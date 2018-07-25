@@ -21,11 +21,15 @@
                         <Card>
                             <p slot="title">
                                 <i-row>
-                                    <i-col span="12" style="text-align:center;border-right: 1px solid #2D8CF0" class="cursor" :class="{active:account == 0}">
-                                        <Icon type="person-stalker"></Icon>用户登陆
+                                    <i-col span="12" style="text-align:center;border-right: 1px solid #2D8CF0"  :class="{active:account == 0}">
+                                        <span  @click="selectdAccount(0)" class="cursor">
+                                            <Icon type="person"></Icon>用户登陆
+                                        </span>
                                     </i-col>
-                                    <i-col span="12" style="text-align:center;" class="cursor" :class="{active:account == 1}" @click="selectdAccount(1)">
-                                        <Icon type="person"></Icon>设备登陆
+                                    <i-col span="12" style="text-align:center;"  :class="{active:account == 1}" >
+                                        <span @click="selectdAccount(1)" class="cursor">
+                                            <Icon type="android-phone-portrait"></Icon>设备登陆
+                                        </span>
                                     </i-col>
                                 </i-row>
                             </p>
@@ -59,7 +63,7 @@
     <script src="dist/vue.min.js"></script>
     <script src="dist/iview.min.js"></script>
     <script src="js/jquery.js"></script>
-    <script src="js/jquery.cookie.js"></script>
+    <script src="js/js.cookie.min.js"></script>
     <script src="js/login.js"></script>
 </body>
 </html>

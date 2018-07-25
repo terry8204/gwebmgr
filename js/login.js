@@ -11,11 +11,10 @@ new Vue({
         account:0
     },
     methods: {
-        handleSubmit(name) {          
+        handleSubmit(name) {
             this.$Message.success('Success!');
         },
         selectdAccount(account){
-            alert(account)
             this.account = account;
         }
     },
