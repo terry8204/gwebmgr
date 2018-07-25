@@ -6,11 +6,17 @@ new Vue({
         formInline: {
             user: '',
             password: ''
-        }
+        },
+        single:false,
+        account:0
     },
     methods: {
         handleSubmit(name) {          
             this.$Message.success('Success!');
+        },
+        selectdAccount(account){
+            alert(account)
+            this.account = account;
         }
     },
     mounted:function () {

@@ -21,11 +21,15 @@
                         <Card>
                             <p slot="title">
                                 <i-row>
-                                    <i-col span="12">col-12</i-col>
-                                    <i-col span="12">col-12</i-col>
+                                    <i-col span="12" style="text-align:center;border-right: 1px solid #2D8CF0" class="cursor" :class="{active:account == 0}">
+                                        <Icon type="person-stalker"></Icon>用户登陆
+                                    </i-col>
+                                    <i-col span="12" style="text-align:center;" class="cursor" :class="{active:account == 1}" @click="selectdAccount(1)">
+                                        <Icon type="person"></Icon>设备登陆
+                                    </i-col>
                                 </i-row>
                             </p>
-                            <div>
+                            <div class="inputs">
                                 <p>
                                     <i-input type="text" v-model="formInline.user" placeholder="Username">
                                         <Icon type="ios-person-outline" slot="prepend"></Icon>
@@ -37,7 +41,10 @@
                                     </i-input>
                                 </p>
                                 <p>
-                                    <i-button type="primary" @click="handleSubmit" style="width: 100%">Signin</i-button>
+                                    <Checkbox v-model="single">记住密码</Checkbox>
+                                </p>
+                                <p>
+                                    <i-button type="primary" @click="handleSubmit" style="width: 100%">登录</i-button>
                                 </p>
                             </div>
                         </Card>

@@ -18,7 +18,13 @@ html,body{
     width: 1200px;
     position: relative;
 }
+.cursor{
+    cursor: pointer;
+}
 
+.active{
+    color:#2D8CF0;
+}
 /* 头部开始 */
     div.header{
         position: absolute;
@@ -60,6 +66,10 @@ html,body{
         height: 308px;
         margin-left: -175px;
         margin-top: -154px;
+    }
+
+    div.inputs p {
+        margin: 15px;
     }
 /* main结束 */
 
