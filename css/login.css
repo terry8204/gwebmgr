@@ -1,0 +1,77 @@
+html,body{
+    height: 100%;
+    width: 100%;
+    font-size: 14px;
+    overflow: auto;
+}
+
+#login-wraper{
+    position: relative;
+    height: 100%;
+    width: 100%;
+    min-width: 1200px;
+    min-height: 580px;
+}
+
+.center{
+    margin: 0 auto;
+    width: 1200px;
+    position: relative;
+}
+
+/* 头部开始 */
+    div.header{
+        position: absolute;
+        left: 0;
+        top: 0;
+        height: 80px;
+        width:100%;
+    }
+
+/* 头部结束 */
+
+
+
+/* main开始 */
+    div.main{
+        position: absolute;
+        left: 0;
+        top: 80px;
+        bottom: 160px;
+        width:100%; 
+    }
+
+    div.main>div.center{
+        height: 100%;     
+    }
+
+    div.main>div.center>div{
+        width: 50%;
+        height: 100%;
+        float: left;
+        position: relative;
+    }
+
+    div.login-form-box{
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        width: 350px;
+        height: 308px;
+        margin-left: -175px;
+        margin-top: -154px;
+    }
+/* main结束 */
+
+
+
+/* 底部开始 */
+    div.footer{
+        position: absolute;
+        left: 0;
+        bottom: 0px;
+        height: 160px;
+        width:100%;  
+    }
+
+/* 底部结束 */
