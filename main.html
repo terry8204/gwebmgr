@@ -10,10 +10,10 @@
     <link rel="stylesheet" href="css/main.css">
     <script src="js/js.cookie.min.js"></script>
     <script>
-        var token = Cookies.get("token");    
-        if(token == undefined){
-            window.location.href = "index.html";
-        }
+        // var token = Cookies.get("token");
+        // if(token == undefined){
+        //     window.location.href = "index.html";
+        // }
     </script>
 </head>
 <body>
@@ -25,7 +25,7 @@
             <component :is="componentId"></component>
         </div>
     </div>
-    
+
     <!-- 头部模版 -->
     <script type="text/template-v" id="header-template">
         <div class="app-header">
@@ -46,16 +46,16 @@
                     <menuItem name="3">
                         <Icon type="ios-gear"></Icon>
                         后台管理
-                    </menuItem>       
+                    </menuItem>
                 </i-menu>
             </div>
             <div class="site_links">
                 <ul>
                     <li>
-                        <i-button type="text">退出</i-button>   
+                        <i-button type="text">退出</i-button>
                     </li>
                 </ul>
-            </div>   
+            </div>
         </div>
     </script>
 
@@ -75,9 +75,9 @@
                                             <Icon :type="item.icon"></Icon>
                                             {{item.title}}
                                         </MenuItem>
-                                    </template>  
+                                    </template>
                             </Submenu>
-                        </template>    
+                        </template>
                     </i-menu>
             </div>
             <div class="mar-view" id="mar-view"></div>
