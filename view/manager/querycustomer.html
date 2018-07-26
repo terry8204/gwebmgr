@@ -1,0 +1,29 @@
+<meta charset="UTF-8">
+
+<style>
+
+</style>
+
+<div id="aaa">
+    我是查询页面
+    {{msg}}
+    <i-button @click="clickMe">click</i-button>
+</div>
+
+<script>
+    new Vue({
+        el:"#aaa",
+        data:{
+            msg:"dfjgj"
+        },
+        methods:{
+            clickMe(){
+                alert("点我干嘛!");
+            }
+        },
+        beforeDestroy:function(){
+            alert("销毁了");
+        }
+    })
+
+</script>

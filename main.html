@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>九户定位平台</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="dist/styles/iview.css">
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="css/main.css">
+    <script src="js/js.cookie.min.js"></script>
+    <script>
+        var token = Cookies.get("token");    
+        if(token == undefined){
+            window.location.href = "index.html";
+        }
+    </script>
+</head>
+<body>
+    <div id="app">
+        <div class="header-wraper">
+            <app-header @change-nav="changeComponent"></app-header>
+        </div>
+        <div class="view-wraper">
+            <component :is="componentId"></component>
+        </div>
+    </div>
+    
+    <!-- 头部模版 -->
+    <script type="text/template-v" id="header-template">
+        <div class="app-header">
+            <div class="logo">
+                <Icon type="planet"></Icon>
+                <span style="font-size:18px;vertical-align:top;">位置信息服务平台</span>
+            </div>
+            <div class="app-nav">
+                <i-menu mode="horizontal" :theme="dark" active-name="3" v-on:on-select="changeNav">
+                    <menuItem name="1">
+                        <Icon type="android-contacts"></Icon>
+                        定位监控
+                    </menuItem>
+                    <menuItem name="2">
+                        <Icon type="ios-paper-outline"></Icon>
+                        统计报表
+                    </menuItem>
+                    <menuItem name="3">
+                        <Icon type="ios-gear"></Icon>
+                        后台管理
+                    </menuItem>       
+                </i-menu>
+            </div>
+            <div class="site_links">
+                <ul>
+                    <li>
+                        <i-button type="text">退出</i-button>   
+                    </li>
+                </ul>
+            </div>   
+        </div>
+    </script>
+
+    <!-- 后台管理 -->
+    <script type="text/template-v" id="manager-template">
+        <div class="manager-wraper">
+            <div class="mar-nav">
+                    <i-menu :theme="theme" @on-select="selectditem">
+                        <template v-for="(group,index) in navList">
+                            <Submenu :name="group.name" :key="index">
+                                    <template slot="title">
+                                        <Icon :type="group.icon"></Icon>
+                                        <span>{{ group.title}}</span>
+                                    </template>
+                                    <template v-for="(item,idx) in group.children">
+                                        <MenuItem :name="item.name" :key="idx">
+                                            <Icon :type="item.icon"></Icon>
+                                            {{item.title}}
+                                        </MenuItem>
+                                    </template>  
+                            </Submenu>
+                        </template>    
+                    </i-menu>
+            </div>
+            <div class="mar-view" id="mar-view"></div>
+        </div>
+    </script>
+
+    <script src="dist/vue.min.js"></script>
+    <script src="dist/vue-router.min.js"></script>
+    <script src="dist/vuex.min.js"></script>
+    <script src="dist/iview.min.js"></script>
+    <script src="js/jquery.js"></script>
+    <script src="js/transformlatlon.js"></script>
+    <script src="js/dateformat.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
