@@ -105,3 +105,109 @@ div.view-wraper{
     }
 
    /* 添加客户css开始 */
+
+
+
+   /* 查询客户css开始 */
+    #query-company{
+        padding: 10px;
+        height: 100%;
+        width: 100%;
+        box-sizing: border-box;
+        position: relative;
+    }
+
+    #query-company>div>div{
+      width: 100%;
+    }
+    #query-company>div> ul{
+        overflow: hidden;
+    }
+    #query-company>div> ul>li{
+        float: left;
+        width: 150px;
+        margin-right: 10px;
+        padding: 5px 0;
+    }
+   /* 查询客户css结束 */
+
+
+   /* 编辑客户开始 */
+   #editcustomer{
+        padding: 10px;
+        height: 100%;
+        width: 100%;
+        box-sizing: border-box;
+        position: relative;
+    }
+    #editcustomer>div>h3{
+        position: relative;
+    }
+    #editcustomer>div>h3>span{
+        position: absolute;
+        right: 10px;
+        top: 0;
+        bottom: 0;
+        width: 80px;
+        height: 100%;
+    }
+    #editcustomer>div>div{
+        margin: 0 auto;
+        width: 700px;
+    }  
+   /* 编辑客户结束 */
+
+
+   /* 添加分组开始 */
+    #addgroup{
+        padding: 10px;
+        height: 100%;
+        width: 100%;
+        box-sizing: border-box;
+        position: relative;
+    }
+   
+    #addgroup>div>div{
+        margin: 0 auto;
+        width: 700px;
+    }
+
+   /* 添加分组结束 */
+
+
+   /* 查询分组开始 */
+   #querygroup{
+        padding: 10px;
+        height: 100%;
+        width: 100%;
+        box-sizing: border-box;
+        position: relative;
+    }
+    #querygroup>div>div{
+        width: 100%;
+    }
+
+    ul.group-item{
+        overflow: hidden;
+    }
+    ul.group-item>li{
+        float: left;
+        line-height: 24px;
+        margin: 3px 0;
+    }
+    ul.group-item>li:nth-child(1){
+        width: 10%;
+    }
+    ul.group-item>li:nth-child(2){
+        width: 15%;
+    }
+    ul.group-item>li:nth-child(3){
+        width: 15%;
+    }
+    ul.group-item>li:nth-child(4){
+        width: 15%;
+    }
+    ul.group-item>li:nth-child(5){
+        width: 45%;
+    }
+   /* 查询分组结束 */

@@ -1,0 +1,161 @@
+
+<meta charset="UTF-8">
+
+<div id="querygroup">
+    <div class="full">
+        <h3 class="h3-title">查询分组</h3>
+        <div>
+            <i-table :columns="columnsList" :data="tableData"></i-table>
+        </div>
+    </div>
+
+    <style>
+        div{
+            
+        }
+    </style>
+    <script>
+        Vue.component('expand-row',{
+            template:'<div>'+ 
+                        '<span v-for="(item , index) in devices" style="display:inline-block;margin:5px">'+
+                            '<i-button icon="ipad"> {{item.deviceid}}</i-button>'+
+                        '</span>'+ 
+                        '<span v-for="(item , index) in devices" style="display:inline-block;margin:5px">'+
+                            '<i-button icon="ipad"> {{item.deviceid}}</i-button>'+
+                        '</span>'+ 
+                        '<span v-for="(item , index) in devices" style="display:inline-block;margin:5px">'+
+                            '<i-button icon="ipad"> {{item.deviceid}}</i-button>'+
+                        '</span>'+ 
+                        '<span v-for="(item , index) in devices" style="display:inline-block;margin:5px">'+
+                            '<i-button icon="ipad"> {{item.deviceid}}</i-button>'+
+                        '</span>'+ 
+                        '<span v-for="(item , index) in devices" style="display:inline-block;margin:5px">'+
+                            '<i-button icon="ipad"> {{item.deviceid}}</i-button>'+
+                        '</span>'+ 
+                        '<span v-for="(item , index) in devices" style="display:inline-block;margin:5px">'+
+                            '<i-button icon="ipad"> {{item.deviceid}}</i-button>'+
+                        '</span>'+ 
+                        '<span v-for="(item , index) in devices" style="display:inline-block;margin:5px">'+
+                            '<i-button icon="ipad"> {{item.deviceid}}</i-button>'+
+                        '</span>'+ 
+                        '<span v-for="(item , index) in devices" style="display:inline-block;margin:5px">'+
+                            '<i-button icon="ipad"> {{item.deviceid}}</i-button>'+
+                        '</span>'+ 
+                        '<span v-for="(item , index) in devices" style="display:inline-block;margin:5px">'+
+                            '<i-button icon="ipad"> {{item.deviceid}}</i-button>'+
+                        '</span>'+ 
+                        '<span v-for="(item , index) in devices" style="display:inline-block;margin:5px">'+
+                            '<i-button icon="ipad"> {{item.deviceid}}</i-button>'+
+                        '</span>'+ 
+                        '<span v-for="(item , index) in devices" style="display:inline-block;margin:5px">'+
+                            '<i-button icon="ipad"> {{item.deviceid}}</i-button>'+
+                        '</span>'+ 
+                        
+                    '</div>',
+            props:{
+                devices:Array
+            },
+            data:function(){
+                return{
+
+                }
+            },
+            methods: {
+                clickMe(index){
+                    console.log(this.row.devices);
+                }
+            },
+            mounted:function(){
+                console.log(this.devices);
+            }
+        })
+        
+        var expandRow = Vue.component('expand-row');
+        new Vue({
+            el:"#querygroup",
+            data:{
+                groupsList:[],
+                tableData:[],
+                columnsList:[
+                   {
+                        type: 'expand',
+                        width: 50,
+                        render: function(h, params){
+                            return h(expandRow, {
+                                props: {
+                                    devices: params.row.devices
+                                }
+                            })
+                        }
+                    },
+                    {
+                        title: '组名',
+                        key: 'groupname'
+                    },
+                    {
+                        title: '用户数量',
+                        key: 'usercount'
+                    },
+                    {
+                        title: '设备数量',
+                        key: 'devicecount'
+                    },
+                    {
+                            title: '操作',
+                            key: 'action',
+                            width: 150,
+                            align: 'center',
+                            render: function(h, params) {
+                                return h('div', [
+                                    h('Button', {
+                                        props: {
+                                            type: 'primary',
+                                            size: 'small'
+                                        },
+                                        style: {
+                                            marginRight: '5px'
+                                        },
+                                        on: {
+                                            click: function() {
+                                                vueInstanse.editCustomer(params.index);
+                                            }
+                                        }
+                                    }, '修改'),
+                                    h('Button', {
+                                        props: {
+                                            type: 'error',
+                                            size: 'small'
+                                        },
+                                        on: {
+                                            click: function() {
+                                                vueInstanse.deleteCustomer(params.index);
+                                            }
+                                        }
+                                    }, '删除')
+                                ]);
+                            }
+                        }
+                ]
+            },
+            methods:{
+                queryAllgroupsInfo:function(){
+                    var url = myUrls.queryGroupByUser();
+                    utils.sendAjax(url,{},this.doQueryAllgroupsInfo);
+                },
+                doQueryAllgroupsInfo:function(resp){
+                    if(resp.status === 0){
+                        this.groupsList = resp.grouplist;
+                        this.tableData = this.groupsList.slice( 0 , 5);
+                    }
+                }
+            },
+            mounted:function(){
+               this.queryAllgroupsInfo();
+            }
+        })
+    </script>
+</div>
+
+
+
+

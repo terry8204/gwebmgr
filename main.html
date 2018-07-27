@@ -10,11 +10,12 @@
     <link rel="stylesheet" href="css/main.css">
     <script src="js/js.cookie.min.js"></script>
     <script>
-        // var token = Cookies.get("token");
-        // if(token == undefined){
-        //     window.location.href = "index.html";
-        // }
+        var token = Cookies.get("token");
+        if(token == undefined){
+            window.location.href = "index.html";
+        }
     </script>
+    <script src="js/config.js"></script>
 </head>
 <body>
     <div id="app">
@@ -22,7 +23,9 @@
             <app-header @change-nav="changeComponent"></app-header>
         </div>
         <div class="view-wraper">
-            <component :is="componentId"></component>
+            <keep-alive>
+                <component :is="componentId"></component>
+            </keep-alive> 
         </div>
     </div>
 
@@ -59,6 +62,21 @@
         </div>
     </script>
 
+    <!-- 定位监控 -->
+    <script type="text/template-v" id="monitor-template">
+        <div class="monitor-wraper">
+            <h1>定位监控</h1>
+        </div>
+    </script>
+
+    <!-- 统计报表 -->
+    <script type="text/template-v" id="report-template">
+        <div class="report-wraper">
+            <h1>统计报表监控</h1>
+        </div>
+    </script>
+    
+
     <!-- 后台管理 -->
     <script type="text/template-v" id="manager-template">
         <div class="manager-wraper">
@@ -91,6 +109,7 @@
     <script src="js/jquery.js"></script>
     <script src="js/transformlatlon.js"></script>
     <script src="js/dateformat.js"></script>
+    <script src="js/util.js"></script>
     <script src="js/main.js"></script>
 </body>
 </html>

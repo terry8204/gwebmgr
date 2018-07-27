@@ -48,3 +48,14 @@ ul,ol,li{
     height: 20px;
     background: #2D8CF0;
 }
+
+/* iview  模态框垂直水平居中 */
+.vertical-center-modal{
+    display: flex;
+    align-items: center;
+    justify-content: center;       
+}
+
+.vertical-center-modal .ivu-modal{
+    top: 0;
+}

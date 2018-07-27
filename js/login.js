@@ -52,10 +52,10 @@ new Vue({
         },
         sendAjax:function(callback){
             var me = this;
-            var url  = "http://112.74.186.169/login?action=login"
-
-            // var data = {from:"web",username:"admin",password:"e10adc3949ba59abbe56e057f20f883e"};
+            var url  = myUrls.login();
             var data = {from:"web",username:this.username,password:$.md5(this.password)};
+            // var url  = host+"webapi?action=login";
+            // var data = {from:"web",username:"admin",password:"e10adc3949ba59abbe56e057f20f883e"};
             var encode = JSON.stringify(data);
                 me.loading = true;
             $.ajax({

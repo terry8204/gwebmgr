@@ -1,0 +1,188 @@
+
+<meta charset="UTF-8">
+
+<div id="addgroup">
+    <div class="full">
+        <h3 class="h3-title">添加分组</h3>
+        <div>
+            <Row style="margin: 10px 0">
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;" :offset="2">企业名称 : &nbsp;</i-col>
+                <i-col span="8">
+                        <i-select v-model="companyid">
+                            <i-option v-for="item in customerList" :value="item.value" :key="item.value">{{ item.label }}</i-option>
+                        </i-select>
+                </i-col>
+                <i-col span="10" style="height: 100%;line-height:32px;padding-left:20px;">
+                    <span>
+                        <Icon type="star"></Icon> 客户名称
+                    </span>
+                </i-col>
+            </Row>
+
+            <Row style="margin: 10px 0">
+                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;" :offset="2">名称 : &nbsp;</i-col>
+                    <i-col span="8">
+                        <i-input v-model.trim="groupname"></i-input>
+                    </i-col>
+                    <i-col span="10" style="height: 100%;line-height:32px;padding-left:20px;">
+                        <span>
+                            <Icon type="star"></Icon> 对象名称(最大不能超过50个字符！)
+                        </span>
+                    </i-col>
+            </Row>
+
+            <Row style="margin: 10px 0">
+                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;" :offset="2">最短定位时间 : &nbsp;</i-col>
+                    <i-col span="8">
+                        <input-number :max="3600" :min="30" :step="30" v-model="mintime"></input-number>&nbsp;秒
+                    </i-col>
+                    <i-col span="10" style="height: 100%;line-height:32px;padding-left:20px;">
+                        <span>
+                            <Icon type="star"></Icon> 车辆可设置定位间隔的下限(最短间隔)
+                        </span>
+                    </i-col>
+            </Row>
+
+            <Row style="margin: 10px 0">
+                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;" :offset="2">最长定位时间 : &nbsp;</i-col>
+                    <i-col span="8">
+                        <input-number :max="3600" :min="30" :step="30" v-model="maxtime"></input-number>&nbsp;秒
+                    </i-col>
+                    <i-col span="10" style="height: 100%;line-height:32px;padding-left:20px;">
+                        <span>
+                            <Icon type="star"></Icon> 车辆可设置定位间隔的上限(最长间隔)
+                        </span>
+                    </i-col>
+            </Row>
+
+            <Row style="margin: 10px 0">
+                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;" :offset="2">上级可见 : &nbsp;</i-col>
+                    <i-col span="8">
+                        <i-select v-model="seenext">
+                            <i-option v-for="item in visibilityList" :value="item.value" :key="item.value">{{ item.label }}</i-option>
+                        </i-select>
+                    </i-col>
+                    <i-col span="10" style="height: 100%;line-height:32px;padding-left:20px;">
+                        <span>
+                            <Icon type="star"></Icon> 是否对上级可见组里面的车辆
+                        </span>
+                    </i-col>
+            </Row>
+
+            <Row style="margin: 10px 0">
+                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;" :offset="2">用户数量 : &nbsp;</i-col>
+                    <i-col span="8">
+                        <i-input v-model.trim="usercount"></i-input>
+                    </i-col>
+                    <i-col span="10" style="height: 100%;line-height:32px;padding-left:20px;">
+                        <span>
+                            <Icon type="star"></Icon> 可包含的监控员数量
+                        </span>
+                    </i-col>
+            </Row>
+
+            <Row style="margin: 10px 0">
+                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;" :offset="2">设备数量 : &nbsp;</i-col>
+                    <i-col span="8">
+                        <i-input v-model.trim="devicecount"></i-input>
+                    </i-col>
+                    <i-col span="10" style="height: 100%;line-height:32px;padding-left:20px;">
+                        <span>
+                            <Icon type="star"></Icon> 可包含的车辆数量
+                        </span>
+                    </i-col>
+            </Row>
+
+            <Row style="margin: 10px 0">
+                    <i-col span="6" :offset="6">
+                        <i-button style="width: 100%" @click="handleSubmit">提交</i-button>
+                    </i-col>
+                    <i-col span="6" :offset="1">
+                        <i-button style="width: 100%" @click="resetInfo">重置</i-button>
+                    </i-col>
+            </Row>
+        </div>
+    </div>
+
+    <script>
+        new Vue({
+            el:"#addgroup",
+            data:{
+                groupname:"",
+                mintime:30,
+                maxtime:3600,
+                usercount:"",
+                devicecount:"",
+                groupname:"",
+                customerList:[],
+                companyid:"",
+                seenext:0,
+                visibilityList:[{value:0,label:"不可见"},{value:1,label:"可见"}]
+            },
+            methods:{
+                handleSubmit:function(){
+                    if(this.companyid == ""){
+                        this.$Message.error("请选择所属客户!");
+                        return;
+                    };
+                    if(this.groupname == ""){
+                        this.$Message.error("填写分组名称!");
+                        return;
+                    };
+                    var url = myUrls.addGroup();
+                    var data = {
+                        groupname:this.groupname,
+                        mintime:this.mintime,
+                        maxtime:this.maxtime,
+                        usercount:this.usercount,
+                        devicecount:this.devicecount,
+                        groupname:this.groupname,
+                        companyid:this.companyid,
+                        seenext:this.seenext,
+                    };
+                    utils.sendAjax(url,data,this.doAddcallback);
+                },
+                doAddcallback:function(resp){
+                    console.log(resp)
+                    if(resp.status == 0){
+                        this.$Message.success("添加成功");
+                    }else{
+                        this.$Message.error(resp.cause);
+                    }
+                },
+                resetInfo:function(){
+                    this.groupname = "";
+                    this.mintime = 30;
+                    this.maxtime = 3600;
+                    this.usercount = "";
+                    this.devicecount = "";
+                    this.groupname = "";
+                    this.companyid = "";
+                    this.seenext = 0; 
+                },
+                queryAllCompanyInfo:function(claaback){
+                    var url = myUrls.queryCompanyByCreater();
+                    utils.sendAjax(url,{},claaback)
+                },
+                doQueryAllCompanyInfo:function(resp){
+                    var me = this;
+                    if(resp.status == 0){
+                        resp.records.forEach(function(item){
+                            me.customerList.push({
+                                label:item.companyname,
+                                value:item.companyid
+                            })
+                        });
+                    }
+                }
+            },
+            mounted:function(){
+                this.queryAllCompanyInfo(this.doQueryAllCompanyInfo);
+            }
+        })
+    </script>
+</div>
+
+
+
+
