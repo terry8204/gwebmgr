@@ -55,7 +55,19 @@
             <div class="site_links">
                 <ul>
                     <li>
-                        <i-button type="text">退出</i-button>
+                        您好! {{name}} 
+                    </li>
+                    <li style="padding:0">|</li>
+                    <li>
+                        <span><Icon type="edit" style="margin-right:3px"></Icon>修改密码</span>
+                    </li>
+                    <li style="padding:0">|</li>
+                    <li>
+                        <span><Icon type="settings" style="margin-right:3px"></Icon>设置</span>
+                    </li>
+                    <li style="padding:0">|</li>
+                    <li>
+                        <span @click="loginOut"><Icon type="android-exit" style="margin-right:3px"></Icon>退出</span>
                     </li>
                 </ul>
             </div>
@@ -65,7 +77,7 @@
     <!-- 定位监控 -->
     <script type="text/template-v" id="monitor-template">
         <div class="monitor-wraper">
-            <h1>定位监控</h1>
+            <div style="width:100%;height:100%;" id="map"></div>
         </div>
     </script>
 
@@ -107,9 +119,11 @@
     <script src="dist/vuex.min.js"></script>
     <script src="dist/iview.min.js"></script>
     <script src="js/jquery.js"></script>
+    <script src="js/jquery.md5.js"></script>
     <script src="js/transformlatlon.js"></script>
     <script src="js/dateformat.js"></script>
     <script src="js/util.js"></script>
+    <script src="http://api.map.baidu.com/api?v=3.0&ak=e7SC5rvmn2FsRNE4R1ygg44n"></script>
     <script src="js/main.js"></script>
 </body>
 </html>

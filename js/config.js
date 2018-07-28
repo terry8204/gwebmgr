@@ -36,5 +36,11 @@ var myUrls = {
     },
     queryGroupByUser:function () { 
         return this.host + "querygroupbyuser&token="+token;
+    },
+    addUser:function () { 
+        return this.host + "adduser&token="+token;
+    },
+    queryCompanyGroup:function () { 
+        return this.host + "querycompanygroup&token="+token;
     }
 }

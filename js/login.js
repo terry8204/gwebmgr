@@ -30,11 +30,10 @@ new Vue({
 
             this.sendAjax(function(resp){
                 if(resp.status == 0){
-                    
-                    window.location.href = "main.html";
-                    Cookies.set("token",resp.token);
-                    Cookies.set("userType",resp.userType);
 
+                    Cookies.set("token",resp.token);
+                    Cookies.set("userType",resp.usertype);
+                    Cookies.set("name",me.username);
                     if(me.keepPass){
                         Cookies.set("accountuser",me.username,{ expires: 7 });
                         Cookies.set("accountpass",me.password,{ expires: 7 });
@@ -45,6 +44,7 @@ new Vue({
                         Cookies.set("keepPass",false,{ expires: 7 });
                     }
 
+                    window.location.href = "main.html";
                 }else{
                     me.$Message.error('账号或密码错误!');
                 }

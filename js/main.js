@@ -8,19 +8,72 @@ var editGroup    = null;   // 要编辑的组对象
         template:document.getElementById("header-template").innerHTML,
         data:function(){
             return {
-                dark:"dark"
+                dark:"dark",
+                name:""
             }
         },
         methods:{
             changeNav:function(index){
                 this.$emit("change-nav",index);
+            },
+            getManagerType:function(userType){
+                var mgr = "";
+                    if(userType == -1){
+                        mgr = "[普通监控员]";
+                    }else if(userType == 0){
+                        mgr = "[系统监控员]";
+                    }else if(userType == 1){
+                        mgr = "[一级监控员]";
+                    }else if(userType == 2){
+                        mgr = "[二级监控员]";
+                    }
+                return mgr;
+            },
+            loginOut:function () { 
+                var me = this;
+                var url = myUrls.loginOut();
+                utils.sendAjax(url,{},function(resp){
+                    console.log(resp);
+                    if(resp.status == 0){
+                        Cookies.remove("token");
+                        window.location.href = "index.html";
+                    }else{
+                        me.$Message.error(resp.cause);
+                    }
+                })   
             }
-        }
+        },
+        mounted:function (param) { 
+            var userType = Cookies.get("userType");
+            var mgr = this.getManagerType(userType);
+            this.name    = Cookies.get("name") + mgr;
+        } 
     };
 
     // 定位监控
     var monitor = {
-        template:document.getElementById("monitor-template").innerHTML, 
+        template:document.getElementById("monitor-template").innerHTML,
+        data:function () { 
+            return {
+                map:null
+            }
+        },
+        methods: {
+            initMap:function () {
+                this.map = new BMap.Map("map");
+                this.map.enableScrollWheelZoom();
+                this.map.centerAndZoom(new BMap.Point(113.27074,23.15004,),12); 
+                var myCity = new BMap.LocalCity();
+                myCity.get(this.setMapCenter);          
+            },
+            setMapCenter(result){
+                var cityName = result.name;
+                this.map.setCenter(cityName);
+            },
+        },
+        mounted:function () { 
+            this.initMap();
+        }
     }
 
     // 统计报表
@@ -53,6 +106,15 @@ var editGroup    = null;   // 要编辑的组对象
                         children:[
                             {title:"增加分组",name:"addGroup",icon:"ios-photos-outline"},
                             {title:"查询分组",name:"queryGroup",icon:"android-search"}
+                        ]
+                    },
+                    {
+                        title:"用户管理", 
+                        name:"userMar",
+                        icon:"person-stalker", 
+                        children:[
+                            {title:"增加用户",name:"addUser",icon:"person-add"},
+                            {title:"查询用户",name:"queryUser",icon:"android-search"}
                         ]
                     },
                     {
@@ -89,7 +151,13 @@ var editGroup    = null;   // 要编辑的组对象
                     break; 
                     case "queryDevice" :
                         page = "querydevice.html";
+                    break;
+                    case "addUser" :
+                        page = "adduser.html";
                     break; 
+                    case "queryUser" :
+                        page = "queryuser.html";
+                    break;
                 }
                 this.currentPage = name;   
                 this.loadPage(page);

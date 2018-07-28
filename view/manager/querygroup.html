@@ -133,7 +133,7 @@ vueInstanse=new Vue({
                 },
                 doQueryAllgroupsInfo:function(resp){
                     if(resp.status === 0){
-                        this.groupsList = resp.grouplist;
+                        this.groupsList = resp.grouplist!==null ? resp.grouplist : [];
                         this.total = this.groupsList.length;
                         this.tableData = this.groupsList.slice( 0 , 5);
                     }

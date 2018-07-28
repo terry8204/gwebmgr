@@ -1,0 +1,239 @@
+
+<meta charset="UTF-8">
+
+<div id="adduser">
+    <div class="full">
+        <h3 class="h3-title">添加用户</h3>
+        <div>
+
+            <Row style="margin: 10px 0">
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">用户名 : &nbsp;</i-col>
+                <i-col span="12">
+                    <i-input v-model.trim="username"></i-input>
+                </i-col>
+            </Row>
+            
+            <Row style="margin: 10px 0">
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">密码 : &nbsp;</i-col>
+                <i-col span="12">
+                    <i-input v-model.trim="password" type="password"></i-input>
+                </i-col>
+            </Row>
+
+            <Row style="margin: 10px 0">
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">确认密码 : &nbsp;</i-col>
+                <i-col span="12">
+                    <i-input v-model.trim="confirmPassword" type="password"></i-input>
+                </i-col>
+            </Row>
+
+            <Row style="margin: 10px 0">
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">过期时间 : &nbsp;</i-col>
+                <i-col span="12">
+                    <date-picker type="date" v-model="overduetime" :options="dateOptions"></date-picker>
+                </i-col>
+            </Row>
+
+            <Row style="margin: 10px 0">
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">用户类型 : &nbsp;</i-col>
+                <i-col span="12">
+                    <i-select v-model="usertype">
+                        <i-option v-for="item in userTypeList" :value="item.value" :key="item.value">{{ item.label }}</i-option>
+                    </i-select>
+                </i-col>
+            </Row>
+
+            <Row style="margin: 10px 0">
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">所属客户 : &nbsp;</i-col>
+                <i-col span="12">
+                    <i-select v-model="companyid">
+                        <i-option v-for="item in companyList" :value="item.value" :key="item.value">{{ item.label }}</i-option>
+                    </i-select>
+                </i-col>
+            </Row>
+
+            <Row style="margin: 10px 0" v-show="isShowGroup">
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">所属分组 : &nbsp;</i-col>
+                <i-col span="12">
+                    <i-select v-model="groupids" multiple>
+                        <i-option v-for="item in groupList" :value="item.value" :key="item.value">{{ item.label }}</i-option>
+                    </i-select>
+                </i-col>
+            </Row>
+
+            <Row style="margin: 10px 0">
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">同时登录 : &nbsp;</i-col>
+                <i-col span="12">
+                        <i-select v-model="singleLogin">
+                            <i-option value="0" >允许</i-option>
+                            <i-option value="1" >禁止</i-option>
+                        </i-select>
+                </i-col>
+            </Row>
+            <Row style="margin: 10px 0">
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">手机登录 : &nbsp;</i-col>
+                <i-col span="12">
+                    <i-select v-model="phoneLogin">
+                        <i-option value="0" >允许</i-option>
+                        <i-option value="1" >禁止</i-option>
+                    </i-select>
+                </i-col>
+            </Row>
+            <Row style="margin: 10px 0">
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">微信登录 : &nbsp;</i-col>
+                <i-col span="12">
+                    <i-select v-model="weixinLogin">
+                        <i-option value="0" >允许</i-option>
+                        <i-option value="1" >禁止</i-option>
+                    </i-select>       
+                </i-col>
+            </Row> 
+            <Row style="margin: 10px 0">
+                    <i-col span="12" :offset="4">
+                        <i-button style="width:100%" @click="handleSubmit">添加</i-button>
+                    </i-col>
+            </Row>          
+        </div>  
+    </div> 
+    <script>
+        new Vue({
+            el:"#adduser",
+            data:{
+                username:"",
+                password:"",
+                confirmPassword:"",
+                overduetime:"",
+                usertype:"",
+                singleLogin:"0",
+                phoneLogin:"0",
+                weixinLogin:"0",
+                companyid:"",
+                companyList:[],
+                groupids:[],
+                groupList:[],
+                dateOptions: {
+                    disabledDate:function(date) {
+                        return date && date.valueOf() < Date.now() - 86400000;
+                    }
+                },
+                isShowGroup:false,
+            },
+            methods: {
+                queryAllCompanyInfo:function(claaback){
+                    var url = myUrls.queryCompanyByCreater();
+                    utils.sendAjax(url,{},claaback)
+                },
+                doQueryAllCompanyInfo:function(resp){
+                    var me = this;
+                    if(resp.status == 0){
+                        resp.records.forEach(function(item){
+                            me.companyList.push({
+                                label:item.companyname,
+                                value:item.companyid
+                            })
+                        });
+                    }
+                },
+                handleSubmit:function(){
+                    var url  = myUrls.addUser();
+                    var userType = this.usertype;
+                    var reg = /^[a-zA-Z0-9_-]{4,32}$/;
+                    var data ={
+                        username:this.username,
+                        password:"",
+                        overduetime:new Date(this.overduetime).getTime(),
+                        usertype:this.usertype,
+                        companyid:this.companyid,
+                    };    
+
+                    if(this.password !== this.confirmPassword){
+                        this.$Message.error("两次密码不一致!");   
+                        return;
+                    }else{
+                        data.password = $.md5(this.password);
+                    }
+                    
+                    if(!reg.test(this.username)){
+                        this.$Message.error("用户名是4到32位的数字和字母组成的!");   
+                        return;
+                    }
+
+                    for(var key in data){
+                        if(data.hasOwnProperty(key)){
+                            if(data[key] == "" || data[key] == NaN ){
+                                this.$Message.error("请填写完整!");   
+                                return;
+                            }
+                        };
+                    };
+                    
+                   
+
+                    if(userType == -1){
+                        if(this.groupids.length == 0){
+                            this.$Message.error("该选择分组");   
+                            return;
+                        };
+                        data.groupids = this.groupids;
+                    }    
+
+                    utils.sendAjax(url,data,this.doAddUserCalback);
+                },
+                doAddUserCalback:function(resp){
+                    console.log(resp);
+                    if(resp.status == 0){
+                        this.$Message.success("添加成功");
+                    }else{
+                        var cause = resp.cause;
+                        if(cause.indexOf("exists")!=-1){
+                            this.$Message.error("该用户已存在");    
+                        }else{
+                            this.$Message.error(resp.cause);
+                        }                      
+                    }
+                },
+                getGroupsList:function(){
+                    var url = myUrls.queryCompanyGroup();                        
+                    utils.sendAjax(url,{companyid:this.companyid},function (resp) { 
+                        console.log(resp);
+                    });
+                }
+            },
+            computed:{
+                userTypeList:function(){
+                    var userType =  Cookies.get("userType");
+                    var userTypeList = null;
+                    if(userType == 0){
+                        userTypeList = [{value:"-1",label:"普通监控员"},{value:"1",label:"一级管理员"},{value:"2",label:"二级管理员"}];
+                    }else if(userType == 1){
+                        userTypeList = [{value:"-1",label:"普通监控员"},{value:"2",label:"二级管理员"}];
+                    }else if(userType == 2){
+                        userTypeList = [{value:"-1",label:"普通监控员"}];
+                    }
+                    return userTypeList;
+                }
+            },
+            watch:{
+                usertype:function(){
+                    if(this.usertype == -1){
+                        this.isShowGroup = true;
+                        if(this.companyid !==""){
+                            this.getGroupsList();
+                        }                   
+                    }else{
+                        this.isShowGroup = false;
+                    }
+                },
+                companyid:function(){
+                    var me = this;
+                    if(this.usertype == -1){
+                        this.getGroupsList();
+                    }
+                }    
+            },
+            mounted:function () {
+                this.queryAllCompanyInfo(this.doQueryAllCompanyInfo);
+            }
+        })
+    </script>    
+</div>        
