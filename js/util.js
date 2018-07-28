@@ -18,3 +18,31 @@ var utils = {
             })
     }
 };
+
+
+//  vue组件   配合查询分组表格使用
+Vue.component('expand-row',{
+    template:'<div>'+ 
+                '<span v-for="(item , index) in devices" style="display:inline-block;margin:5px">'+
+                    '<i-button icon="ipad" @click="clickMe(item)"> {{item.deviceid}}</i-button>'+
+                '</span>'+ 
+            '</div>',
+    props:{
+        devices:Array
+    },
+    data:function(){
+        return{
+
+        }
+    },
+    methods: {
+        clickMe:function(item){
+            console.log(item);
+        }
+    },
+    mounted:function(){
+        console.log(this.devices);
+    }
+});
+
+var expandRow = Vue.component('expand-row');

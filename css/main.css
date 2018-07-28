@@ -172,6 +172,17 @@ div.view-wraper{
         width: 700px;
     }
 
+    #addgroup>div>h3{
+        position: relative;
+    }
+    #addgroup>div>h3>span{
+        position: absolute;
+        right: 10px;
+        top: 0;
+        bottom: 0;
+        width: 80px;
+        height: 100%;
+    }
    /* 添加分组结束 */
 
 
@@ -186,28 +197,14 @@ div.view-wraper{
     #querygroup>div>div{
         width: 100%;
     }
-
-    ul.group-item{
+    #querygroup>div> ul{
         overflow: hidden;
     }
-    ul.group-item>li{
+    #querygroup>div> ul>li{
         float: left;
-        line-height: 24px;
-        margin: 3px 0;
-    }
-    ul.group-item>li:nth-child(1){
-        width: 10%;
-    }
-    ul.group-item>li:nth-child(2){
-        width: 15%;
-    }
-    ul.group-item>li:nth-child(3){
-        width: 15%;
-    }
-    ul.group-item>li:nth-child(4){
-        width: 15%;
-    }
-    ul.group-item>li:nth-child(5){
-        width: 45%;
+        width: 150px;
+        margin-right: 10px;
+        padding: 5px 0;
     }
    /* 查询分组结束 */
+

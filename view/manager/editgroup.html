@@ -3,7 +3,7 @@
 
 <div id="addgroup">
     <div class="full">
-        <h3 class="h3-title">添加分组</h3>
+        <h3 class="h3-title">编辑分组 <span> <i-button style="width: 100%" @click="back">返回</i-button> </h3>
         <div>
             <Row style="margin: 10px 0">
                 <i-col span="4" style="height: 100%;text-align:right;line-height:32px;" :offset="2">企业名称 : &nbsp;</i-col>
@@ -131,6 +131,7 @@
                     };
                     var url = myUrls.addGroup();
                     var data = {
+                        groupid:editGroup.groupid,
                         groupname:this.groupname,
                         mintime:this.mintime,
                         maxtime:this.maxtime,
@@ -145,7 +146,7 @@
                 doAddcallback:function(resp){
                     console.log(resp)
                     if(resp.status == 0){
-                        this.$Message.success("添加成功");
+                        this.$Message.success("修改成功");
                     }else{
                         this.$Message.error(resp.cause);
                     }
@@ -168,16 +169,37 @@
                     var me = this;
                     if(resp.status == 0){
                         resp.records.forEach(function(item){
+                            console.log(item.companyid);
                             me.customerList.push({
                                 label:item.companyname,
                                 value:item.companyid
                             })
                         });
+                        this.setGroupInfo();
                     }
+                },
+                back:function(){
+                    var me = this;
+                    this.$Loading.start();
+                    $("#mar-view").load("../view/manager/querygroup.html",function(){
+                        me.$Loading.finish();
+                    });
+                },
+                setGroupInfo:function(){
+                    console.log(editGroup);
+                    this.groupname    = editGroup.groupname;
+                    this.mintime      = editGroup.mintime;
+                    this.maxtime      = editGroup.maxtime;
+                    this.usercount    = editGroup.usercount;
+                    this.devicecount  = editGroup.devicecount;
+                    this.groupname    = editGroup.groupname;
+                    this.companyid    = editGroup.companyid;
+                    this.seenext      = editGroup.seenext;
                 }
             },
             mounted:function(){
                 this.queryAllCompanyInfo(this.doQueryAllCompanyInfo);
+                
             }
         })
     </script>

@@ -1,5 +1,6 @@
 var vueInstanse  = null;   // 全局vue实例子
 var editCustomer = null;   // 要编辑客户的对象
+var editGroup    = null;   // 要编辑的组对象
 (function(){
 
     // 头部组建
@@ -12,7 +13,7 @@ var editCustomer = null;   // 要编辑客户的对象
         },
         methods:{
             changeNav:function(index){
-                this.$emit("change-nav",index)
+                this.$emit("change-nav",index);
             }
         }
     };
@@ -48,10 +49,19 @@ var editCustomer = null;   // 要编辑客户的对象
                     {
                         title:"分组管理",
                         name:"groupMar",
-                        icon:"ios-albums", 
+                        icon:"ios-albums",  
                         children:[
-                            {title:"增加分组",name:"addGroup",icon:"android-person-add"},
+                            {title:"增加分组",name:"addGroup",icon:"ios-photos-outline"},
                             {title:"查询分组",name:"queryGroup",icon:"android-search"}
+                        ]
+                    },
+                    {
+                        title:"设备管理",
+                        name:"deviceMar",
+                        icon:"ipod",   
+                        children:[
+                            {title:"增加设备",name:"addDevice",icon:"ios-plus-outline"},
+                            {title:"查询设备",name:"queryDevice",icon:"android-search"}
                         ]
                     },
                 ]
@@ -73,10 +83,16 @@ var editCustomer = null;   // 要编辑客户的对象
                     break; 
                     case "queryGroup" :
                         page = "querygroup.html";
-                    break;  
+                    break; 
+                    case "addDevice" :
+                        page = "adddevice.html";
+                    break; 
+                    case "queryDevice" :
+                        page = "querydevice.html";
+                    break; 
                 }
                 this.currentPage = name;   
-                this.loadPage(page)
+                this.loadPage(page);
             },
             loadPage:function(page){
                 var me = this;
@@ -118,6 +134,7 @@ var editCustomer = null;   // 要编辑客户的对象
 
     })
 })();
+
 
 
 

@@ -4,7 +4,6 @@
     <div class="full">
         <h3 class="h3-title">查询客户</h3>
         <ul>
-            <!-- <li style="height: 100%;line-height:32px;">选择查询类型 : &nbsp;</li> -->
             <li>
                 <i-select v-model="queryType">
                     <i-option v-for="item in queryList" :value="item.value" :key="item.value">{{ item.label }}</i-option>
@@ -26,17 +25,17 @@
         </div>
     </div>
     <Modal v-model="modal" width="360" class-name="vertical-center-modal">
-            <p slot="header" style="color:#f60;text-align:center">
-                <Icon type="information-circled"></Icon>
-                <span>是否删除</span>
-            </p>
-            <div style="text-align:center">
-                <p> {{delCustomerObj.companyname}}</p>
-            </div>
-            <div slot="footer">
-                <i-button type="error"  @click="del" style="width: 100%">删除</i-button>
-            </div>
-        </Modal>
+        <p slot="header" style="color:#f60;text-align:center">
+            <Icon type="information-circled"></Icon>
+            <span>是否删除</span>
+        </p>
+        <div style="text-align:center">
+            <p> {{delCustomerObj.companyname}}</p>
+        </div>
+        <div slot="footer">
+            <i-button type="error"  @click="del" style="width: 100%">删除</i-button>
+        </div>
+    </Modal>
     <script>
 vueInstanse = new Vue({
             el:"#query-company",
