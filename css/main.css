@@ -244,3 +244,43 @@ div.view-wraper{
         width: 500px;
     }
    /* 添加用户结束 */
+
+
+   /* c查询用户 */
+   #queryuser{
+        padding: 10px;
+        height: 100%;
+        width: 100%;
+        box-sizing: border-box;
+        position: relative;
+    }
+    #queryuser>div>div{
+        width: 100%;
+    }
+    #queryuser>div> ul{
+        overflow: hidden;
+    }
+    #queryuser>div> ul>li{
+        float: left;
+        width: 150px;
+        margin-right: 10px;
+        padding: 5px 0;
+    }
+   /* 查询用户 */
+
+
+   /* 添加设备开始 */
+    #adddevice{
+        padding: 10px;
+        height: 100%;
+        width: 100%;
+        box-sizing: border-box;
+        position: relative;
+    }
+   
+    #adddevice>div>div{
+        margin: 0 auto;
+        width: 700px;
+    }
+
+   /* 添加设备开始 */

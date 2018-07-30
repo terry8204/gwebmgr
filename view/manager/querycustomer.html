@@ -18,7 +18,7 @@
         </ul>
 
         <div class="table-wraper">
-            <i-table border :columns="columns" :data="tableData"></i-table>
+            <i-table border :columns="columns" :data="tableData" :loading="loading"></i-table>
         </div>
         <div class="my-page" style="margin: 5px 0;">
             <Page :total="total" simple :page-size="5" @on-change="changePage"></Page>
@@ -40,6 +40,7 @@
 vueInstanse = new Vue({
             el:"#query-company",
             data:{
+                loading:true,
                     columns: [
                         {
                             title: '公司名称',
@@ -117,6 +118,7 @@ vueInstanse = new Vue({
                         this.total = this.recordsList.length;
                         this.tableData =  this.recordsList.slice(0,5);
                     }
+                    this.loading = false;
                 },
                 changePage:function(index){
                     var offset = index * 5;
@@ -145,7 +147,7 @@ vueInstanse = new Vue({
                     var me = this; 
                     if(resp.status == 0){
                         this.$Message.success("删除成功");
-                        // this.queryAllCompanyInfo(this.doQueryAllCompanyInfo);
+
                         this.recordsList.forEach(function(item,index){
                             if(item.companyid == me.delCustomerObj.companyid){
                                 me.$delete(me.recordsList,index);
@@ -159,7 +161,6 @@ vueInstanse = new Vue({
                         });
                         
                        
-
                     }else{
                         this.$Message.error(resp.cause);
                     }

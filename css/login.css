@@ -64,6 +64,7 @@
         border-top: 1px solid #C3CEDE;
         border-bottom: 1px solid #C3CEDE;
         background: #FFFFFF;
+        min-height: 352px;
     }
 
     div.main>div.center{

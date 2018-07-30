@@ -3,6 +3,187 @@
 
 <div id="queryuser">
     <div class="full">
-        查询用户
+        <h3 class="h3-title">查询用户</h3>
+        <ul>
+            <li>
+                <i-select v-model="queryType">
+                    <i-option v-for="item in queryList" :value="item.value" :key="item.value">{{ item.label }}</i-option>
+                </i-select> 
+            </li>
+            <li>
+                <i-input v-model.trim="queryParameter"></i-input>
+            </li>
+            <li>
+                <i-button type="primary">查询</i-button>
+            </li>
+        </ul>
+        <div class="table-wraper">
+            <i-table border :columns="columns" :data="tableData" :loading="loading"></i-table>
+        </div>
+        <div class="my-page" style="margin: 5px 0;">
+            <Page :total="total" simple :page-size="5" @on-change="changePage"></Page>
+        </div>
+
+        <Modal v-model="modal" width="360" class-name="vertical-center-modal">
+            <p slot="header" style="color:#f60;text-align:center">
+                <Icon type="information-circled"></Icon>
+                <span>是否删除</span>
+            </p>
+            <div style="text-align:center">
+                <p> {{deleteUserObj.username}}</p>
+            </div>
+            <div slot="footer">
+                <i-button type="error"  @click="handleDelete" style="width: 100%">删除</i-button>
+            </div>
+        </Modal>
     </div>     
+    <script>
+ vueInstanse = new Vue({
+            el:"#queryuser",
+            data:{
+                queryList:[],
+                queryType:"",
+                queryParameter:"",
+                loading:true,
+                total:0,
+                columns: [
+                        {
+                            title: '用户名',
+                            key: 'username',
+                        },
+                        {
+                            title: '用户类型',
+                            key: 'usertype'
+                        },
+                        {
+                            title: '创建时间',
+                            key: 'createtime'
+                        },
+                        {
+                            title: '到期时间',
+                            key: 'overduetime'
+                        },
+                        {
+                            title: '操作',
+                            key: 'action',
+                            width: 150,
+                            align: 'center',
+                            render: function(h, params) {
+                                return h('div', [
+                                    h('Button', {
+                                        props: {
+                                            type: 'primary',
+                                            size: 'small'
+                                        },
+                                        style: {
+                                            marginRight: '5px'
+                                        },
+                                        on: {
+                                            click: function() {
+                                                vueInstanse.editCustomer(params.index);
+                                            }
+                                        }
+                                    }, '修改'),
+                                    h('Button', {
+                                        props: {
+                                            type: 'error',
+                                            size: 'small'
+                                        },
+                                        on: {
+                                            click: function() {
+                                                vueInstanse.deleteUser(params.index);
+                                            }
+                                        }
+                                    }, '删除')
+                                ]);
+                            }
+                        }
+                    ],
+                    tableData: [],
+                    userlists:[],
+                    modal:false,
+                    deleteUserObj:{},
+            },
+            methods:{
+                getUserInfoList:function(){
+                    var url = myUrls.queryUser();
+                    utils.sendAjax(url,{},this.doUserInfoList);
+                },
+                doUserInfoList:function(resp){
+                    console.log(resp)
+                    if(resp.status == 0 && resp.userlists != null){
+                        this.userlists = resp.userlists;
+                        this.filterUsersList();
+                        this.tableData = this.userlists.slice(0,5);
+                        this.total = this.userlists.length;
+                    }
+                    this.loading = false;
+                },
+                timeToDateStr:function(time){
+                    return DateFormat.longToDateTimeStr(time,0);
+                },
+                getUserTypeStr:function(type){
+                    var str = "";
+                    switch(type){
+                        case -1 :
+                           str = "普通监控员";
+                        break; 
+                        case 0 :
+                           str = "系统管理员";
+                        break;  
+                        case 1 :
+                           str = "一级管理员";
+                        break;  
+                        case 2 :
+                           str = "二级管理员";
+                        break;    
+                    }
+                    return str;
+                },
+                filterUsersList:function(){
+                    var me = this ;
+                    this.userlists.forEach(function(user){
+                        user.usertype = me.getUserTypeStr(user.usertype);
+                        user.createtime = me.timeToDateStr(user.createtime);
+                        user.overduetime = me.timeToDateStr(user.overduetime);
+                    });
+                },
+                changePage:function(index){
+                    var offset = index * 5;
+                    var start = (index-1) *5;
+                    this.tableData =  this.userlists.slice(start,offset);
+                },
+                deleteUser:function(index){
+                    this.deleteUserObj = this.tableData[index]; 
+                    this.modal = true;                
+                },
+                handleDelete:function(){
+                    var me = this;
+                    var url = myUrls.delUser();
+                    var username = this.deleteUserObj.username;   
+                    utils.sendAjax(url,{usernames:[username]},function(resp){
+                        if(resp.status == 0){
+                            me.$Message.success("删除成功!");
+                            me.userlists.forEach(function(item,index){
+                                if(item.username == me.deleteUserObj.username){
+                                    me.$delete(me.userlists,index);
+                                }
+                            });
+                            me.tableData.forEach(function(item,index){
+                                if(item.username == me.deleteUserObj.username){
+                                    me.$delete(me.tableData,index);
+                                }
+                            });     
+                        }else{
+                            me.$Message.error(resp.cause);
+                        }
+                        me.modal = false;
+                    });     
+                }
+            },
+            mounted:function(){
+                this.getUserInfoList();
+            }
+        })
+    </script>
 </div>        

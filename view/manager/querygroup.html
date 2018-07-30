@@ -18,7 +18,7 @@
             </li>
         </ul>
         <div>
-            <i-table :columns="columnsList" :data="tableData"></i-table>
+            <i-table :columns="columnsList" :data="tableData" :loading="loading"></i-table>
         </div>
         <div class="my-page" style="margin: 5px 0;">
             <Page :total="total" simple :page-size="5" @on-change="changePage"></Page>
@@ -43,6 +43,7 @@
 vueInstanse=new Vue({
             el:"#querygroup",
             data:{
+                loading:true,
                 modal:false,
                 delGroupObj:{},
                 total:0,
@@ -137,6 +138,7 @@ vueInstanse=new Vue({
                         this.total = this.groupsList.length;
                         this.tableData = this.groupsList.slice( 0 , 5);
                     }
+                    this.loading = false;
                 },
                 editGroup:function(index){
                     var me = this;

@@ -193,9 +193,23 @@
                     }
                 },
                 getGroupsList:function(){
+                    var me = this; 
                     var url = myUrls.queryCompanyGroup();                        
                     utils.sendAjax(url,{companyid:this.companyid},function (resp) { 
-                        console.log(resp);
+                        me.groupList = [];
+                        me.groupids = [];
+                        if(resp.status == 0){
+                            var companys = resp.companys
+                            for(var i = 0 ; i < companys.length ; i++){
+                                var item = companys[i];
+                                if(item.companyid == me.companyid && item.groups != null){
+                                    var groups = item.groups;
+                                    groups.forEach(function(group){
+                                        me.groupList.push({label:group.groupname,value:group.groupid});
+                                    });
+                                }
+                            }
+                        }
                     });
                 }
             },

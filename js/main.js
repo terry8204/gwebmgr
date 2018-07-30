@@ -9,7 +9,8 @@ var editGroup    = null;   // 要编辑的组对象
         data:function(){
             return {
                 dark:"dark",
-                name:""
+                name:"",
+                isManager:true,
             }
         },
         methods:{
@@ -20,6 +21,7 @@ var editGroup    = null;   // 要编辑的组对象
                 var mgr = "";
                     if(userType == -1){
                         mgr = "[普通监控员]";
+                        this.isManager = false;
                     }else if(userType == 0){
                         mgr = "[系统监控员]";
                     }else if(userType == 1){
@@ -44,8 +46,8 @@ var editGroup    = null;   // 要编辑的组对象
             }
         },
         mounted:function (param) { 
-            var userType = Cookies.get("userType");
-            var mgr = this.getManagerType(userType);
+             this.userType = Cookies.get("userType");
+            var mgr = this.getManagerType(this.userType);
             this.name    = Cookies.get("name") + mgr;
         } 
     };
@@ -62,16 +64,16 @@ var editGroup    = null;   // 要编辑的组对象
             initMap:function () {
                 this.map = new BMap.Map("map");
                 this.map.enableScrollWheelZoom();
-                this.map.centerAndZoom(new BMap.Point(113.27074,23.15004,),12); 
+                this.map.centerAndZoom(new BMap.Point(113.27074,23.15004),12); 
                 var myCity = new BMap.LocalCity();
                 myCity.get(this.setMapCenter);          
             },
-            setMapCenter(result){
+            setMapCenter:function(result){
                 var cityName = result.name;
                 this.map.setCenter(cityName);
             },
         },
-        mounted:function () { 
+        mounted:function () {
             this.initMap();
         }
     }

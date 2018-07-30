@@ -42,5 +42,17 @@ var myUrls = {
     },
     queryCompanyGroup:function () { 
         return this.host + "querycompanygroup&token="+token;
+    },
+    queryUser:function () { 
+        return this.host + "queryusers&token="+token;
+    },
+    delUser:function () { 
+        return this.host + "deleteuser&token="+token;
+    },
+    editUser:function () { 
+        return this.host + "edituser&token="+token;
+    },
+    addDevice:function () { 
+        return this.host + "adddevice&token="+token;
     }
 }

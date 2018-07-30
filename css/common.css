@@ -51,11 +51,8 @@ ul,ol,li{
 
 /* iview  模态框垂直水平居中 */
 .vertical-center-modal{
-    display: flex;
-    align-items: center;
-    justify-content: center;       
-}
-
-.vertical-center-modal .ivu-modal{
-    top: 0;
+    position: fixed;     
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%,-50%);
 }

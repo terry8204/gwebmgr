@@ -1,4 +1,179 @@
 <meta charset="UTF-8">
-<div id="adddev">
-    <h1>添加dev</h1>
+<div id="adddevice">
+    <div class="full">
+        <h3 class="h3-title">添加设备</h3>
+        <div>
+
+            <Row style="margin: 10px 0">
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">设备名称 : &nbsp;</i-col>
+                <i-col span="8">
+                    <i-input v-model.trim="devicename"></i-input>
+                </i-col>
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">登录密码 : &nbsp;</i-col>
+                <i-col span="8">
+                    <i-input v-model.trim="loginpwd" type="password"></i-input>
+                </i-col>
+                
+            </Row>
+
+            <Row style="margin: 10px 0">
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">设备类型 : &nbsp;</i-col>
+                    <i-col span="8">
+                        <i-input v-model.trim="devicetype"></i-input>
+                    </i-col>
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">SIM : &nbsp;</i-col>
+                <i-col span="8">
+                    <i-input v-model.trim.number="simnum"></i-input>
+                </i-col>
+            </Row>
+
+            <Row style="margin: 10px 0">
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">过期时间 : &nbsp;</i-col>
+                <i-col span="8">
+                    <date-picker type="date" v-model="overduetime" :options="dateOptions"></date-picker>
+                </i-col>
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">允许登录 : &nbsp;</i-col>
+                <i-col span="8">
+                    <i-select v-model="loginenable">
+                        <i-option value="0">允许</i-option>
+                        <i-option value="1">禁止</i-option>
+                    </i-select>
+                </i-col>
+            </Row>
+
+            <Row style="margin: 10px 0">
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">所属客户 : &nbsp;</i-col>
+                <i-col span="8">
+                    <i-select v-model="companyid">
+                        <i-option v-for="item in customersList" :value="item.value" :key="item.value">{{ item.label }}</i-option>
+                    </i-select>
+                </i-col>
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">所属分组 : &nbsp;</i-col>
+                <i-col span="8">
+                    <i-select v-model="groupid">
+                        <i-option v-for="item in groupsList" :value="item.value" :key="item.value">{{ item.label }}</i-option>
+                    </i-select>
+                </i-col>
+            </Row>
+
+            <Row style="margin: 10px 0">
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">是否使用 : &nbsp;</i-col>
+                <i-col span="8">
+                    <i-select v-model="deviceenable">
+                        <i-option value="0">正常</i-option>
+                        <i-option value="1">停用</i-option>
+                    </i-select>
+                </i-col>
+            </Row>
+            
+            <Row style="margin: 10px 0">
+                <i-col span="6" :offset="7">
+                    <i-button style="width: 100%" @click="handleSubmit">提交</i-button>
+                </i-col>
+                <i-col span="6" :offset="1">
+                    <i-button style="width: 100%" @click="resetInfo">重置</i-button>
+                </i-col>
+            </Row>
+        </div>
+    </div>
+    <script>
+        new Vue({
+            el:"#adddevice",
+            data:{
+                dateOptions:{
+                    disabledDate:function(date) {
+                        return date && date.valueOf() < Date.now() - 86400000;
+                    }
+                },
+                devicename:"",
+                devicetype:"",
+                simnum:"",
+                overduetime:"",
+                loginpwd:"",
+                loginenable:"0",
+                deviceenable:"0",
+                groupsList:[],
+                customersList:[],
+                groupid:'',
+                companyid:''
+            },
+            methods: {
+                handleSubmit:function(){
+                    var url = myUrls.addDevice();
+                    var data = {
+                        devicename:this.devicename,
+                        devicetype:this.devicetype,
+                        simnum:this.simnum,
+                        overduetime:this.overduetime,
+                        loginpwd:this.loginpwd,
+                        loginenable:Number(this.loginenable),
+                        deviceenable:Number(this.deviceenable),
+                        groupid:this.groupid,
+                        companyid:this.companyid
+                    };
+                    utils.sendAjax(url,data,function (resp) { 
+                        console.log(resp);
+                    })
+                },
+                resetInfo:function(){
+                    this.devicename = "";
+                    this.devicetype = "";
+                    this.simnum = "";
+                    this.overduetime = "";
+                    this.loginpwd = "";
+                    this.loginenable = "0";
+                    this.deviceenable = "0";
+                    this.groupsList = "";
+                    this.customersList = "";
+                    this.groupid = "";
+                    this.companyid = "";
+                },
+                queryAllCompanyInfo:function(claaback){
+                    var url = myUrls.queryCompanyByCreater();
+                    utils.sendAjax(url,{},claaback)
+                },
+                doQueryAllCompanyInfo:function(resp){
+                    var me = this;
+                    if(resp.status == 0){
+                        resp.records.forEach(function(item){
+                            me.customersList.push({
+                                label:item.companyname,
+                                value:item.companyid
+                            })
+                        });
+                    }
+                },
+                getGroupsList:function(){
+                    var me = this; 
+                    var url = myUrls.queryCompanyGroup();                        
+                    utils.sendAjax(url,{companyid:this.companyid},function (resp) { 
+                        me.groupList = [];
+                        me.groupids = [];
+                        if(resp.status == 0){
+                            var companys = resp.companys
+                            for(var i = 0 ; i < companys.length ; i++){
+                                var item = companys[i];
+                                if(item.companyid == me.companyid && item.groups != null){
+                                    var groups = item.groups;
+                                    groups.forEach(function(group){
+                                        me.groupsList.push({label:group.groupname,value:group.groupid});
+                                    });
+                                }
+                            }
+                        }
+                    });
+                }
+            },
+            watch:{
+                companyid:function(){
+                    this.groupsList = [];
+                    this.groupid = "";
+                    this.getGroupsList();  
+                }
+            },
+            mounted:function () {
+                this.queryAllCompanyInfo(this.doQueryAllCompanyInfo);
+            } 
+        })
+    </script>
 </div>
