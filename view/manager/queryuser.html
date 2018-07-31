@@ -53,7 +53,11 @@
                         },
                         {
                             title: '用户类型',
-                            key: 'usertype'
+                            key: 'userTypeStr'    
+                        },
+                        {
+                            title: '设备数量',
+                            key: 'currdevicecount' 
                         },
                         {
                             title: '创建时间',
@@ -80,7 +84,7 @@
                                         },
                                         on: {
                                             click: function() {
-                                                vueInstanse.editCustomer(params.index);
+                                                vueInstanse.editUser(params.index);
                                             }
                                         }
                                     }, '修改'),
@@ -143,7 +147,7 @@
                 filterUsersList:function(){
                     var me = this ;
                     this.userlists.forEach(function(user){
-                        user.usertype = me.getUserTypeStr(user.usertype);
+                        user.userTypeStr = me.getUserTypeStr(user.usertype);
                         user.createtime = me.timeToDateStr(user.createtime);
                         user.overduetime = me.timeToDateStr(user.overduetime);
                     });
@@ -179,6 +183,14 @@
                         }
                         me.modal = false;
                     });     
+                },
+                editUser:function(index){
+                    editUser = this.tableData[index];
+                    var me = this;
+                    this.$Loading.start();
+                    $("#mar-view").load("../view/manager/edituser.html",function(){
+                        me.$Loading.finish();
+                    });
                 }
             },
             mounted:function(){

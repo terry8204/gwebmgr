@@ -1,6 +1,7 @@
 var vueInstanse  = null;   // 全局vue实例子
 var editCustomer = null;   // 要编辑客户的对象
 var editGroup    = null;   // 要编辑的组对象
+var editUser     = null;   // 要编辑的user对象
 (function(){
 
     // 头部组建
@@ -25,9 +26,9 @@ var editGroup    = null;   // 要编辑的组对象
                     }else if(userType == 0){
                         mgr = "[系统监控员]";
                     }else if(userType == 1){
-                        mgr = "[一级监控员]";
+                        mgr = "[一级管理员]";
                     }else if(userType == 2){
-                        mgr = "[二级监控员]";
+                        mgr = "[二级管理员]";
                     }
                 return mgr;
             },

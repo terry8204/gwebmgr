@@ -11,6 +11,7 @@ var utils = {
                 },
                 error:function(e){
                     console.log("服务器错误");
+                    new Vue().$Loading.error();
                 },
                 complete:function(){
                    

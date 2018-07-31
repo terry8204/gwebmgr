@@ -17,10 +17,10 @@
             </Row>
 
             <Row style="margin: 10px 0">
-                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">设备类型 : &nbsp;</i-col>
-                    <i-col span="8">
-                        <i-input v-model.trim="devicetype"></i-input>
-                    </i-col>
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">设备ID : &nbsp;</i-col>
+                <i-col span="8">
+                        <i-input v-model.trim="deviceid"></i-input>
+                </i-col>
                 <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">SIM : &nbsp;</i-col>
                 <i-col span="8">
                     <i-input v-model.trim.number="simnum"></i-input>
@@ -32,12 +32,12 @@
                 <i-col span="8">
                     <date-picker type="date" v-model="overduetime" :options="dateOptions"></date-picker>
                 </i-col>
-                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">允许登录 : &nbsp;</i-col>
-                <i-col span="8">
-                    <i-select v-model="loginenable">
-                        <i-option value="0">允许</i-option>
-                        <i-option value="1">禁止</i-option>
-                    </i-select>
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">设备类型 : &nbsp;</i-col>
+                    <i-col span="8">  
+                        <!-- devicetype -->
+                        <i-select v-model="devicetype">
+                            <i-option v-for="item in deviceTypeList" :value="item.value" :key="item.value">{{ item.label }}</i-option>
+                        </i-select>
                 </i-col>
             </Row>
 
@@ -54,6 +54,16 @@
                         <i-option v-for="item in groupsList" :value="item.value" :key="item.value">{{ item.label }}</i-option>
                     </i-select>
                 </i-col>
+            </Row>
+
+            <Row style="margin: 10px 0">
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">允许登录 : &nbsp;</i-col>
+                <i-col span="8">
+                    <i-select v-model="loginenable">
+                            <i-option value="0">允许</i-option>
+                            <i-option value="1">禁止</i-option>
+                    </i-select>
+                </i-col>                   
             </Row>
 
             <Row style="margin: 10px 0">
@@ -85,6 +95,7 @@
                         return date && date.valueOf() < Date.now() - 86400000;
                     }
                 },
+                deviceid:"",
                 devicename:"",
                 devicetype:"",
                 simnum:"",
@@ -94,28 +105,46 @@
                 deviceenable:"0",
                 groupsList:[],
                 customersList:[],
+                deviceTypeList:[],
                 groupid:'',
                 companyid:''
             },
             methods: {
                 handleSubmit:function(){
+                    var me = this;
                     var url = myUrls.addDevice();
+
+                    if(this.deviceid != "") { 
+                        me.$Message.error("请填写设备ID");
+                        return;
+                    };    
+
                     var data = {
+                        deviceid:this.deviceid,
                         devicename:this.devicename,
                         devicetype:this.devicetype,
                         simnum:this.simnum,
-                        overduetime:this.overduetime,
-                        loginpwd:this.loginpwd,
+                        overduetime:new Date(this.overduetime).getTime(),
+                        loginpwd:$.md5(this.loginpwd),
                         loginenable:Number(this.loginenable),
                         deviceenable:Number(this.deviceenable),
                         groupid:this.groupid,
                         companyid:this.companyid
-                    };
+                    };                   
                     utils.sendAjax(url,data,function (resp) { 
-                        console.log(resp);
-                    })
+                        if(resp.status == 0){
+                            this.$Message.success("添加成功");
+                        }else if(resp.status = -1){
+                            if( resp.cause!== null && resp.cause.indexOf("token")!=-1){
+                                window.location.href = "index.html";
+                            }else{
+                                me.$Message.error("添加失败");
+                            }
+                        }
+                    });
                 },
                 resetInfo:function(){
+                    this.deviceid = "";
                     this.devicename = "";
                     this.devicetype = "";
                     this.simnum = "";
@@ -162,6 +191,22 @@
                             }
                         }
                     });
+                },
+                getDeviceType:function () { 
+                    var me = this;
+                    var url = myUrls.queryDeviceType();   
+                    utils.sendAjax(url,{},function (resp) { 
+                        if(resp.status == 0 && resp.devicetypes!=null){
+                            resp.devicetypes.forEach(function (item) { 
+                                me.deviceTypeList.push({value:item.devicetypeid,label:item.typename});
+                            })
+                        }else if(resp.status == -1){
+                            var cause = resp.cause;
+                            if(cause.indexOf("token")!=-1){
+                                window.location.href = "index.html";
+                            }
+                        }
+                    }); 
                 }
             },
             watch:{
@@ -173,6 +218,7 @@
             },
             mounted:function () {
                 this.queryAllCompanyInfo(this.doQueryAllCompanyInfo);
+                this.getDeviceType();
             } 
         })
     </script>

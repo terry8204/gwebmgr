@@ -1,32 +1,16 @@
-
 <meta charset="UTF-8">
 
-<div id="adduser">
+<div id="edituser">
     <div class="full">
-        <h3 class="h3-title">添加用户</h3>
-        <div>
-
+        <h3 class="h3-title">编辑分组 <span> <i-button style="width: 100%" @click="back">返回</i-button> </h3>
+        <div>          
             <Row style="margin: 10px 0">
                 <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">用户名 : &nbsp;</i-col>
                 <i-col span="12">
-                    <i-input v-model.trim="username"></i-input>
+                    <i-input v-model.trim="username" disabled></i-input>
                 </i-col>
             </Row>
-            
-            <Row style="margin: 10px 0">
-                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">密码 : &nbsp;</i-col>
-                <i-col span="12">
-                    <i-input v-model.trim="password" type="password"></i-input>
-                </i-col>
-            </Row>
-
-            <Row style="margin: 10px 0">
-                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">确认密码 : &nbsp;</i-col>
-                <i-col span="12">
-                    <i-input v-model.trim="confirmPassword" type="password"></i-input>
-                </i-col>
-            </Row>
-
+      
             <Row style="margin: 10px 0">
                 <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">过期时间 : &nbsp;</i-col>
                 <i-col span="12">
@@ -88,6 +72,7 @@
                     </i-select>       
                 </i-col>
             </Row> 
+
             <Row style="margin: 10px 0" v-show="!isShowGroup">
                 <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">分组数量 : &nbsp;</i-col>
                 <i-col span="3">
@@ -104,17 +89,19 @@
                     <input-number :max="500" :min="10" v-model="devicecount"></input-number>
                 </i-col>
             </Row> 
+                
 
             <Row style="margin: 10px 0">
                     <i-col span="12" :offset="4">
-                        <i-button style="width:100%" @click="handleSubmit">添加</i-button>
+                        <i-button style="width:100%" @click="handleSubmit">提交</i-button>
                     </i-col>
             </Row>          
-        </div>  
-    </div> 
+        </div>
+    </div>
+
     <script>
         new Vue({
-            el:"#adduser",
+            el:"#edituser",
             data:{
                 username:"",
                 password:"",
@@ -131,6 +118,7 @@
                 companyList:[],
                 groupids:[],
                 groupList:[],
+                userTypeList:[],
                 dateOptions: {
                     disabledDate:function(date) {
                         return date && date.valueOf() < Date.now() - 86400000;
@@ -152,68 +140,26 @@
                                 value:item.companyid
                             })
                         });
+
+                        var userType =  Cookies.get("userType");   
+                        me.$nextTick(function () { 
+                            me.userTypeList = me.userTypeDecsList(userType);
+                            me.usertype = editUser.usertype+""; 
+                            me.username = editUser.username;
+                            me.overduetime = editUser.overduetime;
+                            me.companyid = editUser.company.companyid;
+                        });
                     }
+                },
+                back:function(){
+                    var me = this;
+                    this.$Loading.start();
+                    $("#mar-view").load("../view/manager/queryuser.html",function(){
+                        me.$Loading.finish();
+                    });
                 },
                 handleSubmit:function(){
-                    var url  = myUrls.addUser();
-                    var userType = this.usertype;
-                    var reg = /^[a-zA-Z0-9_-]{4,32}$/;
-                    var data ={
-                        username:this.username,
-                        password:"",
-                        overduetime:new Date(this.overduetime).getTime(),
-                        usertype:this.usertype,
-                        companyid:this.companyid,
-                        groupcount:this.groupcount,
-                        devicecount:this.devicecount,
-                        usercount:this.usercount
-                    };    
 
-                    if(this.password !== this.confirmPassword){
-                        this.$Message.error("两次密码不一致!");   
-                        return;
-                    }else{
-                        data.password = $.md5(this.password);
-                    }
-                    
-                    if(!reg.test(this.username)){
-                        this.$Message.error("用户名是4到32位的数字和字母组成的!");   
-                        return;
-                    }
-
-                    for(var key in data){
-                        if(data.hasOwnProperty(key)){
-                            if(data[key] == "" || data[key] == NaN ){
-                                this.$Message.error("请填写完整!");   
-                                return;
-                            }
-                        };
-                    };
-                    
-                   
-
-                    if(userType == -1){
-                        if(this.groupids.length == 0){
-                            this.$Message.error("该选择分组");   
-                            return;
-                        };
-                        data.groupids = this.groupids;
-                    }    
-
-                    utils.sendAjax(url,data,this.doAddUserCalback);
-                },
-                doAddUserCalback:function(resp){
-                    console.log(resp);
-                    if(resp.status == 0){
-                        this.$Message.success("添加成功");
-                    }else{
-                        var cause = resp.cause;
-                        if(cause.indexOf("exists")!=-1){
-                            this.$Message.error("该用户已存在");    
-                        }else{
-                            this.$Message.error(resp.cause);
-                        }                      
-                    }
                 },
                 getGroupsList:function(){
                     var me = this; 
@@ -234,11 +180,8 @@
                             }
                         }
                     });
-                }
-            },
-            computed:{
-                userTypeList:function(){
-                    var userType =  Cookies.get("userType");
+                },
+                userTypeDecsList:function(userType){                  
                     var userTypeList = null;
                     if(userType == 0){
                         userTypeList = [{value:"-1",label:"普通监控员"},{value:"1",label:"一级管理员"},{value:"2",label:"二级管理员"}];
@@ -249,6 +192,9 @@
                     }
                     return userTypeList;
                 }
+            },
+            computed:{
+                
             },
             watch:{
                 usertype:function(){
@@ -269,9 +215,9 @@
                 }    
             },
             mounted:function () {
+                var me = this;
                 this.queryAllCompanyInfo(this.doQueryAllCompanyInfo);
-                this.usertype = "-1";
             }
         })
-    </script>    
-</div>        
+    </script>
+</div>
