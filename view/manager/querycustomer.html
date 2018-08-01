@@ -127,7 +127,7 @@ vueInstanse = new Vue({
                 },
                 editCustomer:function(index){
                     var me = this;
-                    editCustomer = this.tableData[index];                   
+                    editObject = this.tableData[index];                   
                     this.$Loading.start();
                     $("#mar-view").load("../view/manager/editcustomer.html",function(){
                         me.$Loading.finish();

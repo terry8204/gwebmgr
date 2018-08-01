@@ -17,6 +17,9 @@ var utils = {
                    
                 }
             })
+    },
+    getCustomerList:function () { 
+
     }
 };
 
@@ -47,3 +50,8 @@ Vue.component('expand-row',{
 });
 
 var expandRow = Vue.component('expand-row');
+
+
+$("#mar-view").ajaxError(function(event,request, settings){
+    $(this).append("<li>出错页面:" + settings.url + "</li>");
+});

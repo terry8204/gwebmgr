@@ -104,8 +104,6 @@
             el:"#edituser",
             data:{
                 username:"",
-                password:"",
-                confirmPassword:"",
                 overduetime:"",
                 usertype:"",
                 singleLogin:"0",
@@ -144,10 +142,11 @@
                         var userType =  Cookies.get("userType");   
                         me.$nextTick(function () { 
                             me.userTypeList = me.userTypeDecsList(userType);
-                            me.usertype = editUser.usertype+""; 
-                            me.username = editUser.username;
-                            me.overduetime = editUser.overduetime;
-                            me.companyid = editUser.company.companyid;
+                            me.usertype = editObject.usertype+""; 
+                            me.username = editObject.username;
+                            me.overduetime = editObject.overduetime;
+                            me.companyid = editObject.company.companyid;
+                           
                         });
                     }
                 },
@@ -159,7 +158,48 @@
                     });
                 },
                 handleSubmit:function(){
+                    var me = this;
+                    var url = myUrls.editUser();
+                    var userType = this.usertype;
+                    if(this.overduetime == ""){
+                        this.$Message.error("请选择时间!");
+                        return;
+                    }
+                    var data ={
+                        username:this.username,
+                        overduetime:new Date(this.overduetime).getTime(),
+                        usertype:userType,
+                        companyid:this.companyid,
+                    }; 
 
+                    for(var key in data){
+                        if(data.hasOwnProperty(key)){
+                            if(data[key] == "" || data[key] == NaN ){
+                                this.$Message.error("请填写完整!");   
+                                return;
+                            }
+                        };
+                    };    
+
+                    if(userType == -1){
+                        if(this.groupids.length == 0){
+                            this.$Message.error("该选择分组");   
+                            return;
+                        };
+                        data.groupids = this.groupids;
+                    }else{
+                        data.groupcount = this.groupcount;
+                        data.devicecount = this.devicecount;
+                        data.usercount = this.usercount;
+                    } 
+
+                    utils.sendAjax(url,data,function (resp) {
+                        if(resp.status == 0){
+                            me.$Message.success("修改成功");
+                        }else{
+                            me.$Message.error("修改失败");
+                        }
+                    });
                 },
                 getGroupsList:function(){
                     var me = this; 
@@ -175,9 +215,14 @@
                                     var groups = item.groups;
                                     groups.forEach(function(group){
                                         me.groupList.push({label:group.groupname,value:group.groupid});
-                                    });
-                                }
-                            }
+                                    });                                   
+                                };
+                            };
+
+                            editObject.groups.forEach(function(item){
+                                me.groupids.push(item.groupid);
+                            });
+
                         }
                     });
                 },

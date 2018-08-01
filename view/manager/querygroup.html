@@ -142,7 +142,7 @@ vueInstanse=new Vue({
                 },
                 editGroup:function(index){
                     var me = this;
-                    editGroup = this.tableData[index];
+                    editObject = this.tableData[index];
                     this.$Loading.start();
                     $("#mar-view").load("../view/manager/editgroup.html",function(){
                         me.$Loading.finish();

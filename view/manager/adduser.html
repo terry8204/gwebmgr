@@ -162,12 +162,11 @@
                         username:this.username,
                         password:"",
                         overduetime:new Date(this.overduetime).getTime(),
-                        usertype:this.usertype,
+                        usertype:usertype,
                         companyid:this.companyid,
-                        groupcount:this.groupcount,
-                        devicecount:this.devicecount,
-                        usercount:this.usercount
                     };    
+
+
 
                     if(this.password !== this.confirmPassword){
                         this.$Message.error("两次密码不一致!");   
@@ -191,14 +190,18 @@
                     };
                     
                    
-
                     if(userType == -1){
                         if(this.groupids.length == 0){
                             this.$Message.error("该选择分组");   
                             return;
                         };
                         data.groupids = this.groupids;
+                    }else{
+                        data.groupcount = this.groupcount;
+                        data.devicecount = this.devicecount;
+                        data.usercount = this.usercount;
                     }    
+
 
                     utils.sendAjax(url,data,this.doAddUserCalback);
                 },

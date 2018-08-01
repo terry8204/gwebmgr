@@ -131,7 +131,7 @@
                     };
                     var url = myUrls.editGroup();
                     var data = {
-                        groupid:editGroup.groupid,
+                        groupid:editObject.groupid,
                         groupname:this.groupname,
                         mintime:this.mintime,
                         maxtime:this.maxtime,
@@ -186,15 +186,15 @@
                     });
                 },
                 setGroupInfo:function(){
-                    console.log(editGroup);
-                    this.groupname    = editGroup.groupname;
-                    this.mintime      = editGroup.mintime;
-                    this.maxtime      = editGroup.maxtime;
-                    this.usercount    = editGroup.usercount;
-                    this.devicecount  = editGroup.devicecount;
-                    this.groupname    = editGroup.groupname;
-                    this.companyid    = editGroup.companyid;
-                    this.seenext      = editGroup.seenext;
+                    console.log(editObject);
+                    this.groupname    = editObject.groupname;
+                    this.mintime      = editObject.mintime;
+                    this.maxtime      = editObject.maxtime;
+                    this.usercount    = editObject.usercount;
+                    this.devicecount  = editObject.devicecount;
+                    this.groupname    = editObject.groupname;
+                    this.companyid    = editObject.companyid;
+                    this.seenext      = editObject.seenext;
                 }
             },
             mounted:function(){

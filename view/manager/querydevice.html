@@ -22,33 +22,54 @@
         <div class="my-page" style="margin: 5px 0;">
             <Page :total="total" simple :page-size="5" @on-change="changePage"></Page>
         </div>
+
+        <Modal v-model="modal" width="360" class-name="vertical-center-modal">
+            <p slot="header" style="color:#f60;text-align:center">
+                <Icon type="information-circled"></Icon>
+                <span>是否删除</span>
+            </p>
+            <div style="text-align:center">
+                <p> {{deleteDeviceInfo.devicename}}</p>
+            </div>
+            <div slot="footer">
+                <i-button type="error"  @click="handleDelete" style="width: 100%">删除</i-button>
+            </div>
+        </Modal>
     </div>
 
     <script>
-        new Vue({
+vueInstanse = new Vue({
             el:"#querydev",
             data:{
                 queryParameter:"",
                 queryType:"",
                 queryList:[],
-                loading:false,
+                loading:true,
                 total:0,
                 columns: [
                         {
-                            title: '公司名称',
-                            key: 'companyname',
+                            title: '设备名',
+                            key: 'devicename',
                         },
                         {
-                            title: '企业联系人',
-                            key: 'companyperson'
+                            title: '设备ID',
+                            key: 'deviceid'
                         },
                         {
-                            title: '企业联系电话',
-                            key: 'companyphone'
+                            title: 'SIM号码',
+                            key: 'simnum'
                         },
                         {
-                            title: '办公地址',
-                            key: 'officeaddr'
+                            title: '到期时间',
+                            key: 'overduetimestr'
+                        },
+                        {
+                            title: '所属客户',
+                            key: 'companyname'
+                        },
+                        {
+                            title: '所属分组',
+                            key: 'groupname'
                         },
                         {
                             title: '操作',
@@ -67,7 +88,7 @@
                                         },
                                         on: {
                                             click: function() {
-                                                vueInstanse.editCustomer(params.index);
+                                                vueInstanse.editDevice(params.index);
                                             }
                                         }
                                     }, '修改'),
@@ -78,7 +99,7 @@
                                         },
                                         on: {
                                             click: function() {
-                                                vueInstanse.deleteCustomer(params.index);
+                                                vueInstanse.deleteDevice(params.index);
                                             }
                                         }
                                     }, '删除')
@@ -87,17 +108,127 @@
                         }
                     ],
                 tableData: [],
+                deviceList:[],
+                customersList:null,
+                groupsList:null,
+                deleteDeviceInfo:{},
+                modal:false
             },
             methods: {
-                changePage:function() {
-                    
+                changePage:function(index) {
+                    var offset = index * 5;
+                    var start = (index-1) *5;
+                    this.tableData =  this.deviceList.slice(start,offset);   
                 },
-                getDeviceInfoList:function(){
-                    var url = myUrls;
+                filterDataInfo:function(devList){
+                    var me = this;
+                    var data = [];
+                    devList.forEach(function (dev) { 
+                        dev.overduetimestr = DateFormat.longToDateTimeStr(dev.overduetime,0);
+                        dev.companyname = me.getCustimerName(dev.companyid);
+                        dev.groupname = me.getGroupName(dev.groupid);
+                        data.push(dev);
+                    });
+                    return data;
+                },
+                getCustimerName:function (custimerId) { 
+                    var custimerName = "";
+                    this.customersList.forEach(function (item) { 
+                        if(item.companyid == custimerId){
+                            custimerName = item.companyname;
+                        }
+                    });
+                    return custimerName;
+                },
+                getGroupName:function (groupId) { 
+                    var groupName = "";
+                    this.groupsList.forEach(function (item) { 
+                        if(item.groupid == groupId){
+                            groupName = item.groupname;
+                        }
+                    });
+                    return groupName;
+                },
+                getDeviceList:function(){
+                    var me = this;
+                    var url = myUrls.queryDeviceList();
+                    utils.sendAjax(url,{},function(resp){
+                        if(resp.status == 0 && resp.devices != null){           
+
+                            me.deviceList = me.filterDataInfo(resp.devices );
+                            me.tableData = me.deviceList.slice(0,5);
+                            me.total = me.deviceList.length;
+                        }else{
+                            me.$Message.error(resp.cause);
+                        }
+                        me.loading = false;
+                    });
+                },
+                queryAllCompanyInfo:function(claaback){
+                    var url = myUrls.queryCompanyByCreater();
+                    utils.sendAjax(url,{},claaback)
+                },
+                doQueryAllCompanyInfo:function(resp){
+                    var me = this;
+                    if(resp.status===0 && resp.records != null){
+                        me.customersList = resp.records;
+                        me.queryAllgroupsInfo();
+                    }
+                },
+                queryAllgroupsInfo:function(){
+                    var url = myUrls.queryGroupByUser();
+                    utils.sendAjax(url,{},this.doQueryAllgroupsInfo);
+                },
+                doQueryAllgroupsInfo:function(resp){
+                    var me = this;
+                    if(resp.status === 0 && resp.grouplist!==null){
+                         me.groupsList = resp.grouplist; 
+                         me.getDeviceList();  
+                    }
+                },
+                editDevice:function(index){
+                    var me = this;
+                    editObject = this.tableData[index];
+                    this.$Loading.start();
+                    $("#mar-view").load("../view/manager/editdevice.html",function(){
+                        me.$Loading.finish();
+                    });
+                },
+                deleteDevice:function(index){
+                    console.log(index);
+                    this.deleteDeviceInfo = this.tableData[index];
+                    this.modal = true;
+                },
+                handleDelete:function(){
+                    var me = this;
+                    var url = myUrls.deleteDevice();
+                    var deviceid = this.deleteDeviceInfo.deviceid;
+                    var data = {deviceid:deviceid};
+                    utils.sendAjax(url,data,function (resp) { 
+                        if(resp.status == 0){
+                            me.$Message.success("删除成功");
+                            me.tableData.forEach(function (itme,index) { 
+                                if(itme.deviceid == deviceid){
+                                    me.$delete(me.tableData,index);
+                                }
+                            });
+
+                            me.deviceList.forEach(function (itme,index) { 
+                                if(itme.deviceid == deviceid){
+                                    me.$delete(me.deviceList,index);
+                                }
+                            });
+                        }else{
+                            me.$Message.error("删除失败");
+                        }
+                        me.modal = false;
+                       
+                    });
                 }
             },
             mounted:function () {
-                
+
+                this.queryAllCompanyInfo(this.doQueryAllCompanyInfo);     
             }
         })
     </script>

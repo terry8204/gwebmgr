@@ -111,7 +111,7 @@
             methods:{
                 handleSubmit:function(){
                     var url = myUrls.editCompany();
-                    var data = {companyid:editCustomer.companyid};
+                    var data = {companyid:editObject.companyid};
                         if(this.companyname !== "" ){
                             data.companyname = this.companyname;
                         }else{
@@ -167,19 +167,19 @@
             mounted:function(){
                 var me = this;
                 this.$nextTick(function(){                  
-                    this.companyname = editCustomer.companyname;
-                    this.orgcode = editCustomer.orgcode;
-                    this.companyphone = editCustomer.companyphone;
-                    this.registerdate = DateFormat.longToDateStr(editCustomer.registerdate,0);
-                    this.jurdcperson = editCustomer.jurdcperson;
-                    this.alldayphone =editCustomer.alldayphone;
-                    this.empcount = editCustomer.empcount;
-                    this.empcount = editCustomer.empcount;
-                    this.officeaddr = editCustomer.officeaddr;
-                    this.remark = editCustomer.companyname; 
-                    this.type = editCustomer.type;
-                    this.companyperson = editCustomer.companyperson;
-                    this.registeraddr = editCustomer.registeraddr;
+                    this.companyname = editObject.companyname;
+                    this.orgcode = editObject.orgcode;
+                    this.companyphone = editObject.companyphone;
+                    this.registerdate = DateFormat.longToDateStr(editObject.registerdate,0);
+                    this.jurdcperson = editObject.jurdcperson;
+                    this.alldayphone =editObject.alldayphone;
+                    this.empcount = editObject.empcount;
+                    this.empcount = editObject.empcount;
+                    this.officeaddr = editObject.officeaddr;
+                    this.remark = editObject.companyname; 
+                    this.type = editObject.type;
+                    this.companyperson = editObject.companyperson;
+                    this.registeraddr = editObject.registeraddr;
                 });
             }
         })

@@ -1,7 +1,4 @@
-var vueInstanse  = null;   // 全局vue实例子
-var editCustomer = null;   // 要编辑客户的对象
-var editGroup    = null;   // 要编辑的组对象
-var editUser     = null;   // 要编辑的user对象
+
 (function(){
 
     // 头部组建
@@ -58,7 +55,54 @@ var editUser     = null;   // 要编辑的user对象
         template:document.getElementById("monitor-template").innerHTML,
         data:function () { 
             return {
-                map:null
+                map:null,
+                sosoValue: '',
+                data3: ['Steve Jobs', 'Stephen Gary Wozniak', 'Jonathan Paul Ive'],
+                selectedState:'all',
+                data5: [
+                    {
+                        title: 'parent 1',
+                        expand: true,
+                        render: (h, { root, node, data }) => {
+                            return h('span', {
+                                style: {
+                                    display: 'inline-block',    
+                                    cursor: 'pointer',                             
+                                    width: '100%'
+                                },
+                                on:{
+                                    click:function () { 
+                                        data.expand = !data.expand;
+                                    }
+                                }
+                            }, [
+                                h('span', [
+                                    h('Icon', {
+                                        props: {
+                                            type: 'edit',
+                                        },
+                                        style: {
+                                            marginRight: '8px'
+                                        }
+                                    }),
+                                    h('span', data.title)
+                                ])
+                            ]);
+                        },
+                        children: [
+                            {
+                                title: 'child 1-1',
+                            },
+                            {
+                                title: 'child 1-2',
+                            }
+                        ]
+                    }
+                ],
+                buttonProps: {
+                    type: 'default',
+                    size: 'small',
+                }
             }
         },
         methods: {
@@ -73,6 +117,39 @@ var editUser     = null;   // 要编辑的user对象
                 var cityName = result.name;
                 this.map.setCenter(cityName);
             },
+            filterMethod (value, option) {
+                return option.toUpperCase().indexOf(value.toUpperCase()) !== -1;
+            },
+            selectedStateNav:function (state) {
+                this.selectedState = state;
+            },
+            renderContent (h, { root, node, data }) {
+                return h('span', {
+                    style: {
+                        display: 'inline-block',
+                        cursor: 'pointer',
+                        width: '100%'
+                    },
+                    on:{
+                        click: () => { alert(1111) }
+                    }
+                }, [
+                    h('span', [
+                        h('Icon', {
+                            props: {
+                                type: 'ipod'
+                            },
+                            style: {
+                                marginRight: '8px'
+                            }
+                        }),
+                        h('span', data.title)
+                    ])
+                ]);
+            },
+            selectedChilren:function (param) { 
+                console.log(param)
+            }
         },
         mounted:function () {
             this.initMap();
