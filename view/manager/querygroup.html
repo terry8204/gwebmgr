@@ -38,6 +38,22 @@
         </div>
     </Modal>
 
+    <Modal v-model="selectMonitorModal" width="560" class-name="vertical-center-modal">
+        <p slot="header" style="color:rgb(0, 119, 255);text-align:center;font-size: 18px">
+            <Icon type="ios-add"></Icon>
+            <span>添加监控员</span>
+        </p>
+        <div style="text-align:center">
+            <checkbox-group v-model="monitorPerson">
+                <Checkbox v-for="item in monitorPersonList" :key="item.label" :label="item.label" :value="item.value"></Checkbox>
+            </checkbox-group>
+            <div v-show="monitorPersonList.length == 0" style="color:rgb(0, 119, 255);text-align:center;padding: 10px"> 暂无监控员用户,请先添加. </div>
+        </div>
+        <div slot="footer">
+            <i-button type="primary"  @click="submitMonitor" style="width: 100%">提交</i-button>
+        </div>
+    </Modal>
+
     <script>
         
 vueInstanse=new Vue({
@@ -45,7 +61,10 @@ vueInstanse=new Vue({
             data:{
                 loading:true,
                 modal:false,
+                selectMonitorModal:false,
                 delGroupObj:{},
+                monitorPerson:[],
+                monitorPersonList:[],
                 total:0,
                 queryType:'',
                 queryList:[],
@@ -118,7 +137,7 @@ vueInstanse=new Vue({
                                         },
                                         on: {
                                             click: function() {
-                                                vueInstanse.deleteGroup(params.index);
+                                                vueInstanse.openSelectMonitorModal(params.index);
                                             }
                                         }
                                     }, '选择监控员')
@@ -133,6 +152,7 @@ vueInstanse=new Vue({
                     utils.sendAjax(url,{},this.doQueryAllgroupsInfo);
                 },
                 doQueryAllgroupsInfo:function(resp){
+                    console.log(resp.grouplist)
                     if(resp.status === 0){
                         this.groupsList = resp.grouplist!==null ? resp.grouplist : [];
                         this.total = this.groupsList.length;
@@ -182,10 +202,55 @@ vueInstanse=new Vue({
                     var offset = index * 5;
                     var start = (index-1) *5;
                     this.tableData =  this.groupsList.slice(start,offset);
-                }
+                },
+                openSelectMonitorModal:function(index){
+                    var me = this;
+                    this.delGroupObj = this.tableData[index];
+                    this.monitorPerson = [];
+                    this.selectMonitorModal = true;
+                    if(this.delGroupObj.users!=null && this.delGroupObj.users.length > 0){
+                        this.delGroupObj.users.forEach(function(item){
+                            me.monitorPerson.push(item);
+                        });
+                    }
+                },
+                submitMonitor:function(){
+                    var me = this;
+                    var url = myUrls.editGroupMonitor();
+                    var data = {
+                        groupid: this.delGroupObj.groupid ,
+                        monitors:this.monitorPerson
+                    };
+                    utils.sendAjax(url,data,function (resp) { 
+                        if(resp.status == 0){
+                            me.$Message.success("添加成功");
+                        }else{
+                            me.$Message.success(resp.cause);
+                        }
+                        me.selectMonitorModal = false;
+                    });
+                },
+                getUserInfoList:function(){
+                    var url = myUrls.queryUser();
+                    utils.sendAjax(url,{},this.doUserInfoList);
+                },
+                doUserInfoList:function(resp){               
+                    var me = this;
+                    if(resp.status == 0 && resp.userlists != null){
+                        resp.userlists.forEach(function (item) { 
+                            if(item.usertype == -1 ){
+                                me.monitorPersonList.push({
+                                    label:item.username,
+                                    value:item.username
+                                })
+                            }
+                        });
+                    }
+                },
             },
             mounted:function(){
                this.queryAllgroupsInfo();
+               this.getUserInfoList();
             }
         })
     </script>

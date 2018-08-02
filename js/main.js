@@ -50,6 +50,34 @@
         } 
     };
 
+    // 监控页面的 rander 函数  
+    var render = function (h, { root, node, data }){
+        return h('span', {
+            style: {
+                display: 'inline-block',    
+                cursor: 'pointer',                             
+                width: '100%'
+            },
+            on:{
+                click:function () { 
+                    data.expand = !data.expand;
+                }
+            }
+        }, [
+            h('span', [
+                h('Icon', {
+                    props: {
+                        type: 'edit',
+                    },
+                    style: {
+                        marginRight: '8px'
+                    }
+                }),
+                h('span', data.title)
+            ])
+        ]);
+    };
+
     // 定位监控
     var monitor = {
         template:document.getElementById("monitor-template").innerHTML,
@@ -62,39 +90,27 @@
                 data5: [
                     {
                         title: 'parent 1',
-                        expand: true,
-                        render: (h, { root, node, data }) => {
-                            return h('span', {
-                                style: {
-                                    display: 'inline-block',    
-                                    cursor: 'pointer',                             
-                                    width: '100%'
-                                },
-                                on:{
-                                    click:function () { 
-                                        data.expand = !data.expand;
-                                    }
-                                }
-                            }, [
-                                h('span', [
-                                    h('Icon', {
-                                        props: {
-                                            type: 'edit',
-                                        },
-                                        style: {
-                                            marginRight: '8px'
-                                        }
-                                    }),
-                                    h('span', data.title)
-                                ])
-                            ]);
-                        },
+                        expand: false,
+                        render:render,
                         children: [
                             {
                                 title: 'child 1-1',
                             },
                             {
                                 title: 'child 1-2',
+                            }
+                        ]
+                    },
+                    {
+                        title: 'parent 2',
+                        expand: false,
+                        render:render,
+                        children: [
+                            {
+                                title: 'child 2-1',
+                            },
+                            {
+                                title: 'child 2-2',
                             }
                         ]
                     }
@@ -109,21 +125,15 @@
             initMap:function () {
                 this.map = new BMap.Map("map");
                 this.map.enableScrollWheelZoom();
-                this.map.centerAndZoom(new BMap.Point(113.27074,23.15004),12); 
-                var myCity = new BMap.LocalCity();
-                myCity.get(this.setMapCenter);          
-            },
-            setMapCenter:function(result){
-                var cityName = result.name;
-                this.map.setCenter(cityName);
-            },
+                this.map.centerAndZoom(new BMap.Point(108.0017245,35.926895),5); 
+            },         
             filterMethod (value, option) {
                 return option.toUpperCase().indexOf(value.toUpperCase()) !== -1;
             },
             selectedStateNav:function (state) {
                 this.selectedState = state;
             },
-            renderContent (h, { root, node, data }) {
+            renderContent:function (h, { root, node, data }) {
                 return h('span', {
                     style: {
                         display: 'inline-block',
@@ -131,7 +141,7 @@
                         width: '100%'
                     },
                     on:{
-                        click: () => { alert(1111) }
+                        click: () => { console.log(1111) }
                     }
                 }, [
                     h('span', [
@@ -172,11 +182,11 @@
                 navList:[
                     {
                         title:"客户管理",
-                        name:"customerMar",
-                        icon:"android-contact",
-                        children:[
-                            {title:"增加客户",name:"addCustomer",icon:"android-person-add"},
-                            {title:"查询客户",name:"queryCustomer",icon:"android-search"}
+                        name:"customerMar",    
+                        icon:"md-contact",   
+                        children:[ 
+                            {title:"添加客户",name:"addCustomer",icon:"md-person-add"},
+                            {title:"查询客户",name:"queryCustomer",icon:"md-search"}   
                         ]
                     },
                     {
@@ -184,26 +194,26 @@
                         name:"groupMar",
                         icon:"ios-albums",  
                         children:[
-                            {title:"增加分组",name:"addGroup",icon:"ios-photos-outline"},
-                            {title:"查询分组",name:"queryGroup",icon:"android-search"}
+                            {title:"添加分组",name:"addGroup",icon:"ios-photos-outline"},
+                            {title:"查询分组",name:"queryGroup",icon:"md-search"}
                         ]
                     },
                     {
                         title:"用户管理", 
                         name:"userMar",
-                        icon:"person-stalker", 
-                        children:[
-                            {title:"增加用户",name:"addUser",icon:"person-add"},
-                            {title:"查询用户",name:"queryUser",icon:"android-search"}
+                        icon:"md-person",  
+                        children:[ 
+                            {title:"添加用户",name:"addUser",icon:"ios-person-add"},
+                            {title:"查询用户",name:"queryUser",icon:"md-search"}   
                         ]
                     },
                     {
                         title:"设备管理",
-                        name:"deviceMar",
-                        icon:"ipod",   
+                        name:"deviceMar", 
+                        icon:"md-phone-portrait",  
                         children:[
-                            {title:"增加设备",name:"addDevice",icon:"ios-plus-outline"},
-                            {title:"查询设备",name:"queryDevice",icon:"android-search"}
+                            {title:"添加设备",name:"addDevice",icon:"md-add"},
+                            {title:"查询设备",name:"queryDevice",icon:"md-search"}
                         ]
                     },
                 ]

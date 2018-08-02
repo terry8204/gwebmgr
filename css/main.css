@@ -14,6 +14,9 @@ div.header-wraper{
     height: 60px;
     right: 0;
 }
+.ivu-menu-dark{
+    background:#495060;
+}
     /* 试图 */
 div.view-wraper{
     position: absolute;
@@ -151,6 +154,9 @@ div.view-wraper{
         bottom: 0;
         right: 0;
         left: 240px;
+    }
+    .ivu-icon {
+        margin-top:-3px; 
     }
   /* 后台管理结束 */
 
@@ -390,3 +396,28 @@ div.view-wraper{
         padding: 5px 0;
     }
     /* 查询设备结束 */
+
+    /* 编辑设备开始 */
+    #editdevice{
+        padding: 10px;
+        height: 100%;
+        width: 100%;
+        box-sizing: border-box;
+        position: relative;
+    }
+    #editdevice>div>h3{
+        position: relative;
+    }
+    #editdevice>div>h3>span{
+        position: absolute;
+        right: 10px;
+        top: 0;
+        bottom: 0;
+        width: 80px;
+        height: 100%;
+    }
+    #editdevice>div>div{
+        margin: 0 auto;
+        width: 700px;
+    }
+     /* 编辑设备结束 */

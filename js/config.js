@@ -35,6 +35,9 @@ var myUrls = {
     editGroup:function () { 
         return this.host + "webapi?action=editgroup&token="+token;
     },
+    editGroupMonitor:function () { 
+        return this.host + "webapi?action=editgroupmonitor&token="+token;
+    },
     queryGroupByUser:function () { 
         return this.host + "webapi?action=pagequerygroup&token="+token;
     },

@@ -34,21 +34,21 @@
     <script type="text/template-v" id="header-template">
         <div class="app-header">
             <div class="logo">
-                <Icon type="planet"></Icon>
+                <Icon type="ios-planet" style="vertical-align:top;font-size:50px;margin-top:2px"></Icon>
                 <span style="font-size:18px;vertical-align:top;">位置信息服务平台</span>
             </div>
             <div class="app-nav">
                 <i-menu mode="horizontal" :theme="dark" active-name="3" v-on:on-select="changeNav">
                     <menuItem name="1">
-                        <Icon type="android-contacts"></Icon>
+                        <Icon type="md-contacts"></Icon> 
                         定位监控
                     </menuItem>
                     <menuItem name="2">
                         <Icon type="ios-paper-outline"></Icon>
                         统计报表
                     </menuItem>
-                    <menuItem name="3" v-show="isManager">
-                        <Icon type="ios-gear"></Icon>
+                    <menuItem name="3" v-show="isManager">  
+                        <Icon type="md-settings"></Icon>
                         后台管理
                     </menuItem>
                 </i-menu>
@@ -60,15 +60,15 @@
                     </li>
                     <li style="padding:0">|</li>
                     <li>
-                        <span><Icon type="edit" style="margin-right:3px"></Icon>修改密码</span>
+                        <span><Icon type="md-create" style="margin-right:3px"></Icon>修改密码</span>
                     </li>
                     <li style="padding:0">|</li>
                     <li>
-                        <span><Icon type="settings" style="margin-right:3px"></Icon>设置</span>
+                        <span><Icon type="ios-hammer-outline" style="margin-right:3px"></Icon>设置</span> 
                     </li>
                     <li style="padding:0">|</li>
                     <li>
-                        <span @click="loginOut"><Icon type="android-exit" style="margin-right:3px"></Icon>退出</span>
+                        <span @click="loginOut"><Icon type="ios-power" style="margin-right:3px"></Icon>退出</span>
                     </li>
                 </ul>
             </div>

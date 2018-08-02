@@ -97,6 +97,9 @@
         margin-top: -138.5px;
     }
 
+    .ivu-card-head .ivu-icon {
+        margin-top:-3px; 
+    }
     div.inputs p {
         margin: 15px ;
     }
