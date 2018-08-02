@@ -72,6 +72,9 @@ div.view-wraper{
 
 
  /* 监控开始 */
+    span .ivu-icon {
+        margin-top: -2px;
+    }
     div.monitor-wraper{
         width: 100%;
         height: 100%;
@@ -157,6 +160,9 @@ div.view-wraper{
     }
     .ivu-icon {
         margin-top:-3px; 
+    }
+    .full .ivu-icon{
+        margin-top:-7px; 
     }
   /* 后台管理结束 */
 

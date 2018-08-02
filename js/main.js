@@ -1,6 +1,4 @@
-
 (function(){
-
     // 头部组建
     var appHeader = {
         template:document.getElementById("header-template").innerHTML,
@@ -88,37 +86,26 @@
                 data3: ['Steve Jobs', 'Stephen Gary Wozniak', 'Jonathan Paul Ive'],
                 selectedState:'all',
                 data5: [
-                    {
-                        title: 'parent 1',
-                        expand: false,
-                        render:render,
-                        children: [
-                            {
-                                title: 'child 1-1',
-                            },
-                            {
-                                title: 'child 1-2',
-                            }
-                        ]
-                    },
-                    {
-                        title: 'parent 2',
-                        expand: false,
-                        render:render,
-                        children: [
-                            {
-                                title: 'child 2-1',
-                            },
-                            {
-                                title: 'child 2-2',
-                            }
-                        ]
-                    }
+                    // {
+                    //     title: 'parent 1',
+                    //     expand: false,
+                    //     render:render,
+                    //     children: [
+                    //         {
+                    //             title: 'child 1-1',
+                    //         },
+                    //         {
+                    //             title: 'child 1-2',
+                    //         }
+                    //     ]
+                    // },
+                    
                 ],
                 buttonProps: {
                     type: 'default',
                     size: 'small',
-                }
+                },
+                deviceIds:{}
             }
         },
         methods: {
@@ -134,20 +121,25 @@
                 this.selectedState = state;
             },
             renderContent:function (h, { root, node, data }) {
+                console.log(node);
                 return h('span', {
                     style: {
                         display: 'inline-block',
                         cursor: 'pointer',
-                        width: '100%'
+                        width: '100%',
+                        color:node.node.isOnline ? "#2D8CF0" : "#C7CFD4"
+
                     },
                     on:{
-                        click: () => { console.log(1111) }
+                        click: function(){ 
+                            console.log(data);
+                        }
                     }
                 }, [
                     h('span', [
                         h('Icon', {
                             props: {
-                                type: 'ipod'
+                                type: 'md-person'
                             },
                             style: {
                                 marginRight: '8px'
@@ -159,10 +151,77 @@
             },
             selectedChilren:function (param) { 
                 console.log(param)
+            },
+            getMonitorListByUser:function () {
+                var me = this;
+                var url = myUrls.monitorListByUser();
+                utils.sendAjax(url,{},function (resp) { 
+                    console.log(resp);
+                    if(resp.status == 0 && resp.companys!=null && resp.companys.length > 0){
+                        me.getNavDataList(resp.companys);
+                    }else{
+
+                    }
+                });
+            },
+            getNavDataList:function (companys) { 
+                var me = this;
+                companys.forEach(function(company){
+                    company.groups.forEach(function (group) {
+                        var data =  {
+                            title: group.groupname,
+                            expand: false,
+                            render:render,
+                            children: []
+                        };
+                        group.devices.forEach(function (device,index) {
+                            var dev = {
+                                title:device.deviceid,
+                                isOnline:false,
+                                isSelected:false
+                            };
+                            data.children.push(dev);
+                            me.deviceIds[device.deviceid] = "";
+                        });
+                        if(data.children.length){
+                            if(data.title == "默认组"){
+                                me.data5.unshift(data);
+                            }else{
+                                me.data5.push(data);
+                            }
+                        }                
+                    });    
+                })
+                me.getAllLastPosition();
+            },
+            getAllLastPosition:function () { 
+                var me = this;
+                var url = myUrls.lastPosition();
+                var data = {
+                    username: "admin",
+                    deviceids: Object.keys(this.deviceIds)
+                }
+                utils.sendAjax(url,data,function (resp) {
+                    console.log(resp);
+                    var records = resp.records;
+                    records.forEach(function (record) { 
+                        var marker = new BMap.Marker(record.gpslon,record.gpslat);
+                        me.map.addOverlay(marker)
+                    })
+                });
+
+                setTimeout(function () { 
+                    me.data5.forEach(function (group) { 
+                        group.children.forEach(function (dev) {
+                            dev.isOnline = true;
+                        })
+                    });
+                },5000);
             }
         },
         mounted:function () {
             this.initMap();
+            this.getMonitorListByUser();
         }
     }
 
@@ -269,8 +328,9 @@
     // 根组件
     new Vue({
         el:"#app",
+        i18n:i18n,
         data:{
-            componentId:"bgManager"
+            componentId:"monitor"
         },
         methods:{
             changeComponent:function(index){

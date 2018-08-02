@@ -38,7 +38,7 @@
                 <span style="font-size:18px;vertical-align:top;">位置信息服务平台</span>
             </div>
             <div class="app-nav">
-                <i-menu mode="horizontal" :theme="dark" active-name="3" v-on:on-select="changeNav">
+                <i-menu mode="horizontal" :theme="dark" active-name="1" v-on:on-select="changeNav">
                     <menuItem name="1">
                         <Icon type="md-contacts"></Icon> 
                         定位监控
@@ -56,7 +56,7 @@
             <div class="site_links">
                 <ul>
                     <li>
-                        您好! {{name}} 
+                        您好! {{name}}
                     </li>
                     <li style="padding:0">|</li>
                     <li>
@@ -82,15 +82,15 @@
                 <div class="device-contorller">
                     <ul class="device-state">
                         <li :class="{active:selectedState=='all'}" @click="selectedStateNav('all')">
-                            <p class="p-icon"><Icon :size="24" class="icon iconfont icon-device_tablet" /></p>
-                            <p class="dev-count">全部(10)</p>
+                            <p class="p-icon"><Icon :size="24" type="ios-apps"/></p>
+                            <p class="dev-count">全部(10)</p>  
                         </li>
                         <li :class="{active:selectedState=='online'}" @click="selectedStateNav('online')">
-                            <p class="p-icon"><Icon :size="24" class="icon iconfont icon-online" /></p>
+                            <p class="p-icon"><Icon :size="24" type="md-checkmark-circle" /></p> 
                             <p class="dev-count">在线(10)</p>
                         </li>
                         <li :class="{active:selectedState=='offline'}" @click="selectedStateNav('offline')">
-                            <p class="p-icon"><Icon :size="24" class="icon iconfont icon-offline" /></p>
+                            <p class="p-icon"><Icon :size="24" type="ios-information-circle" /></p> 
                             <p class="dev-count">离线(10)</p>
                         </li>
                     </li>
@@ -150,7 +150,9 @@
     <script src="dist/vue.min.js"></script>
     <script src="dist/vue-router.min.js"></script>
     <script src="dist/vuex.min.js"></script>
+    <script src="js/vue-i18n.min.js"></script>
     <script src="dist/iview.min.js"></script>
+    <script src="js/language.js"></script>
     <script src="js/jquery.js"></script>
     <script src="js/jquery.md5.js"></script>
     <script src="js/transformlatlon.js"></script>

@@ -76,6 +76,13 @@ var myUrls = {
     },
     queryDeviceList:function () { 
         return this.host + "webapi?action=pagequerydevice&token="+token;
+    },
+    // 监控页面url
+    monitorListByUser:function () { 
+        return this.host + "webapi?action=monitorlistbyuser&token="+token;
+    },
+    lastPosition:function () { 
+        return this.host + "webapi?action=lastposition&token="+token;
     }
 }
 

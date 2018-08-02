@@ -210,7 +210,7 @@ vueInstanse=new Vue({
                     this.selectMonitorModal = true;
                     if(this.delGroupObj.users!=null && this.delGroupObj.users.length > 0){
                         this.delGroupObj.users.forEach(function(item){
-                            me.monitorPerson.push(item);
+                            me.monitorPerson.push(item.username);
                         });
                     }
                 },
@@ -224,6 +224,11 @@ vueInstanse=new Vue({
                     utils.sendAjax(url,data,function (resp) { 
                         if(resp.status == 0){
                             me.$Message.success("添加成功");
+                            me.delGroupObj.users = [];
+                            me.monitorPerson.forEach(function (item) {
+                                me.delGroupObj.users.push({username:item});
+                            })
+                          
                         }else{
                             me.$Message.success(resp.cause);
                         }
