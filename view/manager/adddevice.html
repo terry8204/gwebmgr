@@ -111,10 +111,15 @@
                     var me = this;
                     var url = myUrls.addDevice();
 
-                    if(this.deviceid == "") { 
-                        me.$Message.error("请填写设备ID");
+                    if(this.deviceid.length !== 11 ){ 
+                        me.$Message.error("设备ID必须是11位");
                         return;
-                    };    
+                    };
+
+                    if(this.overduetime == "" || this.loginpwd == "" || this.devicename == "" || this.simnum == "" || this.groupid == "" || this.companyid ==""){
+                        me.$Message.error("请把数据填写完整");
+                        return;
+                    };
 
                     var data = {
                         deviceid:this.deviceid,
@@ -127,7 +132,9 @@
                         deviceenable:Number(this.deviceenable),
                         groupid:this.groupid,
                         companyid:this.companyid
-                    };                   
+                    };       
+                    
+                    
                     utils.sendAjax(url,data,function (resp) { 
                         if(resp.status == 0){
                             me.$Message.success("添加成功");
@@ -137,7 +144,7 @@
                             }else{
                                 me.$Message.error("添加失败");
                             }
-                        }
+                        };
                     });
                 },
                 resetInfo:function(){

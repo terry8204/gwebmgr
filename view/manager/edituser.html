@@ -150,6 +150,25 @@
                         });
                     }
                 },
+                queryAllgroupsInfo:function(){
+                    var url = myUrls.queryGroupByUser();
+                    utils.sendAjax(url,{},this.doQueryAllgroupsInfo);
+                },
+                doQueryAllgroupsInfo:function(resp){
+                    var me = this;
+                    if(resp.status === 0){
+                        resp.grouplist.forEach(function (group) { 
+                            me.groupList.push({
+                                label:group.groupname,
+                                value:group.groupid
+                            })
+                        });
+
+                        editObject.groups.forEach(function(item){
+                            me.groupids.push(item.groupid);
+                        });
+                    }
+                },
                 back:function(){
                     var me = this;
                     this.$Loading.start();
@@ -219,9 +238,7 @@
                                 };
                             };
 
-                            editObject.groups.forEach(function(item){
-                                me.groupids.push(item.groupid);
-                            });
+                            
 
                         }
                     });
@@ -245,23 +262,24 @@
                 usertype:function(){
                     if(this.usertype == -1){
                         this.isShowGroup = true;
-                        if(this.companyid !==""){
-                            this.getGroupsList();
-                        }                   
+                        // if(this.companyid !==""){
+                        //     this.getGroupsList();
+                        // }                   
                     }else{
                         this.isShowGroup = false;
                     }
                 },
-                companyid:function(){
-                    var me = this;
-                    if(this.usertype == -1){
-                        this.getGroupsList();
-                    }
-                }    
+                // companyid:function(){
+                //     var me = this;
+                //     if(this.usertype == -1){
+                //         this.getGroupsList();
+                //     }
+                // }    
             },
             mounted:function () {
                 var me = this;
                 this.queryAllCompanyInfo(this.doQueryAllCompanyInfo);
+                this.queryAllgroupsInfo();
             }
         })
     </script>

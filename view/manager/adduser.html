@@ -157,16 +157,15 @@
                 handleSubmit:function(){
                     var url  = myUrls.addUser();
                     var userType = this.usertype;
+                  
                     var reg = /^[a-zA-Z0-9_-]{4,32}$/;
                     var data ={
                         username:this.username,
                         password:"",
                         overduetime:new Date(this.overduetime).getTime(),
-                        usertype:usertype,
+                        usertype:userType,
                         companyid:this.companyid,
                     };    
-
-
 
                     if(this.password !== this.confirmPassword){
                         this.$Message.error("两次密码不一致!");   
@@ -174,7 +173,7 @@
                     }else{
                         data.password = $.md5(this.password);
                     }
-                    
+                  
                     if(!reg.test(this.username)){
                         this.$Message.error("用户名是4到32位的数字和字母组成的!");   
                         return;
@@ -182,14 +181,14 @@
 
                     for(var key in data){
                         if(data.hasOwnProperty(key)){
-                            if(data[key] == "" || data[key] == NaN ){
+                            if(data[key] === "" || data[key] == NaN ){
                                 this.$Message.error("请填写完整!");   
                                 return;
                             }
                         };
                     };
                     
-                   
+                    
                     if(userType == -1){
                         if(this.groupids.length == 0){
                             this.$Message.error("该选择分组");   
@@ -237,7 +236,22 @@
                             }
                         }
                     });
-                }
+                },
+                queryAllgroupsInfo:function(){
+                    var url = myUrls.queryGroupByUser();
+                    utils.sendAjax(url,{},this.doQueryAllgroupsInfo);
+                },
+                doQueryAllgroupsInfo:function(resp){
+                    var me = this;
+                    if(resp.status === 0){
+                        resp.grouplist.forEach(function (group) { 
+                            me.groupList.push({
+                                label:group.groupname,
+                                value:group.groupid
+                            })
+                        });
+                    }
+                },
             },
             computed:{
                 userTypeList:function(){
@@ -257,22 +271,23 @@
                 usertype:function(){
                     if(this.usertype == -1){
                         this.isShowGroup = true;
-                        if(this.companyid !==""){
-                            this.getGroupsList();
-                        }                   
+                        // if(this.companyid !==""){
+                        //     this.getGroupsList();
+                        // }                   
                     }else{
                         this.isShowGroup = false;
                     }
                 },
-                companyid:function(){
-                    var me = this;
-                    if(this.usertype == -1){
-                        this.getGroupsList();
-                    }
-                }    
+                // companyid:function(){
+                //     var me = this;
+                //     if(this.usertype == -1){
+                //         this.getGroupsList();
+                //     }
+                // }    
             },
             mounted:function () {
                 this.queryAllCompanyInfo(this.doQueryAllCompanyInfo);
+                this.queryAllgroupsInfo();
                 this.usertype = "-1";
             }
         })

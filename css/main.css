@@ -25,6 +25,15 @@ div.view-wraper{
     right: 0;
     bottom: 0;
 }
+.ivu-input-number-handler-wrap .ivu-icon{
+    margin-top: 0px; 
+}
+.full .ivu-input-number-handler-wrap .ivu-icon{
+    margin-top: 0px; 
+}
+.full .ivu-tag .ivu-icon{
+    margin-top:0px; 
+}
 /* layout 结束 */
 
 
@@ -75,6 +84,12 @@ div.view-wraper{
     span .ivu-icon {
         margin-top: -2px;
     }
+    .ivu-row .ivu-input-wrapper .ivu-icon{
+        margin-top: 0px;
+    }
+    div.full .ivu-page  .ivu-icon{
+        margin-top: 0px;
+    }
     div.monitor-wraper{
         width: 100%;
         height: 100%;
@@ -106,6 +121,9 @@ div.view-wraper{
     ul.device-state p{text-align: center;}
     ul.device-state p.p-icon{    
         margin-top: 13px;
+    }
+    div.monitor-wraper ul.device-state p.dev-count{    
+       font-size: 14px;
     }
  
     div.device-soso{
@@ -280,6 +298,9 @@ div.view-wraper{
         width: 100%;
         box-sizing: border-box;
         position: relative;
+    }
+    #querygroup>div.full{
+        overflow-y: auto;
     }
     #querygroup>div>div{
         width: 100%;

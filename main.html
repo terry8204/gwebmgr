@@ -12,20 +12,20 @@
     <script src="js/js.cookie.min.js"></script>
     <script>
         var token = Cookies.get("token");
-        // if(token == undefined){
-        //     window.location.href = "index.html";
-        // }
+        if(token == undefined){
+            window.location.href = "index.html";
+        }
     </script>
     <script src="js/config.js"></script>
 </head>
 <body>
     <div id="app">
         <div class="header-wraper">
-            <app-header @change-nav="changeComponent"></app-header>
+            <app-header @change-nav="changeComponent" @change-tree="changeNav" @change-intervaltime="changeInterval"></app-header>
         </div>
         <div class="view-wraper">
-            <keep-alive>
-                <component :is="componentId"></component>
+            <keep-alive exclude="monitor">
+                <component :is="componentId" ref="my-component"></component>
             </keep-alive> 
         </div>
     </div>
@@ -64,7 +64,7 @@
                     </li>
                     <li style="padding:0">|</li>
                     <li>
-                        <span><Icon type="ios-hammer-outline" style="margin-right:3px"></Icon>设置</span> 
+                        <span @click="showSetup"><Icon type="ios-hammer-outline" style="margin-right:3px"></Icon>设置</span> 
                     </li>
                     <li style="padding:0">|</li>
                     <li>
@@ -72,6 +72,28 @@
                     </li>
                 </ul>
             </div>
+
+            <Modal v-model="modal" width="460" class-name="vertical-center-modal">
+                <p slot="header" style="color:#2D8CF0;text-align:center">
+                    <Icon type="ios-hammer-outline"></Icon>
+                    <span>设置</span>
+                </p>
+                <div style="text-align:center">
+                    <Row style="margin: 10px 0">
+                        <i-col span="8" style="height: 100%;text-align:right;line-height:32px;">显示分组所属客户 : &nbsp;</i-col>
+                        <i-col span="16" style="height: 100%;line-height:32px;">
+                            <i-switch v-model="isShowCompany" @on-change="changeShowCompany" />
+                        </i-col>
+                    </Row>
+                    <Row style="margin: 10px 0">
+                        <i-col span="8" style="height: 100%;text-align:right;line-height:32px;">刷新间隔(最小5秒) : &nbsp;</i-col>
+                        <i-col span="16" style="height: 100%;line-height:32px;">
+                            <input-number :max="1800" :min="5" v-model="intervalTime"></input-number>
+                        </i-col>
+                    </Row>
+                </div>
+                <div slot="footer"></div>
+            </Modal>
         </div>
     </script>
 
@@ -83,15 +105,15 @@
                     <ul class="device-state">
                         <li :class="{active:selectedState=='all'}" @click="selectedStateNav('all')">
                             <p class="p-icon"><Icon :size="24" type="ios-apps"/></p>
-                            <p class="dev-count">全部(10)</p>  
+                            <p class="dev-count">全部({{allDevCount}})</p>  
                         </li>
                         <li :class="{active:selectedState=='online'}" @click="selectedStateNav('online')">
                             <p class="p-icon"><Icon :size="24" type="md-checkmark-circle" /></p> 
-                            <p class="dev-count">在线(10)</p>
+                            <p class="dev-count">在线({{onlineDevCount}})</p>
                         </li>
                         <li :class="{active:selectedState=='offline'}" @click="selectedStateNav('offline')">
                             <p class="p-icon"><Icon :size="24" type="ios-information-circle" /></p> 
-                            <p class="dev-count">离线(10)</p>
+                            <p class="dev-count">离线({{offlineDevCount}})</p>
                         </li>
                     </li>
                     <div class="device-soso">
@@ -105,7 +127,7 @@
                     </div>
                 </div>
                 <div class="device-tree">
-                    <Tree :data="data5" :render="renderContent" @on-select-change="selectedChilren"></Tree>
+                    <Tree :data="currentStateData" :render="renderContent"></Tree>
                 </div>
             </div>
             <div class="map-wraper">
@@ -157,6 +179,8 @@
     <script src="js/jquery.md5.js"></script>
     <script src="js/transformlatlon.js"></script>
     <script src="js/dateformat.js"></script>
+    <script src="js/hashmap.js"></script>
+    <script src="js/localcachemgr.js"></script>
     <script src="js/util.js"></script>
     <script src="http://api.map.baidu.com/api?v=3.0&ak=e7SC5rvmn2FsRNE4R1ygg44n"></script>
     <script src="js/main.js"></script>
