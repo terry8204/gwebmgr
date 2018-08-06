@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>定位平台</title>
+    <link rel="stylesheet" href="dist/styles/iview.css">
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="css/login.css">
+    <script src="js/config.js"></script>
+</head>
+<body>
+    <div id="login-wraper" class="noselect">
+        <div class="header">
+            <div class="center">
+                <div class="logo-wrap">
+                    <span class="logo">
+                        <Icon type="planet"></Icon>
+                    </span>
+                    <span class="logo-title">位置信息服务平台</span>
+                    <b>|</b>
+                    <span class="version">v1.0</span>
+                </div>
+            </div>
+        </div>
+        <div class="main">
+            <div class="center">
+                <div class="left-wraper">
+                    <div></div>
+                </div>
+                <div class="right-wraper">
+                    <div class="login-form-box">
+                        <Card>
+                            <p slot="title">
+                                <i-row>
+                                    <i-col span="12" style="text-align:center;border-right: 1px solid #2D8CF0"  :class="{active:account == 0}">
+                                        <span  @click="selectdAccount(0)" class="cursor">
+                                            <Icon type="md-person"></Icon>用户登陆 
+                                        </span>
+                                    </i-col>
+                                    <i-col span="12" style="text-align:center;"  :class="{active:account == 1}" >
+                                        <span @click="selectdAccount(1)" class="cursor">
+                                            <Icon type="md-phone-portrait"></Icon>设备登陆 
+                                        </span>
+                                    </i-col>
+                                </i-row>
+                            </p>
+                            <div class="inputs">
+                                <p>
+                                    <i-input type="text" v-model.trim="username" placeholder="Username">
+                                        <Icon type="ios-person" slot="prepend" v-show="account == 0"></Icon> 
+                                        <Icon type="md-tablet-portrait" slot="prepend" v-show="account == 1"></Icon> 
+                                    </i-input> 
+                                </p>
+                                <p>
+                                    <i-input type="password" v-model.trim="password" placeholder="Password">
+                                        <Icon type="ios-lock" slot="prepend"></Icon>                          
+                                    </i-input>
+                                </p>
+                                <p>
+                                    <Checkbox v-model="keepPass">记住密码</Checkbox>
+                                </p>
+                                <p>
+                                    <i-button type="primary" @click="handleSubmit" style="width: 100%" :loading="loading">登录</i-button>
+                                </p>
+                            </div>
+                        </Card>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="footer">
+            
+        </div>
+    </div>
+    <script src="dist/vue.min.js"></script>
+    <script src="dist/iview.min.js"></script>
+    <script src="js/jquery.js"></script>
+    <script src="js/js.cookie.min.js"></script>
+    <script src="js/jquery.md5.js"></script>
+    <script src="js/login.js"></script>
+</body>
+</html>

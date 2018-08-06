@@ -1,0 +1,266 @@
+
+<meta charset="UTF-8">
+
+<div id="querygroup">
+    <div class="full">
+        <h3 class="h3-title">查询分组</h3>
+        <ul>
+            <li>
+                <i-select v-model="queryType">
+                    <i-option v-for="item in queryList" :value="item.value" :key="item.value">{{ item.label }}</i-option>
+                </i-select> 
+            </li>
+            <li>
+                <i-input v-model.trim="queryParameter"></i-input>
+            </li>
+            <li>
+                <i-button type="primary">查询</i-button>
+            </li>
+        </ul>
+        <div>
+            <i-table :columns="columnsList" :data="tableData" :loading="loading"></i-table>
+        </div>
+        <div class="my-page" style="margin: 5px 0;">
+            <Page :total="total" simple :page-size="5" @on-change="changePage"></Page>
+        </div>
+    </div>
+
+    <Modal v-model="modal" width="360" class-name="vertical-center-modal">
+        <p slot="header" style="color:#f60;text-align:center">
+            <Icon type="information-circled"></Icon>
+            <span>是否删除</span>
+        </p>
+        <div style="text-align:center">
+            <p> {{delGroupObj.groupname}}</p>
+        </div>
+        <div slot="footer">
+            <i-button type="error"  @click="del" style="width: 100%">删除</i-button>
+        </div>
+    </Modal>
+
+    <Modal v-model="selectMonitorModal" width="560" class-name="vertical-center-modal">
+        <p slot="header" style="color:rgb(0, 119, 255);text-align:center;font-size: 18px">
+            <Icon type="ios-add"></Icon>
+            <span>添加监控员</span>
+        </p>
+        <div style="text-align:center">
+            <checkbox-group v-model="monitorPerson">
+                <Checkbox v-for="item in monitorPersonList" :key="item.label" :label="item.label" :value="item.value"></Checkbox>
+            </checkbox-group>
+            <div v-show="monitorPersonList.length == 0" style="color:rgb(0, 119, 255);text-align:center;padding: 10px"> 暂无监控员用户,请先添加. </div>
+        </div>
+        <div slot="footer">
+            <i-button type="primary"  @click="submitMonitor" style="width: 100%">提交</i-button>
+        </div>
+    </Modal>
+
+    <script>
+        
+vueInstanse=new Vue({
+            el:"#querygroup",
+            data:{
+                loading:true,
+                modal:false,
+                selectMonitorModal:false,
+                delGroupObj:{},
+                monitorPerson:[],
+                monitorPersonList:[],
+                total:0,
+                queryType:'',
+                queryList:[],
+                queryParameter:"",
+                groupsList:[],
+                tableData:[],
+                columnsList:[
+                   {
+                        type: 'expand',
+                        width: 50,
+                        render: function(h, params){
+                            return h(expandRow, {
+                                props: {
+                                    devices: params.row.devices
+                                }
+                            })
+                        }
+                    },
+                    {
+                        title: '组名',
+                        key: 'groupname'
+                    },
+                    {
+                        title: '用户数量',
+                        key: 'usercount'
+                    },
+                    {
+                        title: '设备数量',
+                        key: 'devicecount'
+                    },
+                    {
+                            title: '操作',
+                            key: 'action',
+                            width: 250,
+                            align: 'center',
+                            render: function(h, params) {
+                                return h('div', [
+                                    h('Button', {
+                                        props: {
+                                            type: 'primary',
+                                            size: 'small'
+                                        },
+                                        style: {
+                                            marginRight: '5px'
+                                        },
+                                        on: {
+                                            click: function() {
+                                                vueInstanse.editGroup(params.index);
+                                            }
+                                        }
+                                    }, '修改'),
+                                    h('Button', {
+                                        props: {
+                                            type: 'error',
+                                            size: 'small'
+                                        },
+                                        style: {
+                                            marginRight: '5px'
+                                        },
+                                        on: {
+                                            click: function() {
+                                                vueInstanse.deleteGroup(params.index);
+                                            }
+                                        }
+                                    }, '删除'),
+                                    h('Button', {
+                                        props: {
+                                            type: 'primary',
+                                            size: 'small'
+                                        },
+                                        on: {
+                                            click: function() {
+                                                vueInstanse.openSelectMonitorModal(params.index);
+                                            }
+                                        }
+                                    }, '选择监控员')
+                                ]);
+                            }
+                        }
+                ]
+            },
+            methods:{
+                queryAllgroupsInfo:function(){
+                    var url = myUrls.queryGroupByUser();
+                    utils.sendAjax(url,{},this.doQueryAllgroupsInfo);
+                },
+                doQueryAllgroupsInfo:function(resp){
+                    console.log(resp.grouplist)
+                    if(resp.status === 0){
+                        this.groupsList = resp.grouplist!==null ? resp.grouplist : [];
+                        this.total = this.groupsList.length;
+                        this.tableData = this.groupsList.slice( 0 , 5);
+                    }
+                    this.loading = false;
+                },
+                editGroup:function(index){
+                    var me = this;
+                    editObject = this.tableData[index];
+                    this.$Loading.start();
+                    $("#mar-view").load("../view/manager/editgroup.html",function(){
+                        me.$Loading.finish();
+                    });
+                },
+                deleteGroup:function(index){
+                    this.delGroupObj = this.tableData[index];
+                    this.modal = true;
+                },
+                del:function(){
+                    var me = this;
+                    var url = myUrls.deleteGroup();
+                    var groupid = this.delGroupObj.groupid; 
+                    var data = { groupid:groupid };
+                    utils.sendAjax(url,data,function(resp){
+                        if(resp.status == 0){
+                            me.tableData.forEach(function(item,index){
+                                if(item.groupid == groupid){
+                                    me.$delete(me.tableData,index)
+                                }
+                            });
+
+                            me.groupsList.forEach(function(item,index){
+                                if(item.groupid == groupid){
+                                    me.$delete(me.groupsList,index)
+                                }
+                            });
+                            
+                            me.$Message.success("删除成功!");
+                        }else{
+                            me.$Message.error(resp.cause);
+                        }
+                        me.modal = false;
+                    });
+                },
+                changePage:function(index){
+                    var offset = index * 5;
+                    var start = (index-1) *5;
+                    this.tableData =  this.groupsList.slice(start,offset);
+                },
+                openSelectMonitorModal:function(index){
+                    var me = this;
+                    this.delGroupObj = this.tableData[index];
+                    this.monitorPerson = [];
+                    this.selectMonitorModal = true;
+                    if(this.delGroupObj.users!=null && this.delGroupObj.users.length > 0){
+                        this.delGroupObj.users.forEach(function(item){
+                            me.monitorPerson.push(item.username);
+                        });
+                    }
+                },
+                submitMonitor:function(){
+                    var me = this;
+                    var url = myUrls.editGroupMonitor();
+                    var data = {
+                        groupid: this.delGroupObj.groupid ,
+                        monitors:this.monitorPerson
+                    };
+                    utils.sendAjax(url,data,function (resp) { 
+                        if(resp.status == 0){
+                            me.$Message.success("添加成功");
+                            me.delGroupObj.users = [];
+                            me.monitorPerson.forEach(function (item) {
+                                me.delGroupObj.users.push({username:item});
+                            })
+                          
+                        }else{
+                            me.$Message.success(resp.cause);
+                        }
+                        me.selectMonitorModal = false;
+                    });
+                },
+                getUserInfoList:function(){
+                    var url = myUrls.queryUser();
+                    utils.sendAjax(url,{},this.doUserInfoList);
+                },
+                doUserInfoList:function(resp){               
+                    var me = this;
+                    if(resp.status == 0 && resp.userlists != null){
+                        resp.userlists.forEach(function (item) { 
+                            if(item.usertype == -1 ){
+                                me.monitorPersonList.push({
+                                    label:item.username,
+                                    value:item.username
+                                })
+                            }
+                        });
+                    }
+                },
+            },
+            mounted:function(){
+               this.queryAllgroupsInfo();
+               this.getUserInfoList();
+            }
+        })
+    </script>
+</div>
+
+
+
+
