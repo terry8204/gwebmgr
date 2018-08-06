@@ -10,7 +10,7 @@ var utils = {
                     callback(resp)
                 },
                 error:function(e){
-                    console.log("服务器错误");
+                    Cookies.remove("token");
                     new Vue().$Loading.error();
                 },
                 complete:function(){
@@ -57,7 +57,42 @@ var utils = {
 				}
 			}
 		    return theRequest[name];
-	},
+    },
+    getDisplayRange:function(zoom){
+        var range = null;
+        if(zoom == 18){
+            range = 25;
+        }else if(zoom == 17){
+            range = 50;
+        }else if(zoom == 16){
+            range = 100;
+        }else if(zoom == 15){
+            range = 250;
+        }else if(zoom == 14){
+            range = 500;
+        }else if(zoom == 13){
+            range = 1000;
+        }else if(zoom == 12){
+            range = 2500;
+        }else if(zoom == 11){
+            range = 5000;
+        }else if(zoom == 10){
+            range = 10000;
+        }else if(zoom == 9){
+            range = 12500;
+        }else if(zoom == 8){
+            range = 25000;
+        }else if(zoom == 7){
+            range = 50000;
+        }else if(zoom == 6){
+            range = 100000;
+        }else if(zoom == 5){
+            range = 250000;
+        }else if(zoom == 4){
+            range = 500000;
+        }
+        return range;						
+    },
 };
 
 

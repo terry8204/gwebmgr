@@ -108,45 +108,54 @@
         data:function () { 
             return {
                 map:null,
-                isShowConpanyName:false,  // 0 不显示公司   1 显示公司名
-                sosoValue: '',
-                data3: ['Steve Jobs', 'Stephen Gary Wozniak', 'Jonathan Paul Ive'],
-                selectedState:'',
-                groupsData: [],
-                companyData:[],
-                currentStateData:[],
-                records:[],
-                companys:[],
-                buttonProps: {
-                    type: 'default',
-                    size: 'small',
-                },
-                deviceIds:{},
-                intervalTime:null,
-                offlineTime:5*60*1000,
-                allDevCount:0,
-                onlineDevCount:0,
-                offlineDevCount:0,
+                isShowConpanyName:false, // 0 不显示公司   1 显示公司名
+                sosoValue: '',           // 搜索框的值
+                sosoData: [],            // 搜索框里面的数据
+                selectedState:'',        // 选择的状态 all online offline;
+                currentStateData:[],     // 当前tree的数据
+                records:[],              // 全部设备最后一次位置记录
+                companys:[],             // 原始列表数据
+                deviceIds:{},            // id对象
+                intervalTime:null,       // 多久刷新一次设备
+                offlineTime:5*60*1000,   // 根据这个时间算出离线时间
+                allDevCount:0,           // 全部设备的个数
+                onlineDevCount:0,        // 在线设备个数
+                offlineDevCount:0,       // 离线设备个数
+                isMoveTriggerEvent:true  // 地图移动是否触发事件
             }
         },
         methods: {
             initMap:function () {
                 var me = this;
-                this.map = new BMap.Map("map");
+                this.map = new BMap.Map("map",{minZoom:4,maxZoom:18});
                 this.map.enableScrollWheelZoom();
+                this.map.enableAutoResize();
                 this.map.centerAndZoom(new BMap.Point(108.0017245,35.926895),5);
-
+                var top_left_control = new BMap.ScaleControl({anchor: BMAP_ANCHOR_BOTTOM_LEFT});
+                this.map.addControl(top_left_control);
+                
                 this.map.addEventListener("moveend",function (ev) { 
-                    me.map.clearOverlays();
-                    var pointArr = me.getThePointOfTheCurrentWindow();
-                    me.addOverlayToMap(pointArr);
-
+                    if(me.isMoveTriggerEvent){
+                        me.map.clearOverlays();
+                        var pointArr = me.getThePointOfTheCurrentWindow();
+                        var range = utils.getDisplayRange(me.map.getZoom()); 
+                        if(pointArr.length){
+                            var filterArr = me.filterReocrds(range,pointArr);
+                            me.addOverlayToMap(filterArr);
+                        }
+                    }else{
+                        me.isMoveTriggerEvent = true;
+                    }
                 });
 
                 this.map.addEventListener("zoomend",function (ev) {
-                    me.map.clearOverlays(); 
-                    var pointArr = me.getThePointOfTheCurrentWindow();
-                    me.addOverlayToMap(pointArr);
+                        me.map.clearOverlays(); 
+                        var pointArr = me.getThePointOfTheCurrentWindow();
+                        var range = utils.getDisplayRange(me.map.getZoom()); 
+                        if(pointArr.length){
+                            var filterArr = me.filterReocrds(range,pointArr);
+                             me.addOverlayToMap(filterArr);
+                        }        
                 })
             },     
             getThePointOfTheCurrentWindow:function () { 
@@ -161,8 +170,38 @@
                 });	
                 return pointArr;
             },    
-            filterMethod (value, option) {
-                return option.toUpperCase().indexOf(value.toUpperCase()) !== -1;
+            filterMethod (value, option) { 
+                 if(value){
+                    return option.toUpperCase().indexOf(value.toUpperCase()) !== -1;
+                 }else{
+                     return true;
+                 }    
+            },
+            sosoSelect:function (value) { 
+                var me = this;
+                if(value){
+                    if(this.isShowConpanyName){
+                        this.currentStateData.forEach(function (company) { 
+                            company.children.forEach(function (group) { 
+                                group.children.forEach(function (dev) { 
+                                    if(dev.title == value){
+                                        dev.isSelected = false;
+                                        me.handleClickDev(dev.deviceid);
+                                    }                                  
+                                });
+                            })
+                        })
+                    }else{
+                        this.currentStateData.forEach(function (group) { 
+                            group.children.forEach(function (dev) { 
+                                if(dev.title == value){
+                                    dev.isSelected = false;
+                                    me.handleClickDev(dev.deviceid);
+                                }
+                            })
+                        })  
+                    }
+                }
             },
             selectedStateNav:function (state) {
                 this.selectedState = state;
@@ -178,7 +217,7 @@
                         cursor: 'pointer',
                         width: '100%',
                         background:data.isSelected ? "#FFF5C2":"",
-                        color:node.node.isOnline ? "#2D8CF0" : "#C7CFD4"
+                        color:node.node.isOnline ? "#2D8CF0" : "#999999"
                     },
                     on:{
                         click: function(){ 
@@ -203,24 +242,32 @@
             },
             handleClickDev:function (deviceid) {
                 var me = this;
-                var url = myUrls.lastPosition();
-                var data = {
-                    username: this.username,
-                    deviceids: [deviceid]
-                };
-                utils.sendAjax(url,data,function (resp) {              
-                    if(resp.records != null && resp.records.length){
-                        var record = resp.records[0];
+                me.getLastPosition([deviceid],function (resp) { 
+                    var record = resp.records[0];
+                    if(record != null){
                         var callon = record.callon;
                         var callat = record.callat;
                         var lng_lat = wgs84tobd09(callon,callat);
+                        var point = new BMap.Point(lng_lat[0],lng_lat[1]);
+                        record.point = point;
+                        store.currentDeviceId = deviceid;
                         store.currentDeviceRecord = record;
-                        me.map.centerAndZoom(new BMap.Point(lng_lat[0],lng_lat[1]),17);
+                        me.updateRecords(record);
+                        me.map.centerAndZoom(point,17);
+                        me.openDevInfoWindow();
                     }else{
-                        me.$Message.error("没有位置信息");
-                    }
+                        me.$Message.error("该设备没有上报位置信息");    
+                    };
                 });
-                store.currentDeviceId = deviceid;
+            },
+            updateRecords:function (record) { 
+                var records = this.records;
+                for(var i = 0 ; i < records.length ; i++){
+                    var deviceid = records[i].deviceid;
+                    if(record.deviceid == deviceid){
+                        records.splice(i,1,record);
+                    }
+                };
             },
             cancelSelected:function () { 
                 if(this.isShowConpanyName){
@@ -242,12 +289,18 @@
             getMonitorListByUser:function () {
                 var me = this;
                 var url = myUrls.monitorListByUser();
-                utils.sendAjax(url,{},function (resp) { 
-         
+                utils.sendAjax(url,{},function (resp) {         
                     if(resp.status == 0 && resp.companys!=null && resp.companys.length > 0){
                         me.companys = resp.companys;
                         me.setDeviceIdsList(resp.companys);
-                        me.getAllLastPosition();
+                        var devIdList = Object.keys(me.deviceIds);
+                        me.getLastPosition(devIdList,function (resp) { 
+                            me.selectedState = "all";
+                            me.records = resp.records;
+                            var range = utils.getDisplayRange(me.map.getZoom()); 
+                            var filterArr =  me.filterReocrds(range,resp.records);              
+                            me.addOverlayToMap(filterArr);
+                        });
                     }else if(resp.status == 3){
                         me.$Message.error("请重新登录,2秒后自动跳转登录页面");
                         setTimeout(function () { 
@@ -272,45 +325,87 @@
                     });    
                 });     
             },
-            getAllLastPosition:function () { 
+            getLastPosition:function (deviceIds,callback) { 
                 var me = this;
                 var url = myUrls.lastPosition();
                 var data = {
                     username: this.username,
-                    deviceids: Object.keys(this.deviceIds)
+                    deviceids: deviceIds
                 };
-                utils.sendAjax(url,data,function (resp) {                
-                    me.records = resp.records;
-                    me.selectedState = "all";
-                    me.addOverlayToMap(me.records);
+                utils.sendAjax(url,data,function (resp) {   
+                    callback(resp);                              
+                });
+            },
+            filterReocrds:function (range , records) { 
+                var me = this;
+                var filterArr = [];
+                var firstRecord = records[0];
+                var first_lng_lat = wgs84tobd09(firstRecord.callon,firstRecord.callat);
+                    firstRecord.point = new BMap.Point(first_lng_lat[0],first_lng_lat[1]);
+                    filterArr.push(firstRecord);                 
+
+                records.forEach(function (record) { 
+                    var len = filterArr.length-1;
+                    var endPoint = null;
+                    if(!record.point){
+                        var end_lng_lat = wgs84tobd09(record.callon,record.callat);
+                            endPoint = new BMap.Point(end_lng_lat[0],end_lng_lat[1]);
+                            record.point = endPoint;  
+                    }else{
+                        endPoint = record.point;
+                    };
+                    var rice =  me.map.getDistance(filterArr[len].point,endPoint);
+                    if(rice > range){
+                        filterArr.push(record);  
+                    }
                 });
 
+                if( filterArr.length > 300){
+                    return filterReocrds(range+1000,filterArr);
+                }else{
+                    return filterArr;
+                }
             },
             addOverlayToMap:function (records) { 
                 var me = this;
                 records.forEach(function (record){ 
                     if(record != null){
-                        var lng_lat = wgs84tobd09(record.callon,record.callat);
-                        var point = new BMap.Point(lng_lat[0],lng_lat[1]);
+                        var point = null
+                        if(!record.point){
+                            var lng_lat = wgs84tobd09(record.callon,record.callat);
+                            var point = new BMap.Point(lng_lat[0],lng_lat[1]);
+                            record.point = point;
+                        }else{
+                             point = record.point;
+                        };
                         var marker = new BMap.Marker(point);
                         me.markerAddEvent(marker,record.deviceid);
                         me.map.addOverlay(marker);
                     };
-                })
+                });
             },
             markerAddEvent:function (marker,deviceid) {
                 var me = this;
-                var devLastInfo = this.getSingleDeviceInfo(deviceid);
                 marker.deviceid = deviceid; 
                 marker.addEventListener("click", function(){   
+                    me.isMoveTriggerEvent = false;
+                    var devLastInfo = me.getSingleDeviceInfo(this.deviceid);
                     var infoWindow = me.getInfoWindow(devLastInfo);     
                     marker.openInfoWindow(infoWindow,marker.point); //开启信息窗口
                 });
             },
             openDevInfoWindow:function () { 
-
+                var record = store.currentDeviceRecord;
+                var markers = this.map.getOverlays();
+                for(var i = 0 ; i < markers.length ; i++){
+                    var marker = markers[i];
+                    if(marker.deviceid == store.currentDeviceId){
+                        var infoWindow = this.getInfoWindow(record);  
+                        marker.openInfoWindow(infoWindow,record.point);
+                    };
+                };
             },
-            getSingleDeviceInfo:function (deviceid) { 
+            getSingleDeviceInfo:function(deviceid){ 
                 var info = null;
                 for(var i = 0 ; i <  this.records.length ; i++){
                     var item = this.records[i];
@@ -318,10 +413,9 @@
                         info = item;
                     }
                 };
-                return item;
+                return info;
             },
             getInfoWindow:function (info) {
-                console.log(info);
                 var address = this.getAddress(info);
 
                 var sContent = '<div><p style="margin:0;font-size:13px">' +
@@ -370,7 +464,9 @@
                 this.intervalTime = interval;
             },
             getCurrentStateTreeData:function (state,isShowConpanyName) { 
+                var me = this;
                 this.currentStateData = [];
+                this.sosoData = [];
                 if(state === "all"){
                     if(isShowConpanyName){
                         this.getAllShowConpanyTreeData();
@@ -390,10 +486,27 @@
                         this.getOfflineHideConpanyTreeData();
                     }
                 }
+
+                if(isShowConpanyName){
+                    this.currentStateData.forEach(function (company) { 
+                        company.children.forEach(function (group) { 
+                            group.children.forEach(function (dev) { 
+                                me.sosoData.push(dev.title);
+                            })
+                        })
+                    })
+                }else{
+                    this.currentStateData.forEach(function (item) { 
+                        item.children.forEach(function (dev) { 
+                            me.sosoData.push(dev.title);
+                        })
+                    })
+                }
+                
             },
             getAllShowConpanyTreeData:function () { 
                 var me = this;                       
-                    this.companys.forEach(function (company) { 
+                    this.companys.forEach(function (company) {
                         var companyObj = {
                             title: company.companyname,
                             expand: false,
@@ -413,6 +526,11 @@
                                     isSelected:false,
                                     deviceid:device.deviceid
                                 };
+                                if(device.deviceid == store.currentDeviceId){
+                                    devObj.isSelected = true;
+                                    groupObj.expand = true;
+                                    companyObj.expand = true;
+                                }
                                 devObj.isOnline = me.getIsOnline(device.deviceid);
                                 groupObj.children.push(devObj);
                             });    
@@ -444,6 +562,10 @@
                                     isOnline:isOnline,
                                     deviceid:device.deviceid
                                 };
+                                if(device.deviceid == store.currentDeviceId){
+                                    groupData.expand = true;
+                                    dev.isSelected = true;                           
+                                }
                                 groupData.children.push(dev);
                         });
 
@@ -485,7 +607,8 @@
                                 groupObj.children.push(devObj);
                             }
                            
-                        });   
+                        }); 
+
                         if(groupObj.children.length){
                             companyObj.children.push(groupObj);
                         }
@@ -516,6 +639,10 @@
                                     isOnline:isOnline,
                                     deviceid:device.deviceid
                                 };
+                                if(device.deviceid == store.currentDeviceId){
+                                    groupData.expand = true;
+                                    dev.isSelected = true;                           
+                                }
                                 if(isOnline){
                                     groupData.children.push(dev);
                                 }
@@ -594,6 +721,10 @@
                                     isOnline:isOnline,
                                     deviceid:device.deviceid
                                 };
+                                if(device.deviceid == store.currentDeviceId){
+                                    groupData.expand = true;
+                                    dev.isSelected = true;                           
+                                }
                                 if(!isOnline){
                                     groupData.children.push(dev);
                                 }
@@ -670,10 +801,11 @@
             this.intervalTime      = store.intervalTime;
             this.initMap();
             this.getMonitorListByUser();
-
         },
         beforeDestroy:function () { 
-         
+            store.currentDeviceId = null;
+            store.currentDeviceRecord = {};
+            store.deviceNames = {};
         }
     }
 
