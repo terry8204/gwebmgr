@@ -12,7 +12,7 @@ new Vue({
         loading:false
     },
     methods: {
-        handleSubmit:function (name) {
+        handleSubmit:function () {
             var me   = this;
             var user = this.username;
             var pass = this.password;

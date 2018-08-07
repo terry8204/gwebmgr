@@ -17,7 +17,7 @@ div.header-wraper{
 .ivu-menu-dark{
     background:#495060;
 }
-    /* 试图 */
+    /* 视图 */
 div.view-wraper{
     position: absolute;
     left:  0;
@@ -153,7 +153,35 @@ div.view-wraper{
         box-sizing: border-box;
         background: #EAEEF0;
     }
+    p.operation span{
+        margin-right:  5px;
+    }
  /* 监控结束 */
+
+
+/* 报表css开始 */
+    div.report-wraper{
+        position: relative;
+    }
+    div.report-wraper>div{
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        padding: 10px;
+        box-sizing: border-box;
+    }
+    div.report-left-wrap{
+        left: 0px;
+        width: 240px;
+    }
+    div.report-right-wrap{
+        right: 0;
+        left: 240px;
+        border-left:1px solid #D5DCE1; 
+    }
+
+/* 报表css结束 */
+
 
 
   /* 后台管理开始 */

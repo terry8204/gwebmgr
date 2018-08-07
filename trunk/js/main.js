@@ -4,7 +4,8 @@
         intervalTime:10,
         currentDeviceId:null,
         currentDeviceRecord:{},
-        deviceNames:{}
+        deviceNames:{},
+        markerDevicedId:null
     };
     // 头部组建
     var appHeader = {
@@ -111,7 +112,7 @@
                 isShowConpanyName:false, // 0 不显示公司   1 显示公司名
                 sosoValue: '',           // 搜索框的值
                 sosoData: [],            // 搜索框里面的数据
-                selectedState:'',        // 选择的状态 all online offline;
+                selectedState:'',        // 选择nav的状态 all online offline;
                 currentStateData:[],     // 当前tree的数据
                 records:[],              // 全部设备最后一次位置记录
                 companys:[],             // 原始列表数据
@@ -121,7 +122,8 @@
                 allDevCount:0,           // 全部设备的个数
                 onlineDevCount:0,        // 在线设备个数
                 offlineDevCount:0,       // 离线设备个数
-                isMoveTriggerEvent:true  // 地图移动是否触发事件
+                isMoveTriggerEvent:true, // 地图移动是否触发事件
+                intervalInstanse:null    // 定时器实例
             }
         },
         methods: {
@@ -189,8 +191,8 @@
                                         me.handleClickDev(dev.deviceid);
                                     }                                  
                                 });
-                            })
-                        })
+                            });
+                        });
                     }else{
                         this.currentStateData.forEach(function (group) { 
                             group.children.forEach(function (dev) { 
@@ -198,10 +200,10 @@
                                     dev.isSelected = false;
                                     me.handleClickDev(dev.deviceid);
                                 }
-                            })
-                        })  
-                    }
-                }
+                            });
+                        });  
+                    };
+                };
             },
             selectedStateNav:function (state) {
                 this.selectedState = state;
@@ -243,8 +245,8 @@
             handleClickDev:function (deviceid) {
                 var me = this;
                 me.getLastPosition([deviceid],function (resp) { 
-                    var record = resp.records[0];
-                    if(record != null){
+                    if(resp.records != null && resp.records.length && resp.records[0]!==null){
+                        var record = resp.records[0];
                         var callon = record.callon;
                         var callat = record.callat;
                         var lng_lat = wgs84tobd09(callon,callat);
@@ -253,6 +255,7 @@
                         store.currentDeviceId = deviceid;
                         store.currentDeviceRecord = record;
                         me.updateRecords(record);
+                        me.isMoveTriggerEvent = false;
                         me.map.centerAndZoom(point,17);
                         me.openDevInfoWindow();
                     }else{
@@ -298,11 +301,14 @@
                             me.selectedState = "all";
                             me.records = resp.records;
                             var range = utils.getDisplayRange(me.map.getZoom()); 
-                            var filterArr =  me.filterReocrds(range,resp.records);              
-                            me.addOverlayToMap(filterArr);
+                            if(resp.records.length){
+                                var filterArr =  me.filterReocrds(range,resp.records);              
+                                me.addOverlayToMap(filterArr);
+                            }
                         });
                     }else if(resp.status == 3){
                         me.$Message.error("请重新登录,2秒后自动跳转登录页面");
+                        Cookies.remove("token");
                         setTimeout(function () { 
                             window.location.href = "index.html";
                         },2000);
@@ -320,7 +326,7 @@
                         group.devices.forEach(function (device,index) {
                             var deviceid = device.deviceid;
                             me.deviceIds[deviceid] = "";
-                            store.deviceNames[deviceid] = device.devicename;
+                            store.deviceNames[deviceid] = device;
                         });                  
                     });    
                 });     
@@ -333,7 +339,15 @@
                     deviceids: deviceIds
                 };
                 utils.sendAjax(url,data,function (resp) {   
-                    callback(resp);                              
+                    if(resp.status == 0){
+                        callback(resp);     
+                    }else if(resp.status == 3){
+                        me.$Message.error("请重新登录,2秒后自动跳转登录页面");
+                        Cookies.remove("token");
+                        setTimeout(function () { 
+                            window.location.href = "index.html";
+                        },2000);     
+                    }                         
                 });
             },
             filterReocrds:function (range , records) { 
@@ -370,6 +384,7 @@
                 var me = this;
                 records.forEach(function (record){ 
                     if(record != null){
+                        var deviceid = record.deviceid;
                         var point = null
                         if(!record.point){
                             var lng_lat = wgs84tobd09(record.callon,record.callat);
@@ -379,19 +394,22 @@
                              point = record.point;
                         };
                         var marker = new BMap.Marker(point);
-                        me.markerAddEvent(marker,record.deviceid);
+                        var label =  new BMap.Label(store.deviceNames[deviceid].devicename,{ position : point, offset   : new BMap.Size(20, 2) });
+                            marker.setLabel(label);
+                            marker.deviceid = deviceid;
+                        me.markerAddEvent(marker,deviceid);
                         me.map.addOverlay(marker);
                     };
                 });
             },
             markerAddEvent:function (marker,deviceid) {
                 var me = this;
-                marker.deviceid = deviceid; 
                 marker.addEventListener("click", function(){   
                     me.isMoveTriggerEvent = false;
+                    store.markerDevicedId = this.deviceid;
                     var devLastInfo = me.getSingleDeviceInfo(this.deviceid);
                     var infoWindow = me.getInfoWindow(devLastInfo);     
-                    marker.openInfoWindow(infoWindow,marker.point); //开启信息窗口
+                    marker.openInfoWindow(infoWindow,marker.point); 
                 });
             },
             openDevInfoWindow:function () { 
@@ -408,23 +426,29 @@
             getSingleDeviceInfo:function(deviceid){ 
                 var info = null;
                 for(var i = 0 ; i <  this.records.length ; i++){
-                    var item = this.records[i];
-                    if(item.deviceid == deviceid){
-                        info = item;
+                    if(this.records[i]){
+                        var item = this.records[i];
+                        if(item.deviceid == deviceid){
+                            info = item;
+                        };
                     }
                 };
                 return info;
             },
             getInfoWindow:function (info) {
+                console.log(info);
+                var devdata = store.deviceNames[info.deviceid];
                 var address = this.getAddress(info);
-
                 var sContent = '<div><p style="margin:0;font-size:13px">' +
-                '<p> 设备名称: ' +store.deviceNames[info.deviceid]+'</p>' +
+                '<p> 设备名称: ' +devdata.devicename+'</p>' +
                 '<p> 设备ID: ' +info.deviceid+'</p>' + 
+                '<p> 经纬度: ' +info.callon+"-"+ info.callat +'</p>' + 
                 '<p> 最后时间: ' +DateFormat.longToDateTimeStr(info.arrivedtime,0)+'</p>' +
+                '<p> 到期时间: ' +DateFormat.longToDateTimeStr(devdata.overduetime,0)+'</p>' +
                 '<p class="last-address"> 详细地址: '+address+'</p>' +
-                '<p class="operation"> <span onclick="alert(1)"><a>回放</a></span>｜<span onclick="alert(1)"><a>跟踪</a></span> </p></div>';
-
+                '<p class="operation">'+
+                    '<span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="alert('+info.deviceid+')">回放</span>'+
+                    '<span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="alert('+info.deviceid+')">跟踪</span> </p></div>';
                 var opts = {
                     width:300,
                 };
@@ -461,7 +485,9 @@
                 this.isShowConpanyName = state;
             },
             setIntervalTime:function (interval) {
-                this.intervalTime = interval;
+                this.intervalTime = interval*1000;
+                clearInterval(this.intervalInstanse);
+                this.setIntervalReqRecords();
             },
             getCurrentStateTreeData:function (state,isShowConpanyName) { 
                 var me = this;
@@ -513,7 +539,8 @@
                             render:render,
                             children: []
                         }
-                        company.groups.forEach(function (group) {                    
+                        company.groups.forEach(function (group) {
+                            var onlineCount = 0;                   
                             var groupObj =  {
                                 title: group.groupname,
                                 expand: false,
@@ -532,13 +559,18 @@
                                     companyObj.expand = true;
                                 }
                                 devObj.isOnline = me.getIsOnline(device.deviceid);
+                                if(devObj.isOnline){
+                                    onlineCount++;
+                                };
                                 groupObj.children.push(devObj);
                             });    
                             if(groupObj.children.length){
+                                groupObj.title += "("+ onlineCount +"/"+ groupObj.children.length +")";
                                 companyObj.children.push(groupObj);
                             }              
                         }); 
                         if(companyObj.children.length){
+                            companyObj.title += "("+ companyObj.children.length +")";
                             me.currentStateData.push(companyObj);
                         } 
                     })             
@@ -547,6 +579,7 @@
                 var me = this;                       
                 this.companys.forEach(function (company) {
                     company.groups.forEach(function (group) { 
+                        var onlineCount = 0;
                         var groupData =  {
                             title: group.groupname,
                             expand: false,
@@ -566,10 +599,14 @@
                                     groupData.expand = true;
                                     dev.isSelected = true;                           
                                 }
+                                if(isOnline){
+                                    onlineCount++; 
+                                }
                                 groupData.children.push(dev);
                         });
 
                         if(groupData.children.length){
+                            groupData.title += "("+ onlineCount +"/"+ groupData.children.length +")";
                             if(groupData.title == "默认组"){
                                 me.currentStateData.unshift(groupData);
                             }else{
@@ -651,10 +688,12 @@
                         if(groupData.children.length){
                             if(groupData.title == "默认组"){
                                 if(groupData.children.length){
+                                    groupData.title += "("+ groupData.children.length +"/"+ groupData.children.length +")";
                                     me.currentStateData.unshift(groupData);
                                 }                             
                             }else{
                                 if(groupData.children.length){
+                                    groupData.title += "("+ groupData.children.length +"/"+ groupData.children.length +")";
                                     me.currentStateData.push(groupData);
                                 }   
                             }
@@ -759,6 +798,39 @@
                     }                          
                 });
                 return isOnline;
+            },
+            setIntervalReqRecords:function(){
+                var me = this;
+                this.intervalInstanse = setInterval(function () { 
+                    var devIdList = Object.keys(me.deviceIds);
+                    me.getLastPosition(devIdList,function (resp) { 
+                        resp.records.forEach(function (record) { 
+                            var lng_lat = wgs84tobd09(record.callon,record.callat);
+                            record.point = new BMap.Point(lng_lat[0],lng_lat[1]);
+                        })
+                        me.records = resp.records;
+                        me.moveMarkers();
+                    });
+                }, this.intervalTime);
+            },
+            moveMarkers:function () { 
+                var me = this;
+                var markers = this.map.getOverlays();
+                markers.forEach(function (marker) { 
+                    var deviceid = marker.deviceid;
+                    if(deviceid){
+                        me.records.forEach(function (record) { 
+                            if(deviceid === record.deviceid){
+                                marker.setPosition(record.point);
+                                if(deviceid == store.markerDevicedId){
+                                    me.isMoveTriggerEvent = false;
+                                    var infoWindow = me.getInfoWindow(record);     
+                                    marker.openInfoWindow(infoWindow,record.point); 
+                                };
+                            };
+                        });
+                    }
+                })
             }
         },
         computed:{
@@ -771,22 +843,48 @@
                 var online  = 0;
                 var offline = 0;
                 var me = this;
-                this.allDevCount = this.records.length;
-                this.records.forEach(function (record) { 
-                    if(record!==null){
-                        var arrivedtime = record.arrivedtime;
-                        var currentTime = new Date().getTime();
-                        if((currentTime - arrivedtime) < me.offlineTime){
-                            online++;          
+                var deviceIds = Object.keys(this.deviceIds);
+                    
+                if(this.records.length === deviceIds.length){
+             
+                    this.records.forEach(function (record) { 
+                        if(record!==null){
+                            var arrivedtime = record.arrivedtime;
+                            var currentTime = new Date().getTime();
+                            if((currentTime - arrivedtime) < me.offlineTime){
+                                online++;          
+                            }else{
+                                offline++;
+                            }
                         }else{
                             offline++;
                         }
-                    }else{
-                        offline++;
-                    }
-                });
-                this.offlineDevCount = offline;
-                this.onlineDevCount = online;
+                    });
+                    this.offlineDevCount = offline;
+                    this.onlineDevCount = online;
+                }else if(this.records.length === 0){
+                    this.offlineDevCount = deviceIds.length;
+                    this.onlineDevCount = 0;
+                }else{
+                    offline += deviceIds.length - this.records.length;
+                    this.records.forEach(function (record) { 
+                        if(record!==null){
+                            var arrivedtime = record.arrivedtime;
+                            var currentTime = new Date().getTime();
+                            if((currentTime - arrivedtime) < me.offlineTime){
+                                online++;          
+                            }else{
+                                offline++;
+                            }
+                        }else{
+                            offline++;
+                        }
+                    });
+                    this.offlineDevCount = offline;
+                    this.onlineDevCount = online;
+                }
+
+                this.allDevCount = deviceIds.length;
                 this.getCurrentStateTreeData(this.selectedState,this.isShowConpanyName);
             } ,
             selectedState:function () { 
@@ -794,24 +892,37 @@
             },
             isShowConpanyName:function () { 
                 this.getCurrentStateTreeData(this.selectedState,this.isShowConpanyName);
-            }
+            },
         },
         mounted:function () {
             this.isShowConpanyName = store.navState;
-            this.intervalTime      = store.intervalTime;
+            this.intervalTime      = store.intervalTime * 1000;
             this.initMap();
             this.getMonitorListByUser();
+            this.setIntervalReqRecords();
+      
         },
         beforeDestroy:function () { 
             store.currentDeviceId = null;
             store.currentDeviceRecord = {};
             store.deviceNames = {};
+            clearInterval(this.intervalInstanse);
         }
     }
 
     // 统计报表
     var reportForm = {
         template:document.getElementById("report-template").innerHTML, 
+        data() {
+            return {
+               
+            }
+        },
+        methods: {
+            name() {
+                
+            }
+        },
     } 
 
 
@@ -943,7 +1054,6 @@
             monitor   : monitor,
             reportForm : reportForm
         }
-
     })
 })();
 
