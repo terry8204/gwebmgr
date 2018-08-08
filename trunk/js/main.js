@@ -10,6 +10,7 @@
     // 头部组建
     var appHeader = {
         template:document.getElementById("header-template").innerHTML,
+        props:["componentid"],
         data:function(){
             return {
                 dark:"dark",
@@ -17,12 +18,17 @@
                 isManager:true,
                 modal:false,
                 isShowCompany:false,
-                intervalTime:10
+                intervalTime:10,
+                activeName:null,
+                navData:[],
+                isShowMonitor:true,
+                isShowReportForm:true,
+                isShowBgManager:true,
             }
         },
         methods:{
-            changeNav:function(index){
-                this.$emit("change-nav",index);
+            changeNav:function(navName){
+                this.$emit("change-nav",navName);
             },
             getManagerType:function(userType){
                 var mgr = "";
@@ -35,6 +41,9 @@
                         mgr = "[一级管理员]";
                     }else if(userType == 2){
                         mgr = "[二级管理员]";
+                    }else if(userType == 99){
+                        this.isManager = false;
+                        mgr = "[设备]";
                     }
                 return mgr;
             },
@@ -57,12 +66,34 @@
             changeShowCompany:function (state) { 
                 this.$emit("change-tree",state);
                 store.navState = state;
-            }   
+            },
+            reqUserType:function () { 
+                var url = myUrls.queryUserType();
+                utils.sendAjax(url,{},function (resp) {
+                    console.log(resp);
+                })
+            },
+            navJurisdiction:function (userType) { 
+                if(userType == -1 || userType == 99){
+                    this.isShowBgManager = false;
+                    this.$emit("change-nav","monitor");
+                }else if(userType == 0){    
+                    this.isShowMonitor = false;
+                    this.$emit("change-nav","reportForm");
+                }else{
+                    this.$emit("change-nav","monitor");
+                };
+            } 
         },
-        mounted:function (param) { 
-            this.userType = Cookies.get("userType");
-            var mgr = this.getManagerType(this.userType);
-            this.name    = Cookies.get("name") + mgr;
+        mounted:function () { 
+            var me = this;
+            this.activeName = "reportForm";
+            this.$nextTick(function () {    
+                me.userType = Cookies.get("userType");
+                var mgr = me.getManagerType(me.userType);
+                me.name = Cookies.get("name") + mgr;
+                me.navJurisdiction(me.userType);
+            })
         },
         watch: {
             intervalTime:function () { 
@@ -164,11 +195,13 @@
                 var bounds = this.map.getBounds();
 				var pointArr = [];			
 				this.records.forEach(function(item,index){
-                    var lng_lat = wgs84tobd09(item.callon,item.callat);
-					var point = new BMap.Point(lng_lat[0],lng_lat[1]);
-					if(bounds.containsPoint(point)){
-						pointArr.push(item);
-					}																
+                    if(item){
+                        var lng_lat = wgs84tobd09(item.callon,item.callat);
+                        var point = new BMap.Point(lng_lat[0],lng_lat[1]);
+                        if(bounds.containsPoint(point)){
+                            pointArr.push(item);
+                        }
+                    }																
                 });	
                 return pointArr;
             },    
@@ -298,7 +331,6 @@
                         me.setDeviceIdsList(resp.companys);
                         var devIdList = Object.keys(me.deviceIds);
                         me.getLastPosition(devIdList,function (resp) { 
-                            me.selectedState = "all";
                             me.records = resp.records;
                             var range = utils.getDisplayRange(me.map.getZoom()); 
                             if(resp.records.length){
@@ -317,6 +349,7 @@
                             me.$Message.error(resp.cause);
                         }
                     }
+                    me.selectedState = "all";
                 });
             },
             setDeviceIdsList:function (companys) { 
@@ -436,7 +469,6 @@
                 return info;
             },
             getInfoWindow:function (info) {
-                console.log(info);
                 var devdata = store.deviceNames[info.deviceid];
                 var address = this.getAddress(info);
                 var sContent = '<div><p style="margin:0;font-size:13px">' +
@@ -805,8 +837,10 @@
                     var devIdList = Object.keys(me.deviceIds);
                     me.getLastPosition(devIdList,function (resp) { 
                         resp.records.forEach(function (record) { 
-                            var lng_lat = wgs84tobd09(record.callon,record.callat);
-                            record.point = new BMap.Point(lng_lat[0],lng_lat[1]);
+                           if(record){
+                             var lng_lat = wgs84tobd09(record.callon,record.callat);
+                             record.point = new BMap.Point(lng_lat[0],lng_lat[1]);
+                           };
                         })
                         me.records = resp.records;
                         me.moveMarkers();
@@ -931,7 +965,7 @@
         template:document.getElementById("manager-template").innerHTML,
         data:function() {
             return {
-                currentPage:"",
+                userType:null,
                 theme:"light",
                 navList:[
                     {
@@ -1014,10 +1048,14 @@
                 });
             }
         },
+        mounted:function () { 
+            this.userType = Cookies.get("userType");
+            if(this.userType == 0){
+                this.$delete(this.navList,1);
+                this.$delete(this.navList,2);
+            }
+        }
     };
-
-
-    
 
 
     // 根组件
@@ -1025,17 +1063,11 @@
         el:"#app",
         i18n:i18n,
         data:{
-            componentId:"monitor",
+            componentId:"",
         },
         methods:{
-            changeComponent:function(index){
-                if(index == 1){
-                    this.componentId = "monitor";
-                }else if(index == 2){
-                    this.componentId = "reportForm"
-                }else if(index == 3){
-                    this.componentId = "bgManager";
-                }
+            changeComponent:function(componentid){
+                this.componentId = componentid;  
             },
             changeNav:function (state) { 
                 if( this.$refs["my-component"].setNavState){
@@ -1053,6 +1085,9 @@
             bgManager : bgManager,
             monitor   : monitor,
             reportForm : reportForm
+        },
+        mounted:function () {
+
         }
     })
 })();

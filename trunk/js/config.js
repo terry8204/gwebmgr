@@ -1,4 +1,6 @@
-
+/*
+ * 所有的urls
+ */
 var myUrls = {
     // host:"http://192.168.0.108:8090/",
     host:"http://112.74.186.169/",
@@ -7,6 +9,9 @@ var myUrls = {
     },
     loginOut:function(){
         return this.host+"webapi?action=loginout&token="+token;
+    },
+    queryUserType:function () { 
+        return this.host+"webapi?action=queryusertype&token="+token;
     },
     addCompany:function(){
         return this.host+"webapi?action=addcompany&token="+token;
@@ -77,17 +82,32 @@ var myUrls = {
     queryDeviceList:function () { 
         return this.host + "webapi?action=pagequerydevice&token="+token;
     },
+    resetDeviceLoginPwd:function () { 
+        return this.host + "webapi?action=resetdeviceloginpwd&token="+token;
+    },
     // 监控页面url
     monitorListByUser:function () { 
-        return this.host + "webapi?action=monitorlistbyuser&token="+token;
+        return this.host + "webapi?action=querymonitorlist&token="+token;
+    },
+    queryCompanyTree:function () { 
+        return this.host + "webapi?action=querycompanytree&token="+token;
     },
     lastPosition:function () { 
         return this.host + "webapi?action=lastposition&token="+token;
     }
-}
+};
 
 
 var vueInstanse   = null;   // 全局vue实例子
 var editObject    = null;   // 要编辑客户的对象
 var customersList = null;   // 缓存客户列表
 var groupsList    = null;   // 缓存分组列表
+
+
+/* 
+ * 系统管理员 admin       123456
+ * 一级管理员 yijimgr     123456
+ * 二级管理员 erjimgr     123456
+ * 普通监控员 xiaoxu      123456
+ * 设备账号   13128804768 123456  
+ */ 

@@ -163,10 +163,11 @@
                                 value:group.groupid
                             })
                         });
-
-                        editObject.groups.forEach(function(item){
-                            me.groupids.push(item.groupid);
-                        });
+                        if(editObject.groups){
+                            editObject.groups.forEach(function(item){
+                                me.groupids.push(item.groupid);
+                            });
+                        }  
                     }
                 },
                 back:function(){

@@ -30,10 +30,7 @@ new Vue({
 
             this.sendAjax(function(resp){
                 if(resp.status == 0){
-
-                    Cookies.set("token",resp.token);
-                    Cookies.set("userType",resp.usertype);
-                    Cookies.set("name",me.username);
+       
                     if(me.keepPass){
                         Cookies.set("accountuser",me.username,{ expires: 7 });
                         Cookies.set("accountpass",me.password,{ expires: 7 });
@@ -43,7 +40,9 @@ new Vue({
                         Cookies.remove("accountpass");
                         Cookies.set("keepPass",false,{ expires: 7 });
                     }
-
+                    Cookies.set("token",resp.token);
+                    Cookies.set("userType",resp.usertype);
+                    Cookies.set("name",me.username);
                     window.location.href = "main.html";
                 }else{
                     me.$Message.error('账号或密码错误!');
@@ -53,9 +52,8 @@ new Vue({
         sendAjax:function(callback){
             var me = this;
             var url  = myUrls.login();
-            var data = {from:"web",username:this.username,password:$.md5(this.password)};
-            // var url  = host+"webapi?action=login";
-            // var data = {from:"web",username:"admin",password:"e10adc3949ba59abbe56e057f20f883e"};
+            var type = this.account== 0 ? "USER" :"DEVICE";
+            var data = {type:type,from:"web",username:this.username,password:$.md5(this.password)};
             var encode = JSON.stringify(data);
                 me.loading = true;
             $.ajax({
@@ -77,6 +75,8 @@ new Vue({
         },
         selectdAccount:function (account){
             this.account = account;
+            var type = this.account== 0 ? "USER" :"DEVICE";
+            Cookies.set("type",type,{ expires: 7 });
         },
     },
     mounted:function () {
@@ -85,6 +85,15 @@ new Vue({
             var keepPass = Cookies.get("keepPass");
             var user =  Cookies.get("accountuser");
             var pass =  Cookies.get("accountpass");
+            var type = Cookies.get("type");
+            console.log(type);
+            if(type){
+                if(type=="USER"){
+                    me.account = 0;
+                }else if(type=="DEVICE"){
+                    me.account = 1;
+                }
+            };
             if( keepPass == 'true' && user != undefined && pass  != undefined ){
                 me.username = user;
                 me.password = pass;

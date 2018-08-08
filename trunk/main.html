@@ -22,7 +22,7 @@
 <body>
     <div id="app">
         <div class="header-wraper">
-            <app-header @change-nav="changeComponent" @change-tree="changeNav" @change-intervaltime="changeInterval"></app-header>
+            <app-header @change-nav="changeComponent" @change-tree="changeNav" @change-intervaltime="changeInterval" :componentid="componentId"></app-header>
         </div>
         <div class="view-wraper">
             <keep-alive exclude="monitor">
@@ -31,6 +31,7 @@
         </div>
     </div>
 
+      
     <!-- 头部模版 -->
     <script type="text/template-v" id="header-template">
         <div class="app-header">
@@ -40,19 +41,19 @@
                 <span style="font-size:18px;vertical-align:top;">位置信息服务平台</span>
             </div>
             <div class="app-nav">
-                <i-menu mode="horizontal" :theme="dark" active-name="1" v-on:on-select="changeNav">
-                    <menuItem name="1">
-                        <Icon type="md-contacts"></Icon> 
-                        定位监控
-                    </menuItem>
-                    <menuItem name="2">
-                        <Icon type="ios-paper-outline"></Icon>
-                        统计报表
-                    </menuItem>
-                    <menuItem name="3" v-show="isManager">  
-                        <Icon type="md-settings"></Icon>
-                        后台管理
-                    </menuItem>
+                <i-menu mode="horizontal" theme="dark" :active-name="componentid" v-on:on-select="changeNav">
+                        <menuItem name="monitor" v-show="isShowMonitor">
+                            <Icon type="md-contacts"></Icon> 
+                            定位监控
+                        </menuItem>
+                        <menuItem name="reportForm" v-show="isShowReportForm">
+                            <Icon type="ios-paper-outline"></Icon>
+                            统计报表
+                        </menuItem>
+                        <menuItem name="bgManager" v-show="isShowBgManager">  
+                            <Icon type="md-settings"></Icon>
+                            后台管理
+                        </menuItem>
                 </i-menu>
             </div>
             <div class="site_links">

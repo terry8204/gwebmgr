@@ -74,7 +74,7 @@ vueInstanse = new Vue({
                         {
                             title: '操作',
                             key: 'action',
-                            width: 150,
+                            width: 200,
                             align: 'center',
                             render: function(h, params) {
                                 return h('div', [
@@ -92,6 +92,20 @@ vueInstanse = new Vue({
                                             }
                                         }
                                     }, '修改'),
+                                    h('Button', {
+                                        props: {
+                                            type: 'primary',
+                                            size: 'small'
+                                        },
+                                        style: {
+                                            marginRight: '5px'
+                                        },
+                                        on: {
+                                            click: function() {
+                                                vueInstanse.resetDevicePwd(params.index);
+                                            }
+                                        }
+                                    }, '重置密码'),
                                     h('Button', {
                                         props: {
                                             type: 'error',
@@ -131,6 +145,18 @@ vueInstanse = new Vue({
                     });
                     return data;
                 },
+                resetDevicePwd:function(index){
+                    var me = this;
+                    var deviceid = this.tableData[index].deviceid;
+                    var url = myUrls.resetDeviceLoginPwd();
+                    utils.sendAjax(url,{deviceid:deviceid},function (resp) { 
+                        if(resp.status === 0){
+                            me.$Message.success("密码重置为:123456");
+                        }else{
+                            me.$Message.error("密码重置失败");
+                        }
+                    });
+                },
                 getCustimerName:function (custimerId) { 
                     var custimerName = "";
                     this.customersList.forEach(function (item) { 
@@ -153,15 +179,14 @@ vueInstanse = new Vue({
                     var me = this;
                     var url = myUrls.queryDeviceList();
                     utils.sendAjax(url,{},function(resp){
+                        me.loading = false;
                         if(resp.status == 0 && resp.devices != null){           
-
                             me.deviceList = me.filterDataInfo(resp.devices );
                             me.tableData = me.deviceList.slice(0,5);
                             me.total = me.deviceList.length;
                         }else{
                             me.$Message.error(resp.cause);
                         }
-                        me.loading = false;
                     });
                 },
                 queryAllCompanyInfo:function(claaback){
@@ -172,8 +197,8 @@ vueInstanse = new Vue({
                     var me = this;
                     if(resp.status===0 && resp.records != null){
                         me.customersList = resp.records;
-                        me.queryAllgroupsInfo();
                     }
+                    me.queryAllgroupsInfo();
                 },
                 queryAllgroupsInfo:function(){
                     var url = myUrls.queryGroupByUser();
@@ -183,8 +208,8 @@ vueInstanse = new Vue({
                     var me = this;
                     if(resp.status === 0 && resp.grouplist!==null){
                          me.groupsList = resp.grouplist; 
-                         me.getDeviceList();  
                     }
+                    me.getDeviceList();  
                 },
                 editDevice:function(index){
                     var me = this;
