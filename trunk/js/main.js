@@ -443,13 +443,6 @@
                         }
                     }
 
-                    var isShowCompany = Cookies.get("isShowCompany");
-                    if(isShowCompany == "true"){
-                        isShowConpanyName = true;
-                    }else if(isShowCompany == "false"){
-                        isShowConpanyName = false;
-                    } 
-                    me.selectedState = "all";
                 });
             },
             setDeviceIdsList:function (groups) {
@@ -730,8 +723,8 @@
             getAllShowConpanyTreeData:function () {
                 var me = this;
                 var newArray = me.getNewCompanyArr();
-                me.groups.forEach(function (group) {
-
+                var newGroups = [] ; 
+                me.groups.forEach(function (group,index) {
                     var companyid = group.companyid;
                     var onlineCount = 0;
                     var groupObj = {
@@ -742,8 +735,9 @@
                         name:group.groupname,
                         children:[],
                     }
-
-                    group.devices.forEach(function (device) {
+                    
+                    group.devices.forEach(function (device,index) {
+                        console.log("devices--" , index) 
                         var isOnline = me.getIsOnline(device.deviceid);
                         var deviceObj = {
                             title:device.devicename,
@@ -758,10 +752,10 @@
                             groupObj.expand = true;
                             deviceObj.isSelected = true;
                         }
-
                         groupObj.children.push(deviceObj);
                     });
                     groupObj.title += "("+ onlineCount + "/" + groupObj.children.length+")";
+                
                     newArray.forEach(function (company) {
                         if(company.companyid == companyid){
                             company.children.push(groupObj);
@@ -774,7 +768,14 @@
                             }
                         }
                     });
+
                 })
+
+                
+
+
+               
+                
                 me.currentStateData = newArray;
             },
             getAllHideConpanyTreeData:function () {
@@ -823,7 +824,7 @@
                 var me = this;
                 var newArray = me.getNewCompanyArr();
                 var groupsArray = [];
-               
+                
 
                 me.groups.forEach(function (group) {
 
@@ -1140,17 +1141,17 @@
             isShowConpanyName:function () {
                 var me = this;
                 if(this.isShowConpanyName){
-                    // if(me.groups[0] && me.groups[0].companyid ){
-                    //     me.getCurrentStateTreeData(me.selectedState,me.isShowConpanyName);
-                    // }else{
+                    if(me.groups[0] && me.groups[0].companyid ){
+                        me.getCurrentStateTreeData(me.selectedState,me.isShowConpanyName);
+                    }else{
                         this.getMonitorListByUser(1,function (resp) {
                             me.groups = resp.groups;
                             me.queryCompanyTree(function (response) {
                                 me.companys = response.companys;
                                 me.getCurrentStateTreeData(me.selectedState,me.isShowConpanyName);
-                            })
+                            });
                         });
-                    // }
+                    }
                 }else{
                     this.getCurrentStateTreeData(this.selectedState,this.isShowConpanyName)  ;
                 }
@@ -1158,10 +1159,12 @@
         },
         mounted:function () {
             var me = this;
+            var isShowCompany = Cookies.get("isShowCompany");
+            var havecompany =  isShowCompany ? 1 : 0;
             this.isShowConpanyName = store.navState;
             this.intervalTime      = store.intervalTime * 1000;
             this.initMap();
-            this.getMonitorListByUser(0,function (resp) {
+            this.getMonitorListByUser(havecompany,function (resp) {
                 me.groups = resp.groups;
                 me.setDeviceIdsList(resp.groups);
                 var devIdList = Object.keys(store.deviceNames);
@@ -1174,7 +1177,13 @@
                         }else{
                             me.addOverlayToMap(resp.records);
                         }  
-                    }
+                    };
+                    if(isShowCompany == "true"){
+                        isShowConpanyName = true;
+                    }else if(isShowCompany == "false"){
+                        isShowConpanyName = false;
+                    } 
+                    me.selectedState = "all";
                 });
             });
             this.setIntervalReqRecords();
