@@ -1,5 +1,4 @@
 "use strict";
-
 new Vue({
     el:"#login-wraper",
     data:{
@@ -9,7 +8,8 @@ new Vue({
         account:0,
         userTip:false,
         passTip:false,
-        loading:false
+        loading:false,
+        placeholder:""
     },
     methods: {
         handleSubmit:function () {
@@ -20,20 +20,23 @@ new Vue({
             if(user.length < 2){
                 this.$Message.error('账号格式不对!');
                 return;
-            }
+            };
 
             if(pass.length < 4){
                 this.$Message.error('密码格式不对!');
                 return;
-            }
-
+            };
 
             this.sendAjax(function(resp){
                 if(resp.status == 0){
-       
                     if(me.keepPass){
-                        Cookies.set("accountuser",me.username,{ expires: 7 });
-                        Cookies.set("accountpass",me.password,{ expires: 7 });
+                        if(me.account == 0){
+                            Cookies.set("accountuser",me.username,{ expires: 7 });
+                            Cookies.set("accountpass",me.password,{ expires: 7 });                        
+                        }else{
+                            Cookies.set("deviceuser",me.username,{ expires: 7 });
+                            Cookies.set("devicepass",me.password,{ expires: 7 });
+                        }
                         Cookies.set("keepPass",true,{ expires: 7 });
                     }else{
                         Cookies.remove("accountuser");
@@ -75,31 +78,65 @@ new Vue({
         },
         selectdAccount:function (account){
             this.account = account;
-            var type = this.account== 0 ? "USER" :"DEVICE";
-            Cookies.set("type",type,{ expires: 7 });
+            var type = this.account== 0 ? "USER" : "DEVICE" ;
+            Cookies.set( "logintype" , type ,{ expires: 7 } );
         },
     },
     mounted:function () {
         var me = this;
         this.$nextTick(function(){
             var keepPass = Cookies.get("keepPass");
-            var user =  Cookies.get("accountuser");
-            var pass =  Cookies.get("accountpass");
-            var type = Cookies.get("type");
-            console.log(type);
+            var type = Cookies.get("logintype");
             if(type){
                 if(type=="USER"){
                     me.account = 0;
+                    me.placeholder = "请输入用户账号";
+                    var user =  Cookies.get("accountuser");
+                    var pass =  Cookies.get("accountpass");
                 }else if(type=="DEVICE"){
+                    me.placeholder = "请输入设备号";
                     me.account = 1;
+                    var user =  Cookies.get("deviceuser");
+                    var pass =  Cookies.get("devicepass");
                 }
             };
             if( keepPass == 'true' && user != undefined && pass  != undefined ){
-                me.username = user;
-                me.password = pass;
-                me.keepPass = true;
+                if(user && pass){
+                    me.username = user;
+                    me.password = pass;
+                    me.keepPass = true;
+                }else{
+                    me.username = "";
+                    me.password = "";
+                }
             };
         });
+    },
+    watch:{
+        account:function () {
+            if(this.account == 0){
+                this.placeholder = "请输入用户账号";
+                var user =  Cookies.get("accountuser");
+                var pass =  Cookies.get("accountpass");
+            }else{
+                this.placeholder = "请输入设备号";
+                var user =  Cookies.get("deviceuser");
+                var pass =  Cookies.get("devicepass");
+            }
+
+            if(this.keepPass){
+                if(user && pass){
+                    this.username = user;
+                    this.password = pass;
+                }else{
+                    this.username = "";
+                    this.password = "";
+                }
+            }else{
+                this.username = "";
+                this.password = "";
+            }
+        }
     }
 })
 

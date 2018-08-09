@@ -49,13 +49,13 @@
                             </p>
                             <div class="inputs">
                                 <p>
-                                    <i-input type="text" v-model.trim="username" placeholder="Username">
+                                    <i-input type="text" v-model.trim="username" :placeholder="placeholder">
                                         <Icon type="ios-person" slot="prepend" v-show="account == 0"></Icon> 
                                         <Icon type="md-tablet-portrait" slot="prepend" v-show="account == 1"></Icon> 
                                     </i-input> 
                                 </p>
                                 <p>
-                                    <i-input type="password" v-model.trim="password" placeholder="Password">
+                                    <i-input type="password" v-model.trim="password" placeholder="请输入密码">
                                         <Icon type="ios-lock" slot="prepend"></Icon>                          
                                     </i-input>
                                 </p>
