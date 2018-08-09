@@ -103,6 +103,9 @@ new Vue({
                     var user =  Cookies.get("deviceuser");
                     var pass =  Cookies.get("devicepass");
                 }
+            }else{
+                var type = this.account== 0 ? "USER" : "DEVICE" ;
+                Cookies.set( "logintype" , type ,{ expires: 7 } );
             };
             if( keepPass == 'true' && user != undefined && pass  != undefined ){
                 if(user && pass){
@@ -112,6 +115,7 @@ new Vue({
                 }else{
                     me.username = "";
                     me.password = "";
+                    me.keepPass = false;
                 }
             };
         });
