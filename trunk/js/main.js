@@ -205,7 +205,7 @@
                 });
                 return pointArr;
             },
-            filterMethod (value, option) {
+            filterMethod :function(value, option) {
                  if(value){
                     return option.toUpperCase().indexOf(value.toUpperCase()) !== -1;
                  }else{
@@ -306,7 +306,68 @@
                 };
             },
             updateTreeOnlineState:function () {
-                console.log("刷新了");
+                var me = this;
+                this.records.forEach(function (item) { 
+                    var deviceid = item.deviceid;
+                    var isOnline = (function (record) {
+                        var isOnline = false;
+                        var arrivedtime = record.arrivedtime;
+                        var currentTime = new Date().getTime();
+                        if((currentTime - arrivedtime) < me.offlineTime){
+                                isOnline = true;
+                        }  
+                        return isOnline;
+                      })(item);
+                    
+                    if(me.isShowConpanyName){
+                        me.currentStateData.forEach(function (company) { 
+                            company.children.forEach(function (group) { 
+                                group.children.forEach(function (dev) { 
+                                    if(dev.deviceid == deviceid){
+                                        dev.isOnline = isOnline;
+                                    };
+                                });
+                            });
+                        });
+
+                        me.currentStateData.forEach(function (company) { 
+                            company.children.forEach(function (group) { 
+                                var onlineCount = 0;
+                                group.children.forEach(function (dev) { 
+                                    if(dev.isOnline){
+                                        onlineCount++;
+                                    }
+                                });
+                                if(me.selectedState == "all" ){
+                                    group.title = group.name + "(" + onlineCount+ "/" + group.children.length  + ")"; 
+                                }else{
+                                    group.title = group.name + "(" + group.children.length  + ")"; 
+                                }
+                            });
+                        });
+                    }else{            
+                        me.currentStateData.forEach(function (group) { 
+                            group.children.forEach(function (dev) { 
+                                if(dev.deviceid == deviceid){
+                                    dev.isOnline = isOnline;
+                                }
+                            })
+                        });
+                        me.currentStateData.forEach(function (group) { 
+                            var onlineCount = 0;
+                            group.children.forEach(function (dev) { 
+                                if(dev.isOnline){
+                                    onlineCount++;
+                                }
+                            });
+                            if(me.selectedState == "all" ){
+                                group.title = group.name + "(" + onlineCount+ "/" + group.children.length  + ")"; 
+                            }else{
+                                group.title = group.name + "(" + group.children.length  + ")"; 
+                            }                         
+                        });
+                    }
+                })
             },
             cancelSelected:function () {
                 if(this.isShowConpanyName){
@@ -558,10 +619,9 @@
                 }
 
             },
-            getAllShowConpanyTreeData:function () {
-                var me = this;
+            getNewCompanyArr :function () { 
                 var newArray = [];
-                me.companys.forEach(function (company) {
+                this.companys.forEach(function (company) {
                     var companyid =  company.companyid;
                     var companyObj = {
                             title:company.companyname,
@@ -573,7 +633,11 @@
                         };
                         newArray.push(companyObj);
                 });
-
+                return newArray;
+            },
+            getAllShowConpanyTreeData:function () {
+                var me = this;
+                var newArray = me.getNewCompanyArr();
                 me.groups.forEach(function (group) {
 
                     var companyid = group.companyid;
@@ -583,6 +647,7 @@
                         title    :group.groupname,
                         expand: false,
                         render:render,
+                        name:group.groupname,
                         children:[],
                     }
 
@@ -604,7 +669,6 @@
                         groupObj.children.push(deviceObj);
                     });
                     groupObj.title += "("+ onlineCount + "/" + groupObj.children.length+")";
-
                     newArray.forEach(function (company) {
                         if(company.companyid == companyid){
                             company.children.push(groupObj);
@@ -623,7 +687,8 @@
                             title: group.groupname,
                             expand: false,
                             render:render,
-                            children: []
+                            children: [],
+                            name:group.groupname,
                         };
 
                         group.devices.forEach(function (device,index) {
@@ -657,20 +722,9 @@
             },
             getOnlineShowConpanyTreeData:function () {
                 var me = this;
-                var newArray = [];
+                var newArray = me.getNewCompanyArr();
                 var groupsArray = [];
-                me.companys.forEach(function (company) {
-                    var companyid =  company.companyid;
-                    var companyObj = {
-                            title:company.companyname,
-                            companyname:company.companyname,
-                            companyid:companyid,
-                            children:[],
-                            expand: false,
-                            render:render
-                        };
-                        newArray.push(companyObj);
-                });
+               
 
                 me.groups.forEach(function (group) {
 
@@ -682,6 +736,7 @@
                         expand: false,
                         render:render,
                         children:[],
+                        name:group.groupname,
                     }
 
                     group.devices.forEach(function (device) {
@@ -703,7 +758,7 @@
                         }
                     });
                     if(groupObj.children.length){
-                        groupObj.title += "("+ onlineCount + "/" + groupObj.children.length+")";
+                        groupObj.title += "("+ groupObj.children.length +")";
                         groupsArray.push(groupObj);
                     }
 
@@ -717,9 +772,9 @@
                         }
                     });
                     if(company.children.length){
+                        company.title = company.companyname + "(" + company.children.length + ")";
                         me.currentStateData.push(company);
                     }
-
                  });
 
 
@@ -732,7 +787,8 @@
                             title: group.groupname,
                             expand: false,
                             render:render,
-                            children: []
+                            children: [],
+                            name:group.groupname,
                         };
 
                         group.devices.forEach(function (device,index) {
@@ -755,46 +811,34 @@
                         if(groupData.children.length){
                             if(groupData.title == "默认组"){
                                 if(groupData.children.length){
-                                    groupData.title += "("+ groupData.children.length +"/"+ groupData.children.length +")";
                                     me.currentStateData.unshift(groupData);
                                 }
                             }else{
                                 if(groupData.children.length){
-                                    groupData.title += "("+ groupData.children.length +"/"+ groupData.children.length +")";
                                     me.currentStateData.push(groupData);
                                 }
                             }
+                            groupData.title += "("+groupData.children.length +")";
                         }
                     })
 
             },
             getOfflineShowConpanyTreeData:function () {
                 var me = this;
-                var newArray = [];
+                var newArray = me.getNewCompanyArr();
                 var groupsArray = [];
-                me.companys.forEach(function (company) {
-                    var companyid =  company.companyid;
-                    var companyObj = {
-                            title:company.companyname,
-                            companyname:company.companyname,
-                            companyid:companyid,
-                            children:[],
-                            expand: false,
-                            render:render
-                        };
-                        newArray.push(companyObj);
-                });
 
                 me.groups.forEach(function (group) {
 
                     var companyid = group.companyid;
-                    var onlineCount = 0;
+
                     var groupObj = {
                         companyid:companyid,
                         title    :group.groupname,
                         expand: false,
                         render:render,
                         children:[],
+                        name:group.groupname,
                     }
 
                     group.devices.forEach(function (device) {
@@ -810,29 +854,27 @@
                             groupObj.expand = true;
                             deviceObj.isSelected = true;
                         };
-                        if(!isOnline){
-                            onlineCount++;
+                        if(!isOnline){                           
                             groupObj.children.push(deviceObj);
                         }
                     });
                     if(groupObj.children.length){
-                        groupObj.title += "("+ onlineCount + "/" + groupObj.children.length+")";
+                        groupObj.title += "("+ groupObj.children.length+")";
                         groupsArray.push(groupObj);
                     }
-
                 });
                  newArray.forEach(function (company,index) {
                     var companyid = company.companyid;
                     groupsArray.forEach(function(group){
-
                          if(companyid == group.companyid){
+                            
                             company.children.push(group);
                          }
                     });
                     if(company.children.length){
+                        company.title = company.companyname + "(" + company.children.length + ")";
                         me.currentStateData.push(company);
                     }
-
                  });
             },
             getOfflineHideConpanyTreeData:function () {
@@ -843,7 +885,8 @@
                             title: group.groupname,
                             expand: false,
                             render:render,
-                            children: []
+                            children: [],
+                            name:group.groupname,
                         };
 
                         group.devices.forEach(function (device,index) {
@@ -873,6 +916,7 @@
                                     me.currentStateData.push(groupData);
                                 };
                             };
+                            groupData.title += "("+groupData.children.length +")";
                         }
                     });
             },
@@ -904,6 +948,7 @@
                            };
                         })
                         me.records = resp.records;
+                        me.updateTreeOnlineState();
                         me.moveMarkers();
                     });
                 }, this.intervalTime);
@@ -980,7 +1025,6 @@
                 }
 
                 this.allDevCount = deviceIds.length;
-                this.updateTreeOnlineState();
             } ,
             selectedState:function () {
                 this.getCurrentStateTreeData(this.selectedState,this.isShowConpanyName);
@@ -1035,15 +1079,13 @@
     // 统计报表
     var reportForm = {
         template:document.getElementById("report-template").innerHTML,
-        data() {
+        data:function() {
             return {
 
             }
         },
         methods: {
-            name() {
-
-            }
+           
         },
     }
 
