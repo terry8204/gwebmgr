@@ -4,8 +4,7 @@
         intervalTime:10,
         currentDeviceId:null,
         currentDeviceRecord:{},
-        deviceNames:{},
-        markerDevicedId:null
+        deviceNames:{}
     };
     // 头部组建
     var appHeader = {
@@ -66,6 +65,7 @@
             changeShowCompany:function (state) {
                 this.$emit("change-tree",state);
                 store.navState = state;
+                Cookies.set("isShowCompany", state ,{ expires: 7 });
             },
             reqUserType:function () {
                 var url = myUrls.queryUserType();
@@ -93,6 +93,15 @@
                 var mgr = me.getManagerType(me.userType);
                 me.name = Cookies.get("name") + mgr;
                 me.navJurisdiction(me.userType);
+
+                var isShowCompany = Cookies.get("isShowCompany");
+                if(isShowCompany == "true"){
+                    me.isShowCompany = true;
+                    store.navState = true;
+                }else if(isShowCompany == "false"){
+                    me.isShowCompany = false;
+                    store.navState = false;
+                } 
             })
         },
         watch: {
@@ -163,6 +172,7 @@
                 this.map = new BMap.Map("map",{minZoom:4,maxZoom:18});
                 this.map.enableScrollWheelZoom();
                 this.map.enableAutoResize();
+                this.map.disableDoubleClickZoom();
                 this.map.centerAndZoom(new BMap.Point(108.0017245,35.926895),5);
                 var top_left_control = new BMap.ScaleControl({anchor: BMAP_ANCHOR_BOTTOM_LEFT});
                 this.map.addControl(top_left_control);
@@ -173,8 +183,12 @@
                         var pointArr = me.getThePointOfTheCurrentWindow();
                         var range = utils.getDisplayRange(me.map.getZoom());
                         if(pointArr.length){
-                            var filterArr = me.filterReocrds(range,pointArr);
-                            me.addOverlayToMap(filterArr);
+                            if(pointArr.length > 300){
+                                var filterArr = me.filterReocrds(range,pointArr);
+                                me.addOverlayToMap(filterArr);
+                            }else{
+                                me.addOverlayToMap(pointArr); 
+                            }
                             me.openDevInfoWindow();
                         }
                     }else{
@@ -187,11 +201,26 @@
                         var pointArr = me.getThePointOfTheCurrentWindow();
                         var range = utils.getDisplayRange(me.map.getZoom());
                         if(pointArr.length){
-                            var filterArr = me.filterReocrds(range,pointArr);
-                             me.addOverlayToMap(filterArr);
-                             me.openDevInfoWindow();
+                            if(pointArr.length > 300){
+                                var filterArr = me.filterReocrds(range,pointArr);
+                                me.addOverlayToMap(filterArr);
+                            }else{
+                                me.addOverlayToMap(pointArr); 
+                            }
+                            setTimeout(function () {
+                                me.openDevInfoWindow();
+                            },400);
                         }
-                })
+                });
+
+                this.map.addEventListener("click",function (event) {
+                    var overlay = event.overlay;
+                    if(overlay == null || overlay.deviceid == undefined){
+                        store.currentDeviceId = null;
+                        store.currentDeviceRecord = null;
+                    };
+                });
+        
             },
             getThePointOfTheCurrentWindow:function () {
                 var bounds = this.map.getBounds();
@@ -222,8 +251,12 @@
                             company.children.forEach(function (group) {
                                 group.children.forEach(function (dev) {
                                     if(dev.title == value){
-                                        dev.isSelected = false;
+                                        company.expand = true;
+                                        dev.isSelected = true;
+                                        group.expand = true;
                                         me.handleClickDev(dev.deviceid);
+                                    }else{
+                                        dev.isSelected = false;
                                     }
                                 });
                             });
@@ -232,8 +265,11 @@
                         this.currentStateData.forEach(function (group) {
                             group.children.forEach(function (dev) {
                                 if(dev.title == value){
-                                    dev.isSelected = false;
+                                    dev.isSelected = true;
+                                    group.expand = true;
                                     me.handleClickDev(dev.deviceid);
+                                }else{
+                                    dev.isSelected = false;
                                 }
                             });
                         });
@@ -310,6 +346,7 @@
             updateTreeOnlineState:function () {
                 var me = this;
                 this.records.forEach(function (item) { 
+                    if(item == null ){ return; }
                     var deviceid = item.deviceid;
                     var isOnline = (function (record) {
                         var isOnline = false;
@@ -405,6 +442,13 @@
                             me.$Message.error(resp.cause);
                         }
                     }
+
+                    var isShowCompany = Cookies.get("isShowCompany");
+                    if(isShowCompany == "true"){
+                        isShowConpanyName = true;
+                    }else if(isShowCompany == "false"){
+                        isShowConpanyName = false;
+                    } 
                     me.selectedState = "all";
                 });
             },
@@ -440,6 +484,7 @@
                 var me = this;
                 var filterArr = [];
                 var firstRecord = records[0];
+                    if(firstRecord == null){ return [];};
                 var first_lng_lat = wgs84tobd09(firstRecord.callon,firstRecord.callat);
                     firstRecord.point = new BMap.Point(first_lng_lat[0],first_lng_lat[1]);
                     filterArr.push(firstRecord);
@@ -461,7 +506,7 @@
                 });
 
                 if( filterArr.length > 300){
-                    return filterReocrds(range+1000,filterArr);
+                    return filterReocrds(range+100,filterArr);
                 }else{
                     return filterArr;
                 }
@@ -492,20 +537,53 @@
                 var me = this;
                 marker.addEventListener("click", function(){
                     me.isMoveTriggerEvent = false;
-                    store.markerDevicedId = this.deviceid;
-                    var devLastInfo = me.getSingleDeviceInfo(this.deviceid);
+                    var deviceid = this.deviceid;
+                    var devLastInfo = me.getSingleDeviceInfo(deviceid);
+                    store.currentDeviceId = deviceid;
+                    store.currentDeviceRecord = devLastInfo;
                     var infoWindow = me.getInfoWindow(devLastInfo);
                     marker.openInfoWindow(infoWindow,marker.point);
+                    me.openTreeDeviceNav(deviceid);
                 });
             },
+            openTreeDeviceNav:function (deviceid) { 
+                var me = this;
+                if(me.isShowConpanyName){
+                    me.currentStateData.forEach(function (company) {
+                        company.children.forEach(function (group) {
+                            group.children.forEach(function (dev) {
+                                if(dev.deviceid == deviceid){
+                                    company.expand = true;
+                                    dev.isSelected = true;
+                                    group.expand = true;
+                                }else{
+                                    dev.isSelected = false;
+                                }
+                            });
+                        });
+                    });
+                }else{
+                    me.currentStateData.forEach(function (group) {
+                        group.children.forEach(function (dev) {
+                            if(dev.deviceid == deviceid){
+                                dev.isSelected = true;
+                                group.expand = true;
+                            }else{
+                                dev.isSelected = false;
+                            }
+                        });
+                    });
+                };
+            },
             openDevInfoWindow:function () {
+                var me = this;
                 var record = store.currentDeviceRecord;
                 var markers = this.map.getOverlays();
                 for(var i = 0 ; i < markers.length ; i++){
                     var marker = markers[i];
-                    if(marker.deviceid == store.currentDeviceId){
-                        var infoWindow = this.getInfoWindow(record);
-                        marker.openInfoWindow(infoWindow,record.point);
+                    if(marker.deviceid == store.currentDeviceId){              
+                        var infoWindow = me.getInfoWindow(record);
+                         marker.openInfoWindow(infoWindow,record.point)
                     };
                 };
             },
@@ -635,6 +713,18 @@
                         };
                         newArray.push(companyObj);
                 });
+                if(newArray.length === 0 ){
+                    var logintype = Cookies.get("logintype");
+                    if(logintype == "DEVICE"){
+                        newArray.push({
+                            title:"默认客户",
+                            children:[],
+                            companyname:"默认客户",
+                            expand: false,
+                            render:render
+                        })
+                    }
+                };
                 return newArray;
             },
             getAllShowConpanyTreeData:function () {
@@ -668,6 +758,7 @@
                             groupObj.expand = true;
                             deviceObj.isSelected = true;
                         }
+
                         groupObj.children.push(deviceObj);
                     });
                     groupObj.title += "("+ onlineCount + "/" + groupObj.children.length+")";
@@ -675,6 +766,12 @@
                         if(company.companyid == companyid){
                             company.children.push(groupObj);
                             company.title = company.companyname + "("+ company.children.length + ")";
+                        }else{
+                            var logintype = Cookies.get("logintype");
+                            if(logintype == "DEVICE"){
+                                company.children.push(groupObj);
+                                company.title = company.companyname + "("+ company.children.length + ")";
+                            }
                         }
                     });
                 })
@@ -771,6 +868,11 @@
                     groupsArray.forEach(function(group){
                         if(companyid == group.companyid){
                             company.children.push(group);
+                        }else{
+                            var logintype = Cookies.get("logintype");
+                            if(logintype == "DEVICE"){
+                                company.children.push(group);
+                            }
                         }
                     });
                     if(company.children.length){
@@ -868,10 +970,14 @@
                  newArray.forEach(function (company,index) {
                     var companyid = company.companyid;
                     groupsArray.forEach(function(group){
-                         if(companyid == group.companyid){
-                            
+                         if(companyid == group.companyid){   
                             company.children.push(group);
-                         }
+                         }else{
+                            var logintype = Cookies.get("logintype");
+                            if(logintype == "DEVICE"){
+                                company.children.push(group);
+                            }
+                        }
                     });
                     if(company.children.length){
                         company.title = company.companyname + "(" + company.children.length + ")";
@@ -964,7 +1070,7 @@
                         me.records.forEach(function (record) {
                             if(deviceid === record.deviceid){
                                 marker.setPosition(record.point);
-                                if(deviceid == store.markerDevicedId){
+                                if(deviceid == store.currentDeviceId){
                                     me.isMoveTriggerEvent = false;
                                     var infoWindow = me.getInfoWindow(record);
                                     marker.openInfoWindow(infoWindow,record.point);
@@ -1034,9 +1140,9 @@
             isShowConpanyName:function () {
                 var me = this;
                 if(this.isShowConpanyName){
-                    // if(me.groups[0] && me.groups[0].companyid ){
-                    //     me.getCurrentStateTreeData(me.selectedState,me.isShowConpanyName);
-                    // }else{
+                    if(me.groups[0] && me.groups[0].companyid ){
+                        me.getCurrentStateTreeData(me.selectedState,me.isShowConpanyName);
+                    }else{
                         this.getMonitorListByUser(1,function (resp) {
                             me.groups = resp.groups;
                             me.queryCompanyTree(function (response) {
@@ -1044,7 +1150,7 @@
                                 me.getCurrentStateTreeData(me.selectedState,me.isShowConpanyName);
                             })
                         });
-                    // }
+                    }
                 }else{
                     this.getCurrentStateTreeData(this.selectedState,this.isShowConpanyName)  ;
                 }
@@ -1063,8 +1169,11 @@
                     me.records = resp.records;
                     var range = utils.getDisplayRange(me.map.getZoom());
                     if(resp.records.length){
-                        var filterArr =  me.filterReocrds(range,resp.records);
-                        me.addOverlayToMap(filterArr);
+                        if(resp.records.length > 300){
+                            var filterArr =  me.filterReocrds(range,resp.records);
+                        }else{
+                            me.addOverlayToMap(resp.records);
+                        }  
                     }
                 });
             });
