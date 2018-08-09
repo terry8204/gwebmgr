@@ -175,6 +175,7 @@
                         if(pointArr.length){
                             var filterArr = me.filterReocrds(range,pointArr);
                             me.addOverlayToMap(filterArr);
+                            me.openDevInfoWindow();
                         }
                     }else{
                         me.isMoveTriggerEvent = true;
@@ -188,6 +189,7 @@
                         if(pointArr.length){
                             var filterArr = me.filterReocrds(range,pointArr);
                              me.addOverlayToMap(filterArr);
+                             me.openDevInfoWindow();
                         }
                 })
             },
