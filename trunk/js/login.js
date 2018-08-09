@@ -9,7 +9,8 @@ new Vue({
         userTip:false,
         passTip:false,
         loading:false,
-        placeholder:""
+        placeholder:"",
+        language:"zh"
     },
     methods: {
         handleSubmit:function () {
@@ -81,6 +82,9 @@ new Vue({
             var type = this.account== 0 ? "USER" : "DEVICE" ;
             Cookies.set( "logintype" , type ,{ expires: 7 } );
         },
+        changeLang:function (lang) { 
+            this.language = lang;
+        }
     },
     mounted:function () {
         var me = this;

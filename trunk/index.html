@@ -16,13 +16,18 @@
     <div id="login-wraper" class="noselect">
         <div class="header">
             <div class="center">
-                <div class="logo-wrap">
+                <div class="logo-wrap">            
                     <span class="logo">
-                        <Icon type="planet"></Icon>
+                    <Icon type="planet"></Icon>
                     </span>
                     <span class="logo-title">位置信息服务平台</span>
                     <b>|</b>
                     <span class="version">v1.0</span>
+                </div>
+                <div class="language">
+                    <span :class="{active:language == 'zh'}" @click="changeLang('zh')">中文</span>
+                    <b>/</b>
+                    <span :class="{active:language == 'en'}" @click="changeLang('en')">英文</span>
                 </div>
             </div>
         </div>

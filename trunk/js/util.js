@@ -132,8 +132,7 @@ Vue.component('expand-row',{
 var expandRow = Vue.component('expand-row');
 
 
-// playBack
-
+// playBack 轨迹回放
 function playBack(deviceid) { 
     window.open("playback.html?deviceid="+deviceid);
 }

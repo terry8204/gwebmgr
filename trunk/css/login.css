@@ -11,7 +11,9 @@
     margin: 0 auto;
     width: 1200px;
     position: relative;
+    overflow: hidden;
 }
+
 .cursor{
     cursor: pointer;
 }
@@ -19,6 +21,7 @@
 .active{
     color:#2D8CF0;
 }
+
 /* 头部开始 */
     div.header{
         position: absolute;
@@ -31,6 +34,17 @@
     div.logo-wrap{
         line-height: 80px;
         height: 80px;
+        float: left;
+    }
+    div.language{  
+        line-height: 80px;
+        height: 80px;
+        float: right;
+    }
+    div.language > span{  
+       display: inline-block;
+       padding: 0 10px;
+       cursor: pointer;
     }
     span.logo{
         font-size: 40px;
@@ -103,7 +117,7 @@
     div.inputs p {
         margin: 15px ;
     }
-
+  
 /* main结束 */
 
 
