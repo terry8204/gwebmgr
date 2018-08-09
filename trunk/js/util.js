@@ -131,8 +131,3 @@ Vue.component('expand-row',{
 //  得到表格row组建
 var expandRow = Vue.component('expand-row');
 
-
-// playBack 轨迹回放
-function playBack(deviceid) { 
-    window.open("playback.html?deviceid="+deviceid);
-}

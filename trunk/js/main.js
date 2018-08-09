@@ -610,7 +610,7 @@
                 '<p> 到期时间: ' +DateFormat.longToDateTimeStr(devdata.overduetime,0)+'</p>' +
                 '<p class="last-address"> 详细地址: '+address+'</p>' +
                 '<p class="operation">'+
-                    '<span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="playBack('+info.deviceid+')">回放</span>'+
+                    '<span class="ivu-btn ivu-btn-default ivu-btn-small"><a href="playback.html?deviceid=' +info.deviceid+'" target="blank">回放</a></span>'+
                     '<span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="alert('+info.deviceid+')">跟踪</span> </p></div>';
                 var opts = {
                     width:300,
@@ -1140,9 +1140,9 @@
             isShowConpanyName:function () {
                 var me = this;
                 if(this.isShowConpanyName){
-                    if(me.groups[0] && me.groups[0].companyid ){
-                        me.getCurrentStateTreeData(me.selectedState,me.isShowConpanyName);
-                    }else{
+                    // if(me.groups[0] && me.groups[0].companyid ){
+                    //     me.getCurrentStateTreeData(me.selectedState,me.isShowConpanyName);
+                    // }else{
                         this.getMonitorListByUser(1,function (resp) {
                             me.groups = resp.groups;
                             me.queryCompanyTree(function (response) {
@@ -1150,7 +1150,7 @@
                                 me.getCurrentStateTreeData(me.selectedState,me.isShowConpanyName);
                             })
                         });
-                    }
+                    // }
                 }else{
                     this.getCurrentStateTreeData(this.selectedState,this.isShowConpanyName)  ;
                 }
