@@ -16,20 +16,33 @@
             position: absolute;
             left: 0;
             top: 0;
-            right: 0;
+            width: 800px;
             height: 60px;
+            line-height: 60px;
+            background: #F8F8F9; 
         }
     </style>
 </head>
 <body>
     <div id="container">
         <div id="bmap"></div>
-        <div class="controller"></div>
+        <div class="controller">
+            <i-row>
+                <i-col :span="4" style="text-align: right">
+                    时间跨度为7天 : &nbsp;
+                </i-col>
+                <i-col :span="20">
+                        <date-picker type="datetimerange" :editable="false" :options="dateOptions" v-model="selectDate" placeholder="请选择时间" @on-change="changeTime" style="width: 300px"></date-picker>  
+                        <i-button @click="sosoTracks">搜索轨迹</i-button>   
+                </i-col>
+            <i-row>
+        </div>
     </div>
     <script src="dist/vue.min.js"></script>
     <script src="dist/iview.min.js"></script>
     <script src="js/jquery.js"></script>
     <script src="js/js.cookie.min.js"></script>
+    <script src="js/config.js"></script>
     <script src="js/transformlatlon.js"></script>
     <script src="js/dateformat.js"></script>
     <script src="js/util.js"></script>
@@ -40,6 +53,26 @@
                     el:"#container",
                     data:{
                         map:null,
+                        dateOptions:{
+                            disabledDate:function(date){
+                                if(!date.length){
+                                    var  time = date.getTime();
+                                    var currentTime = Date.now();
+                                    if(time <　currentTime){
+                                        return false;
+                                    }else{
+                                        return true;
+                                    }
+                                }
+                            }
+                        },
+                        selectDate:null,
+                        dayTime:60*60*24*1000,   
+                        lock:false,  
+                        deviceid:null,
+                        startTime:null,
+                        endTime :null,
+                        requestTimeStrArr:[]
                     },
                     methods: {
                         initMap : function(){
@@ -48,10 +81,87 @@
                             this.map.enableAutoResize();
                             this.map.disableDoubleClickZoom();
                             this.map.centerAndZoom(new BMap.Point(108.0017245,35.926895),5);
+                        },
+                        changeTime:function(){
+                            if(this.selectDate[0]!=""&&this.selectDate[1]!=""){
+                                this.startTime = this.selectDate[0].getTime();
+                                this.endTime   = this.selectDate[1].getTime();
+
+                                if(this.startTime == this.endTime){
+                                    this.lock = true;
+                                    var beginTimeStr = this.getDayBeginTimeStr(this.startTime);
+                                    var endTimeStr   = this.getDayEndTimeStr(this.endTime);  
+                                }else if((this.endTime - this.startTime) < this.dayTime ){
+                                    this.lock = true;
+                                   
+                                }else{
+                                    var day = (this.endTime - this.startTime)/this.dayTime;
+                                    if(day > 7){
+                                        this.lock = false;
+                                        this.$Message.error("时间不能超过七天!");
+                                    }else{
+                                        this.lock = true;
+                                        this.getRequestTimeStr();
+                                    };
+                                };
+                            };
+                        },
+                        getRequestTimeStr:function(){
+                            var beginTimeStr = DateFormat.longToDateTimeStr(this.startTime,0);
+                            var endTimeStr   = DateFormat.longToDateTimeStr(this.endTime,0);
+                            this.requestTimeStrArr.push({begintime:beginTimeStr,endtime:this.getDayEndTimeStr(this.startTime)});
+                            if(endTimeStr.indexOf("00:00:00") == -1){
+                                this.requestTimeStrArr.push({begintime:this.getDayBeginTimeStr(this.endTime),endtime:this.getDayEndTimeStr(this.endTime)});  
+                            }else{
+                                console.log("haha")
+                                this.requestTimeStrArr.push({begintime:this.getDayBeginTimeStr(this.endTime),endtime:endTimeStr});  
+                            }
+                            
+                              
+
+                            console.log( this.requestTimeStrArr)
+                        },
+                        getDayBeginTimeStr:function(beginTime){
+                            var timeStr = DateFormat.longToDateTimeStr(beginTime,0).split(" ")[0];
+                                timeStr = timeStr + " " + "00:00:00";
+                            return  DateFormat.longToDateTimeStr(new Date(timeStr).getTime(),0);
+                        },
+                        getDayEndTimeStr:function(endTime){
+                            var timeStr = DateFormat.longToDateTimeStr(endTime,0).split(" ")[0];
+                                timeStr = timeStr + " " + "00:00:00";
+                            return DateFormat.longToDateTimeStr(endTime+this.dayTime - 1000,0)
+                        },
+                        sosoTracks:function(){
+                            if(this.lock){
+                                var url = myUrls.queryTracks(this.token);
+                                var data = {
+                                    deviceid: this.deviceid,
+                                    lbs: 1,
+                                    timeorder: 0,
+                                    begintime: DateFormat.longToDateTimeStr(this.begintime,0),
+                                    endtime: DateFormat.longToDateTimeStr(this.endtime,0)
+                                };
+                                utils.sendAjax(url,data,function (resp) { 
+                                    console.log(resp);
+                                });
+                            }else{
+                                this.$Message.error("请选择正确的时间段!");
+                            }
+                        }
+                    },
+                    computed:{
+                        token:function(){
+                            return Cookies.get("token");
                         }
                     },
                     mounted : function() {
                         this.initMap();
+                        var deviceid = utils.getParameterByName("deviceid");
+                        if(deviceid){
+                            this.deviceid = deviceid;
+                        }else{
+                            window.close();
+                        }       
                     }
                 });
         })();

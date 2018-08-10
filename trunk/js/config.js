@@ -94,6 +94,10 @@ var myUrls = {
     },
     lastPosition:function () { 
         return this.host + "webapi?action=lastposition&token="+token;
+    },
+    // 查询轨迹
+    queryTracks:function (token) { 
+        return this.host + "webapi?action=querytracks&token="+token;
     }
 };
 

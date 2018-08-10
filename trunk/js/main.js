@@ -337,9 +337,11 @@
             updateRecords:function (record) {
                 var records = this.records;
                 for(var i = 0 ; i < records.length ; i++){
-                    var deviceid = records[i].deviceid;
-                    if(record.deviceid == deviceid){
-                        records.splice(i,1,record);
+                    if(records[i]!=null){
+                        var deviceid = records[i].deviceid;
+                        if(record.deviceid == deviceid){
+                            records.splice(i,1,record);
+                        }
                     }
                 };
             },
@@ -603,7 +605,7 @@
                 '<p> 到期时间: ' +DateFormat.longToDateTimeStr(devdata.overduetime,0)+'</p>' +
                 '<p class="last-address"> 详细地址: '+address+'</p>' +
                 '<p class="operation">'+
-                    '<span class="ivu-btn ivu-btn-default ivu-btn-small"><a href="playback.html?deviceid=' +info.deviceid+'" target="blank">回放</a></span>'+
+                    '<span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="playBack('+info.deviceid+')">回放</span>'+
                     '<span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="alert('+info.deviceid+')">跟踪</span> </p></div>';
                 var opts = {
                     width:300,
@@ -628,7 +630,6 @@
                         LocalCacheMgr.setAddress(lng,lat,address);
                     }else{
                        utils.getJiuHuAddressSyn(callon,callat,function (resp) {
-                            console.log(resp.address);
                             address = resp.address
                             $("p.last-address").html(" 详细地址: " + address);
                             LocalCacheMgr.setAddress(lng,lat,address);
@@ -734,10 +735,8 @@
                         render:render,
                         name:group.groupname,
                         children:[],
-                    }
-                    
+                    };
                     group.devices.forEach(function (device,index) {
-                        console.log("devices--" , index) 
                         var isOnline = me.getIsOnline(device.deviceid);
                         var deviceObj = {
                             title:device.devicename,
@@ -1069,14 +1068,16 @@
                     var deviceid = marker.deviceid;
                     if(deviceid){
                         me.records.forEach(function (record) {
-                            if(deviceid === record.deviceid){
-                                marker.setPosition(record.point);
-                                if(deviceid == store.currentDeviceId){
-                                    me.isMoveTriggerEvent = false;
-                                    var infoWindow = me.getInfoWindow(record);
-                                    marker.openInfoWindow(infoWindow,record.point);
+                            if(record){
+                                if(deviceid === record.deviceid){
+                                    marker.setPosition(record.point);
+                                    if(deviceid == store.currentDeviceId){
+                                        me.isMoveTriggerEvent = false;
+                                        var infoWindow = me.getInfoWindow(record);
+                                        marker.openInfoWindow(infoWindow,record.point);
+                                    };
                                 };
-                            };
+                            }
                         });
                     }
                 })
@@ -1141,9 +1142,9 @@
             isShowConpanyName:function () {
                 var me = this;
                 if(this.isShowConpanyName){
-                    if(me.groups[0] && me.groups[0].companyid ){
-                        me.getCurrentStateTreeData(me.selectedState,me.isShowConpanyName);
-                    }else{
+                    // if(me.groups[0] && me.groups[0].companyid ){
+                    //     me.getCurrentStateTreeData(me.selectedState,me.isShowConpanyName);
+                    // }else{
                         this.getMonitorListByUser(1,function (resp) {
                             me.groups = resp.groups;
                             me.queryCompanyTree(function (response) {
@@ -1151,7 +1152,7 @@
                                 me.getCurrentStateTreeData(me.selectedState,me.isShowConpanyName);
                             });
                         });
-                    }
+                    // }
                 }else{
                     this.getCurrentStateTreeData(this.selectedState,this.isShowConpanyName)  ;
                 }
