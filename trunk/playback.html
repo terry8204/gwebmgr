@@ -32,11 +32,12 @@
                     时间跨度为7天 : &nbsp;
                 </i-col>
                 <i-col :span="20">
-                        <date-picker type="datetimerange" :editable="false" :options="dateOptions" v-model="selectDate" placeholder="请选择时间" @on-change="changeTime" style="width: 300px"></date-picker>  
-                        <i-button @click="sosoTracks">搜索轨迹</i-button>   
+                    <date-picker type="datetimerange" :editable="false" :options="dateOptions" v-model="selectDate" placeholder="请选择时间" style="width: 300px"></date-picker>  
+                    <i-button @click="sosoTracks">搜索轨迹</i-button>   
                 </i-col>
             <i-row>
         </div>
+        <Spin size="large" fix v-if="spinShow"></Spin>
     </div>
     <script src="dist/vue.min.js"></script>
     <script src="dist/iview.min.js"></script>
@@ -69,10 +70,12 @@
                         selectDate:null,
                         dayTime:60*60*24*1000,   
                         lock:false,  
-                        deviceid:null,
-                        startTime:null,
-                        endTime :null,
-                        requestTimeStrArr:[]
+                        deviceid: null,
+                        startTime: null,
+                        endTime : null,
+                        len : null ,
+                        respCount:0,
+                        spinShow:false
                     },
                     methods: {
                         initMap : function(){
@@ -82,77 +85,153 @@
                             this.map.disableDoubleClickZoom();
                             this.map.centerAndZoom(new BMap.Point(108.0017245,35.926895),5);
                         },
-                        changeTime:function(){
-                            if(this.selectDate[0]!=""&&this.selectDate[1]!=""){
-                                this.startTime = this.selectDate[0].getTime();
-                                this.endTime   = this.selectDate[1].getTime();
-
-                                if(this.startTime == this.endTime){
-                                    this.lock = true;
-                                    var beginTimeStr = this.getDayBeginTimeStr(this.startTime);
-                                    var endTimeStr   = this.getDayEndTimeStr(this.endTime);  
-                                }else if((this.endTime - this.startTime) < this.dayTime ){
-                                    this.lock = true;
-                                   
-                                }else{
-                                    var day = (this.endTime - this.startTime)/this.dayTime;
-                                    if(day > 7){
-                                        this.lock = false;
-                                        this.$Message.error("时间不能超过七天!");
-                                    }else{
-                                        this.lock = true;
-                                        this.getRequestTimeStr();
-                                    };
-                                };
-                            };
-                        },
-                        getRequestTimeStr:function(){
+                        getRequestBeginAndEndTimeStr:function(){
+                            var requestTimeStrArr = [];
                             var beginTimeStr = DateFormat.longToDateTimeStr(this.startTime,0);
                             var endTimeStr   = DateFormat.longToDateTimeStr(this.endTime,0);
-                            this.requestTimeStrArr.push({begintime:beginTimeStr,endtime:this.getDayEndTimeStr(this.startTime)});
-                            if(endTimeStr.indexOf("00:00:00") == -1){
-                                this.requestTimeStrArr.push({begintime:this.getDayBeginTimeStr(this.endTime),endtime:this.getDayEndTimeStr(this.endTime)});  
-                            }else{
-                                console.log("haha")
-                                this.requestTimeStrArr.push({begintime:this.getDayBeginTimeStr(this.endTime),endtime:endTimeStr});  
-                            }
                             
-                              
+                            if(beginTimeStr.indexOf("00:00:00") != -1){
+                                requestTimeStrArr.push({begintime:this.getDayBeginTimeStr(this.startTime),endtime:this.getDayEndTimeStr(this.startTime)});
+                            }else{
+                                requestTimeStrArr.push({begintime:beginTimeStr,endtime:this.getDayEndTimeStr(this.startTime)});
+                            }
 
-                            console.log( this.requestTimeStrArr)
+                            if(endTimeStr.indexOf("00:00:00") != -1){
+                                requestTimeStrArr.push({begintime:this.getDayBeginTimeStr(this.endTime),endtime:this.getDayEndTimeStr(this.endTime)});  
+                            }else{
+                                requestTimeStrArr.push({begintime:this.getDayBeginTimeStr(this.endTime),endtime:endTimeStr});  
+                            }
+                            return requestTimeStrArr;
+                        },
+                        getMiddleDayReqParameter:function(){
+                            var beginDateStr = DateFormat.longToDateStr(this.startTime,8);
+                            var endDateStr   = DateFormat.longToDateStr(this.endTime,8);
+                            var beginDateStrTime =  DateFormat.dateStrToLong(beginDateStr,0) - 3600*1000*8 + this.dayTime;  
+                            var endDateStrTime   =  DateFormat.dateStrToLong(endDateStr,0) - 3600*1000*8 - this.dayTime;    
+                            if(beginDateStrTime == endDateStrTime){
+                                return [{
+                                    begintime:this.getDayBeginTimeStr(beginDateStrTime),
+                                    endtime:this.getDayEndTimeStr(beginDateStrTime)
+                                }];
+                            }else{
+                                var timeStrList = this.getTimeStrObj(beginDateStrTime,endDateStrTime);
+                                return timeStrList;
+                            }
+                        },
+                        getTimeStrObj:function(beginTime,endTime){
+                            var timeStrList = [];
+                            do{
+                                var timeStrObj = {
+                                    begintime:this.getDayBeginTimeStr(endTime),
+                                    endtime:this.getDayEndTimeStr(endTime)
+                                };
+                                timeStrList.push(timeStrObj);
+                                endTime = endTime - this.dayTime;   
+                            }
+                            while (endTime>=beginTime);
+                            return timeStrList;
                         },
                         getDayBeginTimeStr:function(beginTime){
-                            var timeStr = DateFormat.longToDateTimeStr(beginTime,0).split(" ")[0];
-                                timeStr = timeStr + " " + "00:00:00";
-                            return  DateFormat.longToDateTimeStr(new Date(timeStr).getTime(),0);
+                            var timeStr = DateFormat.longToDateStr(beginTime,8);
+                            var time = DateFormat.dateStrToLong(timeStr,0) - 3600*1000*8;    
+                            return  DateFormat.longToDateTimeStr(time,0);
                         },
                         getDayEndTimeStr:function(endTime){
-                            var timeStr = DateFormat.longToDateTimeStr(endTime,0).split(" ")[0];
-                                timeStr = timeStr + " " + "00:00:00";
-                            return DateFormat.longToDateTimeStr(endTime+this.dayTime - 1000,0)
+                            var timeStr = DateFormat.longToDateStr(endTime,8);
+                            var time = DateFormat.dateStrToLong(timeStr,0) + this.dayTime - 1000 - 3600*1000*8;                               
+                            return DateFormat.longToDateTimeStr(time,0);
                         },
-                        sosoTracks:function(){
+                        sosoTracks:function(){   
+                            var me = this;
+                            console.log(this.lock);
                             if(this.lock){
-                                var url = myUrls.queryTracks(this.token);
-                                var data = {
-                                    deviceid: this.deviceid,
-                                    lbs: 1,
-                                    timeorder: 0,
-                                    begintime: DateFormat.longToDateTimeStr(this.begintime,0),
-                                    endtime: DateFormat.longToDateTimeStr(this.endtime,0)
-                                };
-                                utils.sendAjax(url,data,function (resp) { 
-                                    console.log(resp);
-                                });
+                                var times = this.getRequestBeginAndEndTimeStr();
+                                var begintime1 = times[0].begintime;
+                                var endtime1   = times[0].endtime;
+                                var begintime2 = times[1].begintime;
+                                var endtime2   = times[1].endtime;
+                                if(begintime1 == begintime2 && endtime1  == endtime2){
+                                    me.len = 1;
+                                    this.requestTracks(begintime1,endtime1,function (resp) { 
+                                            console.log(resp);
+                                    });
+                                }else{
+                                    var beginDateStr = DateFormat.longToDateStr(this.startTime ,8);
+                                    var endDateStr =   DateFormat.longToDateStr(this.endTime - this.dayTime ,8);
+                                    if(beginDateStr == endDateStr){
+                                        me.len = 2;
+                                        times.forEach(function (timeObj) { 
+                                            me.requestTracks(timeObj.begintime,timeObj.endtime,function (resp) { 
+                                                console.log(resp);
+                                            });
+                                        });
+                                    }else{
+                                        var middleTimes =  this.getMiddleDayReqParameter();
+                                        var newArr = times.concat(middleTimes);
+                                        me.len = newArr.length;
+                                        newArr.forEach(function (timeObj) { 
+                                            me.requestTracks(timeObj.begintime,timeObj.endtime,function (resp) { 
+                                                console.log(resp);
+                                            });
+                                        });
+                                    }
+                                    
+                                }
                             }else{
-                                this.$Message.error("请选择正确的时间段!");
-                            }
+                                this.$Message.error("请选择正确的时间!");
+                            }   
+                        },
+                        requestTracks:function(beginTime,endtime,callback){
+                            this.spinShow = true;
+                            var me = this;
+                            var url = myUrls.queryTracks(Cookies.get("token"));
+                            var data = {
+                                deviceid: this.deviceid,
+                                lbs: 1,
+                                timeorder: 0,
+                                begintime:beginTime,
+                                endtime:endtime
+                            };
+                            utils.sendAjax(url,data,function (resp) { 
+                                me.respCount++;
+                                callback(resp)
+                            });
                         }
                     },
                     computed:{
                         token:function(){
                             return Cookies.get("token");
                         }
+                    },
+                    watch: {
+                        selectDate:function(){
+                            if(this.selectDate[0]&&this.selectDate[1]){
+                                if(this.selectDate[0] && this.selectDate[1]){
+                                    this.startTime = this.selectDate[0].getTime();
+                                    this.endTime   = this.selectDate[1].getTime();
+                                    if(this.startTime == this.endTime){
+                                        this.lock = true;
+                                    }else{
+
+                                        if((this.endTime - this.startTime) < this.dayTime ){
+                                            this.lock = true;
+                                        }else{
+                                            var day = (this.endTime - this.startTime)/this.dayTime;
+                                            if(day > 7){
+                                                this.lock = false;
+                                                this.$Message.error("时间不能超过七天!");
+                                            }else{
+                                                this.lock = true;
+                                            };
+                                        }
+                                    };
+                                }else{
+                                    this.lock = false;
+                                }
+                            }else{
+                                this.lock = false;
+                            }                        
+                        }  
                     },
                     mounted : function() {
                         this.initMap();

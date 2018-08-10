@@ -600,7 +600,7 @@
                 var sContent = '<div><p style="margin:0;font-size:13px">' +
                 '<p> 设备名称: ' +devdata.devicename+'</p>' +
                 '<p> 设备ID: ' +info.deviceid+'</p>' +
-                '<p> 经纬度: ' +info.callon+"-"+ info.callat +'</p>' +
+                '<p> 经纬度: ' +info.callon+","+ info.callat +'</p>' +
                 '<p> 最后时间: ' +DateFormat.longToDateTimeStr(info.arrivedtime,0)+'</p>' +
                 '<p> 到期时间: ' +DateFormat.longToDateTimeStr(devdata.overduetime,0)+'</p>' +
                 '<p class="last-address"> 详细地址: '+address+'</p>' +
