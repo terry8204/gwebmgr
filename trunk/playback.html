@@ -19,7 +19,9 @@
             width: 800px;
             height: 60px;
             line-height: 60px;
-            background: #F8F8F9; 
+            background: #E8F0F7; 
+            border-bottom:1px solid #C3CEDE; 
+            border-right:1px solid #C3CEDE; 
         }
     </style>
 </head>
@@ -75,7 +77,8 @@
                         endTime : null,
                         len : null ,
                         respCount:0,
-                        spinShow:false
+                        spinShow:false,
+                        records:[],
                     },
                     methods: {
                         initMap : function(){
@@ -143,8 +146,10 @@
                         },
                         sosoTracks:function(){   
                             var me = this;
-                            console.log(this.lock);
                             if(this.lock){
+                                this.map.removeOverlay();
+                                me.records = [];
+                                me.respCount = 0;
                                 var times = this.getRequestBeginAndEndTimeStr();
                                 var begintime1 = times[0].begintime;
                                 var endtime1   = times[0].endtime;
@@ -153,7 +158,12 @@
                                 if(begintime1 == begintime2 && endtime1  == endtime2){
                                     me.len = 1;
                                     this.requestTracks(begintime1,endtime1,function (resp) { 
-                                            console.log(resp);
+                                            if(resp.status == 0 && resp.records){
+                                                resp.records.forEach(function (record) {
+                                                    me.records.push(record);
+                                                });     
+                                            };
+                                            me.drawingLine();
                                     });
                                 }else{
                                     var beginDateStr = DateFormat.longToDateStr(this.startTime ,8);
@@ -161,8 +171,13 @@
                                     if(beginDateStr == endDateStr){
                                         me.len = 2;
                                         times.forEach(function (timeObj) { 
-                                            me.requestTracks(timeObj.begintime,timeObj.endtime,function (resp) { 
-                                                console.log(resp);
+                                            me.requestTracks(timeObj.begintime,timeObj.endtime,function (resp) {                       
+                                                if(resp.status == 0 && resp.records){
+                                                    resp.records.forEach(function (record) {
+                                                        me.records.push(record);
+                                                    });     
+                                                };
+                                                me.drawingLine();
                                             });
                                         });
                                     }else{
@@ -171,7 +186,12 @@
                                         me.len = newArr.length;
                                         newArr.forEach(function (timeObj) { 
                                             me.requestTracks(timeObj.begintime,timeObj.endtime,function (resp) { 
-                                                console.log(resp);
+                                                if(resp.status == 0 && resp.records){
+                                                    resp.records.forEach(function (record) {
+                                                        me.records.push(record);
+                                                    });
+                                                };
+                                                me.drawingLine();
                                             });
                                         });
                                     }
@@ -196,6 +216,33 @@
                                 me.respCount++;
                                 callback(resp)
                             });
+                        },
+                        drawingLine:function(){
+                            if(this.respCount == this.len){
+                                this.spinShow = false;
+                                this.records.sort(function (a,b) { 
+                                    return a.arrivedtime - b.arrivedtime;
+                                });
+
+                                if(this.records.length){
+                                    var records = this.records; 
+                                    var firstRecord = records[0];
+                                    var lastRecord = records[records.length-1];
+                                    var startPoint =  new BMap.Point (firstRecord.callon,firstRecord.callat);
+                                    var lastPoint  =  new BMap.Point (lastRecord.callon,lastRecord.callat);
+                                    this.map.addOverlay(new BMap.Marker(startPoint));
+                                    this.map.addOverlay(new BMap.Marker(lastPoint));
+                                    var lines = [];
+                                    for(var i = 1 ; i < records.length ; i ++ ){
+                                        var item = records[i];
+                                        
+                                            lines.push(new BMap.Point (item.callon,item.callat));
+                                    }
+                                    var polyline = new BMap.Polyline(lines, {strokeColor:"red",strokeWeight:3,strokeOpacity:1.5});
+                                    this.map.addOverlay(polyline);
+                                };
+                                console.log(this.records);
+                            };
                         }
                     },
                     computed:{
@@ -231,7 +278,7 @@
                             }else{
                                 this.lock = false;
                             }                        
-                        }  
+                        }
                     },
                     mounted : function() {
                         this.initMap();
