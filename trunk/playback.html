@@ -183,6 +183,12 @@
                             var me = this;
                             if(this.lock){
                                 this.map.removeOverlay();
+                                if(this.isPlay){
+                                    clearInterval(this.intervalInstanse);
+                                    this.index = 0;
+                                }else{
+                                    this.isPlay = true;
+                                };
                                 me.records = [];
                                 me.respCount = 0;
                                 var times = this.getRequestBeginAndEndTimeStr();
@@ -226,10 +232,8 @@
                                                     me.records.sort(function (a,b) { 
                                                         return a.arrivedtime - b.arrivedtime;
                                                     });
-
-                                                };
+                                                }
                                                 me.filtertracks();
-                                                console.log(me.records);
                                                 me.drawingLine();
                                             });
                                         });
@@ -336,7 +340,7 @@
                                         lines.push(records[i].point);
                                     };
 
-                                var polyline = new BMap.Polyline(lines, {strokeColor:"red",strokeWeight:3,strokeOpacity:1.5});
+                                var polyline = new BMap.Polyline(lines, {strokeColor:"#57A3F3",strokeWeight:3,strokeOpacity:1.5});
                                     this.map.addOverlay(polyline);
 
                                 var view = this.map.getViewport(eval(lines));  
@@ -348,9 +352,24 @@
                             }; 
                         },
                         runAnimeate:function(){
-                            this.carMarker = new BMap.Marker(this.records[0].point,{icon:carIcon});
+                            var firstRecord = this.records[0];
+                            var lableOptions = {
+                                position : firstRecord.point,   
+	                            offset   : new BMap.Size(30, -30)
+                            };
+                            this.carMarker = new BMap.Marker(firstRecord.point,{icon:carIcon});
                             this.map.addOverlay(this.carMarker);
-                            this.markerLabel = new BMap.Label("",this.carMarker.point);
+                            this.markerLabel = new BMap.Label(this.getLableContent(firstRecord),lableOptions);
+                            
+                            this.markerLabel.setStyle({
+                                color : "red",
+                                fontSize : "12px",
+                                lineHeight : "14px",
+                                borderRadius:"5px",
+                                padding:"10px",
+                                fontFamily:"微软雅黑"
+                            });
+
                             this.carMarker.setLabel(this.markerLabel);
                             if(this.isPlay){
                                 this.action(); 
@@ -381,9 +400,11 @@
                             if(!this.isPlay){
                                 this.isPlay = true;
                             }
+                            if(this.records.length < 2){ return;}
                             this.action();
                         },
                         beginPlay:function(){
+                            if(this.records.length < 2){ return;}
                             this.isPlay = true;
                             this.action();
                         },
