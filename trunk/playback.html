@@ -47,13 +47,13 @@
             <i-row>
 
                 <i-col :span="6" :offset="3" style="padding:0 5px">
-                    <i-button style="width: 100%">播放</i-button>
+                    <i-button style="width: 100%" @click="beginPlay">播放</i-button>
                 </i-col>
                 <i-col :span="6" style="padding:0 5px">
-                    <i-button style="width: 100%">暂停</i-button>
+                    <i-button style="width: 100%" @click="pause">暂停</i-button>
                 </i-col>    
                 <i-col :span="6" style="padding:0 5px">
-                    <i-button style="width: 100%">重播</i-button>
+                    <i-button style="width: 100%" @click="replay">重播</i-button>
                 </i-col>
             <i-row>    
 
@@ -65,13 +65,15 @@
     <script src="js/jquery.js"></script>
     <script src="js/js.cookie.min.js"></script>
     <script src="js/config.js"></script>
+    <script src="js/hashmap.js"></script>
+    <script src="js/localcachemgr.js"></script>
     <script src="js/transformlatlon.js"></script>
     <script src="js/dateformat.js"></script>
     <script src="js/util.js"></script>
     <script src="http://api.map.baidu.com/api?v=3.0&ak=e7SC5rvmn2FsRNE4R1ygg44n"></script>
     <script>
         (function () { 
-            var carIcon   = new BMap.Icon("http://lbsyun.baidu.com/jsdemo/img/Mario.png", new BMap.Size(32, 70), { imageOffset: new BMap.Size(0, 0)});
+            var carIcon   = new BMap.Icon("http://lbsyun.baidu.com/jsdemo/img/Mario.png", new BMap.Size(32, 32), { imageOffset: new BMap.Size(0, 0)});
             var startIcon = new BMap.Icon("./images/icon_st.png", new BMap.Size(32, 32), { imageOffset: new BMap.Size(0, 0)});
             var endIcon   = new BMap.Icon("./images/icon_en.png", new BMap.Size(32, 32), { imageOffset: new BMap.Size(0, 0)});
             var vm = new Vue({
@@ -102,7 +104,13 @@
                         spinShow:false,
                         records:[],
                         range:50,             // 范围50米之内的点不显示
-                        velocity:500          //半秒
+                        velocity:500,         //半秒
+                        intervalInstanse:null,
+                        carMarker:null,
+                        markerLabel:null,
+                        index : 0,
+                        isPlay:true,
+
                     },
                     methods: {
                         initMap : function(){
@@ -336,30 +344,90 @@
                                 var centerPoint = view.center;   
                                     this.map.centerAndZoom(centerPoint,mapZoom);
                                     
-                                    this.runAnimeate(firstRecord.point,lastRecord.point);  
+                                    this.runAnimeate();  
                             }; 
                         },
-                        runAnimeate:function(myP1,myP2){
+                        runAnimeate:function(){
+                            this.carMarker = new BMap.Marker(this.records[0].point,{icon:carIcon});
+                            this.map.addOverlay(this.carMarker);
+                            this.markerLabel = new BMap.Label("",this.carMarker.point);
+                            this.carMarker.setLabel(this.markerLabel);
+                            if(this.isPlay){
+                                this.action(); 
+                            };      
+                        },
+                        action:function () { 
                             var me = this;
-                            var driving = new BMap.DrivingRoute(this.map, {renderOptions:{map: this.map, autoViewport: true}});  
-                            var carMk = new BMap.Marker(this.records[0].point,{icon:carIcon});
-                                this.map.addOverlay(carMk);
-                            var i = 0;
                             var paths = this.records.length;
-                                function resetMkPoint(i){
-                                    carMk.setPosition(me.records[i].point);
-                                    if(i < paths){
-                                        setTimeout(function(){
-                                            i++;
-                                            resetMkPoint(i);
-                                        },me.velocity);
+                            if(me.intervalInstanse!=null){
+                                clearInterval(me.intervalInstanse);
+                            };
+                            me.intervalInstanse = setInterval(function () {
+                                    var track = me.records[me.index];
+                                    me.carMarker.setPosition(track.point);  
+                                    me.markerLabel.setContent(me.getLableContent(track));
+                                    me.index++;
+                                    if(me.index >= paths){
+                                        me.index = 0;
+                                        if(me.records[0]){
+                                            me.carMarker.setPosition(me.records[0].point);  
+                                        }
+                                        clearInterval(me.intervalInstanse);
                                     }
+                            },me.velocity);
+                        },
+                        replay:function(){
+                            this.index = 0;
+                            if(!this.isPlay){
+                                this.isPlay = true;
+                            }
+                            this.action();
+                        },
+                        beginPlay:function(){
+                            this.isPlay = true;
+                            this.action();
+                        },
+                        pause:function(){
+                            this.isPlay = false;
+                            clearInterval(this.intervalInstanse);
+                        },
+                        getLableContent:function(info){
+                            var address = this.getAddress(info);
+                            var sContent = '<div>' +
+                                '<p> 设备ID: ' +info.deviceid+'</p>' +
+                                '<p> 经纬度: ' +info.callon+","+ info.callat +'</p>' +
+                                '<p> 最后时间: ' +DateFormat.longToDateTimeStr(info.arrivedtime,0)+'</p>' +
+                                '<p class="last-address"> 详细地址: '+address+'</p></div>';
+                            return sContent;
+                        },
+                        getAddress:function (info) {
+                            var callon = info.callon;
+                            var callat = info.callat;
+                            var bd09 = wgs84tobd09(callon,callat)
+                            var lng = bd09[0].toFixed(5);
+                            var lat = bd09[1].toFixed(5);
+                            var address = LocalCacheMgr.getAddress(lng,lat);
+                            if(address !== null){
+                                return address;
+                            }
+                            utils.getBaiduAddressFromBaidu(lng,lat,function (resp) {
+
+                                if(resp.length){
+                                    address = resp;
+                                    $("p.last-address").html(" 详细地址: " + address);
+                                    LocalCacheMgr.setAddress(lng,lat,address);
+                                }else{
+                                utils.getJiuHuAddressSyn(callon,callat,function (resp) {
+                                        address = resp.address
+                                        $("p.last-address").html(" 详细地址: " + address);
+                                        LocalCacheMgr.setAddress(lng,lat,address);
+                                });
                                 }
-                                setTimeout(function(){
-                                    resetMkPoint(i);
-                                },100)
+                            });
+                            return "地址正在解析..."
                         }
                     },
+
                     computed:{
                         token:function(){
                             return Cookies.get("token");
@@ -392,6 +460,9 @@
                             }else{
                                 this.lock = false;
                             }                        
+                        },
+                        velocity:function(){
+                            this.action();
                         }
                     },
                     mounted : function() {
@@ -400,7 +471,7 @@
                         if(deviceid){
                             this.deviceid = deviceid;
                         }else{
-                            window.close();
+                            this.$Message.error("设备id不能为空!");
                         };       
                     }
                 });
