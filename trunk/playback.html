@@ -22,6 +22,42 @@
             background: #E8F0F7; 
             border:1px solid #C3CEDE; 
         }
+        label.BMapLabel::after{
+            font-size: 0px;
+            line-height: 0px;
+            width: 0px;
+            height: 0px;
+            border-width: 10px;
+            border-style: dashed solid dashed dashed;
+            border-color: transparent red transparent transparent;
+            position: absolute;
+            margin-left: -19px;
+            margin-top: -42px;
+        }
+        .guiji_sanjiao {
+            font-size: 0px;
+            line-height: 0px;
+            width: 0px;
+            height: 0px;
+            border-width: 10px;
+            border-style: dashed solid dashed dashed;
+            border-color: transparent #666 transparent transparent;
+            position: absolute;
+            margin-left: -30px;
+            margin-top: -42px;
+        }
+        .guiji_sanjiao_2 {
+            font-size: 0px;
+            line-height: 0px;
+            width: 0px;
+            height: 0px;
+            border-width: 10px;
+            border-style: dashed solid dashed dashed;
+            border-color: transparent #F7F8F9 transparent transparent;
+            position: absolute;
+            margin-left: -30px;
+            margin-top: -42px;
+        }
     </style>
 </head>
 <body>
@@ -73,9 +109,10 @@
     <script src="http://api.map.baidu.com/api?v=3.0&ak=e7SC5rvmn2FsRNE4R1ygg44n"></script>
     <script>
         (function () { 
-            var carIcon   = new BMap.Icon("http://lbsyun.baidu.com/jsdemo/img/Mario.png", new BMap.Size(32, 32), { imageOffset: new BMap.Size(0, 0)});
-            var startIcon = new BMap.Icon("./images/icon_st.png", new BMap.Size(32, 32), { imageOffset: new BMap.Size(0, 0)});
-            var endIcon   = new BMap.Icon("./images/icon_en.png", new BMap.Size(32, 32), { imageOffset: new BMap.Size(0, 0)});
+            var carIcon   = new BMap.Icon("images/carstate/green_0.gif", new BMap.Size(16, 16), { imageOffset: new BMap.Size(0, 0)});
+            var startIcon = new BMap.Icon("./images/map/marker_qidian.png", new BMap.Size(32, 32), { imageOffset: new BMap.Size(0, 0)});
+            var endIcon   = new BMap.Icon("./images/map/marker_zhongdian.png", new BMap.Size(32, 32), { imageOffset: new BMap.Size(0, 0)});
+            var directionList = [ 0 , 45 , 90 , 135 , 180 , 225 , 270 , 315 ];
             var vm = new Vue({
                     el:"#container",
                     data:{
@@ -110,7 +147,9 @@
                         markerLabel:null,
                         index : 0,
                         isPlay:true,
-
+                        firstMarker:null,
+                        lastMakrker:null,
+                        polyline:null
                     },
                     methods: {
                         initMap : function(){
@@ -181,16 +220,12 @@
                         },
                         sosoTracks:function(){   
                             var me = this;
+                                me.resetMapState();
                             if(this.lock){
-                                this.map.removeOverlay();
-                                if(this.isPlay){
-                                    clearInterval(this.intervalInstanse);
-                                    this.index = 0;
-                                }else{
+                                if(!this.isPlay){
                                     this.isPlay = true;
                                 };
-                                me.records = [];
-                                me.respCount = 0;
+               
                                 var times = this.getRequestBeginAndEndTimeStr();
                                 var begintime1 = times[0].begintime;
                                 var endtime1   = times[0].endtime;
@@ -201,7 +236,9 @@
                                     this.requestTracks(begintime1,endtime1,function (resp) { 
                                             if(resp.status == 0 && resp.records){
                                                 resp.records.forEach(function (record) {
-                                                    me.records.push(record);
+                                                    var direction = directionList[parseInt(Math.random()*8)];
+                                                        record.direction = direction;
+                                                        me.records.push(record);
                                                 });     
                                             };
 
@@ -210,9 +247,10 @@
                                                 me.records.sort(function (a,b) { 
                                                     return a.arrivedtime - b.arrivedtime;
                                                 });
+                                                me.filtertracks();
+                                                me.drawingLine();
                                             };
-                                            me.filtertracks();
-                                            me.drawingLine();
+                                            
                                     });
                                 }else{
                                     var beginDateStr = DateFormat.longToDateStr(this.startTime ,8);
@@ -223,7 +261,9 @@
                                             me.requestTracks(timeObj.begintime,timeObj.endtime,function (resp) {                       
                                                 if(resp.status == 0 && resp.records){
                                                     resp.records.forEach(function (record) {
-                                                        me.records.push(record);
+                                                        var direction = directionList[parseInt(Math.random()*8)];
+                                                            record.direction = direction;
+                                                            me.records.push(record);
                                                     });     
                                                 };
 
@@ -232,9 +272,10 @@
                                                     me.records.sort(function (a,b) { 
                                                         return a.arrivedtime - b.arrivedtime;
                                                     });
+                                                    me.filtertracks();
+                                                    me.drawingLine();
                                                 }
-                                                me.filtertracks();
-                                                me.drawingLine();
+                                               
                                             });
                                         });
                                     }else{
@@ -245,7 +286,9 @@
                                             me.requestTracks(timeObj.begintime,timeObj.endtime,function (resp) { 
                                                 if(resp.status == 0 && resp.records){
                                                     resp.records.forEach(function (record) {
-                                                        me.records.push(record);
+                                                        var direction = directionList[parseInt(Math.random()*8)];
+                                                            record.direction = direction;
+                                                            me.records.push(record);
                                                     });
                                                 };
 
@@ -254,12 +297,11 @@
                                                     me.records.sort(function (a,b) { 
                                                         return a.arrivedtime - b.arrivedtime;
                                                     });
-
+                                                    me.filtertracks();
+                                                    me.drawingLine();
                                                 };
                                                 
-                                                me.filtertracks();
-                                                console.log(me.records);
-                                                me.drawingLine();
+                                               
                                             });
                                         });
                                     }
@@ -328,11 +370,11 @@
                                 var records = this.records; 
                                 var firstRecord = records[0];
                                 var lastRecord  = records[records.length-1];
-                                var firstMarker = new BMap.Marker(firstRecord.point,{icon:startIcon});
-                                var lastMakrker = new BMap.Marker(lastRecord.point,{icon:endIcon});
+                                this.firstMarker = new BMap.Marker(firstRecord.point,{icon:startIcon});
+                                this.lastMakrker = new BMap.Marker(lastRecord.point,{icon:endIcon});
 
-                                    this.map.addOverlay(firstMarker);
-                                    this.map.addOverlay(lastMakrker);
+                                    this.map.addOverlay(this.firstMarker);
+                                    this.map.addOverlay(this.lastMakrker);
 
                                 var lines = [];
 
@@ -340,40 +382,40 @@
                                         lines.push(records[i].point);
                                     };
 
-                                var polyline = new BMap.Polyline(lines, {strokeColor:"#57A3F3",strokeWeight:3,strokeOpacity:1.5});
-                                    this.map.addOverlay(polyline);
-
-                                var view = this.map.getViewport(eval(lines));  
-                                var mapZoom = view.zoom;   
-                                var centerPoint = view.center;   
-                                    this.map.centerAndZoom(centerPoint,mapZoom);
-                                    
-                                    this.runAnimeate();  
+                                this.polyline = new BMap.Polyline(lines, {strokeColor:"#0000AA",strokeWeight:3,strokeOpacity:1.5});
+                                this.map.addOverlay(this.polyline);
+                                // 设置中心点
+                                this.setViewPortCenter(lines);
+                                this.runAnimeate();
                             }; 
+                        },
+                        setViewPortCenter:function(lines){
+                            var view = this.map.getViewport(eval(lines));  
+                            var mapZoom = view.zoom;   
+                            var centerPoint = view.center;   
+                                this.map.centerAndZoom(centerPoint,mapZoom);
                         },
                         runAnimeate:function(){
                             var firstRecord = this.records[0];
                             var lableOptions = {
                                 position : firstRecord.point,   
-	                            offset   : new BMap.Size(30, -30)
+	                            offset   : new BMap.Size(30, -42)
                             };
                             this.carMarker = new BMap.Marker(firstRecord.point,{icon:carIcon});
                             this.map.addOverlay(this.carMarker);
                             this.markerLabel = new BMap.Label(this.getLableContent(firstRecord),lableOptions);
                             
                             this.markerLabel.setStyle({
-                                color : "red",
-                                fontSize : "12px",
-                                lineHeight : "14px",
+                                color : "#000000",
+                                border:"1px solid #D0D1D1",
+                                fontSize : "14px",
+                                lineHeight : "18px",
                                 borderRadius:"5px",
                                 padding:"10px",
                                 fontFamily:"微软雅黑"
                             });
 
-                            this.carMarker.setLabel(this.markerLabel);
-                            if(this.isPlay){
-                                this.action(); 
-                            };      
+                            this.carMarker.setLabel(this.markerLabel);    
                         },
                         action:function () { 
                             var me = this;
@@ -383,16 +425,14 @@
                             };
                             me.intervalInstanse = setInterval(function () {
                                     var track = me.records[me.index];
-                                    me.carMarker.setPosition(track.point);  
+                                    me.carMarker.setPosition(track.point); 
+                                    me.carMarker.setIcon(me.getDirectionIcon(track.direction)); 
                                     me.markerLabel.setContent(me.getLableContent(track));
                                     me.index++;
                                     if(me.index >= paths){
                                         me.index = 0;
-                                        if(me.records[0]){
-                                            me.carMarker.setPosition(me.records[0].point);  
-                                        }
                                         clearInterval(me.intervalInstanse);
-                                    }
+                                    };
                             },me.velocity);
                         },
                         replay:function(){
@@ -418,7 +458,7 @@
                                 '<p> 设备ID: ' +info.deviceid+'</p>' +
                                 '<p> 经纬度: ' +info.callon+","+ info.callat +'</p>' +
                                 '<p> 最后时间: ' +DateFormat.longToDateTimeStr(info.arrivedtime,0)+'</p>' +
-                                '<p class="last-address"> 详细地址: '+address+'</p></div>';
+                                '<p class="last-address"> 详细地址: '+address+'</p></div><div class="guiji"><span class="guiji_sanjiao"></span><span class="guiji_sanjiao_2"></span></div>';
                             return sContent;
                         },
                         getAddress:function (info) {
@@ -446,7 +486,43 @@
                                 }
                             });
                             return "地址正在解析..."
-                        }
+                        },
+                        resetMapState:function(){
+                            if(this.carMarker){
+                                this.map.removeOverlay(this.carMarker);
+                                this.carMarker = null;
+                            };
+                            if(this.firstMarker){
+                                this.map.removeOverlay(this.firstMarker);
+                                this.firstMarker = null;
+                            };
+                            if(this.lastMakrker){
+                                this.map.removeOverlay(this.lastMakrker);
+                                this.lastMakrker = null;
+                            };
+                            if(this.polyline){
+                                this.map.removeOverlay(this.polyline);
+                                this.polyline = null;
+                            };
+                            if(this.markerLabel){
+                                this.map.removeOverlay(this.markerLabel);
+                                this.markerLabel = null;
+                            };
+                            if(this.intervalInstanse){
+                                clearInterval(this.intervalInstanse);
+                                this.intervalInstanse = null;
+                            };
+                            this.index = 0;
+                            this.records = [];
+                            this.respCount = 0;
+                            var centerPoint = this.map.getCenter();
+                            if(this.map.getZoom() != 5 || centerPoint.lng !== 108.0017245 || centerPoint.lat !== 35.926895){
+                                this.map.centerAndZoom(new BMap.Point(108.0017245,35.926895),5);
+                            };
+                        },
+                        getDirectionIcon:function(angle){
+                            return new BMap.Icon("images/carstate/green_"+ angle +".gif", new BMap.Size(16, 16), { imageOffset: new BMap.Size(0, 0)}); 
+                        },
                     },
 
                     computed:{

@@ -1,4 +1,7 @@
 (function(){
+    //方向数组
+    var directionList = [ 0 , 45 , 90 , 135 , 180 , 225 , 270 , 315 ];  
+    //全局变量
     var store = {
         navState : false,
         intervalTime:10,
@@ -323,6 +326,15 @@
                         var lng_lat = wgs84tobd09(callon,callat);
                         var point = new BMap.Point(lng_lat[0],lng_lat[1]);
                         record.point = point;
+                        var isOnline = (Date.now() - record.arrivedtime) < me.offlineTime ? true : false ; 
+                        var iconState = null;
+                        var angle = directionList[parseInt(Math.random()*8)];  
+                        if(isOnline){
+                            iconState = new BMap.Icon("../images/carstate/green_"+angle+".png", new BMap.Size(16, 16), { imageOffset: new BMap.Size(0, 0)}); 
+                        }else{
+                            iconState = new BMap.Icon("../images/carstate/gray_"+angle+".png", new BMap.Size(16, 16), { imageOffset: new BMap.Size(0, 0)}); 
+                        };
+                        record.icon = iconState;
                         store.currentDeviceId = deviceid;
                         store.currentDeviceRecord = record;
                         me.updateRecords(record);
@@ -519,8 +531,19 @@
                         }else{
                              point = record.point;
                         };
+                        var isOnline = (Date.now() - record.arrivedtime) < me.offlineTime ? true : false ;
+                        
                         var marker = new BMap.Marker(point);
-                        var label =  new BMap.Label(store.deviceNames[deviceid].devicename,{ position : point, offset   : new BMap.Size(20, 2) });
+                            marker.setIcon(record.icon);
+                        var label =  new BMap.Label(store.deviceNames[deviceid].devicename,{ position : point, offset   : new BMap.Size(20, -3) });
+                            label.setStyle({
+                                color : "#000000",
+                                border:"1px solid #000000",
+                                background:"#F5FCB8",
+                                fontSize : "14px",
+                                fontFamily:"微软雅黑",
+                                padding:"0 2px"
+                            });
                             marker.setLabel(label);
                             marker.deviceid = deviceid;
                         me.markerAddEvent(marker,deviceid);
@@ -528,6 +551,7 @@
                     };
                 });
             },
+
             markerAddEvent:function (marker,deviceid) {
                 var me = this;
                 marker.addEventListener("click", function(){
@@ -769,12 +793,6 @@
                     });
 
                 })
-
-                
-
-
-               
-                
                 me.currentStateData = newArray;
             },
             getAllHideConpanyTreeData:function () {
@@ -1051,8 +1069,17 @@
                     me.getLastPosition(devIdList,function (resp) {
                         resp.records.forEach(function (record) {
                            if(record){
-                             var lng_lat = wgs84tobd09(record.callon,record.callat);
-                             record.point = new BMap.Point(lng_lat[0],lng_lat[1]);
+                               var isOnline = (Date.now() - record.arrivedtime) < me.offlineTime ? true : false ; 
+                               var iconState = null;
+                               var angle = directionList[parseInt(Math.random()*8)];
+                                if(isOnline){
+                                    iconState = new BMap.Icon("../images/carstate/green_"+angle+".png", new BMap.Size(16, 16), { imageOffset: new BMap.Size(0, 0)}); 
+                                }else{
+                                    iconState = new BMap.Icon("../images/carstate/gray_"+angle+".png", new BMap.Size(16, 16), { imageOffset: new BMap.Size(0, 0)}); 
+                                };
+                                record.icon = iconState;
+                               var lng_lat = wgs84tobd09(record.callon,record.callat);
+                               record.point = new BMap.Point(lng_lat[0],lng_lat[1]);
                            };
                         })
                         me.records = resp.records;
@@ -1081,6 +1108,20 @@
                         });
                     }
                 })
+            },
+            setCarIconState:function () {
+                var me = this;
+                this.records.forEach(function (record) {
+                    var isOnline = (Date.now() - record.arrivedtime) < me.offlineTime ? true : false ; 
+                    var iconState = null;
+                    var angle = directionList[parseInt(Math.random()*8)];  
+                    if(isOnline){
+                        iconState = new BMap.Icon("../images/carstate/green_"+angle+".png", new BMap.Size(16, 16), { imageOffset: new BMap.Size(0, 0)}); 
+                    }else{
+                        iconState = new BMap.Icon("../images/carstate/gray_"+angle+".png", new BMap.Size(16, 16), { imageOffset: new BMap.Size(0, 0)}); 
+                    };
+                    record.icon = iconState;
+                });
             }
         },
         computed:{
@@ -1156,7 +1197,7 @@
                 }else{
                     this.getCurrentStateTreeData(this.selectedState,this.isShowConpanyName)  ;
                 }
-            },
+            }
         },
         mounted:function () {
             var me = this;
@@ -1171,6 +1212,7 @@
                 var devIdList = Object.keys(store.deviceNames);
                 me.getLastPosition(devIdList,function (resp) {
                     me.records = resp.records;
+                    me.setCarIconState();
                     var range = utils.getDisplayRange(me.map.getZoom());
                     if(resp.records.length){
                         if(resp.records.length > 300){
