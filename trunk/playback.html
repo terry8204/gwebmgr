@@ -107,6 +107,7 @@
     <script src="js/dateformat.js"></script>
     <script src="js/util.js"></script>
     <script src="http://api.map.baidu.com/api?v=3.0&ak=e7SC5rvmn2FsRNE4R1ygg44n"></script>
+    <script type="text/javascript" src="http://api.map.baidu.com/library/DistanceTool/1.2/src/DistanceTool_min.js"></script>
     <script>
         (function () { 
             var carIcon   = new BMap.Icon("images/carstate/green_0.gif", new BMap.Size(16, 16), { imageOffset: new BMap.Size(0, 0)});
@@ -141,7 +142,7 @@
                         spinShow:false,
                         records:[],
                         range:50,             // 范围50米之内的点不显示
-                        velocity:500,         //半秒
+                        velocity:500,         // 半秒
                         intervalInstanse:null,
                         carMarker:null,
                         markerLabel:null,
@@ -299,12 +300,9 @@
                                                     me.filtertracks();
                                                     me.drawingLine();
                                                 };
-                                                
-                                               
                                             });
                                         });
-                                    }
-                                    
+                                    }                                   
                                 }
                             }else{
                                 this.$Message.error("请选择正确的时间!");
@@ -340,7 +338,6 @@
                                     this.setBmapPointProperty(firstRecord);
                                     this.setBmapPointProperty(lastRecord);
                                     newTrackList.push(firstRecord);
-
                                     if(records.length){
                                         var contrastTrack = records.shift();
                                         var contrastPoint = this.setBmapPointProperty(contrastTrack).point;
@@ -523,7 +520,6 @@
                             return new BMap.Icon("images/carstate/green_"+ angle +".gif", new BMap.Size(16, 16), { imageOffset: new BMap.Size(0, 0)}); 
                         },
                     },
-
                     computed:{
                         token:function(){
                             return Cookies.get("token");

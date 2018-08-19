@@ -62,7 +62,7 @@
                     </li>
                     <li style="padding:0">|</li>
                     <li>
-                        <span><Icon type="md-create" style="margin-right:3px"></Icon>修改密码</span>
+                        <span  @click="changePassword"><Icon type="md-create" style="margin-right:3px"></Icon>修改密码</span>
                     </li>
                     <li style="padding:0">|</li>
                     <li>
@@ -94,7 +94,18 @@
                         </i-col>
                     </Row>
                 </div>
-                <div slot="footer"></div>
+                <div slot="footer" style="padding:12.5px 0;"></div>
+            </Modal>
+
+            <Modal v-model="modalPass" width="460" class-name="vertical-center-modal">
+                <p slot="header" style="color:#2D8CF0;text-align:center">
+                    <Icon type="ios-hammer-outline"></Icon>
+                    <span>修改密码</span>
+                </p>
+                <div style="text-align:center">
+                    11111
+                </div>
+                <div slot="footer" style="padding:12.5px 0;"></div>
             </Modal>
         </div>
     </script>

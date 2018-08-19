@@ -26,6 +26,7 @@
                 isShowMonitor:true,
                 isShowReportForm:true,
                 isShowBgManager:true,
+                modalPass:false
             }
         },
         methods:{
@@ -61,6 +62,9 @@
                         me.$Message.error(resp.cause);
                     }
                 })
+            },
+            changePassword:function () { 
+                this.modalPass = true;
             },
             showSetup:function () {
                 this.modal = true;
@@ -161,7 +165,7 @@
                 companys:[],             //公司名称id
                 groups:[],               // 原始列表数据
                 intervalTime:null,       // 多久刷新一次设备
-                offlineTime:5*60*1000,   // 根据这个时间算出离线时间
+                offlineTime:5*60*1000,   // 根据这个时间算出是否离线
                 allDevCount:0,           // 全部设备的个数
                 onlineDevCount:0,        // 在线设备个数
                 offlineDevCount:0,       // 离线设备个数
@@ -177,9 +181,17 @@
                 this.map.enableAutoResize();
                 this.map.disableDoubleClickZoom();
                 this.map.centerAndZoom(new BMap.Point(108.0017245,35.926895),5);
-                var top_left_control = new BMap.ScaleControl({anchor: BMAP_ANCHOR_BOTTOM_LEFT});
+                // var top_left_control = new BMap.ScaleControl({anchor: BMAP_ANCHOR_BOTTOM_LEFT});
+                var top_left_control = new BMap.ScaleControl({anchor: BMAP_ANCHOR_TOP_LEFT});// 左上角，添加比例尺
+	            var top_left_navigation = new BMap.NavigationControl();  //左上角，添加默认缩放平移控件
                 this.map.addControl(top_left_control);
-
+                this.map.addControl(top_left_navigation);
+                this.map.addControl(new BMap.MapTypeControl({
+                    mapTypes:[
+                        BMAP_NORMAL_MAP,
+                        BMAP_HYBRID_MAP
+                    ]
+                }));    
                 this.map.addEventListener("moveend",function (ev) {
                     if(me.isMoveTriggerEvent){
                         me.map.clearOverlays();
@@ -411,7 +423,7 @@
                             group.children.forEach(function (dev) { 
                                 if(dev.isOnline){
                                     onlineCount++;
-                                }
+                                };
                             });
                             if(me.selectedState == "all" ){
                                 group.title = group.name + "(" + onlineCount+ "/" + group.children.length  + ")"; 
@@ -1112,6 +1124,8 @@
             setCarIconState:function () {
                 var me = this;
                 this.records.forEach(function (record) {
+                    // 如果是null 返回;
+                    if(record == null){ return };
                     var isOnline = (Date.now() - record.arrivedtime) < me.offlineTime ? true : false ; 
                     var iconState = null;
                     var angle = directionList[parseInt(Math.random()*8)];  

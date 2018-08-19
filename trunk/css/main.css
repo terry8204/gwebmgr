@@ -37,6 +37,9 @@ div.view-wraper{
 .ivu-input-type .ivu-icon{
     margin-top:0px; 
 }
+.full .ivu-btn-default .ivu-icon{
+    margin-top:0px; 
+}
 /* layout 结束 */
 
 

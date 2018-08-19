@@ -107,8 +107,8 @@ var utils = {
 Vue.component('expand-row',{
     template:'<div>'+ 
                 '<span v-for="(item , index) in devices" style="display:inline-block;margin:5px">'+
-                    '<i-button icon="ipad" @click="clickMe(item)"> {{item.deviceid}}</i-button>'+
-                '</span>'+ 
+                    '<i-button icon="md-phone-portrait" @click="clickMe(item)"> {{item.deviceid}}</i-button>'+
+                '</span>'+  
             '</div>',
     props:{
         devices:Array
