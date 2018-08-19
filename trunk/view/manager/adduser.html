@@ -7,35 +7,35 @@
         <div>
 
             <Row style="margin: 10px 0">
-                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">用户名 : &nbsp;</i-col>
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;"><i style="color: red;display: inline-block;">*</i>&nbsp;用户名 : &nbsp;</i-col>
                 <i-col span="12">
                     <i-input v-model.trim="username"></i-input>
                 </i-col>
             </Row>
             
             <Row style="margin: 10px 0">
-                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">密码 : &nbsp;</i-col>
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;"><i style="color: red;display: inline-block;">*</i>&nbsp;密码 : &nbsp;</i-col>
                 <i-col span="12">
                     <i-input v-model.trim="password" type="password"></i-input>
                 </i-col>
             </Row>
 
             <Row style="margin: 10px 0">
-                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">确认密码 : &nbsp;</i-col>
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;"><i style="color: red;display: inline-block;">*</i>&nbsp;确认密码 : &nbsp;</i-col>
                 <i-col span="12">
                     <i-input v-model.trim="confirmPassword" type="password"></i-input>
                 </i-col>
             </Row>
 
             <Row style="margin: 10px 0">
-                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">过期时间 : &nbsp;</i-col>
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;"><i style="color: red;display: inline-block;">*</i>&nbsp;过期时间 : &nbsp;</i-col>
                 <i-col span="12">
-                    <date-picker type="date" v-model="overduetime" :options="dateOptions"></date-picker>
+                    <date-picker type="date" v-model="overduetime" :options="dateOptions" style="width: 100%"></date-picker>
                 </i-col>
             </Row>
 
             <Row style="margin: 10px 0">
-                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">用户类型 : &nbsp;</i-col>
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;"><i style="color: red;display: inline-block;">*</i>&nbsp;用户类型 : &nbsp;</i-col>
                 <i-col span="12">
                     <i-select v-model="usertype">
                         <i-option v-for="item in userTypeList" :value="item.value" :key="item.value">{{ item.label }}</i-option>
@@ -44,7 +44,7 @@
             </Row>
 
             <Row style="margin: 10px 0">
-                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">所属客户 : &nbsp;</i-col>
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;"><i style="color: red;display: inline-block;">*</i>&nbsp;所属客户 : &nbsp;</i-col>
                 <i-col span="12">
                     <i-select v-model="companyid">
                         <i-option v-for="item in companyList" :value="item.value" :key="item.value">{{ item.label }}</i-option>
@@ -53,7 +53,7 @@
             </Row>
 
             <Row style="margin: 10px 0" v-show="isShowGroup">
-                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">所属分组 : &nbsp;</i-col>
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;"><i style="color: red;display: inline-block;">*</i>&nbsp;所属分组 : &nbsp;</i-col>
                 <i-col span="12">
                     <i-select v-model="groupids" multiple>
                         <i-option v-for="item in groupList" :value="item.value" :key="item.value">{{ item.label }}</i-option>
@@ -89,17 +89,17 @@
                 </i-col>
             </Row> 
             <Row style="margin: 10px 0" v-show="!isShowGroup">
-                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">分组数量 : &nbsp;</i-col>
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;"><i style="color: red;display: inline-block;">*</i>&nbsp;分组数量 : &nbsp;</i-col>
                 <i-col span="3">
                     <input-number :max="20" :min="1" v-model="groupcount"></input-number>
                 </i-col>
 
-                <i-col span="3" style="height: 100%;text-align:right;line-height:32px;">用户数量 : &nbsp;</i-col>
+                <i-col span="3" style="height: 100%;text-align:right;line-height:32px;"><i style="color: red;display: inline-block;">*</i>&nbsp;用户数量 : &nbsp;</i-col>
                 <i-col span="3">
                     <input-number :max="100" :min="10" v-model="usercount"></input-number>
                 </i-col>
 
-                <i-col span="3" style="height: 100%;text-align:right;line-height:32px;">设备数量 : &nbsp;</i-col>
+                <i-col span="3" style="height: 100%;text-align:right;line-height:32px;"><i style="color: red;display: inline-block;">*</i>&nbsp;设备数量 : &nbsp;</i-col>
                 <i-col span="3">
                     <input-number :max="500" :min="10" v-model="devicecount"></input-number>
                 </i-col>
@@ -289,6 +289,7 @@
                 this.queryAllCompanyInfo(this.doQueryAllCompanyInfo);
                 this.queryAllgroupsInfo();
                 this.usertype = "-1";
+                this.overduetime = new Date(Date.now() + 365*24*3600*1000) ;
             }
         })
     </script>    
