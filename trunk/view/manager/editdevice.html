@@ -5,7 +5,7 @@
         <div>
 
             <Row style="margin: 10px 0">
-                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">设备名称 : &nbsp;</i-col>
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;"><i style="color: red;display: inline-block;">*</i>&nbsp;设备名称 : &nbsp;</i-col>
                 <i-col span="8">
                     <i-input v-model.trim="devicename"></i-input>
                 </i-col>
@@ -16,7 +16,7 @@
             </Row>
 
             <Row style="margin: 10px 0">
-                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">过期时间 : &nbsp;</i-col>
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;"><i style="color: red;display: inline-block;">*</i>&nbsp;过期时间 : &nbsp;</i-col>
                 <i-col span="8">
                     <date-picker type="date" v-model="overduetime" :options="dateOptions"></date-picker>
                 </i-col>
@@ -27,7 +27,7 @@
             </Row>
 
             <Row style="margin: 10px 0">
-                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">所属客户 : &nbsp;</i-col>
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;"><i style="color: red;display: inline-block;">*</i>&nbsp;所属客户 : &nbsp;</i-col>
                 <i-col span="8">
                     <i-select v-model="companyid">
                             <i-option v-for="item in customersList" :value="item.value" :key="item.value">{{ item.label }}</i-option>
@@ -92,7 +92,6 @@
                 devicetype:"",
                 simnum:"",
                 overduetime:"",
-                loginpwd:"",
                 loginenable:"0",
                 deviceenable:"0",
                 groupsList:[],
@@ -117,19 +116,31 @@
                         me.$Message.error("设备ID必须是11位");
                         return;
                     };
+                    if(this.overduetime == ""){
+                        me.$Message.error("请选择时间");
+                        return;
+                    }
+                    if(this.devicename == ""){
+                        me.$Message.error("请填写设备名称");
+                        return;
+                    }
 
                     var data = {
                         deviceid:this.deviceid,
                         devicename:this.devicename,
                         devicetype:this.devicetype,
-                        simnum:this.simnum,
                         overduetime:new Date(this.overduetime).getTime(),
-                        loginpwd:$.md5(this.loginpwd),
                         loginenable:Number(this.loginenable),
                         deviceenable:Number(this.deviceenable),
-                        groupid:this.groupid,
                         companyid:this.companyid
-                    };                   
+                    };            
+                    
+                    if(this.simnum !== ""){
+                        data.simnum = this.simnum;
+                    };
+                    if(this.groupid !== ""){
+                        data.groupid = this.groupid;
+                    };
                     utils.sendAjax(url,data,function (resp) { 
                         if(resp.status == 0){
                             me.$Message.success("修改成功");
@@ -148,7 +159,6 @@
                     this.devicetype = "";
                     this.simnum = "";
                     this.overduetime = "";
-                    this.loginpwd = "";
                     this.loginenable = "0";
                     this.deviceenable = "0";
                     this.groupsList = "";
