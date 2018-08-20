@@ -6,7 +6,7 @@
         <h3 class="h3-title">添加分组</h3>
         <div>
             <Row style="margin: 10px 0">
-                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;" :offset="2">企业名称 : &nbsp;</i-col>
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;" :offset="2"><i style="color: red;display: inline-block;">*</i>&nbsp;企业名称 : &nbsp;</i-col>
                 <i-col span="8">
                         <i-select v-model="companyid">
                             <i-option v-for="item in customerList" :value="item.value" :key="item.value">{{ item.label }}</i-option>
@@ -20,7 +20,7 @@
             </Row>
 
             <Row style="margin: 10px 0">
-                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;" :offset="2">名称 : &nbsp;</i-col>
+                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;" :offset="2"><i style="color: red;display: inline-block;">*</i>&nbsp;分组名称 : &nbsp;</i-col>
                     <i-col span="8">
                         <i-input v-model.trim="groupname"></i-input>
                     </i-col>
@@ -32,7 +32,7 @@
             </Row>
 
             <Row style="margin: 10px 0">
-                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;" :offset="2">最短定位时间 : &nbsp;</i-col>
+                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;" :offset="2"><i style="color: red;display: inline-block;">*</i>&nbsp;最短定位时间 : &nbsp;</i-col>
                     <i-col span="8">
                         <input-number :max="3600" :min="30" :step="30" v-model="mintime" style="width: 210px;"></input-number>&nbsp;秒
                     </i-col>
@@ -44,7 +44,7 @@
             </Row>
 
             <Row style="margin: 10px 0">
-                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;" :offset="2">最长定位时间 : &nbsp;</i-col>
+                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;" :offset="2"><i style="color: red;display: inline-block;">*</i>&nbsp;最长定位时间 : &nbsp;</i-col>
                     <i-col span="8">
                         <input-number :max="3600" :min="30" :step="30" v-model="maxtime" style="width: 210px;"></input-number>&nbsp;秒
                     </i-col>
@@ -56,7 +56,7 @@
             </Row>
 
             <Row style="margin: 10px 0">
-                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;" :offset="2">上级可见 : &nbsp;</i-col>
+                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;" :offset="2"><i style="color: red;display: inline-block;">*</i>&nbsp;上级可见 : &nbsp;</i-col>
                     <i-col span="8">
                         <i-select v-model="seenext">
                             <i-option v-for="item in visibilityList" :value="item.value" :key="item.value">{{ item.label }}</i-option>
@@ -70,9 +70,9 @@
             </Row>
 
             <Row style="margin: 10px 0">
-                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;" :offset="2">用户数量 : &nbsp;</i-col>
+                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;" :offset="2"><i style="color: red;display: inline-block;">*</i>&nbsp;用户数量 : &nbsp;</i-col>
                     <i-col span="8">
-                        <i-input v-model.trim="usercount"></i-input>
+                        <i-input v-model.trim.number="usercount"></i-input>
                     </i-col>
                     <i-col span="10" style="height: 100%;line-height:32px;padding-left:20px;">
                         <span>
@@ -82,9 +82,9 @@
             </Row>
 
             <Row style="margin: 10px 0">
-                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;" :offset="2">设备数量 : &nbsp;</i-col>
+                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;" :offset="2"><i style="color: red;display: inline-block;">*</i>&nbsp;设备数量 : &nbsp;</i-col>
                     <i-col span="8">
-                        <i-input v-model.trim="devicecount"></i-input>
+                        <i-input v-model.trim.number="devicecount"></i-input>
                     </i-col>
                     <i-col span="10" style="height: 100%;line-height:32px;padding-left:20px;">
                         <span>

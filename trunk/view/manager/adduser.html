@@ -91,17 +91,17 @@
             <Row style="margin: 10px 0" v-show="!isShowGroup">
                 <i-col span="4" style="height: 100%;text-align:right;line-height:32px;"><i style="color: red;display: inline-block;">*</i>&nbsp;分组数量 : &nbsp;</i-col>
                 <i-col span="3">
-                    <input-number :max="20" :min="1" v-model="groupcount"></input-number>
+                    <input-number :max="20" :min="1" v-model.trim.number="groupcount"></input-number>
                 </i-col>
 
                 <i-col span="3" style="height: 100%;text-align:right;line-height:32px;"><i style="color: red;display: inline-block;">*</i>&nbsp;用户数量 : &nbsp;</i-col>
                 <i-col span="3">
-                    <input-number :max="100" :min="10" v-model="usercount"></input-number>
+                    <input-number :max="100" :min="10" v-model.trim.number="usercount"></input-number>
                 </i-col>
 
                 <i-col span="3" style="height: 100%;text-align:right;line-height:32px;"><i style="color: red;display: inline-block;">*</i>&nbsp;设备数量 : &nbsp;</i-col>
                 <i-col span="3">
-                    <input-number :max="500" :min="10" v-model="devicecount"></input-number>
+                    <input-number :max="500" :min="10" v-model.trim.number="devicecount"></input-number>
                 </i-col>
             </Row> 
 
@@ -196,9 +196,9 @@
                         };
                         data.groupids = this.groupids;
                     }else{
-                        data.groupcount = number(this.groupcount);
-                        data.devicecount = number(this.devicecount);
-                        data.usercount = number(this.usercount);
+                        data.groupcount = this.groupcount;
+                        data.devicecount = this.devicecount;
+                        data.usercount = this.usercount;
                     }    
 
 

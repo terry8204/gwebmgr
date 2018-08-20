@@ -6,7 +6,7 @@
         <h3 class="h3-title">添加客户</h3>
         <div>
             <Row style="margin: 10px 0">
-                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">企业名称 : &nbsp;</i-col>
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;"><i style="color: red;display: inline-block;">*</i>&nbsp;企业名称 : &nbsp;</i-col>
                 <i-col span="8">
                     <i-input v-model.trim="companyname"></i-input>
                 </i-col>
@@ -130,7 +130,6 @@
                         this.officeaddr !== "" ? data.officeaddr = this.officeaddr : "" ; 
                         this.remark !== "" ? data.remark = this.remark : "" ; 
                         this.type !== "" ? data.type = this.type : "" ; 
-                        console.log(data);
                     utils.sendAjax(url,data,this.doCallback);
                 },
                 doCallback:function(resp){

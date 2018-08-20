@@ -1,9 +1,11 @@
 (function(){
-    //方向数组
-    var directionList = [ 0 , 45 , 90 , 135 , 180 , 225 , 270 , 315 ];  
+    // 方向数组
+    var directionList = [ 0 , 45 , 90 , 135 , 180 , 225 , 270 , 315 ]; 
+    // 是否显示公司名字
+    var isShowCompany = Cookies.get("isShowCompany"); 
     //全局变量
     var store = {
-        navState : false,
+        navState : isShowCompany === 'true' ? true : false ,
         intervalTime:10,
         currentDeviceId:null,
         currentDeviceRecord:{},
@@ -119,7 +121,7 @@
         }
     };
 
-    // 监控页面的 rander 函数
+    // 监控页面的 公司rander 函数
     var render = function (h, info){
         var data = info.data;
         var root = info.root;
@@ -139,7 +141,38 @@
             h('span', [
                 h('Icon', {
                     props: {
-                        type: 'edit',
+                        type: 'md-keypad',
+                    },
+                    style: {
+                        marginRight: '8px'
+                    }
+                }),
+                h('span', data.title)
+            ])
+        ]);
+    };
+
+    // 监控页面的 分组rander 函数
+    var groupRender = function (h, info){
+        var data = info.data;
+        var root = info.root;
+        var node = info.node;
+        return h('span', {
+            style: {
+                display: 'inline-block',
+                cursor: 'pointer',
+                width: '100%'
+            },
+            on:{
+                click:function () {  
+                    data.expand = !data.expand;
+                }
+            }
+        }, [
+            h('span', [
+                h('Icon', {
+                    props: {
+                        type: 'ios-people',
                     },
                     style: {
                         marginRight: '8px'
@@ -156,7 +189,7 @@
         data:function () {
             return {
                 map:null,
-                isShowConpanyName:false, // 0 不显示公司   1 显示公司名
+                isShowConpanyName:store.navState, // 0 不显示公司   1 显示公司名
                 sosoValue: '',           // 搜索框的值
                 sosoData: [],            // 搜索框里面的数据
                 selectedState:'',        // 选择nav的状态 all online offline;
@@ -743,14 +776,25 @@
                         };
                         newArray.push(companyObj);
                 });
+                var logintype = Cookies.get("logintype");
+                if(logintype !== "DEVICE" && this.isShowConpanyName){
+                    newArray.unshift({
+                        title:"默认客户",
+                        companyname:"默认客户",
+                        companyid:0,
+                        children:[],
+                        expand: false,
+                        render:render
+                    });
+                };
                 if(newArray.length === 0 ){
-                    var logintype = Cookies.get("logintype");
                     if(logintype == "DEVICE"){
                         newArray.push({
                             title:"默认客户",
                             children:[],
                             companyname:"默认客户",
                             expand: false,
+                            companyid:0,
                             render:render
                         })
                     }
@@ -760,7 +804,7 @@
             getAllShowConpanyTreeData:function () {
                 var me = this;
                 var newArray = me.getNewCompanyArr();
-                var newGroups = [] ; 
+                var newGroups = [];                 
                 me.groups.forEach(function (group,index) {
                     var companyid = group.companyid;
                     var onlineCount = 0;
@@ -768,7 +812,7 @@
                         companyid:companyid,
                         title    :group.groupname,
                         expand: false,
-                        render:render,
+                        render:groupRender,
                         name:group.groupname,
                         children:[],
                     };
@@ -804,8 +848,15 @@
                         }
                     });
 
-                })
-                me.currentStateData = newArray;
+                });
+                var treeData = [];
+                for(var i = 0 ; i < newArray.length ; i++){
+                    var item = newArray[i];
+                    if(item.children.length !== 0){
+                        treeData.push(item);
+                    }
+                }
+                me.currentStateData = treeData;
             },
             getAllHideConpanyTreeData:function () {
                 var me = this;
@@ -815,7 +866,7 @@
                         var groupData =  {
                             title: group.groupname,
                             expand: false,
-                            render:render,
+                            render:groupRender,
                             children: [],
                             name:group.groupname,
                         };
@@ -863,7 +914,7 @@
                         companyid:companyid,
                         title    :group.groupname,
                         expand: false,
-                        render:render,
+                        render:groupRender,
                         children:[],
                         name:group.groupname,
                     }
@@ -915,12 +966,11 @@
             },
             getOnlineHideConpanyTreeData:function () {
                 var me = this;
-
                     this.groups.forEach(function (group) {
                         var groupData =  {
                             title: group.groupname,
                             expand: false,
-                            render:render,
+                            render:groupRender,
                             children: [],
                             name:group.groupname,
                         };
@@ -970,7 +1020,7 @@
                         companyid:companyid,
                         title    :group.groupname,
                         expand: false,
-                        render:render,
+                        render:groupRender,
                         children:[],
                         name:group.groupname,
                     }
@@ -1022,7 +1072,7 @@
                         var groupData =  {
                             title: group.groupname,
                             expand: false,
-                            render:render,
+                            render:groupRender,
                             children: [],
                             name:group.groupname,
                         };
@@ -1192,7 +1242,15 @@
                 this.allDevCount = deviceIds.length;
             } ,
             selectedState:function () {
-                this.getCurrentStateTreeData(this.selectedState,this.isShowConpanyName);
+                var me = this;
+                if(this.isShowConpanyName && this.companys.length == 0){
+                    this.queryCompanyTree(function (response) {
+                        me.companys = response.companys;
+                        me.getCurrentStateTreeData(me.selectedState,me.isShowConpanyName);
+                    });
+                }else{
+                    this.getCurrentStateTreeData(this.selectedState,this.isShowConpanyName);
+                }              
             },
             isShowConpanyName:function () {
                 var me = this;
@@ -1215,9 +1273,9 @@
         },
         mounted:function () {
             var me = this;
-            var isShowCompany = Cookies.get("isShowCompany");
-            var havecompany =  isShowCompany ? 1 : 0;
-            this.isShowConpanyName = store.navState;
+            // var isShowCompany = Cookies.get("isShowCompany");
+            var havecompany = this.isShowConpanyName == true ? 1 : 0;
+            // this.isShowConpanyName = store.navState;
             this.intervalTime      = store.intervalTime * 1000;
             this.initMap();
             this.getMonitorListByUser(havecompany,function (resp) {
@@ -1235,11 +1293,11 @@
                             me.addOverlayToMap(resp.records);
                         }  
                     };
-                    if(isShowCompany == "true"){
-                        isShowConpanyName = true;
-                    }else if(isShowCompany == "false"){
-                        isShowConpanyName = false;
-                    } 
+                    // if(isShowCompany == "true"){
+                    //     isShowConpanyName = true;
+                    // }else if(isShowCompany == "false"){
+                    //     isShowConpanyName = false;
+                    // } 
                     me.selectedState = "all";
                 });
             });
