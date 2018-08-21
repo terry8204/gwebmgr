@@ -14,10 +14,10 @@
         }
         div.controller{
             position: absolute;
-            right: 20px;
-            bottom: 20px;
+            right: 10px;
+            bottom: 10px;
             width: 500px;
-            height: 180px;
+            height: 240px;
             line-height: 60px;
             background: #E8F0F7; 
             border:1px solid #C3CEDE; 
@@ -65,21 +65,39 @@
         <div id="bmap"></div>
         <div class="controller">
             <i-row>
-                <i-col :span="4" style="text-align: right">
+                <!-- <i-col :span="4" style="text-align: right">
                     选择时间 : &nbsp;
                 </i-col>
                 <i-col :span="20">
                     <date-picker type="datetimerange" :editable="false" :options="dateOptions" v-model="selectDate" placeholder="请选择时间" style="width: 300px"></date-picker>  
                     <i-button @click="sosoTracks">搜索轨迹</i-button>   
+                </i-col> -->
+                <i-col :span="4" style="text-align: right">
+                    开始时间 : &nbsp;
                 </i-col>
+                <i-col :span="20">
+                    <date-picker type="datetime" style="width: 249px" v-model="startTime" :options="dateOptions"></date-picker>
+                </i-col>
+            </i-row>
+
             <i-row>
+                <i-col :span="4" style="text-align: right"> 结束时间 : &nbsp; </i-col>
+                <i-col :span="12" style="text-align: right">
+                    <date-picker type="datetime"  style="width: 100%" v-model="endTime" :options="dateOptions"></date-picker>
+                </i-col>
+                <i-col :span="4" :offset="1"> 
+                    <i-button @click="sosoTracks">搜索轨迹</i-button>   
+                </i-col>
+            </i-row>
+
             <i-row>
                 <i-col :span="4" style="line-height:60px;text-align:right;"> 播放速度 : &nbsp;</i-col>
                 <i-col :span="18" style="height:60px; padding-top: 12px;">
                     <Slider v-model="velocity" :min="100" :max="5000" show-input :step="100"></Slider>
                 </i-col>    
                 <i-col :span="2" style="line-height:60px;text-align:center;"> 毫秒 </i-col>
-            <i-row>
+            </i-row>
+            
             <i-row>
 
                 <i-col :span="6" :offset="3" style="padding:0 5px">
@@ -91,7 +109,7 @@
                 <i-col :span="6" style="padding:0 5px">
                     <i-button style="width: 100%" @click="replay">重播</i-button>
                 </i-col>
-            <i-row>    
+            </i-row>    
 
         </div>
         <Spin size="large" fix v-if="spinShow"></Spin>

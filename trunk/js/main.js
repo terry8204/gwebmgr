@@ -63,6 +63,10 @@
                     "newpass": $.md5(this.newPass),
                     "oldpass": $.md5(this.oldPass)
                 }
+                if(this.newPass.length < 4 ){
+                    this.$Message.error("密码不能小于四位");
+                    return;  
+                }
                 if(this.oldPass == "" || this.newPass == "" || this.confirmPass == ""){
                     this.$Message.error("密码不能为空!");
                     return; 
