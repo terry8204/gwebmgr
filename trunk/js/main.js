@@ -56,6 +56,7 @@
                 return mgr;
             },
             changeUserPass:function () { 
+                var me = this;
                 var url = myUrls.changeUserPass();
                 var data = {
                     "username":Cookies.get("name"),
@@ -72,7 +73,13 @@
                 }
                 
                 utils.sendAjax(url,data,function (resp) { 
-                    console.log(resp);
+                    if(resp.status == 0){
+                        me.$Message.success("密码修改成功!");
+                        Cookies.set("accountpass",me.newPass,{ expires: 7 });              
+                        me.modalPass = false;
+                    }else{
+                        me.$Message.error("旧密码错误!");
+                    };
                 });
 
             },
@@ -91,6 +98,9 @@
             },
             changePassword:function () { 
                 this.modalPass = true;
+                this.oldPass = "";
+                this.newPass = "";
+                this.confirmPass = "";
             },
             showSetup:function () {
                 this.modal = true;
