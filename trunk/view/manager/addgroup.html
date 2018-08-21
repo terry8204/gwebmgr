@@ -70,7 +70,7 @@
             </Row>
 
             <Row style="margin: 10px 0">
-                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;" :offset="2"><i style="color: red;display: inline-block;">*</i>&nbsp;用户数量 : &nbsp;</i-col>
+                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;" :offset="2">用户数量 : &nbsp;</i-col>
                     <i-col span="8">
                         <i-input v-model.trim.number="usercount"></i-input>
                     </i-col>
@@ -82,7 +82,7 @@
             </Row>
 
             <Row style="margin: 10px 0">
-                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;" :offset="2"><i style="color: red;display: inline-block;">*</i>&nbsp;设备数量 : &nbsp;</i-col>
+                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;" :offset="2">设备数量 : &nbsp;</i-col>
                     <i-col span="8">
                         <i-input v-model.trim.number="devicecount"></i-input>
                     </i-col>
@@ -134,16 +134,23 @@
                         groupname:this.groupname,
                         mintime:this.mintime,
                         maxtime:this.maxtime,
-                        usercount:this.usercount,
-                        devicecount:this.devicecount,
                         groupname:this.groupname,
                         companyid:this.companyid,
                         seenext:this.seenext,
                     };
+                    if(this.usercount == ""){
+                        data.usercount = 0;
+                    }else{
+                        data.usercount = this.usercount;
+                    }
+                    if(this.devicecount == ""){
+                        data.devicecount = 0;
+                    }else{
+                        data.devicecount = this.devicecount;
+                    }
                     utils.sendAjax(url,data,this.doAddcallback);
                 },
                 doAddcallback:function(resp){
-                    console.log(resp)
                     if(resp.status == 0){
                         this.$Message.success("添加成功");
                     }else{

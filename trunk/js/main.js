@@ -28,7 +28,10 @@
                 isShowMonitor:true,
                 isShowReportForm:true,
                 isShowBgManager:true,
-                modalPass:false
+                modalPass:false,
+                oldPass:"",
+                newPass:"",
+                confirmPass:""
             }
         },
         methods:{
@@ -51,6 +54,27 @@
                         mgr = "[设备]";
                     }
                 return mgr;
+            },
+            changeUserPass:function () { 
+                var url = myUrls.changeUserPass();
+                var data = {
+                    "username":Cookies.get("name"),
+                    "newpass": $.md5(this.newPass),
+                    "oldpass": $.md5(this.oldPass)
+                }
+                if(this.oldPass == "" || this.newPass == "" || this.confirmPass == ""){
+                    this.$Message.error("密码不能为空!");
+                    return; 
+                }
+                if( this.confirmPass !== this.newPass){
+                    this.$Message.error("2次密码不一致!");
+                    return;
+                }
+                
+                utils.sendAjax(url,data,function (resp) { 
+                    console.log(resp);
+                });
+
             },
             loginOut:function () {
                 var me = this;
@@ -121,7 +145,7 @@
         }
     };
 
-    // 监控页面的 公司rander 函数
+    // 监控页面的 客户公司rander 函数
     var render = function (h, info){
         var data = info.data;
         var root = info.root;
@@ -837,7 +861,9 @@
                 
                     newArray.forEach(function (company) {
                         if(company.companyid == companyid){
-                            company.children.push(groupObj);
+                            if(groupObj.children.length){
+                                company.children.push(groupObj);
+                            }
                             company.title = company.companyname + "("+ company.children.length + ")";
                         }else{
                             var logintype = Cookies.get("logintype");

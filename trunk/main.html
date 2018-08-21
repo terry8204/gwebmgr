@@ -103,9 +103,28 @@
                     <span>修改密码</span>
                 </p>
                 <div style="text-align:center">
-                    11111
+                    <Row style="margin: 10px 0">
+                        <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">旧密码 : &nbsp;</i-col>
+                        <i-col span="16">
+                            <i-input v-model.trim="oldPass"></i-input>
+                        </i-col>
+                    </Row>
+                    <Row style="margin: 10px 0">
+                        <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">新密码 : &nbsp;</i-col>
+                        <i-col span="16">
+                            <i-input v-model.trim="newPass"></i-input>
+                        </i-col>
+                    </Row>
+                    <Row style="margin: 10px 0">
+                        <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">确认密码 : &nbsp;</i-col>
+                        <i-col span="16">
+                            <i-input v-model.trim="confirmPass"></i-input>
+                        </i-col>
+                    </Row>
                 </div>
-                <div slot="footer" style="padding:12.5px 0;"></div>
+                <div slot="footer" >
+                    <i-button style="width: 100%" @click="changeUserPass" type="primary">重置</i-button>
+                </div>
             </Modal>
         </div>
     </script>

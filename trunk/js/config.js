@@ -10,6 +10,9 @@ var myUrls = {
     loginOut:function(){
         return this.host+"webapi?action=loginout&token="+token;
     },
+    changeUserPass:function () { 
+        return this.host+"webapi?action=changeuserpass&token="+token;
+    },
     queryUserType:function () { 
         return this.host+"webapi?action=queryusertype&token="+token;
     },
