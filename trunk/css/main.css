@@ -507,7 +507,7 @@ div.view-wraper{
         right: 10px;
         bottom: 10px;
         background: #495060;
-        z-index: 9999;
+        z-index: 2;
         border: 1px solid #395060; 
         transition: width .3s, height .3s, transform 2s;
     }
@@ -516,31 +516,63 @@ div.view-wraper{
         color: #fff;
         overflow: hidden;
     }
-    ul li {
+
+    ul.waring-controller li {
         float: left;
         text-align: center;  
     }
-
+    
     div.msg_main{
         width: 100%;
         height: 100%;
         color: #fff;
         background: #F8F8F9;
-        overflow-y: auto;
+        
         position: relative;
     }
+
     div.msg_header{
         position:absolute;
         left: 0px;
         height: 22px;
         right: 0px;
+        background: #495060;
+        color: #fff;
     }
+
+    div.msg_header ul{
+        overflow: hidden;
+    }
+
+    div.msg_header ul li{
+        float: left;
+        width: 70px;
+        text-align: center;
+        line-height: 22px; 
+        cursor: pointer;
+    }
+
+    div.msg_header ul li.selected{
+        color: #495060;
+        background: #F8F8F9;
+    }
+    div.shrink-btn{
+        position:absolute;
+        top: 0px;
+        right: 3px;  
+        height: 22px;
+        width: 22px;
+        text-align: center;
+        cursor: pointer;
+    }
+
     div.msg_content{
         position:absolute;
         left: 0px;
         right: 0px;
         top: 22px;
         bottom: 0;
-        background: red;
+        overflow-y: auto;
+        color: #495060;
     }
     /* 报警css结束 */

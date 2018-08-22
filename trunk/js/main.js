@@ -11,6 +11,15 @@
         currentDeviceRecord:{},
         deviceNames:{}
     };
+    // vuex store
+    var vstore = new Vuex.Store({
+        state:{
+            msg:"shabdfjdg"
+        },
+        actions: {
+            
+        },
+    });
     // 头部组建
     var appHeader = {
         template:document.getElementById("header-template").innerHTML,
@@ -1500,33 +1509,107 @@
 
     // 报警组建
     var waringComponent = {
-        template:document.getElementById("waring-template"),
-        data:function(){
-            return{
-                isLargen:false
-            }
-        },
-        computed:{
-            waringWraperStyle:function () { 
-                return {
-                    width:this.isLargen  ? "600px" : "100px",
-                    height:this.isLargen ? "300px" : "22px"
+            template:document.getElementById("waring-template"),
+            data:function(){
+                return{
+                    isLargen:false,
+                    index:1,
+                    componentName:"waringMsg",
+                    waringModal:false,
+                    checkboxObj:{
+                        "emergencyAlarm": false,
+                        "fatigueDrivingAlarm": false,
+                        "speedAlarm": false,
+                        "gnssFault": false,
+                        "lcdFault": false,
+                        "ttsFault": false,
+                        "cameraFault": false,
+                        "inOutArea": false,
+                        "inOutLine": false,
+                        "vssFault": false,
+                        "stolen": true,
+                        "dangerWarning": true,
+                        "gnssAntennaFault": true,
+                        "gnssAntennaShortCircuit": true,
+                        "mainPowerLow": true,
+                        "mainPowerOff": true,
+                        "transportIcFault": false,
+                        "speedWarning": false,
+                        "fatigueDrivingWarning": false,
+                        "drivingOverTime": false,
+                        "parkOverTime": false,
+                        "roadTravelFault": false,
+                        "routeDeviation": false,
+                        "oilMassAbnormal": false,
+                        "unlawfulFire": false,
+                        "unlawfulShift": false,
+                        "collisionWarning": false,
+                        "rolloverWarning": false,
+                        "unlawfulOpenDoorAlarm": false
+                    }
                 }
+            },
+            computed:{
+                waringWraperStyle:function () { 
+                    return {
+                        width:this.isLargen  ? "600px" : "100px",
+                        height:this.isLargen ? "300px" : "22px"
+                    }
+                }
+            },
+            methods: {
+                changeLargen:function () { 
+                    this.isLargen = !this.isLargen;
+                },
+                changeComponent:function (index) { 
+                    this.index = index;
+                    switch(index){
+                        case 1 :
+                          this.componentName = "waringMsg" ;
+                          break;
+                        case 2 :
+                          this.componentName = "deviceMsg" ;
+                          break;
+                    };
+                },
+                queryWaringMsg:function () {
+                    var url = myUrls.queryAlarm();
+                    utils.sendAjax(url,this.checkboxObj,function (resp) { 
+                        console.log(resp);
+                    });
+                },
+                filterWaringType:function () { 
+                    this.waringModal = true;
+                }
+            },
+            components:{
+                waringMsg:{
+                    template:"<div></div>",
+                    data:function () { 
+                        return {
+
+                        }
+                    },
+                    methods:{
+
+                    },
+                    computed:{
+
+                    }
+                },
+                deviceMsg:{
+                    template:"<h1>我是设备消息</h1>"
+                },
+            },
+            mounted:function(){
+                this.queryWaringMsg();
             }
-        },
-        methods: {
-            changeLargen:function () { 
-                this.isLargen = !this.isLargen;
-            }
-        },
-        mounted:function(){
-        
-        }
-    };
+        };
 
     // 根组件
     new Vue({
         el:"#app",
+        store:vstore,
         i18n:i18n,
         data:{
             componentId:"",

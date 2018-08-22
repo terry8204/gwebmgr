@@ -151,14 +151,6 @@ Vue.component('expand-row',{
     }
 });
 
-
-
-
-
-
-
-
-
 //  得到表格row组建
 var expandRow = Vue.component('expand-row');
 
@@ -171,3 +163,5 @@ function playBack(deviceid) {
 function trackMap(deviceid) { 
     window.open("trackmap.html?deviceid=" + deviceid);
 }
+
+

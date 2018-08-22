@@ -216,12 +216,132 @@
             </ul>
             <div class="msg_main" v-show="isLargen">
                 <div class="msg_header">
-
-                <div>
+                    <ul>
+                        <li :class="{selected:index == 1}" @click="changeComponent(1)">报警信息</li>
+                        <li :class="{selected:index == 2}" @click="changeComponent(2)">设备信息</li>
+                        <li style="width:95px;margin-left:10px;" @click="filterWaringType"> [过滤报警类型] </li>
+                    </ul> 
+                    <div @click="changeLargen" class="shrink-btn"><Icon type="ios-trending-down" /></div>
+                </div>
                 <div class="msg_content">
-
-                <div>
+                    <component :is="componentName"></component>
+                </div>
             </div>
+
+            <Modal v-model="waringModal" width="680" class-name="vertical-center-modal">
+                <p slot="header" style="color:#f60;text-align:center">
+                    <Icon type="ios-information-circle"></Icon>
+                    <span>过滤报警类型</span>
+                </p>
+                <div>
+                    <Row style="margin: 10px 0">
+                        <i-col span="6">
+                            <Checkbox  v-model="checkboxObj.emergencyAlarm">emergencyAlarm</Checkbox>
+                        </i-col>
+                        <i-col span="6">
+                            <Checkbox  v-model="checkboxObj.fatigueDrivingAlarm">fatigueDrivingAlarm</Checkbox>
+                        </i-col>
+                        <i-col span="6">
+                                <Checkbox  v-model="checkboxObj.speedAlarm">speedAlarm</Checkbox>
+                        </i-col>
+                        <i-col span="6">
+                                <Checkbox  v-model="checkboxObj.gnssFault">gnssFault</Checkbox>
+                        </i-col>
+                    </Row>
+                    <Row style="margin: 10px 0">
+                        <i-col span="6">
+                            <Checkbox  v-model="checkboxObj.lcdFault">lcdFault</Checkbox>
+                        </i-col>
+                        <i-col span="6">
+                            <Checkbox  v-model="checkboxObj.ttsFault">ttsFault</Checkbox>
+                        </i-col>
+                        <i-col span="6">
+                            <Checkbox  v-model="checkboxObj.cameraFault">cameraFault</Checkbox>
+                        </i-col>
+                        <i-col span="6">
+                                <Checkbox  v-model="checkboxObj.inOutArea">inOutArea</Checkbox>
+                        </i-col>
+                    </Row>
+                    <Row style="margin: 10px 0">
+                        <i-col span="6">
+                            <Checkbox  v-model="checkboxObj.inOutLine">inOutLine</Checkbox>
+                        </i-col>
+                        <i-col span="6">
+                            <Checkbox  v-model="checkboxObj.vssFault">vssFault</Checkbox>
+                        </i-col>
+                        <i-col span="6">
+                            <Checkbox  v-model="checkboxObj.stolen">stolen</Checkbox>
+                        </i-col>
+                        <i-col span="6">
+                                <Checkbox  v-model="checkboxObj.dangerWarning">dangerWarning</Checkbox>
+                        </i-col>
+                    </Row>
+                    <Row style="margin: 10px 0">
+                            <i-col span="6">
+                                <Checkbox  v-model="checkboxObj.gnssAntennaFault">gnssAntennaFault</Checkbox>
+                            </i-col>
+                            <i-col span="6">
+                                <Checkbox  v-model="checkboxObj.gnssAntennaShortCircuit">gnssAntennaShortCircuit</Checkbox>
+                            </i-col>
+                            <i-col span="6">
+                                    <Checkbox  v-model="checkboxObj.mainPowerLow">mainPowerLow</Checkbox>
+                            </i-col>
+                            <i-col span="6">
+                                    <Checkbox  v-model="checkboxObj.mainPowerOff">mainPowerOff</Checkbox>
+                            </i-col>
+                        </Row>
+                        <Row style="margin: 10px 0">
+                            <i-col span="6">
+                                <Checkbox  v-model="checkboxObj.transportIcFault">transportIcFault</Checkbox>
+                            </i-col>
+                            <i-col span="6">
+                                <Checkbox  v-model="checkboxObj.speedWarning">speedWarning</Checkbox>
+                            </i-col>
+                            <i-col span="6">
+                                <Checkbox  v-model="checkboxObj.fatigueDrivingWarning">fatigueDrivingWarning</Checkbox>
+                            </i-col>
+                            <i-col span="6">
+                                    <Checkbox  v-model="checkboxObj.drivingOverTime">drivingOverTime</Checkbox>
+                            </i-col>
+                        </Row>
+                        <Row style="margin: 10px 0">
+                            <i-col span="6">
+                                <Checkbox  v-model="checkboxObj.parkOverTime">parkOverTime</Checkbox>
+                            </i-col>
+                            <i-col span="6">
+                                <Checkbox  v-model="checkboxObj.roadTravelFault">roadTravelFault</Checkbox>
+                            </i-col>
+                            <i-col span="6">
+                                <Checkbox  v-model="checkboxObj.routeDeviation">routeDeviation</Checkbox>
+                            </i-col>
+                            <i-col span="6">
+                                    <Checkbox  v-model="checkboxObj.oilMassAbnormal">oilMassAbnormal</Checkbox>
+                            </i-col>
+                        </Row>
+                        <Row style="margin: 10px 0">
+                                <i-col span="6">
+                                    <Checkbox  v-model="checkboxObj.unlawfulFire">unlawfulFire</Checkbox>
+                                </i-col>
+                                <i-col span="6">
+                                    <Checkbox  v-model="checkboxObj.unlawfulShift">unlawfulShift</Checkbox>
+                                </i-col>
+                                <i-col span="6">
+                                        <Checkbox  v-model="checkboxObj.collisionWarning">collisionWarning</Checkbox>
+                                </i-col>
+                                <i-col span="6">
+                                        <Checkbox  v-model="checkboxObj.rolloverWarning">rolloverWarning</Checkbox>
+                                </i-col>
+                            </Row>     
+                            <!-- <Row style="margin: 10px 0">
+                                <i-col span="6">
+                                    <Checkbox  v-model="checkboxObj.unlawfulOpenDoorAlarm">unlawfulOpenDoorAlarm</Checkbox>
+                                </i-col>
+                            </Row>   -->
+                </div>
+                <div slot="footer">
+                    <Button type="primary" size="large" long  @click="">确定</Button>
+                </div>
+            </Modal>
         </div>
     </script>
 

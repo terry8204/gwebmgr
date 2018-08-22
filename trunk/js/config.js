@@ -58,6 +58,9 @@ var myUrls = {
     queryUser:function () { 
         return this.host + "webapi?action=pagequeryuser&token="+token;
     },
+    resetUserLoginPwd:function () { 
+        return this.host + "webapi?action=resetuserpwd&token="+token;
+    },
     delUser:function () { 
         return this.host + "webapi?action=deleteuser&token="+token;
     },
@@ -101,6 +104,10 @@ var myUrls = {
     // 查询轨迹
     queryTracks:function (token) { 
         return this.host + "webapi?action=querytracks&token="+token;
+    },
+    // 查询报警信息
+    queryAlarm:function () {
+        return this.host + "webapi?action=queryalarm&token="+token;
     }
 };
 

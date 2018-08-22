@@ -70,7 +70,7 @@
                         {
                             title: '操作',
                             key: 'action',
-                            width: 150,
+                            width: 200,
                             align: 'center',
                             render: function(h, params) {
                                 return h('div', [
@@ -88,6 +88,20 @@
                                             }
                                         }
                                     }, '修改'),
+                                    h('Button', {
+                                        props: {
+                                            type: 'primary',
+                                            size: 'small'
+                                        },
+                                        style: {
+                                            marginRight: '5px'
+                                        },
+                                        on: {
+                                            click: function() {
+                                                 vueInstanse.resetDevicePwd(params.index);
+                                            }
+                                        }
+                                    }, '重置密码'),
                                     h('Button', {
                                         props: {
                                             type: 'error',
@@ -191,7 +205,19 @@
                     $("#mar-view").load("../view/manager/edituser.html",function(){
                         me.$Loading.finish();
                     });
-                }
+                },
+                resetDevicePwd:function(index){
+                    var me = this;
+                    var username = this.tableData[index].username;
+                    var url = myUrls.resetUserLoginPwd();  
+                    utils.sendAjax(url,{username:username},function (resp) { 
+                        if(resp.status === 0){
+                            me.$Message.success("密码重置为:123456");
+                        }else{
+                            me.$Message.error("密码重置失败");
+                        }
+                    });
+                },
             },
             mounted:function(){
                 this.getUserInfoList();
