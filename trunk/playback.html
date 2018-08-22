@@ -183,25 +183,25 @@
                         },
                         getRequestBeginAndEndTimeStr:function(){
                             var requestTimeStrArr = [];
-                            var beginTimeStr = DateFormat.longToDateTimeStr(this.startTime,0);
-                            var endTimeStr   = DateFormat.longToDateTimeStr(this.endTime,0);
+                            var beginTimeStr = DateFormat.longToDateTimeStr(this.startTime.getTime(),0);
+                            var endTimeStr   = DateFormat.longToDateTimeStr(this.endTime.getTime(),0);
                             
                             if(beginTimeStr.indexOf("00:00:00") != -1){
-                                requestTimeStrArr.push({begintime:this.getDayBeginTimeStr(this.startTime),endtime:this.getDayEndTimeStr(this.startTime)});
+                                requestTimeStrArr.push({begintime:this.getDayBeginTimeStr(this.startTime.getTime()),endtime:this.getDayEndTimeStr(this.startTime.getTime())});
                             }else{
-                                requestTimeStrArr.push({begintime:beginTimeStr,endtime:this.getDayEndTimeStr(this.startTime)});
+                                requestTimeStrArr.push({begintime:beginTimeStr,endtime:this.getDayEndTimeStr(this.startTime.getTime())});
                             }
 
                             if(endTimeStr.indexOf("00:00:00") != -1){
-                                requestTimeStrArr.push({begintime:this.getDayBeginTimeStr(this.endTime),endtime:this.getDayEndTimeStr(this.endTime)});  
+                                requestTimeStrArr.push({begintime:this.getDayBeginTimeStr(this.endTime.getTime()),endtime:this.getDayEndTimeStr(this.endTime.getTime())});  
                             }else{
-                                requestTimeStrArr.push({begintime:this.getDayBeginTimeStr(this.endTime),endtime:endTimeStr});  
+                                requestTimeStrArr.push({begintime:this.getDayBeginTimeStr(this.endTime.getTime()),endtime:endTimeStr});  
                             }
                             return requestTimeStrArr;
                         },
                         getMiddleDayReqParameter:function(){
-                            var beginDateStr = DateFormat.longToDateStr(this.startTime,8);
-                            var endDateStr   = DateFormat.longToDateStr(this.endTime,8);
+                            var beginDateStr = DateFormat.longToDateStr(this.startTime.getTime(),8);
+                            var endDateStr   = DateFormat.longToDateStr(this.endTime.getTime(),8);
                             var beginDateStrTime =  DateFormat.dateStrToLong(beginDateStr,0) - 3600*1000*8 + this.dayTime;  
                             var endDateStrTime   =  DateFormat.dateStrToLong(endDateStr,0) - 3600*1000*8 - this.dayTime;    
                             if(beginDateStrTime == endDateStrTime){
@@ -240,6 +240,7 @@
                         sosoTracks:function(){   
                             var me = this;
                                 me.resetMapState();
+                                me.verifySelectionTime();
                             if(this.lock){
                                 if(!this.isPlay){
                                     this.isPlay = true;
@@ -268,13 +269,34 @@
                                                 });
                                                 me.filtertracks();
                                                 me.drawingLine();
-                                            };
-                                            
+                                            };                                       
                                     });
                                 }else{
-                                    var beginDateStr = DateFormat.longToDateStr(this.startTime ,8);
-                                    var endDateStr =   DateFormat.longToDateStr(this.endTime - this.dayTime ,8);
+                                    var beginDateStr = DateFormat.longToDateStr(this.startTime.getTime() ,8);
+                                    var endDateStr =   DateFormat.longToDateStr(this.endTime.getTime(),8);
+                                    var prveDateStr = DateFormat.longToDateStr(this.endTime.getTime() - this.dayTime,8);
+                                    console.log(beginDateStr,endDateStr,prveDateStr);
                                     if(beginDateStr == endDateStr){
+                                        me.len = 1;
+                                            me.requestTracks(times[0].begintime,times[1].endtime,function (resp) {                       
+                                                if(resp.status == 0 && resp.records){
+                                                    resp.records.forEach(function (record) {
+                                                        var direction = directionList[parseInt(Math.random()*8)];
+                                                            record.direction = direction;
+                                                            me.records.push(record);
+                                                    });     
+                                                };
+
+                                                if(me.respCount == me.len){
+                                                    me.spinShow = false;
+                                                    me.records.sort(function (a,b) { 
+                                                        return a.arrivedtime - b.arrivedtime;
+                                                    });
+                                                    me.filtertracks();
+                                                    me.drawingLine();
+                                                };
+                                            });
+                                    }else if(beginDateStr == prveDateStr){
                                         me.len = 2;
                                         times.forEach(function (timeObj) { 
                                             me.requestTracks(timeObj.begintime,timeObj.endtime,function (resp) {                       
@@ -309,7 +331,6 @@
                                                             me.records.push(record);
                                                     });
                                                 };
-
                                                 if(me.respCount == me.len){
                                                     me.spinShow = false;
                                                     me.records.sort(function (a,b) { 
@@ -322,9 +343,7 @@
                                         });
                                     }                                   
                                 }
-                            }else{
-                                this.$Message.error("请选择正确的时间!");
-                            }   
+                            } 
                         },
                         requestTracks:function(beginTime,endtime,callback){
                             this.spinShow = true;
@@ -537,6 +556,35 @@
                         getDirectionIcon:function(angle){
                             return new BMap.Icon("images/carstate/green_"+ angle +".gif", new BMap.Size(16, 16), { imageOffset: new BMap.Size(0, 0)}); 
                         },
+                        verifySelectionTime:function(){
+                            if(this.startTime && this.endTime){
+                                var startTime = this.startTime.getTime();
+                                var endTime   = this.endTime.getTime();
+                                if(startTime == endTime){
+                                    this.lock = true;
+                                }else{
+                                    if(endTime - startTime > 0){
+                                        if((endTime - startTime) < this.dayTime ){
+                                            this.lock = true;
+                                        }else{
+                                            var day = (endTime - startTime)/this.dayTime;
+                                            if(day > 30){
+                                                this.lock = false;
+                                                this.$Message.error("时间跨度不能超过30天!");
+                                            }else{
+                                                this.lock = true;
+                                            };
+                                        }
+                                    }else{
+                                        this.lock = false;
+                                        this.$Message.error("开始时间不能大于结束时间!");
+                                    }                                   
+                                };
+                            }else{
+                                this.lock = false;
+                                this.$Message.error("请选择开始结束时间!");
+                            }
+                        }
                     },
                     computed:{
                         token:function(){
@@ -544,33 +592,33 @@
                         }
                     },
                     watch: {
-                        selectDate:function(){
-                            if(this.selectDate[0]&&this.selectDate[1]){
-                                if(this.selectDate[0] && this.selectDate[1]){
-                                    this.startTime = this.selectDate[0].getTime();
-                                    this.endTime   = this.selectDate[1].getTime();
-                                    if(this.startTime == this.endTime){
-                                        this.lock = true;
-                                    }else{
-                                        if((this.endTime - this.startTime) < this.dayTime ){
-                                            this.lock = true;
-                                        }else{
-                                            var day = (this.endTime - this.startTime)/this.dayTime;
-                                            if(day > 7){
-                                                this.lock = false;
-                                                this.$Message.error("时间不能超过七天!");
-                                            }else{
-                                                this.lock = true;
-                                            };
-                                        }
-                                    };
-                                }else{
-                                    this.lock = false;
-                                }
-                            }else{
-                                this.lock = false;
-                            }                        
-                        },
+                        // selectDate:function(){
+                        //     if(this.selectDate[0]&&this.selectDate[1]){
+                        //         if(this.selectDate[0] && this.selectDate[1]){
+                        //             this.startTime = this.selectDate[0].getTime();
+                        //             this.endTime   = this.selectDate[1].getTime();
+                        //             if(this.startTime == this.endTime){
+                        //                 this.lock = true;
+                        //             }else{
+                        //                 if((this.endTime - this.startTime) < this.dayTime ){
+                        //                     this.lock = true;
+                        //                 }else{
+                        //                     var day = (this.endTime - this.startTime)/this.dayTime;
+                        //                     if(day > 7){
+                        //                         this.lock = false;
+                        //                         this.$Message.error("时间不能超过七天!");
+                        //                     }else{
+                        //                         this.lock = true;
+                        //                     };
+                        //                 }
+                        //             };
+                        //         }else{
+                        //             this.lock = false;
+                        //         }
+                        //     }else{
+                        //         this.lock = false;
+                        //     }                        
+                        // },
                         velocity:function(){
                             this.action();
                         }

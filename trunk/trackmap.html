@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>轨迹回放</title>
+    <link rel="stylesheet" href="dist/styles/iview.css">
+    <style>
+        html,body,#container,#bmap{
+            width: 100%;
+            height: 100%;  
+            position: relative;
+        }
+        div.controller{
+            position: absolute;
+            right: 10px;
+            bottom: 10px;
+            width: 500px;
+            height: 240px;
+            line-height: 60px;
+            background: #E8F0F7; 
+            border:1px solid #C3CEDE; 
+        }
+        
+    </style>
+</head>
+<body>
+    <div id="container">
+        <div id="bmap"></div>
+    </div>
+    <script src="dist/vue.min.js"></script>
+    <script src="dist/iview.min.js"></script>
+    <script src="js/jquery.js"></script>
+    <script src="js/js.cookie.min.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/hashmap.js"></script>
+    <script src="js/localcachemgr.js"></script>
+    <script src="js/transformlatlon.js"></script>
+    <script src="js/dateformat.js"></script>
+    <script src="js/util.js"></script>
+    <script src="http://api.map.baidu.com/api?v=3.0&ak=e7SC5rvmn2FsRNE4R1ygg44n"></script>
+    <!-- <script type="text/javascript" src="http://api.map.baidu.com/library/DistanceTool/1.2/src/DistanceTool_min.js"></script> -->
+    <script>
+        (function () { 
+            var carIcon   = new BMap.Icon("images/carstate/green_0.gif", new BMap.Size(16, 16), { imageOffset: new BMap.Size(0, 0)});
+            var startIcon = new BMap.Icon("./images/map/marker_qidian.png", new BMap.Size(32, 32), { imageOffset: new BMap.Size(0, 0)});
+            var endIcon   = new BMap.Icon("./images/map/marker_zhongdian.png", new BMap.Size(32, 32), { imageOffset: new BMap.Size(0, 0)});
+            var directionList = [ 0 , 45 , 90 , 135 , 180 , 225 , 270 , 315 ];
+            var vm = new Vue({
+                    el:"#container",
+                    data:{
+                       
+                    },
+                    methods: {
+                        initMap : function(){
+                            this.map = new BMap.Map("bmap",{minZoom:4,maxZoom:18});
+                            this.map.enableScrollWheelZoom();
+                            this.map.enableAutoResize();
+                            this.map.disableDoubleClickZoom();
+                            this.map.centerAndZoom(new BMap.Point(108.0017245,35.926895),5);
+                        },
+                        drawingLine:function(){
+                          
+                        },
+                        getLableContent:function(info){
+                            var address = this.getAddress(info);
+                            var sContent = '<div>' +
+                                '<p> 设备ID: ' +info.deviceid+'</p>' +
+                                '<p> 经纬度: ' +info.callon+","+ info.callat +'</p>' +
+                                '<p> 最后时间: ' +DateFormat.longToDateTimeStr(info.arrivedtime,0)+'</p>' +
+                                '<p class="last-address"> 详细地址: '+address+'</p></div><div class="guiji"><span class="guiji_sanjiao"></span><span class="guiji_sanjiao_2"></span></div>';
+                            return sContent;
+                        },
+                        getAddress:function (info) {
+                            var callon = info.callon;
+                            var callat = info.callat;
+                            var bd09 = wgs84tobd09(callon,callat)
+                            var lng = bd09[0].toFixed(5);
+                            var lat = bd09[1].toFixed(5);
+                            var address = LocalCacheMgr.getAddress(lng,lat);
+                            if(address !== null){
+                                return address;
+                            }
+                            utils.getBaiduAddressFromBaidu(lng,lat,function (resp) {
+
+                                if(resp.length){
+                                    address = resp;
+                                    $("p.last-address").html(" 详细地址: " + address);
+                                    LocalCacheMgr.setAddress(lng,lat,address);
+                                }else{
+                                utils.getJiuHuAddressSyn(callon,callat,function (resp) {
+                                        address = resp.address
+                                        $("p.last-address").html(" 详细地址: " + address);
+                                        LocalCacheMgr.setAddress(lng,lat,address);
+                                });
+                                }
+                            });
+                            return "地址正在解析..."
+                        },
+                        resetMapState:function(){
+                            if(this.carMarker){
+                                this.map.removeOverlay(this.carMarker);
+                                this.carMarker = null;
+                            };
+                            if(this.firstMarker){
+                                this.map.removeOverlay(this.firstMarker);
+                                this.firstMarker = null;
+                            };
+                            if(this.lastMakrker){
+                                this.map.removeOverlay(this.lastMakrker);
+                                this.lastMakrker = null;
+                            };
+                            if(this.polyline){
+                                this.map.removeOverlay(this.polyline);
+                                this.polyline = null;
+                            };
+                            if(this.markerLabel){
+                                this.map.removeOverlay(this.markerLabel);
+                                this.markerLabel = null;
+                            };
+                            if(this.intervalInstanse){
+                                clearInterval(this.intervalInstanse);
+                                this.intervalInstanse = null;
+                            };
+                            this.index = 0;
+                            this.records = [];
+                            this.respCount = 0;
+                            var centerPoint = this.map.getCenter();
+                            if(this.map.getZoom() != 5 || centerPoint.lng !== 108.0017245 || centerPoint.lat !== 35.926895){
+                                this.map.centerAndZoom(new BMap.Point(108.0017245,35.926895),5);
+                            };
+                        },
+                        getDirectionIcon:function(angle){
+                            return new BMap.Icon("images/carstate/green_"+ angle +".gif", new BMap.Size(16, 16), { imageOffset: new BMap.Size(0, 0)}); 
+                        },
+                        verifySelectionTime:function(){
+                            if(this.startTime && this.endTime){
+                                var startTime = this.startTime.getTime();
+                                var endTime   = this.endTime.getTime();
+                                if(startTime == endTime){
+                                    this.lock = true;
+                                }else{
+                                    if(endTime - startTime > 0){
+                                        if((endTime - startTime) < this.dayTime ){
+                                            this.lock = true;
+                                        }else{
+                                            var day = (endTime - startTime)/this.dayTime;
+                                            if(day > 30){
+                                                this.lock = false;
+                                                this.$Message.error("时间跨度不能超过30天!");
+                                            }else{
+                                                this.lock = true;
+                                            };
+                                        }
+                                    }else{
+                                        this.lock = false;
+                                        this.$Message.error("开始时间不能大于结束时间!");
+                                    }                                   
+                                };
+                            }else{
+                                this.lock = false;
+                                this.$Message.error("请选择开始结束时间!");
+                            }
+                        }
+                    },
+                    computed:{
+                        token:function(){
+                            return Cookies.get("token");
+                        }
+                    },
+                    watch: {
+                        
+                    },
+                    mounted : function() {
+                        this.initMap();
+                        var deviceid = utils.getParameterByName("deviceid");
+                        if(deviceid){
+                            this.deviceid = deviceid;
+                        }else{
+                            this.$Message.error("设备id不能为空!");
+                        };       
+                    }
+                });
+        })();
+    </script>
+</body>
+</html>
