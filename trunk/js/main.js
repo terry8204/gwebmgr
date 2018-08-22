@@ -1546,7 +1546,8 @@
                         "collisionWarning": false,
                         "rolloverWarning": false,
                         "unlawfulOpenDoorAlarm": false
-                    }
+                    },
+                    waringRecords:"aaaa"
                 }
             },
             computed:{
@@ -1585,6 +1586,7 @@
             components:{
                 waringMsg:{
                     template:"<div></div>",
+                    props:['waringrecords'],
                     data:function () { 
                         return {
 
@@ -1595,6 +1597,9 @@
                     },
                     computed:{
 
+                    },
+                    mounted:function () { 
+                        console.log(this.waringrecords);
                     }
                 },
                 deviceMsg:{
