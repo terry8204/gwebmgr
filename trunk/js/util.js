@@ -1,4 +1,4 @@
-var utils = {
+var utils = {    
     sendAjax:function(url,data,callback){
         var encode = JSON.stringify(data);
             $.ajax({
@@ -100,6 +100,29 @@ var utils = {
         }
         return range;						
     },
+    getAngle:function(course){
+        var angle = null ;
+        if(course == 0){
+            angle = 0;
+        }else if(course > 0 && course <= 45){
+            angle = 45;
+        }else if(course > 45 && course <= 90){
+            angle = 90;
+        }else if(course > 90 && course <= 135){
+            angle = 135;
+        }else if(course > 135 && course <= 180){
+            angle = 180;
+        }else if(course > 180 && course <= 225){
+            angle = 225;
+        }else if(course > 225 && course <= 270){
+            angle = 270;
+        }else if(course > 270 && course <= 315){
+            angle = 315;
+        }else if(course > 315 && course <= 360){
+            angle = 0;
+        }
+        return angle;
+    },
 };
 
 
@@ -128,11 +151,23 @@ Vue.component('expand-row',{
     }
 });
 
+
+
+
+
+
+
+
+
 //  得到表格row组建
 var expandRow = Vue.component('expand-row');
 
 // 轨迹回放
-
 function playBack(deviceid) { 
     window.open("playback.html?deviceid=" + deviceid);
+}
+
+// 跟踪
+function trackMap(deviceid) { 
+    window.open("trackmap.html?deviceid=" + deviceid);
 }

@@ -1,6 +1,6 @@
 (function(){
     // 方向数组
-    var directionList = [ 0 , 45 , 90 , 135 , 180 , 225 , 270 , 315 ]; 
+    // var directionList = [ 0 , 45 , 90 , 135 , 180 , 225 , 270 , 315 ]; 
     // 是否显示公司名字
     var isShowCompany = Cookies.get("isShowCompany"); 
     //全局变量
@@ -153,8 +153,9 @@
         },
         watch: {
             intervalTime:function () {
-                this.$emit("change-intervaltime",this.intervalTime);
-                store.intervalTime = this.intervalTime;
+                var intervalTime = Number(this.intervalTime)
+                this.$emit("change-intervaltime",intervalTime);
+                store.intervalTime = intervalTime;
             }
         }
     };
@@ -411,7 +412,8 @@
                         record.point = point;
                         var isOnline = (Date.now() - record.arrivedtime) < me.offlineTime ? true : false ; 
                         var iconState = null;
-                        var angle = directionList[parseInt(Math.random()*8)];  
+                        // var angle = directionList[parseInt(Math.random()*8)];  
+                        var angle = utils.getAngle(record.course);
                         if(isOnline){
                             iconState = new BMap.Icon("../images/carstate/green_"+angle+".png", new BMap.Size(16, 16), { imageOffset: new BMap.Size(0, 0)}); 
                         }else{
@@ -683,7 +685,7 @@
                 var markers = this.map.getOverlays();
                 for(var i = 0 ; i < markers.length ; i++){
                     var marker = markers[i];
-                    if(marker.deviceid == store.currentDeviceId){              
+                    if(marker.deviceid == store.currentDeviceId){           
                         var infoWindow = me.getInfoWindow(record);
                          marker.openInfoWindow(infoWindow,record.point)
                     };
@@ -713,7 +715,7 @@
                 '<p class="last-address"> 详细地址: '+address+'</p>' +
                 '<p class="operation">'+
                     '<span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="playBack('+info.deviceid+')">回放</span>'+
-                    '<span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="alert('+info.deviceid+')">跟踪</span> </p></div>';
+                    '<span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="trackMap('+info.deviceid+')">跟踪</span> </p></div>';
                 var opts = {
                     width:300,
                 };
@@ -749,7 +751,7 @@
                 this.isShowConpanyName = state;
             },
             setIntervalTime:function (interval) {
-                this.intervalTime = interval*1000;
+                this.intervalTime = interval;
                 clearInterval(this.intervalInstanse);
                 this.setIntervalReqRecords();
             },
@@ -839,11 +841,38 @@
                 };
                 return newArray;
             },
+            filterGroups:function (groups) { 
+
+                var newGroups = [];
+                var newObject = {};
+                groups.forEach(function (item) { 
+                    var groupid = item.groupid;
+                    var devices = item.devices;
+                    if(newObject[groupid] == undefined){
+                        newObject[groupid] = {
+                            groupname:item.groupname,
+                            devices:[],
+                            groupid:item.groupid,
+                            remark:item.remark
+                        };
+                    }
+                    newObject[groupid].devices = newObject[groupid].devices.concat(devices);
+                });
+                
+                for(var key in newObject){
+                    if(newObject.hasOwnProperty(key)){
+                        newGroups.push(newObject[key]);
+                    }
+                }
+
+                return newGroups;
+            },
             getAllShowConpanyTreeData:function () {
                 var me = this;
                 var newArray = me.getNewCompanyArr();
                 var newGroups = [];                 
                 me.groups.forEach(function (group,index) {
+                    
                     var companyid = group.companyid;
                     var onlineCount = 0;
                     var groupObj = {
@@ -900,8 +929,9 @@
             },
             getAllHideConpanyTreeData:function () {
                 var me = this;
+                var groups = this.filterGroups(this.groups);
+                    groups.forEach(function (group) {
 
-                    this.groups.forEach(function (group) {
                         var onlineCount = 0;
                         var groupData =  {
                             title: group.groupname,
@@ -1006,7 +1036,8 @@
             },
             getOnlineHideConpanyTreeData:function () {
                 var me = this;
-                    this.groups.forEach(function (group) {
+                var groups = this.filterGroups(this.groups);
+                    groups.forEach(function (group) {
                         var groupData =  {
                             title: group.groupname,
                             expand: false,
@@ -1107,8 +1138,8 @@
             },
             getOfflineHideConpanyTreeData:function () {
                 var me = this;
-
-                    this.groups.forEach(function (group) {
+                var groups = this.filterGroups(this.groups);
+                    groups.forEach(function (group) {
                         var groupData =  {
                             title: group.groupname,
                             expand: false,
@@ -1167,28 +1198,32 @@
             setIntervalReqRecords:function(){
                 var me = this;
                 this.intervalInstanse = setInterval(function () {
-                    var devIdList = Object.keys(store.deviceNames);
-                    me.getLastPosition(devIdList,function (resp) {
-                        resp.records.forEach(function (record) {
-                           if(record){
-                               var isOnline = (Date.now() - record.arrivedtime) < me.offlineTime ? true : false ; 
-                               var iconState = null;
-                               var angle = directionList[parseInt(Math.random()*8)];
-                                if(isOnline){
-                                    iconState = new BMap.Icon("../images/carstate/green_"+angle+".png", new BMap.Size(16, 16), { imageOffset: new BMap.Size(0, 0)}); 
-                                }else{
-                                    iconState = new BMap.Icon("../images/carstate/gray_"+angle+".png", new BMap.Size(16, 16), { imageOffset: new BMap.Size(0, 0)}); 
+                    me.intervalTime--;
+                    if(me.intervalTime <= 0 ){
+                        var devIdList = Object.keys(store.deviceNames);
+                        me.getLastPosition(devIdList,function (resp) {
+                            resp.records.forEach(function (record) {
+                                if(record){
+                                    var isOnline = (Date.now() - record.arrivedtime) < me.offlineTime ? true : false ; 
+                                    var iconState = null;
+                                    var angle = utils.getAngle(record.course);
+                                        if(isOnline){
+                                            iconState = new BMap.Icon("../images/carstate/green_"+angle+".png", new BMap.Size(16, 16), { imageOffset: new BMap.Size(0, 0)}); 
+                                        }else{
+                                            iconState = new BMap.Icon("../images/carstate/gray_"+angle+".png", new BMap.Size(16, 16), { imageOffset: new BMap.Size(0, 0)}); 
+                                        };
+                                        record.icon = iconState;
+                                    var lng_lat = wgs84tobd09(record.callon,record.callat);
+                                    record.point = new BMap.Point(lng_lat[0],lng_lat[1]);
                                 };
-                                record.icon = iconState;
-                               var lng_lat = wgs84tobd09(record.callon,record.callat);
-                               record.point = new BMap.Point(lng_lat[0],lng_lat[1]);
-                           };
-                        })
-                        me.records = resp.records;
-                        me.updateTreeOnlineState();
-                        me.moveMarkers();
-                    });
-                }, this.intervalTime);
+                            })
+                            me.records = resp.records;
+                            me.updateTreeOnlineState();
+                            me.moveMarkers();
+                            me.intervalTime = Number(store.intervalTime);
+                        });
+                    }
+                }, 1000);
             },
             moveMarkers:function () {
                 var me = this;
@@ -1218,7 +1253,8 @@
                     if(record == null){ return };
                     var isOnline = (Date.now() - record.arrivedtime) < me.offlineTime ? true : false ; 
                     var iconState = null;
-                    var angle = directionList[parseInt(Math.random()*8)];  
+                    // var angle = directionList[parseInt(Math.random()*8)];  
+                    var angle = utils.getAngle(record.course);
                     if(isOnline){
                         iconState = new BMap.Icon("../images/carstate/green_"+angle+".png", new BMap.Size(16, 16), { imageOffset: new BMap.Size(0, 0)}); 
                     }else{
@@ -1299,7 +1335,7 @@
                     //     me.getCurrentStateTreeData(me.selectedState,me.isShowConpanyName);
                     // }else{
                         this.getMonitorListByUser(1,function (resp) {
-                            me.groups = resp.groups;
+                            me.groups = resp.groups;                          
                             me.queryCompanyTree(function (response) {
                                 me.companys = response.companys;
                                 me.getCurrentStateTreeData(me.selectedState,me.isShowConpanyName);
@@ -1316,7 +1352,7 @@
             // var isShowCompany = Cookies.get("isShowCompany");
             var havecompany = this.isShowConpanyName == true ? 1 : 0;
             // this.isShowConpanyName = store.navState;
-            this.intervalTime      = store.intervalTime * 1000;
+            this.intervalTime      = Number(store.intervalTime);
             this.initMap();
             this.getMonitorListByUser(havecompany,function (resp) {
                 me.groups = resp.groups;
@@ -1462,6 +1498,31 @@
         }
     };
 
+    // 报警组建
+    var waringComponent = {
+        template:document.getElementById("waring-template"),
+        data:function(){
+            return{
+                isLargen:false
+            }
+        },
+        computed:{
+            waringWraperStyle:function () { 
+                return {
+                    width:this.isLargen  ? "600px" : "100px",
+                    height:this.isLargen ? "300px" : "22px"
+                }
+            }
+        },
+        methods: {
+            changeLargen:function () { 
+                this.isLargen = !this.isLargen;
+            }
+        },
+        mounted:function(){
+        
+        }
+    };
 
     // 根组件
     new Vue({
@@ -1489,7 +1550,8 @@
             appHeader : appHeader,
             bgManager : bgManager,
             monitor   : monitor,
-            reportForm : reportForm
+            reportForm : reportForm,
+            waringComponent : waringComponent
         },
         mounted:function () {
 

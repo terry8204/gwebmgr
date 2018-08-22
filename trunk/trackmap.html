@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>轨迹回放</title>
+    <title>跟踪</title>
     <link rel="stylesheet" href="dist/styles/iview.css">
     <style>
         html,body,#container,#bmap{
@@ -22,12 +22,83 @@
             background: #E8F0F7; 
             border:1px solid #C3CEDE; 
         }
+        label.BMapLabel::after{
+            font-size: 0px;
+            line-height: 0px;
+            width: 0px;
+            height: 0px;
+            border-width: 10px;
+            border-style: dashed solid dashed dashed;
+            border-color: transparent red transparent transparent;
+            position: absolute;
+            margin-left: -19px;
+            margin-top: -42px;
+        }
+        .guiji_sanjiao {
+            font-size: 0px;
+            line-height: 0px;
+            width: 0px;
+            height: 0px;
+            border-width: 10px;
+            border-style: dashed solid dashed dashed;
+            border-color: transparent #666 transparent transparent;
+            position: absolute;
+            margin-left: -30px;
+            margin-top: -42px;
+        }
+        .guiji_sanjiao_2 {
+            font-size: 0px;
+            line-height: 0px;
+            width: 0px;
+            height: 0px;
+            border-width: 10px;
+            border-style: dashed solid dashed dashed;
+            border-color: transparent #F7F8F9 transparent transparent;
+            position: absolute;
+            margin-left: -30px;
+            margin-top: -42px;
+        }
+        .address{
+            position: absolute;
+            left: 5px;
+            top: 5px;
+            width: 400px;
+            height: 30px;
+            background: #e6e6e6;
+            border: 1px solid forestgreen;
+            line-height: 30px;
+            padding-left: 15px;
+        }
+        .interval{
+            position: absolute;
+            right: 10px;
+            bottom: 10px;
+            width: 40px;
+            height: 40px;
+            background: #e4393c;
+            border-radius:50%;
+            color: #fff;
+            line-height:  40px;
+            text-align: center;
+            font-size: 16px;
+        }
         
+        [v-cloak] {
+            display: none;
+        }
     </style>
+    <script src="js/js.cookie.min.js"></script>
+    <script>
+        var token = Cookies.get("token");
+    </script>
 </head>
 <body>
-    <div id="container">
+    <div id="container"  v-cloak>
         <div id="bmap"></div>
+        <div class="address">
+            地址 ： {{address}}
+        </div>
+        <div class="interval">{{interval}}</div>
     </div>
     <script src="dist/vue.min.js"></script>
     <script src="dist/iview.min.js"></script>
@@ -43,14 +114,19 @@
     <!-- <script type="text/javascript" src="http://api.map.baidu.com/library/DistanceTool/1.2/src/DistanceTool_min.js"></script> -->
     <script>
         (function () { 
-            var carIcon   = new BMap.Icon("images/carstate/green_0.gif", new BMap.Size(16, 16), { imageOffset: new BMap.Size(0, 0)});
             var startIcon = new BMap.Icon("./images/map/marker_qidian.png", new BMap.Size(32, 32), { imageOffset: new BMap.Size(0, 0)});
-            var endIcon   = new BMap.Icon("./images/map/marker_zhongdian.png", new BMap.Size(32, 32), { imageOffset: new BMap.Size(0, 0)});
-            var directionList = [ 0 , 45 , 90 , 135 , 180 , 225 , 270 , 315 ];
+            // var directionList = [ 0 , 45 , 90 , 135 , 180 , 225 , 270 , 315 ];
             var vm = new Vue({
                     el:"#container",
                     data:{
-                       
+                        map:null,
+                        deviceid:"",
+                        tracks:[],
+                        interval:10,
+                        lastTrack:{},
+                        markerLabel:null,
+                        carMarker:null,
+                        address:"",
                     },
                     methods: {
                         initMap : function(){
@@ -73,113 +149,157 @@
                             return sContent;
                         },
                         getAddress:function (info) {
+                            var me = this;
                             var callon = info.callon;
                             var callat = info.callat;
                             var bd09 = wgs84tobd09(callon,callat)
                             var lng = bd09[0].toFixed(5);
                             var lat = bd09[1].toFixed(5);
+                        
                             var address = LocalCacheMgr.getAddress(lng,lat);
                             if(address !== null){
+                                me.address = address;
                                 return address;
                             }
                             utils.getBaiduAddressFromBaidu(lng,lat,function (resp) {
 
                                 if(resp.length){
                                     address = resp;
+                                    me.address = address;
                                     $("p.last-address").html(" 详细地址: " + address);
                                     LocalCacheMgr.setAddress(lng,lat,address);
                                 }else{
-                                utils.getJiuHuAddressSyn(callon,callat,function (resp) {
-                                        address = resp.address
-                                        $("p.last-address").html(" 详细地址: " + address);
-                                        LocalCacheMgr.setAddress(lng,lat,address);
-                                });
+                                    utils.getJiuHuAddressSyn(callon,callat,function (resp) {
+                                            address = resp.address
+                                            me.address = address;
+                                            $("p.last-address").html(" 详细地址: " + address);
+                                            LocalCacheMgr.setAddress(lng,lat,address);
+                                    });
                                 }
                             });
                             return "地址正在解析..."
                         },
-                        resetMapState:function(){
-                            if(this.carMarker){
-                                this.map.removeOverlay(this.carMarker);
-                                this.carMarker = null;
-                            };
-                            if(this.firstMarker){
-                                this.map.removeOverlay(this.firstMarker);
-                                this.firstMarker = null;
-                            };
-                            if(this.lastMakrker){
-                                this.map.removeOverlay(this.lastMakrker);
-                                this.lastMakrker = null;
-                            };
-                            if(this.polyline){
-                                this.map.removeOverlay(this.polyline);
-                                this.polyline = null;
-                            };
-                            if(this.markerLabel){
-                                this.map.removeOverlay(this.markerLabel);
-                                this.markerLabel = null;
-                            };
-                            if(this.intervalInstanse){
-                                clearInterval(this.intervalInstanse);
-                                this.intervalInstanse = null;
-                            };
-                            this.index = 0;
-                            this.records = [];
-                            this.respCount = 0;
-                            var centerPoint = this.map.getCenter();
-                            if(this.map.getZoom() != 5 || centerPoint.lng !== 108.0017245 || centerPoint.lat !== 35.926895){
-                                this.map.centerAndZoom(new BMap.Point(108.0017245,35.926895),5);
-                            };
-                        },
                         getDirectionIcon:function(angle){
                             return new BMap.Icon("images/carstate/green_"+ angle +".gif", new BMap.Size(16, 16), { imageOffset: new BMap.Size(0, 0)}); 
                         },
-                        verifySelectionTime:function(){
-                            if(this.startTime && this.endTime){
-                                var startTime = this.startTime.getTime();
-                                var endTime   = this.endTime.getTime();
-                                if(startTime == endTime){
-                                    this.lock = true;
+                        getAge:function(course){
+                            var angle = null ;
+                            if(course == 0){
+                                angle = 0;
+                            }else if(course > 0 && course <= 45){
+                                angle = 45;
+                            }else if(course > 45 && course <= 90){
+                                angle = 90;
+                            }else if(course > 90 && course <= 135){
+                                angle = 135;
+                            }else if(course > 135 && course <= 180){
+                                angle = 180;
+                            }else if(course > 180 && course <= 225){
+                                angle = 225;
+                            }else if(course > 225 && course <= 270){
+                                angle = 270;
+                            }else if(course > 270 && course <= 315){
+                                angle = 315;
+                            }else if(course > 315 && course <= 360){
+                                angle = 0;
+                            }
+                            return angle;
+                        },
+                        getLastPosition:function (callback) {
+                            var me = this;
+                            var url = myUrls.lastPosition();
+                            var data = {
+                                username: this.username,
+                                deviceids: [this.deviceid]
+                            };
+                            utils.sendAjax(url,data,function (resp) {
+                                if(resp.status == 0){
+                                    callback(resp.records[0]);
                                 }else{
-                                    if(endTime - startTime > 0){
-                                        if((endTime - startTime) < this.dayTime ){
-                                            this.lock = true;
-                                        }else{
-                                            var day = (endTime - startTime)/this.dayTime;
-                                            if(day > 30){
-                                                this.lock = false;
-                                                this.$Message.error("时间跨度不能超过30天!");
-                                            }else{
-                                                this.lock = true;
-                                            };
-                                        }
-                                    }else{
-                                        this.lock = false;
-                                        this.$Message.error("开始时间不能大于结束时间!");
-                                    }                                   
+                                    me.$Message.error("轨迹查询失败!")
+                                };   
+                            });
+                        },
+                        doLastPosition:function (record) {
+                            if(record){
+                                this.lastTrack = record;
+                                var carIcon = this.getDirectionIcon(this.getAge(record.course));   
+                                var baidu_lng_lat = wgs84tobd09(record.callon,record.callat);
+                                var point = new BMap.Point(baidu_lng_lat[0],baidu_lng_lat[1]);
+                                    record.point = point;
+                                if(this.tracks.length){
+                                    var prveTrack = this.tracks[this.tracks.length-1];
+                                    var rice = this.map.getDistance(prveTrack.point,point);
+                                    if(rice > 10){
+                                        this.carMarker.setPosition(point);
+                                        this.tracks.push(record);
+                                        this.map.setCenter(point);
+                                    };
+                                    this.markerLabel.setContent(this.getLableContent(record));
+                                }else{
+                                    this.tracks.push(record);
+                                    var lableOptions = {
+                                            position : point,   
+                                            offset   : new BMap.Size(30, -42)
+                                        };                                   
+                                    this.markerLabel = new BMap.Label(this.getLableContent(record),lableOptions);
+                                    this.carMarker = new BMap.Marker(point,{icon:carIcon});    
+                                    this.markerLabel.setStyle({
+                                        color : "#000000",
+                                        border:"1px solid #D0D1D1",
+                                        fontSize : "14px",
+                                        lineHeight : "18px",
+                                        borderRadius:"5px",
+                                        padding:"10px",
+                                        fontFamily:"微软雅黑"
+                                    });
+                                    var firstMarker = new BMap.Marker(point,{icon:startIcon,offset:new BMap.Size(0, -10)});  
+                                    this.carMarker.setLabel(this.markerLabel);     
+                                    this.map.addOverlay(this.carMarker);
+                                    this.map.addOverlay(firstMarker);
+                                    this.map.centerAndZoom(point,16);     
                                 };
-                            }else{
-                                this.lock = false;
-                                this.$Message.error("请选择开始结束时间!");
+                                
                             }
                         }
                     },
                     computed:{
                         token:function(){
                             return Cookies.get("token");
+                        },
+                  
+                        username:function () {
+                            return Cookies.get("name");
                         }
                     },
                     watch: {
-                        
+                        tracks:function(){
+                            if(this.tracks.length >=2){
+                                var firstPoint = this.tracks[this.tracks.length-2].point;
+                                var lastPoint = this.tracks[this.tracks.length-1].point;
+                                var polyline = new BMap.Polyline([firstPoint,lastPoint] ,{strokeColor:"#0000AA",strokeWeight:3,strokeOpacity:1.5})
+                                this.map.addOverlay(polyline);
+                            };
+                        }
                     },
-                    mounted : function() {
-                        this.initMap();
+                    mounted : function() { 
+                        var me = this;
                         var deviceid = utils.getParameterByName("deviceid");
+                            this.initMap();
                         if(deviceid){
                             this.deviceid = deviceid;
+                            this.getLastPosition(this.doLastPosition);
+                            setInterval(function () { 
+                                me.interval--;
+                                if( me.interval == 0 || me.interval < 0){
+                                    me.getLastPosition(me.doLastPosition); 
+                                    me.interval = 10; 
+                                };
+                            },1000);
                         }else{
                             this.$Message.error("设备id不能为空!");
-                        };       
+                        };  
+                        
                     }
                 });
         })();

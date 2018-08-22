@@ -163,6 +163,19 @@ div.view-wraper{
     p.operation span{
         margin-right:  5px;
     }
+    .interval{
+        position: absolute;
+        left: 20px;
+        bottom: 20px;
+        width: 40px;
+        height: 40px;
+        background: #e4393c;
+        border-radius:50%;
+        color: #fff;
+        line-height:  40px;
+        text-align: center;
+        font-size: 16px;
+    }
  /* 监控结束 */
 
 
@@ -486,3 +499,48 @@ div.view-wraper{
         width: 700px;
     }
      /* 编辑设备结束 */
+
+
+    /* 报警css开始 */
+    div.waring-wraper{
+        position: absolute;
+        right: 10px;
+        bottom: 10px;
+        background: #495060;
+        z-index: 9999;
+        border: 1px solid #395060; 
+        transition: width .3s, height .3s, transform 2s;
+    }
+
+    ul.waring-controller{
+        color: #fff;
+        overflow: hidden;
+    }
+    ul li {
+        float: left;
+        text-align: center;  
+    }
+
+    div.msg_main{
+        width: 100%;
+        height: 100%;
+        color: #fff;
+        background: #F8F8F9;
+        overflow-y: auto;
+        position: relative;
+    }
+    div.msg_header{
+        position:absolute;
+        left: 0px;
+        height: 22px;
+        right: 0px;
+    }
+    div.msg_content{
+        position:absolute;
+        left: 0px;
+        right: 0px;
+        top: 22px;
+        bottom: 0;
+        background: red;
+    }
+    /* 报警css结束 */

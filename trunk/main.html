@@ -28,6 +28,7 @@
                 <component :is="componentId" ref="my-component"></component>
             </keep-alive> 
         </div>
+        <waring-component></waring-component>
     </div>
 
       
@@ -166,6 +167,7 @@
             </div>
             <div class="map-wraper">
                 <div style="width:100%;height:100%;" id="map"></div>
+                <div class="interval">{{intervalTime}}</div>
             </div>    
         </div>
     </script>
@@ -200,6 +202,26 @@
                     </i-menu>
             </div>
             <div class="mar-view" id="mar-view"></div>
+        </div>
+    </script>
+
+    <!-- 报警 -->
+    <script type="text/template-v" id="waring-template">
+        <div class="waring-wraper" :style="waringWraperStyle">
+            <ul class="waring-controller" v-show="!isLargen">
+                <li style="width:68px;"><span>消息</span></li>
+                <li style="width:30px;cursor: pointer;">
+                    <div @click="changeLargen"><Icon type="ios-trending-up" /></div>
+                </li>
+            </ul>
+            <div class="msg_main" v-show="isLargen">
+                <div class="msg_header">
+
+                <div>
+                <div class="msg_content">
+
+                <div>
+            </div>
         </div>
     </script>
 

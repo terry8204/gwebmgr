@@ -127,11 +127,11 @@
     <script src="http://api.map.baidu.com/api?v=3.0&ak=e7SC5rvmn2FsRNE4R1ygg44n"></script>
     <script type="text/javascript" src="http://api.map.baidu.com/library/DistanceTool/1.2/src/DistanceTool_min.js"></script>
     <script>
-        (function () { 
+        (function () {   //utils.getAngle
             var carIcon   = new BMap.Icon("images/carstate/green_0.gif", new BMap.Size(16, 16), { imageOffset: new BMap.Size(0, 0)});
             var startIcon = new BMap.Icon("./images/map/marker_qidian.png", new BMap.Size(32, 32), { imageOffset: new BMap.Size(0, 0)});
             var endIcon   = new BMap.Icon("./images/map/marker_zhongdian.png", new BMap.Size(32, 32), { imageOffset: new BMap.Size(0, 0)});
-            var directionList = [ 0 , 45 , 90 , 135 , 180 , 225 , 270 , 315 ];
+
             var vm = new Vue({
                     el:"#container",
                     data:{
@@ -160,7 +160,7 @@
                         spinShow:false,
                         records:[],
                         range:50,             // 范围50米之内的点不显示
-                        velocity:500,         // 半秒
+                        velocity:1000,         // 半秒
                         intervalInstanse:null,
                         carMarker:null,
                         markerLabel:null,
@@ -256,7 +256,7 @@
                                     this.requestTracks(begintime1,endtime1,function (resp) { 
                                             if(resp.status == 0 && resp.records){
                                                 resp.records.forEach(function (record) {
-                                                    var direction = directionList[parseInt(Math.random()*8)];
+                                                    var direction = utils.getAngle(record.course);
                                                         record.direction = direction;
                                                         me.records.push(record);
                                                 });     
@@ -281,7 +281,7 @@
                                             me.requestTracks(times[0].begintime,times[1].endtime,function (resp) {                       
                                                 if(resp.status == 0 && resp.records){
                                                     resp.records.forEach(function (record) {
-                                                        var direction = directionList[parseInt(Math.random()*8)];
+                                                        var direction = utils.getAngle(record.course);
                                                             record.direction = direction;
                                                             me.records.push(record);
                                                     });     
@@ -302,7 +302,7 @@
                                             me.requestTracks(timeObj.begintime,timeObj.endtime,function (resp) {                       
                                                 if(resp.status == 0 && resp.records){
                                                     resp.records.forEach(function (record) {
-                                                        var direction = directionList[parseInt(Math.random()*8)];
+                                                        var direction = utils.getAngle(record.course);
                                                             record.direction = direction;
                                                             me.records.push(record);
                                                     });     
@@ -326,7 +326,7 @@
                                             me.requestTracks(timeObj.begintime,timeObj.endtime,function (resp) { 
                                                 if(resp.status == 0 && resp.records){
                                                     resp.records.forEach(function (record) {
-                                                        var direction = directionList[parseInt(Math.random()*8)];
+                                                        var direction = utils.getAngle(record.course);
                                                             record.direction = direction;
                                                             me.records.push(record);
                                                     });
