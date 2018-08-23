@@ -108,6 +108,9 @@ var myUrls = {
     // 查询报警信息
     queryAlarm:function () {
         return this.host + "webapi?action=queryalarm&token="+token;
+    },
+    queryMsg:function () { 
+        return this.host + "webapi?action=querymsg&token="+token;
     }
 };
 

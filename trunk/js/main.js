@@ -2,22 +2,33 @@
     // 方向数组
     // var directionList = [ 0 , 45 , 90 , 135 , 180 , 225 , 270 , 315 ]; 
     // 是否显示公司名字
-    var isShowCompany = Cookies.get("isShowCompany"); 
+    var isShowCompany     = Cookies.get("isShowCompany"); 
     //全局变量
     var store = {
         navState : isShowCompany === 'true' ? true : false ,
         intervalTime:10,
         currentDeviceId:null,
         currentDeviceRecord:{},
-        deviceNames:{}
     };
     // vuex store
     var vstore = new Vuex.Store({
         state:{
-            msg:"shabdfjdg"
+            deviceNames:{}
         },
         actions: {
-            
+            setDeviceNames:function (context,groups) {
+                context.commit('setDeviceNames',groups);
+            }
+        },
+        mutations: {
+            setDeviceNames:function (state,groups) {
+              groups.forEach(function (group) {
+                    group.devices.forEach(function (device,index) {
+                        var deviceid = device.deviceid;
+                        state.deviceNames[deviceid] = device;
+                    });
+                });
+            }
         },
     });
     // 头部组建
@@ -555,12 +566,13 @@
             },
             setDeviceIdsList:function (groups) {
                 var me = this;
-                groups.forEach(function (group) {
-                    group.devices.forEach(function (device,index) {
-                        var deviceid = device.deviceid;
-                        store.deviceNames[deviceid] = device;
-                    });
-                });
+                // groups.forEach(function (group) {
+                //     group.devices.forEach(function (device,index) {
+                //         var deviceid = device.deviceid;
+                //         store.deviceNames[deviceid] = device;
+                //     });
+                // });
+                this.$store.dispatch("setDeviceNames",groups);
             },
             getLastPosition:function (deviceIds,callback) {
                 var me = this;
@@ -629,7 +641,7 @@
                         
                         var marker = new BMap.Marker(point);
                             marker.setIcon(record.icon);
-                        var label =  new BMap.Label(store.deviceNames[deviceid].devicename,{ position : point, offset   : new BMap.Size(20, -3) });
+                        var label =  new BMap.Label(me.$store.state.deviceNames[deviceid].devicename,{ position : point, offset   : new BMap.Size(20, -3) });
                             label.setStyle({
                                 color : "#000000",
                                 border:"1px solid #000000",
@@ -713,22 +725,28 @@
                 return info;
             },
             getInfoWindow:function (info) {
-                var devdata = store.deviceNames[info.deviceid];
-                var address = this.getAddress(info);
-                var sContent = '<div><p style="margin:0;font-size:13px">' +
-                '<p> 设备名称: ' +devdata.devicename+'</p>' +
-                '<p> 设备ID: ' +info.deviceid+'</p>' +
-                '<p> 经纬度: ' +info.callon+","+ info.callat +'</p>' +
-                '<p> 最后时间: ' +DateFormat.longToDateTimeStr(info.arrivedtime,0)+'</p>' +
-                '<p> 到期时间: ' +DateFormat.longToDateTimeStr(devdata.overduetime,0)+'</p>' +
-                '<p class="last-address"> 详细地址: '+address+'</p>' +
-                '<p class="operation">'+
-                    '<span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="playBack('+info.deviceid+')">回放</span>'+
-                    '<span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="trackMap('+info.deviceid+')">跟踪</span> </p></div>';
-                var opts = {
-                    width:300,
-                };
-                return new BMap.InfoWindow(sContent,opts);
+                try {
+                    var devdata = this.$store.state.deviceNames[info.deviceid];
+                    var address = this.getAddress(info);
+                    var sContent = '<div><p style="margin:0;font-size:13px">' +
+                    '<p> 设备名称: ' +devdata.devicename+'</p>' +
+                    '<p> 设备ID: ' +info.deviceid+'</p>' +
+                    '<p> 经纬度: ' +info.callon+","+ info.callat +'</p>' +
+                    '<p> 最后时间: ' +DateFormat.longToDateTimeStr(info.arrivedtime,0)+'</p>' +
+                    '<p> 到期时间: ' +DateFormat.longToDateTimeStr(devdata.overduetime,0)+'</p>' +
+                    '<p class="last-address"> 详细地址: '+address+'</p>' +
+                    '<p class="operation">'+
+                        '<span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="playBack('+info.deviceid+')">回放</span>'+
+                        '<span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="trackMap('+info.deviceid+')">跟踪</span> </p></div>';
+                    var opts = {
+                        width:300,
+                    };
+                    return new BMap.InfoWindow(sContent,opts);
+                } catch (error) {
+                    console.log("get不到info.deviceid --- ") 
+                    console.log(info) 
+                    console.log(devdata)
+                }
             },
             getAddress:function (info) {
                 var callon = info.callon;
@@ -1209,7 +1227,7 @@
                 this.intervalInstanse = setInterval(function () {
                     me.intervalTime--;
                     if(me.intervalTime <= 0 ){
-                        var devIdList = Object.keys(store.deviceNames);
+                        var devIdList = Object.keys(me.$store.state.deviceNames);
                         me.getLastPosition(devIdList,function (resp) {
                             resp.records.forEach(function (record) {
                                 if(record){
@@ -1276,14 +1294,14 @@
         computed:{
             username:function () {
                 return Cookies.get("name");
-            }
+            },
         },
         watch:{
             records:function () {
                 var online  = 0;
                 var offline = 0;
                 var me = this;
-                var deviceIds = Object.keys(store.deviceNames);
+                var deviceIds = Object.keys(me.$store.state.deviceNames);
 
                 if(this.records.length === deviceIds.length){
 
@@ -1366,7 +1384,7 @@
             this.getMonitorListByUser(havecompany,function (resp) {
                 me.groups = resp.groups;
                 me.setDeviceIdsList(resp.groups);
-                var devIdList = Object.keys(store.deviceNames);
+                var devIdList = Object.keys(me.$store.state.deviceNames);
                 me.getLastPosition(devIdList,function (resp) {
                     me.records = resp.records;
                     me.setCarIconState();
@@ -1378,11 +1396,6 @@
                             me.addOverlayToMap(resp.records);
                         }  
                     };
-                    // if(isShowCompany == "true"){
-                    //     isShowConpanyName = true;
-                    // }else if(isShowCompany == "false"){
-                    //     isShowConpanyName = false;
-                    // } 
                     me.selectedState = "all";
                 });
             });
@@ -1391,7 +1404,7 @@
         beforeDestroy:function () {
             store.currentDeviceId = null;
             store.currentDeviceRecord = {};
-            store.deviceNames = {};
+            this.$store.state.deviceNames = {};
             clearInterval(this.intervalInstanse);
         }
     }
@@ -1527,12 +1540,12 @@
                         "inOutArea": false,
                         "inOutLine": false,
                         "vssFault": false,
-                        "stolen": true,
-                        "dangerWarning": true,
-                        "gnssAntennaFault": true,
-                        "gnssAntennaShortCircuit": true,
-                        "mainPowerLow": true,
-                        "mainPowerOff": true,
+                        "stolen": false,
+                        "dangerWarning": false,
+                        "gnssAntennaFault": false,
+                        "gnssAntennaShortCircuit": false,
+                        "mainPowerLow": false,
+                        "mainPowerOff": false,
                         "transportIcFault": false,
                         "speedWarning": false,
                         "fatigueDrivingWarning": false,
@@ -1547,20 +1560,36 @@
                         "rolloverWarning": false,
                         "unlawfulOpenDoorAlarm": false
                     },
-                    waringRecords:"aaaa"
+                    waringRecords:[],
+                    overdueDevice:[],
+                    isWaring:false,
+                    interval:5000,
                 }
             },
             computed:{
                 waringWraperStyle:function () { 
                     return {
-                        width:this.isLargen  ? "600px" : "100px",
-                        height:this.isLargen ? "300px" : "22px"
+                        width:this.isLargen  ? "900px" : "100px",
+                        height:this.isLargen ? "600px" : "22px"
                     }
-                }
+                },
+                deviceNames:function () { 
+                    return this.$store.state.deviceNames;
+                } 
             },
+            watch:{
+                waringRecords:function () { 
+                    if(this.waringRecords.length ){
+                        this.isWaring = true;
+                    }else{
+                        this.isWaring = false;
+                    }
+                },
+            },    
             methods: {
                 changeLargen:function () { 
                     this.isLargen = !this.isLargen;
+                    this.isWaring = false;
                 },
                 changeComponent:function (index) { 
                     this.index = index;
@@ -1574,45 +1603,174 @@
                     };
                 },
                 queryWaringMsg:function () {
+                    var me = this;
                     var url = myUrls.queryAlarm();
                     utils.sendAjax(url,this.checkboxObj,function (resp) { 
-                        console.log(resp);
+  
+                        if(resp.status == 0){
+                            me.waringRecords = resp.records;
+                        }else{
+
+                        }
                     });
                 },
                 filterWaringType:function () { 
                     this.waringModal = true;
+                },
+                settingCheckboxObj:function(){
+                    var checkboxObj = Cookies.get("checkboxObj");
+                    if(checkboxObj){
+                        for(var key in this.checkboxObj){
+                            if(this.checkboxObj.hasOwnProperty(key)){
+                                this.checkboxObj[key] = checkboxObj[key];
+                            }
+                        };
+                    }else{
+                        for(var key in this.checkboxObj){
+                            if(this.checkboxObj.hasOwnProperty(key)){
+                                this.checkboxObj[key] = true;
+                            }
+                        };
+                    }
+                },
+                pushOverdueDeviceInfo:function () { 
+                    var interval = null;
+                    var me = this;
+                    interval = setInterval(function () { 
+                        if(!$.isEmptyObject(me.deviceNames)){
+                            for(var key in me.deviceNames){
+                                var item = me.deviceNames[key];
+                                var currentTime = Date.now();
+                                var overduetime =  item.overduetime; 
+                                var isOverdue = overduetime > currentTime ? false : true;
+                                if(isOverdue){
+                                    me.overdueDevice.push({
+                                        devicename:item.devicename,
+                                        deviceid:item.deviceid,
+                                        overduetime:DateFormat.longToDateTimeStr(overduetime,0),
+                                        isoverdue: "已过期"
+                                    });
+                                }
+                            };
+                            clearInterval(interval);
+                        }
+                    },1000);
+                },
+                timingRequestMsg:function () { 
+                    var me = this;
+                    var url = myUrls.queryMsg();
+                    setInterval(function () { 
+                        utils.sendAjax(url,me.checkboxObj,function (resp) {  
+                            console.log(resp.data);
+                            if(resp.status == 0){
+                                console.log(resp.data);
+                                me.disposeMsg(resp.data);
+                            }
+                        })
+                    },this.interval);
+                },
+                disposeMsg:function (data) { 
+                    if( data || data.length){
+                        for(var i = 0 ; i < data.length ; i++){
+                            
+                        }
+                    };
                 }
             },
             components:{
                 waringMsg:{
-                    template:"<div></div>",
+                    template:'<Table width="898" height="576" border :columns="columns" :data="waringrecords"></Table>',
                     props:['waringrecords'],
                     data:function () { 
                         return {
-
+                            columns:[
+                                {
+                                    title: '设备ID',
+                                    key: 'deviceid',
+                                    width: 120,
+                                    fixed: 'left',
+                                },
+                                {
+                                    title: '报警时间',
+                                    key: 'gpstime',
+                                    width: 200
+                                },
+                                {
+                                    title: '报警信息',
+                                    key: 'strstate',
+                                    width: 480
+                                },
+                                {
+                                    title: '操作',
+                                    key: 'action',
+                                    fixed: 'right',
+                                    width: 120,
+                                    render: (h, params) => {
+                                        var index = params.index;
+                                        var me = this;
+                                        return h('div', [
+                                            h('Button', {
+                                                props: {
+                                                    type: 'primary',
+                                                    size: 'small'
+                                                },
+                                                on: {
+                                                    click: function () {
+                                                        me.removeWaring(index);
+                                                    }
+                                                }
+                                            }, '解除报警'),
+                                        ]);
+                                    }
+                                }
+                            ]
                         }
                     },
                     methods:{
-
+                        removeWaring:function (index) {
+                            console.log(index);
+                        }
                     },
-                    computed:{
-
-                    },
-                    mounted:function () { 
-                        console.log(this.waringrecords);
-                    }
+                    computed:{},
+                    mounted:function () {}
                 },
                 deviceMsg:{
-                    template:"<h1>我是设备消息</h1>"
+                    template:'<Table height="576" :columns="columns" :data="deviceinfolist"></Table>',
+                    props:['deviceinfolist'],
+                    data:function () { 
+                        return {
+                            columns:[
+                                {
+                                    title: '设备名称',
+                                    key: 'devicename',
+                                },
+                                {
+                                    title: '设备ID',
+                                    key: 'deviceid',
+                                },
+                                {
+                                    title: '过期时间',
+                                    key: 'overduetime',
+                                },
+                                {
+                                    title: '是否过期',
+                                    key: 'isoverdue',
+                                },
+                            ],
+                        }
+                    }
                 },
             },
             mounted:function(){
+                this.settingCheckboxObj();
                 this.queryWaringMsg();
+                this.pushOverdueDeviceInfo();
+                this.timingRequestMsg();
             }
         };
 
     // 根组件
-    new Vue({
+var vRoot = new Vue({
         el:"#app",
         store:vstore,
         i18n:i18n,

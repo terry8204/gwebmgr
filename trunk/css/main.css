@@ -502,6 +502,23 @@ div.view-wraper{
 
 
     /* 报警css开始 */
+    @-webkit-keyframes twinkling {
+        0% {
+        opacity:1;
+        filter:alpha(opacity=100);
+        -webkit-transform:scale(1);
+        }
+        50% {
+            opacity:0.5;
+            filter:alpha(opacity=50);
+            -webkit-transform:scale(0.5);
+        }
+        100% {
+            opacity:0;
+            filter:alpha(opacity=0);
+            -webkit-transform:scale(1);
+        }
+    }
     div.waring-wraper{
         position: absolute;
         right: 10px;
@@ -515,6 +532,18 @@ div.view-wraper{
     ul.waring-controller{
         color: #fff;
         overflow: hidden;
+    }
+
+    ul.waring-controller span.msgwaring{
+        -webkit-animation:twinkling 1s infinite ease;
+        animation:twinkling 1s infinite ease;
+        color: red;
+    }
+
+    ul.waring-controller span.msgnormal{
+        color: #fff;
+        -webkit-animation:none;
+        animation: none;
     }
 
     ul.waring-controller li {
@@ -575,4 +604,5 @@ div.view-wraper{
         overflow-y: auto;
         color: #495060;
     }
+
     /* 报警css结束 */
