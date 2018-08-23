@@ -1248,6 +1248,7 @@
                             me.updateTreeOnlineState();
                             me.moveMarkers();
                             me.intervalTime = Number(store.intervalTime);
+                            console.log(me.intervalTime);
                         });
                     }
                 }, 1000);
@@ -1661,19 +1662,40 @@
                     var url = myUrls.queryMsg();
                     setInterval(function () { 
                         utils.sendAjax(url,me.checkboxObj,function (resp) {  
-                            console.log(resp.data);
                             if(resp.status == 0){
-                                console.log(resp.data);
                                 me.disposeMsg(resp.data);
                             }
                         })
                     },this.interval);
                 },
                 disposeMsg:function (data) { 
-                    if( data || data.length){
-                        for(var i = 0 ; i < data.length ; i++){
-                            
-                        }
+                    if( data && data.length){
+                        var newArr = [];
+                        for(var i = 0 ; i < data.length ; i++){ 
+                            var msgTiem = data[i];                       
+                            for(var j = 0 ; j < this.waringRecords.length ; j++){
+                                var waringItem = this.waringRecords[j];
+                                if(msgTiem.deviceid == waringItem.deviceid && msgTiem.arrivedtime !== waringItem.arrivedtime ){
+                                    if(newArr.indexOf(msgTiem) == -1){
+                                        newArr.push(msgTiem);
+                                        if(msgTiem.type == 1){
+                                            this.waringRecords.unshift({
+                                                deviceid:msgTiem.deviceid,
+                                                gpstime:msgTiem.createtime,
+                                                strstate:msgTiem.content,       
+                                            })
+                                        }else if(msgTiem.type == 2){
+
+                                        }else if(msgTiem.type == 3){
+                                            
+                                        } else if(msgTiem.type == 4){
+                                            
+                                        }                                      
+                                    };                                   
+                                };   
+                            };
+                        };
+                        // this.waringRecords = newArr.concat(this.waringRecords);
                     };
                 }
             },
