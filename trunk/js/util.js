@@ -5,6 +5,7 @@ var utils = {
                 url:url,
                 type:"post",
                 data:encode,
+                timeout : 10000, 
                 dataType:"json",
                 success:function(resp){
                     if(resp.status == 3){
@@ -156,12 +157,12 @@ var expandRow = Vue.component('expand-row');
 
 // 轨迹回放
 function playBack(deviceid) { 
-    window.open("playback.html?deviceid=" + deviceid);
+    window.open("playback.html?deviceid=" + deviceid,'resizable=1, menuBar=0, toolBar=0, scrollbars=yes, Status=yes, resizable=1');
 }
 
 // 跟踪
 function trackMap(deviceid) { 
-    window.open("trackmap.html?deviceid=" + deviceid);
+    window.open("trackmap.html?deviceid=" + deviceid,'resizable=1, menuBar=0, toolBar=0, scrollbars=yes, Status=yes, resizable=1');
 }
 
 

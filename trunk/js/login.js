@@ -119,6 +119,12 @@ new Vue({
                 }
             };
         });
+        document.onkeyup = function (e) { 
+            var keyCode = e.keyCode;
+            if(keyCode == 13){
+                me.handleSubmit();
+            }
+        }
     },
     watch:{
         account:function () {

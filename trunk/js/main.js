@@ -48,6 +48,7 @@
                 isShowMonitor:true,
                 isShowReportForm:true,
                 isShowBgManager:true,
+                isShowSystemParam:true,
                 modalPass:false,
                 oldPass:"",
                 newPass:"",
@@ -63,6 +64,7 @@
                     if(userType == -1){
                         mgr = "[普通监控员]";
                         this.isManager = false;
+                        this.isShowSystemParam = false;
                     }else if(userType == 0){
                         mgr = "[系统管理员]";
                     }else if(userType == 1){
@@ -262,7 +264,8 @@
                 onlineDevCount:0,        // 在线设备个数
                 offlineDevCount:0,       // 离线设备个数
                 isMoveTriggerEvent:true, // 地图移动是否触发事件
-                intervalInstanse:null    // 定时器实例
+                intervalInstanse:null,    // 定时器实例
+                selectedDevObj:{},
             }
         },
         methods: {
@@ -347,7 +350,7 @@
                  if(value){
                     return option.toUpperCase().indexOf(value.toUpperCase()) !== -1;
                  }else{
-                     return true;
+                    return true;
                  }
             },
             sosoSelect:function (value) {
@@ -386,6 +389,12 @@
             selectedStateNav:function (state) {
                 this.selectedState = state;
             },
+            openCanpany:function (conpany) { 
+                conpany.expand = !conpany.expand;
+            },
+            openGroupItem:function (groupInfo) { 
+                groupInfo.expand = !groupInfo.expand;
+            },
             renderContent:function (h, info) {
                 var me = this;
                 var data = info.data;
@@ -420,6 +429,12 @@
                     ])
                 ]);
             },
+            selectedDev:function (deviceInfo) { 
+                this.cancelSelected();
+                     deviceInfo.isSelected = true;
+                this.selectedDevObj = deviceInfo;
+                this.handleClickDev(deviceInfo.deviceid);
+            },
             handleClickDev:function (deviceid) {
                 var me = this;
                 me.getLastPosition([deviceid],function (resp) {
@@ -432,7 +447,6 @@
                         record.point = point;
                         var isOnline = (Date.now() - record.arrivedtime) < me.offlineTime ? true : false ; 
                         var iconState = null;
-                        // var angle = directionList[parseInt(Math.random()*8)];  
                         var angle = utils.getAngle(record.course);
                         if(isOnline){
                             iconState = new BMap.Icon("../images/carstate/green_"+angle+".png", new BMap.Size(16, 16), { imageOffset: new BMap.Size(0, 0)}); 
@@ -534,13 +548,13 @@
                             group.children.forEach(function (dev) {
                                 dev.isSelected = false;
                             });
-                        })
-                    })
+                        });
+                    });
                 }else{
                     this.currentStateData.forEach(function (group) {
                         group.children.forEach(function (dev) {
                             dev.isSelected = false;
-                        })
+                        });
                     })
                 }
             },
@@ -703,14 +717,16 @@
             openDevInfoWindow:function () {
                 var me = this;
                 var record = store.currentDeviceRecord;
-                var markers = this.map.getOverlays();
-                for(var i = 0 ; i < markers.length ; i++){
-                    var marker = markers[i];
-                    if(marker.deviceid == store.currentDeviceId){           
-                        var infoWindow = me.getInfoWindow(record);
-                         marker.openInfoWindow(infoWindow,record.point)
+                if(!$.isEmptyObject(record)){
+                    var markers = this.map.getOverlays();
+                    for(var i = 0 ; i < markers.length ; i++){
+                        var marker = markers[i];
+                        if(marker.deviceid == store.currentDeviceId){           
+                            var infoWindow = me.getInfoWindow(record);
+                            marker.openInfoWindow(infoWindow,record.point)
+                        };
                     };
-                };
+                }
             },
             getSingleDeviceInfo:function(deviceid){
                 var info = null;
@@ -827,7 +843,6 @@
                         })
                     })
                 }
-
             },
             getNewCompanyArr :function () { 
                 var newArray = [];
@@ -1248,7 +1263,6 @@
                             me.updateTreeOnlineState();
                             me.moveMarkers();
                             me.intervalTime = Number(store.intervalTime);
-                            console.log(me.intervalTime);
                         });
                     }
                 }, 1000);
@@ -1521,6 +1535,79 @@
         }
     };
 
+    // 系统参数
+    var systemParam = {
+        template:document.getElementById("systemparam-template"),
+        data:function () { 
+            return {
+                selectdItemName:null,
+                theme:"light",
+                navList:[
+                    {
+                        title:"设备指令",
+                        name:"deviceDirective", 
+                        icon:"ios-pricetag-outline",
+                        // children:[
+                        //     {title:"新增指令",name:"addDirective",icon:"md-add"},
+                        //     {title:"查询指令",name:"queryDirective",icon:"md-search"},
+                        // ]
+                    },
+                    {
+                        title:"设备类型",
+                        name:"deviceType",
+                        icon:"ios-albums",
+                        // children:[
+                        //     {title:"新增设备类型",name:"addDeviceType",icon:"md-add"},
+                        //     {title:"查询设备类型",name:"queryDeviceType",icon:"md-search"}
+                        // ]
+                    },
+                    {
+                        title:"车辆类型",
+                        name:"carType",
+                        icon:"ios-car",
+                        // children:[
+                        //     {title:"新增车辆类型",name:"addCarType",icon:"md-add"},
+                        //     {title:"查询车辆类型",name:"queryCarType",icon:"md-search"} 
+                        // ]
+                    },
+                ]
+            }
+        },
+        methods:{ 
+            selectditem:function (name) { 
+                if(this.selectdItemName != name){
+                    this.selectdItemName = name;
+                    this.changeItem();
+                }
+            },
+            changeItem:function () { 
+                var page = null;
+
+                switch(this.selectdItemName){
+                    case "deviceDirective" :
+                        page = "devicedirective.html";
+                        break;
+                    case "deviceType" :
+                        page = "devicetype.html";
+                        break;   
+                    case "carType" :
+                        page = "cartype.html";
+                        break;          
+                };
+                
+                this.loadPage(page);
+            },
+            loadPage:function(page){
+                var me = this;
+                this.$Loading.start();
+                $("#system-view").load("../view/systemparam/"+page,function(){
+                    me.$Loading.finish();
+                });
+            }
+        }
+    };
+
+
     // 报警组建
     var waringComponent = {
             template:document.getElementById("waring-template"),
@@ -1530,48 +1617,23 @@
                     index:1,
                     componentName:"waringMsg",
                     waringModal:false,
-                    checkboxObj:{
-                        "emergencyAlarm": false,
-                        "fatigueDrivingAlarm": false,
-                        "speedAlarm": false,
-                        "gnssFault": false,
-                        "lcdFault": false,
-                        "ttsFault": false,
-                        "cameraFault": false,
-                        "inOutArea": false,
-                        "inOutLine": false,
-                        "vssFault": false,
-                        "stolen": false,
-                        "dangerWarning": false,
-                        "gnssAntennaFault": false,
-                        "gnssAntennaShortCircuit": false,
-                        "mainPowerLow": false,
-                        "mainPowerOff": false,
-                        "transportIcFault": false,
-                        "speedWarning": false,
-                        "fatigueDrivingWarning": false,
-                        "drivingOverTime": false,
-                        "parkOverTime": false,
-                        "roadTravelFault": false,
-                        "routeDeviation": false,
-                        "oilMassAbnormal": false,
-                        "unlawfulFire": false,
-                        "unlawfulShift": false,
-                        "collisionWarning": false,
-                        "rolloverWarning": false,
-                        "unlawfulOpenDoorAlarm": false
-                    },
+                    disposeModal:false,
+                    checkboxObj:{},
                     waringRecords:[],
                     overdueDevice:[],
+                    alarmTypeList:[],
                     isWaring:false,
                     interval:5000,
+                    disposeRowWaringObj:{},
+                    cmdRowWaringObj:{},
+                    disposeAlarm:"解除报警"
                 }
             },
             computed:{
                 waringWraperStyle:function () { 
                     return {
                         width:this.isLargen  ? "900px" : "100px",
-                        height:this.isLargen ? "600px" : "22px"
+                        height:this.isLargen ? "500px" : "22px"
                     }
                 },
                 deviceNames:function () { 
@@ -1607,29 +1669,25 @@
                     var me = this;
                     var url = myUrls.queryAlarm();
                     utils.sendAjax(url,this.checkboxObj,function (resp) { 
-  
                         if(resp.status == 0){
                             me.waringRecords = resp.records;
-                        }else{
-
+                            me.waringRecords.forEach(function (item) { 
+                                item.isdispose = "未处理";
+                            })
                         }
                     });
                 },
                 filterWaringType:function () { 
+                    this.settingCheckboxObj();
                     this.waringModal = true;
                 },
                 settingCheckboxObj:function(){
-                    var checkboxObj = Cookies.get("checkboxObj");
-                    if(checkboxObj){
+                    var checkboxObjJson = Cookies.get("checkboxObj");
+                    if(checkboxObjJson){
+                        var checkboxObj = JSON.parse(checkboxObjJson);
                         for(var key in this.checkboxObj){
                             if(this.checkboxObj.hasOwnProperty(key)){
                                 this.checkboxObj[key] = checkboxObj[key];
-                            }
-                        };
-                    }else{
-                        for(var key in this.checkboxObj){
-                            if(this.checkboxObj.hasOwnProperty(key)){
-                                this.checkboxObj[key] = true;
                             }
                         };
                     }
@@ -1682,7 +1740,8 @@
                                             this.waringRecords.unshift({
                                                 deviceid:msgTiem.deviceid,
                                                 gpstime:msgTiem.createtime,
-                                                strstate:msgTiem.content,       
+                                                strstate:msgTiem.content,
+                                                isdispose:"未处理"       
                                             })
                                         }else if(msgTiem.type == 2){
 
@@ -1697,11 +1756,76 @@
                         };
                         // this.waringRecords = newArr.concat(this.waringRecords);
                     };
+                },
+                saveReqMsgParameter:function () { 
+                    Cookies.set("checkboxObj",this.checkboxObj);
+                    this.waringModal = false;
+                },
+                showDisposeModalFrame:function (param) {
+                    this.disposeModal = true;
+                    var row = param.row;
+                    var devicetype = this.$store.state.deviceNames[row.deviceid].devicetype;
+                    
+                    this.cmdRowWaringObj = {
+                        "arrivedtime": row.arrivedtime,
+                        "devicetype":devicetype,
+                        "cmdcode": 1,
+                        "cmdpwd": null
+                    }; 
+
+                    this.disposeRowWaringObj = {
+                        "disposecontent": "解除报警",
+                        "arrivedtime": row.arrivedtime,
+                        "disposeway": "解除报警",
+                        "deviceid": row.deviceid,
+                        "cmdcode": 0,
+                        "createtime": null
+                    };
+
+                },
+                sendDisposeWaring:function () { 
+                    var me = this;
+                    var sendCmdUrl = myUrls.sendCmd();
+                    var disposeAlarmUrl = myUrls.disposeAlarm()
+                    utils.sendAjax(sendCmdUrl,this.cmdRowWaringObj,function (resp) { 
+                        if(resp.status == 0){
+                            utils.sendAjax(disposeAlarmUrl,me.disposeRowWaringObj,function (resp) {
+                                if(resp.status === 0){
+                                    me.$Message.success("解除成功");
+                                    me.disposeModal = false;
+                                }else{
+                                    me.$Message.error("解除失败");
+                                }
+                            })
+                        }else{
+                            me.$Message.error(resp.cause);
+                        }
+                    });
+                },
+                queryAlarmDescr:function () { 
+                    var me = this;
+                    var url = myUrls.queryAlarmDescr();
+                    utils.sendAjax(url,{},function (resp) { 
+                        if(resp.status == 0){
+                            var records = resp.records;
+                            records.forEach(function (item,index){ 
+                                var idx = parseFloat(index/3) 
+                                if(index%3 == 0){
+                                    var newArr = [];
+                                    newArr.push(item)
+                                    me.alarmTypeList.push(newArr);
+                                }else{
+                                    me.alarmTypeList[me.alarmTypeList.length - 1].push(item);
+                                }
+                                me.checkboxObj[item.alarmcode] = true;
+                            })
+                        }
+                    });
                 }
             },
             components:{
                 waringMsg:{
-                    template:'<Table width="898" height="576" border :columns="columns" :data="waringrecords"></Table>',
+                    template:'<Table width="898" height="475" border :columns="columns" :data="waringrecords"></Table>',
                     props:['waringrecords'],
                     data:function () { 
                         return {
@@ -1720,7 +1844,12 @@
                                 {
                                     title: '报警信息',
                                     key: 'strstate',
-                                    width: 480
+                                    width: 360
+                                },
+                                {
+                                    title: '是否处理',
+                                    key: 'isdispose',
+                                    width: 100
                                 },
                                 {
                                     title: '操作',
@@ -1728,7 +1857,7 @@
                                     fixed: 'right',
                                     width: 120,
                                     render: (h, params) => {
-                                        var index = params.index;
+                                        var index = params;
                                         var me = this;
                                         return h('div', [
                                             h('Button', {
@@ -1738,7 +1867,8 @@
                                                 },
                                                 on: {
                                                     click: function () {
-                                                        me.removeWaring(index);
+                                                        // me.removeWaring(index);
+                                                        me.$emit("showdisposemodal",params);
                                                     }
                                                 }
                                             }, '解除报警'),
@@ -1757,7 +1887,7 @@
                     mounted:function () {}
                 },
                 deviceMsg:{
-                    template:'<Table height="576" :columns="columns" :data="deviceinfolist"></Table>',
+                    template:'<Table height="475" :columns="columns" :data="deviceinfolist"></Table>',
                     props:['deviceinfolist'],
                     data:function () { 
                         return {
@@ -1788,6 +1918,7 @@
                 this.queryWaringMsg();
                 this.pushOverdueDeviceInfo();
                 this.timingRequestMsg();
+                this.queryAlarmDescr()
             }
         };
 
@@ -1819,7 +1950,8 @@ var vRoot = new Vue({
             bgManager : bgManager,
             monitor   : monitor,
             reportForm : reportForm,
-            waringComponent : waringComponent
+            waringComponent : waringComponent ,
+            systemParam : systemParam
         },
         mounted:function () {
 

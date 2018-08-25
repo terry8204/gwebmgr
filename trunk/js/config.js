@@ -111,6 +111,47 @@ var myUrls = {
     },
     queryMsg:function () { 
         return this.host + "webapi?action=querymsg&token="+token;
+    },
+    //处理报警
+    disposeAlarm:function (param) { 
+        return this.host + "webapi?action=disposealarm&token="+token;
+    },
+    // 下发命令
+    sendCmd:function (param) { 
+        return this.host + "webapi?action=sendcmd&token="+token;
+    },
+    queryAlarmDescr:function () { 
+        return this.host + "webapi?action=queryalarmdescr&token="+token;
+    },
+    // 系统参数  车辆
+    addVehicleType:function () { 
+        return this.host + "webapi?action=addvehicletype&token="+token;
+    },
+    deleteVehicleType:function () { 
+        return this.host + "webapi?action=deletevehicletype&token="+token;
+    },
+    queryVehicleType:function () { 
+        return this.host + "webapi?action=queryvehicletype&token="+token;
+    },
+    // 设备指令
+    queryCmd:function () { 
+        return this.host + "webapi?action=querycmd&token="+token;
+    },
+    addCmd:function () { 
+        return this.host + "webapi?action=addcmd&token="+token;
+    },
+    deleteCmd:function () { 
+        return this.host + "webapi?action=deletecmd&token="+token;
+    },
+    // 设备类型
+    queryCmd:function () { 
+        return this.host + "webapi?action=querycmd&token="+token;
+    },
+    addCmd:function () { 
+        return this.host + "webapi?action=addcmd&token="+token;
+    },
+    deleteCmd:function () { 
+        return this.host + "webapi?action=deletecmd&token="+token;
     }
 };
 

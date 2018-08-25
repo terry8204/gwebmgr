@@ -150,6 +150,22 @@ div.view-wraper{
         overflow-x: hidden;
         overflow-y: auto;
     }
+    /* 设备控制 tree 开始 */
+    .active-dev-offline{
+        border-radius: 5px;
+        background: #ECF2F6; 
+        border: 1px solid #A4D4F5;
+    }
+    .device-controller {
+        overflow: hidden;
+    }
+    .device-controller li {
+        float: left;
+        width: 25%;
+        text-align: center;
+        cursor: pointer;
+        font-size: 12px;
+    }
     div.map-wraper{
         position: absolute;
         left: 290px;
@@ -549,6 +565,7 @@ div.view-wraper{
     ul.waring-controller li {
         float: left;
         text-align: center;  
+        border-top:1px solid #fff; 
     }
     
     div.msg_main{

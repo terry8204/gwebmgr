@@ -1,0 +1,30 @@
+<meta charset="UTF-8">
+<div class="pd-10 system" id="device-type-wraper">
+    <div style="padding: 5px 0">
+        <i-button icon="md-add"  @click="openAddDeviceTypeModal">添加设备类型</i-button> 
+    </div>
+    <div>
+        <i-table border :columns="columns" :data="tableData" :loading="loading"></i-table>
+    </div>
+    
+    <script>
+        new Vue({
+            el:"#device-type-wraper",
+            data:function(){
+                return {
+                    columns:[],
+                    tableData:[],
+                    loading:false
+                }
+            },
+            methods: {
+                openAddDeviceTypeModal:function(){
+
+                }
+            },
+            mounted () {
+                
+            }
+        })
+    </script>
+</div>

@@ -1,0 +1,40 @@
+<meta charset="UTF-8">
+<div class="pd-10 system" id="directive-wraper">
+    <div style="padding: 5px 0">
+        <i-button icon="md-add"  @click="openAddDirectiveModal">添加设备指令</i-button> 
+    </div>
+    <div>
+        <i-table border :columns="columns" :data="tableData" :loading="loading"></i-table>
+    </div>
+    
+    <script>
+        new Vue({
+            el:"#directive-wraper",
+            data:function(){
+                return {
+                    columns:[],
+                    tableData:[],
+                    loading:false
+                }
+            },
+            methods: {
+                openAddDirectiveModal:function(){
+
+                },
+                queryCmdList:function(){
+                    var url = myUrls.queryCmd();
+                    var data = {
+                        "offset": 0,
+                        "pagesize": 10
+                    };
+                    utils.sendAjax(url,data,function (resp) { 
+                        console.log(resp);
+                    });
+                }
+            },
+            mounted () {
+                this.queryCmdList();
+            }
+        })
+    </script>
+</div>

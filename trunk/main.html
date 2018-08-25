@@ -19,6 +19,7 @@
     <script src="js/config.js"></script>
 </head>
 <body>
+    <!-- root -->
     <div id="app">
         <div class="header-wraper">
             <app-header @change-nav="changeComponent" @change-tree="changeNav" @change-intervaltime="changeInterval" :componentid="componentId"></app-header>
@@ -53,7 +54,11 @@
                         <menuItem name="bgManager" v-show="isShowBgManager">  
                             <Icon type="md-settings"></Icon>
                             后台管理
-                        </menuItem>
+                        </menuItem> 
+                        <menuItem name="systemParam" v-show="isShowSystemParam"> 
+                            <Icon type="ios-options"></Icon>
+                            系统参数
+                        </menuItem>    
                 </i-menu>
             </div>
             <div class="site_links">
@@ -162,7 +167,70 @@
                     </div>
                 </div>
                 <div class="device-tree">
-                    <Tree :data="currentStateData" :render="renderContent"></Tree>
+                    <!-- <Tree :data="currentStateData" :render="renderContent"></Tree> -->
+                    <!-- left tree controller 不显示公司名 -->
+                    <dl class="noselect" v-if="!isShowConpanyName">
+                        <template v-for="(group , index) in currentStateData" :key="index">
+                            <dt style="padding:5px;border-bottom:1px solid #ddd;cursor: pointer;" @click="openGroupItem(group)">
+                                <Icon type="ios-arrow-down" v-show="group.expand"/>
+                                <Icon type="ios-arrow-forward" v-show="!group.expand"/>
+                                <b v-text="group.title"></b>
+                            </dt>
+                            <dd style="padding:5px;border-bottom:1px solid #ddd" v-show="group.expand">
+                                <div v-for="(device , index) in group.children" :key="device.deviceid" style="padding-left:15px">
+                                    <div :class="{'active-dev-offline':device.isSelected}" style="margin:3px 0;">
+                                        <div style="padding:3px 5px;cursor: pointer;" :style="{color: device.isOnline ? '#33DAD0' : '#B1BBC2'}" @click="selectedDev(device)">
+                                            <Icon type="md-person"/> 
+                                            <span v-text="device.title"></span>   
+                                        </div>
+                                        <ul class="device-controller" v-show="device.isSelected">
+                                            <li><Icon type="ios-create"/><p>编辑</p><li>
+                                            <li><Icon type="md-planet"/><p>轨迹</p><li>
+                                            <li><Icon type="md-person"/><p>跟踪</p><li> 
+                                            <li><Icon type="ios-list"/><p>更多</p><li> 
+                                        </ul>
+                                    </div>
+                                </div>
+                            </dd>
+                        </template>
+                    </dl>
+                    <!-- left tree controller显示公司名 -->        
+                    <dl class="noselect" v-else="!isShowConpanyName">
+                        <template v-for="(conpany , index) in currentStateData" :key="index">
+                            <div style="padding:5px;border-bottom:1px solid #ddd;cursor: pointer;" @click="openCanpany(conpany)">
+                                {{conpany.title}} 
+                                <span style="float:right;width:16px;height20px;font-size:16px;margin-top:-2px">
+                                    <Icon type="ios-arrow-dropright" v-if="!conpany.expand"/>
+                                    <Icon type="ios-arrow-dropdown" v-else="!conpany.expand"/> 
+                                <span>
+                            </div>
+                            <template v-for="(group , index) in conpany.children" :key="index">
+                                <div v-show="conpany.expand">
+                                        <dt style="padding:5px;border-bottom:1px solid #ddd;cursor: pointer;" @click="openGroupItem(group)">
+                                                <Icon type="ios-arrow-down" v-show="group.expand"/>
+                                                <Icon type="ios-arrow-forward" v-show="!group.expand"/>
+                                                <b v-text="group.title"></b>
+                                            </dt>
+                                            <dd style="padding:5px;border-bottom:1px solid #ddd" v-show="group.expand">
+                                                <div v-for="(device , index) in group.children" :key="device.deviceid" style="padding-left:15px">
+                                                    <div :class="{'active-dev-offline':device.isSelected}" style="margin:3px 0;">
+                                                        <div style="padding:3px 5px;cursor: pointer;" :style="{color: device.isOnline ? '#33DAD0' : '#B1BBC2'}" @click="selectedDev(device)">
+                                                            <Icon type="md-person"/> 
+                                                            <span v-text="device.title"></span>   
+                                                        </div>
+                                                        <ul class="device-controller" v-show="device.isSelected">
+                                                            <li><Icon type="ios-create"/><p>编辑</p><li>
+                                                            <li><Icon type="md-planet"/><p>轨迹</p><li>
+                                                            <li><Icon type="md-person"/><p>跟踪</p><li> 
+                                                            <li><Icon type="ios-list"/><p>更多</p><li> 
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </dd>
+                                </div>
+                            </template>
+                        </template>
+                    </dl>
                 </div>
             </div>
             <div class="map-wraper">
@@ -205,13 +273,44 @@
         </div>
     </script>
 
+    <!-- 系统参数 -->
+    <script type="text/x-template" id="systemparam-template"> 
+        <div class="manager-wraper">
+            <div class="mar-nav">
+                    <i-menu :theme="theme" @on-select="selectditem">
+                        <template v-for="(group,index) in navList">
+                            <Submenu :name="group.name" :key="index" v-if="group.children">
+                                    <template slot="title">
+                                        <Icon :type="group.icon"></Icon>
+                                        <span>{{ group.title}}</span>
+                                    </template>
+                                    <template v-for="(item,idx) in group.children">
+                                        <MenuItem :name="item.name" :key="idx">
+                                            <Icon :type="item.icon"></Icon>
+                                            {{item.title}}
+                                        </MenuItem>
+                                    </template>
+                            </Submenu>
+
+                            <MenuItem :name="group.name" v-else="group.children">
+                                <Icon :type="group.icon" />
+                                <span>{{ group.title}}</span>
+                            </MenuItem>
+
+                        </template>
+                    </i-menu>
+            </div>
+            <div class="mar-view" id="system-view"></div>
+        </div>
+    </script>
+
     <!-- 报警 -->
     <script type="text/x-template" id="waring-template">
         <div class="waring-wraper" :style="waringWraperStyle">
             <ul class="waring-controller" v-show="!isLargen">
-                <li style="width:68px;"><span :class="{msgwaring:isWaring,msgnormal:!isWaring}">消息</span></li>
-                <li style="width:30px;cursor: pointer;">
-                    <div @click="changeLargen"><Icon type="ios-trending-up" /></div>
+                <li style="width:68px;border-left:1px solid #fff; "><span :class="{msgwaring:isWaring,msgnormal:!isWaring}">消息</span></li>
+                <li style="width:30px;cursor: pointer;border-right:1px solid #fff;">
+                    <div @click="changeLargen" title="展开"><Icon type="ios-trending-up" /></div>
                 </li>
             </ul>
             <div class="msg_main" v-show="isLargen">
@@ -221,141 +320,56 @@
                         <li :class="{selected:index == 2}" @click="changeComponent(2)">设备信息</li>
                         <li style="width:95px;margin-left:10px;" @click="filterWaringType"> [过滤报警类型] </li>
                     </ul> 
-                    <div @click="changeLargen" class="shrink-btn"><Icon type="ios-trending-down" /></div>
+                    <div @click="changeLargen" class="shrink-btn" title="还原"><Icon type="ios-trending-down" /></div>
                 </div>
                 <div class="msg_content">
-                    <component :is="componentName" :waringrecords="waringRecords" :deviceinfolist="overdueDevice"></component>
+                    <component 
+                        :is="componentName" 
+                        :waringrecords="waringRecords" 
+                        :deviceinfolist="overdueDevice" 
+                        @showdisposemodal="showDisposeModalFrame">
+                    </component>
                 </div>
             </div>
 
-            
+            <!-- 过滤报警模态 -->
             <Modal v-model="waringModal" width="600" class-name="vertical-center-modal" fullscreen="false">
                 <p slot="header" style="color:#f60;text-align:center">
                     <Icon type="information-circled"></Icon>
                     <span>过滤器报警</span>
                 </p>
                 <div>
-
-                    <Row style="margin: 10px 0">
-                        <i-col span="8">
-                            <Checkbox  v-model="checkboxObj.emergencyAlarm">emergencyAlarm</Checkbox>
-                        </i-col>
-                        <i-col span="8">
-                            <Checkbox  v-model="checkboxObj.fatigueDrivingAlarm">fatigueDrivingAlarm</Checkbox>
-                        </i-col>
-                        <i-col span="8">
-                                <Checkbox  v-model="checkboxObj.speedAlarm">speedAlarm</Checkbox>
+                    <Row style="margin: 10px 0" v-for="(item,index) in alarmTypeList" :key="index">
+                        <i-col span="8" v-for="(type , index) in item" :key="type.alarmcode">
+                            <Checkbox  v-model="checkboxObj[type.alarmcode]" >{{type.alarmname}}</Checkbox>
                         </i-col>
                     </Row>
-
-                    <Row style="margin: 10px 0">
-                        <i-col span="8">
-                            <Checkbox  v-model="checkboxObj.gnssFault">gnssFault</Checkbox>
-                        </i-col>
-                        <i-col span="8">
-                            <Checkbox  v-model="checkboxObj.lcdFault">lcdFault</Checkbox>
-                        </i-col>
-                        <i-col span="8">
-                                <Checkbox  v-model="checkboxObj.ttsFault">ttsFault</Checkbox>
-                        </i-col>
-                    </Row>
-
-                    <Row style="margin: 10px 0">
-                        <i-col span="8">
-                            <Checkbox  v-model="checkboxObj.inOutArea">inOutArea</Checkbox>
-                        </i-col>
-                        <i-col span="8">
-                            <Checkbox  v-model="checkboxObj.inOutLine">inOutLine</Checkbox>
-                        </i-col>
-                        <i-col span="8">
-                                <Checkbox  v-model="checkboxObj.vssFault">vssFault</Checkbox>
-                        </i-col>
-                    </Row>
-
-                    <Row style="margin: 10px 0">
-                        <i-col span="8">
-                            <Checkbox  v-model="checkboxObj.stolen">stolen</Checkbox>
-                        </i-col>
-                        <i-col span="8">
-                            <Checkbox  v-model="checkboxObj.dangerWarning">dangerWarning</Checkbox>
-                        </i-col>
-                        <i-col span="8">
-                                <Checkbox  v-model="checkboxObj.gnssAntennaFault">gnssAntennaFault</Checkbox>
-                        </i-col>
-                    </Row>
-
-                    <Row style="margin: 10px 0">
-                        <i-col span="8">
-                            <Checkbox  v-model="checkboxObj.gnssAntennaShortCircuit">gnssAntennaShortCircuit</Checkbox>
-                        </i-col>
-                        <i-col span="8">
-                            <Checkbox  v-model="checkboxObj.mainPowerLow">mainPowerLow</Checkbox>
-                        </i-col>
-                        <i-col span="8">
-                                <Checkbox  v-model="checkboxObj.mainPowerOff">mainPowerOff</Checkbox>
-                        </i-col>
-                    </Row>
-
-                    <Row style="margin: 10px 0">
-                        <i-col span="8">
-                            <Checkbox  v-model="checkboxObj.transportIcFault">transportIcFault</Checkbox>
-                        </i-col>
-                        <i-col span="8">
-                            <Checkbox  v-model="checkboxObj.speedWarning">speedWarning</Checkbox>
-                        </i-col>
-                        <i-col span="8">
-                                <Checkbox  v-model="checkboxObj.fatigueDrivingWarning">fatigueDrivingWarning</Checkbox>
-                        </i-col>
-                    </Row>
-                    
-                    <Row style="margin: 10px 0">
-                        <i-col span="8">
-                            <Checkbox  v-model="checkboxObj.drivingOverTime">drivingOverTime</Checkbox>
-                        </i-col>
-                        <i-col span="8">
-                            <Checkbox  v-model="checkboxObj.parkOverTime">parkOverTime</Checkbox>
-                        </i-col>
-                        <i-col span="8">
-                                <Checkbox  v-model="checkboxObj.roadTravelFault">roadTravelFault</Checkbox>
-                        </i-col>
-                    </Row>
-
-                    <Row style="margin: 10px 0">
-                        <i-col span="8">
-                            <Checkbox  v-model="checkboxObj.routeDeviation">routeDeviation</Checkbox>
-                        </i-col>
-                        <i-col span="8">
-                            <Checkbox  v-model="checkboxObj.oilMassAbnormal">oilMassAbnormal</Checkbox>
-                        </i-col>
-                        <i-col span="8">
-                                <Checkbox  v-model="checkboxObj.unlawfulFire">unlawfulFire</Checkbox>
-                        </i-col>
-                    </Row>
-
-                    <Row style="margin: 10px 0">
-                        <i-col span="8">
-                            <Checkbox  v-model="checkboxObj.unlawfulShift">unlawfulShift</Checkbox>
-                        </i-col>
-                        <i-col span="8">
-                            <Checkbox  v-model="checkboxObj.collisionWarning">collisionWarning</Checkbox>
-                        </i-col>
-                        <i-col span="8">
-                                <Checkbox  v-model="checkboxObj.rolloverWarning">rolloverWarning</Checkbox>
-                        </i-col>
-                    </Row>
-
-                    <Row style="margin: 10px 0">
-                        <i-col span="8">
-                            <Checkbox  v-model="checkboxObj.cameraFault">cameraFault</Checkbox>
-                        </i-col>
-                        <i-col span="8">
-                            <Checkbox  v-model="checkboxObj.unlawfulOpenDoorAlarm">unlawfulOpenDoorAlarm</Checkbox>
-                        </i-col>
-                    </Row>
-                    
                 </div>
                 <div slot="footer">
-                    <i-button type="primary"  @click="" style="width: 100%">确定</i-button>
+                    <i-button type="primary"  @click="" style="width: 100%" @click="saveReqMsgParameter">确定</i-button>
+                </div>
+            </Modal>
+
+            <!-- 接触报警模态 -->
+            <Modal v-model="disposeModal" width="400" class-name="vertical-center-modal">
+                <p slot="header" style="color:#f60;text-align:center">
+                    <Icon type="information-circled"></Icon>
+                    <span>解除报警</span>
+                </p>
+                <div>
+                    <Row style="margin: 10px 0">
+                        <i-col span="22" :offset="2">
+                            <RadioGroup v-model="disposeAlarm">
+                                <Radio label="下发文本"></Radio>
+                                <Radio label="下发拍照"></Radio>
+                                <Radio label="车辆监听"></Radio>
+                                <Radio label="解除报警"></Radio>
+                            </RadioGroup>
+                        </i-col>
+                    </Row>
+                </div>
+                <div slot="footer">
+                    <i-button type="primary"  @click="" style="width: 100%" @click="sendDisposeWaring">确定</i-button>
                 </div>
             </Modal>
         </div>

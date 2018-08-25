@@ -62,3 +62,14 @@ ul,ol,li{
     width: 78%!important;
     bottom: 51px;
 } */
+
+/* 解决系统参数下所有icon margin 上移3px的问题 */
+.system .ivu-icon{
+    margin: 0;
+}
+
+/* padding */
+
+.pd-10{
+    padding: 10px;
+}

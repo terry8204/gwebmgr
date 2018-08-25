@@ -1,0 +1,159 @@
+<meta charset="UTF-8">
+<div class="pd-10 system" id="car-type-wraper">
+    <div style="padding: 5px 0">
+        <i-button icon="md-add"  @click="openAddCarTypeModal">添加汽车类型</i-button> 
+    </div>
+    <div>
+        <i-table border :columns="columns" :data="tableData" :loading="loading"></i-table>
+    </div>
+
+    <!-- 添加汽车类型 -->
+    <Modal v-model="addCarTypeModal" width="500" class-name="vertical-center-modal">
+        <p slot="header" style="color:#2D8CF0;text-align:center">
+            <Icon type="md-add"></Icon>
+            <span>添加车辆类型</span>
+        </p>
+        <div>
+            <Row>
+                <i-col :span="3" :offset="1" style="height: 100%;text-align:right;line-height:32px;">
+                    类型名称:
+                </i-col>
+                <i-col :span="7">
+                    <i-input v-model.trim="typeInfo.name"></i-input>
+                </i-col>
+                <i-col :span="3" :offset="2" style="height: 100%;text-align:right;line-height:32px;">
+                    内容:
+                </i-col>
+                <i-col :span="7">
+                    <i-input v-model.trim="typeInfo.content"></i-input>
+                </i-col>
+            </Row>
+            <!-- <Row>
+                <i-col :span="3" :offset="1" style="height: 100%;text-align:right;line-height:32px;">
+                    <span>类型名称:</span>
+                </i-col>
+                <i-col :span="7">
+                    <i-input v-model.trim="typeInfo.nameen"></i-input>
+                </i-col>
+                <i-col :span="3" :offset="2" style="height: 100%;text-align:right;line-height:32px;">
+                    <span>类型名称:</span>
+                </i-col>
+                <i-col :span="7">
+                    <i-input v-model.trim="typeInfo.nametw"></i-input>
+                </i-col>
+            </Row> -->
+        </div>
+        <div slot="footer">
+            <i-button type="primary"  @click="handleAddCarType" style="width: 100%">添加</i-button>
+        </div>
+    </Modal>
+
+
+    <script>
+        new Vue({
+            el:"#car-type-wraper",
+            data:function(){
+                return {
+                    addCarTypeModal:false,
+                    editCarTypeModal:false,
+                    loading:false,
+                    columns:[
+                       {
+                            title: '设备数量',
+                            key: 'currdevicecount' 
+                        },
+                        {
+                            title: '创建时间',
+                            key: 'createtime'
+                        },
+                        {
+                            title: '到期时间',
+                            key: 'overduetime'
+                        },
+                        {
+                            title: '操作',
+                            key: 'action',
+                            width: 150,
+                            align: 'center',
+                            render: function(h, params) {
+                                return h('div', [
+                                    h('Button', {
+                                        props: {
+                                            type: 'primary',
+                                            size: 'small'
+                                        },
+                                        style: {
+                                            marginRight: '5px'
+                                        },
+                                        on: {
+                                            click: function() {
+                                              
+                                            }
+                                        }
+                                    }, '修改'),
+                                    h('Button', {
+                                        props: {
+                                            type: 'error',
+                                            size: 'small'
+                                        },
+                                        on: {
+                                            click: function() {
+                                              
+                                            }
+                                        }
+                                    }, '删除')
+                                ]);
+                            }
+                        }
+                    ],
+                    tableData:[],
+                    typeInfo:{
+                        name:"",
+                        content:"",
+                        nameen:"",
+                        nametw:""
+                    }
+                }
+            },
+            methods: {
+                openAddCarTypeModal:function(){
+                    this.addCarTypeModal = true;
+                },
+                handleAddCarType:function(){
+                    var url = myUrls.addVehicleType();
+                    var me = this;
+                    if(this.typeInfo.name == "" && this.typeInfo.content == "" ){
+                        this.$Message.error("请填写类型和内容");
+                        return ;
+                    }
+                    var data = {
+                        name:this.typeInfo.name,
+                        content:this.typeInfo.content
+                    };
+                    utils.sendAjax(url,data,function (resp) {
+                        if(resp.status == 0){
+                            me.$Message.success("添加成功");
+                        }else{
+                            me.$Message.error(resp.cause);  
+                        }
+                    });
+                },
+                openEditCarTypeModal:function(){
+                    this.editCarTypeModal = true;
+                },
+                handleEditCarType:function(){
+
+                },
+                queryCarTypeList:function(){
+                    var url = myUrls.queryVehicleType();
+                    utils.sendAjax(url,{},function (resp) { 
+                        console.log(resp);
+                    });
+                }
+            },
+            mounted() {
+                this.queryCarTypeList();
+            },
+        })
+    </script>
+</div>
