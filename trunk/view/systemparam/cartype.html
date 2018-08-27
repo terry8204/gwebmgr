@@ -205,7 +205,7 @@
                 },
                 queryCarTypeList:function(){
                     var me = this;
-                    var url = myUrls.queryVehicleType();
+                    var url = myUrls.pageQueryVehicleType();
                     utils.sendAjax(url,{},function (resp) { 
                         if(resp.status == 0){
                             me.tableData = resp.records;
