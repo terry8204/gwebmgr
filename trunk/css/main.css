@@ -26,23 +26,24 @@ div.view-wraper{
     bottom: 0;
 }
 /* icon位置 */
-.ivu-input-number-handler-wrap .ivu-icon{
-    margin-top: 0px; 
-}
-.full .ivu-input-number-handler-wrap .ivu-icon{
-    margin-top: 0px; 
-}
-.full .ivu-tag .ivu-icon{
-    margin-top:0px; 
-}
-.ivu-input-type .ivu-icon{
-    margin-top:0px; 
-}
+.ivu-input-number-handler-wrap .ivu-icon , 
+.full .ivu-input-number-handler-wrap .ivu-icon,
+.full .ivu-tag .ivu-icon,
+.ivu-input-type .ivu-icon,
 .full .ivu-btn-default .ivu-icon{
-    margin-top:0px; 
+    margin-top: 0px; 
 }
+
+
 .ivu-tree ul {
     font-size: 14px;
+}
+
+div.ivu-steps-head-inner .ivu-icon{
+    margin-top:-1px; 
+}
+#adddevice div.ivu-steps-title ,#adddevice div.ivu-steps-head{
+    background: #F8F8F9;
 }
 /* layout 结束 */
 

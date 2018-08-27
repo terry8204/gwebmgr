@@ -133,6 +133,9 @@ var myUrls = {
     queryVehicleType:function () { 
         return this.host + "webapi?action=queryvehicletype&token="+token;
     },
+    editVehicleType:function () {
+        return this.host + "webapi?action=editvehicletype&token="+token;
+    },
     // 设备指令
     queryCmd:function () { 
         return this.host + "webapi?action=querycmd&token="+token;
@@ -143,15 +146,21 @@ var myUrls = {
     deleteCmd:function () { 
         return this.host + "webapi?action=deletecmd&token="+token;
     },
+    editCmd:function () { 
+        return this.host + "webapi?action=editcmd&token="+token;
+    },
     // 设备类型
-    queryCmd:function () { 
-        return this.host + "webapi?action=querycmd&token="+token;
+    queryDeviceYype:function () { 
+        return this.host + "webapi?action=querydevicetype&token="+token;
     },
-    addCmd:function () { 
-        return this.host + "webapi?action=addcmd&token="+token;
+    addDeviceType:function () { 
+        return this.host + "webapi?action=adddevicetype&token="+token;
     },
-    deleteCmd:function () { 
-        return this.host + "webapi?action=deletecmd&token="+token;
+    deleteDeviceType:function () { 
+        return this.host + "webapi?action=deletedevicetype&token="+token;
+    },
+    editDeviceTypeCmd:function () { 
+        return this.host + "webapi?action=editdevicetypecmd&token="+token;
     }
 };
 

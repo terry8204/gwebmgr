@@ -3,7 +3,13 @@
     <div class="full">
         <h3 class="h3-title">添加设备</h3>
         <div>
-
+            <Steps :current="currentIndex" size="small">
+                <Step title="已完成"></Step>
+                <Step title="进行中"></Step>
+                <Step title="待进行"></Step>
+            </Steps>
+        </div>
+        <div v-if="currentIndex == 0">
             <Row style="margin: 10px 0">
                 <i-col span="4" style="height: 100%;text-align:right;line-height:32px;"><i style="color: red;display: inline-block;">*</i>&nbsp;设备名称 : &nbsp;</i-col>
                 <i-col span="8">
@@ -72,16 +78,18 @@
                     </i-select>
                 </i-col>                  
             </Row>
-            
             <Row style="margin: 10px 0">
                 <i-col span="6" :offset="7">
-                    <i-button style="width: 100%" @click="handleSubmit">提交</i-button>
+                    <!-- <i-button style="width: 100%" @click="handleSubmit">提交</i-button> -->
+                    <i-button style="width: 100%" @click="currentIndex++">下一步</i-button>
                 </i-col>
                 <i-col span="6" :offset="1">
                     <i-button style="width: 100%" @click="resetInfo">重置</i-button>
                 </i-col>
             </Row>
         </div>
+        <div v-else-if="currentIndex == 1">第2步</div>
+        <div v-else-if="currentIndex == 2">第3步</div>
     </div>
     <script>
         new Vue({
@@ -92,6 +100,7 @@
                         return date && date.valueOf() < Date.now() - 86400000;
                     }
                 },
+                currentIndex:0,
                 deviceid:"",
                 devicename:"",
                 devicetype:"",

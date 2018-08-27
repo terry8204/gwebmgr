@@ -7,23 +7,148 @@
         <i-table border :columns="columns" :data="tableData" :loading="loading"></i-table>
     </div>
     
+    <!-- 添加汽车类型 -->
+    <Modal v-model="addDevTypeModal" width="500" class-name="vertical-center-modal">
+        <p slot="header" style="color:#2D8CF0;text-align:center">
+            <Icon type="md-add"></Icon>
+            <span v-show="!isEdit">添加设备类型</span>
+            <span v-show="isEdit">编辑设备类型</span>
+        </p>
+        <div>
+            <Row>
+                <i-col :span="3" :offset="1" style="height: 100%;text-align:right;line-height:32px;">
+                    类型名称:
+                </i-col>
+                <i-col :span="7">
+                    <i-input v-model.trim="devTypeInfo.typename"></i-input>
+                </i-col>
+                <i-col :span="3" :offset="2" style="height: 100%;text-align:right;line-height:32px;">
+                    typeCode:
+                </i-col>
+                <i-col :span="7">
+                    <i-input v-model.trim="devTypeInfo.typecode"></i-input>
+                </i-col>
+            </Row>
+        </div>
+        <div slot="footer">
+            <i-button type="primary"  @click="handleAddDevType" style="width: 100%">{{isEdit?'编辑':'添加'}}</i-button>
+        </div>
+    </Modal>
+
+    <Modal v-model="delDevTypeModal" width="360" class-name="vertical-center-modal">
+        <p slot="header" style="color:#f60;text-align:center">
+            <Icon type="information-circled"></Icon>
+            <span>是否删除</span>
+        </p>
+        <div style="text-align:center">
+            <p> {{devTypeInfo.name}}</p>
+        </div>
+        <div slot="footer">
+            <i-button type="error"  @click="handleDel" style="width: 100%">删除</i-button>
+        </div>
+    </Modal>
+
     <script>
         new Vue({
             el:"#device-type-wraper",
             data:function(){
                 return {
-                    columns:[],
+                    devTypeInfo:{ 
+                        "port": 0,
+                        "typecode": null,
+                        "typename": null,
+                        "enable": 1,
+                        "level": 0,
+                        "camera": 0,
+                        "lcd": 0,
+                        "led": 0,
+                        "phone": null,
+                        "tcpport": 0,
+                        "udpporct": 0
+                     },
+                    isEdit:false,
+                    delDevTypeModal:false,
+                    addDevTypeModal:false,
+                    columns:[
+                        {
+                            title: '类型名称',
+                            key: 'typename' 
+                        },
+                        {
+                            title: 'typeCode',
+                            key: 'typecode'
+                        },
+                        {
+                            title: '操作',
+                            key: 'action',
+                            width: 150,
+                            align: 'center',
+                            render: function(h, params) {
+                                return h('div', [
+                                    h('Button', {
+                                        props: {
+                                            type: 'primary',
+                                            size: 'small'
+                                        },
+                                        style: {
+                                            marginRight: '5px'
+                                        },
+                                        on: {
+                                            click: function() {
+                                                // me.openEditCarTypeModal(params);
+                                            }
+                                        }
+                                    }, '修改'),
+                                    h('Button', {
+                                        props: {
+                                            type: 'error',
+                                            size: 'small'
+                                        },
+                                        on: {
+                                            click: function() {
+                                                // me.deleteCarType(params);
+                                            }
+                                        }
+                                    }, '删除')
+                                ]);
+                            }
+                        }
+                    ],
                     tableData:[],
                     loading:false
                 }
             },
             methods: {
                 openAddDeviceTypeModal:function(){
+                    this.addDevTypeModal = true;
+                },
+                handleDel:function(){
 
+                },
+                handleAddDevType:function(){
+                    var me = this;
+                    var url = myUrls.addDeviceType();
+                    var data = {
+                        typecode: this.devTypeInfo.typecode,
+                        typename: this.devTypeInfo.typename
+                    };
+                    utils.sendAjax(url,data,function (resp) { 
+                        console.log(resp);
+                    })
+                },
+                queryDevTypeList:function(){
+                    var me = this;
+                    var url = myUrls.queryDeviceYype();
+                    utils.sendAjax(url,{},function (resp) {
+                        console.log(resp);
+                        if(resp.status == 0){
+                            me.tableData = resp.devicetypes;
+                        }
+                    })
                 }
             },
             mounted () {
-                
+                this.queryDevTypeList();
             }
         })
     </script>

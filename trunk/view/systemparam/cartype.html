@@ -4,14 +4,15 @@
         <i-button icon="md-add"  @click="openAddCarTypeModal">添加汽车类型</i-button> 
     </div>
     <div>
-        <i-table border :columns="columns" :data="tableData" :loading="loading"></i-table>
+        <i-table border :data="tableData" :columns="columns" :loading="loading"></i-table>
     </div>
 
     <!-- 添加汽车类型 -->
     <Modal v-model="addCarTypeModal" width="500" class-name="vertical-center-modal">
         <p slot="header" style="color:#2D8CF0;text-align:center">
             <Icon type="md-add"></Icon>
-            <span>添加车辆类型</span>
+            <span v-show="!isEdit">添加车辆类型</span>
+            <span v-show="isEdit">编辑车辆类型</span>
         </p>
         <div>
             <Row>
@@ -44,31 +45,46 @@
             </Row> -->
         </div>
         <div slot="footer">
-            <i-button type="primary"  @click="handleAddCarType" style="width: 100%">添加</i-button>
+            <i-button type="primary"  @click="handleAddCarType" style="width: 100%">{{isEdit?'编辑':'添加'}}</i-button>
         </div>
     </Modal>
 
+    <Modal v-model="delCarTypeModal" width="360" class-name="vertical-center-modal">
+        <p slot="header" style="color:#f60;text-align:center">
+            <Icon type="information-circled"></Icon>
+            <span>是否删除</span>
+        </p>
+        <div style="text-align:center">
+            <p> {{typeInfo.name}}</p>
+        </div>
+        <div slot="footer">
+            <i-button type="error"  @click="handleDel" style="width: 100%">删除</i-button>
+        </div>
+    </Modal>
 
     <script>
         new Vue({
             el:"#car-type-wraper",
             data:function(){
+                var me = this;
                 return {
                     addCarTypeModal:false,
-                    editCarTypeModal:false,
+                    delCarTypeModal:false,
+                    rowIndex:null,
+                    isEdit:false,
                     loading:false,
                     columns:[
-                       {
-                            title: '设备数量',
-                            key: 'currdevicecount' 
+                        {
+                            title: 'ID',
+                            key: 'vhctypeid'
                         },
                         {
-                            title: '创建时间',
-                            key: 'createtime'
+                            title: '名称',
+                            key: 'name' 
                         },
                         {
-                            title: '到期时间',
-                            key: 'overduetime'
+                            title: '内容',
+                            key: 'content'
                         },
                         {
                             title: '操作',
@@ -87,7 +103,7 @@
                                         },
                                         on: {
                                             click: function() {
-                                              
+                                                me.openEditCarTypeModal(params);
                                             }
                                         }
                                     }, '修改'),
@@ -98,7 +114,7 @@
                                         },
                                         on: {
                                             click: function() {
-                                              
+                                                me.deleteCarType(params);
                                             }
                                         }
                                     }, '删除')
@@ -117,10 +133,11 @@
             },
             methods: {
                 openAddCarTypeModal:function(){
+                    this.isEdit = false;
                     this.addCarTypeModal = true;
                 },
                 handleAddCarType:function(){
-                    var url = myUrls.addVehicleType();
+                    var url = null;
                     var me = this;
                     if(this.typeInfo.name == "" && this.typeInfo.content == "" ){
                         this.$Message.error("请填写类型和内容");
@@ -130,25 +147,77 @@
                         name:this.typeInfo.name,
                         content:this.typeInfo.content
                     };
+
+                    if(this.isEdit){
+                        url = myUrls.editVehicleType();
+                        data = this.typeInfo;
+                    }else{
+                        url = myUrls.addVehicleType(); 
+                    }
                     utils.sendAjax(url,data,function (resp) {
+                        console.log(resp);
                         if(resp.status == 0){
-                            me.$Message.success("添加成功");
+                            if(me.isEdit){
+                                me.$Message.success("编辑成功");
+                                me.tableData[me.rowIndex].name="";
+
+                                for(var key in me.typeInfo){
+                                    if(me.typeInfo.hasOwnProperty(key)){
+                                        var val = me.typeInfo[key];
+                                        me.tableData[me.rowIndex][key] = val;
+                                    };
+                                };
+
+                            }else{
+                                me.$Message.success("添加成功");
+                                me.queryCarTypeList(); 
+                            }
+                            me.addCarTypeModal = false;
                         }else{
-                            me.$Message.error(resp.cause);  
+                            me.$Message.error(resp.cause);
                         }
                     });
                 },
-                openEditCarTypeModal:function(){
-                    this.editCarTypeModal = true;
+                openEditCarTypeModal:function(params){
+                    this.isEdit = true;
+                    this.addCarTypeModal = true;
+                    this.typeInfo = JSON.parse(JSON.stringify(params.row));
+                    this.rowIndex = params.index;
                 },
-                handleEditCarType:function(){
-
+                deleteCarType:function(params){
+                    this.delCarTypeModal = true;
+                    this.typeInfo = params.row;
+                    this.rowIndex = params.index;
+                },
+                handleDel:function(){
+                    var me = this;
+                    var url = myUrls.deleteVehicleType();
+                    var data = {vhctypeid:this.typeInfo.vhctypeid};
+                    utils.sendAjax(url,data,function (resp) { 
+                        if(resp.status == 0){
+                            me.$Message.success("删除成功");
+                            me.$delete(me.tableData,me.rowIndex);
+                            me.delCarTypeModal = false;
+                        }else{
+                            me.$Message.success(resp.cause);
+                        };
+                    });
                 },
                 queryCarTypeList:function(){
+                    var me = this;
                     var url = myUrls.queryVehicleType();
                     utils.sendAjax(url,{},function (resp) { 
-                        console.log(resp);
+                        if(resp.status == 0){
+                            me.tableData = resp.records;
+                        };
                     });
+                }
+            },
+            watch:{
+                addCarTypeModal:function(){
+                    if(!this.isEdit){
+                        this.typeInfo = {name:"",content:"",nameen:"",nametw:""};
+                    }
                 }
             },
             mounted() {
