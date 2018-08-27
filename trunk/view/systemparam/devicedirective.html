@@ -19,36 +19,34 @@
                     <i-col :span="3" :offset="1" style="height: 100%;text-align:right;line-height:32px;">
                         指令名称:
                     </i-col>
-                    <i-col :span="7">
+                    <i-col :span="17">
                         <i-input v-model.trim="directiveObj.cmdname"></i-input>
                     </i-col>
-                    <i-col :span="3" :offset="2" style="height: 100%;text-align:right;line-height:32px;">
+                    <!-- <i-col :span="3" :offset="2" style="height: 100%;text-align:right;line-height:32px;">
                         cmdCode:
                     </i-col>
                     <i-col :span="7">
                         <i-input v-model.trim="directiveObj.cmdcode"></i-input>
-                    </i-col>
+                    </i-col> -->
                 </Row>
-                <!-- <Row>
-                    <i-col :span="3" :offset="1" style="height: 100%;text-align:right;line-height:32px;">
-                        <span>类型名称:</span>
-                    </i-col>
-                    <i-col :span="7">
-                        <i-input v-model.trim="typeInfo.nameen"></i-input>
-                    </i-col>
-                    <i-col :span="3" :offset="2" style="height: 100%;text-align:right;line-height:32px;">
-                        <span>类型名称:</span>
-                    </i-col>
-                    <i-col :span="7">
-                        <i-input v-model.trim="typeInfo.nametw"></i-input>
-                    </i-col>
-                </Row> -->
             </div>
             <div slot="footer">
                 <i-button type="primary"  @click="handleAddDirectiveType" style="width: 100%">{{isEdit?'编辑':'添加'}}</i-button>
             </div>
         </Modal>
 
+        <Modal v-model="delDevDirectiveModal" width="360" class-name="vertical-center-modal">
+                <p slot="header" style="color:#f60;text-align:center">
+                    <Icon type="information-circled"></Icon>
+                    <span>是否删除</span>
+                </p>
+                <div style="text-align:center">
+                    <p> {{directiveObj.cmdname}}</p>
+                </div>
+                <div slot="footer">
+                    <i-button type="error"  @click="handleDelDirective" style="width: 100%">删除</i-button>
+                </div>
+            </Modal>
     <script>
         new Vue({
             el:"#directive-wraper",
@@ -60,7 +58,7 @@
                     delDevDirectiveModal:false,
                     directiveObj:{},
                     columns:[
-                    {
+                        {
                             title: '指令名称',
                             key: 'cmdname' 
                         },
@@ -85,7 +83,10 @@
                                         },
                                         on: {
                                             click: function() {
-                                               
+                                                me.isEdit = true;
+                                                me.addDevDirectiveModal = true;
+                                                me.rowIndex = params.index;
+                                                me.directiveObj = params.row;
                                             }
                                         }
                                     }, '修改'),
@@ -96,7 +97,9 @@
                                         },
                                         on: {
                                             click: function() {
-                                               
+                                               me.delDevDirectiveModal = true;
+                                               me.rowIndex = params.index;
+                                               me.directiveObj = params.row;
                                             }
                                         }
                                     }, '删除')
@@ -104,33 +107,64 @@
                             }
                         }
                     ],
+                    rowIndex:null,
                     tableData:[],
                     loading:false
                 }
             },
             methods: {
                 openAddDirectiveModal:function(){
+                    this.isEdit = false;
                     this.addDevDirectiveModal = true;
                 },
                 handleAddDirectiveType:function(){
-                    var url = myUrls.addCmd();
+                    var me = this;
+                    var url = null;
                     var data = {
                         cmdcode:this.directiveObj.cmdcode,
                         cmdname:this.directiveObj.cmdname
                     };
 
+                    if(this.isEdit){
+                        url = myUrls.editCmd();
+                        
+                    }else{
+                        url = myUrls.addCmd();
+                    }
+
+                    utils.sendAjax(url , data , function (resp) { 
+                        console.log(resp);
+                        if(resp.status == 0){
+                            if(me.isEdit){
+                                me.$Message.success("编辑成功");
+                            }else{
+                                me.$Message.success("添加成功");                                 
+                            };
+                            me.addDevDirectiveModal = false;
+                        }else{
+                            me.$Message.error("错误");
+                        }
+                    });
+                },
+
+                handleDelDirective:function(){
+                    var url = myUrls.deleteCmd();
+                    var data = { cmdcode: String(this.directiveObj.cmdcode)};
                     utils.sendAjax(url,data,function (resp) { 
                         console.log(resp);
                     });
                 },
                 queryCmdList:function(){
+                    var me = this;
                     var url = myUrls.queryCmd();
                     var data = {
                         "offset": 0,
                         "pagesize": 10
                     };
                     utils.sendAjax(url,data,function (resp) { 
-                        console.log(resp);
+                        if(resp.status === 0) {
+                            me.tableData = resp.records;
+                        }
                     });
                 }
             },

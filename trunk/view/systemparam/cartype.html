@@ -74,10 +74,10 @@
                     isEdit:false,
                     loading:false,
                     columns:[
-                        {
-                            title: 'ID',
-                            key: 'vhctypeid'
-                        },
+                        // {
+                        //     title: 'ID',
+                        //     key: 'vhctypeid'
+                        // },
                         {
                             title: '名称',
                             key: 'name' 
@@ -220,7 +220,7 @@
                     }
                 }
             },
-            mounted() {
+            mounted:function() {
                 this.queryCarTypeList();
             },
         })

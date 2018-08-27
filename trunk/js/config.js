@@ -4,7 +4,6 @@
 var myUrls = {
     host:"http://192.168.0.112:8090/",
     // host:"http://112.74.186.169/",
-
     login:function(){
         return this.host+"webapi?action=login";
     },

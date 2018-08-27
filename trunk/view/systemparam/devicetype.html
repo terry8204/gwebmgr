@@ -122,25 +122,57 @@
             },
             methods: {
                 openAddDeviceTypeModal:function(){
+                    this.isEdit = false;
                     this.addDevTypeModal = true;
                 },
                 handleDel:function(){
-
+                    var me = this;
+                    var url = myUrls.deleteDeviceType();
+                    var data = {devicetypeid:this.devTypeInfo.devicetypeid};
+                    utils.sendAjax(url,data,function (resp) { 
+                        if(resp.status == 0){
+                            me.$delete(me.tableData,me.rowIndex);
+                            me.delDevTypeModal = false;
+                            me.$Message.success("删除成功");
+                        }else{
+                            me.$Message.success("删除失败");
+                        };
+                    });
                 },
                 handleAddDevType:function(){
                     var me = this;
                     var url = null;
-                    var data = {
-                        typecode: this.devTypeInfo.typecode,
-                        typename: this.devTypeInfo.typename
-                    };
+                    var data = null;
                     if(this.isEdit){
                         url = myUrls.editDeviceTypeCmd();
+                        data = {
+                            "devicetype": this.devTypeInfo.devicetypeid,
+                            "cmds": [
+                                {
+                                "cmdcode": this.devTypeInfo.typecode,
+                                "cmdname": this.devTypeInfo.typename
+                                }
+                            ]
+                        }
                     }else{
                         url = myUrls.addDeviceType();
+                        data = {
+                            typecode: this.devTypeInfo.typecode,
+                            typename: this.devTypeInfo.typename
+                        };
                     }
-                    utils.sendAjax(url,data,function (resp) { 
-                        console.log(resp);
+                    utils.sendAjax(url,data,function (resp) {   
+                        if(resp.status == 0){
+                            if(me.isEdit){
+                                me.$Message.success("编辑成功");
+                            }else{
+                                me.$Message.success("添加成功");
+                            };
+                            me.addDevTypeModal = false;
+                        }else{
+                            me.$Message.error("操作失败");    
+                        }                  
+                        
                     })
                 },
                 openEditDevTypeModal:function(params){
@@ -153,20 +185,32 @@
                     this.delDevTypeModal = true; 
                     this.devTypeInfo = params.row;
                     this.rowIndex = params.index;
-                    console.log(params.row);
                 },
                 queryDevTypeList:function(){
                     var me = this;
                     var url = myUrls.pageQueryDeviceType();
                     utils.sendAjax(url,{},function (resp) {
-                        console.log(resp);
                         if(resp.status == 0){
                             me.tableData = resp.devicetypes;
                         }
                     })
                 }
             },
-            mounted () {
+            watch:{
+                addDevTypeModal:function(){
+                    if(!this.isEdit){
+                        this.devTypeInfo = {
+                            "port": 0,"typecode": null,
+                            "typename": null,"enable": 1,
+                            "level": 0,"camera": 0,
+                            "lcd": 0,"led": 0,
+                            "phone": null,"tcpport": 0,
+                            "udpport": 0
+                        }
+                    }
+                }
+            },
+            mounted :function () {
                 this.queryDevTypeList();
             }
         })

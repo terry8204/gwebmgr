@@ -13,6 +13,7 @@
     // vuex store
     var vstore = new Vuex.Store({
         state:{
+            userType:Cookies.get("userType"),
             deviceNames:{}
         },
         actions: {
