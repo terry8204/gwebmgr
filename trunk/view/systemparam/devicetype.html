@@ -138,7 +138,7 @@
                 },
                 queryDevTypeList:function(){
                     var me = this;
-                    var url = myUrls.queryDeviceYype();
+                    var url = myUrls.pageQueryDeviceType();
                     utils.sendAjax(url,{},function (resp) {
                         console.log(resp);
                         if(resp.status == 0){

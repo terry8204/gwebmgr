@@ -3,7 +3,7 @@
  */
 var myUrls = {
     host:"http://192.168.0.112:8090/",
-    host:"http://112.74.186.169/",
+    //host:"http://112.74.186.169/",
     login:function(){
         return this.host+"webapi?action=login";
     },
@@ -69,9 +69,6 @@ var myUrls = {
     },
     addDevice:function () { 
         return this.host + "webapi?action=adddevice&token="+token;
-    },
-    queryDeviceType:function (param) { 
-        return this.host + "webapi?action=pagequerydevicetype&token="+token;
     },
     queryDeviceInfo:function () { 
         return this.host + "webapi?action=deviceinfo&token="+token;
@@ -150,8 +147,8 @@ var myUrls = {
         return this.host + "webapi?action=editcmd&token="+token;
     },
     // 设备类型
-    queryDeviceYype:function () { 
-        return this.host + "webapi?action=querydevicetype&token="+token;
+    pageQueryDeviceType:function () {
+        return this.host + "webapi?action=pagequerydevicetype&token="+token;
     },
     queryDeviceTypeByUser:function () {
         return this.host + "webapi?action=querydevicetypebyuser&token="+token;

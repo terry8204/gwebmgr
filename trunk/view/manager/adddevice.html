@@ -213,7 +213,7 @@
                 },
                 getDeviceType:function () {
                     var me = this;
-                    var url = myUrls.queryDeviceType();   
+                    var url = myUrls.queryDeviceTypeByUser();
                     utils.sendAjax(url,{},function (resp) { 
                         if(resp.status == 0 && resp.devicetypes!=null){
                             resp.devicetypes.forEach(function (item) { 
