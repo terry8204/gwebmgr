@@ -41,7 +41,7 @@
             <span>是否删除</span>
         </p>
         <div style="text-align:center">
-            <p> {{devTypeInfo.name}}</p>
+            <p> {{devTypeInfo.typename}}</p>
         </div>
         <div slot="footer">
             <i-button type="error"  @click="handleDel" style="width: 100%">删除</i-button>
@@ -52,6 +52,7 @@
         new Vue({
             el:"#device-type-wraper",
             data:function(){
+                var me = this;
                 return {
                     devTypeInfo:{ 
                         "port": 0,
@@ -69,6 +70,7 @@
                     isEdit:false,
                     delDevTypeModal:false,
                     addDevTypeModal:false,
+                    rowIndex:null,
                     columns:[
                         {
                             title: '类型名称',
@@ -95,7 +97,7 @@
                                         },
                                         on: {
                                             click: function() {
-                                                // me.openEditCarTypeModal(params);
+                                                me.openEditDevTypeModal(params);
                                             }
                                         }
                                     }, '修改'),
@@ -106,7 +108,7 @@
                                         },
                                         on: {
                                             click: function() {
-                                                // me.deleteCarType(params);
+                                                me.deleteDevType(params);
                                             }
                                         }
                                     }, '删除')
@@ -127,14 +129,31 @@
                 },
                 handleAddDevType:function(){
                     var me = this;
-                    var url = myUrls.addDeviceType();
+                    var url = null;
                     var data = {
                         typecode: this.devTypeInfo.typecode,
                         typename: this.devTypeInfo.typename
                     };
+                    if(this.isEdit){
+                        url = myUrls.editDeviceTypeCmd();
+                    }else{
+                        url = myUrls.addDeviceType();
+                    }
                     utils.sendAjax(url,data,function (resp) { 
                         console.log(resp);
                     })
+                },
+                openEditDevTypeModal:function(params){
+                    this.isEdit = true;
+                    this.addDevTypeModal = true; 
+                    this.devTypeInfo = JSON.parse(JSON.stringify(params.row));
+                    this.rowIndex = params.index;
+                },
+                deleteDevType:function(params){
+                    this.delDevTypeModal = true; 
+                    this.devTypeInfo = params.row;
+                    this.rowIndex = params.index;
+                    console.log(params.row);
                 },
                 queryDevTypeList:function(){
                     var me = this;
