@@ -19,15 +19,15 @@
                     <i-col :span="3" :offset="1" style="height: 100%;text-align:right;line-height:32px;">
                         指令名称:
                     </i-col>
-                    <i-col :span="17">
+                    <i-col :span="7">
                         <i-input v-model.trim="directiveObj.cmdname"></i-input>
                     </i-col>
-                    <!-- <i-col :span="3" :offset="2" style="height: 100%;text-align:right;line-height:32px;">
+                    <i-col :span="3" :offset="2" style="height: 100%;text-align:right;line-height:32px;">
                         cmdCode:
                     </i-col>
                     <i-col :span="7">
-                        <i-input v-model.trim="directiveObj.cmdcode"></i-input>
-                    </i-col> -->
+                        <i-input v-model.trim="directiveObj.cmdcode" :disabled="isEdit"></i-input>
+                    </i-col>
                 </Row>
             </div>
             <div slot="footer">
@@ -86,7 +86,7 @@
                                                 me.isEdit = true;
                                                 me.addDevDirectiveModal = true;
                                                 me.rowIndex = params.index;
-                                                me.directiveObj = params.row;
+                                                me.directiveObj = JSON.parse(JSON.stringify(params.row));
                                             }
                                         }
                                     }, '修改'),
@@ -133,7 +133,6 @@
                     }
 
                     utils.sendAjax(url , data , function (resp) { 
-                        console.log(resp);
                         if(resp.status == 0){
                             if(me.isEdit){
                                 me.$Message.success("编辑成功");
@@ -148,10 +147,16 @@
                 },
 
                 handleDelDirective:function(){
+                    var me = this;
                     var url = myUrls.deleteCmd();
                     var data = { cmdcode: String(this.directiveObj.cmdcode)};
                     utils.sendAjax(url,data,function (resp) { 
-                        console.log(resp);
+                        if(resp.status == 0){
+                            me.$Message.success("删除成功");
+                            me.delDevDirectiveModal = false;
+                        }else{
+                            me.$Message.error("删除失败");
+                        }
                     });
                 },
                 queryCmdList:function(){
@@ -166,6 +171,13 @@
                             me.tableData = resp.records;
                         }
                     });
+                }
+            },
+            watch:{
+                addDevDirectiveModal:function(){
+                    if(!this.isEdit){
+                        this.directiveObj = { cmdcode:"",camname:""};
+                    }
                 }
             },
             mounted : function () {
