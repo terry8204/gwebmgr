@@ -2,7 +2,7 @@
  * 所有的urls
  */
 var myUrls = {
-    // host:"http://192.168.0.108:8090/",
+    host:"http://192.168.0.112:8090/",
     host:"http://112.74.186.169/",
     login:function(){
         return this.host+"webapi?action=login";
@@ -71,7 +71,7 @@ var myUrls = {
         return this.host + "webapi?action=adddevice&token="+token;
     },
     queryDeviceType:function (param) { 
-        return this.host + "webapi?action=querydevicetype&token="+token; 
+        return this.host + "webapi?action=pagequerydevicetype&token="+token;
     },
     queryDeviceInfo:function () { 
         return this.host + "webapi?action=deviceinfo&token="+token;
@@ -131,14 +131,14 @@ var myUrls = {
         return this.host + "webapi?action=deletevehicletype&token="+token;
     },
     queryVehicleType:function () { 
-        return this.host + "webapi?action=queryvehicletype&token="+token;
+        return this.host + "webapi?action=pagequeryvehicletype&token="+token;
     },
     editVehicleType:function () {
         return this.host + "webapi?action=editvehicletype&token="+token;
     },
     // 设备指令
     queryCmd:function () { 
-        return this.host + "webapi?action=querycmd&token="+token;
+        return this.host + "webapi?action=pagequerycmd&token="+token;
     },
     addCmd:function () { 
         return this.host + "webapi?action=addcmd&token="+token;
@@ -152,6 +152,9 @@ var myUrls = {
     // 设备类型
     queryDeviceYype:function () { 
         return this.host + "webapi?action=querydevicetype&token="+token;
+    },
+    queryDeviceTypeByUser:function () {
+        return this.host + "webapi?action=querydevicetypebyuser&token="+token;
     },
     addDeviceType:function () { 
         return this.host + "webapi?action=adddevicetype&token="+token;
