@@ -127,7 +127,7 @@ var myUrls = {
     deleteVehicleType:function () { 
         return this.host + "webapi?action=deletevehicletype&token="+token;
     },
-    queryVehicleType:function () { 
+    pageQueryVehicleType:function () {
         return this.host + "webapi?action=pagequeryvehicletype&token="+token;
     },
     editVehicleType:function () {
