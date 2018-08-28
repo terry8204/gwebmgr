@@ -1829,7 +1829,8 @@
                                     me.alarmTypeList[me.alarmTypeList.length - 1].push(item);
                                 }
                                 me.checkboxObj[item.alarmcode] = true;
-                            })
+                            });
+                            me.queryWaringMsg();
                         }
                     });
                 }
@@ -1926,7 +1927,6 @@
             },
             mounted:function(){
                 this.settingCheckboxObj();
-                this.queryWaringMsg();
                 this.pushOverdueDeviceInfo();
                 this.timingRequestMsg();
                 this.queryAlarmDescr()

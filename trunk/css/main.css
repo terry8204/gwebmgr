@@ -624,3 +624,7 @@ div.ivu-steps-head-inner .ivu-icon{
     }
 
     /* 报警css结束 */
+
+    #system-view{
+        overflow-y: auto;
+    }

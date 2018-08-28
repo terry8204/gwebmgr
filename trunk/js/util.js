@@ -155,6 +155,35 @@ Vue.component('expand-row',{
 //  得到表格row组建
 var expandRow = Vue.component('expand-row');
 
+
+//  vue组件 
+Vue.component('expand-cmd-row',{
+    template:'<div>'+ 
+                '<span v-for="(item , index) in devices" style="display:inline-block;margin:5px">'+
+                    '<i-button icon="md-phone-portrait" @click="clickMe(item)"> {{item.deviceid}}</i-button>'+
+                '</span>'+  
+            '</div>',
+    props:{
+        devices:Array
+    },
+    data:function(){
+        return{
+
+        }
+    },
+    methods: {
+        clickMe:function(item){
+            console.log(item);
+        }
+    },
+    mounted:function(){
+        console.log(this.devices);
+    }
+});
+
+//  得到表格row组建
+var expandCmdRow = Vue.component('expand-cmd-row');
+
 // 轨迹回放
 function playBack(deviceid) { 
     window.open("playback.html?deviceid=" + deviceid,'resizable=1, menuBar=0, toolBar=0, scrollbars=yes, Status=yes, resizable=1');

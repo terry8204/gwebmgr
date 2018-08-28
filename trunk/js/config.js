@@ -161,6 +161,9 @@ var myUrls = {
     },
     editDeviceTypeCmd:function () { 
         return this.host + "webapi?action=editdevicetypecmd&token="+token;
+    },
+    editDeviceType:function () { 
+        return this.host + "webapi?action=editdevicetype&token="+token;
     }
 };
 

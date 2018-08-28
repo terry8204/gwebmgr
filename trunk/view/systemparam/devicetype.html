@@ -1,12 +1,12 @@
 <meta charset="UTF-8">
 <div class="pd-10 system" id="device-type-wraper">
     <div style="padding: 5px 0">
-        <i-button icon="md-add"  @click="openAddDeviceTypeModal">添加设备类型</i-button> 
+        <i-button icon="md-add" @click="openAddDeviceTypeModal">添加设备类型</i-button>
     </div>
     <div>
-        <i-table border :columns="columns" :data="tableData" :loading="loading"></i-table>
+        <i-table :columns="columns" :data="tableData" :loading="loading"></i-table>
     </div>
-    
+
     <!-- 添加汽车类型 -->
     <Modal v-model="addDevTypeModal" width="500" class-name="vertical-center-modal">
         <p slot="header" style="color:#2D8CF0;text-align:center">
@@ -26,12 +26,12 @@
                     typeCode:
                 </i-col>
                 <i-col :span="7">
-                    <i-input v-model.trim="devTypeInfo.typecode"></i-input>
+                    <i-input v-model.trim="devTypeInfo.typecode" :disabled="isEdit"></i-input>
                 </i-col>
             </Row>
         </div>
         <div slot="footer">
-            <i-button type="primary"  @click="handleAddDevType" style="width: 100%">{{isEdit?'编辑':'添加'}}</i-button>
+            <i-button type="primary" @click="handleAddDevType" style="width: 100%">{{isEdit?'编辑':'添加'}}</i-button>
         </div>
     </Modal>
 
@@ -44,37 +44,57 @@
             <p> {{devTypeInfo.typename}}</p>
         </div>
         <div slot="footer">
-            <i-button type="error"  @click="handleDel" style="width: 100%">删除</i-button>
+            <i-button type="error" @click="handleDel" style="width: 100%">删除</i-button>
+        </div>
+    </Modal>
+
+    <Modal v-model="cmdModal" width="600" class-name="vertical-center-modal" fullscreen="false">
+        <p slot="header" style="color:#f60;text-align:center">
+            <Icon type="information-circled"></Icon>
+            <span>选择设备指令</span>
+        </p>
+        <div>
+            <Row style="margin: 10px 0" v-for="(item,index) in cmdList" :key="index">
+                <i-col span="8" v-for="(type , index) in item" :key="type.cmdcode">
+                    <Checkbox  v-model="checkboxCmdObj[type.cmdcode]" >{{type.cmdname}}</Checkbox>
+                </i-col>
+            </Row>
+        </div>
+        <div slot="footer">
+            <i-button type="primary"  @click="addInstructionsToDeviceTypes" style="width: 100%">确定</i-button>
         </div>
     </Modal>
 
     <script>
         new Vue({
-            el:"#device-type-wraper",
-            data:function(){
+            el: "#device-type-wraper",
+            data: function () {
                 var me = this;
                 return {
-                    devTypeInfo:{ 
-                        "port": 0,
+                    devTypeInfo: {
                         "typecode": null,
                         "typename": null,
-                        "enable": 1,
-                        "level": 0,
-                        "camera": 0,
-                        "lcd": 0,
-                        "led": 0,
-                        "phone": null,
-                        "tcpport": 0,
-                        "udpport": 0
-                     },
-                    isEdit:false,
-                    delDevTypeModal:false,
-                    addDevTypeModal:false,
-                    rowIndex:null,
-                    columns:[
+                    },
+                    isEdit: false,
+                    delDevTypeModal: false,
+                    addDevTypeModal: false,
+                    cmdModal:false,
+                    rowIndex: null,
+                    columns: [
+                        {
+                            type: 'expand',
+                            width: 50,
+                            render: function(h, params){
+                                return h(expandCmdRow, {
+                                    props: {
+                                        devices: params.row
+                                    }
+                                })
+                            }
+                        },
                         {
                             title: '类型名称',
-                            key: 'typename' 
+                            key: 'typename'
                         },
                         {
                             title: 'typeCode',
@@ -83,9 +103,9 @@
                         {
                             title: '操作',
                             key: 'action',
-                            width: 150,
+                            width: 250,
                             align: 'center',
-                            render: function(h, params) {
+                            render: function (h, params) {
                                 return h('div', [
                                     h('Button', {
                                         props: {
@@ -96,7 +116,7 @@
                                             marginRight: '5px'
                                         },
                                         on: {
-                                            click: function() {
+                                            click: function () {
                                                 me.openEditDevTypeModal(params);
                                             }
                                         }
@@ -106,112 +126,163 @@
                                             type: 'error',
                                             size: 'small'
                                         },
+                                        style: {
+                                            marginRight: '5px'
+                                        },
                                         on: {
-                                            click: function() {
+                                            click: function () {
                                                 me.deleteDevType(params);
                                             }
                                         }
-                                    }, '删除')
+                                    }, '删除'),
+                                    h('Button', {
+                                        props: {
+                                            type: 'primary',
+                                            size: 'small'
+                                        },
+                                        on: {
+                                            click: function() {
+                                                me.cmdModal = true;
+                                                me.devTypeInfo = JSON.parse(JSON.stringify(params.row));
+                                                me.rowIndex = params.index;
+                                            }
+                                        }
+                                    }, '选择指令')
                                 ]);
                             }
                         }
                     ],
-                    tableData:[],
-                    loading:false
+                    tableData: [],
+                    cmdList:[],
+                    checkboxCmdObj:{},
+                    loading: false
                 }
             },
             methods: {
-                openAddDeviceTypeModal:function(){
+                openAddDeviceTypeModal: function () {
                     this.isEdit = false;
                     this.addDevTypeModal = true;
                 },
-                handleDel:function(){
+                handleDel: function () {
                     var me = this;
                     var url = myUrls.deleteDeviceType();
-                    var data = {devicetypeid:this.devTypeInfo.devicetypeid};
-                    utils.sendAjax(url,data,function (resp) { 
-                        if(resp.status == 0){
-                            me.$delete(me.tableData,me.rowIndex);
+                    var data = { devicetypeid: this.devTypeInfo.devicetypeid };
+                    utils.sendAjax(url, data, function (resp) {
+                        if (resp.status == 0) {
+                            me.$delete(me.tableData, me.rowIndex);
                             me.delDevTypeModal = false;
                             me.$Message.success("删除成功");
-                        }else{
+                        } else {
                             me.$Message.success("删除失败");
                         };
                     });
                 },
-                handleAddDevType:function(){
+                handleAddDevType: function () {
                     var me = this;
                     var url = null;
                     var data = null;
-                    if(this.isEdit){
-                        url = myUrls.editDeviceTypeCmd();
+                    if (this.isEdit) {
+                        url = myUrls.editDeviceType();
                         data = {
-                            "devicetype": this.devTypeInfo.devicetypeid,
-                            "cmds": [
-                                {
-                                "cmdcode": this.devTypeInfo.typecode,
-                                "cmdname": this.devTypeInfo.typename
-                                }
-                            ]
+                            "devicetypeid": this.devTypeInfo.devicetypeid,
+                            "typecode": this.devTypeInfo.typecode,
+                            "typename": this.devTypeInfo.typename,
                         }
-                    }else{
+                    } else {
                         url = myUrls.addDeviceType();
                         data = {
                             typecode: this.devTypeInfo.typecode,
                             typename: this.devTypeInfo.typename
                         };
                     }
-                    utils.sendAjax(url,data,function (resp) {   
-                        if(resp.status == 0){
-                            if(me.isEdit){
+                    utils.sendAjax(url, data, function (resp) {
+                        if (resp.status == 0) {
+                            if (me.isEdit) {
+                                for (var key in me.devTypeInfo) {
+                                    if (me.devTypeInfo.hasOwnProperty(key)) {
+                                        var val = me.devTypeInfo[key];
+                                        me.tableData[me.rowIndex][key] = val;
+                                    };
+                                };
                                 me.$Message.success("编辑成功");
-                            }else{
+                            } else {
                                 me.$Message.success("添加成功");
+                                me.queryDevTypeList();
                             };
                             me.addDevTypeModal = false;
-                        }else{
-                            me.$Message.error("操作失败");    
-                        }                  
-                        
+                        } else {
+                            me.$Message.error("操作失败");
+                        }
+
                     })
                 },
-                openEditDevTypeModal:function(params){
+                openEditDevTypeModal: function (params) {
                     this.isEdit = true;
-                    this.addDevTypeModal = true; 
+                    this.addDevTypeModal = true;
                     this.devTypeInfo = JSON.parse(JSON.stringify(params.row));
                     this.rowIndex = params.index;
                 },
-                deleteDevType:function(params){
-                    this.delDevTypeModal = true; 
+                deleteDevType: function (params) {
+                    this.delDevTypeModal = true;
                     this.devTypeInfo = params.row;
                     this.rowIndex = params.index;
                 },
-                queryDevTypeList:function(){
+                addInstructionsToDeviceTypes:function(){
+                    alert(111);
+                },
+                queryDevTypeList: function () {
                     var me = this;
                     var url = myUrls.pageQueryDeviceType();
-                    utils.sendAjax(url,{},function (resp) {
-                        if(resp.status == 0){
+                    utils.sendAjax(url, {}, function (resp) {
+                        if (resp.status == 0) {
                             me.tableData = resp.devicetypes;
                         }
                     })
+                },
+                queryCmdList: function () {
+                    var me = this;
+                    var url = myUrls.queryCmd();
+                    var data = {
+                        "offset": 0,
+                        "pagesize": 100
+                    };
+                    utils.sendAjax(url, data, function (resp) {
+                        if (resp.status === 0) {
+                            var records = resp.records;
+                            records.forEach(function (item,index){ 
+                                var idx = parseFloat(index/3) 
+                                if(index%3 == 0){
+                                    var newArr = [];
+                                    newArr.push(item)
+                                    me.cmdList.push(newArr);
+                                }else{
+                                    me.cmdList[me.cmdList.length - 1].push(item);
+                                }
+                                me.checkboxCmdObj[item.cmdcode] = true;
+                            });
+                        }
+                    });
+                    console.log(me.cmdList)
+                    console.log(me.checkboxCmdObj)
                 }
             },
-            watch:{
-                addDevTypeModal:function(){
-                    if(!this.isEdit){
+            watch: {
+                addDevTypeModal: function () {
+                    if (!this.isEdit) {
                         this.devTypeInfo = {
-                            "port": 0,"typecode": null,
-                            "typename": null,"enable": 1,
-                            "level": 0,"camera": 0,
-                            "lcd": 0,"led": 0,
-                            "phone": null,"tcpport": 0,
+                            "port": 0, "typecode": null,
+                            "typename": null, "enable": 1,
+                            "level": 0, "camera": 0,
+                            "lcd": 0, "led": 0,
+                            "phone": null, "tcpport": 0,
                             "udpport": 0
                         }
                     }
                 }
             },
-            mounted :function () {
+            mounted: function () {
                 this.queryDevTypeList();
+                this.queryCmdList();
             }
         })
     </script>

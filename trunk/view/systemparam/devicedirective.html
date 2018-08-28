@@ -1,66 +1,66 @@
 <meta charset="UTF-8">
 <div class="pd-10 system" id="directive-wraper">
     <div style="padding: 5px 0">
-        <i-button icon="md-add"  @click="openAddDirectiveModal">添加设备指令</i-button> 
+        <i-button icon="md-add" @click="openAddDirectiveModal">添加设备指令</i-button>
     </div>
     <div>
         <i-table border :columns="columns" :data="tableData" :loading="loading"></i-table>
     </div>
-    
-     <!-- 添加设备指令 -->
-     <Modal v-model="addDevDirectiveModal" width="500" class-name="vertical-center-modal">
-            <p slot="header" style="color:#2D8CF0;text-align:center">
-                <Icon type="md-add"></Icon>
-                <span v-show="!isEdit">添加指令</span>
-                <span v-show="isEdit">编辑指令</span>
-            </p>
-            <div>
-                <Row>
-                    <i-col :span="3" :offset="1" style="height: 100%;text-align:right;line-height:32px;">
-                        指令名称:
-                    </i-col>
-                    <i-col :span="7">
-                        <i-input v-model.trim="directiveObj.cmdname"></i-input>
-                    </i-col>
-                    <i-col :span="3" :offset="2" style="height: 100%;text-align:right;line-height:32px;">
-                        cmdCode:
-                    </i-col>
-                    <i-col :span="7">
-                        <i-input v-model.trim="directiveObj.cmdcode" :disabled="isEdit"></i-input>
-                    </i-col>
-                </Row>
-            </div>
-            <div slot="footer">
-                <i-button type="primary"  @click="handleAddDirectiveType" style="width: 100%">{{isEdit?'编辑':'添加'}}</i-button>
-            </div>
-        </Modal>
 
-        <Modal v-model="delDevDirectiveModal" width="360" class-name="vertical-center-modal">
-                <p slot="header" style="color:#f60;text-align:center">
-                    <Icon type="information-circled"></Icon>
-                    <span>是否删除</span>
-                </p>
-                <div style="text-align:center">
-                    <p> {{directiveObj.cmdname}}</p>
-                </div>
-                <div slot="footer">
-                    <i-button type="error"  @click="handleDelDirective" style="width: 100%">删除</i-button>
-                </div>
-            </Modal>
+    <!-- 添加设备指令 -->
+    <Modal v-model="addDevDirectiveModal" width="500" class-name="vertical-center-modal">
+        <p slot="header" style="color:#2D8CF0;text-align:center">
+            <Icon type="md-add"></Icon>
+            <span v-show="!isEdit">添加指令</span>
+            <span v-show="isEdit">编辑指令</span>
+        </p>
+        <div>
+            <Row>
+                <i-col :span="3" :offset="1" style="height: 100%;text-align:right;line-height:32px;">
+                    指令名称:
+                </i-col>
+                <i-col :span="7">
+                    <i-input v-model.trim="directiveObj.cmdname"></i-input>
+                </i-col>
+                <i-col :span="3" :offset="2" style="height: 100%;text-align:right;line-height:32px;">
+                    cmdCode:
+                </i-col>
+                <i-col :span="7">
+                    <i-input v-model.trim="directiveObj.cmdcode" :disabled="isEdit"></i-input>
+                </i-col>
+            </Row>
+        </div>
+        <div slot="footer">
+            <i-button type="primary" @click="handleAddDirectiveType" style="width: 100%">{{isEdit?'编辑':'添加'}}</i-button>
+        </div>
+    </Modal>
+
+    <Modal v-model="delDevDirectiveModal" width="360" class-name="vertical-center-modal">
+        <p slot="header" style="color:#f60;text-align:center">
+            <Icon type="information-circled"></Icon>
+            <span>是否删除</span>
+        </p>
+        <div style="text-align:center">
+            <p> {{directiveObj.cmdname}}</p>
+        </div>
+        <div slot="footer">
+            <i-button type="error" @click="handleDelDirective" style="width: 100%">删除</i-button>
+        </div>
+    </Modal>
     <script>
         new Vue({
-            el:"#directive-wraper",
-            data:function(){
+            el: "#directive-wraper",
+            data: function () {
                 var me = this;
                 return {
-                    isEdit:false,
-                    addDevDirectiveModal:false,
-                    delDevDirectiveModal:false,
-                    directiveObj:{},
-                    columns:[
+                    isEdit: false,
+                    addDevDirectiveModal: false,
+                    delDevDirectiveModal: false,
+                    directiveObj: {},
+                    columns: [
                         {
                             title: '指令名称',
-                            key: 'cmdname' 
+                            key: 'cmdname'
                         },
                         {
                             title: 'cmdCode',
@@ -71,7 +71,7 @@
                             key: 'action',
                             width: 150,
                             align: 'center',
-                            render: function(h, params) {
+                            render: function (h, params) {
                                 return h('div', [
                                     h('Button', {
                                         props: {
@@ -82,7 +82,7 @@
                                             marginRight: '5px'
                                         },
                                         on: {
-                                            click: function() {
+                                            click: function () {
                                                 me.isEdit = true;
                                                 me.addDevDirectiveModal = true;
                                                 me.rowIndex = params.index;
@@ -96,10 +96,10 @@
                                             size: 'small'
                                         },
                                         on: {
-                                            click: function() {
-                                               me.delDevDirectiveModal = true;
-                                               me.rowIndex = params.index;
-                                               me.directiveObj = params.row;
+                                            click: function () {
+                                                me.delDevDirectiveModal = true;
+                                                me.rowIndex = params.index;
+                                                me.directiveObj = params.row;
                                             }
                                         }
                                     }, '删除')
@@ -107,88 +107,88 @@
                             }
                         }
                     ],
-                    rowIndex:null,
-                    tableData:[],
-                    loading:false
+                    rowIndex: null,
+                    tableData: [],
+                    loading: false
                 }
             },
             methods: {
-                openAddDirectiveModal:function(){
+                openAddDirectiveModal: function () {
                     this.isEdit = false;
                     this.addDevDirectiveModal = true;
                 },
-                handleAddDirectiveType:function(){
+                handleAddDirectiveType: function () {
                     var me = this;
                     var url = null;
                     var data = {
-                        cmdcode:this.directiveObj.cmdcode,
-                        cmdname:this.directiveObj.cmdname
+                        cmdcode: this.directiveObj.cmdcode,
+                        cmdname: this.directiveObj.cmdname
                     };
 
-                    if(this.isEdit){
+                    if (this.isEdit) {
                         url = myUrls.editCmd();
-                        
-                    }else{
+
+                    } else {
                         url = myUrls.addCmd();
                     }
 
-                    utils.sendAjax(url , data , function (resp) { 
-                        if(resp.status == 0){
-                            if(me.isEdit){
+                    utils.sendAjax(url, data, function (resp) {
+                        if (resp.status == 0) {
+                            if (me.isEdit) {
                                 me.$Message.success("编辑成功");
-                                for(var key in me.directiveObj){
-                                    if(me.directiveObj.hasOwnProperty(key)){
+                                for (var key in me.directiveObj) {
+                                    if (me.directiveObj.hasOwnProperty(key)) {
                                         var val = me.directiveObj[key];
                                         me.tableData[me.rowIndex][key] = val;
                                     };
                                 };
-                            }else{
-                                me.$Message.success("添加成功");       
-                                me.queryCmdList();                          
+                            } else {
+                                me.$Message.success("添加成功");
+                                me.queryCmdList();
                             };
                             me.addDevDirectiveModal = false;
-                        }else{
+                        } else {
                             me.$Message.error("错误");
                         }
                     });
                 },
 
-                handleDelDirective:function(){
+                handleDelDirective: function () {
                     var me = this;
                     var url = myUrls.deleteCmd();
-                    var data = { cmdcode: String(this.directiveObj.cmdcode)};
-                    utils.sendAjax(url,data,function (resp) { 
-                        if(resp.status == 0){
+                    var data = { cmdcode: String(this.directiveObj.cmdcode) };
+                    utils.sendAjax(url, data, function (resp) {
+                        if (resp.status == 0) {
                             me.$Message.success("删除成功");
                             me.delDevDirectiveModal = false;
-                            me.$delete(me.tableData,me.rowIndex);
-                        }else{
+                            me.$delete(me.tableData, me.rowIndex);
+                        } else {
                             me.$Message.error("删除失败");
                         }
                     });
                 },
-                queryCmdList:function(){
+                queryCmdList: function () {
                     var me = this;
                     var url = myUrls.queryCmd();
                     var data = {
                         "offset": 0,
                         "pagesize": 10
                     };
-                    utils.sendAjax(url,data,function (resp) { 
-                        if(resp.status === 0) {
+                    utils.sendAjax(url, data, function (resp) {
+                        if (resp.status === 0) {
                             me.tableData = resp.records;
                         }
                     });
                 }
             },
-            watch:{
-                addDevDirectiveModal:function(){
-                    if(!this.isEdit){
-                        this.directiveObj = { cmdcode:"",camname:""};
-                    }
+            watch: {
+                addDevDirectiveModal: function () {
+                    if (!this.isEdit) {
+                        this.directiveObj = { cmdcode: "", camname: "" };
+                    };
                 }
             },
-            mounted : function () {
+            mounted: function () {
                 this.queryCmdList();
             }
         })
