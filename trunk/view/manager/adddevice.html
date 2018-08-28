@@ -4,9 +4,7 @@
         <h3 class="h3-title">添加设备</h3>
         <div>
             <Steps :current="currentIndex" size="small">
-                <Step title="已完成"></Step>
-                <Step title="进行中"></Step>
-                <Step title="待进行"></Step>
+                <Step v-for="(item,index) in stepsTitle" :key="item" :title="item" ></Step>
             </Steps>
         </div>
         <div v-if="currentIndex == 0">
@@ -19,7 +17,6 @@
                 <i-col span="8">
                     <i-input v-model.trim="loginpwd" type="password"></i-input>
                 </i-col>
-                
             </Row>
 
             <Row style="margin: 10px 0">
@@ -79,27 +76,44 @@
                 </i-col>                  
             </Row>
             <Row style="margin: 10px 0">
-                <i-col span="6" :offset="7">
+                <i-col span="6" :offset="10">
                     <!-- <i-button style="width: 100%" @click="handleSubmit">提交</i-button> -->
-                    <i-button style="width: 100%" @click="currentIndex++">下一步</i-button>
+                    <i-button style="width: 100%" @click="nextStepFn">下一步</i-button>
                 </i-col>
-                <i-col span="6" :offset="1">
+                <!-- <i-col span="6" :offset="1">
                     <i-button style="width: 100%" @click="resetInfo">重置</i-button>
-                </i-col>
+                </i-col> -->
             </Row>
         </div>
         <div v-else-if="currentIndex == 1">
-            第2步
             <Row style="margin: 10px 0">
-                    <i-col span="6" :offset="7">
-                        <i-button style="width: 100%" @click="currentIndex--">上一步</i-button>
-                    </i-col>
-                    <i-col span="6" :offset="1">
-                        <i-button style="width: 100%" @click="currentIndex++">下一步</i-button>
-                    </i-col>
+                <i-col span="6">
+                    <b style="font-size: 18px;">选择报警类型<b>
+                </i-col>
+            </Row>
+            <Row style="margin: 10px 0" v-for="(item,index) in alarmTypeList" :key="index">
+                <i-col span="8" v-for="(type , index) in item" :key="type.alarmcode">
+                    <Checkbox  v-model="checkboxObj[type.alarmcode]" >{{type.alarmname}}</Checkbox>
+                </i-col>
+            </Row>
+            <Row style="margin: 10px 0">
+                <i-col span="6" :offset="5">
+                    <i-button style="width: 100%" @click="currentIndex--">上一步</i-button>
+                </i-col>
+                <i-col span="6" :offset="1">
+                    <i-button style="width: 100%" @click="currentIndex++">下一步</i-button>
+                </i-col>
             </Row>
         </div>
-        <div v-else-if="currentIndex == 2">第3步</div>
+
+        <div v-show="currentIndex == 2">
+            <h1 style="margin-top: 50px;text-align: center;"> 添加成功 </h1>
+            <Row style="margin: 10px 0">
+                <i-col span="6" :offset="9">
+                    <i-button style="width: 100%" @click="resetInfo">继续添加</i-button>
+                </i-col>
+            </Row>
+        </div>
     </div>
     <script>
         new Vue({
@@ -110,6 +124,7 @@
                         return date && date.valueOf() < Date.now() - 86400000;
                     }
                 },
+                stepsTitle:['进行中','待进行','待进行'],
                 currentIndex:0,
                 deviceid:"",
                 devicename:"",
@@ -123,9 +138,25 @@
                 customersList:[],
                 deviceTypeList:[],
                 groupid:'',
-                companyid:''
+                companyid:'',
+                alarmTypeList:[],
+                checkboxObj:{},
             },
             methods: {
+                nextStepFn:function(){
+                    if(this.deviceid.length !== 11 ){ 
+                        this.$Message.error("设备ID必须是11位");
+                        return;
+                    };
+
+                    if(this.overduetime == "" || this.loginpwd == "" || this.devicename == "" || this.companyid ==""){
+                        this.$Message.error("请把数据填写完整");
+                        return;
+                    };
+
+                    this.currentIndex = 1;
+
+                },
                 handleSubmit:function(){
                     var me = this;
                     var url = myUrls.addDevice();
@@ -177,14 +208,13 @@
                     this.devicename = "";
                     this.devicetype = "";
                     this.simnum = "";
-                    this.overduetime = "";
+                    // this.overduetime = "";
                     this.loginpwd = "";
-                    this.loginenable = "0";
-                    this.deviceenable = "0";
-                    this.groupsList = "";
-                    this.customersList = "";
+                    // this.loginenable = "0";
+                    // this.deviceenable = "0";
                     this.groupid = "";
                     this.companyid = "";
+                    this.currentIndex = 0;
                 },
                 queryAllCompanyInfo:function(claaback){
                     var url = myUrls.queryCompanyByCreater();
@@ -237,6 +267,26 @@
                         }
                         me.devicetype = 1;
                     }); 
+                },
+                queryAlarmDescr:function () { 
+                    var me = this;
+                    var url = myUrls.queryAlarmDescr();
+                    utils.sendAjax(url,{},function (resp) { 
+                        if(resp.status == 0){
+                            var records = resp.records;
+                            records.forEach(function (item,index){ 
+                                var idx = parseFloat(index/3) 
+                                if(index%3 == 0){
+                                    var newArr = [];
+                                    newArr.push(item)
+                                    me.alarmTypeList.push(newArr);
+                                }else{
+                                    me.alarmTypeList[me.alarmTypeList.length - 1].push(item);
+                                }
+                                me.checkboxObj[item.alarmcode] = true;
+                            })
+                        }
+                    });
                 }
             },
             watch:{
@@ -244,11 +294,21 @@
                     this.groupsList = [];
                     this.groupid = "";
                     this.getGroupsList();  
+                },
+                currentIndex:function(){
+                    if(this.currentIndex == 0){
+                        this.stepsTitle = ['进行中','待进行','待进行'];
+                    }else if(this.currentIndex == 1){
+                        this.stepsTitle = ['已完成','进行中','待进行'];
+                    }else if(this.currentIndex == 2){
+                        this.stepsTitle = ['已完成','已完成','已完成'];
+                    }
                 }
             },
             mounted:function () {
                 this.queryAllCompanyInfo(this.doQueryAllCompanyInfo);
                 this.getDeviceType();
+                this.queryAlarmDescr();
                 this.overduetime = new Date(Date.now() + 365*24*3600*1000) ;
             } 
         })

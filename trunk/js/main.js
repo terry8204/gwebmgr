@@ -1,6 +1,4 @@
 (function(){
-    // 方向数组
-    // var directionList = [ 0 , 45 , 90 , 135 , 180 , 225 , 270 , 315 ]; 
     // 是否显示公司名字
     var isShowCompany     = Cookies.get("isShowCompany"); 
     //全局变量
@@ -753,7 +751,7 @@
                     '<p> 到期时间: ' +DateFormat.longToDateTimeStr(devdata.overduetime,0)+'</p>' +
                     '<p class="last-address"> 详细地址: '+address+'</p>' +
                     '<p class="operation">'+
-                        '<span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="playBack('+info.deviceid+')">回放</span>'+
+                        '<span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="playBack('+info.deviceid+')">轨迹</span>'+
                         '<span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="trackMap('+info.deviceid+')">跟踪</span> </p></div>';
                     var opts = {
                         width:300,
@@ -804,6 +802,12 @@
                 utils.sendAjax(url,{},function (resp) {
                     callback(resp)
                 })
+            },
+            playBack:function (deviceid) { 
+                playBack(deviceid);
+            },
+            trackMap:function (deviceid) { 
+                trackMap(deviceid);
             },
             getCurrentStateTreeData:function (state,isShowConpanyName) {
                 var me = this;
@@ -1245,25 +1249,27 @@
                     if(me.intervalTime <= 0 ){
                         var devIdList = Object.keys(me.$store.state.deviceNames);
                         me.getLastPosition(devIdList,function (resp) {
-                            resp.records.forEach(function (record) {
-                                if(record){
-                                    var isOnline = (Date.now() - record.arrivedtime) < me.offlineTime ? true : false ; 
-                                    var iconState = null;
-                                    var angle = utils.getAngle(record.course);
-                                        if(isOnline){
-                                            iconState = new BMap.Icon("../images/carstate/green_"+angle+".png", new BMap.Size(16, 16), { imageOffset: new BMap.Size(0, 0)}); 
-                                        }else{
-                                            iconState = new BMap.Icon("../images/carstate/gray_"+angle+".png", new BMap.Size(16, 16), { imageOffset: new BMap.Size(0, 0)}); 
-                                        };
-                                        record.icon = iconState;
-                                    var lng_lat = wgs84tobd09(record.callon,record.callat);
-                                    record.point = new BMap.Point(lng_lat[0],lng_lat[1]);
-                                };
-                            })
-                            me.records = resp.records;
-                            me.updateTreeOnlineState();
-                            me.moveMarkers();
-                            me.intervalTime = Number(store.intervalTime);
+                            if(resp.records){
+                                resp.records.forEach(function (record) {
+                                    if(record){
+                                        var isOnline = (Date.now() - record.arrivedtime) < me.offlineTime ? true : false ; 
+                                        var iconState = null;
+                                        var angle = utils.getAngle(record.course);
+                                            if(isOnline){
+                                                iconState = new BMap.Icon("../images/carstate/green_"+angle+".png", new BMap.Size(16, 16), { imageOffset: new BMap.Size(0, 0)}); 
+                                            }else{
+                                                iconState = new BMap.Icon("../images/carstate/gray_"+angle+".png", new BMap.Size(16, 16), { imageOffset: new BMap.Size(0, 0)}); 
+                                            };
+                                            record.icon = iconState;
+                                        var lng_lat = wgs84tobd09(record.callon,record.callat);
+                                        record.point = new BMap.Point(lng_lat[0],lng_lat[1]);
+                                    };
+                                })
+                                me.records = resp.records;
+                                me.updateTreeOnlineState();
+                                me.moveMarkers();
+                                me.intervalTime = Number(store.intervalTime);
+                            }
                         });
                     }
                 }, 1000);
@@ -1402,10 +1408,14 @@
                 me.setDeviceIdsList(resp.groups);
                 var devIdList = Object.keys(me.$store.state.deviceNames);
                 me.getLastPosition(devIdList,function (resp) {
-                    me.records = resp.records;
+                    if(resp.records){
+                        me.records = resp.records;
+                    }else{
+                        me.records = [];
+                    };
                     me.setCarIconState();
                     var range = utils.getDisplayRange(me.map.getZoom());
-                    if(resp.records.length){
+                    if(resp.records){
                         if(resp.records.length > 300){
                             var filterArr =  me.filterReocrds(range,resp.records);
                         }else{

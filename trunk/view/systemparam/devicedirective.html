@@ -136,8 +136,15 @@
                         if(resp.status == 0){
                             if(me.isEdit){
                                 me.$Message.success("编辑成功");
+                                for(var key in me.directiveObj){
+                                    if(me.directiveObj.hasOwnProperty(key)){
+                                        var val = me.directiveObj[key];
+                                        me.tableData[me.rowIndex][key] = val;
+                                    };
+                                };
                             }else{
-                                me.$Message.success("添加成功");                                 
+                                me.$Message.success("添加成功");       
+                                me.queryCmdList();                          
                             };
                             me.addDevDirectiveModal = false;
                         }else{
@@ -154,6 +161,7 @@
                         if(resp.status == 0){
                             me.$Message.success("删除成功");
                             me.delDevDirectiveModal = false;
+                            me.$delete(me.tableData,me.rowIndex);
                         }else{
                             me.$Message.error("删除失败");
                         }
