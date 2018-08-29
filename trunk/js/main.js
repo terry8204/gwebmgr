@@ -1558,10 +1558,10 @@
                         title:"设备指令",
                         name:"deviceDirective", 
                         icon:"ios-pricetag-outline",
-                        // children:[
-                        //     {title:"新增指令",name:"addDirective",icon:"md-add"},
-                        //     {title:"查询指令",name:"queryDirective",icon:"md-search"},
-                        // ]
+                        children:[
+                            {title:"新增指令",name:"addDirective",icon:"md-add"},
+                            {title:"查询指令",name:"queryDirective",icon:"md-search"},
+                        ]
                     },
                     {
                         title:"设备类型",
@@ -1595,8 +1595,11 @@
                 var page = null;
 
                 switch(this.selectdItemName){
-                    case "deviceDirective" :
+                    case "queryDirective" :
                         page = "devicedirective.html";
+                        break;
+                    case "addDirective" :
+                        page = "adddirective.html";
                         break;
                     case "deviceType" :
                         page = "devicetype.html";

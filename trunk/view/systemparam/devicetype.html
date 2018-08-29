@@ -145,6 +145,9 @@
                                                 me.cmdModal = true;
                                                 me.devTypeInfo = JSON.parse(JSON.stringify(params.row));
                                                 me.rowIndex = params.index;
+                                                if(!params.selectedCmdList){
+                                                    me.querySelectedCmd();
+                                                }
                                             }
                                         }
                                     }, '选择指令')
@@ -228,7 +231,30 @@
                     this.rowIndex = params.index;
                 },
                 addInstructionsToDeviceTypes:function(){
-                    alert(111);
+                    var url = myUrls.editDeviceTypeCmd();
+                    var data = this.getEditDeviceTypeCmdData();
+                    if(data.cmds.length){
+                        utils.sendAjax(url,data,function (resp) {
+                            console.log(resp);
+                        })
+                    }
+                },
+                getEditDeviceTypeCmdData:function(){
+                    var cmdList = this.cmdList;
+                    var selectedCmdObj = this.checkboxCmdObj;
+                    var cmds = [];
+                        for(var key in selectedCmdObj){
+                            if(selectedCmdObj.hasOwnProperty(key) && selectedCmdObj[key]){
+                                cmdList.forEach(function (children) { 
+                                    children.forEach(function (item) { 
+                                        if(item.cmdcode == key){
+                                            cmds.push(item);
+                                        };
+                                    })
+                                })
+                            }
+                        };
+                    return {devicetype:this.tableData[this.rowIndex].devicetypeid,cmds: cmds}
                 },
                 queryDevTypeList: function () {
                     var me = this;
@@ -238,6 +264,23 @@
                             me.tableData = resp.devicetypes;
                         }
                     })
+                },
+                querySelectedCmd:function () {
+                    var url = myUrls.queryDeviceTypeHadCmd();
+                    var data = {"devicetype":  this.tableData[this.rowIndex].devicetypeid};
+                    utils.sendAjax(url,data,this.doQuerySelectedCmdFn);
+                },
+                doQuerySelectedCmdFn:function (resp) { 
+                    var me = this;
+                    if(resp.status == 0) {
+                        this.tableData[me.rowIndex].selectedCmdList =  resp.records;
+
+                        resp.records.forEach(function (item) { 
+                            console.log(item);
+                        });   
+                        
+                        this.tableData = JSON.parse(JSON.stringify(this.tableData));                      
+                    }
                 },
                 queryCmdList: function () {
                     var me = this;
@@ -258,7 +301,7 @@
                                 }else{
                                     me.cmdList[me.cmdList.length - 1].push(item);
                                 }
-                                me.checkboxCmdObj[item.cmdcode] = true;
+                                me.checkboxCmdObj[item.cmdcode] = false;
                             });
                         }
                     });
