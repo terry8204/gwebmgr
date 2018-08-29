@@ -1626,6 +1626,7 @@
                 return{
                     isLargen:false,
                     index:1,
+                    waringRowIndex:null,
                     componentName:"waringMsg",
                     waringModal:false,
                     disposeModal:false,
@@ -1774,6 +1775,7 @@
                 },
                 showDisposeModalFrame:function (param) {
                     this.disposeModal = true;
+                    this.waringRowIndex = param.index;
                     var row = param.row;
                     var devicetype = this.$store.state.deviceNames[row.deviceid].devicetype;
                     
@@ -1793,6 +1795,9 @@
                         "createtime": null
                     };
 
+                    console.log(this.disposeRowWaringObj);
+                    console.log(this.cmdRowWaringObj);
+
                 },
                 sendDisposeWaring:function () { 
                     var me = this;
@@ -1803,6 +1808,7 @@
                             utils.sendAjax(disposeAlarmUrl,me.disposeRowWaringObj,function (resp) {
                                 if(resp.status === 0){
                                     me.$Message.success("解除成功");
+                                    me.waringRecords[me.waringRowIndex].isdispose = "已处理";  
                                     me.disposeModal = false;
                                 }else{
                                     me.$Message.error("解除失败");
