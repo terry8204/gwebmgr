@@ -1780,6 +1780,7 @@
                     var devicetype = this.$store.state.deviceNames[row.deviceid].devicetype;
                     
                     this.cmdRowWaringObj = {
+                        "deviceid":row.deviceid,
                         "arrivedtime": row.arrivedtime,
                         "devicetype":devicetype,
                         "cmdcode": 1,
