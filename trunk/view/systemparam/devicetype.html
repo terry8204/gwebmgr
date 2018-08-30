@@ -87,7 +87,8 @@
                             render: function(h, params){
                                 return h(expandCmdRow, {
                                     props: {
-                                        devices: params.row
+                                        cmds: params.row.cmds,
+                                        typename:params.row.typename
                                     }
                                 })
                             }
@@ -99,6 +100,10 @@
                         {
                             title: 'typeCode',
                             key: 'typecode'
+                        },
+                        {
+                            title: '已设置指令',
+                            key: 'directiveCount'
                         },
                         {
                             title: '操作',
@@ -144,10 +149,22 @@
                                             click: function() {
                                                 me.cmdModal = true;
                                                 me.devTypeInfo = JSON.parse(JSON.stringify(params.row));
-                                                me.rowIndex = params.index;
-                                                if(!params.selectedCmdList){
+                                                me.rowIndex = params.index;  
+                                                var cmds = params.row.cmds;                             
+                                                if(cmds.length){
+                                                    for(var key in me.checkboxCmdObj){
+                                                        if(me.checkboxCmdObj.hasOwnProperty(key)){
+                                                            me.checkboxCmdObj[key] = false;
+                                                        }
+                                                    };      
+
+                                                    cmds.forEach(function (item) { 
+                                                        me.checkboxCmdObj[item.cmdcode] = true;
+                                                    });
+
+                                                }else{
                                                     me.querySelectedCmd();
-                                                }
+                                                };
                                             }
                                         }
                                     }, '选择指令')
@@ -233,9 +250,17 @@
                 addInstructionsToDeviceTypes:function(){
                     var url = myUrls.editDeviceTypeCmd();
                     var data = this.getEditDeviceTypeCmdData();
-                  
+                    var me = this;
                     utils.sendAjax(url,data,function (resp) {
-                        console.log(resp);
+                        if(resp.status == 0){
+                            me.$Message.success("设置成功");
+                            me.cmdModal = false;
+                            me.tableData[me.rowIndex].cmds = data.datas[0].cmds;
+                            me.tableData[me.rowIndex].directiveCount = data.datas[0].cmds.length;
+                            console.log(data.datas[0].cmds);
+                        }else{
+                            me.$Message.error(resp.cause);
+                        }
                     })
                     
                 },
@@ -252,7 +277,7 @@
                                         };
                                     })
                                 })
-                            }
+                            };
                         };
                     return {datas:[{devicetype:this.tableData[this.rowIndex].devicetypeid,cmds: cmds}]}
                 },
@@ -261,6 +286,9 @@
                     var url = myUrls.pageQueryDeviceType();
                     utils.sendAjax(url, {}, function (resp) {
                         if (resp.status == 0) {
+                            resp.devicetypes.forEach(function (item) {
+                                item.directiveCount = item.cmds.length;
+                            })
                             me.tableData = resp.devicetypes;
                         }
                     })
@@ -274,9 +302,15 @@
                     var me = this;
                     if(resp.status == 0) {
                         this.tableData[me.rowIndex].selectedCmdList =  resp.records;
+                        
+                        for(var key in me.checkboxCmdObj){
+                            if(me.checkboxCmdObj.hasOwnProperty(key)){
+                                me.checkboxCmdObj[key] = false;
+                            }
+                        };
 
-                        resp.records.forEach(function (item) { 
-                            console.log(item);
+                        resp.records.forEach(function (item){ 
+                            me.checkboxCmdObj[item.cmdcode] = true;
                         });   
                         
                         this.tableData = JSON.parse(JSON.stringify(this.tableData));                      

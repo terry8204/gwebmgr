@@ -1,12 +1,18 @@
 <meta charset="UTF-8">
-<div class="pd-10 system" id="add-directive-wraper">
-    <h3 class="h3-title" style="height: 32px;margin-bottom: 10px">编辑指令 <span style="float: right;"><i-button style="width: 100%" @click="back">返回</i-button></span> </h3>
+<div class="pd-10 system" id="edit-directive-type-wraper">
+    <h3 class="h3-title" style="height: 32px;margin-bottom: 10px">编辑设备指令 <span style="float: right;"><i-button style="width: 100%" @click="back">返回</i-button></span> </h3>
     <div style="width: 700px;margin: 0 auto;">
-        
+        <Row style="margin: 10px 0">
+            <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">
+                <i style="color: red;display: inline-block;">*</i>&nbsp;设备类型名称 : &nbsp;</i-col>
+            <i-col span="20">
+                <i-input v-model.trim="devtypename" disabled="true"></i-input>
+            </i-col>
+        </Row>
         <Row>
             <i-col span="4" style="height: 100%;text-align:right;line-height:32px;"><i style="color: red;display: inline-block;">*</i>&nbsp;指令Code : &nbsp;</i-col>
             <i-col span="20">
-                <i-input v-model.trim.number="cmdcode"></i-input>
+                <i-input v-model.trim.number="dataInfo.cmdcode" disabled="true"></i-input>
             </i-col>
         </Row>
 
@@ -14,13 +20,14 @@
             <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">
                 <i style="color: red;display: inline-block;">*</i>&nbsp;指令名称 : &nbsp;</i-col>
             <i-col span="20">
-                <i-input v-model.trim="cmdname"></i-input>
+                <i-input v-model.trim="dataInfo.cmdname"></i-input>
             </i-col>
         </Row>
+        
         <Row>
             <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">指令描述 : &nbsp;</i-col>
             <i-col span="20">
-                <i-input v-model.trim="cmddescr"></i-input>
+                <i-input v-model.trim="dataInfo.cmddescr"></i-input>
             </i-col>
         </Row>
 
@@ -28,7 +35,7 @@
             <i-col span="4" style="height: 100%;text-align:right;line-height:100%;">
                 参数 : &nbsp;</i-col>
             <i-col span="20">
-                <i-input v-model.trim="params" type="textarea" :rows="8" />
+                <i-input v-model.trim="dataInfo.params" type="textarea" :rows="8" />
             </i-col>
         </Row>
 
@@ -54,25 +61,14 @@
     </div>
     <script>
         new Vue({
-            el:"#add-directive-wraper",
+            el:"#edit-directive-type-wraper",
             data:function(){
-                return {
-                    cmdcode: null,
-
-                    cmdname: null,
-                    cmdnameen: "",
-                    cmdnametw: "",
-
-                    cmddescr: null,
-                    cmddescren: "",
-                    cmddescrtw: "",
-
-                    params: null,
-                    paramsen: "",
-                    paramstw: "",
+                return {               
                     previewObjList:[],
                     lock:false,
-                    kong:""
+                    kong:"",
+                    dataInfo:{},
+                    devtypename:""
                 }
             },
             watch:{
@@ -80,6 +76,7 @@
                     this.previewObjList = [];
                     if(this.params == ""){ this.lock = false; return ;}
                     if(this.replaceAll(this.params) == ""){
+                        alert(1);
                         this.lock = true;
                         var params = "<params>"+ this.params +"</params>";
                         var parser=new DOMParser(); 
@@ -94,40 +91,19 @@
                 back:function(){
                     var me = this;
                     me.$Loading.start();
-                    $("#system-view").load("../view/systemparam/devicedirective.html", function () {
+                    $("#system-view").load("../view/systemparam/devicetype.html", function () {
                         me.$Loading.finish();
                     });
                 },
                 handleEditDirective:function(){
                     console.log(!this.cmdcode , !this.cmdname , !this.cmddescr , !this.lock);
-                    if( !this.cmdcode || !this.cmdname ){
-                        this.$Message.error("code和指令名称是必填的");
-                        return ;
-                    };
+              
                     var me = this;
-                    var url = myUrls.editCmd();
-                    var data = {
-                        cmdcode: this.cmdcode,
-                        cmdname: this.cmdname,
-                        // cmddescr: this.cmddescr,
-                        // params : this.params,
-                        paramsen: "",
-                        paramstw: "",
-                        cmddescren: "",
-                        cmddescrtw: "",
-                        cmdnameen: "",
-                        cmdnametw: "",
-                    };
+                    var url = myUrls.updateDeviceTypeCmd();
+                   
+                    delete this.dataInfo.devtypename;
 
-                    if(this.cmddescr){
-                        data.cmddescr = this.cmddescr;
-                    };
-                    
-                    if(this.params && this.lock ){
-                        data.params = this.params;
-                    }
-
-                    utils.sendAjax(url, data, function (resp) {
+                    utils.sendAjax(url, this.dataInfo, function (resp) {
                         if (resp.status == 0) {
                             me.$Message.success("添加成功");
                         }else{
@@ -155,29 +131,29 @@
                     
                 },
                 setValue:function(data){
-                    this.cmdcode=data.cmdcode; 
+                    // this.cmdcode=data.cmdcode; 
 
-                    this.cmdname=data.cmdname ;
-                    this.cmdnameen=data.cmdnameen;
-                    this.cmdnametw=data.cmdnametw;
+                    // this.cmdname=data.cmdname ;
+                    // this.cmdnameen=data.cmdnameen;
+                    // this.cmdnametw=data.cmdnametw;
 
-                    this.cmddescr=data.cmddescr;
-                    this.cmddescren=data.cmddescren;
-                    this.cmddescrtw=data.cmddescrtw;
+                    // this.cmddescr=data.cmddescr;
+                    // this.cmddescren=data.cmddescren;
+                    // this.cmddescrtw=data.cmddescrtw;
 
                     
-                    this.paramsen=data.paramsen;
-                    this.paramstw=data.paramstw;
-                    
-                    if(data.params!=""){
-                        this.params=data.params;
+                    // this.paramsen=data.paramsen;
+                    // this.paramstw=data.paramstw;
+                    // this.devtypename = editObject.devtypename;
+                    this.dataInfo = data;
+                    this.devtypename = data.devtypename;
+                    if(data.params){
                         this.lock = true;
                     };
                 }
             },
             mounted : function (param) {  
-                console.log(editObject)
-                this.setValue(editObject)
+                this.setValue(editObject);
             }
         })
     </script>

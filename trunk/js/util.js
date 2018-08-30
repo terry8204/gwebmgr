@@ -159,12 +159,13 @@ var expandRow = Vue.component('expand-row');
 //  vue组件 
 Vue.component('expand-cmd-row',{
     template:'<div>'+ 
-                '<span v-for="(item , index) in selectedCmdList" style="display:inline-block;margin:5px">'+
+                '<span v-for="(item , index) in cmds" style="display:inline-block;margin:5px" @click="handleClick(index)">'+
                     '<i-button icon="ios-female"> {{item.cmdname}}</i-button>'+
                 '</span>'+   
             '</div>',
     props:{
-        devices:Object
+        cmds:Array,
+        typename:String
     },
     data:function(){
         return{
@@ -182,14 +183,19 @@ Vue.component('expand-cmd-row',{
                 this.selectedCmdList = resp.records;
                 this.devices.selectedCmdList = resp.records;
             }
+        },
+        handleClick: function (index) {
+            var me = this;
+            editObject = this.cmds[index];
+            editObject.devtypename = this.typename;
+            me.$Loading.start();
+            $("#system-view").load("../view/systemparam/editdevicetypecmd.html", function () {
+                me.$Loading.finish();
+            });
         }
     },
     mounted:function(){
-        if(this.devices.selectedCmdList == undefined){
-            this.querySelectedCmd();
-        }else{
-            this.selectedCmdList = this.devices.selectedCmdList;
-        };
+      
     }
 });
 

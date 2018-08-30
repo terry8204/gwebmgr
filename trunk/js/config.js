@@ -2,10 +2,8 @@
  * 所有的urls
  */
 var myUrls = {
-
+    host:"http://112.74.186.169/",
     host:"http://192.168.0.253:8090/",
-    // host:"http://112.74.186.169/",
-
     login:function(){
         return this.host+"webapi?action=login";
     },
@@ -172,7 +170,23 @@ var myUrls = {
     },
     editDeviceTypeCmd:function () { 
         return this.host + "webapi?action=editdevicetypecmd&token="+token;
-    }
+    },
+    updateDeviceTypeCmd:function () { 
+        return this.host + "webapi?action=updatedevicetypecmd&token="+token;
+    },
+    //查询用户所有有的设备指令
+    queryAllDeviceCmdByUser:function () { 
+        return this.host + "webapi?action=queryalldevicecmdbyuser&token="+token;
+    },
+    //查询用户已拥有的设备指令
+    queryhaddevicecmdbyuser:function () { 
+        return this.host + "webapi?action=queryhaddevicecmdbyuser&token="+token;
+    },
+    //查询用户所有设备类型详细
+    queryAllDeviceTypeByUser:function () { 
+        return this.host + "webapi?action=queryalldevicetypebyuser&token="+token;
+    },
+
 };
 
 

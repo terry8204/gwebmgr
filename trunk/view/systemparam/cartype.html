@@ -72,7 +72,7 @@
                     delCarTypeModal:false,
                     rowIndex:null,
                     isEdit:false,
-                    loading:false,
+                    loading:true,
                     columns:[
                         // {
                         //     title: 'ID',
@@ -206,6 +206,7 @@
                     var me = this;
                     var url = myUrls.pageQueryVehicleType();
                     utils.sendAjax(url,{},function (resp) { 
+                        me.loading = false;
                         if(resp.status == 0){
                             me.tableData = resp.records;
                         };
