@@ -128,7 +128,6 @@
                     utils.sendAjax(url,{},this.doUserInfoList);
                 },
                 doUserInfoList:function(resp){
-                    console.log(resp)
                     if(resp.status == 0 && resp.userlists != null){
                         this.userlists = resp.userlists;
                         this.filterUsersList();

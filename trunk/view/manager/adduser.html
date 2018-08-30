@@ -11,7 +11,7 @@
                         <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">
                             <i style="color: red;display: inline-block;">*</i>&nbsp;用户名 : &nbsp;</i-col>
                         <i-col span="12">
-                            <i-input v-model.trim="username"></i-input>
+                            <i-input v-model.trim="username" :disabled="!isDisabled"></i-input>
                         </i-col>
                     </Row>
                 
@@ -129,6 +129,11 @@
                     </div>
                     <div style="width: 440px;height: 400px;float: right;border: 1px solid #DCDEE2"></div>
                 </div>
+                <Row style="margin: 10px 0">
+                    <i-col span="8" :offset="8">
+                        <i-button style="width:100%" @click="submitDeviceAuthority">保存</i-button>
+                    </i-col>
+                </Row>
             </tab-pane>
         </Tabs>
         
@@ -157,43 +162,18 @@
                         return date && date.valueOf() < Date.now() - 86400000;
                     }
                 },
-                isDisabled:false,
+                isDisabled:true,
                 isShowGroup:false,
                 treeData:[
                     {
                         title: '所有设备',
-                        expand: false,
+                        expand: true,
                         selected: false,
-                        children: [
-                            {
-                                title: '九护001',
-                                expand: false,
-                                children: [
-                                    {
-                                        title: '关机指令',
-                                        checked: false
-                                    },
-                                    {
-                                        title: '开机指令'
-                                    }
-                                ]
-                            },
-                            {
-                                title: '交通808',
-                                expand: false,
-                                children: [
-                                    {
-                                        title: '关机指令',
-                                        checked: false
-                                    },
-                                    {
-                                        title: '开机指令'
-                                    }
-                                ]
-                            }
-                        ]
+                        children: []
                     }
                 ],
+                devicetypes:[],
+                directiveList:[], 
             },
             methods: {
                 queryAllCompanyInfo:function(claaback){
@@ -265,8 +245,7 @@
                     if(resp.status == 0){
                         this.$Message.success("添加成功");
                         this.queryAllDeviceCmdByUser();
-                        this.queryAllDeviceTypeByUser();
-                        this.isDisabled = false
+                        this.isDisabled = false;
                     }else{
                         var cause = resp.cause;
                         if(cause.indexOf("exists")!=-1){
@@ -312,16 +291,59 @@
                     }
                 },
                 queryAllDeviceCmdByUser:function(){
+                    var me = this;
                     var url = myUrls.queryAllDeviceCmdByUser();
-                    utils.sendAjax(url,{username:'aabbcc'},function (resp) { 
-                        console.log(resp);
+                    utils.sendAjax(url,{username:this.username},function (resp) { 
+                        if(resp.status == 0 ){
+                            me.directiveList = resp.records;
+                            me.queryAllDeviceTypeByUser();
+                        };
                     })    
                 },
                 queryAllDeviceTypeByUser:function(){
+                    var me = this;
                     var url = myUrls.queryAllDeviceTypeByUser();
-                    utils.sendAjax(url,{username:'aabbcc'},function (resp) { 
-                        console.log(resp);
+                    utils.sendAjax(url,{username:this.username},function (resp) { 
+                        if(resp.status == 0 ){
+                            me.devicetypes = resp.devicetypes;
+                        };
                     })    
+                },
+                submitDeviceAuthority:function(){
+                    var url = myUrls.editUserDeviceCmd();
+                    var data = this.getEditUserDeviceCmdData();
+                    utils.sendAjax(url,data,function (resp) { 
+                        console.log(resp);
+                    });
+                },
+                getEditUserDeviceCmdData :function(){
+                    var data = [];
+                    var children = this.treeData[0].children;
+
+                    children.forEach(function (device) { 
+                        if(device.children.length){
+                            var isPush = false;
+                            var itemObj = {
+                                devicetype:device.devicetype,
+                                cmds:[]
+                            };
+                            device.children.forEach(function (cmd) { 
+                                if(cmd.checked){
+                                    var cmdObj = {
+                                        cmdcode:cmd.cmdcode
+                                    };
+                                    itemObj.cmds.push(cmdObj);
+                                }
+                            });
+                            if( itemObj.cmds.length){
+                                data.push(itemObj);
+                            }
+                        };
+                    });
+                    return {
+                        data:data,
+                        username: this.username
+                    }
                 }
             },
             computed:{
@@ -341,27 +363,45 @@
             watch:{
                 usertype:function(){
                     if(this.usertype == -1){
-                        this.isShowGroup = true;
-                        // if(this.companyid !==""){
-                        //     this.getGroupsList();
-                        // }                   
+                        this.isShowGroup = true;             
                     }else{
                         this.isShowGroup = false;
                     }
                 },
-                // companyid:function(){
-                //     var me = this;
-                //     if(this.usertype == -1){
-                //         this.getGroupsList();
-                //     }
-                // }    
+                devicetypes:function(){
+                    var devicetypes = this.devicetypes;
+                    var directiveList = this.directiveList;
+                    var datas = [];
+                    
+                    devicetypes.forEach(function (type) { 
+                        var children = [];
+                        var typeObj = {
+                            title:type.typename,
+                            typecode:type.typecode,
+                            devicetype:type.devicetypeid,
+                            expand: true,
+                            children:children
+                        };
+                        directiveList.forEach(function (directive) { 
+                            if(type.devicetypeid == directive.devicetype){
+                                var directiveObj = {
+                                    title:directive.cmdname,
+                                    checked: false,
+                                    cmdcode:directive.cmdcode
+                                }
+                                children.push(directiveObj)
+                            }
+                        });
+                        datas.push(typeObj);
+                    })
+                    this.treeData[0].children = datas;             
+                }  
             },
             mounted:function () {
                 this.queryAllCompanyInfo(this.doQueryAllCompanyInfo);
                 this.queryAllgroupsInfo();
 
-                this.queryAllDeviceCmdByUser();
-                this.queryAllDeviceTypeByUser();
+                // this.queryAllDeviceCmdByUser();
 
                 this.usertype = "-1";
                 this.overduetime = new Date(Date.now() + 365*24*3600*1000) ;

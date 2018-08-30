@@ -179,13 +179,17 @@ var myUrls = {
         return this.host + "webapi?action=queryalldevicecmdbyuser&token="+token;
     },
     //查询用户已拥有的设备指令
-    queryhaddevicecmdbyuser:function () { 
+    queryHadDeviceCmdByUser:function () { 
         return this.host + "webapi?action=queryhaddevicecmdbyuser&token="+token;
     },
     //查询用户所有设备类型详细
     queryAllDeviceTypeByUser:function () { 
         return this.host + "webapi?action=queryalldevicetypebyuser&token="+token;
     },
+    // 编辑用户设备指令
+    editUserDeviceCmd:function () { 
+        return this.host + "webapi?action=edituserdevicecmd&token="+token;
+    }
 
 };
 
