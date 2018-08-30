@@ -159,29 +159,41 @@ var expandRow = Vue.component('expand-row');
 //  vue组件 
 Vue.component('expand-cmd-row',{
     template:'<div>'+ 
-                '<span v-for="(item , index) in devices" style="display:inline-block;margin:5px">'+
-                    '<i-button icon="md-phone-portrait" @click="clickMe(item)"> {{item.deviceid}}</i-button>'+
-                '</span>'+  
+                '<span v-for="(item , index) in selectedCmdList" style="display:inline-block;margin:5px">'+
+                    '<i-button icon="ios-female"> {{item.cmdname}}</i-button>'+
+                '</span>'+   
             '</div>',
     props:{
-        devices:Array
+        devices:Object
     },
     data:function(){
         return{
-
+            selectedCmdList:[],
         }
     },
     methods: {
-        clickMe:function(item){
-            console.log(item);
+        querySelectedCmd:function () {
+            var url = myUrls.queryDeviceTypeHadCmd();
+            var data = {"devicetype": this.devices.devicetypeid};
+            utils.sendAjax(url,data,this.doQuerySelectedCmdFn);
+        },
+        doQuerySelectedCmdFn:function (resp) { 
+            if(resp.status == 0) {
+                this.selectedCmdList = resp.records;
+                this.devices.selectedCmdList = resp.records;
+            }
         }
     },
     mounted:function(){
-        console.log(this.devices);
+        if(this.devices.selectedCmdList == undefined){
+            this.querySelectedCmd();
+        }else{
+            this.selectedCmdList = this.devices.selectedCmdList;
+        };
     }
 });
 
-//  得到表格row组建
+//  得到表格添加指令的 row组建
 var expandCmdRow = Vue.component('expand-cmd-row');
 
 // 轨迹回放

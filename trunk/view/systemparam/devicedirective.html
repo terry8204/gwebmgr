@@ -1,39 +1,12 @@
 <meta charset="UTF-8">
 <div class="pd-10 system" id="directive-wraper">
-    <div style="padding: 5px 0">
+    <!-- <div style="padding: 5px 0">
         <i-button icon="md-add" @click="openAddDirectiveModal">添加设备指令</i-button>
-    </div>
-    <div>
+    </div> -->
+    <h3 class="h3-title">所有设备指令</h3>
+    <div style="margin-top: 10px;">
         <i-table border :columns="columns" :data="tableData" :loading="loading"></i-table>
     </div>
-
-    <!-- 添加设备指令 -->
-    <Modal v-model="addDevDirectiveModal" width="500" class-name="vertical-center-modal">
-        <p slot="header" style="color:#2D8CF0;text-align:center">
-            <Icon type="md-add"></Icon>
-            <span v-show="!isEdit">添加指令</span>
-            <span v-show="isEdit">编辑指令</span>
-        </p>
-        <div>
-            <Row>
-                <i-col :span="3" :offset="1" style="height: 100%;text-align:right;line-height:32px;">
-                    指令名称:
-                </i-col>
-                <i-col :span="7">
-                    <i-input v-model.trim="directiveObj.cmdname"></i-input>
-                </i-col>
-                <i-col :span="3" :offset="2" style="height: 100%;text-align:right;line-height:32px;">
-                    cmdCode:
-                </i-col>
-                <i-col :span="7">
-                    <i-input v-model.trim="directiveObj.cmdcode" :disabled="isEdit"></i-input>
-                </i-col>
-            </Row>
-        </div>
-        <div slot="footer">
-            <i-button type="primary" @click="handleAddDirectiveType" style="width: 100%">{{isEdit?'编辑':'添加'}}</i-button>
-        </div>
-    </Modal>
 
     <Modal v-model="delDevDirectiveModal" width="360" class-name="vertical-center-modal">
         <p slot="header" style="color:#f60;text-align:center">
@@ -53,8 +26,6 @@
             data: function () {
                 var me = this;
                 return {
-                    isEdit: false,
-                    addDevDirectiveModal: false,
                     delDevDirectiveModal: false,
                     directiveObj: {},
                     columns: [
@@ -83,10 +54,11 @@
                                         },
                                         on: {
                                             click: function () {
-                                                me.isEdit = true;
-                                                me.addDevDirectiveModal = true;
-                                                me.rowIndex = params.index;
-                                                me.directiveObj = JSON.parse(JSON.stringify(params.row));
+                                                editObject = params.row;
+                                                me.$Loading.start();
+                                                $("#system-view").load("../view/systemparam/editdirective.html",function(){
+                                                    me.$Loading.finish();
+                                                });
                                             }
                                         }
                                     }, '修改'),
