@@ -5,99 +5,108 @@
         <h3 class="h3-title">编辑用户 &nbsp; <strong>{{username}}</strong> <span> <i-button style="width: 100%" @click="back">返回</i-button> </span></h3>
             <Tabs type="card">
                     <tab-pane label="用户信息">
-                            <div>          
-                                    <Row style="margin: 10px 0">
-                                        <i-col span="4" style="height: 100%;text-align:right;line-height:32px;"><i style="color: red;display: inline-block;">*</i>&nbsp;用户名 : &nbsp;</i-col>
-                                        <i-col span="12">
-                                            <i-input v-model.trim="username" disabled></i-input>
-                                        </i-col>
-                                    </Row>
-                              
-                                    <Row style="margin: 10px 0">
-                                        <i-col span="4" style="height: 100%;text-align:right;line-height:32px;"><i style="color: red;display: inline-block;">*</i>&nbsp;过期时间 : &nbsp;</i-col>
-                                        <i-col span="12">
-                                            <date-picker type="date" v-model="overduetime" :options="dateOptions"></date-picker>
-                                        </i-col>
-                                    </Row>
+                        <div>
+
+                            <Row style="margin: 10px 0">
+                                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">
+                                    <i style="color: red;display: inline-block;">*</i>&nbsp;用户名 : &nbsp;</i-col>
+                                <i-col span="12">
+                                    <i-input v-model.trim="username" disabled></i-input>
+                                </i-col>
+                            </Row>
                         
-                                    <Row style="margin: 10px 0">
-                                        <i-col span="4" style="height: 100%;text-align:right;line-height:32px;"><i style="color: red;display: inline-block;">*</i>&nbsp;用户类型 : &nbsp;</i-col>
-                                        <i-col span="12">
-                                            <i-select v-model="usertype">
-                                                <i-option v-for="item in userTypeList" :value="item.value" :key="item.value">{{ item.label }}</i-option>
-                                            </i-select>
-                                        </i-col>
-                                    </Row>
+                            <Row style="margin: 10px 0">
+                                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">
+                                    <i style="color: red;display: inline-block;">*</i>&nbsp;过期时间 : &nbsp;</i-col>
+                                <i-col span="12">
+                                    <date-picker type="date" v-model="overduetime" :options="dateOptions"></date-picker>
+                                </i-col>
+                            </Row>
                         
-                                    <Row style="margin: 10px 0">
-                                        <i-col span="4" style="height: 100%;text-align:right;line-height:32px;"><i style="color: red;display: inline-block;">*</i>&nbsp;所属客户 : &nbsp;</i-col>
-                                        <i-col span="12">
-                                            <i-select v-model="companyid">
-                                                <i-option v-for="item in companyList" :value="item.value" :key="item.value">{{ item.label }}</i-option>
-                                            </i-select>
-                                        </i-col>
-                                    </Row>
+                            <Row style="margin: 10px 0">
+                                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">
+                                    <i style="color: red;display: inline-block;">*</i>&nbsp;用户类型 : &nbsp;</i-col>
+                                <i-col span="12">
+                                    <i-select v-model="usertype">
+                                        <i-option v-for="item in userTypeList" :value="item.value" :key="item.value">{{ item.label }}</i-option>
+                                    </i-select>
+                                </i-col>
+                            </Row>
                         
-                                    <Row style="margin: 10px 0" v-show="isShowGroup">
-                                        <i-col span="4" style="height: 100%;text-align:right;line-height:32px;"><i style="color: red;display: inline-block;">*</i>&nbsp;所属分组 : &nbsp;</i-col>
-                                        <i-col span="12">
-                                            <i-select v-model="groupids" multiple>
-                                                <i-option v-for="item in groupList" :value="item.value" :key="item.value">{{ item.label }}</i-option>
-                                            </i-select>
-                                        </i-col>
-                                    </Row>
-                                    
-                                    <Row style="margin: 10px 0">
-                                        <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">同时登录 : &nbsp;</i-col>
-                                        <i-col span="12">
-                                                <i-select v-model="singleLogin">
-                                                    <i-option value="0" >允许</i-option>
-                                                    <i-option value="1" >禁止</i-option>
-                                                </i-select>
-                                        </i-col>
-                                    </Row>
-                                    <Row style="margin: 10px 0">
-                                        <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">手机登录 : &nbsp;</i-col>
-                                        <i-col span="12">
-                                            <i-select v-model="phoneLogin">
-                                                <i-option value="0" >允许</i-option>
-                                                <i-option value="1" >禁止</i-option>
-                                            </i-select>
-                                        </i-col>
-                                    </Row>
-                                    <Row style="margin: 10px 0">
-                                        <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">微信登录 : &nbsp;</i-col>
-                                        <i-col span="12">
-                                            <i-select v-model="weixinLogin">
-                                                <i-option value="0" >允许</i-option>
-                                                <i-option value="1" >禁止</i-option>
-                                            </i-select>       
-                                        </i-col>
-                                    </Row> 
-                                    <Row style="margin: 10px 0" v-show="!isShowGroup">
-                                        <i-col span="4" style="height: 100%;text-align:right;line-height:32px;"><i style="color: red;display: inline-block;">*</i>&nbsp;分组数量 : &nbsp;</i-col>
-                                        <i-col span="3">
-                                            <input-number :max="20" :min="1" v-model="groupcount"></input-number>
-                                        </i-col>
+                            <Row style="margin: 10px 0">
+                                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">
+                                    <i style="color: red;display: inline-block;">*</i>&nbsp;所属客户 : &nbsp;</i-col>
+                                <i-col span="12">
+                                    <i-select v-model="companyid">
+                                        <i-option v-for="item in companyList" :value="item.value" :key="item.value">{{ item.label }}</i-option>
+                                    </i-select>
+                                </i-col>
+                            </Row>
                         
-                                        <i-col span="3" style="height: 100%;text-align:right;line-height:32px;"><i style="color: red;display: inline-block;">*</i>&nbsp;用户数量 : &nbsp;</i-col>
-                                        <i-col span="3">
-                                            <input-number :max="100" :min="10" v-model="usercount"></input-number>
-                                        </i-col>
+                            <Row style="margin: 10px 0" v-show="isShowGroup">
+                                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">
+                                    <i style="color: red;display: inline-block;">*</i>&nbsp;所属分组 : &nbsp;</i-col>
+                                <i-col span="12">
+                                    <i-select v-model="groupids" multiple>
+                                        <i-option v-for="item in groupList" :value="item.value" :key="item.value">{{ item.label }}</i-option>
+                                    </i-select>
+                                </i-col>
+                            </Row>
                         
-                                        <i-col span="3" style="height: 100%;text-align:right;line-height:32px;"><i style="color: red;display: inline-block;">*</i>&nbsp;设备数量 : &nbsp;</i-col>
-                                        <i-col span="3">
-                                            <input-number :max="500" :min="10" v-model="devicecount"></input-number>
-                                        </i-col>
-                                    </Row> 
-                                        
+                            <Row style="margin: 10px 0">
+                                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">同时登录 : &nbsp;</i-col>
+                                <i-col span="12">
+                                    <i-select v-model="singleLogin">
+                                        <i-option value="0">允许</i-option>
+                                        <i-option value="1">禁止</i-option>
+                                    </i-select>
+                                </i-col>
+                            </Row>
+                            <Row style="margin: 10px 0">
+                                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">手机登录 : &nbsp;</i-col>
+                                <i-col span="12">
+                                    <i-select v-model="phoneLogin">
+                                        <i-option value="0">允许</i-option>
+                                        <i-option value="1">禁止</i-option>
+                                    </i-select>
+                                </i-col>
+                            </Row>
+                            <Row style="margin: 10px 0">
+                                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">微信登录 : &nbsp;</i-col>
+                                <i-col span="12">
+                                    <i-select v-model="weixinLogin">
+                                        <i-option value="0">允许</i-option>
+                                        <i-option value="1">禁止</i-option>
+                                    </i-select>
+                                </i-col>
+                            </Row>
+                            <Row style="margin: 10px 0" v-show="!isShowGroup">
+                                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">
+                                    <i style="color: red;display: inline-block;">*</i>&nbsp;分组数量 : &nbsp;</i-col>
+                                <i-col span="3">
+                                    <input-number :max="20" :min="1" v-model="groupcount"></input-number>
+                                </i-col>
                         
-                                    <Row style="margin: 10px 0">
-                                            <i-col span="12" :offset="4">
-                                                <i-button style="width:100%" @click="handleSubmit">提交</i-button>
-                                            </i-col>
-                                    </Row>  
-                                </div> 
+                                <i-col span="3" style="height: 100%;text-align:right;line-height:32px;">
+                                    <i style="color: red;display: inline-block;">*</i>&nbsp;用户数量 : &nbsp;</i-col>
+                                <i-col span="3">
+                                    <input-number :max="100" :min="10" v-model="usercount"></input-number>
+                                </i-col>
+                        
+                                <i-col span="3" style="height: 100%;text-align:right;line-height:32px;">
+                                    <i style="color: red;display: inline-block;">*</i>&nbsp;设备数量 : &nbsp;</i-col>
+                                <i-col span="3">
+                                    <input-number :max="500" :min="10" v-model="devicecount"></input-number>
+                                </i-col>
+                            </Row>
+                        
+                        
+                            <Row style="margin: 10px 0">
+                                <i-col span="12" :offset="4">
+                                    <i-button style="width:100%" @click="handleSubmit">提交</i-button>
+                                </i-col>
+                            </Row>
+                        </div>
                         
                     </tab-pane>
                     <tab-pane label="设备权限" :disabled="isDisabled">
@@ -284,9 +293,9 @@
                 queryAllDeviceCmdByUser:function(){
                     var me = this;
                     var url = myUrls.queryAllDeviceCmdByUser();
-                    console.log(this.username)
+ 
                     utils.sendAjax(url,{username:this.username},function (resp) { 
-                        console.log("111111111111")
+
                         if(resp.status == 0 ){
                             me.directiveList = resp.records;
                             me.queryAllDeviceTypeByUser();
@@ -296,9 +305,9 @@
                 queryAllDeviceTypeByUser:function(){
                     var me = this;
                     var url = myUrls.queryAllDeviceTypeByUser();
-                    console.log(this.username)
+  
                     utils.sendAjax(url,{username:this.username},function (resp) { 
-                        console.log("222222222222")
+            
                         if(resp.status == 0 ){
                             me.devicetypes = resp.devicetypes; 
                         };
@@ -381,6 +390,7 @@
                     var datas = [];
                     
                     devicetypes.forEach(function (type) { 
+                        // console.log(type.typename,type.devicetypeid,type.typecode);
                         var children = [];
                         var typeObj = {
                             title:type.typename,

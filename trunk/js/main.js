@@ -809,6 +809,9 @@
             trackMap:function (deviceid) { 
                 trackMap(deviceid);
             },
+            more:function (e) { 
+                console.log(e);
+            },
             getCurrentStateTreeData:function (state,isShowConpanyName) {
                 var me = this;
                 this.currentStateData = [];
