@@ -2,7 +2,7 @@
 
 <div id="edituser">
     <div class="full">
-        <h3 class="h3-title">编辑分组 <span> <i-button style="width: 100%" @click="back">返回</i-button> </span></h3>
+        <h3 class="h3-title">编辑用户 &nbsp; <strong>{{username}}</strong> <span> <i-button style="width: 100%" @click="back">返回</i-button> </span></h3>
             <Tabs type="card">
                     <tab-pane label="用户信息">
                             <div>          
@@ -300,27 +300,32 @@
                     utils.sendAjax(url,{username:this.username},function (resp) { 
                         console.log("222222222222")
                         if(resp.status == 0 ){
-                            me.devicetypes = resp.devicetypes;
-                            me.queryHadDeviceCmdByUser();
+                            me.devicetypes = resp.devicetypes; 
                         };
                     })    
                 },
                 queryHadDeviceCmdByUser:function(){
+                    var me = this;
                     var url = myUrls.queryHadDeviceCmdByUser();
-                    
-                    utils.sendAjax(url,{username:this.username},function (resp) { 
-                        console.log(resp);
-                        if(resp.status == 0 ){
+                    var children = me.treeData[0].children;
+                    utils.sendAjax(url, { username: this.username }, function (resp) {
+                        if (resp.status == 0) {
                             var records = resp.records;
-                            records.forEach(function (record) { 
+                            records.forEach(function (record) {
                                 var devicetype = record.devicetype;
                                 var cmdcode = record.cmdcode;
-                                devicetypes.forEach(function (data) { 
-                                    console.log(data.devicetype)
+                                children.forEach(function (data) {
+                                    if (data.devicetype == devicetype) {
+                                        data.children.forEach(function (item) {
+                                            if (item.cmdcode == cmdcode) {
+                                                item.checked = true;
+                                            };
+                                        })
+                                    }
                                 });
                             });
                         }
-                    })
+                    });
                 },
                 submitDeviceAuthority:function(){
                     var url = myUrls.editUserDeviceCmd();
@@ -396,7 +401,8 @@
                         });
                         datas.push(typeObj);
                     })
-                    this.treeData[0].children = datas;        
+                    this.treeData[0].children = datas;    
+                    this.queryHadDeviceCmdByUser();    
                 }   
             },
             mounted:function () {
