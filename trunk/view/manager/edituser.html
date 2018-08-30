@@ -172,11 +172,11 @@
                         me.$nextTick(function () { 
                             me.userTypeList = me.userTypeDecsList(userType);
                             me.usertype = editObject.usertype+""; 
-                            me.username = editObject.username;
                             me.overduetime = editObject.overduetime;
                             me.companyid = editObject.company.companyid;
                            
                         });
+                        
                     }
                 },
                 queryAllgroupsInfo:function(){
@@ -284,6 +284,7 @@
                 queryAllDeviceCmdByUser:function(){
                     var me = this;
                     var url = myUrls.queryAllDeviceCmdByUser();
+                    console.log(this.username)
                     utils.sendAjax(url,{username:this.username},function (resp) { 
                         console.log("111111111111")
                         if(resp.status == 0 ){
@@ -295,6 +296,7 @@
                 queryAllDeviceTypeByUser:function(){
                     var me = this;
                     var url = myUrls.queryAllDeviceTypeByUser();
+                    console.log(this.username)
                     utils.sendAjax(url,{username:this.username},function (resp) { 
                         console.log("222222222222")
                         if(resp.status == 0 ){
@@ -307,8 +309,7 @@
                     var url = myUrls.queryHadDeviceCmdByUser();
                     
                     utils.sendAjax(url,{username:this.username},function (resp) { 
-                        console.log("3333333");
-                        console.log("resp");
+                        console.log(resp);
                         if(resp.status == 0 ){
                             var records = resp.records;
                             records.forEach(function (record) { 
@@ -402,6 +403,7 @@
                 var me = this;
                 this.queryAllCompanyInfo(this.doQueryAllCompanyInfo);
                 this.queryAllgroupsInfo();
+                this.username = editObject.username;
                 this.queryAllDeviceCmdByUser();
             }
         })

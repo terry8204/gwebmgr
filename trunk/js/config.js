@@ -179,7 +179,7 @@ var myUrls = {
         return this.host + "webapi?action=queryalldevicecmdbyuser&token="+token;
     },
     //查询用户已拥有的设备指令
-    queryHadDeviceCmdByUser:function () { 
+    queryHadDeviceCmdByUser:function () {
         return this.host + "webapi?action=queryhaddevicecmdbyuser&token="+token;
     },
     //查询用户所有设备类型详细
