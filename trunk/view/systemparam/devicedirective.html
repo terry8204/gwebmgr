@@ -85,46 +85,6 @@
                 }
             },
             methods: {
-                openAddDirectiveModal: function () {
-                    this.isEdit = false;
-                    this.addDevDirectiveModal = true;
-                },
-                handleAddDirectiveType: function () {
-                    var me = this;
-                    var url = null;
-                    var data = {
-                        cmdcode: this.directiveObj.cmdcode,
-                        cmdname: this.directiveObj.cmdname
-                    };
-
-                    if (this.isEdit) {
-                        url = myUrls.editCmd();
-
-                    } else {
-                        url = myUrls.addCmd();
-                    }
-
-                    utils.sendAjax(url, data, function (resp) {
-                        if (resp.status == 0) {
-                            if (me.isEdit) {
-                                me.$Message.success("编辑成功");
-                                for (var key in me.directiveObj) {
-                                    if (me.directiveObj.hasOwnProperty(key)) {
-                                        var val = me.directiveObj[key];
-                                        me.tableData[me.rowIndex][key] = val;
-                                    };
-                                };
-                            } else {
-                                me.$Message.success("添加成功");
-                                me.queryCmdList();
-                            };
-                            me.addDevDirectiveModal = false;
-                        } else {
-                            me.$Message.error("错误");
-                        }
-                    });
-                },
-
                 handleDelDirective: function () {
                     var me = this;
                     var url = myUrls.deleteCmd();
@@ -151,13 +111,6 @@
                             me.tableData = resp.records;
                         }
                     });
-                }
-            },
-            watch: {
-                addDevDirectiveModal: function () {
-                    if (!this.isEdit) {
-                        this.directiveObj = { cmdcode: "", camname: "" };
-                    };
                 }
             },
             mounted: function () {

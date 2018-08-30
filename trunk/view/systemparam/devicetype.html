@@ -233,11 +233,11 @@
                 addInstructionsToDeviceTypes:function(){
                     var url = myUrls.editDeviceTypeCmd();
                     var data = this.getEditDeviceTypeCmdData();
-                    if(data.cmds.length){
-                        utils.sendAjax(url,data,function (resp) {
-                            console.log(resp);
-                        })
-                    }
+                  
+                    utils.sendAjax(url,data,function (resp) {
+                        console.log(resp);
+                    })
+                    
                 },
                 getEditDeviceTypeCmdData:function(){
                     var cmdList = this.cmdList;
@@ -254,7 +254,7 @@
                                 })
                             }
                         };
-                    return {devicetype:this.tableData[this.rowIndex].devicetypeid,cmds: cmds}
+                    return {datas:[{devicetype:this.tableData[this.rowIndex].devicetypeid,cmds: cmds}]}
                 },
                 queryDevTypeList: function () {
                     var me = this;

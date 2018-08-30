@@ -1,6 +1,6 @@
 <meta charset="UTF-8">
 <div class="pd-10 system" id="add-directive-wraper">
-    <h3 class="h3-title">添加指令</h3>
+    <h3 class="h3-title" style="height: 32px;margin-bottom: 10px">编辑指令 <span style="float: right;"><i-button style="width: 100%" @click="back">返回</i-button></span> </h3>
     <div style="width: 700px;margin: 0 auto;">
         <Row>
             <i-col span="4" style="height: 100%;text-align:right;line-height:32px;"><i style="color: red;display: inline-block;">*</i>&nbsp;指令Code : &nbsp;</i-col>
@@ -23,7 +23,6 @@
             </i-col>
         </Row>
 
-    
         <Row style="margin: 10px 0">
             <i-col span="4" style="height: 100%;text-align:right;line-height:100%;">
                 参数 : &nbsp;</i-col>
@@ -48,7 +47,7 @@
        
         <Row style="margin: 10px 0">
             <i-col span="10" :offset="8">
-                    <i-button icon="md-add" @click="handleAddDirective" style="width: 100%">添加</i-button>
+                    <i-button icon="md-add" @click="handleEditDirective" style="width: 100%">提交</i-button>
             </i-col>
         </Row>
     </div>
@@ -91,14 +90,21 @@
                 }
             },
             methods: {
-                handleAddDirective:function(){
+                back:function(){
+                    var me = this;
+                    me.$Loading.start();
+                    $("#system-view").load("../view/systemparam/devicedirective.html", function () {
+                        me.$Loading.finish();
+                    });
+                },
+                handleEditDirective:function(){
                     console.log(!this.cmdcode , !this.cmdname , !this.cmddescr , !this.lock);
                     if( !this.cmdcode || !this.cmdname ){
                         this.$Message.error("code和指令名称是必填的");
                         return ;
                     };
                     var me = this;
-                    var url = myUrls.addCmd();
+                    var url = myUrls.editCmd();
                     var data = {
                         cmdcode: this.cmdcode,
                         cmdname: this.cmdname,
@@ -158,10 +164,14 @@
                     this.cmddescren=data.cmddescren;
                     this.cmddescrtw=data.cmddescrtw;
 
-                    this.params=data.params;
+                    
                     this.paramsen=data.paramsen;
                     this.paramstw=data.paramstw;
-
+                    
+                    if(data.params!=""){
+                        this.params=data.params;
+                        this.lock = true;
+                    };
                 }
             },
             mounted : function (param) {  
