@@ -1202,6 +1202,7 @@
                             if(record){
                                 if(deviceid === record.deviceid){
                                     marker.setPosition(record.point);
+                                    marker.setIcon(record.icon);
                                     if(deviceid == store.currentDeviceId){
                                         me.isMoveTriggerEvent = false;
                                         var infoWindow = me.getInfoWindow(record);

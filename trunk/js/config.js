@@ -2,7 +2,7 @@
  * 所有的urls
  */
 var myUrls = {
-    host:"http://112.74.186.169/",
+    // host:"http://112.74.186.169/",
     host:"http://192.168.0.253:8090/",
     login:function(){
         return this.host+"webapi?action=login";
@@ -203,7 +203,7 @@ var myUrls = {
 
 };
 
-
+// global var
 var vueInstanse   = null;   // 全局vue实例子
 var editObject    = null;   // 要编辑客户的对象
 var customersList = null;   // 缓存客户列表
