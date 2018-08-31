@@ -222,9 +222,9 @@
                                                         </div>
                                                         <ul class="device-controller" v-show="device.isSelected">
                                                             <li><Icon type="ios-create"/><p>编辑</p><li>
-                                                            <li><Icon type="md-planet"/><p>轨迹</p><li>
-                                                            <li><Icon type="md-person"/><p>跟踪</p><li> 
-                                                            <li><Icon type="ios-list"/><p>更多</p><li> 
+                                                            <li @click="playBack(device.deviceid)"><Icon type="md-planet"/><p>轨迹</p><li>
+                                                            <li @click="trackMap(device.deviceid)"><Icon type="md-person"/><p>跟踪</p><li> 
+                                                            <li @click="more"><Icon type="ios-list"/><p>更多</p><li> 
                                                         </ul>
                                                     </div>
                                                 </div>
@@ -376,7 +376,7 @@
             </Modal>
         </div>
     </script>
-    
+
     <script src="dist/vue.min.js"></script>
     <script src="dist/vue-router.min.js"></script>
     <script src="dist/vuex.min.js"></script>

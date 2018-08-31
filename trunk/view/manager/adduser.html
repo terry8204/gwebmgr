@@ -60,8 +60,7 @@
                     </Row>
                 
                     <Row style="margin: 10px 0" v-show="isShowGroup">
-                        <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">
-                            <i style="color: red;display: inline-block;">*</i>&nbsp;所属分组 : &nbsp;</i-col>
+                        <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">所属分组 : &nbsp;</i-col>
                         <i-col span="12">
                             <i-select v-model="groupids" multiple>
                                 <i-option v-for="item in groupList" :value="item.value" :key="item.value">{{ item.label }}</i-option>
@@ -229,12 +228,11 @@
                     
                     
                     if(userType == -1){
-                        if(this.groupids.length == 0){
-                            this.$Message.error("该选择分组");  
-    
-                            return;
-                        };
-                        data.groupids = this.groupids;
+
+                        if(this.groupids.length){
+                            data.groupids = this.groupids; 
+                        };   
+
                     }else{
                         data.groupcount = this.groupcount;
                         data.devicecount = this.devicecount;
@@ -369,7 +367,7 @@
             },
             watch:{
                 usertype:function(){
-                    if(this.usertype == -1){
+                    if(this.usertype >= 10){
                         this.isShowGroup = true;             
                     }else{
                         this.isShowGroup = false;
