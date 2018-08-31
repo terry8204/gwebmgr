@@ -9,14 +9,30 @@
         currentDeviceRecord:{},
     };
     // vuex store
-    var vstore = new Vuex.Store({
+        vstore = new Vuex.Store({
         state:{
             userType:Cookies.get("userType"),
-            deviceNames:{}
+            deviceNames:{},
+            userTypeDescrList:null
         },
         actions: {
             setDeviceNames:function (context,groups) {
                 context.commit('setDeviceNames',groups);
+            },
+            setUserTypeDescr:function (context) { 
+                var url = myUrls.queryUserTypeDescr();
+                $.ajax({
+                    url:url,
+                    method:"post",
+                    data:{},
+                    async:false,
+                    success:function (resp) {
+                        context.commit('setUserTypeDescr',resp.records);
+                    },
+                    error:function(){
+                        
+                    }
+                });
             }
         },
         mutations: {
@@ -27,6 +43,9 @@
                         state.deviceNames[deviceid] = device;
                     });
                 });
+            },
+            setUserTypeDescr:function (state,userTypeDescrList) { 
+                state.userTypeDescrList = userTypeDescrList;
             }
         },
     });
@@ -58,23 +77,18 @@
             changeNav:function(navName){
                 this.$emit("change-nav",navName);
             },
-            getManagerType:function(userType){
-                var mgr = "";
-                    if(userType == -1){
-                        mgr = "[普通监控员]";
-                        this.isManager = false;
-                        this.isShowSystemParam = false;
-                    }else if(userType == 0){
-                        mgr = "[系统管理员]";
-                    }else if(userType == 1){
-                        mgr = "[一级管理员]";
-                    }else if(userType == 2){
-                        mgr = "[二级管理员]";
-                    }else if(userType == 99){
-                        this.isManager = false;
-                        mgr = "[设备]";
+            getManagerType: function (type) {
+
+                var name = "";
+                for (var i = 0; i < this.userTypeDescrList.length; i++) {
+                    var item = this.userTypeDescrList[i];
+                    if (item.type == type) {
+                        name = item.name;
+                        break;
                     }
-                return mgr;
+                };
+                return "["+name+"]";
+
             },
             changeUserPass:function () { 
                 var me = this;
@@ -153,6 +167,11 @@
                 };
             }
         },
+        computed:{
+            userTypeDescrList:function () { 
+                return this.$store.state.userTypeDescrList;
+            }
+        },
         mounted:function () {
             var me = this;
             this.activeName = "reportForm";
@@ -181,67 +200,6 @@
         }
     };
 
-    // 监控页面的 客户公司rander 函数
-    var render = function (h, info){
-        var data = info.data;
-        var root = info.root;
-        var node = info.node;
-        return h('span', {
-            style: {
-                display: 'inline-block',
-                cursor: 'pointer',
-                width: '100%'
-            },
-            on:{
-                click:function () {
-                    data.expand = !data.expand;
-                }
-            }
-        }, [
-            h('span', [
-                h('Icon', {
-                    props: {
-                        type: 'md-keypad',
-                    },
-                    style: {
-                        marginRight: '8px'
-                    }
-                }),
-                h('span', data.title)
-            ])
-        ]);
-    };
-
-    // 监控页面的 分组rander 函数
-    var groupRender = function (h, info){
-        var data = info.data;
-        var root = info.root;
-        var node = info.node;
-        return h('span', {
-            style: {
-                display: 'inline-block',
-                cursor: 'pointer',
-                width: '100%'
-            },
-            on:{
-                click:function () {  
-                    data.expand = !data.expand;
-                }
-            }
-        }, [
-            h('span', [
-                h('Icon', {
-                    props: {
-                        type: 'ios-people',
-                    },
-                    style: {
-                        marginRight: '8px'
-                    }
-                }),
-                h('span', data.title)
-            ])
-        ]);
-    };
 
     // 定位监控
     var monitor = {
@@ -393,40 +351,6 @@
             },
             openGroupItem:function (groupInfo) { 
                 groupInfo.expand = !groupInfo.expand;
-            },
-            renderContent:function (h, info) {
-                var me = this;
-                var data = info.data;
-                var root = info.root;
-                var node = info.node;
-                return h('span', {
-                    style: {
-                        display: 'inline-block',
-                        cursor: 'pointer',
-                        width: '100%',
-                        background:data.isSelected ? "#FFF5C2":"",
-                        color:node.node.isOnline ? "#2D8CF0" : "#999999"
-                    },
-                    on:{
-                        click: function(){
-                            me.cancelSelected();
-                            data.isSelected = true;
-                            me.handleClickDev(data.deviceid);
-                        }
-                    }
-                }, [
-                    h('span', [
-                        h('Icon', {
-                            props: {
-                                type: 'md-person'
-                            },
-                            style: {
-                                marginRight: '8px'
-                            }
-                        }),
-                        h('span', data.title)
-                    ])
-                ]);
             },
             selectedDev:function (deviceInfo) { 
                 this.cancelSelected();
@@ -862,7 +786,6 @@
                             companyid:companyid,
                             children:[],
                             expand: false,
-                            render:render
                         };
                         newArray.push(companyObj);
                 });
@@ -874,7 +797,6 @@
                         companyid:0,
                         children:[],
                         expand: false,
-                        render:render
                     });
                 };
                 if(newArray.length === 0 ){
@@ -885,7 +807,6 @@
                             companyname:"默认客户",
                             expand: false,
                             companyid:0,
-                            render:render
                         })
                     }
                 };
@@ -929,7 +850,6 @@
                         companyid:companyid,
                         title    :group.groupname,
                         expand: false,
-                        render:groupRender,
                         name:group.groupname,
                         children:[],
                     };
@@ -985,8 +905,7 @@
                         var onlineCount = 0;
                         var groupData =  {
                             title: group.groupname,
-                            expand: false,
-                            render:groupRender,
+                            expand: false,          
                             children: [],
                             name:group.groupname,
                         };
@@ -1034,7 +953,6 @@
                         companyid:companyid,
                         title    :group.groupname,
                         expand: false,
-                        render:groupRender,
                         children:[],
                         name:group.groupname,
                     }
@@ -1091,7 +1009,6 @@
                         var groupData =  {
                             title: group.groupname,
                             expand: false,
-                            render:groupRender,
                             children: [],
                             name:group.groupname,
                         };
@@ -1141,7 +1058,6 @@
                         companyid:companyid,
                         title    :group.groupname,
                         expand: false,
-                        render:groupRender,
                         children:[],
                         name:group.groupname,
                     }
@@ -1193,7 +1109,6 @@
                         var groupData =  {
                             title: group.groupname,
                             expand: false,
-                            render:groupRender,
                             children: [],
                             name:group.groupname,
                         };
@@ -1250,6 +1165,7 @@
                 this.intervalInstanse = setInterval(function () {
                     me.intervalTime--;
                     if(me.intervalTime <= 0 ){
+                        me.intervalTime = Number(store.intervalTime);
                         var devIdList = Object.keys(me.$store.state.deviceNames);
                         me.getLastPosition(devIdList,function (resp) {
                             if(resp.records){
@@ -1270,8 +1186,7 @@
                                 })
                                 me.records = resp.records;
                                 me.updateTreeOnlineState();
-                                me.moveMarkers();
-                                me.intervalTime = Number(store.intervalTime);
+                                me.moveMarkers();   
                             }
                         });
                     }
@@ -1978,7 +1893,7 @@ var vRoot = new Vue({
             systemParam : systemParam
         },
         mounted:function () {
-
+            this.$store.dispatch("setUserTypeDescr");
         }
     })
 })();

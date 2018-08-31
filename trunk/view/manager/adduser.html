@@ -44,7 +44,7 @@
                             <i style="color: red;display: inline-block;">*</i>&nbsp;用户类型 : &nbsp;</i-col>
                         <i-col span="12">
                             <i-select v-model="usertype">
-                                <i-option v-for="item in userTypeList" :value="item.value" :key="item.value">{{ item.label }}</i-option>
+                                <i-option v-for="item in userTypeList" :value="item.type" :key="item.type">{{ item.name }}</i-option>
                             </i-select>
                         </i-col>
                     </Row>
@@ -174,6 +174,7 @@
                 ],
                 devicetypes:[],
                 directiveList:[], 
+                userTypeList:[]
             },
             methods: {
                 queryAllCompanyInfo:function(claaback){
@@ -205,14 +206,14 @@
                     };    
 
                     if(this.password !== this.confirmPassword){
-                        this.$Message.error("两次密码不一致!");   
+                        this.$Message.error("两次密码不一致!");  
                         return;
                     }else{
                         data.password = $.md5(this.password);
                     }
                   
                     if(!reg.test(this.username)){
-                        this.$Message.error("用户名是4到32位的数字和字母组成的!");   
+                        this.$Message.error("用户名是4到32位的数字和字母组成的!");  
                         return;
                     }
 
@@ -220,6 +221,7 @@
                         if(data.hasOwnProperty(key)){
                             if(data[key] === "" || data[key] == NaN ){
                                 this.$Message.error("请填写完整!");   
+
                                 return;
                             }
                         };
@@ -228,7 +230,8 @@
                     
                     if(userType == -1){
                         if(this.groupids.length == 0){
-                            this.$Message.error("该选择分组");   
+                            this.$Message.error("该选择分组");  
+    
                             return;
                         };
                         data.groupids = this.groupids;
@@ -237,7 +240,6 @@
                         data.devicecount = this.devicecount;
                         data.usercount = this.usercount;
                     }    
-
 
                     utils.sendAjax(url,data,this.doAddUserCalback);
                 },
@@ -310,10 +312,15 @@
                     })    
                 },
                 submitDeviceAuthority:function(){
+                    var me = this;
                     var url = myUrls.editUserDeviceCmd();
                     var data = this.getEditUserDeviceCmdData();
                     utils.sendAjax(url,data,function (resp) { 
-                        console.log(resp);
+                        if(resp.status == 0){
+                            me.$Message.success("设置成功");
+                        }else{
+                            me.$Message.error(resp.cause);
+                        };
                     });
                 },
                 getEditUserDeviceCmdData :function(){
@@ -344,21 +351,21 @@
                         data:data,
                         username: this.username
                     }
+                },
+                queryUserTypeByUser:function(){
+                    var me = this
+                    var url = myUrls.queryUserTypeByUser();
+                    utils.sendAjax(url,{},function (resp) { 
+                        if(resp.status == 0){
+                            me.userTypeList = resp.records;
+                        }else{
+                            me.$Message.error("请求错误");
+                        }    
+                    });
                 }
             },
             computed:{
-                userTypeList:function(){
-                    var userType =  Cookies.get("userType");
-                    var userTypeList = null;
-                    if(userType == 0){
-                        userTypeList = [{value:"-1",label:"普通监控员"},{value:"1",label:"一级管理员"},{value:"2",label:"二级管理员"}];
-                    }else if(userType == 1){
-                        userTypeList = [{value:"-1",label:"普通监控员"},{value:"2",label:"二级管理员"}];
-                    }else if(userType == 2){
-                        userTypeList = [{value:"-1",label:"普通监控员"}];
-                    }
-                    return userTypeList;
-                }
+                
             },
             watch:{
                 usertype:function(){
@@ -400,10 +407,7 @@
             mounted:function () {
                 this.queryAllCompanyInfo(this.doQueryAllCompanyInfo);
                 this.queryAllgroupsInfo();
-
-                // this.queryAllDeviceCmdByUser();
-
-                this.usertype = "-1";
+                this.queryUserTypeByUser();
                 this.overduetime = new Date(Date.now() + 365*24*3600*1000) ;
             }
         })

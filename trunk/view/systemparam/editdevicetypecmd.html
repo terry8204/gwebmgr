@@ -72,18 +72,18 @@
                 }
             },
             watch:{
-                params:function () { 
+                dataInfo:function () { 
+                    
+                    if(this.dataInfo.params == ""){ this.lock = false; return ;}
                     this.previewObjList = [];
-                    if(this.params == ""){ this.lock = false; return ;}
-                    if(this.replaceAll(this.params) == ""){
-                        alert(1);
+                    if(this.replaceAll(this.dataInfo.params) == ""){
                         this.lock = true;
-                        var params = "<params>"+ this.params +"</params>";
+                        var params = "<params>"+ this.dataInfo.params +"</params>";
                         var parser=new DOMParser(); 
                         var xmlDoc=parser.parseFromString(params,"text/xml"); 
                         this.parseXML(xmlDoc);
                     }else{
-                        this.lock = false;
+                        this.lock = false;                  
                     }
                 }
             },
@@ -112,9 +112,12 @@
                     });
                 },
                 replaceAll:function (str){
-                    if(str!=null)
-                    str = str.replace(/^<[\s\S]*>[\s\S]*<\/[\s\S]*>$/g,"")
-                    return str;
+                    if(str!=null){
+                        str = str.replace(/^<[\s\S]*>[\s\S]*<\/[\s\S]*>$/g,"")
+                        return str;
+                    }else{
+                        return "suibian";
+                    } 
                 },
                 parseXML:function(xmlDoc){
                     // <ha><param size="small" type="password">确认密码</param></ha>
@@ -128,27 +131,12 @@
                             this.previewObjList.push({ type: type, text: text });
                         }
                     }
-                    
                 },
                 setValue:function(data){
-                    // this.cmdcode=data.cmdcode; 
-
-                    // this.cmdname=data.cmdname ;
-                    // this.cmdnameen=data.cmdnameen;
-                    // this.cmdnametw=data.cmdnametw;
-
-                    // this.cmddescr=data.cmddescr;
-                    // this.cmddescren=data.cmddescren;
-                    // this.cmddescrtw=data.cmddescrtw;
-
-                    
-                    // this.paramsen=data.paramsen;
-                    // this.paramstw=data.paramstw;
-                    // this.devtypename = editObject.devtypename;
                     this.dataInfo = data;
                     this.devtypename = data.devtypename;
-                    if(data.params){
-                        this.lock = true;
+                    if(this.dataInfo.params){
+                        this.lock = true;  
                     };
                 }
             },

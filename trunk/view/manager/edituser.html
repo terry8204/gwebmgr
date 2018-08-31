@@ -28,7 +28,7 @@
                                     <i style="color: red;display: inline-block;">*</i>&nbsp;用户类型 : &nbsp;</i-col>
                                 <i-col span="12">
                                     <i-select v-model="usertype">
-                                        <i-option v-for="item in userTypeList" :value="item.value" :key="item.value">{{ item.label }}</i-option>
+                                        <i-option v-for="item in userTypeList" :value="item.type" :key="item.type">{{ item.name }}</i-option>
                                     </i-select>
                                 </i-col>
                             </Row>
@@ -177,13 +177,10 @@
                             })
                         });
 
-                        var userType =  Cookies.get("userType");   
                         me.$nextTick(function () { 
-                            me.userTypeList = me.userTypeDecsList(userType);
-                            me.usertype = editObject.usertype+""; 
+                            me.queryUserTypeByUser();
                             me.overduetime = editObject.overduetime;
                             me.companyid = editObject.company.companyid;
-                           
                         });
                         
                     }
@@ -279,17 +276,6 @@
                         }
                     });
                 },
-                userTypeDecsList:function(userType){                  
-                    var userTypeList = null;
-                    if(userType == 0){
-                        userTypeList = [{value:"-1",label:"普通监控员"},{value:"1",label:"一级管理员"},{value:"2",label:"二级管理员"}];
-                    }else if(userType == 1){
-                        userTypeList = [{value:"-1",label:"普通监控员"},{value:"2",label:"二级管理员"}];
-                    }else if(userType == 2){
-                        userTypeList = [{value:"-1",label:"普通监控员"}];
-                    }
-                    return userTypeList;
-                },
                 queryAllDeviceCmdByUser:function(){
                     var me = this;
                     var url = myUrls.queryAllDeviceCmdByUser();
@@ -371,10 +357,24 @@
                         data:data,
                         username: this.username
                     }
+                },
+                queryUserTypeByUser:function(){
+                    var me = this
+                    var url = myUrls.queryUserTypeByUser();
+                    utils.sendAjax(url,{},function (resp) { 
+                        if(resp.status == 0){
+                            me.$nextTick(function () { 
+                                me.userTypeList = resp.records;
+                                me.usertype = editObject.usertype; 
+                                // me.userTypeList.forEach(function (item) { 
+                                //     console.log(item.type , me.usertype , me.usertype == item.type);
+                                // })
+                            });
+                        }else{
+                            me.$Message.error("请求错误");
+                        }    
+                    });
                 }
-            },
-            computed:{
-                
             },
             watch:{
                 usertype:function(){
@@ -390,7 +390,7 @@
                     var datas = [];
                     
                     devicetypes.forEach(function (type) { 
-                        // console.log(type.typename,type.devicetypeid,type.typecode);
+
                         var children = [];
                         var typeObj = {
                             title:type.typename,

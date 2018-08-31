@@ -140,26 +140,19 @@
                     return DateFormat.longToDateTimeStr(time,0);
                 },
                 getUserTypeStr:function(type){
-                    var str = "";
-                    switch(type){
-                        case -1 :
-                           str = "普通监控员";
-                        break; 
-                        case 0 :
-                           str = "系统管理员";
-                        break;  
-                        case 1 :
-                           str = "一级管理员";
-                        break;  
-                        case 2 :
-                           str = "二级管理员";
-                        break;    
-                    }
-                    return str;
+                    var name = "";
+                    for(var i = 0 ; i < this.userTypeDescrList.length ; i++){
+                        var item = this.userTypeDescrList[i];
+                        if(item.type == type){
+                            name = item.name;
+                            break;
+                        }
+                    };
+                    return name;
                 },
                 filterUsersList:function(){
                     var me = this ;
-                    this.userlists.forEach(function(user){
+                    this.userlists.forEach(function(user){                   
                         user.userTypeStr = me.getUserTypeStr(user.usertype);
                         user.createtime = me.timeToDateStr(user.createtime);
                         user.overduetime = me.timeToDateStr(user.overduetime);
@@ -219,6 +212,7 @@
                 },
             },
             mounted:function(){
+                this.userTypeDescrList = vstore.state.userTypeDescrList;
                 this.getUserInfoList();
             }
         })

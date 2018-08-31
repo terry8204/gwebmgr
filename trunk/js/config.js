@@ -10,6 +10,12 @@ var myUrls = {
     loginOut:function(){
         return this.host+"webapi?action=loginout&token="+token;
     },
+    queryUserTypeDescr:function () { 
+        return this.host+"webapi?action=queryusertypedescr&token="+token; 
+    },
+    queryUserTypeByUser:function () { 
+        return this.host+"webapi?action=queryusertypebyuser&token="+token;  
+    },
     changeUserPass:function () { 
         return this.host+"webapi?action=changeuserpass&token="+token;
     },
@@ -198,7 +204,7 @@ var vueInstanse   = null;   // 全局vue实例子
 var editObject    = null;   // 要编辑客户的对象
 var customersList = null;   // 缓存客户列表
 var groupsList    = null;   // 缓存分组列表
-
+var vstore        = null;   // store
 
 /* 
  * 系统管理员 admin       123456

@@ -150,19 +150,20 @@
                                                 me.cmdModal = true;
                                                 me.devTypeInfo = JSON.parse(JSON.stringify(params.row));
                                                 me.rowIndex = params.index;  
-                                                var cmds = params.row.cmds;                             
-                                                if(cmds.length){
-                                                    for(var key in me.checkboxCmdObj){
-                                                        if(me.checkboxCmdObj.hasOwnProperty(key)){
-                                                            me.checkboxCmdObj[key] = false;
-                                                        }
-                                                    };      
+                                                var cmds = params.row.cmds; 
 
-                                                    cmds.forEach(function (item) { 
+                                                for (var key in me.checkboxCmdObj) {
+                                                    if (me.checkboxCmdObj.hasOwnProperty(key)) {
+                                                        me.checkboxCmdObj[key] = false;
+                                                    }
+                                                };
+
+                                                if (cmds) {
+                                                    cmds.forEach(function (item) {
                                                         me.checkboxCmdObj[item.cmdcode] = true;
                                                     });
 
-                                                }else{
+                                                } else {
                                                     me.querySelectedCmd();
                                                 };
                                             }
@@ -287,7 +288,11 @@
                     utils.sendAjax(url, {}, function (resp) {
                         if (resp.status == 0) {
                             resp.devicetypes.forEach(function (item) {
-                                item.directiveCount = item.cmds.length;
+                                if(item.cmds){
+                                    item.directiveCount = item.cmds.length;
+                                }else{
+                                    item.directiveCount = 0;
+                                }       
                             })
                             me.tableData = resp.devicetypes;
                         }
@@ -301,8 +306,7 @@
                 doQuerySelectedCmdFn:function (resp) { 
                     var me = this;
                     if(resp.status == 0) {
-                        this.tableData[me.rowIndex].selectedCmdList =  resp.records;
-                        
+                        this.tableData[me.rowIndex].cmds =  resp.records;
                         for(var key in me.checkboxCmdObj){
                             if(me.checkboxCmdObj.hasOwnProperty(key)){
                                 me.checkboxCmdObj[key] = false;
@@ -339,8 +343,7 @@
                             });
                         }
                     });
-                    console.log(me.cmdList)
-                    console.log(me.checkboxCmdObj)
+
                 }
             },
             watch: {
