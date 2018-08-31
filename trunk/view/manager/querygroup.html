@@ -243,7 +243,7 @@ vueInstanse=new Vue({
                     var me = this;
                     if(resp.status == 0 && resp.userlists != null){
                         resp.userlists.forEach(function (item) { 
-                            if(item.usertype == -1 ){
+                            if(item.usertype >= 10){
                                 me.monitorPersonList.push({
                                     label:item.username,
                                     value:item.username

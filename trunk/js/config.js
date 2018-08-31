@@ -73,6 +73,10 @@ var myUrls = {
     editUser:function () { 
         return this.host + "webapi?action=edituser&token="+token;
     },
+    //编辑用户设备指令密码
+    editUserDeviceCmdPwd:function () { 
+        return this.host + "webapi?action=edituserdevicecmdpwd&token="+token;
+    },
     addDevice:function () { 
         return this.host + "webapi?action=adddevice&token="+token;
     },

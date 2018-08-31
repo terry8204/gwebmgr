@@ -111,9 +111,41 @@
                     <tab-pane label="设备权限" :disabled="isDisabled">
                         <div style="width: 100%;height: 400px">
                             <div style="width: 250px;height: 400px;float: left;border: 1px solid #DCDEE2;overflow-y: auto;">
-                                <Tree :data="treeData" show-checkbox multiple></Tree> 
+                                <Tree :data="treeData" show-checkbox @on-select-change="handleClickChildren"></Tree> 
                             </div>
-                            <div style="width: 440px;height: 400px;float: right;border: 1px solid #DCDEE2"></div>
+                            <div style="width: 440px;height: 400px;float: right;border: 1px solid #DCDEE2">
+                                <div style="margin-top:50px">
+                                    <Row style="margin: 10px 0">
+                                        <i-col span="6" style="height: 100%;text-align:right;line-height:32px;">
+                                                &nbsp;车机类型&nbsp;:&nbsp;
+                                        </i-col>
+                                        <i-col span="12" style="height: 100%;line-height:32px;">
+                                                &nbsp;{{editTypeName}}
+                                        </i-col>
+                                    </Row>
+                                    <Row style="margin: 10px 0">
+                                        <i-col span="6" style="height: 100%;text-align:right;line-height:32px;">
+                                                &nbsp;车机命令名称&nbsp;:&nbsp;
+                                        </i-col>
+                                        <i-col span="12" style="height: 100%;line-height:32px;">
+                                                &nbsp;{{editDirectiveName}}
+                                        </i-col>
+                                    </Row>
+                                    <Row style="margin: 10px 0">
+                                        <i-col span="6" style="height: 100%;text-align:right;line-height:32px;">
+                                                &nbsp;车机命令密码&nbsp;:&nbsp;
+                                        </i-col>
+                                        <i-col span="12">
+                                            <i-input v-model.trim="directivepwd" :disabled="isEditDirectivePwd"></i-input>
+                                        </i-col>
+                                    </Row>
+                                    <Row style="margin: 10px 0">
+                                        <i-col span="8" :offset="8">
+                                            <i-button style="width:100%" @click="handleEditDirevtivePwd" :disabled="isEditDirectivePwd">修改</i-button>
+                                        </i-col>
+                                    </Row>
+                                </div>
+                            </div>
                         </div>
                         <Row style="margin: 10px 0">
                             <i-col span="8" :offset="8">
@@ -160,8 +192,63 @@
                 ],
                 devicetypes:[],
                 directiveList:[], 
+                hadDeviceCmd:[],
+                directivepwd:"",
+                editTypeName:"",
+                editDirectiveName:"",
+                isEditDirectivePwd:true,
+                directiveInfo:{}
             },
             methods: {
+                handleClickChildren:function(data){
+                    var directiveInfo = data[0];
+                    if(directiveInfo){
+                        if(directiveInfo.children == undefined){ 
+                            this.directiveInfo = directiveInfo;
+                            var devicetype = directiveInfo.devicetype;
+                            var cmdcode = directiveInfo.cmdcode;
+                            var isHasDirective = this.isHasDirective(devicetype,cmdcode);
+                            if(isHasDirective && directiveInfo.params){
+                                this.editTypeName = directiveInfo.typename;
+                                this.editDirectiveName = directiveInfo.title;
+                                this.isEditDirectivePwd = false;
+                            }else{
+                                this.editTypeName = "";
+                                this.editDirectiveName = "";
+                                this.isEditDirectivePwd = true; 
+                            }
+                        }
+                    }
+                },
+                isHasDirective:function(devicetype,cmdcode){
+                    var result = false;
+                    for(var i = 0 ; i < this.hadDeviceCmd.length ; i++){ 
+                        var item = this.hadDeviceCmd[i];
+                        if(devicetype == item.devicetype && cmdcode == item.cmdcode){
+                            result = true;
+                        }
+                    }
+                    return result;
+                },
+                handleEditDirevtivePwd:function(){
+                    if( this.directivepwd.length > 6){ this.$Message.error("密码小于6位") ;return; };
+                    var me = this;
+                    var url = myUrls.editUserDeviceCmdPwd();
+                    var data = {
+                            username: this.username,
+                            cmdcode: this.directiveInfo.cmdcode,
+                            devicetype:this.directiveInfo.devicetype,
+                            cmdpwd: this.directivepwd
+                        };
+
+                    utils.sendAjax(url,data,function (resp) { 
+                        if(resp.status == 0){
+                            me.$Message.success("修改密码成功")
+                        }else{
+                            me.$Message.error(resp.cause);
+                        }
+                    });    
+                },
                 queryAllCompanyInfo:function(claaback){
                     var url = myUrls.queryCompanyByCreater();
                     utils.sendAjax(url,{},claaback)
@@ -303,7 +390,8 @@
                     utils.sendAjax(url, { username: this.username }, function (resp) {
                         if (resp.status == 0) {
                             var records = resp.records;
-                            records.forEach(function (record) {
+                            me.hadDeviceCmd = resp.records;
+                            me.hadDeviceCmd.forEach(function (record) {
                                 var devicetype = record.devicetype;
                                 var cmdcode = record.cmdcode;
                                 children.forEach(function (data) {
@@ -320,10 +408,15 @@
                     });
                 },
                 submitDeviceAuthority:function(){
+                    var me = this;
                     var url = myUrls.editUserDeviceCmd();
                     var data = this.getEditUserDeviceCmdData();
                     utils.sendAjax(url,data,function (resp) { 
-                        console.log(resp);
+                        if(resp.status == 0){
+                            me.$Message.success("修改成功")
+                        }else{
+                            me.$Message.error(resp.cause);
+                        }
                     });
                 },
                 getEditUserDeviceCmdData :function(){
@@ -401,7 +494,10 @@
                                 var directiveObj = {
                                     title:directive.cmdname,
                                     checked: false,
-                                    cmdcode:directive.cmdcode
+                                    cmdcode:directive.cmdcode,
+                                    params:directive.params,
+                                    typename:type.typename,
+                                    devicetype:type.devicetypeid,
                                 }
                                 children.push(directiveObj)
                             }
