@@ -264,7 +264,7 @@
                 }));    
                 this.map.addEventListener("moveend",function (ev) {
                     if(me.isMoveTriggerEvent){
-                        me.map.clearOverlays();
+                        me.clearMarkerOverlays();
                         var pointArr = me.getThePointOfTheCurrentWindow();
                         var range = utils.getDisplayRange(me.map.getZoom());
                         if(pointArr.length){
@@ -281,8 +281,9 @@
                     }
                 });
 
-                this.map.addEventListener("zoomend",function (ev) {
-                        me.map.clearOverlays();
+                this.map.addEventListener("zoomend",function (ev) {  
+                        // me.map.clearOverlays();
+                        me.clearMarkerOverlays();
                         var pointArr = me.getThePointOfTheCurrentWindow();
                         var range = utils.getDisplayRange(me.map.getZoom());
                         if(pointArr.length){
@@ -306,6 +307,15 @@
                     };
                 });
         
+            },
+            clearMarkerOverlays:function () { 
+                var me = this;
+                var mks = me.map.getOverlays();
+                    mks.forEach(function (item) { 
+                        if(item.deviceid){
+                            me.map.removeOverlay(item);
+                        }
+                    });
             },
             openDistance:function () { 
                 if(this.myDis!=null) {this.myDis.close();}
