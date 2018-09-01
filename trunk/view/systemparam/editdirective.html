@@ -9,7 +9,12 @@
                 <i-input v-model.trim.number="cmdcode"></i-input>
             </i-col>
         </Row>
-
+        <Row style="margin: 10px 0">
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;"><i style="color: red;display: inline-block;">*</i>&nbsp;是否通用 : &nbsp;</i-col>
+                <i-col span="20" style="height: 100%;line-height:32px;">
+                    <Checkbox v-model="isPublic">(选中为公用)</Checkbox>
+                </i-col>
+        </Row>
         <Row style="margin: 10px 0">
             <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">
                 <i style="color: red;display: inline-block;">*</i>&nbsp;指令名称 : &nbsp;</i-col>
@@ -66,11 +71,12 @@
                     cmddescr: null,
                     cmddescren: "",
                     cmddescrtw: "",
-
+                    common:0,
                     params: null,
                     paramsen: "",
                     paramstw: "",
                     previewObjList:[],
+                    isPublic:false,
                     lock:false,
                     kong:""
                 }
@@ -88,6 +94,13 @@
                     }else{
                         this.lock = false;
                     }
+                },
+                isPublic:function(){
+                    if(this.isPublic){
+                        this.common = 1;
+                    }else{
+                        this.common = 0;
+                    }
                 }
             },
             methods: {
@@ -99,18 +112,24 @@
                     });
                 },
                 handleEditDirective:function(){
-                    console.log(!this.cmdcode , !this.cmdname , !this.cmddescr , !this.lock);
+          
                     if( !this.cmdcode || !this.cmdname ){
                         this.$Message.error("code和指令名称是必填的");
                         return ;
+                    }else{
+
+                        if( typeof this.cmdcode !== 'number'){
+                            this.$Message.error("cmdcode 必须是数字");
+                            return;
+                        }
                     };
+
                     var me = this;
                     var url = myUrls.editCmd();
                     var data = {
                         cmdcode: this.cmdcode,
                         cmdname: this.cmdname,
-                        // cmddescr: this.cmddescr,
-                        // params : this.params,
+                        common:this.common,
                         paramsen: "",
                         paramstw: "",
                         cmddescren: "",
@@ -125,7 +144,7 @@
                     
                     if(this.params && this.lock ){
                         data.params = this.params;
-                    }
+                    };
 
                     utils.sendAjax(url, data, function (resp) {
                         if (resp.status == 0) {
@@ -168,10 +187,17 @@
                     
                     this.paramsen=data.paramsen;
                     this.paramstw=data.paramstw;
-                    
+                    this.common = data.common;
+
                     if(data.params!=""){
                         this.params=data.params;
                         this.lock = true;
+                    };
+
+                    if(data.common == 0){
+                        this.isPublic = false;
+                    }else{
+                        this.isPublic = true;
                     };
                 }
             },

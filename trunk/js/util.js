@@ -204,12 +204,12 @@ var expandCmdRow = Vue.component('expand-cmd-row');
 
 // 轨迹回放
 function playBack(deviceid) { 
-    window.open("playback.html?deviceid=" + deviceid,'resizable=1, menuBar=0, toolBar=0, scrollbars=yes, Status=yes, resizable=1');
-}
+    window.open("playback.html?deviceid=" + deviceid);
+};
 
 // 跟踪
 function trackMap(deviceid) { 
-    window.open("trackmap.html?deviceid=" + deviceid,'resizable=1, menuBar=0, toolBar=0, scrollbars=yes, Status=yes, resizable=1');
-}
+    window.open("trackmap.html?deviceid=" + deviceid);
+};
 
 

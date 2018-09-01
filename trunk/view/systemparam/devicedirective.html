@@ -38,6 +38,10 @@
                             key: 'cmdcode'
                         },
                         {
+                            title:'指令类型',
+                            key:'commonStr'
+                        },
+                        {
                             title: '操作',
                             key: 'action',
                             width: 150,
@@ -108,7 +112,15 @@
                     };
                     utils.sendAjax(url, data, function (resp) {
                         if (resp.status === 0) {
+                            resp.records.forEach(function (item) { 
+                                if(item.common == 0){
+                                    item.commonStr = "私有指令";
+                                }else{
+                                    item.commonStr = "公共指令";
+                                }
+                            })
                             me.tableData = resp.records;
+                            
                         }
                     });
                 }

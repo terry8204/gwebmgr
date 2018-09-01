@@ -9,12 +9,13 @@
         currentDeviceRecord:{},
     };
     // vuex store
-        vstore = new Vuex.Store({
+    vstore = new Vuex.Store({
         state:{
             userType:Cookies.get("userType"),
             deviceNames:{},
-            userTypeDescrList:null
-        },
+            userTypeDescrList:null,
+            allCmdList:[],  // queryCommonCmd
+        },  
         actions: {
             setDeviceNames:function (context,groups) {
                 context.commit('setDeviceNames',groups);
@@ -33,6 +34,16 @@
                         
                     }
                 });
+            },
+            setAllCmdList:function (context) { 
+                var url = myUrls.queryCommonCmd();
+                utils.sendAjax(url,{},function (resp) { 
+                    if(resp.status == 0){
+                        context.commit('setAllCmdList',resp.records);
+                    }else{
+                        alert("服务器错误!");
+                    }
+                })
             }
         },
         mutations: {
@@ -46,6 +57,12 @@
             },
             setUserTypeDescr:function (state,userTypeDescrList) { 
                 state.userTypeDescrList = userTypeDescrList;
+            },
+            setAllCmdList:function (state,cmdList) { 
+                cmdList.forEach(function (item) { 
+                    state.allCmdList.push(item);
+                });
+                console.log(state.allCmdList, '全部指令');
             }
         },
     });
@@ -1718,8 +1735,6 @@
                         "createtime": null
                     };
 
-                    console.log(this.disposeRowWaringObj);
-                    console.log(this.cmdRowWaringObj);
 
                 },
                 sendDisposeWaring:function () { 
@@ -1785,7 +1800,7 @@
                                 {
                                     title: '报警信息',
                                     key: 'strstate',
-                                    width: 360
+                                    width: 355
                                 },
                                 {
                                     title: '是否处理',
@@ -1894,7 +1909,8 @@ var vRoot = new Vue({
             systemParam : systemParam
         },
         mounted:function () {
-            this.$store.dispatch("setUserTypeDescr");
+            this.$store.dispatch("setUserTypeDescr"); 
+            this.$store.dispatch("setAllCmdList"); 
         }
     })
 })();

@@ -539,8 +539,8 @@ div.ivu-steps-head-inner .ivu-icon{
     }
     div.waring-wraper{
         position: absolute;
-        right: 10px;
-        bottom: 10px;
+        right: 0px;
+        bottom: 0px;
         background: #495060;
         z-index: 2;
         border: 1px solid #395060; 

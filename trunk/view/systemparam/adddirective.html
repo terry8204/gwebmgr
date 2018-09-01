@@ -2,55 +2,64 @@
 <div class="pd-10 system" id="add-directive-wraper">
     <h3 class="h3-title">添加指令</h3>
     <div style="width: 700px;margin: 0 auto;">
-        <Row>
-            <i-col span="4" style="height: 100%;text-align:right;line-height:32px;"><i style="color: red;display: inline-block;">*</i>&nbsp;指令Code : &nbsp;</i-col>
-            <i-col span="20">
-                <i-input v-model.trim.number="cmdcode"></i-input>
-            </i-col>
-        </Row>
 
-        <Row style="margin: 10px 0">
-            <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">
-                <i style="color: red;display: inline-block;">*</i>&nbsp;指令名称 : &nbsp;</i-col>
-            <i-col span="20">
-                <i-input v-model.trim="cmdname"></i-input>
-            </i-col>
-        </Row>
+            <Row>
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;"><i style="color: red;display: inline-block;">*</i>&nbsp;指令Code : &nbsp;</i-col>
+                <i-col span="20">
+                    <i-input v-model.trim.number="cmdcode"></i-input>
+                </i-col>
+            </Row>
+
+            <Row style="margin: 10px 0">
+                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;"><i style="color: red;display: inline-block;">*</i>&nbsp;是否通用 : &nbsp;</i-col>
+                    <i-col span="20" style="height: 100%;line-height:32px;">
+                        <Checkbox v-model="isPublic">(选中为公用)</Checkbox>
+                    </i-col>
+            </Row>
+
+            <Row style="margin: 10px 0">
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">
+                    <i style="color: red;display: inline-block;">*</i>&nbsp;指令名称 : &nbsp;</i-col>
+                <i-col span="20">
+                    <i-input v-model.trim="cmdname"></i-input>
+                </i-col>
+            </Row>
+            
+            <Row>
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">指令描述 : &nbsp;</i-col>
+                <i-col span="20">
+                    <i-input v-model.trim="cmddescr"></i-input>
+                </i-col>
+            </Row>
+
+            <Row style="margin: 10px 0">
+                <i-col span="4" style="height: 100%;text-align:right;line-height:100%;">
+                    参数 : &nbsp;</i-col>
+                <i-col span="20">
+                    <i-input v-model.trim="params" type="textarea" :rows="8" />
+                </i-col>
+            </Row>
+
+            <Row style="margin: 10px 0" v-show="lock">
+                <i-col span="4" style="height: 100%;text-align:right;line-height:100%;">预览 : &nbsp;</i-col>
+                <i-col span="20">
+                    <Row style="margin: 5px 0" v-for="item in previewObjList" :key="item.text">
+                        <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">
+                            {{item.text}} : &nbsp;
+                        </i-col>
+                        <i-col span="16">
+                            <i-input v-model.trim="kong"></i-input>    
+                        </i-col>
+                    </Row>
+                </i-col>
+            </Row>
         
-        <Row>
-            <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">指令描述 : &nbsp;</i-col>
-            <i-col span="20">
-                <i-input v-model.trim="cmddescr"></i-input>
-            </i-col>
-        </Row>
-
-        <Row style="margin: 10px 0">
-            <i-col span="4" style="height: 100%;text-align:right;line-height:100%;">
-                参数 : &nbsp;</i-col>
-            <i-col span="20">
-                <i-input v-model.trim="params" type="textarea" :rows="8" />
-            </i-col>
-        </Row>
-
-        <Row style="margin: 10px 0" v-show="lock">
-            <i-col span="4" style="height: 100%;text-align:right;line-height:100%;">预览 : &nbsp;</i-col>
-            <i-col span="20">
-                <Row style="margin: 5px 0" v-for="item in previewObjList" :key="item.text">
-                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">
-                        {{item.text}} : &nbsp;
-                    </i-col>
-                    <i-col span="16">
-                        <i-input v-model.trim="kong"></i-input>    
-                    </i-col>
-                </Row>
-            </i-col>
-        </Row>
-       
-        <Row style="margin: 10px 0">
-            <i-col span="10" :offset="8">
-                    <i-button icon="md-add" @click="handleAddDirective" style="width: 100%">添加</i-button>
-            </i-col>
-        </Row>
+            <Row style="margin: 10px 0">
+                <i-col span="10" :offset="8">
+                        <i-button icon="md-add" @click="handleAddDirective" style="width: 100%">添加</i-button>
+                </i-col>
+            </Row>
+   
     </div>
     <script>
         new Vue({
@@ -70,9 +79,11 @@
                     params: null,
                     paramsen: "",
                     paramstw: "",
+                    common:0,
                     previewObjList:[],
                     lock:false,
-                    kong:""
+                    isPublic:false,
+                    kong:"",
                 }
             },
             watch:{
@@ -88,22 +99,34 @@
                     }else{
                         this.lock = false;
                     }
+                },
+                isPublic:function(){
+                    if(this.isPublic){
+                        this.common = 1;
+                    }else{
+                        this.common = 0;
+                    }
                 }
             },
             methods: {
                 handleAddDirective:function(){
-                    console.log(!this.cmdcode , !this.cmdname , !this.cmddescr , !this.lock);
+ 
                     if( !this.cmdcode || !this.cmdname ){
                         this.$Message.error("code和指令名称是必填的");
                         return ;
+                    }else{
+                        if( typeof this.cmdcode !== 'number'){
+                            this.$Message.error("cmdcode 必须是数字");
+                            return;
+                        };
                     };
+                    
                     var me = this;
                     var url = myUrls.addCmd();
                     var data = {
                         cmdcode: this.cmdcode,
                         cmdname: this.cmdname,
-                        // cmddescr: this.cmddescr,
-                        // params : this.params,
+                        common:this.common,
                         paramsen: "",
                         paramstw: "",
                         cmddescren: "",

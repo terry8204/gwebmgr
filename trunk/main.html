@@ -189,7 +189,16 @@
                                             <li><Icon type="ios-create"/><p>编辑</p><li>
                                             <li @click="playBack(device.deviceid)"><Icon type="md-planet"/><p>轨迹</p><li>
                                             <li @click="trackMap(device.deviceid)"><Icon type="md-person"/><p>跟踪</p><li> 
-                                            <li @click="more"><Icon type="ios-list"/><p>更多</p><li> 
+                                            <li>
+                                                <Dropdown transfer placement="right-start">
+                                                    <Icon type="ios-list"/><p>更多</p>
+                                                    <i-dropdown-menu slot="list">
+                                                        <DropdownItem name="name">设备指令</DropdownItem>
+                                                        <DropdownItem name="name1">原地设防</DropdownItem>
+                                                        <DropdownItem name="name2">设备报表</DropdownItem>
+                                                    </i-dropdown-menu>
+                                                </Dropdown>
+                                            <li> 
                                         </ul>
                                     </div>
                                 </div>

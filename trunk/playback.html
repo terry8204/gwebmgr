@@ -432,7 +432,7 @@
                             var firstRecord = this.records[0];
                             var lableOptions = {
                                 position : firstRecord.point,   
-	                            offset   : new BMap.Size(30, -42)
+	                            offset   : new BMap.Size(30, -60)
                             };
                             this.carMarker = new BMap.Marker(firstRecord.point,{icon:carIcon});
                             this.map.addOverlay(this.carMarker);
@@ -490,7 +490,8 @@
                             var sContent = '<div>' +
                                 '<p> 设备ID: ' +info.deviceid+'</p>' +
                                 '<p> 经纬度: ' +info.callon+","+ info.callat +'</p>' +
-                                '<p> 最后时间: ' +DateFormat.longToDateTimeStr(info.arrivedtime,0)+'</p>' +
+                                '<p> 角度: ' + utils.getAngle(info.course) +'</p>' +
+                                '<p> 最后时间: ' +DateFormat.longToDateTimeStr(info.arrivedtime,0)+'</p>' +                                
                                 '<p class="last-address"> 详细地址: '+address+'</p></div><div class="guiji"><span class="guiji_sanjiao"></span><span class="guiji_sanjiao_2"></span></div>';
                             return sContent;
                         },

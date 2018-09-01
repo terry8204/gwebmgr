@@ -143,6 +143,7 @@
                             var address = this.getAddress(info);
                             var sContent = '<div>' +
                                 '<p> 设备ID: ' +info.deviceid+'</p>' +
+                                '<p> 角度: ' + utils.getAngle(info.course) +'</p>' +
                                 '<p> 经纬度: ' +info.callon+","+ info.callat +'</p>' +
                                 '<p> 最后时间: ' +DateFormat.longToDateTimeStr(info.arrivedtime,0)+'</p>' +
                                 '<p class="last-address"> 详细地址: '+address+'</p></div><div class="guiji"><span class="guiji_sanjiao"></span><span class="guiji_sanjiao_2"></span></div>';
@@ -223,24 +224,26 @@
                         doLastPosition:function (record) {
                             if(record){
                                 this.lastTrack = record;
-                                var carIcon = this.getDirectionIcon(this.getAge(record.course));   
+                                var carIcon = this.getDirectionIcon(this.getAge(record.course)); 
                                 var baidu_lng_lat = wgs84tobd09(record.callon,record.callat);
                                 var point = new BMap.Point(baidu_lng_lat[0],baidu_lng_lat[1]);
                                     record.point = point;
                                 if(this.tracks.length){
                                     var prveTrack = this.tracks[this.tracks.length-1];
-                                    var rice = this.map.getDistance(prveTrack.point,point);
+                                    var rice = this.map.getDistance(prveTrack.point,point); 
                                     if(rice > 10){
                                         this.carMarker.setPosition(point);
                                         this.tracks.push(record);
                                         this.map.setCenter(point);
                                     };
+                                    this.carMarker.setIcon(carIcon);
                                     this.markerLabel.setContent(this.getLableContent(record));
                                 }else{
                                     this.tracks.push(record);
+                                      
                                     var lableOptions = {
                                             position : point,   
-                                            offset   : new BMap.Size(30, -42)
+                                            offset   : new BMap.Size(30, -60)
                                         };                                   
                                     this.markerLabel = new BMap.Label(this.getLableContent(record),lableOptions);
                                     this.carMarker = new BMap.Marker(point,{icon:carIcon});    
