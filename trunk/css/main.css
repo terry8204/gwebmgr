@@ -178,22 +178,38 @@ div.ivu-steps-head-inner .ivu-icon{
         box-sizing: border-box;
         background: #EAEEF0;
     }
+    div.map_manager{
+        position: absolute;
+        top: 0px;
+        left: 10px;
+        right: 10px;
+        height: 35px;
+        background: #fff;
+    }
+    #map{
+        position: absolute;
+        left: 10px;
+        top: 35px;
+        right: 10px;
+        bottom: 10px;
+    }
+    ul.ul-manager-wraper{
+        overflow: hidden;
+        float: right;
+        height: 35px;
+        padding-right: 10px;
+    }
+    ul.ul-manager-wraper li {
+        float: left;
+        height: 35px;      
+    }
+    ul.ul-manager-wraper li.gongju{
+        padding: 1.5px 5px;
+    }
     p.operation span{
         margin-right:  5px;
     }
-    .interval{
-        position: absolute;
-        left: 20px;
-        bottom: 20px;
-        width: 40px;
-        height: 40px;
-        background: #e4393c;
-        border-radius:50%;
-        color: #fff;
-        line-height:  40px;
-        text-align: center;
-        font-size: 16px;
-    }
+
  /* 监控结束 */
 
 

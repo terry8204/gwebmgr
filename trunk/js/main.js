@@ -239,7 +239,8 @@
                 offlineDevCount:0,       // 离线设备个数
                 isMoveTriggerEvent:true, // 地图移动是否触发事件
                 intervalInstanse:null,    // 定时器实例
-                selectedDevObj:{},
+                selectedDevObj:{},        // 选中的设备信息
+                myDis:null                // 测距实例
             }
         },
         methods: {
@@ -305,6 +306,11 @@
                     };
                 });
         
+            },
+            openDistance:function () { 
+                if(this.myDis!=null) {this.myDis.close();}
+                this.myDis = new BMapLib.DistanceTool(this.map);
+                this.myDis.open(); //开启鼠标测距
             },
             getThePointOfTheCurrentWindow:function () {
                 var bounds = this.map.getBounds();
