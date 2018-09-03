@@ -22,7 +22,7 @@ var utils = {
                     new Vue().$Loading.error();
                 },
                 complete:function(){
-                   
+                //    console.log('完成', '')
                 }
             })
     },

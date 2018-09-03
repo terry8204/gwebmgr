@@ -186,6 +186,7 @@ div.ivu-steps-head-inner .ivu-icon{
         height: 35px;
         background: #fff;
     }
+     
     #map{
         position: absolute;
         left: 10px;
@@ -205,6 +206,9 @@ div.ivu-steps-head-inner .ivu-icon{
     }
     ul.ul-manager-wraper li.gongju{
         padding: 1.5px 5px;
+    }
+    ul.ul-manager-wraper li.gongju .ivu-btn::focus{
+        outline: none;
     }
     p.operation span{
         margin-right:  5px;

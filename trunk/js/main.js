@@ -36,10 +36,15 @@
                 });
             },
             setAllCmdList:function (context) { 
-                var url = myUrls.queryCommonCmd();
-                utils.sendAjax(url,{},function (resp) { 
+                var commonDeviceUrl = myUrls.queryCommonCmd();
+                var hadDeviceUrl = myUrls.queryHadDeviceCmdByUser();
+                utils.sendAjax(commonDeviceUrl,{},function (resp) { 
                     if(resp.status == 0){
-                        context.commit('setAllCmdList',resp.records);
+                        var commonCmd = resp.records;            
+                        utils.sendAjax(hadDeviceUrl,{username:Cookies.get("name")},function (resp) { 
+                            var cmdList = commonCmd.concat(resp.records);
+                                context.commit('setAllCmdList',cmdList);
+                        })
                     }else{
                         alert("服务器错误!");
                     }
@@ -1382,7 +1387,7 @@
         beforeDestroy:function () {
             store.currentDeviceId = null;
             store.currentDeviceRecord = {};
-            this.$store.state.deviceNames = {};
+            // this.$store.state.deviceNames = {};
             clearInterval(this.intervalInstanse);
         }
     }
@@ -1589,11 +1594,12 @@
                     waringRecords:[],
                     overdueDevice:[],
                     alarmTypeList:[],
+                    alarmCmdList:[[]],
                     isWaring:false,
                     interval:5000,
                     disposeRowWaringObj:{},
                     cmdRowWaringObj:{},
-                    disposeAlarm:"解除报警"
+                    disposeAlarm:""
                 }
             },
             computed:{
@@ -1615,6 +1621,33 @@
                         this.isWaring = false;
                     }
                 },
+                disposeModal:function () { 
+                    if(this.disposeModal){
+                        var me = this;
+                        var devicetype = this.cmdRowWaringObj.devicetype;
+                        var cmdList =  this.$store.state.allCmdList;
+                        var beforeCmdList = []; 
+                            cmdList.forEach(function (item,index) { 
+                                if(!item.devicetype){
+                                    beforeCmdList.push(item);
+                                }else{
+                                    if(item.devicetype == devicetype){
+                                        beforeCmdList.push(item);
+                                        me.disposeAlarm = item.cmdcode;
+                                    }
+                                }
+                            });
+
+                        var twoArr = [];
+                        beforeCmdList.forEach(function (item,index) { 
+                            if(index%4 == 0){
+                                twoArr.push([]);
+                            };
+                            twoArr[twoArr.length-1].push(item);
+                        });    
+                        this.alarmCmdList = twoArr;
+                    }
+                }
             },    
             methods: {
                 changeLargen:function () { 
@@ -1729,13 +1762,15 @@
                     this.waringModal = false;
                 },
                 showDisposeModalFrame:function (param) {
-                    this.disposeModal = true;
                     this.waringRowIndex = param.index;
+                    var deviceNames = this.$store.state.deviceNames;
+                    console.log(deviceNames);
                     var row = param.row;
-                    var devicetype = this.$store.state.deviceNames[row.deviceid].devicetype;
+                    var deviceid = row.deviceid;
+                    var devicetype = deviceNames[deviceid].devicetype;
                     
                     this.cmdRowWaringObj = {
-                        "deviceid":row.deviceid,
+                        "deviceid":deviceid,
                         "arrivedtime": row.arrivedtime,
                         "devicetype":devicetype,
                         "cmdcode": 1,
@@ -1746,32 +1781,33 @@
                         "disposecontent": "解除报警",
                         "arrivedtime": row.arrivedtime,
                         "disposeway": "解除报警",
-                        "deviceid": row.deviceid,
+                        "deviceid": deviceid,
                         "cmdcode": 0,
                         "createtime": null
                     };
 
-
+                    this.disposeModal = true;
                 },
                 sendDisposeWaring:function () { 
-                    var me = this;
-                    var sendCmdUrl = myUrls.sendCmd();
-                    var disposeAlarmUrl = myUrls.disposeAlarm()
-                    utils.sendAjax(sendCmdUrl,this.cmdRowWaringObj,function (resp) { 
-                        if(resp.status == 0){
-                            utils.sendAjax(disposeAlarmUrl,me.disposeRowWaringObj,function (resp) {
-                                if(resp.status === 0){
-                                    me.$Message.success("解除成功");
-                                    me.waringRecords[me.waringRowIndex].isdispose = "已处理";  
-                                    me.disposeModal = false;
-                                }else{
-                                    me.$Message.error("解除失败");
-                                }
-                            })
-                        }else{
-                            me.$Message.error(resp.cause);
-                        }
-                    });
+                    console.log('disposeAlarm', this.disposeAlarm );
+                    // var me = this;
+                    // var sendCmdUrl = myUrls.sendCmd();
+                    // var disposeAlarmUrl = myUrls.disposeAlarm()
+                    // utils.sendAjax(sendCmdUrl,this.cmdRowWaringObj,function (resp) { 
+                    //     if(resp.status == 0){
+                    //         utils.sendAjax(disposeAlarmUrl,me.disposeRowWaringObj,function (resp) {
+                    //             if(resp.status === 0){
+                    //                 me.$Message.success("解除成功");
+                    //                 me.waringRecords[me.waringRowIndex].isdispose = "已处理";  
+                    //                 me.disposeModal = false;
+                    //             }else{
+                    //                 me.$Message.error("解除失败");
+                    //             }
+                    //         })
+                    //     }else{
+                    //         me.$Message.error(resp.cause);
+                    //     }
+                    // });
                 },
                 queryAlarmDescr:function () { 
                     var me = this;
@@ -1780,7 +1816,6 @@
                         if(resp.status == 0){
                             var records = resp.records;
                             records.forEach(function (item,index){ 
-                                var idx = parseFloat(index/3) 
                                 if(index%3 == 0){
                                     var newArr = [];
                                     newArr.push(item)
@@ -1843,7 +1878,7 @@
                                                         me.$emit("showdisposemodal",params);
                                                     }
                                                 }
-                                            }, '解除报警'),
+                                            }, '报警处理'),
                                         ]);
                                     }
                                 }

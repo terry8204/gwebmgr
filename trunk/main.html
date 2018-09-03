@@ -380,7 +380,7 @@
             </Modal>
 
             <!-- 接触报警模态 -->
-            <Modal v-model="disposeModal" width="400" class-name="vertical-center-modal">
+            <Modal v-model="disposeModal" width="460" class-name="vertical-center-modal">
                 <p slot="header" style="color:#f60;text-align:center">
                     <Icon type="information-circled"></Icon>
                     <span>解除报警</span>
@@ -388,11 +388,12 @@
                 <div>
                     <Row style="margin: 10px 0">
                         <i-col span="22" :offset="2">
-                            <RadioGroup v-model="disposeAlarm">
-                                <Radio label="下发文本"></Radio>
-                                <Radio label="下发拍照"></Radio>
-                                <Radio label="车辆监听"></Radio>
-                                <Radio label="解除报警"></Radio>
+                            <RadioGroup v-model="disposeAlarm"  style="width:100%">
+                                <Row v-for="(item,index) in alarmCmdList" :key="index" style="width:100%">
+                                    <i-col v-for="(cmd,index) in item" :key="cmd.cmdname" :span="6">
+                                        <Radio :label="cmd.cmdcode">{{cmd.cmdname}}</Radio>
+                                    </i-col>
+                                </Row> 
                             </RadioGroup>
                         </i-col>
                     </Row>
