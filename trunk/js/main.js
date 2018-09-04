@@ -7,6 +7,7 @@
         intervalTime:10,
         currentDeviceId:null,
         currentDeviceRecord:{},
+        paramsCmdCodeArr : []        // 接触报警信息的传参顺序
     };
     // vuex store
     vstore = new Vuex.Store({
@@ -257,7 +258,7 @@
                 this.map.disableDoubleClickZoom();
                 this.map.centerAndZoom(new BMap.Point(108.0017245,35.926895),5);
                 // var top_left_control = new BMap.ScaleControl({anchor: BMAP_ANCHOR_BOTTOM_LEFT});
-                var top_left_control = new BMap.ScaleControl({anchor: BMAP_ANCHOR_TOP_LEFT});// 左上角，添加比例尺
+                var top_left_control = new BMap.ScaleControl({anchor: BMAP_ANCHOR_BOTTOM_LEFT});// 左上角，添加比例尺
 	            var top_left_navigation = new BMap.NavigationControl();  //左上角，添加默认缩放平移控件
                 this.map.addControl(top_left_control);
                 this.map.addControl(top_left_navigation);
@@ -297,7 +298,7 @@
                                 me.addOverlayToMap(filterArr);
                             }else{
                                 me.addOverlayToMap(pointArr); 
-                            }
+                            };
                             setTimeout(function () {
                                 me.openDevInfoWindow();
                             },400);
@@ -323,7 +324,7 @@
                     });
             },
             openDistance:function () { 
-                if(this.myDis!=null) {this.myDis.close();}
+                if(this.myDis!=null) {this.myDis.close()};
                 this.myDis = new BMapLib.DistanceTool(this.map);
                 this.myDis.open(); //开启鼠标测距
             },
@@ -612,7 +613,7 @@
                         }else{
                              point = record.point;
                         };
-                        var isOnline = (Date.now() - record.arrivedtime) < me.offlineTime ? true : false ;
+                        // var isOnline = (Date.now() - record.arrivedtime) < me.offlineTime ? true : false ;
                         
                         var marker = new BMap.Marker(point);
                             marker.setIcon(record.icon);
@@ -1115,7 +1116,7 @@
                         };
                         if(!isOnline){                           
                             groupObj.children.push(deviceObj);
-                        }
+                        };
                     });
                     if(groupObj.children.length){
                         groupObj.title += "("+ groupObj.children.length+")";
@@ -1355,9 +1356,7 @@
         },
         mounted:function () {
             var me = this;
-            // var isShowCompany = Cookies.get("isShowCompany");
             var havecompany = this.isShowConpanyName == true ? 1 : 0;
-            // this.isShowConpanyName = store.navState;
             this.intervalTime      = Number(store.intervalTime);
             this.initMap();
             this.getMonitorListByUser(havecompany,function (resp) {
@@ -1375,6 +1374,7 @@
                     if(resp.records){
                         if(resp.records.length > 300){
                             var filterArr =  me.filterReocrds(range,resp.records);
+                            me.addOverlayToMap(filterArr);
                         }else{
                             me.addOverlayToMap(resp.records);
                         }  
@@ -1599,7 +1599,11 @@
                     interval:5000,
                     disposeRowWaringObj:{},
                     cmdRowWaringObj:{},
-                    disposeAlarm:""
+                    currentDevTypeCmdList:[],
+                    disposeAlarm:"",
+                    params:"", //参数,
+                    paramsInputList:[],
+                    paramsInputObj:{}
                 }
             },
             computed:{
@@ -1627,17 +1631,16 @@
                         var devicetype = this.cmdRowWaringObj.devicetype;
                         var cmdList =  this.$store.state.allCmdList;
                         var beforeCmdList = []; 
-                            cmdList.forEach(function (item,index) { 
+                            cmdList.forEach(function (item) { 
                                 if(!item.devicetype){
                                     beforeCmdList.push(item);
                                 }else{
                                     if(item.devicetype == devicetype){
                                         beforeCmdList.push(item);
-                                        me.disposeAlarm = item.cmdcode;
-                                    }
+                                    };
                                 }
                             });
-
+                            me.currentDevTypeCmdList = beforeCmdList;
                         var twoArr = [];
                         beforeCmdList.forEach(function (item,index) { 
                             if(index%4 == 0){
@@ -1646,10 +1649,48 @@
                             twoArr[twoArr.length-1].push(item);
                         });    
                         this.alarmCmdList = twoArr;
+
+                        me.disposeAlarm = beforeCmdList[beforeCmdList.length-1].cmdcode ;   
+                        me.params = beforeCmdList[beforeCmdList.length-1].params; 
+                    }
+                },
+                disposeAlarm:function () {      
+                    var me = this;
+                    this.currentDevTypeCmdList.forEach(function (item) { 
+                        if(me.disposeAlarm == item.cmdcode){
+                            me.params = item.params;
+                        }
+                    });
+                },
+                params:function () { 
+                    console.log('params', this.params);
+                    this.paramsInputList = [];
+                    this.paramsInputObj = {};
+                    if(this.params){
+                        var params = "<params>"+ this.params +"</params>";
+                        var parser=new DOMParser(); 
+                        var xmlDoc=parser.parseFromString(params,"text/xml"); 
+                        this.parseXML(xmlDoc);
                     }
                 }
             },    
             methods: {
+                parseXML:function(xmlDoc){
+                    store.paramsCmdCodeArr = [];
+                    var parent =  xmlDoc.children[0];
+                    var children = parent.children;
+                    for (var i = 0; i < children.length; i++) {
+                        var item = children[i]
+                        var text = item.innerHTML;
+                        var type = item.getAttribute("type");
+                        if (type && text) {
+                            store.paramsCmdCodeArr.push(type);
+                            this.paramsInputObj[type] = "";
+                            this.paramsInputList.push({ type: type, text: text });
+                            
+                        }
+                    } 
+                },
                 changeLargen:function () { 
                     this.isLargen = !this.isLargen;
                     this.isWaring = false;
@@ -1764,7 +1805,7 @@
                 showDisposeModalFrame:function (param) {
                     this.waringRowIndex = param.index;
                     var deviceNames = this.$store.state.deviceNames;
-                    console.log(deviceNames);
+                
                     var row = param.row;
                     var deviceid = row.deviceid;
                     var devicetype = deviceNames[deviceid].devicetype;
@@ -1774,9 +1815,12 @@
                         "arrivedtime": row.arrivedtime,
                         "devicetype":devicetype,
                         "cmdcode": 1,
-                        "cmdpwd": null
+                        "cmdpwd": null,
+                        "params" :null,
+                        "messageId": 0,
+                        "messageSerialNo": 0,
                     }; 
-
+                    
                     this.disposeRowWaringObj = {
                         "disposecontent": "解除报警",
                         "arrivedtime": row.arrivedtime,
@@ -1789,25 +1833,45 @@
                     this.disposeModal = true;
                 },
                 sendDisposeWaring:function () { 
-                    console.log('disposeAlarm', this.disposeAlarm );
-                    // var me = this;
-                    // var sendCmdUrl = myUrls.sendCmd();
-                    // var disposeAlarmUrl = myUrls.disposeAlarm()
-                    // utils.sendAjax(sendCmdUrl,this.cmdRowWaringObj,function (resp) { 
-                    //     if(resp.status == 0){
-                    //         utils.sendAjax(disposeAlarmUrl,me.disposeRowWaringObj,function (resp) {
-                    //             if(resp.status === 0){
-                    //                 me.$Message.success("解除成功");
-                    //                 me.waringRecords[me.waringRowIndex].isdispose = "已处理";  
-                    //                 me.disposeModal = false;
-                    //             }else{
-                    //                 me.$Message.error("解除失败");
-                    //             }
-                    //         })
-                    //     }else{
-                    //         me.$Message.error(resp.cause);
-                    //     }
-                    // });
+                    var me = this;
+                    var sendCmdUrl = myUrls.sendCmd();
+                    var disposeAlarmUrl = myUrls.disposeAlarm();
+                    var isHasParams = true;
+                    var paramsArr = [];
+                    var paramsInputObj = this.paramsInputObj;
+
+                        store.paramsCmdCodeArr.forEach(function (cmdCode) { 
+                            var val = paramsInputObj[cmdCode];
+                            paramsArr.push(val);
+                            if(val == ""){
+                                isHasParams = false;
+                            }
+                        });
+
+                        if(!isHasParams){
+                            this.$Message.error("所有参数都是必填的");
+                            return;
+                        };
+
+                        if(this.params && paramsArr.length){
+                            this.cmdRowWaringObj.params = paramsArr;
+                        }
+                    
+                    utils.sendAjax(sendCmdUrl,this.cmdRowWaringObj,function (resp) { 
+                        if(resp.status == 0){
+                            utils.sendAjax(disposeAlarmUrl,me.disposeRowWaringObj,function (resp) {
+                                if(resp.status === 0){
+                                    me.$Message.success("解除成功");
+                                    me.waringRecords[me.waringRowIndex].isdispose = "已处理";  
+                                    me.disposeModal = false;
+                                }else{
+                                    me.$Message.error("解除失败");
+                                }
+                            })
+                        }else{
+                            me.$Message.error(resp.cause);
+                        }
+                    });
                 },
                 queryAlarmDescr:function () { 
                     var me = this;
@@ -1924,7 +1988,7 @@
                 this.settingCheckboxObj();
                 this.pushOverdueDeviceInfo();
                 this.timingRequestMsg();
-                this.queryAlarmDescr()
+                this.queryAlarmDescr();
             }
         };
 

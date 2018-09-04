@@ -542,9 +542,9 @@ div.ivu-steps-head-inner .ivu-icon{
     /* 报警css开始 */
     @-webkit-keyframes twinkling {
         0% {
-        opacity:1;
-        filter:alpha(opacity=100);
-        -webkit-transform:scale(1);
+            opacity:1;
+            filter:alpha(opacity=100);
+            -webkit-transform:scale(1);
         }
         50% {
             opacity:0.5;
