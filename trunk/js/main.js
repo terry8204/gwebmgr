@@ -1663,7 +1663,6 @@
                     });
                 },
                 params:function () { 
-                    console.log('params', this.params);
                     this.paramsInputList = [];
                     this.paramsInputObj = {};
                     if(this.params){
