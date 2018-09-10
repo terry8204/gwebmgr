@@ -1667,7 +1667,7 @@
                         var parser=new DOMParser(); 
                         var xmlDoc=parser.parseFromString(params,"text/xml"); 
                         this.parseXML(xmlDoc);
-                    }
+                    };
                 }
             },    
             methods: {
@@ -1683,7 +1683,6 @@
                             store.paramsCmdCodeArr.push(type);
                             this.paramsInputObj[type] = "";
                             this.paramsInputList.push({ type: type, text: text });
-                            
                         }
                     } 
                 },

@@ -50,6 +50,8 @@
     var i18n = new VueI18n({
         locale: 'zhCHT', 
         messages:messages
-    })
+    });
+
     win.i18n = i18n;
+    
 })(this)
