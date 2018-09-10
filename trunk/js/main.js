@@ -289,7 +289,7 @@
 
                 this.map.addEventListener("zoomend",function (ev) {  
                         // me.map.clearOverlays();
-                        me.clearMarkerOverlays();
+                        // me.clearMarkerOverlays();
                         var pointArr = me.getThePointOfTheCurrentWindow();
                         var range = utils.getDisplayRange(me.map.getZoom());
                         if(pointArr.length){
@@ -318,7 +318,7 @@
                 var me = this;
                 var mks = me.map.getOverlays();
                     mks.forEach(function (item) { 
-                        if(item.deviceid){
+                        if(item.deviceid != undefined){
                             me.map.removeOverlay(item);
                         }
                     });
@@ -716,10 +716,7 @@
                     '<p class="operation">'+
                         '<span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="playBack('+info.deviceid+')">轨迹</span>'+
                         '<span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="trackMap('+info.deviceid+')">跟踪</span> </p></div>';
-                    var opts = {
-                        width:300,
-                    };
-                    return new BMap.InfoWindow(sContent,opts);
+                    return new BMap.InfoWindow(sContent,{width:350});
                 } catch (error) {
                     console.log("get不到info.deviceid --- ") 
                     console.log(info) 
