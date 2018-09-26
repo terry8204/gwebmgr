@@ -130,7 +130,7 @@ var utils = {
     var pathname = location.pathname
     var imgPath = ''
     if (pathname.indexOf('WaiQinOpenApi') != -1) {
-      imgPath = 'WaiQinOpenApi/images/carstate'
+      imgPath = myUrls.host + 'images/carstate'
     } else {
       imgPath = '../images/carstate'
     }
