@@ -431,7 +431,7 @@
             //     { imageOffset: new BMap.Size(0, 0) }
             //   )
             // }
-            iconState = me.getDirectionImage(isOnline, angle)
+            iconState = utils.getDirectionImage(isOnline, angle)
             record.icon = iconState
             store.currentDeviceId = deviceid
             store.currentDeviceRecord = record
@@ -443,21 +443,6 @@
             me.$Message.error('该设备没有上报位置信息')
           }
         })
-      },
-      getDirectionImage: function(isOnline, angle) {
-        var pathname = location.pathname
-        var imgPath = ''
-        if (pathname.indexOf('WaiQinOpenApi') != -1) {
-          imgPath = 'WaiQinOpenApi/images/carstate'
-        } else {
-          imgPath = '../images/carstate'
-        }
-        if (isOnline) {
-          imgPath += '/green_' + angle + '.png'
-        } else {
-          imgPath += '/gray_' + angle + '.png'
-        }
-        return imgPath
       },
       updateRecords: function(record) {
         var records = this.records
