@@ -431,7 +431,13 @@
             //     { imageOffset: new BMap.Size(0, 0) }
             //   )
             // }
-            iconState = utils.getDirectionImage(isOnline, angle)
+
+            iconState = new BMap.Icon(
+              utils.getDirectionImage(isOnline, angle),
+              new BMap.Size(16, 16),
+              { imageOffset: new BMap.Size(0, 0) }
+            )
+
             record.icon = iconState
             store.currentDeviceId = deviceid
             store.currentDeviceRecord = record
@@ -1275,7 +1281,13 @@
                     //     { imageOffset: new BMap.Size(0, 0) }
                     //   )
                     // }
-                    iconState = utils.getDirectionImage(isOnline, angle)
+
+                    iconState = new BMap.Icon(
+                      utils.getDirectionImage(isOnline, angle),
+                      new BMap.Size(16, 16),
+                      { imageOffset: new BMap.Size(0, 0) }
+                    )
+
                     record.icon = iconState
                     var lng_lat = wgs84tobd09(record.callon, record.callat)
                     record.point = new BMap.Point(lng_lat[0], lng_lat[1])
@@ -1336,7 +1348,13 @@
           //       { imageOffset: new BMap.Size(0, 0) }
           //     )
           //   }
-          iconState = utils.getDirectionImage(isOnline, angle)
+
+          iconState = new BMap.Icon(
+            utils.getDirectionImage(isOnline, angle),
+            new BMap.Size(16, 16),
+            { imageOffset: new BMap.Size(0, 0) }
+          )
+
           record.icon = iconState
         })
       }
