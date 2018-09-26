@@ -1262,19 +1262,20 @@
                         : false
                     var iconState = null
                     var angle = utils.getAngle(record.course)
-                    if (isOnline) {
-                      iconState = new BMap.Icon(
-                        '../images/carstate/green_' + angle + '.png',
-                        new BMap.Size(16, 16),
-                        { imageOffset: new BMap.Size(0, 0) }
-                      )
-                    } else {
-                      iconState = new BMap.Icon(
-                        '../images/carstate/gray_' + angle + '.png',
-                        new BMap.Size(16, 16),
-                        { imageOffset: new BMap.Size(0, 0) }
-                      )
-                    }
+                    // if (isOnline) {
+                    //   iconState = new BMap.Icon(
+                    //     '../images/carstate/green_' + angle + '.png',
+                    //     new BMap.Size(16, 16),
+                    //     { imageOffset: new BMap.Size(0, 0) }
+                    //   )
+                    // } else {
+                    //   iconState = new BMap.Icon(
+                    //     '../images/carstate/gray_' + angle + '.png',
+                    //     new BMap.Size(16, 16),
+                    //     { imageOffset: new BMap.Size(0, 0) }
+                    //   )
+                    // }
+                    iconState = utils.getDirectionImage(isOnline, angle)
                     record.icon = iconState
                     var lng_lat = wgs84tobd09(record.callon, record.callat)
                     record.point = new BMap.Point(lng_lat[0], lng_lat[1])
@@ -1322,19 +1323,20 @@
           var iconState = null
           // var angle = directionList[parseInt(Math.random()*8)];
           var angle = utils.getAngle(record.course)
-          if (isOnline) {
-            iconState = new BMap.Icon(
-              '../images/carstate/green_' + angle + '.png',
-              new BMap.Size(16, 16),
-              { imageOffset: new BMap.Size(0, 0) }
-            )
-          } else {
-            iconState = new BMap.Icon(
-              '../images/carstate/gray_' + angle + '.png',
-              new BMap.Size(16, 16),
-              { imageOffset: new BMap.Size(0, 0) }
-            )
-          }
+          //   if (isOnline) {
+          //     iconState = new BMap.Icon(
+          //       '../images/carstate/green_' + angle + '.png',
+          //       new BMap.Size(16, 16),
+          //       { imageOffset: new BMap.Size(0, 0) }
+          //     )
+          //   } else {
+          //     iconState = new BMap.Icon(
+          //       '../images/carstate/gray_' + angle + '.png',
+          //       new BMap.Size(16, 16),
+          //       { imageOffset: new BMap.Size(0, 0) }
+          //     )
+          //   }
+          iconState = utils.getDirectionImage(isOnline, angle)
           record.icon = iconState
         })
       }
