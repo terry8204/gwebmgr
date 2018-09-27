@@ -129,7 +129,7 @@ var utils = {
   getDirectionImage: function(isOnline, angle) {
     var pathname = location.pathname
     var imgPath = ''
-    if (pathname.indexOf('WaiQinOpenApi') != -1) {
+    if (pathname.indexOf('gpsserver') != -1) {
       imgPath = myUrls.host + 'images/carstate'
     } else {
       imgPath = '../images/carstate'

@@ -3,8 +3,8 @@
  */
 var pathname = location.pathname
 var host = null
-if (pathname.indexOf('WaiQinOpenApi') != -1) {
-  host = 'http://localhost:8080/WaiQinOpenApi/'
+if (pathname.indexOf('gpsserver') != -1) {
+  host = 'http://localhost:8080/gpsserver/'
 } else {
   host = 'http://112.74.186.169/'
 }

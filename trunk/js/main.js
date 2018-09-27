@@ -418,19 +418,6 @@
               Date.now() - record.arrivedtime < me.offlineTime ? true : false
             var iconState = null
             var angle = utils.getAngle(record.course)
-            // if (isOnline) {
-            //   iconState = new BMap.Icon(
-            //     '../images/carstate/green_' + angle + '.png',
-            //     new BMap.Size(16, 16),
-            //     { imageOffset: new BMap.Size(0, 0) }
-            //   )
-            // } else {
-            //   iconState = new BMap.Icon(
-            //     '../images/carstate/gray_' + angle + '.png',
-            //     new BMap.Size(16, 16),
-            //     { imageOffset: new BMap.Size(0, 0) }
-            //   )
-            // }
 
             iconState = new BMap.Icon(
               utils.getDirectionImage(isOnline, angle),
@@ -1268,19 +1255,6 @@
                         : false
                     var iconState = null
                     var angle = utils.getAngle(record.course)
-                    // if (isOnline) {
-                    //   iconState = new BMap.Icon(
-                    //     '../images/carstate/green_' + angle + '.png',
-                    //     new BMap.Size(16, 16),
-                    //     { imageOffset: new BMap.Size(0, 0) }
-                    //   )
-                    // } else {
-                    //   iconState = new BMap.Icon(
-                    //     '../images/carstate/gray_' + angle + '.png',
-                    //     new BMap.Size(16, 16),
-                    //     { imageOffset: new BMap.Size(0, 0) }
-                    //   )
-                    // }
 
                     iconState = new BMap.Icon(
                       utils.getDirectionImage(isOnline, angle),
@@ -1333,21 +1307,8 @@
           var isOnline =
             Date.now() - record.arrivedtime < me.offlineTime ? true : false
           var iconState = null
-          // var angle = directionList[parseInt(Math.random()*8)];
+
           var angle = utils.getAngle(record.course)
-          //   if (isOnline) {
-          //     iconState = new BMap.Icon(
-          //       '../images/carstate/green_' + angle + '.png',
-          //       new BMap.Size(16, 16),
-          //       { imageOffset: new BMap.Size(0, 0) }
-          //     )
-          //   } else {
-          //     iconState = new BMap.Icon(
-          //       '../images/carstate/gray_' + angle + '.png',
-          //       new BMap.Size(16, 16),
-          //       { imageOffset: new BMap.Size(0, 0) }
-          //     )
-          //   }
 
           iconState = new BMap.Icon(
             utils.getDirectionImage(isOnline, angle),
@@ -1582,8 +1543,14 @@
       },
       loadPage: function(page) {
         var me = this
+        var pagePath = null
+        if (myUrls.host.indexOf('gpsserver') != -1) {
+          pagePath = myUrls.host + 'view/manager/' + page
+        } else {
+          pagePath = '../view/manager/' + page
+        }
         this.$Loading.start()
-        $('#mar-view').load('../view/manager/' + page, function() {
+        $('#mar-view').load(pagePath, function() {
           me.$Loading.finish()
         })
       }
@@ -1664,15 +1631,21 @@
       },
       loadPage: function(page) {
         var me = this
+        var pagePath = null
+        if (myUrls.host.indexOf('gpsserver') != -1) {
+          pagePath = myUrls.host + 'view/systemparam/' + page
+        } else {
+          pagePath = '../view/systemparam/' + page
+        }
         this.$Loading.start()
-        $('#system-view').load('../view/systemparam/' + page, function() {
+        $('#system-view').load(pagePath, function() {
           me.$Loading.finish()
         })
       }
     }
   }
 
-  // 报警组建
+  // 报警组件
   var waringComponent = {
     template: document.getElementById('waring-template'),
     data: function() {
