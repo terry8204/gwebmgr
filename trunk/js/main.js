@@ -421,7 +421,7 @@
 
             iconState = new BMap.Icon(
               utils.getDirectionImage(isOnline, angle),
-              new BMap.Size(16, 16),
+              new BMap.Size(17, 17),
               { imageOffset: new BMap.Size(0, 0) }
             )
 
@@ -1258,7 +1258,7 @@
 
                     iconState = new BMap.Icon(
                       utils.getDirectionImage(isOnline, angle),
-                      new BMap.Size(16, 16),
+                      new BMap.Size(17, 17),
                       { imageOffset: new BMap.Size(0, 0) }
                     )
 
@@ -1312,7 +1312,7 @@
 
           iconState = new BMap.Icon(
             utils.getDirectionImage(isOnline, angle),
-            new BMap.Size(16, 16),
+            new BMap.Size(17, 17),
             { imageOffset: new BMap.Size(0, 0) }
           )
 

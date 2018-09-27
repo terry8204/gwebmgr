@@ -128,7 +128,7 @@
     <script type="text/javascript" src="http://api.map.baidu.com/library/DistanceTool/1.2/src/DistanceTool_min.js"></script>
     <script>
         (function () {   //utils.getAngle
-            var carIcon   = new BMap.Icon("images/carstate/green_0.gif", new BMap.Size(16, 16), { imageOffset: new BMap.Size(0, 0)});
+            var carIcon   = new BMap.Icon("images/carstate/green_0.gif", new BMap.Size(17, 17), { imageOffset: new BMap.Size(0, 0)});
             var startIcon = new BMap.Icon("./images/map/marker_qidian.png", new BMap.Size(32, 32), { imageOffset: new BMap.Size(0, 0)});
             var endIcon   = new BMap.Icon("./images/map/marker_zhongdian.png", new BMap.Size(32, 32), { imageOffset: new BMap.Size(0, 0)});
 
@@ -555,7 +555,7 @@
                             };
                         },
                         getDirectionIcon:function(angle){
-                            return new BMap.Icon("images/carstate/green_"+ angle +".gif", new BMap.Size(16, 16), { imageOffset: new BMap.Size(0, 0)}); 
+                            return new BMap.Icon("images/carstate/green_"+ angle +".gif", new BMap.Size(17, 17), { imageOffset: new BMap.Size(0, 0)}); 
                         },
                         verifySelectionTime:function(){
                             if(this.startTime && this.endTime){
