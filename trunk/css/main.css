@@ -118,7 +118,7 @@ div.ivu-steps-head-inner .ivu-icon{
         border-right: 1px solid #D5DCE1;
     }
     ul.device-state{
-        overflow: hidden;
+        
     }
     ul.device-state>li{
         float: left;

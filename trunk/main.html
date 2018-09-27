@@ -158,15 +158,37 @@
                         </li>
                     </li>
                     <div class="device-soso">
-                        <AutoComplete
+                        <!-- <AutoComplete
                             v-model="sosoValue"
-                            :data="sosoData"
                             icon="ios-search"
-                            :filter-method="filterMethod"
-                            @on-select="sosoSelect"
+                            @on-change="sosoValueChange"
                             placeholder="输入您要搜索的设备"
+                     
                             style="width:100%">
-                        </AutoComplete>
+                            <div class="demo-auto-complete-item" v-for="item in filterData">
+                                <div class="demo-auto-complete-group">
+                                    <span>{{ item.groupname }}</span>
+                                </div>
+                                <Option v-for="option in item.devices" :value="option.groupname" :key="option.groupname">
+                                    <span @click="sosoSelect(option)" class="demo-auto-complete-title">{{ option.devicename }}</span>
+                                </Option>
+                            </div>
+                        </AutoComplete> -->
+                         <div class="search-wrapper">
+                            <i-input v-model.trim="sosoValue"  icon="ios-search-outline" @on-change="sosoValueChange" @on-blur="blur" @on-focus="focus" placeholder="输入设备名称"></i-input>
+                            <transition name="fade">
+                                <ul class="search-item-wrapper" v-show="isShowMatchDev">
+                                    <li  class="demo-auto-complete-item" v-for="item in filterData">
+                                        <div class="demo-auto-complete-group">
+                                            <span>{{ item.groupname }}</span>
+                                        </div>
+                                        <Option v-for="option in item.devices" :value="option.groupname" :key="option.groupname">
+                                            <span @click="sosoSelect(option)" class="demo-auto-complete-title">{{ option.devicename }}</span>
+                                        </Option>
+                                    </li>
+                                </ul>
+                            </transition>
+                        </div>
                     </div>
                 </div>
                 <div class="device-tree">

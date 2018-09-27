@@ -247,7 +247,10 @@
         isMoveTriggerEvent: true, // 地图移动是否触发事件
         intervalInstanse: null, // 定时器实例
         selectedDevObj: {}, // 选中的设备信息
-        myDis: null // 测距实例
+        myDis: null, // 测距实例
+        filterData: [],
+        timeoutIns: null,
+        isShowMatchDev: false
       }
     },
     methods: {
@@ -345,35 +348,59 @@
         })
         return pointArr
       },
-      filterMethod: function(value, option) {
-        if (value) {
-          return option.toUpperCase().indexOf(value.toUpperCase()) !== -1
-        } else {
-          return true
+      focus: function() {
+        var me = this
+        if (this.sosoValue.trim()) {
+          me.sosoValueChange()
+        }
+      },
+      blur: function() {
+        var me = this
+        setTimeout(function() {
+          me.isShowMatchDev = false
+        }, 300)
+      },
+      filterMethod: function(value) {
+        this.filterData = []
+        for (var i = 0; i < this.groups.length; i++) {
+          var group = this.groups[i]
+          if (
+            group.groupname.toUpperCase().indexOf(value.toUpperCase()) !== -1
+          ) {
+            this.filterData.push(group)
+          } else {
+            var devices = group.devices
+            var obj = {
+              groupname: group.groupname,
+              devices: []
+            }
+            for (var j = 0; j < devices.length; j++) {
+              var device = devices[j]
+              var devicename = device.devicename
+              if (
+                devicename.toUpperCase().indexOf(value.toUpperCase()) !== -1
+              ) {
+                obj.devices.push(device)
+              }
+            }
+            if (obj.devices.length) {
+              this.filterData.push(obj)
+            }
+          }
         }
       },
       sosoSelect: function(value) {
+        console.log('sosoSelect', value)
+        this.sosoValue = value.devicename
+        this.filterData = []
         var me = this
-        if (value) {
-          if (this.isShowConpanyName) {
-            this.currentStateData.forEach(function(company) {
-              company.children.forEach(function(group) {
-                group.children.forEach(function(dev) {
-                  if (dev.title == value) {
-                    company.expand = true
-                    dev.isSelected = true
-                    group.expand = true
-                    me.handleClickDev(dev.deviceid)
-                  } else {
-                    dev.isSelected = false
-                  }
-                })
-              })
-            })
-          } else {
-            this.currentStateData.forEach(function(group) {
+
+        if (this.isShowConpanyName) {
+          this.currentStateData.forEach(function(company) {
+            company.children.forEach(function(group) {
               group.children.forEach(function(dev) {
-                if (dev.title == value) {
+                if (dev.title == value.devicename) {
+                  company.expand = true
                   dev.isSelected = true
                   group.expand = true
                   me.handleClickDev(dev.deviceid)
@@ -382,8 +409,40 @@
                 }
               })
             })
-          }
+          })
+        } else {
+          this.currentStateData.forEach(function(group) {
+            group.children.forEach(function(dev) {
+              if (dev.title == value.devicename) {
+                dev.isSelected = true
+                group.expand = true
+                me.handleClickDev(dev.deviceid)
+              } else {
+                dev.isSelected = false
+              }
+            })
+          })
         }
+      },
+      sosoValueChange: function() {
+    	var me = this
+        var value = this.sosoValue
+        
+        if (this.timeoutIns != null) {
+          clearInterval(this.timeoutIns)
+        }
+
+        if (!value.trim()) {
+          this.filterData = [];	
+          return
+        }
+        
+        this.timeoutIns = setTimeout(function() {
+          me.filterMethod(value)
+        }, 300)
+      },
+      handleClickItem: function(device) {
+        console.log('handleClickItem', device)
       },
       selectedStateNav: function(state) {
         this.selectedState = state
@@ -564,13 +623,6 @@
         })
       },
       setDeviceIdsList: function(groups) {
-        var me = this
-        // groups.forEach(function (group) {
-        //     group.devices.forEach(function (device,index) {
-        //         var deviceid = device.deviceid;
-        //         store.deviceNames[deviceid] = device;
-        //     });
-        // });
         this.$store.dispatch('setDeviceNames', groups)
       },
       getLastPosition: function(deviceIds, callback) {
@@ -1326,6 +1378,13 @@
       }
     },
     watch: {
+      filterData: function() {
+        if (this.filterData.length) {
+          this.isShowMatchDev = true
+        } else {
+          this.isShowMatchDev = false
+        }
+      },
       records: function() {
         var online = 0
         var offline = 0
