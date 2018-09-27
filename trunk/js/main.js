@@ -57,8 +57,12 @@
     mutations: {
       setDeviceNames: function(state, groups) {
         groups.forEach(function(group) {
+          group.firstLetter = __pinyin.getFirstLetter(group.groupname)
+          group.pinyin = __pinyin.getPinyin(group.groupname)
           group.devices.forEach(function(device, index) {
             var deviceid = device.deviceid
+            device.firstLetter = __pinyin.getFirstLetter(device.devicename)
+            device.pinyin = __pinyin.getPinyin(device.devicename)
             state.deviceNames[deviceid] = device
           })
         })
@@ -362,10 +366,14 @@
       },
       filterMethod: function(value) {
         this.filterData = []
+        var firstLetter = __pinyin.getFirstLetter(value)
+        var pinyin = __pinyin.getPinyin(value)
         for (var i = 0; i < this.groups.length; i++) {
           var group = this.groups[i]
           if (
-            group.groupname.toUpperCase().indexOf(value.toUpperCase()) !== -1
+            group.groupname.toUpperCase().indexOf(value.toUpperCase()) !== -1 ||
+            group.firstLetter.indexOf(firstLetter) !== -1 ||
+            group.pinyin.indexOf(pinyin) !== -1
           ) {
             this.filterData.push(group)
           } else {
@@ -378,7 +386,9 @@
               var device = devices[j]
               var devicename = device.devicename
               if (
-                devicename.toUpperCase().indexOf(value.toUpperCase()) !== -1
+                devicename.toUpperCase().indexOf(value.toUpperCase()) !== -1 ||
+                device.firstLetter.indexOf(firstLetter) !== -1 ||
+                device.pinyin.indexOf(pinyin) !== -1
               ) {
                 obj.devices.push(device)
               }
@@ -425,18 +435,18 @@
         }
       },
       sosoValueChange: function() {
-    	var me = this
+        var me = this
         var value = this.sosoValue
-        
+
         if (this.timeoutIns != null) {
           clearInterval(this.timeoutIns)
         }
 
         if (!value.trim()) {
-          this.filterData = [];	
+          this.filterData = []
           return
         }
-        
+
         this.timeoutIns = setTimeout(function() {
           me.filterMethod(value)
         }, 300)
