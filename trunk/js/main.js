@@ -625,6 +625,15 @@
         var url = myUrls.monitorListByUser()
         utils.sendAjax(url, { havecompany: havecompany }, function(resp) {
           if (resp.status == 0) {
+            resp.groups.forEach(function(group) {
+              group.firstLetter = __pinyin.getFirstLetter(group.groupname)
+              group.pinyin = __pinyin.getPinyin(group.groupname)
+              group.devices.forEach(function(device, index) {
+                var deviceid = device.deviceid
+                device.firstLetter = __pinyin.getFirstLetter(device.devicename)
+                device.pinyin = __pinyin.getPinyin(device.devicename)
+              })
+            })
             callback(resp)
           } else if (resp.status == 3) {
             me.$Message.error('请重新登录,2秒后自动跳转登录页面')
