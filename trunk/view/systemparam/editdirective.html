@@ -106,8 +106,14 @@
             methods: {
                 back:function(){
                     var me = this;
+                    var pagePath = null
+                        if (myUrls.host.indexOf('gpsserver') != -1) {
+                            pagePath = myUrls.host + 'view/systemparam/devicedirective.html'
+                        } else {
+                            pagePath = '../view/systemparam/devicedirective.html'
+                        }   
                     me.$Loading.start();
-                    $("#system-view").load("../view/systemparam/devicedirective.html", function () {
+                    $("#system-view").load(pagePath, function () {
                         me.$Loading.finish();
                     });
                 },

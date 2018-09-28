@@ -7,6 +7,7 @@
     intervalTime: 10,
     currentDeviceId: null,
     currentDeviceRecord: {},
+    treeDeviceInfo: null,
     paramsCmdCodeArr: [] // 接触报警信息的传参顺序
   }
   // vuex store
@@ -254,7 +255,13 @@
         myDis: null, // 测距实例
         filterData: [],
         timeoutIns: null,
-        isShowMatchDev: false
+        isShowMatchDev: false,
+        editDevModal: false,
+        editDevData: {
+          devicename: '',
+          simnum: '',
+          deviceid: ''
+        }
       }
     },
     methods: {
@@ -409,7 +416,7 @@
           this.currentStateData.forEach(function(company) {
             company.children.forEach(function(group) {
               group.children.forEach(function(dev) {
-                if (dev.title == value.devicename) {
+                if (dev.deviceid == value.deviceid) {
                   company.expand = true
                   dev.isSelected = true
                   group.expand = true
@@ -423,7 +430,7 @@
         } else {
           this.currentStateData.forEach(function(group) {
             group.children.forEach(function(dev) {
-              if (dev.title == value.devicename) {
+              if (dev.deviceid == value.deviceid) {
                 dev.isSelected = true
                 group.expand = true
                 me.handleClickDev(dev.deviceid)
@@ -828,8 +835,6 @@
           return new BMap.InfoWindow(sContent, { width: 350 })
         } catch (error) {
           console.log('get不到info.deviceid --- ')
-          console.log(info)
-          console.log(devdata)
         }
       },
       getAddress: function(info) {
@@ -870,6 +875,40 @@
         utils.sendAjax(url, {}, function(resp) {
           callback(resp)
         })
+      },
+      handleEditDevFn: function() {
+        var me = this
+        var data = this.editDevData
+        var sendData = {
+          deviceid: data.deviceid,
+          devicename: data.devicename
+        }
+        var url = myUrls.editDevice()
+        if (data.devicename.length == 0 || data.devicename == '') {
+          me.$Message.error('设备名称是必填的')
+          return
+        }
+        if (data.simnum) {
+          sendData.simnum = data.simnum
+        }
+
+        utils.sendAjax(url, sendData, function(resp) {
+          if (resp.status == 0) {
+            store.treeDeviceInfo.title = sendData.devicename
+            utils.changeGroupsDevName(sendData, me.groups)
+            me.editDevModal = false
+            me.$Message.success('修改成功')
+          } else if ((resp.status = -1)) {
+            me.$Message.error('修改失败')
+          }
+        })
+      },
+      editDevice: function(device) {
+        store.treeDeviceInfo = device
+        this.editDevData.devicename = device.title
+        this.editDevData.simnum = device.simnum
+        this.editDevData.deviceid = device.deviceid
+        this.editDevModal = true
       },
       playBack: function(deviceid) {
         playBack(deviceid)
@@ -1003,7 +1042,8 @@
               title: device.devicename,
               deviceid: device.deviceid,
               isOnline: isOnline,
-              isSelected: false
+              isSelected: false,
+              simnum: device.simnum
             }
             if (isOnline) {
               onlineCount++
@@ -1061,7 +1101,8 @@
               title: device.devicename,
               isSelected: false,
               isOnline: isOnline,
-              deviceid: device.deviceid
+              deviceid: device.deviceid,
+              simnum: device.simnum
             }
             if (device.deviceid == store.currentDeviceId) {
               groupData.expand = true
@@ -1106,7 +1147,8 @@
               title: device.devicename,
               deviceid: device.deviceid,
               isOnline: isOnline,
-              isSelected: false
+              isSelected: false,
+              simnum: device.simnum
             }
 
             if (device.deviceid == store.currentDeviceId) {
@@ -1160,7 +1202,8 @@
               title: device.devicename,
               isSelected: false,
               isOnline: isOnline,
-              deviceid: device.deviceid
+              deviceid: device.deviceid,
+              simnum: device.simnum
             }
             if (device.deviceid == store.currentDeviceId) {
               groupData.expand = true
@@ -1207,7 +1250,8 @@
               title: device.devicename,
               deviceid: device.deviceid,
               isOnline: isOnline,
-              isSelected: false
+              isSelected: false,
+              simnum: device.simnum
             }
 
             if (device.deviceid == store.currentDeviceId) {
@@ -1259,7 +1303,8 @@
               title: device.devicename,
               isSelected: false,
               isOnline: isOnline,
-              deviceid: device.deviceid
+              deviceid: device.deviceid,
+              simnum: device.simnum
             }
             if (device.deviceid == store.currentDeviceId) {
               groupData.expand = true

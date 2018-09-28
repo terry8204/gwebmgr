@@ -193,8 +193,14 @@
                 editUser:function(index){
                     editObject = this.tableData[index];
                     var me = this;
+                    var pagePath = null
+                        if (myUrls.host.indexOf('gpsserver') != -1) {
+                            pagePath = myUrls.host + 'view/manager/edituser.html' 
+                        } else {
+                            pagePath = '../view/manager/edituser.html' 
+                        }
                     this.$Loading.start();
-                    $("#mar-view").load("../view/manager/edituser.html",function(){
+                    $("#mar-view").load(pagePath,function(){
                         me.$Loading.finish();
                     });
                 },

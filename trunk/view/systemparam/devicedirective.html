@@ -59,8 +59,14 @@
                                         on: {
                                             click: function () {
                                                 editObject = params.row;
+                                                var pagePath = null
+                                                if (myUrls.host.indexOf('gpsserver') != -1) {
+                                                    pagePath = myUrls.host + 'view/systemparam/editdirective.html'
+                                                } else {
+                                                    pagePath = '../view/systemparam/editdirective.html'
+                                                }  
                                                 me.$Loading.start();
-                                                $("#system-view").load("../view/systemparam/editdirective.html",function(){
+                                                $("#system-view").load(pagePath,function(){
                                                     me.$Loading.finish();
                                                 });
                                             }

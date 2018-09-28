@@ -163,8 +163,14 @@ vueInstanse=new Vue({
                 editGroup:function(index){
                     var me = this;
                     editObject = this.tableData[index];
+                    var pagePath = null
+                        if (myUrls.host.indexOf('gpsserver') != -1) {
+                            pagePath = myUrls.host + 'view/manager/editgroup.html' 
+                        } else {
+                            pagePath = '../view/manager/editgroup.html' 
+                        }
                     this.$Loading.start();
-                    $("#mar-view").load("../view/manager/editgroup.html",function(){
+                    $("#mar-view").load(pagePath,function(){
                         me.$Loading.finish();
                     });
                 },

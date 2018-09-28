@@ -157,9 +157,15 @@
                     this.registeraddr = "";
                 },
                 back:function(){
-                    var me = this;                  
+                    var me = this;         
+                    var pagePath = null
+                        if (myUrls.host.indexOf('gpsserver') != -1) {
+                            pagePath = myUrls.host + 'view/manager/querycustomer.html'
+                        } else {
+                            pagePath = '../view/manager/querycustomer.html'
+                        }          
                     this.$Loading.start();
-                    $("#mar-view").load("../view/manager/querycustomer.html",function(){
+                    $("#mar-view").load(pagePath,function(){
                         me.$Loading.finish();
                     });
                 }

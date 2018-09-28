@@ -291,8 +291,14 @@
                 },
                 back:function(){
                     var me = this;
+                    var pagePath = null
+                        if (myUrls.host.indexOf('gpsserver') != -1) {
+                            pagePath = myUrls.host + 'view/manager/queryuser.html'
+                        } else {
+                            pagePath = '../view/manager/queryuser.html'
+                        } 
                     this.$Loading.start();
-                    $("#mar-view").load("../view/manager/queryuser.html",function(){
+                    $("#mar-view").load( pagePath ,function(){
                         me.$Loading.finish();
                     });
                 },

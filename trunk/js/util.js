@@ -140,9 +140,28 @@ var utils = {
       imgPath += '/gray_' + angle + '.png'
     }
     return imgPath
+  },
+  changeGroupsDevName: function(changeInfo, groups) {
+    var deviceid = changeInfo.deviceid
+    var devicename = changeInfo.devicename
+    var simnum = changeInfo.simnum
+
+    groups.forEach(function(group) {
+      group.devices.forEach(function(device) {
+        if (device.deviceid == deviceid) {
+          if (device.devicename != devicename) {
+            device.devicename = devicename
+            device.firstLetter = __pinyin.getFirstLetter(devicename)
+            device.pinyin = __pinyin.getPinyin(devicename)
+          }
+          if (simnum) {
+            device.simnum = simnum
+          }
+        }
+      })
+    })
   }
 }
-
 
 //  vue组件   配合查询分组表格使用
 Vue.component('expand-row', {

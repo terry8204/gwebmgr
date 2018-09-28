@@ -127,9 +127,15 @@ vueInstanse = new Vue({
                 },
                 editCustomer:function(index){
                     var me = this;
-                    editObject = this.tableData[index];                   
+                    editObject = this.tableData[index];   
+                    var pagePath = null
+                        if (myUrls.host.indexOf('gpsserver') != -1) {
+                            pagePath = myUrls.host + 'view/manager/editcustomer.html'
+                        } else {
+                            pagePath = '../view/manager/editcustomer.html'
+                        }                
                     this.$Loading.start();
-                    $("#mar-view").load("../view/manager/editcustomer.html",function(){
+                    $("#mar-view").load(pagePath,function(){
                         me.$Loading.finish();
                     });
                 },

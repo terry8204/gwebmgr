@@ -90,8 +90,14 @@
             methods: {
                 back:function(){
                     var me = this;
+                    var pagePath = null
+                        if (myUrls.host.indexOf('gpsserver') != -1) {
+                            pagePath = myUrls.host + 'view/systemparam/devicetype.html'
+                        } else {
+                            pagePath = '../view/systemparam/devicetype.html'
+                        }   
                     me.$Loading.start();
-                    $("#system-view").load("../view/systemparam/devicetype.html", function () {
+                    $("#system-view").load(pagePath, function () {
                         me.$Loading.finish();
                     });
                 },

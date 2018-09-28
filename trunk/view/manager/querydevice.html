@@ -214,8 +214,14 @@ vueInstanse = new Vue({
                 editDevice:function(index){
                     var me = this;
                     editObject = this.tableData[index];
+                    var pagePath = null
+                        if (myUrls.host.indexOf('gpsserver') != -1) {
+                            pagePath = myUrls.host + 'view/manager/editdevice.html'
+                        } else {
+                            pagePath = '../view/manager/editdevice.html'
+                        }
                     this.$Loading.start();
-                    $("#mar-view").load("../view/manager/editdevice.html",function(){
+                    $("#mar-view").load(pagePath,function(){
                         me.$Loading.finish();
                     });
                 },
