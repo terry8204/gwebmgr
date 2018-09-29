@@ -1,4 +1,4 @@
-;(function() {
+; (function () {
   // 是否显示公司名字
   var isShowCompany = Cookies.get('isShowCompany')
   //全局变量
@@ -19,38 +19,35 @@
       allCmdList: [] // queryCommonCmd
     },
     actions: {
-      setDeviceNames: function(context, groups) {
+      setDeviceNames: function (context, groups) {
         context.commit('setDeviceNames', groups)
       },
-      setUserTypeDescr: function(context) {
+      setUserTypeDescr: function (context) {
         var url = myUrls.queryUserTypeDescr()
         $.ajax({
           url: url,
           method: 'post',
           data: {},
           async: false,
-          success: function(resp) {
+          success: function (resp) {
             context.commit('setUserTypeDescr', resp.records)
           },
-          error: function() {}
+          error: function () { }
         })
       },
-      setAllCmdList: function(context) {
-    	  
-        var commonDeviceUrl = myUrls.queryCommonCmd();
-        var hadDeviceUrl = myUrls.queryHadDeviceCmdByUser();
-        utils.sendAjax(commonDeviceUrl, {}, function(resp) {
+      setAllCmdList: function (context) {
+        var commonDeviceUrl = myUrls.queryCommonCmd()
+        var hadDeviceUrl = myUrls.queryHadDeviceCmdByUser()
+        utils.sendAjax(commonDeviceUrl, {}, function (resp) {
           if (resp.status == 0) {
-            var commonCmd = resp.records
-            alert('commonDeviceUrl');
+            var commonCmd = resp.records;
             utils.sendAjax(
               hadDeviceUrl,
               { username: Cookies.get('name') },
-              function(resp) {
-            	  alert('queryHadDeviceCmdByUser');
-            	  console.log(resp);
-                var cmdList = commonCmd.concat(resp.records)
-                context.commit('setAllCmdList', cmdList)
+              function (resp) {
+                console.log(resp)
+                var cmdList = commonCmd.concat(resp.records);
+                context.commit('setAllCmdList', cmdList);
               }
             )
           } else {
@@ -60,24 +57,24 @@
       }
     },
     mutations: {
-      setDeviceNames: function(state, groups) {
-        groups.forEach(function(group) {
+      setDeviceNames: function (state, groups) {
+        groups.forEach(function (group) {
           group.firstLetter = __pinyin.getFirstLetter(group.groupname)
           group.pinyin = __pinyin.getPinyin(group.groupname)
-          group.devices.forEach(function(device, index) {
+          group.devices.forEach(function (device, index) {
             var deviceid = device.deviceid
             device.firstLetter = __pinyin.getFirstLetter(device.devicename)
             device.pinyin = __pinyin.getPinyin(device.devicename)
-            state.deviceNames[deviceid] = device
+            state.deviceNames[deviceid] = device;
           })
         })
       },
-      setUserTypeDescr: function(state, userTypeDescrList) {
-        state.userTypeDescrList = userTypeDescrList
+      setUserTypeDescr: function (state, userTypeDescrList) {
+        state.userTypeDescrList = userTypeDescrList;
       },
-      setAllCmdList: function(state, cmdList) {
-        cmdList.forEach(function(item) {
-          state.allCmdList.push(item)
+      setAllCmdList: function (state, cmdList) {
+        cmdList.forEach(function (item) {
+          state.allCmdList.push(item);
         })
       }
     }
@@ -86,7 +83,7 @@
   var appHeader = {
     template: document.getElementById('header-template').innerHTML,
     props: ['componentid'],
-    data: function() {
+    data: function () {
       return {
         dark: 'dark',
         name: '',
@@ -107,10 +104,10 @@
       }
     },
     methods: {
-      changeNav: function(navName) {
+      changeNav: function (navName) {
         this.$emit('change-nav', navName)
       },
-      getManagerType: function(type) {
+      getManagerType: function (type) {
         var name = ''
         for (var i = 0; i < this.userTypeDescrList.length; i++) {
           var item = this.userTypeDescrList[i]
@@ -121,7 +118,7 @@
         }
         return '[' + name + ']'
       },
-      changeUserPass: function() {
+      changeUserPass: function () {
         var me = this
         var url = myUrls.changeUserPass()
         var data = {
@@ -146,7 +143,7 @@
           return
         }
 
-        utils.sendAjax(url, data, function(resp) {
+        utils.sendAjax(url, data, function (resp) {
           if (resp.status == 0) {
             me.$Message.success('密码修改成功!')
             Cookies.set('accountpass', me.newPass, { expires: 7 })
@@ -156,10 +153,10 @@
           }
         })
       },
-      loginOut: function() {
+      loginOut: function () {
         var me = this
         var url = myUrls.loginOut()
-        utils.sendAjax(url, {}, function(resp) {
+        utils.sendAjax(url, {}, function (resp) {
           if (resp.status == 0) {
             Cookies.remove('token')
             window.location.href = 'index.html'
@@ -168,27 +165,27 @@
           }
         })
       },
-      changePassword: function() {
+      changePassword: function () {
         this.modalPass = true
         this.oldPass = ''
         this.newPass = ''
         this.confirmPass = ''
       },
-      showSetup: function() {
+      showSetup: function () {
         this.modal = true
       },
-      changeShowCompany: function(state) {
+      changeShowCompany: function (state) {
         this.$emit('change-tree', state)
         store.navState = state
         Cookies.set('isShowCompany', state, { expires: 7 })
       },
-      reqUserType: function() {
+      reqUserType: function () {
         var url = myUrls.queryUserType()
-        utils.sendAjax(url, {}, function(resp) {
+        utils.sendAjax(url, {}, function (resp) {
           console.log(resp)
         })
       },
-      navJurisdiction: function(userType) {
+      navJurisdiction: function (userType) {
         if (userType == -1 || userType == 99) {
           this.isShowBgManager = false
           this.$emit('change-nav', 'monitor')
@@ -201,14 +198,14 @@
       }
     },
     computed: {
-      userTypeDescrList: function() {
+      userTypeDescrList: function () {
         return this.$store.state.userTypeDescrList
       }
     },
-    mounted: function() {
+    mounted: function () {
       var me = this
       this.activeName = 'reportForm'
-      this.$nextTick(function() {
+      this.$nextTick(function () {
         me.userType = Cookies.get('userType')
         var mgr = me.getManagerType(me.userType)
         me.name = Cookies.get('name') + mgr
@@ -225,7 +222,7 @@
       })
     },
     watch: {
-      intervalTime: function() {
+      intervalTime: function () {
         var intervalTime = Number(this.intervalTime)
         this.$emit('change-intervaltime', intervalTime)
         store.intervalTime = intervalTime
@@ -236,7 +233,7 @@
   // 定位监控
   var monitor = {
     template: document.getElementById('monitor-template').innerHTML,
-    data: function() {
+    data: function () {
       return {
         map: null,
         isShowConpanyName: store.navState, // 0 不显示公司   1 显示公司名
@@ -259,18 +256,21 @@
         filterData: [],
         timeoutIns: null,
         isShowMatchDev: false,
-        editDevModal: false,
-        editDevData: {
+        editDevModal: false,          // 编辑设备模态
+        dispatchDirectiveModal: false, // 下发指令模态
+        editDevData: {       //编辑的设备信息
           devicename: '',
           simnum: '',
           deviceid: ''
         },
-        currentDeviceType: null,
-        currentDevDirectiveList: []
+        currentDeviceType: null,  // 选中设备的类型
+        currentDevDirectiveList: [],  // 选中设备的类型对应的设备指令
+        selectedCmdInfo: {},  // 选中设备指令的信息
+        cmdParams: {}
       }
     },
     methods: {
-      initMap: function() {
+      initMap: function () {
         var me = this
         this.map = new BMap.Map('map', { minZoom: 4, maxZoom: 18 })
         this.map.enableScrollWheelZoom()
@@ -289,7 +289,7 @@
             mapTypes: [BMAP_NORMAL_MAP, BMAP_HYBRID_MAP]
           })
         )
-        this.map.addEventListener('moveend', function(ev) {
+        this.map.addEventListener('moveend', function (ev) {
           if (me.isMoveTriggerEvent) {
             me.clearMarkerOverlays()
             var pointArr = me.getThePointOfTheCurrentWindow()
@@ -308,7 +308,7 @@
           }
         })
 
-        this.map.addEventListener('zoomend', function(ev) {
+        this.map.addEventListener('zoomend', function (ev) {
           // me.map.clearOverlays();
           // me.clearMarkerOverlays();
           var pointArr = me.getThePointOfTheCurrentWindow()
@@ -320,13 +320,13 @@
             } else {
               me.addOverlayToMap(pointArr)
             }
-            setTimeout(function() {
+            setTimeout(function () {
               me.openDevInfoWindow()
             }, 400)
           }
         })
 
-        this.map.addEventListener('click', function(event) {
+        this.map.addEventListener('click', function (event) {
           var overlay = event.overlay
           if (overlay == null || overlay.deviceid == undefined) {
             store.currentDeviceId = null
@@ -334,49 +334,71 @@
           }
         })
       },
-      clearMarkerOverlays: function() {
+      clearMarkerOverlays: function () {
         var me = this
         var mks = me.map.getOverlays()
-        mks.forEach(function(item) {
+        mks.forEach(function (item) {
           if (item.deviceid != undefined) {
             me.map.removeOverlay(item)
           }
         })
       },
-      openDistance: function() {
+      openDistance: function () {
         if (this.myDis != null) {
-          this.myDis.close()
+          this.myDis.close();
         }
         this.myDis = new BMapLib.DistanceTool(this.map)
-        this.myDis.open() //开启鼠标测距
+        this.myDis.open(); //开启鼠标测距
       },
-      getThePointOfTheCurrentWindow: function() {
-        var bounds = this.map.getBounds()
-        var pointArr = []
-        this.records.forEach(function(item, index) {
+      getThePointOfTheCurrentWindow: function () {
+        var bounds = this.map.getBounds();
+        var pointArr = [];
+        this.records.forEach(function (item, index) {
           if (item) {
-            var lng_lat = wgs84tobd09(item.callon, item.callat)
-            var point = new BMap.Point(lng_lat[0], lng_lat[1])
+            var lng_lat = wgs84tobd09(item.callon, item.callat);
+            var point = new BMap.Point(lng_lat[0], lng_lat[1]);
             if (bounds.containsPoint(point)) {
-              pointArr.push(item)
+              pointArr.push(item);
             }
           }
         })
-        return pointArr
+        return pointArr;
       },
-      focus: function() {
+      handleClickDirective: function (cmdCode) {
+        this.cmdParams = {};
+        this.selectedCmdInfo = {};
+        var cmdInfo = null;
+        var me = this;
+        this.currentDevDirectiveList.forEach(function (cmd) {
+          if (cmd.cmdcode == cmdCode) {
+            cmdInfo = cmd;
+          }
+        });
+        this.selectedCmdInfo.cmdName = cmdInfo.cmdname;
+        if (cmdInfo.params) {
+          this.selectedCmdInfo.params = utils.parseXML(cmdInfo.params)
+          this.selectedCmdInfo.params.forEach(function (param) {
+            me.cmdParams[param.type]
+          })
+        }
+        this.dispatchDirectiveModal = true;
+      },
+      disposeDirectiveFn: function () {
+        console.log('cmdParams', this.cmdParams)
+      },
+      focus: function () {
         var me = this
         if (this.sosoValue.trim()) {
           me.sosoValueChange()
         }
       },
-      blur: function() {
+      blur: function () {
         var me = this
-        setTimeout(function() {
-          me.isShowMatchDev = false
+        setTimeout(function () {
+          me.isShowMatchDev = false;
         }, 300)
       },
-      filterMethod: function(value) {
+      filterMethod: function (value) {
         this.filterData = []
         var firstLetter = __pinyin.getFirstLetter(value)
         var pinyin = __pinyin.getPinyin(value)
@@ -411,16 +433,16 @@
           }
         }
       },
-      sosoSelect: function(value) {
+      sosoSelect: function (value) {
         console.log('sosoSelect', value)
         this.sosoValue = value.devicename
         this.filterData = []
         var me = this
 
         if (this.isShowConpanyName) {
-          this.currentStateData.forEach(function(company) {
-            company.children.forEach(function(group) {
-              group.children.forEach(function(dev) {
+          this.currentStateData.forEach(function (company) {
+            company.children.forEach(function (group) {
+              group.children.forEach(function (dev) {
                 if (dev.deviceid == value.deviceid) {
                   company.expand = true
                   dev.isSelected = true
@@ -433,8 +455,8 @@
             })
           })
         } else {
-          this.currentStateData.forEach(function(group) {
-            group.children.forEach(function(dev) {
+          this.currentStateData.forEach(function (group) {
+            group.children.forEach(function (dev) {
               if (dev.deviceid == value.deviceid) {
                 dev.isSelected = true
                 group.expand = true
@@ -446,7 +468,7 @@
           })
         }
       },
-      sosoValueChange: function() {
+      sosoValueChange: function () {
         var me = this
         var value = this.sosoValue
 
@@ -459,21 +481,21 @@
           return
         }
 
-        this.timeoutIns = setTimeout(function() {
+        this.timeoutIns = setTimeout(function () {
           me.filterMethod(value)
         }, 300)
       },
 
-      selectedStateNav: function(state) {
+      selectedStateNav: function (state) {
         this.selectedState = state
       },
-      openCanpany: function(conpany) {
+      openCanpany: function (conpany) {
         conpany.expand = !conpany.expand
       },
-      openGroupItem: function(groupInfo) {
+      openGroupItem: function (groupInfo) {
         groupInfo.expand = !groupInfo.expand
       },
-      selectedDev: function(deviceInfo) {
+      selectedDev: function (deviceInfo) {
         var devicetype = deviceInfo.devicetype
         if (devicetype != this.currentDeviceType) {
           this.currentDeviceType = devicetype
@@ -483,9 +505,9 @@
         this.selectedDevObj = deviceInfo
         this.handleClickDev(deviceInfo.deviceid)
       },
-      handleClickDev: function(deviceid) {
+      handleClickDev: function (deviceid) {
         var me = this
-        me.getLastPosition([deviceid], function(resp) {
+        me.getLastPosition([deviceid], function (resp) {
           if (
             resp.records != null &&
             resp.records.length &&
@@ -520,7 +542,7 @@
           }
         })
       },
-      updateRecords: function(record) {
+      updateRecords: function (record) {
         var records = this.records
         for (var i = 0; i < records.length; i++) {
           if (records[i] != null) {
@@ -531,14 +553,14 @@
           }
         }
       },
-      updateTreeOnlineState: function() {
+      updateTreeOnlineState: function () {
         var me = this
-        this.records.forEach(function(item) {
+        this.records.forEach(function (item) {
           if (item == null) {
             return
           }
           var deviceid = item.deviceid
-          var isOnline = (function(record) {
+          var isOnline = (function (record) {
             var isOnline = false
             var arrivedtime = record.arrivedtime
             var currentTime = new Date().getTime()
@@ -549,9 +571,9 @@
           })(item)
 
           if (me.isShowConpanyName) {
-            me.currentStateData.forEach(function(company) {
-              company.children.forEach(function(group) {
-                group.children.forEach(function(dev) {
+            me.currentStateData.forEach(function (company) {
+              company.children.forEach(function (group) {
+                group.children.forEach(function (dev) {
                   if (dev.deviceid == deviceid) {
                     dev.isOnline = isOnline
                   }
@@ -559,10 +581,10 @@
               })
             })
 
-            me.currentStateData.forEach(function(company) {
-              company.children.forEach(function(group) {
+            me.currentStateData.forEach(function (company) {
+              company.children.forEach(function (group) {
                 var onlineCount = 0
-                group.children.forEach(function(dev) {
+                group.children.forEach(function (dev) {
                   if (dev.isOnline) {
                     onlineCount++
                   }
@@ -581,16 +603,16 @@
               })
             })
           } else {
-            me.currentStateData.forEach(function(group) {
-              group.children.forEach(function(dev) {
+            me.currentStateData.forEach(function (group) {
+              group.children.forEach(function (dev) {
                 if (dev.deviceid == deviceid) {
                   dev.isOnline = isOnline
                 }
               })
             })
-            me.currentStateData.forEach(function(group) {
+            me.currentStateData.forEach(function (group) {
               var onlineCount = 0
-              group.children.forEach(function(dev) {
+              group.children.forEach(function (dev) {
                 if (dev.isOnline) {
                   onlineCount++
                 }
@@ -610,32 +632,32 @@
           }
         })
       },
-      cancelSelected: function() {
+      cancelSelected: function () {
         if (this.isShowConpanyName) {
-          this.currentStateData.forEach(function(company) {
-            company.children.forEach(function(group) {
-              group.children.forEach(function(dev) {
+          this.currentStateData.forEach(function (company) {
+            company.children.forEach(function (group) {
+              group.children.forEach(function (dev) {
                 dev.isSelected = false
               })
             })
           })
         } else {
-          this.currentStateData.forEach(function(group) {
-            group.children.forEach(function(dev) {
+          this.currentStateData.forEach(function (group) {
+            group.children.forEach(function (dev) {
               dev.isSelected = false
             })
           })
         }
       },
-      getMonitorListByUser: function(havecompany, callback) {
+      getMonitorListByUser: function (havecompany, callback) {
         var me = this
         var url = myUrls.monitorListByUser()
-        utils.sendAjax(url, { havecompany: havecompany }, function(resp) {
+        utils.sendAjax(url, { havecompany: havecompany }, function (resp) {
           if (resp.status == 0) {
-            resp.groups.forEach(function(group) {
+            resp.groups.forEach(function (group) {
               group.firstLetter = __pinyin.getFirstLetter(group.groupname)
               group.pinyin = __pinyin.getPinyin(group.groupname)
-              group.devices.forEach(function(device, index) {
+              group.devices.forEach(function (device, index) {
                 var deviceid = device.deviceid
                 device.firstLetter = __pinyin.getFirstLetter(device.devicename)
                 device.pinyin = __pinyin.getPinyin(device.devicename)
@@ -645,7 +667,7 @@
           } else if (resp.status == 3) {
             me.$Message.error('请重新登录,2秒后自动跳转登录页面')
             Cookies.remove('token')
-            setTimeout(function() {
+            setTimeout(function () {
               window.location.href = 'index.html'
             }, 2000)
           } else {
@@ -655,29 +677,29 @@
           }
         })
       },
-      setDeviceIdsList: function(groups) {
+      setDeviceIdsList: function (groups) {
         this.$store.dispatch('setDeviceNames', groups)
       },
-      getLastPosition: function(deviceIds, callback) {
+      getLastPosition: function (deviceIds, callback) {
         var me = this
         var url = myUrls.lastPosition()
         var data = {
           username: this.username,
           deviceids: deviceIds
         }
-        utils.sendAjax(url, data, function(resp) {
+        utils.sendAjax(url, data, function (resp) {
           if (resp.status == 0) {
             callback(resp)
           } else if (resp.status == 3) {
             me.$Message.error('请重新登录,2秒后自动跳转登录页面')
             Cookies.remove('token')
-            setTimeout(function() {
+            setTimeout(function () {
               window.location.href = 'index.html'
             }, 2000)
           }
         })
       },
-      filterReocrds: function(range, records) {
+      filterReocrds: function (range, records) {
         var me = this
         var filterArr = []
         var firstRecord = records[0]
@@ -688,7 +710,7 @@
         firstRecord.point = new BMap.Point(first_lng_lat[0], first_lng_lat[1])
         filterArr.push(firstRecord)
 
-        records.forEach(function(record) {
+        records.forEach(function (record) {
           var len = filterArr.length - 1
           var endPoint = null
           if (!record.point) {
@@ -710,9 +732,9 @@
           return filterArr
         }
       },
-      addOverlayToMap: function(records) {
+      addOverlayToMap: function (records) {
         var me = this
-        records.forEach(function(record) {
+        records.forEach(function (record) {
           if (record != null) {
             var deviceid = record.deviceid
             var point = null
@@ -747,9 +769,9 @@
         })
       },
 
-      markerAddEvent: function(marker, deviceid) {
+      markerAddEvent: function (marker, deviceid) {
         var me = this
-        marker.addEventListener('click', function() {
+        marker.addEventListener('click', function () {
           me.isMoveTriggerEvent = false
           var deviceid = this.deviceid
           var devLastInfo = me.getSingleDeviceInfo(deviceid)
@@ -760,12 +782,12 @@
           me.openTreeDeviceNav(deviceid)
         })
       },
-      openTreeDeviceNav: function(deviceid) {
+      openTreeDeviceNav: function (deviceid) {
         var me = this
         if (me.isShowConpanyName) {
-          me.currentStateData.forEach(function(company) {
-            company.children.forEach(function(group) {
-              group.children.forEach(function(dev) {
+          me.currentStateData.forEach(function (company) {
+            company.children.forEach(function (group) {
+              group.children.forEach(function (dev) {
                 if (dev.deviceid == deviceid) {
                   company.expand = true
                   dev.isSelected = true
@@ -777,8 +799,8 @@
             })
           })
         } else {
-          me.currentStateData.forEach(function(group) {
-            group.children.forEach(function(dev) {
+          me.currentStateData.forEach(function (group) {
+            group.children.forEach(function (dev) {
               if (dev.deviceid == deviceid) {
                 dev.isSelected = true
                 group.expand = true
@@ -789,7 +811,7 @@
           })
         }
       },
-      openDevInfoWindow: function() {
+      openDevInfoWindow: function () {
         var me = this
         var record = store.currentDeviceRecord
         if (!$.isEmptyObject(record)) {
@@ -803,7 +825,7 @@
           }
         }
       },
-      getSingleDeviceInfo: function(deviceid) {
+      getSingleDeviceInfo: function (deviceid) {
         var info = null
         for (var i = 0; i < this.records.length; i++) {
           if (this.records[i]) {
@@ -815,7 +837,7 @@
         }
         return info
       },
-      getInfoWindow: function(info) {
+      getInfoWindow: function (info) {
         try {
           var devdata = this.$store.state.deviceNames[info.deviceid]
           var address = this.getAddress(info)
@@ -853,7 +875,7 @@
           console.log('get不到info.deviceid --- ')
         }
       },
-      getAddress: function(info) {
+      getAddress: function (info) {
         var callon = info.callon
         var callat = info.callat
         var bd09 = wgs84tobd09(callon, callat)
@@ -863,13 +885,13 @@
         if (address !== null) {
           return address
         }
-        utils.getBaiduAddressFromBaidu(lng, lat, function(resp) {
+        utils.getBaiduAddressFromBaidu(lng, lat, function (resp) {
           if (resp.length) {
             address = resp
             $('p.last-address').html(' 详细地址: ' + address)
             LocalCacheMgr.setAddress(lng, lat, address)
           } else {
-            utils.getJiuHuAddressSyn(callon, callat, function(resp) {
+            utils.getJiuHuAddressSyn(callon, callat, function (resp) {
               address = resp.address
               $('p.last-address').html(' 详细地址: ' + address)
               LocalCacheMgr.setAddress(lng, lat, address)
@@ -878,21 +900,21 @@
         })
         return '地址正在解析...'
       },
-      setNavState: function(state) {
+      setNavState: function (state) {
         this.isShowConpanyName = state
       },
-      setIntervalTime: function(interval) {
+      setIntervalTime: function (interval) {
         this.intervalTime = interval
         clearInterval(this.intervalInstanse)
         this.setIntervalReqRecords()
       },
-      queryCompanyTree: function(callback) {
+      queryCompanyTree: function (callback) {
         var url = myUrls.queryCompanyTree()
-        utils.sendAjax(url, {}, function(resp) {
+        utils.sendAjax(url, {}, function (resp) {
           callback(resp)
         })
       },
-      handleEditDevFn: function() {
+      handleEditDevFn: function () {
         var me = this
         var data = this.editDevData
         var sendData = {
@@ -908,7 +930,7 @@
           sendData.simnum = data.simnum
         }
 
-        utils.sendAjax(url, sendData, function(resp) {
+        utils.sendAjax(url, sendData, function (resp) {
           if (resp.status == 0) {
             store.treeDeviceInfo.title = sendData.devicename
             utils.changeGroupsDevName(sendData, me.groups)
@@ -919,23 +941,23 @@
           }
         })
       },
-      editDevice: function(device) {
+      editDevice: function (device) {
         store.treeDeviceInfo = device
         this.editDevData.devicename = device.title
         this.editDevData.simnum = device.simnum
         this.editDevData.deviceid = device.deviceid
         this.editDevModal = true
       },
-      playBack: function(deviceid) {
+      playBack: function (deviceid) {
         playBack(deviceid)
       },
-      trackMap: function(deviceid) {
+      trackMap: function (deviceid) {
         trackMap(deviceid)
       },
-      more: function(e) {
+      more: function (e) {
         console.log(e)
       },
-      getCurrentStateTreeData: function(state, isShowConpanyName) {
+      getCurrentStateTreeData: function (state, isShowConpanyName) {
         var me = this
         this.currentStateData = []
         this.sosoData = []
@@ -960,24 +982,24 @@
         }
 
         if (isShowConpanyName) {
-          this.currentStateData.forEach(function(company) {
-            company.children.forEach(function(group) {
-              group.children.forEach(function(dev) {
+          this.currentStateData.forEach(function (company) {
+            company.children.forEach(function (group) {
+              group.children.forEach(function (dev) {
                 me.sosoData.push(dev.title)
               })
             })
           })
         } else {
-          this.currentStateData.forEach(function(item) {
-            item.children.forEach(function(dev) {
+          this.currentStateData.forEach(function (item) {
+            item.children.forEach(function (dev) {
               me.sosoData.push(dev.title)
             })
           })
         }
       },
-      getNewCompanyArr: function() {
+      getNewCompanyArr: function () {
         var newArray = []
-        this.companys.forEach(function(company) {
+        this.companys.forEach(function (company) {
           var companyid = company.companyid
           var companyObj = {
             title: company.companyname,
@@ -1011,10 +1033,10 @@
         }
         return newArray
       },
-      filterGroups: function(groups) {
+      filterGroups: function (groups) {
         var newGroups = []
         var newObject = {}
-        groups.forEach(function(item) {
+        groups.forEach(function (item) {
           var groupid = item.groupid
           var devices = item.devices
           if (newObject[groupid] == undefined) {
@@ -1038,11 +1060,11 @@
 
         return newGroups
       },
-      getAllShowConpanyTreeData: function() {
+      getAllShowConpanyTreeData: function () {
         var me = this
         var newArray = me.getNewCompanyArr()
         var newGroups = []
-        me.groups.forEach(function(group, index) {
+        me.groups.forEach(function (group, index) {
           var companyid = group.companyid
           var onlineCount = 0
           var groupObj = {
@@ -1052,7 +1074,7 @@
             name: group.groupname,
             children: []
           }
-          group.devices.forEach(function(device, index) {
+          group.devices.forEach(function (device, index) {
             var isOnline = me.getIsOnline(device.deviceid)
             var deviceObj = {
               title: device.devicename,
@@ -1074,7 +1096,7 @@
           groupObj.title +=
             '(' + onlineCount + '/' + groupObj.children.length + ')'
 
-          newArray.forEach(function(company) {
+          newArray.forEach(function (company) {
             if (company.companyid == companyid) {
               if (groupObj.children.length) {
                 company.children.push(groupObj)
@@ -1100,10 +1122,10 @@
         }
         me.currentStateData = treeData
       },
-      getAllHideConpanyTreeData: function() {
+      getAllHideConpanyTreeData: function () {
         var me = this
         var groups = this.filterGroups(this.groups)
-        groups.forEach(function(group) {
+        groups.forEach(function (group) {
           var onlineCount = 0
           var groupData = {
             title: group.groupname,
@@ -1112,7 +1134,7 @@
             name: group.groupname
           }
 
-          group.devices.forEach(function(device, index) {
+          group.devices.forEach(function (device, index) {
             var isOnline = me.getIsOnline(device.deviceid)
             var dev = {
               title: device.devicename,
@@ -1143,12 +1165,12 @@
           }
         })
       },
-      getOnlineShowConpanyTreeData: function() {
+      getOnlineShowConpanyTreeData: function () {
         var me = this
         var newArray = me.getNewCompanyArr()
         var groupsArray = []
 
-        me.groups.forEach(function(group) {
+        me.groups.forEach(function (group) {
           var companyid = group.companyid
           var onlineCount = 0
           var groupObj = {
@@ -1159,7 +1181,7 @@
             name: group.groupname
           }
 
-          group.devices.forEach(function(device) {
+          group.devices.forEach(function (device) {
             var isOnline = me.getIsOnline(device.deviceid)
             var deviceObj = {
               title: device.devicename,
@@ -1185,9 +1207,9 @@
           }
         })
 
-        newArray.forEach(function(company, index) {
+        newArray.forEach(function (company, index) {
           var companyid = company.companyid
-          groupsArray.forEach(function(group) {
+          groupsArray.forEach(function (group) {
             if (companyid == group.companyid) {
               company.children.push(group)
             } else {
@@ -1204,10 +1226,10 @@
           }
         })
       },
-      getOnlineHideConpanyTreeData: function() {
+      getOnlineHideConpanyTreeData: function () {
         var me = this
         var groups = this.filterGroups(this.groups)
-        groups.forEach(function(group) {
+        groups.forEach(function (group) {
           var groupData = {
             title: group.groupname,
             expand: false,
@@ -1215,7 +1237,7 @@
             name: group.groupname
           }
 
-          group.devices.forEach(function(device, index) {
+          group.devices.forEach(function (device, index) {
             var isOnline = me.getIsOnline(device.deviceid)
             var dev = {
               title: device.devicename,
@@ -1248,12 +1270,12 @@
           }
         })
       },
-      getOfflineShowConpanyTreeData: function() {
+      getOfflineShowConpanyTreeData: function () {
         var me = this
         var newArray = me.getNewCompanyArr()
         var groupsArray = []
 
-        me.groups.forEach(function(group) {
+        me.groups.forEach(function (group) {
           var companyid = group.companyid
 
           var groupObj = {
@@ -1264,7 +1286,7 @@
             name: group.groupname
           }
 
-          group.devices.forEach(function(device) {
+          group.devices.forEach(function (device) {
             var isOnline = me.getIsOnline(device.deviceid)
             var deviceObj = {
               title: device.devicename,
@@ -1288,9 +1310,9 @@
             groupsArray.push(groupObj)
           }
         })
-        newArray.forEach(function(company, index) {
+        newArray.forEach(function (company, index) {
           var companyid = company.companyid
-          groupsArray.forEach(function(group) {
+          groupsArray.forEach(function (group) {
             if (companyid == group.companyid) {
               company.children.push(group)
             } else {
@@ -1307,10 +1329,10 @@
           }
         })
       },
-      getOfflineHideConpanyTreeData: function() {
+      getOfflineHideConpanyTreeData: function () {
         var me = this
         var groups = this.filterGroups(this.groups)
-        groups.forEach(function(group) {
+        groups.forEach(function (group) {
           var groupData = {
             title: group.groupname,
             expand: false,
@@ -1318,7 +1340,7 @@
             name: group.groupname
           }
 
-          group.devices.forEach(function(device, index) {
+          group.devices.forEach(function (device, index) {
             var isOnline = me.getIsOnline(device.deviceid)
             var dev = {
               title: device.devicename,
@@ -1351,10 +1373,10 @@
           }
         })
       },
-      getIsOnline: function(deviceid) {
+      getIsOnline: function (deviceid) {
         var me = this
         var isOnline = false
-        me.records.forEach(function(record) {
+        me.records.forEach(function (record) {
           if (record !== null) {
             if (deviceid == record.deviceid) {
               var arrivedtime = record.arrivedtime
@@ -1367,16 +1389,16 @@
         })
         return isOnline
       },
-      setIntervalReqRecords: function() {
+      setIntervalReqRecords: function () {
         var me = this
-        this.intervalInstanse = setInterval(function() {
+        this.intervalInstanse = setInterval(function () {
           me.intervalTime--
           if (me.intervalTime <= 0) {
             me.intervalTime = Number(store.intervalTime)
             var devIdList = Object.keys(me.$store.state.deviceNames)
-            me.getLastPosition(devIdList, function(resp) {
+            me.getLastPosition(devIdList, function (resp) {
               if (resp.records) {
-                resp.records.forEach(function(record) {
+                resp.records.forEach(function (record) {
                   if (record) {
                     var isOnline =
                       Date.now() - record.arrivedtime < me.offlineTime
@@ -1404,13 +1426,13 @@
           }
         }, 1000)
       },
-      moveMarkers: function() {
+      moveMarkers: function () {
         var me = this
         var markers = this.map.getOverlays()
-        markers.forEach(function(marker) {
+        markers.forEach(function (marker) {
           var deviceid = marker.deviceid
           if (deviceid) {
-            me.records.forEach(function(record) {
+            me.records.forEach(function (record) {
               if (record) {
                 if (deviceid === record.deviceid) {
                   marker.setPosition(record.point)
@@ -1426,9 +1448,9 @@
           }
         })
       },
-      setCarIconState: function() {
+      setCarIconState: function () {
         var me = this
-        this.records.forEach(function(record) {
+        this.records.forEach(function (record) {
           // 如果是null 返回;
           if (record == null) {
             return
@@ -1450,37 +1472,38 @@
       }
     },
     computed: {
-      username: function() {
+      username: function () {
         return Cookies.get('name')
       }
     },
     watch: {
-      filterData: function() {
+      filterData: function () {
         if (this.filterData.length) {
           this.isShowMatchDev = true
         } else {
           this.isShowMatchDev = false
         }
       },
-      currentDeviceType: function() {
+      currentDeviceType: function () {
         var allCmdList = this.$store.state.allCmdList
         var directiveList = []
         var type = this.currentDeviceType
-        allCmdList.forEach(function(cmd) {
+        allCmdList.forEach(function (cmd) {
           if (cmd.devicetype == type) {
             directiveList.push(cmd)
           }
         })
         this.currentDevDirectiveList = directiveList
+        console.log('currentDevDirectiveList', this.currentDevDirectiveList)
       },
-      records: function() {
+      records: function () {
         var online = 0
         var offline = 0
         var me = this
         var deviceIds = Object.keys(me.$store.state.deviceNames)
 
         if (this.records.length === deviceIds.length) {
-          this.records.forEach(function(record) {
+          this.records.forEach(function (record) {
             if (record !== null) {
               var arrivedtime = record.arrivedtime
               var currentTime = new Date().getTime()
@@ -1500,7 +1523,7 @@
           this.onlineDevCount = 0
         } else {
           offline += deviceIds.length - this.records.length
-          this.records.forEach(function(record) {
+          this.records.forEach(function (record) {
             if (record !== null) {
               var arrivedtime = record.arrivedtime
               var currentTime = new Date().getTime()
@@ -1519,10 +1542,10 @@
 
         this.allDevCount = deviceIds.length
       },
-      selectedState: function() {
+      selectedState: function () {
         var me = this
         if (this.isShowConpanyName && this.companys.length == 0) {
-          this.queryCompanyTree(function(response) {
+          this.queryCompanyTree(function (response) {
             me.companys = response.companys
             me.getCurrentStateTreeData(me.selectedState, me.isShowConpanyName)
           })
@@ -1533,15 +1556,15 @@
           )
         }
       },
-      isShowConpanyName: function() {
+      isShowConpanyName: function () {
         var me = this
         if (this.isShowConpanyName) {
           // if(me.groups[0] && me.groups[0].companyid ){
           //     me.getCurrentStateTreeData(me.selectedState,me.isShowConpanyName);
           // }else{
-          this.getMonitorListByUser(1, function(resp) {
+          this.getMonitorListByUser(1, function (resp) {
             me.groups = resp.groups
-            me.queryCompanyTree(function(response) {
+            me.queryCompanyTree(function (response) {
               me.companys = response.companys
               me.getCurrentStateTreeData(me.selectedState, me.isShowConpanyName)
             })
@@ -1555,16 +1578,16 @@
         }
       }
     },
-    mounted: function() {
+    mounted: function () {
       var me = this
       var havecompany = this.isShowConpanyName == true ? 1 : 0
       this.intervalTime = Number(store.intervalTime)
       this.initMap()
-      this.getMonitorListByUser(havecompany, function(resp) {
+      this.getMonitorListByUser(havecompany, function (resp) {
         me.groups = resp.groups
         me.setDeviceIdsList(resp.groups)
         var devIdList = Object.keys(me.$store.state.deviceNames)
-        me.getLastPosition(devIdList, function(resp) {
+        me.getLastPosition(devIdList, function (resp) {
           if (resp.records) {
             me.records = resp.records
           } else {
@@ -1585,7 +1608,7 @@
       })
       this.setIntervalReqRecords()
     },
-    beforeDestroy: function() {
+    beforeDestroy: function () {
       store.currentDeviceId = null
       store.currentDeviceRecord = {}
       // this.$store.state.deviceNames = {};
@@ -1596,7 +1619,7 @@
   // 统计报表
   var reportForm = {
     template: document.getElementById('report-template').innerHTML,
-    data: function() {
+    data: function () {
       return {}
     },
     methods: {}
@@ -1605,7 +1628,7 @@
   // 后台管理
   var bgManager = {
     template: document.getElementById('manager-template').innerHTML,
-    data: function() {
+    data: function () {
       return {
         userType: null,
         theme: 'light',
@@ -1654,7 +1677,7 @@
       }
     },
     methods: {
-      selectditem: function(name) {
+      selectditem: function (name) {
         if (this.currentPage == name) {
           return
         }
@@ -1688,7 +1711,7 @@
         this.currentPage = name
         this.loadPage(page)
       },
-      loadPage: function(page) {
+      loadPage: function (page) {
         var me = this
         var pagePath = null
         if (myUrls.host.indexOf('gpsserver') != -1) {
@@ -1697,12 +1720,12 @@
           pagePath = '../view/manager/' + page
         }
         this.$Loading.start()
-        $('#mar-view').load(pagePath, function() {
+        $('#mar-view').load(pagePath, function () {
           me.$Loading.finish()
         })
       }
     },
-    mounted: function() {
+    mounted: function () {
       this.userType = Cookies.get('userType')
       if (this.userType == 0) {
         this.$delete(this.navList, 1)
@@ -1714,7 +1737,7 @@
   // 系统参数
   var systemParam = {
     template: document.getElementById('systemparam-template'),
-    data: function() {
+    data: function () {
       return {
         selectdItemName: null,
         theme: 'light',
@@ -1750,13 +1773,13 @@
       }
     },
     methods: {
-      selectditem: function(name) {
+      selectditem: function (name) {
         if (this.selectdItemName != name) {
           this.selectdItemName = name
           this.changeItem()
         }
       },
-      changeItem: function() {
+      changeItem: function () {
         var page = null
 
         switch (this.selectdItemName) {
@@ -1776,7 +1799,7 @@
 
         this.loadPage(page)
       },
-      loadPage: function(page) {
+      loadPage: function (page) {
         var me = this
         var pagePath = null
         if (myUrls.host.indexOf('gpsserver') != -1) {
@@ -1785,7 +1808,7 @@
           pagePath = '../view/systemparam/' + page
         }
         this.$Loading.start()
-        $('#system-view').load(pagePath, function() {
+        $('#system-view').load(pagePath, function () {
           me.$Loading.finish()
         })
       }
@@ -1795,7 +1818,7 @@
   // 报警组件
   var waringComponent = {
     template: document.getElementById('waring-template'),
-    data: function() {
+    data: function () {
       return {
         isLargen: false,
         index: 1,
@@ -1820,31 +1843,31 @@
       }
     },
     computed: {
-      waringWraperStyle: function() {
+      waringWraperStyle: function () {
         return {
           width: this.isLargen ? '900px' : '100px',
           height: this.isLargen ? '500px' : '22px'
         }
       },
-      deviceNames: function() {
+      deviceNames: function () {
         return this.$store.state.deviceNames
       }
     },
     watch: {
-      waringRecords: function() {
+      waringRecords: function () {
         if (this.waringRecords.length) {
           this.isWaring = true
         } else {
           this.isWaring = false
         }
       },
-      disposeModal: function() {
+      disposeModal: function () {
         if (this.disposeModal) {
           var me = this
           var devicetype = this.cmdRowWaringObj.devicetype
           var cmdList = this.$store.state.allCmdList
           var beforeCmdList = []
-          cmdList.forEach(function(item) {
+          cmdList.forEach(function (item) {
             if (!item.devicetype) {
               beforeCmdList.push(item)
             } else {
@@ -1855,7 +1878,7 @@
           })
           me.currentDevTypeCmdList = beforeCmdList
           var twoArr = []
-          beforeCmdList.forEach(function(item, index) {
+          beforeCmdList.forEach(function (item, index) {
             if (index % 4 == 0) {
               twoArr.push([])
             }
@@ -1867,15 +1890,15 @@
           me.params = beforeCmdList[beforeCmdList.length - 1].params
         }
       },
-      disposeAlarm: function() {
+      disposeAlarm: function () {
         var me = this
-        this.currentDevTypeCmdList.forEach(function(item) {
+        this.currentDevTypeCmdList.forEach(function (item) {
           if (me.disposeAlarm == item.cmdcode) {
             me.params = item.params
           }
         })
       },
-      params: function() {
+      params: function () {
         this.paramsInputList = []
         this.paramsInputObj = {}
         if (this.params) {
@@ -1887,7 +1910,7 @@
       }
     },
     methods: {
-      parseXML: function(xmlDoc) {
+      parseXML: function (xmlDoc) {
         store.paramsCmdCodeArr = []
         var parent = xmlDoc.children[0]
         var children = parent.children
@@ -1902,11 +1925,11 @@
           }
         }
       },
-      changeLargen: function() {
+      changeLargen: function () {
         this.isLargen = !this.isLargen
         this.isWaring = false
       },
-      changeComponent: function(index) {
+      changeComponent: function (index) {
         this.index = index
         switch (index) {
           case 1:
@@ -1917,23 +1940,23 @@
             break
         }
       },
-      queryWaringMsg: function() {
+      queryWaringMsg: function () {
         var me = this
         var url = myUrls.queryAlarm()
-        utils.sendAjax(url, this.checkboxObj, function(resp) {
+        utils.sendAjax(url, this.checkboxObj, function (resp) {
           if (resp.status == 0) {
             me.waringRecords = resp.records
-            me.waringRecords.forEach(function(item) {
+            me.waringRecords.forEach(function (item) {
               item.isdispose = '未处理'
             })
           }
         })
       },
-      filterWaringType: function() {
+      filterWaringType: function () {
         this.settingCheckboxObj()
         this.waringModal = true
       },
-      settingCheckboxObj: function() {
+      settingCheckboxObj: function () {
         var checkboxObjJson = Cookies.get('checkboxObj')
         if (checkboxObjJson) {
           var checkboxObj = JSON.parse(checkboxObjJson)
@@ -1944,10 +1967,10 @@
           }
         }
       },
-      pushOverdueDeviceInfo: function() {
+      pushOverdueDeviceInfo: function () {
         var interval = null
         var me = this
-        interval = setInterval(function() {
+        interval = setInterval(function () {
           if (!$.isEmptyObject(me.deviceNames)) {
             for (var key in me.deviceNames) {
               var item = me.deviceNames[key]
@@ -1967,18 +1990,18 @@
           }
         }, 1000)
       },
-      timingRequestMsg: function() {
+      timingRequestMsg: function () {
         var me = this
         var url = myUrls.queryMsg()
-        setInterval(function() {
-          utils.sendAjax(url, me.checkboxObj, function(resp) {
+        setInterval(function () {
+          utils.sendAjax(url, me.checkboxObj, function (resp) {
             if (resp.status == 0) {
               me.disposeMsg(resp.data)
             }
           })
         }, this.interval)
       },
-      disposeMsg: function(data) {
+      disposeMsg: function (data) {
         if (data && data.length) {
           var newArr = []
           for (var i = 0; i < data.length; i++) {
@@ -2009,11 +2032,11 @@
           // this.waringRecords = newArr.concat(this.waringRecords);
         }
       },
-      saveReqMsgParameter: function() {
+      saveReqMsgParameter: function () {
         Cookies.set('checkboxObj', this.checkboxObj)
         this.waringModal = false
       },
-      showDisposeModalFrame: function(param) {
+      showDisposeModalFrame: function (param) {
         this.waringRowIndex = param.index
         var deviceNames = this.$store.state.deviceNames
 
@@ -2043,7 +2066,7 @@
 
         this.disposeModal = true
       },
-      sendDisposeWaring: function() {
+      sendDisposeWaring: function () {
         var me = this
         var sendCmdUrl = myUrls.sendCmd()
         var disposeAlarmUrl = myUrls.disposeAlarm()
@@ -2051,7 +2074,7 @@
         var paramsArr = []
         var paramsInputObj = this.paramsInputObj
 
-        store.paramsCmdCodeArr.forEach(function(cmdCode) {
+        store.paramsCmdCodeArr.forEach(function (cmdCode) {
           var val = paramsInputObj[cmdCode]
           paramsArr.push(val)
           if (val == '') {
@@ -2068,9 +2091,9 @@
           this.cmdRowWaringObj.params = paramsArr
         }
 
-        utils.sendAjax(sendCmdUrl, this.cmdRowWaringObj, function(resp) {
+        utils.sendAjax(sendCmdUrl, this.cmdRowWaringObj, function (resp) {
           if (resp.status == 0) {
-            utils.sendAjax(disposeAlarmUrl, me.disposeRowWaringObj, function(
+            utils.sendAjax(disposeAlarmUrl, me.disposeRowWaringObj, function (
               resp
             ) {
               if (resp.status === 0) {
@@ -2086,13 +2109,13 @@
           }
         })
       },
-      queryAlarmDescr: function() {
+      queryAlarmDescr: function () {
         var me = this
         var url = myUrls.queryAlarmDescr()
-        utils.sendAjax(url, {}, function(resp) {
+        utils.sendAjax(url, {}, function (resp) {
           if (resp.status == 0) {
             var records = resp.records
-            records.forEach(function(item, index) {
+            records.forEach(function (item, index) {
               if (index % 3 == 0) {
                 var newArr = []
                 newArr.push(item)
@@ -2112,7 +2135,7 @@
         template:
           '<Table width="898" height="475" border :columns="columns" :data="waringrecords"></Table>',
         props: ['waringrecords'],
-        data: function() {
+        data: function () {
           return {
             columns: [
               {
@@ -2153,7 +2176,7 @@
                           size: 'small'
                         },
                         on: {
-                          click: function() {
+                          click: function () {
                             // me.removeWaring(index);
                             me.$emit('showdisposemodal', params)
                           }
@@ -2168,18 +2191,18 @@
           }
         },
         methods: {
-          removeWaring: function(index) {
+          removeWaring: function (index) {
             console.log(index)
           }
         },
         computed: {},
-        mounted: function() {}
+        mounted: function () { }
       },
       deviceMsg: {
         template:
           '<Table height="475" :columns="columns" :data="deviceinfolist"></Table>',
         props: ['deviceinfolist'],
-        data: function() {
+        data: function () {
           return {
             columns: [
               {
@@ -2203,7 +2226,7 @@
         }
       }
     },
-    mounted: function() {
+    mounted: function () {
       this.settingCheckboxObj()
       this.pushOverdueDeviceInfo()
       this.timingRequestMsg()
@@ -2220,15 +2243,15 @@
       componentId: ''
     },
     methods: {
-      changeComponent: function(componentid) {
+      changeComponent: function (componentid) {
         this.componentId = componentid
       },
-      changeNav: function(state) {
+      changeNav: function (state) {
         if (this.$refs['my-component'].setNavState) {
           this.$refs['my-component'].setNavState(state)
         }
       },
-      changeInterval: function(interval) {
+      changeInterval: function (interval) {
         if (this.$refs['my-component'].setIntervalTime) {
           this.$refs['my-component'].setIntervalTime(interval)
         }
@@ -2242,7 +2265,7 @@
       waringComponent: waringComponent,
       systemParam: systemParam
     },
-    mounted: function() {
+    mounted: function () {
       this.$store.dispatch('setUserTypeDescr')
       this.$store.dispatch('setAllCmdList')
     }

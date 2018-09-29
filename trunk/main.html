@@ -198,15 +198,17 @@
                                             <li @click="playBack(device.deviceid)"><Icon type="md-planet"/><p>轨迹</p><li>
                                             <li @click="trackMap(device.deviceid)"><Icon type="md-person"/><p>跟踪</p><li> 
                                             <li>
-                                                <Dropdown transfer placement="right-start">
+                                                <Dropdown trigger="click" transfer placement="right-start">
                                                     <Icon type="ios-list"/><p>更多</p>
                                                     <i-dropdown-menu slot="list">
                                                         <DropdownItem name="name1">
-                                                            <Dropdown transfer placement="right-start">
+                                                            <Dropdown transfer placement="right-start" @on-click="handleClickDirective">
                                                                 设备指令
                                                                 <i-dropdown-menu slot="list">
-                                                                    <DropdownItem name="name11">原地设防</DropdownItem>
-                                                                    <DropdownItem name="name21">设备报表</DropdownItem>
+                                                                    <template v-for="(item, index) in currentDevDirectiveList" :key="item.cmdcode">
+                                                                        <DropdownItem :name="item.cmdcode" >{{item.cmdname}}</DropdownItem>
+                                                                    </template>
+                                                                    
                                                                 </i-dropdown-menu>
                                                             </Dropdown>
                                                         </DropdownItem>                                       
@@ -305,6 +307,24 @@
                     <i-button type="primary"  @click="handleEditDevFn" style="width: 100%">确定</i-button>
                 </div>
             </Modal>   
+            <!-- 下发指令模态 -->
+            <Modal v-model="dispatchDirectiveModal" width="460" class-name="vertical-center-modal">
+                    <p slot="header" style="color:#f60;text-align:center">
+                        <Icon type="ios-create-outline"></Icon>
+                        <span>{{ selectedCmdInfo.cmdName }}</span>
+                    </p>
+                     <div style="text-align:center">
+                        <Row style="margin: 10px 0" v-for="item in selectedCmdInfo.params" :key="item.desc">
+                            <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{item.desc}} : &nbsp;</i-col>
+                            <i-col span="16">
+                                <i-input v-model.trim="cmdParams[item.type]"></i-input>
+                            </i-col>
+                        </Row>
+                    </div>
+                    <div slot="footer">
+                        <i-button type="primary"  @click="disposeDirectiveFn" style="width: 100%">确定</i-button>
+                    </div>
+                </Modal>  
         </div>
     </script>
 

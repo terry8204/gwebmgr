@@ -11,203 +11,203 @@ if (pathname.indexOf('gpsserver') != -1) {
 
 var myUrls = {
   host: host,
-  login: function() {
+  login: function () {
     return this.host + 'webapi?action=login'
   },
-  loginOut: function() {
+  loginOut: function () {
     return this.host + 'webapi?action=loginout&token=' + token
   },
-  queryUserTypeDescr: function() {
-    return this.host + 'webapi?action=queryusertypedescr&token=' + token
+  queryUserTypeDescr: function () {
+    return this.host + 'webapi?action=queryusertypedescr&token=' + token;
   },
-  queryCommonCmd: function() {
-    return this.host + 'webapi?action=querycommoncmd&token=' + token
+  queryCommonCmd: function () {
+    return this.host + 'webapi?action=querycommoncmd&token=' + token;
   },
-  queryUserTypeByUser: function() {
+  queryUserTypeByUser: function () {
     return this.host + 'webapi?action=queryusertypebyuser&token=' + token
   },
-  changeUserPass: function() {
+  changeUserPass: function () {
     return this.host + 'webapi?action=changeuserpass&token=' + token
   },
-  queryUserType: function() {
+  queryUserType: function () {
     return this.host + 'webapi?action=queryusertype&token=' + token
   },
-  addCompany: function() {
+  addCompany: function () {
     return this.host + 'webapi?action=addcompany&token=' + token
   },
-  deleteCompany: function() {
+  deleteCompany: function () {
     return this.host + 'webapi?action=deletecompany&token=' + token
   },
-  editCompany: function() {
+  editCompany: function () {
     return this.host + 'webapi?action=editcompany&token=' + token
   },
-  queryCompanyByCreater: function() {
+  queryCompanyByCreater: function () {
     return this.host + 'webapi?action=pagequerycompany&token=' + token
   },
-  queryCompanyByIds: function() {
+  queryCompanyByIds: function () {
     return this.host + 'webapi?action=querycompanybyids&token=' + token
   },
-  queryCompanyById: function() {
+  queryCompanyById: function () {
     return this.host + 'webapi?action=querycompanybyid&token=' + token
   },
-  addGroup: function() {
+  addGroup: function () {
     return this.host + 'webapi?action=addgroup&token=' + token
   },
-  deleteGroup: function() {
+  deleteGroup: function () {
     return this.host + 'webapi?action=deletegroup&token=' + token
   },
-  editGroup: function() {
+  editGroup: function () {
     return this.host + 'webapi?action=editgroup&token=' + token
   },
-  editGroupMonitor: function() {
+  editGroupMonitor: function () {
     return this.host + 'webapi?action=editgroupmonitor&token=' + token
   },
-  queryGroupByUser: function() {
+  queryGroupByUser: function () {
     return this.host + 'webapi?action=pagequerygroup&token=' + token
   },
-  addUser: function() {
+  addUser: function () {
     return this.host + 'webapi?action=adduser&token=' + token
   },
-  queryCompanyGroup: function() {
+  queryCompanyGroup: function () {
     return this.host + 'webapi?action=querycompanygroup&token=' + token
   },
-  queryUser: function() {
+  queryUser: function () {
     return this.host + 'webapi?action=pagequeryuser&token=' + token
   },
-  resetUserLoginPwd: function() {
+  resetUserLoginPwd: function () {
     return this.host + 'webapi?action=resetuserpwd&token=' + token
   },
-  delUser: function() {
+  delUser: function () {
     return this.host + 'webapi?action=deleteuser&token=' + token
   },
-  editUser: function() {
+  editUser: function () {
     return this.host + 'webapi?action=edituser&token=' + token
   },
   //编辑用户设备指令密码
-  editUserDeviceCmdPwd: function() {
+  editUserDeviceCmdPwd: function () {
     return this.host + 'webapi?action=edituserdevicecmdpwd&token=' + token
   },
-  addDevice: function() {
+  addDevice: function () {
     return this.host + 'webapi?action=adddevice&token=' + token
   },
-  queryDeviceInfo: function() {
+  queryDeviceInfo: function () {
     return this.host + 'webapi?action=deviceinfo&token=' + token
   },
-  editDevice: function() {
+  editDevice: function () {
     return this.host + 'webapi?action=editdevice&token=' + token
   },
-  deleteDevice: function() {
+  deleteDevice: function () {
     return this.host + 'webapi?action=deletedevice&token=' + token
   },
-  queryDeviceById: function() {
+  queryDeviceById: function () {
     return this.host + 'webapi?action=querydevicebyid&token=' + token
   },
-  queryDeviceList: function() {
+  queryDeviceList: function () {
     return this.host + 'webapi?action=pagequerydevice&token=' + token
   },
-  resetDeviceLoginPwd: function() {
+  resetDeviceLoginPwd: function () {
     return this.host + 'webapi?action=resetdeviceloginpwd&token=' + token
   },
   // 监控页面url
-  monitorListByUser: function() {
+  monitorListByUser: function () {
     return this.host + 'webapi?action=querymonitorlist&token=' + token
   },
-  queryCompanyTree: function() {
+  queryCompanyTree: function () {
     return this.host + 'webapi?action=querycompanytree&token=' + token
   },
-  lastPosition: function() {
+  lastPosition: function () {
     return this.host + 'webapi?action=lastposition&token=' + token
   },
   // 查询轨迹
-  queryTracks: function(token) {
+  queryTracks: function (token) {
     return this.host + 'webapi?action=querytracks&token=' + token
   },
   // 查询报警信息
-  queryAlarm: function() {
+  queryAlarm: function () {
     return this.host + 'webapi?action=queryalarm&token=' + token
   },
-  queryMsg: function() {
+  queryMsg: function () {
     return this.host + 'webapi?action=querymsg&token=' + token
   },
   //处理报警
-  disposeAlarm: function(param) {
+  disposeAlarm: function (param) {
     return this.host + 'webapi?action=disposealarm&token=' + token
   },
   // 下发命令
-  sendCmd: function(param) {
+  sendCmd: function (param) {
     return this.host + 'webapi?action=sendcmd&token=' + token
   },
-  queryAlarmDescr: function() {
+  queryAlarmDescr: function () {
     return this.host + 'webapi?action=queryalarmdescr&token=' + token
   },
   // 系统参数  车辆
-  addVehicleType: function() {
+  addVehicleType: function () {
     return this.host + 'webapi?action=addvehicletype&token=' + token
   },
-  deleteVehicleType: function() {
+  deleteVehicleType: function () {
     return this.host + 'webapi?action=deletevehicletype&token=' + token
   },
-  pageQueryVehicleType: function() {
+  pageQueryVehicleType: function () {
     return this.host + 'webapi?action=pagequeryvehicletype&token=' + token
   },
-  editVehicleType: function() {
+  editVehicleType: function () {
     return this.host + 'webapi?action=editvehicletype&token=' + token
   },
   // 设备指令
-  queryCmd: function() {
+  queryCmd: function () {
     return this.host + 'webapi?action=pagequerycmd&token=' + token
   },
-  addCmd: function() {
+  addCmd: function () {
     return this.host + 'webapi?action=addcmd&token=' + token
   },
-  deleteCmd: function() {
+  deleteCmd: function () {
     return this.host + 'webapi?action=deletecmd&token=' + token
   },
-  editCmd: function() {
+  editCmd: function () {
     return this.host + 'webapi?action=editcmd&token=' + token
   },
   // 设备类型
-  pageQueryDeviceType: function() {
+  pageQueryDeviceType: function () {
     return this.host + 'webapi?action=pagequerydevicetype&token=' + token
   },
-  queryDeviceTypeByUser: function() {
+  queryDeviceTypeByUser: function () {
     return this.host + 'webapi?action=querydevicetypebyuser&token=' + token
   },
-  addDeviceType: function() {
+  addDeviceType: function () {
     return this.host + 'webapi?action=adddevicetype&token=' + token
   },
-  deleteDeviceType: function() {
+  deleteDeviceType: function () {
     return this.host + 'webapi?action=deletedevicetype&token=' + token
   },
-  editDeviceTypeCmd: function() {
+  editDeviceTypeCmd: function () {
     return this.host + 'webapi?action=editdevicetypecmd&token=' + token
   },
-  editDeviceType: function() {
+  editDeviceType: function () {
     return this.host + 'webapi?action=editdevicetype&token=' + token
   },
-  queryDeviceTypeHadCmd: function() {
+  queryDeviceTypeHadCmd: function () {
     return this.host + 'webapi?action=querydevicetypehadcmd&token=' + token
   },
-  editDeviceTypeCmd: function() {
+  editDeviceTypeCmd: function () {
     return this.host + 'webapi?action=editdevicetypecmd&token=' + token
   },
-  updateDeviceTypeCmd: function() {
+  updateDeviceTypeCmd: function () {
     return this.host + 'webapi?action=updatedevicetypecmd&token=' + token
   },
   //查询用户所有有的设备指令
-  queryAllDeviceCmdByUser: function() {
+  queryAllDeviceCmdByUser: function () {
     return this.host + 'webapi?action=queryalldevicecmdbyuser&token=' + token
   },
   //查询用户已拥有的设备指令
-  queryHadDeviceCmdByUser: function() {
+  queryHadDeviceCmdByUser: function () {
     return this.host + 'webapi?action=queryhaddevicecmdbyuser&token=' + token
   },
   //查询用户所有设备类型详细
-  queryAllDeviceTypeByUser: function() {
+  queryAllDeviceTypeByUser: function () {
     return this.host + 'webapi?action=queryalldevicetypebyuser&token=' + token
   },
   // 编辑用户设备指令
-  editUserDeviceCmd: function() {
+  editUserDeviceCmd: function () {
     return this.host + 'webapi?action=edituserdevicecmd&token=' + token
   }
 }

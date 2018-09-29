@@ -1,5 +1,5 @@
 var utils = {
-  sendAjax: function(url, data, callback) {
+  sendAjax: function (url, data, callback) {
     var encode = JSON.stringify(data)
     $.ajax({
       url: url,
@@ -7,29 +7,29 @@ var utils = {
       data: encode,
       timeout: 10000,
       dataType: 'json',
-      success: function(resp) {
+      success: function (resp) {
         if (resp.status == 3) {
           new Vue().$Message.error('token过期,2秒后跳回登录页面')
-          setTimeout(function() {
+          setTimeout(function () {
             window.location.href = 'index.html'
           })
         } else {
           callback(resp)
         }
       },
-      error: function(e) {
+      error: function (e) {
         Cookies.remove('token')
         new Vue().$Loading.error()
       },
-      complete: function() {
+      complete: function () {
         //  console.log('完成', '')
       }
     })
   },
-  getBaiduAddressFromBaidu: function(offsetlon, offsetlat, callback) {
+  getBaiduAddressFromBaidu: function (offsetlon, offsetlat, callback) {
     var point = new BMap.Point(offsetlon, offsetlat)
     var geoc = new BMap.Geocoder()
-    geoc.getLocation(point, function(rs) {
+    geoc.getLocation(point, function (rs) {
       if (rs) {
         var addComp = rs.addressComponents
         address =
@@ -44,18 +44,18 @@ var utils = {
       }
     })
   },
-  getJiuHuAddressSyn: function(lat, lon, callback) {
+  getJiuHuAddressSyn: function (lat, lon, callback) {
     $.ajax({
       type: 'get',
       url: 'http://www.jh.tt/w?lat=' + lat + '&lon=' + lon,
-      success: function(data) {
+      success: function (data) {
         if (data && data.status == 0) {
           callback(data)
         }
       }
     })
   },
-  getParameterByName: function(name) {
+  getParameterByName: function (name) {
     var url = location.search
     url = decodeURIComponent(url)
     var theRequest = new Object()
@@ -68,7 +68,7 @@ var utils = {
     }
     return theRequest[name]
   },
-  getDisplayRange: function(zoom) {
+  getDisplayRange: function (zoom) {
     var range = null
     if (zoom == 18) {
       range = 25
@@ -103,7 +103,7 @@ var utils = {
     }
     return range
   },
-  getAngle: function(course) {
+  getAngle: function (course) {
     var angle = null
     if (course == 0) {
       angle = 0
@@ -126,7 +126,7 @@ var utils = {
     }
     return angle
   },
-  getDirectionImage: function(isOnline, angle) {
+  getDirectionImage: function (isOnline, angle) {
     var pathname = location.pathname
     var imgPath = ''
     if (pathname.indexOf('gpsserver') != -1) {
@@ -141,13 +141,13 @@ var utils = {
     }
     return imgPath
   },
-  changeGroupsDevName: function(changeInfo, groups) {
+  changeGroupsDevName: function (changeInfo, groups) {
     var deviceid = changeInfo.deviceid
     var devicename = changeInfo.devicename
     var simnum = changeInfo.simnum
 
-    groups.forEach(function(group) {
-      group.devices.forEach(function(device) {
+    groups.forEach(function (group) {
+      group.devices.forEach(function (device) {
         if (device.deviceid == deviceid) {
           if (device.devicename != devicename) {
             device.devicename = devicename
@@ -160,6 +160,23 @@ var utils = {
         }
       })
     })
+  },
+  parseXML: function (param) {
+    var paramsListObj = []
+    var params = "<params>" + param + "</params>";
+    var parser = new DOMParser();
+    var xmlDoc = parser.parseFromString(params, "text/xml");
+    var parent = xmlDoc.children[0];
+    var children = parent.children;
+    for (var i = 0; i < children.length; i++) {
+      var item = children[i]
+      var desc = item.innerHTML;
+      var type = item.getAttribute("type");
+      if (type && desc) {
+        paramsListObj.push({ type: type, desc: desc });
+      }
+    }
+    return paramsListObj;
   }
 }
 
@@ -174,15 +191,15 @@ Vue.component('expand-row', {
   props: {
     devices: Array
   },
-  data: function() {
+  data: function () {
     return {}
   },
   methods: {
-    clickMe: function(item) {
+    clickMe: function (item) {
       console.log(item)
     }
   },
-  mounted: function() {
+  mounted: function () {
     console.log(this.devices)
   }
 })
@@ -202,48 +219,48 @@ Vue.component('expand-cmd-row', {
     cmds: Array,
     typename: String
   },
-  data: function() {
+  data: function () {
     return {
       selectedCmdList: []
     }
   },
   methods: {
-    querySelectedCmd: function() {
+    querySelectedCmd: function () {
       var url = myUrls.queryDeviceTypeHadCmd()
       var data = { devicetype: this.devices.devicetypeid }
       utils.sendAjax(url, data, this.doQuerySelectedCmdFn)
     },
-    doQuerySelectedCmdFn: function(resp) {
+    doQuerySelectedCmdFn: function (resp) {
       if (resp.status == 0) {
         this.selectedCmdList = resp.records
         this.devices.selectedCmdList = resp.records
       }
     },
-    handleClick: function(index) {
+    handleClick: function (index) {
       var me = this
       editObject = this.cmds[index]
       editObject.devtypename = this.typename
       me.$Loading.start()
       $('#system-view').load(
         '../view/systemparam/editdevicetypecmd.html',
-        function() {
+        function () {
           me.$Loading.finish()
         }
       )
     }
   },
-  mounted: function() {}
+  mounted: function () { }
 })
 
 //  得到表格添加指令的 row组建
 var expandCmdRow = Vue.component('expand-cmd-row')
 
 // 轨迹回放
-function playBack(deviceid) {
+function playBack (deviceid) {
   window.open('playback.html?deviceid=' + deviceid)
 }
 
 // 跟踪
-function trackMap(deviceid) {
+function trackMap (deviceid) {
   window.open('trackmap.html?deviceid=' + deviceid)
 }
