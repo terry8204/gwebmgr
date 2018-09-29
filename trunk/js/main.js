@@ -36,15 +36,19 @@
         })
       },
       setAllCmdList: function(context) {
-        var commonDeviceUrl = myUrls.queryCommonCmd()
-        var hadDeviceUrl = myUrls.queryHadDeviceCmdByUser()
+    	  
+        var commonDeviceUrl = myUrls.queryCommonCmd();
+        var hadDeviceUrl = myUrls.queryHadDeviceCmdByUser();
         utils.sendAjax(commonDeviceUrl, {}, function(resp) {
           if (resp.status == 0) {
             var commonCmd = resp.records
+            alert('commonDeviceUrl');
             utils.sendAjax(
               hadDeviceUrl,
               { username: Cookies.get('name') },
               function(resp) {
+            	  alert('queryHadDeviceCmdByUser');
+            	  console.log(resp);
                 var cmdList = commonCmd.concat(resp.records)
                 context.commit('setAllCmdList', cmdList)
               }
@@ -75,7 +79,6 @@
         cmdList.forEach(function(item) {
           state.allCmdList.push(item)
         })
-        console.log(state.allCmdList, '全部指令')
       }
     }
   })
@@ -261,7 +264,9 @@
           devicename: '',
           simnum: '',
           deviceid: ''
-        }
+        },
+        currentDeviceType: null,
+        currentDevDirectiveList: []
       }
     },
     methods: {
@@ -458,9 +463,7 @@
           me.filterMethod(value)
         }, 300)
       },
-      handleClickItem: function(device) {
-        console.log('handleClickItem', device)
-      },
+
       selectedStateNav: function(state) {
         this.selectedState = state
       },
@@ -471,6 +474,10 @@
         groupInfo.expand = !groupInfo.expand
       },
       selectedDev: function(deviceInfo) {
+        var devicetype = deviceInfo.devicetype
+        if (devicetype != this.currentDeviceType) {
+          this.currentDeviceType = devicetype
+        }
         this.cancelSelected()
         deviceInfo.isSelected = true
         this.selectedDevObj = deviceInfo
@@ -1052,7 +1059,8 @@
               deviceid: device.deviceid,
               isOnline: isOnline,
               isSelected: false,
-              simnum: device.simnum
+              simnum: device.simnum,
+              devicetype: device.devicetype
             }
             if (isOnline) {
               onlineCount++
@@ -1111,7 +1119,8 @@
               isSelected: false,
               isOnline: isOnline,
               deviceid: device.deviceid,
-              simnum: device.simnum
+              simnum: device.simnum,
+              devicetype: device.devicetype
             }
             if (device.deviceid == store.currentDeviceId) {
               groupData.expand = true
@@ -1157,7 +1166,8 @@
               deviceid: device.deviceid,
               isOnline: isOnline,
               isSelected: false,
-              simnum: device.simnum
+              simnum: device.simnum,
+              devicetype: device.devicetype
             }
 
             if (device.deviceid == store.currentDeviceId) {
@@ -1212,7 +1222,8 @@
               isSelected: false,
               isOnline: isOnline,
               deviceid: device.deviceid,
-              simnum: device.simnum
+              simnum: device.simnum,
+              devicetype: device.devicetype
             }
             if (device.deviceid == store.currentDeviceId) {
               groupData.expand = true
@@ -1260,7 +1271,8 @@
               deviceid: device.deviceid,
               isOnline: isOnline,
               isSelected: false,
-              simnum: device.simnum
+              simnum: device.simnum,
+              devicetype: device.devicetype
             }
 
             if (device.deviceid == store.currentDeviceId) {
@@ -1313,7 +1325,8 @@
               isSelected: false,
               isOnline: isOnline,
               deviceid: device.deviceid,
-              simnum: device.simnum
+              simnum: device.simnum,
+              devicetype: device.devicetype
             }
             if (device.deviceid == store.currentDeviceId) {
               groupData.expand = true
@@ -1448,6 +1461,17 @@
         } else {
           this.isShowMatchDev = false
         }
+      },
+      currentDeviceType: function() {
+        var allCmdList = this.$store.state.allCmdList
+        var directiveList = []
+        var type = this.currentDeviceType
+        allCmdList.forEach(function(cmd) {
+          if (cmd.devicetype == type) {
+            directiveList.push(cmd)
+          }
+        })
+        this.currentDevDirectiveList = directiveList
       },
       records: function() {
         var online = 0

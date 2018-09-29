@@ -201,9 +201,17 @@
                                                 <Dropdown transfer placement="right-start">
                                                     <Icon type="ios-list"/><p>更多</p>
                                                     <i-dropdown-menu slot="list">
-                                                        <DropdownItem name="name">设备指令</DropdownItem>
-                                                        <DropdownItem name="name1">原地设防</DropdownItem>
-                                                        <DropdownItem name="name2">设备报表</DropdownItem>
+                                                        <DropdownItem name="name1">
+                                                            <Dropdown transfer placement="right-start">
+                                                                设备指令
+                                                                <i-dropdown-menu slot="list">
+                                                                    <DropdownItem name="name11">原地设防</DropdownItem>
+                                                                    <DropdownItem name="name21">设备报表</DropdownItem>
+                                                                </i-dropdown-menu>
+                                                            </Dropdown>
+                                                        </DropdownItem>                                       
+                                                        <DropdownItem name="name2">原地设防</DropdownItem>
+                                                        <DropdownItem name="name3">设备报表</DropdownItem>
                                                     </i-dropdown-menu>
                                                 </Dropdown>
                                             <li> 
