@@ -1493,7 +1493,7 @@
             directiveList.push(cmd)
           }
         })
-        this.currentDevDirectiveList = directiveList
+        this.currentDevDirectiveList = directiveList;
         console.log('currentDevDirectiveList', this.currentDevDirectiveList)
       },
       records: function () {
