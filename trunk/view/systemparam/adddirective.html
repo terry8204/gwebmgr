@@ -7,7 +7,7 @@
                 <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">
                     <i style="color: red;display: inline-block;">*</i>&nbsp;设备类型 : &nbsp;</i-col>
                 <i-col span="20">
-                    <i-select v-model="type">
+                    <i-select v-model="deviceType">
                         <i-option v-for="item in deviceTypeList" :value="item.value" :key="item.value">{{ item.label }}</i-option>
                     </i-select>
                 </i-col>  
@@ -17,17 +17,10 @@
                 <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">
                     <i style="color: red;display: inline-block;">*</i>&nbsp;指令名称 : &nbsp;</i-col>
                 <i-col span="20">
-                    <i-select v-model="type">
+                    <i-select v-model="cmdCode">
                         <i-option v-for="item in listCmdAction" :value="item.value" :key="item.value">{{ item.label }}</i-option>
                     </i-select>
                 </i-col>
-            </Row>
-
-            <Row style="margin: 10px 0">
-                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;"><i style="color: red;display: inline-block;">*</i>&nbsp;是否通用 : &nbsp;</i-col>
-                    <i-col span="20" style="height: 100%;line-height:32px;">
-                        <Checkbox v-model="isPublic">(选中为公用)</Checkbox>
-                    </i-col>
             </Row>
 
             <Row style="margin: 10px 0">
@@ -91,13 +84,12 @@
                     params: null,
                     paramsen: "",
                     paramstw: "",
-                    common:0,
                     previewObjList:[],
                     lock:false,
-                    isPublic:false,
                     isAsync:false,
                     kong:"",
-                    type:"",
+                    deviceType:"",
+                    cmdCode:"",
                     deviceTypeList:[],
                     listCmdAction:[]
                 }
@@ -116,27 +108,17 @@
                         this.lock = false;
                     }
                 },
-                isPublic:function(){
-                    if(this.isPublic){
-                        this.common = 1;
-                    }else{
-                        this.common = 0;
-                    }
-                }
+               
             },
             methods: {
                 handleAddDirective:function(){
  
-                    if( !this.cmdname ){
-                        this.$Message.error("指令名称是必填的");
-                        return ;
-                    }
-                    
+                 
                     var me = this;
                     var url = myUrls.addCmd();
                     var data = {
-                        cmdname: this.cmdname,
-                        common:this.common,
+                        devicetype:this.deviceType,
+                        cmdcode:this.cmdCode,    
                         paramsen: "",
                         paramstw: "",
                         cmddescren: "",
@@ -195,10 +177,11 @@
                     var me = this;
                     var url = myUrls.listCmdAction();
                     utils.sendAjax(url,{},function (resp) { 
-                        if(resp.status == 0 && resp.devicetypes!=null){
-                            resp.devicetypes.forEach(function (item) { 
-                                me.listCmdAction.push({value:item.cmdName,label:item.desc});
+                        if(resp.status == 0){
+                            resp.cmds.forEach(function (item) { 
+                                me.listCmdAction.push({value:item.cmdCode,label:item.cmdName});
                             })
+                            console.log('listCmdAction', me.listCmdAction);
                         }
                     });  
                 }

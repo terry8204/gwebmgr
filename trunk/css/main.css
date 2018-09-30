@@ -35,6 +35,9 @@ div.ivu-tree .ivu-icon,
     margin-top: 0px; 
 }
 
+#add-directive-wraper .ivu-select-selection .ivu-icon {
+    margin-top: -6px; 
+}
 
 .ivu-tree ul {
     font-size: 14px;
