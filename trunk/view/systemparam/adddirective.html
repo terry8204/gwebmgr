@@ -26,7 +26,7 @@
             <Row style="margin: 10px 0">
                 <i-col span="4" style="height: 100%;text-align:right;line-height:32px;"><i style="color: red;display: inline-block;">*</i>&nbsp;是否同步 : &nbsp;</i-col>
                 <i-col span="20" style="height: 100%;line-height:32px;">
-                    <Checkbox v-model="isAsync">(选中为异步)</Checkbox>
+                    <Checkbox v-model="isSync">(选中为同步)</Checkbox>
                 </i-col>
             </Row>
 
@@ -86,7 +86,7 @@
                     paramstw: "",
                     previewObjList:[],
                     lock:false,
-                    isAsync:false,
+                    isSync:false,
                     kong:"",
                     deviceType:"",
                     cmdCode:"",
@@ -125,7 +125,7 @@
                         cmddescrtw: "",
                         cmdnameen: "",
                         cmdnametw: "",
-                        sync:this.isAsync?0:1
+                        sync:this.isSync?1:0
                     };
 
                     if(this.cmddescr){

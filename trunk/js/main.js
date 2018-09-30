@@ -36,24 +36,19 @@
         })
       },
       setAllCmdList: function (context) {
-        var commonDeviceUrl = myUrls.queryCommonCmd()
+        // var commonDeviceUrl = myUrls.queryCommonCmd()
         var hadDeviceUrl = myUrls.queryHadDeviceCmdByUser()
-        utils.sendAjax(commonDeviceUrl, {}, function (resp) {
-          if (resp.status == 0) {
-            var commonCmd = resp.records;
-            utils.sendAjax(
-              hadDeviceUrl,
-              { username: Cookies.get('name') },
-              function (resp) {
-                console.log(resp)
-                var cmdList = commonCmd.concat(resp.records);
-                context.commit('setAllCmdList', cmdList);
-              }
-            )
-          } else {
-            alert('服务器错误!')
+
+        utils.sendAjax(
+          hadDeviceUrl,
+          { username: Cookies.get('name') },
+          function (resp) {
+            console.log(resp)
+            var cmdList = resp.records;
+            context.commit('setAllCmdList', cmdList);
           }
-        })
+        )
+
       }
     },
     mutations: {
