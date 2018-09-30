@@ -34,12 +34,16 @@
                             key: 'cmdname'
                         },
                         {
-                            title: 'cmdCode',
-                            key: 'cmdcode'
+                            title: '描述',
+                            key: 'cmddescr'
                         },
                         {
                             title:'指令类型',
                             key:'commonStr'
+                        }, 
+                        {
+                            title:'是否同步',
+                            key:'isSync'
                         },
                         {
                             title: '操作',
@@ -123,6 +127,11 @@
                                     item.commonStr = "私有指令";
                                 }else{
                                     item.commonStr = "公共指令";
+                                }
+                                if(item.sync==0){
+                                    item.isSync = "异步"
+                                }else{
+                                    item.isSync = "同步"
                                 }
                             })
                             me.tableData = resp.records;

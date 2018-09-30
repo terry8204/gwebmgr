@@ -3,10 +3,11 @@
     <h3 class="h3-title" style="height: 32px;margin-bottom: 10px">编辑指令 <span style="float: right;"><i-button style="width: 100%" @click="back">返回</i-button></span> </h3>
     <div style="width: 700px;margin: 0 auto;">
         
-        <Row>
-            <i-col span="4" style="height: 100%;text-align:right;line-height:32px;"><i style="color: red;display: inline-block;">*</i>&nbsp;指令Code : &nbsp;</i-col>
+        <Row style="margin: 10px 0">
+            <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">
+                <i style="color: red;display: inline-block;">*</i>&nbsp;指令名称 : &nbsp;</i-col>
             <i-col span="20">
-                <i-input v-model.trim.number="cmdcode"></i-input>
+                <i-input v-model.trim="cmdname"></i-input>
             </i-col>
         </Row>
         <Row style="margin: 10px 0">
@@ -16,12 +17,12 @@
                 </i-col>
         </Row>
         <Row style="margin: 10px 0">
-            <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">
-                <i style="color: red;display: inline-block;">*</i>&nbsp;指令名称 : &nbsp;</i-col>
-            <i-col span="20">
-                <i-input v-model.trim="cmdname"></i-input>
+            <i-col span="4" style="height: 100%;text-align:right;line-height:32px;"><i style="color: red;display: inline-block;">*</i>&nbsp;是否同步 : &nbsp;</i-col>
+            <i-col span="20" style="height: 100%;line-height:32px;">
+                <Checkbox v-model="isAsync">(选中为异步)</Checkbox>
             </i-col>
         </Row>
+
         <Row>
             <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">指令描述 : &nbsp;</i-col>
             <i-col span="20">
@@ -77,6 +78,7 @@
                     paramstw: "",
                     previewObjList:[],
                     isPublic:false,
+                    isAsync:false,
                     lock:false,
                     kong:""
                 }
@@ -119,21 +121,14 @@
                 },
                 handleEditDirective:function(){
           
-                    if( !this.cmdcode || !this.cmdname ){
-                        this.$Message.error("code和指令名称是必填的");
+                    if( !this.cmdname ){
+                        this.$Message.error("指令名称是必填的");
                         return ;
-                    }else{
-
-                        if( typeof this.cmdcode !== 'number'){
-                            this.$Message.error("cmdcode 必须是数字");
-                            return;
-                        }
-                    };
+                    }
 
                     var me = this;
                     var url = myUrls.editCmd();
                     var data = {
-                        cmdcode: this.cmdcode,
                         cmdname: this.cmdname,
                         common:this.common,
                         paramsen: "",
@@ -142,6 +137,7 @@
                         cmddescrtw: "",
                         cmdnameen: "",
                         cmdnametw: "",
+                        sync:this.isAsync?0:1
                     };
 
                     if(this.cmddescr){
@@ -194,6 +190,7 @@
                     this.paramsen=data.paramsen;
                     this.paramstw=data.paramstw;
                     this.common = data.common;
+                    this.isAsync = data.sync == 0 ? true :false
 
                     if(data.params!=""){
                         this.params=data.params;
