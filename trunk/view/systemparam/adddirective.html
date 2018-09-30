@@ -2,12 +2,24 @@
 <div class="pd-10 system" id="add-directive-wraper">
     <h3 class="h3-title">添加指令</h3>
     <div style="width: 700px;margin: 0 auto;">
+        
+            <Row style="margin: 10px 0">
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">
+                    <i style="color: red;display: inline-block;">*</i>&nbsp;设备类型 : &nbsp;</i-col>
+                <i-col span="20">
+                    <i-select v-model="type">
+                        <i-option v-for="item in deviceTypeList" :value="item.value" :key="item.value">{{ item.label }}</i-option>
+                    </i-select>
+                </i-col>  
+            </Row>
 
             <Row style="margin: 10px 0">
                 <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">
                     <i style="color: red;display: inline-block;">*</i>&nbsp;指令名称 : &nbsp;</i-col>
                 <i-col span="20">
-                    <i-input v-model.trim="cmdname"></i-input>
+                    <i-select v-model="type">
+                        <i-option v-for="item in listCmdAction" :value="item.value" :key="item.value">{{ item.label }}</i-option>
+                    </i-select>
                 </i-col>
             </Row>
 
@@ -85,6 +97,9 @@
                     isPublic:false,
                     isAsync:false,
                     kong:"",
+                    type:"",
+                    deviceTypeList:[],
+                    listCmdAction:[]
                 }
             },
             watch:{
@@ -164,8 +179,34 @@
                             this.previewObjList.push({ type: type, text: text });
                         }
                     } 
+                },
+                getDeviceType:function () {
+                    var me = this;
+                    var url = myUrls.queryDeviceTypeByUser();
+                    utils.sendAjax(url,{},function (resp) { 
+                        if(resp.status == 0 && resp.devicetypes!=null){
+                            resp.devicetypes.forEach(function (item) { 
+                                me.deviceTypeList.push({value:item.devicetypeid,label:item.typename});
+                            })
+                        }
+                    }); 
+                },
+                getListCmdAction:function(){
+                    var me = this;
+                    var url = myUrls.listCmdAction();
+                    utils.sendAjax(url,{},function (resp) { 
+                        if(resp.status == 0 && resp.devicetypes!=null){
+                            resp.devicetypes.forEach(function (item) { 
+                                me.listCmdAction.push({value:item.cmdName,label:item.desc});
+                            })
+                        }
+                    });  
                 }
             },
+            mounted:function () {
+                this.getDeviceType();
+                this.getListCmdAction();
+            }
         })
     </script>
 </div>

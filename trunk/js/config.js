@@ -209,6 +209,10 @@ var myUrls = {
   // 编辑用户设备指令
   editUserDeviceCmd: function () {
     return this.host + 'webapi?action=edituserdevicecmd&token=' + token
+  },
+  // 查询指令列表
+  listCmdAction: function () {
+    return this.host + 'webapi?action=listcmdaction&token=' + token
   }
 }
 

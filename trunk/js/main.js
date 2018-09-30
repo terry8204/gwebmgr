@@ -375,6 +375,7 @@
           }
         });
         this.selectedCmdInfo.cmdName = cmdInfo.cmdname;
+        this.selectedCmdInfo.cmdcode = cmdInfo.cmdcode;
         if (cmdInfo.params) {
           this.selectedCmdInfo.params = utils.parseXML(cmdInfo.params)
           this.selectedCmdInfo.params.forEach(function (param) {
@@ -384,7 +385,13 @@
         this.dispatchDirectiveModal = true;
       },
       disposeDirectiveFn: function () {
-        console.log('cmdParams', this.cmdParams)
+
+        var url = myUrls.sendCmd();
+        var data = { devicetype: this.currentDeviceType, cmdcode: this.selectedCmdInfo.cmdcode, deviceid: store.currentDeviceId, params: Object.values(this.cmdParams) };
+        console.log('cmdParams-data', data)
+        // utils.sendAjax(url, data, function (resp) {
+
+        // })
       },
       focus: function () {
         var me = this
@@ -1490,7 +1497,9 @@
         var type = this.currentDeviceType
         allCmdList.forEach(function (cmd) {
           if (cmd.devicetype == type) {
-            directiveList.push(cmd)
+            directiveList.push(cmd);
+          } else if (cmd.common == 1) {
+            directiveList.push(cmd);
           }
         })
         this.currentDevDirectiveList = directiveList;
