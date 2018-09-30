@@ -6,20 +6,15 @@
         <Row style="margin: 10px 0">
             <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">
                 <i style="color: red;display: inline-block;">*</i>&nbsp;指令名称 : &nbsp;</i-col>
-            <i-col span="20">
-                <i-input v-model.trim="cmdname"></i-input>
+            <i-col span="20" style="height: 100%;line-height:32px;">
+                {{cmdname}}
             </i-col>
         </Row>
-        <Row style="margin: 10px 0">
-                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;"><i style="color: red;display: inline-block;">*</i>&nbsp;是否通用 : &nbsp;</i-col>
-                <i-col span="20" style="height: 100%;line-height:32px;">
-                    <Checkbox v-model="isPublic">(选中为公用)</Checkbox>
-                </i-col>
-        </Row>
+       
         <Row style="margin: 10px 0">
             <i-col span="4" style="height: 100%;text-align:right;line-height:32px;"><i style="color: red;display: inline-block;">*</i>&nbsp;是否同步 : &nbsp;</i-col>
             <i-col span="20" style="height: 100%;line-height:32px;">
-                <Checkbox v-model="isAsync">(选中为异步)</Checkbox>
+                <Checkbox v-model="isSync">(选中为同步)</Checkbox>
             </i-col>
         </Row>
 
@@ -64,11 +59,11 @@
             data:function(){
                 return {
                     cmdcode: null,
-
+                    devicetype:null,
                     cmdname: null,
                     cmdnameen: "",
                     cmdnametw: "",
-
+                    
                     cmddescr: null,
                     cmddescren: "",
                     cmddescrtw: "",
@@ -78,7 +73,7 @@
                     paramstw: "",
                     previewObjList:[],
                     isPublic:false,
-                    isAsync:false,
+                    isSync:false,
                     lock:false,
                     kong:""
                 }
@@ -95,13 +90,6 @@
                         this.parseXML(xmlDoc);
                     }else{
                         this.lock = false;
-                    }
-                },
-                isPublic:function(){
-                    if(this.isPublic){
-                        this.common = 1;
-                    }else{
-                        this.common = 0;
                     }
                 }
             },
@@ -121,23 +109,19 @@
                 },
                 handleEditDirective:function(){
           
-                    if( !this.cmdname ){
-                        this.$Message.error("指令名称是必填的");
-                        return ;
-                    }
-
                     var me = this;
                     var url = myUrls.editCmd();
                     var data = {
                         cmdname: this.cmdname,
-                        common:this.common,
+                        cmdcode: this.cmdcode,
                         paramsen: "",
                         paramstw: "",
                         cmddescren: "",
                         cmddescrtw: "",
                         cmdnameen: "",
                         cmdnametw: "",
-                        sync:this.isAsync?0:1
+                        devicetype:this.devicetype,
+                        sync:this.isSync?1:0
                     };
 
                     if(this.cmddescr){
@@ -177,7 +161,7 @@
                 },
                 setValue:function(data){
                     this.cmdcode=data.cmdcode; 
-
+                    this.devicetype = data.devicetype;
                     this.cmdname=data.cmdname ;
                     this.cmdnameen=data.cmdnameen;
                     this.cmdnametw=data.cmdnametw;
@@ -190,18 +174,14 @@
                     this.paramsen=data.paramsen;
                     this.paramstw=data.paramstw;
                     this.common = data.common;
-                    this.isAsync = data.sync == 0 ? true :false
+                    this.isSync = data.sync == 1 ? true :false
 
                     if(data.params!=""){
                         this.params=data.params;
                         this.lock = true;
                     };
 
-                    if(data.common == 0){
-                        this.isPublic = false;
-                    }else{
-                        this.isPublic = true;
-                    };
+                   
                 }
             },
             mounted : function (param) {  
