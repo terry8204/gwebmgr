@@ -30,19 +30,18 @@
           data: {},
           async: false,
           success: function (resp) {
-            context.commit('setUserTypeDescr', resp.records)
+            context.commit('setUserTypeDescr', resp.records);
           },
           error: function () { }
         })
       },
       setAllCmdList: function (context) {
-        var hadDeviceUrl = myUrls.queryHadDeviceCmdByUser()
+        var hadDeviceUrl = myUrls.queryHadDeviceCmdByUser();
 
         utils.sendAjax(
           hadDeviceUrl,
           { username: Cookies.get('name') },
           function (resp) {
-            console.log(resp)
             var cmdList = resp.records;
             context.commit('setAllCmdList', cmdList);
           }
@@ -387,7 +386,7 @@
 
         var url = myUrls.sendCmd();
         var data = { devicetype: this.currentDeviceType, cmdcode: this.selectedCmdInfo.cmdcode, deviceid: store.currentDeviceId, params: Object.values(this.cmdParams) };
-        console.log('cmdParams-data', data)
+
         // utils.sendAjax(url, data, function (resp) {
 
         // })
