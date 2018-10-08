@@ -926,7 +926,7 @@
           deviceid: data.deviceid,
           devicename: data.devicename
         }
-        var url = myUrls.editDevice()
+        var url = myUrls.editDeviceSimple()
         if (data.devicename.length == 0 || data.devicename == '') {
           me.$Message.error('设备名称是必填的')
           return
@@ -947,6 +947,7 @@
         })
       },
       editDevice: function (device) {
+        console.log('deviceinfo', this.$store.state.deviceNames);
         store.treeDeviceInfo = device
         this.editDevData.devicename = device.title
         this.editDevData.simnum = device.simnum

@@ -96,6 +96,9 @@ var myUrls = {
   editDevice: function () {
     return this.host + 'webapi?action=editdevice&token=' + token
   },
+  editDeviceSimple: function () {
+    return this.host + 'webapi?action=editdevicesimple&token=' + token
+  },
   deleteDevice: function () {
     return this.host + 'webapi?action=deletedevice&token=' + token
   },
