@@ -16,7 +16,7 @@
       userType: Cookies.get('userType'),
       deviceNames: {},
       userTypeDescrList: null,
-      allCmdList: [] // queryCommonCmd
+      allCmdList: []
     },
     actions: {
       setDeviceNames: function (context, groups) {
@@ -36,7 +36,6 @@
         })
       },
       setAllCmdList: function (context) {
-        // var commonDeviceUrl = myUrls.queryCommonCmd()
         var hadDeviceUrl = myUrls.queryHadDeviceCmdByUser()
 
         utils.sendAjax(
@@ -86,16 +85,17 @@
         modal: false,
         isShowCompany: false,
         intervalTime: 10,
-        activeName: null,
-        navData: [],
-        isShowMonitor: true,
-        isShowReportForm: true,
-        isShowBgManager: true,
-        isShowSystemParam: true,
+        headMenuList: [
+          { name: "monitor", icon: "md-contacts", title: "定位监控" },
+          { name: "reportForm", icon: "ios-paper-outline", title: "统计报表" },
+          { name: "bgManager", icon: "md-settings", title: "后台管理" },
+          { name: "systemParam", icon: "ios-options", title: "系统参数" }
+        ],
         modalPass: false,
         oldPass: '',
         newPass: '',
-        confirmPass: ''
+        confirmPass: '',
+        activeName: 'monitor',
       }
     },
     methods: {
@@ -108,7 +108,7 @@
           var item = this.userTypeDescrList[i]
           if (item.type == type) {
             name = item.name
-            break
+            break;
           }
         }
         return '[' + name + ']'
@@ -181,12 +181,12 @@
         })
       },
       navJurisdiction: function (userType) {
-        if (userType == -1 || userType == 99) {
-          this.isShowBgManager = false
-          this.$emit('change-nav', 'monitor')
+        if (userType == -1 || userType == 99 || userType == 20 || userType == 11) {
+          this.$emit('change-nav', 'monitor');
         } else if (userType == 0) {
-          this.isShowMonitor = false
           this.$emit('change-nav', 'reportForm')
+        } else if (userType == 1 || userType == 2) {
+          this.$emit('change-nav', 'monitor')
         } else {
           this.$emit('change-nav', 'monitor')
         }
@@ -199,7 +199,6 @@
     },
     mounted: function () {
       var me = this
-      this.activeName = 'reportForm'
       this.$nextTick(function () {
         me.userType = Cookies.get('userType')
         var mgr = me.getManagerType(me.userType)
@@ -2248,6 +2247,7 @@
     },
     methods: {
       changeComponent: function (componentid) {
+        console.log('componentid', componentid);
         this.componentId = componentid
       },
       changeNav: function (state) {

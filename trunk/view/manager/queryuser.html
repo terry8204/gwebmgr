@@ -48,6 +48,10 @@
                 total:0,
                 columns: [
                         {
+                            title:'所属公司',
+                            key:'companyname'
+                        },
+                        {
                             title: '用户名',
                             key: 'username',
                         },
@@ -129,12 +133,17 @@
                 },
                 doUserInfoList:function(resp){
                     if(resp.status == 0 && resp.userlists != null){
+                        resp.userlists.forEach(function (item) { 
+                            console.log('item', item)
+                            item.companyname = item.company.companyname;
+                        });
                         this.userlists = resp.userlists;
                         this.filterUsersList();
                         this.tableData = this.userlists.slice(0,5);
                         this.total = this.userlists.length;
                     }
                     this.loading = false;
+                    console.log('userlists', this.userlists);
                 },
                 timeToDateStr:function(time){
                     return DateFormat.longToDateTimeStr(time,0);

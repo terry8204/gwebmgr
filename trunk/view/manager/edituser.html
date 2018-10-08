@@ -125,7 +125,7 @@
                                     </Row>
                                     <Row style="margin: 10px 0">
                                         <i-col span="6" style="height: 100%;text-align:right;line-height:32px;">
-                                                &nbsp;车机命令名称&nbsp;:&nbsp;
+                                                &nbsp;命令名称&nbsp;:&nbsp;
                                         </i-col>
                                         <i-col span="12" style="height: 100%;line-height:32px;">
                                                 &nbsp;{{editDirectiveName}}
@@ -415,6 +415,7 @@
                     var me = this;
                     var url = myUrls.editUserDeviceCmd();
                     var data = this.getEditUserDeviceCmdData();
+                    console.log('data', data);
                     utils.sendAjax(url,data,function (resp) { 
                         if(resp.status == 0){
                             me.$Message.success("修改成功")
