@@ -1,11 +1,23 @@
 <meta charset="UTF-8">
 <div class="pd-10 system" id="directive-wraper">
-    <!-- <div style="padding: 5px 0">
-        <i-button icon="md-add" @click="openAddDirectiveModal">添加设备指令</i-button>
-    </div> -->
     <h3 class="h3-title">所有设备指令</h3>
-    <div style="margin-top: 10px;">
-        <i-table border :columns="columns" :data="tableData" :loading="loading"></i-table>
+    <div style="margin-top: 10px;" class="directive-type-wraper">
+        <div class="device-type">
+            <ul class="ivu-menu ivu-menu-light ivu-menu-vertical">
+                <template v-for="(item,index) in deviceTypeList" >
+                    <li class="ivu-menu-item" 
+                        :key="item.name"
+                        :class="{'ivu-menu-item-active':item.isSelected,'ivu-menu-item-selected':item.isSelected}" 
+                        @click="handleClickDevType(item)">
+                            <Icon :type="item.icon" />
+                            <span>{{ item.title}}</span>
+                    </li> 
+                </template>  
+            </ul>
+        </div>
+        <div class="directive-type">
+            <i-table border :columns="columns" :data="tableData" :loading="loading"></i-table>
+        </div>
     </div>
 
     <Modal v-model="delDevDirectiveModal" width="360" class-name="vertical-center-modal">
@@ -26,6 +38,7 @@
             data: function () {
                 var me = this;
                 return {
+                    theme:"light",
                     delDevDirectiveModal: false,
                     directiveObj: {},
                     columns: [
@@ -37,10 +50,6 @@
                             title: '描述',
                             key: 'cmddescr'
                         },
-                        {
-                            title:'指令类型',
-                            key:'commonStr'
-                        }, 
                         {
                             title:'是否同步',
                             key:'isSync'
@@ -95,10 +104,25 @@
                     ],
                     rowIndex: null,
                     tableData: [],
-                    loading: false
+                    deviceTypeList:[],
+                    allDirectiveList:[],
+                    loading: false,
                 }
             },
             methods: {
+                handleClickDevType:function(type){
+                    var me = this;
+                        me.tableData = [];
+                    this.deviceTypeList.forEach(function (item) { 
+                        item.isSelected = false;
+                    });
+                    this.allDirectiveList.forEach(function (item) { 
+                        if(item.devicetype == type.name){
+                            me.tableData.push(item)
+                        }
+                    });   
+                    type.isSelected = true;
+                },
                 handleDelDirective: function () {
                     var me = this;
                     var url = myUrls.deleteCmd();
@@ -123,25 +147,35 @@
                     utils.sendAjax(url, data, function (resp) {
                         if (resp.status === 0) {
                             resp.records.forEach(function (item) { 
-                                if(item.common == 0){
-                                    item.commonStr = "私有指令";
-                                }else{
-                                    item.commonStr = "公共指令";
-                                }
                                 if(item.sync==0){
                                     item.isSync = "异步"
                                 }else{
                                     item.isSync = "同步"
                                 }
                             })
-                            me.tableData = resp.records;
-                            
+                            me.allDirectiveList = resp.records;
                         }
                     });
-                }
+                },
+                getDeviceType:function () {
+                    var me = this;
+                    var url = myUrls.queryDeviceTypeByUser();
+                    utils.sendAjax(url,{},function (resp) { 
+                        if(resp.status == 0 && resp.devicetypes!=null){
+                            resp.devicetypes.forEach(function (item) { 
+                                me.deviceTypeList.push({name:item.devicetypeid,title:item.typename,icon:"ios-ionitron",isSelected:false});
+                            })
+                            console.log('deviceTypeList', me.deviceTypeList)
+                        }
+                    }); 
+                },
+                selectdDevType:function(name){
+                    console.log('name', name)
+                },
             },
             mounted: function () {
                 this.queryCmdList();
+                this.getDeviceType();
             }
         })
     </script>

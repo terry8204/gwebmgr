@@ -2,12 +2,24 @@
 <div class="pd-10 system" id="add-directive-wraper">
     <h3 class="h3-title" style="height: 32px;margin-bottom: 10px">编辑指令 <span style="float: right;"><i-button style="width: 100%" @click="back">返回</i-button></span> </h3>
     <div style="width: 700px;margin: 0 auto;">
-        
+
+        <Row style="margin: 10px 0">
+            <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">
+                <i style="color: red;display: inline-block;">*</i>&nbsp;设备类型 : &nbsp;</i-col>
+            <i-col span="20">
+                <i-select v-model="deviceType">
+                    <i-option v-for="item in deviceTypeList" :value="item.value" :key="item.value">{{ item.label }}</i-option>
+                </i-select>
+            </i-col>  
+        </Row>
+
         <Row style="margin: 10px 0">
             <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">
                 <i style="color: red;display: inline-block;">*</i>&nbsp;指令名称 : &nbsp;</i-col>
-            <i-col span="20" style="height: 100%;line-height:32px;">
-                {{cmdname}}
+            <i-col span="20">
+                <i-select v-model="cmdCode">
+                    <i-option v-for="item in listCmdAction" :value="item.value" :key="item.value">{{ item.label }}</i-option>
+                </i-select>
             </i-col>
         </Row>
        
@@ -58,8 +70,8 @@
             el:"#add-directive-wraper",
             data:function(){
                 return {
-                    cmdcode: null,
-                    devicetype:null,
+                    cmdCode: null,
+                    deviceType:null,
                     cmdname: null,
                     cmdnameen: "",
                     cmdnametw: "",
@@ -75,7 +87,9 @@
                     isPublic:false,
                     isSync:false,
                     lock:false,
-                    kong:""
+                    kong:"",
+                    deviceTypeList:[],
+                    listCmdAction:[]
                 }
             },
             watch:{
@@ -113,14 +127,14 @@
                     var url = myUrls.editCmd();
                     var data = {
                         cmdname: this.cmdname,
-                        cmdcode: this.cmdcode,
+                        cmdcode: this.cmdCode,
                         paramsen: "",
                         paramstw: "",
                         cmddescren: "",
                         cmddescrtw: "",
                         cmdnameen: "",
                         cmdnametw: "",
-                        devicetype:this.devicetype,
+                        devicetype:this.deviceType,
                         sync:this.isSync?1:0
                     };
 
@@ -160,8 +174,8 @@
                     
                 },
                 setValue:function(data){
-                    this.cmdcode=data.cmdcode; 
-                    this.devicetype = data.devicetype;
+                    this.cmdCode=data.cmdcode; 
+                    this.deviceType = data.devicetype;
                     this.cmdname=data.cmdname ;
                     this.cmdnameen=data.cmdnameen;
                     this.cmdnametw=data.cmdnametw;
@@ -179,14 +193,37 @@
                     if(data.params!=""){
                         this.params=data.params;
                         this.lock = true;
-                    };
-
-                   
+                    };   
+                },
+                getDeviceType:function () {
+                    var me = this;
+                    var url = myUrls.queryDeviceTypeByUser();
+                    utils.sendAjax(url,{},function (resp) { 
+                        if(resp.status == 0 && resp.devicetypes!=null){
+                            resp.devicetypes.forEach(function (item) { 
+                                me.deviceTypeList.push({value:item.devicetypeid,label:item.typename});
+                            })
+                            me.getListCmdAction();
+                        }
+                    }); 
+                },
+                getListCmdAction:function(){
+                    var me = this;
+                    var url = myUrls.listCmdAction();
+                    utils.sendAjax(url,{},function (resp) { 
+                        if(resp.status == 0){
+                            resp.cmds.forEach(function (item) { 
+                                me.listCmdAction.push({value:item.cmdCode,label:item.cmdName});
+                            })
+                            me.setValue(editObject)
+                        }
+                    });  
                 }
             },
             mounted : function (param) {  
                 console.log(editObject)
-                this.setValue(editObject)
+                this.getDeviceType();
+               
             }
         })
     </script>
