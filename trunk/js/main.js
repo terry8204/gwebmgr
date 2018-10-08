@@ -256,6 +256,7 @@
         isShowMatchDev: false,
         editDevModal: false,          // 编辑设备模态
         dispatchDirectiveModal: false, // 下发指令模态
+        deviceInfoModal: false,   // 设备基本信息模态
         editDevData: {       //编辑的设备信息
           devicename: '',
           simnum: '',
@@ -264,7 +265,8 @@
         currentDeviceType: null,  // 选中设备的类型
         currentDevDirectiveList: [],  // 选中设备的类型对应的设备指令
         selectedCmdInfo: {},  // 选中设备指令的信息
-        cmdParams: {}
+        cmdParams: {},
+        deviceBaseInfo: {}
       }
     },
     methods: {
@@ -361,6 +363,27 @@
           }
         })
         return pointArr;
+      },
+      handleClickMore: function (name) {
+        switch (name) {
+          case 'name4':
+            this.queryDeviceBaseInfo();
+            this.deviceInfoModal = true;
+            break;
+        }
+      },
+      queryDeviceBaseInfo: function () {
+        var me = this;
+        var deviceId = store.currentDeviceId;
+        var url = myUrls.queryDeviceBaseInfo();
+        var data = {
+          deviceid: deviceId
+        };
+        utils.sendAjax(url, data, function (resp) {
+          resp.overdueDateStr = DateFormat.longToDateStr(resp.overduetime, 0);
+          me.deviceBaseInfo = resp;
+        })
+
       },
       handleClickDirective: function (cmdCode) {
         this.cmdParams = {};
@@ -937,7 +960,8 @@
 
         utils.sendAjax(url, sendData, function (resp) {
           if (resp.status == 0) {
-            store.treeDeviceInfo.title = sendData.devicename
+            store.treeDeviceInfo.title = sendData.devicename;
+            store.treeDeviceInfo.simnum = sendData.simnum;
             utils.changeGroupsDevName(sendData, me.groups)
             me.editDevModal = false
             me.$Message.success('修改成功')

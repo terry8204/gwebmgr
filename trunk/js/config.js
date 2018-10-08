@@ -216,6 +216,10 @@ var myUrls = {
   // 查询指令列表
   listCmdAction: function () {
     return this.host + 'webapi?action=listcmdaction&token=' + token
+  },
+  // 查询设备基本信息
+  queryDeviceBaseInfo: function () {
+    return this.host + 'webapi?action=querydeviceinfo&token=' + token
   }
 }
 
