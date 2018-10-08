@@ -48,7 +48,7 @@
             <div class="app-nav">
                 <i-menu mode="horizontal" theme="dark" :active-name="componentid" v-on:on-select="changeNav">
                         <template v-for="item in headMenuList" :key="item.name">
-                            <menuItem :name="item.name">  
+                            <menuItem :name="item.name" v-show="item.isShow">  
                                 <Icon :type="item.icon"></Icon>
                                 {{item.title}}
                             </menuItem> 

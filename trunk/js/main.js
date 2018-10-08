@@ -86,10 +86,10 @@
         isShowCompany: false,
         intervalTime: 10,
         headMenuList: [
-          { name: "monitor", icon: "md-contacts", title: "定位监控" },
-          { name: "reportForm", icon: "ios-paper-outline", title: "统计报表" },
-          { name: "bgManager", icon: "md-settings", title: "后台管理" },
-          { name: "systemParam", icon: "ios-options", title: "系统参数" }
+          { name: "monitor", icon: "md-contacts", title: "定位监控", isShow: true },
+          { name: "reportForm", icon: "ios-paper-outline", title: "统计报表", isShow: true },
+          { name: "bgManager", icon: "md-settings", title: "后台管理", isShow: true },
+          { name: "systemParam", icon: "ios-options", title: "系统参数", isShow: true }
         ],
         modalPass: false,
         oldPass: '',
@@ -182,12 +182,17 @@
       },
       navJurisdiction: function (userType) {
         if (userType == -1 || userType == 99 || userType == 20 || userType == 11) {
+          this.headMenuList[2].isShow = false;
+          this.headMenuList[3].isShow = false;
           this.$emit('change-nav', 'monitor');
         } else if (userType == 0) {
+          this.headMenuList[0].isShow = false;
           this.$emit('change-nav', 'reportForm')
         } else if (userType == 1 || userType == 2) {
+          this.headMenuList[3].isShow = false;
           this.$emit('change-nav', 'monitor')
         } else {
+          this.headMenuList[3].isShow = false;
           this.$emit('change-nav', 'monitor')
         }
       }
