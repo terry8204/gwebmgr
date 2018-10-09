@@ -1740,11 +1740,7 @@
             name: 'groupMar',
             icon: 'ios-albums',
             children: [
-              {
-                title: '添加分组',
-                name: 'addGroup',
-                icon: 'ios-photos-outline'
-              },
+              { title: '添加分组', name: 'addGroup', icon: 'ios-photos-outline' },
               { title: '查询分组', name: 'queryGroup', icon: 'md-search' }
             ]
           },
