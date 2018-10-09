@@ -221,6 +221,9 @@ div.ivu-steps-head-inner .ivu-icon{
 
 
 /* 报表css开始 */
+    div.report-left-wrap .ivu-icon {
+        margin-top: -3px;
+    }
     div.report-wraper{
         position: relative;
     }
@@ -228,17 +231,16 @@ div.ivu-steps-head-inner .ivu-icon{
         position: absolute;
         top: 0;
         bottom: 0;
-        padding: 10px;
         box-sizing: border-box;
     }
     div.report-left-wrap{
         left: 0px;
         width: 240px;
+        background: #FFFFFF;
     }
     div.report-right-wrap{
         right: 0;
         left: 240px;
-        border-left:1px solid #D5DCE1; 
     }
 
 /* 报表css结束 */

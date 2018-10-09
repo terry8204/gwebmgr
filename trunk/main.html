@@ -423,7 +423,26 @@
     <!-- 统计报表 -->
     <script type="text/x-template" id="report-template">
         <div class="report-wraper full">
-            <div class="report-left-wrap"></div>
+            <div class="report-left-wrap">
+                    <div class="mar-nav">
+                            <i-menu :theme="theme" @on-select="selectditem">
+                                <template v-for="(group,index) in reportNavList">
+                                    <Submenu :name="group.name" :key="index">
+                                            <template slot="title">
+                                                <Icon :type="group.icon"></Icon>
+                                                <span>{{ group.title}}</span>
+                                            </template>
+                                            <template v-for="(item,idx) in group.children">
+                                                <MenuItem :name="item.name" :key="idx">
+                                                    <Icon :type="item.icon"></Icon>
+                                                    {{item.title}}
+                                                </MenuItem>
+                                            </template>
+                                    </Submenu>
+                                </template>
+                            </i-menu>
+                    </div>    
+            </div>
             <div class="report-right-wrap"></div>
         </div>
     </script>
