@@ -177,6 +177,24 @@ var utils = {
       }
     }
     return paramsListObj;
+  },
+  addMapFence: function (vm, deviceid, distance) {
+    var map = vm.map;
+    var mks = map.getOverlays();
+    var point = null;
+    for (var i = 0; i < mks.length; i++) {
+      var mk = mks[i];
+      if (deviceid == mk.deviceid) {
+        point = mk.point;
+        break;
+      }
+    }
+
+    if (point) {
+      var circle = new BMap.Circle(point, distance, { strokeColor: "red", fillColor: "#eee", strokeWeight: 0.8, fillOpacity: 0.5 });
+      circle.circleid = deviceid;   // 给围栏做标记
+      map.addOverlay(circle);
+    }
   }
 }
 

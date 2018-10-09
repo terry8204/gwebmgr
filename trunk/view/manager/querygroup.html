@@ -8,7 +8,7 @@
             <li>
                 <i-select v-model="queryType">
                     <i-option v-for="item in queryList" :value="item.value" :key="item.value">{{ item.label }}</i-option>
-                </i-select> 
+                </i-select>
             </li>
             <li>
                 <i-input v-model.trim="queryParameter"></i-input>
@@ -67,7 +67,7 @@ vueInstanse=new Vue({
                 monitorPersonList:[],
                 total:0,
                 queryType:'',
-                queryList:[],
+                queryList:[{label:"1111",value:"111"}],
                 queryParameter:"",
                 groupsList:[],
                 tableData:[],

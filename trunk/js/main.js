@@ -256,7 +256,9 @@
         isShowMatchDev: false,
         editDevModal: false,          // 编辑设备模态
         dispatchDirectiveModal: false, // 下发指令模态
+        electronicFenceModal: false,   //电子围栏
         deviceInfoModal: false,   // 设备基本信息模态
+        fenceDistance: 1000,
         editDevData: {       //编辑的设备信息
           devicename: '',
           simnum: '',
@@ -374,12 +376,13 @@
       },
       queryDeviceBaseInfo: function () {
         var me = this;
-        var deviceId = store.currentDeviceId;
+        var deviceId = me.selectedDevObj.deviceid;
         var url = myUrls.queryDeviceBaseInfo();
         var data = {
           deviceid: deviceId
         };
         utils.sendAjax(url, data, function (resp) {
+          console.log('resp', resp)
           resp.overdueDateStr = DateFormat.longToDateStr(resp.overduetime, 0);
           me.deviceBaseInfo = resp;
         })
@@ -404,6 +407,38 @@
           })
         }
         this.dispatchDirectiveModal = true;
+      },
+      handleClickFence: function (name) {
+        switch (name) {
+          case 'shefang':
+            this.cancelFence();
+            this.electronicFenceModal = true;
+            break;
+          case 'chexiao':
+            this.cancelFence();
+            break;
+        }
+      },
+      setFence: function () {
+        var deviceid = this.selectedDevObj.deviceid;
+        var track = this.getSingleDeviceInfo(deviceid);
+        var distance = this.fenceDistance;
+        if (!isNaN(distance)) {
+          this.electronicFenceModal = false;
+          utils.addMapFence(this, deviceid, this.fenceDistance);
+        } else {
+          this.$Message.error("范围必须是数字");
+        }
+      },
+      cancelFence: function () {
+        var deviceid = this.selectedDevObj.deviceid;
+        var mks = this.map.getOverlays();
+        for (var i = 0; i < mks.length; i++) {
+          var mk = mks[i];
+          if (mk.circleid && mk.circleid == deviceid) {
+            this.map.removeOverlay(mk);
+          }
+        }
       },
       disposeDirectiveFn: function () {
 
@@ -530,7 +565,7 @@
         }
         this.cancelSelected()
         deviceInfo.isSelected = true
-        this.selectedDevObj = deviceInfo
+        this.selectedDevObj = deviceInfo;
         this.handleClickDev(deviceInfo.deviceid)
       },
       handleClickDev: function (deviceid) {
@@ -558,14 +593,15 @@
               { imageOffset: new BMap.Size(0, 0) }
             )
 
-            record.icon = iconState
-            store.currentDeviceId = deviceid
-            store.currentDeviceRecord = record
-            me.updateRecords(record)
-            me.isMoveTriggerEvent = false
+            record.icon = iconState;
+            store.currentDeviceId = deviceid;
+            store.currentDeviceRecord = record;
+            me.updateRecords(record);
+            me.isMoveTriggerEvent = false;
             me.map.centerAndZoom(point, 17)
             me.openDevInfoWindow()
           } else {
+            store.currentDeviceRecord = null;
             me.$Message.error('该设备没有上报位置信息')
           }
         })

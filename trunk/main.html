@@ -18,7 +18,7 @@
         };
     </script>
     <script src="js/config.js"></script>
-    <script src="js/pinyinhanzi.js"></script>	
+    <script src="js/pinyinhanzi.js"></script>
     <script type="text/javascript" src="http://api.map.baidu.com/library/DistanceTool/1.2/src/DistanceTool_min.js"></script>
 </head>
 
@@ -191,18 +191,27 @@
                                                 <Dropdown trigger="click" transfer placement="right-start" @on-click="handleClickMore">
                                                     <Icon type="ios-list"/><p>更多</p>
                                                     <i-dropdown-menu slot="list">
-                                                        <DropdownItem name="name1">
+                                                        <DropdownItem name="name1"> 
                                                             <Dropdown transfer placement="right-start" @on-click="handleClickDirective">
                                                                 设备指令
+                                                                <Icon type="ios-arrow-forward"></Icon>
                                                                 <i-dropdown-menu slot="list">
                                                                     <template v-for="(item, index) in currentDevDirectiveList" :key="item.cmdcode">
                                                                         <DropdownItem :name="item.cmdcode" >{{item.cmdname}}</DropdownItem>
                                                                     </template>
-                                                                    
+                                                                </i-dropdown-menu>
+                                                            </Dropdown>                                                                                            
+                                                        </DropdownItem>
+                                                        <DropdownItem name="name2">  
+                                                            <Dropdown transfer placement="right-start" @on-click="handleClickFence">
+                                                                原地设防
+                                                                <Icon type="ios-arrow-forward"></Icon>
+                                                                <i-dropdown-menu slot="list">                                                                         
+                                                                    <DropdownItem name="shefang" >设防</DropdownItem>
+                                                                    <DropdownItem name="chexiao" >撤销</DropdownItem>
                                                                 </i-dropdown-menu>
                                                             </Dropdown>
-                                                        </DropdownItem>                                       
-                                                        <DropdownItem name="name2">原地设防</DropdownItem>
+                                                        </DropdownItem>
                                                         <DropdownItem name="name3">设备报表</DropdownItem>
                                                         <DropdownItem name="name4">设备基本信息</DropdownItem>
                                                     </i-dropdown-menu>
@@ -242,7 +251,36 @@
                                                             <li @click="editDevice(device)"><Icon type="ios-create"/><p>编辑</p><li>
                                                             <li @click="playBack(device.deviceid)"><Icon type="md-planet"/><p>轨迹</p><li>
                                                             <li @click="trackMap(device.deviceid)"><Icon type="md-person"/><p>跟踪</p><li> 
-                                                            <li @click="more"><Icon type="ios-list"/><p>更多</p><li> 
+                                                                <li>
+                                                                    <Dropdown trigger="click" transfer placement="right-start" @on-click="handleClickMore">
+                                                                                <Icon type="ios-list"/><p>更多</p>
+                                                                                <i-dropdown-menu slot="list">
+                                                                                    <DropdownItem name="name1">
+                                                                                        <Dropdown transfer placement="right-start" @on-click="handleClickDirective">
+                                                                                            设备指令
+                                                                                            <Icon type="ios-arrow-forward"></Icon>
+                                                                                            <i-dropdown-menu slot="list">
+                                                                                                <template v-for="(item, index) in currentDevDirectiveList" :key="item.cmdcode">
+                                                                                                    <DropdownItem :name="item.cmdcode" >{{item.cmdname}}</DropdownItem>
+                                                                                                </template>
+                                                                                            </i-dropdown-menu>
+                                                                                        </Dropdown>
+                                                                                    </DropdownItem>                                       
+                                                                                    <DropdownItem name="name2">
+                                                                                        <Dropdown transfer placement="right-start" @on-click="handleClickFence">
+                                                                                            原地设防
+                                                                                            <Icon type="ios-arrow-forward"></Icon>
+                                                                                            <i-dropdown-menu slot="list">                                                                         
+                                                                                                <DropdownItem name="shefang" >设防</DropdownItem>
+                                                                                                <DropdownItem name="chexiao" >撤销</DropdownItem>
+                                                                                            </i-dropdown-menu>
+                                                                                        </Dropdown>
+                                                                                    </DropdownItem>
+                                                                                    <DropdownItem name="name3">设备报表</DropdownItem>
+                                                                                    <DropdownItem name="name4">设备基本信息</DropdownItem>
+                                                                                </i-dropdown-menu>
+                                                                    </Dropdown>
+                                                                <li> 
                                                         </ul>
                                                     </div>
                                                 </div>
@@ -298,6 +336,7 @@
                     <i-button type="primary"  @click="handleEditDevFn" style="width: 100%">确定</i-button>
                 </div>
             </Modal>   
+
             <!-- 下发指令模态 -->
             <Modal v-model="dispatchDirectiveModal" width="460" class-name="vertical-center-modal">
                     <p slot="header" style="color:#f60;text-align:center">
@@ -324,29 +363,60 @@
                         <span>设备基本信息</span>
                     </p>
                      <div style="text-align:center">
-                        <Row style="margin: 10px 0" v-for="item in selectedCmdInfo.params" :key="item.desc">
-                            <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">所属客户 : &nbsp;</i-col>
-                            <i-col span="16">
+                        <Row>
+                            <i-col span="5" style="height: 100%;text-align:right;line-height:25px;">所属客户 : &nbsp;</i-col>
+                            <i-col span="16" style="height: 100%;line-height:25px;">
                                 {{deviceBaseInfo.companyname}}     
                             </i-col>
                         </Row>
-                        <Row style="margin: 10px 0" v-for="item in selectedCmdInfo.params" :key="item.desc">
-                                <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">设备名称 : &nbsp;</i-col>
-                                <i-col span="16">
+                        <Row>
+                            <i-col span="5" style="height: 100%;text-align:right;line-height:25px;">分组名称 : &nbsp;</i-col>
+                            <i-col span="16" style="height: 100%;line-height:25px;">
+                                {{deviceBaseInfo.groupname}}     
+                            </i-col>
+                        </Row>
+                        <Row>
+                                <i-col span="5" style="height: 100%;text-align:right;line-height:25px;">设备名称 : &nbsp;</i-col>
+                                <i-col span="16" style="height: 100%;line-height:25px;">
                                     {{deviceBaseInfo.devicename}}     
                                 </i-col>
                         </Row>
-                        <Row style="margin: 10px 0" v-for="item in selectedCmdInfo.params" :key="item.desc">
-                                <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">到期时间 : &nbsp;</i-col>
-                                <i-col span="16">
+                        <Row>
+                                <i-col span="5" style="height: 100%;text-align:right;line-height:25px;">到期时间 : &nbsp;</i-col>
+                                <i-col span="16" style="height: 100%;line-height:25px;">
                                     {{deviceBaseInfo.overdueDateStr}}     
                                 </i-col>
                         </Row>
+                        <Row>
+                            <i-col span="5" style="height: 100%;text-align:right;line-height:25px;">SIM卡号 : &nbsp;</i-col>
+                            <i-col span="16" style="height: 100%;line-height:25px;">
+                                {{deviceBaseInfo.simnum}}     
+                            </i-col>
+                        </Row>                        
                     </div>
                     <div slot="footer">
-                        <i-button type="primary"  @click="disposeDirectiveFn" style="width: 100%">关闭</i-button>
+                        <i-button type="primary"  @click="deviceInfoModal=false" style="width: 100%">关闭</i-button>
                     </div>
             </Modal>  
+
+                        <!-- 电子围廊模态 -->
+                        <Modal v-model="electronicFenceModal" width="460" class-name="vertical-center-modal">
+                                <p slot="header" style="color:#f60;text-align:center">
+                                    <Icon type="ios-create-outline"></Icon>
+                                    <span>设置电子围栏</span>
+                                </p>
+                                 <div style="text-align:center">
+                                    <Row style="margin: 10px 0">
+                                        <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">范围 : &nbsp;</i-col>
+                                        <i-col span="16">
+                                            <i-input v-model.trim="fenceDistance"></i-input>
+                                        </i-col>
+                                    </Row>
+                                </div>
+                                <div slot="footer">
+                                    <i-button type="primary"  @click="setFence" style="width: 100%">确定</i-button>
+                                </div>
+                        </Modal> 
         </div>
     </script>
 
