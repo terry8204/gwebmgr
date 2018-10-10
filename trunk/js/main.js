@@ -324,15 +324,15 @@
             }
             setTimeout(function () {
               me.openDevInfoWindow()
-            }, 400)
+            }, 400);
           }
-        })
+        });
 
         this.map.addEventListener('click', function (event) {
-          var overlay = event.overlay
+          var overlay = event.overlay;
           if (overlay == null || overlay.deviceid == undefined) {
-            store.currentDeviceId = null
-            store.currentDeviceRecord = null
+            store.currentDeviceId = null;
+            store.currentDeviceRecord = null;
           }
         })
       },
@@ -368,6 +368,9 @@
       },
       handleClickMore: function (name) {
         switch (name) {
+          case 'name3':
+            this.$emit("jump-report", "reportForm");
+            break;
           case 'name4':
             this.queryDeviceBaseInfo();
             this.deviceInfoModal = true;
@@ -411,7 +414,7 @@
       handleClickFence: function (name) {
         switch (name) {
           case 'shefang':
-            this.cancelFence();
+            // this.cancelFence();
             this.electronicFenceModal = true;
             break;
           case 'chexiao':
@@ -420,25 +423,45 @@
         }
       },
       setFence: function () {
+        var me = this;
         var deviceid = this.selectedDevObj.deviceid;
         var track = this.getSingleDeviceInfo(deviceid);
         var distance = this.fenceDistance;
+
         if (!isNaN(distance)) {
-          this.electronicFenceModal = false;
-          utils.addMapFence(this, deviceid, this.fenceDistance);
+          var url = myUrls.setGeofence();
+          utils.sendAjax(url, { deviceid: deviceid, radius: this.fenceDistance, lat: track.callat, lon: track.callon }, function (resp) {
+            if (resp.status == 0) {
+              me.electronicFenceModal = false;
+              utils.addMapFence(me, deviceid, me.fenceDistance);
+            } else {
+              me.$Message.error("设置失败");
+            }
+          })
+
         } else {
           this.$Message.error("范围必须是数字");
         }
       },
       cancelFence: function () {
+        var me = this;
         var deviceid = this.selectedDevObj.deviceid;
         var mks = this.map.getOverlays();
-        for (var i = 0; i < mks.length; i++) {
-          var mk = mks[i];
-          if (mk.circleid && mk.circleid == deviceid) {
-            this.map.removeOverlay(mk);
+        var url = myUrls.unSetGeofence();
+
+        utils.sendAjax(url, { deviceid: deviceid }, function (resp) {
+          if (resp.status == 0) {
+            me.$Message.success("撤防成功");
+            for (var i = 0; i < mks.length; i++) {
+              var mk = mks[i];
+              if (mk.circleid && mk.circleid == deviceid) {
+                me.map.removeOverlay(mk);
+              }
+            }
+          } else {
+            me.$Message.error("设置失败");
           }
-        }
+        })
       },
       disposeDirectiveFn: function () {
 
@@ -497,7 +520,7 @@
         }
       },
       sosoSelect: function (value) {
-        console.log('sosoSelect', value)
+
         this.sosoValue = value.devicename
         this.filterData = []
         var me = this
@@ -2345,6 +2368,9 @@
         if (this.$refs['my-component'].setIntervalTime) {
           this.$refs['my-component'].setIntervalTime(interval)
         }
+      },
+      jumpReport: function (companyName) {
+        this.componentId = companyName;
       }
     },
     components: {

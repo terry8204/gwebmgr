@@ -220,7 +220,15 @@ var myUrls = {
   // 查询设备基本信息
   queryDeviceBaseInfo: function () {
     return this.host + 'webapi?action=querydeviceinfo&token=' + token
-  }
+  },
+  //设置电子围栏
+  setGeofence: function () {
+    return this.host + 'webapi?action=setgeofence&token=' + token
+  },
+  //取消电子围栏
+  unSetGeofence: function () {
+    return this.host + 'webapi?action=unsetgeofence&token=' + token
+  },
 }
 
 // global var

@@ -30,7 +30,7 @@
         </div>
         <div class="view-wraper">
             <keep-alive exclude="monitor">
-                <component :is="componentId" ref="my-component"></component>
+                <component :is="componentId" ref="my-component" @jump-report="jumpReport"></component>
             </keep-alive>
         </div>
         <waring-component></waring-component>
@@ -212,7 +212,7 @@
                                                                 </i-dropdown-menu>
                                                             </Dropdown>
                                                         </DropdownItem>
-                                                        <DropdownItem name="name3">设备报表</DropdownItem>
+                                                        <DropdownItem name="name3">统计报表</DropdownItem>
                                                         <DropdownItem name="name4">设备基本信息</DropdownItem>
                                                     </i-dropdown-menu>
                                                 </Dropdown>
@@ -276,7 +276,7 @@
                                                                                             </i-dropdown-menu>
                                                                                         </Dropdown>
                                                                                     </DropdownItem>
-                                                                                    <DropdownItem name="name3">设备报表</DropdownItem>
+                                                                                    <DropdownItem name="name3">统计报表</DropdownItem>
                                                                                     <DropdownItem name="name4">设备基本信息</DropdownItem>
                                                                                 </i-dropdown-menu>
                                                                     </Dropdown>
