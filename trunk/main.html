@@ -505,26 +505,36 @@
     <!-- 报警 -->
     <script type="text/x-template" id="waring-template">
         <div class="waring-wraper" :style="waringWraperStyle">
-            <ul class="waring-controller" v-show="!isLargen">
+            <ul class="waring-controller" v-show="isLargen == 0">
                 <li style="width:68px;border-left:1px solid #fff; "><span :class="{msgwaring:isWaring,msgnormal:!isWaring}">消息</span></li>
-                <li style="width:30px;cursor: pointer;border-right:1px solid #fff;">
-                    <div @click="changeLargen" title="展开"><Icon type="ios-trending-up" /></div>
-                </li>
+                <li style="width:60px;cursor: pointer;border-right:1px solid #fff;">
+                    <span @click="changeLargen(1)" title="展开"><Icon type="ios-add" /></span>
+                    <span @click="changeLargen(2)" title="最大化" style="margin-left:10px;"><Icon type="ios-browsers-outline" /></span>
+                </li>   
             </ul>
-            <div class="msg_main" v-show="isLargen">
+            <div class="msg_main" v-show="isLargen !== 0">
                 <div class="msg_header">
                     <ul>
                         <li :class="{selected:index == 1}" @click="changeComponent(1)">报警信息</li>
                         <li :class="{selected:index == 2}" @click="changeComponent(2)">设备信息</li>
                         <li style="width:95px;margin-left:10px;" @click="filterWaringType"> [过滤报警类型] </li>
                     </ul> 
-                    <div @click="changeLargen" class="shrink-btn" title="还原"><Icon type="ios-trending-down" /></div>
+                    <div class="shrink-btn">
+                        <span @click="changeLargen(0)" title="最小化">
+                            <Icon type="md-remove" />
+                        </span>
+                        <span @click="changeLargen2()">     
+                            <Icon type="ios-browsers-outline" title="切换窗口" />
+                        </span>
+                    </div>
                 </div>
                 <div class="msg_content">
                     <keep-alive>
                         <component 
                             :is="componentName" 
+                            :tabletype="isLargen"
                             :waringrecords="waringRecords" 
+                            :wrapperheight="wrapperHeight"
                             :deviceinfolist="overdueDevice" 
                             @showdisposemodal="showDisposeModalFrame">
                         </component>

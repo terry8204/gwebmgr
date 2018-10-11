@@ -1932,7 +1932,7 @@
     template: document.getElementById('waring-template'),
     data: function () {
       return {
-        isLargen: false,
+        isLargen: 0,
         index: 1,
         waringRowIndex: null,
         componentName: 'waringMsg',
@@ -1951,21 +1951,21 @@
         disposeAlarm: '',
         params: '', //参数,
         paramsInputList: [],
-        paramsInputObj: {}
+        paramsInputObj: {},
+        wrapperWidth: null,
+        wrapperHeight: null,
+        waringWraperStyle: { width: '130px', height: '22px' },
       }
     },
     computed: {
-      waringWraperStyle: function () {
-        return {
-          width: this.isLargen ? '900px' : '100px',
-          height: this.isLargen ? '500px' : '22px'
-        }
-      },
       deviceNames: function () {
         return this.$store.state.deviceNames
       }
     },
     watch: {
+      isLargen: function () {
+        this.changeWrapperCls();
+      },
       waringRecords: function () {
         if (this.waringRecords.length) {
           this.isWaring = true
@@ -2022,6 +2022,27 @@
       }
     },
     methods: {
+      changeWrapperCls: function () {
+        var type = this.isLargen;
+        var xiao = { width: '130px', height: '22px' };
+        var zhong = { width: '900px', height: '400px' };
+        if (type === 0) {
+          this.wrapperWidth = 130;
+          this.wrapperHeight = 22;
+          this.waringWraperStyle = xiao;
+        } else if (type === 1) {
+          this.wrapperWidth = 900;
+          this.wrapperHeight = 400;
+          this.waringWraperStyle = zhong;
+        } else if (type === 2) {
+          var clientWidth = document.documentElement.clientWidth || document.body.clientWidth;
+          var clientHeight = document.documentElement.clientHeight || document.body.clientHeight;
+          this.wrapperWidth = clientWidth - 295;
+          this.wrapperHeight = clientHeight - 65;
+          var da = { width: this.wrapperWidth + 'px', height: this.wrapperHeight + 'px' };
+          this.waringWraperStyle = da;
+        }
+      },
       parseXML: function (xmlDoc) {
         store.paramsCmdCodeArr = []
         var parent = xmlDoc.children[0]
@@ -2037,9 +2058,16 @@
           }
         }
       },
-      changeLargen: function () {
-        this.isLargen = !this.isLargen
-        this.isWaring = false
+      changeLargen: function (type) {
+        this.isLargen = type;
+        this.isWaring = false;
+      },
+      changeLargen2: function () {
+        if (this.isLargen == 1) {
+          this.isLargen = 2;
+        } else if (this.isLargen == 2) {
+          this.isLargen = 1;
+        }
       },
       changeComponent: function (index) {
         this.index = index
@@ -2245,8 +2273,8 @@
     components: {
       waringMsg: {    //width="898" 
         template:
-          '<Table height="475" border :columns="columns" :data="waringrecords"></Table>',
-        props: ['waringrecords'],
+          '<Table :height="tabheight" border :columns="columns" :data="waringrecords"></Table>',
+        props: ['waringrecords', 'tabletype', 'wrapperheight'],
         data: function () {
           return {
             columns: [
@@ -2254,7 +2282,6 @@
                 title: '设备ID',
                 key: 'deviceid',
                 width: 120,
-                // fixed: 'left'
               },
               {
                 title: '报警时间',
@@ -2264,7 +2291,6 @@
               {
                 title: '报警信息',
                 key: 'strstate',
-                width: 378
               },
               {
                 title: '是否处理',
@@ -2274,7 +2300,6 @@
               {
                 title: '操作',
                 key: 'action',
-                // fixed: 'right',
                 width: 120,
                 render: (h, params) => {
                   var index = params
@@ -2300,23 +2325,31 @@
                 }
               }
             ],
-            tableData: []  //waringrecords
           }
         },
         methods: {
           removeWaring: function (index) {
             console.log(index)
+          },
+        },
+        watch: {
+          tabletype: function () {
+
           }
         },
-        computed: {},
+        computed: {
+          tabheight: function () {
+            return this.wrapperheight - 24;
+          }
+        },
         mounted: function () {
 
         }
       },
       deviceMsg: {
         template:
-          '<Table height="475" :columns="columns" :data="deviceinfolist"></Table>',
-        props: ['deviceinfolist'],
+          '<Table :height="tabheight" :columns="columns" :data="deviceinfolist"></Table>',
+        props: ['deviceinfolist', 'tabletype', 'wrapperheight'],
         data: function () {
           return {
             columns: [
@@ -2338,14 +2371,26 @@
               }
             ]
           }
+        },
+        computed: {
+          tabheight: function () {
+            return this.wrapperheight - 24;
+          }
+        },
+        methods: {
+
+        },
+        mounted: function () {
+
         }
       }
     },
     mounted: function () {
-      this.settingCheckboxObj()
-      this.pushOverdueDeviceInfo()
-      this.timingRequestMsg()
-      this.queryAlarmDescr()
+      this.settingCheckboxObj();
+      this.pushOverdueDeviceInfo();
+      this.timingRequestMsg();
+      this.queryAlarmDescr();
+      this.changeWrapperCls();
     }
   }
 

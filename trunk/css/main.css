@@ -638,9 +638,15 @@ div.ivu-steps-head-inner .ivu-icon{
         top: 0px;
         right: 3px;  
         height: 22px;
-        width: 22px;
+        width: 54px;
         text-align: center;
         cursor: pointer;
+    }
+
+    div.shrink-btn>span{
+        display: inline-block;
+        width: 22px;
+        height: 22px;
     }
 
     div.msg_content{
