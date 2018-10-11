@@ -2024,24 +2024,29 @@
     methods: {
       changeWrapperCls: function () {
         var type = this.isLargen;
-        var xiao = { width: '130px', height: '22px' };
-        var zhong = { width: '900px', height: '400px' };
         if (type === 0) {
           this.wrapperWidth = 130;
           this.wrapperHeight = 22;
-          this.waringWraperStyle = xiao;
         } else if (type === 1) {
           this.wrapperWidth = 900;
           this.wrapperHeight = 400;
-          this.waringWraperStyle = zhong;
+
         } else if (type === 2) {
           var clientWidth = document.documentElement.clientWidth || document.body.clientWidth;
           var clientHeight = document.documentElement.clientHeight || document.body.clientHeight;
+          if (clientWidth < 1300) {
+            clientWidth = 1300;
+          }
+          if (clientHeight < 580) {
+            clientHeight = 580;
+          }
           this.wrapperWidth = clientWidth - 295;
           this.wrapperHeight = clientHeight - 65;
-          var da = { width: this.wrapperWidth + 'px', height: this.wrapperHeight + 'px' };
-          this.waringWraperStyle = da;
         }
+        this.setWaringWraperStyle();
+      },
+      setWaringWraperStyle: function () {
+        this.waringWraperStyle = { width: this.wrapperWidth + 'px', height: this.wrapperHeight + 'px' };
       },
       parseXML: function (xmlDoc) {
         store.paramsCmdCodeArr = []
@@ -2386,11 +2391,15 @@
       }
     },
     mounted: function () {
+      var me = this;
       this.settingCheckboxObj();
       this.pushOverdueDeviceInfo();
       this.timingRequestMsg();
       this.queryAlarmDescr();
       this.changeWrapperCls();
+      window.onresize = function () {
+        me.changeWrapperCls();
+      }
     }
   }
 
