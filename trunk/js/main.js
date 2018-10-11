@@ -268,7 +268,8 @@
         currentDevDirectiveList: [],  // 选中设备的类型对应的设备指令
         selectedCmdInfo: {},  // 选中设备指令的信息
         cmdParams: {},
-        deviceBaseInfo: {}
+        deviceBaseInfo: {},
+        infoWindowInstance: null  //  信息窗口实例
       }
     },
     methods: {
@@ -922,45 +923,74 @@
             }
           }
         }
-        return info
+        return info;
       },
       getInfoWindow: function (info) {
         try {
-          var devdata = this.$store.state.deviceNames[info.deviceid]
-          var address = this.getAddress(info)
-          var sContent =
-            '<div><p style="margin:0;font-size:13px">' +
-            '<p> 设备名称: ' +
-            devdata.devicename +
-            '</p>' +
-            '<p> 设备ID: ' +
-            info.deviceid +
-            '</p>' +
-            '<p> 经纬度: ' +
-            info.callon +
-            ',' +
-            info.callat +
-            '</p>' +
-            '<p> 最后时间: ' +
-            DateFormat.longToDateTimeStr(info.arrivedtime, 0) +
-            '</p>' +
-            '<p> 到期时间: ' +
-            DateFormat.longToDateTimeStr(devdata.overduetime, 0) +
-            '</p>' +
-            '<p class="last-address"> 详细地址: ' +
-            address +
-            '</p>' +
-            '<p class="operation">' +
-            '<span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="playBack(' +
-            info.deviceid +
-            ')">轨迹</span>' +
-            '<span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="trackMap(' +
-            info.deviceid +
-            ')">跟踪</span> </p></div>'
-          return new BMap.InfoWindow(sContent, { width: 350 })
+          var sContent = this.getWindowContent(info);
+          var infoWindowInstance = new BMap.InfoWindow(sContent, { width: 350 });
+          this.infoWindowInstance = infoWindowInstance;
+          return infoWindowInstance;
         } catch (error) {
           console.log('get不到info.deviceid --- ')
         }
+      },
+      getWindowContent: function (info) {
+        var devdata = this.$store.state.deviceNames[info.deviceid];
+        var address = this.getAddress(info);
+        var posiType = (function () {
+          var type = null;
+          var gotsrc = info.gotsrc;  //cell gps wifi
+          switch (gotsrc) {
+            case 'un':
+              type = "未知";
+              break;
+            case 'cell':
+              type = "基站定位";
+              break;
+            case 'gps':
+              type = "卫星定位";
+              break;
+            case 'wifi':
+              type = "WIFI定位";
+              break;
+          }
+          return type;
+        })();
+        var content =
+          '<div><p style="margin:0;font-size:13px">' +
+          '<p> 设备名称: ' +
+          devdata.devicename +
+          '</p>' +
+          '<p> 设备 I D : ' +
+          info.deviceid +
+          '</p>' +
+          '<p> 定位类型: ' +
+          posiType +
+          '</p>' +
+          '<p> 经纬度: ' +
+          info.callon +
+          ',' +
+          info.callat +
+          '</p>' +
+          '<p> 最后时间: ' +
+          DateFormat.longToDateTimeStr(info.arrivedtime, 0) +
+          '</p>' +
+          '<p> 到期时间: ' +
+          DateFormat.longToDateTimeStr(devdata.overduetime, 0) +
+          '</p>' +
+          '<p class="last-address"> 详细地址: ' +
+          address +
+          '</p>' +
+          '<p class="operation">' +
+          '<span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="playBack(' +
+          info.deviceid +
+          ')">轨迹</span>' +
+          '<span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="trackMap(' +
+          info.deviceid +
+          ')">跟踪</span> </p></div>';
+
+        return content;
       },
       getAddress: function (info) {
         var callon = info.callon
@@ -1030,7 +1060,6 @@
         })
       },
       editDevice: function (device) {
-        console.log('deviceinfo', this.$store.state.deviceNames);
         store.treeDeviceInfo = device
         this.editDevData.devicename = device.title
         this.editDevData.simnum = device.simnum
@@ -1135,10 +1164,10 @@
               groupid: item.groupid,
               remark: item.remark
             }
-          }
+          };
           newObject[groupid].devices = newObject[groupid].devices.concat(
             devices
-          )
+          );
         })
 
         for (var key in newObject) {
@@ -1489,27 +1518,24 @@
               if (resp.records) {
                 resp.records.forEach(function (record) {
                   if (record) {
-                    var isOnline =
-                      Date.now() - record.arrivedtime < me.offlineTime
-                        ? true
-                        : false
-                    var iconState = null
-                    var angle = utils.getAngle(record.course)
+                    var isOnline = Date.now() - record.arrivedtime < me.offlineTime ? true : false;
+                    var iconState = null;
+                    var angle = utils.getAngle(record.course);
 
                     iconState = new BMap.Icon(
                       utils.getDirectionImage(isOnline, angle),
                       new BMap.Size(17, 17),
                       { imageOffset: new BMap.Size(0, 0) }
-                    )
+                    );
 
                     record.icon = iconState
                     var lng_lat = wgs84tobd09(record.callon, record.callat)
                     record.point = new BMap.Point(lng_lat[0], lng_lat[1])
                   }
-                })
-                me.records = resp.records
-                me.updateTreeOnlineState()
-                me.moveMarkers()
+                });
+                me.records = resp.records;
+                me.updateTreeOnlineState();
+                me.moveMarkers();
               }
             })
           }
@@ -1517,25 +1543,33 @@
       },
       moveMarkers: function () {
         var me = this
-        var markers = this.map.getOverlays()
+        var markers = this.map.getOverlays();
         markers.forEach(function (marker) {
           var deviceid = marker.deviceid
           if (deviceid) {
             me.records.forEach(function (record) {
               if (record) {
                 if (deviceid === record.deviceid) {
-                  marker.setPosition(record.point)
-                  marker.setIcon(record.icon)
+                  marker.setPosition(record.point);
+                  marker.setIcon(record.icon);
                   if (deviceid == store.currentDeviceId) {
-                    me.isMoveTriggerEvent = false
-                    var infoWindow = me.getInfoWindow(record)
-                    marker.openInfoWindow(infoWindow, record.point)
-                  }
-                }
-              }
-            })
-          }
-        })
+                    me.isMoveTriggerEvent = false;
+                    // var infoWindow = me.getInfoWindow(record);
+                    // marker.openInfoWindow(infoWindow, record.point);
+                    console.log('infoWindowInstance', "刷新了");
+                    if (me.infoWindowInstance) {
+                      if (me.infoWindowInstance.isOpen()) {
+                        var content = me.getWindowContent(record);
+                        me.infoWindowInstance.setContent(content);
+                        me.infoWindowInstance.redraw();
+                      }
+                    };
+                  };
+                };
+              };
+            });
+          };
+        });
       },
       setCarIconState: function () {
         var me = this
@@ -1554,9 +1588,9 @@
             utils.getDirectionImage(isOnline, angle),
             new BMap.Size(17, 17),
             { imageOffset: new BMap.Size(0, 0) }
-          )
+          );
 
-          record.icon = iconState
+          record.icon = iconState;
         })
       }
     },
@@ -1585,7 +1619,6 @@
           }
         })
         this.currentDevDirectiveList = directiveList;
-        console.log('currentDevDirectiveList', this.currentDevDirectiveList)
       },
       records: function () {
         var online = 0
@@ -2092,6 +2125,8 @@
           if (resp.status == 0) {
             me.waringRecords = resp.records
             me.waringRecords.forEach(function (item) {
+              var deviceid = item.deviceid;
+              item.devicename = me.$store.state.deviceNames[deviceid].devicename;
               item.isdispose = '未处理'
             })
           }
@@ -2160,8 +2195,10 @@
                 if (newArr.indexOf(msgTiem) == -1) {
                   newArr.push(msgTiem)
                   if (msgTiem.type == 1) {
+                    var deviceid = msgTiem.deviceid;
                     this.waringRecords.unshift({
-                      deviceid: msgTiem.deviceid,
+                      devicename: this.$store.state.deviceNames[deviceid].devicename,
+                      deviceid: deviceid,
                       gpstime: msgTiem.createtime,
                       strstate: msgTiem.content,
                       isdispose: '未处理'
@@ -2276,13 +2313,18 @@
       }
     },
     components: {
-      waringMsg: {    //width="898" 
+      waringMsg: {
         template:
           '<Table :height="tabheight" border :columns="columns" :data="waringrecords"></Table>',
         props: ['waringrecords', 'tabletype', 'wrapperheight'],
         data: function () {
           return {
             columns: [
+              {
+                title: '设备名称',
+                key: 'devicename',
+                width: 120,
+              },
               {
                 title: '设备ID',
                 key: 'deviceid',
