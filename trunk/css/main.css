@@ -649,7 +649,7 @@ div.ivu-steps-head-inner .ivu-icon{
         right: 0px;
         top: 22px;
         bottom: 0;
-        overflow-y: auto;
+        overflow: hidden;
         color: #495060;
     }
 

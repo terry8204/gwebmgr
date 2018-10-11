@@ -2243,9 +2243,9 @@
       }
     },
     components: {
-      waringMsg: {
+      waringMsg: {    //width="898" 
         template:
-          '<Table width="898" height="475" border :columns="columns" :data="waringrecords"></Table>',
+          '<Table height="475" border :columns="columns" :data="waringrecords"></Table>',
         props: ['waringrecords'],
         data: function () {
           return {
@@ -2254,17 +2254,17 @@
                 title: '设备ID',
                 key: 'deviceid',
                 width: 120,
-                fixed: 'left'
+                // fixed: 'left'
               },
               {
                 title: '报警时间',
                 key: 'gpstime',
-                width: 200
+                width: 160
               },
               {
                 title: '报警信息',
                 key: 'strstate',
-                width: 355
+                width: 378
               },
               {
                 title: '是否处理',
@@ -2274,7 +2274,7 @@
               {
                 title: '操作',
                 key: 'action',
-                fixed: 'right',
+                // fixed: 'right',
                 width: 120,
                 render: (h, params) => {
                   var index = params
@@ -2299,7 +2299,8 @@
                   ])
                 }
               }
-            ]
+            ],
+            tableData: []  //waringrecords
           }
         },
         methods: {
@@ -2308,7 +2309,9 @@
           }
         },
         computed: {},
-        mounted: function () { }
+        mounted: function () {
+
+        }
       },
       deviceMsg: {
         template:

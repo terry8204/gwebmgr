@@ -521,12 +521,14 @@
                     <div @click="changeLargen" class="shrink-btn" title="还原"><Icon type="ios-trending-down" /></div>
                 </div>
                 <div class="msg_content">
-                    <component 
-                        :is="componentName" 
-                        :waringrecords="waringRecords" 
-                        :deviceinfolist="overdueDevice" 
-                        @showdisposemodal="showDisposeModalFrame">
-                    </component>
+                    <keep-alive>
+                        <component 
+                            :is="componentName" 
+                            :waringrecords="waringRecords" 
+                            :deviceinfolist="overdueDevice" 
+                            @showdisposemodal="showDisposeModalFrame">
+                        </component>
+                    </keep-alive>
                 </div>
             </div>
 
