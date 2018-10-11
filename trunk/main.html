@@ -508,8 +508,8 @@
             <ul class="waring-controller" v-show="isLargen == 0">
                 <li style="width:68px;border-left:1px solid #fff; "><span :class="{msgwaring:isWaring,msgnormal:!isWaring}">消息</span></li>
                 <li style="width:60px;cursor: pointer;border-right:1px solid #fff;">
-                    <span @click="changeLargen(1)" title="展开"><Icon type="ios-add" /></span>
-                    <span @click="changeLargen(2)" title="最大化" style="margin-left:10px;"><Icon type="ios-browsers-outline" /></span>
+                    <span @click="changeLargen(1)" title="展开"><Icon type="ios-browsers-outline" :size="14" /></span> 
+                    <span @click="changeLargen(2)" title="最大化" style="margin-left:10px;"><Icon type="ios-square-outline" :size="16"/></span>
                 </li>   
             </ul>
             <div class="msg_main" v-show="isLargen !== 0">
