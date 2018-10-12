@@ -5,6 +5,7 @@
   var communicate = new Vue({});
   // ws
   var ws = null;
+  //  
   //全局变量
   var store = {
     navState: isShowCompany === 'true' ? true : false,
@@ -12,7 +13,8 @@
     currentDeviceId: null,
     currentDeviceRecord: {},
     treeDeviceInfo: null,
-    paramsCmdCodeArr: [] // 接触报警信息的传参顺序
+    paramsCmdCodeArr: [], // 接触报警信息的传参顺序
+    componentName: null,
   }
   // vuex store
   vstore = new Vuex.Store({
@@ -24,7 +26,7 @@
     },
     actions: {
       setDeviceNames: function (context, groups) {
-        context.commit('setDeviceNames', groups)
+        context.commit('setDeviceNames', groups);
       },
       setUserTypeDescr: function (context) {
         var url = myUrls.queryUserTypeDescr()
@@ -349,10 +351,12 @@
           ws = this.wsInstance = new WebSocket(wsHost);
         } else if ('MozWebSocket' in window) {
           ws = this.wsInstance = new MozWebSocket(wsHost);
-        }
+        } else {
+          alert("您的浏览器不支持WebSocket!");
+          return;
+        };
 
         this.wsInstance.onclose = function () {
-          console.log("llws连接关闭!" + new Date().toUTCString());
         };
         this.wsInstance.onerror = function () {
           console.log("llws连接错误!" + new Date().toUTCString());
@@ -371,28 +375,7 @@
             var data = resp.remindMsg;
             communicate.$emit("remindmsg", data);
           } else if (action === "positionlast") {
-            var data = resp.positionLast;
-            var deviceid = data.deviceid;
-            for (var i = 0; i < me.records.length; i++) {
-              var record = me.records[i];
-              if (record.deviceid === deviceid) {
-                var isOnline = Date.now() - data.arrivedtime < me.offlineTime ? true : false;
-                var iconState = null;
-                var angle = utils.getAngle(data.course);
 
-                iconState = new BMap.Icon(
-                  utils.getDirectionImage(isOnline, angle),
-                  new BMap.Size(17, 17),
-                  { imageOffset: new BMap.Size(0, 0) }
-                );
-
-                data.icon = iconState;
-                var lng_lat = wgs84tobd09(data.callon, data.callat);
-                data.point = new BMap.Point(lng_lat[0], lng_lat[1]);
-                me.records.splice(i, 1, data);
-              };
-            };
-            console.log('data', data);
           };
 
         };
@@ -407,6 +390,32 @@
           me.lockReconnect = false;
         }, 2000);
       },
+      handleWebSocket: function (data) {
+        console.log('communicate-positionlast', data);
+        if (store.componentName != "monitor") return;
+        var data = resp.positionLast;
+        var deviceid = data.deviceid;
+        for (var i = 0; i < me.records.length; i++) {
+          var record = me.records[i];
+          if (record.deviceid === deviceid) {
+            var isOnline = Date.now() - data.arrivedtime < me.offlineTime ? true : false;
+            var iconState = null;
+            var angle = utils.getAngle(data.course);
+
+            iconState = new BMap.Icon(
+              utils.getDirectionImage(isOnline, angle),
+              new BMap.Size(17, 17),
+              { imageOffset: new BMap.Size(0, 0) }
+            );
+
+            data.icon = iconState;
+            var lng_lat = wgs84tobd09(data.callon, data.callat);
+            data.point = new BMap.Point(lng_lat[0], lng_lat[1]);
+            me.records.splice(i, 1, data);
+          };
+        };
+
+      },
       clearMarkerOverlays: function () {
         var me = this
         var mks = me.map.getOverlays()
@@ -420,8 +429,10 @@
         if (this.myDis != null) {
           this.myDis.close();
         }
-        this.myDis = new BMapLib.DistanceTool(this.map)
+        // console.log('this.map', this.map);
+        // this.myDis = new BMapLib.DistanceTool(this.map)
         this.myDis.open(); //开启鼠标测距
+        console.log('this.myDis', this.myDis);
       },
       getThePointOfTheCurrentWindow: function () {
         var bounds = this.map.getBounds();
@@ -432,9 +443,9 @@
             var point = new BMap.Point(lng_lat[0], lng_lat[1]);
             if (bounds.containsPoint(point)) {
               pointArr.push(item);
-            }
-          }
-        })
+            };
+          };
+        });
         return pointArr;
       },
       handleClickMore: function (name) {
@@ -1608,7 +1619,7 @@
               }
             })
           }
-        }, 1000)
+        }, 1000);
       },
       moveMarkers: function () {
         var me = this;
@@ -1775,7 +1786,7 @@
       var havecompany = this.isShowConpanyName == true ? 1 : 0;
       this.intervalTime = Number(store.intervalTime);
       this.initMap();
-      this.initWebSocket();
+      // this.initWebSocket();
       this.getMonitorListByUser(havecompany, function (resp) {
         me.groups = resp.groups;
         me.setDeviceIdsList(resp.groups);
@@ -1794,21 +1805,23 @@
               me.addOverlayToMap(filterArr);
             } else {
               me.addOverlayToMap(resp.records);
-            }
-          }
+            };
+          };
           me.selectedState = 'all';
         })
-      })
+      });
+      this.myDis = new BMapLib.DistanceTool(this.map);
       this.setIntervalReqRecords();
+      communicate.$on("positionlast", this.handleWebSocket);
     },
     beforeDestroy: function () {
       store.currentDeviceId = null;
       store.currentDeviceRecord = {};
-      // this.$store.state.deviceNames = {};
       clearInterval(this.intervalInstanse);
-      this.lockReconnect = true;
-      ws.send("offline" + Cookies.get('name'));
-      ws.close();
+      communicate.$off('positionlast', this.handleWebSocket);
+      if (this.myDis != null) {
+        this.myDis.close();
+      };
     }
   }
 
@@ -2049,7 +2062,7 @@
         alarmTypeList: [],
         alarmCmdList: [[]],
         isWaring: false,
-        interval: 5000,
+        interval: 10000,
         disposeRowWaringObj: {},
         cmdRowWaringObj: {},
         currentDevTypeCmdList: [],
@@ -2513,7 +2526,7 @@
       this.changeWrapperCls();
       communicate.$on("remindmsg", function (data) {
         console.log('waringRecords', me.waringRecords[0]);
-        console.log('data', data);
+        console.log('communicate-remindmsg', data);
         me.waringRecords.unshift(data);
       });
       window.onresize = function () {
@@ -2528,11 +2541,13 @@
     store: vstore,
     i18n: i18n,
     data: {
-      componentId: ''
+      componentId: '',
+      lockReconnect: false
     },
     methods: {
       changeComponent: function (componentid) {
         console.log('componentid', componentid);
+        store.componentName = componentid;
         this.componentId = componentid
       },
       changeNav: function (state) {
@@ -2547,7 +2562,50 @@
       },
       jumpReport: function (companyName) {
         this.componentId = companyName;
-      }
+      },
+      initWebSocket: function () {
+        var me = this;
+        if ('WebSocket' in window) {
+          ws = new WebSocket(wsHost);
+        } else if ('MozWebSocket' in window) {
+          ws = new MozWebSocket(wsHost);
+        } else {
+          alert("您的浏览器不支持WebSocket!");
+          return;
+        };
+
+        ws.onclose = function () { };
+        ws.onerror = function () {
+          console.log("llws连接错误!" + new Date().toUTCString());
+          me.reconnectWs();
+        };
+        ws.onopen = function () {
+          console.log('ws连接成功', '');
+          var user = "online" + Cookies.get('name');
+          ws.send(user);
+        };
+        ws.onmessage = function (event) {
+          var resp = JSON.parse(event.data);
+          var action = resp.action;
+          console.log('消息回来了', action);
+          if (action === "remindmsg") {
+            var data = resp.remindMsg;
+            communicate.$emit("remindmsg", data);
+          } else if (action === "positionlast") {
+            communicate.$emit("positionlast", data);
+          };
+        };
+      },
+      reconnectWs: function (url) {
+        var me = this;
+        if (me.lockReconnect) return;
+        me.lockReconnect = true;
+        setTimeout(function () {
+          console.log("ws重连!" + new Date().toUTCString());
+          me.initWebSocket();
+          me.lockReconnect = false;
+        }, 2000);
+      },
     },
     components: {
       appHeader: appHeader,
@@ -2558,8 +2616,9 @@
       systemParam: systemParam
     },
     mounted: function () {
-      this.$store.dispatch('setUserTypeDescr')
-      this.$store.dispatch('setAllCmdList')
+      this.$store.dispatch('setUserTypeDescr');
+      this.$store.dispatch('setAllCmdList');
+      this.initWebSocket();   // 连接webSocket
     }
   })
 })()
