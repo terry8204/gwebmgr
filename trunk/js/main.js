@@ -276,8 +276,6 @@
         cmdParams: {},
         deviceBaseInfo: {},
         infoWindowInstance: null,  //  信息窗口实例
-        wsInstance: null,          // webSocket 实例
-        lockReconnect: false       // 是否重连webSocket
       }
     },
     methods: {
@@ -345,57 +343,11 @@
           }
         })
       },
-      initWebSocket: function () {
-        var me = this;
-        if ('WebSocket' in window) {
-          ws = this.wsInstance = new WebSocket(wsHost);
-        } else if ('MozWebSocket' in window) {
-          ws = this.wsInstance = new MozWebSocket(wsHost);
-        } else {
-          alert("您的浏览器不支持WebSocket!");
-          return;
-        };
-
-        this.wsInstance.onclose = function () {
-        };
-        this.wsInstance.onerror = function () {
-          console.log("llws连接错误!" + new Date().toUTCString());
-          me.reconnectWs();
-        };
-        this.wsInstance.onopen = function () {
-          console.log('ws连接成功', '');
-          var user = "online" + Cookies.get('name');
-          me.wsInstance.send(user);
-        };
-        this.wsInstance.onmessage = function (event) {
-          var resp = JSON.parse(event.data);
-          var action = resp.action;
-          console.log('消息回来了', action);
-          if (action === "remindmsg") {
-            var data = resp.remindMsg;
-            communicate.$emit("remindmsg", data);
-          } else if (action === "positionlast") {
-
-          };
-
-        };
-      },
-      reconnectWs: function (url) {
-        var me = this;
-        if (me.lockReconnect) return;
-        me.lockReconnect = true;
-        setTimeout(function () {
-          console.log("ws重连!" + new Date().toUTCString());
-          me.initWebSocket();
-          me.lockReconnect = false;
-        }, 2000);
-      },
       handleWebSocket: function (data) {
-        console.log('communicate-positionlast', data);
+        var me = this;
         if (store.componentName != "monitor") return;
-        var data = resp.positionLast;
         var deviceid = data.deviceid;
-        for (var i = 0; i < me.records.length; i++) {
+        for (var i = 0; i < this.records.length; i++) {
           var record = me.records[i];
           if (record.deviceid === deviceid) {
             var isOnline = Date.now() - data.arrivedtime < me.offlineTime ? true : false;
@@ -429,10 +381,8 @@
         if (this.myDis != null) {
           this.myDis.close();
         }
-        // console.log('this.map', this.map);
-        // this.myDis = new BMapLib.DistanceTool(this.map)
+        this.myDis = new BMapLib.DistanceTool(this.map)
         this.myDis.open(); //开启鼠标测距
-        console.log('this.myDis', this.myDis);
       },
       getThePointOfTheCurrentWindow: function () {
         var bounds = this.map.getBounds();
@@ -1810,7 +1760,6 @@
           me.selectedState = 'all';
         })
       });
-      this.myDis = new BMapLib.DistanceTool(this.map);
       this.setIntervalReqRecords();
       communicate.$on("positionlast", this.handleWebSocket);
     },
@@ -2281,13 +2230,24 @@
                   newArr.push(msgTiem)
                   if (msgTiem.type == 1) {
                     var deviceid = msgTiem.deviceid;
-                    this.waringRecords.unshift({
-                      devicename: this.$store.state.deviceNames[deviceid].devicename,
-                      deviceid: deviceid,
-                      gpstime: msgTiem.createtime,
-                      strstate: msgTiem.content,
-                      isdispose: '未处理'
-                    })
+                    var lock = true;
+                    for (var i = 0; i < this.waringRecords.length; i++) {
+                      var item = this.waringRecords[i];
+                      if (item.gpstime == msgTiem.createtime) {
+                        lock = false;
+                        break;
+                      };
+                    }
+                    console.log('ispush', lock);
+                    if (lock) {
+                      this.waringRecords.unshift({
+                        devicename: this.$store.state.deviceNames[deviceid].devicename,
+                        deviceid: deviceid,
+                        gpstime: msgTiem.createtime,
+                        strstate: msgTiem.content,
+                        isdispose: '未处理'
+                      });
+                    }
                   } else if (msgTiem.type == 2) {
                   } else if (msgTiem.type == 3) {
                   } else if (msgTiem.type == 4) {
@@ -2525,9 +2485,23 @@
       this.queryAlarmDescr();
       this.changeWrapperCls();
       communicate.$on("remindmsg", function (data) {
-        console.log('waringRecords', me.waringRecords[0]);
-        console.log('communicate-remindmsg', data);
-        me.waringRecords.unshift(data);
+        var lock = true;
+        for (var i = 0; i < me.waringRecords.length; i++) {
+          var item = me.waringRecords[i];
+          if (item.gpstime == data.createtime) {
+            lock = false;
+            break;
+          };
+        }
+        if (lock) {
+          me.waringRecords.unshift({
+            devicename: me.$store.state.deviceNames[data.deviceid].devicename,
+            gpstime: data.createtime,
+            strstate: data.content,
+            isdispose: '未处理',
+            deviceid: data.deviceid
+          });
+        }
       });
       window.onresize = function () {
         me.changeWrapperCls();
@@ -2580,18 +2554,18 @@
           me.reconnectWs();
         };
         ws.onopen = function () {
-          console.log('ws连接成功', '');
           var user = "online" + Cookies.get('name');
+          console.log('ws连接成功', user);
           ws.send(user);
         };
         ws.onmessage = function (event) {
           var resp = JSON.parse(event.data);
           var action = resp.action;
-          console.log('消息回来了', action);
           if (action === "remindmsg") {
             var data = resp.remindMsg;
             communicate.$emit("remindmsg", data);
           } else if (action === "positionlast") {
+            var data = resp.positionLast;
             communicate.$emit("positionlast", data);
           };
         };
@@ -2620,5 +2594,13 @@
       this.$store.dispatch('setAllCmdList');
       this.initWebSocket();   // 连接webSocket
     }
-  })
+  });
+
+  // 页面离开时 关闭 webSocket
+  window.onbeforeunload = function () {
+    var user = "offline" + Cookies.get('name');
+    ws.send(user);
+    ws.close();
+  };
+
 })()
