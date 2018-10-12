@@ -52,12 +52,12 @@
     mutations: {
       setDeviceNames: function (state, groups) {
         groups.forEach(function (group) {
-          group.firstLetter = __pinyin.getFirstLetter(group.groupname)
-          group.pinyin = __pinyin.getPinyin(group.groupname)
+          group.firstLetter = __pinyin.getFirstLetter(group.groupname);
+          group.pinyin = __pinyin.getPinyin(group.groupname);
           group.devices.forEach(function (device, index) {
-            var deviceid = device.deviceid
-            device.firstLetter = __pinyin.getFirstLetter(device.devicename)
-            device.pinyin = __pinyin.getPinyin(device.devicename)
+            var deviceid = device.deviceid;
+            device.firstLetter = __pinyin.getFirstLetter(device.devicename);
+            device.pinyin = __pinyin.getPinyin(device.devicename);
             state.deviceNames[deviceid] = device;
           })
         })
@@ -269,7 +269,9 @@
         selectedCmdInfo: {},  // 选中设备指令的信息
         cmdParams: {},
         deviceBaseInfo: {},
-        infoWindowInstance: null  //  信息窗口实例
+        infoWindowInstance: null,  //  信息窗口实例
+        wsInstance: null,          // webSocket 实例
+        lockReconnect: false       // 是否重连webSocket
       }
     },
     methods: {
@@ -336,6 +338,42 @@
             store.currentDeviceRecord = null;
           }
         })
+      },
+      initWebSocket: function () {
+        var me = this;
+        if ('WebSocket' in window) {
+          this.wsInstance = new WebSocket(wsHost);
+        } else if ('MozWebSocket' in window) {
+          this.wsInstance = new MozWebSocket(wsHost);
+        }
+
+        this.wsInstance.onclose = function () {
+          console.log("llws连接关闭!" + new Date().toUTCString());
+          me.wsInstance.send("offline" + Cookies.get('name'));
+        };
+        this.wsInstance.onerror = function () {
+          console.log("llws连接错误!" + new Date().toUTCString());
+          me.reconnectWs();
+        };
+        this.wsInstance.onopen = function () {
+          console.log('ws连接成功', '');
+          var user = "online" + Cookies.get('name');
+          console.log('user', user);
+          me.wsInstance.send(user);
+        };
+        this.wsInstance.onmessage = function (event) {
+          console.log('xiaoxi', event);
+        };
+      },
+      reconnectWs: function (url) {
+        var me = this;
+        if (me.lockReconnect) return;
+        me.lockReconnect = true;
+        setTimeout(function () {
+          console.log("ws重连!" + new Date().toUTCString());
+          me.initWebSocket();
+          me.lockReconnect = false;
+        }, 2000);
       },
       clearMarkerOverlays: function () {
         var me = this
@@ -933,6 +971,7 @@
           return infoWindowInstance;
         } catch (error) {
           console.log('get不到info.deviceid --- ')
+          this.infoWindowInstance = null;
         }
       },
       getWindowContent: function (info) {
@@ -954,7 +993,7 @@
             case 'wifi':
               type = "WIFI定位";
               break;
-          }
+          };
           return type;
         })();
         var content =
@@ -989,7 +1028,6 @@
           '<span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="trackMap(' +
           info.deviceid +
           ')">跟踪</span> </p></div>';
-
         return content;
       },
       getAddress: function (info) {
@@ -1556,7 +1594,6 @@
                     me.isMoveTriggerEvent = false;
                     // var infoWindow = me.getInfoWindow(record);
                     // marker.openInfoWindow(infoWindow, record.point);
-                    console.log('infoWindowInstance', "刷新了");
                     if (me.infoWindowInstance) {
                       if (me.infoWindowInstance.isOpen()) {
                         var content = me.getWindowContent(record);
@@ -1703,10 +1740,11 @@
       }
     },
     mounted: function () {
-      var me = this
-      var havecompany = this.isShowConpanyName == true ? 1 : 0
-      this.intervalTime = Number(store.intervalTime)
-      this.initMap()
+      var me = this;
+      var havecompany = this.isShowConpanyName == true ? 1 : 0;
+      this.intervalTime = Number(store.intervalTime);
+      this.initMap();
+      this.initWebSocket();
       this.getMonitorListByUser(havecompany, function (resp) {
         me.groups = resp.groups
         me.setDeviceIdsList(resp.groups)

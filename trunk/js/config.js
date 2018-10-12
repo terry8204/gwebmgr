@@ -1,12 +1,15 @@
 /*
  * 所有的urls
  */
-var pathname = location.pathname
-var host = null
+var pathname = location.pathname;
+var host = null;
+var wsHost = null;
 if (pathname.indexOf('gpsserver') != -1) {
-  host = 'http://localhost:8080/gpsserver/'
+  host = 'http://localhost:8080/gpsserver/';
+  wsHost = "ws://localhost:89";
 } else {
-  host = 'http://112.74.186.169/'
+  host = 'http://112.74.186.169/';
+  wsHost = "ws://112.74.186.169:89";
 }
 
 var myUrls = {
