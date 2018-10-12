@@ -1,6 +1,10 @@
 ; (function () {
   // 是否显示公司名字
-  var isShowCompany = Cookies.get('isShowCompany')
+  var isShowCompany = Cookies.get('isShowCompany');
+  // 组件之间通信的vue实例
+  var communicate = new Vue({});
+  // ws
+  var ws = null;
   //全局变量
   var store = {
     navState: isShowCompany === 'true' ? true : false,
@@ -342,14 +346,13 @@
       initWebSocket: function () {
         var me = this;
         if ('WebSocket' in window) {
-          this.wsInstance = new WebSocket(wsHost);
+          ws = this.wsInstance = new WebSocket(wsHost);
         } else if ('MozWebSocket' in window) {
-          this.wsInstance = new MozWebSocket(wsHost);
+          ws = this.wsInstance = new MozWebSocket(wsHost);
         }
 
         this.wsInstance.onclose = function () {
           console.log("llws连接关闭!" + new Date().toUTCString());
-          me.wsInstance.send("offline" + Cookies.get('name'));
         };
         this.wsInstance.onerror = function () {
           console.log("llws连接错误!" + new Date().toUTCString());
@@ -358,11 +361,40 @@
         this.wsInstance.onopen = function () {
           console.log('ws连接成功', '');
           var user = "online" + Cookies.get('name');
-          console.log('user', user);
           me.wsInstance.send(user);
         };
         this.wsInstance.onmessage = function (event) {
-          console.log('xiaoxi', event);
+          var resp = JSON.parse(event.data);
+          var action = resp.action;
+          console.log('消息回来了', action);
+          if (action === "remindmsg") {
+            var data = resp.remindMsg;
+            communicate.$emit("remindmsg", data);
+          } else if (action === "positionlast") {
+            var data = resp.positionLast;
+            var deviceid = data.deviceid;
+            for (var i = 0; i < me.records.length; i++) {
+              var record = me.records[i];
+              if (record.deviceid === deviceid) {
+                var isOnline = Date.now() - data.arrivedtime < me.offlineTime ? true : false;
+                var iconState = null;
+                var angle = utils.getAngle(data.course);
+
+                iconState = new BMap.Icon(
+                  utils.getDirectionImage(isOnline, angle),
+                  new BMap.Size(17, 17),
+                  { imageOffset: new BMap.Size(0, 0) }
+                );
+
+                data.icon = iconState;
+                var lng_lat = wgs84tobd09(data.callon, data.callat);
+                data.point = new BMap.Point(lng_lat[0], lng_lat[1]);
+                me.records.splice(i, 1, data);
+              };
+            };
+            console.log('data', data);
+          };
+
         };
       },
       reconnectWs: function (url) {
@@ -503,13 +535,12 @@
         })
       },
       disposeDirectiveFn: function () {
-
         var url = myUrls.sendCmd();
         var data = { devicetype: this.currentDeviceType, cmdcode: this.selectedCmdInfo.cmdcode, deviceid: store.currentDeviceId, params: Object.values(this.cmdParams) };
 
         // utils.sendAjax(url, data, function (resp) {
 
-        // })
+        // });
       },
       focus: function () {
         var me = this
@@ -683,18 +714,18 @@
         var me = this
         this.records.forEach(function (item) {
           if (item == null) {
-            return
+            return;
           }
-          var deviceid = item.deviceid
+          var deviceid = item.deviceid;
           var isOnline = (function (record) {
-            var isOnline = false
-            var arrivedtime = record.arrivedtime
-            var currentTime = new Date().getTime()
+            var isOnline = false;
+            var arrivedtime = record.arrivedtime;
+            var currentTime = new Date().getTime();
             if (currentTime - arrivedtime < me.offlineTime) {
-              isOnline = true
+              isOnline = true;
             }
-            return isOnline
-          })(item)
+            return isOnline;
+          })(item);
 
           if (me.isShowConpanyName) {
             me.currentStateData.forEach(function (company) {
@@ -702,10 +733,10 @@
                 group.children.forEach(function (dev) {
                   if (dev.deviceid == deviceid) {
                     dev.isOnline = isOnline
-                  }
-                })
-              })
-            })
+                  };
+                });
+              });
+            });
 
             me.currentStateData.forEach(function (company) {
               company.children.forEach(function (group) {
@@ -725,24 +756,24 @@
                     ')'
                 } else {
                   group.title = group.name + '(' + group.children.length + ')'
-                }
-              })
-            })
+                };
+              });
+            });
           } else {
             me.currentStateData.forEach(function (group) {
               group.children.forEach(function (dev) {
                 if (dev.deviceid == deviceid) {
                   dev.isOnline = isOnline
-                }
-              })
-            })
+                };
+              });
+            });
             me.currentStateData.forEach(function (group) {
               var onlineCount = 0
               group.children.forEach(function (dev) {
                 if (dev.isOnline) {
                   onlineCount++
-                }
-              })
+                };
+              });
               if (me.selectedState == 'all') {
                 group.title =
                   group.name +
@@ -753,10 +784,10 @@
                   ')'
               } else {
                 group.title = group.name + '(' + group.children.length + ')'
-              }
-            })
-          }
-        })
+              };
+            });
+          };
+        });
       },
       cancelSelected: function () {
         if (this.isShowConpanyName) {
@@ -1507,27 +1538,27 @@
               devicetype: device.devicetype
             }
             if (device.deviceid == store.currentDeviceId) {
-              groupData.expand = true
-              dev.isSelected = true
+              groupData.expand = true;
+              dev.isSelected = true;
             }
             if (!isOnline) {
-              groupData.children.push(dev)
-            }
+              groupData.children.push(dev);
+            };
           })
 
           if (groupData.children.length) {
             if (groupData.title == '默认组') {
               if (groupData.children.length) {
-                me.currentStateData.unshift(groupData)
-              }
+                me.currentStateData.unshift(groupData);
+              };
             } else {
               if (groupData.children.length) {
-                me.currentStateData.push(groupData)
-              }
-            }
+                me.currentStateData.push(groupData);
+              };
+            };
             groupData.title += '(' + groupData.children.length + ')'
-          }
-        })
+          };
+        });
       },
       getIsOnline: function (deviceid) {
         var me = this
@@ -1535,15 +1566,15 @@
         me.records.forEach(function (record) {
           if (record !== null) {
             if (deviceid == record.deviceid) {
-              var arrivedtime = record.arrivedtime
-              var currentTime = new Date().getTime()
+              var arrivedtime = record.arrivedtime;
+              var currentTime = new Date().getTime();
               if (currentTime - arrivedtime < me.offlineTime) {
-                isOnline = true
-              }
-            }
-          }
-        })
-        return isOnline
+                isOnline = true;
+              };
+            };
+          };
+        });
+        return isOnline;
       },
       setIntervalReqRecords: function () {
         var me = this
@@ -1566,9 +1597,9 @@
                       { imageOffset: new BMap.Size(0, 0) }
                     );
 
-                    record.icon = iconState
-                    var lng_lat = wgs84tobd09(record.callon, record.callat)
-                    record.point = new BMap.Point(lng_lat[0], lng_lat[1])
+                    record.icon = iconState;
+                    var lng_lat = wgs84tobd09(record.callon, record.callat);
+                    record.point = new BMap.Point(lng_lat[0], lng_lat[1]);
                   }
                 });
                 me.records = resp.records;
@@ -1580,10 +1611,10 @@
         }, 1000)
       },
       moveMarkers: function () {
-        var me = this
+        var me = this;
         var markers = this.map.getOverlays();
         markers.forEach(function (marker) {
-          var deviceid = marker.deviceid
+          var deviceid = marker.deviceid;
           if (deviceid) {
             me.records.forEach(function (record) {
               if (record) {
@@ -1598,7 +1629,7 @@
                       if (me.infoWindowInstance.isOpen()) {
                         var content = me.getWindowContent(record);
                         me.infoWindowInstance.setContent(content);
-                        me.infoWindowInstance.redraw();
+                        me.infoWindowInstance.redraw();  //重画
                       }
                     };
                   };
@@ -1613,13 +1644,13 @@
         this.records.forEach(function (record) {
           // 如果是null 返回;
           if (record == null) {
-            return
+            return;
           }
           var isOnline =
             Date.now() - record.arrivedtime < me.offlineTime ? true : false
-          var iconState = null
+          var iconState = null;
 
-          var angle = utils.getAngle(record.course)
+          var angle = utils.getAngle(record.course);
 
           iconState = new BMap.Icon(
             utils.getDirectionImage(isOnline, angle),
@@ -1658,47 +1689,47 @@
         this.currentDevDirectiveList = directiveList;
       },
       records: function () {
-        var online = 0
-        var offline = 0
-        var me = this
-        var deviceIds = Object.keys(me.$store.state.deviceNames)
+        var online = 0;
+        var offline = 0;
+        var me = this;
+        var deviceIds = Object.keys(me.$store.state.deviceNames);
 
         if (this.records.length === deviceIds.length) {
           this.records.forEach(function (record) {
             if (record !== null) {
-              var arrivedtime = record.arrivedtime
-              var currentTime = new Date().getTime()
+              var arrivedtime = record.arrivedtime;
+              var currentTime = new Date().getTime();
               if (currentTime - arrivedtime < me.offlineTime) {
-                online++
+                online++;
               } else {
-                offline++
-              }
+                offline++;
+              };
             } else {
-              offline++
-            }
-          })
-          this.offlineDevCount = offline
-          this.onlineDevCount = online
+              offline++;
+            };
+          });
+          this.offlineDevCount = offline;
+          this.onlineDevCount = online;
         } else if (this.records.length === 0) {
-          this.offlineDevCount = deviceIds.length
-          this.onlineDevCount = 0
+          this.offlineDevCount = deviceIds.length;
+          this.onlineDevCount = 0;
         } else {
-          offline += deviceIds.length - this.records.length
+          offline += deviceIds.length - this.records.length;
           this.records.forEach(function (record) {
             if (record !== null) {
-              var arrivedtime = record.arrivedtime
-              var currentTime = new Date().getTime()
+              var arrivedtime = record.arrivedtime;
+              var currentTime = new Date().getTime();
               if (currentTime - arrivedtime < me.offlineTime) {
-                online++
+                online++;
               } else {
-                offline++
+                offline++;
               }
             } else {
-              offline++
+              offline++;
             }
           })
-          this.offlineDevCount = offline
-          this.onlineDevCount = online
+          this.offlineDevCount = offline;
+          this.onlineDevCount = online;
         }
 
         this.allDevCount = deviceIds.length
@@ -1746,35 +1777,38 @@
       this.initMap();
       this.initWebSocket();
       this.getMonitorListByUser(havecompany, function (resp) {
-        me.groups = resp.groups
-        me.setDeviceIdsList(resp.groups)
+        me.groups = resp.groups;
+        me.setDeviceIdsList(resp.groups);
         var devIdList = Object.keys(me.$store.state.deviceNames)
         me.getLastPosition(devIdList, function (resp) {
           if (resp.records) {
-            me.records = resp.records
+            me.records = resp.records;
           } else {
-            me.records = []
+            me.records = [];
           }
-          me.setCarIconState()
-          var range = utils.getDisplayRange(me.map.getZoom())
+          me.setCarIconState();
+          var range = utils.getDisplayRange(me.map.getZoom());
           if (resp.records) {
             if (resp.records.length > 300) {
-              var filterArr = me.filterReocrds(range, resp.records)
-              me.addOverlayToMap(filterArr)
+              var filterArr = me.filterReocrds(range, resp.records);
+              me.addOverlayToMap(filterArr);
             } else {
-              me.addOverlayToMap(resp.records)
+              me.addOverlayToMap(resp.records);
             }
           }
-          me.selectedState = 'all'
+          me.selectedState = 'all';
         })
       })
-      this.setIntervalReqRecords()
+      this.setIntervalReqRecords();
     },
     beforeDestroy: function () {
-      store.currentDeviceId = null
-      store.currentDeviceRecord = {}
+      store.currentDeviceId = null;
+      store.currentDeviceRecord = {};
       // this.$store.state.deviceNames = {};
-      clearInterval(this.intervalInstanse)
+      clearInterval(this.intervalInstanse);
+      this.lockReconnect = true;
+      ws.send("offline" + Cookies.get('name'));
+      ws.close();
     }
   }
 
@@ -2477,6 +2511,11 @@
       this.timingRequestMsg();
       this.queryAlarmDescr();
       this.changeWrapperCls();
+      communicate.$on("remindmsg", function (data) {
+        console.log('waringRecords', me.waringRecords[0]);
+        console.log('data', data);
+        me.waringRecords.unshift(data);
+      });
       window.onresize = function () {
         me.changeWrapperCls();
       }
