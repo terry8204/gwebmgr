@@ -439,8 +439,8 @@
           this.selectedCmdInfo.params = utils.parseXML(cmdInfo.params)
           this.selectedCmdInfo.params.forEach(function (param) {
             me.cmdParams[param.type]
-          })
-        }
+          });
+        };
         this.dispatchDirectiveModal = true;
       },
       handleClickFence: function (name) {
@@ -1647,6 +1647,7 @@
             directiveList.push(cmd);
           }
         })
+        console.log("currentDevDirectiveList-- ", directiveList);
         this.currentDevDirectiveList = directiveList;
       },
       records: function () {
@@ -2057,6 +2058,8 @@
           })
           me.currentDevTypeCmdList = beforeCmdList
           var twoArr = []
+          console.log('cmdList', cmdList);
+          console.log('beforeCmdList', beforeCmdList);
           beforeCmdList.forEach(function (item, index) {
             if (index % 4 == 0) {
               twoArr.push([])
