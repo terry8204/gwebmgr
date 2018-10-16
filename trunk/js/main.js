@@ -2134,10 +2134,11 @@
           var text = item.innerHTML
           var type = item.getAttribute('type');
           if (type && text) {
-
             store.paramsCmdCodeArr.push(type)
-            this.paramsInputObj[type] = ''
-            this.paramsInputList.push({ type: type, text: text })
+            // this.paramsInputObj[type] = '';
+            this.$set(this.paramsInputObj, type, "");
+            this.paramsInputList.push({ type: type, text: text });
+            console.log('paramsInputObj', this.paramsInputObj);
           }
         }
       },
@@ -2168,7 +2169,7 @@
         var url = myUrls.queryAlarm()
         utils.sendAjax(url, this.checkboxObj, function (resp) {
           if (resp.status == 0) {
-            me.waringRecords = resp.records
+            me.waringRecords = resp.records;
             me.waringRecords.forEach(function (item) {
               var deviceid = item.deviceid;
               if (me.$store.state.deviceNames[deviceid]) {
@@ -2320,7 +2321,7 @@
             isHasParams = false
           }
         });
-
+        console.log('paramsInputObj', paramsInputObj);
         if (!isHasParams) {
           this.$Message.error('所有参数都是必填的');
           return;
