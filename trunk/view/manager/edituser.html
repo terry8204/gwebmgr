@@ -202,15 +202,17 @@
             methods: {
                 handleClickChildren:function(data){
                     var directiveInfo = data[0];
+                    console.log(data);
                     if(directiveInfo){
                         if(directiveInfo.children == undefined){ 
                             this.directiveInfo = directiveInfo;
+                            this.directivepwd = directiveInfo.cmdpwd;
                             var devicetype = directiveInfo.devicetype;
                             var cmdcode = directiveInfo.cmdcode;
-                            var isHasDirective = this.isHasDirective(devicetype,cmdcode);
+                            // var isHasDirective = this.isHasDirective(devicetype,cmdcode);
                             this.editTypeName = directiveInfo.typename;
                             this.editDirectiveName = directiveInfo.title;
-                            if(isHasDirective && directiveInfo.params){
+                            if(directiveInfo.params){
                                 this.isEditDirectivePwd = false;
                             }else{
                                 this.isEditDirectivePwd = true; 
@@ -241,7 +243,8 @@
 
                     utils.sendAjax(url,data,function (resp) { 
                         if(resp.status == 0){
-                            me.$Message.success("修改密码成功")
+                            me.$Message.success("修改密码成功");
+                            me.directiveInfo.cmdpwd = data.cmdpwd;
                         }else{
                             me.$Message.error(resp.cause);
                         }
@@ -503,6 +506,7 @@
                                     params:directive.params,
                                     typename:type.typename,
                                     devicetype:type.devicetypeid,
+                                    cmdpwd: directive.cmdpwd
                                 }
                                 children.push(directiveObj)
                             }

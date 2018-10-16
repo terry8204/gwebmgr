@@ -497,6 +497,7 @@
       },
       disposeDirectiveFn: function () {
         var url = myUrls.sendCmd();
+        console.log('this.cmdParams', this.cmdParams);
         var data = { devicetype: this.currentDeviceType, cmdcode: this.selectedCmdInfo.cmdcode, deviceid: store.currentDeviceId, params: Object.values(this.cmdParams) };
 
         // utils.sendAjax(url, data, function (resp) {
@@ -2297,29 +2298,29 @@
         this.disposeModal = true
       },
       sendDisposeWaring: function () {
-        var me = this
-        var sendCmdUrl = myUrls.sendCmd()
-        var disposeAlarmUrl = myUrls.disposeAlarm()
-        var isHasParams = true
-        var paramsArr = []
-        var paramsInputObj = this.paramsInputObj
-
+        var me = this;
+        var sendCmdUrl = myUrls.sendCmd();
+        var disposeAlarmUrl = myUrls.disposeAlarm();
+        var isHasParams = true;
+        var paramsArr = [];
+        var paramsInputObj = this.paramsInputObj;
+        console.log('paramsInputObj', paramsInputObj);
         store.paramsCmdCodeArr.forEach(function (cmdCode) {
           var val = paramsInputObj[cmdCode]
           paramsArr.push(val)
           if (val == '') {
             isHasParams = false
           }
-        })
+        });
 
         if (!isHasParams) {
-          this.$Message.error('所有参数都是必填的')
-          return
-        }
+          this.$Message.error('所有参数都是必填的');
+          return;
+        };
 
         if (this.params && paramsArr.length) {
-          this.cmdRowWaringObj.params = paramsArr
-        }
+          this.cmdRowWaringObj.params = paramsArr;
+        };
 
         utils.sendAjax(sendCmdUrl, this.cmdRowWaringObj, function (resp) {
           if (resp.status == 0) {
@@ -2327,15 +2328,15 @@
               resp
             ) {
               if (resp.status === 0) {
-                me.$Message.success('解除成功')
-                me.waringRecords[me.waringRowIndex].isdispose = '已处理'
-                me.disposeModal = false
+                me.$Message.success('解除成功');
+                me.waringRecords[me.waringRowIndex].isdispose = '已处理';
+                me.disposeModal = false;
               } else {
-                me.$Message.error('解除失败')
+                me.$Message.error('解除失败');
               }
             })
           } else {
-            me.$Message.error(resp.cause)
+            me.$Message.error(resp.cause);
           }
         })
       },
