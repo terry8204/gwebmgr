@@ -497,12 +497,10 @@
       },
       disposeDirectiveFn: function () {
         var url = myUrls.sendCmd();
-        console.log('this.cmdParams', this.cmdParams);
         var data = { devicetype: this.currentDeviceType, cmdcode: this.selectedCmdInfo.cmdcode, deviceid: store.currentDeviceId, params: Object.values(this.cmdParams) };
-
-        // utils.sendAjax(url, data, function (resp) {
-
-        // });
+        utils.sendAjax(url, data, function (resp) {
+          console.log(resp);
+        });
       },
       focus: function () {
         var me = this
@@ -2164,8 +2162,10 @@
             me.waringRecords = resp.records
             me.waringRecords.forEach(function (item) {
               var deviceid = item.deviceid;
-              item.devicename = me.$store.state.deviceNames[deviceid].devicename;
-              item.isdispose = '未处理'
+              if (me.$store.state.deviceNames[deviceid]) {
+                item.devicename = me.$store.state.deviceNames[deviceid].devicename;
+                item.isdispose = '未处理';
+              }
             })
           }
         })
