@@ -1,4 +1,9 @@
+var alarmMgr = new AlarmMgr();
 ; (function () {
+  // 保存所有的报警消息记录;
+
+  // 最后一次查询报警时间
+  var lastQueryAllAlarmTime = 0;
   // 是否显示公司名字
   var isShowCompany = Cookies.get('isShowCompany');
   // 组件之间通信的vue实例
@@ -2138,7 +2143,6 @@
             // this.paramsInputObj[type] = '';
             this.$set(this.paramsInputObj, type, "");
             this.paramsInputList.push({ type: type, text: text });
-            console.log('paramsInputObj', this.paramsInputObj);
           }
         }
       },
@@ -2166,19 +2170,28 @@
       },
       queryWaringMsg: function () {
         var me = this
-        var url = myUrls.queryAlarm()
+        var url = myUrls.queryAlarm();
+        this.checkboxObj.lastqueryallalarmtime = lastQueryAllAlarmTime;
         utils.sendAjax(url, this.checkboxObj, function (resp) {
           if (resp.status == 0) {
-            me.waringRecords = resp.records;
-            me.waringRecords.forEach(function (item) {
-              var deviceid = item.deviceid;
-              if (me.$store.state.deviceNames[deviceid]) {
-                item.devicename = me.$store.state.deviceNames[deviceid].devicename;
-                item.isdispose = '未处理';
-              }
-            })
+            lastQueryAllAlarmTime = DateFormat.getCurrentUTC();
+            resp.records.forEach(function (item) {
+              alarmMgr.addRecord(item);
+            });
+            me.refreshAlarmToUi();
           }
         })
+      },
+      refreshAlarmToUi: function () {
+        var me = this;
+        var alarmList = alarmMgr.getAlarmList();
+        alarmList.forEach(function (item) {
+          var deviceid = item.deviceid;
+          var deviceName = me.$store.state.deviceNames[deviceid].devicename;
+          item.devicename = deviceName;
+          item.isdispose = item.disposestatus === 0 ? "未处理" : "已处理";
+        });
+        me.waringRecords = alarmList;
       },
       filterWaringType: function () {
         this.settingCheckboxObj()
@@ -2220,13 +2233,9 @@
       },
       timingRequestMsg: function () {
         var me = this
-        var url = myUrls.queryMsg()
+
         setInterval(function () {
-          utils.sendAjax(url, me.checkboxObj, function (resp) {
-            if (resp.status == 0) {
-              me.disposeMsg(resp.data)
-            }
-          })
+          me.queryWaringMsg();
         }, this.interval)
       },
       disposeMsg: function (data) {
@@ -2252,14 +2261,16 @@
                         break;
                       };
                     }
-                    console.log('ispush', lock);
+                    // 判断是否重复消息
                     if (lock) {
                       this.waringRecords.unshift({
                         devicename: this.$store.state.deviceNames[deviceid].devicename,
                         deviceid: deviceid,
                         gpstime: msgTiem.createtime,
                         strstate: msgTiem.content,
-                        isdispose: '未处理'
+                        isdispose: '未处理',
+                        messageSerialNo: msgTiem.messageSerialNo,
+                        messageId: msgTiem.messageId
                       });
                     }
                   } else if (msgTiem.type == 2) {
@@ -2284,7 +2295,7 @@
         var row = param.row
         var deviceid = row.deviceid
         var devicetype = deviceNames[deviceid].devicetype
-
+        console.log('param.row', row);
         this.cmdRowWaringObj = {
           deviceid: deviceid,
           arrivedtime: row.arrivedtime,
@@ -2398,6 +2409,11 @@
                 key: 'strstate',
               },
               {
+                title: '报警次数',
+                key: 'count',
+                width: 100
+              },
+              {
                 title: '是否处理',
                 key: 'isdispose',
                 width: 100
@@ -2498,23 +2514,9 @@
       this.queryAlarmDescr();
       this.changeWrapperCls();
       communicate.$on("remindmsg", function (data) {
-        var lock = true;
-        for (var i = 0; i < me.waringRecords.length; i++) {
-          var item = me.waringRecords[i];
-          if (item.gpstime == data.createtime) {
-            lock = false;
-            break;
-          };
-        }
-        if (lock) {
-          me.waringRecords.unshift({
-            devicename: me.$store.state.deviceNames[data.deviceid].devicename,
-            gpstime: data.createtime,
-            strstate: data.content,
-            isdispose: '未处理',
-            deviceid: data.deviceid
-          });
-        }
+        console.log('remindmsg-data', data);
+        alarmMgr.addRecord(data);
+        me.refreshAlarmToUi();
       });
       window.onresize = function () {
         me.changeWrapperCls();
