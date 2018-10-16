@@ -496,10 +496,18 @@
         })
       },
       disposeDirectiveFn: function () {
+        var me = this;
         var url = myUrls.sendCmd();
         var data = { devicetype: this.currentDeviceType, cmdcode: this.selectedCmdInfo.cmdcode, deviceid: store.currentDeviceId, params: Object.values(this.cmdParams) };
         utils.sendAjax(url, data, function (resp) {
-          console.log(resp);
+          if (resp.status === 0) {
+            me.$Message.success("下发成功");
+            me.dispatchDirectiveModal = false;
+          } else if (resp.status === 1) {
+            me.$Message.error("密码错误");
+          } else if (resp.status === -1) {
+            me.$Message.error("下发失败");
+          }
         });
       },
       focus: function () {
@@ -2124,8 +2132,9 @@
         for (var i = 0; i < children.length; i++) {
           var item = children[i]
           var text = item.innerHTML
-          var type = item.getAttribute('type')
+          var type = item.getAttribute('type');
           if (type && text) {
+
             store.paramsCmdCodeArr.push(type)
             this.paramsInputObj[type] = ''
             this.paramsInputList.push({ type: type, text: text })
@@ -2304,7 +2313,6 @@
         var isHasParams = true;
         var paramsArr = [];
         var paramsInputObj = this.paramsInputObj;
-        console.log('paramsInputObj', paramsInputObj);
         store.paramsCmdCodeArr.forEach(function (cmdCode) {
           var val = paramsInputObj[cmdCode]
           paramsArr.push(val)
