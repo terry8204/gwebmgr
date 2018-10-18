@@ -151,3 +151,6 @@ ul,ol,li{
     right: 0;
     left: 250px;
 }
+.ivu-select-selection .ivu-icon{
+    margin-top:-7px;
+}

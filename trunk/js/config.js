@@ -232,6 +232,10 @@ var myUrls = {
   unSetGeofence: function () {
     return this.host + 'webapi?action=unsetgeofence&token=' + token
   },
+  // 查询设备类型code
+  listDeviceTypeCode: function () {
+    return this.host + 'webapi?action=listdevicetypecode&token=' + token
+  }
 }
 
 // global var

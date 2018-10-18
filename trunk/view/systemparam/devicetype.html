@@ -23,9 +23,14 @@
                     <i-input v-model.trim="devTypeInfo.typename"></i-input>
                 </i-col>
                 <i-col :span="3" :offset="2" style="height: 100%;text-align:right;line-height:32px;">
-                    typeCode:
+                    通信协议:
                 </i-col>
-                <i-col :span="7">
+                <i-col :span="7"  v-show="!isEdit">
+                    <i-select v-model="deviceCode">
+                        <i-option v-for="item in deviceTypeList" :value="item.value" :key="item.value">{{ item.label }}</i-option>
+                    </i-select>
+                </i-col>
+                <i-col :span="7"  v-show="isEdit">
                     <i-input v-model.trim="devTypeInfo.typecode" :disabled="isEdit"></i-input>
                 </i-col>
             </Row>
@@ -75,6 +80,8 @@
                         "typecode": null,
                         "typename": null,
                     },
+                    deviceTypeList:[],
+                    deviceCode:"",
                     isEdit: false,
                     delDevTypeModal: false,
                     addDevTypeModal: false,
@@ -201,6 +208,7 @@
                     var me = this;
                     var url = null;
                     var data = null;
+                    var lock = true;
                     if (this.isEdit) {
                         url = myUrls.editDeviceType();
                         data = {
@@ -211,9 +219,20 @@
                     } else {
                         url = myUrls.addDeviceType();
                         data = {
-                            typecode: this.devTypeInfo.typecode,
+                            typecode: this.deviceCode,
                             typename: this.devTypeInfo.typename
                         };
+                    }
+                    for(var key in data){
+                        if(data.hasOwnProperty(key)){
+                            if(!data[key]){
+                                lock = false;
+                            }
+                        }
+                    };
+                    if(!lock){
+                        this.$Message.error("参数都是必填的");
+                        return;
                     }
                     utils.sendAjax(url, data, function (resp) {
                         if (resp.status == 0) {
@@ -343,6 +362,21 @@
                         }
                     });
 
+                },
+                queryDeviceTypeCode:function(){
+                    var me = this;
+                    var url = myUrls.listDeviceTypeCode();
+                    utils.sendAjax(url, {}, function (resp) {
+                        if (resp.status === 0) {
+                          console.log('resp', resp);
+                          resp.types.forEach(function (item) { 
+                              me.deviceTypeList.push({
+                                  label:item,
+                                  value:item
+                              });
+                          });      
+                        }
+                    });
                 }
             },
             watch: {
@@ -362,6 +396,7 @@
             mounted: function () {
                 this.queryDevTypeList();
                 this.queryCmdList();
+                this.queryDeviceTypeCode();
             }
         })
     </script>

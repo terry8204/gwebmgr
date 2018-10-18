@@ -605,7 +605,7 @@
         var value = this.sosoValue
 
         if (this.timeoutIns != null) {
-          clearInterval(this.timeoutIns)
+          clearTimeout(this.timeoutIns)
         }
 
         if (!value.trim()) {
@@ -2176,10 +2176,12 @@
         utils.sendAjax(url, this.checkboxObj, function (resp) {
           if (resp.status == 0) {
             lastQueryAllAlarmTime = DateFormat.getCurrentUTC();
-            resp.records.forEach(function (item) {
-              alarmMgr.addRecord(item);
-            });
-            me.refreshAlarmToUi();
+            if (resp.records) {
+              resp.records.forEach(function (item) {
+                alarmMgr.addRecord(item);
+              });
+              me.refreshAlarmToUi();
+            }
           }
         })
       },
