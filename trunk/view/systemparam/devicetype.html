@@ -105,7 +105,7 @@
                             key: 'typename'
                         },
                         {
-                            title: 'typeCode',
+                            title: '通信协议',
                             key: 'typecode'
                         },
                         {
@@ -158,6 +158,14 @@
                                                 me.devTypeInfo = JSON.parse(JSON.stringify(params.row));
                                                 me.rowIndex = params.index;  
                                                 var cmds = params.row.cmds; 
+                                                var deviceType = null;
+                                                if(params.row.cmds){
+                                                    deviceType = params.row.cmds[0].devicetype;
+                                                    if(deviceType){
+                                                        me.matchingCmd(deviceType);
+                                                    }
+                                                }
+                                                console.log('deviceType', deviceType);
                                                 for (var key in me.checkboxCmdObj) {
                                                     if (me.checkboxCmdObj.hasOwnProperty(key)) {
                                                         me.checkboxCmdObj[key] = false;
@@ -182,7 +190,8 @@
                     tableData: [],
                     cmdList:[],
                     checkboxCmdObj:{},
-                    loading: false
+                    loading: false,
+                    cmdRecords:[],
                 }
             },
             methods: {
@@ -316,6 +325,27 @@
                         }
                     })
                 },
+                matchingCmd:function(deviceType){
+
+                    var me = this;
+                    var index = 0;
+                    me.checkboxCmdObj = {};
+                    me.cmdList = [];
+                    this.cmdRecords.forEach(function (item){ 
+                        if(item.devicetype == deviceType){
+                            var idx = parseFloat(index/3) 
+                            if(index%3 == 0){
+                                var newArr = [];
+                                newArr.push(item)
+                                me.cmdList.push(newArr);
+                            }else{
+                                me.cmdList[me.cmdList.length - 1].push(item);
+                            }
+                            me.checkboxCmdObj[item.cmdcode] = false;
+                            index++;
+                        }
+                     });
+                },
                 querySelectedCmd:function () {
                     var url = myUrls.queryDeviceTypeHadCmd();
                     var data = {"devicetype":  this.tableData[this.rowIndex].devicetypeid};
@@ -348,18 +378,8 @@
                     utils.sendAjax(url, data, function (resp) {
                         if (resp.status === 0) {
                             var records = resp.records;
-                            records.forEach(function (item,index){ 
-                                var idx = parseFloat(index/3) 
-                                if(index%3 == 0){
-                                    var newArr = [];
-                                    newArr.push(item)
-                                    me.cmdList.push(newArr);
-                                }else{
-                                    me.cmdList[me.cmdList.length - 1].push(item);
-                                }
-                                me.checkboxCmdObj[item.cmdcode] = false;
-                            });
-                        }
+                            me.cmdRecords = records;
+                        };
                     });
 
                 },
