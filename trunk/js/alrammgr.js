@@ -51,10 +51,17 @@
                 }
             }
         };
-        console.log('currentRecord', currentRecord);
         currentRecord.count = index;
         return currentRecord;
     };
 
+    AlarmMgr.prototype.updateDisposeStatus = function (deviceid) {
+        var record = this.records[deviceid];
+        for (var key in record) {
+            if (record.hasOwnProperty(key)) {
+                record[key].record.disposestatus = 1;
+            }
+        }
+    };
     win.AlarmMgr = AlarmMgr;
 })(window);

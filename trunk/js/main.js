@@ -506,6 +506,7 @@ var alarmMgr = new AlarmMgr();
         var data = { devicetype: this.currentDeviceType, cmdcode: this.selectedCmdInfo.cmdcode, deviceid: store.currentDeviceId, params: Object.values(this.cmdParams) };
         utils.sendAjax(url, data, function (resp) {
           if (resp.status === 0) {
+            communicate.$emit("disposeAlarm", data.cmdcode);
             me.$Message.success("下发成功");
             me.dispatchDirectiveModal = false;
           } else if (resp.status === 1) {
@@ -611,28 +612,28 @@ var alarmMgr = new AlarmMgr();
         }
 
         this.timeoutIns = setTimeout(function () {
-          me.filterMethod(value)
+          me.filterMethod(value);
         }, 300)
       },
 
       selectedStateNav: function (state) {
-        this.selectedState = state
+        this.selectedState = state;
       },
       openCanpany: function (conpany) {
-        conpany.expand = !conpany.expand
+        conpany.expand = !conpany.expand;
       },
       openGroupItem: function (groupInfo) {
-        groupInfo.expand = !groupInfo.expand
+        groupInfo.expand = !groupInfo.expand;
       },
       selectedDev: function (deviceInfo) {
-        var devicetype = deviceInfo.devicetype
+        var devicetype = deviceInfo.devicetype;
         if (devicetype != this.currentDeviceType) {
-          this.currentDeviceType = devicetype
-        }
-        this.cancelSelected()
-        deviceInfo.isSelected = true
+          this.currentDeviceType = devicetype;
+        };
+        this.cancelSelected();
+        deviceInfo.isSelected = true;
         this.selectedDevObj = deviceInfo;
-        this.handleClickDev(deviceInfo.deviceid)
+        this.handleClickDev(deviceInfo.deviceid);
       },
       handleClickDev: function (deviceid) {
         var me = this
@@ -2025,7 +2026,6 @@ var alarmMgr = new AlarmMgr();
         alarmCmdList: [[]],
         isWaring: false,
         interval: 10000,
-        disposeRowWaringObj: {},
         cmdRowWaringObj: {},
         currentDevTypeCmdList: [],
         disposeAlarm: '',
@@ -2070,15 +2070,14 @@ var alarmMgr = new AlarmMgr();
           })
           me.currentDevTypeCmdList = beforeCmdList
           var twoArr = []
-          console.log('cmdList', cmdList);
-          console.log('beforeCmdList', beforeCmdList);
           beforeCmdList.forEach(function (item, index) {
             if (index % 4 == 0) {
               twoArr.push([])
             }
-            twoArr[twoArr.length - 1].push(item)
+            twoArr[twoArr.length - 1].push(item);
+            me.disposeAlarm = item.cmdcode;
           })
-          this.alarmCmdList = twoArr
+          this.alarmCmdList = twoArr;
 
           me.disposeAlarm = beforeCmdList[beforeCmdList.length - 1].cmdcode
           me.params = beforeCmdList[beforeCmdList.length - 1].params
@@ -2290,49 +2289,40 @@ var alarmMgr = new AlarmMgr();
       },
       showDisposeModalFrame: function (param) {
         this.waringRowIndex = param.index
-        var deviceNames = this.$store.state.deviceNames
+        var deviceNames = this.$store.state.deviceNames;
 
-        var row = param.row
-        var deviceid = row.deviceid
+        var row = param.row;
+        var deviceid = row.deviceid;
         var devicetype = deviceNames[deviceid].devicetype
-        console.log('param.row', row);
+
         this.cmdRowWaringObj = {
           deviceid: deviceid,
           arrivedtime: row.arrivedtime,
           devicetype: devicetype,
-          cmdcode: 1,
-          cmdpwd: null,
           params: null,
-          messageId: 0,
-          messageSerialNo: 0
         }
 
-        this.disposeRowWaringObj = {
-          disposecontent: '解除报警',
-          arrivedtime: row.arrivedtime,
-          disposeway: '解除报警',
-          deviceid: deviceid,
-          cmdcode: 0,
-          createtime: null
-        }
 
-        this.disposeModal = true
+        this.disposeModal = true;
+
+        console.log('alarmCmdList', this.alarmCmdList);
       },
       sendDisposeWaring: function () {
         var me = this;
         var sendCmdUrl = myUrls.sendCmd();
-        var disposeAlarmUrl = myUrls.disposeAlarm();
+        // var disposeAlarmUrl = myUrls.disposeAlarm();
         var isHasParams = true;
         var paramsArr = [];
-        var paramsInputObj = this.paramsInputObj;
+        me.cmdRowWaringObj.cmdcode = this.disposeAlarm;
+
         store.paramsCmdCodeArr.forEach(function (cmdCode) {
-          var val = paramsInputObj[cmdCode]
-          paramsArr.push(val)
+          var val = me.paramsInputObj[cmdCode]
+          paramsArr.push(val);
           if (val == '') {
-            isHasParams = false
-          }
+            isHasParams = false;
+          };
         });
-        console.log('paramsInputObj', paramsInputObj);
+
         if (!isHasParams) {
           this.$Message.error('所有参数都是必填的');
           return;
@@ -2344,17 +2334,10 @@ var alarmMgr = new AlarmMgr();
 
         utils.sendAjax(sendCmdUrl, this.cmdRowWaringObj, function (resp) {
           if (resp.status == 0) {
-            utils.sendAjax(disposeAlarmUrl, me.disposeRowWaringObj, function (
-              resp
-            ) {
-              if (resp.status === 0) {
-                me.$Message.success('解除成功');
-                me.waringRecords[me.waringRowIndex].isdispose = '已处理';
-                me.disposeModal = false;
-              } else {
-                me.$Message.error('解除失败');
-              }
-            })
+            me.disposeModal = false;
+            me.$Message.success("解除成功!");
+            alarmMgr.updateDisposeStatus(me.cmdRowWaringObj.deviceid);
+            me.refreshAlarmToUi();
           } else {
             me.$Message.error(resp.cause);
           }
@@ -2514,8 +2497,12 @@ var alarmMgr = new AlarmMgr();
       this.queryAlarmDescr();
       this.changeWrapperCls();
       communicate.$on("remindmsg", function (data) {
-        console.log('remindmsg-data', data);
+        // console.log('remindmsg-data', data);
         alarmMgr.addRecord(data);
+        me.refreshAlarmToUi();
+      });
+      communicate.$on("disposeAlarm", function (cmdCode) {
+        alarmMgr.updateDisposeStatus(store.currentDeviceId);
         me.refreshAlarmToUi();
       });
       window.onresize = function () {

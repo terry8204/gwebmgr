@@ -352,6 +352,9 @@
                                 <i-input v-model.trim="cmdParams[item.type]"></i-input>
                             </i-col>
                         </Row>
+                        <Row style="margin: 10px 0" v-if="!selectedCmdInfo.params">
+                            <i-col span="24" style="height: 100%;text-align:center;line-height:32px;font-size:16px;">解除设备报警</i-col>
+                        </Row>
                     </div>
                     <div slot="footer">
                         <i-button type="primary"  @click="disposeDirectiveFn" style="width: 100%">确定</i-button>
