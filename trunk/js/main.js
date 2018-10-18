@@ -1,7 +1,9 @@
-var alarmMgr = new AlarmMgr();
-; (function () {
-  // 保存所有的报警消息记录;
 
+; (function () {
+  // timeout定时器
+  var timeout = null;
+  // 保存所有的报警消息记录;
+  var alarmMgr = new AlarmMgr();
   // 最后一次查询报警时间
   var lastQueryAllAlarmTime = 0;
   // 是否显示公司名字
@@ -2506,7 +2508,12 @@ var alarmMgr = new AlarmMgr();
         me.refreshAlarmToUi();
       });
       window.onresize = function () {
-        me.changeWrapperCls();
+        if (timeout != null) {
+          clearTimeout(timeout);
+        };
+        timeout = setTimeout(function () {
+          me.changeWrapperCls();
+        }, 300);
       }
     }
   }
