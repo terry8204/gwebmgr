@@ -10,13 +10,14 @@
   var isShowCompany = Cookies.get('isShowCompany');
   // 组件之间通信的vue实例
   var communicate = new Vue({});
-  // ws
+  // webSocket
   var ws = null;
-  //  
+
   //全局变量
   var store = {
     navState: isShowCompany === 'true' ? true : false,
     intervalTime: 10,
+    disposeAlarmDeviceid: null,
     currentDeviceId: null,
     currentDeviceRecord: {},
     treeDeviceInfo: null,
@@ -505,7 +506,7 @@
       disposeDirectiveFn: function () {
         var me = this;
         var url = myUrls.sendCmd();
-        var data = { devicetype: this.currentDeviceType, cmdcode: this.selectedCmdInfo.cmdcode, deviceid: store.currentDeviceId, params: Object.values(this.cmdParams) };
+        var data = { devicetype: this.currentDeviceType, cmdcode: this.selectedCmdInfo.cmdcode, deviceid: store.disposeAlarmDeviceid, params: Object.values(this.cmdParams) };
         utils.sendAjax(url, data, function (resp) {
           if (resp.status === 0) {
             communicate.$emit("disposeAlarm", data.cmdcode);
@@ -665,6 +666,7 @@
             record.icon = iconState;
             store.currentDeviceId = deviceid;
             store.currentDeviceRecord = record;
+            store.disposeAlarmDeviceid = deviceid;
             me.updateRecords(record);
             me.isMoveTriggerEvent = false;
             me.map.centerAndZoom(point, 17)
@@ -908,8 +910,9 @@
           me.isMoveTriggerEvent = false
           var deviceid = this.deviceid
           var devLastInfo = me.getSingleDeviceInfo(deviceid)
-          store.currentDeviceId = deviceid
-          store.currentDeviceRecord = devLastInfo
+          store.currentDeviceId = deviceid;
+          store.currentDeviceRecord = devLastInfo;
+          store.disposeAlarmDeviceid = deviceid;
           var infoWindow = me.getInfoWindow(devLastInfo)
           marker.openInfoWindow(infoWindow, marker.point)
           me.openTreeDeviceNav(deviceid)
@@ -1000,6 +1003,8 @@
             case 'wifi':
               type = "WIFI定位";
               break;
+            default:
+              type = "未知";
           };
           return type;
         })();
@@ -1008,7 +1013,7 @@
           '<p> 设备名称: ' +
           devdata.devicename +
           '</p>' +
-          '<p> 设备 I D : ' +
+          '<p> 设备序号: ' +
           info.deviceid +
           '</p>' +
           '<p> 定位类型: ' +
@@ -2609,6 +2614,7 @@
 
   // 页面离开时 关闭 webSocket
   window.onbeforeunload = function () {
+    alert(111);
     var user = "offline" + Cookies.get('name');
     ws.send(user);
     ws.close();
