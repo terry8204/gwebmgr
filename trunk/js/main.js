@@ -426,7 +426,6 @@
           deviceid: deviceId
         };
         utils.sendAjax(url, data, function (resp) {
-          console.log('resp', resp)
           resp.overdueDateStr = DateFormat.longToDateStr(resp.overduetime, 0);
           me.deviceBaseInfo = resp;
         })
