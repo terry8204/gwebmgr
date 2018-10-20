@@ -515,7 +515,11 @@
           } else if (resp.status === 1) {
             me.$Message.error("密码错误");
           } else if (resp.status === -1) {
-            me.$Message.error("下发失败");
+            me.$Message.error("下发指令异常");
+          } else if (resp.status === 2) {
+            me.$Message.error("设备离线,指令没有缓存");
+          } else if (resp.status === 3) {
+            me.$Message.error("设备离线,指令已经缓存");
           }
         });
       },
