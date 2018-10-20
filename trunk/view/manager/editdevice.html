@@ -9,7 +9,7 @@
                 <i-col span="8">
                     <i-input v-model.trim="devicename"></i-input>
                 </i-col>
-                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">设备ID : &nbsp;</i-col>
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">设备序号 : &nbsp;</i-col>
                 <i-col span="8">
                         <i-input v-model.trim="deviceid" disabled></i-input>
                 </i-col>
@@ -119,7 +119,7 @@
                     var url = myUrls.editDevice();
       
                     if(this.deviceid.length !== 11 ){ 
-                        me.$Message.error("设备ID必须是11位");
+                        me.$Message.error("设备序号必须是11位");
                         return;
                     };
                     if(this.overduetime == ""){

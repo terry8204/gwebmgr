@@ -10,12 +10,12 @@
                 </i-col>
                 <i-col span="4" style="height: 100%;text-align:right;line-height:32px;"><i style="color: red;display: inline-block;"></i>&nbsp;登录密码 : &nbsp;</i-col>
                 <i-col span="8">
-                    <i-input v-model.trim="loginpwd" placeholder="默认设备ID后四位"></i-input>
+                    <i-input v-model.trim="loginpwd" placeholder="默认设备序号后四位"></i-input>
                 </i-col>
             </Row>
 
             <Row style="margin: 10px 0">
-                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;"><i style="color: red;display: inline-block;">*</i>&nbsp;设备ID : &nbsp;</i-col>
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;"><i style="color: red;display: inline-block;">*</i>&nbsp;设备序号 : &nbsp;</i-col>
                 <i-col span="8">
                         <i-input v-model.trim="deviceid"></i-input>
                 </i-col>
@@ -111,7 +111,7 @@
                     var url = myUrls.addDevice();
 
                     if(this.deviceid.length !== 11 ){ 
-                        me.$Message.error("设备ID必须是11位");
+                        me.$Message.error("设备序号必须是11位");
                         return;
                     };
 

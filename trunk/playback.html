@@ -489,7 +489,7 @@
                         getLableContent:function(info){
                             var address = this.getAddress(info);
                             var sContent = '<div>' +
-                                '<p> 设备ID: ' +info.deviceid+'</p>' +
+                                '<p> 设备序号: ' +info.deviceid+'</p>' +
                                 '<p> 经纬度: ' +info.callon+","+ info.callat +'</p>' +
                                 '<p> 角度: ' + utils.getAngle(info.course) +'</p>' +
                                 '<p> 最后时间: ' +DateFormat.longToDateTimeStr(info.arrivedtime,0)+'</p>' +                                
@@ -631,7 +631,7 @@
                         if(deviceid){
                             this.deviceid = deviceid;
                         }else{
-                            this.$Message.error("设备id不能为空!");
+                            this.$Message.error("设备序号不能为空!");
                         };       
                     }
                 });

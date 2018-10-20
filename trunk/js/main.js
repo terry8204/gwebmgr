@@ -2387,7 +2387,7 @@
                 width: 120,
               },
               {
-                title: '设备ID',
+                title: '设备序号',
                 key: 'deviceid',
                 width: 120,
               },
@@ -2471,7 +2471,7 @@
                 key: 'devicename'
               },
               {
-                title: '设备ID',
+                title: '设备序号',
                 key: 'deviceid'
               },
               {
