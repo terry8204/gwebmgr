@@ -418,6 +418,7 @@
         }
       },
       queryDeviceBaseInfo: function () {
+        this.deviceBaseInfo = {};
         var me = this;
         var deviceId = me.selectedDevObj.deviceid;
         var url = myUrls.queryDeviceBaseInfo();
@@ -1024,9 +1025,9 @@
           posiType +
           '</p>' +
           '<p> 经纬度: ' +
-          info.callon +
+          info.callon.toFixed(5) +
           ',' +
-          info.callat +
+          info.callat.toFixed(5) +
           '</p>' +
           '<p> 最后时间: ' +
           DateFormat.longToDateTimeStr(info.arrivedtime, 0) +
