@@ -1043,25 +1043,25 @@
         return content;
       },
       getAddress: function (info) {
-        var callon = info.callon
-        var callat = info.callat
-        var bd09 = wgs84tobd09(callon, callat)
-        var lng = bd09[0].toFixed(5)
-        var lat = bd09[1].toFixed(5)
-        var address = LocalCacheMgr.getAddress(lng, lat)
+        var callon = info.callon;
+        var callat = info.callat;
+        var bd09 = wgs84tobd09(callon, callat);
+        var lng = bd09[0].toFixed(5);
+        var lat = bd09[1].toFixed(5);
+        var address = LocalCacheMgr.getAddress(lng, lat);
         if (address !== null) {
-          return address
+          return address;
         }
         utils.getBaiduAddressFromBaidu(lng, lat, function (resp) {
           if (resp.length) {
-            address = resp
-            $('p.last-address').html(' 详细地址: ' + address)
-            LocalCacheMgr.setAddress(lng, lat, address)
+            address = resp;
+            $('p.last-address').html(' 详细地址: ' + address);
+            LocalCacheMgr.setAddress(lng, lat, address);
           } else {
             utils.getJiuHuAddressSyn(callon, callat, function (resp) {
               address = resp.address
-              $('p.last-address').html(' 详细地址: ' + address)
-              LocalCacheMgr.setAddress(lng, lat, address)
+              $('p.last-address').html(' 详细地址: ' + address);
+              LocalCacheMgr.setAddress(lng, lat, address);
             })
           }
         })

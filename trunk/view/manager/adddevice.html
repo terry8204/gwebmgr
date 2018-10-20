@@ -8,9 +8,9 @@
                 <i-col span="8">
                     <i-input v-model.trim="devicename"></i-input>
                 </i-col>
-                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;"><i style="color: red;display: inline-block;">*</i>&nbsp;登录密码 : &nbsp;</i-col>
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;"><i style="color: red;display: inline-block;"></i>&nbsp;登录密码 : &nbsp;</i-col>
                 <i-col span="8">
-                    <i-input v-model.trim="loginpwd" type="password"></i-input>
+                    <i-input v-model.trim="loginpwd" placeholder="默认设备ID后四位"></i-input>
                 </i-col>
             </Row>
 
@@ -115,7 +115,7 @@
                         return;
                     };
 
-                    if(this.overduetime == "" || this.loginpwd == "" || this.devicename == "" || this.companyid ==""){
+                    if(this.overduetime == "" ||  this.devicename == "" || this.companyid ==""){
                         me.$Message.error("请把数据填写完整");
                         return;
                     };
@@ -125,12 +125,17 @@
                         devicename:this.devicename,
                         devicetype:this.devicetype,
                         overduetime:new Date(this.overduetime).getTime(),
-                        loginpwd:$.md5(this.loginpwd),
                         loginenable:Number(this.loginenable),
                         deviceenable:Number(this.deviceenable),
                         companyid:this.companyid
                     };       
                     
+                    if(this.loginpwd){
+                        data.loginpwd = $.md5(this.loginpwd);
+                    }else{
+                        data.loginpwd = $.md5(this.deviceid.substring(7,11));
+                    };
+
                     if(this.simnum){
                         data.simnum = this.simnum;
                     };
@@ -138,8 +143,7 @@
                     if(this.groupid){
                         data.groupid = this.groupid;
                     };
-
-                    
+       
                     utils.sendAjax(url,data,function (resp) { 
                         if(resp.status == 0){
                             me.$Message.success("添加成功");
