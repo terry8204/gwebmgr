@@ -8,14 +8,14 @@ var utils = {
       timeout: 10000,
       dataType: 'json',
       success: function (resp) {
-        if (resp.status == 3) {
-          new Vue().$Message.error('token过期,2秒后跳回登录页面')
-          setTimeout(function () {
-            window.location.href = 'index.html'
-          })
-        } else {
-          callback(resp)
-        }
+        // if (resp.status == 3) {
+        //   new Vue().$Message.error('token过期,2秒后跳回登录页面')
+        //   setTimeout(function () {
+        //     window.location.href = 'index.html'
+        //   })
+        // } else {
+        callback(resp);
+        // }
       },
       error: function (e) {
         Cookies.remove('token')
