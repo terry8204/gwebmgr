@@ -6,10 +6,10 @@ var host = null;
 var wsHost = null;
 if (pathname.indexOf('gpsserver') != -1) {
   host = 'http://localhost:8080/gpsserver/';
-  wsHost = "ws://localhost:89";
+  wsHost = "ws://localhost:90";
 } else {
   host = 'http://112.74.186.169/';
-  wsHost = "ws://112.74.186.169:89";
+  wsHost = "ws://112.74.186.169:90";
 }
 
 var myUrls = {
