@@ -276,7 +276,8 @@
         editDevData: {       //编辑的设备信息
           devicename: '',
           simnum: '',
-          deviceid: ''
+          deviceid: '',
+          remark: ''
         },
         currentDeviceType: null,  // 选中设备的类型
         currentDevDirectiveList: [],  // 选中设备的类型对应的设备指令
@@ -1092,13 +1093,14 @@
         })
       },
       handleEditDevFn: function () {
-        var me = this
-        var data = this.editDevData
+        var me = this;
+        var data = this.editDevData;
         var sendData = {
           deviceid: data.deviceid,
-          devicename: data.devicename
-        }
-        var url = myUrls.editDeviceSimple()
+          devicename: data.devicename,
+          remark: data.remark
+        };
+        var url = myUrls.editDeviceSimple();
         if (data.devicename.length == 0 || data.devicename == '') {
           me.$Message.error('设备名称是必填的')
           return
@@ -1111,19 +1113,24 @@
           if (resp.status == 0) {
             store.treeDeviceInfo.title = sendData.devicename;
             store.treeDeviceInfo.simnum = sendData.simnum;
-            utils.changeGroupsDevName(sendData, me.groups)
-            me.editDevModal = false
-            me.$Message.success('修改成功')
+            utils.changeGroupsDevName(sendData, me.groups);
+            me.editDevModal = false;
+            me.$Message.success('修改成功');
+            me.$store.state.deviceInfos[data.deviceid].remark = data.remark;
           } else if ((resp.status = -1)) {
             me.$Message.error('修改失败')
           }
         })
       },
-      editDevice: function (device) {
-        store.treeDeviceInfo = device
-        this.editDevData.devicename = device.title
-        this.editDevData.simnum = device.simnum
-        this.editDevData.deviceid = device.deviceid
+      editDevice: function (deviceid) {
+        // console.log('editDevice', deviceid);
+        console.log('deviceInfos', this.$store.state.deviceInfos)
+        var device = this.$store.state.deviceInfos[deviceid];
+        store.treeDeviceInfo = device;
+        this.editDevData.devicename = device.devicename;
+        this.editDevData.simnum = device.simnum;
+        this.editDevData.deviceid = deviceid;
+        this.editDevData.remark = device.remark;
         this.editDevModal = true
       },
       playBack: function (deviceid) {
