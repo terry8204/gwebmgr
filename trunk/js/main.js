@@ -28,13 +28,13 @@
   vstore = new Vuex.Store({
     state: {
       userType: Cookies.get('userType'),
-      deviceNames: {},
+      deviceInfos: {},
       userTypeDescrList: null,
       allCmdList: []
     },
     actions: {
-      setDeviceNames: function (context, groups) {
-        context.commit('setDeviceNames', groups);
+      setdeviceInfos: function (context, groups) {
+        context.commit('setdeviceInfos', groups);
       },
       setUserTypeDescr: function (context) {
         var url = myUrls.queryUserTypeDescr()
@@ -64,7 +64,7 @@
       }
     },
     mutations: {
-      setDeviceNames: function (state, groups) {
+      setdeviceInfos: function (state, groups) {
         groups.forEach(function (group) {
           group.firstLetter = __pinyin.getFirstLetter(group.groupname);
           group.pinyin = __pinyin.getPinyin(group.groupname);
@@ -72,7 +72,7 @@
             var deviceid = device.deviceid;
             device.firstLetter = __pinyin.getFirstLetter(device.devicename);
             device.pinyin = __pinyin.getPinyin(device.devicename);
-            state.deviceNames[deviceid] = device;
+            state.deviceInfos[deviceid] = device;
           })
         })
       },
@@ -817,7 +817,7 @@
         })
       },
       setDeviceIdsList: function (groups) {
-        this.$store.dispatch('setDeviceNames', groups)
+        this.$store.dispatch('setdeviceInfos', groups)
       },
       getLastPosition: function (deviceIds, callback) {
         var me = this
@@ -889,7 +889,7 @@
             var marker = new BMap.Marker(point)
             marker.setIcon(record.icon)
             var label = new BMap.Label(
-              me.$store.state.deviceNames[deviceid].devicename,
+              me.$store.state.deviceInfos[deviceid].devicename,
               { position: point, offset: new BMap.Size(20, -3) }
             )
             label.setStyle({
@@ -989,7 +989,7 @@
         }
       },
       getWindowContent: function (info) {
-        var devdata = this.$store.state.deviceNames[info.deviceid];
+        var devdata = this.$store.state.deviceInfos[info.deviceid];
         var address = this.getAddress(info);
         var posiType = (function () {
           var type = null;
@@ -1012,6 +1012,11 @@
           };
           return type;
         })();
+        if (info.radius > 0) {
+          var radiuDesc = ' (误差范围:' + info.radius + '米)';
+          posiType += radiuDesc;
+        };
+
         var content =
           '<div><p style="margin:0;font-size:13px">' +
           '<p> 设备名称: ' +
@@ -1043,7 +1048,8 @@
           ')">轨迹</span>' +
           '<span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="trackMap(' +
           info.deviceid +
-          ')">跟踪</span> </p></div>';
+          ')">跟踪</span></p></div>';
+
         return content;
       },
       getAddress: function (info) {
@@ -1567,7 +1573,7 @@
           me.intervalTime--
           if (me.intervalTime <= 0) {
             me.intervalTime = Number(store.intervalTime)
-            var devIdList = Object.keys(me.$store.state.deviceNames)
+            var devIdList = Object.keys(me.$store.state.deviceInfos)
             me.getLastPosition(devIdList, function (resp) {
               if (resp.records) {
                 resp.records.forEach(function (record) {
@@ -1678,7 +1684,7 @@
         var online = 0;
         var offline = 0;
         var me = this;
-        var deviceIds = Object.keys(me.$store.state.deviceNames);
+        var deviceIds = Object.keys(me.$store.state.deviceInfos);
 
         if (this.records.length === deviceIds.length) {
           this.records.forEach(function (record) {
@@ -1765,7 +1771,7 @@
       this.getMonitorListByUser(havecompany, function (resp) {
         me.groups = resp.groups;
         me.setDeviceIdsList(resp.groups);
-        var devIdList = Object.keys(me.$store.state.deviceNames)
+        var devIdList = Object.keys(me.$store.state.deviceInfos)
         me.getLastPosition(devIdList, function (resp) {
           if (resp.records) {
             me.records = resp.records;
@@ -2049,8 +2055,8 @@
       }
     },
     computed: {
-      deviceNames: function () {
-        return this.$store.state.deviceNames;
+      deviceInfos: function () {
+        return this.$store.state.deviceInfos;
       }
     },
     watch: {
@@ -2199,7 +2205,7 @@
         var alarmList = alarmMgr.getAlarmList();
         alarmList.forEach(function (item) {
           var deviceid = item.deviceid;
-          var deviceName = me.$store.state.deviceNames[deviceid].devicename;
+          var deviceName = me.$store.state.deviceInfos[deviceid].devicename;
           item.devicename = deviceName;
           item.isdispose = item.disposestatus === 0 ? "未处理" : "已处理";
         });
@@ -2224,9 +2230,9 @@
         var interval = null
         var me = this
         interval = setInterval(function () {
-          if (!$.isEmptyObject(me.deviceNames)) {
-            for (var key in me.deviceNames) {
-              var item = me.deviceNames[key]
+          if (!$.isEmptyObject(me.deviceInfos)) {
+            for (var key in me.deviceInfos) {
+              var item = me.deviceInfos[key]
               var currentTime = Date.now()
               var overduetime = item.overduetime
               var isOverdue = overduetime > currentTime ? false : true
@@ -2276,7 +2282,7 @@
                     // 判断是否重复消息
                     if (lock) {
                       this.waringRecords.unshift({
-                        devicename: this.$store.state.deviceNames[deviceid].devicename,
+                        devicename: this.$store.state.deviceInfos[deviceid].devicename,
                         deviceid: deviceid,
                         gpstime: msgTiem.createtime,
                         strstate: msgTiem.content,
@@ -2302,11 +2308,11 @@
       },
       showDisposeModalFrame: function (param) {
         this.waringRowIndex = param.index
-        var deviceNames = this.$store.state.deviceNames;
+        var deviceInfos = this.$store.state.deviceInfos;
 
         var row = param.row;
         var deviceid = row.deviceid;
-        var devicetype = deviceNames[deviceid].devicetype
+        var devicetype = deviceInfos[deviceid].devicetype
 
         this.cmdRowWaringObj = {
           deviceid: deviceid,
