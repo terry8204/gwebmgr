@@ -151,7 +151,7 @@ vueInstanse = new Vue({
                     var url = myUrls.resetDeviceLoginPwd();
                     utils.sendAjax(url,{deviceid:deviceid},function (resp) { 
                         if(resp.status === 0){
-                            me.$Message.success("密码重置为:123456");
+                            me.$Message.success("密码重置为:" + resp.newpass);
                         }else{
                             me.$Message.error("密码重置失败");
                         }
