@@ -2420,9 +2420,6 @@
                 key: 'action',
                 width: 120,
                 render: function (h, params, a) {
-                  var index = params
-
-                  console.log(h, params, a);
                   return h('div', [
                     h(
                       'Button',

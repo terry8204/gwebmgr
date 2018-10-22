@@ -47,10 +47,16 @@ new Vue({
                     Cookies.set("token", resp.token);
                     Cookies.set("userType", resp.usertype);
                     Cookies.set("name", me.username);
-                    // window.location.href = "main.html?token=" + resp.token + "&usertype=" + resp.usertype;;
+                    // window.location.href = "main.html?token=" + resp.token + "&usertype=" + resp.usertype;
                     window.location.href = "main.html";
-                } else {
+                } else if (resp.status == -1) {
+                    me.$Message.error('登录失败!');
+                } else if (resp.status == 1) {
                     me.$Message.error('账号或密码错误!');
+                } else if (resp.status == 2) {
+                    me.$Message.error('禁止登陆!');
+                } else if (resp.status == 3) {
+                    me.$Message.error('账号过期!');
                 }
             });
         },
