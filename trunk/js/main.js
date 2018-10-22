@@ -444,12 +444,14 @@
         });
         this.selectedCmdInfo.cmdName = cmdInfo.cmdname;
         this.selectedCmdInfo.cmdcode = cmdInfo.cmdcode;
+        this.selectedCmdInfo.cmddescr = cmdInfo.cmddescr;
         if (cmdInfo.params) {
           this.selectedCmdInfo.params = utils.parseXML(cmdInfo.params)
           this.selectedCmdInfo.params.forEach(function (param) {
-            me.cmdParams[param.type]
+            me.cmdParams[param.type] = param.value;
           });
         };
+        console.log('this.selectedCmdInfo.params', this.selectedCmdInfo.params);
         this.dispatchDirectiveModal = true;
       },
       handleClickFence: function (name) {

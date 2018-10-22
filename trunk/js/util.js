@@ -172,8 +172,9 @@ var utils = {
       var item = children[i]
       var desc = item.innerHTML;
       var type = item.getAttribute("type");
+      var value = item.getAttribute("value");
       if (type && desc) {
-        paramsListObj.push({ type: type, desc: desc });
+        paramsListObj.push({ type: type, desc: desc, value: value });
       }
     }
     return paramsListObj;
