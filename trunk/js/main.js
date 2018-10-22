@@ -2013,8 +2013,8 @@
         }
         this.$Loading.start()
         $('#system-view').load(pagePath, function () {
-          me.$Loading.finish()
-        })
+          me.$Loading.finish();
+        });
       }
     }
   }
@@ -2050,7 +2050,7 @@
     },
     computed: {
       deviceNames: function () {
-        return this.$store.state.deviceNames
+        return this.$store.state.deviceNames;
       }
     },
     watch: {
@@ -2059,9 +2059,9 @@
       },
       waringRecords: function () {
         if (this.waringRecords.length) {
-          this.isWaring = true
+          this.isWaring = true;
         } else {
-          this.isWaring = false
+          this.isWaring = false;
         }
       },
       disposeModal: function () {
@@ -2383,6 +2383,7 @@
           '<Table :height="tabheight" border :columns="columns" :data="waringrecords"></Table>',
         props: ['waringrecords', 'tabletype', 'wrapperheight'],
         data: function () {
+          var me = this;
           return {
             columns: [
               {
@@ -2418,9 +2419,10 @@
                 title: '操作',
                 key: 'action',
                 width: 120,
-                render: (h, params) => {
+                render: function (h, params, a) {
                   var index = params
-                  var me = this
+
+                  console.log(h, params, a);
                   return h('div', [
                     h(
                       'Button',
