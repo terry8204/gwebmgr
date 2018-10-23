@@ -141,21 +141,29 @@
         float: left;
         width: 50%;
         height: 140px;
-        padding: 10px;
+        padding: 10px 10px 0 10px;
     }
 
     .footer-wrap>div>div{
         float: left;
     }
 
+    .img-wrap{
+        border: 1px solid #BFC4C9;
+        height: 130px;
+    }
+
     .desc{
         height: 100%;
+        margin-left: 10px;
     }
     .desc h3{
-        margin: 15px 5px 5px 0px;
+        margin-top: 15px;
+        margin-bottom: 5px;
     }
     .desc ul li{
         list-style-type: disc;
+        margin-left: 15px;
     }
 
     .beian{
