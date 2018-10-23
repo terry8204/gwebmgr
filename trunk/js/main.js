@@ -2602,7 +2602,7 @@
             communicate.$emit("remindmsg", data);
           } else if (action === "positionlast") {
             var data = resp.positionLast;
-            console.log('positionlast', data)
+            console.log('positionlast', data);
             communicate.$emit("positionlast", data);
           };
         };
