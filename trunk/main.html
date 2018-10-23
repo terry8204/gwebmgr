@@ -186,7 +186,7 @@
                                             <span v-text="device.title"></span>   
                                         </div>
                                         <ul class="device-controller" v-show="device.isSelected">
-                                            <li @click="editDevice(device.deviceid)"><Icon type="ios-create"/><p>编辑</p><li>
+                                            <li @click="editDevice(device)"><Icon type="ios-create"/><p>编辑</p><li>
                                             <li @click="playBack(device.deviceid)"><Icon type="md-planet"/><p>轨迹</p><li>
                                             <li @click="trackMap(device.deviceid)"><Icon type="md-person"/><p>跟踪</p><li> 
                                             <li>

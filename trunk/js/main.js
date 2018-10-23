@@ -1126,21 +1126,23 @@
             utils.changeGroupsDevName(sendData, me.groups);
             me.editDevModal = false;
             me.$Message.success('修改成功');
+
             me.$store.state.deviceInfos[data.deviceid].remark = data.remark;
           } else if ((resp.status = -1)) {
             me.$Message.error('修改失败')
           }
         })
       },
-      editDevice: function (deviceid) {
+      editDevice: function (device) {
         // console.log('editDevice', deviceid);
-        console.log('deviceInfos', this.$store.state.deviceInfos)
-        var device = this.$store.state.deviceInfos[deviceid];
         store.treeDeviceInfo = device;
-        this.editDevData.devicename = device.devicename;
-        this.editDevData.simnum = device.simnum;
+        var deviceid = device.deviceid
+        var deviceInfo = this.$store.state.deviceInfos[deviceid];
+
+        this.editDevData.devicename = deviceInfo.devicename;
+        this.editDevData.simnum = deviceInfo.simnum;
         this.editDevData.deviceid = deviceid;
-        this.editDevData.remark = device.remark;
+        this.editDevData.remark = deviceInfo.remark;
         this.editDevModal = true
       },
       playBack: function (deviceid) {
