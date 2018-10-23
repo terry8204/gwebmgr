@@ -235,7 +235,11 @@ var myUrls = {
   // 查询设备类型code
   listDeviceTypeCode: function () {
     return this.host + 'webapi?action=listdevicetypecode&token=' + token
-  }
+  },
+  // 刷新设备位置最新信息
+  refreshPostion: function () {
+    return this.host + 'webapi?action=refreshpostion&token=' + token
+  },
 }
 
 // global var

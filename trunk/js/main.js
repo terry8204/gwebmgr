@@ -451,7 +451,7 @@
             me.cmdParams[param.type] = param.value;
           });
         };
-        console.log('this.selectedCmdInfo.params', this.selectedCmdInfo.params);
+
         this.dispatchDirectiveModal = true;
       },
       handleClickFence: function (name) {
@@ -1051,7 +1051,9 @@
           ')">轨迹</span>' +
           '<span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="trackMap(' +
           info.deviceid +
-          ')">跟踪</span></p></div>';
+          ')">跟踪</span><span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="refreshPostion(' +
+          info.deviceid +
+          ')">刷新位置</span></p></div>';
 
         return content;
       },
@@ -2600,6 +2602,7 @@
             communicate.$emit("remindmsg", data);
           } else if (action === "positionlast") {
             var data = resp.positionLast;
+            console.log('positionlast', data)
             communicate.$emit("positionlast", data);
           };
         };
@@ -2627,6 +2630,7 @@
       this.$store.dispatch('setUserTypeDescr');
       this.$store.dispatch('setAllCmdList');
       this.initWebSocket();   // 连接webSocket
+      vueInstanse = this;     // 备份monitor实例
     }
   });
 

@@ -283,3 +283,11 @@ function playBack (deviceid) {
 function trackMap (deviceid) {
   window.open('trackmap.html?deviceid=' + deviceid)
 }
+
+//
+function refreshPostion (deviceid) {
+  var url = myUrls.refreshPostion();
+  utils.sendAjax(url, { deviceid: deviceid }, function (resp) {
+    console.log('resp', resp)
+  })
+}
