@@ -574,62 +574,62 @@
               };
             }
             if (obj.devices.length) {
-              this.filterData.push(obj)
-            }
-          }
-        }
+              this.filterData.push(obj);
+            };
+          };
+        };
       },
       sosoSelect: function (value) {
 
-        this.sosoValue = value.devicename
-        this.filterData = []
-        var me = this
+        this.sosoValue = value.devicename;
+        this.filterData = [];
+        var me = this;
 
         if (this.isShowConpanyName) {
           this.currentStateData.forEach(function (company) {
             company.children.forEach(function (group) {
               group.children.forEach(function (dev) {
                 if (dev.deviceid == value.deviceid) {
-                  company.expand = true
-                  dev.isSelected = true
-                  group.expand = true
-                  me.handleClickDev(dev.deviceid)
+                  company.expand = true;
+                  dev.isSelected = true;
+                  group.expand = true;
+                  me.handleClickDev(dev.deviceid);
                 } else {
-                  dev.isSelected = false
-                }
-              })
-            })
-          })
+                  dev.isSelected = false;
+                };
+              });
+            });
+          });
         } else {
           this.currentStateData.forEach(function (group) {
             group.children.forEach(function (dev) {
               if (dev.deviceid == value.deviceid) {
-                dev.isSelected = true
-                group.expand = true
-                me.handleClickDev(dev.deviceid)
+                dev.isSelected = true;
+                group.expand = true;
+                me.handleClickDev(dev.deviceid);
               } else {
-                dev.isSelected = false
-              }
-            })
-          })
+                dev.isSelected = false;
+              };
+            });
+          });
         }
       },
       sosoValueChange: function () {
-        var me = this
-        var value = this.sosoValue
+        var me = this;
+        var value = this.sosoValue;
 
         if (this.timeoutIns != null) {
-          clearTimeout(this.timeoutIns)
+          clearTimeout(this.timeoutIns);
         }
 
         if (!value.trim()) {
-          this.filterData = []
-          return
+          this.filterData = [];
+          return;
         }
 
         this.timeoutIns = setTimeout(function () {
           me.filterMethod(value);
-        }, 300)
+        }, 300);
       },
 
       selectedStateNav: function (state) {

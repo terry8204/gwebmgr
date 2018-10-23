@@ -131,4 +131,40 @@
         width:100%;  
     }
 
+    .footer-wrap{
+        width: 1000px;
+        margin: 0 auto;
+        height: 140px;
+    }
+
+    .footer-wrap>div{
+        float: left;
+        width: 50%;
+        height: 140px;
+        padding: 10px;
+    }
+
+    .footer-wrap>div>div{
+        float: left;
+    }
+
+    .desc{
+        height: 100%;
+    }
+    .desc h3{
+        margin: 15px 5px 5px 0px;
+    }
+    .desc ul li{
+        list-style-type: disc;
+    }
+
+    .beian{
+        font-size: 12px;
+        height: 20px;
+        line-height: 20px;
+        text-align: center;
+    }
+    .beian a{
+        text-decoration: none;
+    }
 /* 底部结束 */
