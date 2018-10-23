@@ -161,7 +161,7 @@ var myUrls = {
   },
   // 设备指令
   queryCmd: function () {
-    return this.host + 'webapi?action=pagequerycmd&token=' + token
+    return this.host + 'webapi?action=queryallcmd&token=' + token
   },
   addCmd: function () {
     return this.host + 'webapi?action=addcmd&token=' + token
