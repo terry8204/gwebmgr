@@ -565,7 +565,13 @@
                 device.pinyin.indexOf(pinyin) !== -1
               ) {
                 obj.devices.push(device)
-              }
+              } else {
+                if (device.remark) {
+                  if (device.remark.indexOf(value) !== -1) {
+                    obj.devices.push(device);
+                  };
+                };
+              };
             }
             if (obj.devices.length) {
               this.filterData.push(obj)
