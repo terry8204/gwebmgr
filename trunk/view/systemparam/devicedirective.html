@@ -32,6 +32,23 @@
             <i-button type="error" @click="handleDelDirective" style="width: 100%">删除</i-button>
         </div>
     </Modal>
+    <Modal v-model="sortModal" width="360" class-name="vertical-center-modal">
+        <p slot="header" style="color:#f60;text-align:center">
+            <Icon type="information-circled"></Icon>
+            <span>指令排序</span>
+        </p>
+        <div style="text-align:center">
+            <Row style="margin: 10px 0">
+                <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">序号 : &nbsp;</i-col>
+                <i-col span="16">
+                    <i-input v-model.trim="sortNumber"></i-input>
+                </i-col>
+            </Row>
+        </div>
+        <div slot="footer">
+            <i-button type="primary" @click="handleSortFn" style="width: 100%">确定</i-button>
+        </div>
+    </Modal>
     <script>
         new Vue({
             el: "#directive-wraper",
@@ -39,7 +56,9 @@
                 var me = this;
                 return {
                     theme:"light",
+                    sortNumber:"",
                     delDevDirectiveModal: false,
+                    sortModal:false,
                     directiveObj: {},
                     columns: [
                         {
@@ -57,10 +76,26 @@
                         {
                             title: '操作',
                             key: 'action',
-                            width: 150,
+                            width: 180,
                             align: 'center',
                             render: function (h, params) {
                                 return h('div', [
+                                h('Button', {
+                                        props: {
+                                            type: 'primary',
+                                            size: 'small'
+                                        },
+                                        style: {
+                                            marginRight: '5px'
+                                        },
+                                        on: {
+                                            click: function () {
+                                                editObject = params.row;
+                                                me.sortNumber = editObject.cmdlevel;
+                                                me.sortModal = true;
+                                            }
+                                        }
+                                    }, '排序'),
                                     h('Button', {
                                         props: {
                                             type: 'primary',
@@ -110,17 +145,38 @@
                 }
             },
             methods: {
+                handleSortFn:function(){
+                    var me = this;
+                    if(this.sortNumber != ""){
+                        var url = myUrls.editCmd();
+                        editObject.cmdlevel = Number(this.sortNumber) ;
+                        utils.sendAjax(url, editObject , function (resp) {
+                            if (resp.status == 0) {
+                                me.$Message.success("排序成功");
+                                me.sortModal = false;
+                            }else{
+                                me.$Message.error(resp.cause);
+                            };
+                        });
+                    }else{
+                        me.$Message.error("序号不能为空!");
+                    }
+                },
                 handleClickDevType:function(type){
                     var me = this;
-                        me.tableData = [];
+                    var tableData = [];
                     this.deviceTypeList.forEach(function (item) { 
                         item.isSelected = false;
                     });
                     this.allDirectiveList.forEach(function (item) { 
                         if(item.devicetype == type.name){
-                            me.tableData.push(item)
+                            tableData.push(item)
                         }
                     });   
+                    tableData.sort(function (a,b) { 
+                        return a.cmdlevel > b.cmdlevel;
+                    });
+                     me.tableData = tableData;
                     type.isSelected = true;
                 },
                 handleDelDirective: function () {

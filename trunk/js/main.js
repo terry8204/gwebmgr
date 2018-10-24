@@ -1696,7 +1696,11 @@
             directiveList.push(cmd);
           }
         })
-        console.log("currentDevDirectiveList-- ", directiveList);
+
+        directiveList.sort(function (a, b) {
+          return a.cmdlevel > b.cmdlevel;
+        });
+        // console.log("currentDevDirectiveList-- ", directiveList);
         this.currentDevDirectiveList = directiveList;
       },
       records: function () {
