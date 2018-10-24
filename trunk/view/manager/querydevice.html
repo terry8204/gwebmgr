@@ -177,7 +177,7 @@ vueInstanse = new Vue({
                 },
                 getDeviceList:function(){
                     var me = this;
-                    var url = myUrls.queryDeviceList();
+                    var url = myUrls.queryDeviceListWithGroupInfo();
                     utils.sendAjax(url,{},function(resp){
                         me.loading = false;
                         if(resp.status == 0 && resp.devices != null){           

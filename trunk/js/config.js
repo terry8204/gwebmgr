@@ -75,7 +75,7 @@ var myUrls = {
     return this.host + 'webapi?action=querycompanygroup&token=' + token
   },
   queryUser: function () {
-    return this.host + 'webapi?action=pagequeryuser&token=' + token
+    return this.host + 'webapi?action=queryuserlist&token=' + token
   },
   resetUserLoginPwd: function () {
     return this.host + 'webapi?action=resetuserpwd&token=' + token
@@ -108,8 +108,8 @@ var myUrls = {
   queryDeviceById: function () {
     return this.host + 'webapi?action=querydevicebyid&token=' + token
   },
-  queryDeviceList: function () {
-    return this.host + 'webapi?action=pagequerydevice&token=' + token
+  queryDeviceListWithGroupInfo: function () {
+    return this.host + 'webapi?action=querydevicelistwithgroupinfo&token=' + token
   },
   resetDeviceLoginPwd: function () {
     return this.host + 'webapi?action=resetdeviceloginpwd&token=' + token
