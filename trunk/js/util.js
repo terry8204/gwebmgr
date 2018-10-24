@@ -26,6 +26,19 @@ var utils = {
       }
     })
   },
+  getParameterByName: function (name) {
+    var url = location.search;
+    url = decodeURIComponent(url);
+    var theRequest = new Object();
+    if (url.indexOf("?") != -1) {
+      var str = url.substr(1);
+      var strs = str.split("&");
+      for (var i = 0; i < strs.length; i++) {
+        theRequest[strs[i].split("=")[0]] = unescape(strs[i].split("=")[1]);
+      }
+    }
+    return theRequest[name];
+  },
   getBaiduAddressFromBaidu: function (offsetlon, offsetlat, callback) {
     var point = new BMap.Point(offsetlon, offsetlat)
     var geoc = new BMap.Geocoder()
@@ -284,10 +297,16 @@ function trackMap (deviceid) {
   window.open('trackmap.html?deviceid=' + deviceid)
 }
 
-//
+//刷新位置信息
 function refreshPostion (deviceid) {
   var url = myUrls.refreshPostion();
   utils.sendAjax(url, { deviceid: deviceid }, function (resp) {
     console.log('resp', resp)
   })
+}
+
+// 设置围栏
+function setFence (deviceid) {
+  var url = 'setfence.html?deviceid=' + deviceid + '&token=' + token;
+  window.open(url);
 }

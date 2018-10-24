@@ -14,7 +14,7 @@
   var ws = null;
 
   //全局变量
-  var store = {
+  store = {
     navState: isShowCompany === 'true' ? true : false,
     intervalTime: 10,
     disposeAlarmDeviceid: null,
@@ -161,9 +161,9 @@
           }
         })
       },
-      loginOut: function () {
+      logout: function () {
         var me = this
-        var url = myUrls.loginOut()
+        var url = myUrls.logout()
         utils.sendAjax(url, {}, function (resp) {
           if (resp.status == 0) {
             Cookies.remove('token')
@@ -1059,7 +1059,9 @@
           info.deviceid +
           ')">跟踪</span><span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="refreshPostion(' +
           info.deviceid +
-          ')">刷新位置</span></p></div>';
+          ')">刷新位置</span><span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="setFence(' +
+          info.deviceid +
+          ')">设置围栏</span></p></div>';
 
         return content;
       },
@@ -2646,12 +2648,4 @@
     }
   });
 
-  // 页面离开时 关闭 webSocket
-  window.onbeforeunload = function () {
-    alert(111);
-    var user = "offline" + Cookies.get('name');
-    ws.send(user);
-    ws.close();
-  };
-
-})()
+})();

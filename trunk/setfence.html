@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="shortcut icon" href="./favicon.ico" />
+    <title>电子围廊</title>
+    <link rel="stylesheet" href="dist/styles/iview.css">
+    <style>
+        html,body,#container,#bmap{
+            width: 100%;
+            height: 100%;  
+            position: relative;
+        }
+        #geofence-center{
+            width:20px;
+            height:20px;
+            background: #ED2D2D;
+            position: absolute;
+            left:50%;
+            top:50%;
+            margin-top:-24px;
+            margin-left:-10px;
+            border-radius: 80% 0 55% 50% / 55% 0 80% 50%;
+            transform: rotate(-225deg);
+        }
+        #controller{
+            position: absolute;
+            right: 20px;
+            bottom: 20px;
+            width: 460px;
+            height: 150px;
+            border: 1px solid #A4D4F5;
+            background: #F3F3F3;
+            padding: 10px;
+            box-sizing: border-box;
+            
+        }   
+        #controller>div{
+            
+        }
+        .title{
+            height: 40px;
+            font-size: 20px;
+            text-align: center;
+            line-height: 40px;
+        }
+        .my-slider{
+            height: 40px;
+        }
+        .my-slider>div{
+            float: left;
+            text-align: center;
+        }
+        .btns{
+            margin-top: 10px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <div id="bmap"></div>
+        <div id="geofence-center"></div>
+        <div id="controller">
+            <div class="title">{{title}}</div>
+            <div class="my-slider">
+                <div style="width: 60px;height:36px;line-height:36px;">{{min}}米</div>
+                <div  style="width: 318px">
+                    <Slider v-model="value4" :step="10" :min="min" :max="max"></Slider>
+                </div>
+                <div style="width: 60px;height:36px;line-height:36px;">{{max}}米</div>
+            </div>
+            <div  class="btns">
+                <i-button>确定</i-button>
+                <i-button>确定</i-button>
+            </div>
+        </div>
+    </div>
+    <script src="dist/vue.min.js"></script>
+    <script src="dist/iview.min.js"></script>
+    <script src="js/jquery.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/hashmap.js"></script>
+    <script src="js/localcachemgr.js"></script>
+    <script src="js/transformlatlon.js"></script>
+    <script src="js/dateformat.js"></script>
+    <script src="js/util.js"></script>
+    <script src="http://api.map.baidu.com/api?v=3.0&ak=e7SC5rvmn2FsRNE4R1ygg44n"></script>
+    <script>
+        var deviceid = utils.getParameterByName("deviceid");
+        var token = utils.getParameterByName("token");
+        (function () { 
+
+            new Vue({
+                    el:"#container",
+                    data:{
+                        map:null,
+                        circle:null,
+                        mapCenterPoint:null,
+                        fr:0,
+                        gpslon:null,
+                        gpslat:null,
+                        b_lon:null,
+                        b_lat:null,
+                        value4:10,
+                        title:"",
+                        isSetFence:null,
+                        min:200,
+                        max:20000,
+                    },
+                    methods: {
+                        initMap : function(){
+                            var self = this;
+                            this.map = new BMap.Map("bmap",{minZoom:4,maxZoom:18});           
+                            this.map.enableScrollWheelZoom();
+                            this.map.enableAutoResize();
+                            this.map.disableDoubleClickZoom();
+                        
+                           
+                            if(this.isSetFence){
+                                var b_lon_lat = wgs84tobd09(this.gpslon,this.gpslat);
+                                this.b_lon = b_lon_lat[0];
+                                this.b_lat = b_lon_lat[1];
+                                this.map.centerAndZoom(new BMap.Point(this.b_lon,this.b_lat),16);
+                                this.circle = new BMap.Circle(point,this.fr,{strokeWeight:2,strokeColor:"#F37A5A"});
+                            }else{
+                                var point = new BMap.Point(108.0017245,35.926895);
+                                this.map.centerAndZoom(point,5);
+                                this.circle = new BMap.Circle(point,this.max,{strokeWeight:2,strokeColor:"#F37A5A"});
+                                this.mapCenterPoint = point;
+                                this.map.addOverlay(this.circle); 
+                            }
+
+                            this.map.addEventListener("moveend",function(e){   	
+                                self.getMapCenterPoint();
+                                self.bd09towgs84();   // 百度坐标转国际坐标
+                                self.circle.setCenter(self.mapCenterPoint );
+                            },false);   
+
+                            this.map.addEventListener("zoomend",function(e){   	  
+                                console.log('self.mapCenterPoint', self.mapCenterPoint);			
+                                self.map.setCenter(self.mapCenterPoint);
+                            },false);
+
+                            this.map.addEventListener("resize",function(e){   	  			
+                                self.map.setCenter(self.mapCenterPoint);
+                            },false);
+
+                        },
+                        getMapCenterPoint:function(){
+                            var pt = this.map.getCenter();				
+                                this.b_lon = pt.lng;
+                                this.b_lat = pt.lat;				
+                                this.mapCenterPoint = pt;
+                        },
+                        bd09towgs84:function(){
+                            var lng_lat = bd09towgs84(this.b_lon,this.b_lat);  	
+                                this.gpslon = lng_lat[0];
+                                this.gpslat = lng_lat[1];
+                                console.log(this.gpslon,this.gpslat )
+                        },
+                        getFenceInfo:function(){
+                            var url = myUrls.queryDeviceBaseInfo();
+                            utils.sendAjax(url,{deviceid:deviceid},this.doFenceInfo);
+                        },
+                        doFenceInfo:function(resp){
+                            this.isSetFence =  resp.fstate === 0 ? false :  true;
+                            this.fr = resp.fr;
+                            this.gpslon = resp.flon;
+                            this.gpslat = resp.flat;
+                            this.initMap();
+                        }
+                    },
+                    watch:{
+                        isSetFence:function(){
+                            if(this.isSetFence){
+                                this.title = "已设置电子围栏";
+                            }else{
+                                this.title = "未设置电子围栏";
+                            }
+                        }
+                    },
+                    mounted () {
+                        // var gpslon = Number(info.gpslon);
+                        // var gpslat = Number(info.gpslat);
+                        // var lon_lat = wgs84tobd09(gpslon,gpslat);
+                        // this.b_lon = lon_lat[0];
+                        // this.b_lat = lon_lat[1];
+                        // this.initMap();
+                        this.getFenceInfo();
+                    }
+            });
+        })();
+    </script>
+</body>
+</html>

@@ -17,8 +17,8 @@ var myUrls = {
   login: function () {
     return this.host + 'webapi?action=login'
   },
-  loginOut: function () {
-    return this.host + 'webapi?action=loginout&token=' + token
+  logout: function () {
+    return this.host + 'webapi?action=logout&token=' + token
   },
   queryUserTypeDescr: function () {
     return this.host + 'webapi?action=queryusertypedescr&token=' + token;
@@ -45,14 +45,14 @@ var myUrls = {
     return this.host + 'webapi?action=editcompany&token=' + token
   },
   queryCompanyByCreater: function () {
-    return this.host + 'webapi?action=pagequerycompany&token=' + token
+    return this.host + 'webapi?action=querycompanysbyuser&token=' + token
   },
   queryCompanyByIds: function () {
     return this.host + 'webapi?action=querycompanybyids&token=' + token
   },
-  queryCompanyById: function () {
-    return this.host + 'webapi?action=querycompanybyid&token=' + token
-  },
+  // queryCompanyById: function () {
+  //   return this.host + 'webapi?action=querycompanybyid&token=' + token
+  // },
   addGroup: function () {
     return this.host + 'webapi?action=addgroup&token=' + token
   },
@@ -210,36 +210,37 @@ var myUrls = {
   },
   //查询用户所有设备类型详细
   queryAllDeviceTypeByUser: function () {
-    return this.host + 'webapi?action=queryalldevicetypebyuser&token=' + token
+    return this.host + 'webapi?action=queryalldevicetypebyuser&token=' + token;
   },
   // 编辑用户设备指令
   editUserDeviceCmd: function () {
-    return this.host + 'webapi?action=edituserdevicecmd&token=' + token
+    return this.host + 'webapi?action=edituserdevicecmd&token=' + token;
   },
   // 查询指令列表
   listCmdAction: function () {
-    return this.host + 'webapi?action=listcmdaction&token=' + token
+    return this.host + 'webapi?action=listcmdaction&token=' + token;
   },
   // 查询设备基本信息
   queryDeviceBaseInfo: function () {
-    return this.host + 'webapi?action=querydeviceinfo&token=' + token
+    return this.host + 'webapi?action=querydeviceinfo&token=' + token;
   },
   //设置电子围栏
   setGeofence: function () {
-    return this.host + 'webapi?action=setgeofence&token=' + token
+    return this.host + 'webapi?action=setgeofence&token=' + token;
   },
   //取消电子围栏
   unSetGeofence: function () {
-    return this.host + 'webapi?action=unsetgeofence&token=' + token
+    return this.host + 'webapi?action=unsetgeofence&token=' + token;
   },
   // 查询设备类型code
   listDeviceTypeCode: function () {
-    return this.host + 'webapi?action=listdevicetypecode&token=' + token
+    return this.host + 'webapi?action=listdevicetypecode&token=' + token;
   },
   // 刷新设备位置最新信息
   refreshPostion: function () {
-    return this.host + 'webapi?action=refreshpostion&token=' + token
+    return this.host + 'webapi?action=refreshpostion&token=' + token;
   },
+
 }
 
 // global var
@@ -248,7 +249,7 @@ var editObject = null // 要编辑客户的对象
 var customersList = null // 缓存客户列表
 var groupsList = null // 缓存分组列表
 var vstore = null // store
-
+var store = null //
 /* 
  * 系统管理员 admin       123456
  * 一级管理员 yijimgr     123456
