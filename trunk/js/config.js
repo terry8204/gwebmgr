@@ -177,7 +177,7 @@ var myUrls = {
     return this.host + 'webapi?action=pagequerydevicetype&token=' + token
   },
   queryDeviceTypeByUser: function () {
-    return this.host + 'webapi?action=querydevicetypebyuser&token=' + token
+    return this.host + 'webapi?action=querydevicetypeownerbyuser&token=' + token
   },
   addDeviceType: function () {
     return this.host + 'webapi?action=adddevicetype&token=' + token
@@ -192,7 +192,7 @@ var myUrls = {
     return this.host + 'webapi?action=editdevicetype&token=' + token
   },
   queryDeviceTypeHadCmd: function () {
-    return this.host + 'webapi?action=querydevicetypehadcmd&token=' + token
+    return this.host + 'webapi?action=querydevicetypewithcmd&token=' + token
   },
   editDeviceTypeCmd: function () {
     return this.host + 'webapi?action=editdevicetypecmd&token=' + token
@@ -210,7 +210,7 @@ var myUrls = {
   },
   //查询用户所有设备类型详细
   queryAllDeviceTypeByUser: function () {
-    return this.host + 'webapi?action=queryalldevicetypebyuser&token=' + token;
+    return this.host + 'webapi?action=queryalldevicetypeinsystem&token=' + token;
   },
   // 编辑用户设备指令
   editUserDeviceCmd: function () {
