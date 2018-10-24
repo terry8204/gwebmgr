@@ -240,52 +240,52 @@ Vue.component('expand-row', {
 var expandRow = Vue.component('expand-row')
 
 //  vue组件
-Vue.component('expand-cmd-row', {
-  template:
-    '<div>' +
-    '<span v-for="(item , index) in cmds" style="display:inline-block;margin:5px" @click="handleClick(index)">' +
-    '<i-button icon="ios-female"> {{item.cmdname}}</i-button>' +
-    '</span>' +
-    '</div>',
-  props: {
-    cmds: Array,
-    typename: String
-  },
-  data: function () {
-    return {
-      selectedCmdList: []
-    }
-  },
-  methods: {
-    querySelectedCmd: function () {
-      var url = myUrls.queryDeviceTypeHadCmd()
-      var data = { devicetype: this.devices.devicetypeid }
-      utils.sendAjax(url, data, this.doQuerySelectedCmdFn)
-    },
-    doQuerySelectedCmdFn: function (resp) {
-      if (resp.status == 0) {
-        this.selectedCmdList = resp.records
-        this.devices.selectedCmdList = resp.records
-      }
-    },
-    handleClick: function (index) {
-      var me = this
-      editObject = this.cmds[index]
-      editObject.devtypename = this.typename
-      me.$Loading.start()
-      $('#system-view').load(
-        '../view/systemparam/editdevicetypecmd.html',
-        function () {
-          me.$Loading.finish()
-        }
-      )
-    }
-  },
-  mounted: function () { }
-})
+// Vue.component('expand-cmd-row', {
+//   template:
+//     '<div>' +
+//     '<span v-for="(item , index) in cmds" style="display:inline-block;margin:5px" @click="handleClick(index)">' +
+//     '<i-button icon="ios-female"> {{item.cmdname}}</i-button>' +
+//     '</span>' +
+//     '</div>',
+//   props: {
+//     cmds: Array,
+//     typename: String
+//   },
+//   data: function () {
+//     return {
+//       selectedCmdList: []
+//     }
+//   },
+//   methods: {
+//     querySelectedCmd: function () {
+//       var url = myUrls.queryDeviceTypeHadCmd()
+//       var data = { devicetype: this.devices.devicetypeid }
+//       utils.sendAjax(url, data, this.doQuerySelectedCmdFn)
+//     },
+//     doQuerySelectedCmdFn: function (resp) {
+//       if (resp.status == 0) {
+//         this.selectedCmdList = resp.records
+//         this.devices.selectedCmdList = resp.records
+//       }
+//     },
+//     handleClick: function (index) {
+//       var me = this
+//       editObject = this.cmds[index]
+//       editObject.devtypename = this.typename
+//       me.$Loading.start()
+//       $('#system-view').load(
+//         '../view/systemparam/editdevicetypecmd.html',
+//         function () {
+//           me.$Loading.finish()
+//         }
+//       )
+//     }
+//   },
+//   mounted: function () { }
+// })
 
 //  得到表格添加指令的 row组建
-var expandCmdRow = Vue.component('expand-cmd-row')
+// var expandCmdRow = Vue.component('expand-cmd-row')
 
 // 轨迹回放
 function playBack (deviceid) {

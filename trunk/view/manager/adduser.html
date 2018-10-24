@@ -369,18 +369,18 @@
                 },
                 queryAllgroupsInfo:function(){
                     var url = myUrls.queryGroupByUser();
-                    utils.sendAjax(url,{},this.doQueryAllgroupsInfo);
+                    utils.sendAjax(url,{},this.doQueryAllGroupsInfo);
                 },
-                doQueryAllgroupsInfo:function(resp){
+                doQueryAllGroupsInfo:function(resp){
                     var me = this;
                     if(resp.status === 0 && resp.grouplist){
                         resp.grouplist.forEach(function (group) { 
                             me.groupList.push({
                                 label:group.groupname,
                                 value:group.groupid
-                            })
+                            });
                         });
-                    }
+                    };
                 },
                 queryAllDeviceCmdByUser:function(){
                     var me = this;

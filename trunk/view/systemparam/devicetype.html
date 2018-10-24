@@ -88,18 +88,7 @@
                     cmdModal:false,
                     rowIndex: null,
                     columns: [
-                        {
-                            type: 'expand',
-                            width: 50,
-                            render: function(h, params){
-                                return h(expandCmdRow, {
-                                    props: {
-                                        cmds: params.row.cmds,
-                                        typename:params.row.typename
-                                    }
-                                })
-                            }
-                        },
+                      
                         {
                             title: '类型名称',
                             key: 'typename'
@@ -146,43 +135,7 @@
                                                 me.deleteDevType(params);
                                             }
                                         }
-                                    }, '删除'),
-                                    h('Button', {
-                                        props: {
-                                            type: 'primary',
-                                            size: 'small'
-                                        },
-                                        on: {
-                                            click: function() {
-                                                me.cmdModal = true;
-                                                me.devTypeInfo = JSON.parse(JSON.stringify(params.row));
-                                                me.rowIndex = params.index;  
-                                                var cmds = params.row.cmds; 
-                                                var deviceType = null;
-                                                if(params.row.cmds){
-                                                    deviceType = params.row.cmds[0].devicetype;
-                                                    if(deviceType){
-                                                        me.matchingCmd(deviceType);
-                                                    }
-                                                }
-                                                console.log('deviceType', deviceType);
-                                                for (var key in me.checkboxCmdObj) {
-                                                    if (me.checkboxCmdObj.hasOwnProperty(key)) {
-                                                        me.checkboxCmdObj[key] = false;
-                                                    }
-                                                };
-
-                                                if (cmds) {
-                                                    cmds.forEach(function (item) {
-                                                        me.checkboxCmdObj[item.cmdcode] = true;
-                                                    });
-
-                                                } else {
-                                                    me.querySelectedCmd();
-                                                };
-                                            }
-                                        }
-                                    }, '选择指令')
+                                    }, '删除')
                                 ]);
                             }
                         }

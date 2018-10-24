@@ -66,7 +66,7 @@ var myUrls = {
     return this.host + 'webapi?action=editgroupmonitor&token=' + token
   },
   queryGroupByUser: function () {
-    return this.host + 'webapi?action=pagequerygroup&token=' + token
+    return this.host + 'webapi?action=queryallgroups&token=' + token
   },
   addUser: function () {
     return this.host + 'webapi?action=adduser&token=' + token
@@ -154,7 +154,7 @@ var myUrls = {
     return this.host + 'webapi?action=deletevehicletype&token=' + token
   },
   pageQueryVehicleType: function () {
-    return this.host + 'webapi?action=pagequeryvehicletype&token=' + token
+    return this.host + 'webapi?action=queryvehicletypes&token=' + token
   },
   editVehicleType: function () {
     return this.host + 'webapi?action=editvehicletype&token=' + token
@@ -234,7 +234,7 @@ var myUrls = {
   },
   // 查询设备类型code
   listDeviceTypeCode: function () {
-    return this.host + 'webapi?action=listdevicetypecode&token=' + token;
+    return this.host + 'webapi?action=listprotocoltypecode&token=' + token;
   },
   // 刷新设备位置最新信息
   refreshPostion: function () {
