@@ -62,6 +62,11 @@
                     directiveObj: {},
                     columns: [
                         {
+                            title: '序号',
+                            key: 'cmdlevel',
+                            width: 80,
+                        },
+                        {
                             title: '指令名称',
                             key: 'cmdname'
                         },
@@ -91,6 +96,7 @@
                                         on: {
                                             click: function () {
                                                 editObject = params.row;
+                                                me.index = params.index;
                                                 me.sortNumber = editObject.cmdlevel;
                                                 me.sortModal = true;
                                             }
@@ -142,6 +148,7 @@
                     deviceTypeList:[],
                     allDirectiveList:[],
                     loading: false,
+                    index:null
                 }
             },
             methods: {
@@ -149,11 +156,17 @@
                     var me = this;
                     if(this.sortNumber != ""){
                         var url = myUrls.editCmd();
-                        editObject.cmdlevel = Number(this.sortNumber) ;
+                        var cmdlevel = Number(this.sortNumber) ;
+                        editObject.cmdlevel = cmdlevel;
                         utils.sendAjax(url, editObject , function (resp) {
                             if (resp.status == 0) {
+                                me.tableData[me.index].cmdlevel = cmdlevel;
+                                me.tableData.sort(function (a,b) { 
+                                    return a.cmdlevel > b.cmdlevel;
+                                });
                                 me.$Message.success("排序成功");
                                 me.sortModal = false;
+
                             }else{
                                 me.$Message.error(resp.cause);
                             };
