@@ -174,7 +174,7 @@ var myUrls = {
   },
   // 设备类型
   pageQueryDeviceType: function () {
-    return this.host + 'webapi?action=pagequerydevicetype&token=' + token
+    return this.host + 'webapi?action=queryalldevicetypeinsystem&token=' + token
   },
   queryDeviceTypeByUser: function () {
     return this.host + 'webapi?action=querydevicetypeownerbyuser&token=' + token

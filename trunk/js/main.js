@@ -44,6 +44,7 @@
           data: {},
           async: false,
           success: function (resp) {
+            console.log('setUserTypeDescr', resp)
             context.commit('setUserTypeDescr', resp.records);
           },
           error: function () { }
