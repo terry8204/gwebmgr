@@ -70,7 +70,7 @@
                 <div  style="width: 318px">
                     <Slider v-model="radius" :step="10" :min="min" :max="max" @on-change="changeValue"></Slider>
                 </div>
-                <div style="width: 60px;height:36px;line-height:36px;">{{max}}米</div>
+                <div style="width: 60px;height:36px;line-height:36px;">{{max/1000}}公里</div>
             </div>
             <div  class="btns">
                 <i-button @click="handleSubmitFence">保存围栏</i-button>
@@ -225,10 +225,10 @@
                             var url = myUrls.setGeofence();
                             utils.sendAjax(url,{deviceid:deviceid,lon:this.gpslon,lat:this.gpslat,radius:this.radius},function (resp) { 
                                 if(resp.status == 0){
-                                    me.$Message.success("围栏设置成功");
+                                    me.$Message.success("保存围栏成功");
                                     me.isSetFence = true;
                                 }else{
-                                    me.$Message.success("围栏设置失败");
+                                    me.$Message.success("保存围栏失败");
                                 }
                             })
                         },
@@ -237,10 +237,10 @@
                             var url = myUrls.unSetGeofence();
                             utils.sendAjax(url,{deviceid:deviceid},function (resp) { 
                                 if(resp.status == 0){
-                                    me.$Message.success("围栏删除成功");
+                                    me.$Message.success("删除围栏成功");
                                     me.isSetFence = false;
                                 }else{
-                                    me.$Message.success("围栏删除失败");
+                                    me.$Message.success("删除围栏失败");
                                 }
                             })
                         }
@@ -254,7 +254,7 @@
                             }
                         }
                     },
-                    mounted () {
+                    mounted:function () {
                         this.getFenceInfo();
                     }
             });
