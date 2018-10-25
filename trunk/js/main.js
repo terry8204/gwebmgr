@@ -44,7 +44,6 @@
           data: {},
           async: false,
           success: function (resp) {
-            console.log('setUserTypeDescr', resp)
             context.commit('setUserTypeDescr', resp.records);
           },
           error: function () { }
@@ -1711,7 +1710,7 @@
         var offline = 0;
         var me = this;
         var deviceIds = Object.keys(me.$store.state.deviceInfos);
-
+        console.log("records数据更新了");
         if (this.records.length === deviceIds.length) {
           this.records.forEach(function (record) {
             if (record !== null) {

@@ -119,7 +119,7 @@ var myUrls = {
     return this.host + 'webapi?action=querymonitorlist&token=' + token
   },
   queryCompanyTree: function () {
-    return this.host + 'webapi?action=querycompanytree&token=' + token
+    return this.host + 'webapi?action=querycompanys&token=' + token
   },
   lastPosition: function () {
     return this.host + 'webapi?action=lastposition&token=' + token
