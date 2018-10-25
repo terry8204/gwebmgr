@@ -584,7 +584,7 @@ div.ivu-steps-head-inner .ivu-icon{
     ul.waring-controller span.msgwaring{
         -webkit-animation:twinkling 1s infinite ease;
         animation:twinkling 1s infinite ease;
-        color: red;
+        color: #fff;
     }
 
     ul.waring-controller span.msgnormal{
