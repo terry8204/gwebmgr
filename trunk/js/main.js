@@ -509,7 +509,7 @@
       disposeDirectiveFn: function () {
         var me = this;
         var url = myUrls.sendCmd();
-        var data = { devicetype: this.currentDeviceType, cmdcode: this.selectedCmdInfo.cmdcode, deviceid: store.disposeAlarmDeviceid, params: Object.values(this.cmdParams) };
+        var data = { devicetype: this.currentDeviceType, cmdcode: this.selectedCmdInfo.cmdcode, deviceid: store.disposeAlarmDeviceid, params: Object.values(this.cmdParams), state: 0 };
         utils.sendAjax(url, data, function (resp) {
           if (resp.status === 0) {
             communicate.$emit("disposeAlarm", data.cmdcode);
@@ -2232,6 +2232,7 @@
           var deviceid = item.deviceid;
           var deviceName = me.$store.state.deviceInfos[deviceid].devicename;
           item.devicename = deviceName;
+          item.lastalarmtimeStr = DateFormat.longToDateTimeStr(item.lastalarmtime, 0);
           item.isdispose = item.disposestatus === 0 ? "未处理" : "已处理";
         });
         me.waringRecords = alarmList;
@@ -2341,9 +2342,9 @@
 
         this.cmdRowWaringObj = {
           deviceid: deviceid,
-          arrivedtime: row.arrivedtime,
           devicetype: devicetype,
           params: null,
+          state: row.state
         }
 
 
@@ -2380,7 +2381,7 @@
           if (resp.status == 0) {
             me.disposeModal = false;
             me.$Message.success("解除成功!");
-            alarmMgr.updateDisposeStatus(me.cmdRowWaringObj.deviceid);
+            alarmMgr.updateDisposeStatus(me.cmdRowWaringObj.deviceid, me.cmdRowWaringObj.state);
             me.refreshAlarmToUi();
           } else {
             me.$Message.error(resp.cause);
@@ -2429,7 +2430,7 @@
               },
               {
                 title: '报警时间',
-                key: 'gpstime',
+                key: 'lastalarmtimeStr',
                 width: 160
               },
               {
@@ -2438,7 +2439,7 @@
               },
               {
                 title: '报警次数',
-                key: 'count',
+                key: 'alarmcount',
                 width: 100
               },
               {
@@ -2545,7 +2546,7 @@
         me.refreshAlarmToUi();
       });
       communicate.$on("disposeAlarm", function (cmdCode) {
-        alarmMgr.updateDisposeStatus(store.currentDeviceId);
+        alarmMgr.updateDisposeStatus(store.currentDeviceId, 0);
         me.refreshAlarmToUi();
       });
       window.onresize = function () {
