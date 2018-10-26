@@ -1710,7 +1710,7 @@
         var offline = 0;
         var me = this;
         var deviceIds = Object.keys(me.$store.state.deviceInfos);
-        console.log("records数据更新了");
+
         if (this.records.length === deviceIds.length) {
           this.records.forEach(function (record) {
             if (record !== null) {
@@ -2111,18 +2111,20 @@
             }
           })
           me.currentDevTypeCmdList = beforeCmdList
-          var twoArr = []
+          var twoArr = [];
           beforeCmdList.forEach(function (item, index) {
             if (index % 4 == 0) {
               twoArr.push([])
             }
             twoArr[twoArr.length - 1].push(item);
+
             me.disposeAlarm = item.cmdcode;
+
           })
           this.alarmCmdList = twoArr;
 
-          me.disposeAlarm = beforeCmdList[beforeCmdList.length - 1].cmdcode
-          me.params = beforeCmdList[beforeCmdList.length - 1].params
+          me.disposeAlarm = beforeCmdList[0].cmdcode;
+          me.params = beforeCmdList[beforeCmdList.length - 1].params;
         }
       },
       disposeAlarm: function () {
@@ -2541,7 +2543,7 @@
       this.queryAlarmDescr();
       this.changeWrapperCls();
       communicate.$on("remindmsg", function (data) {
-        // console.log('remindmsg-data', data);
+        console.log('webSocket-remindmsg-data', data);
         alarmMgr.addRecord(data);
         me.refreshAlarmToUi();
       });
@@ -2617,7 +2619,6 @@
             communicate.$emit("remindmsg", data);
           } else if (action === "positionlast") {
             var data = resp.positionLast;
-            console.log('positionlast', data);
             communicate.$emit("positionlast", data);
           };
         };
