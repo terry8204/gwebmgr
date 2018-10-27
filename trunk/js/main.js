@@ -2131,7 +2131,7 @@
         var me = this
         this.currentDevTypeCmdList.forEach(function (item) {
           if (me.disposeAlarm == item.cmdcode) {
-            me.params = item.params
+            me.params = item.params;
           }
         })
       },

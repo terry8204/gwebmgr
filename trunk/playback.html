@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,22 +9,27 @@
     <title>轨迹回放</title>
     <link rel="stylesheet" href="dist/styles/iview.css">
     <style>
-        html,body,#container,#bmap{
+        html,
+        body,
+        #container,
+        #bmap {
             width: 100%;
-            height: 100%;  
+            height: 100%;
             position: relative;
         }
-        div.controller{
+
+        div.controller {
             position: absolute;
             right: 10px;
             bottom: 10px;
             width: 500px;
             height: 240px;
             line-height: 60px;
-            background: #E8F0F7; 
-            border:1px solid #C3CEDE; 
+            background: #E8F0F7;
+            border: 1px solid #C3CEDE;
         }
-        label.BMapLabel::after{
+
+        label.BMapLabel::after {
             font-size: 0px;
             line-height: 0px;
             width: 0px;
@@ -35,6 +41,7 @@
             margin-left: -19px;
             margin-top: -42px;
         }
+
         .guiji_sanjiao {
             font-size: 0px;
             line-height: 0px;
@@ -47,6 +54,7 @@
             margin-left: -30px;
             margin-top: -42px;
         }
+
         .guiji_sanjiao_2 {
             font-size: 0px;
             line-height: 0px;
@@ -61,56 +69,56 @@
         }
     </style>
 </head>
+
 <body>
     <div id="container">
         <div id="bmap"></div>
         <div class="controller">
             <i-row>
-                <!-- <i-col :span="4" style="text-align: right">
+                <i-col :span="4" style="text-align: center;">
                     选择时间 : &nbsp;
                 </i-col>
-                <i-col :span="20">
-                    <date-picker type="datetimerange" :editable="false" :options="dateOptions" v-model="selectDate" placeholder="请选择时间" style="width: 300px"></date-picker>  
-                    <i-button @click="sosoTracks">搜索轨迹</i-button>   
-                </i-col> -->
-                <i-col :span="4" style="text-align: right">
-                    开始时间 : &nbsp;
+                <i-col :span="11">
+                    <date-picker type="date" style="width: 100%" v-model="startTime"  :clearable="false" :editable="false"></date-picker>
                 </i-col>
-                <i-col :span="20">
-                    <date-picker type="datetime" style="width: 249px" v-model="startTime" :options="dateOptions"></date-picker>
+                <i-col :span="4" style="text-align: center">
+                    <i-button @click="prevDay">上一天</i-button>
                 </i-col>
-            </i-row>
-
-            <i-row>
-                <i-col :span="4" style="text-align: right"> 结束时间 : &nbsp; </i-col>
-                <i-col :span="12" style="text-align: right">
-                    <date-picker type="datetime"  style="width: 100%" v-model="endTime" :options="dateOptions"></date-picker>
-                </i-col>
-                <i-col :span="4" :offset="1"> 
-                    <i-button @click="sosoTracks">搜索轨迹</i-button>   
+                <i-col :span="4" style="text-align: center">
+                    <i-button @click="nextDay">下一天</i-button>
                 </i-col>
             </i-row>
 
             <i-row>
-                <i-col :span="4" style="line-height:60px;text-align:right;"> 播放速度 : &nbsp;</i-col>
-                <i-col :span="18" style="height:60px; padding-top: 12px;">
-                    <Slider v-model="velocity" :min="100" :max="5000" show-input :step="100"></Slider>
-                </i-col>    
-                <i-col :span="2" style="line-height:60px;text-align:center;"> 毫秒 </i-col>
+                <i-col :span="9" style="text-align: center">开始时间 : {{startTimeStr}} </i-col>
+                <i-col :span="9" style="text-align: center">结束时间 : {{endTimeStr}} </i-col>
+                <i-col :span="6" style="text-align: center">
+                    <i-button @click="sosoTracks">搜索轨迹</i-button>
+                </i-col>
             </i-row>
-            
-            <i-row>
 
+            <div>
+
+                <i-row>
+                    <i-col :span="4" style="line-height:60px;text-align:right;"> 播放速度 : &nbsp;</i-col>
+                    <i-col :span="18" style="height:60px; padding-top: 12px;">
+                        <Slider v-model="velocity" :min="100" :max="5000" show-input :step="100"></Slider>
+                    </i-col>
+                    <i-col :span="2" style="line-height:60px;text-align:center;"> 毫秒 </i-col>
+                </i-row>
+            </div>
+
+            <i-row>
                 <i-col :span="6" :offset="3" style="padding:0 5px">
                     <i-button style="width: 100%" @click="beginPlay">播放</i-button>
                 </i-col>
                 <i-col :span="6" style="padding:0 5px">
                     <i-button style="width: 100%" @click="pause">暂停</i-button>
-                </i-col>    
+                </i-col>
                 <i-col :span="6" style="padding:0 5px">
                     <i-button style="width: 100%" @click="replay">重播</i-button>
                 </i-col>
-            </i-row>    
+            </i-row>
 
         </div>
         <Spin size="large" fix v-if="spinShow"></Spin>
@@ -129,514 +137,383 @@
     <script type="text/javascript" src="http://api.map.baidu.com/library/DistanceTool/1.2/src/DistanceTool_min.js"></script>
     <script>
         (function () {   //utils.getAngle
-            var carIcon   = new BMap.Icon("images/carstate/green_0.gif", new BMap.Size(17, 17), { imageOffset: new BMap.Size(0, 0)});
-            var startIcon = new BMap.Icon("./images/map/marker_qidian.png", new BMap.Size(32, 32), { imageOffset: new BMap.Size(0, 0)});
-            var endIcon   = new BMap.Icon("./images/map/marker_zhongdian.png", new BMap.Size(32, 32), { imageOffset: new BMap.Size(0, 0)});
+            var carIcon = new BMap.Icon("images/carstate/green_0.gif", new BMap.Size(17, 17), { imageOffset: new BMap.Size(0, 0) });
+            var startIcon = new BMap.Icon("./images/map/marker_qidian.png", new BMap.Size(32, 32), { imageOffset: new BMap.Size(0, 0) });
+            var endIcon = new BMap.Icon("./images/map/marker_zhongdian.png", new BMap.Size(32, 32), { imageOffset: new BMap.Size(0, 0) });
 
             var vm = new Vue({
-                    el:"#container",
-                    data:{
-                        map:null,
-                        dateOptions:{
-                            disabledDate:function(date){
-                                if(!date.length){
-                                    var  time = date.getTime();
-                                    var currentTime = Date.now();
-                                    if(time < currentTime){
-                                        return false;
-                                    }else{
-                                        return true;
-                                    }
-                                }
-                            }
-                        },
-                        selectDate:null,
-                        dayTime:60*60*24*1000,   
-                        lock:false,  
-                        deviceid: null,
-                        startTime: null,
-                        endTime : null,
-                        len : null ,
-                        respCount:0,
-                        spinShow:false,
-                        records:[],
-                        range:50,             // 范围50米之内的点不显示
-                        velocity:1000,         // 半秒
-                        intervalInstanse:null,
-                        carMarker:null,
-                        markerLabel:null,
-                        index : 0,
-                        isPlay:true,
-                        firstMarker:null,
-                        lastMakrker:null,
-                        polyline:null
+                el: "#container",
+                data: {
+                    map: null,
+                    selectDate: null,
+                    dayTime: 60 * 60 * 24 * 1000,
+                    lock: false,
+                    deviceid: null,
+                    startTime: null,
+                    startTimeStr: "",
+                    endTimeStr: "",
+                    len: null,
+                    spinShow: false,
+                    records: [],
+                    range: 1,             // 范围50米之内的点不显示
+                    velocity: 1000,         // 半秒
+                    intervalInstanse: null,
+                    carMarker: null,
+                    markerLabel: null,
+                    index: 0,
+                    isPlay: true,
+                    firstMarker: null,
+                    lastMakrker: null,
+                    polyline: null
+                },
+                methods: {
+                    initMap: function () {
+                        this.map = new BMap.Map("bmap", { minZoom: 4, maxZoom: 18 });
+                        this.map.enableScrollWheelZoom();
+                        this.map.enableAutoResize();
+                        this.map.disableDoubleClickZoom();
+                        this.map.centerAndZoom(new BMap.Point(108.0017245, 35.926895), 5);
                     },
-                    methods: {
-                        initMap : function(){
-                            this.map = new BMap.Map("bmap",{minZoom:4,maxZoom:18});
-                            this.map.enableScrollWheelZoom();
-                            this.map.enableAutoResize();
-                            this.map.disableDoubleClickZoom();
-                            this.map.centerAndZoom(new BMap.Point(108.0017245,35.926895),5);
-                        },
-                        changeVelocity:function(value){
-                            this.velocity = value;
-                        },
-                        getRequestBeginAndEndTimeStr:function(){
-                            var requestTimeStrArr = [];
-                            var beginTimeStr = DateFormat.longToDateTimeStr(this.startTime.getTime(),0);
-                            var endTimeStr   = DateFormat.longToDateTimeStr(this.endTime.getTime(),0);
-                            
-                            if(beginTimeStr.indexOf("00:00:00") != -1){
-                                requestTimeStrArr.push({begintime:this.getDayBeginTimeStr(this.startTime.getTime()),endtime:this.getDayEndTimeStr(this.startTime.getTime())});
-                            }else{
-                                requestTimeStrArr.push({begintime:beginTimeStr,endtime:this.getDayEndTimeStr(this.startTime.getTime())});
-                            }
+                    changeVelocity: function (value) {
+                        this.velocity = value;
+                    },
+                    getRequestBeginAndEndTimeStr: function () {
+                        var requestTimeStrArr = [];
+                        var beginTimeStr = DateFormat.longToDateTimeStr(this.startTime.getTime(), 0);
+                        var endTimeStr = DateFormat.longToDateTimeStr(this.endTime.getTime(), 0);
 
-                            if(endTimeStr.indexOf("00:00:00") != -1){
-                                requestTimeStrArr.push({begintime:this.getDayBeginTimeStr(this.endTime.getTime()),endtime:this.getDayEndTimeStr(this.endTime.getTime())});  
-                            }else{
-                                requestTimeStrArr.push({begintime:this.getDayBeginTimeStr(this.endTime.getTime()),endtime:endTimeStr});  
-                            }
-                            return requestTimeStrArr;
-                        },
-                        getMiddleDayReqParameter:function(){
-                            var beginDateStr = DateFormat.longToDateStr(this.startTime.getTime(),8);
-                            var endDateStr   = DateFormat.longToDateStr(this.endTime.getTime(),8);
-                            var beginDateStrTime =  DateFormat.dateStrToLong(beginDateStr,0) - 3600*1000*8 + this.dayTime;  
-                            var endDateStrTime   =  DateFormat.dateStrToLong(endDateStr,0) - 3600*1000*8 - this.dayTime;    
-                            if(beginDateStrTime == endDateStrTime){
-                                return [{
-                                    begintime:this.getDayBeginTimeStr(beginDateStrTime),
-                                    endtime:this.getDayEndTimeStr(beginDateStrTime)
-                                }];
-                            }else{
-                                var timeStrList = this.getTimeStrObj(beginDateStrTime,endDateStrTime);
-                                return timeStrList;
-                            }
-                        },
-                        getTimeStrObj:function(beginTime,endTime){
-                            var timeStrList = [];
-                            do{
-                                var timeStrObj = {
-                                    begintime:this.getDayBeginTimeStr(endTime),
-                                    endtime:this.getDayEndTimeStr(endTime)
-                                };
-                                timeStrList.push(timeStrObj);
-                                endTime = endTime - this.dayTime;   
-                            }
-                            while (endTime>=beginTime);
+                        if (beginTimeStr.indexOf("00:00:00") != -1) {
+                            requestTimeStrArr.push({ begintime: this.getDayBeginTimeStr(this.startTime.getTime()), endtime: this.getDayEndTimeStr(this.startTime.getTime()) });
+                        } else {
+                            requestTimeStrArr.push({ begintime: beginTimeStr, endtime: this.getDayEndTimeStr(this.startTime.getTime()) });
+                        }
+
+                        if (endTimeStr.indexOf("00:00:00") != -1) {
+                            requestTimeStrArr.push({ begintime: this.getDayBeginTimeStr(this.endTime.getTime()), endtime: this.getDayEndTimeStr(this.endTime.getTime()) });
+                        } else {
+                            requestTimeStrArr.push({ begintime: this.getDayBeginTimeStr(this.endTime.getTime()), endtime: endTimeStr });
+                        }
+                        return requestTimeStrArr;
+                    },
+                    getMiddleDayReqParameter: function () {
+                        var beginDateStr = DateFormat.longToDateStr(this.startTime.getTime(), 8);
+                        var endDateStr = DateFormat.longToDateStr(this.endTime.getTime(), 8);
+                        var beginDateStrTime = DateFormat.dateStrToLong(beginDateStr, 0) - 3600 * 1000 * 8 + this.dayTime;
+                        var endDateStrTime = DateFormat.dateStrToLong(endDateStr, 0) - 3600 * 1000 * 8 - this.dayTime;
+                        if (beginDateStrTime == endDateStrTime) {
+                            return [{
+                                begintime: this.getDayBeginTimeStr(beginDateStrTime),
+                                endtime: this.getDayEndTimeStr(beginDateStrTime)
+                            }];
+                        } else {
+                            var timeStrList = this.getTimeStrObj(beginDateStrTime, endDateStrTime);
                             return timeStrList;
-                        },
-                        getDayBeginTimeStr:function(beginTime){
-                            var timeStr = DateFormat.longToDateStr(beginTime,8);
-                            var time = DateFormat.dateStrToLong(timeStr,0) - 3600*1000*8;    
-                            return  DateFormat.longToDateTimeStr(time,0);
-                        },
-                        getDayEndTimeStr:function(endTime){
-                            var timeStr = DateFormat.longToDateStr(endTime,8);
-                            var time = DateFormat.dateStrToLong(timeStr,0) + this.dayTime - 1000 - 3600*1000*8;                               
-                            return DateFormat.longToDateTimeStr(time,0);
-                        },
-                        sosoTracks:function(){   
-                            var me = this;
-                                me.resetMapState();
-                                me.verifySelectionTime();
-                            if(this.lock){
-                                if(!this.isPlay){
-                                    this.isPlay = true;
-                                };
-               
-                                var times = this.getRequestBeginAndEndTimeStr();
-                                console.log('times', times);
-                                var begintime1 = times[0].begintime;
-                                var endtime1   = times[0].endtime;
-                                var begintime2 = times[1].begintime;
-                                var endtime2   = times[1].endtime;
-                                if(begintime1 == begintime2 && endtime1  == endtime2){
-                                    me.len = 1;
-                                    this.requestTracks(begintime1,endtime1,function (resp) { 
-                                            if(resp.status == 0 && resp.records){
-                                                resp.records.forEach(function (record) {
-                                                    var direction = utils.getAngle(record.course);
-                                                        record.direction = direction;
-                                                        me.records.push(record);
-                                                });     
-                                            };
-
-                                            if(me.respCount == me.len){
-                                                me.spinShow = false;
-                                                me.records.sort(function (a,b) { 
-                                                    return a.arrivedtime - b.arrivedtime;
-                                                });
-                                                me.filtertracks();
-                                                me.drawingLine();
-                                            };                                       
-                                    });
-                                }else{
-                                    var beginDateStr = DateFormat.longToDateStr(this.startTime.getTime() ,8);
-                                    var endDateStr =   DateFormat.longToDateStr(this.endTime.getTime(),8);
-                                    var prveDateStr = DateFormat.longToDateStr(this.endTime.getTime() - this.dayTime,8);
-                                    console.log(beginDateStr,endDateStr,prveDateStr);
-                                    if(beginDateStr == endDateStr){
-                                        me.len = 1;
-                                            me.requestTracks(times[0].begintime,times[1].endtime,function (resp) {                       
-                                                if(resp.status == 0 && resp.records){
-                                                    resp.records.forEach(function (record) {
-                                                        var direction = utils.getAngle(record.course);
-                                                            record.direction = direction;
-                                                            me.records.push(record);
-                                                    });     
-                                                };
-
-                                                if(me.respCount == me.len){
-                                                    me.spinShow = false;
-                                                    me.records.sort(function (a,b) { 
-                                                        return a.arrivedtime - b.arrivedtime;
-                                                    });
-                                                    me.filtertracks();
-                                                    me.drawingLine();
-                                                };
-                                            });
-                                    }else if(beginDateStr == prveDateStr){
-                                        me.len = 2;
-                                        times.forEach(function (timeObj) { 
-                                            me.requestTracks(timeObj.begintime,timeObj.endtime,function (resp) {                       
-                                                if(resp.status == 0 && resp.records){
-                                                    resp.records.forEach(function (record) {
-                                                        var direction = utils.getAngle(record.course);
-                                                            record.direction = direction;
-                                                            me.records.push(record);
-                                                    });     
-                                                };
-
-                                                if(me.respCount == me.len){
-                                                    me.spinShow = false;
-                                                    me.records.sort(function (a,b) { 
-                                                        return a.arrivedtime - b.arrivedtime;
-                                                    });
-                                                    me.filtertracks();
-                                                    me.drawingLine();
-                                                };
-                                            });
-                                        });
-                                    }else{
-                                        var middleTimes =  this.getMiddleDayReqParameter();
-                                        var newArr = times.concat(middleTimes);
-                                        me.len = newArr.length;
-                                        newArr.forEach(function (timeObj) { 
-                                            me.requestTracks(timeObj.begintime,timeObj.endtime,function (resp) { 
-                                                if(resp.status == 0 && resp.records){
-                                                    resp.records.forEach(function (record) {
-                                                        var direction = utils.getAngle(record.course);
-                                                            record.direction = direction;
-                                                            me.records.push(record);
-                                                    });
-                                                };
-                                                if(me.respCount == me.len){
-                                                    me.spinShow = false;
-                                                    me.records.sort(function (a,b) { 
-                                                        return a.arrivedtime - b.arrivedtime;
-                                                    });
-                                                    me.filtertracks();
-                                                    me.drawingLine();
-                                                };
-                                            });
-                                        });
-                                    }                                   
-                                }
-                            } 
-                        },
-                        requestTracks:function(beginTime,endtime,callback){
-                            this.spinShow = true;
-                            var me = this;
-                            var url = myUrls.queryTracks(Cookies.get("token"));
-                            var data = {
-                                deviceid: this.deviceid,
-                                lbs: 1,
-                                timeorder: 0,
-                                begintime:beginTime,
-                                endtime:endtime
+                        }
+                    },
+                    getTimeStrObj: function (beginTime, endTime) {
+                        var timeStrList = [];
+                        do {
+                            var timeStrObj = {
+                                begintime: this.getDayBeginTimeStr(endTime),
+                                endtime: this.getDayEndTimeStr(endTime)
                             };
-                            utils.sendAjax(url,data,function (resp) { 
-                                me.respCount++;
-                                callback(resp)
-                            });
-                        },
-                        setBmapPointProperty:function(track){
-                            var lng_lat = wgs84tobd09(track.callon,track.callat);
-                                track.point = new BMap.Point(lng_lat[0],lng_lat[1]);
-                            return track; 
-                        },
-                        filtertracks:function(){
-                            var records = this.records;
-                            if(records.length > 1){
-                                var newTrackList = [];
-                                var firstRecord = records.shift();
-                                var lastRecord  = records.pop();
-                                    this.setBmapPointProperty(firstRecord);
-                                    this.setBmapPointProperty(lastRecord);
-                                    newTrackList.push(firstRecord);
-                                    if(records.length){
-                                        var contrastTrack = records.shift();
-                                        var contrastPoint = this.setBmapPointProperty(contrastTrack).point;
-                                            newTrackList.push(contrastTrack);
-                                        for(var i = 0 ; i < records.length ; i ++ ){
-                                            var item = records[i];
-                                                item = this.setBmapPointProperty(item);
-                                            var nextPoint = item.point  
-                                            var rice = this.map.getDistance(contrastPoint,nextPoint);
-                                            if(rice > this.range){
-                                                newTrackList.push(item);
-                                                contrastPoint = nextPoint;
-                                            }
-                                        } 
-                                    }   
-                                    newTrackList.push(lastRecord);      
-                                    this.records = newTrackList;
+                            timeStrList.push(timeStrObj);
+                            endTime = endTime - this.dayTime;
+                        }
+                        while (endTime >= beginTime);
+                        return timeStrList;
+                    },
+                    getDayBeginTimeStr: function (beginTime) {
+                        var timeStr = DateFormat.longToDateStr(beginTime, 8);
+                        var time = DateFormat.dateStrToLong(timeStr, 0) - 3600 * 1000 * 8;
+                        return DateFormat.longToDateTimeStr(time, 0);
+                    },
+                    getDayEndTimeStr: function (endTime) {
+                        var timeStr = DateFormat.longToDateStr(endTime, 8);
+                        var time = DateFormat.dateStrToLong(timeStr, 0) + this.dayTime - 1000 - 3600 * 1000 * 8;
+                        return DateFormat.longToDateTimeStr(time, 0);
+                    },
+                    nextDay:function(){
+                        this.startTime = new Date(this.startTime.getTime() + this.dayTime);
+                    },
+                    prevDay:function(){
+                        this.startTime = new Date(this.startTime - this.dayTime);
+                    },
+                    sosoTracks: function () {
+                        var me = this;
+                        me.resetMapState();
+
+                        me.requestTracks(this.startTimeStr, this.endTimeStr, function (resp) {
+                            if (resp.status == 0 && resp.records) {
+                                resp.records.forEach(function (record) {
+                                    var direction = utils.getAngle(record.course);
+                                    record.direction = direction;
+                                    me.records.push(record);
+                                });
+                            }else  if (resp.status == 3 ) {
+                                me.$Message.error(resp.cause);
                             }else{
-                                for(var i = 0 ; i < records.length ; i ++ ){
-                                    this.setBmapPointProperty(records[i]);        
-                                };
-                            };
-                        },
-                        drawingLine:function(){
-                            if(this.records.length  > 1){
-                                var records = this.records; 
-                                var firstRecord = records[0];
-                                var lastRecord  = records[records.length-1];
-                                this.firstMarker = new BMap.Marker(firstRecord.point,{icon:startIcon});
-                                this.lastMakrker = new BMap.Marker(lastRecord.point,{icon:endIcon});
+                                me.$Message.error("没有当天轨迹");
+                            }
 
-                                    this.map.addOverlay(this.firstMarker);
-                                    this.map.addOverlay(this.lastMakrker);
-
-                                var lines = [];
-
-                                    for(var i = 0 ; i < records.length ; i ++ ){
-                                        lines.push(records[i].point);
-                                    };
-
-                                this.polyline = new BMap.Polyline(lines, {strokeColor:"#0000AA",strokeWeight:3,strokeOpacity:1.5});
-                                this.map.addOverlay(this.polyline);
-                                // 设置中心点
-                                this.setViewPortCenter(lines);
-                                this.runAnimeate();
-                            }; 
-                        },
-                        setViewPortCenter:function(lines){
-                            var view = this.map.getViewport(eval(lines));  
-                            var mapZoom = view.zoom;   
-                            var centerPoint = view.center;   
-                                this.map.centerAndZoom(centerPoint,mapZoom);
-                        },
-                        runAnimeate:function(){
-                            var firstRecord = this.records[0];
-                            var lableOptions = {
-                                position : firstRecord.point,   
-	                            offset   : new BMap.Size(30, -60)
-                            };
-                            this.carMarker = new BMap.Marker(firstRecord.point,{icon:carIcon});
-                            this.map.addOverlay(this.carMarker);
-                            this.markerLabel = new BMap.Label(this.getLableContent(firstRecord),lableOptions);
-                            
-                            this.markerLabel.setStyle({
-                                color : "#000000",
-                                border:"1px solid #D0D1D1",
-                                fontSize : "14px",
-                                lineHeight : "18px",
-                                borderRadius:"5px",
-                                padding:"10px",
-                                fontFamily:"微软雅黑"
+                            me.spinShow = false;
+                            me.records.sort(function (a, b) {
+                                return a.arrivedtime - b.arrivedtime;
                             });
+                            me.filtertracks();
+                            me.drawingLine();
 
-                            this.carMarker.setLabel(this.markerLabel);    
-                        },
-                        action:function () { 
-                            var me = this;
-                            var paths = this.records.length;
-                            if(me.intervalInstanse!=null){
+                        });
+
+                    },
+                    requestTracks: function (beginTime, endtime, callback) {
+                        this.spinShow = true;
+                        var me = this;
+                        var url = myUrls.queryTracks(Cookies.get("token"));
+                        var data = {
+                            deviceid: this.deviceid,
+                            lbs: 1,
+                            timeorder: 0,
+                            begintime: beginTime,
+                            endtime: endtime
+                        };
+                        utils.sendAjax(url, data, function (resp) {
+                            callback(resp)
+                        });
+                    },
+                    setBmapPointProperty: function (track) {
+                        var lng_lat = wgs84tobd09(track.callon, track.callat);
+                        track.point = new BMap.Point(lng_lat[0], lng_lat[1]);
+                        return track;
+                    },
+                    filtertracks: function () {
+                        var records = this.records;
+                        // if (records.length > 1) {
+                        //     var newTrackList = [];
+                        //     var firstRecord = records.shift();
+                        //     var lastRecord = records.pop();
+                        //     this.setBmapPointProperty(firstRecord);
+                        //     this.setBmapPointProperty(lastRecord);
+                        //     newTrackList.push(firstRecord);
+                        //     if (records.length) {
+                        //         var contrastTrack = records.shift();
+                        //         var contrastPoint = this.setBmapPointProperty(contrastTrack).point;
+                        //         newTrackList.push(contrastTrack);
+                        //         for (var i = 0; i < records.length; i++) {
+                        //             var item = records[i];
+                        //             item = this.setBmapPointProperty(item);
+                        //             var nextPoint = item.point
+                        //             var rice = this.map.getDistance(contrastPoint, nextPoint);
+                        //             if (rice > this.range) {
+                        //                 newTrackList.push(item);
+                        //                 contrastPoint = nextPoint;
+                        //             }
+                        //         }
+                        //     }
+                        //     newTrackList.push(lastRecord);
+                        //     this.records = records;
+                        // } else {
+                        //     for (var i = 0; i < records.length; i++) {
+                        //         this.setBmapPointProperty(records[i]);
+                        //     };
+                        // };
+                        for (var i = 0; i < records.length; i++) {
+                            this.setBmapPointProperty(records[i]);
+                        };
+                        this.records = records;
+                    },
+                    drawingLine: function () {
+                        if (this.records.length > 1) {
+                            var records = this.records;
+                            var firstRecord = records[0];
+                            var lastRecord = records[records.length - 1];
+                            this.firstMarker = new BMap.Marker(firstRecord.point, { icon: startIcon });
+                            this.lastMakrker = new BMap.Marker(lastRecord.point, { icon: endIcon });
+
+                            this.map.addOverlay(this.firstMarker);
+                            this.map.addOverlay(this.lastMakrker);
+
+                            var lines = [];
+
+                            for (var i = 0; i < records.length; i++) {
+                                lines.push(records[i].point);
+                            };
+
+                            this.polyline = new BMap.Polyline(lines, { strokeColor: "#0000AA", strokeWeight: 3, strokeOpacity: 1.5 });
+                            this.map.addOverlay(this.polyline);
+                            // 设置中心点
+                            this.setViewPortCenter(lines);
+                            this.runAnimeate();
+                        };
+                    },
+                    setViewPortCenter: function (lines) {
+                        var view = this.map.getViewport(eval(lines));
+                        var mapZoom = view.zoom;
+                        var centerPoint = view.center;
+                        this.map.centerAndZoom(centerPoint, mapZoom);
+                    },
+                    runAnimeate: function () {
+                        var firstRecord = this.records[0];
+                        var lableOptions = {
+                            position: firstRecord.point,
+                            offset: new BMap.Size(30, -60)
+                        };
+                        this.carMarker = new BMap.Marker(firstRecord.point, { icon: carIcon });
+                        this.map.addOverlay(this.carMarker);
+                        this.markerLabel = new BMap.Label(this.getLableContent(firstRecord), lableOptions);
+
+                        this.markerLabel.setStyle({
+                            color: "#000000",
+                            border: "1px solid #D0D1D1",
+                            fontSize: "14px",
+                            lineHeight: "18px",
+                            borderRadius: "5px",
+                            padding: "10px",
+                            fontFamily: "微软雅黑"
+                        });
+
+                        this.carMarker.setLabel(this.markerLabel);
+                    },
+                    action: function () {
+                        var me = this;
+                        var paths = this.records.length;
+                        if (me.intervalInstanse != null) {
+                            clearInterval(me.intervalInstanse);
+                        };
+                        me.intervalInstanse = setInterval(function () {
+                            var track = me.records[me.index];
+                            me.carMarker.setPosition(track.point);
+                            me.carMarker.setIcon(me.getDirectionIcon(track.direction));
+                            me.markerLabel.setContent(me.getLableContent(track));
+                            me.index++;
+                            if (me.index >= paths) {
+                                me.index = 0;
                                 clearInterval(me.intervalInstanse);
                             };
-                            me.intervalInstanse = setInterval(function () {
-                                    var track = me.records[me.index];
-                                    me.carMarker.setPosition(track.point); 
-                                    me.carMarker.setIcon(me.getDirectionIcon(track.direction)); 
-                                    me.markerLabel.setContent(me.getLableContent(track));
-                                    me.index++;
-                                    if(me.index >= paths){
-                                        me.index = 0;
-                                        clearInterval(me.intervalInstanse);
-                                    };
-                            },me.velocity);
-                        },
-                        replay:function(){
-                            this.index = 0;
-                            if(!this.isPlay){
-                                this.isPlay = true;
-                            }
-                            if(this.records.length < 2){ return;}
-                            this.action();
-                        },
-                        beginPlay:function(){
-                            if(this.records.length < 2){ return;}
+                        }, me.velocity);
+                    },
+                    replay: function () {
+                        this.index = 0;
+                        if (!this.isPlay) {
                             this.isPlay = true;
-                            this.action();
-                        },
-                        pause:function(){
-                            this.isPlay = false;
-                            clearInterval(this.intervalInstanse);
-                        },
-                        getLableContent:function(info){
-                            var address = this.getAddress(info);
-                            var sContent = '<div>' +
-                                '<p> 设备序号: ' +info.deviceid+'</p>' +
-                                '<p> 经纬度: ' +info.callon+","+ info.callat +'</p>' +
-                                '<p> 角度: ' + utils.getAngle(info.course) +'</p>' +
-                                '<p> 最后时间: ' +DateFormat.longToDateTimeStr(info.arrivedtime,0)+'</p>' +                                
-                                '<p class="last-address"> 详细地址: '+address+'</p></div><div class="guiji"><span class="guiji_sanjiao"></span><span class="guiji_sanjiao_2"></span></div>';
-                            return sContent;
-                        },
-                        getAddress:function (info) {
-                            var callon = info.callon;
-                            var callat = info.callat;
-                            var bd09 = wgs84tobd09(callon,callat)
-                            var lng = bd09[0].toFixed(5);
-                            var lat = bd09[1].toFixed(5);
-                            var address = LocalCacheMgr.getAddress(lng,lat);
-                            if(address !== null){
-                                return address;
-                            }
-                            utils.getBaiduAddressFromBaidu(lng,lat,function (resp) {
+                        }
+                        if (this.records.length < 2) { return; }
+                        this.action();
+                    },
+                    beginPlay: function () {
+                        if (this.records.length < 2) { return; }
+                        this.isPlay = true;
+                        this.action();
+                    },
+                    pause: function () {
+                        this.isPlay = false;
+                        clearInterval(this.intervalInstanse);
+                    },
+                    getLableContent: function (info) {
+                        var address = this.getAddress(info);
+                        var sContent = '<div>' +
+                            '<p> 设备序号: ' + info.deviceid + '</p>' +
+                            '<p> 经纬度: ' + info.callon + "," + info.callat + '</p>' +
+                            '<p> 角度: ' + utils.getAngle(info.course) + '</p>' +
+                            '<p> 最后时间: ' + DateFormat.longToDateTimeStr(info.arrivedtime, 0) + '</p>' +
+                            '<p class="last-address"> 详细地址: ' + address + '</p></div><div class="guiji"><span class="guiji_sanjiao"></span><span class="guiji_sanjiao_2"></span></div>';
+                        return sContent;
+                    },
+                    getAddress: function (info) {
+                        var callon = info.callon;
+                        var callat = info.callat;
+                        var bd09 = wgs84tobd09(callon, callat)
+                        var lng = bd09[0].toFixed(5);
+                        var lat = bd09[1].toFixed(5);
+                        var address = LocalCacheMgr.getAddress(lng, lat);
+                        if (address !== null) {
+                            return address;
+                        }
+                        utils.getBaiduAddressFromBaidu(lng, lat, function (resp) {
 
-                                if(resp.length){
-                                    address = resp;
+                            if (resp.length) {
+                                address = resp;
+                                $("p.last-address").html(" 详细地址: " + address);
+                                LocalCacheMgr.setAddress(lng, lat, address);
+                            } else {
+                                utils.getJiuHuAddressSyn(callon, callat, function (resp) {
+                                    address = resp.address
                                     $("p.last-address").html(" 详细地址: " + address);
-                                    LocalCacheMgr.setAddress(lng,lat,address);
-                                }else{
-                                utils.getJiuHuAddressSyn(callon,callat,function (resp) {
-                                        address = resp.address
-                                        $("p.last-address").html(" 详细地址: " + address);
-                                        LocalCacheMgr.setAddress(lng,lat,address);
+                                    LocalCacheMgr.setAddress(lng, lat, address);
                                 });
-                                }
-                            });
-                            return "地址正在解析..."
-                        },
-                        resetMapState:function(){
-                            if(this.carMarker){
-                                this.map.removeOverlay(this.carMarker);
-                                this.carMarker = null;
-                            };
-                            if(this.firstMarker){
-                                this.map.removeOverlay(this.firstMarker);
-                                this.firstMarker = null;
-                            };
-                            if(this.lastMakrker){
-                                this.map.removeOverlay(this.lastMakrker);
-                                this.lastMakrker = null;
-                            };
-                            if(this.polyline){
-                                this.map.removeOverlay(this.polyline);
-                                this.polyline = null;
-                            };
-                            if(this.markerLabel){
-                                this.map.removeOverlay(this.markerLabel);
-                                this.markerLabel = null;
-                            };
-                            if(this.intervalInstanse){
-                                clearInterval(this.intervalInstanse);
-                                this.intervalInstanse = null;
-                            };
-                            this.index = 0;
-                            this.records = [];
-                            this.respCount = 0;
-                            var centerPoint = this.map.getCenter();
-                            if(this.map.getZoom() != 5 || centerPoint.lng !== 108.0017245 || centerPoint.lat !== 35.926895){
-                                this.map.centerAndZoom(new BMap.Point(108.0017245,35.926895),5);
-                            };
-                        },
-                        getDirectionIcon:function(angle){
-                            return new BMap.Icon("images/carstate/green_"+ angle +".gif", new BMap.Size(17, 17), { imageOffset: new BMap.Size(0, 0)}); 
-                        },
-                        verifySelectionTime:function(){
-                            if(this.startTime && this.endTime){
-                                var startTime = this.startTime.getTime();
-                                var endTime   = this.endTime.getTime();
-                                if(startTime == endTime){
-                                    this.lock = true;
-                                }else{
-                                    if(endTime - startTime > 0){
-                                        if((endTime - startTime) < this.dayTime ){
-                                            this.lock = true;
-                                        }else{
-                                            var day = (endTime - startTime)/this.dayTime;
-                                            if(day > 30){
-                                                this.lock = false;
-                                                this.$Message.error("时间跨度不能超过30天!");
-                                            }else{
-                                                this.lock = true;
-                                            };
-                                        }
-                                    }else{
-                                        this.lock = false;
-                                        this.$Message.error("开始时间不能大于结束时间!");
-                                    }                                   
-                                };
-                            }else{
-                                this.lock = false;
-                                this.$Message.error("请选择开始结束时间!");
                             }
-                        }
+                        });
+                        return "地址正在解析..."
                     },
-                    computed:{
-                        token:function(){
-                            return Cookies.get("token");
-                        }
+                    resetMapState: function () {
+                        if (this.carMarker) {
+                            this.map.removeOverlay(this.carMarker);
+                            this.carMarker = null;
+                        };
+                        if (this.firstMarker) {
+                            this.map.removeOverlay(this.firstMarker);
+                            this.firstMarker = null;
+                        };
+                        if (this.lastMakrker) {
+                            this.map.removeOverlay(this.lastMakrker);
+                            this.lastMakrker = null;
+                        };
+                        if (this.polyline) {
+                            this.map.removeOverlay(this.polyline);
+                            this.polyline = null;
+                        };
+                        if (this.markerLabel) {
+                            this.map.removeOverlay(this.markerLabel);
+                            this.markerLabel = null;
+                        };
+                        if (this.intervalInstanse) {
+                            clearInterval(this.intervalInstanse);
+                            this.intervalInstanse = null;
+                        };
+                        this.index = 0;
+                        this.records = [];
+
+                        var centerPoint = this.map.getCenter();
+                        if (this.map.getZoom() != 5 || centerPoint.lng !== 108.0017245 || centerPoint.lat !== 35.926895) {
+                            this.map.centerAndZoom(new BMap.Point(108.0017245, 35.926895), 5);
+                        };
                     },
-                    watch: {
-                        // selectDate:function(){
-                        //     if(this.selectDate[0]&&this.selectDate[1]){
-                        //         if(this.selectDate[0] && this.selectDate[1]){
-                        //             this.startTime = this.selectDate[0].getTime();
-                        //             this.endTime   = this.selectDate[1].getTime();
-                        //             if(this.startTime == this.endTime){
-                        //                 this.lock = true;
-                        //             }else{
-                        //                 if((this.endTime - this.startTime) < this.dayTime ){
-                        //                     this.lock = true;
-                        //                 }else{
-                        //                     var day = (this.endTime - this.startTime)/this.dayTime;
-                        //                     if(day > 7){
-                        //                         this.lock = false;
-                        //                         this.$Message.error("时间不能超过七天!");
-                        //                     }else{
-                        //                         this.lock = true;
-                        //                     };
-                        //                 }
-                        //             };
-                        //         }else{
-                        //             this.lock = false;
-                        //         }
-                        //     }else{
-                        //         this.lock = false;
-                        //     }                        
-                        // },
-                        velocity:function(){
-                            this.action();
-                        }
-                    },
-                    mounted : function() {
-                        this.initMap();
-                        var deviceid = utils.getParameterByName("deviceid");
-                        if(deviceid){
-                            this.deviceid = deviceid;
-                        }else{
-                            this.$Message.error("设备序号不能为空!");
-                        };       
+                    getDirectionIcon: function (angle) {
+                        return new BMap.Icon("images/carstate/green_" + angle + ".gif", new BMap.Size(17, 17), { imageOffset: new BMap.Size(0, 0) });
                     }
-                });
+                },
+                computed: {
+                    token: function () {
+                        return Cookies.get("token");
+                    }
+                },
+                watch: {
+                    startTime: function () {
+                        var date = this.startTime;
+                        var year = date.getFullYear();
+                        var month = date.getMonth() + 1;
+                        var day = date.getDate();
+                        var dateStr = year + "-" + (month<10?'0'+month:month) + "-" + (day<10?'0'+day:day);
+                        this.startTimeStr = dateStr + " 00:00:00";
+                        this.endTimeStr = dateStr + " 23:59:00";
+                    },
+                    velocity: function () {
+                        this.action();
+                    }
+                },
+                mounted: function () {
+                    this.initMap();
+                    var deviceid = utils.getParameterByName("deviceid");
+                    this.startTime = new Date();
+                    if (deviceid) {
+                        this.deviceid = deviceid;
+                    } else {
+                        this.$Message.error("设备序号不能为空!");
+                    };
+                }
+            });
         })();
     </script>
 </body>
+
 </html>
