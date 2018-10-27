@@ -75,9 +75,7 @@
         <div id="bmap"></div>
         <div class="controller">
             <i-row>
-                <i-col :span="4" style="text-align: center;">
-                    选择时间 : &nbsp;
-                </i-col>
+                <i-col :span="4" style="text-align: center;">选择时间 : &nbsp;</i-col>
                 <i-col :span="11">
                     <date-picker type="date" style="width: 100%" v-model="startTime"  :clearable="false" :editable="false"></date-picker>
                 </i-col>
@@ -100,7 +98,7 @@
             <div>
 
                 <i-row>
-                    <i-col :span="4" style="line-height:60px;text-align:right;"> 播放速度 : &nbsp;</i-col>
+                    <i-col :span="4" style="line-height:60px;text-align:center;"> 播放速度 : &nbsp;</i-col>
                     <i-col :span="18" style="height:60px; padding-top: 12px;">
                         <Slider v-model="velocity" :min="100" :max="5000" show-input :step="100"></Slider>
                     </i-col>
@@ -376,21 +374,24 @@
                     },
                     action: function () {
                         var me = this;
-                        var paths = this.records.length;
-                        if (me.intervalInstanse != null) {
-                            clearInterval(me.intervalInstanse);
-                        };
-                        me.intervalInstanse = setInterval(function () {
-                            var track = me.records[me.index];
-                            me.carMarker.setPosition(track.point);
-                            me.carMarker.setIcon(me.getDirectionIcon(track.direction));
-                            me.markerLabel.setContent(me.getLableContent(track));
-                            me.index++;
-                            if (me.index >= paths) {
-                                me.index = 0;
+                        if(me.records.length){
+                         
+                            var paths = this.records.length;
+                            if (me.intervalInstanse != null) {
                                 clearInterval(me.intervalInstanse);
                             };
-                        }, me.velocity);
+                            me.intervalInstanse = setInterval(function () {
+                                var track = me.records[me.index];
+                                me.carMarker.setPosition(track.point);
+                                me.carMarker.setIcon(me.getDirectionIcon(track.direction));
+                                me.markerLabel.setContent(me.getLableContent(track));
+                                me.index++;
+                                if (me.index >= paths) {
+                                    me.index = 0;
+                                    clearInterval(me.intervalInstanse);
+                                };
+                            }, me.velocity);
+                        };
                     },
                     replay: function () {
                         this.index = 0;
