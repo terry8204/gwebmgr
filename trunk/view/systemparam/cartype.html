@@ -1,13 +1,13 @@
 <meta charset="UTF-8">
 <div class="pd-10 system" id="car-type-wraper">
     <div style="padding: 5px 0">
-        <i-button icon="md-add"  @click="openAddCarTypeModal">添加汽车类型</i-button> 
+        <i-button icon="md-add"  @click="openAddCarTypeModal">添加车辆类型</i-button> 
     </div>
     <div>
         <i-table border :data="tableData" :columns="columns" :loading="loading"></i-table>
     </div>
 
-    <!-- 添加汽车类型 -->
+    <!-- 添加车辆类型 -->
     <Modal v-model="addCarTypeModal" width="500" class-name="vertical-center-modal">
         <p slot="header" style="color:#2D8CF0;text-align:center">
             <Icon type="md-add"></Icon>
