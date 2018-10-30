@@ -2096,8 +2096,8 @@
         }
       },
       disposeModal: function () {
+        var me = this
         if (this.disposeModal) {
-          var me = this
           var devicetype = this.cmdRowWaringObj.devicetype
           var cmdList = this.$store.state.allCmdList
           var beforeCmdList = []
@@ -2118,13 +2118,11 @@
             }
             twoArr[twoArr.length - 1].push(item);
 
-            me.disposeAlarm = item.cmdcode;
-
           })
           this.alarmCmdList = twoArr;
 
           me.disposeAlarm = beforeCmdList[0].cmdcode;
-          me.params = beforeCmdList[beforeCmdList.length - 1].params;
+          me.params = beforeCmdList[0].params;
         }
       },
       disposeAlarm: function () {
@@ -2136,14 +2134,14 @@
         })
       },
       params: function () {
-        this.paramsInputList = []
-        this.paramsInputObj = {}
+        this.paramsInputList = [];
+        this.paramsInputObj = {};
         if (this.params) {
-          var params = '<params>' + this.params + '</params>'
-          var parser = new DOMParser()
-          var xmlDoc = parser.parseFromString(params, 'text/xml')
-          this.parseXML(xmlDoc)
-        }
+          var params = '<params>' + this.params + '</params>';
+          var parser = new DOMParser();
+          var xmlDoc = parser.parseFromString(params, 'text/xml');
+          this.parseXML(xmlDoc);
+        };
       }
     },
     methods: {
@@ -2348,7 +2346,6 @@
           params: null,
           state: row.state
         }
-
 
         this.disposeModal = true;
 
