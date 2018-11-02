@@ -17,7 +17,7 @@
             <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">
                 <i style="color: red;display: inline-block;">*</i>&nbsp;指令名称 : &nbsp;</i-col>
             <i-col span="20">
-                <i-select v-model="cmdCode">
+                <i-select v-model="cmdCode" filterable>
                     <i-option v-for="item in listCmdAction" :value="item.value" :key="item.value">{{ item.label }}</i-option>
                 </i-select>
             </i-col>
