@@ -2230,10 +2230,13 @@
         var alarmList = alarmMgr.getAlarmList();
         alarmList.forEach(function (item) {
           var deviceid = item.deviceid;
-          var deviceName = me.$store.state.deviceInfos[deviceid].devicename;
-          item.devicename = deviceName;
-          item.lastalarmtimeStr = DateFormat.longToDateTimeStr(item.lastalarmtime, 0);
-          item.isdispose = item.disposestatus === 0 ? "未处理" : "已处理";
+          var deviceInfo = me.$store.state.deviceInfos[deviceid];
+          if (deviceInfo) {
+            var deviceName = deviceInfo.devicename;
+            item.devicename = deviceName;
+            item.lastalarmtimeStr = DateFormat.longToDateTimeStr(item.lastalarmtime, 0);
+            item.isdispose = item.disposestatus === 0 ? "未处理" : "已处理";
+          };
         });
         me.waringRecords = alarmList;
       },
