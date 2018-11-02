@@ -110,8 +110,8 @@
                     var me = this;
                     var url = myUrls.addDevice();
 
-                    if(this.deviceid.length !== 11 ){ 
-                        me.$Message.error("设备序号必须是11位");
+                    if(this.deviceid.length < 11  || this.deviceid.length > 15 ){ 
+                        me.$Message.error("设备序号必须是11-15位之间");
                         return;
                     };
 
