@@ -17,13 +17,25 @@
                 <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">
                     <i style="color: red;display: inline-block;">*</i>&nbsp;指令名称 : &nbsp;</i-col>
                 <i-col span="20">
-                    <i-select v-model="cmdCode" filterable>
+                    <!-- <i-select v-model="cmdCode" filterable>
                         <i-option v-for="item in listCmdAction" :value="item.value" :key="item.value">{{ item.label }}</i-option>
-                    </i-select>
+                    </i-select> -->
+                    <div class="search-wrapper">
+                        <i-input v-model.trim="cmdCodeName"  :icon="iconState" @on-change="sosoValueChange" @on-blur="blur" @on-focus="focus"></i-input>
+                        <transition name="fade">
+                            <ul class="search-item-wrapper" v-show="isShowMatchDev" style="cursor: pointer;">
+                                <li v-for="item in cmdList" style="padding:5px 10px;" @click="selectedCmd(item)">
+                                    <Option :value="item.value" :key="item.label">
+                                        <span style="cursor: pointer;">{{ item.label }}</span>
+                                    </Option>
+                                </li>
+                            </ul>
+                        </transition>
+                    </div>
                 </i-col>
             </Row>
 
-            <Row style="margin: 10px 0">
+            <Row style="margin:10px 0">
                 <i-col span="4" style="height: 100%;text-align:right;line-height:32px;"><i style="color: red;display: inline-block;">*</i>&nbsp;是否同步 : &nbsp;</i-col>
                 <i-col span="20" style="height: 100%;line-height:32px;">
                     <Checkbox v-model="isSync">(选中为同步)</Checkbox>
@@ -72,7 +84,9 @@
         new Vue({
             el:"#add-directive-wraper",
             data:function(){
-                return {         
+                return {     
+                    iconState:"ios-arrow-down",
+                    timeoutIns:null,    
                     cmdname: null,
                     cmdnameen: "",
                     cmdnametw: "",
@@ -90,8 +104,11 @@
                     kong:"",
                     deviceType:"",
                     cmdCode:"",
+                    cmdCodeName:"",
                     deviceTypeList:[],
-                    listCmdAction:[]
+                    listCmdAction:[],
+                    cmdList:[],
+                    isShowMatchDev:false
                 }
             },
             watch:{
@@ -112,8 +129,15 @@
             },
             methods: {
                 handleAddDirective:function(){
- 
-                 
+                    if(!this.deviceType){
+                        this.$Message.error("请选择设备类型");
+                        return ;
+                    }
+                    
+                    if(!this.cmdCode){
+                        this.$Message.error("请选择指令");
+                        return ;
+                    }
                     var me = this;
                     var url = myUrls.addCmd();
                     var data = {
@@ -179,11 +203,77 @@
                     utils.sendAjax(url,{},function (resp) { 
                         if(resp.status == 0){
                             resp.cmds.forEach(function (item) { 
-                                me.listCmdAction.push({value:item.cmdCode,label:item.cmdName});
-                            })
-                   
+                                var cmdName = item.cmdName;
+                                var firstLetter = __pinyin.getFirstLetter(cmdName);
+                                var pinyin = __pinyin.getPinyin(cmdName);
+                                me.listCmdAction.push({
+                                    value:item.cmdCode,
+                                    label:cmdName,
+                                    firstLetter:firstLetter,
+                                    pinyin:pinyin
+                                });
+                            });
+                            me.cmdList = me.listCmdAction;
                         }
                     });  
+                },
+                sosoValueChange:function(){
+                    var me = this;
+                    var value = this.cmdCodeName;
+
+                    if (this.timeoutIns != null) {
+                        clearTimeout(this.timeoutIns);
+                    }
+
+                    if (!value.trim()) {
+                        this.cmdList = this.listCmdAction;
+                        return;
+                    }
+
+                    this.timeoutIns = setTimeout(function () {
+                        me.filterMethod(value);
+                    }, 300);
+                },
+                focus: function () {
+                    this.isShowMatchDev = true;
+                },
+                blur: function () {
+                    var me = this
+                    setTimeout(function () {
+                        me.isShowMatchDev = false;
+                    }, 300)
+                },
+                selectedCmd:function(item){
+                    var me = this;
+                    setTimeout(function () {
+                        me.isShowMatchDev = false;
+                        me.cmdCodeName = item.label;
+                        me.cmdCode = item.value;
+                    }, 300)
+                },
+                filterMethod:function(value){
+                    var list = [];
+                    var firstLetter = __pinyin.getFirstLetter(value);
+                    var pinyin = __pinyin.getPinyin(value);
+                    this.listCmdAction.forEach(function (itme) { 
+                        if(
+                            itme.label.indexOf(value)!=-1 ||
+                            itme.firstLetter.indexOf(firstLetter)!=-1 ||
+                            itme.pinyin.indexOf(pinyin)!=-1 
+                        ){
+                            list.push(itme);
+                        }
+                    })
+                    this.cmdList = list;
+                }
+            },
+            watch:{
+                isShowMatchDev:function(){
+                    if(!this.isShowMatchDev){
+                        this.iconState = "ios-arrow-down";
+                    }else{
+                        this.iconState = "ios-arrow-up";
+                    }
                 }
             },
             mounted:function () {
