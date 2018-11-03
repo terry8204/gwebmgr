@@ -353,9 +353,11 @@
         })
       },
       handleWebSocket: function (data) {
+        console.log('data-收到的轨迹push', data);
         var me = this;
         if (store.componentName != "monitor") return;
         var deviceid = data.deviceid;
+        console.log(' this.records', this.records);
         for (var i = 0; i < this.records.length; i++) {
           var record = me.records[i];
           if (record.deviceid === deviceid) {
@@ -687,6 +689,7 @@
           } else {
             store.currentDeviceRecord = null;
             me.$Message.error('该设备没有上报位置信息')
+            store.disposeAlarmDeviceid = deviceid;
           }
         })
       },
@@ -1597,6 +1600,7 @@
             var devIdList = Object.keys(me.$store.state.deviceInfos)
             me.getLastPosition(devIdList, function (resp) {
               if (resp.records) {
+                var newRecord = [];
                 resp.records.forEach(function (record) {
                   if (record) {
                     var isOnline = Date.now() - record.arrivedtime < me.offlineTime ? true : false;
@@ -1612,9 +1616,10 @@
                     record.icon = iconState;
                     var lng_lat = wgs84tobd09(record.callon, record.callat);
                     record.point = new BMap.Point(lng_lat[0], lng_lat[1]);
+                    newRecord.push(record);
                   }
                 });
-                me.records = resp.records;
+                me.records = newRecord;
                 me.updateTreeOnlineState();
                 me.moveMarkers();
               }
@@ -1799,7 +1804,13 @@
         var devIdList = Object.keys(me.$store.state.deviceInfos)
         me.getLastPosition(devIdList, function (resp) {
           if (resp.records) {
-            me.records = resp.records;
+            var newRecords = [];
+            resp.records.forEach((item) => {
+              if (item) {
+                newRecords.push(item);
+              }
+            })
+            me.records = newRecords;
           } else {
             me.records = [];
           }
@@ -2543,7 +2554,6 @@
       this.queryAlarmDescr();
       this.changeWrapperCls();
       communicate.$on("remindmsg", function (data) {
-        console.log('webSocket-remindmsg-data', data);
         alarmMgr.addRecord(data);
         me.refreshAlarmToUi();
       });
@@ -2649,5 +2659,4 @@
       vueInstanse = this;     // 备份monitor实例
     }
   });
-
 })();
