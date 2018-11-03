@@ -526,7 +526,7 @@
           } else if (resp.status === 3) {
             me.$Message.error("设备离线,指令已经缓存");
           } else if (resp.status === 4) {
-            me.$Message.error("请修改密码后在发送指令");
+            me.$Message.error("请修改密码后再发送指令");
           }
         });
       },
