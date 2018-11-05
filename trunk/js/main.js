@@ -2619,7 +2619,7 @@
           me.reconnectWs();
         };
         ws.onopen = function () {
-          var user = "online" + Cookies.get('name');
+          var user = "online" + Cookies.get('name') + "-web";
           console.log('ws连接成功', user);
           ws.send(user);
         };
