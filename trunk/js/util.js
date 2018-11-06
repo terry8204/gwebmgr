@@ -43,19 +43,36 @@ var utils = {
     var point = new BMap.Point(offsetlon, offsetlat)
     var geoc = new BMap.Geocoder()
     geoc.getLocation(point, function (rs) {
+      console.log('address-resp', rs);
       if (rs) {
-        var addComp = rs.addressComponents
-        address =
+        var addComp = rs.addressComponents;
+        var surroundingPois = rs.surroundingPois;
+        var finaladdress =
           addComp.province +
           addComp.city +
           addComp.district +
           addComp.street +
-          addComp.streetNumber
+          addComp.streetNumber;
+        var buildingAddress = "";
+        if (surroundingPois && surroundingPois.length > 0) {
+          //get max 3 size
+          var realSize = Math.min(3, surroundingPois.length);
+          for (var i = 0; i < realSize; ++i) {
+            var singleAddress = surroundingPois[i].title;
+            buildingAddress += singleAddress;
+            if (i < realSize - 1) {
+              buildingAddress += ",";
+            }
+          }
+        };
+        if (buildingAddress.length > 0) {
+          finaladdress += ";" + buildingAddress;
+        }
         if (callback) {
-          callback(address)
+          callback(finaladdress)
         }
       }
-    })
+    });
   },
   getJiuHuAddressSyn: function (lat, lon, callback) {
     $.ajax({
