@@ -45,7 +45,7 @@
             </i-col>
         </Row>
 
-        <Row style="margin: 10px 0" v-show="lock">
+        <Row style="margin: 10px 0">
             <i-col span="4" style="height: 100%;text-align:right;line-height:100%;">预览 : &nbsp;</i-col>
             <i-col span="20">
                 <Row style="margin: 5px 0" v-for="item in previewObjList" :key="item.text">
@@ -86,7 +86,6 @@
                     previewObjList:[],
                     isPublic:false,
                     isSync:false,
-                    lock:false,
                     kong:"",
                     deviceTypeList:[],
                     listCmdAction:[]
@@ -95,15 +94,12 @@
             watch:{
                 params:function () { 
                     this.previewObjList = [];
-                    if(this.params == ""){ this.lock = false; return ;}
-                    if(this.replaceAll(this.params) == ""){
-                        this.lock = true;
+                    if(this.params == ""){  return ;}
+                    if(this.checkFormatCorrect(this.params.trim())){
                         var params = "<params>"+ this.params +"</params>";
                         var parser=new DOMParser(); 
                         var xmlDoc=parser.parseFromString(params,"text/xml"); 
                         this.parseXML(xmlDoc);
-                    }else{
-                        this.lock = false;
                     }
                 }
             },
@@ -143,9 +139,14 @@
                         data.cmddescr = this.cmddescr;
                     };
                     
-                    if(this.params && this.lock ){
-                        data.params = this.params;
-                    };
+                    if(this.params){
+                        if(this.checkFormatCorrect(this.params.trim())){
+                            data.params = this.params;
+                        }else{
+                            this.$Message.error("参数格式错误");
+                            return;
+                        }
+                    }
 
                     utils.sendAjax(url, data, function (resp) {
                         if (resp.status == 0) {
@@ -155,10 +156,10 @@
                         };
                     });
                 },
-                replaceAll:function (str){
-                    if(str!=null)
-                    str = str.replace(/^<[\s\S]*>[\s\S]*<\/[\s\S]*>$/g,"")
-                    return str;
+                checkFormatCorrect:function (str){
+                      if(str)
+                    str = str.replace(/^<[\s\S]*>[\s\S]*<\/[\s\S]*>$/g,"");
+                    return str == "" ? true : false;
                 },
                 parseXML:function(xmlDoc){
                     // <ha><param size="small" type="password">确认密码</param></ha>
@@ -194,7 +195,6 @@
 
                     if(data.params!=""){
                         this.params=data.params;
-                        this.lock = true;
                     };   
                 },
                 getDeviceType:function () {

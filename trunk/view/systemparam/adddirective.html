@@ -125,7 +125,7 @@
             computed: {
                 aaa:function(){
                     this.previewObjList = [];
-                    if(this.replaceAll(this.params) == ""){
+                    if(this.checkFormatCorrect(this.params)){
                         var params = "<params>"+ this.params +"</params>";
                         var parser=new DOMParser(); 
                         var xmlDoc=parser.parseFromString(params,"text/xml"); 
@@ -164,7 +164,7 @@
                     };
                     
                     if(this.params){
-                        if(this.replaceAll(this.params.trim()) == ""){
+                        if(this.checkFormatCorrect(this.params.trim())){
                             data.params = this.params;
                         }else{
                             this.$Message.error("参数格式错误");
@@ -180,12 +180,10 @@
                         };
                     });
                 },
-                replaceAll:function (str){
-                    var result = "";
+                checkFormatCorrect:function (str){
                     if(str)
-                    result = str.replace(/^<[\s\S]*>[\s\S]*<\/[\s\S]*>$/g,"");
-                    console.log('result', result);
-                    return result;
+                    str = str.replace(/^<[\s\S]*>[\s\S]*<\/[\s\S]*>$/g,"");
+                    return str == "" ? true : false;
                 },
                 parseXML:function(xmlDoc){
                     // <ha><param size="small" type="password">确认密码</param></ha>
