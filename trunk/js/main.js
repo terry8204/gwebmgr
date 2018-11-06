@@ -166,8 +166,8 @@
         var url = myUrls.logout()
         utils.sendAjax(url, {}, function (resp) {
           if (resp.status == 0) {
-            Cookies.remove('token')
-            window.location.href = 'index.html'
+            Cookies.remove('token');
+            window.location.href = 'index.html';
           } else {
             me.$Message.error(resp.cause)
           }
@@ -357,7 +357,7 @@
         var me = this;
         if (store.componentName != "monitor") return;
         var deviceid = data.deviceid;
-        console.log(' this.records', this.records);
+        // console.log(' this.records', this.records);
         for (var i = 0; i < this.records.length; i++) {
           var record = me.records[i];
           if (record.deviceid === deviceid) {
@@ -526,7 +526,7 @@
           } else if (resp.status === 3) {
             me.$Message.error("设备离线,指令已经缓存");
           } else if (resp.status === 4) {
-            me.$Message.error("请修改密码后再发送指令");
+            me.$Message.error("请修改默认密码后再发送指令");
           }
         });
       },
