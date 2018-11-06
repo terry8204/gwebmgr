@@ -55,11 +55,11 @@
                 <i-col span="4" style="height: 100%;text-align:right;line-height:100%;">
                     参数 : &nbsp;</i-col>
                 <i-col span="20">
-                    <i-input v-model.trim="params" type="textarea" :rows="8" />
+                    <i-input v-model="params" type="textarea" :rows="8" />
                 </i-col>
             </Row>
 
-            <Row style="margin: 10px 0" v-show="lock">
+            <Row style="margin: 10px 0">
                 <i-col span="4" style="height: 100%;text-align:right;line-height:100%;">预览 : &nbsp;</i-col>
                 <i-col span="20">
                     <Row style="margin: 5px 0" v-for="item in previewObjList" :key="item.text">
@@ -72,17 +72,17 @@
                     </Row>
                 </i-col>
             </Row>
-        
             <Row style="margin: 10px 0">
                 <i-col span="10" :offset="8">
                         <i-button icon="md-add" @click="handleAddDirective" style="width: 100%">添加</i-button>
                 </i-col>
             </Row>
-   
+            <div style="display:none;">aaa-{{aaa}}</div>
     </div>
     <script>
         new Vue({
             el:"#add-directive-wraper",
+
             data:function(){
                 return {     
                     iconState:"ios-arrow-down",
@@ -95,11 +95,10 @@
                     cmddescren: "",
                     cmddescrtw: "",
 
-                    params: null,
+                    params: "",
                     paramsen: "",
                     paramstw: "",
                     previewObjList:[],
-                    lock:false,
                     isSync:false,
                     kong:"",
                     deviceType:"",
@@ -112,20 +111,28 @@
                 }
             },
             watch:{
-                params:function () { 
+                // params:function () {
+                //     this.previewObjList = [];
+                //     console.log('params2', this.params)
+                //     if(this.replaceAll(this.params) == ""){
+                //         var params = "<params>"+ this.params +"</params>";
+                //         var parser=new DOMParser(); 
+                //         var xmlDoc=parser.parseFromString(params,"text/xml"); 
+                //         this.parseXML(xmlDoc);
+                //     }
+                // }
+            },
+            computed: {
+                aaa:function(){
                     this.previewObjList = [];
-                    if(this.params == ""){ this.lock = false; return ;}
                     if(this.replaceAll(this.params) == ""){
-                        this.lock = true;
                         var params = "<params>"+ this.params +"</params>";
                         var parser=new DOMParser(); 
                         var xmlDoc=parser.parseFromString(params,"text/xml"); 
                         this.parseXML(xmlDoc);
-                    }else{
-                        this.lock = false;
-                    }
-                },
-               
+                    };
+                    return this.params+1;
+                }
             },
             methods: {
                 handleAddDirective:function(){
@@ -156,7 +163,7 @@
                         data.cmddescr = this.cmddescr;
                     };
                     
-                    if(this.params && this.lock ){
+                    if(this.params){
                         data.params = this.params;
                     }
 
@@ -169,9 +176,11 @@
                     });
                 },
                 replaceAll:function (str){
-                    if(str!=null)
-                    str = str.replace(/^<[\s\S]*>[\s\S]*<\/[\s\S]*>$/g,"")
-                    return str;
+                    var result = "";
+                    if(str)
+                    result = str.replace(/^<[\s\S]*>[\s\S]*<\/[\s\S]*>$/g,"");
+                    console.log('result', result);
+                    return result;
                 },
                 parseXML:function(xmlDoc){
                     // <ha><param size="small" type="password">确认密码</param></ha>
@@ -182,6 +191,7 @@
                         var text = item.innerHTML;
                         var type = item.getAttribute("type");
                         if (type && text) {
+                            console.log("{ type: type, text: text }",{ type: type, text: text })
                             this.previewObjList.push({ type: type, text: text });
                         }
                     } 
