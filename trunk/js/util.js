@@ -43,7 +43,7 @@ var utils = {
     var point = new BMap.Point(offsetlon, offsetlat)
     var geoc = new BMap.Geocoder()
     geoc.getLocation(point, function (rs) {
-      console.log('address-resp', rs);
+
       if (rs) {
         var addComp = rs.addressComponents;
         var surroundingPois = rs.surroundingPois;

@@ -28,7 +28,19 @@
             background: #E8F0F7;
             border: 1px solid #C3CEDE;
         }
-
+        div.right-button-wrap{
+            position: absolute;
+            right: 10px;
+            top: 10px;
+            width: 80px;
+            height: 35px;
+            cursor: pointer;
+        }
+        div.right-button-wrap img{
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
         label.BMapLabel::after {
             font-size: 0px;
             line-height: 0px;
@@ -52,7 +64,7 @@
             border-color: transparent #666 transparent transparent;
             position: absolute;
             margin-left: -30px;
-            margin-top: -42px;
+            margin-top: -76px;
         }
 
         .guiji_sanjiao_2 {
@@ -65,7 +77,12 @@
             border-color: transparent #F7F8F9 transparent transparent;
             position: absolute;
             margin-left: -30px;
-            margin-top: -42px;
+            margin-top: -76px;
+        }
+
+        p.last-address{
+            white-space:normal;
+            width:296px;
         }
     </style>
 </head>
@@ -73,6 +90,10 @@
 <body>
     <div id="container">
         <div id="bmap"></div>
+        <div class="right-button-wrap" @click="changePosiType">
+            <img v-if="isExtract" src="./images/ic_fine_network_off.png">
+            <img v-else src="./images/ic_fine_network_on.png">
+        </div>
         <div class="controller">
             <i-row>
                 <i-col :span="4" style="text-align: center;">选择时间 : &nbsp;</i-col>
@@ -153,8 +174,10 @@
                     endTimeStr: "",
                     len: null,
                     spinShow: false,
+                    isExtract:true,
                     records: [],
-                    range: 1,             // 范围50米之内的点不显示
+                    extractRecords:[],//精确位置
+                    range: 1,             // 范围1米之内的点不显示
                     velocity: 1000,         // 半秒
                     intervalInstanse: null,
                     carMarker: null,
@@ -175,6 +198,12 @@
                     },
                     changeVelocity: function (value) {
                         this.velocity = value;
+                    },
+                    changePosiType:function(){
+                        clearInterval(this.intervalInstanse);
+                        this.isExtract = !this.isExtract;
+                        this.resetMapState();
+                        this.drawingLine();
                     },
                     getRequestBeginAndEndTimeStr: function () {
                         var requestTimeStrArr = [];
@@ -243,24 +272,22 @@
                         me.resetMapState();
 
                         me.requestTracks(this.startTimeStr, this.endTimeStr, function (resp) {
-                            if (resp.status == 0 && resp.records) {
-                                resp.records.forEach(function (record) {
-                                    var direction = utils.getAngle(record.course);
-                                    record.direction = direction;
-                                    me.records.push(record);
+                            var records = resp.records;
+                            me.spinShow = false;
+                            if (resp.status == 0 && records) { 
+                                records.sort(function (a, b) {
+                                    return a.arrivedtime - b.arrivedtime;
                                 });
+                                me.filtertracks(records);
+                                me.drawingLine();
                             }else  if (resp.status == 3 ) {
                                 me.$Message.error(resp.cause);
                             }else{
                                 me.$Message.error("没有当天轨迹");
                             }
 
-                            me.spinShow = false;
-                            me.records.sort(function (a, b) {
-                                return a.arrivedtime - b.arrivedtime;
-                            });
-                            me.filtertracks();
-                            me.drawingLine();
+                       
+                            
 
                         });
 
@@ -280,21 +307,28 @@
                             callback(resp)
                         });
                     },
-                    setBmapPointProperty: function (track) {
-                        var lng_lat = wgs84tobd09(track.callon, track.callat);
-                        track.point = new BMap.Point(lng_lat[0], lng_lat[1]);
-                        return track;
-                    },
-                    filtertracks: function () {
-                        var records = this.records;
+                    filtertracks: function (records) {
+                        var extractRecords = [];
+                        var newRecords = [];
                         for (var i = 0; i < records.length; i++) {
-                            this.setBmapPointProperty(records[i]);
+                            var track = records[i];
+                            var direction = utils.getAngle(track.course);
+                            var lng_lat = wgs84tobd09(track.callon, track.callat);
+                            track.direction = direction;
+                            track.point = new BMap.Point(lng_lat[0], lng_lat[1]);
+                            newRecords.push(track);
+                            if(track.gotsrc == "gps"){
+                                extractRecords.push(track);
+                            }
                         };
-                        this.records = records;
+                        this.records = newRecords;
+                        this.extractRecords = extractRecords;
                     },
                     drawingLine: function () {
-                        if (this.records.length > 1) {
-                            var records = this.records;
+                        var records = this.getTypeRecords();
+                 
+                        if (records.length > 1) {
+                        
                             var firstRecord = records[0];
                             var lastRecord = records[records.length - 1];
                             this.firstMarker = new BMap.Marker(firstRecord.point, { icon: startIcon });
@@ -313,10 +347,8 @@
                             this.map.addOverlay(this.polyline);
                             // 设置中心点
                             this.setViewPortCenter(lines);
-                            this.runAnimeate();
-                        }else{
-                            if(this.records.length == 1){
-                                var records = this.records;
+                            this.runAnimeate(records);
+                        }else if(records.length == 1){
                                 var lastRecord = records[records.length - 1];
                                 this.lastMakrker = new BMap.Marker(lastRecord.point, { icon: endIcon });
                                 
@@ -326,10 +358,10 @@
                                 for (var i = 0; i < records.length; i++) {
                                     lines.push(records[i].point);
                                 };
+                  
                                  // 设置中心点
                                 this.setViewPortCenter(lines);
-                                this.runAnimeate();
-                            }
+                                this.runAnimeate(records);
                         };
                     },
                     setViewPortCenter: function (lines) {
@@ -338,8 +370,8 @@
                         var centerPoint = view.center;
                         this.map.centerAndZoom(centerPoint, mapZoom);
                     },
-                    runAnimeate: function () {
-                        var firstRecord = this.records[0];
+                    runAnimeate: function (records) {
+                        var firstRecord = records[0];
                         var lableOptions = {
                             position: firstRecord.point,
                             offset: new BMap.Size(30, -60)
@@ -360,16 +392,26 @@
 
                         this.carMarker.setLabel(this.markerLabel);
                     },
+                    getTypeRecords:function(){
+                        var records = null;
+                        if(this.isExtract){
+                            records = this.extractRecords;
+                        }else{
+                            records = this.records;
+                        };
+
+                        return records;
+                    },
                     action: function () {
                         var me = this;
-                        if(me.records.length){
-                         
-                            var paths = this.records.length;
+                        var records = this.getTypeRecords();
+                        if(records.length){
+                            var paths = records.length;
                             if (me.intervalInstanse != null) {
                                 clearInterval(me.intervalInstanse);
                             };
                             me.intervalInstanse = setInterval(function () {
-                                var track = me.records[me.index];
+                                var track = records[me.index];
                                 me.carMarker.setPosition(track.point);
                                 me.carMarker.setIcon(me.getDirectionIcon(track.direction));
                                 me.markerLabel.setContent(me.getLableContent(track));
@@ -383,14 +425,16 @@
                     },
                     replay: function () {
                         this.index = 0;
+                        var records = this.getTypeRecords();   
                         if (!this.isPlay) {
                             this.isPlay = true;
                         }
-                        if (this.records.length < 2) { return; }
+                        if (records.length < 2) { return; }
                         this.action();
                     },
                     beginPlay: function () {
-                        if (this.records.length < 2) { return; }
+                        var records = this.getTypeRecords();
+                        if (records.length < 2) { return; }
                         this.isPlay = true;
                         this.action();
                     },
@@ -400,9 +444,9 @@
                     },
                     getLableContent: function (info) {
                         var address = this.getAddress(info);
-                        var sContent = '<div>' +
+                        var sContent = '<div style="max-width:296px;">' +
                             '<p> 设备序号: ' + info.deviceid + '</p>' +
-                            '<p> 经纬度: ' + info.callon + "," + info.callat + '</p>' +
+                            '<p> 经纬度: ' + info.callon.toFixed(6) + "," + info.callat.toFixed(6)  + '</p>' +
                             '<p> 角度: ' + utils.getAngle(info.course) + '</p>' +
                             '<p> 最后时间: ' + DateFormat.longToDateTimeStr(info.arrivedtime, 0) + '</p>' +
                             '<p class="last-address"> 详细地址: ' + address + '</p></div><div class="guiji"><span class="guiji_sanjiao"></span><span class="guiji_sanjiao_2"></span></div>';
@@ -460,12 +504,12 @@
                             this.intervalInstanse = null;
                         };
                         this.index = 0;
-                        this.records = [];
-
-                        var centerPoint = this.map.getCenter();
-                        if (this.map.getZoom() != 5 || centerPoint.lng !== 108.0017245 || centerPoint.lat !== 35.926895) {
-                            this.map.centerAndZoom(new BMap.Point(108.0017245, 35.926895), 5);
-                        };
+                        // this.records = [];
+                        // this.extractRecords = [];    
+                        // var centerPoint = this.map.getCenter();
+                        // if (this.map.getZoom() != 5 || centerPoint.lng !== 108.0017245 || centerPoint.lat !== 35.926895) {
+                        //     this.map.centerAndZoom(new BMap.Point(108.0017245, 35.926895), 5);
+                        // };
                     },
                     getDirectionIcon: function (angle) {
                         return new BMap.Icon("images/carstate/green_" + angle + ".gif", new BMap.Size(17, 17), { imageOffset: new BMap.Size(0, 0) });

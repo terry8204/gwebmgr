@@ -45,7 +45,7 @@
             border-color: transparent #666 transparent transparent;
             position: absolute;
             margin-left: -30px;
-            margin-top: -42px;
+            margin-top: -76px;
         }
         .guiji_sanjiao_2 {
             font-size: 0px;
@@ -57,18 +57,18 @@
             border-color: transparent #F7F8F9 transparent transparent;
             position: absolute;
             margin-left: -30px;
-            margin-top: -42px;
+            margin-top: -76px;
         }
         .address{
             position: absolute;
             left: 5px;
             top: 5px;
-            width: 400px;
             height: 30px;
             background: #e6e6e6;
             border: 1px solid forestgreen;
             line-height: 30px;
             padding-left: 15px;
+            padding-right: 15px;
         }
         .interval{
             position: absolute;
@@ -83,7 +83,10 @@
             text-align: center;
             font-size: 16px;
         }
-        
+        .last-address{
+            white-space:normal;
+            width:296px;
+        }
         [v-cloak] {
             display: none;
         }
@@ -141,10 +144,10 @@
                         },
                         getLableContent:function(info){
                             var address = this.getAddress(info);
-                            var sContent = '<div>' +
+                            var sContent = '<div style="width:296px;">' +
                                 '<p> 设备序号: ' +info.deviceid+'</p>' +
                                 '<p> 角度: ' + utils.getAngle(info.course) +'</p>' +
-                                '<p> 经纬度: ' +info.callon+","+ info.callat +'</p>' +
+                                '<p> 经纬度: ' +info.callon.toFixed(6)+","+ info.callat.toFixed(6) +'</p>' +
                                 '<p> 最后时间: ' +DateFormat.longToDateTimeStr(info.arrivedtime,0)+'</p>' +
                                 '<p class="last-address"> 详细地址: '+address+'</p></div><div class="guiji"><span class="guiji_sanjiao"></span><span class="guiji_sanjiao_2"></span></div>';
                             return sContent;
