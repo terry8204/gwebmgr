@@ -287,35 +287,6 @@
                     },
                     filtertracks: function () {
                         var records = this.records;
-                        // if (records.length > 1) {
-                        //     var newTrackList = [];
-                        //     var firstRecord = records.shift();
-                        //     var lastRecord = records.pop();
-                        //     this.setBmapPointProperty(firstRecord);
-                        //     this.setBmapPointProperty(lastRecord);
-                        //     newTrackList.push(firstRecord);
-                        //     if (records.length) {
-                        //         var contrastTrack = records.shift();
-                        //         var contrastPoint = this.setBmapPointProperty(contrastTrack).point;
-                        //         newTrackList.push(contrastTrack);
-                        //         for (var i = 0; i < records.length; i++) {
-                        //             var item = records[i];
-                        //             item = this.setBmapPointProperty(item);
-                        //             var nextPoint = item.point
-                        //             var rice = this.map.getDistance(contrastPoint, nextPoint);
-                        //             if (rice > this.range) {
-                        //                 newTrackList.push(item);
-                        //                 contrastPoint = nextPoint;
-                        //             }
-                        //         }
-                        //     }
-                        //     newTrackList.push(lastRecord);
-                        //     this.records = records;
-                        // } else {
-                        //     for (var i = 0; i < records.length; i++) {
-                        //         this.setBmapPointProperty(records[i]);
-                        //     };
-                        // };
                         for (var i = 0; i < records.length; i++) {
                             this.setBmapPointProperty(records[i]);
                         };
