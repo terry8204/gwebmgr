@@ -687,7 +687,8 @@
             me.updateRecords(record);
             me.isMoveTriggerEvent = false;
             me.map.centerAndZoom(point, 17)
-            me.openDevInfoWindow()
+            me.openDevInfoWindow();
+            me.infoWindowInstance.redraw();
           } else {
             store.currentDeviceRecord = null;
             me.$Message.error('该设备没有上报位置信息')
@@ -897,8 +898,7 @@
               record.point = point
             } else {
               point = record.point
-            }
-            // var isOnline = (Date.now() - record.arrivedtime) < me.offlineTime ? true : false ;
+            };
 
             var marker = new BMap.Marker(point)
             marker.setIcon(record.icon)
@@ -1642,8 +1642,6 @@
                   marker.setIcon(record.icon);
                   if (deviceid == store.currentDeviceId) {
                     me.isMoveTriggerEvent = false;
-                    // var infoWindow = me.getInfoWindow(record);
-                    // marker.openInfoWindow(infoWindow, record.point);
                     if (me.infoWindowInstance) {
                       if (me.infoWindowInstance.isOpen()) {
                         var content = me.getWindowContent(record);
