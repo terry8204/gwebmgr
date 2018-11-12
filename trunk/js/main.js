@@ -154,7 +154,12 @@
         utils.sendAjax(url, data, function (resp) {
           if (resp.status == 0) {
             me.$Message.success('密码修改成功!')
-            Cookies.set('accountpass', me.newPass, { expires: 7 })
+            if (me.userType != 99) {
+              Cookies.set('accountpass', me.newPass, { expires: 7 })
+            } else {
+              Cookies.set('devicepass', me.newPass, { expires: 7 })
+            }
+
             me.modalPass = false
           } else {
             me.$Message.error('旧密码错误!')
@@ -290,7 +295,7 @@
     methods: {
       initMap: function () {
         var me = this
-        this.map = new BMap.Map('map', { minZoom: 4, maxZoom: 18 })
+        this.map = new BMap.Map('map', { minZoom: 4, maxZoom: 18, enableMapClick: false })
         this.map.enableScrollWheelZoom()
         this.map.enableAutoResize()
         this.map.disableDoubleClickZoom()
@@ -686,9 +691,8 @@
             store.disposeAlarmDeviceid = deviceid;
             me.updateRecords(record);
             me.isMoveTriggerEvent = false;
-            me.map.centerAndZoom(point, 17)
+            me.map.centerAndZoom(point, 18);
             me.openDevInfoWindow();
-            me.infoWindowInstance.redraw();
           } else {
             store.currentDeviceRecord = null;
             me.$Message.error('该设备没有上报位置信息')
@@ -708,11 +712,11 @@
         }
       },
       updateTreeOnlineState: function () {
-        var me = this
+        var me = this;
         this.records.forEach(function (item) {
           if (item == null) {
             return;
-          }
+          };
           var deviceid = item.deviceid;
           var isOnline = (function (record) {
             var isOnline = false;
@@ -887,21 +891,21 @@
         }
       },
       addOverlayToMap: function (records) {
-        var me = this
+        var me = this;
         records.forEach(function (record) {
           if (record != null) {
             var deviceid = record.deviceid
-            var point = null
+            var point = null;
             if (!record.point) {
               var lng_lat = wgs84tobd09(record.callon, record.callat)
               var point = new BMap.Point(lng_lat[0], lng_lat[1])
-              record.point = point
+              record.point = point;
             } else {
-              point = record.point
+              point = record.point;
             };
 
             var marker = new BMap.Marker(point)
-            marker.setIcon(record.icon)
+            marker.setIcon(record.icon);
             var label = new BMap.Label(
               me.$store.state.deviceInfos[deviceid].devicename,
               { position: point, offset: new BMap.Size(20, -3) }
@@ -913,11 +917,11 @@
               fontSize: '14px',
               fontFamily: '微软雅黑',
               padding: '0 2px'
-            })
-            marker.setLabel(label)
-            marker.deviceid = deviceid
-            me.markerAddEvent(marker, deviceid)
-            me.map.addOverlay(marker)
+            });
+            marker.setLabel(label);
+            marker.deviceid = deviceid;
+            me.markerAddEvent(marker, deviceid);
+            me.map.addOverlay(marker);
           }
         })
       },
@@ -956,45 +960,47 @@
           me.currentStateData.forEach(function (group) {
             group.children.forEach(function (dev) {
               if (dev.deviceid == deviceid) {
-                dev.isSelected = true
-                group.expand = true
+                dev.isSelected = true;
+                group.expand = true;
               } else {
-                dev.isSelected = false
-              }
-            })
-          })
+                dev.isSelected = false;
+              };
+            });
+          });
         }
       },
       openDevInfoWindow: function () {
-        var me = this
-        var record = store.currentDeviceRecord
+        var me = this;
+        var record = store.currentDeviceRecord;
         if (!$.isEmptyObject(record)) {
-          var markers = this.map.getOverlays()
+          var markers = this.map.getOverlays();
           for (var i = 0; i < markers.length; i++) {
-            var marker = markers[i]
+            var marker = markers[i];
             if (marker.deviceid == store.currentDeviceId) {
-              var infoWindow = me.getInfoWindow(record)
-              marker.openInfoWindow(infoWindow, record.point)
-            }
-          }
-        }
+              var infoWindow = me.getInfoWindow(record);
+              marker.openInfoWindow(infoWindow, record.point);
+            };
+          };
+        };
       },
       getSingleDeviceInfo: function (deviceid) {
-        var info = null
+        var info = null;
         for (var i = 0; i < this.records.length; i++) {
           if (this.records[i]) {
             var item = this.records[i]
             if (item.deviceid == deviceid) {
-              info = item
-            }
-          }
-        }
+              info = item;
+            };
+          };
+        };
         return info;
       },
       getInfoWindow: function (info) {
         try {
           var sContent = this.getWindowContent(info);
           var infoWindowInstance = new BMap.InfoWindow(sContent, { width: 350 });
+          infoWindowInstance.disableCloseOnClick();
+          infoWindowInstance.disableAutoPan();
           this.infoWindowInstance = infoWindowInstance;
           return infoWindowInstance;
         } catch (error) {
@@ -1005,8 +1011,10 @@
       getWindowContent: function (info) {
         var devdata = this.$store.state.deviceInfos[info.deviceid];
         var address = this.getAddress(info);
+        var strstatus = info.strstatus ? info.strstatus : '';
         var posiType = (function () {
           var type = null;
+
           var gotsrc = info.gotsrc;  //cell gps wifi
           switch (gotsrc) {
             case 'un':
@@ -1050,8 +1058,8 @@
           '<p> 最后时间: ' +
           DateFormat.longToDateTimeStr(info.arrivedtime, 0) +
           '</p>' +
-          '<p> 到期时间: ' +
-          DateFormat.longToDateTimeStr(devdata.overduetime, 0) +
+          '<p> 状态: ' +
+          strstatus +
           '</p>' +
           '<p class="last-address"> 详细地址: ' +
           address +
@@ -1071,6 +1079,7 @@
         return content;
       },
       getAddress: function (info) {
+        var me = this;
         var callon = info.callon;
         var callat = info.callat;
         var bd09 = wgs84tobd09(callon, callat);
@@ -1084,11 +1093,13 @@
           if (resp.length) {
             address = resp;
             $('p.last-address').html(' 详细地址: ' + address);
+            me.infoWindowInstance.redraw();
             LocalCacheMgr.setAddress(lng, lat, address);
           } else {
             utils.getJiuHuAddressSyn(callon, callat, function (resp) {
-              address = resp.address
+              address = resp.address;
               $('p.last-address').html(' 详细地址: ' + address);
+              me.infoWindowInstance.redraw();
               LocalCacheMgr.setAddress(lng, lat, address);
             })
           }
@@ -1162,44 +1173,44 @@
         console.log(e)
       },
       getCurrentStateTreeData: function (state, isShowConpanyName) {
-        var me = this
-        this.currentStateData = []
-        this.sosoData = []
+        var me = this;
+        this.currentStateData = [];
+        this.sosoData = [];
         if (state === 'all') {
           if (isShowConpanyName) {
-            this.getAllShowConpanyTreeData()
+            this.getAllShowConpanyTreeData();
           } else {
-            this.getAllHideConpanyTreeData()
-          }
+            this.getAllHideConpanyTreeData();
+          };
         } else if (state === 'online') {
           if (isShowConpanyName) {
-            this.getOnlineShowConpanyTreeData()
+            this.getOnlineShowConpanyTreeData();
           } else {
-            this.getOnlineHideConpanyTreeData()
-          }
+            this.getOnlineHideConpanyTreeData();
+          };
         } else if (state === 'offline') {
           if (isShowConpanyName) {
-            this.getOfflineShowConpanyTreeData()
+            this.getOfflineShowConpanyTreeData();
           } else {
-            this.getOfflineHideConpanyTreeData()
-          }
-        }
+            this.getOfflineHideConpanyTreeData();
+          };
+        };
 
         if (isShowConpanyName) {
           this.currentStateData.forEach(function (company) {
             company.children.forEach(function (group) {
               group.children.forEach(function (dev) {
                 me.sosoData.push(dev.title)
-              })
-            })
-          })
+              });
+            });
+          });
         } else {
           this.currentStateData.forEach(function (item) {
             item.children.forEach(function (dev) {
               me.sosoData.push(dev.title)
-            })
-          })
-        }
+            });
+          });
+        };
       },
       getNewCompanyArr: function () {
         var newArray = []
@@ -1211,8 +1222,8 @@
             companyid: companyid,
             children: [],
             expand: false
-          }
-          newArray.push(companyObj)
+          };
+          newArray.push(companyObj);
         })
         var logintype = Cookies.get('logintype')
         if (logintype !== 'DEVICE' && this.isShowConpanyName) {
@@ -1646,7 +1657,7 @@
                       if (me.infoWindowInstance.isOpen()) {
                         var content = me.getWindowContent(record);
                         me.infoWindowInstance.setContent(content);
-                        me.infoWindowInstance.redraw();  //重画
+                        //me.infoWindowInstance.redraw();  //重画
                       }
                     };
                   };
@@ -2325,7 +2336,7 @@
                         devicename: this.$store.state.deviceInfos[deviceid].devicename,
                         deviceid: deviceid,
                         gpstime: msgTiem.createtime,
-                        strstate: msgTiem.content,
+                        stralarm: msgTiem.content,
                         isdispose: '未处理',
                         messageSerialNo: msgTiem.messageSerialNo,
                         messageId: msgTiem.messageId
@@ -2448,7 +2459,7 @@
               },
               {
                 title: '报警信息',
-                key: 'strstate',
+                key: 'stralarm',
               },
               {
                 title: '报警次数',

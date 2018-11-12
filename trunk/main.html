@@ -234,7 +234,7 @@
                                 <span style="float:right;width:16px;height20px;font-size:16px;margin-top:-2px">
                                     <Icon type="ios-arrow-dropright" v-if="!conpany.expand"/>
                                     <Icon type="ios-arrow-dropdown" v-else="!conpany.expand"/> 
-                                <span>
+                                </span>
                             </div>
                             <template v-for="(group , index) in conpany.children" :key="index">
                                 <div v-show="conpany.expand">
@@ -305,8 +305,8 @@
                                     <Icon type="ios-arrow-down"></Icon>
                                 </i-button>
                                 <i-dropdown-menu slot="list">
-                                    <DropdownItem name="name">
-                                        <i-button type="primary" @click="openDistance" size="small">测距</i-button>
+                                    <DropdownItem name="name1">
+                                        <i-button type="primary" @click.stop="openDistance" size="small">测距</i-button>
                                     </DropdownItem>
                                 </i-dropdown-menu>
                             </Dropdown>
