@@ -358,7 +358,7 @@
         })
       },
       handleWebSocket: function (data) {
-        // console.log('data-收到的轨迹push', data);
+        console.log('data-收到的轨迹push', data);
         var me = this;
         if (store.componentName != "monitor") return;
         var deviceid = data.deviceid;
