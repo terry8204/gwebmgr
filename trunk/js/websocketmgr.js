@@ -9,7 +9,10 @@ var initWebSocket = function (username, callback) {
         initIsPass = true;
     }
     if (initIsPass == true) {
-        ws.onclose = function () { };
+        ws.onclose = function () {
+            console.log("llws连接关闭!" + new Date().toUTCString());
+            reconnectWs();
+        };
         ws.onerror = function () {
             console.log("llws连接错误!" + new Date().toUTCString());
             reconnectWs();

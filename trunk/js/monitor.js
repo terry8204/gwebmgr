@@ -110,12 +110,9 @@ var monitor = {
             })
         },
         handleWebSocket: function (data) {
-
             var me = this;
             if (store.componentName != "monitor") return;
             var deviceid = data.deviceid;
-
-
             me.positionLastrecords[deviceid] = data;
             me.updateTreeOnlineState();
             me.updateDevLastPosition(data);
