@@ -110,13 +110,16 @@ var monitor = {
             })
         },
         handleWebSocket: function (data) {
-            console.log('data-收到的轨迹push', data);
+
             var me = this;
             if (store.componentName != "monitor") return;
             var deviceid = data.deviceid;
 
-            me.updateDevLastPosition(data);
+
             me.positionLastrecords[deviceid] = data;
+            me.updateTreeOnlineState();
+            me.updateDevLastPosition(data);
+            console.log('收到的轨迹push时间', deviceid, DateFormat.longToDateTimeStr(data.arrivedtime, 0));
             if (store.currentDeviceId == deviceid) {
                 if (this.infoWindowInstance && this.infoWindowInstance.isOpen()) {
                     var sContent = this.getWindowContent(data);
@@ -730,7 +733,6 @@ var monitor = {
         },
         getSingleDeviceInfo: function (deviceid) {
             var info = this.positionLastrecords[deviceid];
-
             return info;
         },
         getWithInitInfoWindow: function () {
@@ -844,18 +846,13 @@ var monitor = {
             return '地址正在解析...'
         },
         setNavState: function (state) {
-            this.isShowConpanyName = state
-        },
-        setIntervalTime: function (interval) {
-            this.intervalTime = interval
-            clearInterval(this.intervalInstanse)
-            this.setIntervalReqRecords()
+            this.isShowConpanyName = state;
         },
         queryCompanyTree: function (callback) {
-            var url = myUrls.queryCompanyTree()
+            var url = myUrls.queryCompanyTree();
             utils.sendAjax(url, {}, function (resp) {
-                callback(resp)
-            })
+                callback(resp);
+            });
         },
         handleEditDevFn: function () {
             var me = this;
@@ -1382,8 +1379,7 @@ var monitor = {
             var markers = this.map.getOverlays();
             markers.forEach(function (marker) {
                 var deviceid = marker.deviceid;
-
-                var record = this.positionLastrecords[deviceid];
+                var record = me.positionLastrecords[deviceid];
                 if (record) {
                     if (deviceid === record.deviceid) {
                         marker.setPosition(record.point);
@@ -1394,6 +1390,7 @@ var monitor = {
                                 if (me.infoWindowInstance.isOpen()) {
                                     var content = me.getWindowContent(record);
                                     me.refreshInfoWindow(content, false);
+                                    console.log('查询的轨迹时间', deviceid, DateFormat.longToDateTimeStr(record.arrivedtime, 0));
                                     // $("#info_window").html(content);
                                     // me.infoWindowInstance.setContent(content);
                                 }
@@ -1546,7 +1543,7 @@ var monitor = {
                 me.selectedState = 'all';
             })
         });
-        //  this.setIntervalReqRecords();
+        this.setIntervalReqRecords();
         communicate.$on("positionlast", this.handleWebSocket);
     },
     beforeDestroy: function () {
