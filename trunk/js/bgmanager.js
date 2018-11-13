@@ -1,0 +1,185 @@
+// 后台管理
+var bgManager = {
+    template: document.getElementById('manager-template').innerHTML,
+    data: function () {
+        return {
+            userType: null,
+            theme: 'light',
+            navList: [
+                {
+                    title: '客户管理',
+                    name: 'customerMar',
+                    icon: 'md-contact',
+                    children: [
+                        { title: '添加客户', name: 'addCustomer', icon: 'md-person-add' },
+                        { title: '查询客户', name: 'queryCustomer', icon: 'md-search' }
+                    ]
+                },
+                {
+                    title: '分组管理',
+                    name: 'groupMar',
+                    icon: 'ios-albums',
+                    children: [
+                        { title: '添加分组', name: 'addGroup', icon: 'ios-photos-outline' },
+                        { title: '查询分组', name: 'queryGroup', icon: 'md-search' }
+                    ]
+                },
+                {
+                    title: '用户管理',
+                    name: 'userMar',
+                    icon: 'md-person',
+                    children: [
+                        { title: '添加用户', name: 'addUser', icon: 'ios-person-add' },
+                        { title: '查询用户', name: 'queryUser', icon: 'md-search' }
+                    ]
+                },
+                {
+                    title: '设备管理',
+                    name: 'deviceMar',
+                    icon: 'md-phone-portrait',
+                    children: [
+                        { title: '添加设备', name: 'addDevice', icon: 'md-add' },
+                        { title: '查询设备', name: 'queryDevice', icon: 'md-search' }
+                    ]
+                }
+            ]
+        }
+    },
+    methods: {
+        selectditem: function (name) {
+            if (this.currentPage == name) {
+                return
+            }
+            var page = null
+            switch (name) {
+                case 'addCustomer':
+                    page = 'addcustomer.html'
+                    break
+                case 'queryCustomer':
+                    page = 'querycustomer.html'
+                    break
+                case 'addGroup':
+                    page = 'addgroup.html'
+                    break
+                case 'queryGroup':
+                    page = 'querygroup.html'
+                    break
+                case 'addDevice':
+                    page = 'adddevice.html'
+                    break
+                case 'queryDevice':
+                    page = 'querydevice.html'
+                    break
+                case 'addUser':
+                    page = 'adduser.html'
+                    break
+                case 'queryUser':
+                    page = 'queryuser.html'
+                    break
+            }
+            this.currentPage = name
+            this.loadPage(page)
+        },
+        loadPage: function (page) {
+            var me = this
+            var pagePath = null
+            if (myUrls.host.indexOf('gpsserver') != -1) {
+                pagePath = myUrls.host + 'view/manager/' + page
+            } else {
+                pagePath = '../view/manager/' + page
+            }
+            this.$Loading.start()
+            $('#mar-view').load(pagePath, function () {
+                me.$Loading.finish()
+            })
+        }
+    },
+    mounted: function () {
+        this.userType = Cookies.get('userType')
+        if (this.userType == 0) {
+            this.$delete(this.navList, 1)
+            this.$delete(this.navList, 2)
+        }
+    }
+}
+
+// 系统参数
+var systemParam = {
+    template: document.getElementById('systemparam-template'),
+    data: function () {
+        return {
+            selectdItemName: null,
+            theme: 'light',
+            navList: [
+                {
+                    title: '设备指令',
+                    name: 'deviceDirective',
+                    icon: 'ios-pricetag-outline',
+                    children: [
+                        { title: '新增指令', name: 'addDirective', icon: 'md-add' },
+                        { title: '查询指令', name: 'queryDirective', icon: 'md-search' }
+                    ]
+                },
+                {
+                    title: '设备类型',
+                    name: 'deviceType',
+                    icon: 'ios-albums'
+                    // children:[
+                    //     {title:"新增设备类型",name:"addDeviceType",icon:"md-add"},
+                    //     {title:"查询设备类型",name:"queryDeviceType",icon:"md-search"}
+                    // ]
+                },
+                {
+                    title: '车辆类型',
+                    name: 'carType',
+                    icon: 'ios-car'
+                    // children:[
+                    //     {title:"新增车辆类型",name:"addCarType",icon:"md-add"},
+                    //     {title:"查询车辆类型",name:"queryCarType",icon:"md-search"}
+                    // ]
+                }
+            ]
+        }
+    },
+    methods: {
+        selectditem: function (name) {
+            if (this.selectdItemName != name) {
+                this.selectdItemName = name
+                this.changeItem()
+            }
+        },
+        changeItem: function () {
+            var page = null
+
+            switch (this.selectdItemName) {
+                case 'queryDirective':
+                    page = 'devicedirective.html'
+                    break
+                case 'addDirective':
+                    page = 'adddirective.html'
+                    break
+                case 'deviceType':
+                    page = 'devicetype.html'
+                    break
+                case 'carType':
+                    page = 'cartype.html'
+                    break
+            }
+
+            this.loadPage(page)
+        },
+        loadPage: function (page) {
+            var me = this
+            var pagePath = null
+            if (myUrls.host.indexOf('gpsserver') != -1) {
+                pagePath = myUrls.host + 'view/systemparam/' + page
+            } else {
+                pagePath = '../view/systemparam/' + page
+            }
+            this.$Loading.start()
+            $('#system-view').load(pagePath, function () {
+                me.$Loading.finish();
+            });
+        }
+    }
+}

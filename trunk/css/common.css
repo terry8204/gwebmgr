@@ -157,3 +157,11 @@ ul,ol,li{
 .ivu-select-selection .ivu-icon{
     margin-top:-7px;
 }
+
+p.last-address{
+    height: 42px;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+}

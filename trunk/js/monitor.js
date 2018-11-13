@@ -120,25 +120,18 @@ var monitor = {
             if (store.currentDeviceId == deviceid) {
                 if (this.infoWindowInstance && this.infoWindowInstance.isOpen()) {
                     var sContent = this.getWindowContent(data);
-                    me.refreshInfoWindow(sContent, false);
+                    me.refreshInfoWindow(sContent, true);
                 };
             };
         },
         refreshInfoWindow: function (sContent, isOpen) {
             var contentWithDivStart = '<div id="info_window">';
             var contentWithDivEnd = '</div>';
+            var domStr = contentWithDivStart + sContent + contentWithDivEnd;
             if (isOpen) {
-                sContent = contentWithDivStart + sContent + contentWithDivEnd;
-                this.infoWindowInstance.setContent(sContent);
-                var height = 195;
-
-                if (sContent.length > 750) {
-                    height = 215;
-                };
-
-                this.infoWindowInstance.setHeight(height);
+                $("#info_window").html(domStr);
             } else {
-                $("#info_window").html(sContent);
+                this.infoWindowInstance.setContent(domStr);
             }
         },
         clearMarkerOverlays: function () {
@@ -678,8 +671,7 @@ var monitor = {
                 store.currentDeviceId = deviceid;
                 store.currentDeviceRecord = devLastInfo;
                 store.disposeAlarmDeviceid = deviceid;
-
-                me.refreshInfoWindow(sContent, true);
+                me.refreshInfoWindow(sContent, false);
                 me.map.openInfoWindow(me.infoWindowInstance, marker.point);
                 me.openTreeDeviceNav(deviceid)
             })
@@ -722,7 +714,7 @@ var monitor = {
                     var marker = markers[i];
                     if (marker.deviceid == store.currentDeviceId) {
                         var sContent = me.getWindowContent(record);
-                        me.refreshInfoWindow(sContent, true);
+                        me.refreshInfoWindow(sContent, false);
                         this.map.openInfoWindow(this.infoWindowInstance, record.point);
                     };
                 };
@@ -738,7 +730,7 @@ var monitor = {
             var contentWithDivEnd = '</div>';
             //var sContent = this.getWindowContent(info);
             if (this.infoWindowInstance == null) {
-                this.infoWindowInstance = new BMap.InfoWindow(contentWithDivStart + contentWithDivEnd, { width: 350 });
+                this.infoWindowInstance = new BMap.InfoWindow(contentWithDivStart + contentWithDivEnd, { width: 350, height: 195 });
                 this.infoWindowInstance.disableCloseOnClick();
                 this.infoWindowInstance.disableAutoPan();
             }
@@ -829,13 +821,11 @@ var monitor = {
                 if (resp.length) {
                     address = resp;
                     $('p.last-address').html(' 详细地址: ' + address);
-                    me.infoWindowInstance.redraw();
                     LocalCacheMgr.setAddress(lng, lat, address);
                 } else {
                     utils.getJiuHuAddressSyn(callon, callat, function (resp) {
                         address = resp.address;
                         $('p.last-address').html(' 详细地址: ' + address);
-                        me.infoWindowInstance.redraw();
                         LocalCacheMgr.setAddress(lng, lat, address);
                     })
                 }
@@ -1386,7 +1376,7 @@ var monitor = {
                             if (me.infoWindowInstance) {
                                 if (me.infoWindowInstance.isOpen()) {
                                     var content = me.getWindowContent(record);
-                                    me.refreshInfoWindow(content, false);
+                                    me.refreshInfoWindow(content, true);
                                     console.log('查询的轨迹时间', deviceid, DateFormat.longToDateTimeStr(record.arrivedtime, 0));
                                     // $("#info_window").html(content);
                                     // me.infoWindowInstance.setContent(content);

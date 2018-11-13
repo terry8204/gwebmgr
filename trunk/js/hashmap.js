@@ -1,4 +1,4 @@
-(function(global) {
+(function (global) {
 
     /**
      * A unique object to symbolize removal
@@ -11,7 +11,7 @@
      * All keys are calculated down to a numerical hash.
      * @constructor
      */
-    function HashMap() {
+    function HashMap () {
         this.entries = {};
         this.length = 0;
     }
@@ -23,7 +23,7 @@
      * @param key the key to get the value for
      * @returns {*} the value stored, or null
      */
-    prototype['get'] = function(key) {
+    prototype['get'] = function (key) {
         var hash = calculateHash(key); // 计算哈希
         var bucket = this.entries[hash]; //通过哈希嘚到对应的值
 
@@ -45,7 +45,7 @@
      * @param value the value to set
      * @returns {*} the previous value
      */
-    prototype['put'] = function(key, value) {
+    prototype['put'] = function (key, value) {
         var hash = calculateHash(key);
         var bucket = this.entries[hash];
         var obj = { key: key, value: value };
@@ -79,19 +79,19 @@
      * @param key the key to remove the entry before
      * @returns {*} the removed value
      */
-    prototype['remove'] = function(key) {
+    prototype['remove'] = function (key) {
 
         return this.put(key, REMOVE);
 
     };
 
-    prototype['clear'] = function() {
+    prototype['clear'] = function () {
         "use strict";
         this.entries = {};
         this.length = 0;
     }
 
-    prototype['toArray'] = function() {
+    prototype['toArray'] = function () {
         var arr = [];
         for (var hash in this.entries) {
             if (this.entries.hasOwnProperty(hash)) {
@@ -109,7 +109,7 @@
         return arr;
     };
 
-    function calculateHash(object) {
+    function calculateHash (object) {
         if (!object) {
             return 0;
         };

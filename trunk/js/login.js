@@ -153,12 +153,12 @@ new Vue({
                 } else {
                     this.username = "";
                     this.password = "";
-                }
+                };
             } else {
                 this.username = "";
                 this.password = "";
-            }
+            };
         }
     }
-})
+});
 
