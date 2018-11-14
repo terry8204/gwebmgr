@@ -52,14 +52,14 @@ ul,ol,li{
 
 /* iview  模态框垂直水平居中 */
 .vertical-center-modal{
-    position: fixed;     
+    /* position: fixed;     
     left: 50%;
     top: 40%;
-    transform: translate(-50%,-50%);
+    transform: translate(-50%,-50%); */
 }
-.ivu-modal-wrap{
+/* .ivu-modal-wrap{
     height: 80%;
-}
+} */
 
 
 /* .ivu-modal-fullscreen {

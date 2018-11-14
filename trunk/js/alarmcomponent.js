@@ -25,11 +25,16 @@ var waringComponent = {
             wrapperWidth: null,
             wrapperHeight: null,
             waringWraperStyle: { width: '130px', height: '22px' },
+            paramsCmdCodeArr: [],
+            lastQueryAllAlarmTime: 0,  //查询报警备份的时间
         }
     },
     computed: {
         deviceInfos: function () {
             return this.$store.state.deviceInfos;
+        },
+        currentDeviceId: function () {
+            return this.$store.state.currentDeviceId;
         }
     },
     watch: {
@@ -120,7 +125,7 @@ var waringComponent = {
             this.waringWraperStyle = { width: this.wrapperWidth + 'px', height: this.wrapperHeight + 'px' };
         },
         parseXML: function (xmlDoc) {
-            store.paramsCmdCodeArr = []
+            this.paramsCmdCodeArr = [];
             var parent = xmlDoc.children[0]
             var children = parent.children
             for (var i = 0; i < children.length; i++) {
@@ -128,12 +133,13 @@ var waringComponent = {
                 var text = item.innerHTML
                 var type = item.getAttribute('type');
                 if (type && text) {
-                    store.paramsCmdCodeArr.push(type)
+                    this.paramsCmdCodeArr.push(type)
                     // this.paramsInputObj[type] = '';
                     this.$set(this.paramsInputObj, type, "");
                     this.paramsInputList.push({ type: type, text: text });
                 }
-            }
+            };
+
         },
         changeLargen: function (type) {
             this.isLargen = type;
@@ -160,13 +166,13 @@ var waringComponent = {
         queryWaringMsg: function () {
             var me = this
             var url = myUrls.queryAlarm();
-            this.checkboxObj.lastqueryallalarmtime = lastQueryAllAlarmTime;
+            this.checkboxObj.lastqueryallalarmtime = me.lastQueryAllAlarmTime;
             utils.sendAjax(url, this.checkboxObj, function (resp) {
                 if (resp.status == 0) {
-                    lastQueryAllAlarmTime = DateFormat.getCurrentUTC();
+                    me.lastQueryAllAlarmTime = DateFormat.getCurrentUTC();
                     if (resp.records) {
                         resp.records.forEach(function (item) {
-                            alarmMgr.addRecord(item);
+                            me.alarmMgr.addRecord(item);
                         });
                         me.refreshAlarmToUi();
                     }
@@ -175,7 +181,7 @@ var waringComponent = {
         },
         refreshAlarmToUi: function () {
             var me = this;
-            var alarmList = alarmMgr.getAlarmList();
+            var alarmList = me.alarmMgr.getAlarmList();
             alarmList.forEach(function (item) {
                 var deviceid = item.deviceid;
                 var deviceInfo = me.$store.state.deviceInfos[deviceid];
@@ -310,7 +316,7 @@ var waringComponent = {
             var paramsArr = [];
             me.cmdRowWaringObj.cmdcode = this.disposeAlarm;
 
-            store.paramsCmdCodeArr.forEach(function (cmdCode) {
+            me.paramsCmdCodeArr.forEach(function (cmdCode) {
                 var val = me.paramsInputObj[cmdCode]
                 paramsArr.push(val);
                 if (val == '') {
@@ -331,7 +337,7 @@ var waringComponent = {
                 if (resp.status == 0) {
                     me.disposeModal = false;
                     me.$Message.success("解除成功!");
-                    alarmMgr.updateDisposeStatus(me.cmdRowWaringObj.deviceid, me.cmdRowWaringObj.state);
+                    me.alarmMgr.updateDisposeStatus(me.cmdRowWaringObj.deviceid, me.cmdRowWaringObj.state);
                     me.refreshAlarmToUi();
                 } else {
                     me.$Message.error(resp.cause);
@@ -485,19 +491,22 @@ var waringComponent = {
     },
     mounted: function () {
         var me = this;
+        this.alarmMgr = new AlarmMgr();
         this.settingCheckboxObj();
         this.pushOverdueDeviceInfo();
         this.timingRequestMsg();
         this.queryAlarmDescr();
         this.changeWrapperCls();
         communicate.$on("remindmsg", function (data) {
-            alarmMgr.addRecord(data);
+            me.alarmMgr.addRecord(data);
             me.refreshAlarmToUi();
         });
         communicate.$on("disposeAlarm", function (cmdCode) {
-            alarmMgr.updateDisposeStatus(store.currentDeviceId, 0);
+            me.alarmMgr.updateDisposeStatus(me.currentDeviceId, 0);
             me.refreshAlarmToUi();
         });
+        // timeout定时器
+        var timeout = null;
         window.onresize = function () {
             if (timeout != null) {
                 clearTimeout(timeout);

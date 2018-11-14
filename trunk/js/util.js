@@ -256,54 +256,6 @@ Vue.component('expand-row', {
 //  得到表格row组建
 var expandRow = Vue.component('expand-row')
 
-//  vue组件
-// Vue.component('expand-cmd-row', {
-//   template:
-//     '<div>' +
-//     '<span v-for="(item , index) in cmds" style="display:inline-block;margin:5px" @click="handleClick(index)">' +
-//     '<i-button icon="ios-female"> {{item.cmdname}}</i-button>' +
-//     '</span>' +
-//     '</div>',
-//   props: {
-//     cmds: Array,
-//     typename: String
-//   },
-//   data: function () {
-//     return {
-//       selectedCmdList: []
-//     }
-//   },
-//   methods: {
-//     querySelectedCmd: function () {
-//       var url = myUrls.queryDeviceTypeHadCmd()
-//       var data = { devicetype: this.devices.devicetypeid }
-//       utils.sendAjax(url, data, this.doQuerySelectedCmdFn)
-//     },
-//     doQuerySelectedCmdFn: function (resp) {
-//       if (resp.status == 0) {
-//         this.selectedCmdList = resp.records
-//         this.devices.selectedCmdList = resp.records
-//       }
-//     },
-//     handleClick: function (index) {
-//       var me = this
-//       editObject = this.cmds[index]
-//       editObject.devtypename = this.typename
-//       me.$Loading.start()
-//       $('#system-view').load(
-//         '../view/systemparam/editdevicetypecmd.html',
-//         function () {
-//           me.$Loading.finish()
-//         }
-//       )
-//     }
-//   },
-//   mounted: function () { }
-// })
-
-//  得到表格添加指令的 row组建
-// var expandCmdRow = Vue.component('expand-cmd-row')
-
 // 轨迹回放
 function playBack (deviceid) {
   window.open('playback.html?deviceid=' + deviceid)
@@ -319,11 +271,39 @@ function refreshPostion (deviceid) {
   var url = myUrls.refreshPostion();
   utils.sendAjax(url, { deviceid: deviceid }, function (resp) {
     console.log('resp', resp)
-  })
+  });
 }
 
 // 设置围栏
 function setFence (deviceid) {
   var url = 'setfence.html?deviceid=' + deviceid + '&token=' + token;
   window.open(url);
+}
+
+
+// openSim
+function openSim (deviceId) {
+  var url = myUrls.queryDeviceBaseInfo();
+  utils.sendAjax(url, { deviceid: deviceId }, function (resp) {
+    var sim = null;
+    var type = null;
+    var simiccid = resp.simiccid;
+    var simimsi = resp.simimsi;
+    var simnum = resp.simnum;
+    if (simiccid) {
+      sim = simiccid;
+      type = "simiccid";
+    } else if (simimsi) {
+      sim = simimsi;
+      type = "simimsi";
+    } else if (simnum) {
+      sim = simnum;
+      type = "simnum";
+    };
+    if (sim) {
+      var url = 'sim.html?sim=' + sim + '&type=' + type;
+      window.open(url);
+    };
+  })
+
 }

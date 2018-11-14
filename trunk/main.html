@@ -28,11 +28,11 @@
     <!-- root -->
     <div id="app">
         <div class="header-wraper">
-            <app-header @change-nav="changeComponent" @change-tree="changeNav" @change-intervaltime="changeInterval" :componentid="componentId"></app-header>
+            <app-header @change-nav="changeComponent" :componentid="activeName"></app-header>
         </div>
         <div class="view-wraper">
             <keep-alive exclude="monitor">
-                <component :is="componentId" ref="my-component" @jump-report="jumpReport"></component>
+                <component :is="activeName" ref="my-component" @jump-report="jumpReport"></component>
             </keep-alive>
         </div>
         <waring-component></waring-component>
@@ -78,7 +78,7 @@
                 </ul>
             </div>
 
-            <Modal v-model="modal" width="460" class-name="vertical-center-modal">
+            <Modal v-model="modal" width="460">
                 <p slot="header" style="color:#2D8CF0;text-align:center">
                     <Icon type="ios-hammer-outline"></Icon>
                     <span>设置</span>
@@ -100,7 +100,7 @@
                 <div slot="footer" style="padding:12.5px 0;"></div>
             </Modal>
 
-            <Modal v-model="modalPass" width="460" class-name="vertical-center-modal">
+            <Modal v-model="modalPass" width="460">
                 <p slot="header" style="color:#2D8CF0;text-align:center">
                     <Icon type="ios-hammer-outline"></Icon>
                     <span>修改密码</span>
@@ -172,7 +172,7 @@
                 <div class="device-tree">
                     <!-- <Tree :data="currentStateData" :render="renderContent"></Tree> -->
                     <!-- left tree controller 不显示公司名 -->
-                    <dl class="noselect" v-if="!isShowConpanyName">
+                    <dl class="noselect" v-if="!isShowConpanyName" class="dl-inner-wrapper">
                         <template v-for="(group , index) in currentStateData" :key="index">
                             <dt style="padding:5px;border-bottom:1px solid #ddd;cursor: pointer;" @click="openGroupItem(group)">
                                 <Icon type="ios-arrow-down" v-show="group.expand"/>
@@ -181,7 +181,7 @@
                             </dt>
                             <dd style="padding:5px;border-bottom:1px solid #ddd" v-show="group.expand">
                                 <div v-for="(device , index) in group.children" :key="device.deviceid" style="padding-left:15px">
-                                    <div :class="{'active-dev-offline':device.isSelected}" style="margin:3px 0;">
+                                    <div :class="{'active-dev-offline':device.isSelected}" style="margin:3px 0;" :ref="device.deviceid">
                                         <div style="padding:3px 5px;cursor: pointer;" :style="{color: device.isOnline ? '#33DAD0' : '#B1BBC2'}" @click="selectedDev(device)">
                                             <Icon type="md-person"/> 
                                             <span v-text="device.title"></span>   
@@ -227,7 +227,7 @@
                         </template>
                     </dl>
                     <!-- left tree controller显示公司名 -->        
-                    <dl class="noselect" v-else="!isShowConpanyName">
+                    <dl class="noselect" v-else="!isShowConpanyName" class="dl-inner-wrapper">
                         <template v-for="(conpany , index) in currentStateData" :key="index">
                             <div style="padding:5px;border-bottom:1px solid #ddd;cursor: pointer;" @click="openCanpany(conpany)">
                                 {{conpany.title}} 
@@ -245,7 +245,7 @@
                                             </dt>
                                             <dd style="padding:5px;border-bottom:1px solid #ddd" v-show="group.expand">
                                                 <div v-for="(device , index) in group.children" :key="device.deviceid" style="padding-left:15px">
-                                                    <div :class="{'active-dev-offline':device.isSelected}" style="margin:3px 0;">
+                                                    <div :class="{'active-dev-offline':device.isSelected}" style="margin:3px 0;" :ref="device.deviceid">
                                                         <div style="padding:3px 5px;cursor: pointer;" :style="{color: device.isOnline ? '#33DAD0' : '#B1BBC2'}" @click="selectedDev(device)">
                                                             <Icon type="md-person"/> 
                                                             <span v-text="device.title"></span>   
@@ -316,7 +316,7 @@
                 <div id="map"></div>
             </div>
 			<!-- 编辑设备模态 -->
-            <Modal v-model="editDevModal" width="460" class-name="vertical-center-modal">
+            <Modal v-model="editDevModal" width="460">
                 <p slot="header" style="color:#f60;text-align:center">
                     <Icon type="ios-create-outline"></Icon>
                     <span>编辑设备</span>
@@ -347,7 +347,7 @@
             </Modal>   
 
             <!-- 下发指令模态 -->
-            <Modal v-model="dispatchDirectiveModal" width="460" class-name="vertical-center-modal">
+            <Modal v-model="dispatchDirectiveModal" width="460">
                     <p slot="header" style="color:#f60;text-align:center">
                         <Icon type="ios-create-outline"></Icon>
                         <span>{{ selectedCmdInfo.cmdName }}</span>
@@ -369,7 +369,7 @@
             </Modal>  
 
             <!-- 设备基本信息模态 -->
-            <Modal v-model="deviceInfoModal" width="460" class-name="vertical-center-modal">
+            <Modal v-model="deviceInfoModal" width="460">
                     <p slot="header" style="color:#f60;text-align:center">
                         <Icon type="ios-create-outline"></Icon>
                         <span>设备基本信息</span>
@@ -424,7 +424,19 @@
                             <i-col span="16" style="height: 100%;line-height:25px;text-align:left;">
                                 {{deviceBaseInfo.simnum}}     
                             </i-col>
-                        </Row>                        
+                        </Row>
+                        <Row>
+                                <i-col span="5" style="height: 100%;text-align:right;line-height:25px;">IMSI : &nbsp;</i-col>
+                                <i-col span="16" style="height: 100%;line-height:25px;text-align:left;">
+                                    {{deviceBaseInfo.simimsi}}     
+                                </i-col>
+                        </Row>  
+                        <Row>
+                            <i-col span="5" style="height: 100%;text-align:right;line-height:25px;">ICCID : &nbsp;</i-col>
+                                    <i-col span="16" style="height: 100%;line-height:25px;text-align:left;">
+                                        {{deviceBaseInfo.simiccid}}     
+                            </i-col>
+                        </Row>                      
                     </div>
                     <div slot="footer">
                         <i-button type="primary"  @click="deviceInfoModal=false" style="width: 100%">关闭</i-button>
@@ -432,7 +444,7 @@
             </Modal>  
 
                         <!-- 电子围廊模态 -->
-                        <Modal v-model="electronicFenceModal" width="460" class-name="vertical-center-modal">
+                        <Modal v-model="electronicFenceModal" width="460">
                                 <p slot="header" style="color:#f60;text-align:center">
                                     <Icon type="ios-create-outline"></Icon>
                                     <span>设置电子围栏</span>
@@ -575,7 +587,7 @@
             </div>
 
             <!-- 过滤报警模态 -->
-            <Modal v-model="waringModal" width="600" class-name="vertical-center-modal" fullscreen="false">
+            <Modal v-model="waringModal" width="600">
                 <p slot="header" style="color:#f60;text-align:center">
                     <Icon type="information-circled"></Icon>
                     <span>过滤器报警</span>
@@ -593,7 +605,7 @@
             </Modal>
 
             <!-- 接触报警模态 -->
-            <Modal v-model="disposeModal" width="560" class-name="vertical-center-modal">
+            <Modal v-model="disposeModal" width="560">
                 <p slot="header" style="color:#f60;text-align:center">
                     <Icon type="information-circled"></Icon>
                     <span>解除报警</span>

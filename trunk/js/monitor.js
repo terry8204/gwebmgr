@@ -5,7 +5,7 @@ var monitor = {
     data: function () {
         return {
             map: null,
-            isShowConpanyName: store.navState, // 0 不显示公司   1 显示公司名
+            // isShowConpanyName: store.navState, // 0 不显示公司   1 显示公司名
             sosoValue: '', // 搜索框的值
             sosoData: [], // 搜索框里面的数据
             selectedState: '', // 选择nav的状态 all online offline;
@@ -100,24 +100,16 @@ var monitor = {
                     }, 400);
                 }
             });
-
-            this.map.addEventListener('click', function (event) {
-                var overlay = event.overlay;
-                if (overlay == null || overlay.deviceid == undefined) {
-                    store.currentDeviceId = null;
-                    store.currentDeviceRecord = null;
-                }
-            })
         },
         handleWebSocket: function (data) {
             var me = this;
-            if (store.componentName != "monitor") return;
+            // if (store.componentName != "monitor") return;
             var deviceid = data.deviceid;
             me.positionLastrecords[deviceid] = data;
             me.updateTreeOnlineState();
             me.updateDevLastPosition(data);
             console.log('收到的轨迹push时间', deviceid, DateFormat.longToDateTimeStr(data.arrivedtime, 0));
-            if (store.currentDeviceId == deviceid) {
+            if (me.currentDeviceId == deviceid) {
                 if (this.infoWindowInstance && this.infoWindowInstance.isOpen()) {
                     var sContent = this.getWindowContent(data);
                     me.refreshInfoWindow(sContent, true);
@@ -188,7 +180,6 @@ var monitor = {
                 resp.overdueDateStr = DateFormat.longToDateStr(resp.overduetime, 0);
                 me.deviceBaseInfo = resp;
             })
-
         },
         handleClickDirective: function (cmdCode) {
             this.cmdParams = {};
@@ -267,7 +258,7 @@ var monitor = {
         disposeDirectiveFn: function () {
             var me = this;
             var url = myUrls.sendCmd();
-            var data = { devicetype: this.currentDeviceType, cmdcode: this.selectedCmdInfo.cmdcode, deviceid: store.disposeAlarmDeviceid, params: Object.values(this.cmdParams), state: 0 };
+            var data = { devicetype: this.currentDeviceType, cmdcode: this.selectedCmdInfo.cmdcode, deviceid: me.currentDeviceId, params: Object.values(this.cmdParams), state: 0 };
             utils.sendAjax(url, data, function (resp) {
                 if (resp.status === 0) {
                     communicate.$emit("disposeAlarm", data.cmdcode);
@@ -412,37 +403,20 @@ var monitor = {
             this.handleClickDev(deviceInfo.deviceid);
         },
         handleClickDev: function (deviceid) {
-            var me = this
-            var record = me.getSingleDeviceInfo(deviceid);
+            var record = this.getSingleDeviceInfo(deviceid);
+
             if (record) {
-                var callon = record.callon;
-                var callat = record.callat;
-                var lng_lat = wgs84tobd09(callon, callat);
-                var point = new BMap.Point(lng_lat[0], lng_lat[1]);
-                record.point = point;
-                var isOnline =
-                    Date.now() - record.arrivedtime < me.offlineTime ? true : false;
-                var iconState = null
-                var angle = utils.getAngle(record.course)
-
-                iconState = new BMap.Icon(
-                    utils.getDirectionImage(isOnline, angle),
-                    new BMap.Size(17, 17),
-                    { imageOffset: new BMap.Size(0, 0) }
-                )
-
-                record.icon = iconState;
-                store.currentDeviceId = deviceid;
-                store.currentDeviceRecord = record;
-                store.disposeAlarmDeviceid = deviceid;
-                me.isMoveTriggerEvent = false;
-                me.map.centerAndZoom(point, 18);
-                me.openDevInfoWindow();
+                this.$store.commit('currentDeviceRecord', record);
+                this.isMoveTriggerEvent = false;
+                this.map.centerAndZoom(record.point, 18);
+                this.openDevInfoWindow();
             } else {
-                store.currentDeviceRecord = null;
-                me.$Message.error('该设备没有上报位置信息')
-                store.disposeAlarmDeviceid = deviceid;
+                this.$Message.error('该设备没有上报位置信息')
+                this.$store.commit('currentDeviceId', deviceid);
+                this.infoWindowInstance.isOpen() && this.map.closeInfoWindow();
             }
+            var elTop = this.$refs[deviceid][0].getBoundingClientRect();
+            console.log('resf', elTop);
 
         },
         updateTreeOnlineState: function () {
@@ -668,13 +642,11 @@ var monitor = {
                 var deviceid = this.deviceid
                 var devLastInfo = me.getSingleDeviceInfo(deviceid);
                 var sContent = me.getWindowContent(devLastInfo);
-                store.currentDeviceId = deviceid;
-                store.currentDeviceRecord = devLastInfo;
-                store.disposeAlarmDeviceid = deviceid;
                 me.refreshInfoWindow(sContent, false);
                 me.map.openInfoWindow(me.infoWindowInstance, marker.point);
+                me.$store.commit('currentDeviceRecord', devLastInfo);
                 me.openTreeDeviceNav(deviceid)
-            })
+            });
         },
         openTreeDeviceNav: function (deviceid) {
             var me = this
@@ -707,12 +679,12 @@ var monitor = {
         },
         openDevInfoWindow: function () {
             var me = this;
-            var record = store.currentDeviceRecord;
-            if (!$.isEmptyObject(record)) {
+            var record = me.currentDeviceRecord;
+            if (record) {
                 var markers = this.map.getOverlays();
                 for (var i = 0; i < markers.length; i++) {
                     var marker = markers[i];
-                    if (marker.deviceid == store.currentDeviceId) {
+                    if (marker.deviceid == me.currentDeviceId) {
                         var sContent = me.getWindowContent(record);
                         me.refreshInfoWindow(sContent, false);
                         this.map.openInfoWindow(this.infoWindowInstance, record.point);
@@ -801,7 +773,9 @@ var monitor = {
                 info.deviceid +
                 ')">跟踪</span><span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="refreshPostion(' +
                 info.deviceid +
-                ')">刷新位置</span><span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="setFence(' +
+                ')">刷新位置</span><span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="openSim(' +
+                info.deviceid +
+                ')">SIM</span><span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="setFence(' +
                 info.deviceid +
                 ')">设置围栏</span></p>';
             return content;
@@ -832,9 +806,9 @@ var monitor = {
             })
             return '地址正在解析...'
         },
-        setNavState: function (state) {
-            this.isShowConpanyName = state;
-        },
+        // setNavState: function (state) {
+        //     this.isShowConpanyName = state;
+        // },
         queryCompanyTree: function (callback) {
             var url = myUrls.queryCompanyTree();
             utils.sendAjax(url, {}, function (resp) {
@@ -860,8 +834,8 @@ var monitor = {
 
             utils.sendAjax(url, sendData, function (resp) {
                 if (resp.status == 0) {
-                    store.treeDeviceInfo.title = sendData.devicename;
-                    store.treeDeviceInfo.simnum = sendData.simnum;
+                    me.editDeviceInfo.title = sendData.devicename;
+                    me.editDeviceInfo.simnum = sendData.simnum;
                     utils.changeGroupsDevName(sendData, me.groups);
                     me.editDevModal = false;
                     me.$Message.success('修改成功');
@@ -874,7 +848,7 @@ var monitor = {
         },
         editDevice: function (device) {
             // console.log('editDevice', deviceid);
-            store.treeDeviceInfo = device;
+            this.$store.commit('editDeviceInfo', device);
             var deviceid = device.deviceid
             var deviceInfo = this.$store.state.deviceInfos[deviceid];
 
@@ -889,9 +863,6 @@ var monitor = {
         },
         trackMap: function (deviceid) {
             trackMap(deviceid)
-        },
-        more: function (e) {
-            console.log(e)
         },
         getCurrentStateTreeData: function (state, isShowConpanyName) {
             var me = this;
@@ -1023,7 +994,7 @@ var monitor = {
                     if (isOnline) {
                         onlineCount++
                     }
-                    if (device.deviceid == store.currentDeviceId) {
+                    if (device.deviceid == me.currentDeviceId) {
                         groupObj.expand = true
                         deviceObj.isSelected = true
                     }
@@ -1080,7 +1051,7 @@ var monitor = {
                         simnum: device.simnum,
                         devicetype: device.devicetype
                     }
-                    if (device.deviceid == store.currentDeviceId) {
+                    if (device.deviceid == me.currentDeviceId) {
                         groupData.expand = true
                         dev.isSelected = true
                     }
@@ -1128,7 +1099,7 @@ var monitor = {
                         devicetype: device.devicetype
                     }
 
-                    if (device.deviceid == store.currentDeviceId) {
+                    if (device.deviceid == me.currentDeviceId) {
                         groupObj.expand = true
                         deviceObj.isSelected = true
                     }
@@ -1183,7 +1154,7 @@ var monitor = {
                         simnum: device.simnum,
                         devicetype: device.devicetype
                     }
-                    if (device.deviceid == store.currentDeviceId) {
+                    if (device.deviceid == me.currentDeviceId) {
                         groupData.expand = true
                         dev.isSelected = true
                     }
@@ -1233,7 +1204,7 @@ var monitor = {
                         devicetype: device.devicetype
                     }
 
-                    if (device.deviceid == store.currentDeviceId) {
+                    if (device.deviceid == me.currentDeviceId) {
                         groupObj.expand = true
                         deviceObj.isSelected = true
                     }
@@ -1286,7 +1257,7 @@ var monitor = {
                         simnum: device.simnum,
                         devicetype: device.devicetype
                     }
-                    if (device.deviceid == store.currentDeviceId) {
+                    if (device.deviceid == me.currentDeviceId) {
                         groupData.expand = true;
                         dev.isSelected = true;
                     }
@@ -1342,8 +1313,8 @@ var monitor = {
             this.intervalInstanse = setInterval(function () {
                 me.intervalTime--
                 if (me.intervalTime <= 0) {
-                    me.intervalTime = Number(store.intervalTime)
-                    var devIdList = Object.keys(me.$store.state.deviceInfos)
+                    me.intervalTime = me.stateIntervalTime;
+                    var devIdList = Object.keys(me.$store.state.deviceInfos);
                     me.getLastPosition(devIdList, function (resp) {
                         if (resp.records) {
                             var newRecord = {};
@@ -1371,15 +1342,13 @@ var monitor = {
                     if (deviceid === record.deviceid) {
                         marker.setPosition(record.point);
                         marker.setIcon(record.icon);
-                        if (deviceid == store.currentDeviceId) {
+                        if (deviceid == me.currentDeviceId) {
                             me.isMoveTriggerEvent = false;
                             if (me.infoWindowInstance) {
                                 if (me.infoWindowInstance.isOpen()) {
                                     var content = me.getWindowContent(record);
                                     me.refreshInfoWindow(content, true);
                                     console.log('查询的轨迹时间', deviceid, DateFormat.longToDateTimeStr(record.arrivedtime, 0));
-                                    // $("#info_window").html(content);
-                                    // me.infoWindowInstance.setContent(content);
                                 }
                             };
                         };
@@ -1413,6 +1382,21 @@ var monitor = {
     computed: {
         username: function () {
             return Cookies.get('name')
+        },
+        isShowConpanyName: function () {
+            return this.$store.state.isShowCompany;
+        },
+        stateIntervalTime: function () {
+            return this.$store.state.intervalTime;
+        },
+        editDeviceInfo: function () {
+            return this.$store.state.editDeviceInfo;
+        },
+        currentDeviceRecord: function () {
+            return this.$store.state.currentDeviceRecord;
+        },
+        currentDeviceId: function () {
+            return this.$store.state.currentDeviceId;
         }
     },
     watch: {
@@ -1438,7 +1422,6 @@ var monitor = {
             directiveList.sort(function (a, b) {
                 return a.cmdlevel > b.cmdlevel;
             });
-            // console.log("currentDevDirectiveList-- ", directiveList);
             this.currentDevDirectiveList = directiveList;
         },
         positionLastrecords: function () {
@@ -1497,10 +1480,9 @@ var monitor = {
     mounted: function () {
         var me = this;
         var havecompany = this.isShowConpanyName == true ? 1 : 0;
-        this.intervalTime = Number(store.intervalTime);
+        this.intervalTime = Number(this.stateIntervalTime);
         this.initMap();
         this.getWithInitInfoWindow();
-        // this.initWebSocket();
         this.getMonitorListByUser(havecompany, function (resp) {
             me.groups = resp.groups;
             me.setDeviceIdsList(resp.groups);
@@ -1528,18 +1510,15 @@ var monitor = {
                     };
                 };
                 me.selectedState = 'all';
-            })
+            });
         });
         this.setIntervalReqRecords();
         communicate.$on("positionlast", this.handleWebSocket);
     },
     beforeDestroy: function () {
-        store.currentDeviceId = null;
-        store.currentDeviceRecord = {};
+        this.$store.commit('currentDeviceRecord', {});
         clearInterval(this.intervalInstanse);
         communicate.$off('positionlast', this.handleWebSocket);
-        if (this.myDis != null) {
-            this.myDis.close();
-        };
+        this.myDis && this.myDis.close();
     }
 }

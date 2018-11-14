@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="shortcut icon" href="./favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>SIM流量管理</title>
+    <link rel="stylesheet" href="dist/styles/iview.css">
+    <script src="js/js.cookie.min.js"></script>
+    <script src="js/polyfill.min.js"></script>
+    <style>
+        html,body{
+            height: 100%;
+            width: 100%;
+            background: #F8F8F9;
+        }
+        #container{
+            position: absolute;
+            left: 0;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            width: 400px;
+            height: 300px;
+            margin: 50px auto;
+            overflow-y: auto;
+        }
+        h2.title{
+            text-align: center;
+        }
+        .demo-spin-container{
+            position: fixed;
+            left: 0;
+            top: 0;
+            right: 0;
+            bottom: 0;
+        }
+        .cause{
+            text-align: center;
+            font-size: 16px;
+        }
+        [v-cloak] {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="container" ref="wrap" v-cloak>
+        <Card style="width:100%;" v-show="isShow&&!isError">
+            <h2 slot="title" class="title">当月流量使用情况</h2>
+            <Row>
+                <i-col :span="6">手机号</i-col>
+                <i-col :span="18">{{phone}}</i-col>
+            </Row>
+            <Row v-for="item in cardDataList" :key="item.label">
+                <i-col :span="6">{{item.label}}</i-col>
+                <i-col :span="18">{{item.value | filterFlow}}</i-col>
+            </Row>
+        </Card>
+        <div class="demo-spin-container" v-show="!isShow">
+            <Spin fix></Spin>
+        </div>
+        <div class="cause" v-show="isError">
+            {{cause}}
+        </div>
+    </div>
+    <script src="dist/vue.min.js"></script>
+    <script src="dist/vuex.min.js"></script>
+    <script src="js/jquery.js"></script>
+    <script src="js/vue-i18n.min.js"></script>
+    <script src="dist/iview.min.js"></script>
+    <script type="text/javascript">
+        
+
+        new Vue({
+            el:"#container",
+            data() {
+                return {
+                    isShow:false,
+                    isError:false,
+                    cardDataList:[{label:""},{label:""},{label:""}],
+                    phone:"",
+                    cause:""
+                }
+            },
+            filters: {
+                filterFlow:function(val){
+                    if(isNaN(val)){
+                        return val;
+                    }else{
+                        if(val%1024 == 0){ 
+                            return val/1024 + "M";
+                        }else{
+                            return  (val/1024).toFixed(2) + "M";
+                        }
+                    }  
+                }  
+            },
+            methods: {
+                getParameterByName: function (name) {
+                    var url = location.search;
+                    url = decodeURIComponent(url);
+                    var theRequest = new Object();
+                    if (url.indexOf("?") != -1) {
+                        var str = url.substr(1);
+                        var strs = str.split("&");
+                        for (var i = 0; i < strs.length; i++) {
+                            theRequest[strs[i].split("=")[0]] = unescape(strs[i].split("=")[1]);
+                        }
+                    }
+                    return theRequest[name];
+                },
+                getCardInfo:function(sim,callback){
+                    var action = "";
+                    var type =  this.getParameterByName("type");
+                   
+                    if(type == "simnum"){
+                        action = "queryuseddatabyphonenum"
+                    }else if(type == "simiccid"){
+                        action = "queryuseddatabyiccid"
+                    }else if(type == "simimsi"){
+                        action = "queryuseddatabyimsi";
+                    }
+                    console.log('type', type , action);
+                    // 460042506202035  simnum simimsi simiccid
+                    $.ajax({
+                        url: "http://jh.tt/siminfo?action=" + action + "&id=" + sim,
+                        type: 'get',
+                        data: {},
+                        timeout: 10000,
+                        dataType: 'json',
+                        success: function (resp) {
+                            callback(resp);
+                        },
+                        error: function (e) {},
+                        complete: function () {}
+                    })
+                },
+                doCardInfo:function(resp){
+                    this.isShow = true;
+                    if(resp.code){
+                        var cardDataUseds = resp.cardDataUseds[0];
+                        var excessCount = cardDataUseds.dataCount - cardDataUseds.usedCount;
+                        var cardDataList = [
+                            {label:"套餐名称",value:cardDataUseds.packageName},
+                            {label:"总流量",value:cardDataUseds.dataCount},
+                            {label:"已用流量",value:cardDataUseds.usedCount},
+                            {label:"剩余流量",value:excessCount}
+                        ];
+                        this.phone = resp.phone;
+                        this.cardDataList = cardDataList;
+                    }else{
+                        this.isError = true;
+                        this.cause = resp.cause;
+                    }
+                }
+            },
+            mounted:function () {
+                var sim = this.getParameterByName("sim");
+                sim ? this.getCardInfo(sim,this.doCardInfo) : this.$Message.error("没有sim号");
+            }
+        })
+        // queryuseddatabyphonenum "460042506202035" 
+        // queryuseddatabyiccid   
+        
+    </script>
+</body>
+</html>

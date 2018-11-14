@@ -1,36 +1,19 @@
-
-
-// timeout定时器
-var timeout = null;
-// 保存所有的报警消息记录;
-var alarmMgr = new AlarmMgr();
-// 最后一次查询报警时间
-var lastQueryAllAlarmTime = 0;
 // 是否显示公司名字
 var isShowCompany = Cookies.get('isShowCompany');
-// 组件之间通信的vue实例
-var communicate = new Vue({});
-// webSocket
-var ws = null;
-
-//全局变量
-store = {
-  navState: isShowCompany === 'true' ? true : false,
-  intervalTime: 10,
-  disposeAlarmDeviceid: null,
-  currentDeviceId: null,
-  currentDeviceRecord: {},
-  treeDeviceInfo: null,
-  paramsCmdCodeArr: [], // 接触报警信息的传参顺序
-  componentName: null,
-}
+var communicate = new Vue({}); // 组件之间通信的vue实例
 // vuex store
 vstore = new Vuex.Store({
   state: {
+    isShowCompany: isShowCompany === 'true' ? true : false,
     userType: Cookies.get('userType'),
     deviceInfos: {},
-    userTypeDescrList: null,
-    allCmdList: []
+    userTypeDescrList: null,     // 用户类型描述
+    allCmdList: [],              // 所有的指令
+    headerActiveName: 'monitor', // 选中的header 
+    intervalTime: 10,     // 定位发送请求的timer
+    editDeviceInfo: {},   // 备份监控页面要编辑的设备对象
+    currentDeviceRecord: null, // 点击设备的记录
+    currentDeviceId: null,    // 点击设备的id
   },
   actions: {
     setdeviceInfos: function (context, groups) {
@@ -44,26 +27,35 @@ vstore = new Vuex.Store({
         data: {},
         async: false,
         success: function (resp) {
-          context.commit('setUserTypeDescr', resp.records);
+          if (resp.status == 0) {
+            context.commit('setUserTypeDescr', resp.records);
+          } else {
+            Window.location.href = 'index.html';
+          }
         },
         error: function () { }
       })
     },
     setAllCmdList: function (context) {
       var hadDeviceUrl = myUrls.queryHadDeviceCmdByUser();
-
       utils.sendAjax(
         hadDeviceUrl,
         { username: Cookies.get('name') },
         function (resp) {
-          var cmdList = resp.records;
-          context.commit('setAllCmdList', cmdList);
+          if (resp.status == 0) {
+            var cmdList = resp.records;
+            context.commit('setAllCmdList', cmdList);
+          } else {
+            Window.location.href = 'index.html';
+          }
         }
       );
-
     }
   },
   mutations: {
+    isShowCompany: function (state, isShowCompany) {
+      state.isShowCompany = isShowCompany;
+    },
     setdeviceInfos: function (state, groups) {
       groups.forEach(function (group) {
         group.firstLetter = __pinyin.getFirstLetter(group.groupname);
@@ -83,6 +75,22 @@ vstore = new Vuex.Store({
       cmdList.forEach(function (item) {
         state.allCmdList.push(item);
       })
+    },
+    setHeaderActiveName: function (state, activeName) {
+      state.headerActiveName = activeName;
+    },
+    stateIntervalTime: function (state, intervalTime) {
+      state.intervalTime = intervalTime;
+    },
+    editDeviceInfo: function (state, editDeviceInfo) {
+      state.editDeviceInfo = editDeviceInfo;
+    },
+    currentDeviceRecord: function (state, record) {
+      state.currentDeviceRecord = record;
+      state.currentDeviceId = record.deviceid;
+    },
+    currentDeviceId: function (state, deviceid) {
+      state.currentDeviceId = deviceid;
     }
   }
 })
@@ -96,8 +104,8 @@ var appHeader = {
       name: '',
       isManager: true,
       modal: false,
+      intervalTime: null,
       isShowCompany: false,
-      intervalTime: 10,
       headMenuList: [
         { name: "monitor", icon: "md-contacts", title: "定位监控", isShow: true },
         { name: "reportForm", icon: "ios-paper-outline", title: "统计报表", isShow: true },
@@ -108,12 +116,11 @@ var appHeader = {
       oldPass: '',
       newPass: '',
       confirmPass: '',
-      activeName: 'monitor',
     }
   },
   methods: {
     changeNav: function (navName) {
-      this.$emit('change-nav', navName)
+      this.$emit('change-nav', navName);
     },
     getManagerType: function (type) {
       var name = ''
@@ -179,18 +186,17 @@ var appHeader = {
       })
     },
     changePassword: function () {
-      this.modalPass = true
-      this.oldPass = ''
-      this.newPass = ''
-      this.confirmPass = ''
+      this.modalPass = true;
+      this.oldPass = '';
+      this.newPass = '';
+      this.confirmPass = '';
     },
     showSetup: function () {
-      this.modal = true
+      this.modal = true;
     },
     changeShowCompany: function (state) {
-      this.$emit('change-tree', state)
-      store.navState = state
-      Cookies.set('isShowCompany', state, { expires: 7 })
+      this.$store.commit('isShowCompany', state);
+      Cookies.set('isShowCompany', state, { expires: 7 });
     },
     reqUserType: function () {
       var url = myUrls.queryUserType()
@@ -217,41 +223,35 @@ var appHeader = {
   },
   computed: {
     userTypeDescrList: function () {
-      return this.$store.state.userTypeDescrList
+      return this.$store.state.userTypeDescrList;
+    },
+    stateIntervalTime: function () {
+      return this.$store.state.intervalTime;
     }
   },
   mounted: function () {
     var me = this
     this.$nextTick(function () {
       me.userType = Cookies.get('userType')
-      var mgr = me.getManagerType(me.userType)
-      me.name = Cookies.get('name') + mgr
+      var mgrType = me.getManagerType(me.userType)
+      me.name = Cookies.get('name') + mgrType;
+      me.intervalTime = me.stateIntervalTime;
       me.navJurisdiction(me.userType)
-
       var isShowCompany = Cookies.get('isShowCompany')
       if (isShowCompany == 'true') {
-        me.isShowCompany = true
-        store.navState = true
+        me.isShowCompany = true;
       } else if (isShowCompany == 'false') {
-        me.isShowCompany = false
-        store.navState = false
+        me.isShowCompany = false;
       }
     })
   },
   watch: {
     intervalTime: function () {
       var intervalTime = Number(this.intervalTime)
-      this.$emit('change-intervaltime', intervalTime)
-      store.intervalTime = intervalTime
+      this.$store.commit('stateIntervalTime', intervalTime);
     }
   }
 }
-
-
-
-
-
-
 
 
 
@@ -260,26 +260,13 @@ var vRoot = new Vue({
   el: '#app',
   store: vstore,
   i18n: i18n,
-  data: {
-    componentId: '',
-  },
+  data: {},
   methods: {
-    changeComponent: function (componentid) {
-      store.componentName = componentid;
-      this.componentId = componentid
+    changeComponent: function (activeName) {
+      this.$store.commit('setHeaderActiveName', activeName);
     },
-    changeNav: function (state) {
-      if (this.$refs['my-component'].setNavState) {
-        this.$refs['my-component'].setNavState(state);
-      };
-    },
-    changeInterval: function (interval) {
-      if (this.$refs['my-component'].setIntervalTime) {
-        this.$refs['my-component'].setIntervalTime(interval);
-      }
-    },
-    jumpReport: function (companyName) {
-      this.componentId = companyName;
+    jumpReport: function (activeName) {
+      this.$store.commit('setHeaderActiveName', activeName);
     },
     wsCallback: function (resp) {
       var action = resp.action;
@@ -290,6 +277,11 @@ var vRoot = new Vue({
         var data = resp.positionLast;
         communicate.$emit("positionlast", data);
       };
+    }
+  },
+  computed: {
+    activeName: function () {
+      return this.$store.state.headerActiveName;
     }
   },
   components: {
