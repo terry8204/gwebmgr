@@ -303,6 +303,8 @@ function openSim (deviceId) {
     if (sim) {
       var url = 'sim.html?sim=' + sim + '&type=' + type;
       window.open(url);
+    } else {
+      vRoot.$Message.error("请设置设备手机号");
     };
   })
 

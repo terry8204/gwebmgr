@@ -158,7 +158,7 @@
             },
             mounted:function () {
                 var sim = this.getParameterByName("sim");
-                sim ? this.getCardInfo(sim,this.doCardInfo) : this.$Message.error("没有sim号");
+                sim ? this.getCardInfo(sim,this.doCardInfo) : this.$Message.error("请设置设备的手机号码");
             }
         })
         // queryuseddatabyphonenum "460042506202035" 
