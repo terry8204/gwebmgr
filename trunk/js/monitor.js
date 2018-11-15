@@ -5,7 +5,6 @@ var monitor = {
     data: function () {
         return {
             map: null,
-            // isShowConpanyName: store.navState, // 0 不显示公司   1 显示公司名
             sosoValue: '', // 搜索框的值
             sosoData: [], // 搜索框里面的数据
             selectedState: '', // 选择nav的状态 all online offline;
@@ -127,11 +126,11 @@ var monitor = {
             }
         },
         clearMarkerOverlays: function () {
-            var me = this
-            var mks = me.map.getOverlays()
+            var me = this;
+            var mks = me.map.getOverlays();
             mks.forEach(function (item) {
                 if (item.deviceid != undefined) {
-                    me.map.removeOverlay(item)
+                    me.map.removeOverlay(item);
                 }
             })
         },
@@ -1363,8 +1362,7 @@ var monitor = {
             for (var key in this.positionLastrecords) {
                 var record = this.positionLastrecords[key];
 
-                var isOnline =
-                    Date.now() - record.arrivedtime < me.offlineTime ? true : false
+                var isOnline = Date.now() - record.arrivedtime < me.offlineTime ? true : false;
                 var iconState = null;
 
                 var angle = utils.getAngle(record.course);
@@ -1381,7 +1379,7 @@ var monitor = {
     },
     computed: {
         username: function () {
-            return Cookies.get('name')
+            return Cookies.get('name');
         },
         isShowConpanyName: function () {
             return this.$store.state.isShowCompany;
@@ -1408,9 +1406,9 @@ var monitor = {
             }
         },
         currentDeviceType: function () {
-            var allCmdList = this.$store.state.allCmdList
-            var directiveList = []
-            var type = this.currentDeviceType
+            var allCmdList = this.$store.state.allCmdList;
+            var directiveList = [];
+            var type = this.currentDeviceType;
             allCmdList.forEach(function (cmd) {
                 if (cmd.devicetype == type) {
                     directiveList.push(cmd);
