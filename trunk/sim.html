@@ -37,7 +37,6 @@
             bottom: 0;
         }
         .cause{
-            text-align: center;
             font-size: 16px;
         }
         [v-cloak] {
@@ -62,7 +61,8 @@
             <Spin fix></Spin>
         </div>
         <div class="cause" v-show="isError">
-            {{cause}}
+            <p>不支持的手机号码</p>
+            <p>提示信息：{{cause}}</p>
         </div>
     </div>
     <script src="dist/vue.min.js"></script>
@@ -122,7 +122,7 @@
                     }else if(type == "simimsi"){
                         action = "queryuseddatabyimsi";
                     }
-                    console.log('type', type , action);
+           
                     // 460042506202035  simnum simimsi simiccid
                     $.ajax({
                         url: "http://jh.tt/siminfo?action=" + action + "&id=" + sim,
