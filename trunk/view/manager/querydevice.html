@@ -216,9 +216,9 @@ vueInstanse = new Vue({
                     editObject = this.tableData[index];
                     var pagePath = null
                         if (myUrls.host.indexOf('gpsserver') != -1) {
-                            pagePath = myUrls.host + 'view/manager/editdevice.html'
+                            pagePath = myUrls.host + 'view/manager/editdevice.html';
                         } else {
-                            pagePath = '../view/manager/editdevice.html'
+                            pagePath = '../view/manager/editdevice.html';
                         }
                     this.$Loading.start();
                     $("#mar-view").load(pagePath,function(){
@@ -226,7 +226,6 @@ vueInstanse = new Vue({
                     });
                 },
                 deleteDevice:function(index){
-                    console.log(index);
                     this.deleteDeviceInfo = this.tableData[index];
                     this.modal = true;
                 },

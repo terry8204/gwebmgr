@@ -140,16 +140,20 @@
                 doCardInfo:function(resp){
                     this.isShow = true;
                     if(resp.code){
-                        var cardDataUseds = resp.cardDataUseds[0];
-                        var excessCount = cardDataUseds.dataCount - cardDataUseds.usedCount;
-                        var cardDataList = [
-                            {label:"套餐名称",value:cardDataUseds.packageName},
-                            {label:"总流量",value:cardDataUseds.dataCount},
-                            {label:"已用流量",value:cardDataUseds.usedCount},
-                            {label:"剩余流量",value:excessCount}
-                        ];
+                        var cardDataUseds =resp.cardDataUseds ? resp.cardDataUseds[0] : null;
+                        if(cardDataUseds){
+                     
+                            var cardDataList = [
+                                {label:"套餐名称",value:cardDataUseds.packageName?cardDataUseds.packageName:'空'},
+                                {label:"总流量",value:cardDataUseds.dataCount?cardDataUseds.dataCount:0},
+                                {label:"已用流量",value:cardDataUseds.usedCount?cardDataUseds.usedCount:0},
+                                {label:"剩余流量",value:cardDataUseds.leftCount?cardDataUseds.leftCount:0}
+                            ];
+                            this.cardDataList = cardDataList;
+                        }else{
+
+                        }
                         this.phone = resp.phone;
-                        this.cardDataList = cardDataList;
                     }else{
                         this.isError = true;
                         this.cause = resp.cause;

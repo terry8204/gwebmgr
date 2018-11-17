@@ -167,7 +167,6 @@
                     this.deviceenable = "1";
                     this.groupid = "";
                     this.companyid = "";
-                    this.currentIndex = 0;
                 },
                 queryAllCompanyInfo:function(claaback){
                     var url = myUrls.queryCompanyByCreater();
@@ -247,15 +246,6 @@
                     this.groupsList = [];
                     this.groupid = "";
                     this.getGroupsList();  
-                },
-                currentIndex:function(){
-                    if(this.currentIndex == 0){
-                        this.stepsTitle = ['进行中','待进行','待进行'];
-                    }else if(this.currentIndex == 1){
-                        this.stepsTitle = ['已完成','进行中','待进行'];
-                    }else if(this.currentIndex == 2){
-                        this.stepsTitle = ['已完成','已完成','已完成'];
-                    }
                 }
             },
             mounted:function () {
