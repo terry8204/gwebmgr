@@ -165,3 +165,30 @@ p.last-address{
     -webkit-line-clamp: 2;
     overflow: hidden;
 }
+
+/* tree demo */
+.cursor-pointer{
+    cursor: pointer;
+}
+.tree-demo-wraper{
+    position: relative;
+}
+.toggle-header-wraper{
+    height: 35px;
+}
+.toggle-header-wraper>div{
+    float: left;
+}
+.tree-wrapper{
+    position: absolute;
+    top: 38px;
+    left: 0px;
+    width: 250px;
+    height: 300px;
+    background: #ffffff;
+    border-radius: 3px;
+    overflow-y: auto;
+    border: 1px solid #DCDEE2;
+    padding: 0 10px;
+    z-index: 999;
+}

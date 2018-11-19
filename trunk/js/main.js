@@ -14,6 +14,7 @@ vstore = new Vuex.Store({
     editDeviceInfo: {},   // 备份监控页面要编辑的设备对象
     currentDeviceRecord: null, // 点击设备的记录
     currentDeviceId: null,    // 点击设备的id
+    userName: Cookies.get('name')
   },
   actions: {
     setdeviceInfos: function (context, groups) {

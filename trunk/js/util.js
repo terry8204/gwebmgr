@@ -229,6 +229,8 @@ var utils = {
   }
 }
 
+vClickOutside.install(Vue);
+
 //  vue组件   配合查询分组表格使用
 Vue.component('expand-row', {
   template:

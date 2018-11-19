@@ -1,0 +1,35 @@
+<meta charset="UTF-8">
+<div id="cmd-report">
+    <div class="report-item-header">
+        <Row style="margin:10px;height: 35px;">
+            <div style="float: left;">
+                <span>选择时间:</span>
+                <date-picker 
+                    type="daterange" 
+                    :value="dateVal"
+                    :editable="false"
+                    :clearable="false"
+                    @on-change="onChange" 
+                    show-week-numbers 
+                    placement="bottom-start"></date-picker>
+            </div>
+            <div style="float: left;height: 35px; line-height: 35px;margin-left: 20px;">
+                <span class="cursor-pointer" @click="handleSelectdDate(0)">今天</span> <b>｜</b>
+                <span class="cursor-pointer" @click="handleSelectdDate(1)">昨天</span> <b>｜</b>
+                <span class="cursor-pointer" @click="handleSelectdDate(3)">近三天</span> <b>｜</b>
+                <span class="cursor-pointer" @click="handleSelectdDate(7)">最近七天</span>
+            </div>    
+        </Row>
+        <Row style="margin:10px;height: 35px;">
+            <div style="float: left;">
+                <tree-demo :groupslist="groupslist" @on-selectd-deviceids="onSelectdDeviceIds"></tree-demo>
+            </div>
+            <div style="margin-left:20px;float: left;">
+                <i-button @click="onClickQuery">查询</i-button>
+            </div>
+        </Row>
+        <div style="margin:10px;">
+            <i-table :columns="columns" height="280" :data="tableData"></i-table>
+        </div>
+    </div>
+</div>

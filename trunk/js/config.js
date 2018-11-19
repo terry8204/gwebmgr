@@ -240,7 +240,10 @@ var myUrls = {
   refreshPostion: function () {
     return this.host + 'webapi?action=refreshpostion&token=' + token;
   },
-
+  // 报表 ----------------------------------------------------------------------------------------------
+  reportCmd: function () {
+    return this.host + 'webapi?action=reportcmd&token=' + token;
+  }
 }
 
 // global var
