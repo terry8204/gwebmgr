@@ -352,6 +352,10 @@
             return Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate(), d.getUTCHours(), d.getUTCMinutes(), d.getUTCSeconds(), d.getUTCMilliseconds());
         },
 
+        getOffset: function () {
+            return -(new Date().getTimezoneOffset() / 60);
+        },
+
         //定义内部常量
         WEEKTYPE: {
             ZH_DAYNAME: 0,

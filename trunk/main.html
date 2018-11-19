@@ -469,7 +469,7 @@
         <div class="report-wraper full">
             <div class="report-left-wrap">
                     <div class="mar-nav">
-                            <i-menu :theme="theme" @on-select="selectditem">
+                            <i-menu :theme="theme" @on-select="selectditem" accordion>
                                 <template v-for="(group,index) in reportNavList">
                                     <Submenu :name="group.name" :key="index">
                                             <template slot="title">
@@ -495,7 +495,7 @@
     <script type="text/x-template" id="manager-template">
         <div class="manager-wraper">
             <div class="mar-nav">
-                    <i-menu :theme="theme" @on-select="selectditem">
+                    <i-menu :theme="theme" @on-select="selectditem" accordion>
                         <template v-for="(group,index) in navList">
                             <Submenu :name="group.name" :key="index">
                                     <template slot="title">
@@ -520,7 +520,7 @@
     <script type="text/x-template" id="systemparam-template"> 
         <div class="manager-wraper">
             <div class="mar-nav">
-                    <i-menu :theme="theme" @on-select="selectditem">
+                    <i-menu :theme="theme" @on-select="selectditem" accordion>
                         <template v-for="(group,index) in navList">
                             <Submenu :name="group.name" :key="index" v-if="group.children">
                                     <template slot="title">
@@ -649,7 +649,7 @@
                 <div style="position:relative;width: 187px;">
                     <Input type="text" v-model="something" readonly @on-focus="onFocus"></Input>
                     <div class="tree-wrapper" v-show="visibleTree">
-                        <Tree :data="groupslist" @on-check-change="onCheckChange" show-checkbox></Tree>
+                        <Tree :data="groupslist" @on-check-change="onCheckChange" show-checkbox ref="treeRef"></Tree>
                     </div>
                 </div> 
            </div>

@@ -29,7 +29,10 @@
             </div>
         </Row>
         <div style="margin:10px;">
-            <i-table :columns="columns" height="280" :data="tableData"></i-table>
+            <i-table :columns="columns" height="520" :data="tableData" :loading="loading"></i-table>
+            <div style="margin-top:10px;">
+                <Page :total="total" :current="currentPageIndex" simple :page-size="10" @on-change="changePage"></Page>
+            </div>
         </div>
     </div>
 </div>

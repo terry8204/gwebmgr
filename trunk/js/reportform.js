@@ -1,75 +1,136 @@
-// DateFormat.longToDateStr(Date.now(),0)
+var reportMixin = {
+    data: {
+        isSelectAll: null,
+        dateVal: [DateFormat.longToDateStr(Date.now(), 0), DateFormat.longToDateStr(Date.now(), 0)],
+        total: 0,
+        currentPageIndex: 1,
+    },
+    methods: {
+        changePage: function (index) {
+            var offset = index * 10;
+            var start = (index - 1) * 10;
+            this.currentPageIndex = index;
+            this.tableData = this.cmdRecords.slice(start, offset);
+        },
+        onChange: function (value) {
+            this.dateVal = value;
+        },
+        handleSelectdDate: function (dayNumber) {
+            var dayTime = 24 * 60 * 60 * 1000;
+            if (dayNumber == 0) {
+                this.dateVal = [DateFormat.longToDateStr(Date.now(), 0), DateFormat.longToDateStr(Date.now(), 0)];
+            } else if (dayNumber == 1) {
+                this.dateVal = [DateFormat.longToDateStr(Date.now() - dayTime, 0), DateFormat.longToDateStr(Date.now() - dayTime, 0)];
+            } else if (dayNumber == 3) {
+                this.dateVal = [DateFormat.longToDateStr(Date.now() - dayTime * 2, 0), DateFormat.longToDateStr(Date.now(), 0)];
+            } else if (dayNumber == 7) {
+                this.dateVal = [DateFormat.longToDateStr(Date.now() - dayTime * 6, 0), DateFormat.longToDateStr(Date.now(), 0)];
+            }
+        },
+        onSelectdDeviceIds: function (result) {
+            if (result.isAll !== null) {
+                this.selectdDeviceList = result.deviceids;
+            } else {
+                this.selectdDeviceList = [];
+            }
+            this.isSelectAll = result.isAll;
+        },
+    },
+}
+
+
+
+//  指令查询 DateFormat.longToDateStr(Date.now(),0)
 function cmdReport (groupslist) {
-    console.log('groupslist', groupslist);
+
     new Vue({
         el: "#cmd-report",
         data: {
-            isSelectAll: null,
-            dateVal: [DateFormat.longToDateStr(Date.now(), 0), DateFormat.longToDateStr(Date.now(), 0)],
+            loading: false,
             selectdDeviceList: [],
+            // isSelectAll: null,
+            // dateVal: [DateFormat.longToDateStr(Date.now(), 0), DateFormat.longToDateStr(Date.now(), 0)],
+            // total: 0,
+            // currentPageIndex: 1,
             groupslist: [],
             columns: [
-                { type: 'index', width: 60, align: 'center' },
+                { title: '编号', key: "index", width: 60, align: 'center' },
                 { title: '设备名称', key: 'deviceName' },
-                { title: '发送时间', key: 'sendtime' },
-                { title: '发送命令', key: 'sendcmd' },
-                { title: '发送内容', key: 'sendcontent' },
+                { title: '命令名称', key: 'cmdname' },
+                { title: '发送时间', key: 'cmdtimeStr' },
+                { title: '发送内容', key: 'content' },
             ],
-            tableData: [
-                { deviceName: 12121 },
-                { deviceName: 12121 },
-                { deviceName: 12121 },
-                { deviceName: 12121 },
-                { deviceName: 12121 },
-            ],
+            tableData: [],
+            cmdRecords: []
         },
+        mixins: [reportMixin],
         methods: {
-            onChange: function (value) {
-                this.dateVal = value;
-            },
-            handleSelectdDate: function (dayNumber) {
-                var dayTime = 24 * 60 * 60 * 1000;
-                if (dayNumber == 0) {
-                    this.dateVal = [DateFormat.longToDateStr(Date.now(), 0), DateFormat.longToDateStr(Date.now(), 0)];
-                } else if (dayNumber == 1) {
-                    this.dateVal = [DateFormat.longToDateStr(Date.now() - dayTime, 0), DateFormat.longToDateStr(Date.now() - dayTime, 0)];
-                } else if (dayNumber == 3) {
-                    this.dateVal = [DateFormat.longToDateStr(Date.now() - dayTime * 2, 0), DateFormat.longToDateStr(Date.now(), 0)];
-                } else if (dayNumber == 7) {
-                    this.dateVal = [DateFormat.longToDateStr(Date.now() - dayTime * 6, 0), DateFormat.longToDateStr(Date.now(), 0)];
-                }
-            },
+            // changePage: function (index) {
+            //     var offset = index * 5;
+            //     var start = (index - 1) * 5;
+            //     this.currentPageIndex = index;
+            //     this.tableData = this.cmdRecords.slice(start, offset);
+            // },
+            // onChange: function (value) {
+            //     this.dateVal = value;
+            // },
+            // handleSelectdDate: function (dayNumber) {
+            //     var dayTime = 24 * 60 * 60 * 1000;
+            //     if (dayNumber == 0) {
+            //         this.dateVal = [DateFormat.longToDateStr(Date.now(), 0), DateFormat.longToDateStr(Date.now(), 0)];
+            //     } else if (dayNumber == 1) {
+            //         this.dateVal = [DateFormat.longToDateStr(Date.now() - dayTime, 0), DateFormat.longToDateStr(Date.now() - dayTime, 0)];
+            //     } else if (dayNumber == 3) {
+            //         this.dateVal = [DateFormat.longToDateStr(Date.now() - dayTime * 2, 0), DateFormat.longToDateStr(Date.now(), 0)];
+            //     } else if (dayNumber == 7) {
+            //         this.dateVal = [DateFormat.longToDateStr(Date.now() - dayTime * 6, 0), DateFormat.longToDateStr(Date.now(), 0)];
+            //     }
+            // },
             onSelectdDeviceIds: function (result) {
                 if (result.isAll !== null) {
-                    if (result.isAll) {
-                        this.selectdDeviceList = [];
-                    } else {
-                        this.selectdDeviceList = result.deviceids;
-                    }
+                    this.selectdDeviceList = result.deviceids;
+                } else {
+                    this.selectdDeviceList = [];
                 }
+                console.log(result);
                 this.isSelectAll = result.isAll;
-                console.log('result', result);
             },
             onClickQuery: function () {
+                var self = this;
                 if (this.isSelectAll === null) {
                     this.$Message.error("请选择设备");
                     return;
                 }
                 var data = {
-                    username: vstore.state.userName,
+                    // username: vstore.state.userName,
                     startday: this.dateVal[0],
                     endday: this.dateVal[1],
-                    offset: DateFormat.getCurrentUTC()
+                    offset: DateFormat.getOffset(),
+                    devices: this.selectdDeviceList
                 }
 
-                if (this.isSelectAll === false) {
-                    data.devices = this.selectdDeviceList;
-                    console.log('result', "bushi全部");
-                }
-                console.log('data', data);
-                var url = myUrls.reportCmd();
-                utils.sendAjax(url, data, function (resp) {
+
+                this.loading = true;
+                utils.sendAjax(myUrls.reportCmd(), data, function (resp) {
+                    self.loading = false;
                     console.log('resp', resp);
+                    if (resp.status == 0) {
+                        if (resp.cmdrecords) {
+                            resp.cmdrecords.forEach(function (item, index) {
+                                item.index = ++index;
+                                item.cmdtimeStr = DateFormat.longToDateTimeStr(item.cmdtime, 0);
+                                item.deviceName = vstore.state.deviceInfos[item.deviceid].devicename;
+                            });
+                            self.cmdRecords = resp.cmdrecords;
+                            self.total = self.cmdRecords.length;
+                            self.tableData = self.cmdRecords.slice(0, 10);
+                            self.currentPageIndex = 1;
+                        } else {
+                            self.$Message.error("没有记录");
+                        }
+                    } else {
+                        self.$Message.error(resp.cause);
+                    }
                 })
             }
         },
@@ -104,7 +165,97 @@ function cmdReport (groupslist) {
                         this.$emit("on-selectd-deviceids", result)
                     },
                     isCheckAll: function (list) {
+                        var deviceids = [];
+                        list.forEach(function (itme) {
+                            if (!itme.children) {
+                                deviceids.push(itme.deviceid)
+                            };
+                        })
+                        if (list.length === this.allCount) {
+                            return {
+                                isAll: true,
+                                deviceids: deviceids
+                            }
+                        } else if (list.length == 0) {
+                            return {
+                                isAll: null,
+                            }
+                        } else {
+                            return {
+                                isAll: false,
+                                deviceids: deviceids
+                            }
+                        }
+                    }
+                },
+                watch: {
+                    groupslist: function () {
+                        var count = 0;
+                        this.groupslist.forEach(function (item) {
+                            count++;
+                            item.children.forEach(function (device) {
+                                count++;
+                            })
+                        });
+                        this.allCount = count;
+                    }
+                }
+            }
+        },
+        mounted () {
+            this.groupslist = groupslist;
+        }
+    });
+}
 
+// 查询报警
+function allAlarm (groupslist) {
+    new Vue({
+        el: "#all-alarm",
+        data: {
+            groupslist: [],
+            selectdDeviceList: [],
+        },
+        mixins: [reportMixin],
+        methods: {
+            onClickQuery: function () {
+                console.log('aaa', this.selectdDeviceList);
+            }
+        },
+        mounted () {
+            this.groupslist = groupslist;
+        },
+        components: {
+            treeDemo: {
+                template: document.getElementById("tree-demo-template"),
+                data () {
+                    return {
+                        something: "",
+                        allCount: 0,
+                        visibleTree: false
+                    }
+                },
+                props: {
+                    groupslist: {
+                        type: Array,
+                        default: function () {
+                            return []
+                        }
+                    }
+                },
+                methods: {
+                    onClickOutside: function () {
+                        this.visibleTree = false;
+                    },
+                    onFocus: function () {
+                        this.visibleTree = true;
+                    },
+                    onCheckChange: function (list) {
+                        this.something = list.map(function (item) { return item.title }).join(",");
+                        var result = this.isCheckAll(list);
+                        this.$emit("on-selectd-deviceids", result)
+                    },
+                    isCheckAll: function (list) {
                         if (list.length === this.allCount) {
                             return {
                                 isAll: true,
@@ -137,18 +288,12 @@ function cmdReport (groupslist) {
                             })
                         });
                         this.allCount = count;
-                        console.log('tag', count);
                     }
                 }
             }
-        },
-        mounted () {
-            this.groupslist = groupslist;
         }
-    });
+    })
 }
-
-
 
 
 
@@ -166,8 +311,6 @@ var reportForm = {
                     icon: 'ios-photos',
                     children: [
                         { title: '命令报表', name: 'cmdReport', icon: 'ios-subway' },
-                        { title: '超速报表', name: 'chaosuReport', icon: 'ios-subway' },
-                        { title: '位置报表', name: 'weizhiReport', icon: 'md-pin' }
                     ]
                 },
                 {
@@ -175,7 +318,7 @@ var reportForm = {
                     name: 'warningMar',
                     icon: 'logo-wordpress',
                     children: [
-                        { title: '全部报警', name: 'allWarning', icon: 'md-warning' },
+                        { title: '全部报警', name: 'allAlarm', icon: 'md-warning' },
                     ]
                 },
             ]
@@ -199,6 +342,8 @@ var reportForm = {
                 me.$Loading.finish();
                 if (page.indexOf('cmdreport') !== -1) {
                     cmdReport(me.groupslist);
+                } else if (page.indexOf('allalarm') !== -1) {
+                    allAlarm(me.groupslist);
                 }
             });
         },
