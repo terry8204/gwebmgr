@@ -53,7 +53,7 @@ var monitor = {
                 { title: '编号', key: "index", width: 60, align: 'center' },
                 { title: '设备序号', key: 'deviceid' },
                 { title: '指令名称', key: 'cmdname' },
-                { title: '发送时间', key: 'sendtimeStr' },
+                { title: '发送时间', key: 'sendtimeStr', width: 115 },
                 { title: '发送参数', key: 'cmdparams' },
                 {
                     title: '操作',
@@ -99,7 +99,7 @@ var monitor = {
                 { title: '编号', key: "index", width: 60, align: 'center' },
                 { title: '设备序号', key: 'deviceid' },
                 { title: '指令名称', key: 'cmdname' },
-                { title: '发送时间', key: 'sendtimeStr' },
+                { title: '发送时间', key: 'sendtimeStr', width: 115 },
                 { title: '发送参数', key: 'cmdparams' },
                 { title: '结果', key: 'result' },
             ],
@@ -287,16 +287,20 @@ var monitor = {
             var distance = this.fenceDistance;
 
             if (!isNaN(distance)) {
-                var url = myUrls.setGeofence();
-                utils.sendAjax(url, { deviceid: deviceid, radius: this.fenceDistance, lat: track.callat, lon: track.callon }, function (resp) {
-                    if (resp.status == 0) {
-                        me.electronicFenceModal = false;
-                        utils.addMapFence(me, deviceid, me.fenceDistance);
-                    } else {
-                        me.$Message.error("设置失败");
-                    }
-                })
-
+                if (track) {
+                    var url = myUrls.setGeofence();
+                    utils.sendAjax(url, { deviceid: deviceid, radius: this.fenceDistance, lat: track.callat, lon: track.callon }, function (resp) {
+                        if (resp.status == 0) {
+                            me.electronicFenceModal = false;
+                            utils.addMapFence(me, deviceid, me.fenceDistance);
+                        } else {
+                            me.$Message.error("设置失败");
+                        }
+                    })
+                } else {
+                    me.$Message.error("该设备没有轨迹,无法设防");
+                    me.electronicFenceModal = false;
+                }
             } else {
                 this.$Message.error("范围必须是数字");
             }
