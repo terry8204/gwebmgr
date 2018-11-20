@@ -244,6 +244,10 @@ var myUrls = {
   queryAllCmdRecords: function () {
     return this.host + 'webapi?action=queryallcmdrecords&token=' + token;
   },
+  // 取消缓存发送的设备指令
+  deleteCacheCmd: function () {
+    return this.host + 'webapi?action=deletecachecmd&token=' + token;
+  },
   // 报表 ----------------------------------------------------------------------------------------------
   reportCmd: function () {
     return this.host + 'webapi?action=reportcmd&token=' + token;

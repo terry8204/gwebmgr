@@ -1,46 +1,4 @@
-var cacheColumns = [
-    { title: '编号', key: "index", width: 60, align: 'center' },
-    { title: '设备序号', key: 'deviceid' },
-    { title: '指令名称', key: 'cmdname' },
-    { title: '指令状态', key: 'cmdstate' },
-    {
-        title: '响应时间', key: 'responsetime',
-        filters: [{ label: "响应时间", value: "responsetime" }],
-        filterMethod: function (a, b, c) {
-            console.log('a,b,c', a, b, c);
-            return true;
-        }
-    },
-    { title: '发送时间', key: 'content' },
-    {
-        title: '操作',
-        key: 'action',
-        width: 100,
-        // align: 'center',
-        render: function (h, params) {
-            return h('div', [
-                h('Poptip', {
-                    props: {
-                        confirm: true,
-                        title: '确定取消吗?'
-                    },
-                    on: {
-                        'on-ok': function () {
-                            alert(vm);
-                        }
-                    }
-                }, [
-                        h('Button', {
-                            props: {
-                                type: 'error',
-                                size: 'small'
-                            }
-                        }, "取消")
-                    ])
-            ]);
-        },
-    }
-]
+
 
 
 
@@ -91,7 +49,60 @@ var monitor = {
             deviceBaseInfo: {},
             infoWindowInstance: null,  //  信息窗口实例
             loading: false,
-            cacheColumns: cacheColumns,
+            cacheColumns: [
+                { title: '编号', key: "index", width: 60, align: 'center' },
+                { title: '设备序号', key: 'deviceid' },
+                { title: '指令名称', key: 'cmdname' },
+                { title: '发送时间', key: 'sendtimeStr' },
+                { title: '发送参数', key: 'cmdparams' },
+                {
+                    title: '操作',
+                    key: 'action',
+                    width: 100,
+                    // align: 'center',
+                    render: function (h, params) {
+                        return h('div', [
+                            h('Poptip', {
+                                props: {
+                                    confirm: true,
+                                    title: '确定取消吗?'
+                                },
+                                on: {
+                                    'on-ok': function () {
+                                        var url = myUrls.deleteCacheCmd();
+                                        utils.sendAjax(url, { cachecmdid: params.row.cachecmdid }, function (resp) {
+                                            if (resp.status == 0) {
+                                                vm.$Message.success("取消成功");
+                                                vm.cacheTableData.splice(params.index, 1);
+                                                vm.cacheTableData.forEach(function (item, index) {
+                                                    item.index = ++index;
+                                                });
+                                            } else if (resp.status == 1) {
+                                                vm.$Message.error("取消失败");
+                                            }
+                                        })
+                                    }
+                                }
+                            }, [
+                                    h('Button', {
+                                        props: {
+                                            type: 'error',
+                                            size: 'small'
+                                        }
+                                    }, "取消")
+                                ])
+                        ]);
+                    },
+                }
+            ],
+            sendColumns: [
+                { title: '编号', key: "index", width: 60, align: 'center' },
+                { title: '设备序号', key: 'deviceid' },
+                { title: '指令名称', key: 'cmdname' },
+                { title: '发送时间', key: 'sendtimeStr' },
+                { title: '发送参数', key: 'cmdparams' },
+                { title: '结果', key: 'result' },
+            ],
             cacheTableData: [],
             sendTableData: []
         }
@@ -296,7 +307,16 @@ var monitor = {
             var url = myUrls.queryAllCmdRecords();
             utils.sendAjax(url, { deviceid: this.currentDeviceId }, function (resp) {
                 if (resp.status === 0) {
-
+                    resp.cacherecords.forEach(function (record, index) {
+                        record.index = ++index;
+                        record.sendtimeStr = DateFormat.longToDateTimeStr(record.cmdtime, 0);
+                    });
+                    resp.sendrecords.forEach(function (record, index) {
+                        record.index = ++index;
+                        record.sendtimeStr = DateFormat.longToDateTimeStr(record.cmdtime, 0);
+                    });
+                    me.cacheTableData = resp.cacherecords;
+                    me.sendTableData = resp.sendrecords;
                 } else {
                     me.$Message.error("查询指令记录失败");
                 }
