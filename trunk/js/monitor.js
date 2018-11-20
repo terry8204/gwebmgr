@@ -86,7 +86,7 @@ var monitor = {
                             }, [
                                     h('Button', {
                                         props: {
-                                            type: 'error',
+                                            type: 'primary',
                                             size: 'small'
                                         }
                                     }, "取消")
