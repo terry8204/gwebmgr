@@ -53,7 +53,7 @@ var monitor = {
                 { title: '编号', key: "index", width: 60, align: 'center' },
                 { title: '设备序号', key: 'deviceid' },
                 { title: '指令名称', key: 'cmdname' },
-                { title: '发送时间', key: 'sendtimeStr', width: 115 },
+                { title: '发送时间', key: 'sendtimeStr', width: 170 },
                 { title: '发送参数', key: 'cmdparams' },
                 {
                     title: '操作',
@@ -99,7 +99,7 @@ var monitor = {
                 { title: '编号', key: "index", width: 60, align: 'center' },
                 { title: '设备序号', key: 'deviceid' },
                 { title: '指令名称', key: 'cmdname' },
-                { title: '发送时间', key: 'sendtimeStr', width: 115 },
+                { title: '发送时间', key: 'sendtimeStr', width: 170 },
                 { title: '发送参数', key: 'cmdparams' },
                 { title: '结果', key: 'result' },
             ],
