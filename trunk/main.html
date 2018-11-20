@@ -58,7 +58,6 @@
                 </i-menu>
             </div>
             <div class="site_links">
-
                 <ul>
                     <li>
                         您好! {{name}}
@@ -215,8 +214,9 @@
                                                                 </i-dropdown-menu>
                                                             </Dropdown>
                                                         </DropdownItem>
-                                                        <DropdownItem name="name3">统计报表</DropdownItem>
-                                                        <DropdownItem name="name4">设备基本信息</DropdownItem>
+                                                        <DropdownItem name="name3">指令记录</DropdownItem>
+                                                        <DropdownItem name="name4">统计报表</DropdownItem>
+                                                        <DropdownItem name="name5">设备基本信息</DropdownItem>
                                                     </i-dropdown-menu>
                                                 </Dropdown>
                                             <li> 
@@ -279,8 +279,9 @@
                                                                                             </i-dropdown-menu>
                                                                                         </Dropdown>
                                                                                     </DropdownItem>
-                                                                                    <DropdownItem name="name3">统计报表</DropdownItem>
-                                                                                    <DropdownItem name="name4">设备基本信息</DropdownItem>
+                                                                                    <DropdownItem name="name3">指令记录</DropdownItem>
+                                                                                    <DropdownItem name="name4">统计报表</DropdownItem>
+                                                                                    <DropdownItem name="name5">设备基本信息</DropdownItem>
                                                                                 </i-dropdown-menu>
                                                                     </Dropdown>
                                                                 <li> 
@@ -461,6 +462,26 @@
                                     <i-button type="primary"  @click="setFence" style="width: 100%">确定</i-button>
                                 </div>
                         </Modal> 
+                    <!-- 指令记录 -->
+                    <Modal v-model="directiveReportModal" width="860">
+                            <p slot="header" style="color:#f60;text-align:center">
+                                <Icon type="ios-create-outline"></Icon>
+                                <span>{{currentDeviceName}} - 指令记录</span>
+                            </p>
+                            <div>
+                                <Tabs type="card">
+                                    <tab-pane label="待发送指令">
+                                        <i-table :columns="cacheColumns" height="280" :data="cacheTableData" :loading="loading"></i-table>
+                                    </tab-pane>
+                                    <tab-pane label="已发送指令">
+                                        <i-table :columns="cacheColumns" height="280" :data="cacheTableData" :loading="loading"></i-table>
+                                    </tab-pane>
+                                </Tabs>       
+                            </div>
+                            <div slot="footer">
+                                <i-button type="primary"  @click="directiveReportModal = false" style="width: 100%">确定</i-button>
+                            </div>
+                    </Modal> 
         </div>
     </script>
 
@@ -645,8 +666,8 @@
            <div class="toggle-header-wraper"
                 v-click-outside.capture="onClickOutside"
                 >
-                <div style="height: 35px; line-height: 35px;">选择车俩:&nbsp;</div> 
-                <div style="position:relative;width: 187px;">
+                <div style="height: 35px; line-height: 35px;">选择车辆:&nbsp;</div> 
+                <div style="position:relative;width: 300px;">
                     <Input type="text" v-model="something" readonly @on-focus="onFocus"></Input>
                     <div class="tree-wrapper" v-show="visibleTree">
                         <Tree :data="groupslist" @on-check-change="onCheckChange" show-checkbox ref="treeRef"></Tree>

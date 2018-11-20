@@ -1,5 +1,4 @@
 <meta charset="UTF-8">
-
 <div id="query-company">
     <div class="full">
         <h3 class="h3-title">查询客户</h3>
@@ -61,8 +60,7 @@ vueInstanse = new Vue({
                         {
                             title: '操作',
                             key: 'action',
-                            width: 150,
-                            align: 'center',
+                            width: 160,
                             render: function(h, params) {
                                 return h('div', [
                                     h('Button', {
@@ -79,28 +77,35 @@ vueInstanse = new Vue({
                                             }
                                         }
                                     }, '修改'),
-                                    h('Button', {
+                                    h('Poptip', {
                                         props: {
-                                            type: 'error',
-                                            size: 'small'
+                                            confirm: true,
+                                            title: '确定要删除吗?'
                                         },
                                         on: {
-                                            click: function() {
-                                                vueInstanse.deleteCustomer(params.index);
+                                            'on-ok': function () {
+                                                vueInstanse.del(params.row);
                                             }
                                         }
-                                    }, '删除')
+                                    },[
+                                    h('Button', {
+                                            props: {
+                                            type: 'error',
+                                            size: 'small'
+                                            }
+                                        },"删除") 
+                                    ])    
                                 ]);
                             }
                         }
                     ],
                     tableData: [],
-                    queryType:"",
+                    queryType:"companyname",
                     queryParameter:"",
                     queryList:[
-                        {value:"companyname",label:"公司名称"},{value:"orgcode",label:"组织机构编号"},
-                        {value:"jurdcperson",label:"法人代表"},{value:"companyperson",label:"企业联系人"},
-                        {value:"companyphone",label:"联系电话"},{value:"alldayphone",label:"24小时联系电话"},
+                        {value:"companyname",label:"公司名称"},
+                        {value:"jurdcperson",label:"法人代表"},
+                        {value:"companyperson",label:"企业联系人"},
                     ],
                     recordsList:[],
                     total:0,  
@@ -139,14 +144,11 @@ vueInstanse = new Vue({
                         me.$Loading.finish();
                     });
                 },
-                deleteCustomer:function(index){
-                    this.delCustomerObj = this.tableData[index];
-                    this.modal = true;
-                },
-                del:function(){
-                   var delObj = this.delCustomerObj;
+
+                del:function(delObj){
                    var url = myUrls.deleteCompany();
                    var data = { companyid : delObj.companyid};
+                   this.delCustomerObj = delObj;
                    utils.sendAjax(url,data,this.doDeleteCallback);
                 },
                 doDeleteCallback:function(resp){
@@ -165,8 +167,6 @@ vueInstanse = new Vue({
                                 me.$delete(me.tableData,index);
                             }
                         });
-                        
-                       
                     }else{
                         this.$Message.error(resp.cause);
                     }
@@ -176,8 +176,7 @@ vueInstanse = new Vue({
             mounted:function(){
                 this.queryAllCompanyInfo(this.doQueryAllCompanyInfo);               
             }
-        })
-    
+        });
     </script>    
 </div>
 

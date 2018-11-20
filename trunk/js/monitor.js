@@ -1,8 +1,55 @@
+var cacheColumns = [
+    { title: '编号', key: "index", width: 60, align: 'center' },
+    { title: '设备序号', key: 'deviceid' },
+    { title: '指令名称', key: 'cmdname' },
+    { title: '指令状态', key: 'cmdstate' },
+    {
+        title: '响应时间', key: 'responsetime',
+        filters: [{ label: "响应时间", value: "responsetime" }],
+        filterMethod: function (a, b, c) {
+            console.log('a,b,c', a, b, c);
+            return true;
+        }
+    },
+    { title: '发送时间', key: 'content' },
+    {
+        title: '操作',
+        key: 'action',
+        width: 100,
+        // align: 'center',
+        render: function (h, params) {
+            return h('div', [
+                h('Poptip', {
+                    props: {
+                        confirm: true,
+                        title: '确定取消吗?'
+                    },
+                    on: {
+                        'on-ok': function () {
+                            alert(vm);
+                        }
+                    }
+                }, [
+                        h('Button', {
+                            props: {
+                                type: 'error',
+                                size: 'small'
+                            }
+                        }, "取消")
+                    ])
+            ]);
+        },
+    }
+]
+
+
+
 
 // 定位监控
 var monitor = {
     template: document.getElementById('monitor-template').innerHTML,
     data: function () {
+        var vm = this;
         return {
             map: null,
             sosoValue: '', // 搜索框的值
@@ -28,6 +75,8 @@ var monitor = {
             dispatchDirectiveModal: false, // 下发指令模态
             electronicFenceModal: false,   //电子围栏
             deviceInfoModal: false,   // 设备基本信息模态
+            directiveReportModal: false,//指令记录
+            currentDeviceName: "",
             fenceDistance: 1000,
             editDevData: {       //编辑的设备信息
                 devicename: '',
@@ -41,6 +90,10 @@ var monitor = {
             cmdParams: {},
             deviceBaseInfo: {},
             infoWindowInstance: null,  //  信息窗口实例
+            loading: false,
+            cacheColumns: cacheColumns,
+            cacheTableData: [],
+            sendTableData: []
         }
     },
     methods: {
@@ -159,9 +212,13 @@ var monitor = {
         handleClickMore: function (name) {
             switch (name) {
                 case 'name3':
-                    this.$emit("jump-report", "reportForm");
+                    this.directiveReportModal = true;
+                    this.queryAllCmdRecords();
                     break;
                 case 'name4':
+                    this.$emit("jump-report", "reportForm");
+                    break;
+                case 'name5':
                     this.queryDeviceBaseInfo();
                     this.deviceInfoModal = true;
                     break;
@@ -205,7 +262,6 @@ var monitor = {
         handleClickFence: function (name) {
             switch (name) {
                 case 'shefang':
-                    // this.cancelFence();
                     this.electronicFenceModal = true;
                     break;
                 case 'chexiao':
@@ -233,6 +289,19 @@ var monitor = {
             } else {
                 this.$Message.error("范围必须是数字");
             }
+        },
+        queryAllCmdRecords: function () {
+            this.loading = true;
+            var me = this;
+            var url = myUrls.queryAllCmdRecords();
+            utils.sendAjax(url, { deviceid: this.currentDeviceId }, function (resp) {
+                if (resp.status === 0) {
+
+                } else {
+                    me.$Message.error("查询指令记录失败");
+                }
+                me.loading = false;
+            });
         },
         cancelFence: function () {
             var me = this;
@@ -403,6 +472,7 @@ var monitor = {
         },
         handleClickDev: function (deviceid) {
             var record = this.getSingleDeviceInfo(deviceid);
+            this.currentDeviceName = this.$store.state.deviceInfos[deviceid].devicename;
 
             if (record) {
                 this.$store.commit('currentDeviceRecord', record);
@@ -415,7 +485,7 @@ var monitor = {
                 this.infoWindowInstance.isOpen() && this.map.closeInfoWindow();
             }
             var elTop = this.$refs[deviceid][0].getBoundingClientRect();
-            console.log('resf', elTop);
+            // console.log('resf', elTop);
 
         },
         updateTreeOnlineState: function () {

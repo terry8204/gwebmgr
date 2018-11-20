@@ -240,6 +240,10 @@ var myUrls = {
   refreshPostion: function () {
     return this.host + 'webapi?action=refreshpostion&token=' + token;
   },
+  // 查询已经发送的指令
+  queryAllCmdRecords: function () {
+    return this.host + 'webapi?action=queryallcmdrecords&token=' + token;
+  },
   // 报表 ----------------------------------------------------------------------------------------------
   reportCmd: function () {
     return this.host + 'webapi?action=reportcmd&token=' + token;
