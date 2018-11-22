@@ -50,11 +50,11 @@ var monitor = {
             infoWindowInstance: null,  //  信息窗口实例
             loading: false,
             cacheColumns: [
-                { title: '编号', key: "index", width: 60, align: 'center' },
+                { title: '编号', key: "index", width: 80, align: 'center', sortable: true },
                 { title: '设备序号', key: 'deviceid' },
-                { title: '指令名称', key: 'cmdname' },
-                { title: '发送时间', key: 'sendtimeStr', width: 170 },
-                { title: '发送参数', key: 'cmdparams' },
+                { title: '指令名称', key: 'cmdname', sortable: true },
+                { title: '发送时间', key: 'sendtimeStr', width: 170, sortable: true },
+                { title: '发送参数', key: 'cmdparams', sortable: true },
                 {
                     title: '操作',
                     key: 'action',
@@ -96,12 +96,12 @@ var monitor = {
                 }
             ],
             sendColumns: [
-                { title: '编号', key: "index", width: 60, align: 'center' },
+                { title: '编号', key: "index", width: 80, align: 'center', sortable: true },
                 { title: '设备序号', key: 'deviceid' },
-                { title: '指令名称', key: 'cmdname' },
-                { title: '发送时间', key: 'sendtimeStr', width: 170 },
-                { title: '发送参数', key: 'cmdparams' },
-                { title: '结果', key: 'result' },
+                { title: '指令名称', key: 'cmdname', sortable: true },
+                { title: '发送时间', key: 'sendtimeStr', width: 170, sortable: true },
+                { title: '发送参数', key: 'cmdparams', sortable: true },
+                { title: '结果', key: 'result', sortable: true },
             ],
             cacheTableData: [],
             sendTableData: []

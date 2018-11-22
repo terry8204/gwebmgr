@@ -124,12 +124,12 @@ function cmdReport (groupslist) {
             // currentPageIndex: 1,
             groupslist: [],
             columns: [
-                { title: '编号', key: "index", width: 60, align: 'center' },
-                { title: '设备名称', key: 'deviceName' },
-                { title: '命令名称', key: 'cmdname' },
-                { title: '发送时间', key: 'cmdtimeStr', sortable: "custom" },
-                { title: '发送内容', key: 'cmdparams' },
-                { title: '发送结果', key: 'result' },
+                { title: '编号', key: "index", width: 80, align: 'center', sortable: true },
+                { title: '设备名称', key: 'deviceName', sortable: true },
+                { title: '命令名称', key: 'cmdname', sortable: true },
+                { title: '发送时间', key: 'cmdtimeStr', sortable: true },
+                { title: '发送内容', key: 'cmdparams', sortable: true },
+                { title: '发送结果', key: 'result', sortable: true },
             ],
             tableData: [],
             cmdRecords: []
@@ -170,7 +170,8 @@ function cmdReport (groupslist) {
                             });
                             self.cmdRecords = resp.cmdrecords;
                             self.total = self.cmdRecords.length;
-                            self.tableData = self.cmdRecords.slice(0, 10);
+                            self.tableData = self.cmdRecords;
+                            // self.tableData = self.cmdRecords.slice(0, 10);
                             self.currentPageIndex = 1;
                         } else {
                             self.$Message.error("没有记录");
@@ -179,6 +180,9 @@ function cmdReport (groupslist) {
                         self.$Message.error(resp.cause);
                     }
                 })
+            },
+            onSortChange: function (column) {
+
             }
         },
         mounted () {
@@ -222,7 +226,7 @@ var reportForm = {
                     name: 'reportMar',
                     icon: 'ios-photos',
                     children: [
-                        { title: '命令报表', name: 'cmdReport', icon: 'ios-subway' },
+                        { title: '命令报表', name: 'cmdReport', icon: 'ios-pricetag-outline' },
                     ]
                 },
                 {

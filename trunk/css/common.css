@@ -27,6 +27,10 @@ img{
     user-select: none;    
 }
 
+th span .ivu-icon{
+    margin-top: 0px;
+}
+
 ul,ol,li{
     list-style: none;
 }
@@ -162,6 +166,10 @@ p.last-address{
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 2;
     overflow: hidden;
+}
+
+#cmd-report .ivu-table-sort .ivu-icon{
+    margin-top: 0px; 
 }
 
 /* tree demo */
