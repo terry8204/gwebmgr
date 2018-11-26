@@ -337,7 +337,7 @@ var waringComponent = {
                 if (resp.status == 0) {
                     me.disposeModal = false;
                     me.$Message.success("解除成功!");
-                    me.alarmMgr.updateDisposeStatus(me.cmdRowWaringObj.deviceid, me.cmdRowWaringObj.state);
+                    me.alarmMgr.updateDisposeStatus(me.cmdRowWaringObj.deviceid, me.cmdRowWaringObj.alarm);
                     me.refreshAlarmToUi();
                 } else {
                     me.$Message.error(resp.cause);
