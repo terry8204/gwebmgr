@@ -350,7 +350,7 @@ var monitor = {
         disposeDirectiveFn: function () {
             var me = this;
             var url = myUrls.sendCmd();
-            var data = { devicetype: this.currentDeviceType, cmdcode: this.selectedCmdInfo.cmdcode, deviceid: me.currentDeviceId, params: Object.values(this.cmdParams), state: 0 };
+            var data = { devicetype: this.currentDeviceType, cmdcode: this.selectedCmdInfo.cmdcode, deviceid: me.currentDeviceId, params: Object.values(this.cmdParams), state: -1 };
             utils.sendAjax(url, data, function (resp) {
                 if (resp.status === 0) {
                     communicate.$emit("disposeAlarm", data.cmdcode);
