@@ -193,7 +193,7 @@ p.last-address{
     top: 38px;
     left: 0px;
     width: 250px;
-    height: 300px;
+    max-height: 300px;
     background: #ffffff;
     border-radius: 3px;
     overflow-y: auto;

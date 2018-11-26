@@ -55,6 +55,18 @@
             </Row>
 
             <Row style="margin: 10px 0">
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">已上报次数
+                    : &nbsp;</i-col>
+                <i-col span="8">
+                    <i-input v-model.trim="reportedpoint"></i-input>
+                </i-col>
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">总上报次数 : &nbsp;</i-col>
+                <i-col span="8">
+                    <i-input v-model.trim="totalpoint"></i-input>
+                </i-col>
+            </Row>
+
+            <Row style="margin: 10px 0">
                 <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">允许登录 : &nbsp;</i-col>
                 <i-col span="8">
                     <i-select v-model="loginenable">
@@ -102,6 +114,8 @@
                 deviceTypeList:[],
                 groupid:'',
                 companyid:'',
+                reportedpoint:0,
+                totalpoint:1500,
                 alarmTypeList:[],
                 checkboxObj:{},
             },
@@ -143,7 +157,15 @@
                     if(this.groupid){
                         data.groupid = this.groupid;
                     };
-       
+
+                    if( this.reportedpoint == 0 || this.reportedpoint && !isNaN(this.reportedpoint)){
+                        data.reportedpoint = Number(this.reportedpoint);
+                    }
+
+                    if(this.totalpoint && !isNaN(this.totalpoint)){
+                        data.totalpoint = Number(this.totalpoint);
+                    }
+               
                     utils.sendAjax(url,data,function (resp) { 
                         if(resp.status == 0){
                             me.$Message.success("添加成功");

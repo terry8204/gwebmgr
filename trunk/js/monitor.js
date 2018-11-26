@@ -934,7 +934,7 @@ var monitor = {
                     me.$Message.success('修改成功');
 
                     me.$store.state.deviceInfos[data.deviceid].remark = data.remark;
-                } else if ((resp.status = -1)) {
+                } else if ((resp.status == -1)) {
                     me.$Message.error('修改失败')
                 }
             })
@@ -1386,7 +1386,7 @@ var monitor = {
             }
             return isOnline;
         },
-        updateDevLastPosition (record) {
+        updateDevLastPosition: function (record) {
             var isOnline = (Date.now() - record.arrivedtime) < this.offlineTime ? true : false;
             var iconState = null;
             var angle = utils.getAngle(record.course);

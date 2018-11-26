@@ -59,6 +59,18 @@
             </Row>
 
             <Row style="margin: 10px 0">
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">已上报次数
+                    : &nbsp;</i-col>
+                <i-col span="8">
+                    <i-input v-model.trim="reportedpoint"></i-input>
+                </i-col>
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">总上报次数 : &nbsp;</i-col>
+                <i-col span="8">
+                    <i-input v-model.trim="totalpoint"></i-input>
+                </i-col>
+            </Row>
+
+            <Row style="margin: 10px 0">
                 <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">是否使用 : &nbsp;</i-col>
                 <i-col span="8">
                     <i-select v-model="deviceenable">
@@ -97,6 +109,8 @@
                 groupsList:[],
                 customersList:[],
                 deviceTypeList:[],
+                reportedpoint:0,
+                totalpoint:1500,
                 groupid:'',
                 companyid:''
             },
@@ -147,6 +161,15 @@
                     if(this.groupid !== ""){
                         data.groupid = this.groupid;
                     };
+
+                    if( this.reportedpoint == 0 || this.reportedpoint && !isNaN(this.reportedpoint)){
+                        data.reportedpoint = Number(this.reportedpoint);
+                    }
+
+                    if(this.totalpoint && !isNaN(this.totalpoint)){
+                        data.totalpoint = Number(this.totalpoint);
+                    }
+
                     utils.sendAjax(url,data,function (resp) { 
                         if(resp.status == 0){
                             me.$Message.success("修改成功");
@@ -171,6 +194,8 @@
                     this.customersList = "";
                     this.groupid = "";
                     this.companyid = "";
+                    this.reportedpoint = 0 ;
+                    this.totalpoint = 1500;
                 },
                 queryAllCompanyInfo:function(claaback){
                     var url = myUrls.queryCompanyByCreater();
@@ -194,8 +219,8 @@
                         me.devicetype = editObject.devicetype;
                         me.loginenable ="" + editObject.loginenable;
                         me.deviceenable ="" +  editObject.deviceenable;
-                        console.log('loginenable', me.loginenable);
-                        console.log('deviceenable', me.deviceenable);
+                        me.reportedpoint = editObject.reportedpoint ;
+                        me.totalpoint = editObject.totalpoint ;
                     }
                 },
                 getGroupsList:function(){
