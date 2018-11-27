@@ -61,19 +61,15 @@
                         },
                         {
                             title:'分组数量',
-                            key:'groupcount'
-                        },
-                        {
-                            title:'可添加设备总数',
-                            key:'devicecount'
+                            key:'usedGroupCount'
                         },
                         {
                             title:'用户数量',
-                            key:'usercount'
+                            key:'usedUserCount'
                         },
                         {
                             title: '设备数量',
-                            key: 'currdevicecount' 
+                            key: 'usedDeviceCount' 
                         },
                         {
                             title: '创建时间',
@@ -146,7 +142,9 @@
                 doUserInfoList:function(resp){
                     if(resp.status == 0 && resp.userlists != null){
                         resp.userlists.forEach(function (item) { 
-                            console.log('item', item)
+                            item.usedUserCount = item.currusercount + "/" + item.usercount ;
+                            item.usedDeviceCount = item.currdevicecount + "/" + item.devicecount ;
+                            item.usedGroupCount = item.currgroupcount + "/" + item.groupcount ;
                             item.companyname = item.company.companyname;
                         });
                         this.userlists = resp.userlists;

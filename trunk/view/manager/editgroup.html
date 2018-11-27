@@ -55,19 +55,6 @@
                     </i-col>
             </Row>
 
-            <Row style="margin: 10px 0">
-                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;" :offset="2"><i style="color: red;display: inline-block;">*</i>&nbsp;上级可见 : &nbsp;</i-col>
-                    <i-col span="8">
-                        <i-select v-model="seenext">
-                            <i-option v-for="item in visibilityList" :value="item.value" :key="item.value">{{ item.label }}</i-option>
-                        </i-select>
-                    </i-col>
-                    <i-col span="10" style="height: 100%;line-height:32px;padding-left:20px;">
-                        <span>
-                            <Icon type="star"></Icon> 是否对上级可见组里面的车辆
-                        </span>
-                    </i-col>
-            </Row>
 
             <Row style="margin: 10px 0">
                     <i-col span="4" style="height: 100%;text-align:right;line-height:32px;" :offset="2">用户数量 : &nbsp;</i-col>
@@ -116,8 +103,6 @@
                 groupname:"",
                 customerList:[],
                 companyid:"",
-                seenext:0,
-                visibilityList:[{value:0,label:"不可见"},{value:1,label:"可见"}]
             },
             methods:{
                 handleSubmit:function(){
@@ -137,7 +122,6 @@
                         maxtime:this.maxtime,
                         groupname:this.groupname,
                         companyid:this.companyid,
-                        seenext:this.seenext,
                     };
                     if(this.usercount == ""){
                         data.usercount = 0;
@@ -166,8 +150,7 @@
                     this.usercount = "";
                     this.devicecount = "";
                     this.groupname = "";
-                    this.companyid = "";
-                    this.seenext = 0; 
+                    this.companyid = ""; 
                 },
                 queryAllCompanyInfo:function(claaback){
                     var url = myUrls.queryCompanyByCreater();
@@ -207,7 +190,6 @@
                     this.devicecount  = editObject.devicecount;
                     this.groupname    = editObject.groupname;
                     this.companyid    = editObject.companyid;
-                    this.seenext      = editObject.seenext;
                 }
             },
             mounted:function(){
