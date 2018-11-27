@@ -141,7 +141,7 @@
             methods:{
                 getUserInfoList:function(){
                     var url = myUrls.queryUser();
-                    utils.sendAjax(url,{},this.doUserInfoList);
+                    utils.sendAjax(url,{username:userName},this.doUserInfoList);
                 },
                 doUserInfoList:function(resp){
                     if(resp.status == 0 && resp.userlists != null){
@@ -155,7 +155,7 @@
                         this.total = this.userlists.length;
                     }
                     this.loading = false;
-                    console.log('userlists', this.userlists);
+ 
                 },
                 timeToDateStr:function(time){
                     return DateFormat.longToDateTimeStr(time,0);
