@@ -609,10 +609,10 @@ var monitor = {
                 })
             }
         },
-        getMonitorListByUser: function (havecompany, callback) {
+        getMonitorListByUser: function (data, callback) {
             var me = this
             var url = myUrls.monitorListByUser()
-            utils.sendAjax(url, { havecompany: havecompany }, function (resp) {
+            utils.sendAjax(url, data, function (resp) {
                 if (resp.status == 0) {
                     resp.groups.forEach(function (group) {
                         group.firstLetter = __pinyin.getFirstLetter(group.groupname)
@@ -1571,11 +1571,10 @@ var monitor = {
     },
     mounted: function () {
         var me = this;
-        var havecompany = this.isShowConpanyName == true ? 1 : 0;
         this.intervalTime = Number(this.stateIntervalTime);
         this.initMap();
         this.getWithInitInfoWindow();
-        this.getMonitorListByUser(havecompany, function (resp) {
+        this.getMonitorListByUser({ username: userName }, function (resp) {
             me.groups = resp.groups;
             me.setDeviceIdsList(resp.groups);
             var devIdList = Object.keys(me.$store.state.deviceInfos)
