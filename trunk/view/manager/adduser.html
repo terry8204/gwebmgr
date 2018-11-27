@@ -319,12 +319,8 @@
                     };
                     
                     
-                    if(userType == -1){
-
-                        if(this.groupids.length){
-                            data.groupids = this.groupids; 
-                        };   
-
+                    if(this.isShowGroup){
+                        data.groupids = this.groupids; 
                     }else{
                         data.groupcount = this.groupcount;
                         data.devicecount = this.devicecount;
