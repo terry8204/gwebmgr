@@ -295,12 +295,13 @@ var vRoot = new Vue({
     systemParam: systemParam
   },
   mounted: function () {
-    var username = Cookies.get('name');
     this.$store.dispatch('setUserTypeDescr');
     this.$store.dispatch('setAllCmdList');
-    var initIsPass = initWebSocket(username, this.wsCallback);   // 连接webSocket
-    if (!initIsPass) {
-      this.$Message.error("浏览器不支持webSocket");
+    if (userName) {
+      var initIsPass = initWebSocket(userName, this.wsCallback);   // 连接webSocket
+      if (!initIsPass) {
+        this.$Message.error("浏览器不支持webSocket");
+      }
     }
     vueInstanse = this;     // 备份monitor实例
   }
