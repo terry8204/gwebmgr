@@ -1548,19 +1548,12 @@ var monitor = {
             }
         },
         isShowConpanyName: function () {
-            var me = this
+            var me = this;
             if (this.isShowConpanyName) {
-                // if(me.groups[0] && me.groups[0].companyid ){
-                //     me.getCurrentStateTreeData(me.selectedState,me.isShowConpanyName);
-                // }else{
-                this.getMonitorListByUser(1, function (resp) {
-                    me.groups = resp.groups
-                    me.queryCompanyTree(function (response) {
-                        me.companys = response.companys
-                        me.getCurrentStateTreeData(me.selectedState, me.isShowConpanyName)
-                    })
-                })
-                // }
+                me.queryCompanyTree(function (response) {
+                    me.companys = response.companys
+                    me.getCurrentStateTreeData(me.selectedState, me.isShowConpanyName)
+                });
             } else {
                 this.getCurrentStateTreeData(
                     this.selectedState,
