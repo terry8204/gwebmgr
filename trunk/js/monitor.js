@@ -139,7 +139,8 @@ var monitor = {
                         } else {
                             me.addOverlayToMap(pointArr)
                         }
-                        me.openDevInfoWindow()
+                        var isOpen = me.infoWindowInstance.isOpen();
+                        me.openDevInfoWindow(isOpen);
                     }
                 } else {
                     me.isMoveTriggerEvent = true
@@ -159,7 +160,8 @@ var monitor = {
                         me.addOverlayToMap(pointArr)
                     }
                     setTimeout(function () {
-                        me.openDevInfoWindow()
+                        var isOpen = me.infoWindowInstance.isOpen();
+                        me.openDevInfoWindow(isOpen);
                     }, 400);
                 }
             });
@@ -502,7 +504,7 @@ var monitor = {
                 this.$store.commit('currentDeviceRecord', record);
                 this.isMoveTriggerEvent = false;
                 this.map.centerAndZoom(record.point, 18);
-                this.openDevInfoWindow();
+                this.openDevInfoWindow(true);
             } else {
                 this.$Message.error('该设备没有上报位置信息')
                 this.$store.commit('currentDeviceId', deviceid);
@@ -770,10 +772,10 @@ var monitor = {
                 });
             }
         },
-        openDevInfoWindow: function () {
+        openDevInfoWindow: function (isOpen) {
             var me = this;
             var record = me.currentDeviceRecord;
-            if (record) {
+            if (record && isOpen) {
                 var markers = this.map.getOverlays();
                 for (var i = 0; i < markers.length; i++) {
                     var marker = markers[i];
@@ -798,7 +800,7 @@ var monitor = {
                 this.infoWindowInstance = new BMap.InfoWindow(contentWithDivStart + contentWithDivEnd, { width: 350, height: 195 });
                 this.infoWindowInstance.disableCloseOnClick();
                 this.infoWindowInstance.disableAutoPan();
-            }
+            };
             return this.infoWindowInstance;
 
         },
@@ -828,36 +830,20 @@ var monitor = {
                 };
                 return type;
             })();
+
             if (info.radius > 0) {
                 var radiuDesc = ' (误差范围:' + info.radius + '米)';
                 posiType += radiuDesc;
             };
 
             var content =
-                '<p style="margin:0;font-size:13px">' +
-                '<p> 设备名称: ' +
-                devdata.devicename +
-                '</p>' +
-                '<p> 设备序号: ' +
-                info.deviceid +
-                '</p>' +
-                '<p> 定位类型: ' +
-                posiType +
-                '</p>' +
-                '<p> 经纬度: ' +
-                info.callon.toFixed(5) +
-                ',' +
-                info.callat.toFixed(5) +
-                '</p>' +
-                '<p> 最后时间: ' +
-                DateFormat.longToDateTimeStr(info.arrivedtime, 0) +
-                '</p>' +
-                '<p> 状态: ' +
-                strstatus +
-                '</p>' +
-                '<p class="last-address"> 详细地址: ' +
-                address +
-                '</p>' +
+                '<p> 设备名称: ' + devdata.devicename + '</p>' +
+                '<p> 设备序号: ' + info.deviceid + '</p>' +
+                '<p> 定位类型: ' + posiType + '</p>' +
+                '<p> 经纬度: ' + info.callon.toFixed(5) + ',' + info.callat.toFixed(5) + '</p>' +
+                '<p> 最后时间: ' + DateFormat.longToDateTimeStr(info.arrivedtime, 0) + '</p>' +
+                '<p> 状态: ' + strstatus + '</p>' +
+                '<p class="last-address"> 详细地址: ' + address + '</p>' +
                 '<p class="operation">' +
                 '<span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="playBack(' +
                 info.deviceid +
