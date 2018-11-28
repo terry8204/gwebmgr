@@ -141,7 +141,6 @@ ul,ol,li{
     right: 10px;
     bottom: 10px;
     top: 34px;
-    overflow-y: auto;
 }
 #directive-wraper div.directive-type-wraper>div{
     position: absolute;

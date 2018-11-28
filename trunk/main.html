@@ -35,7 +35,7 @@
                 <component :is="activeName" ref="my-component" @jump-report="jumpReport"></component>
             </keep-alive>
         </div>
-        <waring-component></waring-component>
+        <waring-component v-if="isShowAlarm"></waring-component>
     </div>
 
 

@@ -1,8 +1,4 @@
 
-
-
-
-
 // 定位监控
 var monitor = {
     template: document.getElementById('monitor-template').innerHTML,
@@ -129,29 +125,29 @@ var monitor = {
             )
             this.map.addEventListener('moveend', function (ev) {
                 if (me.isMoveTriggerEvent) {
-                    me.clearMarkerOverlays()
-                    var pointArr = me.getThePointOfTheCurrentWindow()
-                    var range = utils.getDisplayRange(me.map.getZoom())
+                    me.clearMarkerOverlays();
+                    var pointArr = me.getThePointOfTheCurrentWindow();
+                    var range = utils.getDisplayRange(me.map.getZoom());
                     if (pointArr.length) {
                         if (pointArr.length > 300) {
                             var filterArr = me.filterReocrds(range, pointArr)
-                            me.addOverlayToMap(filterArr)
+                            me.addOverlayToMap(filterArr);
                         } else {
-                            me.addOverlayToMap(pointArr)
+                            me.addOverlayToMap(pointArr);
                         }
                         var isOpen = me.infoWindowInstance.isOpen();
                         me.openDevInfoWindow(isOpen);
                     }
                 } else {
-                    me.isMoveTriggerEvent = true
+                    me.isMoveTriggerEvent = true;
                 }
             })
 
             this.map.addEventListener('zoomend', function (ev) {
                 // me.map.clearOverlays();
                 // me.clearMarkerOverlays();
-                var pointArr = me.getThePointOfTheCurrentWindow()
-                var range = utils.getDisplayRange(me.map.getZoom())
+                var pointArr = me.getThePointOfTheCurrentWindow();
+                var range = utils.getDisplayRange(me.map.getZoom());
                 if (pointArr.length) {
                     if (pointArr.length > 300) {
                         var filterArr = me.filterReocrds(range, pointArr)

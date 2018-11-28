@@ -12,7 +12,7 @@
                 <i-input v-model.trim="queryParameter"></i-input>
             </li>
             <li>
-                <i-button type="primary">查询</i-button>
+                <i-button type="primary" @click="handlerClickQuery">查询</i-button>
             </li>
         </ul>
 
@@ -20,21 +20,8 @@
             <i-table border :columns="columns" :data="tableData" :loading="loading"></i-table>
         </div>
         <div class="my-page" style="margin: 5px 0;">
-            <Page :total="total" simple :page-size="5" @on-change="changePage"></Page>
+            <Page :total="total" simple :page-size="5" :current="currentIndex"  @on-change="changePage"></Page>
         </div>
-
-        <Modal v-model="modal" width="360" class-name="vertical-center-modal">
-            <p slot="header" style="color:#f60;text-align:center">
-                <Icon type="information-circled"></Icon>
-                <span>是否删除</span>
-            </p>
-            <div style="text-align:center">
-                <p> {{deleteDeviceInfo.devicename}}</p>
-            </div>
-            <div slot="footer">
-                <i-button type="error"  @click="handleDelete" style="width: 100%">删除</i-button>
-            </div>
-        </Modal>
     </div>
 
     <script>
@@ -42,10 +29,11 @@ vueInstanse = new Vue({
             el:"#querydev",
             data:{
                 queryParameter:"",
-                queryType:"",
-                queryList:[],
+                queryType:"devicename",
+                queryList:[{label:"设备名",value:"devicename"},{label:"设备序号",value:"deviceid"}],
                 loading:true,
                 total:0,
+                currentIndex:1,
                 columns: [
                         {
                             title: '设备名',
@@ -75,7 +63,6 @@ vueInstanse = new Vue({
                             title: '操作',
                             key: 'action',
                             width: 200,
-                            align: 'center',
                             render: function(h, params) {
                                 return h('div', [
                                     h('Button', {
@@ -92,6 +79,27 @@ vueInstanse = new Vue({
                                             }
                                         }
                                     }, '修改'),
+                                    h('Poptip', {
+                                        props: {
+                                            confirm: true,
+                                            title: '确定要删除吗?'
+                                        },
+                                        style: {
+                                            marginRight: '5px'
+                                        },
+                                        on: {
+                                            'on-ok': function () {
+                                                vueInstanse.handleDelete(params.row.deviceid);
+                                            }
+                                        }
+                                    },[
+                                    h('Button', {
+                                            props: {
+                                            type: 'error',
+                                            size: 'small'
+                                            }
+                                        },"删除") 
+                                    ])  ,
                                     h('Button', {
                                         props: {
                                             type: 'primary',
@@ -106,34 +114,17 @@ vueInstanse = new Vue({
                                             }
                                         }
                                     }, '重置密码'),
-                                    h('Button', {
-                                        props: {
-                                            type: 'error',
-                                            size: 'small'
-                                        },
-                                        on: {
-                                            click: function() {
-                                                vueInstanse.deleteDevice(params.index);
-                                            }
-                                        }
-                                    }, '删除')
+                                    
                                 ]);
                             }
                         }
                     ],
                 tableData: [],
-                deviceList:[],
+                recordsList:[],
                 customersList:null,
                 groupsList:[],
-                deleteDeviceInfo:{},
-                modal:false
             },
             methods: {
-                changePage:function(index) {
-                    var offset = index * 5;
-                    var start = (index-1) *5;
-                    this.tableData =  this.deviceList.slice(start,offset);   
-                },
                 filterDataInfo:function(devList){
                     var me = this;
                     var data = [];
@@ -181,9 +172,9 @@ vueInstanse = new Vue({
                     utils.sendAjax(url,{},function(resp){
                         me.loading = false;
                         if(resp.status == 0 && resp.devices != null){           
-                            me.deviceList = me.filterDataInfo(resp.devices );
-                            me.tableData = me.deviceList.slice(0,5);
-                            me.total = me.deviceList.length;
+                            me.recordsList = me.filterDataInfo(resp.devices );
+                            me.tableData = me.recordsList.slice(0,5);
+                            me.total = me.recordsList.length;
                         }else{
                             me.$Message.error(resp.cause);
                         }
@@ -225,14 +216,9 @@ vueInstanse = new Vue({
                         me.$Loading.finish();
                     });
                 },
-                deleteDevice:function(index){
-                    this.deleteDeviceInfo = this.tableData[index];
-                    this.modal = true;
-                },
-                handleDelete:function(){
+                handleDelete:function(deviceid){
                     var me = this;
                     var url = myUrls.deleteDevice();
-                    var deviceid = this.deleteDeviceInfo.deviceid;
                     var data = {deviceid:deviceid};
                     utils.sendAjax(url,data,function (resp) { 
                         if(resp.status == 0){
@@ -243,9 +229,9 @@ vueInstanse = new Vue({
                                 }
                             });
 
-                            me.deviceList.forEach(function (itme,index) { 
+                            me.recordsList.forEach(function (itme,index) { 
                                 if(itme.deviceid == deviceid){
-                                    me.$delete(me.deviceList,index);
+                                    me.$delete(me.recordsList,index);
                                 }
                             });
                         }else{
@@ -256,6 +242,7 @@ vueInstanse = new Vue({
                     });
                 }
             },
+            mixins:[mixIn],
             mounted:function () {
                 this.queryAllCompanyInfo(this.doQueryAllCompanyInfo);     
             }

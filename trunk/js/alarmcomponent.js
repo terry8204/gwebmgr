@@ -35,6 +35,9 @@ var waringComponent = {
         },
         currentDeviceId: function () {
             return this.$store.state.currentDeviceId;
+        },
+        userType: function () {
+            return this.$store.state.userType;
         }
     },
     watch: {
@@ -479,7 +482,7 @@ var waringComponent = {
             computed: {
                 tabheight: function () {
                     return this.wrapperheight - 24;
-                }
+                },
             },
             methods: {
 
@@ -491,29 +494,31 @@ var waringComponent = {
     },
     mounted: function () {
         var me = this;
-        this.alarmMgr = new AlarmMgr();
-        this.settingCheckboxObj();
-        this.pushOverdueDeviceInfo();
-        this.timingRequestMsg();
-        this.queryAlarmDescr();
-        this.changeWrapperCls();
-        communicate.$on("remindmsg", function (data) {
-            me.alarmMgr.addRecord(data);
-            me.refreshAlarmToUi();
-        });
-        communicate.$on("disposeAlarm", function (cmdCode) {
-            me.alarmMgr.updateDisposeStatus(me.currentDeviceId, 0);
-            me.refreshAlarmToUi();
-        });
-        // timeout定时器
-        var timeout = null;
-        window.onresize = function () {
-            if (timeout != null) {
-                clearTimeout(timeout);
-            };
-            timeout = setTimeout(function () {
-                me.changeWrapperCls();
-            }, 300);
+        if (this.userType != 0) {
+            this.alarmMgr = new AlarmMgr();
+            this.settingCheckboxObj();
+            this.pushOverdueDeviceInfo();
+            this.timingRequestMsg();
+            this.queryAlarmDescr();
+            this.changeWrapperCls();
+            communicate.$on("remindmsg", function (data) {
+                me.alarmMgr.addRecord(data);
+                me.refreshAlarmToUi();
+            });
+            communicate.$on("disposeAlarm", function (cmdCode) {
+                me.alarmMgr.updateDisposeStatus(me.currentDeviceId, 0);
+                me.refreshAlarmToUi();
+            });
+            // timeout定时器
+            var timeout = null;
+            window.onresize = function () {
+                if (timeout != null) {
+                    clearTimeout(timeout);
+                };
+                timeout = setTimeout(function () {
+                    me.changeWrapperCls();
+                }, 300);
+            }
         }
     }
 }

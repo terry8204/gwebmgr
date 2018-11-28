@@ -8,7 +8,7 @@
     </div>
 
     <!-- 添加车辆类型 -->
-    <Modal v-model="addDevTypeModal" width="500" class-name="vertical-center-modal">
+    <Modal v-model="addDevTypeModal" width="520" class-name="vertical-center-modal">
         <p slot="header" style="color:#2D8CF0;text-align:center">
             <Icon type="md-add"></Icon>
             <span v-show="!isEdit">添加设备类型</span>
@@ -17,13 +17,13 @@
         <div>
             <Row>
                 <i-col :span="3" :offset="1" style="height: 100%;text-align:right;line-height:32px;">
-                    类型名称:
+                    类型名称&nbsp;:&nbsp;
                 </i-col>
                 <i-col :span="7">
                     <i-input v-model.trim="devTypeInfo.typename"></i-input>
                 </i-col>
                 <i-col :span="3" :offset="2" style="height: 100%;text-align:right;line-height:32px;">
-                    通信协议:
+                    通信协议&nbsp;:&nbsp;
                 </i-col>
                 <i-col :span="7"  v-show="!isEdit">
                     <i-select v-model="deviceCode">
@@ -37,19 +37,6 @@
         </div>
         <div slot="footer">
             <i-button type="primary" @click="handleAddDevType" style="width: 100%">{{isEdit?'编辑':'添加'}}</i-button>
-        </div>
-    </Modal>
-
-    <Modal v-model="delDevTypeModal" width="360" class-name="vertical-center-modal">
-        <p slot="header" style="color:#f60;text-align:center">
-            <Icon type="information-circled"></Icon>
-            <span>是否删除</span>
-        </p>
-        <div style="text-align:center">
-            <p> {{devTypeInfo.typename}}</p>
-        </div>
-        <div slot="footer">
-            <i-button type="error" @click="handleDel" style="width: 100%">删除</i-button>
         </div>
     </Modal>
 
@@ -83,7 +70,6 @@
                     deviceTypeList:[],
                     deviceCode:"",
                     isEdit: false,
-                    delDevTypeModal: false,
                     addDevTypeModal: false,
                     cmdModal:false,
                     rowIndex: null,
@@ -101,7 +87,6 @@
                             title: '操作',
                             key: 'action',
                             width: 250,
-                            align: 'center',
                             render: function (h, params) {
                                 return h('div', [
                                     h('Button', {
@@ -118,20 +103,24 @@
                                             }
                                         }
                                     }, '修改'),
-                                    h('Button', {
+                                    h('Poptip', {
                                         props: {
-                                            type: 'error',
-                                            size: 'small'
-                                        },
-                                        style: {
-                                            marginRight: '5px'
+                                            confirm: true,
+                                            title: '确定要删除吗?'
                                         },
                                         on: {
-                                            click: function () {
-                                                me.deleteDevType(params);
+                                            'on-ok': function () {
+                                                me.handleDel(params);
                                             }
                                         }
-                                    }, '删除')
+                                    },[
+                                    h('Button', {
+                                            props: {
+                                            type: 'error',
+                                            size: 'small'
+                                            }
+                                        },"删除") 
+                                    ]) 
                                 ]);
                             }
                         }
@@ -148,13 +137,13 @@
                     this.isEdit = false;
                     this.addDevTypeModal = true;
                 },
-                handleDel: function () {
+                handleDel: function (params) {
                     var me = this;
                     var url = myUrls.deleteDeviceType();
-                    var data = { devicetypeid: this.devTypeInfo.devicetypeid };
+                    var data = { devicetypeid: params.row.devicetypeid };
                     utils.sendAjax(url, data, function (resp) {
                         if (resp.status == 0) {
-                            me.$delete(me.tableData, me.rowIndex);
+                            me.$delete(me.tableData, params.index);
                             me.delDevTypeModal = false;
                             me.$Message.success("删除成功");
                         } else {
@@ -217,11 +206,6 @@
                     this.isEdit = true;
                     this.addDevTypeModal = true;
                     this.devTypeInfo = JSON.parse(JSON.stringify(params.row));
-                    this.rowIndex = params.index;
-                },
-                deleteDevType: function (params) {
-                    this.delDevTypeModal = true;
-                    this.devTypeInfo = params.row;
                     this.rowIndex = params.index;
                 },
                 addInstructionsToDeviceTypes:function(){

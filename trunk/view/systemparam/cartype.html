@@ -8,7 +8,7 @@
     </div>
 
     <!-- 添加车辆类型 -->
-    <Modal v-model="addCarTypeModal" width="500" class-name="vertical-center-modal">
+    <Modal v-model="addCarTypeModal" width="520" class-name="vertical-center-modal">
         <p slot="header" style="color:#2D8CF0;text-align:center">
             <Icon type="md-add"></Icon>
             <span v-show="!isEdit">添加车辆类型</span>
@@ -17,51 +17,23 @@
         <div>
             <Row>
                 <i-col :span="3" :offset="1" style="height: 100%;text-align:right;line-height:32px;">
-                    类型名称:
+                    类型名称&nbsp;:&nbsp;
                 </i-col>
                 <i-col :span="7">
                     <i-input v-model.trim="typeInfo.name"></i-input>
                 </i-col>
                 <i-col :span="3" :offset="2" style="height: 100%;text-align:right;line-height:32px;">
-                    内容:
+                    内容&nbsp;:&nbsp;
                 </i-col>
                 <i-col :span="7">
                     <i-input v-model.trim="typeInfo.content"></i-input>
                 </i-col>
             </Row>
-            <!-- <Row>
-                <i-col :span="3" :offset="1" style="height: 100%;text-align:right;line-height:32px;">
-                    <span>类型名称:</span>
-                </i-col>
-                <i-col :span="7">
-                    <i-input v-model.trim="typeInfo.nameen"></i-input>
-                </i-col>
-                <i-col :span="3" :offset="2" style="height: 100%;text-align:right;line-height:32px;">
-                    <span>类型名称:</span>
-                </i-col>
-                <i-col :span="7">
-                    <i-input v-model.trim="typeInfo.nametw"></i-input>
-                </i-col>
-            </Row> -->
         </div>
         <div slot="footer">
             <i-button type="primary"  @click="handleAddCarType" style="width: 100%">{{isEdit?'编辑':'添加'}}</i-button>
         </div>
     </Modal>
-
-    <Modal v-model="delCarTypeModal" width="360" class-name="vertical-center-modal">
-        <p slot="header" style="color:#f60;text-align:center">
-            <Icon type="information-circled"></Icon>
-            <span>是否删除</span>
-        </p>
-        <div style="text-align:center">
-            <p> {{typeInfo.name}}</p>
-        </div>
-        <div slot="footer">
-            <i-button type="error"  @click="handleDel" style="width: 100%">删除</i-button>
-        </div>
-    </Modal>
-
     <script>
         new Vue({
             el:"#car-type-wraper",
@@ -69,15 +41,10 @@
                 var me = this;
                 return {
                     addCarTypeModal:false,
-                    delCarTypeModal:false,
                     rowIndex:null,
                     isEdit:false,
                     loading:true,
                     columns:[
-                        // {
-                        //     title: 'ID',
-                        //     key: 'vhctypeid'
-                        // },
                         {
                             title: '名称',
                             key: 'name' 
@@ -90,7 +57,6 @@
                             title: '操作',
                             key: 'action',
                             width: 150,
-                            align: 'center',
                             render: function(h, params) {
                                 return h('div', [
                                     h('Button', {
@@ -107,17 +73,24 @@
                                             }
                                         }
                                     }, '修改'),
-                                    h('Button', {
+                                    h('Poptip', {
                                         props: {
-                                            type: 'error',
-                                            size: 'small'
+                                            confirm: true,
+                                            title: '确定要删除吗?'
                                         },
                                         on: {
-                                            click: function() {
-                                                me.deleteCarType(params);
+                                            'on-ok': function () {
+                                                me.handleDel(params);
                                             }
                                         }
-                                    }, '删除')
+                                    },[
+                                    h('Button', {
+                                            props: {
+                                            type: 'error',
+                                            size: 'small'
+                                            }
+                                        },"删除") 
+                                    ]) 
                                 ]);
                             }
                         }
@@ -183,20 +156,14 @@
                     this.typeInfo = JSON.parse(JSON.stringify(params.row));
                     this.rowIndex = params.index;
                 },
-                deleteCarType:function(params){
-                    this.delCarTypeModal = true;
-                    this.typeInfo = params.row;
-                    this.rowIndex = params.index;
-                },
-                handleDel:function(){
+                handleDel:function(params){
                     var me = this;
                     var url = myUrls.deleteVehicleType();
-                    var data = {vhctypeid:this.typeInfo.vhctypeid};
+                    var data = {vhctypeid:params.row.vhctypeid};
                     utils.sendAjax(url,data,function (resp) { 
                         if(resp.status == 0){
                             me.$Message.success("删除成功");
-                            me.$delete(me.tableData,me.rowIndex);
-                            me.delCarTypeModal = false;
+                            me.$delete(me.tableData,params.index);
                         }else{
                             me.$Message.success(resp.cause);
                         };

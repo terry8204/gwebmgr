@@ -12,7 +12,7 @@
                 <i-input v-model.trim="queryParameter"></i-input>
             </li>
             <li>
-                <i-button type="primary">查询</i-button>
+                <i-button type="primary" @click="handlerClickQuery">查询</i-button>
             </li>
         </ul>
 
@@ -20,21 +20,9 @@
             <i-table border :columns="columns" :data="tableData" :loading="loading"></i-table>
         </div>
         <div class="my-page" style="margin: 5px 0;">
-            <Page :total="total" simple :page-size="5" @on-change="changePage"></Page>
+            <Page :total="total" simple :page-size="5" :current="currentIndex" @on-change="changePage"></Page>
         </div>
     </div>
-    <Modal v-model="modal" width="360" class-name="vertical-center-modal">
-        <p slot="header" style="color:#f60;text-align:center">
-            <Icon type="information-circled"></Icon>
-            <span>是否删除</span>
-        </p>
-        <div style="text-align:center">
-            <p> {{delCustomerObj.companyname}}</p>
-        </div>
-        <div slot="footer">
-            <i-button type="error"  @click="del" style="width: 100%">删除</i-button>
-        </div>
-    </Modal>
     <script>
 vueInstanse = new Vue({
             el:"#query-company",
@@ -99,6 +87,7 @@ vueInstanse = new Vue({
                             }
                         }
                     ],
+                    currentIndex:1,
                     tableData: [],
                     queryType:"companyname",
                     queryParameter:"",
@@ -109,7 +98,6 @@ vueInstanse = new Vue({
                     ],
                     recordsList:[],
                     total:0,  
-                    modal:false,
                     delCustomerObj:{}
             },
             methods:{
@@ -125,11 +113,12 @@ vueInstanse = new Vue({
                     }
                     this.loading = false;
                 },
-                changePage:function(index){
-                    var offset = index * 5;
-                    var start = (index-1) *5;
-                    this.tableData =  this.recordsList.slice(start,offset);
-                },
+                // changePage:function(index){
+                //     var offset = index * 5;
+                //     var start = (index-1) *5;
+                //     this.currentIndex = index;
+                //     this.tableData =  this.recordsList.slice(start,offset);
+                // },
                 editCustomer:function(index){
                     var me = this;
                     editObject = this.tableData[index];   
@@ -171,8 +160,28 @@ vueInstanse = new Vue({
                         this.$Message.error(resp.cause);
                     }
                     this.modal = false;
-                }
-            },           
+                },
+                // handlerClickQuery(){
+                //     var self = this;
+                //     var queryTableData = [] ;
+                //     this.recordsList.forEach(function (record) { 
+                //         var value = record[self.queryType];
+                //         if( value && value.indexOf(self.queryParameter)!=-1){
+                //             queryTableData.push(record);
+                //         }
+                //     })
+                //     this.tableData = queryTableData;
+                // }
+            },
+            // watch: {
+            //     queryParameter:function(){
+            //         if(!this.queryParameter){
+            //             this.tableData =  this.recordsList.slice(0,5);
+            //             this.currentIndex = 1;
+            //         }
+            //     } 
+            // },       
+            mixins:[mixIn],
             mounted:function(){
                 this.queryAllCompanyInfo(this.doQueryAllCompanyInfo);               
             }

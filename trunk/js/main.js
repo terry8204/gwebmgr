@@ -262,7 +262,9 @@ var vRoot = new Vue({
   el: '#app',
   store: vstore,
   i18n: i18n,
-  data: {},
+  data: {
+    isShowAlarm: true
+  },
   methods: {
     changeComponent: function (activeName) {
       this.$store.commit('setHeaderActiveName', activeName);
@@ -284,6 +286,9 @@ var vRoot = new Vue({
   computed: {
     activeName: function () {
       return this.$store.state.headerActiveName;
+    },
+    userType: function () {
+      return this.$store.state.userType;
     }
   },
   components: {
@@ -295,9 +300,11 @@ var vRoot = new Vue({
     systemParam: systemParam
   },
   mounted: function () {
+    this.isShowAlarm = this.userType == 0 ? false : true;
     this.$store.dispatch('setUserTypeDescr');
     this.$store.dispatch('setAllCmdList');
-    if (userName) {
+
+    if (userName && this.isShowAlarm) {
       var initIsPass = initWebSocket(userName, this.wsCallback);   // 连接webSocket
       if (!initIsPass) {
         this.$Message.error("浏览器不支持webSocket");

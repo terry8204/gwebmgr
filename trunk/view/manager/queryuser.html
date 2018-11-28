@@ -14,38 +14,30 @@
                 <i-input v-model.trim="queryParameter"></i-input>
             </li>
             <li>
-                <i-button type="primary">查询</i-button>
+                <i-button type="primary"  @click="handlerClickQuery">查询</i-button>
             </li>
         </ul>
         <div class="table-wraper">
             <i-table border :columns="columns" :data="tableData" :loading="loading"></i-table>
         </div>
         <div class="my-page" style="margin: 5px 0;">
-            <Page :total="total" simple :page-size="5" @on-change="changePage"></Page>
+            <Page :total="total" simple :page-size="5" :current="currentIndex" @on-change="changePage"></Page>
         </div>
 
-        <Modal v-model="modal" width="360" class-name="vertical-center-modal">
-            <p slot="header" style="color:#f60;text-align:center">
-                <Icon type="information-circled"></Icon>
-                <span>是否删除</span>
-            </p>
-            <div style="text-align:center">
-                <p> {{deleteUserObj.username}}</p>
-            </div>
-            <div slot="footer">
-                <i-button type="error"  @click="handleDelete" style="width: 100%">删除</i-button>
-            </div>
-        </Modal>
     </div>     
     <script>
  vueInstanse = new Vue({
             el:"#queryuser",
             data:{
-                queryList:[],
-                queryType:"",
+                queryList:[
+                    {label:"所属公司",value:"companyname"},{label:"用户名",value:"username"},
+                    {label:"用户类型",value:"userTypeStr"},
+                ],
+                queryType:"username",
                 queryParameter:"",
                 loading:true,
                 total:0,
+                currentIndex:1,
                 columns: [
                         {
                             title:'所属公司',
@@ -83,7 +75,6 @@
                             title: '操作',
                             key: 'action',
                             width: 200,
-                            align: 'center',
                             render: function(h, params) {
                                 return h('div', [
                                     h('Button', {
@@ -100,6 +91,29 @@
                                             }
                                         }
                                     }, '修改'),
+                                    
+                                    h('Poptip', {
+                                        props: {
+                                            confirm: true,
+                                            title: '确定要删除吗?'
+                                        },
+                                        style: {
+                                            marginRight: '5px'
+                                        },
+                                        on: {
+                                            'on-ok': function () {
+                                                vueInstanse.handleDelete(params.row.username);
+                                            }
+                                        }
+                                    },[
+                                    h('Button', {
+                                            props: {
+                                            type: 'error',
+                                            size: 'small'
+                                            }
+                                        },"删除") 
+                                    ])  ,
+
                                     h('Button', {
                                         props: {
                                             type: 'primary',
@@ -113,26 +127,13 @@
                                                  vueInstanse.resetDevicePwd(params.index);
                                             }
                                         }
-                                    }, '重置密码'),
-                                    h('Button', {
-                                        props: {
-                                            type: 'error',
-                                            size: 'small'
-                                        },
-                                        on: {
-                                            click: function() {
-                                                vueInstanse.deleteUser(params.index);
-                                            }
-                                        }
-                                    }, '删除')
+                                    }, '重置密码')
                                 ]);
                             }
                         }
                     ],
                     tableData: [],
-                    userlists:[],
-                    modal:false,
-                    deleteUserObj:{},
+                    recordsList:[],
             },
             methods:{
                 getUserInfoList:function(){
@@ -147,13 +148,12 @@
                             item.usedGroupCount = item.currgroupcount + "/" + item.groupcount ;
                             item.companyname = item.company.companyname;
                         });
-                        this.userlists = resp.userlists;
+                        this.recordsList = resp.userlists;
                         this.filterUsersList();
-                        this.tableData = this.userlists.slice(0,5);
-                        this.total = this.userlists.length;
+                        this.tableData = this.recordsList.slice(0,5);
+                        this.total = this.recordsList.length;
                     }
                     this.loading = false;
- 
                 },
                 timeToDateStr:function(time){
                     return DateFormat.longToDateTimeStr(time,0);
@@ -171,35 +171,26 @@
                 },
                 filterUsersList:function(){
                     var me = this ;
-                    this.userlists.forEach(function(user){                   
+                    this.recordsList.forEach(function(user){                   
                         user.userTypeStr = me.getUserTypeStr(user.usertype);
                         user.createtime = me.timeToDateStr(user.createtime);
                         user.overduetime = me.timeToDateStr(user.overduetime);
                     });
                 },
-                changePage:function(index){
-                    var offset = index * 5;
-                    var start = (index-1) *5;
-                    this.tableData =  this.userlists.slice(start,offset);
-                },
-                deleteUser:function(index){
-                    this.deleteUserObj = this.tableData[index]; 
-                    this.modal = true;                
-                },
-                handleDelete:function(){
+                handleDelete:function(username){
                     var me = this;
                     var url = myUrls.delUser();
-                    var username = this.deleteUserObj.username;   
+
                     utils.sendAjax(url,{usernames:[username]},function(resp){
                         if(resp.status == 0){
                             me.$Message.success("删除成功!");
-                            me.userlists.forEach(function(item,index){
-                                if(item.username == me.deleteUserObj.username){
-                                    me.$delete(me.userlists,index);
+                            me.recordsList.forEach(function(item,index){
+                                if(item.username == username){
+                                    me.$delete(me.recordsList,index);
                                 }
                             });
                             me.tableData.forEach(function(item,index){
-                                if(item.username == me.deleteUserObj.username){
+                                if(item.username == username){
                                     me.$delete(me.tableData,index);
                                 }
                             });     
@@ -236,6 +227,7 @@
                     });
                 },
             },
+            mixins:[mixIn],
             mounted:function(){
                 this.userTypeDescrList = vstore.state.userTypeDescrList;
                 this.getUserInfoList();

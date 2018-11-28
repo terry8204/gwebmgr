@@ -19,19 +19,6 @@
             <i-table border :columns="columns" :data="tableData" :loading="loading"></i-table>
         </div>
     </div>
-
-    <Modal v-model="delDevDirectiveModal" width="360" class-name="vertical-center-modal">
-        <p slot="header" style="color:#f60;text-align:center">
-            <Icon type="information-circled"></Icon>
-            <span>是否删除</span>
-        </p>
-        <div style="text-align:center">
-            <p> {{directiveObj.cmdname}}</p>
-        </div>
-        <div slot="footer">
-            <i-button type="error" @click="handleDelDirective" style="width: 100%">删除</i-button>
-        </div>
-    </Modal>
     <Modal v-model="sortModal" width="360" class-name="vertical-center-modal">
         <p slot="header" style="color:#f60;text-align:center">
             <Icon type="information-circled"></Icon>
@@ -57,7 +44,6 @@
                 return {
                     theme:"light",
                     sortNumber:"",
-                    delDevDirectiveModal: false,
                     sortModal:false,
                     directiveObj: {},
                     columns: [
@@ -82,7 +68,6 @@
                             title: '操作',
                             key: 'action',
                             width: 180,
-                            align: 'center',
                             render: function (h, params) {
                                 return h('div', [
                                 h('Button', {
@@ -127,19 +112,25 @@
                                             }
                                         }
                                     }, '修改'),
-                                    h('Button', {
+                                    
+                                    h('Poptip', {
                                         props: {
-                                            type: 'error',
-                                            size: 'small'
+                                            confirm: true,
+                                            title: '确定要删除吗?'
                                         },
                                         on: {
-                                            click: function () {
-                                                me.delDevDirectiveModal = true;
-                                                me.rowIndex = params.index;
-                                                me.directiveObj = params.row;
+                                            'on-ok': function () {
+                                               me.handleDelDirective(params);
                                             }
                                         }
-                                    }, '删除')
+                                    },[
+                                    h('Button', {
+                                            props: {
+                                            type: 'error',
+                                            size: 'small'
+                                            }
+                                        },"删除") 
+                                    ]) 
                                 ]);
                             }
                         }
@@ -193,15 +184,14 @@
                      me.tableData = tableData;
                     type.isSelected = true;
                 },
-                handleDelDirective: function () {
+                handleDelDirective: function (params) {
                     var me = this;
                     var url = myUrls.deleteCmd();
-                    var data = { cmdcode: String(this.directiveObj.cmdcode) };
+                    var data = { cmdcode: String(params.row.cmdcode) };
                     utils.sendAjax(url, data, function (resp) {
                         if (resp.status == 0) {
                             me.$Message.success("删除成功");
-                            me.delDevDirectiveModal = false;
-                            me.$delete(me.tableData, me.rowIndex);
+                            me.$delete(me.tableData, params.index);
                         } else {
                             me.$Message.error("删除失败");
                         }

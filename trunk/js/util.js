@@ -255,6 +255,38 @@ Vue.component('expand-row', {
   }
 })
 
+var mixIn = {
+  methods: {
+    handlerClickQuery () {
+      var self = this;
+      var queryTableData = [];
+      if (!self.queryParameter) return;
+      this.recordsList.forEach(function (record) {
+        var value = record[self.queryType];
+        if (value && value.indexOf(self.queryParameter) != -1) {
+          queryTableData.push(record);
+        }
+      })
+      this.tableData = queryTableData;
+    },
+    changePage: function (index) {
+      var offset = index * 5;
+      var start = (index - 1) * 5;
+      this.currentIndex = index;
+      this.tableData = this.recordsList.slice(start, offset);
+    },
+  },
+  watch: {
+    queryParameter: function () {
+      if (!this.queryParameter) {
+        this.tableData = this.recordsList.slice(0, 5);
+        this.currentIndex = 1;
+      }
+    }
+  },
+}
+
+
 //  得到表格row组建
 var expandRow = Vue.component('expand-row')
 

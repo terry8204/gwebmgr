@@ -14,29 +14,16 @@
                 <i-input v-model.trim="queryParameter"></i-input>
             </li>
             <li>
-                <i-button type="primary">查询</i-button>
+                <i-button type="primary"  @click="handlerClickQuery">查询</i-button>
             </li>
         </ul>
         <div>
             <i-table :columns="columnsList" :data="tableData" :loading="loading"></i-table>
         </div>
         <div class="my-page" style="margin: 5px 0;">
-            <Page :total="total" simple :page-size="5" @on-change="changePage"></Page>
+            <Page :total="total" simple :page-size="5" :current="currentIndex" @on-change="changePage"></Page>
         </div>
     </div>
-
-    <Modal v-model="modal" width="360" class-name="vertical-center-modal">
-        <p slot="header" style="color:#f60;text-align:center">
-            <Icon type="information-circled"></Icon>
-            <span>是否删除</span>
-        </p>
-        <div style="text-align:center">
-            <p> {{delGroupObj.groupname}}</p>
-        </div>
-        <div slot="footer">
-            <i-button type="error"  @click="del" style="width: 100%">删除</i-button>
-        </div>
-    </Modal>
 
     <Modal v-model="selectMonitorModal" width="560" class-name="vertical-center-modal">
         <p slot="header" style="color:rgb(0, 119, 255);text-align:center;font-size: 18px">
@@ -60,16 +47,16 @@ vueInstanse=new Vue({
             el:"#querygroup",
             data:{
                 loading:true,
-                modal:false,
                 selectMonitorModal:false,
                 delGroupObj:{},
                 monitorPerson:[],
                 monitorPersonList:[],
                 total:0,
-                queryType:'',
-                queryList:[{label:"1111",value:"111"}],
+                currentIndex:1,
+                queryType:'groupname',
+                queryList:[{label:"分组名称",value:"groupname"}],
                 queryParameter:"",
-                groupsList:[],
+                recordsList:[],
                 tableData:[],
                 columnsList:[
                    {
@@ -98,8 +85,7 @@ vueInstanse=new Vue({
                     {
                             title: '操作',
                             key: 'action',
-                            width: 250,
-                            align: 'center',
+                            width: 220,
                             render: function(h, params) {
                                 return h('div', [
                                     h('Button', {
@@ -116,20 +102,28 @@ vueInstanse=new Vue({
                                             }
                                         }
                                     }, '修改'),
-                                    h('Button', {
+
+                                    h('Poptip', {
                                         props: {
-                                            type: 'error',
-                                            size: 'small'
+                                            confirm: true,
+                                            title: '确定要删除吗?'
                                         },
                                         style: {
                                             marginRight: '5px'
                                         },
                                         on: {
-                                            click: function() {
-                                                vueInstanse.deleteGroup(params.index);
+                                            'on-ok': function () {
+                                                vueInstanse.del(params.row.groupid);
                                             }
                                         }
-                                    }, '删除'),
+                                    },[
+                                    h('Button', {
+                                            props: {
+                                            type: 'error',
+                                            size: 'small'
+                                            }
+                                        },"删除") 
+                                    ])  ,
                                     h('Button', {
                                         props: {
                                             type: 'primary',
@@ -154,9 +148,9 @@ vueInstanse=new Vue({
                 doQueryAllgroupsInfo:function(resp){
                     console.log(resp.grouplist)
                     if(resp.status === 0){
-                        this.groupsList = resp.grouplist!==null ? resp.grouplist : [];
-                        this.total = this.groupsList.length;
-                        this.tableData = this.groupsList.slice( 0 , 5);
+                        this.recordsList = resp.grouplist!==null ? resp.grouplist : [];
+                        this.total = this.recordsList.length;
+                        this.tableData = this.recordsList.slice( 0 , 5);
                     }
                     this.loading = false;
                 },
@@ -174,14 +168,9 @@ vueInstanse=new Vue({
                         me.$Loading.finish();
                     });
                 },
-                deleteGroup:function(index){
-                    this.delGroupObj = this.tableData[index];
-                    this.modal = true;
-                },
-                del:function(){
+                del:function(groupid){
                     var me = this;
                     var url = myUrls.deleteGroup();
-                    var groupid = this.delGroupObj.groupid; 
                     var data = { groupid:groupid };
                     utils.sendAjax(url,data,function(resp){
                         if(resp.status == 0){
@@ -191,9 +180,9 @@ vueInstanse=new Vue({
                                 }
                             });
 
-                            me.groupsList.forEach(function(item,index){
+                            me.recordsList.forEach(function(item,index){
                                 if(item.groupid == groupid){
-                                    me.$delete(me.groupsList,index)
+                                    me.$delete(me.recordsList,index)
                                 }
                             });
                             
@@ -201,14 +190,13 @@ vueInstanse=new Vue({
                         }else{
                             me.$Message.error(resp.cause);
                         }
-                        me.modal = false;
                     });
                 },
-                changePage:function(index){
-                    var offset = index * 5;
-                    var start = (index-1) *5;
-                    this.tableData =  this.groupsList.slice(start,offset);
-                },
+                // changePage:function(index){
+                //     var offset = index * 5;
+                //     var start = (index-1) *5;
+                //     this.tableData =  this.recordsList.slice(start,offset);
+                // },
                 openSelectMonitorModal:function(index){
                     var me = this;
                     this.delGroupObj = this.tableData[index];
@@ -259,6 +247,7 @@ vueInstanse=new Vue({
                     }
                 },
             },
+            mixins:[mixIn],
             mounted:function(){
                this.queryAllgroupsInfo();
                this.getUserInfoList();
