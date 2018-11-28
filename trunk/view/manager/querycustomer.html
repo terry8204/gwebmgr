@@ -113,13 +113,8 @@ vueInstanse = new Vue({
                     }
                     this.loading = false;
                 },
-                // changePage:function(index){
-                //     var offset = index * 5;
-                //     var start = (index-1) *5;
-                //     this.currentIndex = index;
-                //     this.tableData =  this.recordsList.slice(start,offset);
-                // },
                 editCustomer:function(index){
+
                     var me = this;
                     editObject = this.tableData[index];   
                     var pagePath = null
@@ -160,27 +155,8 @@ vueInstanse = new Vue({
                         this.$Message.error(resp.cause);
                     }
                     this.modal = false;
-                },
-                // handlerClickQuery(){
-                //     var self = this;
-                //     var queryTableData = [] ;
-                //     this.recordsList.forEach(function (record) { 
-                //         var value = record[self.queryType];
-                //         if( value && value.indexOf(self.queryParameter)!=-1){
-                //             queryTableData.push(record);
-                //         }
-                //     })
-                //     this.tableData = queryTableData;
-                // }
-            },
-            // watch: {
-            //     queryParameter:function(){
-            //         if(!this.queryParameter){
-            //             this.tableData =  this.recordsList.slice(0,5);
-            //             this.currentIndex = 1;
-            //         }
-            //     } 
-            // },       
+                }
+            },     
             mixins:[mixIn],
             mounted:function(){
                 this.queryAllCompanyInfo(this.doQueryAllCompanyInfo);               
