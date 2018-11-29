@@ -6,6 +6,8 @@ var monitor = {
         var vm = this;
         return {
             map: null,
+            mapType: "bMap",
+            mapList: [{ label: "百度地图", value: "bMap" }, { label: "谷歌地图", value: "gMap" }],
             sosoValue: '', // 搜索框的值
             sosoData: [], // 搜索框里面的数据
             selectedState: '', // 选择nav的状态 all online offline;
@@ -43,7 +45,6 @@ var monitor = {
             selectedCmdInfo: {},  // 选中设备指令的信息
             cmdParams: {},
             deviceBaseInfo: {},
-            infoWindowInstance: null,  //  信息窗口实例
             loading: false,
             cacheColumns: [
                 { title: '编号', key: "index", width: 80, align: 'center', sortable: true },
@@ -105,103 +106,35 @@ var monitor = {
     },
     methods: {
         initMap: function () {
-            var me = this
-            this.map = new BMap.Map('map', { minZoom: 4, maxZoom: 18, enableMapClick: false })
-            this.map.enableScrollWheelZoom()
-            this.map.enableAutoResize()
-            this.map.disableDoubleClickZoom()
-            this.map.centerAndZoom(new BMap.Point(108.0017245, 35.926895), 5)
-            // var top_left_control = new BMap.ScaleControl({anchor: BMAP_ANCHOR_BOTTOM_LEFT});
-            var top_left_control = new BMap.ScaleControl({
-                anchor: BMAP_ANCHOR_BOTTOM_LEFT
-            }) // 左上角，添加比例尺
-            var top_left_navigation = new BMap.NavigationControl() //左上角，添加默认缩放平移控件
-            this.map.addControl(top_left_control)
-            this.map.addControl(top_left_navigation)
-            this.map.addControl(
-                new BMap.MapTypeControl({
-                    mapTypes: [BMAP_NORMAL_MAP, BMAP_HYBRID_MAP]
-                })
-            )
-            this.map.addEventListener('moveend', function (ev) {
-                if (me.isMoveTriggerEvent) {
-                    me.clearMarkerOverlays();
-                    var pointArr = me.getThePointOfTheCurrentWindow();
-                    var range = utils.getDisplayRange(me.map.getZoom());
-                    if (pointArr.length) {
-                        if (pointArr.length > 300) {
-                            var filterArr = me.filterReocrds(range, pointArr)
-                            me.addOverlayToMap(filterArr);
-                        } else {
-                            me.addOverlayToMap(pointArr);
-                        }
-                        var isOpen = me.infoWindowInstance.isOpen();
-                        me.openDevInfoWindow(isOpen);
-                    }
-                } else {
-                    me.isMoveTriggerEvent = true;
-                }
-            })
-
-            this.map.addEventListener('zoomend', function (ev) {
-                // me.map.clearOverlays();
-                // me.clearMarkerOverlays();
-                var pointArr = me.getThePointOfTheCurrentWindow();
-                var range = utils.getDisplayRange(me.map.getZoom());
-                if (pointArr.length) {
-                    if (pointArr.length > 300) {
-                        var filterArr = me.filterReocrds(range, pointArr)
-                        me.addOverlayToMap(filterArr)
-                    } else {
-                        me.addOverlayToMap(pointArr)
-                    }
-                    setTimeout(function () {
-                        var isOpen = me.infoWindowInstance.isOpen();
-                        me.openDevInfoWindow(isOpen);
-                    }, 400);
-                }
-            });
+            switch (this.mapType) {
+                case 'bMap':
+                    this.map = new BMapClass();
+                    break;
+                case 'gMap':
+                    this.map = new GoogleMap();
+                    break;
+            };
         },
         handleWebSocket: function (data) {
             var me = this;
-            // if (store.componentName != "monitor") return;
             var deviceid = data.deviceid;
+            data.devicename = this.deviceInfos[deviceid].devicename;
             me.positionLastrecords[deviceid] = data;
             me.updateTreeOnlineState();
             me.updateDevLastPosition(data);
             console.log('收到的轨迹push时间', deviceid, DateFormat.longToDateTimeStr(data.arrivedtime, 0));
             if (me.currentDeviceId == deviceid) {
-                if (this.infoWindowInstance && this.infoWindowInstance.isOpen()) {
-                    var sContent = this.getWindowContent(data);
-                    me.refreshInfoWindow(sContent, true);
-                };
+                me.map.updateSingleMarkerState(deviceid);
             };
-        },
-        refreshInfoWindow: function (sContent, isOpen) {
-            var contentWithDivStart = '<div id="info_window">';
-            var contentWithDivEnd = '</div>';
-            var domStr = contentWithDivStart + sContent + contentWithDivEnd;
-            if (isOpen) {
-                $("#info_window").html(domStr);
-            } else {
-                this.infoWindowInstance.setContent(domStr);
-            }
-        },
-        clearMarkerOverlays: function () {
-            var me = this;
-            var mks = me.map.getOverlays();
-            mks.forEach(function (item) {
-                if (item.deviceid != undefined) {
-                    me.map.removeOverlay(item);
-                }
-            })
         },
         openDistance: function () {
             if (this.myDis != null) {
                 this.myDis.close();
             }
-            this.myDis = new BMapLib.DistanceTool(this.map)
-            this.myDis.open(); //开启鼠标测距
+            if (this.mapType == 'bMap') {
+                this.myDis = new BMapLib.DistanceTool(this.map.mapInstance);
+                this.myDis.open();
+            }
         },
         getThePointOfTheCurrentWindow: function () {
             var bounds = this.map.getBounds();
@@ -421,11 +354,9 @@ var monitor = {
             };
         },
         sosoSelect: function (value) {
-
             this.sosoValue = value.devicename;
             this.filterData = [];
             var me = this;
-
             if (this.isShowConpanyName) {
                 this.currentStateData.forEach(function (company) {
                     company.children.forEach(function (group) {
@@ -494,21 +425,15 @@ var monitor = {
         },
         handleClickDev: function (deviceid) {
             var record = this.getSingleDeviceInfo(deviceid);
-            this.currentDeviceName = this.$store.state.deviceInfos[deviceid].devicename;
-
+            this.currentDeviceName = this.deviceInfos[deviceid].devicename;
             if (record) {
                 this.$store.commit('currentDeviceRecord', record);
-                this.isMoveTriggerEvent = false;
-                this.map.centerAndZoom(record.point, 18);
-                this.openDevInfoWindow(true);
+                this.map.onClickDevice(deviceid);
             } else {
                 this.$Message.error('该设备没有上报位置信息')
                 this.$store.commit('currentDeviceId', deviceid);
-                this.infoWindowInstance.isOpen() && this.map.closeInfoWindow();
             }
             var elTop = this.$refs[deviceid][0].getBoundingClientRect();
-            // console.log('resf', elTop);
-
         },
         updateTreeOnlineState: function () {
             var me = this;
@@ -518,16 +443,7 @@ var monitor = {
                     return;
                 };
                 var deviceid = item.deviceid;
-                var isOnline = (function (record) {
-                    var isOnline = false;
-                    var arrivedtime = record.arrivedtime;
-                    var currentTime = new Date().getTime();
-                    if (currentTime - arrivedtime < me.offlineTime) {
-                        isOnline = true;
-                    }
-                    return isOnline;
-                })(item);
-
+                var isOnline = utils.getIsOnline(item);
                 if (me.isShowConpanyName) {
                     me.currentStateData.forEach(function (company) {
                         company.children.forEach(function (group) {
@@ -635,19 +551,38 @@ var monitor = {
                 }
             })
         },
-        setDeviceIdsList: function (groups) {
-            this.$store.dispatch('setdeviceInfos', groups)
-        },
         getLastPosition: function (deviceIds, callback) {
-            var me = this
-            var url = myUrls.lastPosition()
+            var me = this;
+            var url = myUrls.lastPosition();
             var data = {
                 username: this.username,
                 deviceids: deviceIds
             }
             utils.sendAjax(url, data, function (resp) {
                 if (resp.status == 0) {
-                    callback(resp)
+                    if (resp.records) {
+                        var newRecords = {};
+                        resp.records.forEach((item) => {
+                            if (item) {
+                                if (item) {
+                                    var deviceid = item.deviceid;
+                                    var b_lon_and_b_lat = wgs84tobd09(item.callon, item.callat)
+                                    var g_lon_and_g_lat = wgs84togcj02(item.callon, item.callat);
+                                    var online = utils.getIsOnline(item);
+                                    item.b_lon = b_lon_and_b_lat[0];
+                                    item.b_lat = b_lon_and_b_lat[1];
+                                    item.g_lon = g_lon_and_g_lat[0];
+                                    item.g_lat = g_lon_and_g_lat[1];
+                                    item.online = online;
+                                    item.devicename = me.deviceInfos[deviceid].devicename;
+                                    item.arrivedTimeStr = DateFormat.longToDateTimeStr(item.arrivedtime, 0);
+                                    newRecords[deviceid] = item;
+                                }
+                            }
+                        })
+                        me.positionLastrecords = newRecords;
+                        callback ? callback() : '';
+                    }
                 } else if (resp.status == 3) {
                     me.$Message.error('请重新登录,2秒后自动跳转登录页面')
                     Cookies.remove('token')
@@ -690,67 +625,21 @@ var monitor = {
                 return filterArr
             }
         },
-        addOverlayToMap: function (records) {
-            var me = this;
-            records.forEach(function (record) {
-                if (record != null) {
-                    var deviceid = record.deviceid
-                    var point = null;
-                    if (!record.point) {
-                        var lng_lat = wgs84tobd09(record.callon, record.callat)
-                        var point = new BMap.Point(lng_lat[0], lng_lat[1])
-                        record.point = point;
-                    } else {
-                        point = record.point;
-                    };
-
-                    var marker = new BMap.Marker(point)
-                    marker.setIcon(record.icon);
-                    var label = new BMap.Label(
-                        me.$store.state.deviceInfos[deviceid].devicename,
-                        { position: point, offset: new BMap.Size(20, -3) }
-                    )
-                    label.setStyle({
-                        color: '#000000',
-                        border: '1px solid #000000',
-                        background: '#F5FCB8',
-                        fontSize: '14px',
-                        fontFamily: '微软雅黑',
-                        padding: '0 2px'
-                    });
-                    marker.setLabel(label);
-                    marker.deviceid = deviceid;
-                    me.markerAddEvent(marker, deviceid);
-                    me.map.addOverlay(marker);
-                }
-            })
-        },
-
-        markerAddEvent: function (marker, deviceid) {
-            var me = this
-            marker.addEventListener('click', function () {
-                me.isMoveTriggerEvent = false
-                var deviceid = this.deviceid
-                var devLastInfo = me.getSingleDeviceInfo(deviceid);
-                var sContent = me.getWindowContent(devLastInfo);
-                me.refreshInfoWindow(sContent, false);
-                me.map.openInfoWindow(me.infoWindowInstance, marker.point);
-                me.$store.commit('currentDeviceRecord', devLastInfo);
-                me.openTreeDeviceNav(deviceid)
-            });
-        },
         openTreeDeviceNav: function (deviceid) {
-            var me = this
+            var me = this;
+            var devLastInfo = me.getSingleDeviceInfo(deviceid);
+            me.$store.commit('currentDeviceId', deviceid);
+            me.$store.commit('currentDeviceRecord', devLastInfo);
             if (me.isShowConpanyName) {
                 me.currentStateData.forEach(function (company) {
                     company.children.forEach(function (group) {
                         group.children.forEach(function (dev) {
                             if (dev.deviceid == deviceid) {
-                                company.expand = true
-                                dev.isSelected = true
-                                group.expand = true
+                                company.expand = true;
+                                dev.isSelected = true;
+                                group.expand = true;
                             } else {
-                                dev.isSelected = false
+                                dev.isSelected = false;
                             }
                         })
                     })
@@ -768,122 +657,9 @@ var monitor = {
                 });
             }
         },
-        openDevInfoWindow: function (isOpen) {
-            var me = this;
-            var record = me.currentDeviceRecord;
-            if (record && isOpen) {
-                var markers = this.map.getOverlays();
-                for (var i = 0; i < markers.length; i++) {
-                    var marker = markers[i];
-                    if (marker.deviceid == me.currentDeviceId) {
-                        var sContent = me.getWindowContent(record);
-                        me.refreshInfoWindow(sContent, false);
-                        this.map.openInfoWindow(this.infoWindowInstance, record.point);
-                    };
-                };
-            };
-        },
         getSingleDeviceInfo: function (deviceid) {
-            var info = this.positionLastrecords[deviceid];
-            return info;
+            return this.positionLastrecords[deviceid];
         },
-        getWithInitInfoWindow: function () {
-
-            var contentWithDivStart = '<div id="info_window">';
-            var contentWithDivEnd = '</div>';
-            //var sContent = this.getWindowContent(info);
-            if (this.infoWindowInstance == null) {
-                this.infoWindowInstance = new BMap.InfoWindow(contentWithDivStart + contentWithDivEnd, { width: 350, height: 195 });
-                this.infoWindowInstance.disableCloseOnClick();
-                this.infoWindowInstance.disableAutoPan();
-            };
-            return this.infoWindowInstance;
-
-        },
-        getWindowContent: function (info) {
-            var devdata = this.$store.state.deviceInfos[info.deviceid];
-            var address = this.getAddress(info);
-            var strstatus = info.strstatus ? info.strstatus : '';
-            var posiType = (function () {
-                var type = null;
-
-                var gotsrc = info.gotsrc;  //cell gps wifi
-                switch (gotsrc) {
-                    case 'un':
-                        type = "未知";
-                        break;
-                    case 'cell':
-                        type = "基站定位";
-                        break;
-                    case 'gps':
-                        type = "卫星定位";
-                        break;
-                    case 'wifi':
-                        type = "WIFI定位";
-                        break;
-                    default:
-                        type = "未知";
-                };
-                return type;
-            })();
-
-            if (info.radius > 0) {
-                var radiuDesc = ' (误差范围:' + info.radius + '米)';
-                posiType += radiuDesc;
-            };
-
-            var content =
-                '<p> 设备名称: ' + devdata.devicename + '</p>' +
-                '<p> 设备序号: ' + info.deviceid + '</p>' +
-                '<p> 定位类型: ' + posiType + '</p>' +
-                '<p> 经纬度: ' + info.callon.toFixed(5) + ',' + info.callat.toFixed(5) + '</p>' +
-                '<p> 最后时间: ' + DateFormat.longToDateTimeStr(info.arrivedtime, 0) + '</p>' +
-                '<p> 状态: ' + strstatus + '</p>' +
-                '<p class="last-address"> 详细地址: ' + address + '</p>' +
-                '<p class="operation">' +
-                '<span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="playBack(' +
-                info.deviceid +
-                ')">轨迹</span>' +
-                '<span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="trackMap(' +
-                info.deviceid +
-                ')">跟踪</span><span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="refreshPostion(' +
-                info.deviceid +
-                ')">刷新位置</span><span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="openSim(' +
-                info.deviceid +
-                ')">SIM</span><span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="setFence(' +
-                info.deviceid +
-                ')">设置围栏</span></p>';
-            return content;
-        },
-        getAddress: function (info) {
-            var me = this;
-            var callon = info.callon;
-            var callat = info.callat;
-            var bd09 = wgs84tobd09(callon, callat);
-            var lng = bd09[0].toFixed(5);
-            var lat = bd09[1].toFixed(5);
-            var address = LocalCacheMgr.getAddress(lng, lat);
-            if (address !== null) {
-                return address;
-            }
-            utils.getBaiduAddressFromBaidu(lng, lat, function (resp) {
-                if (resp.length) {
-                    address = resp;
-                    $('p.last-address').html(' 详细地址: ' + address);
-                    LocalCacheMgr.setAddress(lng, lat, address);
-                } else {
-                    utils.getJiuHuAddressSyn(callon, callat, function (resp) {
-                        address = resp.address;
-                        $('p.last-address').html(' 详细地址: ' + address);
-                        LocalCacheMgr.setAddress(lng, lat, address);
-                    })
-                }
-            })
-            return '地址正在解析...'
-        },
-        // setNavState: function (state) {
-        //     this.isShowConpanyName = state;
-        // },
         queryCompanyTree: function (callback) {
             var url = myUrls.queryCompanyTree();
             utils.sendAjax(url, {}, function (resp) {
@@ -915,7 +691,7 @@ var monitor = {
                     me.editDevModal = false;
                     me.$Message.success('修改成功');
 
-                    me.$store.state.deviceInfos[data.deviceid].remark = data.remark;
+                    me.deviceInfos[data.deviceid].remark = data.remark;
                 } else if ((resp.status == -1)) {
                     me.$Message.error('修改失败')
                 }
@@ -925,7 +701,7 @@ var monitor = {
             // console.log('editDevice', deviceid);
             this.$store.commit('editDeviceInfo', device);
             var deviceid = device.deviceid
-            var deviceInfo = this.$store.state.deviceInfos[deviceid];
+            var deviceInfo = this.deviceInfos[deviceid];
 
             this.editDevData.devicename = deviceInfo.devicename;
             this.editDevData.simnum = deviceInfo.simnum;
@@ -1045,8 +821,8 @@ var monitor = {
         getAllShowConpanyTreeData: function () {
             var me = this
             var newArray = me.getNewCompanyArr()
-            var newGroups = []
-            me.groups.forEach(function (group, index) {
+
+            me.groups.forEach(function (group) {
                 var companyid = group.companyid
                 var onlineCount = 0
                 var groupObj = {
@@ -1368,20 +1144,20 @@ var monitor = {
             }
             return isOnline;
         },
-        updateDevLastPosition: function (record) {
-            var isOnline = (Date.now() - record.arrivedtime) < this.offlineTime ? true : false;
-            var iconState = null;
-            var angle = utils.getAngle(record.course);
-
-            iconState = new BMap.Icon(
-                utils.getDirectionImage(isOnline, angle),
-                new BMap.Size(17, 17),
-                { imageOffset: new BMap.Size(0, 0) }
-            );
-
-            record.icon = iconState;
-            var lng_lat = wgs84tobd09(record.callon, record.callat);
-            record.point = new BMap.Point(lng_lat[0], lng_lat[1]);
+        updateDevLastPosition: function (item) {
+            var deviceid = item.deviceid;
+            var b_lon_and_b_lat = wgs84tobd09(item.callon, item.callat)
+            var g_lon_and_g_lat = wgs84togcj02(item.callon, item.callat);
+            var online = utils.getIsOnline(item);
+            item.b_lon = b_lon_and_b_lat[0];
+            item.b_lat = b_lon_and_b_lat[1];
+            item.g_lon = g_lon_and_g_lat[0];
+            item.g_lat = g_lon_and_g_lat[1];
+            item.online = online;
+            item.devicename = this.deviceInfos[deviceid].devicename;
+            item.arrivedTimeStr = DateFormat.longToDateTimeStr(item.arrivedtime, 0);
+            this.positionLastrecords[deviceid] = item;
+            this.map.updateLastTracks(this.positionLastrecords);
         },
         setIntervalReqRecords: function () {
             var me = this
@@ -1389,69 +1165,15 @@ var monitor = {
                 me.intervalTime--
                 if (me.intervalTime <= 0) {
                     me.intervalTime = me.stateIntervalTime;
-                    var devIdList = Object.keys(me.$store.state.deviceInfos);
-                    me.getLastPosition(devIdList, function (resp) {
-                        if (resp.records) {
-                            var newRecord = {};
-                            resp.records.forEach(function (record) {
-                                if (record) {
-                                    me.updateDevLastPosition(record);
-                                    newRecord[record.deviceid] = record;
-                                }
-                            });
-                            me.positionLastrecords = newRecord;
-                            me.updateTreeOnlineState();
-                            me.moveMarkers();
-                        }
-                    })
+                    var devIdList = Object.keys(me.deviceInfos);
+                    me.getLastPosition(devIdList, function () {
+                        me.map.updateLastTracks(me.positionLastrecords);
+                        me.map.updateMarkersState(me.currentDeviceId);
+                        me.updateTreeOnlineState();
+                    });
                 }
             }, 1000);
         },
-        moveMarkers: function () {
-            var me = this;
-            var markers = this.map.getOverlays();
-            markers.forEach(function (marker) {
-                var deviceid = marker.deviceid;
-                var record = me.positionLastrecords[deviceid];
-                if (record) {
-                    if (deviceid === record.deviceid) {
-                        marker.setPosition(record.point);
-                        marker.setIcon(record.icon);
-                        if (deviceid == me.currentDeviceId) {
-                            me.isMoveTriggerEvent = false;
-                            if (me.infoWindowInstance) {
-                                if (me.infoWindowInstance.isOpen()) {
-                                    var content = me.getWindowContent(record);
-                                    me.refreshInfoWindow(content, true);
-                                    console.log('查询的轨迹时间', deviceid, DateFormat.longToDateTimeStr(record.arrivedtime, 0));
-                                }
-                            };
-                        };
-                    };
-                };
-
-
-            });
-        },
-        setCarIconState: function () {
-            var me = this
-            for (var key in this.positionLastrecords) {
-                var record = this.positionLastrecords[key];
-
-                var isOnline = Date.now() - record.arrivedtime < me.offlineTime ? true : false;
-                var iconState = null;
-
-                var angle = utils.getAngle(record.course);
-
-                iconState = new BMap.Icon(
-                    utils.getDirectionImage(isOnline, angle),
-                    new BMap.Size(17, 17),
-                    { imageOffset: new BMap.Size(0, 0) }
-                );
-
-                record.icon = iconState;
-            };
-        }
     },
     computed: {
         username: function () {
@@ -1471,9 +1193,16 @@ var monitor = {
         },
         currentDeviceId: function () {
             return this.$store.state.currentDeviceId;
+        },
+        deviceInfos: function () {
+            return this.$store.state.deviceInfos;
         }
     },
     watch: {
+        mapType: function () {
+            this.initMap();
+            this.map.setMarkerClusterer(this.positionLastrecords);
+        },
         filterData: function () {
             if (this.filterData.length) {
                 this.isShowMatchDev = true
@@ -1501,7 +1230,7 @@ var monitor = {
         positionLastrecords: function () {
             var me = this;
             var online = 0;
-            var deviceIds = Object.keys(me.$store.state.deviceInfos);
+            var deviceIds = Object.keys(me.deviceInfos);
 
             for (var key in this.positionLastrecords) {
                 var record = this.positionLastrecords[key];
@@ -1509,11 +1238,11 @@ var monitor = {
                 if (isOnline) {
                     online++;
                 }
-            }
+            };
+
             this.allDevCount = deviceIds.length;
             this.onlineDevCount = online;
             this.offlineDevCount = this.allDevCount - this.onlineDevCount;
-
         },
         selectedState: function () {
             var me = this
@@ -1548,43 +1277,24 @@ var monitor = {
         var me = this;
         this.intervalTime = Number(this.stateIntervalTime);
         this.initMap();
-        this.getWithInitInfoWindow();
         this.getMonitorListByUser({ username: userName }, function (resp) {
             me.groups = resp.groups;
-            me.setDeviceIdsList(resp.groups);
-            var devIdList = Object.keys(me.$store.state.deviceInfos)
+            me.$store.dispatch('setdeviceInfos', me.groups);
+            var devIdList = Object.keys(me.deviceInfos);
             me.getLastPosition(devIdList, function (resp) {
-                if (resp.records) {
-                    var newRecords = {};
-                    resp.records.forEach((item) => {
-                        if (item) {
-                            newRecords[item.deviceid] = item;
-                        }
-                    })
-                    me.positionLastrecords = newRecords;
-                } else {
-                    me.positionLastrecords = {};
-                }
-                me.setCarIconState();
-                var range = utils.getDisplayRange(me.map.getZoom());
-                if (resp.records) {
-                    if (resp.records.length > 300) {
-                        var filterArr = me.filterReocrds(range, resp.records);
-                        me.addOverlayToMap(filterArr);
-                    } else {
-                        me.addOverlayToMap(resp.records);
-                    };
-                };
+                me.map.setMarkerClusterer(me.positionLastrecords);
                 me.selectedState = 'all';
             });
         });
-        this.setIntervalReqRecords();
+        //this.setIntervalReqRecords();
         communicate.$on("positionlast", this.handleWebSocket);
+        communicate.$on("on-click-marker", this.openTreeDeviceNav);
     },
     beforeDestroy: function () {
         this.$store.commit('currentDeviceRecord', {});
         clearInterval(this.intervalInstanse);
         communicate.$off('positionlast', this.handleWebSocket);
+        communicate.$off("on-click-marker", this.openTreeDeviceNav);
         this.myDis && this.myDis.close();
     }
 }

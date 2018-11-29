@@ -163,6 +163,7 @@ div.ivu-steps-head-inner .ivu-icon{
     }
     .device-controller {
         overflow: hidden;
+        padding-bottom: 3px;
     }
     .device-controller li {
         float: left;
@@ -190,7 +191,7 @@ div.ivu-steps-head-inner .ivu-icon{
         background: #fff;
     }
      
-    #map{
+    #my-map{
         position: absolute;
         left: 10px;
         top: 35px;
@@ -203,16 +204,23 @@ div.ivu-steps-head-inner .ivu-icon{
         height: 35px;
         padding-right: 10px;
     }
-    ul.ul-manager-wraper li {
+    ul.ul-manager-wraper>li {
         float: left;
-        height: 35px;      
+        height: 35px;    
+        margin-left: 10px;  
     }
+    ul.ul-manager-wraper li.maps{
+        line-height: 35px;
+        width: 88px;
+    }
+    ul.ul-manager-wraper li.maps .ivu-select-item{
+        width: 100%;
+    }
+    
     ul.ul-manager-wraper li.gongju{
-        padding: 1.5px 5px;
+        line-height: 35px;
     }
-    ul.ul-manager-wraper li.gongju .ivu-btn::focus{
-        outline: none;
-    }
+
     p.operation span{
         margin-right:  5px;
     }

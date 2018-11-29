@@ -16,7 +16,6 @@
     };
 
     AlarmMgr.prototype.getAlarmList = function () {
-        console.log("alarmRecords -- ", this.records);
         return Object.values(this.records);
     };
 

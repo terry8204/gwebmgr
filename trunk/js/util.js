@@ -26,18 +26,13 @@ var utils = {
       }
     })
   },
-  getParameterByName: function (name) {
-    var url = location.search;
-    url = decodeURIComponent(url);
-    var theRequest = new Object();
-    if (url.indexOf("?") != -1) {
-      var str = url.substr(1);
-      var strs = str.split("&");
-      for (var i = 0; i < strs.length; i++) {
-        theRequest[strs[i].split("=")[0]] = unescape(strs[i].split("=")[1]);
-      }
+  getIsOnline: function (track) {
+    var result = false;
+    var arrivedtime = track.arrivedtime;
+    if ((Date.now() - arrivedtime) < 60 * 5 * 1000) {
+      result = true;
     }
-    return theRequest[name];
+    return result;
   },
   getBaiduAddressFromBaidu: function (offsetlon, offsetlat, callback) {
     var point = new BMap.Point(offsetlon, offsetlat)
@@ -226,9 +221,63 @@ var utils = {
       circle.circleid = deviceid;   // 给围栏做标记
       map.addOverlay(circle);
     }
+  },
+  getWindowContent: function (track, b_address) {
+    var strstatus = track.strstatus ? track.strstatus : '';
+    var posiType = (function () {
+      var type = null;
+
+      var gotsrc = track.gotsrc;  //cell gps wifi
+      switch (gotsrc) {
+        case 'un':
+          type = "未知";
+          break;
+        case 'cell':
+          type = "基站定位";
+          break;
+        case 'gps':
+          type = "卫星定位";
+          break;
+        case 'wifi':
+          type = "WIFI定位";
+          break;
+        default:
+          type = "未知";
+      };
+      return type;
+    })();
+
+    if (track.radius > 0) {
+      var radiuDesc = ' (误差范围:' + track.radius + '米)';
+      posiType += radiuDesc;
+    };
+
+    var content =
+      '<p> 设备名称: ' + track.devicename + '</p>' +
+      '<p> 设备序号: ' + track.deviceid + '</p>' +
+      '<p> 定位类型: ' + posiType + '</p>' +
+      '<p> 经纬度: ' + track.callon.toFixed(5) + ',' + track.callat.toFixed(5) + '</p>' +
+      '<p> 最后时间: ' + DateFormat.longToDateTimeStr(track.arrivedtime, 0) + '</p>' +
+      '<p> 状态: ' + strstatus + '</p>' +
+      '<p class="last-address"> 详细地址: ' + b_address + '</p>' +
+      '<p class="operation">' +
+      '<span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="playBack(' +
+      track.deviceid +
+      ')">轨迹</span>' +
+      '<span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="trackMap(' +
+      track.deviceid +
+      ')">跟踪</span><span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="refreshPostion(' +
+      track.deviceid +
+      ')">刷新位置</span><span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="openSim(' +
+      track.deviceid +
+      ')">SIM</span><span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="setFence(' +
+      track.deviceid +
+      ')">设置围栏</span></p>';
+    return content;
   }
 }
 
+//自定义 vue指令
 vClickOutside.install(Vue);
 
 //  vue组件   配合查询分组表格使用

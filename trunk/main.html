@@ -159,9 +159,9 @@
                                         <div class="demo-auto-complete-group">
                                             <span>{{ item.groupname }}</span>
                                         </div>
-                                        <Option v-for="option in item.devices" :value="option.groupname" :key="option.groupname">
+                                        <i-option v-for="option in item.devices" :value="option.groupname" :key="option.groupname">
                                             <span @click="sosoSelect(option)" class="demo-auto-complete-title">{{ option.devicename }}</span>
-                                        </Option>
+                                        </i-option>
                                     </li>
                                 </ul>
                             </transition>
@@ -299,11 +299,15 @@
                 <div class="map_manager">
                     <div style="float:left;height:35px; line-height:35px;padding-left:15px;color:red;font-size:12px;">{{intervalTime}}秒后刷新</div>
                     <ul class="ul-manager-wraper">
+                        <li class="maps">
+                            <i-select v-model="mapType" size="small" style="width:88px">
+                                <i-option v-for="item in mapList" :value="item.value" :key="item.value">{{ item.label }}</i-option>
+                            </i-select>
+                        </li>
                         <li class="gongju">
                             <Dropdown transfer>
-                                <i-button type="text">
-                                    工具
-                                    <Icon type="ios-arrow-down"></Icon>
+                                <i-button type="primary" size="small">
+                                    工具<Icon type="ios-arrow-down"></Icon>
                                 </i-button>
                                 <i-dropdown-menu slot="list">
                                     <DropdownItem name="name1">
@@ -314,7 +318,7 @@
                         </li>
                     </ul>
                 </div>
-                <div id="map"></div>
+                <div id="my-map"></div>
             </div>
 			<!-- 编辑设备模态 -->
             <Modal v-model="editDevModal" width="460">
@@ -691,12 +695,20 @@
     <script src="js/localcachemgr.js"></script>
     <script src="js/util.js"></script>
     <script src="http://api.map.baidu.com/api?v=3.0&ak=e7SC5rvmn2FsRNE4R1ygg44n"></script>
+    <script type="text/javascript" src="http://api.map.baidu.com/library/TextIconOverlay/1.2/src/TextIconOverlay_min.js"></script>
+    <script src="http://ditu.google.cn/maps/api/js?v=3.1&sensor=false&language=cn&key=AIzaSyDXQKVS1Tdp3VlrzBsZbBlLj_uYHVDHe6M" type="text/javascript"></script>
+    <script src="js/gmarkerclusterer.js"></script>
+    <script src="js/markerwithlabel.js"></script>
+    <script src="js/markerclusterer.js"></script>
     <script src="js/websocketmgr.js"></script>
+    <script src="js/baidumap.js"></script>
+    <script src="js/googlemap.js"></script>
     <script src="js/monitor.js"></script>
     <script src="js/reportform.js"></script>
     <script src="js/bgmanager.js"></script>
     <script src="js/alarmcomponent.js"></script>
     <script src="js/main.js"></script>
+    
 </body>
 
 </html>
