@@ -503,3 +503,8 @@ function openSim (deviceId) {
   }
   win.deepClone = deepClone;
 })(this);
+
+
+
+// var bounds = this.map.getBounds();
+//  bounds.containsPoint(point)

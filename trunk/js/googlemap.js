@@ -10,7 +10,6 @@ GoogleMap.pt = GoogleMap.prototype;
 
 GoogleMap.pt.initMap = function () {
     var center = new google.maps.LatLng(24.129163, 113.264435);
-
     this.mapInstance = new google.maps.Map(document.getElementById('my-map'), {
         zoom: 4,
         center: center,
@@ -22,14 +21,13 @@ GoogleMap.pt.setMarkerClusterer = function (lastTracks) {
     this.lastTracks = lastTracks;
     if (this.markerClusterer == null) {
         var markers = this.getMarkers(lastTracks);
-        var pathname = location.pathname
-        var imgPath = ''
+        var pathname = location.pathname;
+        var imgPath = '';
         if (pathname.indexOf('gpsserver') != -1) {
             imgPath = myUrls.host + '/images/m';
         } else {
             imgPath = '/images/m';
         }
-        console.log('imgPath', imgPath);
         this.markerClusterer = new GMarkerClusterer(this.mapInstance, markers, { imagePath: imgPath });
     }
 }
@@ -41,11 +39,6 @@ GoogleMap.pt.getMarkers = function (lastTracks) {
             var track = lastTracks[deviceid];
             var myIcon = this.getIcon(track);
             var latLng = new google.maps.LatLng(track.g_lat, track.g_lon);
-            // var marker = new google.maps.Marker({
-            //     position: latLng,
-            //     icon: myIcon,
-            // });
-
             var marker = new MarkerWithLabel({
                 position: latLng,
                 icon: myIcon,
@@ -60,9 +53,7 @@ GoogleMap.pt.getMarkers = function (lastTracks) {
                     color: "#fff"
                 }
             });
-
             marker.deviceid = track.deviceid;
-            // marker.setLabel(label);
             markers.push(marker);
             this.addMarkerEvent(marker);
         }
@@ -96,14 +87,14 @@ GoogleMap.pt.getIcon = function (track) {
     var pathname = location.pathname
     var imgPath = ''
     if (pathname.indexOf('gpsserver') != -1) {
-        imgPath = myUrls.host + 'images/carstate'
+        imgPath = myUrls.host + 'images/carstate';
     } else {
-        imgPath = '../images/carstate'
+        imgPath = '../images/carstate';
     }
     if (track.online) {
-        imgPath += '/green_0.png'
+        imgPath += '/green_' + utils.getAngle(track.course) + '.png';
     } else {
-        imgPath += '/gray_0.png'
+        imgPath += '/gray_' + utils.getAngle(track.course) + '.png';
     }
     return imgPath;
 }

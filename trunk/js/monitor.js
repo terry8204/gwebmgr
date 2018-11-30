@@ -136,21 +136,6 @@ var monitor = {
                 this.myDis.open();
             }
         },
-        getThePointOfTheCurrentWindow: function () {
-            var bounds = this.map.getBounds();
-            var pointArr = [];
-            for (var key in this.positionLastrecords) {
-                var item = this.positionLastrecords[key];
-                if (item) {
-                    var lng_lat = wgs84tobd09(item.callon, item.callat);
-                    var point = new BMap.Point(lng_lat[0], lng_lat[1]);
-                    if (bounds.containsPoint(point)) {
-                        pointArr.push(item);
-                    };
-                };
-            };
-            return pointArr;
-        },
         handleClickMore: function (name) {
             switch (name) {
                 case 'name3':
@@ -403,7 +388,6 @@ var monitor = {
                 me.filterMethod(value);
             }, 300);
         },
-
         selectedStateNav: function (state) {
             this.selectedState = state;
         },
@@ -591,39 +575,6 @@ var monitor = {
                     }, 2000)
                 }
             })
-        },
-        filterReocrds: function (range, records) {
-            var me = this
-            var filterArr = []
-            var firstRecord = records[0]
-            if (firstRecord == null) {
-                return []
-            }
-            var first_lng_lat = wgs84tobd09(firstRecord.callon, firstRecord.callat)
-            firstRecord.point = new BMap.Point(first_lng_lat[0], first_lng_lat[1])
-            filterArr.push(firstRecord)
-
-            records.forEach(function (record) {
-                var len = filterArr.length - 1
-                var endPoint = null
-                if (!record.point) {
-                    var end_lng_lat = wgs84tobd09(record.callon, record.callat)
-                    endPoint = new BMap.Point(end_lng_lat[0], end_lng_lat[1])
-                    record.point = endPoint
-                } else {
-                    endPoint = record.point
-                }
-                var rice = me.map.getDistance(filterArr[len].point, endPoint)
-                if (rice > range) {
-                    filterArr.push(record)
-                }
-            })
-
-            if (filterArr.length > 300) {
-                return filterReocrds(range + 100, filterArr)
-            } else {
-                return filterArr
-            }
         },
         openTreeDeviceNav: function (deviceid) {
             var me = this;
@@ -1286,7 +1237,7 @@ var monitor = {
                 me.selectedState = 'all';
             });
         });
-        //this.setIntervalReqRecords();
+        this.setIntervalReqRecords();
         communicate.$on("positionlast", this.handleWebSocket);
         communicate.$on("on-click-marker", this.openTreeDeviceNav);
     },
