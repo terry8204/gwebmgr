@@ -2,6 +2,7 @@
 var isShowCompany = Cookies.get('isShowCompany');
 var communicate = new Vue({}); // 组件之间通信的vue实例
 var userName = Cookies.get('name');
+var mapType = Cookies.get('app-map-type');
 // vuex store
 vstore = new Vuex.Store({
   state: {

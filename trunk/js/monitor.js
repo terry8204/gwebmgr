@@ -6,7 +6,7 @@ var monitor = {
         var vm = this;
         return {
             map: null,
-            mapType: "bMap",
+            mapType: mapType ? mapType : 'bMap',
             mapList: [{ label: "百度地图", value: "bMap" }, { label: "谷歌地图", value: "gMap" }],
             sosoValue: '', // 搜索框的值
             sosoData: [], // 搜索框里面的数据
@@ -1153,6 +1153,7 @@ var monitor = {
         mapType: function () {
             this.initMap();
             this.map.setMarkerClusterer(this.positionLastrecords);
+            Cookies.set('app-map-type', this.mapType);
         },
         filterData: function () {
             if (this.filterData.length) {
