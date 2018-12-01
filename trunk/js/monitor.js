@@ -1157,9 +1157,9 @@ var monitor = {
         },
         filterData: function () {
             if (this.filterData.length) {
-                this.isShowMatchDev = true
+                this.isShowMatchDev = true;
             } else {
-                this.isShowMatchDev = false
+                this.isShowMatchDev = false;
             }
         },
         currentDeviceType: function () {
