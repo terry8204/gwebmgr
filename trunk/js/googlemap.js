@@ -110,7 +110,7 @@ GoogleMap.pt.getDevAddress = function (track) {
     if (address != null) {
         return address;
     };
-    utils.getBaiduAddressFromBaidu(b_lon, b_lat, function (b_address) {
+    utils.getGoogleAddressSyn(track.g_lat, track.g_lon, function (b_address) {
         if (b_address.length) {
             var content = utils.getWindowContent(track, b_address);
             self.mapInfoWindow.setContent(content);

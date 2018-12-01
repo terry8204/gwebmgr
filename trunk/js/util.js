@@ -80,6 +80,18 @@ var utils = {
       }
     })
   },
+  getGoogleAddressSyn: function (lat, lon, callback) {
+    var request = {
+      location: new google.maps.LatLng({ lat: lat, lng: lon })
+    }
+    var geocoder = new google.maps.Geocoder();
+    geocoder.geocode(request, function (resp) {
+      if (resp && resp.length) {
+        var address = resp[0].formatted_address;
+        callback(address);
+      }
+    })
+  },
   getParameterByName: function (name) {
     var url = location.search
     url = decodeURIComponent(url)

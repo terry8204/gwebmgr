@@ -181,7 +181,7 @@ var monitor = {
             me.updateDevLastPosition(data);
             console.log('收到的轨迹push时间', deviceid, DateFormat.longToDateTimeStr(data.arrivedtime, 0));
             if (me.currentDeviceId == deviceid) {
-                me.map.updateSingleMarkerState(deviceid);
+                me.map && me.map.updateSingleMarkerState(deviceid);
             };
         },
         openDistance: function () {
@@ -465,6 +465,7 @@ var monitor = {
             this.handleClickDev(deviceInfo.deviceid);
         },
         handleClickDev: function (deviceid) {
+            if (!this.map) { return; }
             var record = this.getSingleDeviceInfo(deviceid);
             this.currentDeviceName = this.deviceInfos[deviceid].devicename;
             if (record) {

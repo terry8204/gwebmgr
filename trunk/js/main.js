@@ -22,6 +22,7 @@ var getPath = function () {
   return jsPath.substring(0, jsPath.lastIndexOf('/') + 1);
 }();
 
+// 百度地图是否加载完成 改变全局变量
 function loadBMapSucc () {
   isLoadBMap = true;
 }
