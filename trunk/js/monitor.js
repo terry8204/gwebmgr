@@ -1,10 +1,30 @@
 
+// baidu: 'http://api.map.baidu.com/api?v=3.0&ak=e7SC5rvmn2FsRNE4R1ygg44n',
+// textIconoverlay: getPath + 'textIconoverlay_min.js',
+// distancetool: getPath + 'distancetool_min.js',
+// bmarkerclusterer: getPath + "markerclusterer.js",
+
+// google: "http://ditu.google.cn/maps/api/js?v=3.1&sensor=false&language=cn&key=AIzaSyAjWE3yINoltrJcma3fq73wCp04jjEo1zA",
+// gmarkerclusterer: getPath + "gmarkerclusterer.js",
+// markerwithlabel: getPath + "markerwithlabel.js",
+
+// <!-- <script type="text/javascript" src="http://api.map.baidu.com/library/DistanceTool/1.2/src/DistanceTool_min.js"></script> -->
+//     <!-- <script src="http://api.map.baidu.com/api?v=3.0&ak=e7SC5rvmn2FsRNE4R1ygg44n"></script> -->
+//     <!-- <script type="text/javascript" src="http://api.map.baidu.com/library/TextIconOverlay/1.2/src/TextIconOverlay_min.js"></script> -->
+//     <!-- <script src="js/textIconoverlay_min.js"></script>
+//     <script src="js/distancetool_min.js"></script>
+//     <script src="js/markerclusterer.js"></script> -->
+//     <!-- <script src="http://ditu.google.cn/maps/api/js?v=3.1&sensor=false&language=cn&key=AIzaSyAjWE3yINoltrJcma3fq73wCp04jjEo1zA" type="text/javascript"></script>
+//     <script src="js/gmarkerclusterer.js"></script>
+//     <script src="js/markerwithlabel.js"></script> -->
+
 // 定位监控
 var monitor = {
     template: document.getElementById('monitor-template').innerHTML,
     data: function () {
         var vm = this;
         return {
+            isSpin: false,
             map: null,
             mapType: mapType ? mapType : 'bMap',
             mapList: [{ label: "百度地图", value: "bMap" }, { label: "谷歌地图", value: "gMap" }],
@@ -106,12 +126,49 @@ var monitor = {
     },
     methods: {
         initMap: function () {
+            var me = this;
             switch (this.mapType) {
                 case 'bMap':
-                    this.map = new BMapClass();
+                    try {
+                        BMap ? this.map = new BMapClass() : '';
+                    } catch (error) {
+                        me.isSpin = true;
+                        asyncLoadJs('baidu', function () {
+                            (function poll () {
+                                if (isLoadBMap) {
+                                    asyncLoadJs('distancetool', function () {
+                                        asyncLoadJs('textIconoverlay', function () {
+                                            asyncLoadJs('bmarkerclusterer', function () {
+                                                me.map = new BMapClass();
+                                                me.map.setMarkerClusterer(me.positionLastrecords);
+                                                me.isSpin = false;
+                                            });
+
+                                        });
+                                    });
+                                } else {
+                                    setTimeout(poll, 4);
+                                }
+                            }());
+                        });
+
+                    }
                     break;
                 case 'gMap':
-                    this.map = new GoogleMap();
+                    try {
+                        google ? this.map = new GoogleMap() : '';
+                    } catch (error) {
+                        me.isSpin = true;
+                        asyncLoadJs('google', function () {
+                            asyncLoadJs('markerwithlabel', function () {
+                                asyncLoadJs('gmarkerclusterer', function () {
+                                    me.map = new GoogleMap();
+                                    me.map.setMarkerClusterer(me.positionLastrecords);
+                                    me.isSpin = false;
+                                });
+                            });
+                        });
+                    }
                     break;
             };
         },
@@ -1234,7 +1291,7 @@ var monitor = {
             me.$store.dispatch('setdeviceInfos', me.groups);
             var devIdList = Object.keys(me.deviceInfos);
             me.getLastPosition(devIdList, function (resp) {
-                me.map.setMarkerClusterer(me.positionLastrecords);
+                me.map ? me.map.setMarkerClusterer(me.positionLastrecords) : '';
                 me.selectedState = 'all';
             });
         });

@@ -3,6 +3,82 @@ var isShowCompany = Cookies.get('isShowCompany');
 var communicate = new Vue({}); // 组件之间通信的vue实例
 var userName = Cookies.get('name');
 var mapType = Cookies.get('app-map-type');
+var isLoadBMap = false;
+var getPath = function () {
+  var jsPath = document.currentScript ? document.currentScript.src : function () {
+    var js = document.scripts
+      , last = js.length - 1
+      , src;
+
+    for (var i = last; i > 0; i--) {
+      if (js[i].readyState === 'interactive') {
+        src = js[i].src;
+        break;
+      }
+    }
+    return src || js[last].src;
+  }();
+
+  return jsPath.substring(0, jsPath.lastIndexOf('/') + 1);
+}();
+
+function loadBMapSucc () {
+  isLoadBMap = true;
+}
+
+var asyncLoadJs = function (jsName, callback) {
+  var node = document.createElement('script'),
+    timeout = 1,
+    head = document.getElementsByTagName('head')[0],
+    urls = {
+      baidu: 'http://api.map.baidu.com/api?v=3.0&ak=e7SC5rvmn2FsRNE4R1ygg44n&callback=loadBMapSucc',
+      textIconoverlay: 'http://api.map.baidu.com/library/TextIconOverlay/1.2/src/TextIconOverlay_min.js',
+      distancetool: getPath + 'distancetool_min.js',
+      bmarkerclusterer: getPath + "markerclusterer.js",
+
+      google: "http://ditu.google.cn/maps/api/js?v=3.1&sensor=false&language=cn&key=AIzaSyAjWE3yINoltrJcma3fq73wCp04jjEo1zA",
+      gmarkerclusterer: getPath + "gmarkerclusterer.js",
+      markerwithlabel: getPath + "markerwithlabel.js",
+    };
+
+  //加载完毕
+  function onScriptLoad (e) {
+    var readyRegExp = navigator.platform === 'PLaySTATION 3' ? /^complete$/ : /^(complete|loaded)$/
+    if (e.type === 'load' || (readyRegExp.test((e.currentTarget || e.srcElement).readyState))) {
+
+      head.removeChild(node);
+      (function poll () {
+        if (++timeout > timeout * 1000 / 4) {
+          return console.error(jsName + ' is not a valid module');
+        };
+        try {
+          callback();
+        } catch (error) {
+          setTimeout(poll, 4);
+        }
+
+      }());
+    }
+  }
+
+  node.async = true;
+  node.charset = 'utf-8';
+  node.src = urls[jsName];
+
+  head.appendChild(node);
+
+  if (node.attachEvent && !(node.attachEvent.toString && node.attachEvent.toString().indexOf('[native code') < 0) && !isOpera) {
+    node.attachEvent('onreadystatechange', function (e) {
+      onScriptLoad(e);
+    });
+  } else {
+    node.addEventListener('load', function (e) {
+      onScriptLoad(e);
+    }, false);
+  };
+
+}
+
 // vuex store
 vstore = new Vuex.Store({
   state: {
@@ -314,4 +390,5 @@ var vRoot = new Vue({
     vueInstanse = this;     // 备份monitor实例
   }
 });
+
 

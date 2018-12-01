@@ -190,13 +190,17 @@ div.ivu-steps-head-inner .ivu-icon{
         height: 35px;
         background: #fff;
     }
-     
-    #my-map{
+    #my-map,.spin-wraper{
         position: absolute;
         left: 10px;
         top: 35px;
         right: 10px;
         bottom: 10px;
+    }
+    .spin-wraper{
+        z-index: 999;
+        display: inline-block;
+        background: rgba(0, 0, 0, 0.5);
     }
     ul.ul-manager-wraper{
         overflow: hidden;
