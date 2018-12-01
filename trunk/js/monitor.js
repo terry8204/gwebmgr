@@ -175,7 +175,7 @@ var monitor = {
         handleWebSocket: function (data) {
             var me = this;
             var deviceid = data.deviceid;
-            data.devicename = this.deviceInfos[deviceid].devicename;
+            data.devicename = this.deviceInfos[deviceid] ? this.deviceInfos[deviceid].devicename : "";
             me.positionLastrecords[deviceid] = data;
             me.updateTreeOnlineState();
             me.updateDevLastPosition(data);
