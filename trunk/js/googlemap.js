@@ -3,6 +3,7 @@ function GoogleMap () {
     this.markerClusterer = null;
     this.lastTracks = null;
     this.mapInfoWindow = null; //地图窗口 
+    this.circleList = [];
     this.initMap();
 }
 
@@ -145,6 +146,42 @@ GoogleMap.pt.onClickDevice = function (deviceid) {
         }
     }
 }
+
+GoogleMap.pt.addMapFence = function (deviceid, distance) {
+    var mks = this.markerClusterer.getMarkers();
+    var point = null;
+    for (var i = 0; i < mks.length; i++) {
+        var mk = mks[i];
+        if (deviceid == mk.deviceid) {
+            console.log('mk', mk);
+            point = mk.internalPosition;
+            break;
+        }
+    };
+    if (point) {
+        var circle = new google.maps.Circle({
+            map: this.mapInstance,
+            radius: Number(distance),
+            fillColor: '#AA0000',
+            center: point
+        });
+        circle.deviceid = deviceid;
+        this.circleList.push(circle);
+    }
+}
+
+GoogleMap.pt.cancelFence = function (deviceid) {
+    for (var i = 0; i < this.circleList.length; i++) {
+        var mk = this.circleList[i];
+        if (mk && mk.deviceid === deviceid) {
+            mk.setMap(null);
+            this.circleList.splice(i, 1, null);
+        }
+    }
+}
+
+
+
 
 GoogleMap.pt.updateLastTracks = function (lastTracks) {
     this.lastTracks = lastTracks;

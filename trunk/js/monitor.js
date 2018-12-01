@@ -265,7 +265,8 @@ var monitor = {
                     utils.sendAjax(url, { deviceid: deviceid, radius: this.fenceDistance, lat: track.callat, lon: track.callon }, function (resp) {
                         if (resp.status == 0) {
                             me.electronicFenceModal = false;
-                            utils.addMapFence(me, deviceid, me.fenceDistance);
+                            // utils.addMapFence(me, deviceid, me.fenceDistance);
+                            me.map.addMapFence(deviceid, me.fenceDistance);
                         } else {
                             me.$Message.error("设置失败");
                         }
@@ -303,18 +304,11 @@ var monitor = {
         cancelFence: function () {
             var me = this;
             var deviceid = this.selectedDevObj.deviceid;
-            var mks = this.map.getOverlays();
             var url = myUrls.unSetGeofence();
-
             utils.sendAjax(url, { deviceid: deviceid }, function (resp) {
                 if (resp.status == 0) {
                     me.$Message.success("撤防成功");
-                    for (var i = 0; i < mks.length; i++) {
-                        var mk = mks[i];
-                        if (mk.circleid && mk.circleid == deviceid) {
-                            me.map.removeOverlay(mk);
-                        }
-                    }
+                    me.map.cancelFence(deviceid);
                 } else {
                     me.$Message.error("设置失败");
                 }

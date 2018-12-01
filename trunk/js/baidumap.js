@@ -3,6 +3,7 @@ function BMapClass () {
     this.markerClusterer = null;
     this.lastTracks = null;
     this.mapInfoWindow = null; //地图窗口 
+    this.circleList = [];
     this.initMap();
 }
 
@@ -159,6 +160,37 @@ BMapClass.pt.onClickDevice = function (deviceid) {
         }
     }
 }
+
+BMapClass.pt.addMapFence = function (deviceid, distance) {
+    var mks = this.markerClusterer.getMarkers();
+    var point = null;
+    for (var i = 0; i < mks.length; i++) {
+        var mk = mks[i];
+        if (deviceid == mk.deviceid) {
+            point = mk.point;
+            break;
+        }
+    };
+    console.log('point', point);
+    if (point) {
+        var circle = new BMap.Circle(point, distance, { strokeColor: "red", fillColor: "#eee", strokeWeight: 0.8, fillOpacity: 0.5 });
+        circle.circleid = deviceid;   // 给围栏做标记
+        this.circleList.push(circle);
+        this.mapInstance.addOverlay(circle);
+    }
+}
+
+BMapClass.pt.cancelFence = function (deviceid) {
+    var mks = this.mapInstance.getOverlays();
+    for (var i = 0; i < mks.length; i++) {
+        var mk = mks[i];
+        if (mk && mk.circleid == deviceid) {
+            this.mapInstance.removeOverlay(mk);
+            this.circleList.splice(i, 1, null);
+        }
+    }
+}
+
 
 BMapClass.pt.updateLastTracks = function (lastTracks) {
     this.lastTracks = lastTracks;
