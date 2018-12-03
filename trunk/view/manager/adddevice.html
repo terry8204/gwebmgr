@@ -145,9 +145,13 @@
                     };       
                     
                     if(this.loginpwd){
+                    	console.log("this.loginpwd:", this.loginpwd);
                         data.loginpwd = $.md5(this.loginpwd);
                     }else{
-                        data.loginpwd = $.md5(this.deviceid.substring(7,11));
+                     	
+                     	var legnth = this.deviceid.length;
+                     	console.log("this.loginpwd:", this.deviceid.substring(legnth-4,legnth));
+                        data.loginpwd = $.md5(this.deviceid.substring(legnth-4,legnth));
                     };
 
                     if(this.simnum){
