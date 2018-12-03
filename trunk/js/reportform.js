@@ -287,11 +287,11 @@ var reportForm = {
                     }
 
                 } else if (resp.status == 3) {
-                    me.$Message.error('请重新登录,2秒后自动跳转登录页面')
-                    Cookies.remove('token')
+                    me.$Message.error('请重新登录,2秒后自动跳转登录页面');
+                    Cookies.remove('token');
                     setTimeout(function () {
                         window.location.href = 'index.html'
-                    }, 2000)
+                    }, 2000);
                 } else {
                     if (resp.cause) {
                         me.$Message.error(resp.cause)

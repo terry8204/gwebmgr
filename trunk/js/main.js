@@ -78,7 +78,7 @@ var asyncLoadJs = function (jsName, callback) {
     }, false);
   };
 
-}
+};
 
 // vuex store
 vstore = new Vuex.Store({
