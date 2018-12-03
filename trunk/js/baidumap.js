@@ -171,7 +171,6 @@ BMapClass.pt.addMapFence = function (deviceid, distance) {
             break;
         }
     };
-    console.log('point', point);
     if (point) {
         var circle = new BMap.Circle(point, distance, { strokeColor: "red", fillColor: "#eee", strokeWeight: 0.8, fillOpacity: 0.5 });
         circle.circleid = deviceid;   // 给围栏做标记

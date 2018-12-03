@@ -267,7 +267,7 @@ var reportForm = {
         getMonitorListByUser: function (callback) {
             var me = this
             var url = myUrls.monitorListByUser()
-            utils.sendAjax(url, { havecompany: 0 }, function (resp) {
+            utils.sendAjax(url, { username: userName }, function (resp) {
                 if (resp.status == 0) {
                     var newGroups = []
                     resp.groups.forEach(function (group) {
