@@ -182,7 +182,6 @@ GoogleMap.pt.cancelFence = function (deviceid) {
 
 
 
-
 GoogleMap.pt.updateLastTracks = function (lastTracks) {
     this.lastTracks = lastTracks;
     var markers = this.markerClusterer.getMarkers();
