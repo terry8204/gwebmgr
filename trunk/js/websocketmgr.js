@@ -18,6 +18,7 @@ var initWebSocket = function (username, callback) {
             reconnectWs();
         };
         ws.onopen = function () {
+            if (!username) return;
             var user = "online" + username + "-web";
             console.log('ws连接成功', user);
             ws.send(user);
