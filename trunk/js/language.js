@@ -8,12 +8,12 @@
  *    },
  * 
  *   this.$i18n.locale='zhCHS'
- */ 
-(function (win) { 
+ */
+(function (win) {
     Vue.use(VueI18n)
     var messages = {
         en: {
-            login:{
+            login: {
 
             },
             message: {
@@ -24,7 +24,7 @@
         },
         //简体中文
         zhCHS: {
-            login:{
+            login: {
 
             },
             message: {
@@ -35,7 +35,7 @@
         },
         //繁体中文
         zhCHT: {
-            login:{
+            login: {
 
             },
             message: {
@@ -48,10 +48,10 @@
 
 
     var i18n = new VueI18n({
-        locale: 'zhCHT', 
-        messages:messages
+        locale: 'zhCHT',
+        messages: messages
     });
 
     win.i18n = i18n;
-    
+
 })(this)

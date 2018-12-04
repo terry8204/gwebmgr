@@ -185,6 +185,40 @@ GoogleMap.pt.cancelFence = function (deviceid) {
 
 GoogleMap.pt.updateLastTracks = function (lastTracks) {
     this.lastTracks = lastTracks;
+    var markers = this.markerClusterer.getMarkers();
+    for (var key in this.lastTracks) {
+        if (this.lastTracks.hasOwnProperty(key)) {
+            var isHas = false;
+            var track = this.lastTracks[key];
+            for (var i = 0; i < markers.length; i++) {
+                var marker = markers[i];
+                if (marker.deviceid == key) {
+                    isHas = true;
+                }
+            };
+            if (!isHas) {
+                var myIcon = this.getIcon(track);
+                var latLng = new google.maps.LatLng(track.g_lat, track.g_lon);
+                var marker = new MarkerWithLabel({
+                    position: latLng,
+                    icon: myIcon,
+                    raiseOnDrag: true,
+                    map: this.mapInstance,
+                    labelContent: track.devicename,
+                    labelAnchor: new google.maps.Point(-10, 17),
+                    labelStyle: {
+                        border: 0,
+                        padding: "2px",
+                        background: "#00A8D4",
+                        color: "#fff"
+                    }
+                });
+                marker.deviceid = track.deviceid;
+                this.addMarkerEvent(marker);
+                this.markerClusterer.addMarker(marker);
+            }
+        }
+    }
 }
 
 GoogleMap.pt.updateMarkersState = function (deviceid) {

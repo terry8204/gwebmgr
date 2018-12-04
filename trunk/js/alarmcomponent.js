@@ -355,15 +355,15 @@ var waringComponent = {
                     var records = resp.records
                     records.forEach(function (item, index) {
                         if (index % 3 == 0) {
-                            var newArr = []
-                            newArr.push(item)
-                            me.alarmTypeList.push(newArr)
+                            var newArr = [];
+                            newArr.push(item);
+                            me.alarmTypeList.push(newArr);
                         } else {
-                            me.alarmTypeList[me.alarmTypeList.length - 1].push(item)
-                        }
-                        me.checkboxObj[item.alarmcode] = true
-                    })
-                    me.queryWaringMsg()
+                            me.alarmTypeList[me.alarmTypeList.length - 1].push(item);
+                        };
+                        me.checkboxObj[item.alarmcode] = true;
+                    });
+                    me.queryWaringMsg();
                 }
             })
         }

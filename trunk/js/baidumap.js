@@ -193,6 +193,29 @@ BMapClass.pt.cancelFence = function (deviceid) {
 
 BMapClass.pt.updateLastTracks = function (lastTracks) {
     this.lastTracks = lastTracks;
+    var markers = this.markerClusterer.getMarkers();
+    for (var key in this.lastTracks) {
+        if (this.lastTracks.hasOwnProperty(key)) {
+            var isHas = false;
+            var track = this.lastTracks[key];
+            for (var i = 0; i < markers.length; i++) {
+                var marker = markers[i];
+                if (marker.deviceid == key) {
+                    isHas = true;
+                }
+            };
+            if (!isHas) {
+                var myIcon = this.getIcon(track);
+                var point = new BMap.Point(track.b_lon, track.b_lat);
+                var marker = new BMap.Marker(point, { icon: myIcon, rotation: track.course });
+                this.addMarkerEvent(marker);
+                var label = this.getCarLabel(track);
+                marker.deviceid = track.deviceid;
+                marker.setLabel(label);
+                this.markerClusterer.addMarker(marker);
+            }
+        }
+    }
 }
 
 BMapClass.pt.updateMarkersState = function (deviceid) {
