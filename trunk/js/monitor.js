@@ -1160,7 +1160,7 @@ var monitor = {
             item.devicename = this.deviceInfos[deviceid].devicename;
             item.arrivedTimeStr = DateFormat.longToDateTimeStr(item.arrivedtime, 0);
             this.positionLastrecords[deviceid] = item;
-            this.map.updateLastTracks(this.positionLastrecords);
+            this.map && this.map.updateLastTracks(this.positionLastrecords);
         },
         setIntervalReqRecords: function () {
             var me = this

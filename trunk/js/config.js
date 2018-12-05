@@ -125,7 +125,7 @@ var myUrls = {
     return this.host + 'webapi?action=lastposition&token=' + token
   },
   // 查询轨迹
-  queryTracks: function (token) {
+  queryTracks: function () {
     return this.host + 'webapi?action=querytracks&token=' + token
   },
   // 查询报警信息

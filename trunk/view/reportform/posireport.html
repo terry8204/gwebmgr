@@ -1,0 +1,123 @@
+<meta charset="UTF-8">
+<style>
+    .my-tabs-style > .ivu-tabs.ivu-tabs-card > .ivu-tabs-bar .ivu-tabs-tab{
+        border-radius: 0;
+        background: #fff;
+    }
+    .my-tabs-style > .ivu-tabs.ivu-tabs-card > .ivu-tabs-bar .ivu-tabs-tab-active{
+        border-top: 1px solid #3399ff;
+    }
+    .my-tabs-style > .ivu-tabs.ivu-tabs-card > .ivu-tabs-bar .ivu-tabs-tab-active:before{
+        content: '';
+        display: block;
+        width: 100%;
+        height: 1px;
+        background: #3399ff;
+        position: absolute;
+        top: 0;
+        left: 0;
+    }
+    .posi-map-wraper{
+        position: fixed;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        z-index: 299999;
+    }
+    .map-modal{
+        width: 100%;
+        height: 100%;
+        background: #000000;
+        opacity: .5;
+        
+    }
+    .inner-map-wraper{
+        width: 606px;
+        height: 506px;
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        margin-top: -250px;
+        margin-left: -300px;
+        border: 3px solid #fff;
+        border-radius:3px; 
+    }
+    .posi-map-title{
+        width: 100%;
+        height: 50px;
+        background: #3399ff;
+        color: #ffffff;
+        text-align: center;
+        line-height: 50px;
+        position: relative;
+    }
+    #posi-map{
+        width: 100%;
+        height: 450px;
+    }
+    .fade-enter-active, .fade-leave-active {
+        transition: opacity .3s;
+    }
+    .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+        opacity: 0;
+    }
+</style>
+<div id="posi-report">
+    <div class="report-item-header">
+        <Row style="margin:10px;height: 35px;">
+            <div style="float: left;">
+                <span>选择时间:</span>
+                <date-picker 
+                    type="daterange" 
+                    :value="dateVal"
+                    :editable="false"
+                    :clearable="false"
+                    @on-change="onChange" 
+                    show-week-numbers 
+                    style="width:300px"
+                    placement="bottom-start"></date-picker>
+            </div>
+            <div style="float: left;height: 35px; line-height: 35px;margin-left: 20px;" class="spans-wrap">
+                <span class="cursor-pointer" @click="handleSelectdDate(0)">今天</span> <b>｜</b>
+                <span class="cursor-pointer" @click="handleSelectdDate(1)">昨天</span> <b>｜</b>
+                <span class="cursor-pointer" @click="handleSelectdDate(3)">近三天</span> <b>｜</b>
+                <span class="cursor-pointer" @click="handleSelectdDate(7)">最近七天</span>
+            </div>    
+        </Row>
+        <Row style="margin:10px;height: 35px;">
+            <div style="float: left;">
+                <tree-demo :groupslist="groupslist" @on-selectd-deviceids="onSelectdDeviceIds"></tree-demo>
+            </div>
+            <div style="margin-left:20px;float: left;">
+                <span>间隔时间:</span>
+                <input-number :max="30" :min="5" v-model.trim.number="minuteNum"></input-number>
+            </div>
+            <div style="margin-left:20px;float: left;">
+                <i-button @click="onClickQuery">查询</i-button>
+            </div>
+        </Row>
+        <div style="margin:10px;" class="my-tabs-style">
+            <Tabs type="card" :animated="false" v-model="tabValue">
+                <tab-pane label="最后位置" name="lastPosi">
+                    <i-table :columns="lastPosiColumns" height="520" :data="lastPosiData" :loading="loading"></i-table>
+                </tab-pane>
+                <tab-pane label="位置明细" name="posiDetail">
+                    <i-table :columns="posiDetailColumns" height="520" :data="posiDetailData" :loading="loading"></i-table>
+                </tab-pane>
+            </Tabs>
+        </div>
+        <transition name="fade">
+            <div v-show="mapModal" class="posi-map-wraper">
+                <div class="map-modal" @click="mapModal=false"></div>
+                <div class="inner-map-wraper">
+                    <div class="posi-map-title">
+                        查看位置
+                        <div class="map-close"></div>
+                    </div>
+                    <div id="posi-map"></div>
+                </div>
+            </div>
+        </transition>
+    </div>
+</div>

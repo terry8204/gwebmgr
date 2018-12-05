@@ -185,11 +185,310 @@ function cmdReport (groupslist) {
 
             }
         },
-        mounted () {
+        mounted: function () {
             this.groupslist = groupslist;
         }
     });
 }
+
+
+// 位置报表
+function posiReport (groupslist) {
+    vueInstanse = new Vue({
+        el: "#posi-report",
+        data: {
+            loading: false,
+            mapModal: false,
+            mapType: null,
+            groupslist: [],
+            selectdDeviceList: [],
+            minuteNum: 5,
+            tabValue: "lastPosi",
+            markerIns: null,
+            lastPosiColumns: [
+                { title: '设备名称', key: 'devicename', width: 150 },
+                { title: '经度', key: 'fixedLon', width: 100 },
+                { title: '纬度', key: 'fixedLat', width: 100 },
+                { title: '时间', key: 'arrivedTimeStr', width: 160 },
+                { title: '状态', key: 'strstatus', width: 300 },
+                { title: '地址', key: 'address' },
+                {
+                    title: '操作',
+                    key: 'action',
+                    width: 180,
+                    render: function (h, params) {
+                        return h('div', [
+                            h('Button', {
+                                props: {
+                                    type: 'primary',
+                                    size: 'small'
+                                },
+                                style: {
+                                    marginRight: '5px'
+                                },
+                                on: {
+                                    click: function () {
+                                        vueInstanse.loading = true;
+                                        vueInstanse.tabValue = "posiDetail";
+                                        vueInstanse.querySingleDevTracks(params.row.deviceid, function () {
+                                            vueInstanse.loading = false;
+                                        });
+                                    }
+                                }
+                            }, '位置明细'),
+                            h('Button', {
+                                props: {
+                                    type: 'primary',
+                                    size: 'small',
+                                    disabled: params.row.disabled,
+                                },
+                                style: {
+
+                                },
+                                on: {
+                                    click: function () {
+                                        vueInstanse.getAddress(0, params);
+                                    }
+                                }
+                            }, '获取地址')
+                        ]);
+                    }
+                }
+            ],
+            posiDetailColumns: [
+                { title: '设备名称', key: 'devicename', width: 150 },
+                { title: '经度', key: 'fixedLon', width: 100 },
+                { title: '纬度', key: 'fixedLat', width: 100 },
+                { title: '时间', key: 'arrivedTimeStr', width: 160 },
+                { title: '地址', key: 'address' },
+                {
+                    title: '操作',
+                    key: 'action',
+                    width: 180,
+                    render: function (h, params) {
+                        return h('div', [
+                            h('Button', {
+                                props: {
+                                    type: 'primary',
+                                    size: 'small'
+                                },
+                                style: {
+                                    marginRight: '5px'
+                                },
+                                on: {
+                                    click: function () {
+                                        vueInstanse.mapModal = true;
+                                        var row = params.row;
+                                        if (vueInstanse.mapType == 'bMap') {
+                                            var b_lon_lat = wgs84tobd09(Number(row.callon), Number(row.callat));
+                                            var point = new BMap.Point(b_lon_lat[0], b_lon_lat[1]);
+                                            var marker = new BMap.Marker(point);
+                                            setTimeout(function () {
+                                                vueInstanse.mapInstance.clearOverlays();
+                                                vueInstanse.mapInstance.addOverlay(marker);
+                                                vueInstanse.mapInstance.setCenter(point);
+                                            }, 100);
+                                        } else {
+                                            if (vueInstanse.markerIns) {
+                                                vueInstanse.markerIns.setMap(null);
+                                            }
+                                            var g_lon_lat = wgs84togcj02(Number(row.callon), Number(row.callat));
+                                            var latLng = new google.maps.LatLng(g_lon_lat[1], g_lon_lat[0]);
+
+                                            vueInstanse.markerIns = new MarkerWithLabel({
+                                                position: latLng,
+                                                map: vueInstanse.mapInstance,
+                                            });
+                                            vueInstanse.mapInstance.setZoom(18);
+                                            setTimeout(function () {
+                                                vueInstanse.mapInstance.panTo(latLng);
+                                            }, 100);
+
+                                        }
+                                    }
+                                }
+                            }, '查看位置'),
+                            h('Button', {
+                                props: {
+                                    type: 'primary',
+                                    size: 'small',
+                                    disabled: params.row.disabled,
+                                },
+                                on: {
+                                    click: function () {
+                                        vueInstanse.getAddress(1, params);
+                                    }
+                                }
+                            }, '获取地址')
+                        ]);
+                    }
+                }
+            ],
+            lastPosiData: [],
+            posiDetailData: [],
+            mapInstance: null,
+        },
+        mixins: [reportMixin],
+        methods: {
+            onClickQuery: function () {
+                var me = this;
+                if (this.selectdDeviceList.length) {
+                    this.loading = true;
+                    this.getLastPosition(this.selectdDeviceList, function () {
+                        me.loading = false;
+                    });
+                } else {
+                    this.$Message.error("请选择设备");
+                }
+            },
+            getLastPosition: function (deviceIds, callback) {
+                var me = this;
+                var url = myUrls.lastPosition();
+                var data = {
+                    username: userName,
+                    deviceids: deviceIds
+                }
+                utils.sendAjax(url, data, function (resp) {
+                    if (resp.status == 0) {
+                        if (resp.records) {
+                            var newCored = [];
+                            resp.records.forEach((item) => {
+                                if (item) {
+                                    if (item) {
+
+                                        var deviceid = item.deviceid;
+                                        item.devicename = vstore.state.deviceInfos[deviceid].devicename;
+                                        item.arrivedTimeStr = DateFormat.longToDateTimeStr(item.arrivedtime, 0);
+                                        item.fixedLon = item.callon.toFixed(5);
+                                        item.fixedLat = item.callat.toFixed(5);
+                                        var address = LocalCacheMgr.getAddress(item.fixedLon, item.fixedLat);
+                                        item.address = address ? address : '';
+                                        item.disabled = address ? true : false;
+                                        newCored.push(item);
+                                    }
+                                }
+                            });
+                            me.lastPosiData = newCored;
+                        } else {
+
+                        }
+                    } else if (resp.status == 3) {
+                        me.$Message.error('请重新登录,2秒后自动跳转登录页面')
+                        Cookies.remove('token')
+                        setTimeout(function () {
+                            window.location.href = 'index.html'
+                        }, 2000);
+                    }
+                })
+                callback();
+            },
+            querySingleDevTracks: function (deviceid, callback) {
+                var me = this;
+                var url = myUrls.queryTracks();
+                var data = { "deviceid": deviceid, "lbs": 1, "timeorder": 0, "begintime": this.dateVal[0] + " 00:00:00", "endtime": this.dateVal[1] + " 23:59:00" };
+                utils.sendAjax(url, data, function (resp) {
+                    console.log('resp', resp);
+                    if (resp.status === 0) {
+                        if (resp.records) {
+                            var newArr = [];
+                            var devicename = vstore.state.deviceInfos[deviceid].devicename;
+                            resp.records.sort(function (a, b) {
+                                return a.arrivedtime - b.arrivedtime;
+                            });
+                            resp.records.forEach(function (item) {
+                                var fixedLon = item.callon.toFixed(5);
+                                var fixedLat = item.callat.toFixed(5);
+                                var address = LocalCacheMgr.getAddress(fixedLon, fixedLat);
+                                newArr.push({
+                                    deviceid: item.deviceid,
+                                    devicename: devicename,
+                                    arrivedTimeStr: DateFormat.longToDateTimeStr(item.arrivedtime, 0),
+                                    callon: item.callon,
+                                    callat: item.callat,
+                                    fixedLon: fixedLon,
+                                    fixedLat: fixedLat,
+                                    address: address ? address : '',
+                                    disabled: address ? true : false
+                                })
+                            });
+                            me.posiDetailData = newArr;
+                        } else {
+                            me.posiDetailData = [];
+                        }
+                    } else {
+                        me.posiDetailData = [];
+                    }
+                    callback();
+                });
+            },
+            initMap: function () {
+                if (this.mapType == 'bMap') {
+                    this.mapInstance = new BMap.Map('posi-map', { minZoom: 4, maxZoom: 18, enableMapClick: false });
+                    this.mapInstance.enableScrollWheelZoom();
+                    this.mapInstance.enableAutoResize();
+                    this.mapInstance.disableDoubleClickZoom();
+                    this.mapInstance.centerAndZoom(new BMap.Point(113.264435, 24.129163), 18);
+                } else {
+                    var center = new google.maps.LatLng(24.129163, 113.264435);
+                    this.mapInstance = new google.maps.Map(document.getElementById('posi-map'), {
+                        zoom: 4,
+                        center: center,
+                        mapTypeId: google.maps.MapTypeId.ROADMAP
+                    });
+                };
+            },
+            getAddress: function (type, params) {
+                var me = this;
+                var row = params.row;
+                var index = params.index;
+                this.queryAddress(row, function (address) {
+                    if (type === 0) {
+                        me.lastPosiData[index].address = address;
+                        me.lastPosiData[index].disabled = true;
+                    } else if (type === 1) {
+                        me.posiDetailData[index].address = address;
+                        me.posiDetailData[index].disabled = true;
+                    }
+                    LocalCacheMgr.setAddress(row.fixedLon, row.fixedLat, address);
+                })
+            },
+            queryAddress: function (info, callback) {
+                if (this.mapType == 'bMap') {
+                    var b_lon_lat = wgs84tobd09(Number(info.callon), Number(info.callat));
+                    utils.getBaiduAddressFromBaidu(b_lon_lat[0], b_lon_lat[1], function (b_address) {
+                        if (b_address.length) {
+                            callback(b_address);
+                        } else {
+                            utils.getJiuHuAddressSyn(info.callon, info.callat, function (resp) {
+                                var j_address = resp.address;
+                                callback(j_address);
+                            })
+                        }
+                    });
+                } else {
+                    var g_lon_lat = wgs84togcj02(Number(info.callon), Number(info.callat));
+                    utils.getGoogleAddressSyn(g_lon_lat[1], g_lon_lat[0], function (b_address) {
+                        if (b_address.length) {
+                            callback(b_address);
+                        } else {
+                            utils.getJiuHuAddressSyn(callon, callat, function (resp) {
+                                var j_address = resp.address
+                                callback(j_address);
+                            });
+                        }
+                    });
+                }
+            }
+        },
+        mounted: function () {
+            this.mapType = Cookies.get('app-map-type');
+            this.initMap();
+            this.groupslist = groupslist;
+        }
+    })
+}
+
+
 
 // 查询报警
 function allAlarm (groupslist) {
@@ -205,7 +504,7 @@ function allAlarm (groupslist) {
                 console.log('aaa', this.selectdDeviceList);
             }
         },
-        mounted () {
+        mounted: function () {
             this.groupslist = groupslist;
         }
     })
@@ -227,6 +526,7 @@ var reportForm = {
                     icon: 'ios-photos',
                     children: [
                         { title: '命令报表', name: 'cmdReport', icon: 'ios-pricetag-outline' },
+                        { title: '位置报表', name: 'posiReport', icon: 'ios-pin' },
                     ]
                 },
                 {
@@ -261,6 +561,8 @@ var reportForm = {
                     cmdReport(groupslist);
                 } else if (page.indexOf('allalarm') !== -1) {
                     allAlarm(groupslist);
+                } else if (page.indexOf('posireport') !== -1) {
+                    posiReport(groupslist);
                 }
             });
         },

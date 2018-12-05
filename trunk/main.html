@@ -27,9 +27,9 @@
             <app-header @change-nav="changeComponent" :componentid="activeName"></app-header>
         </div>
         <div class="view-wraper">
-            <keep-alive exclude="monitor">
-                <component :is="activeName" ref="my-component" @jump-report="jumpReport"></component>
-            </keep-alive>
+            <component :is="activeName" ref="my-component" @jump-report="jumpReport"></component>
+            <!-- <keep-alive exclude="monitor">
+            </keep-alive> -->
         </div>
         <waring-component v-if="isShowAlarm"></waring-component>
     </div>
