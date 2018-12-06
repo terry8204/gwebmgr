@@ -202,7 +202,7 @@ function posiReport (groupslist) {
             mapType: null,
             groupslist: [],
             selectdDeviceList: [],
-            minuteNum: 5,
+            minuteNum: 1,
             tabValue: "lastPosi",
             markerIns: null,
             lastPosiColumns: [
@@ -385,16 +385,23 @@ function posiReport (groupslist) {
             querySingleDevTracks: function (deviceid, callback) {
                 var me = this;
                 var url = myUrls.queryTracks();
-                var data = { "deviceid": deviceid, "lbs": 1, "timeorder": 0, "begintime": this.dateVal[0] + " 00:00:00", "endtime": this.dateVal[1] + " 23:59:00" };
+                var data = {
+                    "deviceid": deviceid,
+                    "begintime": this.dateVal[0] + " 00:00:00",
+                    "endtime": this.dateVal[1] + " 23:59:00",
+                    'interval': this.minuteNum * 60,
+                    'timezone': DateFormat.getOffset()
+                };
+
                 utils.sendAjax(url, data, function (resp) {
                     console.log('resp', resp);
                     if (resp.status === 0) {
                         if (resp.records && resp.records.length) {
                             var newArr = [];
                             var devicename = vstore.state.deviceInfos[deviceid].devicename;
-                            resp.records.sort(function (a, b) {
-                                return a.arrivedtime - b.arrivedtime;
-                            });
+                            // resp.records.sort(function (a, b) {
+                            //     return a.arrivedtime - b.arrivedtime;
+                            // });
                             resp.records.forEach(function (item) {
                                 var fixedLon = item.callon.toFixed(5);
                                 var fixedLat = item.callat.toFixed(5);

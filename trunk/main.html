@@ -164,7 +164,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="device-tree">
+                <div class="device-tree" ref="treeWraper">
                     <!-- <Tree :data="currentStateData" :render="renderContent"></Tree> -->
                     <!-- left tree controller 不显示公司名 -->
                     <dl class="noselect" v-if="!isShowConpanyName" class="dl-inner-wrapper">
@@ -185,12 +185,12 @@
                                             <li @click="editDevice(device)"><Icon type="ios-create"/><p>编辑</p><li>
                                             <li @click="playBack(device.deviceid)"><Icon type="md-planet"/><p>轨迹</p><li>
                                             <li @click="trackMap(device.deviceid)"><Icon type="md-person"/><p>跟踪</p><li> 
-                                            <li>
-                                                <Dropdown trigger="click" transfer placement="right-start" @on-click="handleClickMore">
+                                            <li  @mouseover="handleMousemove($event)">
+                                                <Dropdown trigger="click" transfer :placement="placement" @on-click="handleClickMore" style="width:100%;">
                                                     <Icon type="ios-list"/><p>更多</p>
                                                     <i-dropdown-menu slot="list">
                                                         <DropdownItem name="name1"> 
-                                                            <Dropdown transfer placement="right-start" @on-click="handleClickDirective">
+                                                            <Dropdown transfer placement="right-start" @on-click="handleClickDirective" style="width:100%;">
                                                                 设备指令
                                                                 <Icon type="ios-arrow-forward"></Icon>
                                                                 <i-dropdown-menu slot="list">
@@ -201,7 +201,7 @@
                                                             </Dropdown>                                                                                            
                                                         </DropdownItem>
                                                         <DropdownItem name="name2">  
-                                                            <Dropdown transfer placement="right-start" @on-click="handleClickFence">
+                                                            <Dropdown transfer placement="right-start" @on-click="handleClickFence" style="width:100%;">
                                                                 原地设防
                                                                 <Icon type="ios-arrow-forward"></Icon>
                                                                 <i-dropdown-menu slot="list">                                                                         
@@ -250,11 +250,11 @@
                                                             <li @click="editDevice(device)"><Icon type="ios-create"/><p>编辑</p><li>
                                                             <li @click="playBack(device.deviceid)"><Icon type="md-planet"/><p>轨迹</p><li>
                                                             <li @click="trackMap(device.deviceid)"><Icon type="md-person"/><p>跟踪</p><li> 
-                                                                <li>
-                                                                    <Dropdown trigger="click" transfer placement="right-start" @on-click="handleClickMore">
+                                                                <li @mouseover="handleMousemove($event)">
+                                                                    <Dropdown trigger="click" transfer :placement="placement" @on-click="handleClickMore">
                                                                                 <Icon type="ios-list"/><p>更多</p>
                                                                                 <i-dropdown-menu slot="list">
-                                                                                    <DropdownItem name="name1">
+                                                                                    <DropdownItem name="name1"  style="width:100%;">
                                                                                         <Dropdown transfer placement="right-start" @on-click="handleClickDirective">
                                                                                             设备指令
                                                                                             <Icon type="ios-arrow-forward"></Icon>

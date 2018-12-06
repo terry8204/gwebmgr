@@ -26,6 +26,7 @@ var monitor = {
         return {
             isSpin: false,
             map: null,
+            placement: "right-start",
             mapType: mapType ? mapType : 'bMap',
             mapList: [{ label: "百度地图", value: "bMap" }, { label: "谷歌地图", value: "gMap" }],
             sosoValue: '', // 搜索框的值
@@ -393,6 +394,7 @@ var monitor = {
             this.sosoValue = value.devicename;
             this.filterData = [];
             var me = this;
+            var deviceid = null
             if (this.isShowConpanyName) {
                 this.currentStateData.forEach(function (company) {
                     company.children.forEach(function (group) {
@@ -401,6 +403,7 @@ var monitor = {
                                 company.expand = true;
                                 dev.isSelected = true;
                                 group.expand = true;
+                                deviceid = dev.deviceid;
                                 me.handleClickDev(dev.deviceid);
                             } else {
                                 dev.isSelected = false;
@@ -414,6 +417,7 @@ var monitor = {
                         if (dev.deviceid == value.deviceid) {
                             dev.isSelected = true;
                             group.expand = true;
+                            deviceid = dev.deviceid;
                             me.handleClickDev(dev.deviceid);
                         } else {
                             dev.isSelected = false;
@@ -421,6 +425,14 @@ var monitor = {
                     });
                 });
             }
+            var elWraper = this.$refs.treeWraper;
+            var wrapY = elWraper.getBoundingClientRect().y;
+            var wrapHeight = elWraper.getBoundingClientRect().height;
+            var elY = this.$refs[deviceid][0].getBoundingClientRect().y;
+            // if (wrapHeight >= 380 && ) {
+            //     elWraper.scroolTo(elWraper - wrapHeight);
+            // }
+            // console.log('elTop', elY - wrapY, wrapHeight);
         },
         sosoValueChange: function () {
             var me = this;
@@ -469,7 +481,6 @@ var monitor = {
                 this.$Message.error('该设备没有上报位置信息')
                 this.$store.commit('currentDeviceId', deviceid);
             }
-            var elTop = this.$refs[deviceid][0].getBoundingClientRect();
         },
         updateTreeOnlineState: function () {
             var me = this;
@@ -1177,6 +1188,12 @@ var monitor = {
                 }
             }, 1000);
         },
+        handleMousemove: function (e) {
+            var pageY = event.pageY;
+            var height = 8 * 38;
+            var isOverflow = pageY + height < window.innerHeight
+            this.placement = isOverflow ? 'right-start' : 'right-end';
+        }
     },
     computed: {
         username: function () {
