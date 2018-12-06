@@ -251,6 +251,12 @@ var myUrls = {
   // 报表 ----------------------------------------------------------------------------------------------
   reportCmd: function () {
     return this.host + 'webapi?action=reportcmd&token=' + token;
+  },
+  queryTrackDetail: function () {
+    return this.host + 'webapi?action=querytrackdetail&token=' + token;
+  },
+  refreshTrackPosition: function () {
+    return this.host + 'webapi?action=refreshtrackposition&token=' + token;
   }
 }
 

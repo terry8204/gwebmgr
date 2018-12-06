@@ -423,14 +423,20 @@ function posiReport (groupslist) {
                                 })
                             });
                             me.posiDetailData = newArr;
-                            me.tableData = me.posiDetailData.slice(0, 8);
                             me.total = newArr.length;
                             me.currentIndex = 1;
+                            me.tableData = me.posiDetailData.slice(0, 8);
                         } else {
+                            me.tableData = [];
                             me.posiDetailData = [];
+                            me.currentIndex = 1;
+                            me.total = 0;
                         }
                     } else {
+                        me.tableData = [];
                         me.posiDetailData = [];
+                        me.currentIndex = 1;
+                        me.total = 0;
                     }
                     callback();
                 });
