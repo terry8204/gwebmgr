@@ -197,12 +197,14 @@ function posiReport (groupslist) {
     vueInstanse = new Vue({
         el: "#posi-report",
         data: {
+            total: 0,
+            currentIndex: 1,
             loading: false,
             mapModal: false,
             mapType: null,
             groupslist: [],
             selectdDeviceList: [],
-            minuteNum: 1,
+            minuteNum: 5,
             tabValue: "lastPosi",
             markerIns: null,
             lastPosiColumns: [
@@ -259,7 +261,7 @@ function posiReport (groupslist) {
                 { title: '设备名称', key: 'devicename', width: 150 },
                 { title: '经度', key: 'fixedLon', width: 100 },
                 { title: '纬度', key: 'fixedLat', width: 100 },
-                { title: '时间', key: 'arrivedTimeStr', width: 160 },
+                { title: '时间', key: 'arrivedTimeStr', width: 160, sortable: true },
                 { title: '地址', key: 'address' },
                 {
                     title: '操作',
@@ -326,6 +328,7 @@ function posiReport (groupslist) {
             ],
             lastPosiData: [],
             posiDetailData: [],
+            tableData: [],
             mapInstance: null,
         },
         mixins: [reportMixin],
@@ -333,6 +336,7 @@ function posiReport (groupslist) {
             onClickQuery: function () {
                 var me = this;
                 if (this.selectdDeviceList.length) {
+                    this.tabValue = "lastPosi";
                     this.loading = true;
                     this.getLastPosition(this.selectdDeviceList, function () {
                         me.loading = false;
@@ -419,6 +423,9 @@ function posiReport (groupslist) {
                                 })
                             });
                             me.posiDetailData = newArr;
+                            me.tableData = me.posiDetailData.slice(0, 8);
+                            me.total = newArr.length;
+                            me.currentIndex = 1;
                         } else {
                             me.posiDetailData = [];
                         }
@@ -485,7 +492,13 @@ function posiReport (groupslist) {
                         }
                     });
                 }
-            }
+            },
+            changePage: function (index) {
+                var offset = index * 8;
+                var start = (index - 1) * 8;
+                this.currentIndex = index;
+                this.tableData = this.posiDetailData.slice(start, offset);
+            },
         },
         mounted: function () {
             this.mapType = Cookies.get('app-map-type') ? Cookies.get('app-map-type') : 'bMap';

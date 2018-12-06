@@ -90,7 +90,7 @@
                 <tree-demo :groupslist="groupslist" @on-selectd-deviceids="onSelectdDeviceIds"></tree-demo>
             </div>
             <div style="margin-left:20px;float: left;">
-                <span>间隔时间:</span>
+                <span>间隔时间(分):</span>
                 <input-number :max="30" :min="1" v-model.trim.number="minuteNum"></input-number>
             </div>
             <div style="margin-left:20px;float: left;">
@@ -103,7 +103,10 @@
                     <i-table :columns="lastPosiColumns" height="520" :data="lastPosiData" :loading="loading"></i-table>
                 </tab-pane>
                 <tab-pane label="位置明细" name="posiDetail">
-                    <i-table :columns="posiDetailColumns" height="520" :data="posiDetailData" :loading="loading"></i-table>
+                    <i-table :columns="posiDetailColumns" height="424" :data="tableData" :loading="loading"></i-table>
+                    <div style="margin: 5px 0;">
+                        <Page :total="total" simple :page-size="8" :current="currentIndex"  @on-change="changePage"></Page>
+                    </div>
                 </tab-pane>
             </Tabs>
         </div>

@@ -167,9 +167,10 @@ p.last-address{
     overflow: hidden;
 }
 
-#cmd-report .ivu-table-sort .ivu-icon{
+#cmd-report .ivu-table-sort .ivu-icon,#posi-report .ivu-table-sort .ivu-icon{
     margin-top: 0px; 
 }
+
 
 /* tree demo */
 .cursor-pointer{
