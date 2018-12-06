@@ -376,7 +376,7 @@ function posiReport (groupslist) {
                         me.$Message.error('请重新登录,2秒后自动跳转登录页面')
                         Cookies.remove('token')
                         setTimeout(function () {
-                            window.location.href = 'index.html'
+                            window.location.href = 'index.html';
                         }, 2000);
                     }
                 })
