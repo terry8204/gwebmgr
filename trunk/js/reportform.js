@@ -286,7 +286,7 @@ function posiReport (groupslist) {
                                             setTimeout(function () {
                                                 vueInstanse.mapInstance.clearOverlays();
                                                 vueInstanse.mapInstance.addOverlay(marker);
-                                                vueInstanse.mapInstance.setCenter(point);
+                                                vueInstanse.mapInstance.panTo(point);
                                             }, 100);
                                         } else {
                                             if (vueInstanse.markerIns) {
@@ -389,7 +389,7 @@ function posiReport (groupslist) {
                 utils.sendAjax(url, data, function (resp) {
                     console.log('resp', resp);
                     if (resp.status === 0) {
-                        if (resp.records) {
+                        if (resp.records && resp.records.length) {
                             var newArr = [];
                             var devicename = vstore.state.deviceInfos[deviceid].devicename;
                             resp.records.sort(function (a, b) {
@@ -481,7 +481,7 @@ function posiReport (groupslist) {
             }
         },
         mounted: function () {
-            this.mapType = Cookies.get('app-map-type');
+            this.mapType = Cookies.get('app-map-type') ? Cookies.get('app-map-type') : 'bMap';
             this.initMap();
             this.groupslist = groupslist;
         }
