@@ -85,6 +85,10 @@
             width:296px;
         }
     </style>
+    <script src="js/js.cookie.min.js"></script>
+    <script>
+        var token = Cookies.get("token");
+    </script>
 </head>
 
 <body>
@@ -146,7 +150,6 @@
     <script src="dist/vue.min.js"></script>
     <script src="dist/iview.min.js"></script>
     <script src="js/jquery.js"></script>
-    <script src="js/js.cookie.min.js"></script>
     <script src="js/config.js"></script>
     <script src="js/hashmap.js"></script>
     <script src="js/localcachemgr.js"></script>
@@ -295,7 +298,7 @@
                     requestTracks: function (beginTime, endtime, callback) {
                         this.spinShow = true;
                         var me = this;
-                        var url = myUrls.queryTracks(Cookies.get("token"));
+                        var url = myUrls.queryTracks();
                         var data = {
                             deviceid: this.deviceid,
                             lbs: 1,
