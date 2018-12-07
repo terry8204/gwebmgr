@@ -83,6 +83,11 @@
         p.last-address{
             white-space:normal;
             width:296px;
+            height: 36px;
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 3;
+            overflow: hidden;
         }
     </style>
     <script src="js/js.cookie.min.js"></script>
@@ -148,13 +153,27 @@
                         <i-button style="width: 100%" @click="prevStep">上一步</i-button>
                     </i-col>
                     <i-col :span="6" style="padding:0 5px">
-                        <i-button style="width: 100%" @click="pause">{{ index + 1}} / {{ isExtract ? extractRecords.length : records.length }}</i-button>
+                        <i-button style="width: 100%" @click="pause">
+                            {{ isExtract ? (extractRecords.length == 0 ? 0 : index + 1) :  (records.length == 0 ? 0 : index + 1)}} 
+                            / 
+                            {{ isExtract ? extractRecords.length : records.length }}
+                        </i-button>
                     </i-col>
                     <i-col :span="6" style="padding:0 5px">
                         <i-button style="width: 100%" @click="nextStep">下一步</i-button>
                     </i-col>
             </i-row>
         </div>
+        <Modal v-model="modal" width="560">
+            <p slot="header" style="color:#2D8CF0;text-align:center">
+                <Icon type="ios-hammer-outline"></Icon>
+                <span>基站列表</span>
+            </p>
+            <div style="text-align:center">
+               <p style="margin: 10px 0;">x : {{xList}}</p>
+               <p style="margin: 10px 0;">w : {{wList}}</p>
+            </div>
+        </Modal>
         <Spin size="large" fix v-if="spinShow"></Spin>
     </div>
     <script src="dist/vue.min.js"></script>
@@ -170,6 +189,7 @@
     <script type="text/javascript" src="http://api.map.baidu.com/library/DistanceTool/1.2/src/DistanceTool_min.js"></script>
     <script>
         var currentTrack = null;
+        var vm = null;
         function queryTrackDetail(deviceid){
             var data = {
                 deviceid:deviceid,
@@ -178,18 +198,36 @@
             };
             var url = myUrls.queryTrackDetail();
             utils.sendAjax(url,data,function (resp) { 
-                console.log('resp', resp);
+                if(resp.status == 0 ){
+                    vm.xList = resp.track.x ? resp.track.x : '空';
+                    vm.wList = resp.track.w ? resp.track.x : '空';
+                    vm.modal = true;
+                }else{
+                    vm.$Message.error("请求失败");
+                }
             });
         };
 
         function refreshTrackPosition(deviceid) { 
-
+            var data = {
+                deviceid:deviceid,
+                arrivedtime:currentTrack.arrivedtime,
+                trackid:currentTrack.trackid
+            };
+            var url = myUrls.refreshTrackPosition();
+            utils.sendAjax(url,data,function (resp) { 
+                if(resp.status === 0){
+                    vm.$Message.success("刷新成功");
+                }else{
+                    vm.$Message.error(resp.cause);
+                }
+            });
         }
         (function () {   //utils.getAngle
             var carIcon = new BMap.Icon("images/carstate/green_0.gif", new BMap.Size(17, 17), { imageOffset: new BMap.Size(0, 0) });
             var startIcon = new BMap.Icon("./images/map/marker_qidian.png", new BMap.Size(32, 32), { imageOffset: new BMap.Size(0, 0) });
             var endIcon = new BMap.Icon("./images/map/marker_zhongdian.png", new BMap.Size(32, 32), { imageOffset: new BMap.Size(0, 0) });
-            var vm = new Vue({
+                vm = new Vue({
                 el: "#container",
                 data: {
                     map: null,
@@ -215,11 +253,14 @@
                     isPlay: true,
                     firstMarker: null,
                     lastMakrker: null,
-                    polyline: null
+                    polyline: null,
+                    modal:false,
+                    xList:'',
+                    wList:''
                 },
                 methods: {
                     initMap: function () {
-                        this.map = new BMap.Map("bmap", { minZoom: 4, maxZoom: 18 });
+                        this.map = new BMap.Map("bmap", { minZoom: 4, maxZoom: 18 ,enableMapClick: false });
                         this.map.enableScrollWheelZoom();
                         this.map.enableAutoResize();
                         this.map.disableDoubleClickZoom();
@@ -297,6 +338,9 @@
                         this.startTime = new Date(this.startTime - this.dayTime);
                     },
                     prevStep:function(){
+                        if (this.intervalInstanse != null) {
+                            clearInterval(this.intervalInstanse);
+                        };
                         this.index--;
                         if(this.isExtract){
                             if(this.index < 0 ){
@@ -311,10 +355,12 @@
                         }
                   
                         var marker = this.getPointMarker();
-                        console.log('track', track,marker);
                         this.openInfoWindow(marker,track);
                     },
                     nextStep:function(){
+                        if (this.intervalInstanse != null) {
+                            clearInterval(this.intervalInstanse);
+                        };
                         this.index++;
                         if(this.isExtract){
                              if(this.index > this.extractRecords.length-1){
@@ -394,6 +440,7 @@
                         };
                         this.records = newRecords;
                         this.extractRecords = extractRecords;
+                        console.log(newRecords,extractRecords);
                     },
                     drawingLine: function () {
                         var records = this.getTypeRecords();
@@ -406,7 +453,7 @@
                             this.lastMakrker = new BMap.Marker(lastRecord.point, { icon: endIcon });
                             this.firstMarker.index = 0;
                             this.lastMakrker.index = records.length-1;
-
+                       
                             this.map.addOverlay(this.firstMarker);
                             this.map.addOverlay(this.lastMakrker);
                             this.addEventListenerToMarker(this.firstMarker);
@@ -429,16 +476,16 @@
                             this.markers.unshift(this.firstMarker);
                             this.markers.push(this.lastMakrker);
 
-                            this.polyline = new BMap.Polyline(lines, { strokeColor: "#0000AA", strokeWeight: 3, strokeOpacity: 1.5 });
+                            this.polyline = new BMap.Polyline(lines, { strokeColor: "#e4393c", strokeWeight: 3, strokeOpacity: 1.5 });
                             this.map.addOverlay(this.polyline);
                             // 设置中心点
                             this.setViewPortCenter(lines);
                             this.runAnimeate(records);
                         }else if(records.length == 1){
                                 var lastRecord = records[records.length - 1];
-                                this.lastMakrker = new BMap.Marker(lastRecord.point, { icon: endIcon });
+                                this.firstMarker = new BMap.Marker(lastRecord.point, { icon: endIcon });
                                 
-                                this.map.addOverlay(this.lastMakrker);
+                                this.map.addOverlay(this.firstMarker);
                                 var lines = [];
 
                                 for (var i = 0; i < records.length; i++) {
@@ -472,6 +519,7 @@
                     openInfoWindow:function(marker,track){
                         var sContent = this.getLableContent(track);
                         var windowInfo = new BMap.InfoWindow(sContent);
+                            windowInfo.disableCloseOnClick();
                             marker.openInfoWindow(windowInfo);
                             this.carMarker.setPosition(track.point);
                             this.carMarker.setIcon(this.getDirectionIcon(track.direction));
@@ -511,6 +559,12 @@
                                 clearInterval(me.intervalInstanse);
                             };
                             me.intervalInstanse = setInterval(function () {
+                                me.index++;
+                                if (me.index >= paths) {
+                                    clearInterval(me.intervalInstanse);
+                                    me.index = 0;
+                                    me.openInfoWindow(me.firstMarker,records[me.index]);
+                                };
                                 var track = records[me.index];
                                 me.carMarker.setPosition(track.point);
                                 me.carMarker.setIcon(me.getDirectionIcon(track.direction));
@@ -518,10 +572,7 @@
                                 var sContent = me.getLableContent(track);
                                 var windowInfo = new BMap.InfoWindow(sContent);
                                 me.carMarker.openInfoWindow(windowInfo);
-                                me.index++;
-                                if (me.index >= paths) {
-                                    clearInterval(me.intervalInstanse);
-                                };
+
                             }, me.velocity);
                         };
                     },
@@ -592,14 +643,15 @@
                             this.map.removeOverlay(this.carMarker);
                             this.carMarker = null;
                         };
-                        if (this.firstMarker) {
-                            this.map.removeOverlay(this.firstMarker);
+                        if (this.markers.length) {
+                            for(var i = 0 ; i < this.markers.length ; i++ ){
+                                this.map.removeOverlay(this.markers[i]);
+                            }
+                            this.markers = [];
                             this.firstMarker = null;
-                        };
-                        if (this.lastMakrker) {
-                            this.map.removeOverlay(this.lastMakrker);
                             this.lastMakrker = null;
                         };
+
                         if (this.polyline) {
                             this.map.removeOverlay(this.polyline);
                             this.polyline = null;
