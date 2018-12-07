@@ -164,14 +164,26 @@
                     </i-col>
             </i-row>
         </div>
-        <Modal v-model="modal" width="560">
+        <Modal v-model="modal" width="600">
             <p slot="header" style="color:#2D8CF0;text-align:center">
                 <Icon type="ios-hammer-outline"></Icon>
-                <span>基站列表</span>
+                <span>定位详情</span>
             </p>
-            <div style="text-align:center">
-               <p style="margin: 10px 0;">x : {{xList}}</p>
-               <p style="margin: 10px 0;">w : {{wList}}</p>
+            <div style="">
+               <p style="margin: 10px">轨迹序号 : {{trackid}}</p>
+               <p style="margin: 10px">基站列表 : {{xList}}</p>
+               <p style="margin: 10px">WIFI列表 : {{wList}}</p>
+            </div>
+        </Modal>
+        <Modal v-model="modal1" width="600">
+            <p slot="header" style="color:#2D8CF0;text-align:center">
+                <Icon type="ios-hammer-outline"></Icon>
+                <span>定位结果</span>
+            </p>
+            <div style="text-align: center;">
+                <p>
+                    {{cause}}
+                </p>
             </div>
         </Modal>
         <Spin size="large" fix v-if="spinShow"></Spin>
@@ -201,6 +213,7 @@
                 if(resp.status == 0 ){
                     vm.xList = resp.track.x ? resp.track.x : '空';
                     vm.wList = resp.track.w ? resp.track.x : '空';
+                    vm.trackid = resp.track.trackid;
                     vm.modal = true;
                 }else{
                     vm.$Message.error("请求失败");
@@ -219,7 +232,8 @@
                 if(resp.status === 0){
                     vm.$Message.success("刷新成功");
                 }else{
-                    vm.$Message.error(resp.cause);
+                    vm.modal1 = true;
+                    vm.cause = resp.cause;
                 }
             });
         }
@@ -255,8 +269,11 @@
                     lastMakrker: null,
                     polyline: null,
                     modal:false,
+                    modal1:false,
+                    cause:"",
                     xList:'',
-                    wList:''
+                    wList:'',
+                    trackid:''
                 },
                 methods: {
                     initMap: function () {
@@ -598,9 +615,31 @@
                     getLableContent: function (info) {
                         currentTrack = info;
                         var address = this.getAddress(info);
+                        var posiType = (function () {
+                            var type = null;
+                            var gotsrc = info.gotsrc;  //cell gps wifi
+                            switch (gotsrc) {
+                                case 'un':
+                                type = "未知";
+                                break;
+                                case 'cell':
+                                type = "基站定位";
+                                break;
+                                case 'gps':
+                                type = "卫星定位";
+                                break;
+                                case 'wifi':
+                                type = "WIFI定位";
+                                break;
+                                default:
+                                type = "未知";
+                            };
+                            return type;
+                        })();
                         var sContent = '<div style="max-width:296px;">' +
                             '<p> 设备序号: ' + this.deviceid + '</p>' +
                             '<p> 经纬度: ' + info.callon.toFixed(6) + "," + info.callat.toFixed(6)  + '</p>' +
+                            '<p> 定位类型: ' + posiType  + '</p>' +
                             '<p> 角度: ' + utils.getAngle(info.course) + '</p>' +
                             '<p> 最后时间: ' + DateFormat.longToDateTimeStr(info.arrivedtime, 0) + '</p>' +
                             '<p class="last-address"> 详细地址: ' + address + '</p>'+
