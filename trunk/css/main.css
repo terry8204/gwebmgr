@@ -583,9 +583,9 @@ div.ivu-steps-head-inner .ivu-icon{
         right: 2px;
         bottom: 2px;
         background: #495060;
-        z-index: 2;
         border: 1px solid #395060; 
         transition: width .3s, height .3s, transform 2s;
+        z-index: 999;
     }
 
     ul.waring-controller{
