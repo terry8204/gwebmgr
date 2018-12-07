@@ -77,8 +77,10 @@ var utils = {
     }
     var geocoder = new google.maps.Geocoder();
     geocoder.geocode(request, function (resp) {
+      console.log(resp)
       if (resp && resp.length) {
         var address = resp[0].formatted_address;
+
         callback(address);
       }
     })
@@ -329,9 +331,30 @@ function trackMap (deviceid) {
 //刷新位置信息
 function refreshPostion (deviceid) {
   var url = myUrls.refreshPostion();
-  utils.sendAjax(url, { deviceid: deviceid }, function (resp) {
-    console.log('resp', resp)
-  });
+  var track = vstore.state.currentDeviceRecord;
+  var lon = track.callon.toFixed(5);
+  var lat = track.callat.toFixed(5);
+  console.log(lon, lat);
+  try {
+    var b_lon_lat = wgs84tobd09(track.callon, track.callat);
+    utils.getBaiduAddressFromBaidu(b_lon_lat[0], b_lon_lat[1], function (b_address) {
+      if (b_address) {
+        console.log('b_address', b_address);
+        $("p.last-address").html("详细地址: " + b_address);
+        LocalCacheMgr.setAddress(lon, lat, b_address);
+      };
+    })
+  } catch (error) {
+    var g_lon_lat = wgs84togcj02(track.callon, track.callat);
+    utils.getGoogleAddressSyn(g_lon_lat[1], g_lon_lat[0], function (g_address) {
+      if (g_address) {
+        console.log('g_address', g_address);
+        $("p.last-address").html("详细地址: " + g_address);
+        LocalCacheMgr.setAddress(lon, lat, g_address);
+      }
+    });
+  }
+  utils.sendAjax(url, { deviceid: deviceid }, function (resp) { });
 }
 
 // 设置围栏
