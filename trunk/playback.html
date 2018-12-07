@@ -615,27 +615,7 @@
                     getLableContent: function (info) {
                         currentTrack = info;
                         var address = this.getAddress(info);
-                        var posiType = (function () {
-                            var type = null;
-                            var gotsrc = info.gotsrc;  //cell gps wifi
-                            switch (gotsrc) {
-                                case 'un':
-                                type = "未知";
-                                break;
-                                case 'cell':
-                                type = "基站定位";
-                                break;
-                                case 'gps':
-                                type = "卫星定位";
-                                break;
-                                case 'wifi':
-                                type = "WIFI定位";
-                                break;
-                                default:
-                                type = "未知";
-                            };
-                            return type;
-                        })();
+                        var posiType = utils.getPosiType(info);
                         var sContent = '<div style="max-width:296px;">' +
                             '<p> 设备序号: ' + this.deviceid + '</p>' +
                             '<p> 经纬度: ' + info.callon.toFixed(6) + "," + info.callat.toFixed(6)  + '</p>' +

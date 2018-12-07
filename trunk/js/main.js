@@ -345,6 +345,7 @@ var vRoot = new Vue({
   },
   methods: {
     changeComponent: function (activeName) {
+      window.onresize = null;
       this.$store.commit('setHeaderActiveName', activeName);
     },
     jumpReport: function (activeName) {

@@ -207,30 +207,30 @@ var utils = {
     }
     return paramsListObj;
   },
+  getPosiType: function (track) {
+    var type = null;
+    var gotsrc = track.gotsrc;  //cell gps wifi
+    switch (gotsrc) {
+      case 'un':
+        type = "未知";
+        break;
+      case 'cell':
+        type = "基站定位";
+        break;
+      case 'gps':
+        type = "卫星定位";
+        break;
+      case 'wifi':
+        type = "WIFI定位";
+        break;
+      default:
+        type = "未知";
+    };
+    return type;
+  },
   getWindowContent: function (track, b_address) {
     var strstatus = track.strstatus ? track.strstatus : '';
-    var posiType = (function () {
-      var type = null;
-
-      var gotsrc = track.gotsrc;  //cell gps wifi
-      switch (gotsrc) {
-        case 'un':
-          type = "未知";
-          break;
-        case 'cell':
-          type = "基站定位";
-          break;
-        case 'gps':
-          type = "卫星定位";
-          break;
-        case 'wifi':
-          type = "WIFI定位";
-          break;
-        default:
-          type = "未知";
-      };
-      return type;
-    })();
+    var posiType = this.getPosiType(track);
 
     if (track.radius > 0) {
       var radiuDesc = ' (误差范围:' + track.radius + '米)';

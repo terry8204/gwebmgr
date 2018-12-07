@@ -201,6 +201,7 @@ function posiReport (groupslist) {
             currentIndex: 1,
             loading: false,
             mapModal: false,
+            trackDetailModal: false,
             mapType: null,
             groupslist: [],
             selectdDeviceList: [],
@@ -212,7 +213,8 @@ function posiReport (groupslist) {
                 { title: '经度', key: 'fixedLon', width: 100 },
                 { title: '纬度', key: 'fixedLat', width: 100 },
                 { title: '时间', key: 'arrivedTimeStr', width: 160 },
-                { title: '状态', key: 'strstatus', width: 300 },
+                { title: '状态', key: 'strstatus', width: 180 },
+                { title: '定位类型', key: 'positype', width: 100 },
                 { title: '地址', key: 'address' },
                 {
                     title: '操作',
@@ -231,7 +233,8 @@ function posiReport (groupslist) {
                                 on: {
                                     click: function () {
                                         vueInstanse.loading = true;
-                                        vueInstanse.tabValue = "posiDetail";
+                                        vueInstanse.trackDetailModal = true;
+                                        vueInstanse.deviceName = params.row.devicename;
                                         vueInstanse.querySingleDevTracks(params.row.deviceid, function () {
                                             vueInstanse.loading = false;
                                         });
@@ -258,10 +261,16 @@ function posiReport (groupslist) {
                 }
             ],
             posiDetailColumns: [
-                { title: '设备名称', key: 'devicename', width: 150 },
+                {
+                    type: 'index',
+                    width: 60,
+                    align: 'center'
+                },
                 { title: '经度', key: 'fixedLon', width: 100 },
                 { title: '纬度', key: 'fixedLat', width: 100 },
                 { title: '时间', key: 'arrivedTimeStr', width: 160, sortable: true },
+                { title: '状态', key: 'strstatus', width: 180, },
+                { title: '定位类型', key: 'positype', width: 100 },
                 { title: '地址', key: 'address' },
                 {
                     title: '操作',
@@ -330,9 +339,17 @@ function posiReport (groupslist) {
             posiDetailData: [],
             tableData: [],
             mapInstance: null,
+            deviceName: '',
+            lastTableHeight: 100,
+            posiDetailHeight: 100
         },
         mixins: [reportMixin],
         methods: {
+            calcTableHeight: function () {
+                var wHeight = window.innerHeight;
+                this.lastTableHeight = wHeight - 170;
+                this.posiDetailHeight = wHeight - 144;
+            },
             onClickQuery: function () {
                 var me = this;
                 if (this.selectdDeviceList.length) {
@@ -357,20 +374,20 @@ function posiReport (groupslist) {
                         if (resp.records) {
                             var newCored = [];
                             resp.records.forEach((item) => {
-                                if (item) {
-                                    if (item) {
 
-                                        var deviceid = item.deviceid;
-                                        item.devicename = vstore.state.deviceInfos[deviceid].devicename;
-                                        item.arrivedTimeStr = DateFormat.longToDateTimeStr(item.arrivedtime, 0);
-                                        item.fixedLon = item.callon.toFixed(5);
-                                        item.fixedLat = item.callat.toFixed(5);
-                                        var address = LocalCacheMgr.getAddress(item.fixedLon, item.fixedLat);
-                                        item.address = address ? address : '';
-                                        item.disabled = address ? true : false;
-                                        newCored.push(item);
-                                    }
+                                if (item) {
+                                    var deviceid = item.deviceid;
+                                    item.devicename = vstore.state.deviceInfos[deviceid].devicename;
+                                    item.arrivedTimeStr = DateFormat.longToDateTimeStr(item.arrivedtime, 0);
+                                    item.fixedLon = item.callon.toFixed(5);
+                                    item.fixedLat = item.callat.toFixed(5);
+                                    var address = LocalCacheMgr.getAddress(item.fixedLon, item.fixedLat);
+                                    item.address = address ? address : '';
+                                    item.disabled = address ? true : false;
+                                    newCored.push(item);
+                                    item.positype = utils.getPosiType(item);
                                 }
+
                             });
                             me.lastPosiData = newCored;
                         } else {
@@ -398,7 +415,7 @@ function posiReport (groupslist) {
                 };
 
                 utils.sendAjax(url, data, function (resp) {
-                    console.log('resp', resp);
+
                     if (resp.status === 0) {
                         if (resp.records && resp.records.length) {
                             var newArr = [];
@@ -406,7 +423,6 @@ function posiReport (groupslist) {
                             resp.records.sort(function (a, b) {
                                 return a.arrivedtime - b.arrivedtime;
                             });
-
                             resp.records.forEach(function (item) {
                                 var fixedLon = item.callon.toFixed(5);
                                 var fixedLat = item.callat.toFixed(5);
@@ -419,6 +435,8 @@ function posiReport (groupslist) {
                                     callat: item.callat,
                                     fixedLon: fixedLon,
                                     fixedLat: fixedLat,
+                                    strstatus: item.strstatus,
+                                    positype: utils.getPosiType(item),
                                     address: address ? address : '',
                                     disabled: address ? true : false
                                 })
@@ -426,7 +444,8 @@ function posiReport (groupslist) {
                             me.posiDetailData = newArr;
                             me.total = newArr.length;
                             me.currentIndex = 1;
-                            me.tableData = me.posiDetailData.slice(0, 8);
+                            // me.tableData = me.posiDetailData.slice(0, 8);
+
                         } else {
                             me.tableData = [];
                             me.posiDetailData = [];
@@ -442,6 +461,7 @@ function posiReport (groupslist) {
                     callback();
                 });
             },
+
             initMap: function () {
                 if (this.mapType == 'bMap') {
                     this.mapInstance = new BMap.Map('posi-map', { minZoom: 4, maxZoom: 18, enableMapClick: false });
@@ -508,9 +528,14 @@ function posiReport (groupslist) {
             },
         },
         mounted: function () {
+            var me = this;
             this.mapType = Cookies.get('app-map-type') ? Cookies.get('app-map-type') : 'bMap';
             this.initMap();
+            this.calcTableHeight();
             this.groupslist = groupslist;
+            window.onresize = function () {
+                me.calcTableHeight();
+            }
         }
     })
 }
@@ -584,6 +609,7 @@ var reportForm = {
             $('#report-right-wrap').load(pagePath, function () {
                 me.$Loading.finish();
                 var groupslist = deepClone(me.groupslist);
+                window.onresize = null;
                 if (page.indexOf('cmdreport') !== -1) {
                     cmdReport(groupslist);
                 } else if (page.indexOf('allalarm') !== -1) {

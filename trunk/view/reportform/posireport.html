@@ -98,18 +98,17 @@
             </div>
         </Row>
         <div style="margin:10px;" class="my-tabs-style">
-            <Tabs type="card" :animated="false" v-model="tabValue">
-                <tab-pane label="最后位置" name="lastPosi">
-                    <i-table :columns="lastPosiColumns" height="520" :data="lastPosiData" :loading="loading"></i-table>
-                </tab-pane>
-                <tab-pane label="位置明细" name="posiDetail">
-                    <i-table :columns="posiDetailColumns" height="424" :data="tableData" :loading="loading"></i-table>
-                    <div style="margin: 5px 0;">
-                        <Page :total="total" simple :page-size="8" :current="currentIndex"  @on-change="changePage"></Page>
-                    </div>
-                </tab-pane>
-            </Tabs>
+            <i-table :columns="lastPosiColumns" :height="lastTableHeight" :data="lastPosiData" :loading="loading"></i-table>
         </div>
+        <Modal v-model="trackDetailModal" fullscreen>
+                <p slot="header" style="color:#f60;text-align:center">
+                    <Icon type="ios-create-outline"></Icon>
+                    <span>位置明细-{{deviceName}}</span>
+                </p>
+                <div>
+                    <i-table :columns="posiDetailColumns" :data="posiDetailData" :loading="loading" :height="posiDetailHeight"></i-table>  
+                </div>
+        </Modal> 
         <transition name="fade">
             <div v-show="mapModal" class="posi-map-wraper">
                 <div class="map-modal" @click="mapModal=false"></div>
