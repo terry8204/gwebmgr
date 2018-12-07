@@ -403,9 +403,10 @@ function posiReport (groupslist) {
                         if (resp.records && resp.records.length) {
                             var newArr = [];
                             var devicename = vstore.state.deviceInfos[deviceid].devicename;
-                            // resp.records.sort(function (a, b) {
-                            //     return a.arrivedtime - b.arrivedtime;
-                            // });
+                            resp.records.sort(function (a, b) {
+                                return a.arrivedtime - b.arrivedtime;
+                            });
+
                             resp.records.forEach(function (item) {
                                 var fixedLon = item.callon.toFixed(5);
                                 var fixedLat = item.callat.toFixed(5);
