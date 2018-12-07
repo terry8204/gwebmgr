@@ -96,40 +96,26 @@ var utils = {
     }
     return theRequest[name]
   },
-  getDisplayRange: function (zoom) {
-    var range = null
-    if (zoom == 18) {
-      range = 25
-    } else if (zoom == 17) {
-      range = 50
-    } else if (zoom == 16) {
-      range = 100
-    } else if (zoom == 15) {
-      range = 250
-    } else if (zoom == 14) {
-      range = 500
-    } else if (zoom == 13) {
-      range = 1000
-    } else if (zoom == 12) {
-      range = 2500
-    } else if (zoom == 11) {
-      range = 5000
-    } else if (zoom == 10) {
-      range = 10000
-    } else if (zoom == 9) {
-      range = 12500
-    } else if (zoom == 8) {
-      range = 25000
-    } else if (zoom == 7) {
-      range = 50000
-    } else if (zoom == 6) {
-      range = 100000
-    } else if (zoom == 5) {
-      range = 250000
-    } else if (zoom == 4) {
-      range = 500000
+  getCarDirection: function (course) {
+    var direction = null
+    if (course == 0) {
+      direction = '正北';
+    } else if (course == 90) {
+      direction = '正东';
+    } else if (course == 180) {
+      direction = '正南';
+    } else if (course == 270) {
+      direction = '正西';
+    } else if (course > 0 && course < 90) {
+      direction = '东北';
+    } else if (course > 90 && course < 180) {
+      direction = '东南';
+    } else if (course > 180 && course < 270) {
+      direction = '西南';
+    } else if (course > 270 && course <= 360) {
+      direction = '西北';
     }
-    return range
+    return direction
   },
   getAngle: function (course) {
     var angle = null

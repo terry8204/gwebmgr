@@ -29,9 +29,9 @@ Vue.component('tree-demo', {
         },
         isCheckAll: function (list) {
             var deviceids = [];
-            list.forEach(function (itme) {
-                if (!itme.children) {
-                    deviceids.push(itme.deviceid)
+            list.forEach(function (item) {
+                if (!item.children) {
+                    deviceids.push(item.deviceid)
                 };
             })
             if (list.length === this.allCount) {
@@ -209,9 +209,12 @@ function posiReport (groupslist) {
             tabValue: "lastPosi",
             markerIns: null,
             lastPosiColumns: [
+                { type: 'index', width: 60, align: 'center' },
                 { title: '设备名称', key: 'devicename', width: 150 },
                 { title: '经度', key: 'fixedLon', width: 100 },
                 { title: '纬度', key: 'fixedLat', width: 100 },
+                { title: '方向', key: 'direction', width: 80 },
+                { title: '速度', key: 'speed', width: 100 },
                 { title: '时间', key: 'arrivedTimeStr', width: 160 },
                 { title: '状态', key: 'strstatus', width: 180 },
                 { title: '定位类型', key: 'positype', width: 100 },
@@ -261,13 +264,11 @@ function posiReport (groupslist) {
                 }
             ],
             posiDetailColumns: [
-                {
-                    type: 'index',
-                    width: 60,
-                    align: 'center'
-                },
+                { type: 'index', width: 60, align: 'center' },
                 { title: '经度', key: 'fixedLon', width: 100 },
                 { title: '纬度', key: 'fixedLat', width: 100 },
+                { title: '方向', key: 'direction', width: 80 },
+                { title: '速度', key: 'speed', width: 100 },
                 { title: '时间', key: 'arrivedTimeStr', width: 160, sortable: true },
                 { title: '状态', key: 'strstatus', width: 180, },
                 { title: '定位类型', key: 'positype', width: 100 },
@@ -386,6 +387,8 @@ function posiReport (groupslist) {
                                     item.disabled = address ? true : false;
                                     newCored.push(item);
                                     item.positype = utils.getPosiType(item);
+                                    item.direction = utils.getCarDirection(item.course);
+                                    item.speed = item.speed == 0 ? item.speed : (item.speed / 1000).toFixed(2) + "公里";
                                 }
 
                             });
@@ -438,7 +441,9 @@ function posiReport (groupslist) {
                                     strstatus: item.strstatus,
                                     positype: utils.getPosiType(item),
                                     address: address ? address : '',
-                                    disabled: address ? true : false
+                                    disabled: address ? true : false,
+                                    direction: item.direction = utils.getCarDirection(item.course),
+                                    speed: item.speed == 0 ? item.speed : (item.speed / 1000).toFixed(2) + "公里"
                                 })
                             });
                             me.posiDetailData = newArr;
@@ -526,6 +531,13 @@ function posiReport (groupslist) {
                 this.currentIndex = index;
                 this.tableData = this.posiDetailData.slice(start, offset);
             },
+        },
+        watch: {
+            trackDetailModal: function () {
+                if (!this.trackDetailModal) {
+                    this.posiDetailData = [];
+                }
+            }
         },
         mounted: function () {
             var me = this;

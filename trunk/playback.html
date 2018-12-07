@@ -616,6 +616,10 @@
                         currentTrack = info;
                         var address = this.getAddress(info);
                         var posiType = utils.getPosiType(info);
+                        if (info.radius > 0) {
+                            var radiuDesc = ' (误差范围:' + info.radius + '米)';
+                            posiType += radiuDesc;
+                        };
                         var sContent = '<div style="max-width:296px;">' +
                             '<p> 设备序号: ' + this.deviceid + '</p>' +
                             '<p> 经纬度: ' + info.callon.toFixed(6) + "," + info.callat.toFixed(6)  + '</p>' +
@@ -624,7 +628,7 @@
                             '<p> 最后时间: ' + DateFormat.longToDateTimeStr(info.arrivedtime, 0) + '</p>' +
                             '<p class="last-address"> 详细地址: ' + address + '</p>'+
                             '<p>'+
-                                '<span style="margin-right:5px;" class="ivu-btn ivu-btn-default ivu-btn-small" onclick="queryTrackDetail(' + this.deviceid +')">轨迹细节</span>'+
+                                '<span style="margin-right:5px;" class="ivu-btn ivu-btn-default ivu-btn-small" onclick="queryTrackDetail(' + this.deviceid +')">详细信息</span>'+
                                 '<span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="refreshTrackPosition(' +this.deviceid +')">刷新位置</span>'+
                             '</p>'+
                             '</div>';
