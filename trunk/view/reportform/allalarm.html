@@ -4,7 +4,14 @@
         <Row style="margin:10px;height: 35px;">
             <div style="float: left;">
                 <span>选择时间:</span>
-                <date-picker type="daterange" :value="dateVal" :editable="false" :clearable="false" @on-change="onChange" show-week-numbers
+                <date-picker 
+                    type="daterange" 
+                    :value="dateVal"
+                    :editable="false"
+                    :clearable="false"
+                    @on-change="onChange" 
+                    show-week-numbers 
+                    style="width:300px"
                     placement="bottom-start"></date-picker>
             </div>
             <div style="float: left;height: 35px; line-height: 35px;margin-left: 20px;" class="spans-wrap">
