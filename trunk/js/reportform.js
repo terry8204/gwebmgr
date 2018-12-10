@@ -574,7 +574,7 @@ function allAlarm (groupslist) {
                 },
                 {
                     title: '开始报警时间',
-                    key: 'lastalarmtimeStr',
+                    key: 'startalarmtimeStr',
                     width: 160
                 },
                 {
@@ -623,7 +623,28 @@ function allAlarm (groupslist) {
                 this.loading = true;
                 var url = myUrls.reportAlarm();
                 utils.sendAjax(url, data, function (resp) {
-                    console.log('resp', resp);
+                    if (resp.status == 0) {
+                        var alarmRecords = [];
+                        if (resp.alarmrecords && resp.alarmrecords.length) {
+                            resp.alarmrecords.forEach(function (record) {
+                                alarmRecords.push({
+                                    devicename: vstore.state.deviceInfos[record.deviceid].devicename,
+                                    alarmcount: record.alarmcount,
+                                    lastalarmtimeStr: DateFormat.longToDateTimeStr(record.lastalarmtime, 0),
+                                    startalarmtimeStr: DateFormat.longToDateTimeStr(record.startalarmtime, 0),
+                                    isdispose: record.disposestatus === 0 ? "未处理" : "已处理",
+                                    stralarm: record.stralarm,
+                                    disposeperson: record.disposeperson ? record.disposeperson : '',
+                                })
+                            });
+                            self.alarmData = alarmRecords;
+                        } else {
+                            self.alarmData = [];
+                        }
+                    } else {
+                        self.alarmData = [];
+                    }
+                    self.loading = false;
                 });
             }
         },
