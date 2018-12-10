@@ -607,17 +607,12 @@ function allAlarm (groupslist) {
         mixins: [reportMixin],
         methods: {
             onClickQuery: function () {
-                console.log('aaa', this.selectdDeviceList);
                 var self = this;
                 if (this.isSelectAll === null) {
                     this.$Message.error("请选择设备");
                     return;
                 };
                 var data = {
-                    // username: vstore.state.userName,
-                    startday: this.dateVal[0],
-                    endday: this.dateVal[1],
-                    offset: DateFormat.getOffset(),
                     devices: this.selectdDeviceList
                 };
                 this.loading = true;
@@ -646,6 +641,11 @@ function allAlarm (groupslist) {
                     }
                     self.loading = false;
                 });
+            }
+        },
+        computed: {
+            calcHeight: function () {
+                return this.lastTableHeight + 45;
             }
         },
         mounted: function () {

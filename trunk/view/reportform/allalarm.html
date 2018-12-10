@@ -3,26 +3,6 @@
     <div class="report-item-header">
         <Row style="margin:10px;height: 35px;">
             <div style="float: left;">
-                <span>选择时间:</span>
-                <date-picker 
-                    type="daterange" 
-                    :value="dateVal"
-                    :editable="false"
-                    :clearable="false"
-                    @on-change="onChange" 
-                    show-week-numbers 
-                    style="width:300px"
-                    placement="bottom-start"></date-picker>
-            </div>
-            <div style="float: left;height: 35px; line-height: 35px;margin-left: 20px;" class="spans-wrap">
-                <span class="cursor-pointer" @click="handleSelectdDate(0)">今天</span> <b>｜</b>
-                <span class="cursor-pointer" @click="handleSelectdDate(1)">昨天</span> <b>｜</b>
-                <span class="cursor-pointer" @click="handleSelectdDate(3)">近三天</span> <b>｜</b>
-                <span class="cursor-pointer" @click="handleSelectdDate(7)">最近七天</span>
-            </div>
-        </Row>
-        <Row style="margin:10px;height: 35px;">
-            <div style="float: left;">
                 <tree-demo :groupslist="groupslist" @on-selectd-deviceids="onSelectdDeviceIds"></tree-demo>
             </div>
             <div style="margin-left:20px;float: left;">
@@ -30,7 +10,7 @@
             </div>
         </Row>
         <div style="margin:10px;">
-            <i-table :columns="alarmColumns" :height="lastTableHeight" :data="alarmData" :loading="loading"></i-table>
+            <i-table :columns="alarmColumns" :height="calcHeight" :data="alarmData" :loading="loading"></i-table>
         </div>
     </div>
 </div>
