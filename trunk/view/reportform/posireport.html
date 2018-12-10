@@ -1,22 +1,5 @@
 <meta charset="UTF-8">
 <style>
-    .my-tabs-style > .ivu-tabs.ivu-tabs-card > .ivu-tabs-bar .ivu-tabs-tab{
-        border-radius: 0;
-        background: #fff;
-    }
-    .my-tabs-style > .ivu-tabs.ivu-tabs-card > .ivu-tabs-bar .ivu-tabs-tab-active{
-        border-top: 1px solid #3399ff;
-    }
-    .my-tabs-style > .ivu-tabs.ivu-tabs-card > .ivu-tabs-bar .ivu-tabs-tab-active:before{
-        content: '';
-        display: block;
-        width: 100%;
-        height: 1px;
-        background: #3399ff;
-        position: absolute;
-        top: 0;
-        left: 0;
-    }
     .posi-map-wraper{
         position: fixed;
         left: 0;
@@ -97,7 +80,7 @@
                 <i-button @click="onClickQuery">查询</i-button>
             </div>
         </Row>
-        <div style="margin:10px;" class="my-tabs-style">
+        <div style="margin:10px;">
             <i-table :columns="lastPosiColumns" :height="lastTableHeight" :data="lastPosiData" :loading="loading"></i-table>
         </div>
         <Modal v-model="trackDetailModal" fullscreen>

@@ -30,10 +30,7 @@
             </div>
         </Row>
         <div style="margin:10px;">
-            <i-table :columns="columns" height="520" :data="tableData" :loading="loading" @on-sort-change="onSortChange"></i-table>
-            <!-- <div style="margin-top:10px;">
-                <Page :total="total" :current="currentPageIndex" simple :page-size="10" @on-change="changePage"></Page>
-            </div> -->
+            <i-table :columns="columns" :height="lastTableHeight" :data="tableData" :loading="loading" @on-sort-change="onSortChange"></i-table>
         </div>
     </div>
 </div>

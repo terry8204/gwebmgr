@@ -257,6 +257,10 @@ var myUrls = {
   },
   refreshTrackPosition: function () {
     return this.host + 'webapi?action=refreshtrackposition&token=' + token;
+  },
+  //查询所有的报警信息
+  reportAlarm: function () {
+    return this.host + 'webapi?action=reportalarm&token=' + token;
   }
 }
 

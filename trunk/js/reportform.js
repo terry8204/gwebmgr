@@ -74,6 +74,8 @@ var reportMixin = {
         dateVal: [DateFormat.longToDateStr(Date.now(), 0), DateFormat.longToDateStr(Date.now(), 0)],
         total: 0,
         currentPageIndex: 1,
+        lastTableHeight: 100,
+        posiDetailHeight: 100
     },
     methods: {
         changePage: function (index) {
@@ -105,7 +107,19 @@ var reportMixin = {
             }
             this.isSelectAll = result.isAll;
         },
+        calcTableHeight: function () {
+            var wHeight = window.innerHeight;
+            this.lastTableHeight = wHeight - 170;
+            this.posiDetailHeight = wHeight - 144;
+        },
     },
+    mounted: function () {
+        var me = this;
+        this.calcTableHeight();
+        window.onresize = function () {
+            me.calcTableHeight();
+        }
+    }
 }
 
 
@@ -341,16 +355,9 @@ function posiReport (groupslist) {
             tableData: [],
             mapInstance: null,
             deviceName: '',
-            lastTableHeight: 100,
-            posiDetailHeight: 100
         },
         mixins: [reportMixin],
         methods: {
-            calcTableHeight: function () {
-                var wHeight = window.innerHeight;
-                this.lastTableHeight = wHeight - 170;
-                this.posiDetailHeight = wHeight - 144;
-            },
             onClickQuery: function () {
                 var me = this;
                 if (this.selectdDeviceList.length) {
@@ -543,11 +550,7 @@ function posiReport (groupslist) {
             var me = this;
             this.mapType = Cookies.get('app-map-type') ? Cookies.get('app-map-type') : 'bMap';
             this.initMap();
-            this.calcTableHeight();
             this.groupslist = groupslist;
-            window.onresize = function () {
-                me.calcTableHeight();
-            }
         }
     })
 }
@@ -559,13 +562,69 @@ function allAlarm (groupslist) {
     new Vue({
         el: "#all-alarm",
         data: {
+            loading: false,
             groupslist: [],
             selectdDeviceList: [],
+            alarmColumns: [
+                { type: 'index', width: 60, align: 'center' },
+                {
+                    title: '设备名称',
+                    key: 'devicename',
+                    width: 120,
+                },
+                {
+                    title: '开始报警时间',
+                    key: 'lastalarmtimeStr',
+                    width: 160
+                },
+                {
+                    title: '最后报警时间',
+                    key: 'lastalarmtimeStr',
+                    width: 160
+                },
+                {
+                    title: '报警信息',
+                    key: 'stralarm',
+                },
+                {
+                    title: '报警次数',
+                    key: 'alarmcount',
+                    width: 100
+                },
+                {
+                    title: '是否处理',
+                    key: 'isdispose',
+                    width: 100
+                },
+                {
+                    title: '处理人',
+                    key: 'disposeperson',
+                    width: 100
+                },
+            ],
+            alarmData: [],
         },
         mixins: [reportMixin],
         methods: {
             onClickQuery: function () {
                 console.log('aaa', this.selectdDeviceList);
+                var self = this;
+                if (this.isSelectAll === null) {
+                    this.$Message.error("请选择设备");
+                    return;
+                };
+                var data = {
+                    // username: vstore.state.userName,
+                    startday: this.dateVal[0],
+                    endday: this.dateVal[1],
+                    offset: DateFormat.getOffset(),
+                    devices: this.selectdDeviceList
+                };
+                this.loading = true;
+                var url = myUrls.reportAlarm();
+                utils.sendAjax(url, data, function (resp) {
+                    console.log('resp', resp);
+                });
             }
         },
         mounted: function () {

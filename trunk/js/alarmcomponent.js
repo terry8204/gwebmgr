@@ -511,14 +511,17 @@ var waringComponent = {
             });
             // timeout定时器
             var timeout = null;
-            window.onresize = function () {
+
+            window.addEventListener('resize', function () {
+                // window.onresize = function () {
                 if (timeout != null) {
                     clearTimeout(timeout);
                 };
                 timeout = setTimeout(function () {
                     me.changeWrapperCls();
                 }, 300);
-            }
+                // }
+            })
         }
     }
 }

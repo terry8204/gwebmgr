@@ -29,5 +29,8 @@
                 <i-button @click="onClickQuery">查询</i-button>
             </div>
         </Row>
+        <div style="margin:10px;">
+            <i-table :columns="alarmColumns" :height="lastTableHeight" :data="alarmData" :loading="loading"></i-table>
+        </div>
     </div>
 </div>
