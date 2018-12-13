@@ -1,6 +1,7 @@
 "use strict";
 new Vue({
     el: "#login-wraper",
+    i18n: i18n,
     data: {
         username: '',
         password: '',
@@ -10,7 +11,8 @@ new Vue({
         passTip: false,
         loading: false,
         placeholder: "",
-        language: "zh"
+        pwdPlaceholder: "",
+        language: Cookies.get("PATH_LANG") || 'zh',
     },
     methods: {
         handleSubmit: function () {
@@ -19,12 +21,12 @@ new Vue({
             var pass = this.password;
 
             if (user.length < 2) {
-                this.$Message.error('账号格式不对!');
+                this.$Message.error(this.$t("login.error_1"));
                 return;
             };
 
             if (pass.length < 4) {
-                this.$Message.error('密码格式不对!');
+                this.$Message.error(this.$t("login.error_2"));
                 return;
             };
 
@@ -50,13 +52,13 @@ new Vue({
                     // window.location.href = "main.html?token=" + resp.token + "&usertype=" + resp.usertype;
                     window.location.href = "main.html";
                 } else if (resp.status == -1) {
-                    me.$Message.error('登录失败!');
+                    me.$Message.error(me.$t("login.error_3"));
                 } else if (resp.status == 1) {
-                    me.$Message.error('账号或密码错误!');
+                    me.$Message.error(me.$t("login.error_4"));
                 } else if (resp.status == 2) {
-                    me.$Message.error('禁止登陆!');
+                    me.$Message.error(me.$t("login.error_5"));
                 } else if (resp.status == 3) {
-                    me.$Message.error('账号过期!');
+                    me.$Message.error(me.$t("login.error_6"));
                 }
             });
         },
@@ -88,9 +90,19 @@ new Vue({
             this.account = account;
             var type = this.account == 0 ? "USER" : "DEVICE";
             Cookies.set("logintype", type, { expires: 7 });
+
         },
         changeLang: function (lang) {
             this.language = lang;
+            this.$i18n.locale = lang;
+            Cookies.set("PATH_LANG", lang, { expires: 31 });
+            this.pwdPlaceholder = this.$t("login.inputPassword");
+            var type = Cookies.get("logintype");
+            if (type == "USER") {
+                this.placeholder = this.$t("login.inputUsername");
+            } else if (type == "DEVICE") {
+                this.placeholder = this.$t("login.inputDeviceNumber");
+            }
         }
     },
     mounted: function () {
@@ -101,11 +113,11 @@ new Vue({
             if (type) {
                 if (type == "USER") {
                     me.account = 0;
-                    me.placeholder = "请输入用户账号";
+                    me.placeholder = this.$t("login.inputUsername");
                     var user = Cookies.get("accountuser");
                     var pass = Cookies.get("accountpass");
                 } else if (type == "DEVICE") {
-                    me.placeholder = "请输入设备号";
+                    me.placeholder = this.$t("login.inputDeviceNumber");
                     me.account = 1;
                     var user = Cookies.get("deviceuser");
                     var pass = Cookies.get("devicepass");
@@ -126,6 +138,7 @@ new Vue({
                     me.keepPass = false;
                 }
             };
+            me.pwdPlaceholder = this.$t("login.inputPassword");
         });
         document.onkeyup = function (e) {
             var keyCode = e.keyCode;
@@ -137,15 +150,14 @@ new Vue({
     watch: {
         account: function () {
             if (this.account == 0) {
-                this.placeholder = "请输入用户账号";
+                this.placeholder = this.$t("login.inputUsername");
                 var user = Cookies.get("accountuser");
                 var pass = Cookies.get("accountpass");
             } else {
-                this.placeholder = "请输入设备号";
+                this.placeholder = this.$t("login.inputDeviceNumber");
                 var user = Cookies.get("deviceuser");
                 var pass = Cookies.get("devicepass");
             }
-
             if (this.keepPass) {
                 if (user && pass) {
                     this.username = user;

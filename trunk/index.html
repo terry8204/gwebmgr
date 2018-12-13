@@ -13,21 +13,27 @@
     <script src="js/config.js"></script>
 </head>
 <body>
-    <div id="login-wraper">
+    <div id="login-wraper" v-cloak>
         <div class="header">
             <div class="center">
                 <div class="logo-wrap">            
                     <span class="logo">
                     <Icon type="planet"></Icon>
                     </span>
-                    <span class="logo-title">位置信息服务平台</span>
+                    <span class="logo-title">{{$t("login.title")}}</span>
                     <b>|</b>
                     <span class="version">v1.0</span>
                 </div>
                 <div class="language">
-                    <span :class="{active:language == 'zh'}" @click="changeLang('zh')">中文</span>
+                    <span :class="{active:language == 'zh'}" @click="changeLang('zh')"> 
+                        <img src="./images/chinaflag72x72.jpg" style="width:16px;height:16px;vertical-align: middle">
+                        {{$t("login.chinese")}}
+                    </span>
                     <b>/</b>
-                    <span :class="{active:language == 'en'}" @click="changeLang('en')">英文</span>
+                    <span :class="{active:language == 'en'}" @click="changeLang('en')">
+                        <img src="./images/usflag72x72.jpg" style="width:16px;height:16px;vertical-align: middle">
+                        {{$t("login.english")}}
+                    </span>
                 </div>
             </div>
         </div>
@@ -43,12 +49,12 @@
                                 <i-row>
                                     <i-col span="12" style="text-align:center;border-right: 1px solid #2D8CF0"  :class="{active:account == 0}">
                                         <span  @click="selectdAccount(0)" class="cursor">
-                                            <Icon type="md-person"></Icon>企业登陆
+                                            <Icon type="md-person"></Icon>{{$t("login.companyLogin")}}
                                         </span>
                                     </i-col>
                                     <i-col span="12" style="text-align:center;"  :class="{active:account == 1}" >
                                         <span @click="selectdAccount(1)" class="cursor">
-                                            <Icon type="md-phone-portrait"></Icon>设备登陆
+                                            <Icon type="md-phone-portrait"></Icon>{{$t("login.deviceLogin")}}
                                         </span>
                                     </i-col>
                                 </i-row>
@@ -61,15 +67,15 @@
                                     </i-input> 
                                 </p>
                                 <p>
-                                    <i-input type="password" v-model.trim="password" placeholder="请输入密码">
+                                    <i-input type="password" v-model.trim="password" :placeholder="pwdPlaceholder">
                                         <Icon type="ios-lock" slot="prepend"></Icon>                          
                                     </i-input>
                                 </p>
                                 <p>
-                                    <Checkbox v-model="keepPass">记住密码</Checkbox>
+                                    <Checkbox v-model="keepPass">{{$t("login.pememberPwd")}}</Checkbox>
                                 </p>
                                 <p>
-                                    <i-button type="primary" @click="handleSubmit" style="width: 100%" :loading="loading">登录</i-button>
+                                    <i-button type="primary" @click="handleSubmit" style="width: 100%" :loading="loading">{{$t("login.logining")}}</i-button>
                                 </p>
                             </div>
                         </Card>
@@ -84,11 +90,11 @@
                         <img src="./images/gps51wx.jpg" alt="" srcset="" width="128px" height="128px">
                     </div>
                     <div class="desc">
-                        <h3>微信小程序</h3>
+                        <h3>{{$t("login.wechatApplet")}}</h3>
                         <ul>
-                            <li>1.在微信中搜索gps51小程序</li>
-                            <li>2.或者直接扫描二维码</li>
-                            <li>3.适用于iPhone/Android</li>
+                            <li>{{$t("login.step1")}}</li>
+                            <li>{{$t("login.step2")}}</li>
+                            <li>{{$t("login.step3")}}</li>
                         </ul>
                     </div>
                 </div>
@@ -100,9 +106,11 @@
         </div>
     </div>
     <script src="dist/vue.min.js"></script>
-    <script src="dist/iview.min.js"></script>
-    <script src="js/jquery.js"></script>
     <script src="js/js.cookie.min.js"></script>
+    <script src="dist/iview.min.js"></script>
+    <script src="js/vue-i18n.min.js"></script>
+    <script src="js/language.js"></script>
+    <script src="js/jquery.js"></script>
     <script src="js/jquery.md5.js"></script>
     <script src="js/login.js"></script>
 </body>
