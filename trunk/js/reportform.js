@@ -129,6 +129,7 @@ function cmdReport (groupslist) {
 
     new Vue({
         el: "#cmd-report",
+        i18n: utils.getI18n(),
         data: {
             loading: false,
             selectdDeviceList: [],
@@ -210,6 +211,7 @@ function cmdReport (groupslist) {
 function posiReport (groupslist) {
     vueInstanse = new Vue({
         el: "#posi-report",
+        i18n: utils.getI18n(),
         data: {
             total: 0,
             currentIndex: 1,
@@ -223,8 +225,8 @@ function posiReport (groupslist) {
             tabValue: "lastPosi",
             markerIns: null,
             lastPosiColumns: [
-                { type: 'index', width: 60, align: 'center' },
-                { title: '设备名称', key: 'devicename', width: 150 },
+                { type: 'index', width: 60, align: 'center', fixed: 'left' },
+                { title: '设备名称', key: 'devicename', width: 150, fixed: 'left' },
                 { title: '经度', key: 'fixedLon', width: 100 },
                 { title: '纬度', key: 'fixedLat', width: 100 },
                 { title: '方向', key: 'direction', width: 80 },
@@ -232,11 +234,12 @@ function posiReport (groupslist) {
                 { title: '时间', key: 'arrivedTimeStr', width: 160 },
                 { title: '状态', key: 'strstatus', width: 180 },
                 { title: '定位类型', key: 'positype', width: 100 },
-                { title: '地址', key: 'address' },
+                { title: '地址', key: 'address', width: 430 },
                 {
                     title: '操作',
                     key: 'action',
                     width: 180,
+                    fixed: 'right',
                     render: function (h, params) {
                         return h('div', [
                             h('Button', {
@@ -561,6 +564,7 @@ function posiReport (groupslist) {
 function allAlarm (groupslist) {
     new Vue({
         el: "#all-alarm",
+        i18n: utils.getI18n(),
         data: {
             loading: false,
             groupslist: [],
@@ -660,25 +664,26 @@ function allAlarm (groupslist) {
 var reportForm = {
     template: document.getElementById('report-template').innerHTML,
     data: function () {
+        var me = this;
         return {
             theme: "light",
             groupslist: [],
             reportNavList: [
                 {
-                    title: '行驶报表',
-                    name: 'reportMar',
+                    title: me.$t("reportForm.drivingReport"),
+                    name: 'drivingReport',
                     icon: 'ios-photos',
                     children: [
-                        { title: '命令报表', name: 'cmdReport', icon: 'ios-pricetag-outline' },
-                        { title: '位置报表', name: 'posiReport', icon: 'ios-pin' },
+                        { title: me.$t("reportForm.cmdReport"), name: 'cmdReport', icon: 'ios-pricetag-outline' },
+                        { title: me.$t("reportForm.posiReport"), name: 'posiReport', icon: 'ios-pin' },
                     ]
                 },
                 {
-                    title: '报警报表',
-                    name: 'warningMar',
+                    title: me.$t("reportForm.warningReport"),
+                    name: 'warningReport',
                     icon: 'logo-wordpress',
                     children: [
-                        { title: '全部报警', name: 'allAlarm', icon: 'md-warning' },
+                        { title: me.$t("reportForm.allAlarm"), name: 'allAlarm', icon: 'md-warning' },
                     ]
                 },
             ]

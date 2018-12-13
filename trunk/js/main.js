@@ -4,6 +4,7 @@ var communicate = new Vue({}); // 组件之间通信的vue实例
 var userName = Cookies.get('name');
 var mapType = Cookies.get('app-map-type');
 var isLoadBMap = false;
+var isZh = utils.locale === 'zh';
 var getPath = function () {
   var jsPath = document.currentScript ? document.currentScript.src : function () {
     var js = document.scripts
@@ -179,6 +180,7 @@ var appHeader = {
   template: document.getElementById('header-template').innerHTML,
   props: ['componentid'],
   data: function () {
+    var me = this;
     return {
       dark: 'dark',
       name: '',
@@ -187,10 +189,10 @@ var appHeader = {
       intervalTime: null,
       isShowCompany: false,
       headMenuList: [
-        { name: "monitor", icon: "md-contacts", title: "定位监控", isShow: true },
-        { name: "reportForm", icon: "ios-paper-outline", title: "统计报表", isShow: true },
-        { name: "bgManager", icon: "md-settings", title: "后台管理", isShow: true },
-        { name: "systemParam", icon: "ios-options", title: "系统参数", isShow: true }
+        { name: "monitor", icon: "md-contacts", title: me.$t("header.monitor"), isShow: true },
+        { name: "reportForm", icon: "ios-paper-outline", title: me.$t("header.reportForm"), isShow: true },
+        { name: "bgManager", icon: "md-settings", title: me.$t("header.bgManager"), isShow: true },
+        { name: "systemParam", icon: "ios-options", title: me.$t("header.systemParam"), isShow: true }
       ],
       modalPass: false,
       oldPass: '',
@@ -222,7 +224,7 @@ var appHeader = {
         oldpass: $.md5(this.oldPass)
       }
       if (this.newPass.length < 4) {
-        this.$Message.error('密码不能小于四位')
+        this.$Message.error(this.$t("header.error_1"));
         return
       }
       if (
@@ -230,17 +232,17 @@ var appHeader = {
         this.newPass == '' ||
         this.confirmPass == ''
       ) {
-        this.$Message.error('密码不能为空!')
+        this.$Message.error(me.$t("header.error_2"));
         return
       }
       if (this.confirmPass !== this.newPass) {
-        this.$Message.error('2次密码不一致!')
+        this.$Message.error(me.$t("header.error_3"));
         return
       }
 
       utils.sendAjax(url, data, function (resp) {
         if (resp.status == 0) {
-          me.$Message.success('密码修改成功!')
+          me.$Message.success(me.$t("header.changePwdSucc"))
           if (me.userType != 99) {
             Cookies.set('accountpass', me.newPass, { expires: 7 })
           } else {
@@ -249,7 +251,7 @@ var appHeader = {
 
           me.modalPass = false
         } else {
-          me.$Message.error('旧密码错误!')
+          me.$Message.error(me.$t("header.error_4"))
         }
       })
     },
@@ -333,13 +335,14 @@ var appHeader = {
   }
 }
 
-
+// 根据当前语言来设置 iview 使用使用设么语言
+iview.lang(isZh ? 'zh-CN' : 'en-US');
 
 // 根组件
 var vRoot = new Vue({
   el: '#app',
   store: vstore,
-  i18n: i18n,
+  i18n: utils.getI18n(),
   data: {
     isShowAlarm: true
   },

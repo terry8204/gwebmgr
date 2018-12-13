@@ -1,7 +1,7 @@
 "use strict";
 new Vue({
     el: "#login-wraper",
-    i18n: i18n,
+    i18n: utils.getI18n(),
     data: {
         username: '',
         password: '',

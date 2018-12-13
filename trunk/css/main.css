@@ -215,7 +215,7 @@ div.ivu-steps-head-inner .ivu-icon{
     }
     ul.ul-manager-wraper li.maps{
         line-height: 35px;
-        width: 88px;
+        width: 100px;
     }
     ul.ul-manager-wraper li.maps .ivu-select-item{
         width: 100%;
@@ -635,12 +635,16 @@ div.ivu-steps-head-inner .ivu-icon{
 
     div.msg_header ul li{
         float: left;
-        width: 70px;
+        min-width: 70px;
         text-align: center;
         line-height: 22px; 
         cursor: pointer;
+        padding: 0 5px;
     }
-
+    div.msg_header ul li:last-child{
+        margin-left: 15px;
+        padding: 0;
+    }
     div.msg_header ul li.selected{
         color: #495060;
         background: #F8F8F9;

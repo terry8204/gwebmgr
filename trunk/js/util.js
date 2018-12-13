@@ -1,4 +1,5 @@
 var utils = {
+  locale: Cookies.get("PATH_LANG") || 'zh',
   sendAjax: function (url, data, callback) {
     var encode = JSON.stringify(data)
     $.ajax({
@@ -101,21 +102,21 @@ var utils = {
   getCarDirection: function (course) {
     var direction = null
     if (course == 0) {
-      direction = '正北';
+      direction = isZh ? '正北' : 'Due north';
     } else if (course == 90) {
-      direction = '正东';
+      direction = isZh ? '正东' : 'Due east';
     } else if (course == 180) {
-      direction = '正南';
+      direction = isZh ? '正南' : 'Due south';
     } else if (course == 270) {
-      direction = '正西';
+      direction = isZh ? '正西' : 'due west';
     } else if (course > 0 && course < 90) {
-      direction = '东北';
+      direction = isZh ? '东北' : 'Northeast';
     } else if (course > 90 && course < 180) {
-      direction = '东南';
+      direction = isZh ? '东南' : 'Southeast';
     } else if (course > 180 && course < 270) {
-      direction = '西南';
+      direction = isZh ? '西南' : 'Southwest';
     } else if (course > 270 && course <= 360) {
-      direction = '西北';
+      direction = isZh ? '西北' : 'Northwest';
     }
     return direction
   },
@@ -200,19 +201,19 @@ var utils = {
     var gotsrc = track.gotsrc;  //cell gps wifi
     switch (gotsrc) {
       case 'un':
-        type = "未知";
+        type = isZh ? "未知" : "Unknown";
         break;
       case 'cell':
-        type = "基站定位";
+        type = isZh ? "基站定位" : "Base station location";
         break;
       case 'gps':
-        type = "卫星定位";
+        type = isZh ? "卫星定位" : "Satellite positioning";
         break;
       case 'wifi':
-        type = "WIFI定位";
+        type = isZh ? "WIFI定位" : "WIFI Location";
         break;
       default:
-        type = "未知";
+        type = isZh ? "未知" : "Unknown";
     };
     return type;
   },
@@ -221,32 +222,43 @@ var utils = {
     var posiType = this.getPosiType(track);
 
     if (track.radius > 0) {
-      var radiuDesc = ' (误差范围:' + track.radius + '米)';
+      var radiuDesc = null;
+      if (isZh) {
+        radiuDesc = ' (误差范围:' + track.radius + '米)';
+      } else {
+        radiuDesc = ' (Error range:' + track.radius + 'm)';
+      }
       posiType += radiuDesc;
     };
 
     var content =
-      '<p> 设备名称: ' + track.devicename + '</p>' +
-      '<p> 设备序号: ' + track.deviceid + '</p>' +
-      '<p> 定位类型: ' + posiType + '</p>' +
-      '<p> 经纬度: ' + track.callon.toFixed(5) + ',' + track.callat.toFixed(5) + '</p>' +
-      '<p> 最后时间: ' + DateFormat.longToDateTimeStr(track.arrivedtime, 0) + '</p>' +
-      '<p> 状态: ' + strstatus + '</p>' +
-      '<p class="last-address"> 详细地址: ' + b_address + '</p>' +
+      '<p> ' + (isZh ? '设备名称' : 'Device Name') + ': ' + track.devicename + '</p>' +
+      '<p> ' + (isZh ? '设备序号' : 'Device Number') + ': ' + track.deviceid + '</p>' +
+      '<p> ' + (isZh ? '定位类型' : 'Position Type') + ': ' + posiType + '</p>' +
+      '<p> ' + (isZh ? '经纬度' : 'Longitude and latitude') + ': ' + track.callon.toFixed(5) + ',' + track.callat.toFixed(5) + '</p>' +
+      '<p> ' + (isZh ? '最后时间' : 'Last time') + ': ' + DateFormat.longToDateTimeStr(track.arrivedtime, 0) + '</p>' +
+      '<p> ' + (isZh ? '状态' : 'Status') + ': ' + strstatus + '</p>' +
+      '<p class="last-address"> ' + (isZh ? '详细地址' : 'Address') + ': ' + b_address + '</p>' +
       '<p class="operation">' +
       '<span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="playBack(' +
       track.deviceid +
-      ')">轨迹</span>' +
+      ')">' + (isZh ? '轨迹' : 'Track') + '</span>' +
       '<span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="trackMap(' +
       track.deviceid +
-      ')">跟踪</span><span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="refreshPostion(' +
+      ')">' + (isZh ? '跟踪' : 'Stalker') + '</span><span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="refreshPostion(' +
       track.deviceid +
-      ')">刷新位置</span><span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="openSim(' +
+      ')">' + (isZh ? '刷新位置' : 'RefreshPosi') + '</span><span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="openSim(' +
       track.deviceid +
       ')">SIM</span><span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="setFence(' +
       track.deviceid +
-      ')">设置围栏</span></p>';
+      ')">' + (isZh ? '设置围栏' : 'SetFence') + '</span></p>';
     return content;
+  },
+  getI18n: function () {
+    return new VueI18n({
+      locale: Cookies.get("PATH_LANG") || 'zh',
+      messages: messages
+    });
   }
 }
 

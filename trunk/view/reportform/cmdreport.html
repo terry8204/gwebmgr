@@ -3,7 +3,7 @@
     <div class="report-item-header">
         <Row style="margin:10px;height: 35px;">
             <div style="float: left;">
-                <span>选择时间:</span>
+                <span>{{$t("reportForm.selectTime")}}:</span>
                 <date-picker 
                     type="daterange" 
                     :value="dateVal"
@@ -15,10 +15,10 @@
                     placement="bottom-start"></date-picker>
             </div>
             <div style="float: left;height: 35px; line-height: 35px;margin-left: 20px;" class="spans-wrap">
-                <span class="cursor-pointer" @click="handleSelectdDate(0)">今天</span> <b>｜</b>
-                <span class="cursor-pointer" @click="handleSelectdDate(1)">昨天</span> <b>｜</b>
-                <span class="cursor-pointer" @click="handleSelectdDate(3)">近三天</span> <b>｜</b>
-                <span class="cursor-pointer" @click="handleSelectdDate(7)">最近七天</span>
+                <span class="cursor-pointer" @click="handleSelectdDate(0)">{{$t("reportForm.toDay")}}</span> <b>｜</b>
+                <span class="cursor-pointer" @click="handleSelectdDate(1)">{{$t("reportForm.yesterDay")}}</span> <b>｜</b>
+                <span class="cursor-pointer" @click="handleSelectdDate(3)">{{$t("reportForm.threeDays")}}</span> <b>｜</b>
+                <span class="cursor-pointer" @click="handleSelectdDate(7)">{{$t("reportForm.sevenDays")}}</span>
             </div>    
         </Row>
         <Row style="margin:10px;height: 35px;">
@@ -26,7 +26,7 @@
                 <tree-demo :groupslist="groupslist" @on-selectd-deviceids="onSelectdDeviceIds"></tree-demo>
             </div>
             <div style="margin-left:20px;float: left;">
-                <i-button @click="onClickQuery">查询</i-button>
+                <i-button @click="onClickQuery">{{$t("reportForm.query")}}</i-button>
             </div>
         </Row>
         <div style="margin:10px;">

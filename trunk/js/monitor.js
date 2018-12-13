@@ -24,11 +24,12 @@ var monitor = {
     data: function () {
         var vm = this;
         return {
+            placeholder: "",
             isSpin: false,
             map: null,
             placement: "right-start",
             mapType: mapType ? mapType : 'bMap',
-            mapList: [{ label: "百度地图", value: "bMap" }, { label: "谷歌地图", value: "gMap" }],
+            mapList: [{ label: isZh ? "百度地图" : "BaiduMap", value: "bMap" }, { label: isZh ? "谷歌地图" : "GoogleMap", value: "gMap" }],
             sosoValue: '', // 搜索框的值
             sosoData: [], // 搜索框里面的数据
             selectedState: '', // 选择nav的状态 all online offline;
@@ -68,13 +69,13 @@ var monitor = {
             deviceBaseInfo: {},
             loading: false,
             cacheColumns: [
-                { title: '编号', key: "index", width: 80, align: 'center', sortable: true },
-                { title: '设备序号', key: 'deviceid' },
-                { title: '指令名称', key: 'cmdname', sortable: true },
-                { title: '发送时间', key: 'sendtimeStr', width: 170, sortable: true },
-                { title: '发送参数', key: 'cmdparams', sortable: true },
+                { title: isZh ? '编号' : 'index', key: "index", width: 90, align: 'center', sortable: true },
+                { title: isZh ? '设备序号' : 'Device Number', key: 'deviceid' },
+                { title: isZh ? '指令名称' : 'Cmd name', key: 'cmdname', sortable: true },
+                { title: isZh ? '发送时间' : 'Send date', key: 'sendtimeStr', width: 170, sortable: true },
+                { title: isZh ? '发送参数' : 'Send parmas', key: 'cmdparams', sortable: true },
                 {
-                    title: '操作',
+                    title: isZh ? '操作' : "Action",
                     key: 'action',
                     width: 100,
                     // align: 'center',
@@ -83,20 +84,20 @@ var monitor = {
                             h('Poptip', {
                                 props: {
                                     confirm: true,
-                                    title: '确定取消吗?'
+                                    title: isZh ? '确定取消吗?' : "cancelled ?"
                                 },
                                 on: {
                                     'on-ok': function () {
                                         var url = myUrls.deleteCacheCmd();
                                         utils.sendAjax(url, { cachecmdid: params.row.cachecmdid }, function (resp) {
                                             if (resp.status == 0) {
-                                                vm.$Message.success("取消成功");
+                                                vm.$Message.success(isZh ? "取消成功" : "Cancel successfully");
                                                 vm.cacheTableData.splice(params.index, 1);
                                                 vm.cacheTableData.forEach(function (item, index) {
                                                     item.index = ++index;
                                                 });
                                             } else if (resp.status == 1) {
-                                                vm.$Message.error("取消失败");
+                                                vm.$Message.error(isZh ? "取消失败" : "Cancel fail");
                                             }
                                         })
                                     }
@@ -107,19 +108,19 @@ var monitor = {
                                             type: 'primary',
                                             size: 'small'
                                         }
-                                    }, "取消")
+                                    }, isZh ? "取消" : "Cancel")
                                 ])
                         ]);
                     },
                 }
             ],
             sendColumns: [
-                { title: '编号', key: "index", width: 80, align: 'center', sortable: true },
-                { title: '设备序号', key: 'deviceid' },
-                { title: '指令名称', key: 'cmdname', sortable: true },
-                { title: '发送时间', key: 'sendtimeStr', width: 170, sortable: true },
-                { title: '发送参数', key: 'cmdparams', sortable: true },
-                { title: '结果', key: 'result', sortable: true },
+                { title: isZh ? '编号' : 'index', key: "index", width: 90, align: 'center', sortable: true },
+                { title: isZh ? '设备序号' : '', key: 'deviceid' },
+                { title: isZh ? '指令名称' : 'Cmd name', key: 'cmdname', sortable: true },
+                { title: isZh ? '发送时间' : 'Send date', key: 'sendtimeStr', width: 170, sortable: true },
+                { title: isZh ? '发送参数' : 'Send Params ', key: 'cmdparams', sortable: true },
+                { title: isZh ? '结果' : 'Result', key: 'result', sortable: true },
             ],
             cacheTableData: [],
             sendTableData: []
@@ -269,15 +270,15 @@ var monitor = {
                             // utils.addMapFence(me, deviceid, me.fenceDistance);
                             me.map.addMapFence(deviceid, me.fenceDistance);
                         } else {
-                            me.$Message.error("设置失败");
+                            me.$Message.error(me.$t("monitor.settingFail"));
                         }
                     })
                 } else {
-                    me.$Message.error("该设备没有轨迹,无法设防");
+                    me.$Message.error(me.$t("monitor.noTrackError"));
                     me.electronicFenceModal = false;
                 }
             } else {
-                this.$Message.error("范围必须是数字");
+                this.$Message.error(me.$t("monitor.rangeNumErr"));
             }
         },
         queryAllCmdRecords: function () {
@@ -297,7 +298,7 @@ var monitor = {
                     me.cacheTableData = resp.cacherecords;
                     me.sendTableData = resp.sendrecords;
                 } else {
-                    me.$Message.error("查询指令记录失败");
+                    me.$Message.error(me.$t("queryCmdRecordErr"));
                 }
                 me.loading = false;
             });
@@ -308,10 +309,10 @@ var monitor = {
             var url = myUrls.unSetGeofence();
             utils.sendAjax(url, { deviceid: deviceid }, function (resp) {
                 if (resp.status == 0) {
-                    me.$Message.success("撤防成功");
+                    me.$Message.success(me.$t("monitor.cancelFenceSucc"));
                     me.map.cancelFence(deviceid);
                 } else {
-                    me.$Message.error("设置失败");
+                    me.$Message.error(me.$t("monitor.settingFail"));
                 }
             })
         },
@@ -322,18 +323,18 @@ var monitor = {
             utils.sendAjax(url, data, function (resp) {
                 if (resp.status === 0) {
                     communicate.$emit("disposeAlarm", data.cmdcode);
-                    me.$Message.success("下发成功");
+                    me.$Message.success(me.$t("monitor.sendSucc"));
                     me.dispatchDirectiveModal = false;
                 } else if (resp.status === 1) {
-                    me.$Message.error("密码错误");
+                    me.$Message.error(me.$t("monitor.pwdErr"));
                 } else if (resp.status === -1) {
-                    me.$Message.error("下发指令异常");
+                    me.$Message.error(me.$t("monitor.sendCmdAbnormal"));
                 } else if (resp.status === 2) {
-                    me.$Message.error("设备离线,指令没有缓存");
+                    me.$Message.error(me.$t("monitor.sendCmdNoCache"));
                 } else if (resp.status === 3) {
-                    me.$Message.error("设备离线,指令已经缓存");
+                    me.$Message.error(me.$t("monitor.sendCmdAlreadyCache"));
                 } else if (resp.status === 4) {
-                    me.$Message.error("请修改默认密码后再发送指令");
+                    me.$Message.error(me.$t("monitor.changePwdSendCmd"));
                 }
             });
         },
@@ -478,7 +479,7 @@ var monitor = {
                 this.$store.commit('currentDeviceRecord', record);
                 this.map.onClickDevice(deviceid);
             } else {
-                this.$Message.error('该设备没有上报位置信息')
+                this.$Message.error(this.$t("monitor.noRecordTrack"))
                 this.$store.commit('currentDeviceId', deviceid);
             }
         },
@@ -586,7 +587,7 @@ var monitor = {
                     })
                     callback(resp)
                 } else if (resp.status == 3) {
-                    me.$Message.error('请重新登录,2秒后自动跳转登录页面')
+                    me.$Message.error(me.$t("monitor.reLogin"))
                     Cookies.remove('token')
                     setTimeout(function () {
                         window.location.href = 'index.html'
@@ -631,7 +632,7 @@ var monitor = {
                         callback ? callback() : '';
                     }
                 } else if (resp.status == 3) {
-                    me.$Message.error('请重新登录,2秒后自动跳转登录页面')
+                    me.$Message.error(me.$t("monitor.reLogin"))
                     Cookies.remove('token')
                     setTimeout(function () {
                         window.location.href = 'index.html'
@@ -690,7 +691,7 @@ var monitor = {
             };
             var url = myUrls.editDeviceSimple();
             if (data.devicename.length == 0 || data.devicename == '') {
-                me.$Message.error('设备名称是必填的')
+                me.$Message.error(me.$t("monitor.devNameMust"))
                 return
             }
             if (data.simnum) {
@@ -703,11 +704,11 @@ var monitor = {
                     me.editDeviceInfo.simnum = sendData.simnum;
                     utils.changeGroupsDevName(sendData, me.groups);
                     me.editDevModal = false;
-                    me.$Message.success('修改成功');
+                    me.$Message.success(me.$t("monitor.changeSucc"));
 
                     me.deviceInfos[data.deviceid].remark = data.remark;
                 } else if ((resp.status == -1)) {
-                    me.$Message.error('修改失败')
+                    me.$Message.error(me.$t("monitor.changeFail"))
                 }
             })
         },
@@ -1297,6 +1298,7 @@ var monitor = {
     mounted: function () {
         var me = this;
         this.intervalTime = Number(this.stateIntervalTime);
+        this.placeholder = this.$t("monitor.placeholder");
         this.initMap();
         this.getMonitorListByUser({ username: userName }, function (resp) {
             me.groups = resp.groups;

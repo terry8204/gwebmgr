@@ -3,6 +3,7 @@ var waringComponent = {
     template: document.getElementById('waring-template'),
     data: function () {
         return {
+            isZh: isZh,
             isLargen: 0,
             index: 1,
             waringRowIndex: null,
@@ -192,7 +193,11 @@ var waringComponent = {
                     var deviceName = deviceInfo.devicename;
                     item.devicename = deviceName;
                     item.lastalarmtimeStr = DateFormat.longToDateTimeStr(item.lastalarmtime, 0);
-                    item.isdispose = item.disposestatus === 0 ? "未处理" : "已处理";
+                    if (isZh) {
+                        item.isdispose = item.disposestatus === 0 ? "未处理" : "已处理";
+                    } else {
+                        item.isdispose = item.disposestatus === 0 ? "Untreated" : "Handled";
+                    }
                 };
             });
             me.waringRecords = alarmList;
@@ -227,7 +232,7 @@ var waringComponent = {
                                 devicename: item.devicename,
                                 deviceid: item.deviceid,
                                 overduetime: DateFormat.longToDateTimeStr(overduetime, 0),
-                                isoverdue: '已过期'
+                                isoverdue: isZh ? '已过期' : 'Expired'
                             })
                         }
                     }
@@ -272,7 +277,7 @@ var waringComponent = {
                                             deviceid: deviceid,
                                             gpstime: msgTiem.createtime,
                                             stralarm: msgTiem.content,
-                                            isdispose: '未处理',
+                                            isdispose: isZh ? '未处理' : 'Untreated',
                                             messageSerialNo: msgTiem.messageSerialNo,
                                             messageId: msgTiem.messageId
                                         });
@@ -309,7 +314,6 @@ var waringComponent = {
 
             this.disposeModal = true;
 
-            console.log('alarmCmdList', this.alarmCmdList);
         },
         sendDisposeWaring: function () {
             var me = this;
@@ -328,7 +332,7 @@ var waringComponent = {
             });
 
             if (!isHasParams) {
-                this.$Message.error('所有参数都是必填的');
+                this.$Message.error(me.$t("alarm.errorNeedParams"));
                 return;
             };
 
@@ -339,7 +343,7 @@ var waringComponent = {
             utils.sendAjax(sendCmdUrl, this.cmdRowWaringObj, function (resp) {
                 if (resp.status == 0) {
                     me.disposeModal = false;
-                    me.$Message.success("解除成功!");
+                    me.$Message.success(me.$t("alarm.successfulRelease"));
                     me.alarmMgr.updateDisposeStatus(me.cmdRowWaringObj.deviceid, me.cmdRowWaringObj.alarm);
                     me.refreshAlarmToUi();
                 } else {
@@ -378,36 +382,36 @@ var waringComponent = {
                 return {
                     columns: [
                         {
-                            title: '设备名称',
+                            title: me.$t("alarm.devName"),
                             key: 'devicename',
                             width: 120,
                         },
                         {
-                            title: '设备序号',
+                            title: me.$t("alarm.devNum"),
                             key: 'deviceid',
-                            width: 120,
+                            width: 130,
                         },
                         {
-                            title: '报警时间',
+                            title: me.$t("alarm.alarmTime"),
                             key: 'lastalarmtimeStr',
                             width: 160
                         },
                         {
-                            title: '报警信息',
+                            title: me.$t("alarm.alarmMsg"),
                             key: 'stralarm',
                         },
                         {
-                            title: '报警次数',
+                            title: me.$t("alarm.alarmCount"),
                             key: 'alarmcount',
-                            width: 100
+                            width: 120
                         },
                         {
-                            title: '是否处理',
+                            title: me.$t("alarm.isDispose"),
                             key: 'isdispose',
                             width: 100
                         },
                         {
-                            title: '操作',
+                            title: me.$t("alarm.action"),
                             key: 'action',
                             width: 120,
                             render: function (h, params, a) {
@@ -426,7 +430,7 @@ var waringComponent = {
                                                 }
                                             }
                                         },
-                                        '报警处理'
+                                        me.$t("alarm.alarmDispose"),
                                     )
                                 ])
                             }
@@ -458,22 +462,23 @@ var waringComponent = {
                 '<Table :height="tabheight" :columns="columns" :data="deviceinfolist"></Table>',
             props: ['deviceinfolist', 'tabletype', 'wrapperheight'],
             data: function () {
+                var me = this;
                 return {
                     columns: [
                         {
-                            title: '设备名称',
+                            title: me.$t("alarm.devName"),
                             key: 'devicename'
                         },
                         {
-                            title: '设备序号',
+                            title: me.$t("alarm.devNum"),
                             key: 'deviceid'
                         },
                         {
-                            title: '过期时间',
+                            title: me.$t("alarm.overdueTime"),
                             key: 'overduetime'
                         },
                         {
-                            title: '是否过期',
+                            title: me.$t("alarm.isOverdue"),
                             key: 'isoverdue'
                         }
                     ]
