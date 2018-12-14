@@ -3,10 +3,10 @@
 
 <div id="addgroup">
     <div class="full">
-        <h3 class="h3-title">添加分组</h3>
+        <h3 class="h3-title">{{$t("bgMgr.addGroup")}}</h3>
         <div>
             <Row style="margin: 10px 0">
-                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;" :offset="2"><i style="color: red;display: inline-block;">*</i>&nbsp;企业名称 : &nbsp;</i-col>
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;" :offset="2"><i style="color: red;display: inline-block;">*</i>&nbsp;{{$t("customer.customerName")}} : &nbsp;</i-col>
                 <i-col span="8">
                         <i-select v-model="companyid">
                             <i-option v-for="item in customerList" :value="item.value" :key="item.value">{{ item.label }}</i-option>
@@ -14,78 +14,78 @@
                 </i-col>
                 <i-col span="10" style="height: 100%;line-height:32px;padding-left:20px;">
                     <span>
-                        <Icon type="star"></Icon> 客户名称
+                        <Icon type="star"></Icon> {{$t("customer.kehuName")}}
                     </span>
                 </i-col>
             </Row>
 
             <Row style="margin: 10px 0">
-                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;" :offset="2"><i style="color: red;display: inline-block;">*</i>&nbsp;分组名称 : &nbsp;</i-col>
+                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;" :offset="2"><i style="color: red;display: inline-block;">*</i>&nbsp;{{$t("group.groupName")}} : &nbsp;</i-col>
                     <i-col span="8">
                         <i-input v-model.trim="groupname"></i-input>
                     </i-col>
                     <i-col span="10" style="height: 100%;line-height:32px;padding-left:20px;">
                         <span>
-                            <Icon type="star"></Icon> 对象名称(最大不能超过50个字符!)
+                            <Icon type="star"></Icon> {{$t("group.groupNameTip")}} 
                         </span>
                     </i-col>
             </Row>
 
-            <Row style="margin: 10px 0">
-                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;" :offset="2"><i style="color: red;display: inline-block;">*</i>&nbsp;最短定位时间 : &nbsp;</i-col>
+            <Row style="margin: 10px 0">   
+                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;" :offset="2"><i style="color: red;display: inline-block;">*</i>&nbsp;{{$t("group.mintime")}}  : &nbsp;</i-col>
                     <i-col span="8">
-                        <input-number :max="3600" :min="30" :step="30" v-model="mintime" style="width: 210px;"></input-number>&nbsp;秒
+                        <input-number :max="3600" :min="30" :step="30" v-model="mintime" style="width: 210px;"></input-number>&nbsp;s
                     </i-col>
                     <i-col span="10" style="height: 100%;line-height:32px;padding-left:20px;">
                         <span>
-                            <Icon type="star"></Icon> 车辆可设置定位间隔的下限(最短间隔)
+                            <Icon type="star"></Icon> {{$t("group.mintimeTip")}}  
                         </span>
                     </i-col>
             </Row>
 
             <Row style="margin: 10px 0">
-                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;" :offset="2"><i style="color: red;display: inline-block;">*</i>&nbsp;最长定位时间 : &nbsp;</i-col>
+                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;" :offset="2"><i style="color: red;display: inline-block;">*</i>&nbsp;{{$t("group.maxtime")}}  : &nbsp;</i-col>
                     <i-col span="8">
-                        <input-number :max="3600" :min="30" :step="30" v-model="maxtime" style="width: 210px;"></input-number>&nbsp;秒
+                        <input-number :max="3600" :min="30" :step="30" v-model="maxtime" style="width: 210px;"></input-number>&nbsp;s
                     </i-col>
                     <i-col span="10" style="height: 100%;line-height:32px;padding-left:20px;">
                         <span>
-                            <Icon type="star"></Icon> 车辆可设置定位间隔的上限(最长间隔)
+                            <Icon type="star"></Icon> {{$t("group.maxtimeTip")}}  
                         </span>
                     </i-col>
             </Row>
 
 
             <Row style="margin: 10px 0">
-                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;" :offset="2">用户数量 : &nbsp;</i-col>
+                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;" :offset="2">{{$t("group.userCount")}} : &nbsp;</i-col>
                     <i-col span="8">
                         <i-input v-model.trim.number="usercount"></i-input>
                     </i-col>
                     <i-col span="10" style="height: 100%;line-height:32px;padding-left:20px;">
                         <span>
-                            <Icon type="star"></Icon> 可包含的监控员数量
+                            <Icon type="star"></Icon> {{$t("group.userCountTip")}}
                         </span>
                     </i-col>
             </Row>
 
             <Row style="margin: 10px 0">
-                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;" :offset="2">设备数量 : &nbsp;</i-col>
+                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;" :offset="2">{{$t("group.devCount")}} : &nbsp;</i-col>
                     <i-col span="8">
                         <i-input v-model.trim.number="devicecount"></i-input>
                     </i-col>
                     <i-col span="10" style="height: 100%;line-height:32px;padding-left:20px;">
                         <span>
-                            <Icon type="star"></Icon> 可包含的车辆数量
+                            <Icon type="star"></Icon> {{$t("group.devCountTip")}}
                         </span>
                     </i-col>
             </Row>
 
             <Row style="margin: 10px 0">
                     <i-col span="6" :offset="6">
-                        <i-button style="width: 100%" @click="handleSubmit">提交</i-button>
+                        <i-button style="width: 100%" @click="handleSubmit">{{$t("bgMgr.submit")}}</i-button>
                     </i-col>
                     <i-col span="6" :offset="1">
-                        <i-button style="width: 100%" @click="resetInfo">重置</i-button>
+                        <i-button style="width: 100%" @click="resetInfo">{{$t("bgMgr.reset")}}</i-button>
                     </i-col>
             </Row>
         </div>
@@ -94,6 +94,7 @@
     <script>
         new Vue({
             el:"#addgroup",
+            i18n: utils.getI18n(),
             data:{
                 groupname:"",
                 mintime:30,
@@ -107,11 +108,11 @@
             methods:{
                 handleSubmit:function(){
                     if(this.companyid == ""){
-                        this.$Message.error("请选择所属客户!");
+                        this.$Message.error(this.$t("message.selectCustomersTip"));
                         return;
                     };
                     if(this.groupname == ""){
-                        this.$Message.error("填写分组名称!");
+                        this.$Message.error(this.$t("message.fillGroupNameTip"));
                         return;
                     };
                     var url = myUrls.addGroup();
@@ -136,7 +137,7 @@
                 },
                 doAddcallback:function(resp){
                     if(resp.status == 0){
-                        this.$Message.success("添加成功");
+                        this.$Message.success(this.$t("message.addSucc"));
                     }else{
                         this.$Message.error(resp.cause);
                     }

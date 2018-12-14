@@ -3,7 +3,7 @@
 
 <div id="queryuser">
     <div class="full">
-        <h3 class="h3-title">查询用户</h3>
+        <h3 class="h3-title">{{$t("bgMgr.queryUser")}}</h3>
         <ul>
             <li>
                 <i-select v-model="queryType">
@@ -14,7 +14,7 @@
                 <i-input v-model.trim="queryParameter"></i-input>
             </li>
             <li>
-                <i-button type="primary"  @click="handlerClickQuery">查询</i-button>
+                <i-button type="primary"  @click="handlerClickQuery">{{$t("reportForm.query")}}</i-button>
             </li>
         </ul>
         <div class="table-wraper">
@@ -28,10 +28,10 @@
     <script>
  vueInstanse = new Vue({
             el:"#queryuser",
+            i18n: utils.getI18n(),
             data:{
                 queryList:[
-                    {label:"所属公司",value:"companyname"},{label:"用户名",value:"username"},
-                    {label:"用户类型",value:"userTypeStr"},
+                    {label:vRoot.$t("user.client"),value:"companyname"},{label:vRoot.$t("user.username"),value:"username"},{label:vRoot.$t("user.userType"),value:"userTypeStr"},
                 ],
                 queryType:"username",
                 queryParameter:"",
@@ -40,41 +40,41 @@
                 currentIndex:1,
                 columns: [
                         {
-                            title:'所属公司',
+                            title:vRoot.$t("user.client"),
                             key:'companyname'
                         },
                         {
-                            title: '用户名',
+                            title: vRoot.$t("user.username"),
                             key: 'username',
                         },
                         {
-                            title: '用户类型',
+                            title: vRoot.$t("user.userType"),
                             key: 'userTypeStr'    
                         },
                         {
-                            title:'分组数量',
+                            title:vRoot.$t("user.groupCount"),
                             key:'usedGroupCount'
                         },
                         {
-                            title:'用户数量',
+                            title:vRoot.$t("group.userCount"),  
                             key:'usedUserCount'
                         },
                         {
-                            title: '设备数量',
+                            title: vRoot.$t("group.devCount"),  
                             key: 'usedDeviceCount' 
                         },
                         {
-                            title: '创建时间',
+                            title:vRoot.$t("user.createTime"),
                             key: 'createtime'
                         },
                         {
-                            title: '到期时间',
+                            title: vRoot.$t("user.deadline"),
                             key: 'overduetime'
                         },
                         {
-                            title: '操作',
+                            title: vRoot.$t("bgMgr.action"),
                             key: 'action',
-                            width: 200,
+                            width: 250,
                             render: function(h, params) {
                                 return h('div', [
                                     h('Button', {
@@ -90,12 +90,12 @@
                                                 vueInstanse.editUser(params.index);
                                             }
                                         }
-                                    }, '修改'),
+                                    }, vRoot.$t("bgMgr.edit")),
                                     
                                     h('Poptip', {
                                         props: {
                                             confirm: true,
-                                            title: '确定要删除吗?'
+                                            title: vRoot.$t("message.confirmDel")
                                         },
                                         style: {
                                             marginRight: '5px'
@@ -111,7 +111,7 @@
                                             type: 'error',
                                             size: 'small'
                                             }
-                                        },"删除") 
+                                        },vRoot.$t("bgMgr.delete")) 
                                     ])  ,
 
                                     h('Button', {
@@ -127,7 +127,7 @@
                                                  vueInstanse.resetDevicePwd(params.index);
                                             }
                                         }
-                                    }, '重置密码')
+                                    }, vRoot.$t("user.resetPwd"))
                                 ]);
                             }
                         }
@@ -183,7 +183,7 @@
 
                     utils.sendAjax(url,{usernames:[username]},function(resp){
                         if(resp.status == 0){
-                            me.$Message.success("删除成功!");
+                            me.$Message.success(me.$t("message.deleteSucc"));
                             me.recordsList.forEach(function(item,index){
                                 if(item.username == username){
                                     me.$delete(me.recordsList,index);
@@ -220,9 +220,9 @@
                     var url = myUrls.resetUserLoginPwd();  
                     utils.sendAjax(url,{username:username},function (resp) { 
                         if(resp.status === 0){
-                            me.$Message.success("密码重置为:123456");
+                            me.$Message.success(me.$t("message.resetPwdTips"));
                         }else{
-                            me.$Message.error("密码重置失败");
+                            me.$Message.error("error");
                         }
                     });
                 },

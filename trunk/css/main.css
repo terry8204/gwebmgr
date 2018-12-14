@@ -312,7 +312,7 @@ div.ivu-steps-head-inner .ivu-icon{
    
     #addcustomer>div>div{
         margin: 0 auto;
-        width: 700px;
+        width: 780px;
     }
 
    /* 添加客户css开始 */
@@ -365,7 +365,7 @@ div.ivu-steps-head-inner .ivu-icon{
     }
     #editcustomer>div>div{
         margin: 0 auto;
-        width: 700px;
+        width: 780px;
     }  
    /* 编辑客户结束 */
 
@@ -381,7 +381,7 @@ div.ivu-steps-head-inner .ivu-icon{
    
     #addgroup>div>div{
         margin: 0 auto;
-        width: 700px;
+        width: 850px;
     }
 
     #addgroup>div>h3{
@@ -504,7 +504,7 @@ div.ivu-steps-head-inner .ivu-icon{
    
     #adddevice>div>div{
         margin: 0 auto;
-        width: 700px;
+        width: 740px;
     }
 
    /* 添加设备开始 */

@@ -3,47 +3,47 @@
 
 <div id="editcustomer">
     <div class="full">
-        <h3 class="h3-title">编辑客户  <span> <i-button style="width: 100%" @click="back">返回</i-button> </span></h3>
+        <h3 class="h3-title">{{$t("customer.editCustomer")}}  <span> <i-button style="width: 100%" @click="back">{{$t("bgMgr.back")}}</i-button> </span></h3>
         <div>
             <Row style="margin: 10px 0">
-                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;"><i style="color: red;display: inline-block;">*</i>&nbsp;企业名称 : &nbsp;</i-col>
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;"><i style="color: red;display: inline-block;">*</i>&nbsp;{{$t("customer.customerName")}} : &nbsp;</i-col>
                 <i-col span="8">
                     <i-input v-model.trim="companyname"></i-input>
                 </i-col>
-                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">组织机构编号 : &nbsp;</i-col>
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">{{$t("customer.organization")}} : &nbsp;</i-col>
                 <i-col span="8">
                     <i-input v-model.trim="orgcode"></i-input>
                 </i-col>
             </Row>
 
             <Row style="margin: 10px 0">
-                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">注册日期 : &nbsp;</i-col>
+                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">{{$t("customer.registerDate")}}  : &nbsp;</i-col>
                     <i-col span="8">
                         <date-picker type="date" v-model="registerdate"></date-picker>
                     </i-col>
-                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">法人代表 : &nbsp;</i-col>
+                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">{{$t("customer.legalPerson")}} : &nbsp;</i-col>
                     <i-col span="8">
                         <i-input v-model.trim="jurdcperson"></i-input>
                     </i-col>
             </Row>
 
             <Row style="margin: 10px 0">
-                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">企业联系人 : &nbsp;</i-col>
+                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">{{$t("customer.contacts")}} : &nbsp;</i-col>
                     <i-col span="8">
                         <i-input v-model.trim="companyperson"></i-input>
                     </i-col>
-                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">企业联系电话 : &nbsp;</i-col>
+                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">{{$t("customer.contactNumber")}} : &nbsp;</i-col>
                     <i-col span="8">
                         <i-input v-model.trim.number="companyphone"></i-input>
                     </i-col>
             </Row>
 
             <Row style="margin: 10px 0">
-                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">24小时联系电话 : &nbsp;</i-col>
+                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">{{$t("customer.phoneNumber")}} : &nbsp;</i-col>
                     <i-col span="8">
                         <i-input v-model.trim.number="alldayphone"></i-input>
                     </i-col>
-                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">运营资质类别 : &nbsp;</i-col>
+                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">{{$t("customer.aptitude")}} : &nbsp;</i-col>
                     <i-col span="8">
                         <i-select v-model="type">
                             <i-option v-for="item in operationList" :value="item.value" :key="item.value">{{ item.label }}</i-option>
@@ -52,28 +52,28 @@
             </Row>
 
             <Row style="margin: 10px 0">
-                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">企业员工数量 : &nbsp;</i-col>
+                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">{{$t("customer.personNumber")}} : &nbsp;</i-col>
                     <i-col span="8">
                         <i-input v-model.trim.number="empcount"></i-input>
                     </i-col>
             </Row>
 
             <Row style="margin: 10px 0">
-                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">办公地址 : &nbsp;</i-col>
+                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">{{$t("customer.officeAddress")}} : &nbsp;</i-col>
                     <i-col span="20">
                         <i-input v-model.trim="officeaddr"></i-input>
                     </i-col>
             </Row>
 
             <Row style="margin: 10px 0">
-                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">注册地点 : &nbsp;</i-col>
+                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">{{$t("customer.registerAddress")}} : &nbsp;</i-col>
                     <i-col span="20">
                         <i-input v-model.trim="registeraddr"></i-input>
                     </i-col>
             </Row>
 
             <Row style="margin: 10px 0">
-                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">备注 : &nbsp;</i-col>
+                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">{{$t("customer.remark")}} : &nbsp;</i-col>
                     <i-col span="20">
                         <i-input v-model.trim="remark"></i-input>
                     </i-col>
@@ -81,10 +81,10 @@
 
             <Row style="margin: 10px 0">
                     <i-col span="6" :offset="6">
-                        <i-button style="width: 100%" @click="handleSubmit">提交</i-button>
+                        <i-button style="width: 100%" @click="handleSubmit">{{$t("bgMgr.submit")}}</i-button>
                     </i-col>
                     <i-col span="6" :offset="1">
-                        <i-button style="width: 100%" @click="resetInfo">重置</i-button>
+                        <i-button style="width: 100%" @click="resetInfo">{{$t("bgMgr.reset")}}</i-button>
                     </i-col>
             </Row>
         </div>
@@ -93,6 +93,7 @@
     <script>
         new Vue({
             el:"#editcustomer",
+            i18n: utils.getI18n(),
             data:{
                 companyname:"", //公司名称
                 orgcode  :"",  //机构编号
@@ -106,7 +107,7 @@
                 registeraddr:"",//注册地址
                 remark:"",      //备注
                 type:"",  // 运营级别
-                operationList:[{value:1,label: '1级资质'},{value:2,label: '2级资质'},{value:3,label: '3级资质'}]    
+                operationList:[{value:1,label: isZh ? '1级资质' : 'Level 1'},{value:2,label: isZh ? '2级资质' : 'Level 2'},{value:3,label: isZh ? '3级资质' : 'Level 3'}]
             },
             methods:{
                 handleSubmit:function(){
@@ -115,7 +116,7 @@
                         if(this.companyname !== "" ){
                             data.companyname = this.companyname;
                         }else{
-                            this.$Message.error("公司名称是必填的!");
+                            this.$Message.error(isZh ? "公司名称是必填的!" : "Company name is mandatory");
                             return ;
                         }
                         this.orgcode !== "" ? data.orgcode = this.orgcode : "" ;
@@ -136,7 +137,7 @@
                 doCallback:function(resp){
 
                     if(resp.status==0){
-                        this.$Message.success("修改成功");
+                        this.$Message.success(isZh ? "修改成功" : "Editorial success");
                     }else{
                         this.$Message.error(resp.cause);
                     }

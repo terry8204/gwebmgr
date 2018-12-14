@@ -133,18 +133,14 @@ function cmdReport (groupslist) {
         data: {
             loading: false,
             selectdDeviceList: [],
-            // isSelectAll: null,
-            // dateVal: [DateFormat.longToDateStr(Date.now(), 0), DateFormat.longToDateStr(Date.now(), 0)],
-            // total: 0,
-            // currentPageIndex: 1,
             groupslist: [],
             columns: [
-                { title: '编号', key: "index", width: 80, align: 'center', sortable: true },
-                { title: '设备名称', key: 'deviceName', sortable: true },
-                { title: '命令名称', key: 'cmdname', sortable: true },
-                { title: '发送时间', key: 'cmdtimeStr', sortable: true },
-                { title: '发送内容', key: 'cmdparams', sortable: true },
-                { title: '发送结果', key: 'result', sortable: true },
+                { title: isZh ? '编号' : 'index', key: "index", width: 90, align: 'center', sortable: true },
+                { title: isZh ? '设备名称' : 'Device Name', key: 'deviceName', sortable: true },
+                { title: isZh ? '命令名称' : 'Cmd Name', key: 'cmdname', sortable: true },
+                { title: isZh ? '发送时间' : 'Send date', key: 'cmdtimeStr', sortable: true },
+                { title: isZh ? '发送内容' : 'Content', key: 'cmdparams', sortable: true },
+                { title: isZh ? '发送结果' : 'Result', key: 'result', sortable: true },
             ],
             tableData: [],
             cmdRecords: []
@@ -163,7 +159,7 @@ function cmdReport (groupslist) {
             onClickQuery: function () {
                 var self = this;
                 if (this.isSelectAll === null) {
-                    this.$Message.error("请选择设备");
+                    this.$Message.error(this.$t("reportForm.selectDevTip"));
                     return;
                 };
                 var data = {
@@ -178,18 +174,19 @@ function cmdReport (groupslist) {
                     self.loading = false;
                     if (resp.status == 0) {
                         if (resp.cmdrecords) {
+
                             resp.cmdrecords.forEach(function (item, index) {
                                 item.index = ++index;
                                 item.cmdtimeStr = DateFormat.longToDateTimeStr(item.cmdtime, 0);
                                 item.deviceName = vstore.state.deviceInfos[item.deviceid].devicename;
-                            });
+                            })
                             self.cmdRecords = resp.cmdrecords;
                             self.total = self.cmdRecords.length;
                             self.tableData = self.cmdRecords;
                             // self.tableData = self.cmdRecords.slice(0, 10);
                             self.currentPageIndex = 1;
                         } else {
-                            self.$Message.error("没有记录");
+                            self.$Message.error(self.$t("reportForm.noRecord"));
                         }
                     } else {
                         self.$Message.error(resp.cause);
@@ -226,19 +223,19 @@ function posiReport (groupslist) {
             markerIns: null,
             lastPosiColumns: [
                 { type: 'index', width: 60, align: 'center', fixed: 'left' },
-                { title: '设备名称', key: 'devicename', width: 150, fixed: 'left' },
-                { title: '经度', key: 'fixedLon', width: 100 },
-                { title: '纬度', key: 'fixedLat', width: 100 },
-                { title: '方向', key: 'direction', width: 80 },
-                { title: '速度', key: 'speed', width: 100 },
-                { title: '时间', key: 'arrivedTimeStr', width: 160 },
-                { title: '状态', key: 'strstatus', width: 180 },
-                { title: '定位类型', key: 'positype', width: 100 },
-                { title: '地址', key: 'address', width: 430 },
+                { title: isZh ? '设备名称' : 'Device Name', key: 'devicename', width: 150, fixed: 'left' },
+                { title: isZh ? '经度' : 'Lon', key: 'fixedLon', width: 100 },
+                { title: isZh ? '纬度' : 'Lat', key: 'fixedLat', width: 100 },
+                { title: isZh ? '方向' : 'Direction', key: 'direction', width: 90 },
+                { title: isZh ? '速度' : 'Speed', key: 'speed', width: 100 },
+                { title: isZh ? '时间' : 'Date', key: 'arrivedTimeStr', width: 160 },
+                { title: isZh ? '状态' : 'Status', key: 'strstatus', width: 180 },
+                { title: isZh ? '定位类型' : 'Position Type', key: 'positype', width: 115 },
+                { title: isZh ? '地址' : 'Address', key: 'address', width: 395 },
                 {
-                    title: '操作',
+                    title: isZh ? '操作' : 'Action',
                     key: 'action',
-                    width: 180,
+                    width: 190,
                     fixed: 'right',
                     render: function (h, params) {
                         return h('div', [
@@ -260,7 +257,7 @@ function posiReport (groupslist) {
                                         });
                                     }
                                 }
-                            }, '位置明细'),
+                            }, isZh ? '位置明细' : 'Details'),
                             h('Button', {
                                 props: {
                                     type: 'primary',
@@ -275,25 +272,25 @@ function posiReport (groupslist) {
                                         vueInstanse.getAddress(0, params);
                                     }
                                 }
-                            }, '获取地址')
+                            }, isZh ? '获取地址' : 'Get Address')
                         ]);
                     }
                 }
             ],
             posiDetailColumns: [
                 { type: 'index', width: 60, align: 'center' },
-                { title: '经度', key: 'fixedLon', width: 100 },
-                { title: '纬度', key: 'fixedLat', width: 100 },
-                { title: '方向', key: 'direction', width: 80 },
-                { title: '速度', key: 'speed', width: 100 },
-                { title: '时间', key: 'arrivedTimeStr', width: 160, sortable: true },
-                { title: '状态', key: 'strstatus', width: 180, },
-                { title: '定位类型', key: 'positype', width: 100 },
-                { title: '地址', key: 'address' },
+                { title: isZh ? '经度' : 'Lon', key: 'fixedLon', width: 100 },
+                { title: isZh ? '纬度' : 'Lat', key: 'fixedLat', width: 100 },
+                { title: isZh ? '方向' : 'Direction', key: 'direction', width: 90 },
+                { title: isZh ? '速度' : 'Speed', key: 'speed', width: 100 },
+                { title: isZh ? '时间' : 'Date', key: 'arrivedTimeStr', width: 160, sortable: true },
+                { title: isZh ? '状态' : 'Status', key: 'strstatus', width: 180, },
+                { title: isZh ? '定位类型' : 'Position Type', key: 'positype', width: 115 },
+                { title: isZh ? '地址' : 'Address', key: 'address' },
                 {
-                    title: '操作',
+                    title: isZh ? '操作' : 'Action',
                     key: 'action',
-                    width: 180,
+                    width: 210,
                     render: function (h, params) {
                         return h('div', [
                             h('Button', {
@@ -336,7 +333,7 @@ function posiReport (groupslist) {
                                         }
                                     }
                                 }
-                            }, '查看位置'),
+                            }, isZh ? '查看位置' : 'See position'),
                             h('Button', {
                                 props: {
                                     type: 'primary',
@@ -348,7 +345,7 @@ function posiReport (groupslist) {
                                         vueInstanse.getAddress(1, params);
                                     }
                                 }
-                            }, '获取地址')
+                            }, isZh ? '获取地址' : 'Get Address')
                         ]);
                     }
                 }
@@ -370,7 +367,7 @@ function posiReport (groupslist) {
                         me.loading = false;
                     });
                 } else {
-                    this.$Message.error("请选择设备");
+                    this.$Message.error(this.$t("reportForm.selectDevTip"));
                 }
             },
             getLastPosition: function (deviceIds, callback) {
@@ -398,7 +395,7 @@ function posiReport (groupslist) {
                                     newCored.push(item);
                                     item.positype = utils.getPosiType(item);
                                     item.direction = utils.getCarDirection(item.course);
-                                    item.speed = item.speed == 0 ? item.speed : (item.speed / 1000).toFixed(2) + "公里";
+                                    item.speed = item.speed == 0 ? item.speed : (item.speed / 1000).toFixed(2) + "h/km";
                                 }
 
                             });
@@ -407,8 +404,8 @@ function posiReport (groupslist) {
 
                         }
                     } else if (resp.status == 3) {
-                        me.$Message.error('请重新登录,2秒后自动跳转登录页面')
-                        Cookies.remove('token')
+                        me.$Message.error(me.$t("monitor.reLogin"));
+                        Cookies.remove('token');
                         setTimeout(function () {
                             window.location.href = 'index.html';
                         }, 2000);
@@ -453,7 +450,7 @@ function posiReport (groupslist) {
                                     address: address ? address : '',
                                     disabled: address ? true : false,
                                     direction: item.direction = utils.getCarDirection(item.course),
-                                    speed: item.speed == 0 ? item.speed : (item.speed / 1000).toFixed(2) + "公里"
+                                    speed: item.speed == 0 ? item.speed : (item.speed / 1000).toFixed(2) + "h/km"
                                 })
                             });
                             me.posiDetailData = newArr;
@@ -572,36 +569,36 @@ function allAlarm (groupslist) {
             alarmColumns: [
                 { type: 'index', width: 60, align: 'center' },
                 {
-                    title: '设备名称',
+                    title: isZh ? '设备名称' : 'Device Name',
                     key: 'devicename',
                     width: 120,
                 },
                 {
-                    title: '开始报警时间',
+                    title: isZh ? '开始报警时间' : 'Start date',
                     key: 'startalarmtimeStr',
                     width: 160
                 },
                 {
-                    title: '最后报警时间',
+                    title: isZh ? '最后报警时间' : 'Last date',
                     key: 'lastalarmtimeStr',
                     width: 160
                 },
                 {
-                    title: '报警信息',
+                    title: isZh ? '报警信息' : 'Alarm Info',
                     key: 'stralarm',
                 },
                 {
-                    title: '报警次数',
+                    title: isZh ? '报警次数' : 'Alarm Count',
                     key: 'alarmcount',
-                    width: 100
+                    width: 110
                 },
                 {
-                    title: '是否处理',
+                    title: isZh ? '是否处理' : 'Dispose',
                     key: 'isdispose',
                     width: 100
                 },
                 {
-                    title: '处理人',
+                    title: isZh ? '处理人' : 'Person',
                     key: 'disposeperson',
                     width: 100
                 },
@@ -613,7 +610,7 @@ function allAlarm (groupslist) {
             onClickQuery: function () {
                 var self = this;
                 if (this.isSelectAll === null) {
-                    this.$Message.error("请选择设备");
+                    this.$Message.error(self.$t("reportForm.selectDevTip"));
                     return;
                 };
                 var data = {
@@ -626,12 +623,18 @@ function allAlarm (groupslist) {
                         var alarmRecords = [];
                         if (resp.alarmrecords && resp.alarmrecords.length) {
                             resp.alarmrecords.forEach(function (record) {
+                                var isdispose;
+                                if (isZh) {
+                                    isdispose = record.disposestatus === 0 ? "未处理" : "已处理";
+                                } else {
+                                    isdispose = record.disposestatus === 0 ? "Untreated" : "Handled";
+                                };
                                 alarmRecords.push({
                                     devicename: vstore.state.deviceInfos[record.deviceid].devicename,
                                     alarmcount: record.alarmcount,
                                     lastalarmtimeStr: DateFormat.longToDateTimeStr(record.lastalarmtime, 0),
                                     startalarmtimeStr: DateFormat.longToDateTimeStr(record.startalarmtime, 0),
-                                    isdispose: record.disposestatus === 0 ? "未处理" : "已处理",
+                                    isdispose: isdispose,
                                     stralarm: record.stralarm,
                                     disposeperson: record.disposeperson ? record.disposeperson : '',
                                 })
@@ -739,7 +742,7 @@ var reportForm = {
                     }
 
                 } else if (resp.status == 3) {
-                    me.$Message.error('请重新登录,2秒后自动跳转登录页面');
+                    me.$Message.error(me.$t("monitor.reLogin"));
                     Cookies.remove('token');
                     setTimeout(function () {
                         window.location.href = 'index.html'

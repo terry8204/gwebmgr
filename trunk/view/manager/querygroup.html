@@ -3,7 +3,7 @@
 
 <div id="querygroup">
     <div class="full">
-        <h3 class="h3-title">查询分组</h3>
+        <h3 class="h3-title">{{$t("bgMgr.queryGroup")}}</h3>
         <ul>
             <li>
                 <i-select v-model="queryType">
@@ -14,7 +14,7 @@
                 <i-input v-model.trim="queryParameter"></i-input>
             </li>
             <li>
-                <i-button type="primary"  @click="handlerClickQuery">查询</i-button>
+                <i-button type="primary"  @click="handlerClickQuery">{{$t("reportForm.query")}}</i-button>
             </li>
         </ul>
         <div>
@@ -28,16 +28,16 @@
     <Modal v-model="selectMonitorModal" width="560" class-name="vertical-center-modal">
         <p slot="header" style="color:rgb(0, 119, 255);text-align:center;font-size: 18px">
             <Icon type="ios-add"></Icon>
-            <span>添加监控员</span>
+            <span>{{$t("group.addMonitors")}}</span>
         </p>
         <div style="text-align:center">
             <checkbox-group v-model="monitorPerson">
                 <Checkbox v-for="item in monitorPersonList" :key="item.label" :label="item.label" :value="item.value"></Checkbox>
-            </checkbox-group>
-            <div v-show="monitorPersonList.length == 0" style="color:rgb(0, 119, 255);text-align:center;padding: 10px"> 暂无监控员用户,请先添加. </div>
+            </checkbox-group>   
+            <div v-show="monitorPersonList.length == 0" style="color:rgb(0, 119, 255);text-align:center;padding: 10px"> {{$t("group.noMonitors")}}</div>
         </div>
         <div slot="footer">
-            <i-button type="primary"  @click="submitMonitor" style="width: 100%">提交</i-button>
+            <i-button type="primary"  @click="submitMonitor" style="width: 100%">{{$t("bgMgr.submit")}}</i-button>
         </div>
     </Modal>
 
@@ -45,6 +45,7 @@
         
 vueInstanse=new Vue({
             el:"#querygroup",
+            i18n: utils.getI18n(),
             data:{
                 loading:true,
                 selectMonitorModal:false,
@@ -54,7 +55,7 @@ vueInstanse=new Vue({
                 total:0,
                 currentIndex:1,
                 queryType:'groupname',
-                queryList:[{label:"分组名称",value:"groupname"}],
+                queryList:[{label:vRoot.$t("group.groupName"),value:"groupname"}],
                 queryParameter:"",
                 recordsList:[],
                 tableData:[],
@@ -71,19 +72,19 @@ vueInstanse=new Vue({
                         }
                     },
                     {
-                        title: '组名',
+                        title: vRoot.$t("group.groupName"),
                         key: 'groupname'
                     },
                     {
-                        title: '用户数量',
+                        title: vRoot.$t("group.userCount"),
                         key: 'usercount'
                     },
                     {
-                        title: '设备数量',
+                        title: vRoot.$t("group.devCount"),
                         key: 'devicecount'
                     },
                     {
-                            title: '操作',
+                            title: vRoot.$t("bgMgr.action"),
                             key: 'action',
                             width: 220,
                             render: function(h, params) {
@@ -101,12 +102,12 @@ vueInstanse=new Vue({
                                                 vueInstanse.editGroup(params.index);
                                             }
                                         }
-                                    }, '修改'),
+                                    }, vRoot.$t("bgMgr.edit")),
 
                                     h('Poptip', {
                                         props: {
                                             confirm: true,
-                                            title: '确定要删除吗?'
+                                            title: vRoot.$t("message.confirmDel")
                                         },
                                         style: {
                                             marginRight: '5px'
@@ -122,7 +123,7 @@ vueInstanse=new Vue({
                                             type: 'error',
                                             size: 'small'
                                             }
-                                        },"删除") 
+                                        },vRoot.$t("bgMgr.delete")) 
                                     ])  ,
                                     h('Button', {
                                         props: {
@@ -134,7 +135,7 @@ vueInstanse=new Vue({
                                                 vueInstanse.openSelectMonitorModal(params.index);
                                             }
                                         }
-                                    }, '选择监控员')
+                                    }, vRoot.$t("group.monitors")) 
                                 ]);
                             }
                         }
@@ -186,7 +187,7 @@ vueInstanse=new Vue({
                                 }
                             });
                             
-                            me.$Message.success("删除成功!");
+                            me.$Message.success(me.$("message.deleteSucc"));
                         }else{
                             me.$Message.error(resp.cause);
                         }
@@ -217,7 +218,7 @@ vueInstanse=new Vue({
                     };
                     utils.sendAjax(url,data,function (resp) { 
                         if(resp.status == 0){
-                            me.$Message.success("添加成功");
+                            me.$Message.success(me.$("message.addSucc"));
                             me.delGroupObj.users = [];
                             me.monitorPerson.forEach(function (item) {
                                 me.delGroupObj.users.push({username:item});

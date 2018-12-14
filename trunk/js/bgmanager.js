@@ -2,44 +2,45 @@
 var bgManager = {
     template: document.getElementById('manager-template').innerHTML,
     data: function () {
+        var me = this;
         return {
             userType: null,
             theme: 'light',
             navList: [
                 {
-                    title: '客户管理',
+                    title: me.$t("bgMgr.customerMgr"),
                     name: 'customerMar',
                     icon: 'md-contact',
                     children: [
-                        { title: '添加客户', name: 'addCustomer', icon: 'md-person-add' },
-                        { title: '查询客户', name: 'queryCustomer', icon: 'md-search' }
+                        { title: me.$t("bgMgr.addCustomer"), name: 'addCustomer', icon: 'md-person-add' },
+                        { title: me.$t("bgMgr.queryCustomer"), name: 'queryCustomer', icon: 'md-search' }
                     ]
                 },
                 {
-                    title: '分组管理',
+                    title: me.$t("bgMgr.groupMgr"),
                     name: 'groupMar',
                     icon: 'ios-albums',
                     children: [
-                        { title: '添加分组', name: 'addGroup', icon: 'ios-photos-outline' },
-                        { title: '查询分组', name: 'queryGroup', icon: 'md-search' }
+                        { title: me.$t("bgMgr.addGroup"), name: 'addGroup', icon: 'ios-photos-outline' },
+                        { title: me.$t("bgMgr.queryGroup"), name: 'queryGroup', icon: 'md-search' }
                     ]
                 },
                 {
-                    title: '用户管理',
+                    title: me.$t("bgMgr.userMgr"),
                     name: 'userMar',
                     icon: 'md-person',
                     children: [
-                        { title: '添加用户', name: 'addUser', icon: 'ios-person-add' },
-                        { title: '查询用户', name: 'queryUser', icon: 'md-search' }
+                        { title: me.$t("bgMgr.addUser"), name: 'addUser', icon: 'ios-person-add' },
+                        { title: me.$t("bgMgr.queryUser"), name: 'queryUser', icon: 'md-search' }
                     ]
                 },
                 {
-                    title: '设备管理',
+                    title: me.$t("bgMgr.devMgr"),
                     name: 'deviceMar',
                     icon: 'md-phone-portrait',
                     children: [
-                        { title: '添加设备', name: 'addDevice', icon: 'md-add' },
-                        { title: '查询设备', name: 'queryDevice', icon: 'md-search' }
+                        { title: me.$t("bgMgr.addDev"), name: 'addDevice', icon: 'md-add' },
+                        { title: me.$t("bgMgr.queryDev"), name: 'queryDevice', icon: 'md-search' }
                     ]
                 }
             ]

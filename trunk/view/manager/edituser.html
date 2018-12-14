@@ -2,30 +2,30 @@
 
 <div id="edituser">
     <div class="full">
-        <h3 class="h3-title">编辑用户 &nbsp; <strong>{{username}}</strong> <span> <i-button style="width: 100%" @click="back">返回</i-button> </span></h3>
+        <h3 class="h3-title">{{$t("user.editUser")}} &nbsp; <strong>{{username}}</strong> <span> <i-button style="width: 100%" @click="back">{{$t("bgMgr.back")}}</i-button> </span></h3>
             <Tabs type="card">
-                    <tab-pane label="用户信息">
+                    <tab-pane :label="$t('user.userInfo')">
                         <div>
 
                             <Row style="margin: 10px 0">
-                                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">
-                                    <i style="color: red;display: inline-block;">*</i>&nbsp;用户名 : &nbsp;</i-col>
+                                <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">
+                                    <i style="color: red;display: inline-block;">*</i>&nbsp;{{$t("user.username")}} : &nbsp;</i-col>
                                 <i-col span="12">
                                     <i-input v-model.trim="username" disabled></i-input>
                                 </i-col>
                             </Row>
                         
                             <Row style="margin: 10px 0">
-                                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">
-                                    <i style="color: red;display: inline-block;">*</i>&nbsp;过期时间 : &nbsp;</i-col>
+                                <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">
+                                    <i style="color: red;display: inline-block;">*</i>&nbsp;{{$t("user.deadline")}} : &nbsp;</i-col>
                                 <i-col span="12">
                                     <date-picker type="date" v-model="overduetime" :options="dateOptions"></date-picker>
                                 </i-col>
                             </Row>
                         
                             <Row style="margin: 10px 0">
-                                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">
-                                    <i style="color: red;display: inline-block;">*</i>&nbsp;用户类型 : &nbsp;</i-col>
+                                <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">
+                                    <i style="color: red;display: inline-block;">*</i>&nbsp;{{$t("user.userType")}} : &nbsp;</i-col>
                                 <i-col span="12">
                                     <i-select v-model="usertype">
                                         <i-option v-for="item in userTypeList" :value="item.type" :key="item.type">{{ item.name }}</i-option>
@@ -34,8 +34,8 @@
                             </Row>
                         
                             <Row style="margin: 10px 0">
-                                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">
-                                    <i style="color: red;display: inline-block;">*</i>&nbsp;所属客户 : &nbsp;</i-col>
+                                <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">
+                                    <i style="color: red;display: inline-block;">*</i>&nbsp;{{$t("user.client")}} : &nbsp;</i-col>
                                 <i-col span="12">
                                     <i-select v-model="companyid">
                                         <i-option v-for="item in companyList" :value="item.value" :key="item.value">{{ item.label }}</i-option>
@@ -44,7 +44,7 @@
                             </Row>
                         
                             <Row style="margin: 10px 0" v-show="isShowGroup">
-                                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">所属分组 : &nbsp;</i-col>
+                                <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t("user.grouping")}} : &nbsp;</i-col>
                                 <i-col span="12">
                                     <i-select v-model="groupids" multiple>
                                         <i-option v-for="item in groupList" :value="item.value" :key="item.value">{{ item.label }}</i-option>
@@ -53,47 +53,47 @@
                             </Row>
                         
                             <Row style="margin: 10px 0">
-                                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">同时登录 : &nbsp;</i-col>
+                                <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t("user.simultaneousLogin")}}  : &nbsp;</i-col>
                                 <i-col span="12">
                                     <i-select v-model="singleLogin">
-                                        <i-option value="0">允许</i-option>
-                                        <i-option value="1">禁止</i-option>
+                                        <i-option value="0">{{$t("user.allow")}}</i-option>
+                                        <i-option value="1">{{$t("user.ban")}}</i-option>
                                     </i-select>
                                 </i-col>
                             </Row>
                             <Row style="margin: 10px 0">
-                                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">手机登录 : &nbsp;</i-col>
+                                <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t("user.phoneLogin")}}  : &nbsp;</i-col>
                                 <i-col span="12">
                                     <i-select v-model="phoneLogin">
-                                        <i-option value="0">允许</i-option>
-                                        <i-option value="1">禁止</i-option>
+                                        <i-option value="0">{{$t("user.allow")}}</i-option>
+                                        <i-option value="1">{{$t("user.ban")}}</i-option>
                                     </i-select>
                                 </i-col>
                             </Row>
                             <Row style="margin: 10px 0">
-                                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">微信登录 : &nbsp;</i-col>
+                                <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t("user.wxLogin")}} : &nbsp;</i-col>
                                 <i-col span="12">
                                     <i-select v-model="weixinLogin">
-                                        <i-option value="0">允许</i-option>
-                                        <i-option value="1">禁止</i-option>
+                                        <i-option value="0">{{$t("user.allow")}}</i-option>
+                                        <i-option value="1">{{$t("user.ban")}}</i-option>
                                     </i-select>
                                 </i-col>
                             </Row>
                             <Row style="margin: 10px 0" v-show="!isShowGroup">
                                 <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">
-                                    <i style="color: red;display: inline-block;">*</i>&nbsp;分组数量 : &nbsp;</i-col>
+                                    <i style="color: red;display: inline-block;">*</i>&nbsp;{{$t("user.groupCount")}} : &nbsp;</i-col>
                                 <i-col span="3">
                                     <input-number :max="20" :min="1" v-model="groupcount"></input-number>
                                 </i-col>
                         
-                                <i-col span="3" style="height: 100%;text-align:right;line-height:32px;">
-                                    <i style="color: red;display: inline-block;">*</i>&nbsp;用户数量 : &nbsp;</i-col>
+                                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">
+                                    <i style="color: red;display: inline-block;">*</i>&nbsp;{{$t("group.userCount")}} : &nbsp;</i-col>
                                 <i-col span="3">
                                     <input-number :max="100" :min="10" v-model="usercount"></input-number>
                                 </i-col>
                         
-                                <i-col span="3" style="height: 100%;text-align:right;line-height:32px;">
-                                    <i style="color: red;display: inline-block;">*</i>&nbsp;设备数量 : &nbsp;</i-col>
+                                <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">
+                                    <i style="color: red;display: inline-block;">*</i>&nbsp;{{$t("group.devCount")}} : &nbsp;</i-col>
                                 <i-col span="3">
                                     <input-number :max="500" :min="10" v-model="devicecount"></input-number>
                                 </i-col>
@@ -102,13 +102,13 @@
                         
                             <Row style="margin: 10px 0">
                                 <i-col span="12" :offset="4">
-                                    <i-button style="width:100%" @click="handleSubmit">提交</i-button>
+                                    <i-button style="width:100%" @click="handleSubmit">{{$t("bgMgr.submit")}}</i-button>
                                 </i-col>
                             </Row>
                         </div>
                         
                     </tab-pane>
-                    <tab-pane label="设备权限" :disabled="isDisabled">
+                    <tab-pane :label="$t('user.userAuthority')" :disabled="isDisabled">
                         <div style="width: 100%;height: 400px">
                             <div style="width: 250px;height: 400px;float: left;border: 1px solid #DCDEE2;overflow-y: auto;">
                                 <Tree :data="treeData" show-checkbox @on-select-change="handleClickChildren"></Tree> 
@@ -117,7 +117,7 @@
                                 <div style="margin-top:50px">
                                     <Row style="margin: 10px 0">
                                         <i-col span="6" style="height: 100%;text-align:right;line-height:32px;">
-                                                &nbsp;车机类型&nbsp;:&nbsp;
+                                                &nbsp;{{$t("user.devType")}}&nbsp;:&nbsp;
                                         </i-col>
                                         <i-col span="12" style="height: 100%;line-height:32px;">
                                                 &nbsp;{{editTypeName}}
@@ -125,7 +125,7 @@
                                     </Row>
                                     <Row style="margin: 10px 0">
                                         <i-col span="6" style="height: 100%;text-align:right;line-height:32px;">
-                                                &nbsp;命令名称&nbsp;:&nbsp;
+                                                &nbsp;{{$t("user.cmdName")}}&nbsp;:&nbsp;
                                         </i-col>
                                         <i-col span="12" style="height: 100%;line-height:32px;">
                                                 &nbsp;{{editDirectiveName}}
@@ -133,7 +133,7 @@
                                     </Row>
                                     <Row style="margin: 10px 0" v-show="!isEditDirectivePwd">
                                         <i-col span="6" style="height: 100%;text-align:right;line-height:32px;">
-                                                &nbsp;命令密码&nbsp;:&nbsp;
+                                                &nbsp;{{$t("user.cmdPwd")}}&nbsp;:&nbsp;
                                         </i-col>
                                         <i-col span="12">
                                             <i-input v-model.trim="directivepwd"></i-input>
@@ -141,7 +141,7 @@
                                     </Row>
                                     <Row style="margin: 10px 0" v-show="!isEditDirectivePwd">
                                         <i-col span="8" :offset="8">
-                                            <i-button style="width:100%" @click="handleEditDirevtivePwd">修改</i-button>
+                                            <i-button style="width:100%" @click="handleEditDirevtivePwd">{{$t("bgMgr.edit")}}</i-button>
                                         </i-col>
                                     </Row>
                                 </div>
@@ -149,7 +149,7 @@
                         </div>
                         <Row style="margin: 10px 0">
                             <i-col span="8" :offset="8">
-                                <i-button style="width:100%" @click="submitDeviceAuthority">保存</i-button>
+                                <i-button style="width:100%" @click="submitDeviceAuthority">{{$t("user.save")}}</i-button>
                             </i-col>
                         </Row>
                     </tab-pane>
@@ -160,6 +160,7 @@
     <script>
         new Vue({
             el:"#edituser",
+            i18n: utils.getI18n(),
             data:{
                 username:"",
                 overduetime:"",
@@ -184,7 +185,7 @@
                 isDisabled:false,
                 treeData:[
                     {
-                        title: '所有设备',
+                        title: vRoot.$t("user.allDev"),
                         expand: true,
                         selected: false,
                         children: []
@@ -231,7 +232,7 @@
                     return result;
                 },
                 handleEditDirevtivePwd:function(){
-                    if( this.directivepwd.length > 6){ this.$Message.error("密码小于6位") ;return; };
+                    if( this.directivepwd.length > 6){ this.$Message.error(this.$t("message.pwdRule")) ;return; };
                     var me = this;
                     var url = myUrls.editUserDeviceCmdPwd();
                     var data = {
@@ -243,7 +244,7 @@
 
                     utils.sendAjax(url,data,function (resp) { 
                         if(resp.status == 0){
-                            me.$Message.success("修改密码成功");
+                            me.$Message.success(me.$t("message.changeSucc"));
                             me.directiveInfo.cmdpwd = data.cmdpwd;
                         }else{
                             me.$Message.error(resp.cause);
@@ -310,7 +311,7 @@
                     var url = myUrls.editUser();
                     var userType = this.usertype;
                     if(this.overduetime == ""){
-                        this.$Message.error("请选择时间!");
+                        this.$Message.error(this.$t("reportForm.selectTime"));
                         return;
                     }
                     var data ={
@@ -323,7 +324,7 @@
                     for(var key in data){
                         if(data.hasOwnProperty(key)){
                             if(data[key] == "" || data[key] == NaN ){
-                                this.$Message.error("请填写完整!");   
+                                this.$Message.error(this.$t("message.fullComplete"));   
                                 return;
                             }
                         };
@@ -339,9 +340,9 @@
 
                     utils.sendAjax(url,data,function (resp) {
                         if(resp.status == 0){
-                            me.$Message.success("修改成功");
+                            me.$Message.success(me.$t("message.changeSucc"));
                         }else{
-                            me.$Message.error("修改失败");
+                            me.$Message.error(me.$t("message.changeFail"));
                         }
                     });
                 },
@@ -369,8 +370,7 @@
                     var me = this;
                     var url = myUrls.queryAllDeviceCmdByUser();
  
-                    utils.sendAjax(url,{username:this.username},function (resp) { 
-
+                    utils.sendAjax(url,{username:this.username},function (resp) {
                         if(resp.status == 0 ){
                             me.directiveList = resp.records;
                             me.queryAllDeviceTypeByUser();
@@ -419,7 +419,7 @@
                     console.log('data', data);
                     utils.sendAjax(url,data,function (resp) { 
                         if(resp.status == 0){
-                            me.$Message.success("修改成功")
+                            me.$Message.success(me.$t("message.changeSucc"));
                         }else{
                             me.$Message.error(resp.cause);
                         }
@@ -464,10 +464,10 @@
                                 me.usertype = editObject.usertype; 
                                 // me.userTypeList.forEach(function (item) { 
                                 //     console.log(item.type , me.usertype , me.usertype == item.type);
-                                // })
+                                // });
                             });
                         }else{
-                            me.$Message.error("请求错误");
+                            me.$Message.error("error");
                         }    
                     });
                 }
