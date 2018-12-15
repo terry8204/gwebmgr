@@ -352,7 +352,7 @@ function refreshPostion (deviceid) {
     utils.getBaiduAddressFromBaidu(b_lon_lat[0], b_lon_lat[1], function (b_address) {
       if (b_address) {
         console.log('b_address', b_address);
-        $("p.last-address").html("详细地址: " + b_address);
+        $("p.last-address").html((isZh ? "详细地址: " : "Address: ") + b_address);
         LocalCacheMgr.setAddress(lon, lat, b_address);
       };
     })
@@ -361,7 +361,7 @@ function refreshPostion (deviceid) {
     utils.getGoogleAddressSyn(g_lon_lat[1], g_lon_lat[0], function (g_address) {
       if (g_address) {
         console.log('g_address', g_address);
-        $("p.last-address").html("详细地址: " + g_address);
+        $("p.last-address").html((isZh ? "详细地址: " : "Address: ") + g_address);
         LocalCacheMgr.setAddress(lon, lat, g_address);
       }
     });
@@ -399,7 +399,7 @@ function openSim (deviceId) {
       var url = 'sim.html?sim=' + sim + '&type=' + type;
       window.open(url);
     } else {
-      vRoot.$Message.error("请设置设备手机号");
+      vRoot.$Message.error(isZh ? "请设置设备手机号" : "Please set the mobile phone number of the device.");
     };
   })
 

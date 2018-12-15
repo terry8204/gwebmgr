@@ -135,12 +135,12 @@ function cmdReport (groupslist) {
             selectdDeviceList: [],
             groupslist: [],
             columns: [
-                { title: isZh ? '编号' : 'index', key: "index", width: 90, align: 'center', sortable: true },
-                { title: isZh ? '设备名称' : 'Device Name', key: 'deviceName', sortable: true },
-                { title: isZh ? '命令名称' : 'Cmd Name', key: 'cmdname', sortable: true },
-                { title: isZh ? '发送时间' : 'Send date', key: 'cmdtimeStr', sortable: true },
-                { title: isZh ? '发送内容' : 'Content', key: 'cmdparams', sortable: true },
-                { title: isZh ? '发送结果' : 'Result', key: 'result', sortable: true },
+                { title: vRoot.$t("reportForm.index"), key: "index", width: 90, align: 'center', sortable: true },
+                { title: vRoot.$t("alarm.devName"), key: 'deviceName', sortable: true },
+                { title: vRoot.$t("user.cmdName"), key: 'cmdname', sortable: true },
+                { title: vRoot.$t("reportForm.sendDate"), key: 'cmdtimeStr', sortable: true },
+                { title: vRoot.$t("reportForm.content"), key: 'cmdparams', sortable: true },
+                { title: vRoot.$t("reportForm.sendResult"), key: 'result', sortable: true },
             ],
             tableData: [],
             cmdRecords: []
@@ -223,17 +223,17 @@ function posiReport (groupslist) {
             markerIns: null,
             lastPosiColumns: [
                 { type: 'index', width: 60, align: 'center', fixed: 'left' },
-                { title: isZh ? '设备名称' : 'Device Name', key: 'devicename', width: 150, fixed: 'left' },
-                { title: isZh ? '经度' : 'Lon', key: 'fixedLon', width: 100 },
-                { title: isZh ? '纬度' : 'Lat', key: 'fixedLat', width: 100 },
-                { title: isZh ? '方向' : 'Direction', key: 'direction', width: 90 },
-                { title: isZh ? '速度' : 'Speed', key: 'speed', width: 100 },
-                { title: isZh ? '时间' : 'Date', key: 'arrivedTimeStr', width: 160 },
-                { title: isZh ? '状态' : 'Status', key: 'strstatus', width: 180 },
-                { title: isZh ? '定位类型' : 'Position Type', key: 'positype', width: 115 },
-                { title: isZh ? '地址' : 'Address', key: 'address', width: 395 },
+                { title: vRoot.$t("alarm.devName"), key: 'devicename', width: 150, fixed: 'left' },
+                { title: vRoot.$t("reportForm.lon"), key: 'fixedLon', width: 100 },
+                { title: vRoot.$t("reportForm.lat"), key: 'fixedLat', width: 100 },
+                { title: vRoot.$t("reportForm.direction"), key: 'direction', width: 90 },
+                { title: vRoot.$t("reportForm.speed"), key: 'speed', width: 100 },
+                { title: vRoot.$t("reportForm.date"), key: 'arrivedTimeStr', width: 160 },
+                { title: vRoot.$t("reportForm.status"), key: 'strstatus', width: 180 },
+                { title: vRoot.$t("reportForm.posiType"), key: 'positype', width: 115 },
+                { title: vRoot.$t("reportForm.address"), key: 'address', width: 395 },
                 {
-                    title: isZh ? '操作' : 'Action',
+                    title: vRoot.$t("bgMgr.action"),
                     key: 'action',
                     width: 190,
                     fixed: 'right',
@@ -257,7 +257,7 @@ function posiReport (groupslist) {
                                         });
                                     }
                                 }
-                            }, isZh ? '位置明细' : 'Details'),
+                            }, vRoot.$t("reportForm.AddressDetails")),
                             h('Button', {
                                 props: {
                                     type: 'primary',
@@ -272,23 +272,23 @@ function posiReport (groupslist) {
                                         vueInstanse.getAddress(0, params);
                                     }
                                 }
-                            }, isZh ? '获取地址' : 'Get Address')
+                            }, vRoot.$t("reportForm.getAddress"))
                         ]);
                     }
                 }
             ],
             posiDetailColumns: [
                 { type: 'index', width: 60, align: 'center' },
-                { title: isZh ? '经度' : 'Lon', key: 'fixedLon', width: 100 },
-                { title: isZh ? '纬度' : 'Lat', key: 'fixedLat', width: 100 },
-                { title: isZh ? '方向' : 'Direction', key: 'direction', width: 90 },
-                { title: isZh ? '速度' : 'Speed', key: 'speed', width: 100 },
-                { title: isZh ? '时间' : 'Date', key: 'arrivedTimeStr', width: 160, sortable: true },
-                { title: isZh ? '状态' : 'Status', key: 'strstatus', width: 180, },
-                { title: isZh ? '定位类型' : 'Position Type', key: 'positype', width: 115 },
-                { title: isZh ? '地址' : 'Address', key: 'address' },
+                { title: vRoot.$t("reportForm.lon"), key: 'fixedLon', width: 100 },
+                { title: vRoot.$t("reportForm.lat"), key: 'fixedLat', width: 100 },
+                { title: vRoot.$t("reportForm.direction"), key: 'direction', width: 90 },
+                { title: vRoot.$t("reportForm.speed"), key: 'speed', width: 100 },
+                { title: vRoot.$t("reportForm.date"), key: 'arrivedTimeStr', width: 160, sortable: true },
+                { title: vRoot.$t("reportForm.status"), key: 'strstatus', width: 180, },
+                { title: vRoot.$t("reportForm.posiType"), key: 'positype', width: 115 },
+                { title: vRoot.$t("reportForm.address"), key: 'address' },
                 {
-                    title: isZh ? '操作' : 'Action',
+                    title: vRoot.$t("bgMgr.action"),
                     key: 'action',
                     width: 210,
                     render: function (h, params) {
@@ -333,7 +333,7 @@ function posiReport (groupslist) {
                                         }
                                     }
                                 }
-                            }, isZh ? '查看位置' : 'See position'),
+                            }, vRoot.$t("reportForm.seePosi")),
                             h('Button', {
                                 props: {
                                     type: 'primary',
@@ -345,7 +345,7 @@ function posiReport (groupslist) {
                                         vueInstanse.getAddress(1, params);
                                     }
                                 }
-                            }, isZh ? '获取地址' : 'Get Address')
+                            }, vRoot.$t("reportForm.getAddress"))
                         ]);
                     }
                 }
@@ -569,36 +569,36 @@ function allAlarm (groupslist) {
             alarmColumns: [
                 { type: 'index', width: 60, align: 'center' },
                 {
-                    title: isZh ? '设备名称' : 'Device Name',
+                    title: vRoot.$t("alarm.devName"),
                     key: 'devicename',
                     width: 120,
                 },
                 {
-                    title: isZh ? '开始报警时间' : 'Start date',
+                    title: vRoot.$t("reportForm.startAlarmDate"),
                     key: 'startalarmtimeStr',
                     width: 160
                 },
                 {
-                    title: isZh ? '最后报警时间' : 'Last date',
+                    title: vRoot.$t("reportForm.lastAlarmDate"),
                     key: 'lastalarmtimeStr',
                     width: 160
                 },
                 {
-                    title: isZh ? '报警信息' : 'Alarm Info',
+                    title: vRoot.$t("reportForm.alarmInfo"),
                     key: 'stralarm',
                 },
                 {
-                    title: isZh ? '报警次数' : 'Alarm Count',
+                    title: vRoot.$t("reportForm.alarmCount"),
                     key: 'alarmcount',
                     width: 110
                 },
                 {
-                    title: isZh ? '是否处理' : 'Dispose',
+                    title: vRoot.$t("reportForm.isDispose"),
                     key: 'isdispose',
                     width: 100
                 },
                 {
-                    title: isZh ? '处理人' : 'Person',
+                    title: vRoot.$t("reportForm.disposePerson"),
                     key: 'disposeperson',
                     width: 100
                 },
@@ -623,12 +623,7 @@ function allAlarm (groupslist) {
                         var alarmRecords = [];
                         if (resp.alarmrecords && resp.alarmrecords.length) {
                             resp.alarmrecords.forEach(function (record) {
-                                var isdispose;
-                                if (isZh) {
-                                    isdispose = record.disposestatus === 0 ? "未处理" : "已处理";
-                                } else {
-                                    isdispose = record.disposestatus === 0 ? "Untreated" : "Handled";
-                                };
+                                var isdispose = record.disposestatus === 0 ? self.$t("reportForm.untreated") : self.$t("reportForm.handled");
                                 alarmRecords.push({
                                     devicename: vstore.state.deviceInfos[record.deviceid].devicename,
                                     alarmcount: record.alarmcount,

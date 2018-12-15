@@ -86,7 +86,7 @@
         <Modal v-model="trackDetailModal" fullscreen>
                 <p slot="header" style="color:#f60;text-align:center">
                     <Icon type="ios-create-outline"></Icon>
-                    <span>位置明细-{{deviceName}}</span>
+                    <span>{{$t("reportForm.AddressDetails")}}-{{deviceName}}</span>
                 </p>
                 <div>
                     <i-table :columns="posiDetailColumns" :data="posiDetailData" :loading="loading" :height="posiDetailHeight"></i-table>  
@@ -97,7 +97,7 @@
                 <div class="map-modal" @click="mapModal=false"></div>
                 <div class="inner-map-wraper">
                     <div class="posi-map-title">
-                        查看位置
+                        {{$t("reportForm.seePosi")}}
                         <div class="map-close"></div>
                     </div>
                     <div id="posi-map"></div>
