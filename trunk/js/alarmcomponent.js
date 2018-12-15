@@ -426,11 +426,11 @@ var waringComponent = {
                                             on: {
                                                 click: function () {
                                                     // me.removeWaring(index);
-                                                    me.$emit('showdisposemodal', params)
+                                                    me.$emit('showdisposemodal', params);
                                                 }
                                             }
                                         },
-                                        me.$t("alarm.alarmDispose"),
+                                        me.$t("alarm.alarmDispose")
                                     )
                                 ])
                             }
