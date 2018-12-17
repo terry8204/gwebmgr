@@ -836,13 +836,12 @@ var monitor = {
                     newGroups.push(newObject[key])
                 };
             };
-            console.log('newGroups', newGroups)
+
             return newGroups;
         },
         getAllShowConpanyTreeData: function () {
-            var me = this
-            var newArray = me.getNewCompanyArr()
-
+            var me = this;
+            var newArray = me.getNewCompanyArr();
             me.groups.forEach(function (group) {
                 var companyid = group.companyid
                 var onlineCount = 0
@@ -852,7 +851,7 @@ var monitor = {
                     expand: false,
                     name: group.groupname,
                     children: []
-                }
+                };
                 group.devices.forEach(function (device, index) {
                     var isOnline = me.getIsOnline(device.deviceid)
                     var deviceObj = {

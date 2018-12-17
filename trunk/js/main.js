@@ -181,7 +181,8 @@ vstore = new Vuex.Store({
       state.currentDeviceId = deviceid;
     }
   }
-})
+});
+
 // 头部组建
 var appHeader = {
   template: document.getElementById('header-template').innerHTML,

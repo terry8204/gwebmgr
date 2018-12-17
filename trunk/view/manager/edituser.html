@@ -266,7 +266,7 @@
                         });
 
                         me.$nextTick(function () { 
-                            me.queryUserTypeByUser();
+                            me.setUserTypeByUser();
                             me.overduetime = editObject.overduetime;
                             me.companyid = editObject.company.companyid;
                         });
@@ -454,23 +454,40 @@
                         username: this.username
                     }
                 },
-                queryUserTypeByUser:function(){
-                    var me = this
-                    var url = myUrls.queryUserTypeByUser();
-                    utils.sendAjax(url,{},function (resp) { 
-                        if(resp.status == 0){
-                            me.$nextTick(function () { 
-                                me.userTypeList = resp.records;
-                                me.usertype = editObject.usertype; 
-                                // me.userTypeList.forEach(function (item) { 
-                                //     console.log(item.type , me.usertype , me.usertype == item.type);
-                                // });
-                            });
-                        }else{
-                            me.$Message.error("error");
-                        }    
-                    });
-                }
+                setUserTypeByUser:function(){
+                    var userType = vstore.state.userType;
+                    var newArray = [
+                        { "name": isZh ? "一级管理员" : 'Supervisor', "type": 1 },
+                        { "name": isZh ? "二级管理员" : 'Manager', "type": 2 },
+                        { "name": isZh ? "普通监控员" : 'Monitor', "type": 20 },
+                        { "name": isZh ? "设备" : 'Device', "type": 99 },
+                        { "name": isZh ? "体验帐号" : 'Demo', "type": 10 }
+                    ];
+                    if(userType == 1){
+                        newArray.shift();
+                    }else if(userType == 2){
+                        newArray.shift();
+                        newArray.shift();
+                    }else if(userType >10){
+                        newArray = [];
+                    }
+                    this.userTypeList = newArray;
+                    this.usertype = editObject.usertype;    
+                },
+                // queryUserTypeByUser:function(){
+                //     var me = this
+                //     var url = myUrls.queryUserTypeByUser();
+                //     utils.sendAjax(url,{},function (resp) { 
+                //         if(resp.status == 0){
+                //             me.$nextTick(function () { 
+                //                 me.userTypeList = resp.records;
+                //                 me.usertype = editObject.usertype; 
+                //             });
+                //         }else{
+                //             me.$Message.error("error");
+                //         }    
+                //     });
+                // }
             },
             watch:{
                 usertype:function(){
