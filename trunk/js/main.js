@@ -39,7 +39,7 @@ var asyncLoadJs = function (jsName, callback) {
       distancetool: getPath + 'distancetool_min.js',
       bmarkerclusterer: getPath + "markerclusterer.js",
 
-      google: "http://ditu.google.cn/maps/api/js?v=3.1&sensor=false&language=cn&key=AIzaSyAjWE3yINoltrJcma3fq73wCp04jjEo1zA",
+      google: "http://ditu.google.cn/maps/api/js?v=3.1&sensor=false&language=" + (isZh ? 'cn' : 'en') + "&key=AIzaSyAjWE3yINoltrJcma3fq73wCp04jjEo1zA",
       gmarkerclusterer: getPath + "gmarkerclusterer.js",
       markerwithlabel: getPath + "markerwithlabel.js",
     };
