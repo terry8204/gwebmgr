@@ -110,7 +110,7 @@
                 cmdRecord: "Cmd record",
                 recordForm: "Record form",
                 devBaseInfo: "Basic Information",
-                refreshAfter: "s post refresh",
+                refreshAfter: "s after refresh",
                 ranging: "Ranging",
                 tools: "Tools",
                 editDev: "Edit Device",
