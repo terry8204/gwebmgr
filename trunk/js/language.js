@@ -153,7 +153,7 @@
                 allAlarm: "All Alarm",
                 selectTime: "Selection time",
                 selectDev: "Selection Car ",
-                toDay: "To Day",
+                toDay: "Today",
                 yesterDay: "Yester day",
                 threeDays: "Nearly three days",
                 sevenDays: "Last seven days",
