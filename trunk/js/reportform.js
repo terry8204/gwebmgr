@@ -229,7 +229,7 @@ function posiReport (groupslist) {
                 { title: vRoot.$t("reportForm.direction"), key: 'direction', width: 90 },
                 { title: vRoot.$t("reportForm.speed"), key: 'speed', width: 100 },
                 { title: vRoot.$t("reportForm.date"), key: 'arrivedTimeStr', width: 160 },
-                { title: vRoot.$t("reportForm.status"), key: 'strstatus', width: 180 },
+                { title: vRoot.$t("reportForm.status"), key: isZh ? 'strstatus' : 'strstatusen', width: 180 },
                 { title: vRoot.$t("reportForm.posiType"), key: 'positype', width: 115 },
                 { title: vRoot.$t("reportForm.address"), key: 'address', width: 395 },
                 {
@@ -445,6 +445,7 @@ function posiReport (groupslist) {
                                     fixedLon: fixedLon,
                                     fixedLat: fixedLat,
                                     strstatus: item.strstatus,
+                                    strstatusen: item.strstatusen,
                                     positype: utils.getPosiType(item),
                                     address: address ? address : '',
                                     disabled: address ? true : false,

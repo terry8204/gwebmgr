@@ -218,9 +218,13 @@ var utils = {
     return type;
   },
   getWindowContent: function (track, b_address) {
-    var strstatus = track.strstatus ? track.strstatus : '';
+    var strstatus = '';
     var posiType = this.getPosiType(track);
-
+    if (isZh) {
+      track.strstatus ? track.strstatus : '';
+    } else {
+      track.strstatusen ? track.strstatusen : '';
+    }
     if (track.radius > 0) {
       var radiuDesc = null;
       if (isZh) {
