@@ -92,6 +92,9 @@
                 isOverdue: "Overdue"
             },
             monitor: {
+                devGroup: "Devices",
+                defaultGroup: "Default group",
+                defaultCustomer: "Default customer",
                 all: "All",
                 online: "Online",
                 offline: "Offline",
@@ -357,6 +360,9 @@
                 isOverdue: "是否过期"
             },
             monitor: {
+                devGroup: "设备组",
+                defaultGroup: "默认组",
+                defaultCustomer: "默认客户",
                 all: "全部",
                 online: "在线",
                 offline: "离线",

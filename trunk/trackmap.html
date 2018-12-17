@@ -118,6 +118,7 @@
     <!-- <script type="text/javascript" src="http://api.map.baidu.com/library/DistanceTool/1.2/src/DistanceTool_min.js"></script> -->
     <script>
         (function () { 
+            var isZh = utils.locale === 'zh';
             var startIcon = new BMap.Icon("./images/map/marker_qidian.png", new BMap.Size(32, 32), { imageOffset: new BMap.Size(0, 0)});
             var vm = new Vue({
                     el:"#container",
@@ -144,12 +145,17 @@
                         },
                         getLableContent:function(info){
                             var address = this.getAddress(info);
+                            var deviceIdStr =  isZh ? "设备序号" :"Device Number";
+                            var ageStr = isZh ? "角度" : "Angle";
+                            var lon_lat_str = isZh ? "经纬度" :"Lon_lat";
+                            var lastDateStr = isZh ? "最后时间" : "Last Date";
+                            var addressStr = isZh ? "详细地址" : "Address";
                             var sContent = '<div style="width:296px;">' +
-                                '<p> 设备序号: ' +info.deviceid+'</p>' +
-                                '<p> 角度: ' + utils.getAngle(info.course) +'</p>' +
-                                '<p> 经纬度: ' +info.callon.toFixed(6)+","+ info.callat.toFixed(6) +'</p>' +
-                                '<p> 最后时间: ' +DateFormat.longToDateTimeStr(info.arrivedtime,0)+'</p>' +
-                                '<p class="last-address"> 详细地址: '+address+'</p></div><div class="guiji"><span class="guiji_sanjiao"></span><span class="guiji_sanjiao_2"></span></div>';
+                                '<p> '+ deviceIdStr +': ' +info.deviceid+'</p>' +
+                                '<p> '+ ageStr +': ' + utils.getAngle(info.course) +'</p>' +
+                                '<p> '+ lon_lat_str +': ' +info.callon.toFixed(6)+","+ info.callat.toFixed(6) +'</p>' +
+                                '<p> '+ lastDateStr +': ' +DateFormat.longToDateTimeStr(info.arrivedtime,0)+'</p>' +
+                                '<p class="last-address"> '+ addressStr +': '+address+'</p></div><div class="guiji"><span class="guiji_sanjiao"></span><span class="guiji_sanjiao_2"></span></div>';
                             return sContent;
                         },
                         getAddress:function (info) {
@@ -166,22 +172,22 @@
                                 return address;
                             }
                             utils.getBaiduAddressFromBaidu(lng,lat,function (resp) {
-
+                                var addressStr = isZh ? "详细地址" : "Address";
                                 if(resp.length){
                                     address = resp;
                                     me.address = address;
-                                    $("p.last-address").html(" 详细地址: " + address);
+                                    $("p.last-address").html(addressStr + " : " + address);
                                     LocalCacheMgr.setAddress(lng,lat,address);
                                 }else{
                                     utils.getJiuHuAddressSyn(callon,callat,function (resp) {
                                             address = resp.address
                                             me.address = address;
-                                            $("p.last-address").html(" 详细地址: " + address);
+                                            $("p.last-address").html(addressStr + " : " + address);
                                             LocalCacheMgr.setAddress(lng,lat,address);
                                     });
                                 }
                             });
-                            return "地址正在解析..."
+                            return isZh  ? "地址正在解析..." : "Address is being resolved...";
                         },
                         getDirectionIcon:function(angle){
                             return new BMap.Icon("images/carstate/green_"+ angle +".gif", new BMap.Size(17, 17), { imageOffset: new BMap.Size(0, 0)}); 

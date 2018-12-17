@@ -786,8 +786,8 @@ var monitor = {
             var logintype = Cookies.get('logintype')
             if (logintype !== 'DEVICE' && this.isShowConpanyName) {
                 newArray.unshift({
-                    title: '默认客户',
-                    companyname: '默认客户',
+                    title: this.$t("monitor.defaultCustomer"),
+                    companyname: this.$t("monitor.defaultCustomer"),
                     companyid: 0,
                     children: [],
                     expand: false
@@ -796,9 +796,9 @@ var monitor = {
             if (newArray.length === 0) {
                 if (logintype == 'DEVICE') {
                     newArray.push({
-                        title: '默认客户',
+                        title: this.$t("monitor.defaultCustomer"),
                         children: [],
-                        companyname: '默认客户',
+                        companyname: this.$t("monitor.defaultCustomer"),
                         expand: false,
                         companyid: 0
                     })
@@ -807,12 +807,18 @@ var monitor = {
             return newArray
         },
         filterGroups: function (groups) {
-            var newGroups = []
-            var newObject = {}
+            var me = this;
+            var newGroups = [];
+            var newObject = {};
             groups.forEach(function (item) {
                 var groupid = item.groupid
                 var devices = item.devices
                 if (newObject[groupid] == undefined) {
+                    if (item.groupname == 'Default') {
+                        isZh ? item.groupname = me.$t("monitor.defaultGroup") : '';
+                    } else if (item.groupname == 'Device') {
+                        isZh ? item.groupname = me.$t("monitor.devGroup") : '';
+                    };
                     newObject[groupid] = {
                         groupname: item.groupname,
                         devices: [],
@@ -823,15 +829,15 @@ var monitor = {
                 newObject[groupid].devices = newObject[groupid].devices.concat(
                     devices
                 );
-            })
+            });
 
             for (var key in newObject) {
                 if (newObject.hasOwnProperty(key)) {
                     newGroups.push(newObject[key])
-                }
-            }
-
-            return newGroups
+                };
+            };
+            console.log('newGroups', newGroups)
+            return newGroups;
         },
         getAllShowConpanyTreeData: function () {
             var me = this
@@ -925,12 +931,12 @@ var monitor = {
                         onlineCount++
                     }
                     groupData.children.push(dev)
-                })
+                });
 
                 if (groupData.children.length) {
                     groupData.title +=
                         '(' + onlineCount + '/' + groupData.children.length + ')'
-                    if (groupData.title == '默认组') {
+                    if (groupData.title == '默认组' || groupData.title == 'Default') {
                         me.currentStateData.unshift(groupData)
                     } else {
                         me.currentStateData.push(groupData)
@@ -1030,7 +1036,7 @@ var monitor = {
                 })
 
                 if (groupData.children.length) {
-                    if (groupData.title == '默认组') {
+                    if (groupData.title == '默认组' || groupData.title == 'Default') {
                         if (groupData.children.length) {
                             me.currentStateData.unshift(groupData)
                         }
@@ -1133,7 +1139,7 @@ var monitor = {
                 })
 
                 if (groupData.children.length) {
-                    if (groupData.title == '默认组') {
+                    if (groupData.title == '默认组' || groupData.title == 'Default') {
                         if (groupData.children.length) {
                             me.currentStateData.unshift(groupData);
                         };
@@ -1142,7 +1148,7 @@ var monitor = {
                             me.currentStateData.push(groupData);
                         };
                     };
-                    groupData.title += '(' + groupData.children.length + ')'
+                    groupData.title += '(' + groupData.children.length + ')';
                 };
             });
         },

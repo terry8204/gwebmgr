@@ -87,7 +87,13 @@ vstore = new Vuex.Store({
     isShowCompany: isShowCompany === 'true' ? true : false,
     userType: Cookies.get('userType'),
     deviceInfos: {},
-    userTypeDescrList: null,     // 用户类型描述
+    userTypeDescrList: [
+      { "name": isZh ? "系统管理员" : 'Admin', "type": 0 },
+      { "name": isZh ? "一级管理员" : 'Supervisor', "type": 1 },
+      { "name": isZh ? "二级管理员" : 'Manager', "type": 2 },
+      { "name": isZh ? "普通监控员" : 'Monitor', "type": 20 },
+      { "name": isZh ? "设备" : 'Device', "type": 99 },
+      { "name": isZh ? "体验帐号" : 'Demo', "type": 10 }],     // 用户类型描述
     allCmdList: [],              // 所有的指令
     headerActiveName: 'monitor', // 选中的header 
     intervalTime: 10,     // 定位发送请求的timer
@@ -383,7 +389,7 @@ var vRoot = new Vue({
   },
   mounted: function () {
     this.isShowAlarm = this.userType == 0 ? false : true;
-    this.$store.dispatch('setUserTypeDescr');
+    //this.$store.dispatch('setUserTypeDescr');
     this.$store.dispatch('setAllCmdList');
 
     if (userName && this.isShowAlarm) {

@@ -56,7 +56,7 @@ var utils = {
           finaladdress += ";" + buildingAddress;
         }
         if (callback) {
-          callback(finaladdress)
+          callback(finaladdress);
         }
       }
     });
