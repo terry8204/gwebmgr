@@ -329,7 +329,6 @@ function posiReport (groupslist) {
                                             setTimeout(function () {
                                                 vueInstanse.mapInstance.panTo(latLng);
                                             }, 100);
-
                                         }
                                     }
                                 }
@@ -585,7 +584,7 @@ function allAlarm (groupslist) {
                 },
                 {
                     title: vRoot.$t("reportForm.alarmInfo"),
-                    key: 'stralarm',
+                    key: isZh ? 'stralarm' : 'stralarmen',
                 },
                 {
                     title: vRoot.$t("reportForm.alarmCount"),
@@ -631,6 +630,7 @@ function allAlarm (groupslist) {
                                     startalarmtimeStr: DateFormat.longToDateTimeStr(record.startalarmtime, 0),
                                     isdispose: isdispose,
                                     stralarm: record.stralarm,
+                                    stralarmen: record.stralarmen,
                                     disposeperson: record.disposeperson ? record.disposeperson : '',
                                 })
                             });

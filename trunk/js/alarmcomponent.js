@@ -398,7 +398,7 @@ var waringComponent = {
                         },
                         {
                             title: me.$t("alarm.alarmMsg"),
-                            key: 'stralarm',
+                            key: isZh ? 'stralarm' : 'stralarmen',
                         },
                         {
                             title: me.$t("alarm.alarmCount"),
