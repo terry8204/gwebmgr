@@ -221,9 +221,9 @@ var utils = {
     var strstatus = '';
     var posiType = this.getPosiType(track);
     if (isZh) {
-      track.strstatus ? track.strstatus : '';
+      strstatus = track.strstatus ? track.strstatus : '';
     } else {
-      track.strstatusen ? track.strstatusen : '';
+      strstatus = track.strstatusen ? track.strstatusen : '';
     }
     if (track.radius > 0) {
       var radiuDesc = null;
