@@ -1,5 +1,16 @@
 var utils = {
   locale: Cookies.get("PATH_LANG") || 'zh',
+  getMapType: function () {
+    var mapType = Cookies.get('app-map-type');
+    if (!mapType) {
+      if (this.locale === 'zh') {
+        mapType = "bMap";
+      } else {
+        mapType = "gMap";
+      }
+    };
+    return mapType;
+  },
   sendAjax: function (url, data, callback) {
     var encode = JSON.stringify(data)
     $.ajax({

@@ -2,9 +2,9 @@
 var isShowCompany = Cookies.get('isShowCompany');
 var communicate = new Vue({}); // 组件之间通信的vue实例
 var userName = Cookies.get('name');
-var mapType = Cookies.get('app-map-type');
-var isLoadBMap = false;
 var isZh = utils.locale === 'zh';
+var mapType = utils.getMapType();
+var isLoadBMap = false;
 document.title = isZh ? "位置信息服务平台" : "Location information service platform";
 var getPath = function () {
   var jsPath = document.currentScript ? document.currentScript.src : function () {
