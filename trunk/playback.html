@@ -105,52 +105,52 @@
         </div>
         <div class="controller">
             <i-row>
-                <i-col :span="4" style="text-align: center;">选择时间 : &nbsp;</i-col>
+                <i-col :span="4" style="text-align: center;">{{$t("main.selectDate")}} : &nbsp;</i-col>
                 <i-col :span="11">
                     <date-picker type="date" style="width: 100%" v-model="startTime"  :clearable="false" :editable="false"></date-picker>
                 </i-col>
                 <i-col :span="4" style="text-align: center">
-                    <i-button @click="prevDay">上一天</i-button>
+                    <i-button @click="prevDay">{{$t("main.prevDay")}}</i-button>
                 </i-col>
                 <i-col :span="4" style="text-align: center">
-                    <i-button @click="nextDay">下一天</i-button>
+                    <i-button @click="nextDay">{{$t("main.nextDay")}}</i-button>
                 </i-col>
             </i-row>
 
             <i-row>
-                <i-col :span="9" style="text-align: center">开始时间 : {{startTimeStr}} </i-col>
-                <i-col :span="9" style="text-align: center">结束时间 : {{endTimeStr}} </i-col>
+                <i-col :span="9" style="text-align: center">{{$t("main.startDate")}} : {{startTimeStr}} </i-col>
+                <i-col :span="9" style="text-align: center">{{$t("main.endDate")}} : {{endTimeStr}} </i-col>
                 <i-col :span="5" style="text-align: center">
-                    <i-button @click="sosoTracks">搜索轨迹</i-button>
+                    <i-button @click="sosoTracks">{{$t("main.queryBtn")}}</i-button>
                 </i-col>
                 <i-col :span="1">&nbsp;</i-col>
             </i-row>
 
             <div>
 
-                <i-row>
-                    <i-col :span="4" style="line-height:60px;text-align:center;"> 播放速度 : &nbsp;</i-col>
+                <i-row> 
+                    <i-col :span="4" style="line-height:60px;text-align:center;"> {{$t("main.playSpeed")}} : &nbsp;</i-col>
                     <i-col :span="18" style="height:60px; padding-top: 12px;">
                         <Slider v-model="velocity" :min="100" :max="5000" show-input :step="100"></Slider>
                     </i-col>
-                    <i-col :span="2" style="line-height:60px;text-align:center;"> 毫秒 </i-col>
+                    <i-col :span="2" style="line-height:60px;text-align:center;"> {{$t("main.msec")}} </i-col>
                 </i-row>
             </div>
 
             <i-row>
                 <i-col :span="6" :offset="3" style="padding:0 5px">
-                    <i-button style="width: 100%" @click="beginPlay">播放</i-button>
+                    <i-button style="width: 100%" @click="beginPlay">{{$t("main.play")}}</i-button>
                 </i-col>
                 <i-col :span="6" style="padding:0 5px">
-                    <i-button style="width: 100%" @click="pause">暂停</i-button>
+                    <i-button style="width: 100%" @click="pause">{{$t("main.pause")}}</i-button>
                 </i-col>
                 <i-col :span="6" style="padding:0 5px">
-                    <i-button style="width: 100%" @click="replay">重播</i-button>
+                    <i-button style="width: 100%" @click="replay">{{$t("main.replay")}}</i-button> 
                 </i-col>
             </i-row>
             <i-row>
                     <i-col :span="6" :offset="3" style="padding:0 5px">
-                        <i-button style="width: 100%" @click="prevStep">上一步</i-button>
+                        <i-button style="width: 100%" @click="prevStep">{{$t("main.prevStep")}}</i-button>
                     </i-col>
                     <i-col :span="6" style="padding:0 5px">
                         <i-button style="width: 100%" @click="pause">
@@ -160,25 +160,25 @@
                         </i-button>
                     </i-col>
                     <i-col :span="6" style="padding:0 5px">
-                        <i-button style="width: 100%" @click="nextStep">下一步</i-button>
+                        <i-button style="width: 100%" @click="nextStep">{{$t("main.nextStep")}}</i-button>
                     </i-col>
             </i-row>
         </div>
         <Modal v-model="modal" width="600">
             <p slot="header" style="color:#2D8CF0;text-align:center">
                 <Icon type="ios-hammer-outline"></Icon>
-                <span>定位详情</span>
+                <span>{{$t("main.posiDetail")}}</span>
             </p>
             <div style="">
-               <p style="margin: 10px">轨迹序号 : {{trackid}}</p>
-               <p style="margin: 10px">基站列表 : {{xList}}</p>
-               <p style="margin: 10px">WIFI列表 : {{wList}}</p>
+               <p style="margin: 10px">{{$t("main.trackId")}} : {{trackid}}</p>
+               <p style="margin: 10px">{{$t("main.jizhanList")}} : {{xList}}</p>
+               <p style="margin: 10px">{{$t("main.WIFIList")}} : {{wList}}</p>
             </div>
         </Modal>
         <Modal v-model="modal1" width="600">
             <p slot="header" style="color:#2D8CF0;text-align:center">
                 <Icon type="ios-hammer-outline"></Icon>
-                <span>定位结果</span>
+                <span>{{$t("main.result")}}</span>
             </p>
             <div style="text-align: center;">
                 <p>
@@ -190,17 +190,25 @@
     </div>
     <script src="dist/vue.min.js"></script>
     <script src="dist/iview.min.js"></script>
-    <script src="js/jquery.js"></script>
-    <script src="js/config.js"></script>
-    <script src="js/hashmap.js"></script>
-    <script src="js/localcachemgr.js"></script>
-    <script src="js/transformlatlon.js"></script>
-    <script src="js/dateformat.js"></script>
-    <script src="js/util.js"></script>
-    <script src="js/js.cookie.min.js"></script>
+    <script src="./js/jquery.js"></script>
+    <script src="./js/config.js"></script>
+    <script src="./js/vue-i18n.min.js"></script>
+    <script src="./js/hashmap.js"></script>
+    <script src="./js/localcachemgr.js"></script>
+    <script src="./js/transformlatlon.js"></script>
+    <script src="./js/dateformat.js"></script>
+    <script src="./js/util.js"></script>
+    <script src="./js/js.cookie.min.js"></script>
+    <script src="./js/en-US.js"></script>
+    <script src="./js/zh-CN.js"></script>
     <script src="http://api.map.baidu.com/api?v=3.0&ak=e7SC5rvmn2FsRNE4R1ygg44n"></script>
     <script type="text/javascript" src="http://api.map.baidu.com/library/DistanceTool/1.2/src/DistanceTool_min.js"></script>
     <script>
+        Vue.use(iview);
+        Vue.use(VueI18n);
+        var isZh = utils.locale === 'zh'; 
+        document.title = isZh ? "轨迹回放" : "Playback";
+        iview.lang(isZh ? 'zh-CN' : 'en-US');
         var currentTrack = null;
         var vm = null;
         function queryTrackDetail(deviceid){
@@ -212,12 +220,12 @@
             var url = myUrls.queryTrackDetail();
             utils.sendAjax(url,data,function (resp) { 
                 if(resp.status == 0 ){
-                    vm.xList = resp.track.x ? resp.track.x : '空';
-                    vm.wList = resp.track.w ? resp.track.x : '空';
+                    vm.xList = resp.track.x ? resp.track.x : isZh?'空':'Empty';
+                    vm.wList = resp.track.w ? resp.track.x : isZh?'空':'Empty';
                     vm.trackid = resp.track.trackid;
                     vm.modal = true;
                 }else{
-                    vm.$Message.error("请求失败");
+                    vm.$Message.error("error");
                 }
             });
         };
@@ -232,7 +240,7 @@
             var url = myUrls.refreshTrackPosition();
             utils.sendAjax(url,data,function (resp) { 
                 if(resp.status === 0){
-                    vm.$Message.success("刷新成功");
+                    vm.$Message.success(isZh?"刷新成功":"Refresh success");
                     Cookies.set(deviceid + '-' + trackid , true);
                 }else{
                     vm.modal1 = true;
@@ -240,13 +248,65 @@
                 }
                 //Cookies.set(deviceid + '-' + trackid , true);
             });
-        }
+        };
+        var messages = {
+            en: {
+                main:{
+                    selectDate:"Select Date",
+                    prevDay:"Prev Day",
+                    nextDay:"Next Day",
+                    startDate:"Start time",
+                    endDate:"End time",
+                    queryBtn:"Query",
+                    playSpeed:"Play Speed",
+                    msec:"ms",
+                    play:"Play",
+                    pause:"Pause",
+                    replay:"Replay",
+                    prevStep:"Prev step",
+                    nextStep:"Next step",
+                    empty:"Empty",
+                    refreshSuccess:"Refresh success",
+                    posiDetail:"Positon details",
+                    trackId:"Track ID",
+                    jizhanList:"Base station",
+                    WIFIList:"WIFT",
+                    result:"Position result"
+                }
+
+            },
+            zh: {
+                main:{
+                    selectDate:"选择时间",
+                    prevDay:"上一天",
+                    nextDay:"下一天",
+                    startDate:"开始时间",
+                    endDate:"结束时间",
+                    queryBtn:"查询轨迹",
+                    playSpeed:"播放速度",
+                    msec:"毫秒",
+                    play:"播放",
+                    pause:"暂停",
+                    replay:"重播",
+                    prevStep:"上一步",
+                    nextStep:"下一步",
+                    empty:"空",
+                    refreshSuccess:"刷新成功",
+                    posiDetail:"定位详情",
+                    trackId:"轨迹序号",
+                    jizhanList:"基站列表",
+                    WIFIList:"WIFT列表",
+                    result:"定位结果"
+                }
+            }
+        };
         (function () {   //utils.getAngle
             var carIcon = new BMap.Icon("images/carstate/green_0.gif", new BMap.Size(17, 17), { imageOffset: new BMap.Size(0, 0) });
             var startIcon = new BMap.Icon("./images/map/marker_qidian.png", new BMap.Size(32, 32), { imageOffset: new BMap.Size(0, 0) });
             var endIcon = new BMap.Icon("./images/map/marker_zhongdian.png", new BMap.Size(32, 32), { imageOffset: new BMap.Size(0, 0) });
                 vm = new Vue({
                 el: "#container",
+                i18n: utils.getI18n(),
                 data: {
                     map: null,
                     selectDate: null,
@@ -622,22 +682,29 @@
                         var posiType = utils.getPosiType(info);
                         var color = '#515A6E';
                         if (info.radius > 0) {
-                            var radiuDesc = ' (误差范围:' + info.radius + '米)';
+                            var radiuDesc = null;
+                            if (isZh) {
+                                radiuDesc = ' (误差范围:' + info.radius + '米)';
+                            } else {
+                                radiuDesc = ' (Error range:' + info.radius + 'm)';
+                            }
                             posiType += radiuDesc;
                         };
+
                         if(Cookies.get(this.deviceid+'-'+info.trackid)){
                             color = 'red';
                         };
+
                         var sContent = '<div style="max-width:296px;">' +
-                            '<p> 设备序号: ' + this.deviceid + '</p>' +
-                            '<p> 经纬度: ' + info.callon.toFixed(6) + "," + info.callat.toFixed(6)  + '</p>' +
-                            '<p> 定位类型: ' + posiType  + '</p>' +
-                            '<p> 方向: ' + utils.getCarDirection(info.course)+ '</p>' +
-                            '<p> 最后时间: ' + DateFormat.longToDateTimeStr(info.arrivedtime, 0) + '</p>' +
-                            '<p class="last-address"> 详细地址: ' + address + '</p>'+
+                            '<p> ' + (isZh ? '设备名称' : 'Device Name') + ': ' + this.deviceid + '</p>' +
+                            '<p> ' + (isZh ? '经纬度' : 'Longitude and latitude') + ': ' + info.callon.toFixed(6) + "," + info.callat.toFixed(6)  + '</p>' +
+                            '<p> ' + (isZh ? '定位类型' : 'Position Type') + ': ' + posiType  + '</p>' +
+                            '<p> ' + (isZh ? '方向' : 'Direction') + ': ' + utils.getCarDirection(info.course)+ '</p>' +
+                            '<p> ' + (isZh ? '最后时间' : 'Last time') + ': ' + DateFormat.longToDateTimeStr(info.arrivedtime, 0) + '</p>' +
+                            '<p class="last-address"> ' + (isZh ? '详细地址' : 'Address') + ': ' + address + '</p>'+
                             '<p>'+
-                                '<span style="margin-right:5px;" class="ivu-btn ivu-btn-default ivu-btn-small" onclick="queryTrackDetail(' + this.deviceid +')">详细信息</span>'+
-                                '<span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="refreshTrackPosition(' +this.deviceid +')" style="color:'+color+';">刷新位置</span>'+
+                                '<span style="margin-right:5px;" class="ivu-btn ivu-btn-default ivu-btn-small" onclick="queryTrackDetail(' + this.deviceid +')">' + (isZh ? '详细信息' : 'Detailed info') + '</span>'+
+                                '<span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="refreshTrackPosition(' +this.deviceid +')" style="color:'+color+';">' + (isZh ? '刷新位置' : 'Refresh position') + '</span>'+
                             '</p>'+
                             '</div>';
                         return sContent;

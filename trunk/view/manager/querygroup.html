@@ -187,7 +187,7 @@ vueInstanse=new Vue({
                                 }
                             });
                             
-                            me.$Message.success(me.$("message.deleteSucc"));
+                            me.$Message.success(me.$t("message.deleteSucc"));
                         }else{
                             me.$Message.error(resp.cause);
                         }
@@ -218,7 +218,7 @@ vueInstanse=new Vue({
                     };
                     utils.sendAjax(url,data,function (resp) { 
                         if(resp.status == 0){
-                            me.$Message.success(me.$("message.addSucc"));
+                            me.$Message.success(me.$t("message.addSucc"));
                             me.delGroupObj.users = [];
                             me.monitorPerson.forEach(function (item) {
                                 me.delGroupObj.users.push({username:item});

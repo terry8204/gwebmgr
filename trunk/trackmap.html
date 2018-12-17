@@ -119,6 +119,7 @@
     <script>
         (function () { 
             var isZh = utils.locale === 'zh';
+            document.title = isZh ? "跟踪" : "Track";
             var startIcon = new BMap.Icon("./images/map/marker_qidian.png", new BMap.Size(32, 32), { imageOffset: new BMap.Size(0, 0)});
             var vm = new Vue({
                     el:"#container",

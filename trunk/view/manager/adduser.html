@@ -338,7 +338,7 @@
                     }else{
                         var cause = resp.cause;
                         if(cause.indexOf("exists")!=-1){
-                            this.$Message.error(this.$("message.userExists"));    
+                            this.$Message.error(this.$t("message.userExists"));    
                         }else{
                             this.$Message.error(resp.cause);
                         }                      

@@ -139,7 +139,7 @@ vueInstanse = new Vue({
                 doDeleteCallback:function(resp){
                     var me = this; 
                     if(resp.status == 0){
-                        this.$Message.success(me.$("message.deleteSucc"));
+                        this.$Message.success(me.$t("message.deleteSucc"));
 
                         this.recordsList.forEach(function(item,index){
                             if(item.companyid == me.delCustomerObj.companyid){

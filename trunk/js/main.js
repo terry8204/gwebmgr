@@ -5,6 +5,7 @@ var userName = Cookies.get('name');
 var mapType = Cookies.get('app-map-type');
 var isLoadBMap = false;
 var isZh = utils.locale === 'zh';
+document.title = isZh ? "位置信息服务平台" : "Location information service platform";
 var getPath = function () {
   var jsPath = document.currentScript ? document.currentScript.src : function () {
     var js = document.scripts

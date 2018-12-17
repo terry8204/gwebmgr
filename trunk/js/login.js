@@ -103,6 +103,7 @@ new Vue({
             } else if (type == "DEVICE") {
                 this.placeholder = this.$t("login.inputDeviceNumber");
             }
+            document.title = this.$t("login.title");
         }
     },
     mounted: function () {
@@ -139,6 +140,7 @@ new Vue({
                 }
             };
             me.pwdPlaceholder = this.$t("login.inputPassword");
+            document.title = this.$t("login.title");
         });
         document.onkeyup = function (e) {
             var keyCode = e.keyCode;
