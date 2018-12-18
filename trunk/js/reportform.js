@@ -231,7 +231,7 @@ function posiReport (groupslist) {
                 { title: vRoot.$t("reportForm.date"), key: 'arrivedTimeStr', width: 160 },
                 { title: vRoot.$t("reportForm.status"), key: isZh ? 'strstatus' : 'strstatusen', width: 180 },
                 { title: vRoot.$t("reportForm.posiType"), key: 'positype', width: 115 },
-                { title: vRoot.$t("reportForm.address"), key: 'address', width: 395 },
+                { title: vRoot.$t("reportForm.address"), key: 'address', width: 410 },
                 {
                     title: vRoot.$t("bgMgr.action"),
                     key: 'action',
@@ -547,8 +547,7 @@ function posiReport (groupslist) {
             }
         },
         mounted: function () {
-            var me = this;
-            this.mapType = Cookies.get('app-map-type') ? Cookies.get('app-map-type') : 'bMap';
+            this.mapType = utils.getMapType();;
             this.initMap();
             this.groupslist = groupslist;
         }
