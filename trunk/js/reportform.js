@@ -147,15 +147,6 @@ function cmdReport (groupslist) {
         },
         mixins: [reportMixin],
         methods: {
-            onSelectdDeviceIds: function (result) {
-                if (result.isAll !== null) {
-                    this.selectdDeviceList = result.deviceids;
-                } else {
-                    this.selectdDeviceList = [];
-                }
-                console.log(result);
-                this.isSelectAll = result.isAll;
-            },
             onClickQuery: function () {
                 var self = this;
                 if (this.isSelectAll === null) {
@@ -554,6 +545,43 @@ function posiReport (groupslist) {
     })
 }
 
+function mileageReport (groupslist) {
+    new Vue({
+        el: "#mileage-report",
+        i18n: utils.getI18n(),
+        mixins: [reportMixin],
+        data: {
+            loading: false,
+            groupslist: [],
+            columns: [],
+            tableData: []
+        },
+        methods: {
+            onClickQuery: function () {
+                var me = this;
+                if (this.selectdDeviceList.length) {
+                    var url = myUrls.reportMileageSummary();
+                    var data = {
+                        // username: vstore.state.userName,
+                        startday: this.dateVal[0],
+                        endday: this.dateVal[1],
+                        offset: DateFormat.getOffset(),
+                        devices: this.selectdDeviceList
+                    };
+                    utils.sendAjax(url, data, function (resp) {
+                        console.log('resp', resp);
+                    });
+                } else {
+                    this.$Message.error(this.$t("reportForm.selectDevTip"));
+                }
+            },
+        },
+        mounted: function () {
+            this.groupslist = groupslist;
+        }
+    })
+
+}
 
 
 // 查询报警
@@ -674,6 +702,7 @@ var reportForm = {
                     children: [
                         { title: me.$t("reportForm.cmdReport"), name: 'cmdReport', icon: 'ios-pricetag-outline' },
                         { title: me.$t("reportForm.posiReport"), name: 'posiReport', icon: 'ios-pin' },
+                        { title: me.$t("reportForm.reportmileagesummary"), name: 'reportMileageSummary', icon: 'ios-bicycle' },
                     ]
                 },
                 {
@@ -711,6 +740,8 @@ var reportForm = {
                     allAlarm(groupslist);
                 } else if (page.indexOf('posireport') !== -1) {
                     posiReport(groupslist);
+                } else if (page.indexOf('reportmileagesummary') !== -1) {
+                    mileageReport(groupslist);
                 }
             });
         },

@@ -261,6 +261,10 @@ var myUrls = {
   //查询所有的报警信息
   reportAlarm: function () {
     return this.host + 'webapi?action=reportalarm&token=' + token;
+  },
+  // 查询里程报表
+  reportMileageSummary: function () {
+    return this.host + 'webapi?action=reportmileagesummary&token=' + token;
   }
 }
 
