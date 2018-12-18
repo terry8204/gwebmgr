@@ -265,6 +265,10 @@ var myUrls = {
   // 查询里程报表
   reportMileageSummary: function () {
     return this.host + 'webapi?action=reportmileagesummary&token=' + token;
+  },
+  // 里程细节
+  reportMileageDetail: function () {
+    return this.host + 'webapi?action=reportmileagedetail&token=' + token;
   }
 }
 

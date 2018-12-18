@@ -558,7 +558,7 @@ function reportMileageSummary (groupslist) {
                 { title: vRoot.$t("user.grouping"), key: 'groupName' },
                 { title: vRoot.$t("reportForm.mileage"), key: 'totalDistance' },
             ],
-            tableData: []
+            tableData: [],
         },
         methods: {
             onClickQuery: function () {
@@ -615,13 +615,99 @@ function reportMileageSummary (groupslist) {
                     }
                 };
                 return groupName;
-            }
+            },
+
         },
         mounted: function () {
             this.groupslist = groupslist;
         }
     })
 
+}
+
+function reportMileageDetail (groupslist) {
+    new Vue({
+        el: '#mileage-detail',
+        i18n: utils.getI18n(),
+        data: {
+            dateVal: [DateFormat.longToDateStr(Date.now(), 0), DateFormat.longToDateStr(Date.now(), 0)],
+            lastTableHeight: 100,
+            queryDeviceId: '',
+            deviceList: [],
+            sosoValue: '',
+
+        },
+        methods: {
+            onChange: function (value) {
+                this.dateVal = value;
+            },
+            handleSelectdDate: function (dayNumber) {
+                var dayTime = 24 * 60 * 60 * 1000;
+                if (dayNumber == 0) {
+                    this.dateVal = [DateFormat.longToDateStr(Date.now(), 0), DateFormat.longToDateStr(Date.now(), 0)];
+                } else if (dayNumber == 1) {
+                    this.dateVal = [DateFormat.longToDateStr(Date.now() - dayTime, 0), DateFormat.longToDateStr(Date.now() - dayTime, 0)];
+                } else if (dayNumber == 3) {
+                    this.dateVal = [DateFormat.longToDateStr(Date.now() - dayTime * 2, 0), DateFormat.longToDateStr(Date.now(), 0)];
+                } else if (dayNumber == 7) {
+                    this.dateVal = [DateFormat.longToDateStr(Date.now() - dayTime * 6, 0), DateFormat.longToDateStr(Date.now(), 0)];
+                }
+            },
+            calcTableHeight: function () {
+                var wHeight = window.innerHeight;
+                this.lastTableHeight = wHeight - 170;
+                this.posiDetailHeight = wHeight - 144;
+            },
+            onClickQuery: function () {
+                if (this.queryDeviceId) {
+                    var url = myUrls.reportMileageDetail();
+                    var data = {
+                        startday: this.dateVal[0],
+                        endday: this.dateVal[1],
+                        offset: DateFormat.getOffset(),
+                        deviceid: this.queryDeviceId
+                    }
+                    utils.sendAjax(url, data, function (resp) {
+                        console.log('resp', resp);
+                    })
+                } else {
+
+                }
+            },
+            getDeviceList: function (groupslist) {
+                var newArr = [];
+                groupslist.forEach(function (item) {
+                    item.children.forEach(function (device) {
+                        newArr.push({
+                            value: device.deviceid,
+                            label: device.title
+                        })
+                    });
+                })
+                return newArr;
+            },
+            onClickQueryDev: function () {
+                var val = this.sosoValue;
+                if (val) {
+                    for (var i = 0; i < this.deviceList.length; i++) {
+                        var item = this.deviceList[i];
+                        if (item.value == val || item.label == val) {
+                            this.queryDeviceId = item.value;
+                            break;
+                        }
+                    }
+                };
+            }
+        },
+        mounted: function () {
+            var me = this;
+            this.deviceList = this.getDeviceList(groupslist);
+            this.calcTableHeight();
+            window.onresize = function () {
+                me.calcTableHeight();
+            }
+        }
+    })
 }
 
 
@@ -744,6 +830,7 @@ var reportForm = {
                         { title: me.$t("reportForm.cmdReport"), name: 'cmdReport', icon: 'ios-pricetag-outline' },
                         { title: me.$t("reportForm.posiReport"), name: 'posiReport', icon: 'ios-pin' },
                         { title: me.$t("reportForm.reportmileagesummary"), name: 'reportMileageSummary', icon: 'ios-bicycle' },
+                        { title: me.$t("reportForm.reportmileagedetail"), name: 'mileageDetail', icon: 'ios-color-wand' },
                     ]
                 },
                 {
@@ -783,6 +870,8 @@ var reportForm = {
                     posiReport(groupslist);
                 } else if (page.indexOf('reportmileagesummary') !== -1) {
                     reportMileageSummary(groupslist);
+                } else if (page.indexOf('mileagedetail') !== -1) {
+                    reportMileageDetail(groupslist);
                 }
             });
         },
