@@ -544,8 +544,8 @@ function posiReport (groupslist) {
         }
     })
 }
-
-function mileageReport (groupslist) {
+// 里程总览
+function reportMileageSummary (groupslist) {
     new Vue({
         el: "#mileage-report",
         i18n: utils.getI18n(),
@@ -553,7 +553,11 @@ function mileageReport (groupslist) {
         data: {
             loading: false,
             groupslist: [],
-            columns: [],
+            columns: [
+                { title: vRoot.$t("alarm.devName"), key: 'deviceName' },
+                { title: vRoot.$t("user.grouping"), key: 'groupName' },
+                { title: vRoot.$t("reportForm.mileage"), key: 'totalDistance' },
+            ],
             tableData: []
         },
         methods: {
@@ -562,19 +566,56 @@ function mileageReport (groupslist) {
                 if (this.selectdDeviceList.length) {
                     var url = myUrls.reportMileageSummary();
                     var data = {
-                        // username: vstore.state.userName,
                         startday: this.dateVal[0],
                         endday: this.dateVal[1],
                         offset: DateFormat.getOffset(),
                         devices: this.selectdDeviceList
                     };
+                    me.loading = true;
                     utils.sendAjax(url, data, function (resp) {
-                        console.log('resp', resp);
+                        me.loading = false;
+                        if (resp.status == 0) {
+                            if (resp.records.length) {
+                                var data = me.getTableData(resp.records);
+                                me.tableData = data;
+                            } else {
+                                me.tableData = [];
+                            }
+                        } else {
+
+                            me.tableData = [];
+                        }
                     });
                 } else {
                     this.$Message.error(this.$t("reportForm.selectDevTip"));
                 }
             },
+            getTableData: function (records) {
+                var me = this;
+                var newArray = [];
+                records.forEach(function (item) {
+                    newArray.push({
+                        deviceName: vstore.state.deviceInfos[item.deviceid].devicename,
+                        groupName: me.getGroupName(item.deviceid),
+                        totalDistance: utils.getMileage(item.totaldistance)
+                    })
+                })
+                return newArray
+            },
+            getGroupName: function (deviceid) {
+                var groupName = "";
+                for (var i = 0; i < this.groupslist.length; i++) {
+                    var group = this.groupslist[i];
+                    for (var j = 0; j < group.children.length; j++) {
+                        var device = group.children[j];
+                        if (deviceid == device.deviceid) {
+                            groupName = group.title;
+                            break;
+                        }
+                    }
+                };
+                return groupName;
+            }
         },
         mounted: function () {
             this.groupslist = groupslist;
@@ -741,7 +782,7 @@ var reportForm = {
                 } else if (page.indexOf('posireport') !== -1) {
                     posiReport(groupslist);
                 } else if (page.indexOf('reportmileagesummary') !== -1) {
-                    mileageReport(groupslist);
+                    reportMileageSummary(groupslist);
                 }
             });
         },
