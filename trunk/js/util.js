@@ -274,7 +274,7 @@ var utils = {
     if (totaldistance == 0) {
       return totaldistance + 'km';
     };
-    return (totaldistance / 1000).toFixed(4) + 'km';
+    return (totaldistance * 1.0 / 1000).toFixed(3) + 'km';
   },
   getI18n: function () {
     return new VueI18n({
