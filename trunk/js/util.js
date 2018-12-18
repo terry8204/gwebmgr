@@ -253,7 +253,7 @@ var utils = {
       '<p> ' + (isZh ? '经纬度' : 'Longitude and latitude') + ': ' + track.callon.toFixed(5) + ',' + track.callat.toFixed(5) + '</p>' +
       '<p> ' + (isZh ? '最后时间' : 'Last time') + ': ' + DateFormat.longToDateTimeStr(track.arrivedtime, 0) + '</p>' +
       '<p> ' + (isZh ? '状态' : 'Status') + ': ' + strstatus + '</p>' +
-      '<p> ' + (isZh ? '总里程' : 'Mileage') + ': ' + parseInt(track.totaldistance / 1000) + 'km</p>' +
+      '<p> ' + (isZh ? '总里程' : 'Mileage') + ': ' + this.getMileage(track.totaldistance) + '</p>' +
       '<p class="last-address"> ' + (isZh ? '详细地址' : 'Address') + ': ' + b_address + '</p>' +
       '<p class="operation">' +
       '<span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="playBack(' +
@@ -269,6 +269,12 @@ var utils = {
       track.deviceid +
       ')">' + (isZh ? '设置围栏' : 'SetFence') + '</span></p>';
     return content;
+  },
+  getMileage: function (totaldistance) {
+    if (totaldistance == 0) {
+      return totaldistance + 'km';
+    };
+    return (totaldistance / 1000).toFixed(4) + 'km';
   },
   getI18n: function () {
     return new VueI18n({
