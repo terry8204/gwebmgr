@@ -760,12 +760,17 @@ function reportMileageDetail (groupslist) {
                         me.loading = false;
                         if (resp.status === 0) {
                             if (resp.records.length) {
+                                var total = 0;
                                 resp.records.forEach(function (item) {
+                                    total += item.totaldistance;
                                     item.deviceName = vstore.state.deviceInfos[me.queryDeviceId].devicename;
                                     item.mintotaldistance = utils.getMileage(item.mintotaldistance);
                                     item.maxtotaldistance = utils.getMileage(item.maxtotaldistance);
                                     item.totaldistance = utils.getMileage(item.totaldistance);
                                 });
+                                resp.records.push({
+                                    totaldistance: '合计 : ' + utils.getMileage(total),
+                                })
                                 me.tableData = resp.records;
                             } else {
                                 me.tableData = [];
