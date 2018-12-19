@@ -808,18 +808,20 @@ function parkDetails (groupslist) {
             timeoutIns: null,
             isShowMatchDev: true,
             columns: [
-                { type: 'index', width: 60, align: 'center' },
+                { type: 'index', width: 60, align: 'center', fixed: 'left' },
+                { title: vRoot.$t("alarm.devName"), key: 'deviceName', width: 160, fixed: 'left' },
                 { title: vRoot.$t("reportForm.startDate"), key: 'startDate', width: 180 },
                 { title: vRoot.$t("reportForm.endDate"), key: 'endDate', width: 180 },
                 { title: vRoot.$t("reportForm.parkDate"), key: 'parkTime', width: 160 },
                 { title: vRoot.$t("reportForm.lon"), key: 'callon', width: 100 },
                 { title: vRoot.$t("reportForm.lat"), key: 'callat', width: 100 },
-                { title: vRoot.$t("reportForm.status"), key: 'strStatus' },
-                { title: vRoot.$t("reportForm.address"), key: 'address' },
+                { title: vRoot.$t("reportForm.status"), key: 'strStatus', width: 240 },
+                { title: vRoot.$t("reportForm.address"), key: 'address', width: 350 },
                 {
                     title: vRoot.$t("bgMgr.action"),
                     key: 'action',
                     width: 130,
+                    fixed: 'right',
                     render: function (h, params) {
                         return h('Button', {
                             props: {
@@ -948,14 +950,16 @@ function parkDetails (groupslist) {
                     utils.sendAjax(url, data, function (resp) {
                         me.loading = false;
                         if (resp.status == 0) {
-                            if (resp.records.length) {
+                            if (resp.records && resp.records.length) {
                                 var newRecords = [];
+                                var deviceName = vstore.state.deviceInfos[me.queryDeviceId].devicename;
                                 resp.records.forEach(function (item) {
                                     var callon = item.callon.toFixed(5);
                                     var callat = item.callat.toFixed(5);
                                     var parkTime = me.getParkTime(item.endtime - item.starttime);
                                     var address = LocalCacheMgr.getAddress(callon, callat);
                                     newRecords.push({
+                                        deviceName: deviceName,
                                         startDate: DateFormat.longToDateTimeStr(item.starttime, 0),
                                         endDate: DateFormat.longToDateTimeStr(item.endtime, 0),
                                         parkTime: parkTime,
