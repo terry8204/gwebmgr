@@ -269,6 +269,10 @@ var myUrls = {
   // 里程细节
   reportMileageDetail: function () {
     return this.host + 'webapi?action=reportmileagedetail&token=' + token;
+  },
+  // 停留报表
+  reportParkDetail: function () {
+    return this.host + 'webapi?action=reportparkdetail&token=' + token;
   }
 }
 

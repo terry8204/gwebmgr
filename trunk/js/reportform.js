@@ -485,7 +485,7 @@ function posiReport (groupslist) {
                 var me = this;
                 var row = params.row;
                 var index = params.index;
-                this.queryAddress(row, function (address) {
+                utils.queryAddress(row, function (address) {
                     if (type === 0) {
                         me.lastPosiData[index].address = address;
                         me.lastPosiData[index].disabled = true;
@@ -494,34 +494,7 @@ function posiReport (groupslist) {
                         me.posiDetailData[index].disabled = true;
                     }
                     LocalCacheMgr.setAddress(row.fixedLon, row.fixedLat, address);
-                })
-            },
-            queryAddress: function (info, callback) {
-                if (this.mapType == 'bMap') {
-                    var b_lon_lat = wgs84tobd09(Number(info.callon), Number(info.callat));
-                    utils.getBaiduAddressFromBaidu(b_lon_lat[0], b_lon_lat[1], function (b_address) {
-                        if (b_address.length) {
-                            callback(b_address);
-                        } else {
-                            utils.getJiuHuAddressSyn(info.callon, info.callat, function (resp) {
-                                var j_address = resp.address;
-                                callback(j_address);
-                            })
-                        }
-                    });
-                } else {
-                    var g_lon_lat = wgs84togcj02(Number(info.callon), Number(info.callat));
-                    utils.getGoogleAddressSyn(g_lon_lat[1], g_lon_lat[0], function (b_address) {
-                        if (b_address.length) {
-                            callback(b_address);
-                        } else {
-                            utils.getJiuHuAddressSyn(callon, callat, function (resp) {
-                                var j_address = resp.address
-                                callback(j_address);
-                            });
-                        }
-                    });
-                }
+                });
             },
             changePage: function (index) {
                 var offset = index * 8;
@@ -538,7 +511,7 @@ function posiReport (groupslist) {
             }
         },
         mounted: function () {
-            this.mapType = utils.getMapType();;
+            this.mapType = utils.getMapType();
             this.initMap();
             this.groupslist = groupslist;
         }
@@ -624,7 +597,7 @@ function reportMileageSummary (groupslist) {
     })
 
 }
-
+// 里程详单
 function reportMileageDetail (groupslist) {
     new Vue({
         el: '#mileage-detail',
@@ -809,7 +782,6 @@ function reportMileageDetail (groupslist) {
         mounted: function () {
             var me = this;
             this.groupslist = this.getPinyin(groupslist);
-            console.log('tthis.groupslist ag', this.groupslist);
             this.calcTableHeight();
             window.onresize = function () {
                 me.calcTableHeight();
@@ -818,6 +790,249 @@ function reportMileageDetail (groupslist) {
     })
 }
 
+// 停车表报
+function parkDetails (groupslist) {
+    vueInstanse = new Vue({
+        el: '#park-details',
+        i18n: utils.getI18n(),
+        data: {
+            mapType: utils.getMapType(),
+            placeholder: vRoot.$t("monitor.placeholder"),
+            loading: false,
+            dateVal: [DateFormat.longToDateStr(Date.now(), 0), DateFormat.longToDateStr(Date.now(), 0)],
+            lastTableHeight: 100,
+            queryDeviceId: '',
+            groupslist: [],
+            filterData: [],
+            sosoValue: '',
+            timeoutIns: null,
+            isShowMatchDev: true,
+            columns: [
+                { type: 'index', width: 60, align: 'center' },
+                { title: vRoot.$t("reportForm.startDate"), key: 'startDate', width: 180 },
+                { title: vRoot.$t("reportForm.endDate"), key: 'endDate', width: 180 },
+                { title: vRoot.$t("reportForm.parkDate"), key: 'parkTime', width: 100 },
+                { title: vRoot.$t("reportForm.lon"), key: 'callon', width: 100 },
+                { title: vRoot.$t("reportForm.lat"), key: 'callat', width: 100 },
+                { title: vRoot.$t("reportForm.status"), key: 'strStatus' },
+                { title: vRoot.$t("reportForm.address"), key: 'address' },
+                {
+                    title: vRoot.$t("bgMgr.action"),
+                    key: 'action',
+                    width: 130,
+                    render: function (h, params) {
+                        return h('Button', {
+                            props: {
+                                type: 'primary',
+                                size: 'small',
+                                disabled: params.row.disabled,
+                            },
+                            on: {
+                                click: function () {
+                                    vueInstanse.getAddress(params);
+                                }
+                            }
+                        }, vRoot.$t("reportForm.getAddress"))
+                    }
+                }
+            ],
+            tableData: []
+        },
+        methods: {
+            onChange: function (value) {
+                this.dateVal = value;
+            },
+            handleSelectdDate: function (dayNumber) {
+                var dayTime = 24 * 60 * 60 * 1000;
+                if (dayNumber == 0) {
+                    this.dateVal = [DateFormat.longToDateStr(Date.now(), 0), DateFormat.longToDateStr(Date.now(), 0)];
+                } else if (dayNumber == 1) {
+                    this.dateVal = [DateFormat.longToDateStr(Date.now() - dayTime, 0), DateFormat.longToDateStr(Date.now() - dayTime, 0)];
+                } else if (dayNumber == 3) {
+                    this.dateVal = [DateFormat.longToDateStr(Date.now() - dayTime * 2, 0), DateFormat.longToDateStr(Date.now(), 0)];
+                } else if (dayNumber == 7) {
+                    this.dateVal = [DateFormat.longToDateStr(Date.now() - dayTime * 6, 0), DateFormat.longToDateStr(Date.now(), 0)];
+                }
+            },
+            calcTableHeight: function () {
+                var wHeight = window.innerHeight;
+                this.lastTableHeight = wHeight - 170;
+                this.posiDetailHeight = wHeight - 144;
+            },
+            focus: function () {
+                var me = this;
+                if (this.sosoValue.trim()) {
+                    me.sosoValueChange()
+                } else {
+                    this.filterData = this.groupslist;
+                    this.isShowMatchDev = true;
+                }
+            },
+            onClickOutside: function () {
+                this.isShowMatchDev = false;
+            },
+            sosoValueChange: function () {
+                var me = this;
+                var value = this.sosoValue;
+
+                if (this.timeoutIns != null) {
+                    clearTimeout(this.timeoutIns);
+                };
+
+                this.timeoutIns = setTimeout(function () {
+                    me.filterMethod(value);
+                }, 300);
+            },
+            filterMethod: function (value) {
+                var filterData = [];
+                this.queryDeviceId = '';
+                var firstLetter = __pinyin.getFirstLetter(value)
+                var pinyin = __pinyin.getPinyin(value)
+                for (var i = 0; i < this.groupslist.length; i++) {
+                    var group = this.groupslist[i];
+                    if (
+                        group.groupname.toUpperCase().indexOf(value.toUpperCase()) !== -1 ||
+                        group.firstLetter.indexOf(firstLetter) !== -1 ||
+                        group.pinyin.indexOf(pinyin) !== -1
+                    ) {
+                        filterData.push(group)
+                    } else {
+                        var devices = group.devices
+                        var obj = {
+                            groupname: group.groupname,
+                            devices: []
+                        }
+                        for (var j = 0; j < devices.length; j++) {
+                            var device = devices[j]
+                            var devicename = device.devicename
+                            if (
+                                devicename.toUpperCase().indexOf(value.toUpperCase()) !== -1 ||
+                                device.firstLetter.indexOf(firstLetter) !== -1 ||
+                                device.pinyin.indexOf(pinyin) !== -1
+                            ) {
+                                obj.devices.push(device)
+                            } else {
+                                if (device.remark) {
+                                    if (device.remark.indexOf(value) !== -1) {
+                                        obj.devices.push(device);
+                                    };
+                                };
+                            };
+                        }
+                        if (obj.devices.length) {
+                            filterData.push(obj);
+                        };
+                    };
+                };
+                this.filterData = filterData;
+                if (!this.isShowMatchDev) {
+                    this.isShowMatchDev = true;
+                };
+            },
+            sosoSelect: function (item) {
+                this.sosoValue = item.devicename;
+                this.queryDeviceId = item.deviceid;
+                this.isShowMatchDev = false;
+            },
+            onClickQuery: function () {
+                if (this.queryDeviceId) {
+                    var me = this;
+                    var url = myUrls.reportParkDetail();
+                    var data = {
+                        startday: this.dateVal[0],
+                        endday: this.dateVal[1],
+                        offset: DateFormat.getOffset(),
+                        deviceid: this.queryDeviceId
+                    }
+                    me.loading = true;
+                    utils.sendAjax(url, data, function (resp) {
+                        me.loading = false;
+                        if (resp.status == 0) {
+                            if (resp.records.length) {
+                                var newRecords = [];
+                                resp.records.forEach(function (item) {
+                                    var callon = item.callon.toFixed(5);
+                                    var callat = item.callat.toFixed(5);
+                                    var parkTime = me.getParkTime(item.endtime - item.starttime);
+                                    var address = LocalCacheMgr.getAddress(callon, callat);
+                                    newRecords.push({
+                                        startDate: DateFormat.longToDateTimeStr(item.starttime, 0),
+                                        endDate: DateFormat.longToDateTimeStr(item.endtime, 0),
+                                        parkTime: parkTime,
+                                        callon: callon,
+                                        callat: callat,
+                                        strStatus: isZh ? item.strstatus : item.strstatusen,
+                                        address: address,
+                                        disabled: address ? true : false
+                                    });
+                                });
+                                me.tableData = newRecords;
+                            } else {
+                                me.tableData = [];
+                            }
+                        } else {
+                            me.tableData = [];
+                        }
+                    });
+                } else {
+                    this.$Message.error(this.$t("reportForm.selectDevTip"));
+                }
+            },
+            getPinyin: function (groupslist) {
+                var newArr = [];
+
+                groupslist.forEach(function (group) {
+                    var groupObj = {
+                        firstLetter: __pinyin.getFirstLetter(group.title),
+                        pinyin: __pinyin.getPinyin(group.title),
+                        groupname: group.title,
+                        devices: []
+                    };
+                    group.children.forEach(function (device) {
+                        groupObj.devices.push({
+                            deviceid: device.deviceid,
+                            devicename: device.title,
+                            firstLetter: __pinyin.getFirstLetter(device.title),
+                            pinyin: __pinyin.getPinyin(device.title),
+                        })
+                    })
+                    newArr.push(groupObj);
+                });
+                return newArr;
+            },
+            getParkTime: function (mss) {
+                var strTime = '';
+                var days = parseInt(mss / (1000 * 60 * 60 * 24));
+                var hours = parseInt((mss % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                var minutes = parseInt((mss % (1000 * 60 * 60)) / (1000 * 60));
+                var seconds = parseInt((mss % (1000 * 60)) / 1000);
+                days ? (strTime += days + this.$t("reportForm.d")) : '';
+                hours ? (strTime += hours + this.$t("reportForm.h")) : '';
+                minutes ? (strTime += minutes + this.$t("reportForm.m")) : '';
+                seconds ? (strTime += seconds + this.$t("reportForm.s")) : '';
+                return strTime == '' ? 0 : strTime;
+            },
+            getAddress: function (params) {
+                var me = this;
+                var row = params.row;
+                var index = params.index;
+                utils.queryAddress(row, function (address) {
+                    me.tableData[index].address = address;
+                    me.tableData[index].disabled = true;
+                    LocalCacheMgr.setAddress(row.callon, row.callat, address);
+                });
+            }
+        },
+        mounted: function () {
+            var me = this;
+            this.groupslist = this.getPinyin(groupslist);
+            this.calcTableHeight();
+            window.onresize = function () {
+                me.calcTableHeight();
+            }
+        }
+    })
+}
 
 // 查询报警
 function allAlarm (groupslist) {
@@ -939,6 +1154,7 @@ var reportForm = {
                         { title: me.$t("reportForm.posiReport"), name: 'posiReport', icon: 'ios-pin' },
                         { title: me.$t("reportForm.reportmileagesummary"), name: 'reportMileageSummary', icon: 'ios-bicycle' },
                         { title: me.$t("reportForm.reportmileagedetail"), name: 'mileageDetail', icon: 'ios-color-wand' },
+                        { title: me.$t("reportForm.parkDetails"), name: 'parkDetails', icon: 'md-analytics' },
                     ]
                 },
                 {
@@ -980,6 +1196,8 @@ var reportForm = {
                     reportMileageSummary(groupslist);
                 } else if (page.indexOf('mileagedetail') !== -1) {
                     reportMileageDetail(groupslist);
+                } else if (page.indexOf('parkdetails') !== -1) {
+                    parkDetails(groupslist);
                 }
             });
         },

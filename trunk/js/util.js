@@ -281,7 +281,34 @@ var utils = {
       locale: Cookies.get("PATH_LANG") || 'zh',
       messages: messages
     });
-  }
+  },
+  queryAddress: function (info, callback) {
+    if (this.getMapType() == 'bMap') {
+      var b_lon_lat = wgs84tobd09(Number(info.callon), Number(info.callat));
+      utils.getBaiduAddressFromBaidu(b_lon_lat[0], b_lon_lat[1], function (b_address) {
+        if (b_address.length) {
+          callback(b_address);
+        } else {
+          utils.getJiuHuAddressSyn(info.callon, info.callat, function (resp) {
+            var j_address = resp.address;
+            callback(j_address);
+          })
+        }
+      });
+    } else {
+      var g_lon_lat = wgs84togcj02(Number(info.callon), Number(info.callat));
+      utils.getGoogleAddressSyn(g_lon_lat[1], g_lon_lat[0], function (b_address) {
+        if (b_address.length) {
+          callback(b_address);
+        } else {
+          utils.getJiuHuAddressSyn(callon, callat, function (resp) {
+            var j_address = resp.address
+            callback(j_address);
+          });
+        }
+      });
+    }
+  },
 }
 
 try {
