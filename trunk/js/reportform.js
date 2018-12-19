@@ -769,8 +769,8 @@ function reportMileageDetail (groupslist) {
                                     item.totaldistance = utils.getMileage(item.totaldistance);
                                 });
                                 resp.records.push({
-                                    totaldistance: '合计 : ' + utils.getMileage(total),
-                                })
+                                    totaldistance: me.$t("reportForm.total") + utils.getMileage(total),
+                                });
                                 me.tableData = resp.records;
                             } else {
                                 me.tableData = [];
