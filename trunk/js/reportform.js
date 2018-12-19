@@ -630,7 +630,7 @@ function reportMileageDetail (groupslist) {
         el: '#mileage-detail',
         i18n: utils.getI18n(),
         data: {
-            placeholder: "搜索你想要得设备",
+            placeholder: vRoot.$t("monitor.placeholder"),
             loading: false,
             dateVal: [DateFormat.longToDateStr(Date.now(), 0), DateFormat.longToDateStr(Date.now(), 0)],
             lastTableHeight: 100,

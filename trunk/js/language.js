@@ -145,8 +145,8 @@
                 devNameMust: "Device name is mandatory",
             },
             reportForm: {
-                maxMileage: "Max Mileage",
-                minMileage: "Min Mileage",
+                maxMileage: "End Mileage",
+                minMileage: "Start Mileage",
                 totalMileage: "Total Mileage",
                 index: "index",
                 date: "Date",
@@ -421,8 +421,8 @@
                 devNameMust: "设备名称是必填的",
             },
             reportForm: {
-                maxMileage: "最大里程",
-                minMileage: "最小里程",
+                maxMileage: "最终里程",
+                minMileage: "起始里程",
                 totalMileage: "总里程",
                 date: "日期",
                 index: "编号",

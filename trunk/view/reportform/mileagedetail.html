@@ -33,9 +33,9 @@
                             <div class="demo-auto-complete-group">
                                 <span>{{ item.groupname }}</span>
                             </div>
-                            <i-option v-for="option in item.devices" :value="option.groupname" :key="option.groupname">
+                            <div v-for="option in item.devices" :value="option.groupname" :key="option.groupname" class="ivu-select-item">
                                 <span @click="sosoSelect(option)" class="demo-auto-complete-title">{{ option.devicename }}</span>
-                            </i-option>
+                            </div>
                         </li>
                     </ul>
                 </transition>
