@@ -811,7 +811,7 @@ function parkDetails (groupslist) {
                 { type: 'index', width: 60, align: 'center' },
                 { title: vRoot.$t("reportForm.startDate"), key: 'startDate', width: 180 },
                 { title: vRoot.$t("reportForm.endDate"), key: 'endDate', width: 180 },
-                { title: vRoot.$t("reportForm.parkDate"), key: 'parkTime', width: 100 },
+                { title: vRoot.$t("reportForm.parkDate"), key: 'parkTime', width: 160 },
                 { title: vRoot.$t("reportForm.lon"), key: 'callon', width: 100 },
                 { title: vRoot.$t("reportForm.lat"), key: 'callat', width: 100 },
                 { title: vRoot.$t("reportForm.status"), key: 'strStatus' },
