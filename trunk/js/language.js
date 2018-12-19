@@ -421,7 +421,7 @@
                 devNameMust: "设备名称是必填的",
             },
             reportForm: {
-                maxMileage: "最终里程",
+                maxMileage: "结束里程",
                 minMileage: "起始里程",
                 totalMileage: "总里程",
                 date: "日期",
@@ -432,7 +432,7 @@
                 mileageReport: "里程报表",
                 mileage: "里程",
                 reportmileagesummary: "里程总览",
-                reportmileagedetail: "里程细节",
+                reportmileagedetail: "里程详单",
                 warningReport: "报警报表",
                 allAlarm: "全部报警",
                 selectTime: "选择时间",
