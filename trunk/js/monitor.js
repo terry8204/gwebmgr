@@ -1166,18 +1166,20 @@ var monitor = {
         },
         updateDevLastPosition: function (item) {
             var deviceid = item.deviceid;
-            var b_lon_and_b_lat = wgs84tobd09(item.callon, item.callat)
-            var g_lon_and_g_lat = wgs84togcj02(item.callon, item.callat);
-            var online = utils.getIsOnline(item);
-            item.b_lon = b_lon_and_b_lat[0];
-            item.b_lat = b_lon_and_b_lat[1];
-            item.g_lon = g_lon_and_g_lat[0];
-            item.g_lat = g_lon_and_g_lat[1];
-            item.online = online;
-            item.devicename = this.deviceInfos[deviceid].devicename;
-            item.arrivedTimeStr = DateFormat.longToDateTimeStr(item.arrivedtime, 0);
-            this.positionLastrecords[deviceid] = item;
-            this.map && this.map.updateLastTracks(this.positionLastrecords);
+            if (this.deviceInfos && this.deviceInfos[deviceid]) {
+                var b_lon_and_b_lat = wgs84tobd09(item.callon, item.callat)
+                var g_lon_and_g_lat = wgs84togcj02(item.callon, item.callat);
+                var online = utils.getIsOnline(item);
+                item.b_lon = b_lon_and_b_lat[0];
+                item.b_lat = b_lon_and_b_lat[1];
+                item.g_lon = g_lon_and_g_lat[0];
+                item.g_lat = g_lon_and_g_lat[1];
+                item.online = online;
+                item.devicename = this.deviceInfos[deviceid].devicename;
+                item.arrivedTimeStr = DateFormat.longToDateTimeStr(item.arrivedtime, 0);
+                this.positionLastrecords[deviceid] = item;
+                this.map && this.map.updateLastTracks(this.positionLastrecords);
+            }
         },
         setIntervalReqRecords: function () {
             var me = this

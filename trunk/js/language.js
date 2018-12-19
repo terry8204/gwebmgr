@@ -145,7 +145,11 @@
                 devNameMust: "Device name is mandatory",
             },
             reportForm: {
+                maxMileage: "Max Mileage",
+                minMileage: "Min Mileage",
+                totalMileage: "Total Mileage",
                 index: "index",
+                date: "Date",
                 drivingReport: "Driving Report",
                 cmdReport: "Directive Report",
                 posiReport: "Position Report",
@@ -417,6 +421,10 @@
                 devNameMust: "设备名称是必填的",
             },
             reportForm: {
+                maxMileage: "最大里程",
+                minMileage: "最小里程",
+                totalMileage: "总里程",
+                date: "日期",
                 index: "编号",
                 drivingReport: "行驶报表",
                 cmdReport: "命令报表",

@@ -630,12 +630,24 @@ function reportMileageDetail (groupslist) {
         el: '#mileage-detail',
         i18n: utils.getI18n(),
         data: {
+            placeholder: "搜索你想要得设备",
+            loading: false,
             dateVal: [DateFormat.longToDateStr(Date.now(), 0), DateFormat.longToDateStr(Date.now(), 0)],
             lastTableHeight: 100,
             queryDeviceId: '',
-            deviceList: [],
+            groupslist: [],
+            filterData: [],
             sosoValue: '',
-
+            timeoutIns: null,
+            isShowMatchDev: true,
+            columns: [
+                { title: vRoot.$t("alarm.devName"), key: 'deviceName' },
+                { title: vRoot.$t("reportForm.date"), key: 'day', sortable: true },
+                { title: vRoot.$t("reportForm.minMileage"), key: 'mintotaldistance', sortable: true },
+                { title: vRoot.$t("reportForm.maxMileage"), key: 'maxtotaldistance', sortable: true },
+                { title: vRoot.$t("reportForm.totalMileage"), key: 'totaldistance', sortable: true },
+            ],
+            tableData: []
         },
         methods: {
             onChange: function (value) {
@@ -658,8 +670,84 @@ function reportMileageDetail (groupslist) {
                 this.lastTableHeight = wHeight - 170;
                 this.posiDetailHeight = wHeight - 144;
             },
+            focus: function () {
+                var me = this;
+                if (this.sosoValue.trim()) {
+                    me.sosoValueChange()
+                } else {
+                    this.filterData = this.groupslist;
+                    this.isShowMatchDev = true;
+                }
+            },
+            onClickOutside: function () {
+                this.isShowMatchDev = false;
+            },
+            sosoValueChange: function () {
+                var me = this;
+                var value = this.sosoValue;
+
+                if (this.timeoutIns != null) {
+                    clearTimeout(this.timeoutIns);
+                };
+
+                this.timeoutIns = setTimeout(function () {
+                    me.filterMethod(value);
+                }, 300);
+            },
+            filterMethod: function (value) {
+                var filterData = [];
+                this.queryDeviceId = '';
+                var firstLetter = __pinyin.getFirstLetter(value)
+                var pinyin = __pinyin.getPinyin(value)
+                for (var i = 0; i < this.groupslist.length; i++) {
+                    var group = this.groupslist[i];
+                    if (
+                        group.groupname.toUpperCase().indexOf(value.toUpperCase()) !== -1 ||
+                        group.firstLetter.indexOf(firstLetter) !== -1 ||
+                        group.pinyin.indexOf(pinyin) !== -1
+                    ) {
+                        filterData.push(group)
+                    } else {
+                        var devices = group.devices
+                        var obj = {
+                            groupname: group.groupname,
+                            devices: []
+                        }
+                        for (var j = 0; j < devices.length; j++) {
+                            var device = devices[j]
+                            var devicename = device.devicename
+                            if (
+                                devicename.toUpperCase().indexOf(value.toUpperCase()) !== -1 ||
+                                device.firstLetter.indexOf(firstLetter) !== -1 ||
+                                device.pinyin.indexOf(pinyin) !== -1
+                            ) {
+                                obj.devices.push(device)
+                            } else {
+                                if (device.remark) {
+                                    if (device.remark.indexOf(value) !== -1) {
+                                        obj.devices.push(device);
+                                    };
+                                };
+                            };
+                        }
+                        if (obj.devices.length) {
+                            filterData.push(obj);
+                        };
+                    };
+                };
+                this.filterData = filterData;
+                if (!this.isShowMatchDev) {
+                    this.isShowMatchDev = true;
+                };
+            },
+            sosoSelect: function (item) {
+                this.sosoValue = item.devicename;
+                this.queryDeviceId = item.deviceid;
+                this.isShowMatchDev = false;
+            },
             onClickQuery: function () {
                 if (this.queryDeviceId) {
+                    var me = this;
                     var url = myUrls.reportMileageDetail();
                     var data = {
                         startday: this.dateVal[0],
@@ -667,41 +755,56 @@ function reportMileageDetail (groupslist) {
                         offset: DateFormat.getOffset(),
                         deviceid: this.queryDeviceId
                     }
+                    me.loading = true;
                     utils.sendAjax(url, data, function (resp) {
-                        console.log('resp', resp);
+                        me.loading = false;
+                        if (resp.status === 0) {
+                            if (resp.records.length) {
+                                resp.records.forEach(function (item) {
+                                    item.deviceName = vstore.state.deviceInfos[me.queryDeviceId].devicename;
+                                    item.mintotaldistance = utils.getMileage(item.mintotaldistance);
+                                    item.maxtotaldistance = utils.getMileage(item.maxtotaldistance);
+                                    item.totaldistance = utils.getMileage(item.totaldistance);
+                                });
+                                me.tableData = resp.records;
+                            } else {
+                                me.tableData = [];
+                            };
+                        } else {
+                            me.tableData = [];
+                        }
                     })
                 } else {
-
+                    this.$Message.error(this.$t("reportForm.selectDevTip"));
                 }
             },
-            getDeviceList: function (groupslist) {
+            getPinyin: function (groupslist) {
                 var newArr = [];
-                groupslist.forEach(function (item) {
-                    item.children.forEach(function (device) {
-                        newArr.push({
-                            value: device.deviceid,
-                            label: device.title
+
+                groupslist.forEach(function (group) {
+                    var groupObj = {
+                        firstLetter: __pinyin.getFirstLetter(group.title),
+                        pinyin: __pinyin.getPinyin(group.title),
+                        groupname: group.title,
+                        devices: []
+                    };
+                    group.children.forEach(function (device) {
+                        groupObj.devices.push({
+                            deviceid: device.deviceid,
+                            devicename: device.title,
+                            firstLetter: __pinyin.getFirstLetter(device.title),
+                            pinyin: __pinyin.getPinyin(device.title),
                         })
-                    });
-                })
+                    })
+                    newArr.push(groupObj);
+                });
                 return newArr;
-            },
-            onClickQueryDev: function () {
-                var val = this.sosoValue;
-                if (val) {
-                    for (var i = 0; i < this.deviceList.length; i++) {
-                        var item = this.deviceList[i];
-                        if (item.value == val || item.label == val) {
-                            this.queryDeviceId = item.value;
-                            break;
-                        }
-                    }
-                };
             }
         },
         mounted: function () {
             var me = this;
-            this.deviceList = this.getDeviceList(groupslist);
+            this.groupslist = this.getPinyin(groupslist);
+            console.log('tthis.groupslist ag', this.groupslist);
             this.calcTableHeight();
             window.onresize = function () {
                 me.calcTableHeight();
