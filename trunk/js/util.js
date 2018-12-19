@@ -23,8 +23,8 @@ var utils = {
         callback(resp);
       },
       error: function (e) {
-        Cookies.remove('token')
-        new Vue().$Loading.error()
+        Cookies.remove('token');
+        new Vue().$Loading.error();
       },
       complete: function () { }
     })
@@ -309,6 +309,34 @@ var utils = {
       });
     }
   },
+  showWindowMap: function (vueInstanse, params) {
+    vueInstanse.mapModal = true;
+    var row = params.row;
+    if (vueInstanse.mapType == 'bMap') {
+      var b_lon_lat = wgs84tobd09(Number(row.callon), Number(row.callat));
+      var point = new BMap.Point(b_lon_lat[0], b_lon_lat[1]);
+      var marker = new BMap.Marker(point);
+      setTimeout(function () {
+        vueInstanse.mapInstance.clearOverlays();
+        vueInstanse.mapInstance.addOverlay(marker);
+        vueInstanse.mapInstance.panTo(point);
+      }, 100);
+    } else {
+      if (vueInstanse.markerIns) {
+        vueInstanse.markerIns.setMap(null);
+      }
+      var g_lon_lat = wgs84togcj02(Number(row.callon), Number(row.callat));
+      var latLng = new google.maps.LatLng(g_lon_lat[1], g_lon_lat[0]);
+      vueInstanse.markerIns = new MarkerWithLabel({
+        position: latLng,
+        map: vueInstanse.mapInstance,
+      });
+      vueInstanse.mapInstance.setZoom(18);
+      setTimeout(function () {
+        vueInstanse.mapInstance.panTo(latLng);
+      }, 100);
+    }
+  }
 }
 
 try {

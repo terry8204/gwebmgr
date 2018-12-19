@@ -170,11 +170,10 @@ function cmdReport (groupslist) {
                                 item.index = ++index;
                                 item.cmdtimeStr = DateFormat.longToDateTimeStr(item.cmdtime, 0);
                                 item.deviceName = vstore.state.deviceInfos[item.deviceid].devicename;
-                            })
+                            });
                             self.cmdRecords = resp.cmdrecords;
                             self.total = self.cmdRecords.length;
                             self.tableData = self.cmdRecords;
-                            // self.tableData = self.cmdRecords.slice(0, 10);
                             self.currentPageIndex = 1;
                         } else {
                             self.$Message.error(self.$t("reportForm.noRecord"));
@@ -294,33 +293,7 @@ function posiReport (groupslist) {
                                 },
                                 on: {
                                     click: function () {
-                                        vueInstanse.mapModal = true;
-                                        var row = params.row;
-                                        if (vueInstanse.mapType == 'bMap') {
-                                            var b_lon_lat = wgs84tobd09(Number(row.callon), Number(row.callat));
-                                            var point = new BMap.Point(b_lon_lat[0], b_lon_lat[1]);
-                                            var marker = new BMap.Marker(point);
-                                            setTimeout(function () {
-                                                vueInstanse.mapInstance.clearOverlays();
-                                                vueInstanse.mapInstance.addOverlay(marker);
-                                                vueInstanse.mapInstance.panTo(point);
-                                            }, 100);
-                                        } else {
-                                            if (vueInstanse.markerIns) {
-                                                vueInstanse.markerIns.setMap(null);
-                                            }
-                                            var g_lon_lat = wgs84togcj02(Number(row.callon), Number(row.callat));
-                                            var latLng = new google.maps.LatLng(g_lon_lat[1], g_lon_lat[0]);
-
-                                            vueInstanse.markerIns = new MarkerWithLabel({
-                                                position: latLng,
-                                                map: vueInstanse.mapInstance,
-                                            });
-                                            vueInstanse.mapInstance.setZoom(18);
-                                            setTimeout(function () {
-                                                vueInstanse.mapInstance.panTo(latLng);
-                                            }, 100);
-                                        }
+                                        utils.showWindowMap(vueInstanse, params);
                                     }
                                 }
                             }, vRoot.$t("reportForm.seePosi")),
@@ -796,7 +769,10 @@ function parkDetails (groupslist) {
         el: '#park-details',
         i18n: utils.getI18n(),
         data: {
+            mapModal: false,
             mapType: utils.getMapType(),
+            mapInstance: null,
+            markerIns: null,
             placeholder: vRoot.$t("monitor.placeholder"),
             loading: false,
             dateVal: [DateFormat.longToDateStr(Date.now(), 0), DateFormat.longToDateStr(Date.now(), 0)],
@@ -820,21 +796,37 @@ function parkDetails (groupslist) {
                 {
                     title: vRoot.$t("bgMgr.action"),
                     key: 'action',
-                    width: 130,
                     fixed: 'right',
+                    width: 210,
                     render: function (h, params) {
-                        return h('Button', {
-                            props: {
-                                type: 'primary',
-                                size: 'small',
-                                disabled: params.row.disabled,
-                            },
-                            on: {
-                                click: function () {
-                                    vueInstanse.getAddress(params);
+                        return h('div', [
+                            h('Button', {
+                                props: {
+                                    type: 'primary',
+                                    size: 'small'
+                                },
+                                style: {
+                                    marginRight: '5px'
+                                },
+                                on: {
+                                    click: function () {
+                                        utils.showWindowMap(vueInstanse, params);
+                                    }
                                 }
-                            }
-                        }, vRoot.$t("reportForm.getAddress"))
+                            }, vRoot.$t("reportForm.seePosi")),
+                            h('Button', {
+                                props: {
+                                    type: 'primary',
+                                    size: 'small',
+                                    disabled: params.row.disabled,
+                                },
+                                on: {
+                                    click: function () {
+                                        vueInstanse.getAddress(params);
+                                    }
+                                }
+                            }, vRoot.$t("reportForm.getAddress"))
+                        ]);
                     }
                 }
             ],
@@ -1025,10 +1017,27 @@ function parkDetails (groupslist) {
                     me.tableData[index].disabled = true;
                     LocalCacheMgr.setAddress(row.callon, row.callat, address);
                 });
-            }
+            },
+            initMap: function () {
+                if (this.mapType == 'bMap') {
+                    this.mapInstance = new BMap.Map('posi-map', { minZoom: 4, maxZoom: 18, enableMapClick: false });
+                    this.mapInstance.enableScrollWheelZoom();
+                    this.mapInstance.enableAutoResize();
+                    this.mapInstance.disableDoubleClickZoom();
+                    this.mapInstance.centerAndZoom(new BMap.Point(113.264435, 24.129163), 18);
+                } else {
+                    var center = new google.maps.LatLng(24.129163, 113.264435);
+                    this.mapInstance = new google.maps.Map(document.getElementById('posi-map'), {
+                        zoom: 4,
+                        center: center,
+                        mapTypeId: google.maps.MapTypeId.ROADMAP
+                    });
+                };
+            },
         },
         mounted: function () {
             var me = this;
+            this.initMap();
             this.groupslist = this.getPinyin(groupslist);
             this.calcTableHeight();
             window.onresize = function () {
