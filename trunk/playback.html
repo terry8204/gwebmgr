@@ -694,12 +694,13 @@
                         if(Cookies.get(this.deviceid+'-'+info.trackid)){
                             color = 'red';
                         };
-
+                        var speed = info.speed == 0 ? "0km/h" : (info.speed / 1000).toFixed(2) + "km/h";
                         var sContent = '<div style="max-width:296px;">' +
                             '<p> ' + (isZh ? '设备名称' : 'Device Name') + ': ' + this.deviceid + '</p>' +
                             '<p> ' + (isZh ? '经纬度' : 'Longitude and latitude') + ': ' + info.callon.toFixed(6) + "," + info.callat.toFixed(6)  + '</p>' +
                             '<p> ' + (isZh ? '定位类型' : 'Position Type') + ': ' + posiType  + '</p>' +
                             '<p> ' + (isZh ? '方向' : 'Direction') + ': ' + utils.getCarDirection(info.course)+ '</p>' +
+                            '<p> ' + (isZh ? '速度' : 'Speed') + ': ' + speed + '</p>' +
                             '<p> ' + (isZh ? '总里程' : 'Mileage') + ': ' + utils.getMileage(info.totaldistance) + '</p>' +
                             '<p> ' + (isZh ? '最后时间' : 'Last time') + ': ' + DateFormat.longToDateTimeStr(info.arrivedtime, 0) + '</p>' +
                             '<p class="last-address"> ' + (isZh ? '详细地址' : 'Address') + ': ' + address + '</p>'+
