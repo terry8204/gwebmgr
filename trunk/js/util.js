@@ -245,7 +245,7 @@ var utils = {
       }
       posiType += radiuDesc;
     };
-    var speed = track.speed == 0 ? track.speed : (track.speed / 1000).toFixed(2) + "h/km";
+    var speed = track.speed == 0 ? "0km/h" : (track.speed / 1000).toFixed(2) + "km/h";
     var content =
       '<p> ' + (isZh ? '设备名称' : 'Device Name') + ': ' + track.devicename + '</p>' +
       '<p> ' + (isZh ? '设备序号' : 'Device Number') + ': ' + track.deviceid + '</p>' +
