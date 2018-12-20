@@ -784,23 +784,18 @@ function parkDetails (groupslist) {
             timeoutIns: null,
             isShowMatchDev: true,
             columns: [
-                { type: 'index', width: 60, align: 'center', fixed: 'left' },
-                { title: vRoot.$t("alarm.devName"), key: 'deviceName', width: 160, fixed: 'left' },
+                { type: 'index', width: 60, align: 'center' },
+                { title: vRoot.$t("alarm.devName"), key: 'deviceName', width: 160 },
                 { title: vRoot.$t("reportForm.startDate"), key: 'startDate', width: 180 },
                 { title: vRoot.$t("reportForm.endDate"), key: 'endDate', width: 180 },
                 { title: vRoot.$t("reportForm.parkDate"), key: 'parkTime', width: 160 },
-                { title: vRoot.$t("reportForm.lon"), key: 'callon', width: 100 },
-                { title: vRoot.$t("reportForm.lat"), key: 'callat', width: 100 },
-                { title: vRoot.$t("reportForm.status"), key: 'strStatus', width: 240 },
-                { title: vRoot.$t("reportForm.address"), key: 'address', width: 350 },
                 {
-                    title: vRoot.$t("bgMgr.action"),
-                    key: 'action',
-                    fixed: 'right',
-                    width: 210,
+                    title: vRoot.$t("reportForm.lon") + "," + vRoot.$t("reportForm.lat"),
+                    width: 160,
+                    key: 'callon_callat',
                     render: function (h, params) {
                         return h('div', [
-                            h('Button', {
+                            h('a', {
                                 props: {
                                     type: 'primary',
                                     size: 'small'
@@ -813,8 +808,24 @@ function parkDetails (groupslist) {
                                         utils.showWindowMap(vueInstanse, params);
                                     }
                                 }
-                            }, vRoot.$t("reportForm.seePosi")),
-                            h('Button', {
+                            }, params.row.callon_callat)
+                        ]);
+                    }
+                },
+                {
+                    title: vRoot.$t("reportForm.address"),
+                    key: 'address',
+                    render: function (h, params) {
+                        var disabled = params.row.disabled;
+                        var node = null;
+                        if (disabled) {
+                            node = h('div', {
+                                props: {},
+                                style: {},
+                                on: {}
+                            }, params.row.address);
+                        } else {
+                            node = h('Button', {
                                 props: {
                                     type: 'primary',
                                     size: 'small',
@@ -825,8 +836,9 @@ function parkDetails (groupslist) {
                                         vueInstanse.getAddress(params);
                                     }
                                 }
-                            }, vRoot.$t("reportForm.getAddress"))
-                        ]);
+                            }, vRoot.$t("reportForm.getAddress"));
+                        }
+                        return node;
                     }
                 }
             ],
@@ -955,9 +967,9 @@ function parkDetails (groupslist) {
                                         startDate: DateFormat.longToDateTimeStr(item.starttime, 0),
                                         endDate: DateFormat.longToDateTimeStr(item.endtime, 0),
                                         parkTime: parkTime,
+                                        callon_callat: callon + ',' + callat,
                                         callon: callon,
                                         callat: callat,
-                                        strStatus: isZh ? item.strstatus : item.strstatusen,
                                         address: address,
                                         disabled: address ? true : false
                                     });

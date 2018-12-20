@@ -245,15 +245,16 @@ var utils = {
       }
       posiType += radiuDesc;
     };
-
+    var speed = track.speed == 0 ? track.speed : (track.speed / 1000).toFixed(2) + "h/km";
     var content =
       '<p> ' + (isZh ? '设备名称' : 'Device Name') + ': ' + track.devicename + '</p>' +
       '<p> ' + (isZh ? '设备序号' : 'Device Number') + ': ' + track.deviceid + '</p>' +
       '<p> ' + (isZh ? '定位类型' : 'Position Type') + ': ' + posiType + '</p>' +
       '<p> ' + (isZh ? '经纬度' : 'Longitude and latitude') + ': ' + track.callon.toFixed(5) + ',' + track.callat.toFixed(5) + '</p>' +
       '<p> ' + (isZh ? '最后时间' : 'Last time') + ': ' + DateFormat.longToDateTimeStr(track.arrivedtime, 0) + '</p>' +
-      '<p> ' + (isZh ? '状态' : 'Status') + ': ' + strstatus + '</p>' +
+      '<p> ' + (isZh ? '速度' : 'Speed') + ': ' + speed + '</p>' +
       '<p> ' + (isZh ? '总里程' : 'Mileage') + ': ' + this.getMileage(track.totaldistance) + '</p>' +
+      '<p> ' + (isZh ? '状态' : 'Status') + ': ' + strstatus + '</p>' +
       '<p class="last-address"> ' + (isZh ? '详细地址' : 'Address') + ': ' + b_address + '</p>' +
       '<p class="operation">' +
       '<span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="playBack(' +
