@@ -1059,6 +1059,221 @@ function parkDetails (groupslist) {
     })
 }
 
+//acc报表
+function accDetails (groupslist) {
+    vueInstanse = new Vue({
+        el: '#acc-details',
+        i18n: utils.getI18n(),
+        data: {
+            mapModal: false,
+            mapType: utils.getMapType(),
+            mapInstance: null,
+            markerIns: null,
+            placeholder: vRoot.$t("monitor.placeholder"),
+            loading: false,
+            dateVal: [DateFormat.longToDateStr(Date.now(), 0), DateFormat.longToDateStr(Date.now(), 0)],
+            lastTableHeight: 100,
+            queryDeviceId: '',
+            groupslist: [],
+            filterData: [],
+            sosoValue: '',
+            timeoutIns: null,
+            isShowMatchDev: true,
+            columns: [
+                { type: 'index', width: 60, align: 'center' },
+                { title: vRoot.$t("alarm.devName"), key: 'deviceName', width: 160 },
+                { title: vRoot.$t("reportForm.accstatus"), key: 'accStatus' },
+                { title: vRoot.$t("reportForm.startDate"), key: 'startDate', width: 180 },
+                { title: vRoot.$t("reportForm.endDate"), key: 'endDate', width: 180 },
+                { title: vRoot.$t("reportForm.duration"), key: 'duration' },
+            ],
+            tableData: []
+        },
+        methods: {
+            onChange: function (value) {
+                this.dateVal = value;
+            },
+            handleSelectdDate: function (dayNumber) {
+                var dayTime = 24 * 60 * 60 * 1000;
+                if (dayNumber == 0) {
+                    this.dateVal = [DateFormat.longToDateStr(Date.now(), 0), DateFormat.longToDateStr(Date.now(), 0)];
+                } else if (dayNumber == 1) {
+                    this.dateVal = [DateFormat.longToDateStr(Date.now() - dayTime, 0), DateFormat.longToDateStr(Date.now() - dayTime, 0)];
+                } else if (dayNumber == 3) {
+                    this.dateVal = [DateFormat.longToDateStr(Date.now() - dayTime * 2, 0), DateFormat.longToDateStr(Date.now(), 0)];
+                } else if (dayNumber == 7) {
+                    this.dateVal = [DateFormat.longToDateStr(Date.now() - dayTime * 6, 0), DateFormat.longToDateStr(Date.now(), 0)];
+                }
+            },
+            calcTableHeight: function () {
+                var wHeight = window.innerHeight;
+                this.lastTableHeight = wHeight - 170;
+                this.posiDetailHeight = wHeight - 144;
+            },
+            focus: function () {
+                var me = this;
+                if (this.sosoValue.trim()) {
+                    me.sosoValueChange()
+                } else {
+                    this.filterData = this.groupslist;
+                    this.isShowMatchDev = true;
+                }
+            },
+            onClickOutside: function () {
+                this.isShowMatchDev = false;
+            },
+            sosoValueChange: function () {
+                var me = this;
+                var value = this.sosoValue;
+
+                if (this.timeoutIns != null) {
+                    clearTimeout(this.timeoutIns);
+                };
+
+                this.timeoutIns = setTimeout(function () {
+                    me.filterMethod(value);
+                }, 300);
+            },
+            filterMethod: function (value) {
+                var filterData = [];
+                this.queryDeviceId = '';
+                var firstLetter = __pinyin.getFirstLetter(value)
+                var pinyin = __pinyin.getPinyin(value)
+                for (var i = 0; i < this.groupslist.length; i++) {
+                    var group = this.groupslist[i];
+                    if (
+                        group.groupname.toUpperCase().indexOf(value.toUpperCase()) !== -1 ||
+                        group.firstLetter.indexOf(firstLetter) !== -1 ||
+                        group.pinyin.indexOf(pinyin) !== -1
+                    ) {
+                        filterData.push(group)
+                    } else {
+                        var devices = group.devices
+                        var obj = {
+                            groupname: group.groupname,
+                            devices: []
+                        }
+                        for (var j = 0; j < devices.length; j++) {
+                            var device = devices[j]
+                            var devicename = device.devicename
+                            if (
+                                devicename.toUpperCase().indexOf(value.toUpperCase()) !== -1 ||
+                                device.firstLetter.indexOf(firstLetter) !== -1 ||
+                                device.pinyin.indexOf(pinyin) !== -1
+                            ) {
+                                obj.devices.push(device)
+                            } else {
+                                if (device.remark) {
+                                    if (device.remark.indexOf(value) !== -1) {
+                                        obj.devices.push(device);
+                                    };
+                                };
+                            };
+                        }
+                        if (obj.devices.length) {
+                            filterData.push(obj);
+                        };
+                    };
+                };
+                this.filterData = filterData;
+                if (!this.isShowMatchDev) {
+                    this.isShowMatchDev = true;
+                };
+            },
+            sosoSelect: function (item) {
+                this.sosoValue = item.devicename;
+                this.queryDeviceId = item.deviceid;
+                this.isShowMatchDev = false;
+            },
+            onClickQuery: function () {
+                if (this.queryDeviceId) {
+                    var me = this;
+                    var url = myUrls.reportAcc();
+                    var data = {
+                        startday: this.dateVal[0],
+                        endday: this.dateVal[1],
+                        offset: DateFormat.getOffset(),
+                        deviceid: this.queryDeviceId
+                    }
+                    me.loading = true;
+                    utils.sendAjax(url, data, function (resp) {
+                        me.loading = false;
+                        if (resp.status == 0) {
+                            if (resp.records && resp.records.length) {
+                                var newRecords = [];
+                                var deviceName = vstore.state.deviceInfos[me.queryDeviceId].devicename;
+                                resp.records.forEach(function (item) {
+                                    var callon = item.callon.toFixed(5);
+                                    var callat = item.callat.toFixed(5);
+                                    var parkTime = me.getParkTime(item.endtime - item.starttime);
+                                    var address = LocalCacheMgr.getAddress(callon, callat);
+                                    newRecords.push({
+                                        deviceName: deviceName,
+                                        startDate: DateFormat.longToDateTimeStr(item.starttime, 0),
+                                        endDate: DateFormat.longToDateTimeStr(item.endtime, 0),
+                                        parkTime: parkTime,
+                                    });
+                                });
+                                me.tableData = newRecords;
+                            } else {
+                                me.tableData = [];
+                            }
+                        } else {
+                            me.tableData = [];
+                        }
+                    });
+                } else {
+                    this.$Message.error(this.$t("reportForm.selectDevTip"));
+                }
+            },
+            getPinyin: function (groupslist) {
+                var newArr = [];
+
+                groupslist.forEach(function (group) {
+                    var groupObj = {
+                        firstLetter: __pinyin.getFirstLetter(group.title),
+                        pinyin: __pinyin.getPinyin(group.title),
+                        groupname: group.title,
+                        devices: []
+                    };
+                    group.children.forEach(function (device) {
+                        groupObj.devices.push({
+                            deviceid: device.deviceid,
+                            devicename: device.title,
+                            firstLetter: __pinyin.getFirstLetter(device.title),
+                            pinyin: __pinyin.getPinyin(device.title),
+                        })
+                    })
+                    newArr.push(groupObj);
+                });
+                return newArr;
+            },
+            getParkTime: function (mss) {
+                var strTime = '';
+                var days = parseInt(mss / (1000 * 60 * 60 * 24));
+                var hours = parseInt((mss % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                var minutes = parseInt((mss % (1000 * 60 * 60)) / (1000 * 60));
+                var seconds = parseInt((mss % (1000 * 60)) / 1000);
+                days ? (strTime += days + this.$t("reportForm.d")) : '';
+                hours ? (strTime += hours + this.$t("reportForm.h")) : '';
+                minutes ? (strTime += minutes + this.$t("reportForm.m")) : '';
+                seconds ? (strTime += seconds + this.$t("reportForm.s")) : '';
+                return strTime == '' ? 0 : strTime;
+            },
+        },
+        mounted: function () {
+            var me = this;
+
+            this.groupslist = this.getPinyin(groupslist);
+            this.calcTableHeight();
+            window.onresize = function () {
+                me.calcTableHeight();
+            }
+        }
+    })
+
+}
+
 // 查询报警
 function allAlarm (groupslist) {
     new Vue({
@@ -1180,6 +1395,7 @@ var reportForm = {
                         { title: me.$t("reportForm.reportmileagesummary"), name: 'reportMileageSummary', icon: 'ios-bicycle' },
                         { title: me.$t("reportForm.reportmileagedetail"), name: 'mileageDetail', icon: 'ios-color-wand' },
                         { title: me.$t("reportForm.parkDetails"), name: 'parkDetails', icon: 'md-analytics' },
+                        { title: me.$t("reportForm.acc"), name: 'accDetails', icon: 'md-bulb' },
                     ]
                 },
                 {
@@ -1223,6 +1439,8 @@ var reportForm = {
                     reportMileageDetail(groupslist);
                 } else if (page.indexOf('parkdetails') !== -1) {
                     parkDetails(groupslist);
+                } else if (page.indexOf('accdetails') !== -1) {
+                    accDetails(groupslist);
                 }
             });
         },

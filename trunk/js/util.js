@@ -12,7 +12,7 @@ var utils = {
     return mapType;
   },
   sendAjax: function (url, data, callback) {
-    var encode = JSON.stringify(data)
+    var encode = JSON.stringify(data);
     $.ajax({
       url: url,
       type: 'post',

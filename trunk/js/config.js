@@ -273,7 +273,11 @@ var myUrls = {
   // 停留报表
   reportParkDetail: function () {
     return this.host + 'webapi?action=reportparkdetail&token=' + token;
-  }
+  },
+  // acc报表
+  reportAcc: function () {
+    return this.host + 'webapi?action=reportacc&token=' + token;
+  },
 }
 
 // global var

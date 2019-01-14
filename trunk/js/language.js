@@ -200,6 +200,9 @@
                 h: "h",
                 m: "m",
                 s: "s",
+                acc: "Acc Report",
+                accstatus: 'Acc State',
+                duration: 'Duration'
             },
             bgMgr: {
                 customerMgr: "Customer Manager",
@@ -485,6 +488,9 @@
                 h: "小时",
                 m: "分",
                 s: "秒",
+                acc: "ACC报表",
+                accstatus: 'ACC状态',
+                duration: '时长'
             },
             bgMgr: {
                 customerMgr: "客户管理",
