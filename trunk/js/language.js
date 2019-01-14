@@ -202,7 +202,9 @@
                 s: "s",
                 acc: "Acc Report",
                 accstatus: 'Acc State',
-                duration: 'Duration'
+                duration: 'Duration',
+                open: 'Open',
+                stalling: 'Stalling'
             },
             bgMgr: {
                 customerMgr: "Customer Manager",
@@ -490,7 +492,9 @@
                 s: "秒",
                 acc: "ACC报表",
                 accstatus: 'ACC状态',
-                duration: '时长'
+                duration: '时长',
+                open: '开启',
+                stalling: '熄火'
             },
             bgMgr: {
                 customerMgr: "客户管理",

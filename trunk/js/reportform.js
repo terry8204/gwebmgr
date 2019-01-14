@@ -1203,15 +1203,13 @@ function accDetails (groupslist) {
                                 var newRecords = [];
                                 var deviceName = vstore.state.deviceInfos[me.queryDeviceId].devicename;
                                 resp.records.forEach(function (item) {
-                                    var callon = item.callon.toFixed(5);
-                                    var callat = item.callat.toFixed(5);
-                                    var parkTime = me.getParkTime(item.endtime - item.starttime);
-                                    var address = LocalCacheMgr.getAddress(callon, callat);
+                                    var duration = me.getParkTime(item.endtime - item.begintime);
                                     newRecords.push({
                                         deviceName: deviceName,
-                                        startDate: DateFormat.longToDateTimeStr(item.starttime, 0),
+                                        startDate: DateFormat.longToDateTimeStr(item.begintime, 0),
                                         endDate: DateFormat.longToDateTimeStr(item.endtime, 0),
-                                        parkTime: parkTime,
+                                        accStatus: item.accstate === 1 ? me.$t("reportForm.open") : me.$t("reportForm.stalling"),
+                                        duration: duration
                                     });
                                 });
                                 me.tableData = newRecords;
