@@ -1082,6 +1082,7 @@ function accDetails (groupslist) {
             columns: [
                 { type: 'index', width: 60, align: 'center' },
                 { title: vRoot.$t("alarm.devName"), key: 'deviceName', width: 160 },
+                { title: vRoot.$t("alarm.devNum"), key: 'deviceid', width: 160 },
                 { title: vRoot.$t("reportForm.accstatus"), key: 'accStatus' },
                 { title: vRoot.$t("reportForm.startDate"), key: 'startDate', width: 180 },
                 { title: vRoot.$t("reportForm.endDate"), key: 'endDate', width: 180 },
@@ -1205,6 +1206,7 @@ function accDetails (groupslist) {
                                 resp.records.forEach(function (item) {
                                     var duration = me.getParkTime(item.endtime - item.begintime);
                                     newRecords.push({
+                                        deviceid: item.deviceid,
                                         deviceName: deviceName,
                                         startDate: DateFormat.longToDateTimeStr(item.begintime, 0),
                                         endDate: DateFormat.longToDateTimeStr(item.endtime, 0),
