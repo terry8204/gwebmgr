@@ -704,11 +704,11 @@ var monitor = {
                     me.editDeviceInfo.simnum = sendData.simnum;
                     utils.changeGroupsDevName(sendData, me.groups);
                     me.editDevModal = false;
-                    me.$Message.success(me.$t("monitor.changeSucc"));
-
+                    me.$Message.success(me.$t("message.changeSucc"));
+                    me.deviceInfos[data.deviceid].simnum = sendData.simnum;
                     me.deviceInfos[data.deviceid].remark = data.remark;
                 } else if ((resp.status == -1)) {
-                    me.$Message.error(me.$t("monitor.changeFail"))
+                    me.$Message.error(me.$t("message.changeFail"))
                 }
             })
         },
