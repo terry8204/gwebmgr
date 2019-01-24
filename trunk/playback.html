@@ -304,6 +304,7 @@
             var carIcon = new BMap.Icon("images/carstate/green_0.gif", new BMap.Size(17, 17), { imageOffset: new BMap.Size(0, 0) });
             var startIcon = new BMap.Icon("./images/map/marker_qidian.png", new BMap.Size(32, 32), { imageOffset: new BMap.Size(0, 0) });
             var endIcon = new BMap.Icon("./images/map/marker_zhongdian.png", new BMap.Size(32, 32), { imageOffset: new BMap.Size(0, 0) });
+            
                 vm = new Vue({
                 el: "#container",
                 i18n: utils.getI18n(),
@@ -356,62 +357,7 @@
                         this.resetMapState();
                         this.drawingLine();
                     },
-                    getRequestBeginAndEndTimeStr: function () {
-                        var requestTimeStrArr = [];
-                        var beginTimeStr = DateFormat.longToDateTimeStr(this.startTime.getTime(), 0);
-                        var endTimeStr = DateFormat.longToDateTimeStr(this.endTime.getTime(), 0);
-
-                        if (beginTimeStr.indexOf("00:00:00") != -1) {
-                            requestTimeStrArr.push({ begintime: this.getDayBeginTimeStr(this.startTime.getTime()), endtime: this.getDayEndTimeStr(this.startTime.getTime()) });
-                        } else {
-                            requestTimeStrArr.push({ begintime: beginTimeStr, endtime: this.getDayEndTimeStr(this.startTime.getTime()) });
-                        }
-
-                        if (endTimeStr.indexOf("00:00:00") != -1) {
-                            requestTimeStrArr.push({ begintime: this.getDayBeginTimeStr(this.endTime.getTime()), endtime: this.getDayEndTimeStr(this.endTime.getTime()) });
-                        } else {
-                            requestTimeStrArr.push({ begintime: this.getDayBeginTimeStr(this.endTime.getTime()), endtime: endTimeStr });
-                        }
-                        return requestTimeStrArr;
-                    },
-                    getMiddleDayReqParameter: function () {
-                        var beginDateStr = DateFormat.longToDateStr(this.startTime.getTime(), 8);
-                        var endDateStr = DateFormat.longToDateStr(this.endTime.getTime(), 8);
-                        var beginDateStrTime = DateFormat.dateStrToLong(beginDateStr, 0) - 3600 * 1000 * 8 + this.dayTime;
-                        var endDateStrTime = DateFormat.dateStrToLong(endDateStr, 0) - 3600 * 1000 * 8 - this.dayTime;
-                        if (beginDateStrTime == endDateStrTime) {
-                            return [{
-                                begintime: this.getDayBeginTimeStr(beginDateStrTime),
-                                endtime: this.getDayEndTimeStr(beginDateStrTime)
-                            }];
-                        } else {
-                            var timeStrList = this.getTimeStrObj(beginDateStrTime, endDateStrTime);
-                            return timeStrList;
-                        }
-                    },
-                    getTimeStrObj: function (beginTime, endTime) {
-                        var timeStrList = [];
-                        do {
-                            var timeStrObj = {
-                                begintime: this.getDayBeginTimeStr(endTime),
-                                endtime: this.getDayEndTimeStr(endTime)
-                            };
-                            timeStrList.push(timeStrObj);
-                            endTime = endTime - this.dayTime;
-                        }
-                        while (endTime >= beginTime);
-                        return timeStrList;
-                    },
-                    getDayBeginTimeStr: function (beginTime) {
-                        var timeStr = DateFormat.longToDateStr(beginTime, 8);
-                        var time = DateFormat.dateStrToLong(timeStr, 0) - 3600 * 1000 * 8;
-                        return DateFormat.longToDateTimeStr(time, 0);
-                    },
-                    getDayEndTimeStr: function (endTime) {
-                        var timeStr = DateFormat.longToDateStr(endTime, 8);
-                        var time = DateFormat.dateStrToLong(timeStr, 0) + this.dayTime - 1000 - 3600 * 1000 * 8;
-                        return DateFormat.longToDateTimeStr(time, 0);
-                    },
+                    
                     nextDay:function(){
                         this.startTime = new Date(this.startTime.getTime() + this.dayTime);
                     },
@@ -521,13 +467,18 @@
                         };
                         this.records = newRecords;
                         this.extractRecords = extractRecords;
-                        console.log(newRecords,extractRecords);
                     },
                     drawingLine: function () {
                         var records = this.getTypeRecords();
-                 
+                        var sy = new BMap.Symbol(BMap_Symbol_SHAPE_BACKWARD_OPEN_ARROW, {
+                                    scale: 0.6,//图标缩放大小
+                                    strokeColor:'#fff',//设置矢量图标的线填充颜色
+                                    strokeWeight: '2',//设置线宽
+                                });
+                          
+                        var lineIcon = new BMap.IconSequence(sy, '10', '30'); 
                         if (records.length > 1) {
-                        
+             
                             var firstRecord = records[0];
                             var lastRecord = records[records.length - 1];
                             this.firstMarker = new BMap.Marker(firstRecord.point, { icon: startIcon });
@@ -541,11 +492,12 @@
                             this.addEventListenerToMarker(this.lastMakrker);
 
                             var lines = [];
+                               
 
                             for (var i = 0; i < records.length; i++) {
                                 var point = records[i].point;
                                 lines.push(point);
-                                 
+
                                 if(i !=0 && i != records.length-1){
                                     var makrker = new BMap.Marker(point);
                                     this.map.addOverlay(makrker);
@@ -557,7 +509,16 @@
                             this.markers.unshift(this.firstMarker);
                             this.markers.push(this.lastMakrker);
 
-                            this.polyline = new BMap.Polyline(lines, { strokeColor: "#e4393c", strokeWeight: 3, strokeOpacity: 1.5 });
+                            // this.polyline = new BMap.Polyline(lines, { strokeColor: "#e4393c", strokeWeight: 8, strokeOpacity: 1.5 ,icons:[icons]});
+                            this.polyline = new BMap.Polyline(lines, { 
+                                enableEditing: false,//是否启用线编辑，默认为false
+                                enableClicking: true,//是否响应点击事件，默认为true
+                                enableMassClear:true,
+                                icons:[lineIcon],
+                                strokeWeight:'8',//折线的宽度，以像素为单位
+                                strokeOpacity: 0.8,//折线的透明度，取值范围0 - 1
+                                strokeColor:"#18a45b" //折线颜色
+                            });
                             this.map.addOverlay(this.polyline);
                             // 设置中心点
                             this.setViewPortCenter(lines);
@@ -740,30 +701,25 @@
                     },
                     resetMapState: function () {
                         if (this.carMarker) {
-                            this.map.removeOverlay(this.carMarker);
                             this.carMarker = null;
                         };
                         if (this.markers.length) {
-                            for(var i = 0 ; i < this.markers.length ; i++ ){
-                                this.map.removeOverlay(this.markers[i]);
-                            }
                             this.markers = [];
                             this.firstMarker = null;
                             this.lastMakrker = null;
                         };
 
                         if (this.polyline) {
-                            this.map.removeOverlay(this.polyline);
                             this.polyline = null;
                         };
                         if (this.markerLabel) {
-                            this.map.removeOverlay(this.markerLabel);
                             this.markerLabel = null;
                         };
                         if (this.intervalInstanse) {
                             clearInterval(this.intervalInstanse);
                             this.intervalInstanse = null;
                         };
+                        this.map.clearOverlays();
                         this.index = 0;
                         // this.records = [];
                         // this.extractRecords = [];    
