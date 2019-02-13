@@ -181,7 +181,7 @@ var monitor = {
             me.positionLastrecords[deviceid] = data;
             me.updateTreeOnlineState();
             me.updateDevLastPosition(data);
-            console.log('收到的轨迹push时间', deviceid, DateFormat.longToDateTimeStr(data.arrivedtime, 0));
+            //console.log('收到的轨迹push时间', deviceid, DateFormat.longToDateTimeStr(data.arrivedtime, 0));
             if (me.currentDeviceId == deviceid) {
                 me.map && me.map.updateSingleMarkerState(deviceid);
             };
