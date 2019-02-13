@@ -475,13 +475,15 @@
                     },
                     drawingLine: function () {
                         var records = this.getTypeRecords();
-                        var sy = new BMap.Symbol(BMap_Symbol_SHAPE_BACKWARD_OPEN_ARROW, {
-                                    scale: 0.6,//图标缩放大小
-                                    strokeColor:'#fff',//设置矢量图标的线填充颜色
-                                    strokeWeight: '2',//设置线宽
-                                });
+                     
+                        // var sy = new BMap.Symbol(BMap_Symbol_SHAPE_BACKWARD_OPEN_ARROW, {
+                        //             scale: 0.6,//图标缩放大小
+                        //             strokeColor:'#fff',//设置矢量图标的线填充颜色
+                        //             strokeWeight: '2',//设置线宽
+                        //         });
                           
-                        var lineIcon = new BMap.IconSequence(sy, '10', '30'); 
+                        // var lineIcon = new BMap.IconSequence(sy, '10', '30'); 
+                        var lines;
                         if (records.length > 1) {
              
                             var firstRecord = records[0];
@@ -496,7 +498,7 @@
                             this.addEventListenerToMarker(this.firstMarker);
                             this.addEventListenerToMarker(this.lastMakrker);
 
-                            var lines = [];
+                            lines = [];
                                
 
                             for (var i = 0; i < records.length; i++) {
@@ -515,15 +517,17 @@
                             this.markers.push(this.lastMakrker);
 
                             // this.polyline = new BMap.Polyline(lines, { strokeColor: "#e4393c", strokeWeight: 8, strokeOpacity: 1.5 ,icons:[icons]});
+                            console.log('this.polyline', this.polyline);
                             this.polyline = new BMap.Polyline(lines, { 
                                 enableEditing: false,//是否启用线编辑，默认为false
                                 enableClicking: true,//是否响应点击事件，默认为true
                                 enableMassClear:true,
-                                icons:[lineIcon],
+                                // icons:[lineIcon],
                                 strokeWeight:'8',//折线的宽度，以像素为单位
                                 strokeOpacity: 0.8,//折线的透明度，取值范围0 - 1
                                 strokeColor:"#18a45b" //折线颜色
                             });
+                 
                             this.map.addOverlay(this.polyline);
                             // 设置中心点
                             this.setViewPortCenter(lines);
@@ -533,7 +537,7 @@
                                 this.firstMarker = new BMap.Marker(lastRecord.point, { icon: endIcon });
                                 
                                 this.map.addOverlay(this.firstMarker);
-                                var lines = [];
+                                lines = [];
 
                                 for (var i = 0; i < records.length; i++) {
                                     lines.push(records[i].point);
