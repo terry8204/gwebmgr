@@ -61,7 +61,7 @@
         }
         .address{
             position: absolute;
-            left: 5px;
+            left: 65px;
             top: 5px;
             height: 30px;
             background: #e6e6e6;
@@ -139,6 +139,10 @@
                             this.map.enableScrollWheelZoom();
                             this.map.enableAutoResize();
                             this.map.disableDoubleClickZoom();
+                            var top_left_control = new BMap.ScaleControl({anchor: BMAP_ANCHOR_BOTTOM_LEFT});
+                            var top_left_navigation = new BMap.NavigationControl() //左上角，添加默认缩放平移控件
+                            this.map.addControl(top_left_control)
+                            this.map.addControl(top_left_navigation)
                             this.map.centerAndZoom(new BMap.Point(108.0017245,35.926895),5);
                         },
                         drawingLine:function(){

@@ -113,7 +113,7 @@
             <img v-else src="./images/ic_fine_network_on.png">
         </div>
         <div class="right-button-wrap-ceju">
-            <i-button @click="openDistance" size="small" style="width:100%;">测距</i-button>
+            <i-button @click="openDistance" size="small" style="width:100%;">{{isZh ? '测距' : 'Ranging'}}</i-button>
         </div>
         <div class="controller">
             <Row>
