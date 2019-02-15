@@ -365,16 +365,16 @@
                         this.map.enableAutoResize();
                         this.map.disableDoubleClickZoom();
                         var top_left_control = new BMap.ScaleControl({anchor: BMAP_ANCHOR_BOTTOM_LEFT});
-                        var top_left_navigation = new BMap.NavigationControl() //左上角，添加默认缩放平移控件
-                        this.map.addControl(top_left_control)
-                        this.map.addControl(top_left_navigation)
+                        var top_left_navigation = new BMap.NavigationControl(); //左上角，添加默认缩放平移控件
+                        this.map.addControl(top_left_control);
+                        this.map.addControl(top_left_navigation);
                         this.map.centerAndZoom(new BMap.Point(108.0017245, 35.926895), 5);
 
                     },
                     openDistance: function () {
                         if (this.myDis != null) {
                             this.myDis.close();
-                        }
+                        };
                         this.myDis = new BMapLib.DistanceTool(this.map);
                         this.myDis.open();
                     },
@@ -387,7 +387,6 @@
                         this.resetMapState();
                         this.drawingLine();
                     },
-                    
                     nextDay:function(){
                         this.startTime = new Date(this.startTime.getTime() + this.dayTime);
                     },

@@ -146,12 +146,10 @@
                     };       
                     
                     if(this.loginpwd){
-                    	console.log("this.loginpwd:", this.loginpwd);
                         data.loginpwd = $.md5(this.loginpwd);
                     }else{
                      	
                      	var legnth = this.deviceid.length;
-                     	console.log("this.loginpwd:", this.deviceid.substring(legnth-4,legnth));
                         data.loginpwd = $.md5(this.deviceid.substring(legnth-4,legnth));
                     };
 
@@ -174,12 +172,18 @@
                     utils.sendAjax(url,data,function (resp) { 
                         if(resp.status == 0){
                             me.$Message.success(me.$t("message.addSucc"));
-                        }else if(resp.status = -1){
+                        }else if(resp.status == -1){
                             if( resp.cause!== null && resp.cause.indexOf("token")!=-1){
                                 window.location.href = "index.html";
                             }else{
                                 me.$Message.error(me.$t("message.addFail"));
                             }
+                        }else if(resp.status == 1 ){
+                            me.$Message.error(me.$t("message.IDRepeat"));
+                        }else if(resp.status == 2 ){
+                            me.$Message.error(me.$t('message.IDError'));
+                        }else if(resp.status == 3 ){
+                            me.$Message.error(me.$t('message.reqFail'));
                         };
                     });
                 },

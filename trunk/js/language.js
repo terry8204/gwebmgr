@@ -24,6 +24,9 @@
                 userExists: "The user already exists",
                 resetPwdTips: "Password reset to:123456",
                 plSelectTime: "Please choose the time",
+                IDRepeat: "Device ID repeat",
+                IDError: "Device ID error",
+                reqFail: "Request fail"
             },
             login: {
                 title: "Location information service platform",
@@ -314,6 +317,9 @@
                 userExists: "该用户已存在",
                 resetPwdTips: "密码重置为:123456",
                 plSelectTime: "请选择时间",
+                IDRepeat: "设备序号重复",
+                IDError: "设备序号错误",
+                reqFail: "请求失败"
             },
             login: {
                 title: "位置信息服务平台",
