@@ -186,6 +186,9 @@ vueInstanse=new Vue({
                                     me.$delete(me.recordsList,index)
                                 }
                             });
+
+                            me.total = me.recordsList.length;
+                            me.tableData = me.recordsList.slice( me.currentIndex - 1 , 5);
                             
                             me.$Message.success(me.$t("message.deleteSucc"));
                         }else{

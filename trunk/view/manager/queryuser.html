@@ -193,7 +193,9 @@
                                 if(item.username == username){
                                     me.$delete(me.tableData,index);
                                 }
-                            });     
+                            });   
+                            me.total = me.recordsList.length;
+                            me.tableData = me.recordsList.slice( me.currentIndex - 1 , 5);
                         }else{
                             me.$Message.error(resp.cause);
                         }

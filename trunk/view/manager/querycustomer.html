@@ -152,6 +152,9 @@ vueInstanse = new Vue({
                                 me.$delete(me.tableData,index);
                             }
                         });
+
+                        me.total = me.recordsList.length;
+                        me.tableData = me.recordsList.slice( me.currentIndex - 1 , 5);
                     }else{
                         this.$Message.error(resp.cause);
                     }
