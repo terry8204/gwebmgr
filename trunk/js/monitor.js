@@ -145,7 +145,6 @@ var monitor = {
                                                 me.map.setMarkerClusterer(me.positionLastrecords);
                                                 me.isSpin = false;
                                             });
-
                                         });
                                     });
                                 } else {
@@ -497,7 +496,7 @@ var monitor = {
                         company.children.forEach(function (group) {
                             group.children.forEach(function (dev) {
                                 if (dev.deviceid == deviceid) {
-                                    dev.isOnline = isOnline
+                                    dev.isOnline = isOnline;
                                 };
                             });
                         });
@@ -533,7 +532,7 @@ var monitor = {
                         });
                     });
                     me.currentStateData.forEach(function (group) {
-                        var onlineCount = 0
+                        var onlineCount = 0;
                         group.children.forEach(function (dev) {
                             if (dev.isOnline) {
                                 onlineCount++
@@ -548,7 +547,7 @@ var monitor = {
                                 group.children.length +
                                 ')'
                         } else {
-                            group.title = group.name + '(' + group.children.length + ')'
+                            group.title = group.name + '(' + group.children.length + ')';
                         };
                     });
                 };
@@ -715,14 +714,14 @@ var monitor = {
         editDevice: function (device) {
             // console.log('editDevice', deviceid);
             this.$store.commit('editDeviceInfo', device);
-            var deviceid = device.deviceid
+            var deviceid = device.deviceid;
             var deviceInfo = this.deviceInfos[deviceid];
 
             this.editDevData.devicename = deviceInfo.devicename;
             this.editDevData.simnum = deviceInfo.simnum;
             this.editDevData.deviceid = deviceid;
             this.editDevData.remark = deviceInfo.remark;
-            this.editDevModal = true
+            this.editDevModal = true;
         },
         playBack: function (deviceid) {
             playBack(deviceid)
@@ -771,7 +770,7 @@ var monitor = {
             };
         },
         getNewCompanyArr: function () {
-            var newArray = []
+            var newArray = [];
             this.companys.forEach(function (company) {
                 var companyid = company.companyid
                 var companyObj = {
@@ -782,7 +781,7 @@ var monitor = {
                     expand: false
                 };
                 newArray.push(companyObj);
-            })
+            });
             var logintype = Cookies.get('logintype')
             if (logintype !== 'DEVICE' && this.isShowConpanyName) {
                 newArray.unshift({

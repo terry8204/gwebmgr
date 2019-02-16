@@ -453,6 +453,7 @@ div.ivu-steps-head-inner .ivu-icon{
     }
     #queryuser>div> ul{
         height: 42px;
+        overflow: hidden;
     }
     #queryuser>div> ul>li{
         float: left;
@@ -460,6 +461,14 @@ div.ivu-steps-head-inner .ivu-icon{
         margin-right: 10px;
         padding: 5px 0;
         position: relative;
+    }
+    div.my-total{
+        /* border: 1px solid #DCDEE2; */
+        margin: 10px 0;
+    }
+    div.my-total>span{
+        display: inline-block;
+        padding-right: 15px;
     }
    /* 查询用户 */
 

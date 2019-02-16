@@ -17,6 +17,11 @@
                 <i-button type="primary"  @click="handlerClickQuery">{{$t("reportForm.query")}}</i-button>
             </li>
         </ul>
+        <div class="my-total">
+            <span>{{$t("bgMgr.userTotal")}} : {{userTotal}}</span>
+            <span>{{$t("bgMgr.groupTotal")}} : {{groupTotal}}</span>
+            <span>{{$t("bgMgr.deviceTotal")}} : {{deviceTotal}}</span>
+        </div>
         <div class="table-wraper">
             <i-table border :columns="columns" :data="tableData" :loading="loading"></i-table>
         </div>
@@ -33,6 +38,9 @@
                 queryList:[
                     {label:vRoot.$t("user.client"),value:"companyname"},{label:vRoot.$t("user.username"),value:"username"},{label:vRoot.$t("user.userType"),value:"userTypeStr"},
                 ],
+                deviceTotal:'',
+                userTotal:'',
+                groupTotal:'',
                 queryType:"username",
                 queryParameter:"",
                 loading:true,
@@ -142,16 +150,23 @@
                 },
                 doUserInfoList:function(resp){
                     if(resp.status == 0 && resp.userlists != null){
+                        var currdevicecount = 0;
+                        var currgroupcount = 0;
                         resp.userlists.forEach(function (item) { 
                             item.usedUserCount = item.currusercount + "/" + item.usercount ;
                             item.usedDeviceCount = item.currdevicecount + "/" + item.devicecount ;
                             item.usedGroupCount = item.currgroupcount + "/" + item.groupcount ;
                             item.companyname = item.company.companyname;
+                            currdevicecount += item.currdevicecount;
+                            currgroupcount += item.currgroupcount;
                         });
                         this.recordsList = resp.userlists;
                         this.filterUsersList();
                         this.tableData = this.recordsList.slice(0,5);
                         this.total = this.recordsList.length;
+                        this.deviceTotal = currdevicecount;
+                        this.userTotal = resp.userlists.length;
+                        this.groupTotal = currgroupcount;
                     }
                     this.loading = false;
                 },
@@ -186,6 +201,10 @@
                             me.$Message.success(me.$t("message.deleteSucc"));
                             me.recordsList.forEach(function(item,index){
                                 if(item.username == username){
+                                    var delUserItem = me.recordsList[index];
+                                    me.deviceTotal -= delUserItem.currdevicecount;
+                                    me.userTotal -= 1;
+                                    me.groupTotal -= delUserItem.currgroupcount;
                                     me.$delete(me.recordsList,index);
                                 }
                             });

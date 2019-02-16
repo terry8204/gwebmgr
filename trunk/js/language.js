@@ -227,7 +227,10 @@
                 back: "Back",
                 delete: "Delete",
                 edit: "Edit",
-                action: "Action"
+                action: "Action",
+                userTotal: "User Total",
+                deviceTotal: "Device Total",
+                groupTotal: "Group Total",
             },
             customer: {
                 kehuName: "Customer name",
@@ -520,7 +523,10 @@
                 back: "返回",
                 delete: "删除",
                 edit: "编辑",
-                action: "操作"
+                action: "操作",
+                userTotal: "用户总数",
+                deviceTotal: "设备总数",
+                groupTotal: "分组总数",
             },
             customer: {
                 kehuName: "客户名称",
