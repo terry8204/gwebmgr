@@ -36,7 +36,9 @@
             i18n: utils.getI18n(),
             data:{
                 queryList:[
-                    {label:vRoot.$t("user.client"),value:"companyname"},{label:vRoot.$t("user.username"),value:"username"},{label:vRoot.$t("user.userType"),value:"userTypeStr"},
+                    {label:vRoot.$t("user.client"),value:"companyname"},
+                    {label:vRoot.$t("user.username"),value:"username"},
+                    {label:vRoot.$t("user.userType"),value:"userTypeStr"},
                 ],
                 deviceTotal:'',
                 userTotal:'',
@@ -252,6 +254,7 @@
             mounted:function(){
                 this.userTypeDescrList = vstore.state.userTypeDescrList;
                 this.getUserInfoList();
+                console.log('queryList', this.queryList);
             }
         })
     </script>

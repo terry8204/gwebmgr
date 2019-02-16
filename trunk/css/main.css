@@ -453,7 +453,6 @@ div.ivu-steps-head-inner .ivu-icon{
     }
     #queryuser>div> ul{
         height: 42px;
-        overflow: hidden;
     }
     #queryuser>div> ul>li{
         float: left;
