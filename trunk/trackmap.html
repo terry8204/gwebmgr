@@ -161,7 +161,7 @@
                                 '<p> '+ ageStr +': ' + utils.getAngle(info.course) +'</p>' +
                                 '<p> '+ lon_lat_str +': ' +info.callon.toFixed(6)+","+ info.callat.toFixed(6) +'</p>' +
                                 '<p> '+ lastDateStr +': ' +DateFormat.longToDateTimeStr(info.arrivedtime,0)+'</p>' +
-                                '<p> ' + (isZh ? '速度' : 'Speed') + ': ' + speed + '</p>' +
+                                '<p> ' + (isZh ? '速度' : 'Speed') + ': ' + speed +'('+(isZh ? '信号:' : 'Signal:')+ info.rxlevel+'%)</p>' +
                                 '<p class="last-address"> '+ addressStr +': '+address+'</p></div><div class="guiji"><span class="guiji_sanjiao"></span><span class="guiji_sanjiao_2"></span></div>';
                             return sContent;
                         },
