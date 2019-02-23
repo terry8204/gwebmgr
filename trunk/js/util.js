@@ -252,7 +252,7 @@ var utils = {
       '<p> ' + (isZh ? '定位类型' : 'Position Type') + ': ' + posiType + '</p>' +
       '<p> ' + (isZh ? '经纬度' : 'Longitude and latitude') + ': ' + track.callon.toFixed(5) + ',' + track.callat.toFixed(5) + '</p>' +
       '<p> ' + (isZh ? '最后时间' : 'Last time') + ': ' + DateFormat.longToDateTimeStr(track.arrivedtime, 0) + '</p>' +
-      '<p> ' + (isZh ? '速度' : 'Speed') + ': ' + speed + '(信号:' + track.rxlevel + '%)' + '</p>' +
+      '<p> ' + (isZh ? '速度' : 'Speed') + ': ' + speed + '(' + (isZh ? '信号' : 'Signal') + ':' + track.rxlevel + '%)' + '</p>' +
       '<p> ' + (isZh ? '总里程' : 'Mileage') + ': ' + this.getMileage(track.totaldistance) + '</p>' +
       '<p> ' + (isZh ? '状态' : 'Status') + ': ' + strstatus + '</p>' +
       '<p class="last-address"> ' + (isZh ? '详细地址' : 'Address') + ': ' + b_address + '</p>' +
