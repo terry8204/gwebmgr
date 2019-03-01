@@ -9,10 +9,13 @@
         addMsg: function (msgObj) {
             var key = this._getKey(msgObj);
             this.cache[key] = msgObj;
-            console.log('tag', this.cache);
         },
         getMsgList: function () {
-            return Object.values(this.cache);
+            var list = Object.values(this.cache);
+            list.sort(function (a, b) {
+                return a.createtime - b.createtime;
+            });
+            return list;
         },
         _getKey (msgObj) {
             return msgObj.deviceid + "-" + msgObj.msgtype;
