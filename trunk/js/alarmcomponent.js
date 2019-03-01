@@ -248,8 +248,9 @@ var waringComponent = {
             };
             return deviceName;
         },
-        deleteMsg: function (index) {
-            this.$delete(this.overdueDevice, index);
+        deleteMsg: function (row) {
+            this.$delete(this.overdueDevice, row._index);
+            this.msgListObj.deleteMsg(row);
         },
         timingRequestMsg: function () {
             var me = this;
@@ -513,7 +514,7 @@ var waringComponent = {
                                                     var url = myUrls.deleteMsg();
                                                     utils.sendAjax(url, { devicemsgid: devicemsgid }, function (resp) {
                                                         if (resp.status === 0) {
-                                                            me.$emit('deletemsg', params.row._index);
+                                                            me.$emit('deletemsg', params.row);
                                                         }
                                                     });
 
