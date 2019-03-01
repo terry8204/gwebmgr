@@ -161,6 +161,7 @@ vstore = new Vuex.Store({
     },
     setAllCmdList: function (state, cmdList) {
       cmdList.forEach(function (item) {
+        console.log(item.cmdname, item.cmddescr)
         state.allCmdList.push(item);
       })
     },

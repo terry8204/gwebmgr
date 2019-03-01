@@ -114,6 +114,7 @@ var myUrls = {
   resetDeviceLoginPwd: function () {
     return this.host + 'webapi?action=resetdeviceloginpwd&token=' + token
   },
+
   // 监控页面url
   monitorListByUser: function () {
     return this.host + 'webapi?action=querymonitorlist&token=' + token
@@ -278,6 +279,7 @@ var myUrls = {
   reportAcc: function () {
     return this.host + 'webapi?action=reportacc&token=' + token;
   },
+
 }
 
 // global var

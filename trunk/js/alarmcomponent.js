@@ -227,18 +227,23 @@ var waringComponent = {
                         var currentTime = Date.now()
                         var overduetime = item.overduetime
                         var isOverdue = overduetime > currentTime ? false : true
-                        if (isOverdue) {
-                            me.overdueDevice.push({
-                                devicename: item.devicename,
-                                deviceid: item.deviceid,
-                                overduetime: DateFormat.longToDateTimeStr(overduetime, 0),
-                                isoverdue: isZh ? '已过期' : 'Expired'
-                            })
-                        }
+                        // if (isOverdue) {
+                        me.overdueDevice.push({
+                            devicename: item.devicename,
+                            deviceid: item.deviceid,
+                            overduetime: DateFormat.longToDateTimeStr(overduetime, 0),
+                            content: 'fiogo',
+                            isoverdue: isZh ? '已过期' : 'Expired'
+                        })
+                        // }
                     }
                     clearInterval(interval)
                 }
             }, 1000)
+            var url = myUrls.queryMsg();
+            utils.sendAjax(url, {}, function (resp) {
+                console.log('queryMsg', resp);
+            })
         },
         timingRequestMsg: function () {
             var me = this
@@ -480,6 +485,34 @@ var waringComponent = {
                         {
                             title: me.$t("alarm.isOverdue"),
                             key: 'isoverdue'
+                        },
+                        {
+                            title: "内容",
+                            key: 'content'
+                        },
+                        {
+                            title: me.$t("alarm.action"),
+                            key: 'action',
+                            width: 120,
+                            render: function (h, params, a) {
+                                return h('div', [
+                                    h(
+                                        'Button',
+                                        {
+                                            props: {
+                                                type: 'primary',
+                                                size: 'small'
+                                            },
+                                            on: {
+                                                click: function () {
+
+                                                }
+                                            }
+                                        },
+                                        me.$t("alarm.alarmDispose")
+                                    )
+                                ])
+                            }
                         }
                     ]
                 }
