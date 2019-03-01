@@ -8,8 +8,8 @@ var waringComponent = {
             index: 1,
             waringRowIndex: null,
             componentName: 'waringMsg',
-            waringModal: false,
             disposeModal: false,
+            waringModal: false,
             checkboxObj: {},
             waringRecords: [],
             overdueDevice: [],
@@ -28,6 +28,8 @@ var waringComponent = {
             waringWraperStyle: { width: '130px', height: '22px' },
             paramsCmdCodeArr: [],
             lastQueryAllAlarmTime: 0,  //查询报警备份的时间
+            lastqueryallmsgtime: 0,
+            msgListObj: new MsgMgr()
         }
     },
     computed: {
@@ -133,12 +135,11 @@ var waringComponent = {
             var parent = xmlDoc.children[0]
             var children = parent.children
             for (var i = 0; i < children.length; i++) {
-                var item = children[i]
-                var text = item.innerHTML
+                var item = children[i];
+                var text = item.innerHTML;
                 var type = item.getAttribute('type');
                 if (type && text) {
-                    this.paramsCmdCodeArr.push(type)
-                    // this.paramsInputObj[type] = '';
+                    this.paramsCmdCodeArr.push(type);
                     this.$set(this.paramsInputObj, type, "");
                     this.paramsInputList.push({ type: type, text: text });
                 }
@@ -221,14 +222,16 @@ var waringComponent = {
             var me = this;
             setTimeout(function () {
                 var url = myUrls.queryMsg();
-                utils.sendAjax(url, {}, function (resp) {
+                utils.sendAjax(url, { lastqueryallmsgtime: me.lastqueryallmsgtime }, function (resp) {
+                    me.lastqueryallmsgtime = DateFormat.getCurrentUTC();
                     if (resp.status === 0) {
                         var records = resp.records;
                         records.forEach(function (item) {
                             item.devicename = me.getDeviceName(item.deviceid);
                             item.createtimeStr = DateFormat.longToDateTimeStr(item.createtime, 0);
+                            me.msgListObj.addMsg(item);
                         });
-                        me.overdueDevice = me.overdueDevice.concat(records);
+                        me.overdueDevice = me.msgListObj.getMsgList();
                     };
                 })
             }, 1000)
