@@ -203,8 +203,8 @@ var waringComponent = {
             me.waringRecords = alarmList;
         },
         filterWaringType: function () {
-            this.settingCheckboxObj()
-            this.waringModal = true
+            this.settingCheckboxObj();
+            this.waringModal = true;
         },
         settingCheckboxObj: function () {
             var checkboxObjJson = Cookies.get('checkboxObj')
@@ -218,11 +218,10 @@ var waringComponent = {
             }
         },
         pushOverdueDeviceInfo: function () {
-            var me = this
+            var me = this;
             setTimeout(function () {
                 var url = myUrls.queryMsg();
                 utils.sendAjax(url, {}, function (resp) {
-                    console.log('queryMsg', resp);
                     if (resp.status === 0) {
                         var records = resp.records;
                         records.forEach(function (item) {
@@ -250,11 +249,11 @@ var waringComponent = {
             this.$delete(this.overdueDevice, index);
         },
         timingRequestMsg: function () {
-            var me = this
+            var me = this;
             setInterval(function () {
                 me.queryWaringMsg();
                 me.pushOverdueDeviceInfo();
-            }, this.interval)
+            }, this.interval);
         },
         disposeMsg: function (data) {
             if (data && data.length) {
@@ -510,9 +509,11 @@ var waringComponent = {
                                                     var devicemsgid = params.row.devicemsgid;
                                                     var url = myUrls.deleteMsg();
                                                     utils.sendAjax(url, { devicemsgid: devicemsgid }, function (resp) {
-                                                        console.log('resp', resp);
+                                                        if (resp.status === 0) {
+                                                            me.$emit('deletemsg', params.row._index);
+                                                        }
                                                     });
-                                                    // me.$emit('deletemsg', params.row._index);
+
                                                 }
                                             }
                                         },
