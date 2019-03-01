@@ -92,7 +92,9 @@
                 action: "Action",
                 alarmDispose: "Alarm Dispose",
                 overdueTime: "Overdue Date",
-                isOverdue: "Overdue"
+                isOverdue: "Overdue",
+                createTime: "Create time",
+                content: 'Content'
             },
             monitor: {
                 devGroup: "Devices",
@@ -388,7 +390,9 @@
                 action: "操作",
                 alarmDispose: "报警处理",
                 overdueTime: "过期时间",
-                isOverdue: "是否过期"
+                isOverdue: "是否过期",
+                createTime: "创建时间",
+                content: '内容'
             },
             monitor: {
                 devGroup: "设备组",

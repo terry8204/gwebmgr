@@ -136,6 +136,9 @@ var myUrls = {
   queryMsg: function () {
     return this.host + 'webapi?action=querymsg&token=' + token
   },
+  deleteMsg: function () {
+    return this.host + 'webapi?action=deletemsg&token=' + token
+  },
   //处理报警
   disposeAlarm: function (param) {
     return this.host + 'webapi?action=disposealarm&token=' + token

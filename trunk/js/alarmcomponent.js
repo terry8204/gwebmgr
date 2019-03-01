@@ -218,38 +218,42 @@ var waringComponent = {
             }
         },
         pushOverdueDeviceInfo: function () {
-            var interval = null
             var me = this
-            interval = setInterval(function () {
-                if (!$.isEmptyObject(me.deviceInfos)) {
-                    for (var key in me.deviceInfos) {
-                        var item = me.deviceInfos[key]
-                        var currentTime = Date.now()
-                        var overduetime = item.overduetime
-                        var isOverdue = overduetime > currentTime ? false : true
-                        // if (isOverdue) {
-                        me.overdueDevice.push({
-                            devicename: item.devicename,
-                            deviceid: item.deviceid,
-                            overduetime: DateFormat.longToDateTimeStr(overduetime, 0),
-                            content: 'fiogo',
-                            isoverdue: isZh ? '已过期' : 'Expired'
-                        })
-                        // }
-                    }
-                    clearInterval(interval)
-                }
+            setTimeout(function () {
+                var url = myUrls.queryMsg();
+                utils.sendAjax(url, {}, function (resp) {
+                    console.log('queryMsg', resp);
+                    if (resp.status === 0) {
+                        var records = resp.records;
+                        records.forEach(function (item) {
+                            item.devicename = me.getDeviceName(item.deviceid);
+                            item.createtimeStr = DateFormat.longToDateTimeStr(item.createtime, 0);
+                        });
+                        me.overdueDevice = records;
+                    };
+                })
             }, 1000)
-            var url = myUrls.queryMsg();
-            utils.sendAjax(url, {}, function (resp) {
-                console.log('queryMsg', resp);
-            })
+        },
+        getDeviceName: function (deviceid) {
+            var deviceName = null;
+            var deviceInfos = this.deviceInfos;
+            for (var key in deviceInfos) {
+                var item = deviceInfos[key];
+                if (item.deviceid == deviceid) {
+                    deviceName = item.devicename;
+                    break;
+                };
+            };
+            return deviceName;
+        },
+        deleteMsg: function (index) {
+            this.$delete(this.overdueDevice, index);
         },
         timingRequestMsg: function () {
             var me = this
-
             setInterval(function () {
                 me.queryWaringMsg();
+                me.pushOverdueDeviceInfo();
             }, this.interval)
         },
         disposeMsg: function (data) {
@@ -472,29 +476,27 @@ var waringComponent = {
                     columns: [
                         {
                             title: me.$t("alarm.devName"),
+                            width: 200,
                             key: 'devicename'
                         },
                         {
                             title: me.$t("alarm.devNum"),
+                            width: 200,
                             key: 'deviceid'
                         },
                         {
-                            title: me.$t("alarm.overdueTime"),
-                            key: 'overduetime'
+                            title: me.$t("alarm.createTime"),
+                            key: 'createtimeStr'
                         },
                         {
-                            title: me.$t("alarm.isOverdue"),
-                            key: 'isoverdue'
-                        },
-                        {
-                            title: "内容",
+                            title: me.$t("alarm.content"),
                             key: 'content'
                         },
                         {
                             title: me.$t("alarm.action"),
                             key: 'action',
                             width: 120,
-                            render: function (h, params, a) {
+                            render: function (h, params) {
                                 return h('div', [
                                     h(
                                         'Button',
@@ -505,13 +507,19 @@ var waringComponent = {
                                             },
                                             on: {
                                                 click: function () {
-
+                                                    var devicemsgid = params.row.devicemsgid;
+                                                    var url = myUrls.deleteMsg();
+                                                    utils.sendAjax(url, { devicemsgid: devicemsgid }, function (resp) {
+                                                        console.log('resp', resp);
+                                                    });
+                                                    // me.$emit('deletemsg', params.row._index);
                                                 }
                                             }
                                         },
-                                        me.$t("alarm.alarmDispose")
+                                        me.$t("bgMgr.delete")
                                     )
                                 ])
+
                             }
                         }
                     ]
