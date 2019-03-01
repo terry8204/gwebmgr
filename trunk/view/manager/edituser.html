@@ -279,7 +279,7 @@
                 },
                 doQueryAllgroupsInfo:function(resp){
                     var me = this;
-                    if(resp.status === 0){
+                    if(resp.grouplist && resp.status === 0 ){
                         resp.grouplist.forEach(function (group) { 
                             me.groupList.push({
                                 label:group.groupname,
