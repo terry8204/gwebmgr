@@ -228,7 +228,7 @@ var waringComponent = {
                             item.devicename = me.getDeviceName(item.deviceid);
                             item.createtimeStr = DateFormat.longToDateTimeStr(item.createtime, 0);
                         });
-                        me.overdueDevice = records;
+                        me.overdueDevice = me.overdueDevice.concat(records);
                     };
                 })
             }, 1000)
