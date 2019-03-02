@@ -68,6 +68,7 @@ var monitor = {
             cmdParams: {},
             deviceBaseInfo: {},
             loading: false,
+            selectedTypeVal: null,
             cacheColumns: [
                 { title: isZh ? '编号' : 'index', key: "index", width: 90, align: 'center', sortable: true },
                 { title: isZh ? '设备序号' : 'Device Number', key: 'deviceid' },
@@ -236,12 +237,14 @@ var monitor = {
             this.selectedCmdInfo.cmdcode = cmdInfo.cmdcode;
             this.selectedCmdInfo.cmddescr = cmdInfo.cmddescr;
             if (cmdInfo.params) {
-                this.selectedCmdInfo.params = utils.parseXML(cmdInfo.params)
+                var paramsXMLObj = utils.parseXML(cmdInfo.params);
+                this.selectedCmdInfo.type = paramsXMLObj.type;
+                this.selectedCmdInfo.params = paramsXMLObj.paramsListObj;
                 this.selectedCmdInfo.params.forEach(function (param) {
                     me.cmdParams[param.type] = param.value;
                 });
+                paramsXMLObj.type !== 'text' ? this.selectedTypeVal = null : '';
             };
-
             this.dispatchDirectiveModal = true;
         },
         handleClickFence: function (name) {
@@ -318,7 +321,8 @@ var monitor = {
         disposeDirectiveFn: function () {
             var me = this;
             var url = myUrls.sendCmd();
-            var data = { devicetype: this.currentDeviceType, cmdcode: this.selectedCmdInfo.cmdcode, deviceid: me.currentDeviceId, params: Object.values(this.cmdParams), state: -1 };
+            var params = this.selectedCmdInfo.type === 'text' ? Object.values(this.cmdParams) : [this.selectedTypeVal];
+            var data = { devicetype: this.currentDeviceType, cmdcode: this.selectedCmdInfo.cmdcode, deviceid: me.currentDeviceId, params: params, state: -1 };
             utils.sendAjax(url, data, function (resp) {
                 if (resp.status === 0) {
                     communicate.$emit("disposeAlarm", data.cmdcode);

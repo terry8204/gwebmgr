@@ -43,7 +43,16 @@
             </Row>
 
             
-            
+            <Row style="margin: 10px 0">
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">参数类型 : &nbsp;</i-col>
+                <i-col span="20">
+                    <i-select v-model="selectParamType">
+                        <i-option value="text">文本输入</i-option>
+                        <i-option value="list">下拉选择</i-option>
+                    </i-select> 
+                </i-col>
+            </Row>
+
             <Row>
                 <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">指令描述 : &nbsp;</i-col>
                 <i-col span="20">
@@ -107,7 +116,8 @@
                     deviceTypeList:[],
                     listCmdAction:[],
                     cmdList:[],
-                    isShowMatchDev:false
+                    isShowMatchDev:false,
+                    selectParamType:null,
                 }
             },
             watch:{
@@ -169,6 +179,15 @@
                         }else{
                             this.$Message.error("参数格式错误");
                             return;
+                        }
+                    }
+
+                    
+                    if(data.params){
+                        if(this.selectParamType === 'text'){
+                            data.params = "<param type='text'>文本输入</param>\n" + data.params;
+                        }else if(this.selectParamType === 'list'){
+                            data.params = "<param type='list'>下拉选择 </param>\n" + data.params;
                         }
                     }
 
