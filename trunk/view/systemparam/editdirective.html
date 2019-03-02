@@ -210,19 +210,17 @@
                     this.paramstw=data.paramstw;
                     this.common = data.common;
                     this.isSync = data.sync == 1 ? true :false
-                    console.log('data.params', data.params)
-                    if(data.params!=""){
+
+                    if(data.params){
                         var paramsArr = data.params.split('\n');
                         var firstType = paramsArr.shift();
                         var selectParamType = this.getSelectParamType(firstType);
-                        console.log('selectParamType', selectParamType , selectParamType == 'text');
                         if(selectParamType !== 'text' && selectParamType !== 'list'){
                             this.params = data.params;
                         }else{
                             this.params=paramsArr.join("\n");
                             this.selectParamType = selectParamType;
                         }
-                        console.log('1selectParamType', this.selectParamType);
                     };   
                 },
                 getSelectParamType:function(param){
