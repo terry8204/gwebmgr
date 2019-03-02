@@ -57,13 +57,22 @@
 
         <Row style="margin: 10px 0">
             <i-col span="4" style="height: 100%;text-align:right;line-height:100%;">预览 : &nbsp;</i-col>
-            <i-col span="20">
+            <i-col span="20" v-if="selectParamType==='text'">
                 <Row style="margin: 5px 0" v-for="item in previewObjList" :key="item.text">
                     <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">
                         {{item.text}} : &nbsp;
                     </i-col>
                     <i-col span="16">
                         <i-input v-model.trim="kong"></i-input>    
+                    </i-col>
+                </Row>
+            </i-col>
+            <i-col span="20" v-if="selectParamType==='list'">
+                <Row style="margin: 5px 0">
+                    <i-col span="16" offset="4">
+                        <i-select v-model="preview">
+                            <i-option v-for="item in previewObjList" :value="item.type" :key="item.type">{{ item.text }}</i-option>
+                        </i-select>
                     </i-col>
                 </Row>
             </i-col>
@@ -99,7 +108,8 @@
                     kong:"",
                     deviceTypeList:[],
                     listCmdAction:[],
-                    selectParamType:''
+                    selectParamType:'',
+                    preview:null
                 }
             },
             watch:{

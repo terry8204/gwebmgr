@@ -169,7 +169,7 @@ var waringComponent = {
             }
         },
         queryWaringMsg: function () {
-            if ($.isEmptyObject(this.deviceInfos)) {
+            if (!$.isEmptyObject(this.deviceInfos)) {
                 var me = this;
                 var url = myUrls.queryAlarm();
                 this.checkboxObj.lastqueryallalarmtime = me.lastQueryAllAlarmTime;
@@ -222,7 +222,7 @@ var waringComponent = {
         },
         queryDeviceMsgList: function () {
             var me = this;
-            if ($.isEmptyObject(this.deviceInfos)) {
+            if (!$.isEmptyObject(this.deviceInfos)) {
                 setTimeout(function () {
                     var url = myUrls.queryMsg();
                     utils.sendAjax(url, { lastqueryallmsgtime: me.lastqueryallmsgtime }, function (resp) {
