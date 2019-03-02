@@ -471,7 +471,7 @@ var waringComponent = {
         },
         deviceMsg: {
             template:
-                '<Table :height="tabheight" :columns="columns" :data="deviceinfolist"></Table>',
+                '<Table :height="tabheight" border :columns="columns" :data="deviceinfolist"></Table>',
             props: ['deviceinfolist', 'tabletype', 'wrapperheight'],
             data: function () {
                 var me = this;
