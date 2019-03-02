@@ -169,20 +169,22 @@ var waringComponent = {
             }
         },
         queryWaringMsg: function () {
-            var me = this
-            var url = myUrls.queryAlarm();
-            this.checkboxObj.lastqueryallalarmtime = me.lastQueryAllAlarmTime;
-            utils.sendAjax(url, this.checkboxObj, function (resp) {
-                if (resp.status == 0) {
-                    me.lastQueryAllAlarmTime = DateFormat.getCurrentUTC();
-                    if (resp.records) {
-                        resp.records.forEach(function (item) {
-                            me.alarmMgr.addRecord(item);
-                        });
-                        me.refreshAlarmToUi();
+            if ($.isEmptyObject(this.deviceInfos)) {
+                var me = this;
+                var url = myUrls.queryAlarm();
+                this.checkboxObj.lastqueryallalarmtime = me.lastQueryAllAlarmTime;
+                utils.sendAjax(url, this.checkboxObj, function (resp) {
+                    if (resp.status == 0) {
+                        me.lastQueryAllAlarmTime = DateFormat.getCurrentUTC();
+                        if (resp.records) {
+                            resp.records.forEach(function (item) {
+                                me.alarmMgr.addRecord(item);
+                            });
+                            me.refreshAlarmToUi();
+                        }
                     }
-                }
-            })
+                })
+            }
         },
         refreshAlarmToUi: function () {
             var me = this;
@@ -218,23 +220,25 @@ var waringComponent = {
                 }
             }
         },
-        pushOverdueDeviceInfo: function () {
+        queryDeviceMsgList: function () {
             var me = this;
-            setTimeout(function () {
-                var url = myUrls.queryMsg();
-                utils.sendAjax(url, { lastqueryallmsgtime: me.lastqueryallmsgtime }, function (resp) {
-                    me.lastqueryallmsgtime = DateFormat.getCurrentUTC();
-                    if (resp.status === 0) {
-                        var records = resp.records;
-                        records.forEach(function (item) {
-                            item.devicename = me.getDeviceName(item.deviceid);
-                            item.createtimeStr = DateFormat.longToDateTimeStr(item.createtime, 0);
-                            me.msgListObj.addMsg(item);
-                        });
-                        me.overdueDevice = me.msgListObj.getMsgList();
-                    };
-                })
-            }, 1000)
+            if ($.isEmptyObject(this.deviceInfos)) {
+                setTimeout(function () {
+                    var url = myUrls.queryMsg();
+                    utils.sendAjax(url, { lastqueryallmsgtime: me.lastqueryallmsgtime }, function (resp) {
+                        me.lastqueryallmsgtime = DateFormat.getCurrentUTC();
+                        if (resp.status === 0) {
+                            var records = resp.records;
+                            records.forEach(function (item) {
+                                item.devicename = me.getDeviceName(item.deviceid);
+                                item.createtimeStr = DateFormat.longToDateTimeStr(item.createtime, 0);
+                                me.msgListObj.addMsg(item);
+                            });
+                            me.overdueDevice = me.msgListObj.getMsgList();
+                        };
+                    })
+                }, 1000);
+            }
         },
         getDeviceName: function (deviceid) {
             var deviceName = null;
@@ -256,7 +260,7 @@ var waringComponent = {
             var me = this;
             setInterval(function () {
                 me.queryWaringMsg();
-                me.pushOverdueDeviceInfo();
+                me.queryDeviceMsgList();
             }, this.interval);
         },
         disposeMsg: function (data) {
@@ -548,7 +552,7 @@ var waringComponent = {
         if (this.userType != 0) {
             this.alarmMgr = new AlarmMgr();
             this.settingCheckboxObj();
-            this.pushOverdueDeviceInfo();
+            this.queryDeviceMsgList();
             this.timingRequestMsg();
             this.queryAlarmDescr();
             this.changeWrapperCls();
