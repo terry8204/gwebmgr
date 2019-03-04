@@ -236,7 +236,7 @@
             utils.sendAjax(url,data,function (resp) { 
                 if(resp.status == 0 ){
                     vm.xList = resp.track.x ? resp.track.x : isZh?'空':'Empty';
-                    vm.wList = resp.track.w ? resp.track.x : isZh?'空':'Empty';
+                    vm.wList = resp.track.w ? resp.track.w : isZh?'空':'Empty';
                     vm.trackid = resp.track.trackid;
                     vm.modal = true;
                 }else{
@@ -285,7 +285,7 @@
                     posiDetail:"Positon details",
                     trackId:"Track ID",
                     jizhanList:"Base station",
-                    WIFIList:"WIFT",
+                    WIFIList:"WiFi",
                     result:"Position result"
                 }
 
@@ -310,7 +310,7 @@
                     posiDetail:"定位详情",
                     trackId:"轨迹序号",
                     jizhanList:"基站列表",
-                    WIFIList:"WIFT列表",
+                    WIFIList:"WiFi列表",
                     result:"定位结果"
                 }
             }
