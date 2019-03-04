@@ -224,6 +224,7 @@ var monitor = {
             })
         },
         handleClickDirective: function (cmdCode) {
+
             this.cmdParams = {};
             this.selectedCmdInfo = {};
             var cmdInfo = null;
@@ -233,6 +234,7 @@ var monitor = {
                     cmdInfo = cmd;
                 }
             });
+            console.log('cmdInfo', cmdInfo);
             this.selectedCmdInfo.cmdName = cmdInfo.cmdname;
             this.selectedCmdInfo.cmdcode = cmdInfo.cmdcode;
             this.selectedCmdInfo.cmddescr = cmdInfo.cmddescr;

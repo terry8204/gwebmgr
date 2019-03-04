@@ -382,6 +382,12 @@
                         </Row>
                     </div>
 
+                    <div style="text-align:center" v-lese>
+                        <Row style="margin: 10px 0">
+                            <i-col span="24" style="height: 100%;text-align:center;line-height:32px;font-size:14px;">{{selectedCmdInfo.cmddescr}}</i-col>
+                        </Row>
+                    </div>
+
                     <div slot="footer">
                         <i-button type="primary"  @click="disposeDirectiveFn" style="width: 100%">{{$t("monitor.confirm")}}</i-button>
                     </div>
