@@ -254,6 +254,9 @@ var utils = {
       }
       posiType += radiuDesc;
     };
+    if (track.gotsrc === 'gps' && track.gpsvalidnum) {
+      posiType += "(" + track.gpsvalidnum + ")";
+    };
     var speed = track.speed == 0 ? "0km/h" : (track.speed / 1000).toFixed(2) + "km/h";
     var content =
       '<p> ' + (isZh ? '设备名称' : 'Device Name') + ': ' + track.devicename + '</p>' +
