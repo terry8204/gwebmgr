@@ -219,6 +219,7 @@ var monitor = {
                 deviceid: deviceId
             };
             utils.sendAjax(url, data, function (resp) {
+
                 resp.overdueDateStr = DateFormat.longToDateStr(resp.overduetime, 0);
                 me.deviceBaseInfo = resp;
             })
@@ -234,7 +235,7 @@ var monitor = {
                     cmdInfo = cmd;
                 }
             });
-            console.log('cmdInfo', cmdInfo);
+
             this.selectedCmdInfo.cmdName = cmdInfo.cmdname;
             this.selectedCmdInfo.cmdcode = cmdInfo.cmdcode;
             this.selectedCmdInfo.cmddescr = cmdInfo.cmddescr;
