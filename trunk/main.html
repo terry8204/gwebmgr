@@ -675,12 +675,20 @@
                         </i-col>
                     </Row>
 
-                    <Row style="margin: 10px 0" v-for="item in paramsInputList" :key="item.text">
+                    <Row style="margin: 10px 0" v-for="item in paramsInputList" :key="item.text" v-if="type=='text'">
                         <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">
                             <i style="color: red;display: inline-block;">*</i>&nbsp;{{item.text}} : &nbsp;
                         </i-col>
                         <i-col span="16">
                             <i-input v-model.trim="paramsInputObj[item.type]"></i-input>
+                        </i-col>
+                    </Row>
+
+                    <Row style="margin: 10px 0"  v-else-if="type=='list'">
+                        <i-col span="16" :offset="4">
+                            <i-select v-model="selectedTypeVal">
+                                <i-option v-for="item in paramsInputList" :value="item.type" :key="item.type">{{ item.value }}</i-option>
+                            </i-select>
                         </i-col>
                     </Row>
                 </div>

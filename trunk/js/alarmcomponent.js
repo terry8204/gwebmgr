@@ -29,7 +29,9 @@ var waringComponent = {
             paramsCmdCodeArr: [],
             lastQueryAllAlarmTime: 0,  //查询报警备份的时间
             lastqueryallmsgtime: 0,
-            msgListObj: new MsgMgr()
+            msgListObj: new MsgMgr(),
+            type: null, // 解除报警的参数类型 是 text | list
+            selectedTypeVal: null,
         }
     },
     computed: {
@@ -100,6 +102,8 @@ var waringComponent = {
                 var parser = new DOMParser();
                 var xmlDoc = parser.parseFromString(params, 'text/xml');
                 this.parseXML(xmlDoc);
+            } else {
+                this.type = null;
             };
         }
     },
@@ -132,9 +136,14 @@ var waringComponent = {
         },
         parseXML: function (xmlDoc) {
             this.paramsCmdCodeArr = [];
-            var parent = xmlDoc.children[0]
-            var children = parent.children
-            for (var i = 0; i < children.length; i++) {
+            var parent = xmlDoc.children[0];
+            var children = parent.children;
+            var type = children[0].getAttribute('type');
+            this.type = type;
+            if (this.type === 'list') {
+                this.selectedTypeVal = null;
+            };
+            for (var i = 1; i < children.length; i++) {
                 var item = children[i];
                 var text = item.innerHTML;
                 var type = item.getAttribute('type');
@@ -265,11 +274,11 @@ var waringComponent = {
         },
         disposeMsg: function (data) {
             if (data && data.length) {
-                var newArr = []
+                var newArr = [];
                 for (var i = 0; i < data.length; i++) {
                     var msgTiem = data[i]
                     for (var j = 0; j < this.waringRecords.length; j++) {
-                        var waringItem = this.waringRecords[j]
+                        var waringItem = this.waringRecords[j];
                         if (
                             msgTiem.deviceid == waringItem.deviceid &&
                             msgTiem.arrivedtime !== waringItem.arrivedtime
@@ -314,19 +323,19 @@ var waringComponent = {
             this.waringModal = false
         },
         showDisposeModalFrame: function (param) {
-            this.waringRowIndex = param.index
+            this.waringRowIndex = param.index;
             var deviceInfos = this.$store.state.deviceInfos;
 
             var row = param.row;
             var deviceid = row.deviceid;
-            var devicetype = deviceInfos[deviceid].devicetype
+            var devicetype = deviceInfos[deviceid].devicetype;
 
             this.cmdRowWaringObj = {
                 deviceid: deviceid,
                 devicetype: devicetype,
                 params: null,
                 state: row.state
-            }
+            };
 
             this.disposeModal = true;
 
@@ -354,6 +363,14 @@ var waringComponent = {
 
             if (this.params && paramsArr.length) {
                 this.cmdRowWaringObj.params = paramsArr;
+            };
+
+            if (this.type === 'list') {
+                if (this.selectedTypeVal) {
+                    this.cmdRowWaringObj.params = [this.selectedTypeVal];
+                } else {
+                    return;
+                }
             };
 
             utils.sendAjax(sendCmdUrl, this.cmdRowWaringObj, function (resp) {
