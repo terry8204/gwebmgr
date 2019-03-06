@@ -380,7 +380,7 @@ var waringComponent = {
                     me.alarmMgr.updateDisposeStatus(me.cmdRowWaringObj.deviceid, me.cmdRowWaringObj.alarm);
                     me.refreshAlarmToUi();
                 } else {
-                    me.$Message.error(resp.cause);
+                    resp.cause && me.$Message.error(resp.cause);
                 }
             })
         },
