@@ -357,36 +357,30 @@
                         <span>{{ selectedCmdInfo.cmdName }}</span>
                     </p>
 
-                    <div style="text-align:center" v-if="selectedCmdInfo.type === 'text'">
+             
+                    <div style="text-align:center" >
                         <Row style="margin: 10px 0">
                             <i-col span="24" style="height: 100%;text-align:center;line-height:32px;font-size:14px;">{{selectedCmdInfo.cmddescr}}</i-col>
                         </Row>
-                        <Row style="margin: 10px 0" v-for="item in selectedCmdInfo.params" :key="item.desc">
-                            <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{item.desc}} : &nbsp;</i-col>
-                            <i-col span="16">
-                                <i-input v-model.trim="cmdParams[item.type]"></i-input>
-                            </i-col>
-                        </Row>
-                    </div>
 
-                    <div style="text-align:center" v-if="selectedCmdInfo.type === 'list'">
-                        <Row style="margin: 10px 0">
-                            <i-col span="24" style="height: 100%;text-align:center;line-height:32px;font-size:14px;">{{selectedCmdInfo.cmddescr}}</i-col>
-                        </Row>
-                        <Row style="margin: 10px 0">
+                        <Row style="margin: 10px 0" v-if="selectedCmdInfo.type === 'list'">
                             <i-col span="24">
                                 <i-select v-model="selectedTypeVal">
                                     <i-option v-for="item in selectedCmdInfo.params" :value="item.type" :key="item.type">{{ item.value }}</i-option>
                                 </i-select>
                             </i-col>
                         </Row>
+
+                        <Row style="margin: 10px 0" v-for="item in selectedCmdInfo.params" :key="item.desc" v-if="selectedCmdInfo.type === 'text'">
+                            <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{item.desc}} : &nbsp;</i-col>
+                            <i-col span="16">
+                                <i-input v-model.trim="cmdParams[item.type]"></i-input>
+                            </i-col>
+                        </Row>
+
                     </div>
 
-                    <div style="text-align:center" v-else>
-                        <Row style="margin: 10px 0">
-                            <i-col span="24" style="height: 100%;text-align:center;line-height:32px;font-size:14px;">{{selectedCmdInfo.cmddescr}}</i-col>
-                        </Row>
-                    </div>
+        
 
                     <div slot="footer">
                         <i-button type="primary"  @click="disposeDirectiveFn" style="width: 100%">{{$t("monitor.confirm")}}</i-button>
@@ -612,7 +606,7 @@
                     <ul>
                         <li :class="{selected:index == 1}" @click="changeComponent(1)">{{$t("alarm.alarmMsg")}}</li>
                         <li :class="{selected:index == 2}" @click="changeComponent(2)">{{$t("alarm.devMsg")}}</li>
-                        <li @click="filterWaringType"> [{{$t("alarm.filterAlarmType")}}] </li>
+                        <!-- <li @click="filterWaringType"> [{{$t("alarm.filterAlarmType")}}] </li> -->
                     </ul> 
                     <div class="shrink-btn">
                         <span @click="changeLargen(0)" :title="$t('alarm.min')">
