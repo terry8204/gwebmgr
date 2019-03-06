@@ -49,6 +49,10 @@ vueInstanse = new Vue({
                             key: 'simnum'
                         },
                         {
+                            title: vRoot.$t("bgMgr.addTime"),
+                            key: 'createtimestr'
+                        },
+                        {
                             title: vRoot.$t("monitor.expireTime"),
                             key: 'overduetimestr'
                         },
@@ -130,6 +134,7 @@ vueInstanse = new Vue({
                     var me = this;
                     var data = [];
                     devList.forEach(function (dev) { 
+                        dev.createtimestr = DateFormat.longToDateTimeStr(dev.createtime,0);
                         dev.overduetimestr = DateFormat.longToDateTimeStr(dev.overduetime,0);
                         dev.companyname = me.getCustimerName(dev.companyid);
                         dev.groupname = me.getGroupName(dev.groupid);
