@@ -73,6 +73,7 @@
                     addDevTypeModal: false,
                     cmdModal:false,
                     rowIndex: null,
+                    oldtypename:null,
                     columns: [
                       
                         {
@@ -161,7 +162,8 @@
                         data = {
                             "devicetypeid": this.devTypeInfo.devicetypeid,
                             "typecode": this.devTypeInfo.typecode,
-                            "typename": this.devTypeInfo.typename,
+                            "newtypename": this.devTypeInfo.typename,
+                            "oldtypename":this.oldtypename
                         }
                     } else {
                         url = myUrls.addDeviceType();
@@ -197,7 +199,15 @@
                             };
                             me.addDevTypeModal = false;
                         } else {
-                            me.$Message.error("操作失败");
+                            if (me.isEdit) {
+                                if (resp.status == 1){  
+                                    me.$Message.error("原设备类型不存在");
+                                }else if (resp.status == 2){
+                                    me.$Message.error("新的设备类型重复");
+                                }
+                            }else{
+                                me.$Message.error("操作失败");
+                            };   
                         }
 
                     })
@@ -205,6 +215,7 @@
                 openEditDevTypeModal: function (params) {
                     this.isEdit = true;
                     this.addDevTypeModal = true;
+                    this.oldtypename = params.row.typename;
                     this.devTypeInfo = JSON.parse(JSON.stringify(params.row));
                     this.rowIndex = params.index;
                 },
