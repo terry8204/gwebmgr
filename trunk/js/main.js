@@ -368,17 +368,17 @@ var trackDebug = {
       contentString: "",
       columns: [
         { title: 'trackid', key: 'trackid', fixed: 'left', width: 80 },
-        { title: 'arrivedtime', key: 'arrivedtimeStr', width: 200 },
+        { title: 'arrivedtime', key: 'arrivedtimeStr', width: 160 },
         { title: 'loctype', key: 'loctype', width: 80 },
         { title: 'callat', key: 'callat', width: 120 },
         { title: 'callon', key: 'callon', width: 120 },
         { title: 'radius', key: 'radius', width: 80 },
         { title: 'speed', key: 'speed', width: 80 },
-        { title: 'totaldistance', key: 'totaldistance' },
+        { title: 'totaldistance', key: 'totaldistance', width: 120 },
         { title: 'altitude', key: 'altitude', width: 80 },
         { title: 'course', key: 'course', width: 80 },
-        { title: 'status', key: 'status' },
-        { title: 'strstatus', key: 'strstatus' },
+        { title: 'status', key: 'status', width: 80 },
+        { title: 'strstatus', key: 'strstatus', width: 500 },
         { title: 'gotsrc', key: 'gotsrc', width: 80 },
         { title: 'rxlevel', key: 'rxlevel', width: 80 },
         { title: 'servicealive', key: 'servicealive', width: 80 },
@@ -431,6 +431,9 @@ var trackDebug = {
       if (resp.status == 0 && resp.records) {
         resp.records.forEach(function (record) {
           record.arrivedtimeStr = DateFormat.longToDateTimeStr(record.arrivedtime, 0)
+        });
+        resp.records.sort(function (a, b) {
+          return a.arrivedtime - b.arrivedtime;
         });
         this.data = resp.records;
         this.total = this.data.length;

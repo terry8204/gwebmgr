@@ -315,11 +315,13 @@ div.ivu-steps-head-inner .ivu-icon{
 .trackdebug-wraper .table-wrappr{
     top: 45px;
     bottom: 45px;
+    overflow-y: auto;
 }
 .trackdebug-wraper  .content-wrap{
     position: absolute;
     right: 5px;
     bottom: 5px;
+    z-index: 9999;
 }
 #content-string{
     overflow: hidden;
