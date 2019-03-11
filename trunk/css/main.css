@@ -260,7 +260,7 @@ div.ivu-steps-head-inner .ivu-icon{
 
 
   /* 后台管理开始 */
-    div.manager-wraper{
+    div.manager-wraper,div.trackdebug-wraper{
         height: 100%;
         width: 100%;
         position: relative;
@@ -291,11 +291,51 @@ div.ivu-steps-head-inner .ivu-icon{
   /* 后台管理结束 */
 
 
+/* 轨迹debug */
+.trackdebug-wraper .control-wrapper, .trackdebug-wraper .table-wrappr, .trackdebug-wraper .page-wrappr{
+    position: absolute;
+    left: 0;
+    right: 0;
+}
 
+.trackdebug-wraper .control-wrapper{
+    height: 45px;
+    top: 0;
+}
+.trackdebug-wraper .control-wrapper>ul{
+    padding-top: 6.5px;
+    overflow: hidden;
+    padding-left: 15px;
+}
+.trackdebug-wraper .control-wrapper>ul>li{
+    float: left;
+    margin-right: 15px
+}
 
+.trackdebug-wraper .table-wrappr{
+    top: 45px;
+    bottom: 45px;
+}
+.trackdebug-wraper  .content-wrap{
+    position: absolute;
+    right: 5px;
+    bottom: 5px;
+}
+#content-string{
+    overflow: hidden;
+    word-wrap:break-word;
+}
 
-
-
+.trackdebug-wraper .page-wrappr{
+    height: 45px;
+    bottom: 0;
+    padding-right: 20px;
+    background: #fff;
+}
+.trackdebug-wraper .page-wrappr>div{
+    padding-top: 5px;
+    float: right;
+}
 
 
 

@@ -391,7 +391,7 @@
                         this.startTime = new Date(this.startTime.getTime() + this.dayTime);
                     },
                     prevDay:function(){
-                        this.startTime = new Date(this.startTime - this.dayTime);
+                        this.startTime = new Date(this.startTime.getTime()  - this.dayTime);
                     },
                     prevStep:function(){
                         if (this.intervalInstanse != null) {

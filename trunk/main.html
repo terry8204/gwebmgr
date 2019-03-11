@@ -591,6 +591,61 @@
         </div>
     </script>
 
+    <!-- 轨迹调试 -->
+    <script type="text/x-template" id="trackdebug-template"> 
+        <div class="trackdebug-wraper">
+            <div class="control-wrapper">
+                <ul>
+                    <li>
+                        <i-input 
+                            style="width: auto;width:100%;" 
+                            v-model.trim="deviceId" 
+                            placeholder="input device id"
+                            @on-blur="onBlur">
+                            <Icon type="ios-search" slot="suffix" />
+                        </i-input>
+                    </li>
+                    <li>
+                        <date-picker type="date" 
+                                    style="width: 180px;" 
+                                    v-model="startDate"  
+                                    :clearable="false" 
+                                    :editable="false"></date-picker>
+                    </li>
+                    <li>
+                        <i-button @click="prevDay">上一天</i-button>
+                    </li>
+                    <li>
+                        <i-button @click="nextDay">下一天</i-button>
+                    </li>
+                </ul>
+            </div>
+            <div class="table-wrappr" ref="tableWrappr">
+                <i-table :height="tableHeight" border :columns="columns" :data="tableData" :loading="loading" @on-row-click="onRowClick"></i-table>
+                <div class="content-wrap" v-show="isShowCard">
+                    <Card style="width:650px">
+                        <p slot="title">
+                            <Icon type="ios-film-outline"></Icon>
+                            Content
+                        </p>
+                        <a href="#" slot="extra" @click.prevent="closeCard">
+                            <Icon type="ios-loop-strong"></Icon>
+                            X
+                        </a>
+                        <div id="content-string">
+                            {{contentString}}
+                        </div>
+                    </Card>
+                </div>
+            </div>
+            <div class="page-wrappr">
+                <div>
+                    <Page :total="total" show-total @on-change="onChange" />
+                </div>
+            </div>
+        </div>
+    </script>
+
     <!-- 报警 -->
     <script type="text/x-template" id="waring-template">
         <div class="waring-wraper" :style="waringWraperStyle">

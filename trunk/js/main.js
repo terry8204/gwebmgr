@@ -200,7 +200,8 @@ var appHeader = {
         { name: "monitor", icon: "md-contacts", title: me.$t("header.monitor"), isShow: true },
         { name: "reportForm", icon: "ios-paper-outline", title: me.$t("header.reportForm"), isShow: true },
         { name: "bgManager", icon: "md-settings", title: me.$t("header.bgManager"), isShow: true },
-        { name: "systemParam", icon: "ios-options", title: me.$t("header.systemParam"), isShow: true }
+        { name: "systemParam", icon: "ios-options", title: me.$t("header.systemParam"), isShow: true },
+        { name: "trackDebug", icon: "ios-options", title: "轨迹调试", isShow: true }
       ],
       modalPass: false,
       oldPass: '',
@@ -298,17 +299,21 @@ var appHeader = {
       if (userType == -1 || userType == 99 || userType == 20 || userType == 11) {
         this.headMenuList[2].isShow = false;
         this.headMenuList[3].isShow = false;
+        this.headMenuList[4].isShow = false;
         this.$emit('change-nav', 'monitor');
       } else if (userType == 0) {
         this.headMenuList[0].isShow = false;
         this.$emit('change-nav', 'reportForm')
       } else if (userType == 1 || userType == 2) {
         this.headMenuList[3].isShow = false;
+        this.headMenuList[4].isShow = false;
         this.$emit('change-nav', 'monitor')
       } else {
         this.headMenuList[3].isShow = false;
+        this.headMenuList[4].isShow = false;
         this.$emit('change-nav', 'monitor')
       }
+      console.log(this.headMenuList);
     }
   },
   computed: {
@@ -346,6 +351,123 @@ var appHeader = {
 // 根据当前语言来设置 iview 使用使用设么语言
 iview.lang(isZh ? 'zh-CN' : 'en-US');
 
+
+var trackDebug = {
+  template: document.getElementById('trackdebug-template').innerHTML,
+  data: function () {
+    return {
+      loading: false,
+      isShowCard: false,
+      deviceId: '22200029669',
+      dayTime: 60 * 60 * 24 * 1000,
+      total: 0,
+      tableHeight: 400,
+      startDate: null,
+      startTimeStr: null,
+      endTimeStr: null,
+      contentString: "",
+      columns: [
+        { title: 'trackid', key: 'trackid', fixed: 'left', width: 80 },
+        { title: 'arrivedtime', key: 'arrivedtimeStr', width: 200 },
+        { title: 'loctype', key: 'loctype', width: 80 },
+        { title: 'callat', key: 'callat', width: 120 },
+        { title: 'callon', key: 'callon', width: 120 },
+        { title: 'radius', key: 'radius', width: 80 },
+        { title: 'speed', key: 'speed', width: 80 },
+        { title: 'totaldistance', key: 'totaldistance' },
+        { title: 'altitude', key: 'altitude', width: 80 },
+        { title: 'course', key: 'course', width: 80 },
+        { title: 'status', key: 'status' },
+        { title: 'strstatus', key: 'strstatus' },
+        { title: 'gotsrc', key: 'gotsrc', width: 80 },
+        { title: 'rxlevel', key: 'rxlevel', width: 80 },
+        { title: 'servicealive', key: 'servicealive', width: 80 },
+        { title: 'connectalive', key: 'connectalive', width: 80 },
+      ],
+      data: [],
+      tableData: []
+    }
+  },
+  methods: {
+    onChange (index) {
+      this.isShowCard = false;
+      this.tableData = this.data.slice(index - 1, 10);
+    },
+    onBlur: function () {
+      this.requestTracks(this.doRequestTracks);
+    },
+    closeCard: function () {
+      this.isShowCard = false;
+    },
+    nextDay: function () {
+      this.isShowCard = false;
+      this.startDate = new Date(this.startDate.getTime() + this.dayTime);
+      this.getTimeParams();
+      this.requestTracks(this.doRequestTracks);
+    },
+    prevDay: function () {
+      this.isShowCard = false;
+      this.startDate = new Date(this.startDate.getTime() - this.dayTime);
+      this.getTimeParams();
+      this.requestTracks(this.doRequestTracks);
+    },
+    requestTracks: function (callback) {
+      if (!this.deviceId) { return; };
+      this.loading = true;
+      var url = myUrls.queryTracks();
+      var data = {
+        deviceid: this.deviceId,
+        lbs: 1,
+        timeorder: 0,
+        begintime: this.startTimeStr,
+        endtime: this.endTimeStr
+      };
+      utils.sendAjax(url, data, function (resp) {
+        callback(resp)
+      });
+    },
+    doRequestTracks: function (resp) {
+      this.loading = false;
+      if (resp.status == 0 && resp.records) {
+        resp.records.forEach(function (record) {
+          record.arrivedtimeStr = DateFormat.longToDateTimeStr(record.arrivedtime, 0)
+        });
+        this.data = resp.records;
+        this.total = this.data.length;
+        this.tableData = this.data.slice(0, 10);
+      } else {
+        this.total = 0;
+        this.data = [];
+        this.tableData = [];
+      }
+    },
+    onRowClick: function (row, i) {
+      this.isShowCard = true;
+      this.contentString = JSON.stringify(row);
+    },
+    caclTableheight: function () {
+      var tHeight = parseInt(getComputedStyle(this.$refs.tableWrappr).height);
+      this.tableHeight = tHeight;
+    },
+    getTimeParams: function () {
+      var date = this.startDate;
+      var year = date.getFullYear();
+      var month = date.getMonth() + 1;
+      var day = date.getDate();
+      var dateStr = year + "-" + (month < 10 ? '0' + month : month) + "-" + (day < 10 ? '0' + day : day);
+      this.startTimeStr = dateStr + " 00:00:00";
+      this.endTimeStr = dateStr + " 23:59:00";
+    }
+  },
+  mounted () {
+    this.caclTableheight();
+    this.startDate = new Date();
+    this.getTimeParams();
+    this.requestTracks(this.doRequestTracks);
+  }
+}
+
+
 // 根组件
 var vRoot = new Vue({
   el: '#app',
@@ -357,6 +479,7 @@ var vRoot = new Vue({
   methods: {
     changeComponent: function (activeName) {
       window.onresize = null;
+      console.log('activeName', activeName);
       this.$store.commit('setHeaderActiveName', activeName);
     },
     jumpReport: function (activeName) {
@@ -387,7 +510,8 @@ var vRoot = new Vue({
     monitor: monitor,
     reportForm: reportForm,
     waringComponent: waringComponent,
-    systemParam: systemParam
+    systemParam: systemParam,
+    trackDebug: trackDebug
   },
   mounted: function () {
     this.isShowAlarm = this.userType == 0 ? false : true;
