@@ -391,7 +391,7 @@ var trackDebug = {
   methods: {
     onChange (index) {
       this.isShowCard = false;
-      this.tableData = this.data.slice(index - 1, 10);
+      this.tableData = this.data.slice(index - 1, index - 1 + 30);
     },
     onBlur: function () {
       this.requestTracks(this.doRequestTracks);
@@ -419,6 +419,7 @@ var trackDebug = {
         deviceid: this.deviceId,
         lbs: 1,
         timeorder: 0,
+        interval: -1,
         begintime: this.startTimeStr,
         endtime: this.endTimeStr
       };
@@ -433,11 +434,11 @@ var trackDebug = {
           record.arrivedtimeStr = DateFormat.longToDateTimeStr(record.arrivedtime, 0)
         });
         resp.records.sort(function (a, b) {
-          return a.arrivedtime - b.arrivedtime;
+          return b.arrivedtime - a.arrivedtime;
         });
         this.data = resp.records;
         this.total = this.data.length;
-        this.tableData = this.data.slice(0, 10);
+        this.tableData = this.data.slice(0, 30);
       } else {
         this.total = 0;
         this.data = [];
