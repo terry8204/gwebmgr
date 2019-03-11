@@ -201,7 +201,7 @@ var appHeader = {
         { name: "reportForm", icon: "ios-paper-outline", title: me.$t("header.reportForm"), isShow: true },
         { name: "bgManager", icon: "md-settings", title: me.$t("header.bgManager"), isShow: true },
         { name: "systemParam", icon: "ios-options", title: me.$t("header.systemParam"), isShow: true },
-        { name: "trackDebug", icon: "ios-options", title: "轨迹调试", isShow: true }
+        { name: "trackDebug", icon: "ios-bug", title: "轨迹调试", isShow: true }
       ],
       modalPass: false,
       oldPass: '',
