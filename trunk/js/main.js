@@ -369,6 +369,7 @@ var trackDebug = {
       currentIndex: 1,
       columns: [
         { title: 'trackid', key: 'trackid', fixed: 'left', width: 80 },
+        { title: 'sn', key: 'sn', width: 80 },
         { title: 'arrivedtime', key: 'arrivedtimeStr', width: 160 },
         { title: 'loctype', key: 'loctype', width: 80 },
         { title: 'callat', key: 'callat', width: 120 },
