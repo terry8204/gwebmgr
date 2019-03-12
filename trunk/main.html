@@ -618,6 +618,9 @@
                     <li>
                         <i-button @click="nextDay">下一天</i-button>
                     </li>
+                    <li>
+                        <i-button @click="refresh">刷新</i-button>
+                    </li>
                 </ul>
             </div>
             <div class="table-wrappr" ref="tableWrappr">
@@ -640,7 +643,7 @@
             </div>
             <div class="page-wrappr">
                 <div>
-                    <Page :total="total" show-total @on-change="onChange" />
+                    <Page :total="total" show-total @on-change="onChange" :current="currentIndex" />
                 </div>
             </div>
         </div>

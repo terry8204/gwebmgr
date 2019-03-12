@@ -366,6 +366,7 @@ var trackDebug = {
       startTimeStr: null,
       endTimeStr: null,
       contentString: "",
+      currentIndex: 1,
       columns: [
         { title: 'trackid', key: 'trackid', fixed: 'left', width: 80 },
         { title: 'arrivedtime', key: 'arrivedtimeStr', width: 160 },
@@ -391,6 +392,7 @@ var trackDebug = {
   methods: {
     onChange (index) {
       this.isShowCard = false;
+      this.currentIndex = index;
       this.tableData = this.data.slice(index - 1, index - 1 + 30);
     },
     onBlur: function () {
@@ -439,11 +441,16 @@ var trackDebug = {
         this.data = resp.records;
         this.total = this.data.length;
         this.tableData = this.data.slice(0, 30);
+        this.currentIndex = 1;
       } else {
         this.total = 0;
         this.data = [];
         this.tableData = [];
       }
+    },
+    refresh: function () {
+      this.getTimeParams();
+      this.requestTracks(this.doRequestTracks);
     },
     onRowClick: function (row, i) {
       this.isShowCard = true;
