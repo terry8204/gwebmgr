@@ -370,6 +370,8 @@ var trackDebug = {
       columns: [
         { title: 'trackid', key: 'trackid', fixed: 'left', width: 80 },
         { title: 'sn', key: 'sn', width: 80 },
+        { title: 'messagetype', key: 'messagetype', width: 80 },
+        { title: 'typedescr', key: 'typedescr', width: 120 },
         { title: 'arrivedtime', key: 'arrivedtimeStr', width: 160 },
         { title: 'loctype', key: 'loctype', width: 80 },
         { title: 'callat', key: 'callat', width: 120 },
@@ -380,7 +382,7 @@ var trackDebug = {
         { title: 'altitude', key: 'altitude', width: 80 },
         { title: 'course', key: 'course', width: 80 },
         { title: 'status', key: 'status', width: 80 },
-        { title: 'strstatus', key: 'strstatus', width: 500 },
+        { title: 'strstatus', key: 'strstatus', width: 220 },
         { title: 'gotsrc', key: 'gotsrc', width: 80 },
         { title: 'rxlevel', key: 'rxlevel', width: 80 },
         { title: 'servicealive', key: 'servicealive', width: 80 },
@@ -434,7 +436,9 @@ var trackDebug = {
       this.loading = false;
       if (resp.status == 0 && resp.records) {
         resp.records.forEach(function (record) {
-          record.arrivedtimeStr = DateFormat.longToDateTimeStr(record.arrivedtime, 0)
+          var type = "0x" + parseInt(record.messagetype, 10).toString(16) + '(' + record.messagetype + ')';
+          record.messagetype = type;
+          record.arrivedtimeStr = DateFormat.longToDateTimeStr(record.arrivedtime, 0);
         });
         resp.records.sort(function (a, b) {
           return b.arrivedtime - a.arrivedtime;
