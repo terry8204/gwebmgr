@@ -458,8 +458,15 @@ var trackDebug = {
       this.requestTracks(this.doRequestTracks);
     },
     onRowClick: function (row, i) {
+      var me = this;
       this.isShowCard = true;
-      this.contentString = JSON.stringify(row);
+      this.queryTrackDetail(row, function (resp) {
+        if (resp.track) {
+          me.contentString = JSON.stringify(resp.track);
+        } else {
+          vm.$Message.error("没有查询到数据");
+        }
+      });
     },
     caclTableheight: function () {
       var tHeight = parseInt(getComputedStyle(this.$refs.tableWrappr).height);
@@ -473,6 +480,19 @@ var trackDebug = {
       var dateStr = year + "-" + (month < 10 ? '0' + month : month) + "-" + (day < 10 ? '0' + day : day);
       this.startTimeStr = dateStr + " 00:00:00";
       this.endTimeStr = dateStr + " 23:59:00";
+    },
+    queryTrackDetail: function (row, callback) {
+      var data = {
+        deviceid: this.deviceId,
+        arrivedtime: row.arrivedtime,
+        trackid: row.trackid
+      }
+      var url = myUrls.queryTrackDetail();
+      utils.sendAjax(url, data, function (resp) {
+        if (resp.status == 0) {
+          callback(resp);
+        }
+      })
     }
   },
   mounted () {
