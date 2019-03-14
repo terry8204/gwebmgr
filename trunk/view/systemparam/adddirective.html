@@ -191,15 +191,17 @@
                             return;
                         }
                     }
-
-                    
-                    if(data.params){
-                        if(this.selectParamType === 'text'){
-                            data.params = "<param type='text'>文本输入</param>\n" + data.params;
-                        }else if(this.selectParamType === 'list'){
-                            data.params = "<param type='list'>下拉选择 </param>\n" + data.params;
-                        }
+                    if(this.selectParamType){
+                        data.cmdtype = this.selectParamType;
                     }
+                    
+                    // if(data.params){
+                    //     if(this.selectParamType === 'text'){
+                    //         data.params = "<param type='text'>文本输入</param>\n" + data.params;
+                    //     }else if(this.selectParamType === 'list'){
+                    //         data.params = "<param type='list'>下拉选择 </param>\n" + data.params;
+                    //     }
+                    // }
 
                     utils.sendAjax(url, data, function (resp) {
                         if (resp.status == 0) {

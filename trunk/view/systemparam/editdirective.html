@@ -167,14 +167,17 @@
                             this.$Message.error("参数格式错误");
                             return;
                         }
-                    }
-                    if(data.params){
-                        if(this.selectParamType === 'text'){
-                            data.params = "<param type='text'>文本输入</param>\n" + data.params;
-                        }else if(this.selectParamType === 'list'){
-                            data.params = "<param type='list'>下拉选择 </param>\n" + data.params;
-                        }
-                    }
+                    };
+                    if(this.selectParamType){
+                        data.cmdtype = this.selectParamType;
+                    };
+                    // if(data.params){
+                    //     if(this.selectParamType === 'text'){
+                    //         data.params = "<param type='text'>文本输入</param>\n" + data.params;
+                    //     }else if(this.selectParamType === 'list'){
+                    //         data.params = "<param type='list'>下拉选择 </param>\n" + data.params;
+                    //     }
+                    // }
                     
 
                     utils.sendAjax(url, data, function (resp) {
@@ -223,24 +226,14 @@
 
                     if(data.params){
                         var paramsArr = data.params.split('\n');
-                        var firstType = paramsArr.shift();
-                        var selectParamType = this.getSelectParamType(firstType);
-                        if(selectParamType !== 'text' && selectParamType !== 'list'){
+                        console.log('paramsArr', paramsArr);
+                        if(data.cmdtype !== 'text' && data.cmdtype !== 'list'){
                             this.params = data.params;
                         }else{
                             this.params=paramsArr.join("\n");
-                            this.selectParamType = selectParamType;
+                            this.selectParamType = data.cmdtype;
                         }
                     };   
-                },
-                getSelectParamType:function(param){
-                    var params = "<params>" + param + "</params>";
-                    var parser = new DOMParser();
-                    var xmlDoc = parser.parseFromString(params, "text/xml");
-                    var parent = xmlDoc.children[0];
-                    var children = parent.children;
-                    var childrenControlType = children[0];
-                    return childrenControlType.getAttribute("type");
                 },
                 getDeviceType:function () {
                     var me = this;
