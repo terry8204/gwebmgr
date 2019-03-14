@@ -237,18 +237,20 @@ var monitor = {
                     cmdInfo = cmd;
                 }
             });
+            console.log('cmdInfo', cmdInfo.cmdtype);
             this.selectedCmdInfo.cmdName = cmdInfo.cmdname;
             this.selectedCmdInfo.cmdcode = cmdInfo.cmdcode;
             this.selectedCmdInfo.cmddescr = cmdInfo.cmddescr;
             this.selectedCmdInfo.cmdpwd = cmdInfo.cmdpwd;
+            this.selectedCmdInfo.type = cmdInfo.cmdtype;
             if (cmdInfo.params) {
                 var paramsXMLObj = utils.parseXML(cmdInfo.params);
-                this.selectedCmdInfo.type = paramsXMLObj.type;
+                // this.selectedCmdInfo.type = paramsXMLObj.type;
                 this.selectedCmdInfo.params = paramsXMLObj.paramsListObj;
                 this.selectedCmdInfo.params.forEach(function (param) {
                     me.cmdParams[param.type] = param.value;
                 });
-                paramsXMLObj.type !== 'text' ? this.selectedTypeVal = null : '';
+                cmdInfo.cmdtype !== 'text' ? this.selectedTypeVal = null : '';
             };
             this.dispatchDirectiveModal = true;
         },
@@ -361,9 +363,9 @@ var monitor = {
             });
         },
         focus: function () {
-            var me = this
+            var me = this;
             if (this.sosoValue.trim()) {
-                me.sosoValueChange()
+                me.sosoValueChange();
             }
         },
         blur: function () {

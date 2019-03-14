@@ -196,23 +196,23 @@ var utils = {
     var xmlDoc = parser.parseFromString(params, "text/xml");
     var parent = xmlDoc.children[0];
     var children = parent.children;
-    var childrenControlType = children[0];
-    var controlType = childrenControlType.getAttribute("type");
+    // var childrenControlType = children[0];
+    // var controlType = childrenControlType.getAttribute("type");
     //only text list
-    if (children.length > 1) {
-      for (var i = 1; i < children.length; i++) {
-        var item = children[i];
-        var desc = item.innerHTML;
-        var type = item.getAttribute("type");
-        var value = item.getAttribute("value");
-        if (type && desc) {
-          paramsListObj.push({ type: type, desc: desc, value: value });
-        }
+    // if (children.length > 1) {
+    for (var i = 0; i < children.length; i++) {
+      var item = children[i];
+      var desc = item.innerHTML;
+      var type = item.getAttribute("type");
+      var value = item.getAttribute("value");
+      if (type && desc) {
+        paramsListObj.push({ type: type, desc: desc, value: value });
       }
     }
+    // }
 
     return {
-      type: controlType,
+      // type: controlType,
       paramsListObj: paramsListObj
     };
   },
