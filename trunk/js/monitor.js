@@ -124,7 +124,8 @@ var monitor = {
                 { title: isZh ? '结果' : 'Result', key: 'result', sortable: true },
             ],
             cacheTableData: [],
-            sendTableData: []
+            sendTableData: [],
+            cmdPwd: null,  //指令密码
         }
     },
     methods: {
@@ -228,6 +229,7 @@ var monitor = {
 
             this.cmdParams = {};
             this.selectedCmdInfo = {};
+            this.cmdPwd = null;
             var cmdInfo = null;
             var me = this;
             this.currentDevDirectiveList.forEach(function (cmd) {
@@ -235,10 +237,10 @@ var monitor = {
                     cmdInfo = cmd;
                 }
             });
-
             this.selectedCmdInfo.cmdName = cmdInfo.cmdname;
             this.selectedCmdInfo.cmdcode = cmdInfo.cmdcode;
             this.selectedCmdInfo.cmddescr = cmdInfo.cmddescr;
+            this.selectedCmdInfo.cmdpwd = cmdInfo.cmdpwd;
             if (cmdInfo.params) {
                 var paramsXMLObj = utils.parseXML(cmdInfo.params);
                 this.selectedCmdInfo.type = paramsXMLObj.type;
@@ -325,7 +327,21 @@ var monitor = {
             var me = this;
             var url = myUrls.sendCmd();
             var params = this.selectedCmdInfo.type === 'text' ? Object.values(this.cmdParams) : [this.selectedTypeVal];
-            var data = { devicetype: this.currentDeviceType, cmdcode: this.selectedCmdInfo.cmdcode, deviceid: me.currentDeviceId, params: params, state: -1 };
+            var data = {
+                devicetype: this.currentDeviceType,
+                cmdcode: this.selectedCmdInfo.cmdcode,
+                deviceid: me.currentDeviceId,
+                params: params,
+                state: -1
+            };
+            if (this.selectedCmdInfo.cmdpwd && this.selectedCmdInfo.cmdpwd != "") {
+                if (this.cmdPwd) {
+                    data.cmdpwd = this.cmdPwd;
+                } else {
+                    me.$Message.error(me.$t("monitor.pwdErr"));
+                    return;
+                }
+            };
             utils.sendAjax(url, data, function (resp) {
                 if (resp.status === 0) {
                     communicate.$emit("disposeAlarm", data.cmdcode);

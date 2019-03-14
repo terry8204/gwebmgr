@@ -210,7 +210,7 @@ var utils = {
         }
       }
     }
-    console.log('paramsListObj', paramsListObj);
+
     return {
       type: controlType,
       paramsListObj: paramsListObj

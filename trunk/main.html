@@ -364,7 +364,7 @@
                         </Row>
 
                         <Row style="margin: 10px 0" v-if="selectedCmdInfo.type === 'list'">
-                            <i-col span="24">
+                            <i-col :offset="5" span="16">
                                 <i-select v-model="selectedTypeVal">
                                     <i-option v-for="item in selectedCmdInfo.params" :value="item.type" :key="item.type">{{ item.value }}</i-option>
                                 </i-select>
@@ -378,6 +378,12 @@
                             </i-col>
                         </Row>
 
+                        <Row style="margin: 10px 0" v-show="selectedCmdInfo.cmdpwd">
+                            <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">密码 : &nbsp;</i-col>
+                            <i-col span="16">
+                                <i-input v-model.trim="cmdPwd" style="width:100%;"></i-input>
+                            </i-col>
+                        </Row>    
                     </div>
 
         
