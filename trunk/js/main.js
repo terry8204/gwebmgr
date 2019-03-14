@@ -396,7 +396,8 @@ var trackDebug = {
     onChange (index) {
       this.isShowCard = false;
       this.currentIndex = index;
-      this.tableData = this.data.slice(index - 1, index - 1 + 30);
+      console.log('index', index);
+      this.tableData = this.data.slice((index - 1) * 30, (index - 1) * 30 + 30);
     },
     onBlur: function () {
       this.requestTracks(this.doRequestTracks);
