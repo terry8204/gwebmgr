@@ -375,20 +375,20 @@ var reportModeType = {
 function getReportModeStr (reportmode) {
   var reportModeStr = "0x" + reportmode.toString(16);
   switch (reportmode) {
-    case 0x00:
+  case 0x00:
       reportModeStr += "定时上报";
       break;
     case 0x01: reportModeStr += "定距上报";
       break;
     case 0x02: reportModeStr += "拐点上传";
       break;
-    case 0x03: reportModeStr += "ACC 状态改变上传";
+    case 0x03: reportModeStr += "ACC状态改变上传";
       break;
-    case 0x04: reportModeStr += "从运动变为静止状态后，补传最后一个定位点";
+    case 0x04: reportModeStr += "运动变静止最后一个点";
       break;
-    case 0x05: reportModeStr += "网络断开重连后，上报之前最后一个有效上传点";
+    case 0x05: reportModeStr += "网络重连最后一个有效点";
       break;
-    case 0X06: reportModeStr += "星历更新强制上传 GPS 点";
+    case 0X06: reportModeStr += "星历更新强制上传 GPS点";
       break;
     case 0X07: reportModeStr += "按键上传定位点";
       break;
@@ -396,7 +396,7 @@ function getReportModeStr (reportmode) {
       break;
     case 0X09: reportModeStr += "未使用";
       break;
-    case 0X0A: reportModeStr += "设备静止后上报最后的经纬度，但时间更新";
+    case 0X0A: reportModeStr += "静止后上报最后的经纬度且时间更新";
       break;
     case 0X0B: reportModeStr += "WiFi解析经纬度上传包";
       break;
@@ -404,7 +404,7 @@ function getReportModeStr (reportmode) {
       break;
     case 0X0D: reportModeStr += "设备静止后上报最后的经纬度";
       break;
-    case 0X0E: reportModeStr += "下静止状态定时上传";
+    case 0X0E: reportModeStr += "静止状态定时上传";
       break;
     case -1: reportModeStr += "-1";
       break;
