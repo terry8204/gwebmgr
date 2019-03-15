@@ -352,6 +352,67 @@ var appHeader = {
 iview.lang(isZh ? 'zh-CN' : 'en-US');
 
 
+//0x00 定时上报
+//0x01 定距上报
+//0x02 拐点上传
+//0x03 ACC 状态改变上传
+//0x04 从运动变为静止状态后，补传最后一个定位点
+//0x05 网络断开重连后，上报之前最后一个有效上传点
+//0X06 星历更新强制上传 GPS 点
+//0X07 按键上传定位点
+//0X08 开机上报位置信息
+//0X09 未使用
+//0X0A 设备静止后上报最后的经纬度，但时间更新
+//0X0B WiFi解析经纬度上传包
+//0X0C 立即定位指令上报
+//0X0D 设备静止后上报最后的经纬度
+//0X0E 下静止状态定时上传
+
+var reportModeType = {
+
+}
+
+function getReportModeStr (reportmode) {
+  var reportModeStr = "0x" + reportmode.toString(16);
+  switch (reportmode) {
+    case 0x00:
+      reportModeStr += "定时上报";
+      break;
+    case 0x01: reportModeStr += "定距上报";
+      break;
+    case 0x02: reportModeStr += "拐点上传";
+      break;
+    case 0x03: reportModeStr += "ACC 状态改变上传";
+      break;
+    case 0x04: reportModeStr += "从运动变为静止状态后，补传最后一个定位点";
+      break;
+    case 0x05: reportModeStr += "网络断开重连后，上报之前最后一个有效上传点";
+      break;
+    case 0X06: reportModeStr += "星历更新强制上传 GPS 点";
+      break;
+    case 0X07: reportModeStr += "按键上传定位点";
+      break;
+    case 0X08: reportModeStr += "开机上报位置信息";
+      break;
+    case 0X09: reportModeStr += "未使用";
+      break;
+    case 0X0A: reportModeStr += "设备静止后上报最后的经纬度，但时间更新";
+      break;
+    case 0X0B: reportModeStr += "WiFi解析经纬度上传包";
+      break;
+    case 0X0C: reportModeStr += "立即定位指令上报";
+      break;
+    case 0X0D: reportModeStr += "设备静止后上报最后的经纬度";
+      break;
+    case 0X0E: reportModeStr += "下静止状态定时上传";
+      break;
+    case -1: reportModeStr += "-1";
+      break;
+  }
+
+  return reportModeStr;
+}
+
 var trackDebug = {
   template: document.getElementById('trackdebug-template').innerHTML,
   data: function () {
@@ -373,8 +434,8 @@ var trackDebug = {
         { title: 'messagetype', key: 'messagetype', width: 80 },
         { title: 'typedescr', key: 'typedescr', width: 120 },
         { title: 'arrivedtime', key: 'arrivedtimeStr', width: 160 },
-        { title: 'reportmode', key: 'reportmode', width: 80 },
-        { title: 're', key: 'reissue', width: 40 },
+        { title: 'reportmode', key: 'reportmodeStr', width: 120 },
+        { title: 're', key: 'reissue', width: 80 },
         { title: 'callat', key: 'callat', width: 120 },
         { title: 'callon', key: 'callon', width: 120 },
         { title: 'radius', key: 'radius', width: 80 },
@@ -397,7 +458,6 @@ var trackDebug = {
     onChange (index) {
       this.isShowCard = false;
       this.currentIndex = index;
-      console.log('index', index);
       this.tableData = this.data.slice((index - 1) * 30, (index - 1) * 30 + 30);
     },
     onBlur: function () {
@@ -440,6 +500,7 @@ var trackDebug = {
         resp.records.forEach(function (record) {
           var type = "0x" + parseInt(record.messagetype, 10).toString(16) + '(' + record.messagetype + ')';
           record.messagetype = type;
+          record.reportmodeStr = getReportModeStr(record.reportmode);
           record.arrivedtimeStr = DateFormat.longToDateTimeStr(record.arrivedtime, 0);
         });
         resp.records.sort(function (a, b) {
@@ -449,6 +510,12 @@ var trackDebug = {
         this.total = this.data.length;
         this.tableData = this.data.slice(0, 30);
         this.currentIndex = 1;
+      } else if (resp.status == 3) {
+        this.$Message.error(this.$t("monitor.reLogin"));
+        Cookies.remove('token');
+        setTimeout(function () {
+          window.location.href = 'index.html'
+        }, 2000);
       } else {
         this.total = 0;
         this.data = [];
