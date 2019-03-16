@@ -375,7 +375,7 @@ var reportModeType = {
 function getReportModeStr (reportmode) {
   var reportModeStr = "0x" + reportmode.toString(16);
   switch (reportmode) {
-  case 0x00:
+    case 0x00:
       reportModeStr += "定时上报";
       break;
     case 0x01: reportModeStr += "定距上报";
@@ -421,6 +421,7 @@ var trackDebug = {
       isShowCard: false,
       deviceId: '22200029669',
       dayTime: 60 * 60 * 24 * 1000,
+      filterStr: "",
       total: 0,
       tableHeight: 400,
       startDate: null,
@@ -562,6 +563,27 @@ var trackDebug = {
           callback(resp);
         }
       })
+    },
+    filterTypeDesc: function () {
+      if (this.filterStr) {
+        var that = this;
+        var filterArr = [];
+        this.data.forEach(function (item) {
+          if (item.typedescr.indexOf(that.filterStr) != -1) {
+            filterArr.push(item);
+          }
+        });
+        this.tableData = filterArr;
+      };
+    }
+  },
+  watch: {
+    filterStr: function () {
+      if (this.filterStr === "") {
+        this.total = this.data.length;
+        this.tableData = this.data.slice(0, 30);
+        this.currentIndex = 1;
+      };
     }
   },
   mounted () {

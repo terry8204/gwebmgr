@@ -684,6 +684,7 @@
                         var address = this.getAddress(info);
                         var posiType = utils.getPosiType(info);
                         var color = '#515A6E';
+                        var strstatus = null;
                         if (info.radius > 0) {
                             var radiuDesc = null;
                             if (isZh) {
@@ -693,7 +694,11 @@
                             }
                             posiType += radiuDesc;
                         };
-
+                        if (isZh) {
+                            strstatus = info.strstatus ? info.strstatus : '';
+                        } else {
+                            strstatus = info.strstatusen ? info.strstatusen : '';
+                        }
                         if(Cookies.get(this.deviceid+'-'+info.trackid)){
                             color = 'red';
                         };
@@ -706,6 +711,7 @@
                             '<p> ' + (isZh ? '速度' : 'Speed') + ': ' + speed +'('+(isZh ? '信号:' : 'Signal:')+ info.rxlevel+'%)</p>' +
                             '<p> ' + (isZh ? '总里程' : 'Mileage') + ': ' + utils.getMileage(info.totaldistance) + '</p>' +
                             '<p> ' + (isZh ? '最后时间' : 'Last time') + ': ' + DateFormat.longToDateTimeStr(info.arrivedtime, 0) + '</p>' +
+                            '<p> ' + (isZh ? '状态' : 'Status') + ': ' + strstatus + '</p>' +
                             '<p class="last-address"> ' + (isZh ? '详细地址' : 'Address') + ': ' + address + '</p>'+
                             '<p>'+
                                 '<span style="margin-right:5px;" class="ivu-btn ivu-btn-default ivu-btn-small" onclick="queryTrackDetail(' + this.deviceid +')">' + (isZh ? '详细信息' : 'Detailed info') + '</span>'+

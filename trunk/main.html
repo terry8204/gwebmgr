@@ -627,6 +627,17 @@
                     <li>
                         <i-button @click="refresh">刷新</i-button>
                     </li>
+                    <li>
+                        <i-input 
+                            style="width: auto;width:100%;" 
+                            v-model.trim="filterStr" 
+                            placeholder="过滤">
+                            <Icon type="ios-search" slot="suffix" />
+                        </i-input>
+                    </li>
+                    <li>
+                        <i-button @click="filterTypeDesc">过滤</i-button>
+                    </li>
                 </ul>
             </div>
             <div class="table-wrappr" ref="tableWrappr">
