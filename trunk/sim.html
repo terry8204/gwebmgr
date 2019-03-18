@@ -140,17 +140,19 @@
                 doCardInfo:function(resp){
                     this.isShow = true;
                     if(resp.code){
-                        var cardDataUseds =resp.cardDataUseds ? resp.cardDataUseds[0] : null;
+                        var cardDataListTotal = [];
+                        var cardDataUseds =resp.cardDataUseds ? resp.cardDataUseds: null;
+                        var activeTime = {label:"激活时间",value:resp.active_time?resp.active_time:'空'}
+                        cardDataListTotal.push(activeTime);
                         if(cardDataUseds){
-                     
-                            var cardDataList = [
-                                {label:"套餐名称",value:cardDataUseds.packageName?cardDataUseds.packageName:'空'},
-                                {label:"开始时间",value:cardDataUseds.startDate?cardDataUseds.startDate:'空'},
-                                {label:"总流量",value:cardDataUseds.dataCount?cardDataUseds.dataCount:0},
-                                {label:"已用流量",value:cardDataUseds.usedCount?cardDataUseds.usedCount:0},
-                                {label:"剩余流量",value:cardDataUseds.leftCount?cardDataUseds.leftCount:0}
-                            ];
-                            this.cardDataList = cardDataList;
+                            for(var i = 0 ; i< cardDataUseds.length ; i++ ){
+                                var item = cardDataUseds[i];
+                                cardDataListTotal.push({label:"套餐名称",value:item.packageName?item.packageName:'空'});
+                                cardDataListTotal.push({label:"总流量",value:item.dataCount?item.dataCount:0});
+                                cardDataListTotal.push({label:"已用流量",value:item.usedCount?item.usedCount:0});
+                                cardDataListTotal.push({label:"剩余流量",value:item.leftCount?item.leftCount:0}); 
+                            }
+                            this.cardDataList = cardDataListTotal;
                         }else{
 
                         }
