@@ -16,18 +16,24 @@
             width: 100%;
             height: 100%;
             position: relative;
+            overflow: hidden;
         }
 
         div.controller {
             position: absolute;
             right: 10px;
             bottom: 10px;
-            width: 500px;
-            height: 300px;
             line-height: 60px;
-            background: #E8F0F7;
-            border: 1px solid #C3CEDE;
         }
+
+        div.close-icon{
+            position: absolute;
+            top: -50px;
+            right: 0;
+            width: 32px;
+            height: 32px;
+        }
+
         div.right-button-wrap{
             position: absolute;
             right: 10px;
@@ -36,18 +42,37 @@
             height: 35px;
             cursor: pointer;
         }
-        div.right-button-wrap img{
+        div.right-button-wrap img,.right-button-wrap-marker img{
             width: 100%;
             height: 100%;
             border: 0;
         }
+        .right-button-wrap-marker{
+            position: absolute;
+            right: 10px;
+            top: 70px;
+            width: 80px;
+            height: 35px;
+            cursor: pointer;
+        }
         div.right-button-wrap-ceju{
             position: absolute;
             right: 10px;
-            top: 45px;
+            top: 135px;
             width: 80px;
             height: 35px;
             padding: 0 5px;
+        }
+        div.btn-label{
+            position: absolute;
+            left: 50%;
+            bottom: -15px;
+            transform: translateX(-50%);
+            background: #FB6726;
+            color: #fff;
+            font-size: 12px;
+            text-align: center;
+            width: 50px;
         }
         label.BMapLabel::after {
             font-size: 0px;
@@ -97,6 +122,16 @@
             -webkit-line-clamp: 3;
             overflow: hidden;
         }
+        .fade-enter-active, .fade-leave-active {
+            transition: all .3s;
+        }
+        .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+            opacity: 0;
+            transform: translateY(300px);
+        }
+        [v-cloak]{
+            display: none;
+        }
     </style>
     <script src="js/js.cookie.min.js"></script>
     <script src="js/distancetool_min.js"></script>
@@ -106,78 +141,92 @@
 </head>
 
 <body>
-    <div id="container">
+    <div id="container" v-cloak>
         <div id="bmap"></div>
         <div class="right-button-wrap" @click="changePosiType">
             <img v-if="isExtract" src="./images/ic_fine_network_off.png">
             <img v-else src="./images/ic_fine_network_on.png">
+            <div class="btn-label">{{isZh ? '精 / 粗' : 'Fine / Coarse'}} </div>
+        </div>
+        <div class="right-button-wrap-marker" @click="onShowMarker">
+            <img v-if="isShowMarker" src="./images/ic_on.png">
+            <img v-else src="./images/ic_off.png">
+            <div class="btn-label">  {{isZh ? '显示点' : 'Marker'}}</div>
         </div>
         <div class="right-button-wrap-ceju">
             <i-button @click="openDistance" size="small" style="width:100%;">{{isZh ? '测距' : 'Ranging'}}</i-button>
         </div>
         <div class="controller">
-            <Row>
-                <i-col :span="4" style="text-align: center;height:45px;">{{$t("main.selectDate")}} : &nbsp;</i-col>
-                <i-col :span="11" style="height:45px;">
-                    <date-picker type="date" style="width: 100%;height:45px;" v-model="startTime"  :clearable="false" :editable="false"></date-picker>
-                </i-col>
-                <i-col :span="4" style="text-align: center;height:45px;">
-                    <i-button @click="prevDay">{{$t("main.prevDay")}}</i-button>
-                </i-col>
-                <i-col :span="4" style="text-align: center;height:45px;">
-                    <i-button @click="nextDay">{{$t("main.nextDay")}}</i-button>
-                </i-col>
-            </Row>
-
-            <Row>
-                <i-col :span="9" style="text-align: center;height:45px;">{{$t("main.startDate")}} : {{startTimeStr}} </i-col>
-                <i-col :span="9" style="text-align: center;height:45px;">{{$t("main.endDate")}} : {{endTimeStr}} </i-col>
-                <i-col :span="5" style="text-align: center;height:45px;">
-                    <i-button @click="sosoTracks">{{$t("main.queryBtn")}}</i-button>
-                </i-col>
-                <i-col :span="1" style="height:45px;">&nbsp;</i-col>
-            </Row>
-
-    
-            <Row> 
-                    <i-col :span="4" style="line-height:60px;text-align:center;"> {{$t("main.playSpeed")}} : &nbsp;</i-col>
-                    <i-col :span="18" style="height:60px; padding-top: 12px;">
-                        <Slider v-model="velocity" :min="100" :max="5000" show-input :step="100"></Slider>
-                    </i-col>
-                    <i-col :span="2" style="line-height:60px;text-align:center;"> {{$t("main.msec")}} </i-col>
-            </Row>
-            <Row>
-                <i-col :span="21" style="padding:0 10px;height:35px;line-height: 35px;">
-                    {{(isZh ? '总里程数' : 'Mileage')}} : {{totalMileage}}
-                </i-col>
-            </Row>
-
-            <Row>
-                <i-col :span="6" :offset="3" style="padding:0 5px;height:45px;">
-                    <i-button style="width: 100%" @click="beginPlay">{{$t("main.play")}}</i-button>
-                </i-col>
-                <i-col :span="6" style="padding:0 5px;height:45px;">
-                    <i-button style="width: 100%" @click="pause">{{$t("main.pause")}}</i-button>
-                </i-col>
-                <i-col :span="6" style="padding:0 5px;height:45px;">
-                    <i-button style="width: 100%" @click="replay">{{$t("main.replay")}}</i-button> 
-                </i-col>
-            </Row>
-            <Row>
-                    <i-col :span="6" :offset="3" style="padding:0 5px;height:45px;">
-                        <i-button style="width: 100%" @click="prevStep">{{$t("main.prevStep")}}</i-button>
-                    </i-col>
-                    <i-col :span="6" style="padding:0 5px;height:45px;">
-                        <i-button style="width: 100%" @click="pause">
-                            {{ isExtract ? (extractRecords.length == 0 ? 0 : index + 1) :  (records.length == 0 ? 0 : index + 1)}} 
-                            / 
-                            {{ isExtract ? extractRecords.length : records.length }}
-                        </i-button>
-                    </i-col>
-                    <i-col :span="6" style="padding:0 5px;height:45px;">
-                        <i-button style="width: 100%" @click="nextStep">{{$t("main.nextStep")}}</i-button>
-                    </i-col>
-            </Row>
+            <div class="close-icon" @click="onShowCtrl">
+                <i-button shape="circle" icon="ios-arrow-down" v-if="isShowCtrl"></i-button>
+                <i-button shape="circle" icon="ios-arrow-up" v-else></i-button>
+            </div>
+            <transition name="fade">
+                    <div style="width: 500px;height: 300px;background: #E8F0F7;border: 1px solid #C3CEDE;" v-show="isShowCtrl">
+                            <Row>
+                                <i-col :span="4" style="text-align: center;height:45px;">{{$t("main.selectDate")}} : &nbsp;</i-col>
+                                <i-col :span="11" style="height:45px;">
+                                    <date-picker type="date" style="width: 100%;height:45px;" v-model="startTime"  :clearable="false" :editable="false"></date-picker>
+                                </i-col>
+                                <i-col :span="4" style="text-align: center;height:45px;">
+                                    <i-button @click="prevDay">{{$t("main.prevDay")}}</i-button>
+                                </i-col>
+                                <i-col :span="4" style="text-align: center;height:45px;">
+                                    <i-button @click="nextDay">{{$t("main.nextDay")}}</i-button>
+                                </i-col>
+                            </Row>
+                
+                            <Row>
+                                <i-col :span="9" style="text-align: center;height:45px;">{{$t("main.startDate")}} : {{startTimeStr}} </i-col>
+                                <i-col :span="9" style="text-align: center;height:45px;">{{$t("main.endDate")}} : {{endTimeStr}} </i-col>
+                                <i-col :span="5" style="text-align: center;height:45px;">
+                                    <i-button @click="sosoTracks">{{$t("main.queryBtn")}}</i-button>
+                                </i-col>
+                                <i-col :span="1" style="height:45px;">&nbsp;</i-col>
+                            </Row>
+                
+                    
+                            <Row> 
+                                    <i-col :span="4" style="line-height:60px;text-align:center;"> {{$t("main.playSpeed")}} : &nbsp;</i-col>
+                                    <i-col :span="18" style="height:60px; padding-top: 12px;">
+                                        <Slider v-model="velocity" :min="100" :max="5000" show-input :step="100"></Slider>
+                                    </i-col>
+                                    <i-col :span="2" style="line-height:60px;text-align:center;"> {{$t("main.msec")}} </i-col>
+                            </Row>
+                            <Row>
+                                <i-col :span="21" style="padding:0 10px;height:35px;line-height: 35px;">
+                                    {{(isZh ? '总里程数' : 'Mileage')}} : {{totalMileage}}
+                                </i-col>
+                            </Row>
+                
+                            <Row>
+                                <i-col :span="6" :offset="3" style="padding:0 5px;height:45px;">
+                                    <i-button style="width: 100%" @click="beginPlay">{{$t("main.play")}}</i-button>
+                                </i-col>
+                                <i-col :span="6" style="padding:0 5px;height:45px;">
+                                    <i-button style="width: 100%" @click="pause">{{$t("main.pause")}}</i-button>
+                                </i-col>
+                                <i-col :span="6" style="padding:0 5px;height:45px;">
+                                    <i-button style="width: 100%" @click="replay">{{$t("main.replay")}}</i-button> 
+                                </i-col>
+                            </Row>
+                            <Row>
+                                    <i-col :span="6" :offset="3" style="padding:0 5px;height:45px;">
+                                        <i-button style="width: 100%" @click="prevStep">{{$t("main.prevStep")}}</i-button>
+                                    </i-col>
+                                    <i-col :span="6" style="padding:0 5px;height:45px;">
+                                        <i-button style="width: 100%" @click="pause">
+                                            {{ isExtract ? (extractRecords.length == 0 ? 0 : index + 1) :  (records.length == 0 ? 0 : index + 1)}} 
+                                            / 
+                                            {{ isExtract ? extractRecords.length : records.length }}
+                                        </i-button>
+                                    </i-col>
+                                    <i-col :span="6" style="padding:0 5px;height:45px;">
+                                        <i-button style="width: 100%" @click="nextStep">{{$t("main.nextStep")}}</i-button>
+                                    </i-col>
+                            </Row>
+                    </div>
+            </transition>
         </div>
         <Modal v-model="modal" width="600">
             <p slot="header" style="color:#2D8CF0;text-align:center">
@@ -325,6 +374,8 @@
                 i18n: utils.getI18n(),
                 data: {
                     isZh : isZh ,
+                    isShowCtrl:true,
+                    isShowMarker:true,
                     map: null,
                     myDis:null,
                     totalMileage:'0km',
@@ -435,7 +486,9 @@
                     getPointMarker:function(){
                         var index = this.index;
                         var marker = null;
-
+                        if(!this.isShowMarker){
+                            return this.carMarker;
+                        };
                         for(var i = 0 ;  i < this.markers.length ; i ++){
 
                             marker = this.markers[i];
@@ -533,10 +586,10 @@
 
                                 if(i !=0 && i != records.length-1){
                                     var makrker = new BMap.Marker(point);
-                                    this.map.addOverlay(makrker);
                                     makrker.index = i;
-                                    this.markers.push(makrker);
+                                    this.isShowMarker && this.map.addOverlay(makrker);
                                     this.addEventListenerToMarker(makrker);
+                                    this.markers.push(makrker);
                                 }
                             };
                             this.markers.unshift(this.firstMarker);
@@ -778,6 +831,12 @@
                     },
                     getDirectionIcon: function (angle) {
                         return new BMap.Icon("images/carstate/green_" + angle + ".gif", new BMap.Size(17, 17), { imageOffset: new BMap.Size(0, 0) });
+                    },
+                    onShowCtrl:function(){
+                        this.isShowCtrl = !this.isShowCtrl;
+                    },
+                    onShowMarker:function(){
+                        this.isShowMarker = !this.isShowMarker;
                     }
                 },
                 computed: {
@@ -797,6 +856,23 @@
                     },
                     velocity: function () {
                         this.action();
+                    },
+                    isShowMarker:function(){
+                        var mkLength = this.markers.length;
+                        if(mkLength > 2){
+                            var markers = this.markers.slice(1,mkLength - 1);
+                       
+                            for(var i = 0 ; i < markers.length ; i++ ){
+                                var marker = markers[i];
+                                if(this.isShowMarker){
+                                    this.map.addOverlay(marker);
+                                }else{
+                                    this.map.removeOverlay(marker);
+                                }
+                                    
+                            };
+                            
+                        };
                     }
                 },
                 mounted: function () {
