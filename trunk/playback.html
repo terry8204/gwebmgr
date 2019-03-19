@@ -237,6 +237,7 @@
                <p style="margin: 10px">{{$t("main.trackId")}} : {{trackid}}</p>
                <p style="margin: 10px">{{$t("main.jizhanList")}} : {{xList}}</p>
                <p style="margin: 10px">{{$t("main.WIFIList")}} : {{wList}}</p>
+               <p style="margin: 10px;word-wrap:break-word;">{{$t("main.originalData")}} : {{trackStringify}}</p>
             </div>
         </Modal>
         <Modal v-model="modal1" width="600">
@@ -287,6 +288,7 @@
                     vm.xList = resp.track.x ? resp.track.x : isZh?'空':'Empty';
                     vm.wList = resp.track.w ? resp.track.w : isZh?'空':'Empty';
                     vm.trackid = resp.track.trackid;
+                    vm.trackStringify = JSON.stringify(resp);
                     vm.modal = true;
                 }else{
                     vm.$Message.error("error");
@@ -335,6 +337,7 @@
                     trackId:"Track ID",
                     jizhanList:"Base station",
                     WIFIList:"WiFi",
+                    originalData:"Original Data",
                     result:"Position result"
                 }
 
@@ -360,6 +363,7 @@
                     trackId:"轨迹序号",
                     jizhanList:"基站列表",
                     WIFIList:"WiFi列表",
+                    originalData:"原始数据",
                     result:"定位结果"
                 }
             }
@@ -407,7 +411,8 @@
                     cause:"",
                     xList:'',
                     wList:'',
-                    trackid:''
+                    trackid:'',
+                    trackStringify:""
                 },
                 methods: {
                     initMap: function () {
