@@ -436,7 +436,7 @@ var trackDebug = {
         { title: 'typedescr', key: 'typedescr', width: 120 },
         { title: 'status', key: 'status', width: 80 },
         { title: 'strstatus', key: 'strstatus', width: 220 },
-        { title: 'arrivedtime', key: 'arrivedtimeStr', width: 160 },
+        { title: 'updatetime', key: 'updatetimeStr', width: 160 },
         { title: 'reportmode', key: 'reportmodeStr', width: 120 },
         { title: 're', key: 'reissue', width: 80 },
         { title: 'callat', key: 'callat', width: 120 },
@@ -502,10 +502,10 @@ var trackDebug = {
           var type = "0x" + parseInt(record.messagetype, 10).toString(16) + '(' + record.messagetype + ')';
           record.messagetype = type;
           record.reportmodeStr = getReportModeStr(record.reportmode);
-          record.arrivedtimeStr = DateFormat.longToDateTimeStr(record.arrivedtime, 0);
+          record.updatetimeStr = DateFormat.longToDateTimeStr(record.updatetime, 0);
         });
         resp.records.sort(function (a, b) {
-          return b.arrivedtime - a.arrivedtime;
+          return b.updatetime - a.updatetime;
         });
         this.data = resp.records;
         this.total = this.data.length;
@@ -554,7 +554,7 @@ var trackDebug = {
     queryTrackDetail: function (row, callback) {
       var data = {
         deviceid: this.deviceId,
-        arrivedtime: row.arrivedtime,
+        updatetime: row.updatetime,
         trackid: row.trackid
       }
       var url = myUrls.queryTrackDetail();

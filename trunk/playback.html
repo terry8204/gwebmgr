@@ -279,7 +279,7 @@
         function queryTrackDetail(deviceid){
             var data = {
                 deviceid:deviceid,
-                arrivedtime:currentTrack.arrivedtime,
+                updatetime:currentTrack.updatetime,
                 trackid:currentTrack.trackid
             };
             var url = myUrls.queryTrackDetail();
@@ -300,7 +300,7 @@
             var trackid = currentTrack.trackid;
             var data = {
                 deviceid:deviceid,
-                arrivedtime:currentTrack.arrivedtime,
+                updatetime:currentTrack.updatetime,
                 trackid:currentTrack.trackid
             };
             var url = myUrls.refreshTrackPosition();
@@ -511,7 +511,7 @@
                             me.spinShow = false;
                             if (resp.status == 0 && records) { 
                                 records.sort(function (a, b) {
-                                    return a.arrivedtime - b.arrivedtime;
+                                    return a.updatetime - b.updatetime;
                                 });
                                 me.filtertracks(records);
                                 me.drawingLine();
@@ -768,7 +768,7 @@
                             '<p> ' + (isZh ? '方向' : 'Direction') + ': ' + utils.getCarDirection(info.course)+ '</p>' +
                             '<p> ' + (isZh ? '速度' : 'Speed') + ': ' + speed +'('+(isZh ? '信号:' : 'Signal:')+ info.rxlevel+'%)</p>' +
                             '<p> ' + (isZh ? '总里程' : 'Mileage') + ': ' + utils.getMileage(info.totaldistance) + '</p>' +
-                            '<p> ' + (isZh ? '最后时间' : 'Last time') + ': ' + DateFormat.longToDateTimeStr(info.arrivedtime, 0) + '</p>' +
+                            '<p> ' + (isZh ? '最后时间' : 'Last time') + ': ' + DateFormat.longToDateTimeStr(info.updatetime, 0) + '</p>' +
                             '<p> ' + (isZh ? '状态' : 'Status') + ': ' + strstatus + '</p>' +
                             '<p class="last-address"> ' + (isZh ? '详细地址' : 'Address') + ': ' + address + '</p>'+
                             '<p>'+

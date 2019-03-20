@@ -31,8 +31,8 @@ var utils = {
   },
   getIsOnline: function (track) {
     var result = false;
-    var arrivedtime = track.arrivedtime;
-    if ((Date.now() - arrivedtime) < 60 * 5 * 1000) {
+    var updatetime = track.updatetime;
+    if ((Date.now() - updatetime) < 60 * 5 * 1000) {
       result = true;
     }
     return result;
@@ -263,7 +263,7 @@ var utils = {
       '<p> ' + (isZh ? '设备序号' : 'Device Number') + ': ' + track.deviceid + '</p>' +
       '<p> ' + (isZh ? '定位类型' : 'Position Type') + ': ' + posiType + '</p>' +
       '<p> ' + (isZh ? '经纬度' : 'Longitude and latitude') + ': ' + track.callon.toFixed(5) + ',' + track.callat.toFixed(5) + '</p>' +
-      '<p> ' + (isZh ? '最后时间' : 'Last time') + ': ' + DateFormat.longToDateTimeStr(track.arrivedtime, 0) + '</p>' +
+      '<p> ' + (isZh ? '最后时间' : 'Last time') + ': ' + DateFormat.longToDateTimeStr(track.updatetime, 0) + '</p>' +
       '<p> ' + (isZh ? '速度' : 'Speed') + ': ' + speed + '(' + (isZh ? '信号' : 'Signal') + ':' + track.rxlevel + '%)' + '</p>' +
       '<p> ' + (isZh ? '总里程' : 'Mileage') + ': ' + this.getMileage(track.totaldistance) + '</p>' +
       '<p> ' + (isZh ? '状态' : 'Status') + ': ' + strstatus + '</p>' +

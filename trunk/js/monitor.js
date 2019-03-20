@@ -182,7 +182,7 @@ var monitor = {
             me.positionLastrecords[deviceid] = data;
             me.updateTreeOnlineState();
             me.updateDevLastPosition(data);
-            //console.log('收到的轨迹push时间', deviceid, DateFormat.longToDateTimeStr(data.arrivedtime, 0));
+            //console.log('收到的轨迹push时间', deviceid, DateFormat.longToDateTimeStr(data.updatetime, 0));
             if (me.currentDeviceId == deviceid) {
                 me.map && me.map.updateSingleMarkerState(deviceid);
             };
@@ -647,7 +647,7 @@ var monitor = {
                                     item.g_lat = g_lon_and_g_lat[1];
                                     item.online = online;
                                     item.devicename = me.deviceInfos[deviceid].devicename;
-                                    item.arrivedTimeStr = DateFormat.longToDateTimeStr(item.arrivedtime, 0);
+                                    item.updatetimeStr = DateFormat.longToDateTimeStr(item.updatetime, 0);
                                     newRecords[deviceid] = item;
                                 }
                             }
@@ -1180,9 +1180,9 @@ var monitor = {
             var isOnline = false;
             var record = this.positionLastrecords[deviceid];
             if (record) {
-                var arrivedtime = record.arrivedtime;
+                var updatetime = record.updatetime;
                 var currentTime = new Date().getTime();
-                if (currentTime - arrivedtime < me.offlineTime) {
+                if (currentTime - updatetime < me.offlineTime) {
                     isOnline = true;
                 };
             }
@@ -1200,7 +1200,7 @@ var monitor = {
                 item.g_lat = g_lon_and_g_lat[1];
                 item.online = online;
                 item.devicename = this.deviceInfos[deviceid].devicename;
-                item.arrivedTimeStr = DateFormat.longToDateTimeStr(item.arrivedtime, 0);
+                item.updatetimeStr = DateFormat.longToDateTimeStr(item.updatetime, 0);
                 this.positionLastrecords[deviceid] = item;
                 this.map && this.map.updateLastTracks(this.positionLastrecords);
             }

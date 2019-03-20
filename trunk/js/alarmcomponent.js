@@ -281,7 +281,7 @@ var waringComponent = {
                         var waringItem = this.waringRecords[j];
                         if (
                             msgTiem.deviceid == waringItem.deviceid &&
-                            msgTiem.arrivedtime !== waringItem.arrivedtime
+                            msgTiem.updatetime !== waringItem.updatetime
                         ) {
                             if (newArr.indexOf(msgTiem) == -1) {
                                 newArr.push(msgTiem)

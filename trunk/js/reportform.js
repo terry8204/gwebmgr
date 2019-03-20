@@ -218,7 +218,7 @@ function posiReport (groupslist) {
                 { title: vRoot.$t("reportForm.lat"), key: 'fixedLat', width: 100 },
                 { title: vRoot.$t("reportForm.direction"), key: 'direction', width: 90 },
                 { title: vRoot.$t("reportForm.speed"), key: 'speed', width: 100 },
-                { title: vRoot.$t("reportForm.date"), key: 'arrivedTimeStr', width: 160 },
+                { title: vRoot.$t("reportForm.date"), key: 'updatetimeStr', width: 160 },
                 { title: vRoot.$t("reportForm.status"), key: isZh ? 'strstatus' : 'strstatusen', width: 180 },
                 { title: vRoot.$t("reportForm.posiType"), key: 'positype', width: 115 },
                 { title: vRoot.$t("reportForm.address"), key: 'address', width: 410 },
@@ -273,7 +273,7 @@ function posiReport (groupslist) {
                 { title: vRoot.$t("reportForm.lat"), key: 'fixedLat', width: 100 },
                 { title: vRoot.$t("reportForm.direction"), key: 'direction', width: 90 },
                 { title: vRoot.$t("reportForm.speed"), key: 'speed', width: 100 },
-                { title: vRoot.$t("reportForm.date"), key: 'arrivedTimeStr', width: 160, sortable: true },
+                { title: vRoot.$t("reportForm.date"), key: 'updatetimeStr', width: 160, sortable: true },
                 { title: vRoot.$t("reportForm.status"), key: 'strstatus', width: 180, },
                 { title: vRoot.$t("reportForm.posiType"), key: 'positype', width: 115 },
                 { title: vRoot.$t("reportForm.address"), key: 'address' },
@@ -349,7 +349,7 @@ function posiReport (groupslist) {
                                 if (item) {
                                     var deviceid = item.deviceid;
                                     item.devicename = vstore.state.deviceInfos[deviceid].devicename;
-                                    item.arrivedTimeStr = DateFormat.longToDateTimeStr(item.arrivedtime, 0);
+                                    item.updatetimeStr = DateFormat.longToDateTimeStr(item.updatetime, 0);
                                     item.fixedLon = item.callon.toFixed(5);
                                     item.fixedLat = item.callat.toFixed(5);
                                     var address = LocalCacheMgr.getAddress(item.fixedLon, item.fixedLat);
@@ -394,7 +394,7 @@ function posiReport (groupslist) {
                             var newArr = [];
                             var devicename = vstore.state.deviceInfos[deviceid].devicename;
                             resp.records.sort(function (a, b) {
-                                return a.arrivedtime - b.arrivedtime;
+                                return a.updatetime - b.updatetime;
                             });
                             resp.records.forEach(function (item) {
                                 var fixedLon = item.callon.toFixed(5);
@@ -403,7 +403,7 @@ function posiReport (groupslist) {
                                 newArr.push({
                                     deviceid: item.deviceid,
                                     devicename: devicename,
-                                    arrivedTimeStr: DateFormat.longToDateTimeStr(item.arrivedtime, 0),
+                                    updatetimeStr: DateFormat.longToDateTimeStr(item.updatetime, 0),
                                     callon: item.callon,
                                     callat: item.callat,
                                     fixedLon: fixedLon,
