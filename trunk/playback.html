@@ -662,7 +662,7 @@
                         var sContent = this.getLableContent(track);
                         var windowInfo = new BMap.InfoWindow(sContent);
                             windowInfo.disableCloseOnClick();
-                            marker.openInfoWindow(windowInfo);
+                            this.isShowMarker && marker.openInfoWindow(windowInfo);
                             this.carMarker.setPosition(track.point);
                             this.carMarker.setIcon(this.getDirectionIcon(track.direction));
                     },

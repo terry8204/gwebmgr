@@ -129,7 +129,7 @@ var utils = {
     } else if (course > 270 && course <= 360) {
       direction = isZh ? '西北' : 'Northwest';
     }
-    return direction
+    return direction + "(" + course + "°)";
   },
   getAngle: function (course) {
     var angle = null
