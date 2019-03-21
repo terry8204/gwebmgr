@@ -60,6 +60,10 @@
                     </li>
                     <li style="padding:0">|</li>
                     <li>
+                        <span  @click="serviceModal=true"><Icon type="md-create" style="margin-right:3px"></Icon>{{$t("header.contact")}}</span>
+                    </li>
+                    <li style="padding:0">|</li>
+                    <li>
                         <span  @click="changePassword"><Icon type="md-create" style="margin-right:3px"></Icon>{{$t("header.changePwd")}}</span>
                     </li>
                     <li style="padding:0">|</li>
@@ -123,6 +127,46 @@
                 <div slot="footer" >
                     <i-button style="width: 100%" @click="changeUserPass" type="primary">{{$t("header.submit")}}</i-button>
                 </div>
+            </Modal>
+
+            <Modal v-model="serviceModal" width="510">
+                <p slot="header" style="color:#2D8CF0;text-align:center">
+                    <Icon type="ios-bowtie-outline"></Icon>
+                    <span>{{$t("header.info")}}</span>
+                </p>  
+                <div style="text-align:center">
+                    <Row style="margin: 10px 0">
+                        <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t("header.name")}}  : &nbsp;</i-col>
+                        <i-col span="16" style="height: 100%;line-height:32px;">
+                            {{creatername}}
+                        </i-col>
+                    </Row>
+                    <Row style="margin: 10px 0">
+                        <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">QQ  : &nbsp;</i-col>
+                        <i-col span="16" style="height: 100%;line-height:32px;">
+                            <a :href="'tencent://message/?uin='+createrqq+'&amp;Site=九护设备&amp;Menu=yes'" id="floatQQ"> {{createrqq}}</a>
+                        </i-col>
+                    </Row>
+                    <Row style="margin: 10px 0">
+                        <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t("header.wechat")}} : &nbsp;</i-col>
+                        <i-col span="16" style="height: 100%;line-height:32px;">
+                            {{ createrwechat}}
+                        </i-col>
+                    </Row>
+                    <Row style="margin: 10px 0">
+                        <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t("header.phone")}} : &nbsp;</i-col>
+                        <i-col span="16" style="height: 100%;line-height:32px;">
+                            {{ createrphone}}
+                        </i-col>
+                    </Row>
+                    <Row style="margin: 10px 0">
+                        <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t("header.email")}} : &nbsp;</i-col>
+                        <i-col span="16" style="height: 100%;line-height:32px;">
+                            {{createremail}}
+                        </i-col>
+                    </Row>
+                </div>
+                
             </Modal>
         </div>
     </script>

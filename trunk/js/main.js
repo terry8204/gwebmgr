@@ -196,6 +196,7 @@ var appHeader = {
       modal: false,
       intervalTime: null,
       isShowCompany: false,
+      serviceModal: false,
       headMenuList: [
         { name: "monitor", icon: "md-contacts", title: me.$t("header.monitor"), isShow: true },
         { name: "reportForm", icon: "ios-paper-outline", title: me.$t("header.reportForm"), isShow: true },
@@ -207,6 +208,11 @@ var appHeader = {
       oldPass: '',
       newPass: '',
       confirmPass: '',
+      creatername: localStorage.getItem("creatername"),
+      createrqq: localStorage.getItem("createrqq"),
+      createrphone: localStorage.getItem("createrphone"),
+      createrwechat: localStorage.getItem("createrwechat"),
+      createremail: localStorage.getItem("createremail"),
     }
   },
   methods: {
@@ -314,6 +320,9 @@ var appHeader = {
         this.$emit('change-nav', 'monitor')
       }
       console.log(this.headMenuList);
+    },
+    contactService: function () {
+
     }
   },
   computed: {

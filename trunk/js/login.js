@@ -32,6 +32,11 @@ new Vue({
 
             this.sendAjax(function (resp) {
                 if (resp.status == 0) {
+                    localStorage.setItem("creatername", resp.creatername ? resp.creatername : "");
+                    localStorage.setItem("createremail", resp.createremail ? resp.createremail : "");
+                    localStorage.setItem("createrphone", resp.createrphone ? resp.createrphone : "");
+                    localStorage.setItem("createrqq", resp.createrqq ? resp.createrqq : "");
+                    localStorage.setItem("createrwechat", resp.createrwechat ? resp.createrwechat : "");
                     if (me.keepPass) {
                         if (me.account == 0) {
                             Cookies.set("accountuser", me.username, { expires: 7 });
