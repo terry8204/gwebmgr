@@ -33,6 +33,7 @@ var monitor = {
             sosoValue: '', // 搜索框的值
             sosoData: [], // 搜索框里面的数据
             openGroupIds: {},
+            openCompanyIds: {},
             selectedState: '', // 选择nav的状态 all online offline;
             currentStateData: [], // 当前tree的数据
             positionLastrecords: {}, // 全部设备最后一次位置记录
@@ -480,9 +481,18 @@ var monitor = {
         selectedStateNav: function (state) {
             this.selectedState = state;
             this.openGroupIds = {};
+            this.openCompanyIds = {};
         },
         openCanpany: function (conpany) {
+
+            var companyid = conpany.companyid;
             conpany.expand = !conpany.expand;
+            if (conpany.expand) {
+                this.openCompanyIds[companyid] = "";
+            } else {
+                delete this.openCompanyIds[companyid];
+            }
+
         },
         openGroupItem: function (groupInfo) {
             var groupid = groupInfo.groupid;
@@ -806,7 +816,7 @@ var monitor = {
         },
         getNewCompanyArr: function () {
             var newArray = [];
-
+            var me = this;
             this.companys.forEach(function (company) {
                 var companyid = company.companyid
                 var companyObj = {
@@ -814,7 +824,7 @@ var monitor = {
                     companyname: company.companyname,
                     companyid: companyid,
                     children: [],
-                    expand: Object.keys(this.openGroupIds).length !== 0
+                    expand: Object.keys(me.openCompanyIds).includes(company.companyid + "")
                 };
                 newArray.push(companyObj);
             });
@@ -825,7 +835,7 @@ var monitor = {
                     companyname: this.$t("monitor.defaultCustomer"),
                     companyid: 0,
                     children: [],
-                    expand: Object.keys(this.openGroupIds).length !== 0
+                    expand: Object.keys(me.openCompanyIds).includes("0")
                 })
             }
             if (newArray.length === 0) {
@@ -834,7 +844,7 @@ var monitor = {
                         title: this.$t("monitor.defaultCustomer"),
                         children: [],
                         companyname: this.$t("monitor.defaultCustomer"),
-                        expand: false,
+                        expand: Object.keys(me.openCompanyIds).includes("0"),
                         companyid: 0
                     })
                 }
