@@ -32,11 +32,19 @@ new Vue({
 
             this.sendAjax(function (resp) {
                 if (resp.status == 0) {
-                    localStorage.setItem("creatername", resp.creatername ? resp.creatername : "");
-                    localStorage.setItem("createremail", resp.createremail ? resp.createremail : "");
-                    localStorage.setItem("createrphone", resp.createrphone ? resp.createrphone : "");
-                    localStorage.setItem("createrqq", resp.createrqq ? resp.createrqq : "");
-                    localStorage.setItem("createrwechat", resp.createrwechat ? resp.createrwechat : "");
+                    // console.log('resp', resp, resp.nickname);
+                    // return;
+                    sessionStorage.setItem("creatername", resp.creatername ? resp.creatername : "");
+                    sessionStorage.setItem("createremail", resp.createremail ? resp.createremail : "");
+                    sessionStorage.setItem("createrphone", resp.createrphone ? resp.createrphone : "");
+                    sessionStorage.setItem("createrqq", resp.createrqq ? resp.createrqq : "");
+                    sessionStorage.setItem("createrwechat", resp.createrwechat ? resp.createrwechat : "");
+
+                    sessionStorage.setItem("email", resp.email ? resp.email : "");
+                    sessionStorage.setItem("nickname", resp.nickname ? resp.nickname : "");
+                    sessionStorage.setItem("phone", resp.phone ? resp.phone : "");
+                    sessionStorage.setItem("qq", resp.qq ? resp.qq : "");
+                    sessionStorage.setItem("wechat", resp.wechat ? resp.wechat : "");
                     if (me.keepPass) {
                         if (me.account == 0) {
                             Cookies.set("accountuser", me.username, { expires: 7 });

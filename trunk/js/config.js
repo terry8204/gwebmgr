@@ -20,6 +20,9 @@ var myUrls = {
   logout: function () {
     return this.host + 'webapi?action=logout&token=' + token
   },
+  editMyInfo: function () {
+    return this.host + 'webapi?action=editmyinfo&token=' + token
+  },
   queryUserTypeDescr: function () {
     return this.host + 'webapi?action=queryusertypedescr&token=' + token;
   },

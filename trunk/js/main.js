@@ -208,11 +208,23 @@ var appHeader = {
       oldPass: '',
       newPass: '',
       confirmPass: '',
-      creatername: localStorage.getItem("creatername"),
-      createrqq: localStorage.getItem("createrqq"),
-      createrphone: localStorage.getItem("createrphone"),
-      createrwechat: localStorage.getItem("createrwechat"),
-      createremail: localStorage.getItem("createremail"),
+      creatername: sessionStorage.getItem("creatername"),
+      createrqq: sessionStorage.getItem("createrqq"),
+      createrphone: sessionStorage.getItem("createrphone"),
+      createrwechat: sessionStorage.getItem("createrwechat"),
+      createremail: sessionStorage.getItem("createremail"),
+      email: sessionStorage.getItem("email"),
+      nickname: sessionStorage.getItem("nickname"),
+      phone: sessionStorage.getItem("phone"),
+      qq: sessionStorage.getItem("qq"),
+      wechat: sessionStorage.getItem("wechat"),
+      selfConcatInfo: {
+        email: sessionStorage.getItem("email"),
+        nickname: sessionStorage.getItem("nickname"),
+        phone: sessionStorage.getItem("phone"),
+        qq: sessionStorage.getItem("qq"),
+        wechat: sessionStorage.getItem("wechat"),
+      },
     }
   },
   methods: {
@@ -321,8 +333,26 @@ var appHeader = {
       }
       console.log(this.headMenuList);
     },
-    contactService: function () {
-
+    handleEditMyInfo: function () {
+      var me = this;
+      var url = myUrls.editMyInfo();
+      var data = {
+        email: this.email,
+        nickname: this.nickname,
+        phone: this.phone,
+        qq: this.qq,
+        wechat: this.wechat,
+        username: userName
+      };
+      utils.sendAjax(url, data, function (resp) {
+        if (resp.status === 0) {
+          delete data.username;
+          me.selfConcatInfo = data;
+          me.$Message.success(me.$t("message.changeSucc"));
+        } else {
+          me.$Message.error(me.$t("message.changeFail"));
+        }
+      });
     }
   },
   computed: {
@@ -331,12 +361,15 @@ var appHeader = {
     },
     stateIntervalTime: function () {
       return this.$store.state.intervalTime;
+    },
+    userType: function () {
+      return this.$store.state.userType;
     }
   },
   mounted: function () {
-    var me = this
+    var me = this;
+    console.log('saas', this.selfConcatInfo);
     this.$nextTick(function () {
-      me.userType = Cookies.get('userType')
       var mgrType = me.getManagerType(me.userType)
       me.name = Cookies.get('name') + mgrType;
       me.intervalTime = me.stateIntervalTime;
@@ -353,6 +386,15 @@ var appHeader = {
     intervalTime: function () {
       var intervalTime = Number(this.intervalTime)
       this.$store.commit('stateIntervalTime', intervalTime);
+    },
+    modal: function () {
+      if (!this.modal) {
+        this.email = this.selfConcatInfo.email;
+        this.nickname = this.selfConcatInfo.nickname;
+        this.phone = this.selfConcatInfo.phone;
+        this.qq = this.selfConcatInfo.qq;
+        this.wechat = this.selfConcatInfo.wechat;
+      }
     }
   }
 }
@@ -440,7 +482,7 @@ var trackDebug = {
       currentIndex: 1,
       columns: [
         { title: 'trackid', key: 'trackid', fixed: 'left', width: 80 },
-        { title: 'sn', key: 'sn', width: 80 },
+        { title: 'sn', key: 'sn', width: 80, "sortable": true },
         { title: 'messagetype', key: 'messagetype', width: 80 },
         { title: 'typedescr', key: 'typedescr', width: 120 },
         { title: 'status', key: 'status', width: 80 },
