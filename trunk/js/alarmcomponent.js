@@ -566,34 +566,34 @@ var waringComponent = {
     },
     mounted: function () {
         var me = this;
-        if (this.userType != 0) {
-            this.alarmMgr = new AlarmMgr();
-            this.settingCheckboxObj();
-            this.queryDeviceMsgList();
-            this.timingRequestMsg();
-            this.queryAlarmDescr();
-            this.changeWrapperCls();
-            communicate.$on("remindmsg", function (data) {
-                me.alarmMgr.addRecord(data);
-                me.refreshAlarmToUi();
-            });
-            communicate.$on("disposeAlarm", function (cmdCode) {
-                me.alarmMgr.updateDisposeStatus(me.currentDeviceId, 0);
-                me.refreshAlarmToUi();
-            });
-            // timeout定时器
-            var timeout = null;
+        // if (this.userType) {
+        this.alarmMgr = new AlarmMgr();
+        this.settingCheckboxObj();
+        this.queryDeviceMsgList();
+        this.timingRequestMsg();
+        this.queryAlarmDescr();
+        this.changeWrapperCls();
+        communicate.$on("remindmsg", function (data) {
+            me.alarmMgr.addRecord(data);
+            me.refreshAlarmToUi();
+        });
+        communicate.$on("disposeAlarm", function (cmdCode) {
+            me.alarmMgr.updateDisposeStatus(me.currentDeviceId, 0);
+            me.refreshAlarmToUi();
+        });
+        // timeout定时器
+        var timeout = null;
 
-            window.addEventListener('resize', function () {
-                // window.onresize = function () {
-                if (timeout != null) {
-                    clearTimeout(timeout);
-                };
-                timeout = setTimeout(function () {
-                    me.changeWrapperCls();
-                }, 300);
-                // }
-            })
-        }
+        window.addEventListener('resize', function () {
+            // window.onresize = function () {
+            if (timeout != null) {
+                clearTimeout(timeout);
+            };
+            timeout = setTimeout(function () {
+                me.changeWrapperCls();
+            }, 300);
+            // }
+        })
+        // }
     }
 }

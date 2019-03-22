@@ -5,6 +5,7 @@ var userName = Cookies.get('name');
 var isZh = utils.locale === 'zh';
 var mapType = utils.getMapType();
 var isLoadBMap = false;
+var globalDeviceId = "";
 document.title = isZh ? "位置信息服务平台" : "Location information service platform";
 var getPath = function () {
   var jsPath = document.currentScript ? document.currentScript.src : function () {
@@ -318,20 +319,21 @@ var appHeader = {
         this.headMenuList[2].isShow = false;
         this.headMenuList[3].isShow = false;
         this.headMenuList[4].isShow = false;
-        this.$emit('change-nav', 'monitor');
+        // this.$emit('change-nav', 'monitor');
       } else if (userType == 0) {
-        this.headMenuList[0].isShow = false;
-        this.$emit('change-nav', 'reportForm')
+        // this.headMenuList[0].isShow = false;
+        // this.$emit('change-nav', 'reportForm')
       } else if (userType == 1 || userType == 2) {
         this.headMenuList[3].isShow = false;
         this.headMenuList[4].isShow = false;
-        this.$emit('change-nav', 'monitor')
+        // this.$emit('change-nav', 'monitor')
       } else {
         this.headMenuList[3].isShow = false;
         this.headMenuList[4].isShow = false;
-        this.$emit('change-nav', 'monitor')
+
       }
-      console.log(this.headMenuList);
+      // console.log(this.headMenuList);
+      this.$emit('change-nav', 'monitor')
     },
     handleEditMyInfo: function () {
       var me = this;
@@ -368,7 +370,6 @@ var appHeader = {
   },
   mounted: function () {
     var me = this;
-    console.log('saas', this.selfConcatInfo);
     this.$nextTick(function () {
       var mgrType = me.getManagerType(me.userType)
       me.name = Cookies.get('name') + mgrType;
@@ -470,7 +471,7 @@ var trackDebug = {
     return {
       loading: false,
       isShowCard: false,
-      deviceId: '22200029669',
+      deviceId: globalDeviceId,
       dayTime: 60 * 60 * 24 * 1000,
       filterStr: "",
       total: 0,
@@ -638,6 +639,7 @@ var trackDebug = {
     }
   },
   mounted () {
+    this.deviceId = globalDeviceId;
     this.caclTableheight();
     this.startDate = new Date();
     this.getTimeParams();
@@ -652,12 +654,11 @@ var vRoot = new Vue({
   store: vstore,
   i18n: utils.getI18n(),
   data: {
-    isShowAlarm: true
+    // isShowAlarm: true
   },
   methods: {
     changeComponent: function (activeName) {
       window.onresize = null;
-      console.log('activeName', activeName);
       this.$store.commit('setHeaderActiveName', activeName);
     },
     jumpReport: function (activeName) {
@@ -692,11 +693,11 @@ var vRoot = new Vue({
     trackDebug: trackDebug
   },
   mounted: function () {
-    this.isShowAlarm = this.userType == 0 ? false : true;
+    // this.isShowAlarm = this.userType == 0 ? false : true;
     //this.$store.dispatch('setUserTypeDescr');
     this.$store.dispatch('setAllCmdList');
 
-    if (userName && this.isShowAlarm) {
+    if (userName) {
       var initIsPass = initWebSocket(userName, this.wsCallback);   // 连接webSocket
       if (!initIsPass) {
         this.$Message.error("浏览器不支持webSocket");

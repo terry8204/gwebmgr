@@ -32,6 +32,7 @@ var monitor = {
             mapList: [{ label: isZh ? "百度地图" : "BaiduMap", value: "bMap" }, { label: isZh ? "谷歌地图" : "GoogleMap", value: "gMap" }],
             sosoValue: '', // 搜索框的值
             sosoData: [], // 搜索框里面的数据
+            openGroupIds: {},
             selectedState: '', // 选择nav的状态 all online offline;
             currentStateData: [], // 当前tree的数据
             positionLastrecords: {}, // 全部设备最后一次位置记录
@@ -478,12 +479,19 @@ var monitor = {
         },
         selectedStateNav: function (state) {
             this.selectedState = state;
+            this.openGroupIds = {};
         },
         openCanpany: function (conpany) {
             conpany.expand = !conpany.expand;
         },
         openGroupItem: function (groupInfo) {
+            var groupid = groupInfo.groupid;
             groupInfo.expand = !groupInfo.expand;
+            if (groupInfo.expand) {
+                this.openGroupIds[groupid] = "";
+            } else {
+                delete this.openGroupIds[groupid];
+            }
         },
         selectedDev: function (deviceInfo) {
             var devicetype = deviceInfo.devicetype;
@@ -496,6 +504,7 @@ var monitor = {
             this.handleClickDev(deviceInfo.deviceid);
         },
         handleClickDev: function (deviceid) {
+            globalDeviceId = deviceid;
             if (!this.map) { return; }
             var record = this.getSingleDeviceInfo(deviceid);
             this.currentDeviceName = this.deviceInfos[deviceid].devicename;
@@ -508,75 +517,76 @@ var monitor = {
             }
         },
         updateTreeOnlineState: function () {
-            var me = this;
-            for (var key in this.positionLastrecords) {
-                var item = this.positionLastrecords[key];
-                if (item == null) {
-                    return;
-                };
-                var deviceid = item.deviceid;
-                var isOnline = utils.getIsOnline(item);
-                if (me.isShowConpanyName) {
-                    me.currentStateData.forEach(function (company) {
-                        company.children.forEach(function (group) {
-                            group.children.forEach(function (dev) {
-                                if (dev.deviceid == deviceid) {
-                                    dev.isOnline = isOnline;
-                                };
-                            });
-                        });
-                    });
+            // var me = this;
+            // for (var key in this.positionLastrecords) {
+            //     var item = this.positionLastrecords[key];
+            //     if (item == null) {
+            //         return;
+            //     };
+            //     var deviceid = item.deviceid;
+            //     var isOnline = utils.getIsOnline(item);
+            //     if (me.isShowConpanyName) {
+            //         me.currentStateData.forEach(function (company) {
+            //             company.children.forEach(function (group) {
+            //                 group.children.forEach(function (dev) {
+            //                     if (dev.deviceid == deviceid) {
+            //                         dev.isOnline = isOnline;
+            //                     };
+            //                 });
+            //             });
+            //         });
 
-                    me.currentStateData.forEach(function (company) {
-                        company.children.forEach(function (group) {
-                            var onlineCount = 0
-                            group.children.forEach(function (dev) {
-                                if (dev.isOnline) {
-                                    onlineCount++
-                                }
-                            })
-                            if (me.selectedState == 'all') {
-                                group.title =
-                                    group.name +
-                                    '(' +
-                                    onlineCount +
-                                    '/' +
-                                    group.children.length +
-                                    ')'
-                            } else {
-                                group.title = group.name + '(' + group.children.length + ')'
-                            };
-                        });
-                    });
-                } else {
-                    me.currentStateData.forEach(function (group) {
-                        group.children.forEach(function (dev) {
-                            if (dev.deviceid == deviceid) {
-                                dev.isOnline = isOnline
-                            };
-                        });
-                    });
-                    me.currentStateData.forEach(function (group) {
-                        var onlineCount = 0;
-                        group.children.forEach(function (dev) {
-                            if (dev.isOnline) {
-                                onlineCount++
-                            };
-                        });
-                        if (me.selectedState == 'all') {
-                            group.title =
-                                group.name +
-                                '(' +
-                                onlineCount +
-                                '/' +
-                                group.children.length +
-                                ')'
-                        } else {
-                            group.title = group.name + '(' + group.children.length + ')';
-                        };
-                    });
-                };
-            };
+            //         me.currentStateData.forEach(function (company) {
+            //             company.children.forEach(function (group) {
+            //                 var onlineCount = 0
+            //                 group.children.forEach(function (dev) {
+            //                     if (dev.isOnline) {
+            //                         onlineCount++
+            //                     }
+            //                 })
+            //                 if (me.selectedState == 'all') {
+            //                     group.title =
+            //                         group.name +
+            //                         '(' +
+            //                         onlineCount +
+            //                         '/' +
+            //                         group.children.length +
+            //                         ')'
+            //                 } else {
+            //                     group.title = group.name + '(' + group.children.length + ')'
+            //                 };
+            //             });
+            //         });
+            //     } else {
+            //         me.currentStateData.forEach(function (group) {
+            //             group.children.forEach(function (dev) {
+            //                 if (dev.deviceid == deviceid) {
+            //                     dev.isOnline = isOnline
+            //                 };
+            //             });
+            //         });
+            //         me.currentStateData.forEach(function (group) {
+            //             var onlineCount = 0;
+            //             group.children.forEach(function (dev) {
+            //                 if (dev.isOnline) {
+            //                     onlineCount++
+            //                 };
+            //             });
+            //             if (me.selectedState == 'all') {
+            //                 group.title =
+            //                     group.name +
+            //                     '(' +
+            //                     onlineCount +
+            //                     '/' +
+            //                     group.children.length +
+            //                     ')'
+            //             } else {
+            //                 group.title = group.name + '(' + group.children.length + ')';
+            //             };
+            //         });
+            //     };
+            // };
+            this.getCurrentStateTreeData(this.selectedState, this.isShowConpanyName);
         },
         cancelSelected: function () {
             if (this.isShowConpanyName) {
@@ -796,6 +806,7 @@ var monitor = {
         },
         getNewCompanyArr: function () {
             var newArray = [];
+
             this.companys.forEach(function (company) {
                 var companyid = company.companyid
                 var companyObj = {
@@ -803,7 +814,7 @@ var monitor = {
                     companyname: company.companyname,
                     companyid: companyid,
                     children: [],
-                    expand: false
+                    expand: Object.keys(this.openGroupIds).length !== 0
                 };
                 newArray.push(companyObj);
             });
@@ -814,7 +825,7 @@ var monitor = {
                     companyname: this.$t("monitor.defaultCustomer"),
                     companyid: 0,
                     children: [],
-                    expand: false
+                    expand: Object.keys(this.openGroupIds).length !== 0
                 })
             }
             if (newArray.length === 0) {
@@ -872,9 +883,10 @@ var monitor = {
                 var groupObj = {
                     companyid: companyid,
                     title: group.groupname,
-                    expand: false,
+                    expand: Object.keys(me.openGroupIds).includes(group.groupid + ""),
                     name: group.groupname,
-                    children: []
+                    children: [],
+                    groupid: group.groupid
                 };
                 group.devices.forEach(function (device, index) {
                     var isOnline = me.getIsOnline(device.deviceid)
@@ -926,14 +938,15 @@ var monitor = {
         },
         getAllHideConpanyTreeData: function () {
             var me = this
-            var groups = this.filterGroups(this.groups)
+            var groups = this.filterGroups(this.groups);
             groups.forEach(function (group) {
                 var onlineCount = 0
                 var groupData = {
                     title: group.groupname,
-                    expand: false,
+                    expand: Object.keys(me.openGroupIds).includes(group.groupid + ""),
                     children: [],
-                    name: group.groupname
+                    name: group.groupname,
+                    groupid: group.groupid
                 }
 
                 group.devices.forEach(function (device, index) {
@@ -978,9 +991,10 @@ var monitor = {
                 var groupObj = {
                     companyid: companyid,
                     title: group.groupname,
-                    expand: false,
+                    expand: Object.keys(me.openGroupIds).includes(group.groupid + ""),
                     children: [],
-                    name: group.groupname
+                    name: group.groupname,
+                    groupid: group.groupid
                 }
 
                 group.devices.forEach(function (device) {
@@ -1034,9 +1048,10 @@ var monitor = {
             groups.forEach(function (group) {
                 var groupData = {
                     title: group.groupname,
-                    expand: false,
+                    expand: Object.keys(me.openGroupIds).includes(group.groupid + ""),
                     children: [],
-                    name: group.groupname
+                    name: group.groupname,
+                    groupid: group.groupid
                 }
 
                 group.devices.forEach(function (device, index) {
@@ -1083,9 +1098,10 @@ var monitor = {
                 var groupObj = {
                     companyid: companyid,
                     title: group.groupname,
-                    expand: false,
+                    expand: Object.keys(me.openGroupIds).includes(group.groupid + ""),
                     children: [],
-                    name: group.groupname
+                    name: group.groupname,
+                    groupid: group.groupid
                 }
 
                 group.devices.forEach(function (device) {
@@ -1137,9 +1153,10 @@ var monitor = {
             groups.forEach(function (group) {
                 var groupData = {
                     title: group.groupname,
-                    expand: false,
+                    expand: Object.keys(me.openGroupIds).includes(group.groupid + ""),
                     children: [],
-                    name: group.groupname
+                    name: group.groupname,
+                    groupid: group.groupid
                 }
 
                 group.devices.forEach(function (device, index) {
