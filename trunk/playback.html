@@ -665,6 +665,7 @@
                             this.isShowMarker && marker.openInfoWindow(windowInfo);
                             this.carMarker.setPosition(track.point);
                             this.carMarker.setIcon(this.getDirectionIcon(track.direction));
+                            
                     },
                     setViewPortCenter: function (lines) {
                         var view = this.map.getViewport(eval(lines));
@@ -713,7 +714,7 @@
                                 // me.markerLabel.setContent(me.getLableContent(track));
                                 var sContent = me.getLableContent(track);
                                 var windowInfo = new BMap.InfoWindow(sContent);
-                                me.carMarker.openInfoWindow(windowInfo);
+                                me.isShowMarker && me.carMarker.openInfoWindow(windowInfo);
 
                             }, me.velocity);
                         };
@@ -841,6 +842,9 @@
                         this.isShowCtrl = !this.isShowCtrl;
                     },
                     onShowMarker:function(){
+                        if(this.isShowMarker){
+                            this.map.closeInfoWindow();
+                        }
                         this.isShowMarker = !this.isShowMarker;
                     }
                 },

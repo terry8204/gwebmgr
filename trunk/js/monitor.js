@@ -483,10 +483,10 @@ var monitor = {
             this.openGroupIds = {};
             this.openCompanyIds = {};
         },
-        openCanpany: function (conpany) {
+        openCompany: function (company) {
 
-            var companyid = conpany.companyid;
-            conpany.expand = !conpany.expand;
+            var companyid = company.companyid;
+            company.expand = !company.expand;
             if (conpany.expand) {
                 this.openCompanyIds[companyid] = "";
             } else {
