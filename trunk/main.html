@@ -248,7 +248,9 @@
                     </div>
                 </div>
                 <div class="device-tree" ref="treeWraper">
-                    <!-- <Tree :data="currentStateData" :render="renderContent"></Tree> -->
+                    <div class="spin-wraper" v-show="isSpin">
+                        <Spin fix size="large"></Spin>
+                    </div>
                     <!-- left tree controller 不显示公司名 -->
                     <dl class="noselect" v-if="!isShowCompanyName" class="dl-inner-wrapper">
                         <!-- all -->

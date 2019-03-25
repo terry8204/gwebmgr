@@ -31,7 +31,7 @@ BMapClass.pt.initMap = function () {
 
 
 BMapClass.pt.setMarkerClusterer = function (lastTracks) {
-
+    console.log('lastTracks', lastTracks);
     this.lastTracks = lastTracks;
     if (this.markerClusterer == null) {
         var markers = this.getMarkers(lastTracks);
@@ -223,23 +223,26 @@ BMapClass.pt.updateMarkersState = function (deviceid) {
     for (var i = 0; i < markers.length; i++) {
         var marker = markers[i];
         var track = this.lastTracks[marker.deviceid];
-        var newPoint = new BMap.Point(track.b_lon, track.b_lat);
-        var isEq = marker.point.equals(newPoint);
-        var myIcon = this.getIcon(track);
-        marker.setIcon(myIcon);
-        marker.setRotation(track.course);
-        if (!isEq) {
-            marker.setPosition(newPoint);
-            if (this.mapInfoWindow && marker.deviceid == deviceid && this.mapInfoWindow.isOpen()) {
-                this.openInfoWindow(marker, deviceid);
+        console.log('updateMarkersState track', track);
+        if (track) {
+            var newPoint = new BMap.Point(track.b_lon, track.b_lat);
+            var isEq = marker.point.equals(newPoint);
+            var myIcon = this.getIcon(track);
+            marker.setIcon(myIcon);
+            marker.setRotation(track.course);
+            if (!isEq) {
+                marker.setPosition(newPoint);
+                if (this.mapInfoWindow && marker.deviceid == deviceid && this.mapInfoWindow.isOpen()) {
+                    this.openInfoWindow(marker, deviceid);
+                };
+            } else {
+                if (this.mapInfoWindow && marker.deviceid == deviceid && this.mapInfoWindow.isOpen()) {
+                    var address = this.getDevAddress(track);
+                    var content = utils.getWindowContent(track, address);
+                    $("#windowInfo").html(content);
+                };
             };
-        } else {
-            if (this.mapInfoWindow && marker.deviceid == deviceid && this.mapInfoWindow.isOpen()) {
-                var address = this.getDevAddress(track);
-                var content = utils.getWindowContent(track, address);
-                $("#windowInfo").html(content);
-            };
-        };
+        }
     }
 }
 

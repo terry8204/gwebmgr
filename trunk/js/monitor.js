@@ -595,7 +595,6 @@ var monitor = {
                 success: function (resp) {
                     if (resp.status == 0) {
                         if (resp.records) {
-                            var newRecords = {};
                             resp.records.forEach((item) => {
                                 if (item) {
                                     if (item) {
@@ -610,11 +609,11 @@ var monitor = {
                                         item.online = online;
                                         item.devicename = me.deviceInfos[deviceid].devicename;
                                         item.updatetimeStr = DateFormat.longToDateTimeStr(item.updatetime, 0);
-                                        newRecords[deviceid] = item;
+                                        me.positionLastrecords[deviceid] = item;
                                     }
                                 }
                             })
-                            me.positionLastrecords = newRecords;
+                            me.positionLastrecords
                             callback ? callback() : '';
                         }
                     } else if (resp.status == 3) {
@@ -885,9 +884,7 @@ var monitor = {
             me.currentStateData = treeData
         },
         getAllHideCompanyTreeData: function () {
-            var stime = Date.now();
             var me = this
-
             // this.groups.forEach(function (group) {
             //     var onlineCount = 0
             //     var groupData = {
@@ -940,7 +937,6 @@ var monitor = {
                 group.isShow = true;
                 group.title = group.groupname + "(" + online + "/" + count + ")";
             });
-            console.log('耗时', Date.now() - stime);
         },
         getOnlineShowCompanyTreeData: function () {
             var me = this
@@ -1221,6 +1217,7 @@ var monitor = {
                         me.map.updateLastTracks(me.positionLastrecords);
                         me.map.updateMarkersState(me.currentDeviceId);
                         me.updateTreeOnlineState();
+                        me.me.caclOnlineCount();
                     }, function (error) {
                         // alert(1);
                     });
@@ -1232,6 +1229,21 @@ var monitor = {
             var height = 8 * 38;
             var isOverflow = pageY + height < window.innerHeight
             this.placement = isOverflow ? 'right-start' : 'right-end';
+        },
+        caclOnlineCount: function () {
+            var me = this;
+            var online = 0;
+            var deviceIds = Object.keys(me.deviceInfos);
+            for (var key in this.positionLastrecords) {
+                var record = this.positionLastrecords[key];
+                var isOnline = me.getIsOnline(record.deviceid);
+                if (isOnline) {
+                    online++;
+                }
+            };
+            this.allDevCount = deviceIds.length;
+            this.onlineDevCount = online;
+            this.offlineDevCount = this.allDevCount - this.onlineDevCount;
         }
     },
     computed: {
@@ -1287,21 +1299,6 @@ var monitor = {
             });
             this.currentDevDirectiveList = directiveList;
         },
-        positionLastrecords: function () {
-            var me = this;
-            var online = 0;
-            var deviceIds = Object.keys(me.deviceInfos);
-            for (var key in this.positionLastrecords) {
-                var record = this.positionLastrecords[key];
-                var isOnline = me.getIsOnline(record.deviceid);
-                if (isOnline) {
-                    online++;
-                }
-            };
-            this.allDevCount = deviceIds.length;
-            this.onlineDevCount = online;
-            this.offlineDevCount = this.allDevCount - this.onlineDevCount;
-        },
         selectedState: function () {
             var me = this
             if (this.isShowCompanyName && this.companys.length == 0) {
@@ -1347,17 +1344,18 @@ var monitor = {
             me.getLastPosition([], function (resp) {
                 me.lastquerypositiontime = DateFormat.getCurrentUTC();
                 me.map ? me.map.setMarkerClusterer(me.positionLastrecords) : '';
-                me.selectedState = 'all';
+                me.caclOnlineCount();
+                me.updateTreeOnlineState();
                 communicate.$on("positionlast", me.handleWebSocket);
                 // communicate.$on("on-click-marker", me.openTreeDeviceNav);
             }, function (error) {
-                me.selectedState = 'all'
+                // me.selectedState = 'all'
             });
             me.setIntervalReqRecords();
         });
     },
     activated: function () {
-        console.log('activated', this.groups.length)
+        // console.log('activated', this.groups.length)
     },
     beforeDestroy: function () {
         this.$store.commit('currentDeviceRecord', {});
