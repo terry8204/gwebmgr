@@ -20,7 +20,7 @@
             <i-table border :columns="columns" :data="tableData" :loading="loading"></i-table>
         </div>
         <div class="my-page" style="margin: 5px 0;">
-            <Page :total="total" simple :page-size="5" :current="currentIndex"  @on-change="changePage"></Page>
+            <Page :total="total" simple :page-size="10" :current="currentIndex"  @on-change="changePage"></Page>
         </div>
     </div>
 
@@ -179,7 +179,7 @@ vueInstanse = new Vue({
                         me.loading = false;
                         if(resp.status == 0 && resp.devices != null){           
                             me.recordsList = me.filterDataInfo(resp.devices );
-                            me.tableData = me.recordsList.slice(0,5);
+                            me.tableData = me.recordsList.slice(0,10);
                             me.total = me.recordsList.length;
                         }else{
                             me.$Message.error(resp.cause);
@@ -242,7 +242,7 @@ vueInstanse = new Vue({
                             });
 
                             me.total = me.recordsList.length;
-                            me.tableData = me.recordsList.slice( me.currentIndex - 1 , 5);
+                            me.tableData = me.recordsList.slice( me.currentIndex - 1 , 10);
                         }else{
                             me.$Message.error(me.$t("message.deleteFail"));
                         }

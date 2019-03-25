@@ -78,7 +78,14 @@
                     </i-select>
                 </i-col>
             </Row>
-            
+
+            <Row style="margin: 10px 0">
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;转发地址 : &nbsp;</i-col>
+                <i-col span="20">
+                    <i-input v-model.trim="forwardurl"></i-input>
+                </i-col>
+            </Row>
+
             <Row style="margin: 10px 0">
                 <i-col span="6" :offset="7">
                     <i-button style="width: 100%" @click="handleSubmit">{{$t("bgMgr.submit")}}</i-button>
@@ -112,7 +119,8 @@
                 reportedpoint:0,
                 totalpoint:1500,
                 groupid:'',
-                companyid:''
+                companyid:'',
+                forwardurl:""
             },
             methods: {
                 back:function(){
@@ -165,6 +173,8 @@
                         data.totalpoint = Number(this.totalpoint);
                     }
 
+                    this.forwardurl && (data.forwardurl = this.forwardurl);
+
                     utils.sendAjax(url,data,function (resp) { 
                         if(resp.status == 0){
                             me.$Message.success(me.$t("message.changeSucc"));
@@ -190,6 +200,7 @@
                     this.companyid = "";
                     this.reportedpoint = 0;
                     this.totalpoint = 1500;
+                    this.forwardurl = "";
                 },
                 queryAllCompanyInfo:function(claaback){
                     var url = myUrls.queryCompanyByCreater();
@@ -215,6 +226,7 @@
                         me.deviceenable ="" +  editObject.deviceenable;
                         me.reportedpoint = editObject.reportedpoint ;
                         me.totalpoint = editObject.totalpoint ;
+                        me.forwardurl = editObject.forwardurl;
                     }
                 },
                 getGroupsList:function(){

@@ -250,21 +250,22 @@
                 <div class="device-tree" ref="treeWraper">
                     <!-- <Tree :data="currentStateData" :render="renderContent"></Tree> -->
                     <!-- left tree controller 不显示公司名 -->
-                    <dl class="noselect" v-if="!isShowConpanyName" class="dl-inner-wrapper">
-                        <template v-for="(group , index) in currentStateData" :key="index">
+                    <dl class="noselect" v-if="!isShowCompanyName" class="dl-inner-wrapper">
+                        <!-- all -->
+                        <template v-for="(group , index) in groups" :key="index" v-if="selectedState==='all'">
                             <dt style="padding:5px;border-bottom:1px solid #ddd;cursor: pointer;" @click="openGroupItem(group)">
                                 <Icon type="ios-arrow-down" v-show="group.expand"/>
                                 <Icon type="ios-arrow-forward" v-show="!group.expand"/>
                                 <b v-text="group.title"></b>
                             </dt>
-                            <dd style="padding:5px;border-bottom:1px solid #ddd" v-show="group.expand">
-                                <div v-for="(device , index) in group.children" :key="device.deviceid" style="padding-left:15px">
+                            <dd style="padding:5px;border-bottom:1px solid #ddd" v-if="group.expand">
+                                <div v-for="(device , index) in group.devices" :key="device.deviceid" style="padding-left:15px">
                                     <div :class="{'active-dev-offline':device.isSelected}" style="margin:3px 0;" :ref="device.deviceid">
                                         <div style="padding:3px 5px;cursor: pointer;" :style="{color: device.isOnline ? '#33DAD0' : '#B1BBC2'}" @click="selectedDev(device)">
                                             <Icon type="md-person"/> 
-                                            <span v-text="device.title"></span>   
+                                            <span v-text="device.devicename"></span> 
                                         </div>
-                                        <ul class="device-controller" v-show="device.isSelected">
+                                        <ul class="device-controller" v-if="device.isSelected">
                                             <li @click="editDevice(device)"><Icon type="ios-create"/><p>{{$t("monitor.edit")}}</p><li>
                                             <li @click="playBack(device.deviceid)"><Icon type="md-planet"/><p>{{$t("monitor.track")}}</p><li>
                                             <li @click="trackMap(device.deviceid)"><Icon type="md-person"/><p>{{$t("monitor.following")}}</p><li> 
@@ -304,19 +305,128 @@
                                 </div>
                             </dd>
                         </template>
+                        <!-- online -->
+                        <template v-for="(group , index) in groups" :key="index" v-if="selectedState==='online'">
+                                <dt style="padding:5px;border-bottom:1px solid #ddd;cursor: pointer;" @click="openGroupItem(group)" v-if="group.isShow">
+                                    <Icon type="ios-arrow-down" v-show="group.expand"/>
+                                    <Icon type="ios-arrow-forward" v-show="!group.expand"/>
+                                    <b v-text="group.title"></b>
+                                </dt>
+                                <dd style="padding:5px;border-bottom:1px solid #ddd" v-if="group.expand">
+                                    <div v-for="(device , index) in group.devices" :key="device.deviceid" style="padding-left:15px" v-if="device.isOnline">
+                                        <div :class="{'active-dev-offline':device.isSelected}" style="margin:3px 0;" :ref="device.deviceid">
+                                            <div style="padding:3px 5px;cursor: pointer;" :style="{color: device.isOnline ? '#33DAD0' : '#B1BBC2'}" @click="selectedDev(device)">
+                                                <Icon type="md-person"/> 
+                                                <span v-text="device.devicename"></span> 
+                                            </div>
+                                            <ul class="device-controller" v-if="device.isSelected">
+                                                <li @click="editDevice(device)"><Icon type="ios-create"/><p>{{$t("monitor.edit")}}</p><li>
+                                                <li @click="playBack(device.deviceid)"><Icon type="md-planet"/><p>{{$t("monitor.track")}}</p><li>
+                                                <li @click="trackMap(device.deviceid)"><Icon type="md-person"/><p>{{$t("monitor.following")}}</p><li> 
+                                                <li  @mouseover="handleMousemove($event)">
+                                                    <Dropdown trigger="click" transfer :placement="placement" @on-click="handleClickMore" style="width:100%;">
+                                                        <Icon type="ios-list"/><p>{{$t("monitor.more")}}</p>
+                                                        <i-dropdown-menu slot="list">
+                                                            <DropdownItem name="name1"> 
+                                                                <Dropdown transfer placement="right-start" @on-click="handleClickDirective" style="width:100%;">
+                                                                    {{$t("monitor.deviceCmd")}}
+                                                                    <Icon type="ios-arrow-forward"></Icon>
+                                                                    <i-dropdown-menu slot="list">
+                                                                        <template v-for="(item, index) in currentDevDirectiveList" :key="item.cmdcode">
+                                                                            <DropdownItem :name="item.cmdcode" >{{item.cmdname}}</DropdownItem>
+                                                                        </template>
+                                                                    </i-dropdown-menu>
+                                                                </Dropdown>                                                                                            
+                                                            </DropdownItem>
+                                                            <DropdownItem name="name2">  
+                                                                <Dropdown transfer placement="right-start" @on-click="handleClickFence" style="width:100%;">
+                                                                    {{$t("monitor.siteProtection")}}
+                                                                    <Icon type="ios-arrow-forward"></Icon>
+                                                                    <i-dropdown-menu slot="list">                                                                         
+                                                                        <DropdownItem name="shefang" >{{$t("monitor.fortify")}}</DropdownItem>
+                                                                        <DropdownItem name="chexiao" >{{$t("monitor.cancel")}}</DropdownItem>
+                                                                    </i-dropdown-menu>
+                                                                </Dropdown>
+                                                            </DropdownItem>
+                                                            <DropdownItem name="name3">{{$t("monitor.cmdRecord")}}</DropdownItem>
+                                                            <DropdownItem name="name4">{{$t("monitor.recordForm")}}</DropdownItem>
+                                                            <DropdownItem name="name5">{{$t("monitor.devBaseInfo")}}</DropdownItem>
+                                                        </i-dropdown-menu>
+                                                    </Dropdown>
+                                                <li> 
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </dd>
+                        </template>   
+                        <!-- offline -->
+                        <template v-for="(group , index) in groups" :key="index" v-if="selectedState==='offline'">
+                                <dt style="padding:5px;border-bottom:1px solid #ddd;cursor: pointer;" @click="openGroupItem(group)" v-if="group.isShow">
+                                    <Icon type="ios-arrow-down" v-show="group.expand"/>
+                                    <Icon type="ios-arrow-forward" v-show="!group.expand"/>
+                                    <b v-text="group.title"></b>
+                                </dt>
+                                <dd style="padding:5px;border-bottom:1px solid #ddd" v-if="group.expand">
+                                    <div v-for="(device , index) in group.devices" :key="device.deviceid" style="padding-left:15px" v-if="!device.isOnline">
+                                        <div :class="{'active-dev-offline':device.isSelected}" style="margin:3px 0;" :ref="device.deviceid">
+                                            <div style="padding:3px 5px;cursor: pointer;" :style="{color:'#B1BBC2'}" @click="selectedDev(device)">
+                                                <Icon type="md-person"/> 
+                                                <span v-text="device.devicename"></span> 
+                                            </div>
+                                            <ul class="device-controller" v-if="device.isSelected">
+                                                <li @click="editDevice(device)"><Icon type="ios-create"/><p>{{$t("monitor.edit")}}</p><li>
+                                                <li @click="playBack(device.deviceid)"><Icon type="md-planet"/><p>{{$t("monitor.track")}}</p><li>
+                                                <li @click="trackMap(device.deviceid)"><Icon type="md-person"/><p>{{$t("monitor.following")}}</p><li> 
+                                                <li  @mouseover="handleMousemove($event)">
+                                                    <Dropdown trigger="click" transfer :placement="placement" @on-click="handleClickMore" style="width:100%;">
+                                                        <Icon type="ios-list"/><p>{{$t("monitor.more")}}</p>
+                                                        <i-dropdown-menu slot="list">
+                                                            <DropdownItem name="name1"> 
+                                                                <Dropdown transfer placement="right-start" @on-click="handleClickDirective" style="width:100%;">
+                                                                    {{$t("monitor.deviceCmd")}}
+                                                                    <Icon type="ios-arrow-forward"></Icon>
+                                                                    <i-dropdown-menu slot="list">
+                                                                        <template v-for="(item, index) in currentDevDirectiveList" :key="item.cmdcode">
+                                                                            <DropdownItem :name="item.cmdcode" >{{item.cmdname}}</DropdownItem>
+                                                                        </template>
+                                                                    </i-dropdown-menu>
+                                                                </Dropdown>                                                                                            
+                                                            </DropdownItem>
+                                                            <DropdownItem name="name2">  
+                                                                <Dropdown transfer placement="right-start" @on-click="handleClickFence" style="width:100%;">
+                                                                    {{$t("monitor.siteProtection")}}
+                                                                    <Icon type="ios-arrow-forward"></Icon>
+                                                                    <i-dropdown-menu slot="list">                                                                         
+                                                                        <DropdownItem name="shefang" >{{$t("monitor.fortify")}}</DropdownItem>
+                                                                        <DropdownItem name="chexiao" >{{$t("monitor.cancel")}}</DropdownItem>
+                                                                    </i-dropdown-menu>
+                                                                </Dropdown>
+                                                            </DropdownItem>
+                                                            <DropdownItem name="name3">{{$t("monitor.cmdRecord")}}</DropdownItem>
+                                                            <DropdownItem name="name4">{{$t("monitor.recordForm")}}</DropdownItem>
+                                                            <DropdownItem name="name5">{{$t("monitor.devBaseInfo")}}</DropdownItem>
+                                                        </i-dropdown-menu>
+                                                    </Dropdown>
+                                                <li> 
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </dd>
+                        </template>
+
                     </dl>
                     <!-- left tree controller显示公司名 -->        
-                    <dl class="noselect" v-else="!isShowConpanyName" class="dl-inner-wrapper">
-                        <template v-for="(conpany , index) in currentStateData" :key="index">
+                    <dl class="noselect" v-else="!isShowCompanyName" class="dl-inner-wrapper">
+                        <template v-for="(company , index) in currentStateData" :key="index">
                             <div style="padding:5px;border-bottom:1px solid #ddd;cursor: pointer;" @click="openCompany(company)">
-                                {{conpany.title}} 
+                                {{company.title}} 
                                 <span style="float:right;width:16px;height20px;font-size:16px;margin-top:-2px">
-                                    <Icon type="ios-arrow-dropright" v-if="!conpany.expand"/>
-                                    <Icon type="ios-arrow-dropdown" v-else="!conpany.expand"/> 
+                                    <Icon type="ios-arrow-dropright" v-if="!company.expand"/>
+                                    <Icon type="ios-arrow-dropdown" v-else="!company.expand"/> 
                                 </span>
                             </div>
-                            <template v-for="(group , index) in conpany.children" :key="index">
-                                <div v-show="conpany.expand">
+                            <template v-for="(group , index) in company.children" :key="index">
+                                <div v-if="company.expand">
                                         <dt style="padding:5px;border-bottom:1px solid #ddd;cursor: pointer;" @click="openGroupItem(group)">
                                                 <Icon type="ios-arrow-down" v-show="group.expand"/>
                                                 <Icon type="ios-arrow-forward" v-show="!group.expand"/>
@@ -329,7 +439,7 @@
                                                             <Icon type="md-person"/> 
                                                             <span v-text="device.title"></span>   
                                                         </div>
-                                                        <ul class="device-controller" v-show="device.isSelected">
+                                                        <ul class="device-controller" v-if="device.isSelected">
                                                             <li @click="editDevice(device)"><Icon type="ios-create"/><p>{{$t("monitor.edit")}}</p><li>
                                                             <li @click="playBack(device.deviceid)"><Icon type="md-planet"/><p>{{$t("monitor.track")}}</p><li>
                                                             <li @click="trackMap(device.deviceid)"><Icon type="md-person"/><p>{{$t("monitor.following")}}</p><li> 

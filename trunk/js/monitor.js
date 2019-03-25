@@ -17,7 +17,6 @@
 //     <!-- <script src="http://ditu.google.cn/maps/api/js?v=3.1&sensor=false&language=cn&key=AIzaSyAjWE3yINoltrJcma3fq73wCp04jjEo1zA" type="text/javascript"></script>
 //     <script src="js/gmarkerclusterer.js"></script>
 //     <script src="js/markerwithlabel.js"></script> -->
-
 // 定位监控
 var monitor = {
     template: document.getElementById('monitor-template').innerHTML,
@@ -34,7 +33,7 @@ var monitor = {
             sosoData: [], // 搜索框里面的数据
             openGroupIds: {},
             openCompanyIds: {},
-            selectedState: '', // 选择nav的状态 all online offline;
+            selectedState: 'all', // 选择nav的状态 all online offline;
             currentStateData: [], // 当前tree的数据
             positionLastrecords: {}, // 全部设备最后一次位置记录
             companys: [], //公司名称id
@@ -128,6 +127,7 @@ var monitor = {
             cacheTableData: [],
             sendTableData: [],
             cmdPwd: null,  //指令密码
+            lastquerypositiontime: 0
         }
     },
     methods: {
@@ -422,7 +422,7 @@ var monitor = {
             this.filterData = [];
             var me = this;
             var deviceid = null
-            if (this.isShowConpanyName) {
+            if (this.isShowCompanyName) {
                 this.currentStateData.forEach(function (company) {
                     company.children.forEach(function (group) {
                         group.children.forEach(function (dev) {
@@ -439,8 +439,8 @@ var monitor = {
                     });
                 });
             } else {
-                this.currentStateData.forEach(function (group) {
-                    group.children.forEach(function (dev) {
+                this.groups.forEach(function (group) {
+                    group.devices.forEach(function (dev) {
                         if (dev.deviceid == value.deviceid) {
                             dev.isSelected = true;
                             group.expand = true;
@@ -455,7 +455,7 @@ var monitor = {
             var elWraper = this.$refs.treeWraper;
             var wrapY = elWraper.getBoundingClientRect().y;
             var wrapHeight = elWraper.getBoundingClientRect().height;
-            var elY = this.$refs[deviceid][0].getBoundingClientRect().y;
+            // var elY = this.$refs[deviceid][0].getBoundingClientRect().y;
             // if (wrapHeight >= 380 && ) {
             //     elWraper.scroolTo(elWraper - wrapHeight);
             // }
@@ -487,7 +487,7 @@ var monitor = {
 
             var companyid = company.companyid;
             company.expand = !company.expand;
-            if (conpany.expand) {
+            if (company.expand) {
                 this.openCompanyIds[companyid] = "";
             } else {
                 delete this.openCompanyIds[companyid];
@@ -495,16 +495,17 @@ var monitor = {
 
         },
         openGroupItem: function (groupInfo) {
-            var groupid = groupInfo.groupid;
+            // var groupid = groupInfo.groupid;
             groupInfo.expand = !groupInfo.expand;
-            if (groupInfo.expand) {
-                this.openGroupIds[groupid] = "";
-            } else {
-                delete this.openGroupIds[groupid];
-            }
+            // if (groupInfo.expand) {
+            //     this.openGroupIds[groupid] = "";
+            // } else {
+            //     delete this.openGroupIds[groupid];
+            // }
         },
         selectedDev: function (deviceInfo) {
-            var devicetype = deviceInfo.devicetype;
+            var device = this.deviceInfos[deviceInfo.deviceid];
+            var devicetype = device.devicetype;
             if (devicetype != this.currentDeviceType) {
                 this.currentDeviceType = devicetype;
             };
@@ -535,7 +536,7 @@ var monitor = {
             //     };
             //     var deviceid = item.deviceid;
             //     var isOnline = utils.getIsOnline(item);
-            //     if (me.isShowConpanyName) {
+            //     if (me.isShowCompanyName) {
             //         me.currentStateData.forEach(function (company) {
             //             company.children.forEach(function (group) {
             //                 group.children.forEach(function (dev) {
@@ -596,10 +597,11 @@ var monitor = {
             //         });
             //     };
             // };
-            this.getCurrentStateTreeData(this.selectedState, this.isShowConpanyName);
+            this.getCurrentStateTreeData(this.selectedState, this.isShowCompanyName);
         },
         cancelSelected: function () {
-            if (this.isShowConpanyName) {
+            //currentStateData
+            if (this.isShowCompanyName) {
                 this.currentStateData.forEach(function (company) {
                     company.children.forEach(function (group) {
                         group.children.forEach(function (dev) {
@@ -608,8 +610,8 @@ var monitor = {
                     })
                 })
             } else {
-                this.currentStateData.forEach(function (group) {
-                    group.children.forEach(function (dev) {
+                this.groups.forEach(function (group) {
+                    group.devices.forEach(function (dev) {
                         dev.isSelected = false
                     })
                 })
@@ -620,15 +622,15 @@ var monitor = {
             var url = myUrls.monitorListByUser()
             utils.sendAjax(url, data, function (resp) {
                 if (resp.status == 0) {
-                    resp.groups.forEach(function (group) {
-                        group.firstLetter = __pinyin.getFirstLetter(group.groupname)
-                        group.pinyin = __pinyin.getPinyin(group.groupname)
-                        group.devices.forEach(function (device, index) {
-                            var deviceid = device.deviceid
-                            device.firstLetter = __pinyin.getFirstLetter(device.devicename)
-                            device.pinyin = __pinyin.getPinyin(device.devicename)
-                        })
-                    })
+                    // resp.groups.forEach(function (group) {
+                    //     group.firstLetter = __pinyin.getFirstLetter(group.groupname)
+                    //     group.pinyin = __pinyin.getPinyin(group.groupname)
+                    //     group.devices.forEach(function (device, index) {
+                    //         var deviceid = device.deviceid
+                    //         device.firstLetter = __pinyin.getFirstLetter(device.devicename)
+                    //         device.pinyin = __pinyin.getPinyin(device.devicename)
+                    //     })
+                    // })
                     callback(resp)
                 } else if (resp.status == 3) {
                     me.$Message.error(me.$t("monitor.reLogin"))
@@ -643,44 +645,58 @@ var monitor = {
                 }
             })
         },
-        getLastPosition: function (deviceIds, callback) {
+        getLastPosition: function (deviceIds, callback, errorCall) {
             var me = this;
             var url = myUrls.lastPosition();
             var data = {
                 username: this.username,
-                deviceids: deviceIds
+                deviceids: deviceIds,
+                lastquerypositiontime: me.lastquerypositiontime
             }
-            utils.sendAjax(url, data, function (resp) {
-                if (resp.status == 0) {
-                    if (resp.records) {
-                        var newRecords = {};
-                        resp.records.forEach((item) => {
-                            if (item) {
+            // utils.sendAjax(url, data, function (resp) {
+
+            // });
+            $.ajax({
+                url: url,
+                method: 'post',
+                data: data,
+                dataType: "json",
+                success: function (resp) {
+                    if (resp.status == 0) {
+                        if (resp.records) {
+                            var newRecords = {};
+                            resp.records.forEach((item) => {
                                 if (item) {
-                                    var deviceid = item.deviceid;
-                                    var b_lon_and_b_lat = wgs84tobd09(item.callon, item.callat)
-                                    var g_lon_and_g_lat = wgs84togcj02(item.callon, item.callat);
-                                    var online = utils.getIsOnline(item);
-                                    item.b_lon = b_lon_and_b_lat[0];
-                                    item.b_lat = b_lon_and_b_lat[1];
-                                    item.g_lon = g_lon_and_g_lat[0];
-                                    item.g_lat = g_lon_and_g_lat[1];
-                                    item.online = online;
-                                    item.devicename = me.deviceInfos[deviceid].devicename;
-                                    item.updatetimeStr = DateFormat.longToDateTimeStr(item.updatetime, 0);
-                                    newRecords[deviceid] = item;
+                                    if (item) {
+                                        var deviceid = item.deviceid;
+                                        var b_lon_and_b_lat = wgs84tobd09(item.callon, item.callat)
+                                        var g_lon_and_g_lat = wgs84togcj02(item.callon, item.callat);
+                                        var online = utils.getIsOnline(item);
+                                        item.b_lon = b_lon_and_b_lat[0];
+                                        item.b_lat = b_lon_and_b_lat[1];
+                                        item.g_lon = g_lon_and_g_lat[0];
+                                        item.g_lat = g_lon_and_g_lat[1];
+                                        item.online = online;
+                                        item.devicename = me.deviceInfos[deviceid].devicename;
+                                        item.updatetimeStr = DateFormat.longToDateTimeStr(item.updatetime, 0);
+                                        newRecords[deviceid] = item;
+                                    }
                                 }
-                            }
-                        })
-                        me.positionLastrecords = newRecords;
-                        callback ? callback() : '';
+                            })
+                            me.positionLastrecords = newRecords;
+                            callback ? callback() : '';
+                        }
+                    } else if (resp.status == 3) {
+                        me.$Message.error(me.$t("monitor.reLogin"))
+                        Cookies.remove('token')
+                        setTimeout(function () {
+                            window.location.href = 'index.html'
+                        }, 2000)
                     }
-                } else if (resp.status == 3) {
-                    me.$Message.error(me.$t("monitor.reLogin"))
-                    Cookies.remove('token')
-                    setTimeout(function () {
-                        window.location.href = 'index.html'
-                    }, 2000)
+                    me.lastquerypositiontime = DateFormat.getCurrentUTC();
+                },
+                error: function (err) {
+                    errorCall(err);
                 }
             })
         },
@@ -689,7 +705,7 @@ var monitor = {
             var devLastInfo = me.getSingleDeviceInfo(deviceid);
             me.$store.commit('currentDeviceId', deviceid);
             me.$store.commit('currentDeviceRecord', devLastInfo);
-            if (me.isShowConpanyName) {
+            if (me.isShowCompanyName) {
                 me.currentStateData.forEach(function (company) {
                     company.children.forEach(function (group) {
                         group.children.forEach(function (dev) {
@@ -774,31 +790,31 @@ var monitor = {
         trackMap: function (deviceid) {
             trackMap(deviceid)
         },
-        getCurrentStateTreeData: function (state, isShowConpanyName) {
+        getCurrentStateTreeData: function (state, isShowCompanyName) {
             var me = this;
             this.currentStateData = [];
             this.sosoData = [];
             if (state === 'all') {
-                if (isShowConpanyName) {
-                    this.getAllShowConpanyTreeData();
+                if (isShowCompanyName) {
+                    this.getAllShowCompanyTreeData();
                 } else {
-                    this.getAllHideConpanyTreeData();
+                    this.getAllHideCompanyTreeData();
                 };
             } else if (state === 'online') {
-                if (isShowConpanyName) {
-                    this.getOnlineShowConpanyTreeData();
+                if (isShowCompanyName) {
+                    this.getOnlineShowCompanyTreeData();
                 } else {
-                    this.getOnlineHideConpanyTreeData();
+                    this.getOnlineHideCompanyTreeData();
                 };
             } else if (state === 'offline') {
-                if (isShowConpanyName) {
-                    this.getOfflineShowConpanyTreeData();
+                if (isShowCompanyName) {
+                    this.getOfflineShowCompanyTreeData();
                 } else {
-                    this.getOfflineHideConpanyTreeData();
+                    this.getOfflineHideCompanyTreeData();
                 };
             };
 
-            if (isShowConpanyName) {
+            if (isShowCompanyName) {
                 this.currentStateData.forEach(function (company) {
                     company.children.forEach(function (group) {
                         group.children.forEach(function (dev) {
@@ -829,7 +845,7 @@ var monitor = {
                 newArray.push(companyObj);
             });
             var logintype = Cookies.get('logintype')
-            if (logintype !== 'DEVICE' && this.isShowConpanyName) {
+            if (logintype !== 'DEVICE' && this.isShowCompanyName) {
                 newArray.unshift({
                     title: this.$t("monitor.defaultCustomer"),
                     companyname: this.$t("monitor.defaultCustomer"),
@@ -852,39 +868,32 @@ var monitor = {
             return newArray
         },
         filterGroups: function (groups) {
-            var me = this;
-            var newGroups = [];
-            var newObject = {};
-            groups.forEach(function (item) {
-                var groupid = item.groupid
-                var devices = item.devices
-                if (newObject[groupid] == undefined) {
-                    if (item.groupname == 'Default') {
-                        isZh ? item.groupname = me.$t("monitor.defaultGroup") : '';
-                    } else if (item.groupname == 'Device') {
-                        isZh ? item.groupname = me.$t("monitor.devGroup") : '';
-                    };
-                    newObject[groupid] = {
-                        groupname: item.groupname,
-                        devices: [],
-                        groupid: item.groupid,
-                        remark: item.remark
-                    }
+            var me = this, all = 0;
+            groups.forEach(function (group) {
+                var devCount = 0;
+                if (group.groupname == 'Default') {
+                    isZh ? group.groupname = me.$t("monitor.defaultGroup") : '';
+                } else if (group.groupname == 'Device') {
+                    isZh ? group.groupname = me.$t("monitor.devGroup") : '';
                 };
-                newObject[groupid].devices = newObject[groupid].devices.concat(
-                    devices
-                );
+                group.firstLetter = __pinyin.getFirstLetter(group.groupname);
+                group.pinyin = __pinyin.getPinyin(group.groupname);
+                group.expand = false;
+                group.devices.forEach(function (device) {
+                    all++;
+                    devCount++;
+                    device.isSelected = false;
+                    device.firstLetter = __pinyin.getFirstLetter(device.devicename);
+                    device.pinyin = __pinyin.getPinyin(device.devicename);
+                });
+                group.title = group.groupname + "(0/" + devCount + ")";
             });
-
-            for (var key in newObject) {
-                if (newObject.hasOwnProperty(key)) {
-                    newGroups.push(newObject[key])
-                };
-            };
-
-            return newGroups;
+            this.allDevCount = all;
+            this.onlineCount = 0;
+            this.offlineDevCount = all;
+            return groups;
         },
-        getAllShowConpanyTreeData: function () {
+        getAllShowCompanyTreeData: function () {
             var me = this;
             var newArray = me.getNewCompanyArr();
             me.groups.forEach(function (group) {
@@ -905,8 +914,6 @@ var monitor = {
                         deviceid: device.deviceid,
                         isOnline: isOnline,
                         isSelected: false,
-                        simnum: device.simnum,
-                        devicetype: device.devicetype
                     }
                     if (isOnline) {
                         onlineCount++
@@ -946,51 +953,65 @@ var monitor = {
             }
             me.currentStateData = treeData
         },
-        getAllHideConpanyTreeData: function () {
+        getAllHideCompanyTreeData: function () {
+            var stime = Date.now();
             var me = this
-            var groups = this.filterGroups(this.groups);
-            groups.forEach(function (group) {
-                var onlineCount = 0
-                var groupData = {
-                    title: group.groupname,
-                    expand: Object.keys(me.openGroupIds).includes(group.groupid + ""),
-                    children: [],
-                    name: group.groupname,
-                    groupid: group.groupid
-                }
 
+            // this.groups.forEach(function (group) {
+            //     var onlineCount = 0
+            //     var groupData = {
+            //         title: group.groupname,
+            //         expand: Object.keys(me.openGroupIds).includes(group.groupid + ""),
+            //         children: [],
+            //         name: group.groupname,
+            //         groupid: group.groupid
+            //     }
+
+            //     group.devices.forEach(function (device, index) {
+            //         var isOnline = me.getIsOnline(device.deviceid)
+            //         var dev = {
+            //             title: device.devicename,
+            //             isSelected: false,
+            //             isOnline: isOnline,
+            //             deviceid: device.deviceid
+            //         }
+            //         if (device.deviceid == me.currentDeviceId) {
+            //             groupData.expand = true
+            //             dev.isSelected = true
+            //         }
+            //         if (isOnline) {
+            //             onlineCount++
+            //         }
+            //         groupData.children.push(dev);
+            //     });
+
+            //     if (groupData.children.length) {
+            //         groupData.title +=
+            //             '(' + onlineCount + '/' + groupData.children.length + ')'
+            //         if (groupData.title == '默认组' || groupData.title == 'Default') {
+            //             me.currentStateData.unshift(groupData)
+            //         } else {
+            //             me.currentStateData.push(groupData)
+            //         }
+            //     }
+            // });
+            this.groups.forEach(function (group) {
+                var count = 0;
+                var online = 0;
                 group.devices.forEach(function (device, index) {
-                    var isOnline = me.getIsOnline(device.deviceid)
-                    var dev = {
-                        title: device.devicename,
-                        isSelected: false,
-                        isOnline: isOnline,
-                        deviceid: device.deviceid,
-                        simnum: device.simnum,
-                        devicetype: device.devicetype
-                    }
-                    if (device.deviceid == me.currentDeviceId) {
-                        groupData.expand = true
-                        dev.isSelected = true
-                    }
+                    count++;
+                    var isOnline = me.getIsOnline(device.deviceid);
+                    device.isOnline = isOnline;
                     if (isOnline) {
-                        onlineCount++
-                    }
-                    groupData.children.push(dev)
+                        online++;
+                    };
                 });
-
-                if (groupData.children.length) {
-                    groupData.title +=
-                        '(' + onlineCount + '/' + groupData.children.length + ')'
-                    if (groupData.title == '默认组' || groupData.title == 'Default') {
-                        me.currentStateData.unshift(groupData)
-                    } else {
-                        me.currentStateData.push(groupData)
-                    }
-                }
-            })
+                group.isShow = true;
+                group.title = group.groupname + "(" + online + "/" + count + ")";
+            });
+            console.log('耗时', Date.now() - stime);
         },
-        getOnlineShowConpanyTreeData: function () {
+        getOnlineShowCompanyTreeData: function () {
             var me = this
             var newArray = me.getNewCompanyArr()
             var groupsArray = []
@@ -1013,9 +1034,7 @@ var monitor = {
                         title: device.devicename,
                         deviceid: device.deviceid,
                         isOnline: isOnline,
-                        isSelected: false,
-                        simnum: device.simnum,
-                        devicetype: device.devicetype
+                        isSelected: false
                     }
 
                     if (device.deviceid == me.currentDeviceId) {
@@ -1052,52 +1071,67 @@ var monitor = {
                 }
             })
         },
-        getOnlineHideConpanyTreeData: function () {
+        getOnlineHideCompanyTreeData: function () {
             var me = this
-            var groups = this.filterGroups(this.groups)
-            groups.forEach(function (group) {
-                var groupData = {
-                    title: group.groupname,
-                    expand: Object.keys(me.openGroupIds).includes(group.groupid + ""),
-                    children: [],
-                    name: group.groupname,
-                    groupid: group.groupid
-                }
+            // this.groups.forEach(function (group) {
+            //     var groupData = {
+            //         title: group.groupname,
+            //         expand: Object.keys(me.openGroupIds).includes(group.groupid + ""),
+            //         children: [],
+            //         name: group.groupname,
+            //         groupid: group.groupid
+            //     }
 
+            //     group.devices.forEach(function (device, index) {
+            //         var isOnline = me.getIsOnline(device.deviceid)
+            //         var dev = {
+            //             title: device.devicename,
+            //             isSelected: false,
+            //             isOnline: isOnline,
+            //             deviceid: device.deviceid,
+            //         }
+            //         if (device.deviceid == me.currentDeviceId) {
+            //             groupData.expand = true
+            //             dev.isSelected = true
+            //         }
+            //         if (isOnline) {
+            //             groupData.children.push(dev)
+            //         }
+            //     })
+
+            //     if (groupData.children.length) {
+            //         if (groupData.title == '默认组' || groupData.title == 'Default') {
+            //             if (groupData.children.length) {
+            //                 me.currentStateData.unshift(groupData)
+            //             }
+            //         } else {
+            //             if (groupData.children.length) {
+            //                 me.currentStateData.push(groupData)
+            //             }
+            //         }
+            //         groupData.title += '(' + groupData.children.length + ')'
+            //     }
+            // })
+
+            this.groups.forEach(function (group) {
+                var online = 0;
                 group.devices.forEach(function (device, index) {
-                    var isOnline = me.getIsOnline(device.deviceid)
-                    var dev = {
-                        title: device.devicename,
-                        isSelected: false,
-                        isOnline: isOnline,
-                        deviceid: device.deviceid,
-                        simnum: device.simnum,
-                        devicetype: device.devicetype
-                    }
-                    if (device.deviceid == me.currentDeviceId) {
-                        groupData.expand = true
-                        dev.isSelected = true
-                    }
+                    var isOnline = me.getIsOnline(device.deviceid);
+                    device.isOnline = isOnline;
                     if (isOnline) {
-                        groupData.children.push(dev)
-                    }
-                })
-
-                if (groupData.children.length) {
-                    if (groupData.title == '默认组' || groupData.title == 'Default') {
-                        if (groupData.children.length) {
-                            me.currentStateData.unshift(groupData)
-                        }
-                    } else {
-                        if (groupData.children.length) {
-                            me.currentStateData.push(groupData)
-                        }
-                    }
-                    groupData.title += '(' + groupData.children.length + ')'
+                        online++;
+                    };
+                });
+                if (online != 0) {
+                    group.isShow = true;
+                } else {
+                    group.isShow = false;
                 }
-            })
+                group.title = group.groupname + "(" + online + ")";
+            });
+
         },
-        getOfflineShowConpanyTreeData: function () {
+        getOfflineShowCompanyTreeData: function () {
             var me = this
             var newArray = me.getNewCompanyArr()
             var groupsArray = []
@@ -1120,9 +1154,7 @@ var monitor = {
                         title: device.devicename,
                         deviceid: device.deviceid,
                         isOnline: isOnline,
-                        isSelected: false,
-                        simnum: device.simnum,
-                        devicetype: device.devicetype
+                        isSelected: false
                     }
 
                     if (device.deviceid == me.currentDeviceId) {
@@ -1157,49 +1189,64 @@ var monitor = {
                 }
             })
         },
-        getOfflineHideConpanyTreeData: function () {
+        getOfflineHideCompanyTreeData: function () {
             var me = this
-            var groups = this.filterGroups(this.groups)
-            groups.forEach(function (group) {
-                var groupData = {
-                    title: group.groupname,
-                    expand: Object.keys(me.openGroupIds).includes(group.groupid + ""),
-                    children: [],
-                    name: group.groupname,
-                    groupid: group.groupid
-                }
+            // var groups = this.groups;
+            // groups.forEach(function (group) {
+            //     var groupData = {
+            //         title: group.groupname,
+            //         expand: Object.keys(me.openGroupIds).includes(group.groupid + ""),
+            //         children: [],
+            //         name: group.groupname,
+            //         groupid: group.groupid
+            //     }
 
+            //     group.devices.forEach(function (device, index) {
+            //         // var isOnline = me.getIsOnline(device.deviceid)
+            //         var isOnline = false;
+            //         var dev = {
+            //             title: device.devicename,
+            //             isSelected: false,
+            //             isOnline: isOnline,
+            //             deviceid: device.deviceid,
+            //         }
+            //         if (device.deviceid == me.currentDeviceId) {
+            //             groupData.expand = true;
+            //             dev.isSelected = true;
+            //         }
+            //         if (!isOnline) {
+            //             groupData.children.push(dev);
+            //         };
+            //     })
+
+            //     if (groupData.children.length) {
+            //         if (groupData.title == '默认组' || groupData.title == 'Default') {
+            //             if (groupData.children.length) {
+            //                 me.currentStateData.unshift(groupData);
+            //             };
+            //         } else {
+            //             if (groupData.children.length) {
+            //                 me.currentStateData.push(groupData);
+            //             };
+            //         };
+            //         groupData.title += '(' + groupData.children.length + ')';
+            //     };
+            // });
+            this.groups.forEach(function (group) {
+                var offline = 0;
                 group.devices.forEach(function (device, index) {
-                    var isOnline = me.getIsOnline(device.deviceid)
-                    var dev = {
-                        title: device.devicename,
-                        isSelected: false,
-                        isOnline: isOnline,
-                        deviceid: device.deviceid,
-                        simnum: device.simnum,
-                        devicetype: device.devicetype
-                    }
-                    if (device.deviceid == me.currentDeviceId) {
-                        groupData.expand = true;
-                        dev.isSelected = true;
-                    }
+                    var isOnline = me.getIsOnline(device.deviceid);
+                    device.isOnline = isOnline;
                     if (!isOnline) {
-                        groupData.children.push(dev);
+                        offline++;
                     };
-                })
-
-                if (groupData.children.length) {
-                    if (groupData.title == '默认组' || groupData.title == 'Default') {
-                        if (groupData.children.length) {
-                            me.currentStateData.unshift(groupData);
-                        };
-                    } else {
-                        if (groupData.children.length) {
-                            me.currentStateData.push(groupData);
-                        };
-                    };
-                    groupData.title += '(' + groupData.children.length + ')';
-                };
+                });
+                if (offline != 0) {
+                    group.isShow = true;
+                } else {
+                    group.isShow = false;
+                }
+                group.title = group.groupname + "(" + offline + ")";
             });
         },
         getIsOnline: function (deviceid) {
@@ -1239,10 +1286,12 @@ var monitor = {
                 if (me.intervalTime <= 0) {
                     me.intervalTime = me.stateIntervalTime;
                     var devIdList = Object.keys(me.deviceInfos);
-                    me.getLastPosition(devIdList, function () {
+                    me.getLastPosition([], function () {
                         me.map.updateLastTracks(me.positionLastrecords);
                         me.map.updateMarkersState(me.currentDeviceId);
                         me.updateTreeOnlineState();
+                    }, function (error) {
+                        // alert(1);
                     });
                 }
             }, 1000);
@@ -1258,7 +1307,7 @@ var monitor = {
         username: function () {
             return Cookies.get('name');
         },
-        isShowConpanyName: function () {
+        isShowCompanyName: function () {
             return this.$store.state.isShowCompany;
         },
         stateIntervalTime: function () {
@@ -1326,29 +1375,29 @@ var monitor = {
         },
         selectedState: function () {
             var me = this
-            if (this.isShowConpanyName && this.companys.length == 0) {
+            if (this.isShowCompanyName && this.companys.length == 0) {
                 this.queryCompanyTree(function (response) {
                     me.companys = response.companys
-                    me.getCurrentStateTreeData(me.selectedState, me.isShowConpanyName)
+                    me.getCurrentStateTreeData(me.selectedState, me.isShowCompanyName)
                 });
             } else {
                 this.getCurrentStateTreeData(
                     this.selectedState,
-                    this.isShowConpanyName
+                    this.isShowCompanyName
                 )
             }
         },
-        isShowConpanyName: function () {
+        isShowCompanyName: function () {
             var me = this;
-            if (this.isShowConpanyName) {
+            if (this.isShowCompanyName) {
                 me.queryCompanyTree(function (response) {
                     me.companys = response.companys
-                    me.getCurrentStateTreeData(me.selectedState, me.isShowConpanyName)
+                    me.getCurrentStateTreeData(me.selectedState, me.isShowCompanyName)
                 });
             } else {
                 this.getCurrentStateTreeData(
                     this.selectedState,
-                    this.isShowConpanyName
+                    this.isShowCompanyName
                 )
             }
         }
@@ -1359,17 +1408,24 @@ var monitor = {
         this.placeholder = this.$t("monitor.placeholder");
         this.initMap();
         this.getMonitorListByUser({ username: userName }, function (resp) {
-            me.groups = resp.groups;
+            // resp.groups.forEach((group) => {
+            //     group.devices = group.devices.slice(0, 3000);
+            // });
+            me.groups = me.filterGroups(resp.groups)
             me.$store.dispatch('setdeviceInfos', me.groups);
-            var devIdList = Object.keys(me.deviceInfos);
-            me.getLastPosition(devIdList, function (resp) {
+            // var devIdList = Object.keys(me.deviceInfos);
+
+            me.getLastPosition([], function (resp) {
+                me.lastquerypositiontime = DateFormat.getCurrentUTC();
                 me.map ? me.map.setMarkerClusterer(me.positionLastrecords) : '';
                 me.selectedState = 'all';
+                communicate.$on("positionlast", me.handleWebSocket);
+                // communicate.$on("on-click-marker", me.openTreeDeviceNav);
+            }, function (error) {
+                me.selectedState = 'all'
             });
+            me.setIntervalReqRecords();
         });
-        this.setIntervalReqRecords();
-        communicate.$on("positionlast", this.handleWebSocket);
-        communicate.$on("on-click-marker", this.openTreeDeviceNav);
     },
     beforeDestroy: function () {
         this.$store.commit('currentDeviceRecord', {});

@@ -63,7 +63,7 @@ BMapClass.pt.addMarkerEvent = function (marker) {
     var self = this;
     marker.addEventListener("click", function () {
         var deviceid = marker.deviceid;
-        communicate.$emit("on-click-marker", deviceid);
+        // communicate.$emit("on-click-marker", deviceid);
         self.openInfoWindow(marker, deviceid);
     });
 }

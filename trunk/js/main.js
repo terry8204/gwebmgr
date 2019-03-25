@@ -31,6 +31,7 @@ function loadBMapSucc () {
 }
 
 var asyncLoadJs = function (jsName, callback) {
+  console.log('asyncLoadJs');
   var node = document.createElement('script'),
     timeout = 1,
     head = document.getElementsByTagName('head')[0],
@@ -147,15 +148,15 @@ vstore = new Vuex.Store({
     },
     setdeviceInfos: function (state, groups) {
       groups.forEach(function (group) {
-        group.firstLetter = __pinyin.getFirstLetter(group.groupname);
-        group.pinyin = __pinyin.getPinyin(group.groupname);
+        // group.firstLetter = __pinyin.getFirstLetter(group.groupname);
+        // group.pinyin = __pinyin.getPinyin(group.groupname);
         group.devices.forEach(function (device, index) {
           var deviceid = device.deviceid;
-          device.firstLetter = __pinyin.getFirstLetter(device.devicename);
-          device.pinyin = __pinyin.getPinyin(device.devicename);
+          // device.firstLetter = __pinyin.getFirstLetter(device.devicename);
+          // device.pinyin = __pinyin.getPinyin(device.devicename);
           state.deviceInfos[deviceid] = device;
         })
-      })
+      });
     },
     setUserTypeDescr: function (state, userTypeDescrList) {
       state.userTypeDescrList = userTypeDescrList;
@@ -559,7 +560,7 @@ var trackDebug = {
         resp.records.sort(function (a, b) {
           return b.updatetime - a.updatetime;
         });
-        this.data = resp.records;
+        this.data = Object.freeze(resp.records);
         this.total = this.data.length;
         this.tableData = this.data.slice(0, 30);
         this.currentIndex = 1;
@@ -647,7 +648,7 @@ var trackDebug = {
   }
 }
 
-
+Vue.devtools = false;
 // 根组件
 var vRoot = new Vue({
   el: '#app',

@@ -400,8 +400,8 @@ var mixIn = {
       this.tableData = queryTableData;
     },
     changePage: function (index) {
-      var offset = index * 5;
-      var start = (index - 1) * 5;
+      var offset = index * 10;
+      var start = (index - 1) * 10;
       this.currentIndex = index;
       this.tableData = this.recordsList.slice(start, offset);
     },
@@ -521,7 +521,7 @@ function openSim (deviceId) {
     return detect(data);
   }
 
-  const deepClone = function (data) {
+  var deepClone = function (data) {
     if (data === null || data === undefined) {
       return undefined;
     }
