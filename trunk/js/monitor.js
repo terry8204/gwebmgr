@@ -659,8 +659,8 @@ var monitor = {
             $.ajax({
                 url: url,
                 method: 'post',
-                data: data,
-                dataType: "json",
+                data: JSON.stringify(data),
+                dataType: 'json',
                 success: function (resp) {
                     if (resp.status == 0) {
                         if (resp.records) {
