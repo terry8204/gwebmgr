@@ -17,6 +17,7 @@
 //     <!-- <script src="http://ditu.google.cn/maps/api/js?v=3.1&sensor=false&language=cn&key=AIzaSyAjWE3yINoltrJcma3fq73wCp04jjEo1zA" type="text/javascript"></script>
 //     <script src="js/gmarkerclusterer.js"></script>
 //     <script src="js/markerwithlabel.js"></script> -->
+var isLoadLastPositon = false;
 // 定位监控
 var monitor = {
     template: document.getElementById('monitor-template').innerHTML,
@@ -141,13 +142,14 @@ var monitor = {
                         me.isSpin = true;
                         asyncLoadJs('baidu', function () {
                             (function poll () {
-                                if (isLoadBMap) {
+                                if (isLoadBMap && isLoadLastPositon) {
                                     asyncLoadJs('distancetool', function () {
                                         asyncLoadJs('textIconoverlay', function () {
                                             asyncLoadJs('bmarkerclusterer', function () {
                                                 me.map = new BMapClass();
                                                 me.map.setMarkerClusterer(me.positionLastrecords);
                                                 me.isSpin = false;
+                                                console.log('地图先回来', '')
                                             });
                                         });
                                     });
@@ -1212,12 +1214,12 @@ var monitor = {
                 me.intervalTime--
                 if (me.intervalTime <= 0) {
                     me.intervalTime = me.stateIntervalTime;
-                    var devIdList = Object.keys(me.deviceInfos);
+                    // var devIdList = Object.keys(me.deviceInfos);
                     me.getLastPosition([], function () {
                         me.map.updateLastTracks(me.positionLastrecords);
                         me.map.updateMarkersState(me.currentDeviceId);
                         me.updateTreeOnlineState();
-                        me.me.caclOnlineCount();
+                        me.caclOnlineCount();
                     }, function (error) {
                         // alert(1);
                     });
@@ -1342,15 +1344,13 @@ var monitor = {
             // var devIdList = Object.keys(me.deviceInfos);
 
             me.getLastPosition([], function (resp) {
+                isLoadLastPositon = true;
                 me.lastquerypositiontime = DateFormat.getCurrentUTC();
-                me.map ? me.map.setMarkerClusterer(me.positionLastrecords) : '';
                 me.caclOnlineCount();
                 me.updateTreeOnlineState();
                 communicate.$on("positionlast", me.handleWebSocket);
-                // communicate.$on("on-click-marker", me.openTreeDeviceNav);
-            }, function (error) {
-                // me.selectedState = 'all'
-            });
+            }, function (error) { });
+
             me.setIntervalReqRecords();
         });
     },

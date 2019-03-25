@@ -4,6 +4,7 @@ function BMapClass () {
     this.lastTracks = null;
     this.mapInfoWindow = null; //地图窗口 
     this.circleList = [];
+    this.markerHashMap = {};
     this.initMap();
 }
 
@@ -31,29 +32,27 @@ BMapClass.pt.initMap = function () {
 
 
 BMapClass.pt.setMarkerClusterer = function (lastTracks) {
-    console.log('lastTracks', lastTracks);
-    this.lastTracks = lastTracks;
+    this.lastTracks = deepClone(lastTracks);
     if (this.markerClusterer == null) {
-        var markers = this.getMarkers(lastTracks);
+        var markers = this.getMarkers();
         this.markerClusterer = new BMapLib.MarkerClusterer(this.mapInstance, { markers: markers });
         this.markerClusterer.setMaxZoom(17);
     }
 };
 
-BMapClass.pt.getMarkers = function (lastTracks) {
+BMapClass.pt.getMarkers = function () {
     var markers = [];
-    for (var deviceid in lastTracks) {
-        if (lastTracks.hasOwnProperty(deviceid)) {
-            var track = lastTracks[deviceid];
-            var myIcon = this.getIcon(track);
-            var point = new BMap.Point(track.b_lon, track.b_lat);
-            var marker = new BMap.Marker(point, { icon: myIcon, rotation: track.course });
-            this.addMarkerEvent(marker);
-            var label = this.getCarLabel(track);
-            marker.deviceid = track.deviceid;
-            marker.setLabel(label);
-            markers.push(marker);
-        }
+    for (var key in this.lastTracks) {
+        var track = this.lastTracks[key];
+        var myIcon = this.getIcon(track);
+        var point = new BMap.Point(track.b_lon, track.b_lat);
+        var marker = new BMap.Marker(point, { icon: myIcon, rotation: track.course });
+        this.addMarkerEvent(marker);
+        var label = this.getCarLabel(track);
+        marker.deviceid = track.deviceid;
+        marker.setLabel(label);
+        markers.push(marker);
+        this.markerHashMap[track.deviceid] = marker;
     }
     return markers;
 }
@@ -193,17 +192,14 @@ BMapClass.pt.cancelFence = function (deviceid) {
 
 BMapClass.pt.updateLastTracks = function (lastTracks) {
     this.lastTracks = lastTracks;
-    var markers = this.markerClusterer.getMarkers();
+
     for (var key in this.lastTracks) {
         if (this.lastTracks.hasOwnProperty(key)) {
             var isHas = false;
             var track = this.lastTracks[key];
-            for (var i = 0; i < markers.length; i++) {
-                var marker = markers[i];
-                if (marker.deviceid == key) {
-                    isHas = true;
-                }
-            };
+            if (this.markerHashMap[key]) {
+                isHas = true;
+            }
             if (!isHas) {
                 var myIcon = this.getIcon(track);
                 var point = new BMap.Point(track.b_lon, track.b_lat);
@@ -213,6 +209,7 @@ BMapClass.pt.updateLastTracks = function (lastTracks) {
                 marker.deviceid = track.deviceid;
                 marker.setLabel(label);
                 this.markerClusterer.addMarker(marker);
+                this.markerHashMap[key] = marker;
             }
         }
     }
@@ -223,7 +220,6 @@ BMapClass.pt.updateMarkersState = function (deviceid) {
     for (var i = 0; i < markers.length; i++) {
         var marker = markers[i];
         var track = this.lastTracks[marker.deviceid];
-        console.log('updateMarkersState track', track);
         if (track) {
             var newPoint = new BMap.Point(track.b_lon, track.b_lat);
             var isEq = marker.point.equals(newPoint);
