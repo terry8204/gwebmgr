@@ -43,6 +43,9 @@ var waringComponent = {
         },
         userType: function () {
             return this.$store.state.userType;
+        },
+        activeComponent: function () {
+            return this.$store.state.headerActiveName;
         }
     },
     watch: {

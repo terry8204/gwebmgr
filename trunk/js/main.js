@@ -31,7 +31,6 @@ function loadBMapSucc () {
 }
 
 var asyncLoadJs = function (jsName, callback) {
-  console.log('asyncLoadJs');
   var node = document.createElement('script'),
     timeout = 1,
     head = document.getElementsByTagName('head')[0],

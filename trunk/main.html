@@ -27,9 +27,9 @@
             <app-header @change-nav="changeComponent" :componentid="activeName"></app-header>
         </div>
         <div class="view-wraper">
-            <component :is="activeName" ref="my-component" @jump-report="jumpReport"></component>
-            <!-- <keep-alive exclude="monitor">
-            </keep-alive> -->
+            <keep-alive include="monitor">
+                <component :is="activeName" ref="my-component" @jump-report="jumpReport"></component>
+            </keep-alive>
         </div>
         <waring-component></waring-component>
     </div>
@@ -861,7 +861,7 @@
 
     <!-- 报警 -->
     <script type="text/x-template" id="waring-template">
-        <div class="waring-wraper" :style="waringWraperStyle">
+        <div class="waring-wraper" :style="waringWraperStyle" v-if="activeComponent !== 'trackDebug'">
             <ul class="waring-controller" v-show="isLargen == 0">
                 <li style="width:68px;border-left:1px solid #fff; "><span :class="{msgwaring:isWaring,msgnormal:!isWaring}">{{$t("alarm.message")}}</span></li>
                 <li style="width:60px;cursor: pointer;border-right:1px solid #fff;">

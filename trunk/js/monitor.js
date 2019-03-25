@@ -528,75 +528,6 @@ var monitor = {
             }
         },
         updateTreeOnlineState: function () {
-            // var me = this;
-            // for (var key in this.positionLastrecords) {
-            //     var item = this.positionLastrecords[key];
-            //     if (item == null) {
-            //         return;
-            //     };
-            //     var deviceid = item.deviceid;
-            //     var isOnline = utils.getIsOnline(item);
-            //     if (me.isShowCompanyName) {
-            //         me.currentStateData.forEach(function (company) {
-            //             company.children.forEach(function (group) {
-            //                 group.children.forEach(function (dev) {
-            //                     if (dev.deviceid == deviceid) {
-            //                         dev.isOnline = isOnline;
-            //                     };
-            //                 });
-            //             });
-            //         });
-
-            //         me.currentStateData.forEach(function (company) {
-            //             company.children.forEach(function (group) {
-            //                 var onlineCount = 0
-            //                 group.children.forEach(function (dev) {
-            //                     if (dev.isOnline) {
-            //                         onlineCount++
-            //                     }
-            //                 })
-            //                 if (me.selectedState == 'all') {
-            //                     group.title =
-            //                         group.name +
-            //                         '(' +
-            //                         onlineCount +
-            //                         '/' +
-            //                         group.children.length +
-            //                         ')'
-            //                 } else {
-            //                     group.title = group.name + '(' + group.children.length + ')'
-            //                 };
-            //             });
-            //         });
-            //     } else {
-            //         me.currentStateData.forEach(function (group) {
-            //             group.children.forEach(function (dev) {
-            //                 if (dev.deviceid == deviceid) {
-            //                     dev.isOnline = isOnline
-            //                 };
-            //             });
-            //         });
-            //         me.currentStateData.forEach(function (group) {
-            //             var onlineCount = 0;
-            //             group.children.forEach(function (dev) {
-            //                 if (dev.isOnline) {
-            //                     onlineCount++
-            //                 };
-            //             });
-            //             if (me.selectedState == 'all') {
-            //                 group.title =
-            //                     group.name +
-            //                     '(' +
-            //                     onlineCount +
-            //                     '/' +
-            //                     group.children.length +
-            //                     ')'
-            //             } else {
-            //                 group.title = group.name + '(' + group.children.length + ')';
-            //             };
-            //         });
-            //     };
-            // };
             this.getCurrentStateTreeData(this.selectedState, this.isShowCompanyName);
         },
         cancelSelected: function () {
@@ -1360,7 +1291,6 @@ var monitor = {
             var me = this;
             var online = 0;
             var deviceIds = Object.keys(me.deviceInfos);
-
             for (var key in this.positionLastrecords) {
                 var record = this.positionLastrecords[key];
                 var isOnline = me.getIsOnline(record.deviceid);
@@ -1368,7 +1298,6 @@ var monitor = {
                     online++;
                 }
             };
-
             this.allDevCount = deviceIds.length;
             this.onlineDevCount = online;
             this.offlineDevCount = this.allDevCount - this.onlineDevCount;
@@ -1426,6 +1355,9 @@ var monitor = {
             });
             me.setIntervalReqRecords();
         });
+    },
+    activated: function () {
+        console.log('activated', this.groups.length)
     },
     beforeDestroy: function () {
         this.$store.commit('currentDeviceRecord', {});
