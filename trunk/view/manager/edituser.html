@@ -358,10 +358,6 @@
                         overduetime:new Date(this.overduetime).getTime(),
                         usertype:userType,
                         companyid:this.companyid,
-                        qq:this.qq,
-                        email:this.email,
-                        phone:this.phone,
-                        wechat:this.phone
                     }; 
 
                     for(var key in data){
@@ -372,6 +368,11 @@
                             }
                         };
                     };    
+
+                    this.qq?data.qq=this.qq:"";
+                    this.email?data.email=this.email:"";
+                    this.phone?data.phone=this.phone:"";
+                    this.phone?data.wechat=this.phone:"";
 
                     data.allrights = this.allrights ? 1 : 0;
 

@@ -4,13 +4,14 @@ function GoogleMap () {
     this.lastTracks = null;
     this.mapInfoWindow = null; //地图窗口 
     this.circleList = [];
+    this.markerHashMap = {};
     this.initMap();
 }
 
 GoogleMap.pt = GoogleMap.prototype;
 
 GoogleMap.pt.initMap = function () {
-    var center = new google.maps.LatLng(24.129163, 113.264435);
+    var center = new google.maps.LatLng(35.129163, 102.264435);
     this.mapInstance = new google.maps.Map(document.getElementById('my-map'), {
         zoom: 4,
         center: center,
@@ -19,6 +20,8 @@ GoogleMap.pt.initMap = function () {
 }
 
 GoogleMap.pt.setMarkerClusterer = function (lastTracks) {
+    console.log('gl setMarkerClusterer');
+    var startTime = Date.now();
     this.lastTracks = lastTracks;
     if (this.markerClusterer == null) {
         var markers = this.getMarkers(lastTracks);
@@ -29,7 +32,9 @@ GoogleMap.pt.setMarkerClusterer = function (lastTracks) {
         } else {
             imgPath = '/images/m';
         }
+
         this.markerClusterer = new GMarkerClusterer(this.mapInstance, markers, { imagePath: imgPath });
+        console.log('结束', Date.now() - startTime);
     }
 }
 
@@ -37,6 +42,7 @@ GoogleMap.pt.getMarkers = function (lastTracks) {
     var markers = [];
     for (var deviceid in lastTracks) {
         if (lastTracks.hasOwnProperty(deviceid)) {
+            idx++;
             var track = lastTracks[deviceid];
             var myIcon = this.getIcon(track);
             var latLng = new google.maps.LatLng(track.g_lat, track.g_lon);
@@ -56,6 +62,7 @@ GoogleMap.pt.getMarkers = function (lastTracks) {
             });
             marker.deviceid = track.deviceid;
             markers.push(marker);
+            this.markerHashMap[track.deviceid] = marker;
             this.addMarkerEvent(marker);
         }
     }
@@ -153,7 +160,6 @@ GoogleMap.pt.addMapFence = function (deviceid, distance) {
     for (var i = 0; i < mks.length; i++) {
         var mk = mks[i];
         if (deviceid == mk.deviceid) {
-            console.log('mk', mk);
             point = mk.internalPosition;
             break;
         }
@@ -186,46 +192,45 @@ GoogleMap.pt.updateLastTracks = function (lastTracks) {
     this.lastTracks = lastTracks;
     var markers = this.markerClusterer.getMarkers();
     for (var key in this.lastTracks) {
-        if (this.lastTracks.hasOwnProperty(key)) {
-            var isHas = false;
-            var track = this.lastTracks[key];
-            for (var i = 0; i < markers.length; i++) {
-                var marker = markers[i];
-                if (marker.deviceid == key) {
-                    isHas = true;
+        var isHas = false;
+        var track = this.lastTracks[key];
+        if (this.markerHashMap[track.deviceid]) {
+            isHas = true
+        };
+        if (!isHas) {
+            var myIcon = this.getIcon(track);
+            var latLng = new google.maps.LatLng(track.g_lat, track.g_lon);
+            var marker = new MarkerWithLabel({
+                position: latLng,
+                icon: myIcon,
+                raiseOnDrag: true,
+                map: this.mapInstance,
+                labelContent: track.devicename,
+                labelAnchor: new google.maps.Point(-10, 17),
+                labelStyle: {
+                    border: 0,
+                    padding: "2px",
+                    background: "#00A8D4",
+                    color: "#fff"
                 }
-            };
-            if (!isHas) {
-                var myIcon = this.getIcon(track);
-                var latLng = new google.maps.LatLng(track.g_lat, track.g_lon);
-                var marker = new MarkerWithLabel({
-                    position: latLng,
-                    icon: myIcon,
-                    raiseOnDrag: true,
-                    map: this.mapInstance,
-                    labelContent: track.devicename,
-                    labelAnchor: new google.maps.Point(-10, 17),
-                    labelStyle: {
-                        border: 0,
-                        padding: "2px",
-                        background: "#00A8D4",
-                        color: "#fff"
-                    }
-                });
-                marker.deviceid = track.deviceid;
-                this.addMarkerEvent(marker);
-                this.markerClusterer.addMarker(marker);
-            }
+            });
+            marker.deviceid = track.deviceid;
+            this.markerHashMap[track.deviceid] = marker;
+            this.addMarkerEvent(marker);
+            this.markerClusterer.addMarker(marker);
         }
+
     }
 }
 
 GoogleMap.pt.updateMarkersState = function (deviceid) {
+    console.log('gl updateMarkersState');
     var markers = this.markerClusterer.getMarkers();
     for (var i = 0; i < markers.length; i++) {
         var marker = markers[i];
         var track = this.lastTracks[marker.deviceid];
         var latLng = new google.maps.LatLng(track.g_lat, track.g_lon);
+        // var mPoint = marker.internalPosition;
         var myIcon = this.getIcon(track);
         marker.setPosition(latLng);
         marker.setIcon(myIcon);

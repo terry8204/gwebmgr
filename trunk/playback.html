@@ -761,6 +761,9 @@
                         if(Cookies.get(this.deviceid+'-'+info.trackid)){
                             color = 'red';
                         };
+                        if (info.gotsrc === 'gps' && info.gpsvalidnum) {
+                            posiType += "(" + info.gpsvalidnum + ")";
+                        };
                         var speed = info.speed == 0 ? "0km/h" : (info.speed / 1000).toFixed(2) + "km/h";
                         var sContent = '<div style="max-width:296px;">' +
                             '<p> ' + (isZh ? '设备名称' : 'Device Name') + ': ' + this.deviceid + '</p>' +

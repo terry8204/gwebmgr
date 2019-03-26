@@ -25,7 +25,8 @@ var monitor = {
         var vm = this;
         return {
             placeholder: "",
-            isSpin: false,
+            isLoadGroup: true,
+            isSpin: true,
             map: null,
             placement: "right-start",
             mapType: mapType ? mapType : 'bMap',
@@ -138,6 +139,10 @@ var monitor = {
                 case 'bMap':
                     try {
                         BMap ? this.map = new BMapClass() : '';
+                        me.isSpin = false;
+                        (function poll () {
+                            isLoadLastPositon ? me.map.setMarkerClusterer(me.positionLastrecords) : setTimeout(poll, 4);
+                        }());
                     } catch (error) {
                         me.isSpin = true;
                         asyncLoadJs('baidu', function () {
@@ -146,10 +151,9 @@ var monitor = {
                                     asyncLoadJs('distancetool', function () {
                                         asyncLoadJs('textIconoverlay', function () {
                                             asyncLoadJs('bmarkerclusterer', function () {
+                                                me.isSpin = false;
                                                 me.map = new BMapClass();
                                                 me.map.setMarkerClusterer(me.positionLastrecords);
-                                                me.isSpin = false;
-                                                console.log('地图先回来', '')
                                             });
                                         });
                                     });
@@ -164,20 +168,34 @@ var monitor = {
                 case 'gMap':
                     try {
                         google ? this.map = new GoogleMap() : '';
+                        me.isSpin = false;
+                        (function poll () {
+                            isLoadLastPositon ? me.map.setMarkerClusterer(me.positionLastrecords) : setTimeout(poll, 4);
+                        }());
                     } catch (error) {
                         me.isSpin = true;
                         asyncLoadJs('google', function () {
                             asyncLoadJs('markerwithlabel', function () {
                                 asyncLoadJs('gmarkerclusterer', function () {
-                                    me.map = new GoogleMap();
-                                    me.map.setMarkerClusterer(me.positionLastrecords);
-                                    me.isSpin = false;
+                                    (function poll () {
+                                        console.log('load google', '')
+                                        if (isLoadLastPositon) {
+                                            console.log('g isLoadLastPositon', isLoadLastPositon);
+                                            me.isSpin = false;
+                                            me.map = new GoogleMap();
+                                            me.map.setMarkerClusterer(me.positionLastrecords);
+                                        } else {
+                                            setTimeout(poll, 100);
+                                        }
+                                    }());
+
                                 });
                             });
                         });
                     }
                     break;
             };
+
         },
         handleWebSocket: function (data) {
             var me = this;
@@ -626,9 +644,11 @@ var monitor = {
                         }, 2000)
                     }
                     me.lastquerypositiontime = DateFormat.getCurrentUTC();
+                    isLoadLastPositon = true;
                 },
                 error: function (err) {
                     errorCall(err);
+                    isLoadLastPositon = true;
                 }
             })
         },
@@ -1213,6 +1233,7 @@ var monitor = {
             this.intervalInstanse = setInterval(function () {
                 me.intervalTime--
                 if (me.intervalTime <= 0) {
+                    console.log("第一次请求");
                     me.intervalTime = me.stateIntervalTime;
                     // var devIdList = Object.keys(me.deviceInfos);
                     me.getLastPosition([], function () {
@@ -1274,7 +1295,7 @@ var monitor = {
     watch: {
         mapType: function () {
             this.initMap();
-            this.map.setMarkerClusterer(this.positionLastrecords);
+            // this.map.setMarkerClusterer(this.positionLastrecords);
             Cookies.set('app-map-type', this.mapType);
         },
         filterData: function () {
@@ -1339,18 +1360,18 @@ var monitor = {
             // resp.groups.forEach((group) => {
             //     group.devices = group.devices.slice(0, 3000);
             // });
+
             me.groups = me.filterGroups(resp.groups)
             me.$store.dispatch('setdeviceInfos', me.groups);
             // var devIdList = Object.keys(me.deviceInfos);
 
             me.getLastPosition([], function (resp) {
-                isLoadLastPositon = true;
                 me.lastquerypositiontime = DateFormat.getCurrentUTC();
                 me.caclOnlineCount();
                 me.updateTreeOnlineState();
                 communicate.$on("positionlast", me.handleWebSocket);
             }, function (error) { });
-
+            me.isLoadGroup = false;
             me.setIntervalReqRecords();
         });
     },
@@ -1363,5 +1384,6 @@ var monitor = {
         communicate.$off('positionlast', this.handleWebSocket);
         communicate.$off("on-click-marker", this.openTreeDeviceNav);
         this.myDis && this.myDis.close();
+        isLoadLastPositon = false;
     }
 }
