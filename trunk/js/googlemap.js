@@ -20,8 +20,6 @@ GoogleMap.pt.initMap = function () {
 }
 
 GoogleMap.pt.setMarkerClusterer = function (lastTracks) {
-    console.log('gl setMarkerClusterer');
-    var startTime = Date.now();
     this.lastTracks = lastTracks;
     if (this.markerClusterer == null) {
         var markers = this.getMarkers(lastTracks);
@@ -34,7 +32,6 @@ GoogleMap.pt.setMarkerClusterer = function (lastTracks) {
         }
 
         this.markerClusterer = new GMarkerClusterer(this.mapInstance, markers, { imagePath: imgPath });
-        console.log('结束', Date.now() - startTime);
     }
 }
 
@@ -42,7 +39,6 @@ GoogleMap.pt.getMarkers = function (lastTracks) {
     var markers = [];
     for (var deviceid in lastTracks) {
         if (lastTracks.hasOwnProperty(deviceid)) {
-            idx++;
             var track = lastTracks[deviceid];
             var myIcon = this.getIcon(track);
             var latLng = new google.maps.LatLng(track.g_lat, track.g_lon);

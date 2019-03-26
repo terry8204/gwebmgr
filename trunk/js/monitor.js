@@ -140,13 +140,13 @@ var monitor = {
                     try {
                         BMap ? this.map = new BMapClass() : '';
                         me.isSpin = false;
-                        (function poll () {
-                            isLoadLastPositon ? me.map.setMarkerClusterer(me.positionLastrecords) : setTimeout(poll, 4);
+                        (function poll1 () {
+                            isLoadLastPositon ? me.map.setMarkerClusterer(me.positionLastrecords) : setTimeout(poll1, 4);
                         }());
                     } catch (error) {
                         me.isSpin = true;
                         asyncLoadJs('baidu', function () {
-                            (function poll () {
+                            (function poll2 () {
                                 if (isLoadBMap && isLoadLastPositon) {
                                     asyncLoadJs('distancetool', function () {
                                         asyncLoadJs('textIconoverlay', function () {
@@ -158,7 +158,7 @@ var monitor = {
                                         });
                                     });
                                 } else {
-                                    setTimeout(poll, 4);
+                                    setTimeout(poll2, 4);
                                 }
                             }());
                         });
@@ -169,26 +169,23 @@ var monitor = {
                     try {
                         google ? this.map = new GoogleMap() : '';
                         me.isSpin = false;
-                        (function poll () {
-                            isLoadLastPositon ? me.map.setMarkerClusterer(me.positionLastrecords) : setTimeout(poll, 4);
+                        (function poll3 () {
+                            isLoadLastPositon ? me.map.setMarkerClusterer(me.positionLastrecords) : setTimeout(poll3, 4);
                         }());
                     } catch (error) {
                         me.isSpin = true;
                         asyncLoadJs('google', function () {
                             asyncLoadJs('markerwithlabel', function () {
                                 asyncLoadJs('gmarkerclusterer', function () {
-                                    (function poll () {
-                                        console.log('load google', '')
-                                        if (isLoadLastPositon) {
-                                            console.log('g isLoadLastPositon', isLoadLastPositon);
+                                    (function poll4 () {
+                                        if (isLoadLastPositon && google) {
                                             me.isSpin = false;
                                             me.map = new GoogleMap();
                                             me.map.setMarkerClusterer(me.positionLastrecords);
                                         } else {
-                                            setTimeout(poll, 100);
+                                            setTimeout(poll4, 100);
                                         }
                                     }());
-
                                 });
                             });
                         });
@@ -906,45 +903,7 @@ var monitor = {
             me.currentStateData = treeData
         },
         getAllHideCompanyTreeData: function () {
-            var me = this
-            // this.groups.forEach(function (group) {
-            //     var onlineCount = 0
-            //     var groupData = {
-            //         title: group.groupname,
-            //         expand: Object.keys(me.openGroupIds).includes(group.groupid + ""),
-            //         children: [],
-            //         name: group.groupname,
-            //         groupid: group.groupid
-            //     }
-
-            //     group.devices.forEach(function (device, index) {
-            //         var isOnline = me.getIsOnline(device.deviceid)
-            //         var dev = {
-            //             title: device.devicename,
-            //             isSelected: false,
-            //             isOnline: isOnline,
-            //             deviceid: device.deviceid
-            //         }
-            //         if (device.deviceid == me.currentDeviceId) {
-            //             groupData.expand = true
-            //             dev.isSelected = true
-            //         }
-            //         if (isOnline) {
-            //             onlineCount++
-            //         }
-            //         groupData.children.push(dev);
-            //     });
-
-            //     if (groupData.children.length) {
-            //         groupData.title +=
-            //             '(' + onlineCount + '/' + groupData.children.length + ')'
-            //         if (groupData.title == '默认组' || groupData.title == 'Default') {
-            //             me.currentStateData.unshift(groupData)
-            //         } else {
-            //             me.currentStateData.push(groupData)
-            //         }
-            //     }
-            // });
+            var me = this;
             this.groups.forEach(function (group) {
                 var count = 0;
                 var online = 0;
@@ -1021,47 +980,7 @@ var monitor = {
             })
         },
         getOnlineHideCompanyTreeData: function () {
-            var me = this
-            // this.groups.forEach(function (group) {
-            //     var groupData = {
-            //         title: group.groupname,
-            //         expand: Object.keys(me.openGroupIds).includes(group.groupid + ""),
-            //         children: [],
-            //         name: group.groupname,
-            //         groupid: group.groupid
-            //     }
-
-            //     group.devices.forEach(function (device, index) {
-            //         var isOnline = me.getIsOnline(device.deviceid)
-            //         var dev = {
-            //             title: device.devicename,
-            //             isSelected: false,
-            //             isOnline: isOnline,
-            //             deviceid: device.deviceid,
-            //         }
-            //         if (device.deviceid == me.currentDeviceId) {
-            //             groupData.expand = true
-            //             dev.isSelected = true
-            //         }
-            //         if (isOnline) {
-            //             groupData.children.push(dev)
-            //         }
-            //     })
-
-            //     if (groupData.children.length) {
-            //         if (groupData.title == '默认组' || groupData.title == 'Default') {
-            //             if (groupData.children.length) {
-            //                 me.currentStateData.unshift(groupData)
-            //             }
-            //         } else {
-            //             if (groupData.children.length) {
-            //                 me.currentStateData.push(groupData)
-            //             }
-            //         }
-            //         groupData.title += '(' + groupData.children.length + ')'
-            //     }
-            // })
-
+            var me = this;
             this.groups.forEach(function (group) {
                 var online = 0;
                 group.devices.forEach(function (device, index) {
@@ -1139,48 +1058,7 @@ var monitor = {
             })
         },
         getOfflineHideCompanyTreeData: function () {
-            var me = this
-            // var groups = this.groups;
-            // groups.forEach(function (group) {
-            //     var groupData = {
-            //         title: group.groupname,
-            //         expand: Object.keys(me.openGroupIds).includes(group.groupid + ""),
-            //         children: [],
-            //         name: group.groupname,
-            //         groupid: group.groupid
-            //     }
-
-            //     group.devices.forEach(function (device, index) {
-            //         // var isOnline = me.getIsOnline(device.deviceid)
-            //         var isOnline = false;
-            //         var dev = {
-            //             title: device.devicename,
-            //             isSelected: false,
-            //             isOnline: isOnline,
-            //             deviceid: device.deviceid,
-            //         }
-            //         if (device.deviceid == me.currentDeviceId) {
-            //             groupData.expand = true;
-            //             dev.isSelected = true;
-            //         }
-            //         if (!isOnline) {
-            //             groupData.children.push(dev);
-            //         };
-            //     })
-
-            //     if (groupData.children.length) {
-            //         if (groupData.title == '默认组' || groupData.title == 'Default') {
-            //             if (groupData.children.length) {
-            //                 me.currentStateData.unshift(groupData);
-            //             };
-            //         } else {
-            //             if (groupData.children.length) {
-            //                 me.currentStateData.push(groupData);
-            //             };
-            //         };
-            //         groupData.title += '(' + groupData.children.length + ')';
-            //     };
-            // });
+            var me = this;
             this.groups.forEach(function (group) {
                 var offline = 0;
                 group.devices.forEach(function (device, index) {
@@ -1233,7 +1111,6 @@ var monitor = {
             this.intervalInstanse = setInterval(function () {
                 me.intervalTime--
                 if (me.intervalTime <= 0) {
-                    console.log("第一次请求");
                     me.intervalTime = me.stateIntervalTime;
                     // var devIdList = Object.keys(me.deviceInfos);
                     me.getLastPosition([], function () {
@@ -1241,9 +1118,7 @@ var monitor = {
                         me.map.updateMarkersState(me.currentDeviceId);
                         me.updateTreeOnlineState();
                         me.caclOnlineCount();
-                    }, function (error) {
-                        // alert(1);
-                    });
+                    }, function (error) { });
                 }
             }, 1000);
         },
