@@ -469,14 +469,15 @@ var monitor = {
                     });
                 });
             }
+
             var elWraper = this.$refs.treeWraper;
-            var wrapY = elWraper.getBoundingClientRect().y;
             var wrapHeight = elWraper.getBoundingClientRect().height;
-            // var elY = this.$refs[deviceid][0].getBoundingClientRect().y;
-            // if (wrapHeight >= 380 && ) {
-            //     elWraper.scroolTo(elWraper - wrapHeight);
-            // }
-            // console.log('elTop', elY - wrapY, wrapHeight);
+            setTimeout(function () {
+                var top = me.$refs[deviceid][0].getBoundingClientRect().top - wrapHeight;
+                $(elWraper).animate({ scrollTop: top }, 500);
+                // elWraper.scrollTop = me.$refs[deviceid][0].getBoundingClientRect().top - wrapHeight;
+            }, 500);
+
         },
         sosoValueChange: function () {
             var me = this;
