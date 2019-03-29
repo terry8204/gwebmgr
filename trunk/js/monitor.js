@@ -1142,6 +1142,20 @@ var monitor = {
             this.allDevCount = deviceIds.length;
             this.onlineDevCount = online;
             this.offlineDevCount = this.allDevCount - this.onlineDevCount;
+        },
+        onSelectState: function () {
+            var me = this
+            if (this.isShowCompanyName && this.companys.length == 0) {
+                this.queryCompanyTree(function (response) {
+                    me.companys = response.companys
+                    me.getCurrentStateTreeData(me.selectedState, me.isShowCompanyName)
+                });
+            } else {
+                this.getCurrentStateTreeData(
+                    this.selectedState,
+                    this.isShowCompanyName
+                )
+            }
         }
     },
     computed: {
@@ -1198,18 +1212,7 @@ var monitor = {
             this.currentDevDirectiveList = directiveList;
         },
         selectedState: function () {
-            var me = this
-            if (this.isShowCompanyName && this.companys.length == 0) {
-                this.queryCompanyTree(function (response) {
-                    me.companys = response.companys
-                    me.getCurrentStateTreeData(me.selectedState, me.isShowCompanyName)
-                });
-            } else {
-                this.getCurrentStateTreeData(
-                    this.selectedState,
-                    this.isShowCompanyName
-                )
-            }
+            this.onSelectState();
         },
         isShowCompanyName: function () {
             var me = this;
@@ -1239,7 +1242,7 @@ var monitor = {
             me.groups = me.filterGroups(resp.groups)
             me.$store.dispatch('setdeviceInfos', me.groups);
             // var devIdList = Object.keys(me.deviceInfos);
-
+            me.isShowCompanyName && me.onSelectState();
             me.getLastPosition([], function (resp) {
                 me.lastquerypositiontime = DateFormat.getCurrentUTC();
                 me.caclOnlineCount();
