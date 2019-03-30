@@ -285,8 +285,19 @@ var myUrls = {
   reportAcc: function () {
     return this.host + 'webapi?action=reportacc&token=' + token;
   },
-
+  queryMedia: function () {
+    return this.host + 'webapi?action=querymedia&token=' + token;
+  },
+  readMedia: function () {
+    return this.host + 'webapi?action=readmedia&token=' + token;
+  },
+  recordAudio: function () {
+    return this.host + 'webapi?action=recordaudio&token=' + token;
+  }
 }
+
+
+
 
 // global var
 var vueInstanse = null // 全局vue实例子

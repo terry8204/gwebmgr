@@ -11,9 +11,6 @@ var utils = {
     };
     return mapType;
   },
-  caclTreeScrollheight: function (show, groups) {
-
-  },
   sendAjax: function (url, data, callback) {
     var encode = JSON.stringify(data);
     $.ajax({

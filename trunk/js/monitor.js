@@ -228,6 +228,9 @@ var monitor = {
                     this.queryDeviceBaseInfo();
                     this.deviceInfoModal = true;
                     break;
+                case 'luyin':
+                    window.location.href = "record.html?deviceid=" + this.currentDeviceId;
+                    break;
             }
         },
         queryDeviceBaseInfo: function () {

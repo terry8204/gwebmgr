@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="divport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="dist/styles/iview.css">
+    <title>录音记录</title>
+    <style>
+        *{
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+        }
+        html,body{
+            height: 100%;
+            width: 100%;
+            background-color: rgba(246, 246, 246, 0.897);
+        }
+        div.container{
+            width: 375px;
+            height: 667px;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            margin-top:-333.5px;
+            margin-left:-187.5px;    
+            background-color:#fff; 
+            display: flex;
+            flex-direction: column;
+        }
+        div.record-body{
+            overflow-y: auto;
+            flex: 1;
+        }
+
+.body-item{
+  display: flex;
+  flex-direction: row;
+}
+.body-item .person,.send-item .person{
+  height: 60px;
+  line-height: 58px;
+  padding: 0 10px;
+  font-size: 24px;
+  color: #090909;
+}
+.send-item{
+  display: flex;
+  flex-direction: row-reverse;
+}
+
+/* 语音气泡 */
+.speech {
+    float: left;
+    margin: 8px;
+    padding: 6px;
+    table-layout: fixed;
+    word-break: break-all;
+    position: relative;
+    background: #ffffff;
+    border: 1px solid #989898;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: row;
+    cursor: pointer;
+}
+.duration{
+    height: 30px;
+    line-height: 30px;
+    padding: 0 20px 0 30px;
+    font-size: 14px;
+}
+.audio-icon{
+  width: 30px;
+  height: 30px;
+  position: relative;
+}
+.speech:before {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 0;
+    left: -20px;
+    top: 10px;
+    border: 10px solid;
+    border-color:  transparent #989898 transparent  transparent ;
+}
+.speech:after {
+ content: '';
+ position: absolute;
+ width: 0;
+ height: 0;
+ left: -16px;
+ top: 12px;
+ border: 8px solid;
+ border-color: transparent #ffffff transparent transparent ;
+}
+
+.speech2 {
+    float: left;
+    margin: 8px;
+    padding: 6px;
+    table-layout: fixed;
+    word-break: break-all;
+    position: relative;
+    background: #ffffff;
+    border: 1px solid #989898;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: row;
+}
+.speech2 .duration{
+    height: 30px;
+    line-height: 30px;
+    padding: 0 20px;
+    font-size: 14px;
+}
+.speech2:before {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 0;
+    right: -20px;
+    top: 10px;
+    border: 10px solid;
+    border-color:  transparent transparent  transparent #989898;
+}
+.speech2:after {
+ content: '';
+ position: absolute;
+ width: 0;
+ height: 0;
+ right: -16px;
+ top: 12px;
+ border: 8px solid;
+ border-color: transparent  transparent transparent #ffffff;
+}
+
+
+        .box {
+            box-sizing: border-box;
+            position: relative;
+        }
+        .wifi-symbol {
+            width: 30px;
+            height: 30px;
+            box-sizing: border-box;
+            overflow: hidden;
+            transform: rotate(135deg);
+        }
+        .wifi-circle {
+            border: 3px solid #999999;
+            border-radius: 50%;
+            position: absolute;
+        }
+
+        .first {
+            width: 3px;
+            height: 3px;
+            background: #cccccc;
+            top: 26px;
+            left: 26px;
+        }
+
+        .second {
+            width: 15px;
+            height: 15px;
+            top: 19.8px;
+            left: 19.8px;
+            animation: fadeInOut 1s infinite 0.3s;
+        }
+
+        .third {
+            width: 24px;
+            height: 24px;
+            top: 15px;
+            left: 15px;
+            animation: fadeInOut 1s infinite 0.6s;
+        }
+
+        @keyframes fadeInOut {
+            0% {
+                opacity: 0; /*初始状态 透明度为0*/
+            }
+            100% {
+                opacity: 1; /*结尾状态 透明度为1*/
+            }
+        }
+
+.is-played{
+  width: 10px;
+  position: relative;
+}
+.is-played::before{
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 0;
+  left: 0px;
+  top: 24px;
+  border: 4px solid;
+  border-color: red;
+  border-radius: 50%;
+}
+
+/* 底部 控制器 */
+.ctrl{
+  height: 45px;
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  box-sizing:  border-box;
+}
+.time-wrappr{
+  width: 120px;
+  height: 45px;
+  border-top: 1px solid #f3f3f3;
+}
+.fast-record{
+  height: 45px;
+  text-align: center;
+  line-height: 45px;
+  flex: 1;
+  color: #ffffff;
+  background-color: #206AC9;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+[v-cloak]{display: none}
+
+
+        .select-wrap{
+            height: 100%;
+            width: 100%;
+            position: relative;
+            cursor: pointer;
+        }
+        div.now-text{
+            height: 100%;
+            width: 100%;
+            text-align: center;
+            line-height: 45px;
+            position: relative;
+            padding-left: 20px;
+        }
+        div.now-text::before{
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 0;
+            left: 20px;
+            top: 7px;
+            border: 10px solid;
+            border-color:  transparent transparent #989898 transparent ;
+        }
+        div.options-wrap{
+            position: absolute;
+            bottom: 45px;
+            left: 0;
+            width: 120px;
+            z-index: 9999;
+            border-left: 1px solid #f6f6f6; 
+            border-right: 1px solid #f6f6f6; 
+            background-color: #fff;
+        }
+        div.options-item{
+            height: 45px;
+            text-align: center;
+            line-height: 45px;
+            border-top: 1px solid #f6f6f6; 
+        }
+            
+    </style>
+    <script src="js/js.cookie.min.js"></script>
+    <script src="js/polyfill.min.js"></script>
+</head>
+<body>
+    <div class="container" id="app" v-cloak>
+        <div class='record-body' ref="recordsWrapper">
+            <template v-for="(item,index) in tableData" :key="index">
+               
+                            <div class='body-item' v-if="item.type === 0">
+                                    <div class='person'>
+                                        <Icon type="md-tablet-portrait" size="24" />
+                                        <!-- <span class="icon iconfont icon-iconmydevices" style='font-size:24px;'></span>   -->
+                                    </div>
+                                    <div class='speech' @click="playYuYin">
+                                        <div class='duration'>{{item.updatetimeStr}}</div>
+                                        <div class='audio-icon box'>
+                                        <div class="wifi-symbol" v-if="item.show">
+                                            <div class="wifi-circle first"></div>
+                                            <div class="wifi-circle second"></div>
+                                            <div class="wifi-circle third"></div>
+                                        </div>
+                                        </div>
+                                    </div>
+                                    <div class='is-played' v-if="item.readstatus === 0"></div>
+                                </div>
+                                <div v-else class='send-item'>
+                                    <div class='person'>
+                                        <Icon type="ios-contact" size="24" />
+                                        <!-- <span class="icon iconfont icon-shenfenzheng" style='font-size:24px;'></span>   -->
+                                    </div>
+                                    <div class='speech2'>
+                                        <div class='duration'>{{item.updatetimeStr +" "+ item.intervalseconds +"s"}}</div>
+                                    </div>
+                                </div>
+                  
+            </template>
+        </div>
+        <div class='ctrl'>
+                
+                <div class='time-wrappr'>
+                    <div class="select-wrap">
+                        <div class="now-text" @click="isShowSelect=!isShowSelect">{{selectVal}}</div>
+                        <div class="options-wrap" v-show="isShowSelect">
+                            <div class="options-item" v-for="item in selectArr" :key="item" @click="onSelect(item)">{{item}}</div>
+                        </div>
+                    </div>
+                </div>
+                <div class='fast-record' @@click="handleClickSound">
+                    开始录音
+                </div>
+        </div>
+    </div>
+    <script src="js/jquery.js"></script>
+    <script src="dist/vue.min.js"></script>
+    <script src="dist/iview.min.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/util.js"></script>
+    <script src="js/dateformat.js"></script>
+    <script>
+        var token = Cookies.get("token");
+        
+        new Vue({
+            el:"#app",
+            data:{
+                deviceId:"",
+                isShowSelect:false,
+                selectVal:"10s",
+                selectArr:["10s","20s","30s"],
+                tableData:[]
+            },
+            methods: {
+                onSelect:function(val){
+                    this.isShowSelect = false;
+                    this.selectVal = val;
+                },
+                playYuYin:function(){
+                    
+                },
+                handleClickSound:function(){
+
+                },
+                queryMedia() {
+                    var url = myUrls.queryMedia() , me = this;
+                    utils.sendAjax(url,{deviceid:this.deviceId},function (resp) { 
+                        console.log('resp', resp);
+                        if(resp.status == 0){
+                            if(resp.records && resp.records.length){
+                                var tableData = [] ,
+                                    records = resp.records;
+                                    for (var index = 0; index < records.length; index++) {
+                                        const record = records[index];
+                                        record.updatetimeStr = DateFormat.longToDateTimeStr(record.updatetime, 0);
+                                        tableData.push(record)
+                                      
+                                    }
+                                me.tableData = tableData;
+                                console.log('me.$refs', me.$refs);
+                            }
+                            
+                        }else{
+
+                        }
+
+                    })
+                },
+            },
+            mounted:function(){
+                var deviceId = utils.getParameterByName("deviceid");
+                if(deviceId){
+                    this.deviceId = deviceId;
+                    this.queryMedia();
+                }
+            }
+        })
+    </script>
+</body>
+</html>
