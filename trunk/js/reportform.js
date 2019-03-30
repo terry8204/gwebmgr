@@ -366,12 +366,6 @@ function posiReport (groupslist) {
                         } else {
 
                         }
-                    } else if (resp.status == 3) {
-                        me.$Message.error(me.$t("monitor.reLogin"));
-                        Cookies.remove('token');
-                        setTimeout(function () {
-                            window.location.href = 'index.html';
-                        }, 2000);
                     }
                 })
                 callback();

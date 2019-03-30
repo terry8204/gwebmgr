@@ -11,6 +11,9 @@ var utils = {
     };
     return mapType;
   },
+  caclTreeScrollheight: function (show, groups) {
+
+  },
   sendAjax: function (url, data, callback) {
     var encode = JSON.stringify(data);
     $.ajax({
@@ -20,10 +23,19 @@ var utils = {
       timeout: 10000,
       dataType: 'json',
       success: function (resp) {
-        callback(resp);
+        if (resp.status > 9000) {
+          vRoot.$Message.error(me.$t("monitor.reLogin"))
+          Cookies.remove('token')
+          setTimeout(function () {
+            window.location.href = 'index.html'
+          }, 2000);
+        } else {
+          callback(resp);
+        }
+
       },
       error: function (e) {
-        Cookies.remove('token');
+        // Cookies.remove('token');
         new Vue().$Loading.error();
       },
       complete: function () { }

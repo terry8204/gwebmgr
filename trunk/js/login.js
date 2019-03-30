@@ -65,7 +65,8 @@ new Vue({
                     // window.location.href = "main.html?token=" + resp.token + "&usertype=" + resp.usertype;
                     window.location.href = "main.html";
                 } else if (resp.status == -1) {
-                    me.$Message.error(me.$t("login.error_3"));
+                    // me.$Message.error(me.$t("login.error_3"));
+                    me.$Message.error(me.$t("login.error_4"));
                 } else if (resp.status == 1) {
                     me.$Message.error(me.$t("login.error_4"));
                 } else if (resp.status == 2) {

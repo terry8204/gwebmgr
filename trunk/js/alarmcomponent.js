@@ -246,7 +246,7 @@ var waringComponent = {
                                 item.createtimeStr = DateFormat.longToDateTimeStr(item.createtime, 0);
                                 me.msgListObj.addMsg(item);
                             });
-                            me.overdueDevice = me.msgListObj.getMsgList();
+                            me.overdueDevice = me.msgListObj.getMsgList().reverse();
                         };
                     })
                 }, 1000);

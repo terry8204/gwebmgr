@@ -448,6 +448,7 @@ var monitor = {
                                 dev.isSelected = true;
                                 group.expand = true;
                                 deviceid = dev.deviceid;
+                                me.currentDeviceType = dev.devicetype;
                                 me.handleClickDev(dev.deviceid);
                             } else {
                                 dev.isSelected = false;
@@ -462,6 +463,7 @@ var monitor = {
                             dev.isSelected = true;
                             group.expand = true;
                             deviceid = dev.deviceid;
+                            me.currentDeviceType = dev.devicetype;
                             me.handleClickDev(dev.deviceid);
                         } else {
                             dev.isSelected = false;
@@ -470,12 +472,35 @@ var monitor = {
                 });
             }
 
-            var elWraper = this.$refs.treeWraper;
-            var wrapHeight = elWraper.getBoundingClientRect().height;
+
             setTimeout(function () {
-                var top = me.$refs[deviceid][0].getBoundingClientRect().top - wrapHeight;
-                $(elWraper).animate({ scrollTop: top }, 500);
-                // elWraper.scrollTop = me.$refs[deviceid][0].getBoundingClientRect().top - wrapHeight;
+                if (me.isShowCompanyName) return;
+                var elWraper = me.$refs.treeWraper;
+                var wrapHeight = elWraper.getBoundingClientRect().height;
+                var sHeight = 0;
+                for (var i = 0; i < me.groups.length; i++) {
+                    var group = me.groups[i]
+                    var isBreak = false;
+                    sHeight += 32;
+                    if (group.expand) {
+                        var devices = group.devices;
+                        for (var j = 0; j < devices.length; j++) {
+                            var device = devices[j];
+                            sHeight += 27;
+                            if (device.deviceid === deviceid) {
+                                isBreak = true;
+                                sHeight += 60;
+                                break;
+                            }
+                        }
+                    }
+                    if (isBreak) break;
+                };
+                if (sHeight < wrapHeight) {
+                    $(elWraper).animate({ scrollTop: 0 }, 500);
+                } else {
+                    $(elWraper).animate({ scrollTop: sHeight - (wrapHeight / 2) }, 500);
+                }
             }, 500);
 
         },
@@ -513,13 +538,7 @@ var monitor = {
 
         },
         openGroupItem: function (groupInfo) {
-            // var groupid = groupInfo.groupid;
             groupInfo.expand = !groupInfo.expand;
-            // if (groupInfo.expand) {
-            //     this.openGroupIds[groupid] = "";
-            // } else {
-            //     delete this.openGroupIds[groupid];
-            // }
         },
         selectedDev: function (deviceInfo) {
             var device = this.deviceInfos[deviceInfo.deviceid];
@@ -571,22 +590,7 @@ var monitor = {
             var url = myUrls.monitorListByUser()
             utils.sendAjax(url, data, function (resp) {
                 if (resp.status == 0) {
-                    // resp.groups.forEach(function (group) {
-                    //     group.firstLetter = __pinyin.getFirstLetter(group.groupname)
-                    //     group.pinyin = __pinyin.getPinyin(group.groupname)
-                    //     group.devices.forEach(function (device, index) {
-                    //         var deviceid = device.deviceid
-                    //         device.firstLetter = __pinyin.getFirstLetter(device.devicename)
-                    //         device.pinyin = __pinyin.getPinyin(device.devicename)
-                    //     })
-                    // })
                     callback(resp)
-                } else if (resp.status == 3) {
-                    me.$Message.error(me.$t("monitor.reLogin"))
-                    Cookies.remove('token')
-                    setTimeout(function () {
-                        window.location.href = 'index.html'
-                    }, 2000)
                 } else {
                     if (resp.cause) {
                         me.$Message.error(resp.cause)
@@ -634,7 +638,7 @@ var monitor = {
                             me.positionLastrecords
                             callback ? callback() : '';
                         }
-                    } else if (resp.status == 3) {
+                    } else if (resp.status > 9000) {
                         me.$Message.error(me.$t("monitor.reLogin"))
                         Cookies.remove('token')
                         setTimeout(function () {

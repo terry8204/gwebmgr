@@ -258,7 +258,7 @@
                                 <b v-text="group.title"></b>
                             </dt>
                             <dd style="padding:5px;border-bottom:1px solid #ddd" v-if="group.expand">
-                                <div v-for="(device , index) in group.devices" :key="device.deviceid" style="padding-left:15px">
+                                <div v-for="(device , index) in group.devices" :key="device.deviceid" :data-id="device.deviceid" style="padding-left:15px">
                                     <div :class="{'active-dev-offline':device.isSelected}" style="margin:3px 0;" :ref="device.deviceid">
                                         <div style="padding:3px 5px;cursor: pointer;" :style="{color: device.isOnline ? '#33DAD0' : '#B1BBC2'}" @click="selectedDev(device)">
                                             <Icon type="md-person"/> 
@@ -847,7 +847,7 @@
                             <Icon type="ios-loop-strong"></Icon>
                             X
                         </a>
-                        <div id="content-string">
+                        <div id="content-string" style="max-height:400px;overflow-y:auto;">
                             {{contentString}}
                         </div>
                     </Card>
