@@ -173,6 +173,7 @@
                     this.deviceTypeList.forEach(function (item) { 
                         item.isSelected = false;
                     });
+
                     this.allDirectiveList.forEach(function (item) { 
                         if(item.devicetype == type.name){
                             tableData.push(item)
@@ -208,12 +209,13 @@
                         if (resp.status === 0) {
                             resp.records.forEach(function (item) { 
                                 if(item.sync==0){
-                                    item.isSync = "异步"
+                                    item.isSync = "异步";
                                 }else{
-                                    item.isSync = "同步"
+                                    item.isSync = "同步";
                                 }
                             })
                             me.allDirectiveList = resp.records;
+                            me.getDeviceType();
                         }
                     });
                 },
@@ -222,20 +224,19 @@
                     var url = myUrls.queryDeviceTypeByUser();
                     utils.sendAjax(url,{},function (resp) { 
                         if(resp.status == 0 && resp.devicetypes!=null){
-                            resp.devicetypes.forEach(function (item) { 
-                                me.deviceTypeList.push({name:item.devicetypeid,title:item.typename,icon:"ios-ionitron",isSelected:false});
+                            var firstType = null;
+                            resp.devicetypes.forEach(function (item,index) { 
+                                var type = {name:item.devicetypeid,title:item.typename,icon:"ios-ionitron",isSelected:false};
+                                if(index==0){firstType = type };
+                                me.deviceTypeList.push(type);
                             })
-                            console.log('deviceTypeList', me.deviceTypeList)
+                            me.handleClickDevType(firstType);
                         }
                     }); 
-                },
-                selectdDevType:function(name){
-                    console.log('name', name)
                 },
             },
             mounted: function () {
                 this.queryCmdList();
-                this.getDeviceType();
             }
         })
     </script>

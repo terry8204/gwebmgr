@@ -34,6 +34,32 @@
                     <i-input v-model.trim="devTypeInfo.typecode" :disabled="isEdit"></i-input>
                 </i-col>
             </Row>
+            <Row style="margin:10px 0;">
+                <i-col :span="3" :offset="1" style="height: 100%;line-height:32px;">
+                    功能列表&nbsp;:&nbsp;
+                </i-col>
+            </Row>
+            <Row style="margin:10px 0;">
+                    <i-col :span="20" :offset="4" style="height: 100%;line-height:32px;">
+                        <CheckboxGroup v-model="functions">
+                            <Checkbox label="audio">
+                                <span>录音</span>
+                            </Checkbox>
+                            <Checkbox label="camera">
+                                <span>摄像头</span>
+                            </Checkbox>
+                        </CheckboxGroup>
+                    </i-col>
+
+            </Row>
+            <Row>
+                    <i-col :span="3" :offset="1" style="height: 100%;text-align:right;line-height:32px;">
+                        备注&nbsp;:&nbsp;
+                    </i-col>
+                    <i-col :span="19">
+                        <i-input v-model.trim="remarks" :autosize="{minRows: 15}" type="textarea"></i-input>
+                    </i-col>
+            </Row>
         </div>
         <div slot="footer">
             <i-button type="primary" @click="handleAddDevType" style="width: 100%">{{isEdit?'编辑':'添加'}}</i-button>
@@ -67,6 +93,8 @@
                         "typecode": null,
                         "typename": null,
                     },
+                    functions:[],
+                    remarks:"",
                     deviceTypeList:[],
                     deviceCode:"",
                     isEdit: false,
@@ -254,9 +282,11 @@
                     return {datas:[{devicetype:this.tableData[this.rowIndex].devicetypeid,cmds: cmds}]}
                 },
                 queryDevTypeList: function () {
+                    console.log('queryDevTypeList');
                     var me = this;
                     var url = myUrls.pageQueryDeviceType();
                     utils.sendAjax(url, {}, function (resp) {
+                        console.log('queryDevTypeList', resp);
                         if (resp.status == 0) {
                             resp.devicetypes.forEach(function (item) {
                                 if(item.cmds){
@@ -265,7 +295,9 @@
                                     item.directiveCount = 0;
                                 }       
                             })
+                            
                             me.tableData = resp.devicetypes;
+                            
                         }
                     })
                 },

@@ -347,8 +347,9 @@
     <script>
         var token = Cookies.get("token");
         
-        new Vue({
+        var vRoot = new Vue({
             el:"#app",
+            i18n: utils.getI18n(),
             data:{
                 intervalNumber:60,
                 currentIndex:null,
