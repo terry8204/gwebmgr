@@ -293,7 +293,7 @@
                                                                 </i-dropdown-menu>
                                                             </Dropdown>
                                                         </DropdownItem>
-                                                        <DropdownItem name="luyin">录音</DropdownItem>
+                                                        <DropdownItem name="luyin" v-show="isShowRecordBtn">录音</DropdownItem>
                                                         <DropdownItem name="name3">{{$t("monitor.cmdRecord")}}</DropdownItem>
                                                         <DropdownItem name="name4">{{$t("monitor.recordForm")}}</DropdownItem>
                                                         <DropdownItem name="name5">{{$t("monitor.devBaseInfo")}}</DropdownItem>
@@ -348,7 +348,7 @@
                                                                     </i-dropdown-menu>
                                                                 </Dropdown>
                                                             </DropdownItem>
-                                                            <DropdownItem name="luyin">录音</DropdownItem>
+                                                            <DropdownItem name="luyin" v-show="isShowRecordBtn">录音</DropdownItem>
                                                             <DropdownItem name="name3">{{$t("monitor.cmdRecord")}}</DropdownItem>
                                                             <DropdownItem name="name4">{{$t("monitor.recordForm")}}</DropdownItem>
                                                             <DropdownItem name="name5">{{$t("monitor.devBaseInfo")}}</DropdownItem>
@@ -403,7 +403,7 @@
                                                                     </i-dropdown-menu>
                                                                 </Dropdown>
                                                             </DropdownItem>
-                                                            <DropdownItem name="luyin">录音</DropdownItem>
+                                                            <DropdownItem name="luyin" v-show="isShowRecordBtn">录音</DropdownItem>
                                                             <DropdownItem name="name3">{{$t("monitor.cmdRecord")}}</DropdownItem>
                                                             <DropdownItem name="name4">{{$t("monitor.recordForm")}}</DropdownItem>
                                                             <DropdownItem name="name5">{{$t("monitor.devBaseInfo")}}</DropdownItem>
@@ -470,7 +470,7 @@
                                                                                             </i-dropdown-menu>
                                                                                         </Dropdown>
                                                                                     </DropdownItem>
-                                                                                    <DropdownItem name="luyin">录音</DropdownItem>
+                                                                                    <DropdownItem name="luyin" v-show="isShowRecordBtn">录音</DropdownItem>
                                                                                     <DropdownItem name="name3">{{$t("monitor.cmdRecord")}}</DropdownItem>
                                                                                     <DropdownItem name="name4">{{$t("monitor.recordForm")}}</DropdownItem>
                                                                                     <DropdownItem name="name5">{{$t("monitor.devBaseInfo")}}</DropdownItem>
@@ -917,7 +917,7 @@
                         <i-col span="8" v-for="(type , index) in item" :key="type.alarmcode">
                             <Checkbox  v-model="checkboxObj[type.alarmcode]" >{{ isZh ? type.alarmname : type.alarmcode}}</Checkbox>
                         </i-col>
-                    </Row>
+                    </Row>  
                 </div>
                 <div slot="footer">
                     <i-button type="primary"  @click="saveReqMsgParameter" style="width: 100%">{{$t("monitor.confirm")}}</i-button>

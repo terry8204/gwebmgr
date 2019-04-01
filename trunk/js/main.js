@@ -97,6 +97,7 @@ vstore = new Vuex.Store({
       { "name": isZh ? "设备" : 'Device', "type": 99 },
       { "name": isZh ? "体验帐号" : 'Demo', "type": 10 }],     // 用户类型描述
     allCmdList: [],              // 所有的指令
+    deviceTypes: [],
     headerActiveName: 'monitor', // 选中的header 
     intervalTime: 10,     // 定位发送请求的timer
     editDeviceInfo: {},   // 备份监控页面要编辑的设备对象
@@ -107,6 +108,14 @@ vstore = new Vuex.Store({
   actions: {
     setdeviceInfos: function (context, groups) {
       context.commit('setdeviceInfos', groups);
+    },
+    setDeviceTypes: function (context) {
+      var url = myUrls.queryDeviceTypeByUser();
+      utils.sendAjax(url, {}, function (resp) {
+        if (resp.status == 0) {
+          context.commit('setDeviceTypes', resp.devicetypes);
+        }
+      });
     },
     setUserTypeDescr: function (context) {
       var url = myUrls.queryUserTypeDescr();
@@ -180,6 +189,10 @@ vstore = new Vuex.Store({
     },
     currentDeviceId: function (state, deviceid) {
       state.currentDeviceId = deviceid;
+    },
+    setDeviceTypes: function (state, devicetypes) {
+      console.log('setDeviceTypes', devicetypes);
+      state.deviceTypes = devicetypes;
     }
   }
 });
@@ -696,6 +709,7 @@ var vRoot = new Vue({
     // this.isShowAlarm = this.userType == 0 ? false : true;
     //this.$store.dispatch('setUserTypeDescr');
     this.$store.dispatch('setAllCmdList');
+    this.$store.dispatch('setDeviceTypes');
 
     if (userName) {
       var initIsPass = initWebSocket(userName, this.wsCallback);   // 连接webSocket

@@ -249,8 +249,9 @@
                 openEditDevTypeModal: function (params) {
                     this.isEdit = true;
                     this.addDevTypeModal = true;
+                    console.log('params', params);
                     this.oldtypename = params.row.typename;
-                    params.row.functions ? params.row.functions.split(","):"";
+                    params.row.functions ? this.functions = params.row.functions.split(","): this.functions = [];
                     this.remark = params.row.remark;
                     this.devTypeInfo = JSON.parse(JSON.stringify(params.row));
                     this.rowIndex = params.index;

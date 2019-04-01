@@ -27,6 +27,7 @@ var monitor = {
             placeholder: "",
             isLoadGroup: true,
             isSpin: true,
+            isShowRecordBtn: false,
             map: null,
             placement: "right-start",
             mapType: mapType ? mapType : 'bMap',
@@ -1164,6 +1165,24 @@ var monitor = {
                     this.isShowCompanyName
                 )
             }
+        },
+        isShowRecordBtnByDeviceType: function () {
+            var deviceTypes = this.deviceTypes;
+            var result = false;
+            for (var i = 0; i < deviceTypes.length; i++) {
+                if (this.currentDeviceType == deviceTypes[i].devicetypeid) {
+                    console.log('this.currentDeviceType', this.currentDeviceType);
+                    var functions = deviceTypes[i].functions;
+                    if (functions) {
+                        if (functions.indexOf("audio") != -1) {
+                            console.log('deviceTypes[i]', deviceTypes[i]);
+                            result = true;
+                        }
+                    }
+                }
+            };
+            console.log('result', result);
+            this.isShowRecordBtn = result;
         }
     },
     computed: {
@@ -1187,6 +1206,9 @@ var monitor = {
         },
         deviceInfos: function () {
             return this.$store.state.deviceInfos;
+        },
+        deviceTypes: function () {
+            return this.$store.state.deviceTypes;
         }
     },
     watch: {
@@ -1215,9 +1237,11 @@ var monitor = {
             });
 
             directiveList.sort(function (a, b) {
-                return a.cmdlevel > b.cmdlevel;
+                return a.cmdlevel - b.cmdlevel;
             });
             this.currentDevDirectiveList = directiveList;
+            this.isShowRecordBtnByDeviceType();
+
         },
         selectedState: function () {
             this.onSelectState();
