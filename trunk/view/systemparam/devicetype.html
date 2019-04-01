@@ -41,23 +41,22 @@
             </Row>
             <Row style="margin:10px 0;">
                     <i-col :span="20" :offset="4" style="height: 100%;line-height:32px;">
-                        <CheckboxGroup v-model="functions">
+                        <checkbox-group v-model="functions">
                             <Checkbox label="audio">
                                 <span>录音</span>
                             </Checkbox>
                             <Checkbox label="camera">
                                 <span>摄像头</span>
                             </Checkbox>
-                        </CheckboxGroup>
+                        </checkbox-group>
                     </i-col>
-
             </Row>
             <Row>
                     <i-col :span="3" :offset="1" style="height: 100%;text-align:right;line-height:32px;">
                         备注&nbsp;:&nbsp;
                     </i-col>
                     <i-col :span="19">
-                        <i-input v-model.trim="remarks" :autosize="{minRows: 15}" type="textarea"></i-input>
+                        <i-input v-model.trim="remark" :autosize="{minRows: 15}" type="textarea"></i-input>
                     </i-col>
             </Row>
         </div>
@@ -94,7 +93,7 @@
                         "typename": null,
                     },
                     functions:[],
-                    remarks:"",
+                    remark:"",
                     deviceTypeList:[],
                     deviceCode:"",
                     isEdit: false,
@@ -197,7 +196,7 @@
                         url = myUrls.addDeviceType();
                         data = {
                             typecode: this.deviceCode,
-                            typename: this.devTypeInfo.typename
+                            typename: this.devTypeInfo.typename,
                         };
                     }
                     for(var key in data){
@@ -211,6 +210,12 @@
                         this.$Message.error("参数都是必填的");
                         return;
                     }
+                    if( this.functions && this.functions.length){
+                        data.functions = this.functions.join(",");
+                    }
+                    if(this.remark !== ""){
+                        data.remark = this.remark;
+                    }
                     utils.sendAjax(url, data, function (resp) {
                         if (resp.status == 0) {
                             if (me.isEdit) {
@@ -220,6 +225,7 @@
                                         me.tableData[me.rowIndex][key] = val;
                                     };
                                 };
+                                me.tableData[me.rowIndex].remark = me.remark;
                                 me.$Message.success("编辑成功");
                             } else {
                                 me.$Message.success("添加成功");
@@ -244,6 +250,8 @@
                     this.isEdit = true;
                     this.addDevTypeModal = true;
                     this.oldtypename = params.row.typename;
+                    params.row.functions ? params.row.functions.split(","):"";
+                    this.remark = params.row.remark;
                     this.devTypeInfo = JSON.parse(JSON.stringify(params.row));
                     this.rowIndex = params.index;
                 },
@@ -383,8 +391,10 @@
                             "level": 0, "camera": 0,
                             "lcd": 0, "led": 0,
                             "phone": null, "tcpport": 0,
-                            "udpport": 0
+                            "udpport": 0,
                         }
+                        this.remark = "";
+                        this.functions = [];
                     }
                 }
             },
