@@ -271,25 +271,37 @@
             line-height: 45px;
             border-top: 1px solid #f6f6f6; 
         }
-            
+        .interval-number{
+  position: absolute;
+  bottom: 48px;
+  left: 3px;
+  width: 45px;
+  height: 45px;
+  background-color: #e4393c;
+  border-radius: 50%;
+  line-height: 45px;
+  text-align: center;
+  color: #ffffff;
+}   
     </style>
     <script src="js/js.cookie.min.js"></script>
     <script src="js/polyfill.min.js"></script>
 </head>
 <body>
     <div class="container" id="app" v-cloak>
+        <audio ref="music"></audio>
         <div class='record-body' ref="recordsWrapper">
             <template v-for="(item,index) in tableData" :key="index">
-               
+
                             <div class='body-item' v-if="item.type === 0">
                                     <div class='person'>
                                         <Icon type="md-tablet-portrait" size="24" />
                                         <!-- <span class="icon iconfont icon-iconmydevices" style='font-size:24px;'></span>   -->
                                     </div>
-                                    <div class='speech' @click="playYuYin">
+                                    <div class='speech' @click="playYuYin(index)">
                                         <div class='duration'>{{item.updatetimeStr}}</div>
                                         <div class='audio-icon box'>
-                                        <div class="wifi-symbol" v-if="item.show">
+                                        <div class="wifi-symbol" v-show="item.show">
                                             <div class="wifi-circle first"></div>
                                             <div class="wifi-circle second"></div>
                                             <div class="wifi-circle third"></div>
@@ -320,10 +332,11 @@
                         </div>
                     </div>
                 </div>
-                <div class='fast-record' @@click="handleClickSound">
-                    开始录音
+                <div class='fast-record' @click="handleClickSound">
+                    点击录音
                 </div>
         </div>
+        <div class="interval-number">{{intervalNumber}}</div>
     </div>
     <script src="js/jquery.js"></script>
     <script src="dist/vue.min.js"></script>
@@ -337,6 +350,9 @@
         new Vue({
             el:"#app",
             data:{
+                intervalNumber:60,
+                currentIndex:null,
+                audio:null,
                 deviceId:"",
                 isShowSelect:false,
                 selectVal:"10s",
@@ -348,11 +364,39 @@
                     this.isShowSelect = false;
                     this.selectVal = val;
                 },
-                playYuYin:function(){
-                    
+                playYuYin:function(index){
+                    if(index === this.currentIndex) return;
+                    var audio = this.$refs.music;
+                    var item =  this.tableData[index];
+                    this.tableData.forEach(function(record){ record.show = false; });
+                    item.show = true;
+                    if(!audio.paused){              
+                        audio.pause();  
+                    }   
+                    audio.src = item.url;
+                    audio.play();
+                    item.readstatus !== 1 ? this.readMedia(item.mediaid) : "";
+                    item.readstatus = 1;
+                    this.currentIndex = index;
+
+                },
+                readMedia:function (mediaid) { 
+                    var url = myUrls.readMedia();
+                    utils.sendAjax(url,{mediaid:mediaid},function (resp) {});
                 },
                 handleClickSound:function(){
-
+                    if(this.deviceId == "") return; 
+                    var me = this;
+                    var url = myUrls.recordAudio();
+                    utils.sendAjax(url, { deviceid: this.deviceId, interval: parseFloat(this.selectVal)} ,function (resp) { 
+                        if(resp.status == 0){
+                            me.tableData.push({ updatetimeStr: DateFormat.longToDateTimeStr(Date.now(), 0), intervalseconds: parseFloat(me.selectVal)})
+                            setTimeout(function () { document.getElementsByClassName("record-body")[0].scrollTop = 10000; },10);
+                            me.$Message.success("发送成功");
+                        }else{
+                            me.$Message.error("发送失败");
+                        }
+                    });
                 },
                 queryMedia() {
                     var url = myUrls.queryMedia() , me = this;
@@ -364,12 +408,13 @@
                                     records = resp.records;
                                     for (var index = 0; index < records.length; index++) {
                                         const record = records[index];
+                                        record.show = false;
                                         record.updatetimeStr = DateFormat.longToDateTimeStr(record.updatetime, 0);
                                         tableData.push(record)
                                       
                                     }
-                                me.tableData = tableData;
-                                console.log('me.$refs', me.$refs);
+                                me.tableData = tableData.reverse();
+                                setTimeout(function () { document.getElementsByClassName("record-body")[0].scrollTop = 10000; },10);
                             }
                             
                         }else{
@@ -381,10 +426,19 @@
             },
             mounted:function(){
                 var deviceId = utils.getParameterByName("deviceid");
+                var me = this;
+                this.audio = this.$refs.music; 
                 if(deviceId){
                     this.deviceId = deviceId;
                     this.queryMedia();
                 }
+                setInterval(function () { 
+                    me.intervalNumber = --me.intervalNumber;
+                    if(me.intervalNumber < 1){
+                        me.intervalNumber = 60;
+                        me.queryMedia();
+                    };
+                 },1000)
             }
         })
     </script>

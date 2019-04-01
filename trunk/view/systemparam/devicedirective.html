@@ -179,9 +179,9 @@
                         }
                     });   
                     tableData.sort(function (a,b) { 
-                        return a.cmdlevel > b.cmdlevel;
+                        return a.cmdlevel - b.cmdlevel;
                     });
-                     me.tableData = tableData;
+                    me.tableData = tableData;
                     type.isSelected = true;
                 },
                 handleDelDirective: function (params) {

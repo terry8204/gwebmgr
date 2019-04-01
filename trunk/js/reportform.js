@@ -722,33 +722,11 @@ function reportMileageDetail (groupslist) {
                 } else {
                     this.$Message.error(this.$t("reportForm.selectDevTip"));
                 }
-            },
-            getPinyin: function (groupslist) {
-                var newArr = [];
-
-                groupslist.forEach(function (group) {
-                    var groupObj = {
-                        firstLetter: __pinyin.getFirstLetter(group.title),
-                        pinyin: __pinyin.getPinyin(group.title),
-                        groupname: group.title,
-                        devices: []
-                    };
-                    group.children.forEach(function (device) {
-                        groupObj.devices.push({
-                            deviceid: device.deviceid,
-                            devicename: device.title,
-                            firstLetter: __pinyin.getFirstLetter(device.title),
-                            pinyin: __pinyin.getPinyin(device.title),
-                        })
-                    })
-                    newArr.push(groupObj);
-                });
-                return newArr;
             }
         },
         mounted: function () {
             var me = this;
-            this.groupslist = this.getPinyin(groupslist);
+            this.groupslist = utils.getPinyin(groupslist);
             this.calcTableHeight();
             window.onresize = function () {
                 me.calcTableHeight();
@@ -980,28 +958,6 @@ function parkDetails (groupslist) {
                     this.$Message.error(this.$t("reportForm.selectDevTip"));
                 }
             },
-            getPinyin: function (groupslist) {
-                var newArr = [];
-
-                groupslist.forEach(function (group) {
-                    var groupObj = {
-                        firstLetter: __pinyin.getFirstLetter(group.title),
-                        pinyin: __pinyin.getPinyin(group.title),
-                        groupname: group.title,
-                        devices: []
-                    };
-                    group.children.forEach(function (device) {
-                        groupObj.devices.push({
-                            deviceid: device.deviceid,
-                            devicename: device.title,
-                            firstLetter: __pinyin.getFirstLetter(device.title),
-                            pinyin: __pinyin.getPinyin(device.title),
-                        })
-                    })
-                    newArr.push(groupObj);
-                });
-                return newArr;
-            },
             getParkTime: function (mss) {
                 var strTime = '';
                 var days = parseInt(mss / (1000 * 60 * 60 * 24));
@@ -1044,7 +1000,7 @@ function parkDetails (groupslist) {
         mounted: function () {
             var me = this;
             this.initMap();
-            this.groupslist = this.getPinyin(groupslist);
+            this.groupslist = utils.getPinyin(groupslist);
             this.calcTableHeight();
             window.onresize = function () {
                 me.calcTableHeight();
@@ -1220,28 +1176,6 @@ function accDetails (groupslist) {
                     this.$Message.error(this.$t("reportForm.selectDevTip"));
                 }
             },
-            getPinyin: function (groupslist) {
-                var newArr = [];
-
-                groupslist.forEach(function (group) {
-                    var groupObj = {
-                        firstLetter: __pinyin.getFirstLetter(group.title),
-                        pinyin: __pinyin.getPinyin(group.title),
-                        groupname: group.title,
-                        devices: []
-                    };
-                    group.children.forEach(function (device) {
-                        groupObj.devices.push({
-                            deviceid: device.deviceid,
-                            devicename: device.title,
-                            firstLetter: __pinyin.getFirstLetter(device.title),
-                            pinyin: __pinyin.getPinyin(device.title),
-                        })
-                    })
-                    newArr.push(groupObj);
-                });
-                return newArr;
-            },
             getParkTime: function (mss) {
                 var strTime = '';
                 var days = parseInt(mss / (1000 * 60 * 60 * 24));
@@ -1257,8 +1191,7 @@ function accDetails (groupslist) {
         },
         mounted: function () {
             var me = this;
-
-            this.groupslist = this.getPinyin(groupslist);
+            this.groupslist = utils.getPinyin(groupslist);
             this.calcTableHeight();
             window.onresize = function () {
                 me.calcTableHeight();
@@ -1267,6 +1200,167 @@ function accDetails (groupslist) {
     })
 
 }
+
+
+
+function devRecords (groupslist) {
+    vueInstanse = new Vue({
+        el: '#dev-records',
+        i18n: utils.getI18n(),
+        data: {
+            placeholder: vRoot.$t("monitor.placeholder"),
+            loading: false,
+            tableHeight: 100,
+            queryDeviceId: '',
+            groupslist: [],
+            filterData: [],
+            sosoValue: '',
+            timeoutIns: null,
+            isShowMatchDev: true,
+            columns: [
+                { type: 'index', width: 60, align: 'center' },
+                { title: vRoot.$t("alarm.devName"), key: 'devicename' },
+                { title: vRoot.$t("alarm.devNum"), key: 'deviceid' },
+                { title: isZh ? '时间' : 'date', key: 'updatetimeStr' },
+                {
+                    title: isZh ? '录音' : 'record',
+                    render: function (h, data) {
+                        return h(
+                            "audio",
+                            {
+                                style: {
+                                    marginTop: "5px"
+                                },
+                                attrs: {
+                                    controls: "controls",
+                                    src: data.row.url
+                                }
+                            }
+                        )
+                    }
+                },
+            ],
+            tableData: []
+        },
+        methods: {
+            calcTableHeight: function () {
+                var wHeight = window.innerHeight;
+                this.tableHeight = wHeight - 125;
+            },
+            focus: function () {
+                var me = this;
+                if (this.sosoValue.trim()) {
+                    me.sosoValueChange()
+                } else {
+                    this.filterData = this.groupslist;
+                    this.isShowMatchDev = true;
+                }
+            },
+            onClickOutside: function () {
+                this.isShowMatchDev = false;
+            },
+            sosoValueChange: function () {
+                var me = this;
+                var value = this.sosoValue;
+
+                if (this.timeoutIns != null) {
+                    clearTimeout(this.timeoutIns);
+                };
+
+                this.timeoutIns = setTimeout(function () {
+                    me.filterMethod(value);
+                }, 300);
+            },
+            filterMethod: function (value) {
+                var filterData = [];
+                this.queryDeviceId = '';
+                var firstLetter = __pinyin.getFirstLetter(value)
+                var pinyin = __pinyin.getPinyin(value)
+                for (var i = 0; i < this.groupslist.length; i++) {
+                    var group = this.groupslist[i];
+                    if (
+                        group.groupname.toUpperCase().indexOf(value.toUpperCase()) !== -1 ||
+                        group.firstLetter.indexOf(firstLetter) !== -1 ||
+                        group.pinyin.indexOf(pinyin) !== -1
+                    ) {
+                        filterData.push(group)
+                    } else {
+                        var devices = group.devices
+                        var obj = {
+                            groupname: group.groupname,
+                            devices: []
+                        }
+                        for (var j = 0; j < devices.length; j++) {
+                            var device = devices[j]
+                            var devicename = device.devicename
+                            if (
+                                devicename.toUpperCase().indexOf(value.toUpperCase()) !== -1 ||
+                                device.firstLetter.indexOf(firstLetter) !== -1 ||
+                                device.pinyin.indexOf(pinyin) !== -1
+                            ) {
+                                obj.devices.push(device)
+                            } else {
+                                if (device.remark) {
+                                    if (device.remark.indexOf(value) !== -1) {
+                                        obj.devices.push(device);
+                                    };
+                                };
+                            };
+                        }
+                        if (obj.devices.length) {
+                            filterData.push(obj);
+                        };
+                    };
+                };
+                this.filterData = filterData;
+                if (!this.isShowMatchDev) {
+                    this.isShowMatchDev = true;
+                };
+            },
+            sosoSelect: function (item) {
+                this.sosoValue = item.devicename;
+                this.queryDeviceId = item.deviceid;
+                this.isShowMatchDev = false;
+            },
+            onClickQuery: function () {
+                if (this.queryDeviceId == "") { return };
+                var me = this;
+                var url = myUrls.reportAudio();
+                var data = {
+                    deviceid: this.queryDeviceId
+                }
+                utils.sendAjax(url, data, function (resp) {
+                    if (resp.status === 0) {
+                        var records = resp.records;
+                        var tableData = [];
+                        records.forEach(function (record) {
+                            tableData.push({
+                                devicename: me.sosoValue,
+                                deviceid: me.queryDeviceId,
+                                updatetimeStr: DateFormat.longToDateTimeStr(record.updatetime, 0),
+                                url: record.url
+                            })
+                        });
+                        me.tableData = tableData;
+                    }
+
+                })
+            }
+        },
+        mounted: function () {
+            var me = this;
+            this.groupslist = utils.getPinyin(groupslist);
+            this.calcTableHeight();
+            window.onresize = function () {
+                me.calcTableHeight();
+            }
+        }
+    });
+}
+
+
+
+
 
 // 查询报警
 function allAlarm (groupslist) {
@@ -1390,6 +1484,7 @@ var reportForm = {
                         { title: me.$t("reportForm.reportmileagedetail"), name: 'mileageDetail', icon: 'ios-color-wand' },
                         { title: me.$t("reportForm.parkDetails"), name: 'parkDetails', icon: 'md-analytics' },
                         { title: me.$t("reportForm.acc"), name: 'accDetails', icon: 'md-bulb' },
+                        { title: isZh ? '语音报表' : 'Voice report', name: 'records', icon: 'md-bulb' },
                     ]
                 },
                 {
@@ -1435,6 +1530,8 @@ var reportForm = {
                     parkDetails(groupslist);
                 } else if (page.indexOf('accdetails') !== -1) {
                     accDetails(groupslist);
+                } else if (page.indexOf('records') !== -1) {
+                    devRecords(groupslist);
                 }
             });
         },

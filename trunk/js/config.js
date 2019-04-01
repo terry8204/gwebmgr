@@ -293,6 +293,9 @@ var myUrls = {
   },
   recordAudio: function () {
     return this.host + 'webapi?action=recordaudio&token=' + token;
+  },
+  reportAudio: function () {
+    return this.host + 'webapi?action=reportaudio&token=' + token;
   }
 }
 

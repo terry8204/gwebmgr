@@ -21,7 +21,7 @@ var utils = {
       dataType: 'json',
       success: function (resp) {
         if (resp.status > 9000) {
-          vRoot.$Message.error(me.$t("monitor.reLogin"))
+          vRoot.$Message.error(vRoot.$t("monitor.reLogin"))
           Cookies.remove('token')
           setTimeout(function () {
             window.location.href = 'index.html'
@@ -358,6 +358,28 @@ var utils = {
         vueInstanse.mapInstance.panTo(latLng);
       }, 100);
     }
+  },
+  getPinyin: function (groupslist) {
+    var newArr = [];
+
+    groupslist.forEach(function (group) {
+      var groupObj = {
+        firstLetter: __pinyin.getFirstLetter(group.title),
+        pinyin: __pinyin.getPinyin(group.title),
+        groupname: group.title,
+        devices: []
+      };
+      group.children.forEach(function (device) {
+        groupObj.devices.push({
+          deviceid: device.deviceid,
+          devicename: device.title,
+          firstLetter: __pinyin.getFirstLetter(device.title),
+          pinyin: __pinyin.getPinyin(device.title),
+        })
+      })
+      newArr.push(groupObj);
+    });
+    return newArr;
   }
 }
 

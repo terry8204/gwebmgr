@@ -229,7 +229,7 @@ var monitor = {
                     this.deviceInfoModal = true;
                     break;
                 case 'luyin':
-                    window.location.href = "record.html?deviceid=" + this.currentDeviceId;
+                    window.open("record.html?deviceid=" + this.currentDeviceId);
                     break;
             }
         },
