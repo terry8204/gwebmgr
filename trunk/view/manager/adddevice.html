@@ -247,20 +247,24 @@
                 },
                 getDeviceType:function () {
                     var me = this;
-                    var url = myUrls.queryDeviceTypeByUser();
-                    utils.sendAjax(url,{},function (resp) { 
-                        if(resp.status == 0 && resp.devicetypes!=null){
-                            resp.devicetypes.forEach(function (item) { 
-                                me.deviceTypeList.push({value:item.devicetypeid,label:item.typename});
-                            })
-                        }else if(resp.status == -1){
-                            var cause = resp.cause;
-                            if(cause.indexOf("token")!=-1){
-                                window.location.href = "index.html";
-                            }
-                        }
-                        me.devicetype = 1;
-                    }); 
+                    // var url = myUrls.queryDeviceTypeByUser();
+                    // utils.sendAjax(url,{},function (resp) { 
+                    //     if(resp.status == 0 && resp.devicetypes!=null){
+                    //         resp.devicetypes.forEach(function (item) { 
+                    //             me.deviceTypeList.push({value:item.devicetypeid,label:item.typename});
+                    //         })
+                    //     }else if(resp.status == -1){
+                    //         var cause = resp.cause;
+                    //         if(cause.indexOf("token")!=-1){
+                    //             window.location.href = "index.html";
+                    //         }
+                    //     }
+                    //     me.devicetype = 1;
+                    // }); 
+                    vstore.state.deviceTypes .forEach(function (item) { 
+                        me.deviceTypeList.push({value:item.devicetypeid,label:item.typename});
+                    })
+                    me.devicetype = 1;
                 },
                 queryAlarmDescr:function () { 
                     var me = this;

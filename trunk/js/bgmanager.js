@@ -96,11 +96,7 @@ var bgManager = {
         }
     },
     mounted: function () {
-        this.userType = Cookies.get('userType')
-        if (this.userType == 0) {
-            this.$delete(this.navList, 1)
-            this.$delete(this.navList, 2)
-        }
+        this.userType = Cookies.get('userType');
     }
 }
 
