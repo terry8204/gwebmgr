@@ -11,15 +11,18 @@
             <Row style="margin: 10px 0" v-if="userType == 0">
                 <i-col span="4" style="height: 100%;text-align:right;line-height:32px;"><i style="color: red;display: inline-block;">*</i>&nbsp;选择账号 : &nbsp;</i-col>
                 <i-col span="8">
-                    <!-- <i-select v-model="createrToUser" style="width: 100%">
-                        <i-option v-for="item in userlists" :value="item.value" :key="item.value">{{ item.label }}</i-option>
-                    </i-select> -->
-                    <auto-complete
-                    v-model="createrToUser"
-                    :data="userlists"
-                    @on-search="handleSearch"
-                    @on-blur="handleBlur"
-                    style="width:100%"></auto-complete>
+                    <div class="search-wrapper">
+                        <i-input v-model.trim="createrToUser"  :icon="iconState" @on-change="sosoValueChange" @on-blur="blur" @on-focus="focus"></i-input>
+                        <transition name="fade">
+                            <ul class="search-item-wrapper" v-show="isShowMatchDev" style="cursor: pointer;">
+                                <li v-for="item in userlists" style="padding:5px 10px;" @click="selectedCmd(item)" :class="{'ivu-select-item-focus':item == createrToUser}">
+                                    <Option :value="item" :key="item">
+                                        <span style="cursor: pointer;">{{ item }}</span>
+                                    </Option>
+                                </li>
+                            </ul>
+                        </transition>
+                    </div>
                 </i-col>
             </Row>
             <Row style="margin: 10px 0">
@@ -129,6 +132,7 @@
                         return date && date.valueOf() < Date.now() - 86400000;
                     }
                 },
+                iconState:"ios-arrow-down",
                 deviceid:"",
                 devicename:"",
                 devicetype:"",
@@ -149,25 +153,52 @@
                 forwardurl:"",
                 createrToUser:"",
                 userlists:[],
-                userType:null
+                userType:null,
+                timeoutIns:null,
+                isShowMatchDev:false,
             },
             methods: {
-                handleSearch:function(value){
-                    if(value){
-                        var searchList = [];
-                        userlists.forEach(function (item) { 
-                            if(item.toLowerCase().indexOf(value)!=-1){
-                                searchList.push(item);
-                            }
-                        })
-                        console.log("searchList",searchList);
-                        this.userlists = searchList;
-                    }else{
-                        this.userlists = userlists;
-                    }
+                selectedCmd:function(item){
+                    var me = this;
+                    setTimeout(function () {
+                        me.isShowMatchDev = false;
+                        me.createrToUser = item;
+                    }, 100)
                 },
-                handleBlur:function(){
-                    this.userlists = userlists;
+                sosoValueChange:function(){
+                    var me = this;
+                    var value = this.createrToUser.toLowerCase();
+
+                    if (this.timeoutIns != null) {
+                        clearTimeout(this.timeoutIns);
+                    }
+
+                    if (!value.trim()) {
+                        this.userlists = userlists;
+                        return;
+                    }
+
+                    this.timeoutIns = setTimeout(function () {
+                        me.filterMethod(value);
+                    }, 100);
+                },
+                focus: function () {
+                    this.isShowMatchDev = true;
+                },
+                blur: function () {
+                    var me = this
+                    setTimeout(function () {
+                        me.isShowMatchDev = false;
+                    }, 300)
+                },
+                filterMethod:function(value){
+                    var list = [];
+                    userlists.forEach(function (itme) { 
+                        if(itme.toLowerCase().indexOf(value) != -1){
+                            list.push(itme);
+                        }
+                    })
+                    this.userlists = list;
                 },
                 handleSubmit:function(){
                     var me = this;
@@ -323,6 +354,13 @@
                     this.groupsList = [];
                     this.groupid = "";
                     this.getGroupsList();  
+                },
+                isShowMatchDev:function(){
+                    if(!this.isShowMatchDev){
+                        this.iconState = "ios-arrow-down";
+                    }else{
+                        this.iconState = "ios-arrow-up";
+                    }
                 }
             },
             mounted:function () {
