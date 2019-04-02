@@ -380,6 +380,18 @@ var utils = {
       newArr.push(groupObj);
     });
     return newArr;
+  },
+  getUserInfoList: function () {
+    var url = myUrls.queryUser();
+    utils.sendAjax(url, { username: userName }, function (resp) {
+      if (resp.status == 0) {
+        if (resp.userlists) {
+          resp.userlists.forEach(function (user) {
+            userlists.push({ label: user.username, value: user.username });
+          })
+        }
+      }
+    });
   }
 }
 

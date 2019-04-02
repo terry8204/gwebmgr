@@ -6,6 +6,8 @@ var isZh = utils.locale === 'zh';
 var mapType = utils.getMapType();
 var isLoadBMap = false;
 var globalDeviceId = "";
+var userlists = [];
+
 document.title = isZh ? "位置信息服务平台" : "Location information service platform";
 var getPath = function () {
   var jsPath = document.currentScript ? document.currentScript.src : function () {
@@ -718,6 +720,7 @@ var vRoot = new Vue({
       }
     }
     vueInstanse = this;     // 备份monitor实例
+    utils.getUserInfoList();
   }
 });
 

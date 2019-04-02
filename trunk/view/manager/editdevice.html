@@ -3,6 +3,14 @@
     <div class="full">
         <h3 class="h3-title">{{$t("device.editDev")}}  <span><i-button style="width: 100%" size="" @click="back">{{$t("bgMgr.back")}}</i-button> </span></h3>
         <div>
+            <Row style="margin: 10px 0" v-if="userType == 0">
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;"><i style="color: red;display: inline-block;">*</i>&nbsp;选择账号 : &nbsp;</i-col>
+                <i-col span="8">
+                    <i-select v-model="createrToUser" style="width: 100%">
+                        <i-option v-for="item in userlists" :value="item.value" :key="item.value">{{ item.label }}</i-option>
+                    </i-select>
+                </i-col>
+            </Row>
             <Row style="margin: 10px 0">
                 <i-col span="4" style="height: 100%;text-align:right;line-height:32px;"><i style="color: red;display: inline-block;">*</i>&nbsp;{{$t("alarm.devName")}} : &nbsp;</i-col>
                 <i-col span="8">
@@ -120,7 +128,10 @@
                 totalpoint:1500,
                 groupid:'',
                 companyid:'',
-                forwardurl:""
+                forwardurl:"",
+                createrToUser:"",
+                userlists:[],
+                userType:null,
             },
             methods: {
                 back:function(){
@@ -175,6 +186,13 @@
 
                     this.forwardurl && (data.forwardurl = this.forwardurl);
 
+                    if(this.userType == 0){
+                        data.creater = this.createrToUser;
+                        console.log('this.createrToUser', this.createrToUser);
+                    }else{
+                        data.creater = userName;
+                    }     
+
                     utils.sendAjax(url,data,function (resp) { 
                         if(resp.status == 0){
                             me.$Message.success(me.$t("message.changeSucc"));
@@ -227,6 +245,7 @@
                         me.reportedpoint = editObject.reportedpoint ;
                         me.totalpoint = editObject.totalpoint ;
                         me.forwardurl = editObject.forwardurl;
+                        me.createrToUser = editObject.creater;
                     }
                 },
                 getGroupsList:function(){
@@ -252,23 +271,11 @@
                 },
                 getDeviceType:function () { 
                     var me = this;
-                    // var url = myUrls.queryDeviceTypeByUser();
-                    // utils.sendAjax(url,{},function (resp) { 
-                    //     if(resp.status == 0 && resp.devicetypes!=null){
-                    //         resp.devicetypes.forEach(function (item) { 
-                    //             me.deviceTypeList.push({value:item.devicetypeid,label:item.typename});
-                    //         })
-                    //     }else if(resp.status == -1){
-                    //         var cause = resp.cause;
-                    //         if(cause.indexOf("token")!=-1){
-                    //             window.location.href = "index.html";
-                    //         }
-                    //     }
-                    // }); 
                     vstore.state.deviceTypes .forEach(function (item) { 
                         me.deviceTypeList.push({value:item.devicetypeid,label:item.typename});
                     })
-                }
+                },
+                
             },
             watch:{
                 companyid:function(){
@@ -278,7 +285,9 @@
                 }
             },
             mounted:function () {
-                this.queryAllCompanyInfo(this.doQueryAllCompanyInfo);          
+                this.queryAllCompanyInfo(this.doQueryAllCompanyInfo);      
+                this.userlists = userlists;
+                this.userType = vstore.state.userType;
             } 
         })
     </script>
