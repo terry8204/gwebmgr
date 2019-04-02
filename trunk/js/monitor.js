@@ -260,7 +260,6 @@ var monitor = {
                     cmdInfo = cmd;
                 }
             });
-            console.log('cmdInfo', cmdInfo.cmdtype);
             this.selectedCmdInfo.cmdName = cmdInfo.cmdname;
             this.selectedCmdInfo.cmdcode = cmdInfo.cmdcode;
             this.selectedCmdInfo.cmddescr = cmdInfo.cmddescr;
@@ -1173,11 +1172,9 @@ var monitor = {
             var result = false;
             for (var i = 0; i < deviceTypes.length; i++) {
                 if (this.currentDeviceType == deviceTypes[i].devicetypeid) {
-                    console.log('this.currentDeviceType', this.currentDeviceType);
                     var functions = deviceTypes[i].functions;
                     if (functions) {
                         if (functions.indexOf("audio") != -1) {
-                            console.log('deviceTypes[i]', deviceTypes[i]);
                             result = true;
                         }
                     }
@@ -1195,6 +1192,22 @@ var monitor = {
                 }
             }
             return typeName;
+        },
+        getMonitorList: function () {
+            var me = this;
+            this.getMonitorListByUser({ username: userName }, function (resp) {
+                me.groups = me.filterGroups(resp.groups)
+                me.$store.dispatch('setdeviceInfos', me.groups);
+                me.isShowCompanyName && me.onSelectState();
+                me.getLastPosition([], function (resp) {
+                    me.lastquerypositiontime = DateFormat.getCurrentUTC();
+                    me.caclOnlineCount();
+                    me.updateTreeOnlineState();
+                    communicate.$on("positionlast", me.handleWebSocket);
+                }, function (error) { });
+                me.isLoadGroup = false;
+                me.setIntervalReqRecords();
+            });
         }
     },
     computed: {
@@ -1273,27 +1286,16 @@ var monitor = {
             }
         },
         deviceTypes: function () {
-            console.log('deviceTypes回来了')
-            var me = this;
-            this.getMonitorListByUser({ username: userName }, function (resp) {
-                me.groups = me.filterGroups(resp.groups)
-                me.$store.dispatch('setdeviceInfos', me.groups);
-                me.isShowCompanyName && me.onSelectState();
-                me.getLastPosition([], function (resp) {
-                    me.lastquerypositiontime = DateFormat.getCurrentUTC();
-                    me.caclOnlineCount();
-                    me.updateTreeOnlineState();
-                    communicate.$on("positionlast", me.handleWebSocket);
-                }, function (error) { });
-                me.isLoadGroup = false;
-                me.setIntervalReqRecords();
-            });
+            this.getMonitorList();
         }
     },
     mounted: function () {
         this.intervalTime = Number(this.stateIntervalTime);
         this.placeholder = this.$t("monitor.placeholder");
         this.initMap();
+        if (this.deviceTypes.length) {
+            this.getMonitorList();
+        }
     },
     activated: function () {
         // console.log('activated', this.groups.length)
