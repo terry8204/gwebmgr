@@ -387,7 +387,8 @@ var utils = {
       if (resp.status == 0) {
         if (resp.userlists) {
           resp.userlists.forEach(function (user) {
-            userlists.push({ label: user.username, value: user.username });
+            // userlists.push({ label: user.username, value: user.username });
+            userlists.push(user.username);
           })
         }
       }
