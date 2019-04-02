@@ -707,7 +707,7 @@ var vRoot = new Vue({
   },
   mounted: function () {
     // this.isShowAlarm = this.userType == 0 ? false : true;
-    //this.$store.dispatch('setUserTypeDescr');
+    // this.$store.dispatch('setUserTypeDescr');
     this.$store.dispatch('setAllCmdList');
     this.$store.dispatch('setDeviceTypes');
 

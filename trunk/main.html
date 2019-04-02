@@ -262,7 +262,7 @@
                                     <div :class="{'active-dev-offline':device.isSelected}" style="margin:3px 0;" :ref="device.deviceid">
                                         <div style="padding:3px 5px;cursor: pointer;" :style="{color: device.isOnline ? '#33DAD0' : '#B1BBC2'}" @click="selectedDev(device)">
                                             <Icon type="md-person"/> 
-                                            <span v-text="device.devicename"></span> 
+                                            <span v-text="device.devicetitle"></span> 
                                         </div>
                                         <ul class="device-controller" v-if="device.isSelected">
                                             <li @click="editDevice(device)"><Icon type="ios-create"/><p>{{$t("monitor.edit")}}</p><li>
@@ -317,7 +317,7 @@
                                         <div :class="{'active-dev-offline':device.isSelected}" style="margin:3px 0;" :ref="device.deviceid">
                                             <div style="padding:3px 5px;cursor: pointer;" :style="{color: device.isOnline ? '#33DAD0' : '#B1BBC2'}" @click="selectedDev(device)">
                                                 <Icon type="md-person"/> 
-                                                <span v-text="device.devicename"></span> 
+                                                <span v-text="device.devicetitle"></span> 
                                             </div>
                                             <ul class="device-controller" v-if="device.isSelected">
                                                 <li @click="editDevice(device)"><Icon type="ios-create"/><p>{{$t("monitor.edit")}}</p><li>
@@ -372,7 +372,7 @@
                                         <div :class="{'active-dev-offline':device.isSelected}" style="margin:3px 0;" :ref="device.deviceid">
                                             <div style="padding:3px 5px;cursor: pointer;" :style="{color:'#B1BBC2'}" @click="selectedDev(device)">
                                                 <Icon type="md-person"/> 
-                                                <span v-text="device.devicename"></span> 
+                                                <span v-text="device.devicetitle"></span> 
                                             </div>
                                             <ul class="device-controller" v-if="device.isSelected">
                                                 <li @click="editDevice(device)"><Icon type="ios-create"/><p>{{$t("monitor.edit")}}</p><li>
