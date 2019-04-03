@@ -180,9 +180,6 @@ var myUrls = {
     return this.host + 'webapi?action=editcmd&token=' + token
   },
   // 设备类型
-  pageQueryDeviceType: function () {
-    return this.host + 'webapi?action=queryalldevicetypeinsystem&token=' + token
-  },
   queryDeviceTypeByUser: function () {
     return this.host + 'webapi?action=querydevicetypeownerbyuser&token=' + token
   },

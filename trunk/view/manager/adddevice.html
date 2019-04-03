@@ -148,7 +148,6 @@
                 companyid:'',
                 reportedpoint:0,
                 totalpoint:1500,
-                alarmTypeList:[],
                 checkboxObj:{},
                 forwardurl:"",
                 createrToUser:"",
@@ -328,26 +327,7 @@
                     })
                     me.devicetype = 1;
                 },
-                queryAlarmDescr:function () { 
-                    var me = this;
-                    var url = myUrls.queryAlarmDescr();
-                    utils.sendAjax(url,{},function (resp) { 
-                        if(resp.status == 0){
-                            var records = resp.records;
-                            records.forEach(function (item,index){ 
-                                var idx = parseFloat(index/3) 
-                                if(index%3 == 0){
-                                    var newArr = [];
-                                    newArr.push(item)
-                                    me.alarmTypeList.push(newArr);
-                                }else{
-                                    me.alarmTypeList[me.alarmTypeList.length - 1].push(item);
-                                }
-                                me.checkboxObj[item.alarmcode] = true;
-                            })
-                        }
-                    });
-                }
+                   
             },
             watch:{
                 companyid:function(){
@@ -361,12 +341,31 @@
                     }else{
                         this.iconState = "ios-arrow-up";
                     }
+                },
+                createrToUser:function(){
+                    var me = this, url = myUrls.queryCompanyByCreater();
+                    utils.sendAjax(url,{username:this.createrToUser},function (resp) { 
+                        if(resp.status === 0){
+                            var customersList = [];
+                            resp.records.forEach(function(item){
+                                customersList.push({
+                                    label:item.companyname,
+                                    value:item.companyid
+                                });
+                            });
+                            me.customersList = customersList;
+                            if(me.userType == 0){
+                                me.companyid = customersList.length ? customersList[0].companyid : "";
+                            }else{
+                                me.companyid = editObject.companyid;
+                            }    
+                        }
+                    });
                 }
             },
             mounted:function () {
                 this.queryAllCompanyInfo(this.doQueryAllCompanyInfo);
                 this.getDeviceType();
-                this.queryAlarmDescr();
                 this.userlists = userlists;
                 this.overduetime = new Date(Date.now() + 365*24*3600*1000) ;
                 this.userType = vstore.state.userType;

@@ -177,7 +177,6 @@
                         doFenceInfo:function(resp){
                             var device = resp.device;
                             if(resp.status == 0){
-                                
                                 this.isSetFence =  device.fr > 0 ? true : false;
                                 this.fr = device.fr;
                                 this.gpslon = device.flon;

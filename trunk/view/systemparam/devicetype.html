@@ -291,9 +291,8 @@
                     return {datas:[{devicetype:this.tableData[this.rowIndex].devicetypeid,cmds: cmds}]}
                 },
                 queryDevTypeList: function () {
-                    console.log('queryDevTypeList');
                     var me = this;
-                    var url = myUrls.pageQueryDeviceType();
+                    var url = myUrls.queryDeviceTypeByUser();
                     utils.sendAjax(url, {}, function (resp) {
                         console.log('queryDevTypeList', resp);
                         if (resp.status == 0) {

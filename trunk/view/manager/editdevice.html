@@ -199,7 +199,6 @@
 
                     if(this.userType == 0){
                         data.creater = this.createrToUser;
-                        console.log('this.createrToUser', this.createrToUser);
                     }else{
                         data.creater = userName;
                     }     
@@ -224,7 +223,7 @@
                     this.loginenable = "0";
                     this.deviceenable = "0";
                     this.groupsList = "";
-                    this.customersList = "";
+                    this.customersList = [];
                     this.groupid = "";
                     this.companyid = "";
                     this.reportedpoint = 0;
@@ -244,20 +243,24 @@
                                 value:item.companyid
                             });
                         });
-                        me.getDeviceType();
-                        me.deviceid = editObject.deviceid;
-                        me.simnum = editObject.simnum;
-                        me.overduetime = editObject.overduetimestr;
-                        me.devicename  = editObject.devicename;
-                        me.companyid = editObject.companyid;
-                        me.devicetype = editObject.devicetype;
-                        me.loginenable ="" + editObject.loginenable;
-                        me.deviceenable ="" +  editObject.deviceenable;
-                        me.reportedpoint = editObject.reportedpoint ;
-                        me.totalpoint = editObject.totalpoint ;
-                        me.forwardurl = editObject.forwardurl;
-                        me.createrToUser = editObject.creater;
+    
                     }
+                },
+                setDeviceData:function(){ 
+                    var me = this;
+                    me.deviceid = editObject.deviceid;
+                    me.simnum = editObject.simnum;
+                    me.overduetime = editObject.overduetimestr;
+                    me.devicename  = editObject.devicename;
+                    me.companyid = editObject.companyid;
+                    me.devicetype = editObject.devicetype;
+                    me.loginenable ="" + editObject.loginenable;
+                    me.deviceenable ="" +  editObject.deviceenable;
+                    me.reportedpoint = editObject.reportedpoint ;
+                    me.totalpoint = editObject.totalpoint ;
+                    me.forwardurl = editObject.forwardurl;
+                    me.createrToUser = editObject.creater;
+
                 },
                 getGroupsList:function(){
                     var me = this; 
@@ -285,6 +288,7 @@
                     vstore.state.deviceTypes .forEach(function (item) { 
                         me.deviceTypeList.push({value:item.devicetypeid,label:item.typename});
                     })
+
                 },
                 selectedCmd:function(item){
                     var me = this;
@@ -341,12 +345,45 @@
                     this.groupsList = [];
                     this.groupid = "";
                     this.getGroupsList();  
+                },
+                isShowMatchDev:function(){
+                    if(!this.isShowMatchDev){
+                        this.iconState = "ios-arrow-down";
+                    }else{
+                        this.iconState = "ios-arrow-up";
+                    }
+                },
+                createrToUser:function(){
+                    var me = this, url = myUrls.queryCompanyByCreater();
+                    utils.sendAjax(url,{username:this.createrToUser},function (resp) { 
+                        console.log('resp', resp);
+                        if(resp.status === 0){
+                            var customersList = [];
+                            resp.records.forEach(function(item){
+                                customersList.push({
+                                    label:item.companyname,
+                                    value:item.companyid
+                                });
+                            });
+                            me.customersList = customersList;
+                            if(me.userType == 0){
+                                me.companyid = customersList.length ? customersList[0].companyid : "";
+                            }else{
+                                me.companyid = editObject.companyid;
+                            }    
+                        }
+                    });
                 }
             },
             mounted:function () {
-                this.queryAllCompanyInfo(this.doQueryAllCompanyInfo);      
+                 
+
+                // this.queryAllCompanyInfo(this.doQueryAllCompanyInfo);
                 this.userlists = userlists;
                 this.userType = vstore.state.userType;
+
+                this.getDeviceType(); 
+                this.setDeviceData();
             } 
         })
     </script>
