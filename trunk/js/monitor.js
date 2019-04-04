@@ -863,8 +863,14 @@ var monitor = {
                 };
                 group.devices.forEach(function (device, index) {
                     var isOnline = me.getIsOnline(device.deviceid)
+                    var deviceTypeName = me.getDeviceTypeName(device.devicetype);
+                    if (deviceTypeName) {
+                        deviceTypeName = deviceTypeName + "-" + device.devicename;
+                    } else {
+                        deviceTypeName = device.devicename;
+                    }
                     var deviceObj = {
-                        title: me.getDeviceTypeName(device.devicetype) + "-" + device.devicename,
+                        title: deviceTypeName,
                         deviceid: device.deviceid,
                         isOnline: isOnline,
                         isSelected: false,
@@ -916,7 +922,11 @@ var monitor = {
                     count++;
                     var isOnline = me.getIsOnline(device.deviceid);
                     var deviceTypeName = me.getDeviceTypeName(device.devicetype);
-                    device.devicetitle = deviceTypeName + "-" + device.devicename;
+                    if (deviceTypeName) {
+                        device.devicetitle = deviceTypeName + "-" + device.devicename;
+                    } else {
+                        device.devicetitle = device.devicename;
+                    }
                     device.isOnline = isOnline;
                     if (isOnline) {
                         online++;
@@ -945,8 +955,14 @@ var monitor = {
 
                 group.devices.forEach(function (device) {
                     var isOnline = me.getIsOnline(device.deviceid)
+                    var deviceTypeName = me.getDeviceTypeName(device.devicetype);
+                    if (deviceTypeName) {
+                        deviceTypeName = deviceTypeName + "-" + device.devicename;
+                    } else {
+                        deviceTypeName = device.devicename;
+                    }
                     var deviceObj = {
-                        title: me.getDeviceTypeName(device.devicetype) + "-" + device.devicename,
+                        title: deviceTypeName,
                         deviceid: device.deviceid,
                         isOnline: isOnline,
                         isSelected: false
@@ -1025,8 +1041,14 @@ var monitor = {
 
                 group.devices.forEach(function (device) {
                     var isOnline = me.getIsOnline(device.deviceid)
+                    var deviceTypeName = me.getDeviceTypeName(device.devicetype);
+                    if (deviceTypeName) {
+                        deviceTypeName = deviceTypeName + "-" + device.devicename;
+                    } else {
+                        deviceTypeName = device.devicename;
+                    }
                     var deviceObj = {
-                        title: me.getDeviceTypeName(device.devicetype) + "-" + device.devicename,
+                        title: deviceTypeName,
                         deviceid: device.deviceid,
                         isOnline: isOnline,
                         isSelected: false
