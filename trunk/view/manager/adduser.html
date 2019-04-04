@@ -3,8 +3,7 @@
 <div id="adduser">
     <div class="full">
         <h3 class="h3-title">{{$t("bgMgr.addUser")}}</h3>
-        <Tabs type="card">
-            <tab-pane :label="$t('user.userInfo')">
+
                 <div>
                     <Row style="margin: 10px 0">
                         <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">
@@ -96,33 +95,7 @@
                         </i-col>
                     </Row>
 
-                    <!-- <Row style="margin: 10px 0">
-                        <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t("user.simultaneousLogin")}} : &nbsp;</i-col>
-                        <i-col span="12">
-                            <i-select v-model="singleLogin">
-                                <i-option value="0">{{$t("user.allow")}}</i-option>
-                                <i-option value="1">{{$t("user.ban")}}</i-option>
-                            </i-select>
-                        </i-col>
-                    </Row>
-                    <Row style="margin: 10px 0">
-                        <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t("user.phoneLogin")}} : &nbsp;</i-col>
-                        <i-col span="12">
-                            <i-select v-model="phoneLogin">
-                                <i-option value="0">{{$t("user.allow")}}</i-option>
-                                <i-option value="1">{{$t("user.ban")}}</i-option>
-                            </i-select>
-                        </i-col>
-                    </Row>
-                    <Row style="margin: 10px 0">
-                        <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t("user.wxLogin")}} : &nbsp;</i-col>
-                        <i-col span="12">
-                            <i-select v-model="weixinLogin">
-                                <i-option value="0">{{$t("user.allow")}}</i-option>
-                                <i-option value="1">{{$t("user.ban")}}</i-option>
-                            </i-select>
-                        </i-col>
-                    </Row> -->
+            
                     
                     <Row style="margin: 10px 0" v-show="!isShowGroup">
                         <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">
@@ -148,55 +121,7 @@
                             <i-button style="width:100%" @click="handleSubmit">{{$t("user.add")}}</i-button>
                         </i-col>
                     </Row>
-                </div>
-            </tab-pane>
-            <tab-pane :label="$t('user.userAuthority')" :disabled="isDisabled">
-                <div style="width: 100%;height: 400px">
-                    <div style="width: 250px;height: 400px;float: left;border: 1px solid #DCDEE2;overflow-y: auto;">
-                        <Tree :data="treeData" show-checkbox @on-select-change="handleClickChildren"></Tree> 
-                    </div>
-                    <div style="width: 440px;height: 400px;float: right;border: 1px solid #DCDEE2">
-                            <div style="margin-top:50px">
-                                    <Row style="margin: 10px 0">
-                                        <i-col span="6" style="height: 100%;text-align:right;line-height:32px;">
-                                                &nbsp;{{$t("user.devType")}}&nbsp;:&nbsp;
-                                        </i-col>
-                                        <i-col span="12" style="height: 100%;line-height:32px;">
-                                                &nbsp;{{editTypeName}}
-                                        </i-col>
-                                    </Row>
-                                    <Row style="margin: 10px 0">
-                                        <i-col span="6" style="height: 100%;text-align:right;line-height:32px;">
-                                                &nbsp;{{$t("user.cmdName")}}&nbsp;:&nbsp;
-                                        </i-col>
-                                        <i-col span="12" style="height: 100%;line-height:32px;">
-                                                &nbsp;{{editDirectiveName}}
-                                        </i-col>
-                                    </Row>
-                                    <Row style="margin: 10px 0" v-show="!isEditDirectivePwd">
-                                        <i-col span="6" style="height: 100%;text-align:right;line-height:32px;">
-                                                &nbsp;{{$t("user.cmdPwd")}}&nbsp;:&nbsp;
-                                        </i-col>
-                                        <i-col span="12">
-                                            <i-input v-model.trim="directivepwd"></i-input>
-                                        </i-col>
-                                    </Row>
-                                    <Row style="margin: 10px 0" v-show="!isEditDirectivePwd">
-                                        <i-col span="8" :offset="8">
-                                            <i-button style="width:100%" @click="handleEditDirevtivePwd">{{$t("bgMgr.edit")}}</i-button>
-                                        </i-col>
-                                    </Row>
-                                </div>
-                    </div>
-                </div>
-                <Row style="margin: 10px 0">
-                    <i-col span="8" :offset="8">
-                        <i-button style="width:100%" @click="submitDeviceAuthority">{{$t("user.save")}}</i-button>
-                    </i-col>
-                </Row>
-            </tab-pane>
-        </Tabs>
-        
+                </div>  
     </div> 
     <script>
         new Vue({
@@ -225,22 +150,10 @@
                 },
                 isDisabled:true,
                 isShowGroup:false,
-                treeData:[
-                    {
-                        title: vRoot.$t("user.allDev"),
-                        expand: true,
-                        selected: false,
-                        children: []
-                    }
-                ],
                 devicetypes:[],
                 directiveList:[], 
                 userTypeList:[],
                 hadDeviceCmd:[],
-                directivepwd:"",
-                editTypeName:"",
-                editDirectiveName:"",
-                isEditDirectivePwd:true,
                 directiveInfo:{},
                 qq:"",
                 email:"",
@@ -248,62 +161,8 @@
                 wechat:""
             },
             methods: {
-                handleClickChildren:function(data){
-                    var directiveInfo = data[0];
-                    if(directiveInfo){
-                        if(directiveInfo.children == undefined){ 
-                            this.directiveInfo = directiveInfo;
-                            var devicetype = directiveInfo.devicetype;
-                            var cmdcode = directiveInfo.cmdcode;
-                            var isHasDirective = this.isHasDirective(devicetype,cmdcode);
-                            this.editTypeName = directiveInfo.typename;
-                            this.editDirectiveName = directiveInfo.title;
-                            if(isHasDirective && directiveInfo.params){
-                                this.isEditDirectivePwd = false;
-                            }else{
-                                this.isEditDirectivePwd = true; 
-                            }
-                        }
-                    }
-                },
-                isHasDirective:function(devicetype,cmdcode){
-                    var result = false;
-                    for(var i = 0 ; i < this.hadDeviceCmd.length ; i++){ 
-                        var item = this.hadDeviceCmd[i];
-                        if(devicetype == item.devicetype && cmdcode == item.cmdcode){
-                            result = true;
-                        }
-                    }
-                    return result;
-                },
-                handleEditDirevtivePwd:function(){
-                    if( this.directivepwd.length > 6){ this.$Message.error(this.$t("message.pwdRule")) ;return; };
-                    var me = this;
-                    var url = myUrls.editUserDeviceCmdPwd();
-                    var data = {
-                            username: this.username,
-                            cmdcode: this.directiveInfo.cmdcode,
-                            devicetype:this.directiveInfo.devicetype,
-                            cmdpwd: this.directivepwd
-                        };
 
-                    utils.sendAjax(url,data,function (resp) { 
-                        if(resp.status == 0){
-                            me.$Message.success(me.$t("message.changeSucc"));
-                        }else{
-                            me.$Message.error(resp.cause);
-                        }
-                    });    
-                },
-                queryHadDeviceCmdByUser:function(){
-                    var me = this;
-                    var url = myUrls.queryHadDeviceCmdByUser();
-                    utils.sendAjax(url, { username: this.username }, function (resp) {
-                        if (resp.status == 0) {
-                            me.hadDeviceCmd = resp.records;
-                        }
-                    });
-                },
+
                 queryAllCompanyInfo:function(claaback){
                     var url = myUrls.queryCompanyByCreater();
                     utils.sendAjax(url,{},claaback)
@@ -371,8 +230,6 @@
                 doAddUserCalback:function(resp){
                     if(resp.status == 0){
                         this.$Message.success(this.$t("message.addSucc"));
-                        this.queryAllDeviceCmdByUser();
-                        this.isDisabled = false;
                     }else{
                         var cause = resp.cause;
                         if(cause.indexOf("exists")!=-1){
@@ -416,67 +273,6 @@
                             });
                         });
                     };
-                },
-                queryAllDeviceCmdByUser:function(){
-                    var me = this;
-                    var url = myUrls.queryAllDeviceCmdByUser();
-                    utils.sendAjax(url,{username:this.username},function (resp) { 
-                        if(resp.status == 0 ){
-                            me.directiveList = resp.records;
-                            me.queryAllDeviceTypeByUser();
-                        };
-                    })    
-                },
-                queryAllDeviceTypeByUser:function(){
-                    var me = this;
-                    var url = myUrls.queryAllDeviceTypeByUser();
-                    utils.sendAjax(url,{username:this.username},function (resp) { 
-                        if(resp.status == 0 ){
-                            me.devicetypes = resp.devicetypes;
-                        };
-                    })    
-                },
-                submitDeviceAuthority:function(){
-                    var me = this;
-                    var url = myUrls.editUserDeviceCmd();
-                    var data = this.getEditUserDeviceCmdData();
-                    utils.sendAjax(url,data,function (resp) { 
-                        if(resp.status == 0){
-                            me.queryHadDeviceCmdByUser();
-                            me.$Message.success(me.$t("message.changeSucc"));
-                        }else{
-                            me.$Message.error(resp.cause);
-                        };
-                    });
-                },
-                getEditUserDeviceCmdData :function(){
-                    var data = [];
-                    var children = this.treeData[0].children;
-
-                    children.forEach(function (device) { 
-                        if(device.children.length){
-                            var isPush = false;
-                            var itemObj = {
-                                devicetype:device.devicetype,
-                                cmds:[]
-                            };
-                            device.children.forEach(function (cmd) { 
-                                if(cmd.checked){
-                                    var cmdObj = {
-                                        cmdcode:cmd.cmdcode
-                                    };
-                                    itemObj.cmds.push(cmdObj);
-                                }
-                            });
-                            if( itemObj.cmds.length){
-                                data.push(itemObj);
-                            }
-                        };
-                    });
-                    return {
-                        data:data,
-                        username: this.username
-                    }
                 },
                 setUserTypeByUser:function(){
                     var userType = vstore.state.userType;

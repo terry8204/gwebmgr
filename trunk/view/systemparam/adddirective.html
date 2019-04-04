@@ -42,11 +42,18 @@
                 </i-col>
             </Row>
 
-            
-            <Row>
+
+            <Row style="margin:10px 0">
                 <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">指令描述 : &nbsp;</i-col>
                 <i-col span="20">
                     <i-input v-model.trim="cmddescr"></i-input>
+                </i-col>
+            </Row>
+
+            <Row style="margin:10px 0">
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">指令密码 : &nbsp;</i-col>
+                <i-col span="20">
+                    <i-input v-model.trim="cmdpwd"></i-input>
                 </i-col>
             </Row>
 
@@ -108,7 +115,7 @@
                     cmdname: null,
                     cmdnameen: "",
                     cmdnametw: "",
-
+                    cmdpwd:"",
                     cmddescr: null,
                     cmddescren: "",
                     cmddescrtw: "",
@@ -195,13 +202,7 @@
                         data.cmdtype = this.selectParamType;
                     }
                     
-                    // if(data.params){
-                    //     if(this.selectParamType === 'text'){
-                    //         data.params = "<param type='text'>文本输入</param>\n" + data.params;
-                    //     }else if(this.selectParamType === 'list'){
-                    //         data.params = "<param type='list'>下拉选择 </param>\n" + data.params;
-                    //     }
-                    // }
+                    data.cmdpwd = this.cmdpwd;
 
                     utils.sendAjax(url, data, function (resp) {
                         if (resp.status == 0) {
