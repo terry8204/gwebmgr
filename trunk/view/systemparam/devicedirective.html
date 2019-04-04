@@ -154,7 +154,7 @@
                             if (resp.status == 0) {
                                 me.tableData[me.index].cmdlevel = cmdlevel;
                                 me.tableData.sort(function (a,b) { 
-                                    return a.cmdlevel > b.cmdlevel;
+                                    return a.cmdlevel - b.cmdlevel;
                                 });
                                 me.$Message.success("排序成功");
                                 me.sortModal = false;

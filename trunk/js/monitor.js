@@ -55,11 +55,9 @@ var monitor = {
             isShowMatchDev: false,
             editDevModal: false,          // 编辑设备模态
             dispatchDirectiveModal: false, // 下发指令模态
-            electronicFenceModal: false,   //电子围栏
             deviceInfoModal: false,   // 设备基本信息模态
             directiveReportModal: false,//指令记录
             currentDeviceName: "",
-            fenceDistance: 1000,
             editDevData: {       //编辑的设备信息
                 devicename: '',
                 simnum: '',
@@ -218,14 +216,14 @@ var monitor = {
         },
         handleClickMore: function (name) {
             switch (name) {
-                case 'name3':
+                case 'cmdrecord':
                     this.directiveReportModal = true;
                     this.queryAllCmdRecords();
                     break;
-                case 'name4':
+                case 'recordform':
                     this.$emit("jump-report", "reportForm");
                     break;
-                case 'name5':
+                case 'devbaseinfo':
                     this.queryDeviceBaseInfo();
                     this.deviceInfoModal = true;
                     break;
@@ -276,42 +274,7 @@ var monitor = {
             };
             this.dispatchDirectiveModal = true;
         },
-        handleClickFence: function (name) {
-            switch (name) {
-                case 'shefang':
-                    this.electronicFenceModal = true;
-                    break;
-                case 'chexiao':
-                    this.cancelFence();
-                    break;
-            }
-        },
-        setFence: function () {
-            var me = this;
-            var deviceid = this.selectedDevObj.deviceid;
-            var track = this.getSingleDeviceInfo(deviceid);
-            var distance = this.fenceDistance;
 
-            if (!isNaN(distance)) {
-                if (track) {
-                    var url = myUrls.setGeofence();
-                    utils.sendAjax(url, { deviceid: deviceid, radius: this.fenceDistance, lat: track.callat, lon: track.callon }, function (resp) {
-                        if (resp.status == 0) {
-                            me.electronicFenceModal = false;
-                            // utils.addMapFence(me, deviceid, me.fenceDistance);
-                            me.map.addMapFence(deviceid, me.fenceDistance);
-                        } else {
-                            me.$Message.error(me.$t("monitor.settingFail"));
-                        }
-                    })
-                } else {
-                    me.$Message.error(me.$t("monitor.noTrackError"));
-                    me.electronicFenceModal = false;
-                }
-            } else {
-                this.$Message.error(me.$t("monitor.rangeNumErr"));
-            }
-        },
         queryAllCmdRecords: function () {
             this.loading = true;
             var me = this;
@@ -334,19 +297,7 @@ var monitor = {
                 me.loading = false;
             });
         },
-        cancelFence: function () {
-            var me = this;
-            var deviceid = this.selectedDevObj.deviceid;
-            var url = myUrls.unSetGeofence();
-            utils.sendAjax(url, { deviceid: deviceid }, function (resp) {
-                if (resp.status == 0) {
-                    me.$Message.success(me.$t("monitor.cancelFenceSucc"));
-                    me.map.cancelFence(deviceid);
-                } else {
-                    me.$Message.error(me.$t("monitor.settingFail"));
-                }
-            })
-        },
+
         disposeDirectiveFn: function () {
             var me = this;
             var url = myUrls.sendCmd();
@@ -1312,6 +1263,7 @@ var monitor = {
         this.intervalTime = Number(this.stateIntervalTime);
         this.placeholder = this.$t("monitor.placeholder");
         this.initMap();
+        console.log('this.deviceTypes', this.deviceTypes)
         if (this.deviceTypes.length) {
             this.getMonitorList();
         }
