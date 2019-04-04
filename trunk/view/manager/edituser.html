@@ -165,7 +165,7 @@
                                                 &nbsp;{{editDirectiveName}}
                                         </i-col>
                                     </Row>
-                                    <Row style="margin: 10px 0" v-show="!isEditDirectivePwd">
+                                    <Row style="margin: 10px 0">
                                         <i-col span="6" style="height: 100%;text-align:right;line-height:32px;">
                                                 &nbsp;{{$t("user.cmdPwd")}}&nbsp;:&nbsp;
                                         </i-col>
@@ -173,7 +173,7 @@
                                             <i-input v-model.trim="directivepwd"></i-input>
                                         </i-col>
                                     </Row>
-                                    <Row style="margin: 10px 0" v-show="!isEditDirectivePwd">
+                                    <Row style="margin: 10px 0">
                                         <i-col span="8" :offset="8">
                                             <i-button style="width:100%" @click="handleEditDirevtivePwd">{{$t("bgMgr.edit")}}</i-button>
                                         </i-col>
@@ -232,7 +232,6 @@
                 directivepwd:"",
                 editTypeName:"",
                 editDirectiveName:"",
-                isEditDirectivePwd:true,
                 directiveInfo:{},
                 qq:"",
                 email:"",
@@ -242,7 +241,7 @@
             methods: {
                 handleClickChildren:function(data){
                     var directiveInfo = data[0];
-                    console.log(data);
+
                     if(directiveInfo){
                         if(directiveInfo.children == undefined){ 
                             this.directiveInfo = directiveInfo;
@@ -252,11 +251,7 @@
                             // var isHasDirective = this.isHasDirective(devicetype,cmdcode);
                             this.editTypeName = directiveInfo.typename;
                             this.editDirectiveName = directiveInfo.title;
-                            if(directiveInfo.params){
-                                this.isEditDirectivePwd = false;
-                            }else{
-                                this.isEditDirectivePwd = true; 
-                            }
+                   
                         }
                     }
                 },
