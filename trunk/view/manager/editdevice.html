@@ -129,7 +129,7 @@
                 devicetype:"",
                 simnum:"",
                 overduetime:"",
-                loginenable:"0",
+                loginenable:"1",
                 deviceenable:"0",
                 groupsList:[],
                 customersList:[],
@@ -184,8 +184,10 @@
                     if(this.simnum !== ""){
                         data.simnum = this.simnum;
                     };
-                    if(this.groupid !== ""){
+                    if(this.groupid !== "" && this.groupsList.length){
                         data.groupid = this.groupid;
+                    }else{
+                        data.groupid = 0;
                     };
 
                     if( this.reportedpoint == 0 || this.reportedpoint && !isNaN(this.reportedpoint)){
@@ -255,8 +257,8 @@
                     me.devicename  = editObject.devicename;
                     me.companyid = editObject.companyid;
                     me.devicetype = editObject.devicetype;
-                    me.loginenable ="" + editObject.loginenable;
-                    me.deviceenable ="" +  editObject.deviceenable;
+                    me.loginenable = editObject.loginenable + "";
+                    me.deviceenable = "" +  editObject.deviceenable;
                     me.reportedpoint = editObject.reportedpoint ;
                     me.totalpoint = editObject.totalpoint ;
                     me.forwardurl = editObject.forwardurl;
@@ -377,14 +379,13 @@
                 }
             },
             mounted:function () {
-                 
-
-                // this.queryAllCompanyInfo(this.doQueryAllCompanyInfo);
+                var me = this;
                 this.userlists = userlists;
                 this.userType = vstore.state.userType;
-
                 this.getDeviceType(); 
-                this.setDeviceData();
+                me.$nextTick(function () { 
+                    me.setDeviceData();
+                });
             } 
         })
     </script>
