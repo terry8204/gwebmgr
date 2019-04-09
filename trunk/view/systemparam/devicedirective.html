@@ -17,6 +17,21 @@
         </div>
         <div class="directive-type">
             <i-table border :columns="columns" :data="tableData" :loading="loading"></i-table>
+            <Row style="margin: 10px 0">
+                <i-col span="4" style="padding:0 3px">
+                    <i-select v-model="copyDevType">
+                        <i-option v-for="item in deviceTypeList" :value="item.name" :key="item.name">{{ item.title }}</i-option>
+                    </i-select>
+                </i-col>
+                <i-col span="8" style="padding:0 3px">
+                    <i-select v-model="copyDirective">
+                        <i-option v-for="item in copySelectedData" :value="item.cmdcode" :key="item.cmdcode">{{ item.cmdname }}</i-option>
+                    </i-select>   
+                </i-col>
+                <i-col span="4" style="padding:0 3px">
+                    <i-button @click="onCopyDirective">复制</i-button>
+                </i-col>
+            </Row>
         </div>
     </div>
     <Modal v-model="sortModal" width="360" class-name="vertical-center-modal">
@@ -46,6 +61,10 @@
                     sortNumber:"",
                     sortModal:false,
                     directiveObj: {},
+                    copySelectedData:[],
+                    selectedDeviceType:null,
+                    copyDevType:"",
+                    copyDirective:"",
                     columns: [
                         {
                             title: '序号',
@@ -144,6 +163,31 @@
                 }
             },
             methods: {
+                onCopyDirective:function(){
+                    var directiveInfo =  null , me = this;
+                    this.copySelectedData.forEach(function (item) { 
+                        if(item.cmdcode == me.copyDirective){
+                            directiveInfo = item;
+                        }
+                    });    
+
+                    if(directiveInfo){
+                        var url = myUrls.addCmd();
+                        var cloneObj = deepClone(directiveInfo);
+                        cloneObj.devicetype =  this.selectedDeviceType.name;
+
+                        utils.sendAjax(url, cloneObj, function (resp) {
+                            if (resp.status == 0) {
+                                cloneObj.cmdlevel = me.tableData.length + 2;
+                                me.tableData.push(cloneObj);
+                                me.allDirectiveList.push(cloneObj);
+                                me.$Message.success("复制成功");
+                            }else{
+                                me.$Message.error(resp.cause);
+                            };
+                        });    
+                    }
+                },
                 handleSortFn:function(){
                     var me = this;
                     if(this.sortNumber != ""){
@@ -184,11 +228,21 @@
                     });
                     me.tableData = tableData;
                     type.isSelected = true;
+                    this.selectedDeviceType = type;
+                },
+                onSelectedDeviceType:function(){
+                    var data = [], me = this;
+                    this.allDirectiveList.forEach(function (item) { 
+                        if(item.devicetype == me.copyDevType){
+                            data.push(item)
+                        }
+                    });
+                    this.copySelectedData = data;
                 },
                 handleDelDirective: function (params) {
                     var me = this;
                     var url = myUrls.deleteCmd();
-                    var data = { cmdcode: String(params.row.cmdcode) };
+                    var data = { cmdcode: String(params.row.cmdcode) , devicetype:params.row.cmdcode.devicetype };
                     utils.sendAjax(url, data, function (resp) {
                         if (resp.status == 0) {
                             me.$Message.success("删除成功");
@@ -230,10 +284,18 @@
                                 if(index==0){firstType = type };
                                 me.deviceTypeList.push(type);
                             })
+                            console.log('deviceTypeList', me.deviceTypeList);
                             me.handleClickDevType(firstType);
                         }
                     }); 
+                    
                 },
+            },
+            watch: {
+                copyDevType:function(){
+                    this.copyDirective = "";
+                    this.onSelectedDeviceType();
+                }
             },
             mounted: function () {
                 this.queryCmdList();
