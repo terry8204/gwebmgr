@@ -480,7 +480,7 @@ function refreshPostion (deviceid) {
   var track = vstore.state.currentDeviceRecord;
   var lon = track.callon.toFixed(5);
   var lat = track.callat.toFixed(5);
-  console.log(lon, lat);
+
   try {
     var b_lon_lat = wgs84tobd09(track.callon, track.callat);
     utils.getBaiduAddressFromBaidu(b_lon_lat[0], b_lon_lat[1], function (b_address) {

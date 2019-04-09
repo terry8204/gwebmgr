@@ -193,7 +193,6 @@ vstore = new Vuex.Store({
       state.currentDeviceId = deviceid;
     },
     setDeviceTypes: function (state, devicetypes) {
-      console.log('setDeviceTypes', devicetypes);
       state.deviceTypes = devicetypes;
     }
   }

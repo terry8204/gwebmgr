@@ -62,7 +62,7 @@
             </Row>
 
             <Row style="margin: 10px 0">
-                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;"><i style="color: red;display: inline-block;">*</i>&nbsp;{{$t("user.client")}} : &nbsp;</i-col>
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;{{$t("user.client")}} : &nbsp;</i-col>
                 <i-col span="8">
                     <i-select v-model="companyid" style="width: 100%">
                         <i-option v-for="item in customersList" :value="item.value" :key="item.value">{{ item.label }}</i-option>
@@ -208,7 +208,7 @@
                         return;
                     };
 
-                    if(this.overduetime == "" ||  this.devicename == "" || this.companyid ==""){
+                    if(this.overduetime == "" ||  this.devicename == ""){
                         me.$Message.error(me.$t("message.fullComplete"));
                         return;
                     };
@@ -220,13 +220,14 @@
                         overduetime:new Date(this.overduetime).getTime(),
                         loginenable:Number(this.loginenable),
                         deviceenable:Number(this.deviceenable),
-                        companyid:this.companyid
-                    };       
+                    };      
+
+                    if(this.companyid){data.companyid = this.companyid;}
                     
+
                     if(this.loginpwd){
                         data.loginpwd = $.md5(this.loginpwd);
                     }else{
-                     	
                      	var legnth = this.deviceid.length;
                         data.loginpwd = $.md5(this.deviceid.substring(legnth-4,legnth));
                     };
@@ -255,7 +256,7 @@
                         data.creater = userName;
                     }
 
-                    utils.sendAjax(url,data,function (resp) { 
+                    utils.sendAjax(data,function (resp) { 
                         if(resp.status == 0){
                             me.$Message.success(me.$t("message.addSucc"));
                         }else if(resp.status == -1){

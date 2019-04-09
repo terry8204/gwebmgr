@@ -43,7 +43,7 @@
             </Row>
 
             <Row style="margin: 10px 0">
-                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;"><i style="color: red;display: inline-block;">*</i>&nbsp;{{$t("user.client")}} : &nbsp;</i-col>
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;{{$t("user.client")}} : &nbsp;</i-col>
                 <i-col span="8">
                     <i-select v-model="companyid">
                             <i-option v-for="item in customersList" :value="item.value" :key="item.value">{{ item.label }}</i-option>
@@ -177,9 +177,10 @@
                         overduetime:new Date(this.overduetime).getTime(),
                         loginenable:Number(this.loginenable),
                         deviceenable:Number(this.deviceenable),
-                        companyid:this.companyid
                     };            
                     
+                    if(this.companyid){data.companyid = this.companyid;}
+
                     if(this.simnum !== ""){
                         data.simnum = this.simnum;
                     };
