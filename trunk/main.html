@@ -388,7 +388,7 @@
 
                     </dl>
                     <!-- left tree controller显示公司名 -->        
-                    <dl class="noselect" v-else="!isShowCompanyName" class="dl-inner-wrapper">
+                    <dl class="noselect" v-else class="dl-inner-wrapper">
                         <template v-for="(company , index) in currentStateData" :key="index">
                             <div style="padding:5px;border-bottom:1px solid #ddd;cursor: pointer;" @click="openCompany(company)">
                                 {{company.title}} 

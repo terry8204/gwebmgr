@@ -428,28 +428,58 @@ var monitor = {
 
 
             setTimeout(function () {
-                if (me.isShowCompanyName) return;
                 var elWraper = me.$refs.treeWraper;
                 var wrapHeight = elWraper.getBoundingClientRect().height;
                 var sHeight = 0;
-                for (var i = 0; i < me.groups.length; i++) {
-                    var group = me.groups[i]
-                    var isBreak = false;
-                    sHeight += 32;
-                    if (group.expand) {
-                        var devices = group.devices;
-                        for (var j = 0; j < devices.length; j++) {
-                            var device = devices[j];
-                            sHeight += 27;
-                            if (device.deviceid === deviceid) {
-                                isBreak = true;
-                                sHeight += 60;
-                                break;
+                if (me.isShowCompanyName) {
+                    console.log('tag', me.currentStateData);
+                    for (var i = 0; i < me.currentStateData.length; i++) {
+                        var company = me.currentStateData[i];
+                        var isBreak = false;
+                        sHeight += 32;
+                        if (company.expand) {
+                            var groups = company.children;
+                            for (var j = 0; j < groups.length; j++) {
+                                var group = groups[j];
+                                sHeight += 32;
+                                if (group.expand) {
+                                    var devices = group.children;
+                                    for (var h = 0; h < devices.length; h++) {
+                                        var device = devices[h];
+                                        sHeight += 27;
+                                        if (device.deviceid === deviceid) {
+                                            isBreak = true;
+                                            sHeight += 60;
+                                            break;
+                                        }
+                                    }
+                                }
+                                if (isBreak) break;
                             }
                         }
-                    }
-                    if (isBreak) break;
+                        if (isBreak) break;
+                    };
+                } else {
+                    for (var i = 0; i < me.groups.length; i++) {
+                        var group = me.groups[i]
+                        var isBreak = false;
+                        sHeight += 32;
+                        if (group.expand) {
+                            var devices = group.devices;
+                            for (var j = 0; j < devices.length; j++) {
+                                var device = devices[j];
+                                sHeight += 27;
+                                if (device.deviceid === deviceid) {
+                                    isBreak = true;
+                                    sHeight += 60;
+                                    break;
+                                }
+                            }
+                        }
+                        if (isBreak) break;
+                    };
                 };
+                console.log('sHeight', sHeight);
                 if (sHeight < wrapHeight) {
                     $(elWraper).animate({ scrollTop: 0 }, 500);
                 } else {
@@ -493,6 +523,11 @@ var monitor = {
         },
         openGroupItem: function (groupInfo) {
             groupInfo.expand = !groupInfo.expand;
+            if (groupInfo.expand) {
+                this.openGroupIds[groupInfo.groupid] = "";
+            } else {
+                delete this.openGroupIds[groupInfo.groupid];
+            }
         },
         selectedDev: function (deviceInfo) {
             var device = this.deviceInfos[deviceInfo.deviceid];
@@ -1168,7 +1203,7 @@ var monitor = {
             this.getMonitorListByUser({ username: userName }, function (resp) {
                 me.groups = me.filterGroups(resp.groups)
                 me.$store.dispatch('setdeviceInfos', me.groups);
-                me.isShowCompanyName && me.onSelectState();
+                // me.isShowCompanyName && me.onSelectState();
                 me.getLastPosition([], function (resp) {
                     me.lastquerypositiontime = DateFormat.getCurrentUTC();
                     me.caclOnlineCount();
@@ -1263,7 +1298,6 @@ var monitor = {
         this.intervalTime = Number(this.stateIntervalTime);
         this.placeholder = this.$t("monitor.placeholder");
         this.initMap();
-        console.log('this.deviceTypes', this.deviceTypes)
         if (this.deviceTypes.length) {
             this.getMonitorList();
         }

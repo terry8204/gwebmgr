@@ -254,9 +254,9 @@
                         data.creater = this.createrToUser;
                     }else{
                         data.creater = userName;
-                    }
+                    };
 
-                    utils.sendAjax(data,function (resp) { 
+                    utils.sendAjax(url,data,function (resp) { 
                         if(resp.status == 0){
                             me.$Message.success(me.$t("message.addSucc"));
                         }else if(resp.status == -1){
