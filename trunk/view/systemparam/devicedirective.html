@@ -175,10 +175,9 @@
                         var url = myUrls.addCmd();
                         var cloneObj = deepClone(directiveInfo);
                         cloneObj.devicetype =  this.selectedDeviceType.name;
-
                         utils.sendAjax(url, cloneObj, function (resp) {
                             if (resp.status == 0) {
-                                cloneObj.cmdlevel = me.tableData.length + 2;
+                                cloneObj.cmdlevel = me.tableData.length + 1;
                                 me.tableData.push(cloneObj);
                                 me.allDirectiveList.push(cloneObj);
                                 me.$Message.success("复制成功");
@@ -242,15 +241,29 @@
                 handleDelDirective: function (params) {
                     var me = this;
                     var url = myUrls.deleteCmd();
-                    var data = { cmdcode: String(params.row.cmdcode) , devicetype:params.row.cmdcode.devicetype };
+                    var data = { cmdcode: String(params.row.cmdcode) , devicetype:params.row.devicetype };
                     utils.sendAjax(url, data, function (resp) {
                         if (resp.status == 0) {
                             me.$Message.success("删除成功");
+                            me.deleteSingleCmd(params.row);
                             me.$delete(me.tableData, params.index);
                         } else {
                             me.$Message.error("删除失败");
                         }
                     });
+                },
+                deleteSingleCmd:function(info){
+                    var idx = null ;
+                    for(var i = 0 ; this.allDirectiveList.length ; i++){
+                        var cmd = this.allDirectiveList[i];
+                        if(cmd.devicetype == info.devicetype && cmd.cmdcode == info.cmdcode){
+                            idx = i;
+                            break;
+                        }
+                    }
+                    if(idx!==null){
+                        this.allDirectiveList.splice(idx,1);
+                    }
                 },
                 queryCmdList: function () {
                     var me = this;
@@ -284,7 +297,6 @@
                                 if(index==0){firstType = type };
                                 me.deviceTypeList.push(type);
                             })
-                            console.log('deviceTypeList', me.deviceTypeList);
                             me.handleClickDevType(firstType);
                         }
                     }); 
