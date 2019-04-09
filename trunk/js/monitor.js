@@ -1203,7 +1203,7 @@ var monitor = {
             this.getMonitorListByUser({ username: userName }, function (resp) {
                 me.groups = me.filterGroups(resp.groups)
                 me.$store.dispatch('setdeviceInfos', me.groups);
-                // me.isShowCompanyName && me.onSelectState();
+                me.isShowCompanyName && me.onSelectState();
                 me.getLastPosition([], function (resp) {
                     me.lastquerypositiontime = DateFormat.getCurrentUTC();
                     me.caclOnlineCount();
