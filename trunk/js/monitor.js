@@ -398,11 +398,13 @@ var monitor = {
                     company.children.forEach(function (group) {
                         group.children.forEach(function (dev) {
                             if (dev.deviceid == value.deviceid) {
-                                company.expand = true;
                                 dev.isSelected = true;
-                                group.expand = true;
                                 deviceid = dev.deviceid;
                                 me.currentDeviceType = dev.devicetype;
+                                me.openCompanyIds[company.companyid] = "";
+                                me.openGroupIds[group.groupid] = "";
+                                company.expand = true;
+                                group.expand = true;
                                 me.handleClickDev(dev.deviceid);
                             } else {
                                 dev.isSelected = false;
@@ -432,7 +434,6 @@ var monitor = {
                 var wrapHeight = elWraper.getBoundingClientRect().height;
                 var sHeight = 0;
                 if (me.isShowCompanyName) {
-                    console.log('tag', me.currentStateData);
                     for (var i = 0; i < me.currentStateData.length; i++) {
                         var company = me.currentStateData[i];
                         var isBreak = false;
@@ -479,7 +480,6 @@ var monitor = {
                         if (isBreak) break;
                     };
                 };
-                console.log('sHeight', sHeight);
                 if (sHeight < wrapHeight) {
                     $(elWraper).animate({ scrollTop: 0 }, 500);
                 } else {
@@ -511,7 +511,6 @@ var monitor = {
             this.openCompanyIds = {};
         },
         openCompany: function (company) {
-
             var companyid = company.companyid;
             company.expand = !company.expand;
             if (company.expand) {
@@ -519,7 +518,6 @@ var monitor = {
             } else {
                 delete this.openCompanyIds[companyid];
             }
-
         },
         openGroupItem: function (groupInfo) {
             groupInfo.expand = !groupInfo.expand;
@@ -860,6 +858,7 @@ var monitor = {
                         deviceid: device.deviceid,
                         isOnline: isOnline,
                         isSelected: false,
+                        devicetype: device.devicetype
                     }
                     if (isOnline) {
                         onlineCount++
@@ -951,7 +950,8 @@ var monitor = {
                         title: deviceTypeName,
                         deviceid: device.deviceid,
                         isOnline: isOnline,
-                        isSelected: false
+                        isSelected: false,
+                        devicetype: device.devicetype
                     }
 
                     if (device.deviceid == me.currentDeviceId) {
@@ -1037,7 +1037,8 @@ var monitor = {
                         title: deviceTypeName,
                         deviceid: device.deviceid,
                         isOnline: isOnline,
-                        isSelected: false
+                        isSelected: false,
+                        devicetype: device.devicetype
                     }
 
                     if (device.deviceid == me.currentDeviceId) {
