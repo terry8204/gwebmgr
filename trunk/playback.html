@@ -275,7 +275,7 @@
         document.title = isZh ? "轨迹回放" : "Playback";
         iview.lang(isZh ? 'zh-CN' : 'en-US');
         var currentTrack = null;
-        var vm = null;
+        var vRoot = null;
         function queryTrackDetail(deviceid){
             var data = {
                 deviceid:deviceid,
@@ -285,13 +285,13 @@
             var url = myUrls.queryTrackDetail();
             utils.sendAjax(url,data,function (resp) { 
                 if(resp.status == 0 ){
-                    vm.xList = resp.track.x ? resp.track.x : isZh?'空':'Empty';
-                    vm.wList = resp.track.w ? resp.track.w : isZh?'空':'Empty';
-                    vm.trackid = resp.track.trackid;
-                    vm.trackStringify = JSON.stringify(resp);
-                    vm.modal = true;
+                    vRoot.xList = resp.track.x ? resp.track.x : isZh?'空':'Empty';
+                    vRoot.wList = resp.track.w ? resp.track.w : isZh?'空':'Empty';
+                    vRoot.trackid = resp.track.trackid;
+                    vRoot.trackStringify = JSON.stringify(resp);
+                    vRoot.modal = true;
                 }else{
-                    vm.$Message.error("error");
+                    vRoot.$Message.error("error");
                 }
             });
         };
@@ -306,11 +306,11 @@
             var url = myUrls.refreshTrackPosition();
             utils.sendAjax(url,data,function (resp) { 
                 if(resp.status === 0){
-                    vm.$Message.success(isZh?"刷新成功":"Refresh success");
+                    vRoot.$Message.success(isZh?"刷新成功":"Refresh success");
                     Cookies.set(deviceid + '-' + trackid , true);
                 }else{
-                    vm.modal1 = true;
-                    vm.cause = resp.cause;
+                    vRoot.modal1 = true;
+                    vRoot.cause = resp.cause;
                 }
                 //Cookies.set(deviceid + '-' + trackid , true);
             });
@@ -373,7 +373,7 @@
             var startIcon = new BMap.Icon("./images/map/marker_qidian.png", new BMap.Size(32, 32), { imageOffset: new BMap.Size(0, 0) });
             var endIcon = new BMap.Icon("./images/map/marker_zhongdian.png", new BMap.Size(32, 32), { imageOffset: new BMap.Size(0, 0) });
             
-                vm = new Vue({
+            vRoot = new Vue({
                 el: "#container",
                 i18n: utils.getI18n(),
                 data: {
