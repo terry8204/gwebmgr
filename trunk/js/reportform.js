@@ -1229,6 +1229,7 @@ function devRecords (groupslist) {
                             "a",
                             {
                                 attrs: {
+                                    download: true,
                                     target: "_blank",
                                     href: data.row.url
                                 }
