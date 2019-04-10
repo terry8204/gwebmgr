@@ -17,9 +17,21 @@
             <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">
                 <i style="color: red;display: inline-block;">*</i>&nbsp;指令名称 : &nbsp;</i-col>
             <i-col span="20">
-                <i-select v-model="cmdCode" filterable>
+                <!-- <i-select v-model="cmdCode" filterable>
                     <i-option v-for="item in listCmdAction" :value="item.value" :key="item.value">{{ item.label }}</i-option>
-                </i-select>
+                </i-select> -->
+                <div class="search-wrapper">
+                    <i-input v-model.trim="cmdCodeName" :icon="iconState" @on-change="sosoValueChange" @on-blur="blur" @on-focus="focus"></i-input>
+                    <transition name="fade">
+                        <ul class="search-item-wrapper" v-show="isShowMatchDev" style="cursor: pointer;">
+                            <li v-for="item in cmdList" style="padding:5px 10px;" @click="selectedCmd(item)">
+                                <Option :value="item.value" :key="item.label">
+                                    <span style="cursor: pointer;">{{ item.label }}</span>
+                                </Option>
+                            </li>
+                        </ul>
+                    </transition>
+                </div>
             </i-col>
         </Row>
        
@@ -96,6 +108,7 @@
             el:"#add-directive-wraper",
             data:function(){
                 return {
+                    iconState:"ios-arrow-down",
                     cmdCode: null,
                     deviceType:null,
                     cmdname: null,
@@ -110,13 +123,17 @@
                     paramsen: "",
                     paramstw: "",
                     previewObjList:[],
+                    isShowMatchDev:false,
                     isPublic:false,
                     isSync:false,
                     kong:"",
                     deviceTypeList:[],
                     listCmdAction:[],
                     selectParamType:'',
-                    preview:null
+                    preview:null,
+                    timeoutIns:null,
+                    cmdCodeName:"",
+                    cmdList:[]
                 }
             },
             watch:{
@@ -129,9 +146,65 @@
                         var xmlDoc=parser.parseFromString(params,"text/xml"); 
                         this.parseXML(xmlDoc);
                     }
+                },
+                isShowMatchDev:function(){
+                    if(!this.isShowMatchDev){
+                        this.iconState = "ios-arrow-down";
+                    }else{
+                        this.iconState = "ios-arrow-up";
+                    }
                 }
             },
             methods: {
+                selectedCmd:function(item){
+                    var me = this;
+                    setTimeout(function () {
+                        me.isShowMatchDev = false;
+                        me.cmdCodeName = item.label;
+                        me.cmdCode = item.value;
+                    }, 300)
+                },
+                filterMethod:function(value){
+                    var list = [];
+                    var firstLetter = __pinyin.getFirstLetter(value);
+                    var pinyin = __pinyin.getPinyin(value);
+                    this.listCmdAction.forEach(function (itme) { 
+                        if(
+                            itme.label.indexOf(value)!=-1 ||
+                            itme.firstLetter.indexOf(firstLetter)!=-1 ||
+                            itme.pinyin.indexOf(pinyin)!=-1 
+                        ){
+                            list.push(itme);
+                        }
+                    })
+                    this.cmdList = list;
+                },
+                sosoValueChange:function(){
+                    var me = this;
+                    var value = this.cmdCodeName;
+
+                    if (this.timeoutIns != null) {
+                        clearTimeout(this.timeoutIns);
+                    }
+
+                    if (!value.trim()) {
+                        this.cmdList = this.listCmdAction;
+                        return;
+                    }
+
+                    this.timeoutIns = setTimeout(function () {
+                        me.filterMethod(value);
+                    }, 300);
+                },
+                focus: function () {
+                    this.isShowMatchDev = true;
+                },
+                blur: function () {
+                    var me = this
+                    setTimeout(function () {
+                        me.isShowMatchDev = false;
+                    }, 300)
+                },
                 back:function(){
                     var me = this;
                     var pagePath = null
@@ -211,6 +284,7 @@
                     
                 },
                 setValue:function(data){
+                    this.cmdCodeName = data.cmdname;
                     this.cmdCode=data.cmdcode; 
                     this.deviceType = data.devicetype;
                     this.cmdname=data.cmdname ;
@@ -257,8 +331,17 @@
                     utils.sendAjax(url,{},function (resp) { 
                         if(resp.status == 0){
                             resp.cmds.forEach(function (item) { 
-                                me.listCmdAction.push({value:item.cmdCode,label:item.cmdName});
+                                var cmdName = item.cmdName;
+                                var firstLetter = __pinyin.getFirstLetter(cmdName);
+                                var pinyin = __pinyin.getPinyin(cmdName);
+                                me.listCmdAction.push({
+                                    value:item.cmdCode,
+                                    label:cmdName,
+                                    firstLetter:firstLetter,
+                                    pinyin:pinyin
+                                });
                             })
+                            me.cmdList = me.listCmdAction;
                             me.setValue(editObject)
                         }
                     });  
