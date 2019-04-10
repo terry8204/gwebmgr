@@ -1223,6 +1223,21 @@ function devRecords (groupslist) {
                 { title: vRoot.$t("alarm.devNum"), key: 'deviceid', width: 200 },
                 { title: isZh ? '时间' : 'date', key: 'updatetimeStr', width: 200 },
                 {
+                    title: isZh ? '下载' : 'download',
+                    render: function (h, data) {
+                        return h(
+                            "a",
+                            {
+                                attrs: {
+                                    target: "_blank",
+                                    href: data.row.url
+                                }
+                            },
+                            isZh ? '下载' : 'download')
+                    },
+                    width: 80,
+                },
+                {
                     title: isZh ? '录音' : 'record',
                     render: function (h, data) {
                         return h(
