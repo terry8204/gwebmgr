@@ -18,10 +18,14 @@ var initWebSocket = function (username, callback) {
             reconnectWs();
         };
         ws.onopen = function () {
-            if (!username) return;
-            var user = "online" + username + "-web";
-            console.log('ws连接成功', user);
-            ws.send(user);
+            if (userName) {
+                var user = "online" + userName + "-web";
+                console.log('ws连接成功', user);
+                ws.send(user);
+            }
+            else {
+                console.log('ws连接成功 userName is null');
+            }
         };
         ws.onmessage = function (event) {
             var resp = JSON.parse(event.data);
