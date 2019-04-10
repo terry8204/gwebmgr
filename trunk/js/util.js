@@ -41,7 +41,7 @@ var utils = {
   getIsOnline: function (track) {
     var result = false;
     var updatetime = track.updatetime;
-    if ((Date.now() - updatetime) < 60 * 5 * 1000) {
+    if ((Date.now() - updatetime) < 60 * 10 * 1000) {
       result = true;
     }
     return result;

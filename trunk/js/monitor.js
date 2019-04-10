@@ -42,7 +42,7 @@ var monitor = {
             companys: [], //公司名称id
             groups: [], // 原始列表数据
             intervalTime: null, // 多久刷新一次设备
-            offlineTime: 5 * 60 * 1000, // 根据这个时间算出是否离线
+            offlineTime: 10 * 60 * 1000, // 根据这个时间算出是否离线
             allDevCount: 0, // 全部设备的个数
             onlineDevCount: 0, // 在线设备个数
             offlineDevCount: 0, // 离线设备个数
