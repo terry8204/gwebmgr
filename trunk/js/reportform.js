@@ -1219,9 +1219,9 @@ function devRecords (groupslist) {
             isShowMatchDev: true,
             columns: [
                 { type: 'index', width: 60, align: 'center' },
-                { title: vRoot.$t("alarm.devName"), key: 'devicename' },
-                { title: vRoot.$t("alarm.devNum"), key: 'deviceid' },
-                { title: isZh ? '时间' : 'date', key: 'updatetimeStr' },
+                { title: vRoot.$t("alarm.devName"), key: 'devicename', width: 200 },
+                { title: vRoot.$t("alarm.devNum"), key: 'deviceid', width: 200 },
+                { title: isZh ? '时间' : 'date', key: 'updatetimeStr', width: 200 },
                 {
                     title: isZh ? '录音' : 'record',
                     render: function (h, data) {
