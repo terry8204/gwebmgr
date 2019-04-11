@@ -20,7 +20,7 @@
             <Row style="margin: 10px 0">
                 <i-col span="4" style="padding:0 3px">
                     <i-select v-model="copyDevType">
-                        <i-option v-for="item in deviceTypeList" :value="item.name" :key="item.name">{{ item.title }}</i-option>
+                        <i-option v-for="item in deviceTypeList" :value="item.name" :key="item.name">{{ item.typename }}</i-option>
                     </i-select>
                 </i-col>
                 <i-col span="8" style="padding:0 3px">
@@ -293,7 +293,12 @@
                         if(resp.status == 0 && resp.devicetypes!=null){
                             var firstType = null;
                             resp.devicetypes.forEach(function (item,index) { 
-                                var type = {name:item.devicetypeid,title:item.typename,icon:"ios-ionitron",isSelected:false};
+                                console.log(item);
+                                var title = item.typename;
+                                if(item.remark){
+                                    title += "(" + item.remark +  ")";
+                                };   
+                                var type = {name:item.devicetypeid,title:title,icon:"ios-ionitron",isSelected:false,typename:item.typename};
                                 if(index==0){firstType = type };
                                 me.deviceTypeList.push(type);
                             })
