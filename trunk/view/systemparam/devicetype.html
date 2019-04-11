@@ -270,7 +270,6 @@
                             me.cmdModal = false;
                             me.tableData[me.rowIndex].cmds = data.datas[0].cmds;
                             me.tableData[me.rowIndex].directiveCount = data.datas[0].cmds.length;
-                            console.log(data.datas[0].cmds);
                         }else{
                             me.$Message.error(resp.cause);
                         }
@@ -298,7 +297,6 @@
                     var me = this;
                     var url = myUrls.queryDeviceTypeByUser();
                     utils.sendAjax(url, {}, function (resp) {
-                        console.log('queryDevTypeList', resp);
                         if (resp.status == 0) {
                             resp.devicetypes.forEach(function (item) {
                                 if(item.cmds){

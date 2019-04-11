@@ -293,7 +293,6 @@
                         if(resp.status == 0 && resp.devicetypes!=null){
                             var firstType = null;
                             resp.devicetypes.forEach(function (item,index) { 
-                                console.log(item);
                                 var title = item.typename;
                                 if(item.remark){
                                     title += "(" + item.remark +  ")";

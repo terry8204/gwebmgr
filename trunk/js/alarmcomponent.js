@@ -14,12 +14,12 @@ var waringComponent = {
             waringRecords: [],
             overdueDevice: [],
             alarmTypeList: [],
-            alarmCmdList: [[]],
+            // alarmCmdList: [[]],
             isWaring: false,
             interval: 10000,
             cmdRowWaringObj: {},
             currentDevTypeCmdList: [],
-            disposeAlarm: '',
+            disposeAlarm: 'TYPE_SERVER_DIS_ALARM',
             params: '', //参数,
             paramsInputList: [],
             paramsInputObj: {},
@@ -59,43 +59,15 @@ var waringComponent = {
                 this.isWaring = false;
             }
         },
-        disposeModal: function () {
-            var me = this
-            if (this.disposeModal) {
-                var devicetype = this.cmdRowWaringObj.devicetype
-                var cmdList = this.$store.state.allCmdList
-                var beforeCmdList = []
-                cmdList.forEach(function (item) {
-                    if (!item.devicetype) {
-                        beforeCmdList.push(item)
-                    } else {
-                        if (item.devicetype == devicetype) {
-                            beforeCmdList.push(item)
-                        }
-                    }
-                })
-                me.currentDevTypeCmdList = beforeCmdList
-                var twoArr = [];
-                beforeCmdList.forEach(function (item, index) {
-                    if (index % 4 == 0) {
-                        twoArr.push([])
-                    }
-                    twoArr[twoArr.length - 1].push(item);
 
-                })
-                this.alarmCmdList = twoArr;
-
-                me.disposeAlarm = beforeCmdList[0].cmdcode;
-                me.params = beforeCmdList[0].params;
-            }
-        },
         disposeAlarm: function () {
-            var me = this
-            this.currentDevTypeCmdList.forEach(function (item) {
-                if (me.disposeAlarm == item.cmdcode) {
-                    me.params = item.params;
-                }
-            })
+            // var me = this
+            // this.currentDevTypeCmdList.forEach(function (item) {
+            //     if (me.disposeAlarm == item.cmdcode) {
+            //         me.params = item.params;
+            //     }
+            // })
+            console.log('this.disposeAlarm', this.disposeAlarm);
         },
         params: function () {
             this.paramsInputList = [];
@@ -326,6 +298,7 @@ var waringComponent = {
             this.waringModal = false
         },
         showDisposeModalFrame: function (param) {
+            console.log('param', param);
             this.waringRowIndex = param.index;
             var deviceInfos = this.$store.state.deviceInfos;
 
@@ -461,7 +434,6 @@ var waringComponent = {
                                             },
                                             on: {
                                                 click: function () {
-                                                    // me.removeWaring(index);
                                                     me.$emit('showdisposemodal', params);
                                                 }
                                             }
