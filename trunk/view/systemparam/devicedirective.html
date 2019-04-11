@@ -177,6 +177,7 @@
                         cloneObj.devicetype =  this.selectedDeviceType.name;
                         utils.sendAjax(url, cloneObj, function (resp) {
                             if (resp.status == 0) {
+                                cloneObj.predictcmdid = resp.predictcmdid;
                                 cloneObj.cmdlevel = me.tableData.length + 1;
                                 me.tableData.push(cloneObj);
                                 me.allDirectiveList.push(cloneObj);
