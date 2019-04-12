@@ -372,7 +372,8 @@ var monitor = {
                             devicename.toUpperCase().indexOf(value.toUpperCase()) !== -1 ||
                             device.firstLetter.indexOf(firstLetter) !== -1 ||
                             device.pinyin.indexOf(pinyin) !== -1 ||
-                            device.deviceid.indexOf(pinyin) !== -1
+                            device.deviceid.indexOf(pinyin) !== -1 ||
+                            String(device.devicetype).indexOf(pinyin) !== -1
                         ) {
                             obj.devices.push(device)
                         } else {
