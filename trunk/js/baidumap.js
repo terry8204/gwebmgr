@@ -11,7 +11,7 @@ function BMapClass () {
 BMapClass.pt = BMapClass.prototype;
 
 BMapClass.pt.initMap = function () {
-    this.mapInstance = new BMap.Map('my-map', { minZoom: 4, maxZoom: 18, enableMapClick: false, mapType: BMAP_PERSPECTIVE_MAP })
+    this.mapInstance = new BMap.Map('my-map', { minZoom: 4, maxZoom: 18, enableMapClick: false })
     this.mapInstance.enableScrollWheelZoom()
     this.mapInstance.enableAutoResize()
     this.mapInstance.disableDoubleClickZoom()
