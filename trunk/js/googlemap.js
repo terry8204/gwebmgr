@@ -72,7 +72,7 @@ GoogleMap.pt.addMarkerEvent = function (marker) {
         var deviceid = marker.deviceid;
         self.mapInstance.panTo(marker.position);
         self.openInfoWindow(marker, deviceid);
-        // communicate.$emit("on-click-marker", deviceid);
+        communicate.$emit("on-click-marker", deviceid);
     });
 
 

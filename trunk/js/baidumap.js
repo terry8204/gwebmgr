@@ -11,7 +11,7 @@ function BMapClass () {
 BMapClass.pt = BMapClass.prototype;
 
 BMapClass.pt.initMap = function () {
-    this.mapInstance = new BMap.Map('my-map', { minZoom: 4, maxZoom: 18, enableMapClick: false })
+    this.mapInstance = new BMap.Map('my-map', { minZoom: 4, maxZoom: 18, enableMapClick: false, mapType: BMAP_PERSPECTIVE_MAP })
     this.mapInstance.enableScrollWheelZoom()
     this.mapInstance.enableAutoResize()
     this.mapInstance.disableDoubleClickZoom()
@@ -62,7 +62,7 @@ BMapClass.pt.addMarkerEvent = function (marker) {
     var self = this;
     marker.addEventListener("click", function () {
         var deviceid = marker.deviceid;
-        // communicate.$emit("on-click-marker", deviceid);
+        communicate.$emit("on-click-marker", deviceid);
         self.openInfoWindow(marker, deviceid);
     });
 }
