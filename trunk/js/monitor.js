@@ -705,6 +705,11 @@ var monitor = {
                     me.$Message.success(me.$t("message.changeSucc"));
                     me.deviceInfos[data.deviceid].simnum = sendData.simnum;
                     me.deviceInfos[data.deviceid].remark = data.remark;
+                    var record = me.getSingleDeviceInfo(data.deviceid);
+                    if (record) {
+                        me.positionLastrecords[data.deviceid].devicename = sendData.devicename;
+                        me.map.onClickDevice(data.deviceid);
+                    };
                 } else if ((resp.status == -1)) {
                     me.$Message.error(me.$t("message.changeFail"))
                 }

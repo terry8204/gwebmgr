@@ -32,7 +32,8 @@ BMapClass.pt.initMap = function () {
 
 
 BMapClass.pt.setMarkerClusterer = function (lastTracks) {
-    this.lastTracks = deepClone(lastTracks);
+    // this.lastTracks = deepClone(lastTracks);
+    this.lastTracks = lastTracks;
     if (this.markerClusterer == null) {
         var markers = this.getMarkers();
         this.markerClusterer = new BMapLib.MarkerClusterer(this.mapInstance, { markers: markers });
