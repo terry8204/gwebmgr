@@ -189,6 +189,7 @@ GoogleMap.pt.updateLastTracks = function (lastTracks) {
         var isHas = false;
         var track = this.lastTracks[key];
         track.online = utils.getIsOnline(track);
+
         if (this.markerHashMap[track.deviceid]) {
             isHas = true
         };

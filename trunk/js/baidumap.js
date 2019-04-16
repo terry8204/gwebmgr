@@ -201,6 +201,7 @@ BMapClass.pt.updateLastTracks = function (lastTracks) {
             var isHas = false;
             var track = this.lastTracks[key];
             track.online = utils.getIsOnline(track);
+
             if (this.markerHashMap[key]) {
                 isHas = true;
             }
