@@ -90,6 +90,10 @@ BMapClass.pt.getCarLabel = function (track) {
 }
 
 BMapClass.pt.getIcon = function (track) {
+
+    if ("868120216532868" == track.deviceid) {
+        console.log('track', track.online);
+    }
     var pathname = location.pathname
     var imgPath = ''
     if (pathname.indexOf('gpsserver') != -1) {
@@ -192,11 +196,11 @@ BMapClass.pt.cancelFence = function (deviceid) {
 
 BMapClass.pt.updateLastTracks = function (lastTracks) {
     this.lastTracks = lastTracks;
-
     for (var key in this.lastTracks) {
         if (this.lastTracks.hasOwnProperty(key)) {
             var isHas = false;
             var track = this.lastTracks[key];
+            track.online = utils.getIsOnline(track);
             if (this.markerHashMap[key]) {
                 isHas = true;
             }

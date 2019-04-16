@@ -367,13 +367,13 @@ var monitor = {
                     }
                     for (var j = 0; j < devices.length; j++) {
                         var device = devices[j]
-                        var devicename = device.devicename
+                        var devicename = device.devicename;
                         if (
+                            device.devicetitle.toUpperCase().indexOf(value.toUpperCase()) !== -1 ||
                             devicename.toUpperCase().indexOf(value.toUpperCase()) !== -1 ||
                             device.firstLetter.indexOf(firstLetter) !== -1 ||
                             device.pinyin.indexOf(pinyin) !== -1 ||
-                            device.deviceid.indexOf(pinyin) !== -1 ||
-                            String(device.devicetype).indexOf(pinyin) !== -1
+                            device.deviceid.indexOf(pinyin) !== -1
                         ) {
                             obj.devices.push(device)
                         } else {
@@ -605,20 +605,18 @@ var monitor = {
                         if (resp.records) {
                             resp.records.forEach((item) => {
                                 if (item) {
-                                    if (item) {
-                                        var deviceid = item.deviceid;
-                                        var b_lon_and_b_lat = wgs84tobd09(item.callon, item.callat)
-                                        var g_lon_and_g_lat = wgs84togcj02(item.callon, item.callat);
-                                        var online = utils.getIsOnline(item);
-                                        item.b_lon = b_lon_and_b_lat[0];
-                                        item.b_lat = b_lon_and_b_lat[1];
-                                        item.g_lon = g_lon_and_g_lat[0];
-                                        item.g_lat = g_lon_and_g_lat[1];
-                                        item.online = online;
-                                        item.devicename = me.deviceInfos[deviceid] ? me.deviceInfos[deviceid].devicename : "";
-                                        item.updatetimeStr = DateFormat.longToDateTimeStr(item.updatetime, 0);
-                                        me.positionLastrecords[deviceid] = item;
-                                    }
+                                    var deviceid = item.deviceid;
+                                    var b_lon_and_b_lat = wgs84tobd09(item.callon, item.callat)
+                                    var g_lon_and_g_lat = wgs84togcj02(item.callon, item.callat);
+                                    var online = utils.getIsOnline(item);
+                                    item.b_lon = b_lon_and_b_lat[0];
+                                    item.b_lat = b_lon_and_b_lat[1];
+                                    item.g_lon = g_lon_and_g_lat[0];
+                                    item.g_lat = g_lon_and_g_lat[1];
+                                    item.online = online;
+                                    item.devicename = me.deviceInfos[deviceid] ? me.deviceInfos[deviceid].devicename : "";
+                                    item.updatetimeStr = DateFormat.longToDateTimeStr(item.updatetime, 0);
+                                    me.positionLastrecords[deviceid] = item;
                                 }
                             })
                             me.positionLastrecords
@@ -1101,7 +1099,7 @@ var monitor = {
             if (record) {
                 var updatetime = record.updatetime;
                 var currentTime = new Date().getTime();
-                if (currentTime - updatetime < me.offlineTime) {
+                if ((currentTime - updatetime) < me.offlineTime) {
                     isOnline = true;
                 };
             }

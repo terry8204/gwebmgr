@@ -74,8 +74,6 @@ GoogleMap.pt.addMarkerEvent = function (marker) {
         self.openInfoWindow(marker, deviceid);
         communicate.$emit("on-click-marker", deviceid);
     });
-
-
 }
 
 GoogleMap.pt.openInfoWindow = function (marker, deviceid) {
@@ -190,6 +188,7 @@ GoogleMap.pt.updateLastTracks = function (lastTracks) {
     for (var key in this.lastTracks) {
         var isHas = false;
         var track = this.lastTracks[key];
+        track.online = utils.getIsOnline(track);
         if (this.markerHashMap[track.deviceid]) {
             isHas = true
         };
