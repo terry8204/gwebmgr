@@ -107,6 +107,13 @@
             </Row>
 
             <Row style="margin: 10px 0">
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;监护账号 : &nbsp;</i-col>
+                <i-col span="8">
+                    <i-input v-model.trim="monitor"></i-input>
+                </i-col>
+            </Row>
+
+            <Row style="margin: 10px 0">
                 <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;转发地址 : &nbsp;</i-col>
                 <i-col span="20">
                     <i-input v-model.trim="forwardurl"></i-input>
@@ -156,6 +163,7 @@
                 userType:null,
                 timeoutIns:null,
                 isShowMatchDev:false,
+                monitor:""
             },
             methods: {
                 selectedCmd:function(item){
@@ -225,7 +233,7 @@
                     if(this.devicename) data.devicename = this.devicename;
 
                     if(this.companyid){data.companyid = this.companyid;}
-                    
+                    if(this.monitor){ data.monitor = this.monitor;}
 
                     if(this.loginpwd){
                         data.loginpwd = $.md5(this.loginpwd);
