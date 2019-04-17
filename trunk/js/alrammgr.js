@@ -16,7 +16,8 @@
     };
 
     AlarmMgr.prototype.getAlarmList = function () {
-        return Object.values(this.records);
+        var records = Object.values(this.records);
+        return records.sort(function (a, b) { return b.lastalarmtime - a.lastalarmtime; });
     };
 
     AlarmMgr.prototype.updateDisposeStatus = function (deviceId, alarm) {
