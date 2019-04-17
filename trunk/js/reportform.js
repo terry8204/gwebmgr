@@ -1500,7 +1500,7 @@ var reportForm = {
                         { title: me.$t("reportForm.reportmileagedetail"), name: 'mileageDetail', icon: 'ios-color-wand' },
                         { title: me.$t("reportForm.parkDetails"), name: 'parkDetails', icon: 'md-analytics' },
                         { title: me.$t("reportForm.acc"), name: 'accDetails', icon: 'md-bulb' },
-                        { title: isZh ? '语音报表' : 'Voice report', name: 'records', icon: 'md-bulb' },
+                        { title: isZh ? '语音报表' : 'Voice report', name: 'records', icon: 'md-volume-up' },
                     ]
                 },
                 {
