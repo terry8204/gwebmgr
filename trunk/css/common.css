@@ -130,8 +130,15 @@ ul,ol,li{
     max-height: 300px;
     z-index: 10000;
     overflow-y:auto; 
+    overflow-x:hidden; 
 }
 
+.search-wrapper ul.search-item-wrapper .ivu-select-item,
+.search-wrapper ul.search-item-wrapper .ivu-select-item span{
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
 /* 查询所有设备指令 */
 #directive-wraper{
     position: relative;

@@ -828,6 +828,13 @@ var monitor = {
                     device.isSelected = false;
                     device.firstLetter = __pinyin.getFirstLetter(device.devicename);
                     device.pinyin = __pinyin.getPinyin(device.devicename);
+                    var deviceTypeName = me.getDeviceTypeName(device.devicetype);
+                    if (deviceTypeName) {
+                        device.devicetitle = deviceTypeName + "-" + device.devicename;
+                    } else {
+                        device.devicetitle = device.devicename;
+                    }
+                    device.allDeviceIdTitle = device.devicetitle + "-" + device.deviceid;
                 });
                 group.title = group.groupname + "(0/" + devCount + ")";
             });
@@ -911,12 +918,6 @@ var monitor = {
                 group.devices.forEach(function (device, index) {
                     count++;
                     var isOnline = me.getIsOnline(device.deviceid);
-                    var deviceTypeName = me.getDeviceTypeName(device.devicetype);
-                    if (deviceTypeName) {
-                        device.devicetitle = deviceTypeName + "-" + device.devicename;
-                    } else {
-                        device.devicetitle = device.devicename;
-                    }
                     device.isOnline = isOnline;
                     if (isOnline) {
                         online++;
@@ -1215,6 +1216,7 @@ var monitor = {
                     me.caclOnlineCount();
                     me.updateTreeOnlineState();
                     communicate.$on("positionlast", me.handleWebSocket);
+                    communicate.$on("on-click-marker", me.openTreeDeviceNav);
                 }, function (error) { });
                 me.isLoadGroup = false;
                 me.setIntervalReqRecords();
