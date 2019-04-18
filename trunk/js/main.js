@@ -694,13 +694,13 @@ var vRoot = new Vue({
         var newObj = {};
         var deviceId = devicemedia.deviceid;
         var jsonStringify = null;
-        if (jsonStringify = sessionStorage.getItem("devicemedia")) {
+        if (jsonStringify = localStorage.getItem("devicemedia")) {
           Object.assign(newObj, JSON.parse(jsonStringify));
         };
         if (!newObj[deviceId]) { newObj[deviceId] = {} };
         newObj[deviceId][devicemedia.mediaid] = devicemedia;
         console.log("JSON.stringify(newObj)", newObj);
-        sessionStorage.setItem("devicemedia", JSON.stringify(newObj));
+        localStorage.setItem("devicemedia", JSON.stringify(newObj));
       };;
     }
   },
