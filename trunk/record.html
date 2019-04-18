@@ -434,7 +434,7 @@
                         if(newPushDeviceReords){
                             for(var key in newPushDeviceReords){
                                 var isHas = false;
-                                for(var i = i ; i < tableData.length ; i++){
+                                for(var i = 0 ; i < tableData.length ; i++){
                                     var record = tableData[i];
                                     if(key == record.mediaid){
                                         isHas = true;
@@ -448,11 +448,11 @@
                                     newRecords.push(newRecord);
                                 }
                             }
-                            console.log('newRecords', newRecords);
                             if(newRecords.length){
                                 this.tableData = (newRecords.concat(tableData)).sort(function (a,b) { return a.updatetime - b.updatetime; });
                                 newPushLocalMedia[this.deviceId] = {};
-                                localStorage.setItem("devicemedia",newPushLocalMedia);
+                                localStorage.setItem("devicemedia",JSON.stringify(newPushLocalMedia));
+                                setTimeout(function () { document.getElementsByClassName("record-body")[0].scrollTop = 10000; },10);
                             }
                         }
                     }
