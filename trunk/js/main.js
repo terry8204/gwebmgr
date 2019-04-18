@@ -700,7 +700,7 @@ var vRoot = new Vue({
         if (!newObj[deviceId]) { newObj[deviceId] = {} };
         newObj[deviceId][devicemedia.mediaid] = devicemedia;
         console.log("JSON.stringify(newObj)", newObj);
-        localStorage.setItem("devicemedia", JSON.stringify(newObj));
+        sessionStorage.setItem("devicemedia", JSON.stringify(newObj));
       };;
     }
   },
