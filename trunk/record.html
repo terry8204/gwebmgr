@@ -413,7 +413,7 @@
                                         record.updatetimeStr = DateFormat.longToDateTimeStr(record.updatetime, 0);
                                         tableData.push(record);
                                     }
-                                me.tableData = tableData.reverse();
+                                me.tableData = tableData.sort(function (a,b) { return a.updatetime - b.updatetime;});
                                 setTimeout(function () { document.getElementsByClassName("record-body")[0].scrollTop = 10000; },10);
                             }
                             
@@ -423,38 +423,29 @@
 
                     })
                 },
-                queryLocalMedia:function(){
-                    var newPushLocalMedia = localStorage.getItem("devicemedia"); 
-                    if(newPushLocalMedia !== null && newPushLocalMedia !== "null")
-                    {
-                        var tableData = this.tableData;
+                getLocalMediaByDeviceId:function(deviceId){
+                    var newMedia = null;
+                    var newPushLocalMedia = localStorage.getItem("devicemedia");
+                    if(newPushLocalMedia !== null && newPushLocalMedia !== "null"){
                         var newPushLocalMediaObject = JSON.parse(newPushLocalMedia);
-                        var newPushDeviceReords = newPushLocalMediaObject[this.deviceId];
-                        var newRecords = [];
-                        if(newPushDeviceReords){
-                            for(var key in newPushDeviceReords){
-                                var isHas = false;
-                                for(var i = 0 ; i < tableData.length ; i++){
-                                    var record = tableData[i];
-                                    if(key == record.mediaid){
-                                        isHas = true;
-                                        break;
-                                    }
-                                }
-                                if(isHas === false){
-                                    var newRecord = newPushDeviceReords[key];
-                                    newRecord.show = false;
-                                    newRecord.updatetimeStr = DateFormat.longToDateTimeStr(newRecord.updatetime, 0);
-                                    newRecords.push(newRecord);
-                                }
-                            }
-                            if(newRecords.length){
-                                this.tableData = (newRecords.concat(tableData)).sort(function (a,b) { return a.updatetime - b.updatetime; });
-                                newPushLocalMedia[this.deviceId] = {};
-                                localStorage.setItem("devicemedia",JSON.stringify(newPushLocalMedia));
-                                setTimeout(function () { document.getElementsByClassName("record-body")[0].scrollTop = 10000; },10);
-                            }
+                        if(newPushLocalMediaObject.deviceid === deviceId){
+                            newMedia =  newPushLocalMediaObject;
                         }
+                    }
+                    return newMedia;
+                },
+                clearLocalMedia:function(){
+                    localStorage.setItem("devicemedia",null);
+                },
+                queryLocalMedia:function(){
+                    var newMedia = this.getLocalMediaByDeviceId(this.deviceId);
+                    if(newMedia !== null)
+                    {
+                        newMedia.show = false;
+                        newMedia.updatetimeStr = DateFormat.longToDateTimeStr(newMedia.updatetime, 0);
+                        this.tableData.push(newMedia);
+                        this.clearLocalMedia();
+                        setTimeout(function () { document.getElementsByClassName("record-body")[0].scrollTop = 10000; },10);
                     }
                 }
             },

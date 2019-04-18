@@ -678,6 +678,10 @@ var vRoot = new Vue({
     jumpReport: function (activeName) {
       this.$store.commit('setHeaderActiveName', activeName);
     },
+
+    addPushMediaToLocalStore (devicemedia) {
+      localStorage.setItem("devicemedia", JSON.stringify(devicemedia));
+    },
     wsCallback: function (resp) {
       var action = resp.action;
       if (action === "remindmsg") {
@@ -691,19 +695,7 @@ var vRoot = new Vue({
         communicate.$emit("reminddevicemsg", data);
       } else if (action == "reminddevicemedia") {
         let devicemedia = resp.devicemedia;
-        var newObj = {};
-        var deviceId = devicemedia.deviceid;
-        var jsonStringify = null;
-        if (localStorage.getItem("devicemedia")) {
-          jsonStringify = localStorage.getItem("devicemedia");
-          console.log('jsonStringify', jsonStringify);
-          Object.assign(newObj, JSON.parse(jsonStringify));
-          console.log('newObj', newObj);
-        };
-        if (!newObj[deviceId]) { newObj[deviceId] = {} };
-        newObj[deviceId][devicemedia.mediaid] = devicemedia;
-        console.log("JSON.stringify(newObj)", newObj);
-        localStorage.setItem("devicemedia", JSON.stringify(newObj));
+        this.addPushMediaToLocalStore(devicemedia);
       };;
     }
   },
