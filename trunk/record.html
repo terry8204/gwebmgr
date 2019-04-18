@@ -424,33 +424,36 @@
                     })
                 },
                 queryLocalMedia:function(){
-                    var localMedai = sessionStorage.getItem("devicemedia");
-                    if(localMedai)
+                    var newPushLocalMedia = sessionStorage.getItem("devicemedia");
+                    if(newPushLocalMedia)
                     {
                         var tableData = this.tableData;
-                        var localMedaiObj = JSON.parse(localMedai);
-                        var deviceReords = localMedaiObj[this.deviceId];
+                        var newPushLocalMediaObject = JSON.parse(newPushLocalMedia);
+                        var newPushDeviceReords = newPushLocalMediaObject[this.deviceId];
                         var newRecords = [];
-                        if(deviceReords){
-                            for(var key in deviceReords){
+                        if(newPushDeviceReords){
+                            for(var key in newPushDeviceReords){
                                 var isHas = false;
                                 for(var i = i ; i < tableData.length ; i++){
                                     var record = tableData[i];
                                     if(key == record.mediaid){
                                         isHas = true;
+                                        break;
                                     }
                                 }
                                 if(isHas === false){
-                                    var newRecord = deviceReords[key];
+                                    var newRecord = newPushDeviceReords[key];
                                     newRecord.show = false;
                                     newRecord.updatetimeStr = DateFormat.longToDateTimeStr(newRecord.updatetime, 0);
                                     newRecords.push(newRecord);
                                 }
                             }
+                            console.log('newRecords', newRecords);
                             if(newRecords.length){
+                                console.log('newRecords---');
                                 this.tableData = (newRecords.concat(tableData)).sort(function (a,b) { return a.updatetime - b.updatetime; });
-                                localMedaiObj[this.deviceId] = {};
-                                sessionStorage.setItem("devicemedia",JSON.stringify(localMedaiObj));
+                                newPushLocalMedia[this.deviceId] = {};
+                                sessionStorage.setItem("devicemedia",newPushLocalMedia);
                             }
                         }
                     }
