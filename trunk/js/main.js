@@ -686,7 +686,22 @@ var vRoot = new Vue({
       } else if (action === "positionlast") {
         var data = resp.positionLast;
         communicate.$emit("positionlast", data);
-      };
+      } else if (action === "reminddevicemsg") {
+        var data = resp.devicemsg;
+        communicate.$emit("reminddevicemsg", data);
+      } else if (action == "reminddevicemedia") {
+        let devicemedia = data.devicemedia;
+        var newObj = {};
+        var deviceId = devicemedia.deviceid;
+        var jsonStringify = null;
+        if (jsonStringify = localStorage.getItem("devicemedia")) {
+          Object.assign(newObj, JSON.parse(jsonStringify));
+        };
+        if (!newObj[deviceId]) { newObj[deviceId] = {} };
+        newObj[deviceId][devicemedia.mediaid] = devicemedia;
+        console.log("JSON.stringify(newObj)", newObj);
+        localStorage.setItem("devicemedia", JSON.stringify(newObj));
+      };;
     }
   },
   computed: {

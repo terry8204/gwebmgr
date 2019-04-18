@@ -485,7 +485,8 @@ var waringComponent = {
                         },
                         {
                             title: me.$t("alarm.createTime"),
-                            key: 'createtimeStr'
+                            key: 'createtimeStr',
+                            width: 200,
                         },
                         {
                             title: me.$t("alarm.content"),
@@ -552,9 +553,15 @@ var waringComponent = {
             me.alarmMgr.addRecord(data);
             me.refreshAlarmToUi();
         });
-        communicate.$on("disposeAlarm", function (cmdCode) {
+        communicate.$on("disposeAlarm", function () {
             me.alarmMgr.updateDisposeStatus(me.currentDeviceId, 0);
             me.refreshAlarmToUi();
+        });
+        communicate.$on("reminddevicemsg", function (data) {
+            data.devicename = me.getDeviceName(data.deviceid);
+            data.createtimeStr = DateFormat.longToDateTimeStr(data.createtime, 0);
+            me.msgListObj.addMsg(data);
+            me.overdueDevice = me.msgListObj.getMsgList().reverse();
         });
         // timeout定时器
         var timeout = null;

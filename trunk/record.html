@@ -403,7 +403,6 @@
                 queryMedia() {
                     var url = myUrls.queryMedia() , me = this;
                     utils.sendAjax(url,{deviceid:this.deviceId},function (resp) { 
-                        console.log('resp', resp);
                         if(resp.status == 0){
                             if(resp.records && resp.records.length){
                                 var tableData = [] ,
@@ -412,8 +411,7 @@
                                         const record = records[index];
                                         record.show = false;
                                         record.updatetimeStr = DateFormat.longToDateTimeStr(record.updatetime, 0);
-                                        tableData.push(record)
-                                      
+                                        tableData.push(record);
                                     }
                                 me.tableData = tableData.reverse();
                                 setTimeout(function () { document.getElementsByClassName("record-body")[0].scrollTop = 10000; },10);
@@ -425,6 +423,32 @@
 
                     })
                 },
+                queryLocalMedia:function(){
+                    var localMedai = localStorage.getItem("devicemedia");
+                    if(localMedai)
+                    {
+                        var tableData = this.tableData;
+                        var localMedaiObj = JSON.parse(localMedai);
+                        var deviceReords = localMedaiObj[this.deviceId];
+                        if(deviceReords){
+                            for(var key in deviceReords){
+                                var isHas = false;
+                                for(var i = i ; i < tableData.length ; i++){
+                                    var record = tableData[i];
+                                    if(key === record.mediaid){
+                                        isHas = true;
+                                    }
+                                }
+                                if(isHas === false){
+                                    var newRecords = deviceReords[key];
+                                    newRecords.show = false;
+                                    newRecords.updatetimeStr = DateFormat.longToDateTimeStr(newRecords.updatetime, 0);
+                                    tableData.push(newRecords);
+                                }
+                            }
+                        }
+                    }
+                }
             },
             mounted:function(){
                 var deviceId = utils.getParameterByName("deviceid");
@@ -436,6 +460,7 @@
                 }
                 setInterval(function () { 
                     me.intervalNumber = --me.intervalNumber;
+                    me.queryLocalMedia();
                     if(me.intervalNumber < 1){
                         me.intervalNumber = 60;
                         me.queryMedia();
