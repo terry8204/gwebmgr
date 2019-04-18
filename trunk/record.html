@@ -441,14 +441,14 @@
                                     }
                                 }
                                 if(isHas === false){
-                                    var newRecords = deviceReords[key];
-                                    newRecords.show = false;
-                                    newRecords.updatetimeStr = DateFormat.longToDateTimeStr(newRecords.updatetime, 0);
-                                    newRecords.push(newRecords);
+                                    var newRecord = deviceReords[key];
+                                    newRecord.show = false;
+                                    newRecord.updatetimeStr = DateFormat.longToDateTimeStr(newRecord.updatetime, 0);
+                                    newRecords.push(newRecord);
                                 }
                             }
                             if(newRecords.length){
-                                this.tableData = newRecords.concat(tableData).sort(function (a,b) { return a.updatetime - b.updatetime; });
+                                this.tableData = (newRecords.concat(tableData)).sort(function (a,b) { return a.updatetime - b.updatetime; });
                                 localMedaiObj[this.deviceId] = {};
                                 sessionStorage.setItem("devicemedia",JSON.stringify(localMedaiObj));
                             }
