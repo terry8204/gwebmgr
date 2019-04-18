@@ -690,7 +690,7 @@ var vRoot = new Vue({
         var data = resp.devicemsg;
         communicate.$emit("reminddevicemsg", data);
       } else if (action == "reminddevicemedia") {
-        let devicemedia = data.devicemedia;
+        let devicemedia = resp.devicemedia;
         var newObj = {};
         var deviceId = devicemedia.deviceid;
         var jsonStringify = null;
