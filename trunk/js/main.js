@@ -694,8 +694,11 @@ var vRoot = new Vue({
         var newObj = {};
         var deviceId = devicemedia.deviceid;
         var jsonStringify = null;
-        if (jsonStringify = localStorage.getItem("devicemedia")) {
+        if (localStorage.getItem("devicemedia")) {
+          jsonStringify = localStorage.getItem("devicemedia");
+          console.log('jsonStringify', jsonStringify);
           Object.assign(newObj, JSON.parse(jsonStringify));
+          console.log('newObj', newObj);
         };
         if (!newObj[deviceId]) { newObj[deviceId] = {} };
         newObj[deviceId][devicemedia.mediaid] = devicemedia;

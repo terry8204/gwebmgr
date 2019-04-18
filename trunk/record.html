@@ -425,7 +425,7 @@
                 },
                 queryLocalMedia:function(){
                     var newPushLocalMedia = localStorage.getItem("devicemedia"); 
-                    if(newPushLocalMedia)
+                    if(newPushLocalMedia !== null && newPushLocalMedia !== "null")
                     {
                         var tableData = this.tableData;
                         var newPushLocalMediaObject = JSON.parse(newPushLocalMedia);
