@@ -424,18 +424,19 @@
                     })
                 },
                 queryLocalMedia:function(){
-                    var localMedai = localStorage.getItem("devicemedia");
+                    var localMedai = sessionStorage.getItem("devicemedia");
                     if(localMedai)
                     {
                         var tableData = this.tableData;
                         var localMedaiObj = JSON.parse(localMedai);
                         var deviceReords = localMedaiObj[this.deviceId];
+                        var newRecords = [];
                         if(deviceReords){
                             for(var key in deviceReords){
                                 var isHas = false;
                                 for(var i = i ; i < tableData.length ; i++){
                                     var record = tableData[i];
-                                    if(key === record.mediaid){
+                                    if(key == record.mediaid){
                                         isHas = true;
                                     }
                                 }
@@ -443,8 +444,13 @@
                                     var newRecords = deviceReords[key];
                                     newRecords.show = false;
                                     newRecords.updatetimeStr = DateFormat.longToDateTimeStr(newRecords.updatetime, 0);
-                                    tableData.push(newRecords);
+                                    newRecords.push(newRecords);
                                 }
+                            }
+                            if(newRecords.length){
+                                this.tableData = newRecords.concat(tableData).sort(function (a,b) { return a.updatetime - b.updatetime; });
+                                localMedaiObj[this.deviceId] = {};
+                                sessionStorage.setItem("devicemedia",JSON.stringify(localMedaiObj));
                             }
                         }
                     }
