@@ -424,7 +424,7 @@
                     })
                 },
                 queryLocalMedia:function(){
-                    var newPushLocalMedia = sessionStorage.getItem("devicemedia");
+                    var newPushLocalMedia = localStorage.getItem("devicemedia"); 
                     if(newPushLocalMedia)
                     {
                         var tableData = this.tableData;
@@ -450,10 +450,9 @@
                             }
                             console.log('newRecords', newRecords);
                             if(newRecords.length){
-                                console.log('newRecords---');
                                 this.tableData = (newRecords.concat(tableData)).sort(function (a,b) { return a.updatetime - b.updatetime; });
                                 newPushLocalMedia[this.deviceId] = {};
-                                sessionStorage.setItem("devicemedia",newPushLocalMedia);
+                                localStorage.setItem("devicemedia",newPushLocalMedia);
                             }
                         }
                     }
