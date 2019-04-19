@@ -429,8 +429,10 @@ var monitor = {
                     });
                 });
             }
-
-
+            this.scrollToCurruntDevice(deviceid);
+        },
+        scrollToCurruntDevice: function (deviceid) {
+            var me = this;
             setTimeout(function () {
                 var elWraper = me.$refs.treeWraper;
                 var wrapHeight = elWraper.getBoundingClientRect().height;
@@ -488,7 +490,6 @@ var monitor = {
                     $(elWraper).animate({ scrollTop: sHeight - (wrapHeight / 2) }, 500);
                 }
             }, 500);
-
         },
         sosoValueChange: function () {
             var me = this;
@@ -642,33 +643,34 @@ var monitor = {
             var me = this;
             var devLastInfo = me.getSingleDeviceInfo(deviceid);
             me.$store.commit('currentDeviceId', deviceid);
-            // me.$store.commit('currentDeviceRecord', devLastInfo);
-            // if (me.isShowCompanyName) {
-            //     me.currentStateData.forEach(function (company) {
-            //         company.children.forEach(function (group) {
-            //             group.children.forEach(function (dev) {
-            //                 if (dev.deviceid == deviceid) {
-            //                     company.expand = true;
-            //                     dev.isSelected = true;
-            //                     group.expand = true;
-            //                 } else {
-            //                     dev.isSelected = false;
-            //                 }
-            //             })
-            //         })
-            //     })
-            // } else {
-            //     me.currentStateData.forEach(function (group) {
-            //         group.children.forEach(function (dev) {
-            //             if (dev.deviceid == deviceid) {
-            //                 dev.isSelected = true;
-            //                 group.expand = true;
-            //             } else {
-            //                 dev.isSelected = false;
-            //             };
-            //         });
-            //     });
-            // }
+            me.$store.commit('currentDeviceRecord', devLastInfo);
+            if (me.isShowCompanyName) {
+                me.currentStateData.forEach(function (company) {
+                    company.children.forEach(function (group) {
+                        group.children.forEach(function (dev) {
+                            if (dev.deviceid == deviceid) {
+                                company.expand = true;
+                                dev.isSelected = true;
+                                group.expand = true;
+                            } else {
+                                dev.isSelected = false;
+                            }
+                        })
+                    })
+                })
+            } else {
+                me.groups.forEach(function (group) {
+                    group.devices.forEach(function (device) {
+                        if (device.deviceid == deviceid) {
+                            device.isSelected = true;
+                            group.expand = true;
+                        } else {
+                            device.isSelected = false;
+                        };
+                    });
+                });
+            }
+            this.scrollToCurruntDevice(deviceid);
         },
         getSingleDeviceInfo: function (deviceid) {
             return this.positionLastrecords[deviceid];
