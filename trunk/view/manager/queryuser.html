@@ -155,12 +155,12 @@
                         var currdevicecount = 0;
                         var currgroupcount = 0;
                         resp.userlists.forEach(function (item) { 
-                            item.usedUserCount = item.currusercount + "/" + item.usercount ;
-                            item.usedDeviceCount = item.currdevicecount + "/" + item.devicecount ;
-                            item.usedGroupCount = item.currgroupcount + "/" + item.groupcount ;
-                            item.companyname = item.company.companyname;
-                            currdevicecount += item.currdevicecount;
-                            currgroupcount += item.currgroupcount;
+                            item.usedUserCount = item.company?item.currusercount + "/" + item.usercount :"";
+                            item.usedDeviceCount = item.company?item.currdevicecount + "/" + item.devicecount :"";
+                            item.usedGroupCount = item.company?item.currgroupcount + "/" + item.groupcount :"";
+                            item.companyname = item.company?item.company.companyname:"";
+                            currdevicecount += item.company?item.currdevicecount:"";
+                            currgroupcount += item.company?item.currgroupcount:"";
                         });
                         this.recordsList = resp.userlists;
                         this.filterUsersList();
@@ -254,7 +254,6 @@
             mounted:function(){
                 this.userTypeDescrList = vstore.state.userTypeDescrList;
                 this.getUserInfoList();
-                console.log('queryList', this.queryList);
             }
         })
     </script>
