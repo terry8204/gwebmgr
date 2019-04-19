@@ -223,7 +223,7 @@
                     var children = parent.children;
                     for (var i = 0; i < children.length; i++) {
                         var item = children[i]
-                        var text = item.innerHTML;
+                        var text = item.getAttribute("value");
                         var type = item.getAttribute("type");
                         if (type && text) {
                             this.previewObjList.push({ type: type, text: text });
