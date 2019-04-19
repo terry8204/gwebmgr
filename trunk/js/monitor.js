@@ -652,6 +652,8 @@ var monitor = {
                                 company.expand = true;
                                 dev.isSelected = true;
                                 group.expand = true;
+                                me.openCompanyIds[company.companyid] = "";
+                                me.openGroupIds[group.groupid] = "";
                             } else {
                                 dev.isSelected = false;
                             }
