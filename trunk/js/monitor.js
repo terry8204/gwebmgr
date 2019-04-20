@@ -1226,6 +1226,44 @@ var monitor = {
                 me.isLoadGroup = false;
                 me.setIntervalReqRecords();
             });
+        },
+        refreshMonitorRestartOpen () {
+            var me = this;
+            if (globalDeviceId) {
+                if (me.isShowCompanyName) {
+                    for (var i = 0; i < me.currentStateData.length; i++) {
+                        var company = me.currentStateData[i];
+                        for (var j = 0; j < company.children.length; j++) {
+                            var group = company.children[j];
+                            for (var o = 0; o < group.children.length; o++) {
+                                var device = group.children[o];
+                                if (device.deviceid === globalDeviceId) {
+                                    device.isSelected = true;
+                                    group.expand = true;
+                                    me.selectedDevObj = device;
+                                    company.expand = true;
+                                    setTimeout(function () { me.handleClickDev(device.deviceid); }, 300);
+                                    return;
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    for (var i = 0; i < me.groups.length; i++) {
+                        var group = me.groups[i];
+                        for (var j = 0; j < group.devices.length; j++) {
+                            var device = group.devices[j];
+                            if (device.deviceid === globalDeviceId) {
+                                device.isSelected = true;
+                                group.expand = true;
+                                me.selectedDevObj = device;
+                                setTimeout(function () { me.handleClickDev(device.deviceid); }, 300);
+                                return;
+                            }
+                        }
+                    }
+                }
+            }
         }
     },
     computed: {
@@ -1316,7 +1354,19 @@ var monitor = {
         }
     },
     activated: function () {
-        // console.log('activated', this.groups.length)
+        if (isNeedRefresh) {
+            var me = this;
+            this.getMonitorListByUser({ username: userName }, function (resp) {
+                me.groups = me.filterGroups(resp.groups);
+                me.$store.dispatch('setdeviceInfos', me.groups);
+                me.isShowCompanyName && me.onSelectState();
+                me.refreshMonitorRestartOpen();
+                me.updateTreeOnlineState();
+                isNeedRefresh = false;
+            });
+            console.log('activated', this.groups.length)
+        };
+
     },
     beforeDestroy: function () {
         this.$store.commit('currentDeviceRecord', {});

@@ -228,6 +228,11 @@ vueInstanse = new Vue({
                     var data = {deviceid:deviceid};
                     utils.sendAjax(url,data,function (resp) { 
                         if(resp.status == 0){
+                            isNeedRefresh = true;
+                            if(deviceid == globalDeviceId){
+                                globalDeviceId = "";
+                                vRoot.$store.commit('currentDeviceId', "");
+                            }
                             me.$Message.success(me.$t("message.deleteSucc"));
                             me.tableData.forEach(function (itme,index) { 
                                 if(itme.deviceid == deviceid){

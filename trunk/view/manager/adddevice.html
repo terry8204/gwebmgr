@@ -268,6 +268,7 @@
 
                     utils.sendAjax(url,data,function (resp) { 
                         if(resp.status == 0){
+                            isNeedRefresh = true;
                             me.$Message.success(me.$t("message.addSucc"));
                         }else if(resp.status == -1){
                             if( resp.cause!== null && resp.cause.indexOf("token")!=-1){

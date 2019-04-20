@@ -7,6 +7,7 @@ var mapType = utils.getMapType();
 var isLoadBMap = false;
 var globalDeviceId = "";
 var userlists = [];
+var isNeedRefresh = false;
 
 document.title = isZh ? "位置信息服务平台" : "Location information service platform";
 var getPath = function () {
