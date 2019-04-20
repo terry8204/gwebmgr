@@ -644,6 +644,7 @@ var monitor = {
             var devLastInfo = me.getSingleDeviceInfo(deviceid);
             me.$store.commit('currentDeviceId', deviceid);
             me.$store.commit('currentDeviceRecord', devLastInfo);
+            globalDeviceId = deviceid;
             if (me.isShowCompanyName) {
                 me.currentStateData.forEach(function (company) {
                     company.children.forEach(function (group) {
