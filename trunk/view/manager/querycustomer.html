@@ -12,7 +12,7 @@
         </ul>
 
         <div class="table-wraper">
-            <i-table border :columns="columns" :data="tableData" :loading="loading"></i-table>
+            <i-table border :columns="columns" height="520" :data="tableData" :loading="loading"></i-table>
         </div>
         <div class="my-page" style="margin: 5px 0;">
             <Page :total="total" simple :page-size="10" :current="currentIndex" @on-change="changePage"></Page>
@@ -104,6 +104,7 @@ vueInstanse = new Vue({
                 doQueryAllCompanyInfo:function(resp){
                     if(resp.status===0){
                         resp.records.forEach(function (record) { 
+                            record.companyperson ? "" : record.companyperson = record.jurdcperson;
                             record.pinYin = __pinyin.getPinyin(record.companyname);
                             record.firstLetter = __pinyin.getFirstLetter(record.companyname);
                         });
@@ -120,10 +121,10 @@ vueInstanse = new Vue({
                     if (!self.queryParameter) return;
                     this.recordsList.forEach(function (record) {
                         var companyname = record.companyname;
-                        var companyperson = record.companyperson;
+                        var jurdcperson = record.companyperson ? record.companyperson :record.jurdcperson;
                         if (
                             companyname.indexOf(self.queryParameter) != -1 || 
-                            companyperson.indexOf(self.queryParameter) != -1 ||
+                            (jurdcperson && jurdcperson.indexOf(self.queryParameter) != -1) ||
                             record.pinYin.indexOf(queryParameterLowerCase) != -1 ||
                             record.firstLetter.indexOf(queryParameterLowerCase) != -1 
                         ){        

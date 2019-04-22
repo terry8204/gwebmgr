@@ -12,7 +12,7 @@
         </ul>
 
         <div class="table-wraper">
-            <i-table border :columns="columns" :data="tableData" :loading="loading"></i-table>
+            <i-table border :columns="columns" :data="tableData" height="520" :loading="loading"></i-table>
         </div>
         <div class="my-page" style="margin: 5px 0;">
             <Page :total="total" simple :page-size="10" :current="currentIndex"  @on-change="changePage"></Page>

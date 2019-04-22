@@ -18,7 +18,7 @@
             <span>{{$t("bgMgr.deviceTotal")}} : {{deviceTotal}}</span>
         </div>
         <div class="table-wraper">
-            <i-table border :columns="columns" :data="tableData" :loading="loading"></i-table>
+            <i-table border :columns="columns" height="520" :data="tableData" :loading="loading"></i-table>
         </div>
         <div class="my-page" style="margin: 5px 0;">
             <Page :total="total" simple :page-size="10" :current="currentIndex" @on-change="changePage"></Page>
@@ -141,13 +141,17 @@
                     var queryParameterLowerCase = this.queryParameter.toLowerCase();
                     if (!self.queryParameter) return;
                     this.recordsList.forEach(function (record) {
+                       
                         var username = record.username,
                             companynamePinyin =record.companynamePinyin,
                             companynameFirstLetter = record.companynameFirstLetter ,
                             userTypeStrPinyin = record.userTypeStrPinyin ,
                             userTypeStrFirstLetter = record.userTypeStrFirstLetter ;
+    
                         if (
-                            username.toLowerCase().indexOf(self.queryParameter) != -1 || 
+                            record.userTypeStr.indexOf(self.queryParameter) != -1 ||
+                            (record.companyname.indexOf(self.queryParameter))  != -1 ||
+                            username.toLowerCase().indexOf(queryParameterLowerCase) != -1 || 
                             companynamePinyin.indexOf(queryParameterLowerCase) != -1 ||
                             companynameFirstLetter.indexOf(queryParameterLowerCase) != -1 ||
                             userTypeStrPinyin.indexOf(queryParameterLowerCase) != -1 ||

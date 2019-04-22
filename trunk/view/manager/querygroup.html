@@ -13,7 +13,7 @@
             </li>
         </ul>
         <div>
-            <i-table :columns="columnsList" :data="tableData" :loading="loading"></i-table>
+            <i-table :columns="columnsList" :data="tableData" height="520" :loading="loading"></i-table>
         </div>
         <div class="my-page" style="margin: 5px 0;">
             <Page :total="total" simple :page-size="10" :current="currentIndex" @on-change="changePage"></Page>
