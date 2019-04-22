@@ -486,6 +486,8 @@ var trackDebug = {
     return {
       loading: false,
       isShowCard: false,
+      clearTracks: false,
+      deleteRecordsModal: false,
       deviceId: globalDeviceId,
       dayTime: 60 * 60 * 24 * 1000,
       filterStr: "",
@@ -519,10 +521,27 @@ var trackDebug = {
         { title: 'connectalive', key: 'connectalive', width: 80 },
       ],
       data: [],
-      tableData: []
+      tableData: [],
+      deleteRecordsObject: {}
     }
   },
   methods: {
+    openClearTracksModal () {
+      if (this.deviceId) { this.clearTracks = true; };
+    },
+    onHandleDeleteOK: function () {
+      var url = myUrls.cleanHistoryData(), me = this;
+      utils.sendAjax(url, { deviceid: this.deviceId }, function (resp) {
+        console.log('resp', resp);
+        if (resp.status === 0) {
+          me.deleteRecordsModal = true;
+          me.deleteRecordsObject = resp;
+        } else {
+          me.$Message.error(resp.cause);
+        }
+      });
+
+    },
     onChange (index) {
       this.isShowCard = false;
       this.currentIndex = index;

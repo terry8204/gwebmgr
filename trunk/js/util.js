@@ -431,20 +431,9 @@ Vue.component('expand-row', {
   }
 })
 
+// 后台管理
 var mixIn = {
   methods: {
-    handlerClickQuery () {
-      var self = this;
-      var queryTableData = [];
-      if (!self.queryParameter) return;
-      this.recordsList.forEach(function (record) {
-        var value = record[self.queryType];
-        if (value && value.indexOf(self.queryParameter) != -1) {
-          queryTableData.push(record);
-        }
-      })
-      this.tableData = queryTableData;
-    },
     changePage: function (index) {
       var offset = index * 10;
       var start = (index - 1) * 10;
@@ -455,7 +444,7 @@ var mixIn = {
   watch: {
     queryParameter: function () {
       if (!this.queryParameter) {
-        this.tableData = this.recordsList.slice(0, 5);
+        this.tableData = this.recordsList.slice(0, 10);
         this.currentIndex = 1;
       }
     }

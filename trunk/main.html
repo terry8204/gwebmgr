@@ -780,6 +780,9 @@
                     <li>
                         <i-button @click="filterTypeDesc">过滤</i-button>
                     </li>
+                    <li style="float:right">
+                        <i-button @click="openClearTracksModal">清除使用记录</i-button>
+                    </li>
                 </ul>
             </div>
             <div class="table-wrappr" ref="tableWrappr">
@@ -805,6 +808,26 @@
                     <Page :total="total" show-total @on-change="onChange" :page-size="30" :current="currentIndex" />
                 </div>
             </div>
+            <Modal
+                v-model="clearTracks"
+                @on-ok="onHandleDeleteOK">
+                <p slot="header" style="color:#f60;text-align:center">
+                    <Icon type="ios-information-circle"></Icon>
+                    <span>删除录音</span>
+                </p>
+                <p style="text-align:center;">是否删除{{this.deviceId}}的录音</p>
+            </Modal>
+            <Modal
+                v-model="deleteRecordsModal">
+                <p slot="header" style="color:#f60;text-align:center">
+                    <Icon type="ios-information-circle"></Icon>
+                    <span>删除记录</span>
+                </p>
+                <p style="text-align:center;">已删除语音条数 : {{deleteRecordsObject.removedmediacount}}</p>  
+                <p style="text-align:center;">已删除消息条数 : {{deleteRecordsObject.removedmsgcount}}</p>
+                <p style="text-align:center;">已删除报警条数 : {{deleteRecordsObject.removedalarmcount}}</p>
+                <p style="text-align:center;">已删除轨迹条数 : {{deleteRecordsObject.removedtrackcount}}</p>
+            </Modal>
         </div>
     </script>
 
