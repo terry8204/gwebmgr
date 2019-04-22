@@ -6,11 +6,6 @@
         <h3 class="h3-title">{{$t("bgMgr.queryGroup")}}</h3>
         <ul>
             <li>
-                <i-select v-model="queryType">
-                    <i-option v-for="item in queryList" :value="item.value" :key="item.value">{{ item.label }}</i-option>
-                </i-select>
-            </li>
-            <li>
                 <i-input v-model.trim="queryParameter"></i-input>
             </li>
             <li>
@@ -54,8 +49,6 @@ vueInstanse=new Vue({
                 monitorPersonList:[],
                 total:0,
                 currentIndex:1,
-                queryType:'groupname',
-                queryList:[{label:vRoot.$t("group.groupName"),value:"groupname"}],
                 queryParameter:"",
                 recordsList:[],
                 tableData:[],
@@ -142,6 +135,23 @@ vueInstanse=new Vue({
                 ]
             },
             methods:{
+                handlerClickQuery () {
+                    var self = this;
+                    var queryTableData = [];
+                    var queryParameterLowerCase = this.queryParameter.toLowerCase();
+                    if (!self.queryParameter) return;
+                    this.recordsList.forEach(function (record) {
+                        var groupname = record.groupname;
+                        if (
+                            groupname.indexOf(self.queryParameter) != -1 || 
+                            record.pinYin.indexOf(queryParameterLowerCase) != -1 ||
+                            record.firstLetter.indexOf(queryParameterLowerCase) != -1 
+                        ){        
+                            queryTableData.push(record);
+                        }
+                    })
+                    this.tableData = queryTableData;
+                },
                 queryAllgroupsInfo:function(){
                     var url = myUrls.queryGroupByUser();
                     utils.sendAjax(url,{},this.doQueryAllgroupsInfo);
@@ -149,7 +159,11 @@ vueInstanse=new Vue({
                 doQueryAllgroupsInfo:function(resp){
                     console.log(resp.grouplist)
                     if(resp.status === 0){
-                        this.recordsList = resp.grouplist!==null ? resp.grouplist : [];
+                        this.recordsList = resp.grouplist !==null ? resp.grouplist : [];
+                        this.recordsList.forEach(function (group) { 
+                            group.pinYin = __pinyin.getPinyin(group.groupname);
+                            group.firstLetter = __pinyin.getFirstLetter(group.groupname);
+                        });
                         this.total = this.recordsList.length;
                         this.tableData = this.recordsList.slice( 0 , 10);
                     }

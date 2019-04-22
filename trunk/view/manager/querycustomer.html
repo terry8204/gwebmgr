@@ -4,11 +4,6 @@
         <h3 class="h3-title">{{$t("bgMgr.queryCustomer")}}</h3>
         <ul>
             <li>
-                <i-select v-model="queryType">
-                    <i-option v-for="item in queryList" :value="item.value" :key="item.value">{{ item.label }}</i-option>
-                </i-select> 
-            </li>
-            <li>
                 <i-input v-model.trim="queryParameter"></i-input>
             </li>
             <li>
@@ -108,14 +103,36 @@ vueInstanse = new Vue({
                 },
                 doQueryAllCompanyInfo:function(resp){
                     if(resp.status===0){
+                        resp.records.forEach(function (record) { 
+                            record.pinYin = __pinyin.getPinyin(record.companyname);
+                            record.firstLetter = __pinyin.getFirstLetter(record.companyname);
+                        });
                         this.recordsList = resp.records;
                         this.total = this.recordsList.length;
                         this.tableData =  this.recordsList.slice(0,10);
                     }
                     this.loading = false;
                 },
+                handlerClickQuery () {
+                    var self = this;
+                    var queryTableData = [];
+                    var queryParameterLowerCase = this.queryParameter.toLowerCase();
+                    if (!self.queryParameter) return;
+                    this.recordsList.forEach(function (record) {
+                        var companyname = record.companyname;
+                        var companyperson = record.companyperson;
+                        if (
+                            companyname.indexOf(self.queryParameter) != -1 || 
+                            companyperson.indexOf(self.queryParameter) != -1 ||
+                            record.pinYin.indexOf(queryParameterLowerCase) != -1 ||
+                            record.firstLetter.indexOf(queryParameterLowerCase) != -1 
+                        ){        
+                            queryTableData.push(record);
+                        }
+                    })
+                    this.tableData = queryTableData;
+                },
                 editCustomer:function(index){
-
                     var me = this;
                     editObject = this.tableData[index];   
                     var pagePath = null

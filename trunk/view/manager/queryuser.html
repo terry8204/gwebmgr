@@ -6,11 +6,6 @@
         <h3 class="h3-title">{{$t("bgMgr.queryUser")}}</h3>
         <ul>
             <li>
-                <i-select v-model="queryType">
-                    <i-option v-for="item in queryList" :value="item.value" :key="item.value">{{ item.label }}</i-option>
-                </i-select> 
-            </li>
-            <li>
                 <i-input v-model.trim="queryParameter"></i-input>
             </li>
             <li>
@@ -35,15 +30,9 @@
             el:"#queryuser",
             i18n: utils.getI18n(),
             data:{
-                queryList:[
-                    {label:vRoot.$t("user.client"),value:"companyname"},
-                    {label:vRoot.$t("user.username"),value:"username"},
-                    {label:vRoot.$t("user.userType"),value:"userTypeStr"},
-                ],
                 deviceTotal:'',
                 userTotal:'',
                 groupTotal:'',
-                queryType:"username",
                 queryParameter:"",
                 loading:true,
                 total:0,
@@ -146,12 +135,36 @@
                     recordsList:[],
             },
             methods:{
+                handlerClickQuery () {
+                    var self = this;
+                    var queryTableData = [];
+                    var queryParameterLowerCase = this.queryParameter.toLowerCase();
+                    if (!self.queryParameter) return;
+                    this.recordsList.forEach(function (record) {
+                        var username = record.username,
+                            companynamePinyin =record.companynamePinyin,
+                            companynameFirstLetter = record.companynameFirstLetter ,
+                            userTypeStrPinyin = record.userTypeStrPinyin ,
+                            userTypeStrFirstLetter = record.userTypeStrFirstLetter ;
+                        if (
+                            username.toLowerCase().indexOf(self.queryParameter) != -1 || 
+                            companynamePinyin.indexOf(queryParameterLowerCase) != -1 ||
+                            companynameFirstLetter.indexOf(queryParameterLowerCase) != -1 ||
+                            userTypeStrPinyin.indexOf(queryParameterLowerCase) != -1 ||
+                            userTypeStrFirstLetter.indexOf(queryParameterLowerCase) != -1 
+                        ){        
+                            queryTableData.push(record);
+                        }
+                    })
+                    this.tableData = queryTableData;
+                },
                 getUserInfoList:function(){
                     var url = myUrls.queryUser();
                     utils.sendAjax(url,{username:userName},this.doUserInfoList);
                 },
                 doUserInfoList:function(resp){
                     if(resp.status == 0 && resp.userlists != null){
+                        var me = this;
                         var currdevicecount = 0;
                         var currgroupcount = 0;
                         resp.userlists.forEach(function (item) { 
@@ -161,9 +174,18 @@
                             item.companyname = item.company?item.company.companyname:"";
                             currdevicecount += item.company?item.currdevicecount:"";
                             currgroupcount += item.company?item.currgroupcount:"";
+
+                            item.userTypeStr = me.getUserTypeStr(item.usertype);
+                            item.createtime = me.timeToDateStr(item.createtime);
+                            item.overduetime = me.timeToDateStr(item.overduetime); 
+
+                            item.companynamePinyin = __pinyin.getPinyin(item.company.companyname);
+                            item.companynameFirstLetter = __pinyin.getFirstLetter(item.company.companyname);
+                            item.userTypeStrPinyin = __pinyin.getPinyin(item.userTypeStr);
+                            item.userTypeStrFirstLetter = __pinyin.getFirstLetter(item.userTypeStr);
                         });
                         this.recordsList = resp.userlists;
-                        this.filterUsersList();
+
                         this.tableData = this.recordsList.slice(0,10);
                         this.total = this.recordsList.length;
                         this.deviceTotal = currdevicecount;
@@ -185,14 +207,6 @@
                         }
                     };
                     return name;
-                },
-                filterUsersList:function(){
-                    var me = this ;
-                    this.recordsList.forEach(function(user){                   
-                        user.userTypeStr = me.getUserTypeStr(user.usertype);
-                        user.createtime = me.timeToDateStr(user.createtime);
-                        user.overduetime = me.timeToDateStr(user.overduetime);
-                    });
                 },
                 handleDelete:function(username){
                     var me = this;
@@ -248,7 +262,7 @@
                             me.$Message.error("error");
                         }
                     });
-                },
+                }
             },
             mixins:[mixIn],
             mounted:function(){

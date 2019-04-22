@@ -4,11 +4,6 @@
         <h3 class="h3-title">{{$t("bgMgr.queryDev")}}</h3>
         <ul>
             <li>
-                <i-select v-model="queryType">
-                    <i-option v-for="item in queryList" :value="item.value" :key="item.value">{{ item.label }}</i-option>
-                </i-select> 
-            </li>
-            <li>
                 <i-input v-model.trim="queryParameter"></i-input>
             </li>
             <li>
@@ -30,8 +25,6 @@ vueInstanse = new Vue({
             i18n: utils.getI18n(),
             data:{
                 queryParameter:"",
-                queryType:"devicename",
-                queryList:[{label:vRoot.$t("alarm.devName"),value:"devicename"},{label:vRoot.$t("alarm.devNum"),value:"deviceid"}],
                 loading:true,
                 total:0,
                 currentIndex:1,
@@ -130,6 +123,25 @@ vueInstanse = new Vue({
                 groupsList:[],
             },
             methods: {
+                handlerClickQuery () {
+                    var self = this;
+                    var queryTableData = [];
+                    var queryParameterLowerCase = this.queryParameter.toLowerCase();
+                    if (!self.queryParameter) return;
+                    this.recordsList.forEach(function (record) {
+                        var deviceid = record.deviceid;
+                        var devicename = record.devicename;
+                        if (
+                            devicename.indexOf(self.queryParameter) != -1 || 
+                            deviceid.indexOf(self.queryParameter) != -1 ||
+                            record.pinYin.indexOf(queryParameterLowerCase) != -1 ||
+                            record.firstLetter.indexOf(queryParameterLowerCase) != -1 
+                        ){        
+                            queryTableData.push(record);
+                        }
+                    })
+                    this.tableData = queryTableData;
+                },
                 filterDataInfo:function(devList){
                     var me = this;
                     var data = [];
@@ -138,6 +150,8 @@ vueInstanse = new Vue({
                         dev.overduetimestr = DateFormat.longToDateTimeStr(dev.overduetime,0);
                         dev.companyname = me.getCustimerName(dev.companyid);
                         dev.groupname = me.getGroupName(dev.groupid);
+                        dev.pinYin = __pinyin.getPinyin(dev.devicename);
+                        dev.firstLetter = __pinyin.getFirstLetter(dev.devicename);
                         data.push(dev);
                     });
                     return data;
@@ -178,7 +192,7 @@ vueInstanse = new Vue({
                     utils.sendAjax(url,{},function(resp){
                         me.loading = false;
                         if(resp.status == 0 && resp.devices != null){           
-                            me.recordsList = me.filterDataInfo(resp.devices );
+                            me.recordsList = me.filterDataInfo(resp.devices);
                             me.tableData = me.recordsList.slice(0,10);
                             me.total = me.recordsList.length;
                         }else{
