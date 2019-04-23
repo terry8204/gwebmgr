@@ -24,6 +24,7 @@ var monitor = {
     data: function () {
         var vm = this;
         return {
+            cmdSettings: {},
             placeholder: "",
             isLoadGroup: true,
             isSpin: true,
@@ -251,12 +252,12 @@ var monitor = {
             })
         },
         handleClickDirective: function (cmdCode) {
-
             this.cmdParams = {};
             this.selectedCmdInfo = {};
             this.cmdPwd = null;
             var cmdInfo = null;
             var me = this;
+            var cmdVal = this.cmdSettings[cmdCode];
             this.currentDevDirectiveList.forEach(function (cmd) {
                 if (cmd.cmdcode == cmdCode) {
                     cmdInfo = cmd;
@@ -271,11 +272,16 @@ var monitor = {
                 var paramsXMLObj = utils.parseXML(cmdInfo.params);
                 // this.selectedCmdInfo.type = paramsXMLObj.type;
                 this.selectedCmdInfo.params = paramsXMLObj.paramsListObj;
-                this.selectedCmdInfo.params.forEach(function (param) {
-                    me.cmdParams[param.type] = param.value;
+                this.selectedCmdInfo.params.forEach(function (param, index) {
+                    if (cmdVal) {
+                        me.cmdParams[param.type] = cmdVal[index];
+                    } else {
+                        me.cmdParams[param.type] = param.value;
+                    }
                 });
-                cmdInfo.cmdtype !== 'text' ? this.selectedTypeVal = null : '';
+                cmdInfo.cmdtype !== 'text' ? this.selectedTypeVal = (cmdVal ? cmdVal[0] : "") : '';
             };
+
             this.dispatchDirectiveModal = true;
         },
 
@@ -547,6 +553,7 @@ var monitor = {
         },
         handleClickDev: function (deviceid) {
             globalDeviceId = deviceid;
+            this.querySingleAllCmdDefaultValue(deviceid);
             if (!this.map) { return; }
             var record = this.getSingleDeviceInfo(deviceid);
             this.currentDeviceName = this.deviceInfos[deviceid].devicename;
@@ -557,6 +564,14 @@ var monitor = {
                 this.$Message.error(this.$t("monitor.noRecordTrack"))
                 this.$store.commit('currentDeviceId', deviceid);
             }
+        },
+        querySingleAllCmdDefaultValue: function (deviceid) {
+            var url = myUrls.queryDeviceSettings(), me = this;
+            utils.sendAjax(url, { deviceid: deviceid }, function (resp) {
+                if (resp.status === 0) {
+                    me.cmdSettings = resp.settings;
+                }
+            })
         },
         updateTreeOnlineState: function () {
             this.getCurrentStateTreeData(this.selectedState, this.isShowCompanyName);

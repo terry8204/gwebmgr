@@ -296,6 +296,9 @@ var myUrls = {
   },
   cleanHistoryData: function () {
     return this.host + 'webapi?action=cleanhistorydata&token=' + token;
+  },
+  queryDeviceSettings: function () {
+    return this.host + 'webapi?action=querydevicesettings&token=' + token;
   }
 }
 

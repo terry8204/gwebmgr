@@ -154,6 +154,8 @@
                 noRecordTrack: 'The device did not report location information',
                 reLogin: "Please re-login and automatically jump to the login page in 2 seconds",
                 devNameMust: "Device name is mandatory",
+                alarmRecords: "Alarm records",
+                media: "Media"
             },
             reportForm: {
                 total: "Total : ",
@@ -459,6 +461,8 @@
                 noRecordTrack: '该设备没有上报位置信息',
                 reLogin: "请重新登录,2秒后自动跳转登录页面",
                 devNameMust: "设备名称是必填的",
+                alarmRecords: "报警记录",
+                media: "录音"
             },
             reportForm: {
                 total: "合计 : ",
