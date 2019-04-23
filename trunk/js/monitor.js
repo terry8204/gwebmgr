@@ -230,6 +230,10 @@ var monitor = {
                 case 'luyin':
                     window.open("record.html?deviceid=" + this.currentDeviceId);
                     break;
+                case 'alarmList':
+                    isToAlarmListRecords = true;
+                    this.$emit("jump-report", "reportForm");
+                    break;
             }
         },
         queryDeviceBaseInfo: function () {

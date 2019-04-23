@@ -286,6 +286,7 @@
                                                         <DropdownItem name="luyin" v-show="isShowRecordBtn">录音</DropdownItem>
                                                         <DropdownItem name="cmdrecord">{{$t("monitor.cmdRecord")}}</DropdownItem>
                                                         <DropdownItem name="recordform">{{$t("monitor.recordForm")}}</DropdownItem>
+                                                        <DropdownItem name="alarmList">{{$t("reportForm.allAlarm")}}</DropdownItem>
                                                         <DropdownItem name="devbaseinfo">{{$t("monitor.devBaseInfo")}}</DropdownItem>
                                                     </i-dropdown-menu>
                                                 </Dropdown>
@@ -331,6 +332,7 @@
                                                             <DropdownItem name="luyin" v-show="isShowRecordBtn">录音</DropdownItem>
                                                             <DropdownItem name="cmdrecord">{{$t("monitor.cmdRecord")}}</DropdownItem>
                                                             <DropdownItem name="recordform">{{$t("monitor.recordForm")}}</DropdownItem>
+                                                            <DropdownItem name="alarmList">{{$t("reportForm.allAlarm")}}</DropdownItem>
                                                             <DropdownItem name="devbaseinfo">{{$t("monitor.devBaseInfo")}}</DropdownItem>
                                                         </i-dropdown-menu>
                                                     </Dropdown>
@@ -376,6 +378,7 @@
                                                             <DropdownItem name="luyin" v-show="isShowRecordBtn">录音</DropdownItem>
                                                             <DropdownItem name="cmdrecord">{{$t("monitor.cmdRecord")}}</DropdownItem>
                                                             <DropdownItem name="recordform">{{$t("monitor.recordForm")}}</DropdownItem>
+                                                            <DropdownItem name="alarmList">{{$t("reportForm.allAlarm")}}</DropdownItem>
                                                             <DropdownItem name="devbaseinfo">{{$t("monitor.devBaseInfo")}}</DropdownItem>
                                                         </i-dropdown-menu>
                                                     </Dropdown>
@@ -433,6 +436,7 @@
                                                                                     <DropdownItem name="luyin" v-show="isShowRecordBtn">录音</DropdownItem>
                                                                                     <DropdownItem name="cmdrecord">{{$t("monitor.cmdRecord")}}</DropdownItem>
                                                                                     <DropdownItem name="recordform">{{$t("monitor.recordForm")}}</DropdownItem>
+                                                                                    <DropdownItem name="alarmList">{{$t("reportForm.allAlarm")}}</DropdownItem>
                                                                                     <DropdownItem name="devbaseinfo">{{$t("monitor.devBaseInfo")}}</DropdownItem>
                                                                                 </i-dropdown-menu>
                                                                     </Dropdown>
@@ -662,7 +666,7 @@
         <div class="report-wraper full">
             <div class="report-left-wrap">
                     <div class="mar-nav">
-                            <i-menu :theme="theme" @on-select="selectditem" accordion>
+                            <i-menu :theme="theme" @on-select="selectditem" :active-name="activeName" :open-names="openedNames" ref="navMenu">
                                 <template v-for="(group,index) in reportNavList">
                                     <Submenu :name="group.name" :key="index">
                                             <template slot="title">
@@ -815,7 +819,7 @@
                     <Icon type="ios-information-circle"></Icon>
                     <span>删除录音</span>
                 </p>
-                <p style="text-align:center;">是否删除{{this.deviceId}}的录音</p>
+                <p style="text-align:center;">是否删除{{this.deviceId}}的全部记录包括语音、轨迹、报警消息</p>
             </Modal>
             <Modal
                 v-model="deleteRecordsModal">

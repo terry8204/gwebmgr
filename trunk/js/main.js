@@ -8,7 +8,7 @@ var isLoadBMap = false;
 var globalDeviceId = "";
 var userlists = [];
 var isNeedRefresh = false;
-
+var isToAlarmListRecords = false;
 document.title = isZh ? "位置信息服务平台" : "Location information service platform";
 var getPath = function () {
   var jsPath = document.currentScript ? document.currentScript.src : function () {
@@ -435,10 +435,6 @@ iview.lang(isZh ? 'zh-CN' : 'en-US');
 //0X0D 设备静止后上报最后的经纬度
 //0X0E 下静止状态定时上传
 
-var reportModeType = {
-
-}
-
 function getReportModeStr (reportmode) {
   var reportModeStr = "0x" + reportmode.toString(16);
   switch (reportmode) {
@@ -693,12 +689,12 @@ var vRoot = new Vue({
   methods: {
     changeComponent: function (activeName) {
       window.onresize = null;
+      isToAlarmListRecords = false;
       this.$store.commit('setHeaderActiveName', activeName);
     },
     jumpReport: function (activeName) {
       this.$store.commit('setHeaderActiveName', activeName);
     },
-
     addPushMediaToLocalStore (devicemedia) {
       localStorage.setItem("devicemedia", JSON.stringify(devicemedia));
     },

@@ -49,18 +49,25 @@ Vue.component('tree-demo', {
                     deviceids: deviceids
                 }
             }
+        },
+        setSomething: function (somethingArr) {
+            this.something = somethingArr.join(",");
         }
     },
     watch: {
         groupslist: function () {
             var count = 0;
+            var somethingArr = [];
             this.groupslist.forEach(function (item) {
                 count++;
                 item.children.forEach(function (device) {
                     count++;
+                    if (device.checked) { somethingArr.push(device.title) }
                 })
             });
             this.allCount = count;
+
+            this.setSomething(somethingArr);
         }
     },
     mounted: function () {
@@ -1465,6 +1472,23 @@ function allAlarm (groupslist) {
                     }
                     self.loading = false;
                 });
+            },
+            selectedTreeByDeviceId (deviceId) {
+                var isBreak = false;
+                for (var index = 0; index < this.groupslist.length; index++) {
+                    var children = this.groupslist[index].children;
+                    for (var j = 0; j < children.length; j++) {
+                        var device = children[j];
+                        if (device.deviceid == deviceId) {
+                            groupslist[index].selected = true;
+                            device.checked = true;
+                            isBreak = true;
+                            break;
+                        }
+                    }
+                    if (isBreak) { break; }
+                };
+                this.groupslist = deepClone(this.groupslist);
             }
         },
         computed: {
@@ -1473,7 +1497,16 @@ function allAlarm (groupslist) {
             }
         },
         mounted: function () {
-            this.groupslist = groupslist;
+            var me = this;
+            me.groupslist = groupslist;
+            this.$nextTick(function () {
+                if (isToAlarmListRecords) {
+                    me.selectedTreeByDeviceId(globalDeviceId);
+                    me.isSelectAll = globalDeviceId;
+                    me.selectdDeviceList = [globalDeviceId];
+                    me.onClickQuery();
+                }
+            });
         }
     })
 }
@@ -1488,6 +1521,8 @@ var reportForm = {
         return {
             theme: "light",
             groupslist: [],
+            activeName: "",
+            openedNames: [],
             reportNavList: [
                 {
                     title: me.$t("reportForm.drivingReport"),
@@ -1585,12 +1620,24 @@ var reportForm = {
                     }
                 }
             })
+        },
+        toAlarmListRecords () {
+            var me = this;
+            this.activeName = "allAlarm";
+            this.openedNames = ['warningReport'];
+            this.$nextTick(function () {
+                me.$refs.navMenu.updateOpened();
+                me.loadPage("allalarm.html");
+            })
         }
     },
     mounted: function () {
         var me = this;
         this.getMonitorListByUser(function (groups) {
             me.groupslist = groups;
+            if (isToAlarmListRecords) {
+                me.toAlarmListRecords();
+            }
         })
     }
 }
