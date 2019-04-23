@@ -329,6 +329,7 @@ var monitor = {
             };
             utils.sendAjax(url, data, function (resp) {
                 if (resp.status === 0) {
+                    me.cmdSettings[data.cmdcode] = params;
                     communicate.$emit("disposeAlarm", data.cmdcode);
                     me.$Message.success(me.$t("monitor.sendSucc"));
                     me.dispatchDirectiveModal = false;
