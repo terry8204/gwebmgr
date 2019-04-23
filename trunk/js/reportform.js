@@ -1501,6 +1501,7 @@ function allAlarm (groupslist) {
             me.groupslist = groupslist;
             this.$nextTick(function () {
                 if (isToAlarmListRecords) {
+                    isToAlarmListRecords = false;
                     me.selectedTreeByDeviceId(globalDeviceId);
                     me.isSelectAll = globalDeviceId;
                     me.selectdDeviceList = [globalDeviceId];
