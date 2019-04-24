@@ -78,19 +78,19 @@
             <i-col span="4" style="height: 100%;text-align:right;line-height:100%;">预览 : &nbsp;</i-col>
             <i-col span="20" v-if="selectParamType==='text'">
                 <Row style="margin: 5px 0" v-for="item in previewObjList" :key="item.text">
-                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">
-                        {{item.text}} : &nbsp;
+                    <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">
+                        {{item.title}} : &nbsp;
                     </i-col>
-                    <i-col span="16">
-                        <i-input v-model.trim="kong"></i-input>    
+                    <i-col span="15">
+                        <i-input v-model.trim="item.value"></i-input>    
                     </i-col>
                 </Row>
             </i-col>
             <i-col span="20" v-if="selectParamType==='list'">
                 <Row style="margin: 5px 0">
-                    <i-col span="16" offset="4">
+                    <i-col span="15" offset="5">
                         <i-select v-model="preview">
-                            <i-option v-for="item in previewObjList" :value="item.type" :key="item.type">{{ item.text }}</i-option>
+                            <i-option v-for="item in previewObjList" :value="item.type" :key="item.type">{{ item.value }}</i-option>
                         </i-select>
                     </i-col>
                 </Row>
@@ -275,12 +275,14 @@
                     var children = parent.children;
                     for (var i = 0; i < children.length; i++) {
                         var item = children[i]
-                        var text = item.getAttribute("value");
+                        var title = item.innerHTML;
+                        var value = item.getAttribute("value");
                         var type = item.getAttribute("type");
-                        if (type && text) {
-                            this.previewObjList.push({ type: type, text: text });
+                        if (type && value) {
+                            this.previewObjList.push({ type: type, value: value ,title:title});
                         }
                     }
+                    console.log(' this.previewObjList',  this.previewObjList);
                     
                 },
                 setValue:function(data){
