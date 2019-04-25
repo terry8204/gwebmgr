@@ -23,11 +23,24 @@
         </Row>
         <Row style="margin:10px;height: 35px;">
             <div style="float: left;">
-                <tree-demo :groupslist="groupslist" @on-selectd-deviceids="onSelectdDeviceIds"></tree-demo>
+                <div style="height: 35px; line-height: 35px;">{{$t("reportForm.selectDev")}}:&nbsp;</div> 
             </div>
-            <div style="margin-left:20px;float: left;">
-                <span>{{$t("reportForm.intervalTime")}}:</span>
-                <input-number :max="30" :min="1" v-model.trim.number="minuteNum"></input-number>
+            <div style="float: left;position: relative;width: 300px;">
+                <div class="search-wrapper" v-click-outside.capture="onClickOutside">
+                    <i-input v-model.trim="sosoValue"  icon="ios-search-outline" @on-change="sosoValueChange" @on-blur="blur" @on-focus="focus" :placeholder="placeholder"></i-input>
+                    <transition name="fade">
+                        <ul class="search-item-wrapper" v-show="isShowMatchDev">
+                            <li  class="demo-auto-complete-item" v-for="item in filterData">
+                                <div class="demo-auto-complete-group">
+                                    <span>{{ item.groupname }}</span>
+                                </div>
+                                <div v-for="option in item.devices" :value="option.groupname" :key="option.groupname" class="ivu-select-item">
+                                    <span @click="sosoSelect(option)" class="demo-auto-complete-title">{{ option.title }}</span>
+                                </div>
+                            </li>
+                        </ul>
+                    </transition>
+                </div>
             </div>
             <div style="margin-left:20px;float: left;">
                 <i-button @click="onClickQuery">{{$t("reportForm.query")}}</i-button>

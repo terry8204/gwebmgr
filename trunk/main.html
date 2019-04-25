@@ -912,22 +912,6 @@
         </div>
     </script>
 
-    <!-- 选择车辆组件 -->
-    <script type="text/x-template" id="tree-demo-template"> 
-        <div class="tree-demo-wraper">
-           <div class="toggle-header-wraper"
-                v-click-outside.capture="onClickOutside"
-                >
-                <div style="height: 35px; line-height: 35px;">{{$t("reportForm.selectDev")}}:&nbsp;</div> 
-                <div style="position:relative;width: 300px;">
-                    <Input type="text" v-model="something" readonly @on-focus="onFocus"></Input>
-                    <div class="tree-wrapper" v-show="visibleTree">
-                        <Tree :data="groupslist" @on-check-change="onCheckChange" show-checkbox ref="treeRef"></Tree>
-                    </div>
-                </div> 
-           </div>
-        </div>
-    </script>
     <script src="dist/vue.min.js"></script>
     <script src="dist/vuex.min.js"></script>
     <script src="js/v-click-outside-x.js"></script>

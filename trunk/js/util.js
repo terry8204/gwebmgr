@@ -362,26 +362,30 @@ var utils = {
     }
   },
   getPinyin: function (groupslist) {
-    var newArr = [];
-
+    var me = this;
+    console.log(groupslist);
     groupslist.forEach(function (group) {
-      var groupObj = {
-        firstLetter: __pinyin.getFirstLetter(group.title),
-        pinyin: __pinyin.getPinyin(group.title),
-        groupname: group.title,
-        devices: []
-      };
-      group.children.forEach(function (device) {
-        groupObj.devices.push({
-          deviceid: device.deviceid,
-          devicename: device.title,
-          firstLetter: __pinyin.getFirstLetter(device.title),
-          pinyin: __pinyin.getPinyin(device.title),
-        })
+      group.firstLetter = __pinyin.getFirstLetter(group.groupname);
+      group.pinyin = __pinyin.getPinyin(group.groupname);
+      group.devices.forEach(function (device) {
+        var typeName = me.getDeviceTypeName(device.devicetype)
+        device.firstLetter = __pinyin.getFirstLetter(device.devicename);
+        device.pinyin = __pinyin.getPinyin(device.devicename);
+        device.title = typeName + "-" + device.devicename + "-" + device.deviceid;
       })
-      newArr.push(groupObj);
     });
-    return newArr;
+    return groupslist;
+  },
+  getDeviceTypeName: function (deviceTypeId) {
+    var typeName = "", deviceTypes = vstore.state.deviceTypes;
+    for (var index = 0; index < deviceTypes.length; index++) {
+      var element = deviceTypes[index];
+      if (element.devicetypeid === deviceTypeId) {
+        typeName = element.typename;
+        break
+      }
+    }
+    return typeName;
   },
   getUserInfoList: function () {
     var url = myUrls.queryUser();

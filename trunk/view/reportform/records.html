@@ -19,7 +19,7 @@
                                 <span>{{ item.groupname }}</span>
                             </div>
                             <div v-for="option in item.devices" :value="option.groupname" :key="option.groupname" class="ivu-select-item">
-                                <span @click="sosoSelect(option)" class="demo-auto-complete-title">{{ option.devicename }}</span>
+                                <span @click="sosoSelect(option)" class="demo-auto-complete-title">{{ option.title }}</span>
                             </div>
                         </li>
                     </ul>

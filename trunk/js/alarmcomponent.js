@@ -68,18 +68,6 @@ var waringComponent = {
             //     }
             // })
             console.log('this.disposeAlarm', this.disposeAlarm);
-        },
-        params: function () {
-            this.paramsInputList = [];
-            this.paramsInputObj = {};
-            if (this.params) {
-                var params = '<params>' + this.params + '</params>';
-                var parser = new DOMParser();
-                var xmlDoc = parser.parseFromString(params, 'text/xml');
-                this.parseXML(xmlDoc);
-            } else {
-                this.type = null;
-            };
         }
     },
     methods: {
@@ -109,27 +97,6 @@ var waringComponent = {
         setWaringWraperStyle: function () {
             this.waringWraperStyle = { width: this.wrapperWidth + 'px', height: this.wrapperHeight + 'px' };
         },
-        parseXML: function (xmlDoc) {
-            this.paramsCmdCodeArr = [];
-            var parent = xmlDoc.children[0];
-            var children = parent.children;
-            var type = children[0].getAttribute('type');
-            this.type = type;
-            if (this.type === 'list') {
-                this.selectedTypeVal = null;
-            };
-            for (var i = 1; i < children.length; i++) {
-                var item = children[i];
-                var text = item.innerHTML;
-                var type = item.getAttribute('type');
-                if (type && text) {
-                    this.paramsCmdCodeArr.push(type);
-                    this.$set(this.paramsInputObj, type, "");
-                    this.paramsInputList.push({ type: type, text: text });
-                }
-            };
-
-        },
         changeLargen: function (type) {
             this.isLargen = type;
             this.isWaring = false;
@@ -145,10 +112,10 @@ var waringComponent = {
             this.index = index
             switch (index) {
                 case 1:
-                    this.componentName = 'waringMsg'
+                    this.componentName = 'waringMsg';
                     break
                 case 2:
-                    this.componentName = 'deviceMsg'
+                    this.componentName = 'deviceMsg';
                     break
             }
         },
