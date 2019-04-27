@@ -17,10 +17,10 @@
             });
             return list;
         },
-        _getKey (msgObj) {
+        _getKey: function (msgObj) {
             return msgObj.deviceid + "-" + msgObj.msgtype;
         },
-        deleteMsg (msgObj) {
+        deleteMsg: function (msgObj) {
             var key = this._getKey(msgObj);
             delete this.cache[key];
         }

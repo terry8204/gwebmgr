@@ -522,7 +522,7 @@ var trackDebug = {
     }
   },
   methods: {
-    openClearTracksModal () {
+    openClearTracksModal: function () {
       if (this.deviceId) { this.clearTracks = true; };
     },
     onHandleDeleteOK: function () {
@@ -538,7 +538,7 @@ var trackDebug = {
       });
 
     },
-    onChange (index) {
+    onChange: function (index) {
       this.isShowCard = false;
       this.currentIndex = index;
       this.tableData = this.data.slice((index - 1) * 30, (index - 1) * 30 + 30);

@@ -627,7 +627,7 @@ var monitor = {
                 success: function (resp) {
                     if (resp.status == 0) {
                         if (resp.records) {
-                            resp.records.forEach((item) => {
+                            resp.records.forEach(function (item) {
                                 if (item) {
                                     var deviceid = item.deviceid;
                                     var b_lon_and_b_lat = wgs84tobd09(item.callon, item.callat)
@@ -1250,7 +1250,7 @@ var monitor = {
                 me.setIntervalReqRecords();
             });
         },
-        refreshMonitorRestartOpen () {
+        refreshMonitorRestartOpen: function () {
             var me = this;
             if (globalDeviceId) {
                 if (me.isShowCompanyName) {

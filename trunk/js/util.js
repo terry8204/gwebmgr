@@ -296,7 +296,9 @@ var utils = {
       track.deviceid +
       ')">SIM</span><span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="setFence(' +
       track.deviceid +
-      ')">' + (isZh ? '设置围栏' : 'SetFence') + '</span></p>';
+      ')">' + (isZh ? '设置围栏' : 'SetFence') + '</span><span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="setPanorama(' +
+      track.deviceid +
+      ')">' + (isZh ? '查看街景' : 'Panorama') + '</span></p>';
     return content;
   },
   getMileage: function (totaldistance) {
@@ -508,6 +510,31 @@ function setFence (deviceid) {
   var url = 'setfence.html?deviceid=' + deviceid + '&token=' + token;
   window.open(url);
 }
+
+// 全景
+function setPanorama (deviceid) {
+  var monitorIns = vRoot.$children[1];
+  if (monitorIns.mapType === 'bMap') {
+    var track = monitorIns.$data.positionLastrecords[deviceid];
+    var panoramaService = new BMap.PanoramaService();
+    panoramaService.getPanoramaByLocation(new BMap.Point(track.b_lon, track.b_lat), function (data) {
+      var myData = data;
+      var panoramaInfo = "";
+      if (data == null) {
+        return;
+      }
+      panoramaInfo += '全景id为：' + data.id + '\n';
+      panoramaInfo += '坐标为：' + data.position.lng + ':' + data.position.lat + '\n';
+      console.log('panoramaInfo', panoramaInfo);
+      var panorama = monitorIns.$data.map.mapInstance.getPanorama();//获取实例对象
+      panorama.setId(myData.id);  //全景ID
+      panorama.show(); //显示全景
+    });
+  } else {
+    vRoot.$Message.error("谷歌地图暂时没开发");
+  }
+}
+
 
 
 // openSim

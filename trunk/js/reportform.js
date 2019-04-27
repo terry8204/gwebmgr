@@ -344,7 +344,7 @@ function posiReport (groupslist) {
                     if (resp.status == 0) {
                         if (resp.records) {
                             var newCored = [];
-                            resp.records.forEach((item) => {
+                            resp.records.forEach(function (item) {
 
                                 if (item) {
                                     var deviceid = item.deviceid;
@@ -1210,7 +1210,7 @@ var reportForm = {
                 }
             })
         },
-        toAlarmListRecords () {
+        toAlarmListRecords: function () {
             var me = this;
             this.activeName = "allAlarm";
             this.openedNames = ['warningReport'];
