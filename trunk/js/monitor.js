@@ -562,6 +562,9 @@ var monitor = {
                 this.$store.commit('currentDeviceRecord', record);
                 this.map.onClickDevice(deviceid);
             } else {
+                if (this.mapType == 'bMap') {
+                    this.map.mapInstance.closeInfoWindow();
+                };
                 this.$Message.error(this.$t("monitor.noRecordTrack"))
                 this.$store.commit('currentDeviceId', deviceid);
             }
