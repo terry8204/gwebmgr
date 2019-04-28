@@ -178,7 +178,7 @@ var waringComponent = {
                     var url = myUrls.queryMsg();
                     utils.sendAjax(url, { lastqueryallmsgtime: me.lastqueryallmsgtime }, function (resp) {
                         me.lastqueryallmsgtime = DateFormat.getCurrentUTC();
-                        if (resp.status === 0) {
+                        if (resp.status === 0 && resp.records) {
                             var records = resp.records;
                             records.forEach(function (item) {
                                 item.devicename = me.getDeviceName(item.deviceid);

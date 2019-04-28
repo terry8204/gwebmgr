@@ -170,7 +170,8 @@ ul,ol,li{
 }
 
 p.last-address{
-    height: 42px;
+    min-height: 21px;
+    max-height: 42px;
     display: -webkit-box;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 2;
