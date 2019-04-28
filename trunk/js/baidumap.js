@@ -11,7 +11,7 @@ function BMapClass () {
 BMapClass.pt = BMapClass.prototype;
 
 BMapClass.pt.initMap = function () {
-    this.mapInstance = new BMap.Map('my-map', { minZoom: 4, maxZoom: 18, enableMapClick: false })
+    this.mapInstance = new BMap.Map('my-map', { minZoom: 4, maxZoom: 20, enableMapClick: false })
     this.mapInstance.enableScrollWheelZoom()
     this.mapInstance.enableAutoResize()
     this.mapInstance.disableDoubleClickZoom()
@@ -154,7 +154,7 @@ BMapClass.pt.onClickDevice = function (deviceid) {
     for (var i = 0; i < markers.length; i++) {
         var marker = markers[i];
         if (marker.deviceid == deviceid) {
-            this.mapInstance.getZoom() != 18 ? this.mapInstance.setZoom(18) : '';
+            this.mapInstance.getZoom() != 19 ? this.mapInstance.setZoom(19) : '';
             this.openInfoWindow(marker, deviceid);
             break;
         }
