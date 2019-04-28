@@ -299,6 +299,9 @@ var myUrls = {
   },
   queryDeviceSettings: function () {
     return this.host + 'webapi?action=querydevicesettings&token=' + token;
+  },
+  deleteAudio: function () {
+    return this.host + 'webapi?action=deleteaudio&token=' + token;
   }
 }
 
