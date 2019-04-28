@@ -1040,7 +1040,6 @@ var monitor = {
                 }
                 group.title = group.groupname + "(" + online + ")";
             });
-
         },
         getOfflineShowCompanyTreeData: function () {
             var me = this
