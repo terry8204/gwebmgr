@@ -67,10 +67,6 @@
                             key: 'createtime'
                         },
                         {
-                            title: vRoot.$t("user.deadline"),
-                            key: 'overduetime'
-                        },
-                        {
                             title: vRoot.$t("bgMgr.action"),
                             key: 'action',
                             width: 250,
@@ -181,7 +177,6 @@
 
                             item.userTypeStr = me.getUserTypeStr(item.usertype);
                             item.createtime = me.timeToDateStr(item.createtime);
-                            item.overduetime = me.timeToDateStr(item.overduetime); 
 
                             item.companynamePinyin = __pinyin.getPinyin(item.company&&item.company.companyname);
                             item.companynameFirstLetter = __pinyin.getFirstLetter(item.company&&item.company.companyname);

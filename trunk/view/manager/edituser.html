@@ -15,14 +15,6 @@
                         
                             <Row style="margin: 10px 0">
                                 <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">
-                                    <i style="color: red;display: inline-block;">*</i>&nbsp;{{$t("user.deadline")}} : &nbsp;</i-col>
-                                <i-col span="12">
-                                    <date-picker type="date" v-model="overduetime" :options="dateOptions"></date-picker>
-                                </i-col>
-                            </Row>
-                        
-                            <Row style="margin: 10px 0">
-                                <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">
                                     <i style="color: red;display: inline-block;">*</i>&nbsp;{{$t("user.userType")}} : &nbsp;</i-col>
                                 <i-col span="12">
                                     <i-select v-model="usertype">
@@ -115,7 +107,6 @@
             i18n: utils.getI18n(),
             data:{
                 username:"",
-                overduetime:"",
                 usertype:"",
                 singleLogin:"0",
                 phoneLogin:"0",
@@ -161,8 +152,7 @@
 
                         me.$nextTick(function () { 
                             me.setUserTypeByUser();
-                            me.overduetime = editObject.overduetime;
-                            me.companyid = editObject.company.companyid;
+                            me.companyid = editObject.company ? editObject.company.companyid : "";
                         });
                         
                     }
@@ -204,13 +194,8 @@
                     var me = this;
                     var url = myUrls.editUser();
                     var userType = this.usertype;
-                    if(this.overduetime == ""){
-                        this.$Message.error(this.$t("message.plSelectTime"));
-                        return;
-                    }
                     var data ={
                         username:this.username,
-                        overduetime:new Date(this.overduetime).getTime(),
                         usertype:userType,
                         companyid:this.companyid,
                     }; 
