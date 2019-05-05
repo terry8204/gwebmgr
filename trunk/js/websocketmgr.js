@@ -46,7 +46,7 @@ var reconnectWs = function () {
         lockReconnect = true;
         setTimeout(function () {
             console.log("ws重连!" + new Date().toUTCString());
-            initWebSocket(tempUserName, tempCallBack);
+            initWebSocket(wsHost, tempUserName, tempCallBack);
             lockReconnect = false;
         }, 2000);
     }

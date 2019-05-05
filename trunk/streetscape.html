@@ -124,7 +124,12 @@
             divWrap.style.height = "35px";
             divWrap.className = "jiejing";    
             divWrap.onclick = function(e){
-                panorama.show(); 
+                if(panorama !== null){
+                    panorama.show(); 
+                }else{
+                    alert("该位置暂时没有街景");
+                }
+                 
             };
             mapInstance.getContainer().appendChild(divWrap);
             return divWrap;
