@@ -75,11 +75,12 @@
             mapInstance.enableAutoResize();
             mapInstance.disableDoubleClickZoom();
             mapInstance.centerAndZoom(new BMap.Point ( blon, blat ), 19);
-            // var top_left_control = new BMap.ScaleControl({anchor: BMAP_ANCHOR_BOTTOM_LEFT});
-            var top_left_control = new BMap.ScaleControl({
-                anchor: BMAP_ANCHOR_BOTTOM_LEFT
-            }) // 左上角，添加比例尺
-            mapInstance.addControl(top_left_control);
+            // BMAP_SATELLITE_MAP BMAP_NORMAL_MAP
+            var mapTypeControl = new BMap.MapTypeControl({
+                mapTypes:[BMAP_SATELLITE_MAP , BMAP_NORMAL_MAP]
+            });
+            mapInstance.addControl(mapTypeControl);
+            
         } 
 
        
