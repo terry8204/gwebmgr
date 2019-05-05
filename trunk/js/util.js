@@ -519,14 +519,11 @@ function setPanorama (deviceid) {
     var track = monitorIns.$data.positionLastrecords[deviceid];
     var panoramaService = new BMap.PanoramaService();
     panoramaService.getPanoramaByLocation(new BMap.Point(track.b_lon, track.b_lat), function (data) {
-      var myData = data;
-      var panoramaInfo = "";
       if (data == null) {
+        vRoot.$Message.error("该位置暂时没有街景");
         return;
       }
-      panoramaInfo += '全景id为：' + data.id + '\n';
-      panoramaInfo += '坐标为：' + data.position.lng + ':' + data.position.lat + '\n';
-      console.log('panoramaInfo', panoramaInfo);
+      var myData = data;
       var panorama = monitorIns.$data.map.mapInstance.getPanorama();//获取实例对象
       panorama.setId(myData.id);  //全景ID
       panorama.show(); //显示全景

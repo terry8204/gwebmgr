@@ -668,7 +668,7 @@ var trackDebug = {
       };
     }
   },
-  mounted () {
+  mounted: function () {
     this.deviceId = globalDeviceId;
     this.caclTableheight();
     this.startDate = new Date();
