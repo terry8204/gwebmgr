@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>streetscape</title>
+    <style>
+        body{margin: 0}
+        html,body,.map-wrapper,#my-map{width: 100%;height: 100%;}
+
+    </style>
+</head>
+<body>
+    <div class="map-wrapper">
+        <div id="my-map"></div>
+    </div>
+    <script src="http://api.map.baidu.com/api?v=3.0&ak=e7SC5rvmn2FsRNE4R1ygg44n"></script>
+    <script>
+        var mapInstance = null; 
+
+        function getParameterByName (name) {
+            var url = location.search
+            url = decodeURIComponent(url)
+            var theRequest = new Object()
+            if (url.indexOf('?') != -1) {
+            var str = url.substr(1)
+            var strs = str.split('&')
+            for (var i = 0; i < strs.length; i++) {
+                theRequest[strs[i].split('=')[0]] = unescape(strs[i].split('=')[1])
+            }
+            }
+            return theRequest[name]
+        };
+
+        function initMap(param) { 
+            mapInstance = new BMap.Map('my-map', { minZoom: 4, maxZoom: 20, enableMapClick: false })
+            mapInstance.enableScrollWheelZoom();
+            mapInstance.enableAutoResize();
+            mapInstance.disableDoubleClickZoom();
+            mapInstance.centerAndZoom(new BMap.Point(113.864275, 22.566936), 5);
+            // var top_left_control = new BMap.ScaleControl({anchor: BMAP_ANCHOR_BOTTOM_LEFT});
+            var top_left_control = new BMap.ScaleControl({
+                anchor: BMAP_ANCHOR_BOTTOM_LEFT
+            }) // 左上角，添加比例尺
+            mapInstance.addControl(top_left_control);
+        } 
+
+        initMap();
+
+
+        function setPanorama (deviceid) {
+            var panoramaService = new BMap.PanoramaService();
+            panoramaService.getPanoramaByLocation(new BMap.Point(113.864275,22.566936), function (data) {
+                if (data == null) {
+                    alert("该位置暂时没有街景");
+                    return;
+                }
+                var myData = data;
+                var panorama = mapInstance.getPanorama();//获取实例对象
+                panorama.setId(myData.id);  //全景ID
+                panorama.show(); //显示全景
+            });
+        }
+    </script>
+</body>
+</html>

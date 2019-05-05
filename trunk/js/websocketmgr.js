@@ -1,5 +1,5 @@
 var lockReconnect = false;
-var initWebSocket = function (username, callback) {
+var initWebSocket = function (userName, callback) {
     var initIsPass = false;
     if ('WebSocket' in window) {
         ws = new WebSocket(wsHost);
@@ -40,7 +40,7 @@ var reconnectWs = function (url) {
         lockReconnect = true;
         setTimeout(function () {
             console.log("ws重连!" + new Date().toUTCString());
-            initWebSocket();
+            initWebSocket(userName, vRoot.wsCallback);
             lockReconnect = false;
         }, 2000);
     }

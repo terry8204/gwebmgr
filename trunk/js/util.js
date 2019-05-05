@@ -529,7 +529,7 @@ function setPanorama (deviceid) {
       panorama.show(); //显示全景
     });
   } else {
-    vRoot.$Message.error("谷歌地图暂时没开发");
+    alert("谷歌地图暂时没开发");
   }
 }
 
