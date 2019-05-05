@@ -44,11 +44,11 @@
             url = decodeURIComponent(url)
             var theRequest = new Object()
             if (url.indexOf('?') != -1) {
-            var str = url.substr(1)
-            var strs = str.split('&')
-            for (var i = 0; i < strs.length; i++) {
-                theRequest[strs[i].split('=')[0]] = unescape(strs[i].split('=')[1])
-            }
+                var str = url.substr(1)
+                var strs = str.split('&')
+                for (var i = 0; i < strs.length; i++) {
+                    theRequest[strs[i].split('=')[0]] = unescape(strs[i].split('=')[1])
+                }
             }
             return theRequest[name]
         };
@@ -83,7 +83,6 @@
         } 
 
        
-
         function ZoomControl(){
             this.defaultAnchor = BMAP_ANCHOR_BOTTOM_RIGHT;
             this.defaultOffset = new BMap.Size(10, 10);
@@ -121,16 +120,12 @@
 
         JieJingControl.prototype.initialize = function(map){
             var divWrap = document.createElement("div");
-
             divWrap.style.width = "35px";
             divWrap.style.height = "35px";
             divWrap.className = "jiejing";    
-
-
             divWrap.onclick = function(e){
                 panorama.show(); 
             };
-
             mapInstance.getContainer().appendChild(divWrap);
             return divWrap;
         }
@@ -151,7 +146,7 @@
 
         initMap();
 
-        if(lon && lat){
+        if(lon !== undefined && lat !== undefined){
             addOverlay(); 
             addControl();
             setPanorama (lon,lat);     
