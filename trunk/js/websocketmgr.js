@@ -1,11 +1,17 @@
 var lockReconnect = false;
-var initWebSocket = function (userName, callback) {
+var tempUserName = null;
+var tempCallBack = null;
+var tempHost = null;
+var initWebSocket = function (host, userName, callback) {
+    tempHost = host;
+    tempUserName = userName;
+    tempCallBack = callback;
     var initIsPass = false;
     if ('WebSocket' in window) {
-        ws = new WebSocket(wsHost);
+        ws = new WebSocket(tempHost);
         initIsPass = true;
     } else if ('MozWebSocket' in window) {
-        ws = new MozWebSocket(wsHost);
+        ws = new MozWebSocket(tempHost);
         initIsPass = true;
     }
     if (initIsPass == true) {
@@ -18,8 +24,8 @@ var initWebSocket = function (userName, callback) {
             reconnectWs();
         };
         ws.onopen = function () {
-            if (userName) {
-                var user = "online" + userName + "-web";
+            if (tempUserName) {
+                var user = "online" + tempUserName + "-web";
                 console.log('ws连接成功', user);
                 ws.send(user);
             }
@@ -29,18 +35,18 @@ var initWebSocket = function (userName, callback) {
         };
         ws.onmessage = function (event) {
             var resp = JSON.parse(event.data);
-            callback(resp);
+            tempCallBack(resp);
         };
     }
     return initIsPass;
 };
 
-var reconnectWs = function (url) {
+var reconnectWs = function () {
     if (lockReconnect == false) {
         lockReconnect = true;
         setTimeout(function () {
             console.log("ws重连!" + new Date().toUTCString());
-            initWebSocket(userName, vRoot.wsCallback);
+            initWebSocket(tempUserName, tempCallBack);
             lockReconnect = false;
         }, 2000);
     }

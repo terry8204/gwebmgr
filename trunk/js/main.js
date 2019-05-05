@@ -695,7 +695,7 @@ var vRoot = new Vue({
     jumpReport: function (activeName) {
       this.$store.commit('setHeaderActiveName', activeName);
     },
-    addPushMediaToLocalStore (devicemedia) {
+    addPushMediaToLocalStore: function (devicemedia) {
       localStorage.setItem("devicemedia", JSON.stringify(devicemedia));
     },
     wsCallback: function (resp) {
@@ -739,7 +739,7 @@ var vRoot = new Vue({
     this.$store.dispatch('setDeviceTypes');
 
     if (userName) {
-      var initIsPass = initWebSocket(userName, this.wsCallback);   // 连接webSocket
+      var initIsPass = initWebSocket(wsHost, userName, this.wsCallback);   // 连接webSocket
       if (!initIsPass) {
         this.$Message.error("浏览器不支持webSocket");
       }

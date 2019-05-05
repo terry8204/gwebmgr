@@ -4,11 +4,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>streetscape</title>
+    <title>街景</title>
     <style>
         body{margin: 0}
         html,body,.map-wrapper,#my-map{width: 100%;height: 100%;}
-
+        .map-wrapper{ position: relative;}
+        .zoomin80{
+            width: 35px;
+            height: 35px;
+            background: url('./images/zoomin80.png') no-repeat;
+            background-size: cover;
+        }
+        .zoomout80{
+            width: 35px;
+            height: 35px;
+            background: url('./images/zoomout80.png') no-repeat;
+            background-size: cover; 
+            margin-top: 10px;
+        }
+        .jiejing{
+            background: url('./images/zoomout80.png') no-repeat;
+            background-size: cover;    
+        }
     </style>
 </head>
 <body>
@@ -18,6 +35,9 @@
     <script src="https://api.map.baidu.com/api?v=3.0&ak=e7SC5rvmn2FsRNE4R1ygg44n"></script>
     <script>
         var mapInstance = null; 
+        var panorama = null;
+        var lon = getParameterByName ("lon");
+        var lat = getParameterByName ("lat");
 
         function getParameterByName (name) {
             var url = location.search
@@ -33,12 +53,28 @@
             return theRequest[name]
         };
 
+        function setPanorama (lon,lat) {
+            var panoramaService = new BMap.PanoramaService();
+            panoramaService.getPanoramaByLocation(new BMap.Point(lon,lat), function (data) {
+                if (data == null) {
+                    alert("该位置暂时没有街景");
+                    return;
+                }
+                var myData = data;
+                panorama = mapInstance.getPanorama();//获取实例对象
+                panorama.setId(myData.id);  //全景ID
+                panorama.show(); //显示全景
+            });
+        }    
+
         function initMap(param) { 
-            mapInstance = new BMap.Map('my-map', { minZoom: 4, maxZoom: 20, enableMapClick: false })
+            var blon =  lon ? lon : 113.864275;
+            var blat =  lat ? lat : 22.566936;
+            mapInstance = new BMap.Map('my-map', { minZoom: 4, maxZoom: 19, enableMapClick: false })
             mapInstance.enableScrollWheelZoom();
             mapInstance.enableAutoResize();
             mapInstance.disableDoubleClickZoom();
-            mapInstance.centerAndZoom(new BMap.Point(113.864275, 22.566936), 5);
+            mapInstance.centerAndZoom(new BMap.Point ( blon, blat ), 19);
             // var top_left_control = new BMap.ScaleControl({anchor: BMAP_ANCHOR_BOTTOM_LEFT});
             var top_left_control = new BMap.ScaleControl({
                 anchor: BMAP_ANCHOR_BOTTOM_LEFT
@@ -46,22 +82,82 @@
             mapInstance.addControl(top_left_control);
         } 
 
+       
+
+        function ZoomControl(){
+            this.defaultAnchor = BMAP_ANCHOR_BOTTOM_RIGHT;
+            this.defaultOffset = new BMap.Size(10, 10);
+        }
+
+        ZoomControl.prototype = new BMap.Control();
+
+        ZoomControl.prototype.initialize = function(map){
+            var divWrap = document.createElement("div");
+            var divTop = document.createElement("div");
+            var divBottom = document.createElement("div");
+            divWrap.style.width = "35px";
+            divWrap.style.height = "80px";
+            divWrap.style.position = "relative";
+            divTop.className = "zoomin80";    
+            divBottom.className = "zoomout80";   
+            divTop.onclick = function(e){
+                mapInstance.setZoom(mapInstance.getZoom() + 1);
+            }
+            divBottom.onclick = function(e){
+                mapInstance.setZoom(mapInstance.getZoom() - 1);
+            }
+            divWrap.appendChild(divTop);
+            divWrap.appendChild(divBottom);
+            mapInstance.getContainer().appendChild(divWrap);
+            return divWrap;
+        }
+
+        function JieJingControl(){
+            this.defaultAnchor = BMAP_ANCHOR_BOTTOM_LEFT;
+            this.defaultOffset = new BMap.Size(10, 25);
+        }
+
+        JieJingControl.prototype = new BMap.Control();
+
+        JieJingControl.prototype.initialize = function(map){
+            var divWrap = document.createElement("div");
+
+            divWrap.style.width = "35px";
+            divWrap.style.height = "35px";
+            divWrap.className = "jiejing";    
+
+
+            divWrap.onclick = function(e){
+                panorama.show(); 
+            };
+
+            mapInstance.getContainer().appendChild(divWrap);
+            return divWrap;
+        }
+
+      
+        function  addControl() { 
+            var myZoomCtrl = new ZoomControl();
+            var JieJingCtrl = new JieJingControl();
+            mapInstance.addControl(myZoomCtrl);
+            mapInstance.addControl(JieJingCtrl);
+        }
+        
+        function addOverlay() { 
+            var point = new BMap.Point ( lon, lat );
+            var marker = new BMap.Marker(point,{});
+            mapInstance.addOverlay(marker);
+        }
+
         initMap();
 
-
-        function setPanorama (deviceid) {
-            var panoramaService = new BMap.PanoramaService();
-            panoramaService.getPanoramaByLocation(new BMap.Point(113.864275,22.566936), function (data) {
-                if (data == null) {
-                    alert("该位置暂时没有街景");
-                    return;
-                }
-                var myData = data;
-                var panorama = mapInstance.getPanorama();//获取实例对象
-                panorama.setId(myData.id);  //全景ID
-                panorama.show(); //显示全景
-            });
+        if(lon && lat){
+            addOverlay(); 
+            addControl();
+            setPanorama (lon,lat);     
         }
+            
+
     </script>
 </body>
 </html>
