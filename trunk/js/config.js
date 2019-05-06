@@ -302,6 +302,9 @@ var myUrls = {
   },
   deleteAudio: function () {
     return this.host + 'webapi?action=deleteaudio&token=' + token;
+  },
+  fixTotalDistance: function () {
+    return this.host + 'webapi?action=fixtotaldistance&token=' + token;
   }
 }
 

@@ -482,6 +482,8 @@ var trackDebug = {
     return {
       loading: false,
       isShowCard: false,
+      meter: 0,
+      lichengModal: false,
       clearTracks: false,
       deleteRecordsModal: false,
       deviceId: globalDeviceId,
@@ -522,6 +524,18 @@ var trackDebug = {
     }
   },
   methods: {
+    onSettingLicheng: function () {
+      if (!this.deviceId && typeof this.meter !== "number") { return; };
+      var me = this, url = myUrls.fixTotalDistance();
+      utils.sendAjax(url, { deviceid: this.deviceId, totaldistance: this.meter }, function (resp) {
+        if (resp.status === 0) {
+          me.lichengModal = false;
+          me.$Message.success("设置成功");
+        } else {
+          me.$Message.error("设置失败");
+        }
+      });
+    },
     openClearTracksModal: function () {
       if (this.deviceId) { this.clearTracks = true; };
     },

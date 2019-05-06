@@ -20,16 +20,19 @@ var utils = {
       timeout: 10000,
       dataType: 'json',
       success: function (resp) {
-        if (resp.status > 9000) {
-          vRoot.$Message.error(vRoot.$t("monitor.reLogin"))
-          Cookies.remove('token')
-          setTimeout(function () {
-            window.location.href = 'index.html'
-          }, 2000);
+        if (resp) {
+          if (resp.status > 9000) {
+            vRoot.$Message.error(vRoot.$t("monitor.reLogin"))
+            Cookies.remove('token')
+            setTimeout(function () {
+              window.location.href = 'index.html'
+            }, 2000);
+          } else {
+            callback(resp);
+          }
         } else {
-          callback(resp);
+          console.log('sendAjax - resp - null', url);
         }
-
       },
       error: function (e) {
         // Cookies.remove('token');

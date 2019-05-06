@@ -781,6 +781,9 @@
                         <i-button @click="filterTypeDesc">过滤</i-button>
                     </li>
                     <li style="float:right">
+                        <i-button @click="lichengModal=true">设置总里程</i-button>
+                    </li>
+                    <li style="float:right">
                         <i-button @click="openClearTracksModal">清除使用记录</i-button>
                     </li>
                 </ul>
@@ -827,6 +830,22 @@
                 <p style="text-align:center;">已删除消息条数 : {{deleteRecordsObject.removedmsgcount}}</p>
                 <p style="text-align:center;">已删除报警条数 : {{deleteRecordsObject.removedalarmcount}}</p>
                 <p style="text-align:center;">已删除轨迹条数 : {{deleteRecordsObject.removedtrackcount}}</p>
+            </Modal>
+            <Modal
+                v-model="lichengModal">
+                <p slot="header" style="color:#f60;text-align:center">
+                    <Icon type="md-settings"></Icon>
+                    <span>设置总里程</span>
+                </p>
+                <Row style="margin: 10px 0">
+                    <i-col span="4" :offset="1" style="height: 100%;text-align:right;line-height:32px;">里程数(米) :</i-col>
+                    <i-col span="16" :offset="1">
+                        <i-input v-model.trim="meter"></i-input>
+                    </i-col>
+                </Row>
+                <p slot="footer" style="">
+                   <i-button type="primary" @click="onSettingLicheng" style="width:100%;">设置</i-button>
+                </p>
             </Modal>
         </div>
     </script>
