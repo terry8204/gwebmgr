@@ -118,7 +118,6 @@
                         method:"post",
                         success:function(resp){                           
                             if( resp.status == 0 && resp.logs){
-                                resp.logs.sort(function (a,b) {  return b.logintime - a.logintime; });
                                 resp.logs.forEach(function (item) { 
                                     item.logintimeStr = DateFormat.longToDateTimeStr(item.logintime, 0);
                                 });
