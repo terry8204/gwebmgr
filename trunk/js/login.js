@@ -15,6 +15,66 @@ new Vue({
         language: Cookies.get("PATH_LANG") || 'zh',
     },
     methods: {
+        getBrowserInfo: function () {
+            var userAgent = navigator.userAgent; //取得浏览器的userAgent字符串
+            var isOpera = userAgent.indexOf("Opera") > -1; //判断是否Opera浏览器
+            var isIE = userAgent.indexOf("compatible") > -1
+                && userAgent.indexOf("MSIE") > -1 && !isOpera; //判断是否IE浏览器
+            var isEdge = userAgent.indexOf("Edge") > -1; //判断是否IE的Edge浏览器
+            var isFF = userAgent.indexOf("Firefox") > -1; //判断是否Firefox浏览器
+            var isSafari = userAgent.indexOf("Safari") > -1
+                && userAgent.indexOf("Chrome") == -1; //判断是否Safari浏览器
+            var isChrome = userAgent.indexOf("Chrome") > -1
+                && userAgent.indexOf("Safari") > -1; //判断Chrome浏览器
+
+            if (isIE) {
+                var reIE = new RegExp("MSIE (\\d+\\.\\d+);");
+                reIE.test(userAgent);
+                var fIEVersion = parseFloat(RegExp["$1"]);
+                if (fIEVersion == 7) {
+                    return "IE7";
+                } else if (fIEVersion == 8) {
+                    return "IE8";
+                } else if (fIEVersion == 9) {
+                    return "IE9";
+                } else if (fIEVersion == 10) {
+                    return "IE10";
+                } else if (fIEVersion == 11) {
+                    return "IE11";
+                } else {
+                    return "0";
+                }//IE版本过低
+                return "IE";
+            }
+
+            function getVersion (browserName) {
+                var idx = userAgent.indexOf(browserName);
+                var versionArr = userAgent.slice(idx).split(" ");
+                for (var i = 0; i < versionArr.length; i++) {
+                    var item = versionArr[i];
+                    if (item.indexOf(browserName) !== -1) {
+                        return item;
+                    };
+                }
+                return "";
+            }
+
+            if (isOpera) {
+                return getVersion("Opera");
+            }
+            if (isEdge) {
+                return getVersion("Edge");
+            }
+            if (isFF) {
+                return getVersion("Firefox");
+            }
+            if (isSafari) {
+                return getVersion("Safari");
+            }
+            if (isChrome) {
+                return getVersion("Chrome");
+            }
+        },
         handleSubmit: function () {
             var me = this;
             var user = this.username;
@@ -80,7 +140,7 @@ new Vue({
             var me = this;
             var url = myUrls.login();
             var type = this.account == 0 ? "USER" : "DEVICE";
-            var data = { type: type, from: "web", username: this.username, password: $.md5(this.password) };
+            var data = { type: type, from: "web", username: this.username, password: $.md5(this.password), phonemodelorbrowser: me.getBrowserInfo() };
             var encode = JSON.stringify(data);
             me.loading = true;
             $.ajax({

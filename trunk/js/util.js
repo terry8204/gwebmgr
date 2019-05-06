@@ -374,7 +374,6 @@ var utils = {
   },
   getPinyin: function (groupslist) {
     var me = this;
-    console.log(groupslist);
     groupslist.forEach(function (group) {
       group.firstLetter = __pinyin.getFirstLetter(group.groupname);
       group.pinyin = __pinyin.getPinyin(group.groupname);

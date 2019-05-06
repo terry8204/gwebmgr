@@ -524,6 +524,9 @@ var trackDebug = {
     }
   },
   methods: {
+    loginRecords: function () {
+      window.open("loginrecords.html");
+    },
     onSettingLicheng: function () {
       if (!this.deviceId && typeof this.meter !== "number") { return; };
       var me = this, url = myUrls.fixTotalDistance();

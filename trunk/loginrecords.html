@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>登录记录</title>
+    <link rel="stylesheet" href="dist/styles/iview.css">
+    <script src="js/js.cookie.min.js"></script>
+    <style>
+        html,body,.container{
+            width: 100%;height: 100%;
+        }
+        .container{
+            position: relative;
+            padding: 10px;
+            overflow: hidden;
+        }
+        .header{
+            height: 40px;
+            width: 100px;
+        }
+    </style>
+    <script>
+        var token = Cookies.get("token");
+        if (token == undefined) {
+            window.location.href = "index.html";
+        };
+    </script>
+</head>
+<body>
+    <div class="container" id="container">
+        <Row style="margin: 10px 0">
+            <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">用户名称</i-col>
+            <i-col span="8">
+                <i-input v-model.trim="username"></i-input>
+            </i-col>
+            <i-col span="8">
+                <i-button @click="onHandleClick">查询</i-button>
+            </i-col>
+        </Row>
+        <i-table border :columns="columns" :data="tableData" :height="tableHeight" :loading="loading"></i-table>
+    </div>
+    <script src="dist/vue.min.js"></script>
+    <script src="dist/iview.min.js"></script>
+    <script src="js/jquery.js"></script>
+    <script src="js/config.js"></script>
+    <script>
+        new Vue({
+            el:"#container",
+            data:{
+                loading:false,
+                username:"",
+                tableHeight:100,
+                columns:[
+                    {
+                        title: "用户名称",
+                        key: 'username'
+                    },
+                ],
+                tableData:[]
+            },
+            methods: {
+                getLoginRecords:function(){
+
+                },
+                calcTableHeight: function () {
+                    var wHeight = window.innerHeight;
+                    this.tableHeight = wHeight - 72;
+                },
+                onHandleClick:function(){
+                    var url = myUrls.reportLoginLog();
+                    $.ajax({
+                        url:url,
+                        data:JSON.stringify({userid:this.username}),
+                        method:"post",
+                        success:function(resp){
+                            console.log('resp', resp);
+                        }
+                    })
+                }
+            },
+            mounted () {
+                var me = this;
+                this.calcTableHeight();
+                window.onresize = function () { 
+                    me.calcTableHeight();
+                }
+            },
+        })
+    </script>
+ 
+</body>
+</html>

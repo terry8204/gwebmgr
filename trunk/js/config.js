@@ -305,7 +305,10 @@ var myUrls = {
   },
   fixTotalDistance: function () {
     return this.host + 'webapi?action=fixtotaldistance&token=' + token;
-  }
+  },
+  reportLoginLog: function () {
+    return this.host + 'webapi?action=reportloginlog&token=' + token;
+  },
 }
 
 
