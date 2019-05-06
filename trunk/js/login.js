@@ -140,7 +140,7 @@ new Vue({
             var me = this;
             var url = myUrls.login();
             var type = this.account == 0 ? "USER" : "DEVICE";
-            var data = { type: type, from: "web", username: this.username, password: $.md5(this.password), phonemodelorbrowser: me.getBrowserInfo() };
+            var data = { type: type, from: "web", username: this.username, password: $.md5(this.password), browser: me.getBrowserInfo() };
             var encode = JSON.stringify(data);
             me.loading = true;
             $.ajax({
