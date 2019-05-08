@@ -737,6 +737,7 @@ var monitor = {
                     if (record) {
                         me.positionLastrecords[data.deviceid].devicename = sendData.devicename;
                         me.map.onClickDevice(data.deviceid);
+                        me.map.updateMarkerLabel(data.deviceid);
                     };
                 } else if ((resp.status == -1)) {
                     me.$Message.error(me.$t("message.changeFail"))

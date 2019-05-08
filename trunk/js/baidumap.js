@@ -41,6 +41,8 @@ BMapClass.pt.setMarkerClusterer = function (lastTracks) {
     }
 };
 
+
+
 BMapClass.pt.getMarkers = function () {
     var markers = [];
     for (var key in this.lastTracks) {
@@ -56,6 +58,17 @@ BMapClass.pt.getMarkers = function () {
         this.markerHashMap[track.deviceid] = marker;
     }
     return markers;
+}
+
+BMapClass.pt.updateMarkerLabel = function (deviceid) {
+    var marker = this.markerHashMap[deviceid];
+    if (marker) {
+        var track = this.lastTracks[deviceid];
+        if (track) {
+            var label = this.getCarLabel(track);
+            marker.setLabel(label);
+        }
+    }
 }
 
 
@@ -76,6 +89,7 @@ BMapClass.pt.openInfoWindow = function (marker, deviceid) {
     this.mapInstance.panTo(marker.point);
     this.mapInfoWindow = mapInfoWindow;
 }
+
 
 BMapClass.pt.getCarLabel = function (track) {
     var label = new BMap.Label(track.devicename, {
@@ -150,14 +164,10 @@ BMapClass.pt.getInfoWindow = function (track, address) {
 }
 
 BMapClass.pt.onClickDevice = function (deviceid) {
-    var markers = this.markerClusterer.getMarkers();
-    for (var i = 0; i < markers.length; i++) {
-        var marker = markers[i];
-        if (marker.deviceid == deviceid) {
-            this.mapInstance.getZoom() != 19 ? this.mapInstance.setZoom(19) : '';
-            this.openInfoWindow(marker, deviceid);
-            break;
-        }
+    var marker = this.markerHashMap[deviceid];
+    if (marker) {
+        this.mapInstance.getZoom() != 19 ? this.mapInstance.setZoom(19) : '';
+        this.openInfoWindow(marker, deviceid);
     }
 }
 
