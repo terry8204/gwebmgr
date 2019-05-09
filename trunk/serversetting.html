@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>服务器参数设置</title>
+    <link rel="shortcut icon" href="./favicon.ico" />
+    <link rel="stylesheet" href="dist/styles/iview.css">
+    <script src="js/js.cookie.min.js"></script>
+    <script src="js/polyfill.min.js"></script>
+    <script>
+        var token = Cookies.get("token");
+        if (token == undefined) {
+            window.location.href = "index.html";
+        };
+    </script>
+    <style>
+        .container{
+            width: 1200px;
+            height: 600px;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            margin-top: -300px;
+            margin-left: -600px;
+        }
+        .ctrl{
+            position: absolute;
+            top: -40px;
+            left: 0;
+            right: 0;
+            height: 40px;
+            padding-top: 4px;
+        }
+        [v-lock]{
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="box" v-lock>
+        <div class="ctrl">
+            <i-button type="primary" style="width:100px" @click="add">添加</i-button>
+        </div>
+        <i-table border :columns="columns" :data="tableData" height="600" :loading="loading"></i-table>
+        <Modal v-model="modal" width="560">
+                <h3 slot="header" style="color:rgb(255, 145, 0);text-align:center;font-size: 16px;">
+                    <span>{{ isAdd ? '添加' : '编辑'}}</span>
+                </h3>
+                <div>
+                    <Row style="margin: 10px 0">
+                        <i-col span="5" style="height: 100%;text-align:center;line-height:32px;">
+                            KeyStr
+                        </i-col>
+                        <i-col span="17">
+                            <i-input v-model.trim="editObj.keystr"></i-input>
+                        </i-col>
+                    </Row>
+                    <Row style="margin: 10px 0">
+                        <i-col span="5" style="height: 100%;text-align:center;line-height:32px;">
+                            ValueStr
+                        </i-col>
+                        <i-col span="17">
+                            <i-input v-model.trim="editObj.valuestr"></i-input>
+                        </i-col>
+                    </Row>
+                    <Row style="margin: 10px 0">
+                        <i-col span="5" style="height: 100%;text-align:center;line-height:32px;">
+                            Remark
+                        </i-col>
+                        <i-col span="17">
+                            <i-input v-model.trim="editObj.remark"></i-input>
+                        </i-col>
+                    </Row>
+                </div>
+                <div slot="footer">
+                    <i-button type="primary" style="width: 100%" @click="comfirm">确定</i-button>
+                </div>
+        </Modal>
+    </div>
+    <script src="js/config.js"></script>
+    <script src="dist/vue.min.js"></script>
+    <script src="dist/iview.min.js"></script>
+    <script src="js/jquery.js"></script>
+    <script>
+        new Vue({
+            el:"#box",
+            data:function () { 
+                var that = this;
+                return {
+                    isAdd:true,
+                    modal:false,
+                    loading:false,
+                    columns:[
+                        {
+                            title:'KeyStr',
+                            key:'keystr'
+                        },
+                        {
+                            title:'ValueStr',
+                            key:'valuestr'
+                        },
+                        {
+                            title:'Remark',
+                            key:'remark'
+                        },
+                        {
+                            title:'Action',
+                            width:160,
+                            render: function(h, params) {
+                                    var row = params.row;
+                                    return h('div', [
+                                        h('Button', {
+                                            props: {
+                                                type: 'primary',
+                                                size: 'small'
+                                            },
+                                            style: {
+                                                marginRight: '5px'
+                                            },
+                                            on: {
+                                                click: function() {
+                                                    that.isAdd = false;
+                                                    that.modal = true;
+                                                    that.editObj.keystr = row.keystr;
+                                                    that.editObj.valuestr = row.valuestr;
+                                                    that.editObj.remark = row.remark;
+                                                    that.editObj.id = row.serverconfigid;
+                                                }
+                                            }
+                                        },'编辑'),
+                                        h('Poptip', {
+                                            props: {
+                                                confirm: true,
+                                                title: '确定要删除吗?'  
+                                            },
+                                            style: {
+                                                marginRight: '5px'
+                                            },
+                                            on: {
+                                                'on-ok': function () {
+                                                    var url = myUrls.deleteServerConfig();
+                                                    $.ajax({
+                                                        url:url,
+                                                        method:"post",
+                                                        data:JSON.stringify({id:row.serverconfigid}),
+                                                        success:function(data){
+                                                            if(data.status === 0 ){
+                                                                that.tableData.splice(params.index,1);
+                                                            }else if(data.status > 9000){
+                                                                that.$Message.error("token失效")
+                                                            }
+                                                        }
+                                                    })
+                                                }
+                                            }
+                                        },[
+                                        h('Button', {
+                                                props: {
+                                                type: 'error',
+                                                size: 'small'
+                                                }
+                                            },'删除') 
+                                        ])  
+                                    ]);
+                                }
+                        }
+                    ],
+                    tableData:[],
+                    editObj:{
+                        keystr:"",
+                        valuestr:"",
+                        remark:""
+                    }
+                }
+            },
+            methods: {
+                add() {
+                    if("id" in this.editObj) { delete this.editObj.id;}
+                    this.editObj.keystr = "";
+                    this.editObj.valuestr = "";
+                    this.editObj.remark = "";
+                    this.isAdd = true;
+                    this.modal = true;
+                },
+                comfirm:function(){
+                    var url = '' , data = null , that = this;
+                    if(this.isAdd){
+                        url = myUrls.addServerConfig();
+                    }else{
+                        url = myUrls.editServerConfig();
+                    }
+                    $.ajax({
+                        url:url,
+                        method:"post",
+                        data:JSON.stringify(this.editObj),
+                        success:function(data){      
+                            if(data.status === 0 ){
+                                that.modal = false;
+                                that._queryServerConfig();
+                            }else if(data.status > 9000){
+                                that.$Message.error("token失效")
+                            }
+                        }
+                    })
+                },
+                _queryServerConfig:function(){
+                    var url = myUrls.queryServerConfig() , that = this;
+                    $.ajax({
+                        url:url,
+                        method:"get",
+                        success:function(data){
+                            if(data.status === 0 && data.configs.length){
+                                that.tableData = data.configs;
+                            }else if(data.status > 9000){
+                                that.$Message.error("token失效")
+                            }
+                        }
+                    })
+                }
+            },
+            mounted:function () {
+                this._queryServerConfig();
+            },
+        })
+        
+    </script>
+</body>
+</html>

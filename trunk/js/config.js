@@ -309,6 +309,19 @@ var myUrls = {
   reportLoginLog: function () {
     return this.host + 'webapi?action=reportloginlog&token=' + token;
   },
+  // 查询服务器配置
+  queryServerConfig: function () {
+    return this.host + 'webapi?action=queryserverconfig&token=' + token;
+  },
+  addServerConfig: function () {
+    return this.host + 'webapi?action=addserverconfig&token=' + token;
+  },
+  deleteServerConfig: function () {
+    return this.host + 'webapi?action=deleteserverconfig&token=' + token;
+  },
+  editServerConfig: function () {
+    return this.host + 'webapi?action=editserverconfig&token=' + token;
+  }
 }
 
 
