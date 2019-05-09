@@ -142,11 +142,13 @@
                     if(resp.code){
                         var cardDataListTotal = [];
                         var cardDataUseds =resp.cardDataUseds ? resp.cardDataUseds: null;
-                        var activeTime = {label:"激活时间",value:resp.active_time?resp.active_time:'空'}
-                        cardDataListTotal.push(activeTime);
+                        // var activeTime = {label:"激活时间",value:resp.active_time?resp.active_time:'空'}
+                        // cardDataListTotal.push(activeTime);
                         if(cardDataUseds){
                             for(var i = 0 ; i< cardDataUseds.length ; i++ ){
                                 var item = cardDataUseds[i];
+                                cardDataListTotal.push({label:"开始时间",value:item.startDate?item.startDate:'空'});
+                                cardDataListTotal.push({label:"到期时间",value:item.expiryDate?item.expiryDate:'空'});
                                 cardDataListTotal.push({label:"套餐名称",value:item.packageName?item.packageName:'空'});
                                 cardDataListTotal.push({label:"总流量",value:item.dataCount?item.dataCount:0});
                                 cardDataListTotal.push({label:"已用流量",value:item.usedCount?item.usedCount:0});
