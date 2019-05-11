@@ -600,7 +600,7 @@
                         <Row>
                                 <i-col span="5" style="height: 100%;text-align:right;line-height:25px;">{{$t("monitor.expireTime")}} : &nbsp;</i-col>
                                 <i-col span="16" style="height: 100%;line-height:25px;text-align:left;">
-                                    {{deviceBaseInfo.overdueDateStr}}     
+                                    {{deviceBaseInfo.isfree === 1 ? '终身免费' : deviceBaseInfo.overdueDateStr}}     
                                 </i-col>
                         </Row>
                         <Row>

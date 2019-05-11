@@ -21,10 +21,20 @@
                 </i-col>
             </Row>
             <Row style="margin: 10px 0">
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;"><i style="color: red;display: inline-block;">*</i>&nbsp;终身免费 : &nbsp;</i-col>
+                <i-col span="8">  
+                    <i-select v-model="isfree" style="width: 100%">
+                        <i-option value="1">是</i-option>
+                        <i-option value="0">否</i-option>
+                    </i-select>
+                </i-col>
+            </Row>
+            <Row style="margin: 10px 0">
                 <i-col span="4" style="height: 100%;text-align:right;line-height:32px;"><i style="color: red;display: inline-block;">*</i>&nbsp;{{$t("alarm.overdueTime")}} : &nbsp;</i-col>
                 <i-col span="8">
                     <date-picker type="date" v-model="overduetime" :options="dateOptions"></date-picker>
                 </i-col>
+
                 <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;{{$t("alarm.devName")}} : &nbsp;</i-col>
                 <i-col span="8">
                     <i-input v-model.trim="devicename"></i-input>
@@ -152,6 +162,7 @@
                 userType:null,
                 isShowMatchDev:false,
                 monitor:"",
+                isfree:'1'
             },
             methods: {
                 back:function(){
@@ -181,6 +192,7 @@
                         overduetime:new Date(this.overduetime).getTime(),
                         loginenable:Number(this.loginenable),
                         deviceenable:Number(this.deviceenable),
+                        isfree:Number(this.isfree)
                     };      
                     
                     if(this.devicename){ data.devicename = this.devicename;};
@@ -274,6 +286,7 @@
                     me.forwardurl = editObject.forwardurl;
                     me.createrToUser = editObject.creater;
                     me.monitor = editObject.monitor;
+                    me.isfree = String(editObject.isfree);
                 },
                 getGroupsList:function(){
                     var me = this; 
