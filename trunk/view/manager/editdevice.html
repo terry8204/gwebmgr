@@ -32,7 +32,7 @@
             <Row style="margin: 10px 0">
                 <i-col span="4" style="height: 100%;text-align:right;line-height:32px;"><i style="color: red;display: inline-block;">*</i>&nbsp;{{$t("alarm.overdueTime")}} : &nbsp;</i-col>
                 <i-col span="8">
-                    <date-picker type="date" v-model="overduetime" :options="dateOptions"></date-picker>
+                    <date-picker type="date" v-model="overduetime"></date-picker>
                 </i-col>
 
                 <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;{{$t("alarm.devName")}} : &nbsp;</i-col>
@@ -136,11 +136,6 @@
             el:"#editdevice",
             i18n: utils.getI18n(),
             data:{
-                dateOptions:{
-                    disabledDate:function(date) {
-                        return date && date.valueOf() < Date.now() - 86400000;
-                    }
-                },
                 iconState:"ios-arrow-down",
                 deviceid:"",
                 devicename:"",

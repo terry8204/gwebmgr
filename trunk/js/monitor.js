@@ -201,7 +201,7 @@ var monitor = {
             me.positionLastrecords[deviceid] = data;
             me.updateTreeOnlineState();
             me.updateDevLastPosition(data);
-            //console.log('收到的轨迹push时间', deviceid, DateFormat.longToDateTimeStr(data.updatetime, 0));
+            // console.log('轨迹push', deviceid, DateFormat.longToDateTimeStr(data.updatetime, 0));
             if (me.currentDeviceId == deviceid) {
                 me.map && me.map.updateSingleMarkerState(deviceid);
             };
@@ -641,6 +641,7 @@ var monitor = {
                                     item.devicename = me.deviceInfos[deviceid] ? me.deviceInfos[deviceid].devicename : "";
                                     item.updatetimeStr = DateFormat.longToDateTimeStr(item.updatetime, 0);
                                     me.positionLastrecords[deviceid] = item;
+                                    // console.log("lastPositon", item.devicename, DateFormat.longToDateTimeStr(item.updatetime, 0));
                                 }
                             })
                             me.positionLastrecords
@@ -745,7 +746,6 @@ var monitor = {
             })
         },
         editDevice: function (device) {
-            // console.log('editDevice', deviceid);
             this.$store.commit('editDeviceInfo', device);
             var deviceid = device.deviceid;
             var deviceInfo = this.deviceInfos[deviceid];
@@ -1387,7 +1387,6 @@ var monitor = {
                 me.updateTreeOnlineState();
                 isNeedRefresh = false;
             });
-            console.log('activated', this.groups.length)
         };
 
     },
