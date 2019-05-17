@@ -321,7 +321,10 @@ var myUrls = {
   },
   editServerConfig: function () {
     return this.host + 'webapi?action=editserverconfig&token=' + token;
-  }
+  },
+  queryCallAlarm: function () {
+    return this.host + 'webapi?action=querycallalarm&token=' + token;
+  },
 }
 
 

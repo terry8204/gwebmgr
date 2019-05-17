@@ -1115,7 +1115,67 @@ function allAlarm (groupslist) {
     })
 }
 
+//
 
+function phoneAlarm (groupslist) {
+    new Vue({
+        el: '#phone-alarm',
+        i18n: utils.getI18n(),
+        mixins: [reportMixin],
+        data: {
+            loading: false,
+            tableHeight: 100,
+            groupslist: [],
+            timeoutIns: null,
+            isShowMatchDev: true,
+            columns: [
+                { type: 'index', width: 60, align: 'center' },
+                { title: vRoot.$t("alarm.devNum"), key: 'deviceid', width: 200 },
+                { title: isZh ? '报警类型' : 'alarm Type', key: 'stralarm' },
+                { title: isZh ? '时间' : 'date', key: 'datestr' },
+                { title: isZh ? '结果' : 'result', key: 'notifyresult' },
+            ],
+            tableData: []
+        },
+        methods: {
+            calcTableHeight: function () {
+                var wHeight = window.innerHeight;
+                this.tableHeight = wHeight - 125;
+            },
+            onClickQuery: function () {
+                if (this.queryDeviceId == "") { return };
+                var me = this;
+                var url = myUrls.queryCallAlarm();
+                var data = {
+                    deviceid: this.queryDeviceId
+                }
+                utils.sendAjax(url, data, function (resp) {
+                    if (resp.status === 0) {
+                        var records = resp.records;
+                        var tableData = [];
+                        records.forEach(function (record) {
+                            tableData.push({
+                                deviceid: me.queryDeviceId,
+                                notifyresult: record.notifyresult,
+                                datestr: DateFormat.format(new Date(record.lastalarmtime), "yyyy-MM-dd hh:mm:ss"),
+                                stralarm: record.stralarm
+                            })
+                        });
+                        me.tableData = tableData;
+                    }
+                })
+            },
+        },
+        mounted: function () {
+            var me = this;
+            this.groupslist = groupslist;
+            this.calcTableHeight();
+            window.onresize = function () {
+                me.calcTableHeight();
+            }
+        }
+    });
+}
 
 // 统计报表
 var reportForm = {
@@ -1147,6 +1207,7 @@ var reportForm = {
                     icon: 'logo-wordpress',
                     children: [
                         { title: me.$t("reportForm.allAlarm"), name: 'allAlarm', icon: 'md-warning' },
+                        { title: me.$t("reportForm.phoneAlarm"), name: 'phoneAlarm', icon: 'md-warning' },
                     ]
                 },
             ]
@@ -1185,6 +1246,8 @@ var reportForm = {
                     accDetails(groupslist);
                 } else if (page.indexOf('records') !== -1) {
                     devRecords(groupslist);
+                } else if (page.indexOf('phonealarm') !== -1) {
+                    phoneAlarm(groupslist);
                 }
             });
         },
