@@ -325,6 +325,9 @@ var myUrls = {
   queryCallAlarm: function () {
     return this.host + 'webapi?action=querycallalarm&token=' + token;
   },
+  reportChargeCall: function () {
+    return this.host + 'webapi?action=reportchargecall&token=' + token;
+  },
 }
 
 

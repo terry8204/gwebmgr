@@ -1185,6 +1185,74 @@ function phoneAlarm (groupslist) {
     });
 }
 
+
+function rechargeRecords (groupslist) {
+    new Vue({
+        el: '#recharge-records',
+        i18n: utils.getI18n(),
+        mixins: [reportMixin],
+        data: {
+            loading: false,
+            tableHeight: 100,
+            groupslist: [],
+            timeoutIns: null,
+            isShowMatchDev: true,
+            columns: [
+                { type: 'index', width: 60, align: 'center' },
+                { title: isZh ? '用户' : 'userName', key: 'username' },
+                { title: vRoot.$t("alarm.devNum"), key: 'deviceid' },
+                { title: isZh ? '时间' : 'date', key: 'chargetimeStr' },
+                { title: isZh ? '单号' : 'outtradeno', key: 'outtradeno' },
+                { title: isZh ? '价格' : 'Price', key: 'fee' },
+            ],
+            tableData: []
+        },
+        methods: {
+            calcTableHeight: function () {
+                var wHeight = window.innerHeight;
+                this.tableHeight = wHeight - 125;
+            },
+            onClickQuery: function () {
+
+                var me = this;
+                var url = myUrls.reportChargeCall();
+                var data = {
+                    username: userName,
+                }
+
+                this.queryDeviceId && (data.deviceid = this.queryDeviceId);
+
+                utils.sendAjax(url, data, function (resp) {
+                    if (resp.status === 0) {
+                        var records = resp.records;
+                        var tableData = [];
+                        records.forEach(function (record) {
+                            tableData.push({
+                                username: userName,
+                                deviceid: record.deviceid,
+                                chargetimeStr: DateFormat.format(new Date(record.chargetime), "yyyy-MM-dd hh:mm:ss"),
+                                outtradeno: record.outtradeno,
+                                fee: (record.fee / 100) + "元",
+                            })
+                        });
+                        me.tableData = tableData;
+                    }
+                })
+            },
+        },
+        mounted: function () {
+            var me = this;
+            this.groupslist = groupslist;
+            this.calcTableHeight();
+            window.onresize = function () {
+                me.calcTableHeight();
+            }
+        }
+    });
+}
+
+
+
 // 统计报表
 var reportForm = {
     template: document.getElementById('report-template').innerHTML,
@@ -1215,7 +1283,8 @@ var reportForm = {
                     icon: 'logo-wordpress',
                     children: [
                         { title: me.$t("reportForm.allAlarm"), name: 'allAlarm', icon: 'md-warning' },
-                        { title: me.$t("reportForm.phoneAlarm"), name: 'phoneAlarm', icon: 'md-warning' },
+                        { title: me.$t("reportForm.phoneAlarm"), name: 'phoneAlarm', icon: 'ios-call' },
+                        { title: me.$t("reportForm.rechargeRecords"), name: 'rechargeRecords', icon: 'ios-list-box-outline' },
                     ]
                 },
             ]
@@ -1227,6 +1296,7 @@ var reportForm = {
             this.loadPage(pageName);
         },
         loadPage: function (page) {
+            console.log('page', page);
             var me = this
             var pagePath = null
             if (myUrls.host.indexOf('gpsserver') != -1) {
@@ -1238,9 +1308,10 @@ var reportForm = {
             $('#report-right-wrap').load(pagePath, function () {
                 me.$Loading.finish();
                 var groupslist = deepClone(me.groupslist);
-
                 window.onresize = null;
-                if (page.indexOf('cmdreport') !== -1) {
+                if (page.indexOf('rechargerecords') !== -1) {
+                    rechargeRecords(groupslist);
+                } else if (page.indexOf('cmdreport') !== -1) {
                     cmdReport(groupslist);
                 } else if (page.indexOf('allalarm') !== -1) {
                     allAlarm(groupslist);
