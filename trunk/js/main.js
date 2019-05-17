@@ -9,6 +9,7 @@ var globalDeviceId = "";
 var userlists = [];
 var isNeedRefresh = false;
 var isToAlarmListRecords = false;
+var isToPhoneAlarmRecords = false;
 document.title = isZh ? "位置信息服务平台" : "Location information service platform";
 var getPath = function () {
   var jsPath = document.currentScript ? document.currentScript.src : function () {
@@ -707,6 +708,7 @@ var vRoot = new Vue({
     changeComponent: function (activeName) {
       window.onresize = null;
       isToAlarmListRecords = false;
+      isToPhoneAlarmRecords = false;
       this.$store.commit('setHeaderActiveName', activeName);
     },
     jumpReport: function (activeName) {

@@ -109,6 +109,21 @@ var reportMixin = {
             this.queryDeviceId = item.deviceid;
             this.isShowMatchDev = false;
         },
+        getDeviceTitle: function (deviceid) {
+            var title = "1-";
+            this.groupslist.forEach(function (group) {
+                var isReturn = false;
+                group.devices.forEach(function (device) {
+                    if (device.deviceid === deviceid) {
+                        isReturn = true;
+                        title = device.title;
+                        return false;
+                    }
+                });
+                if (isReturn) { return false };
+            });
+            return title;
+        }
     },
     mounted: function () {
         var me = this;
@@ -1078,21 +1093,6 @@ function allAlarm (groupslist) {
                     self.loading = false;
                 });
             },
-            getDeviceTitle: function (deviceid) {
-                var title = "1-";
-                this.groupslist.forEach(function (group) {
-                    var isReturn = false;
-                    group.devices.forEach(function (device) {
-                        if (device.deviceid === deviceid) {
-                            isReturn = true;
-                            title = device.title;
-                            return false;
-                        }
-                    });
-                    if (isReturn) { return false };
-                });
-                return title;
-            }
         },
         computed: {
             calcHeight: function () {
@@ -1170,6 +1170,14 @@ function phoneAlarm (groupslist) {
             var me = this;
             this.groupslist = groupslist;
             this.calcTableHeight();
+            this.$nextTick(function () {
+                if (isToPhoneAlarmRecords) {
+                    isToPhoneAlarmRecords = false;
+                    me.sosoValue = me.getDeviceTitle(globalDeviceId);
+                    me.queryDeviceId = globalDeviceId;
+                    me.onClickQuery();
+                }
+            });
             window.onresize = function () {
                 me.calcTableHeight();
             }
@@ -1273,13 +1281,13 @@ var reportForm = {
                 }
             })
         },
-        toAlarmListRecords: function () {
+        toAlarmRecords: function (activeName, pageHtml) {
             var me = this;
-            this.activeName = "allAlarm";
+            this.activeName = activeName;
             this.openedNames = ['warningReport'];
             this.$nextTick(function () {
                 me.$refs.navMenu.updateOpened();
-                me.loadPage("allalarm.html");
+                me.loadPage(pageHtml);
             })
         }
     },
@@ -1288,7 +1296,9 @@ var reportForm = {
         this.getMonitorListByUser(function (groups) {
             me.groupslist = utils.getPinyin(groups);
             if (isToAlarmListRecords) {
-                me.toAlarmListRecords();
+                me.toAlarmRecords("allAlarm", "allalarm.html");
+            } else if (isToPhoneAlarmRecords) {
+                me.toAlarmRecords("phoneAlarm", "phonealarm.html");
             }
         })
     }

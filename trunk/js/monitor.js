@@ -235,6 +235,10 @@ var monitor = {
                     isToAlarmListRecords = true;
                     this.$emit("jump-report", "reportForm");
                     break;
+                case 'phoneAlarm':
+                    isToPhoneAlarmRecords = true;
+                    this.$emit("jump-report", "reportForm");
+                    break;
             }
         },
         queryDeviceBaseInfo: function () {
