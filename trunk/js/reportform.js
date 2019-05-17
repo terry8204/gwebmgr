@@ -1157,7 +1157,7 @@ function phoneAlarm (groupslist) {
                             tableData.push({
                                 deviceid: me.queryDeviceId,
                                 notifyresult: record.notifyresult,
-                                datestr: DateFormat.format(new Date(record.lastalarmtime), "yyyy-MM-dd hh:mm:ss"),
+                                datestr: DateFormat.longToDateTimeStr(new Date(record.lastalarmtime), 0),
                                 stralarm: record.stralarm
                             })
                         });
@@ -1230,7 +1230,7 @@ function rechargeRecords (groupslist) {
                             tableData.push({
                                 username: userName,
                                 deviceid: record.deviceid,
-                                chargetimeStr: DateFormat.format(new Date(record.chargetime), "yyyy-MM-dd hh:mm:ss"),
+                                chargetimeStr: DateFormat.longToDateTimeStr(record.chargetime, 0),
                                 outtradeno: record.outtradeno,
                                 fee: (record.fee / 100) + "元",
                             })
