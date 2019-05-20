@@ -81,12 +81,20 @@ BMapClass.pt.addMarkerEvent = function (marker) {
     });
 }
 
-BMapClass.pt.openInfoWindow = function (marker, deviceid) {
+BMapClass.pt.openInfoWindow = function (marker, deviceid, zoom) {
     var track = this.lastTracks[deviceid];
     var address = this.getDevAddress(track);
     var mapInfoWindow = this.getInfoWindow(track, address);
+    if (zoom) {
+        if (zoom == 19) {
+            this.mapInstance.panTo(marker.point);
+        } else {
+            this.mapInstance.centerAndZoom(marker.point, 19);
+        };
+    } else {
+        this.mapInstance.panTo(marker.point);
+    };
     this.mapInstance.openInfoWindow(mapInfoWindow, marker.point);
-    this.mapInstance.panTo(marker.point);
     this.mapInfoWindow = mapInfoWindow;
 }
 
@@ -166,8 +174,8 @@ BMapClass.pt.getInfoWindow = function (track, address) {
 BMapClass.pt.onClickDevice = function (deviceid) {
     var marker = this.markerHashMap[deviceid];
     if (marker) {
-        this.mapInstance.getZoom() != 19 ? this.mapInstance.setZoom(19) : '';
-        this.openInfoWindow(marker, deviceid);
+        var that = this;
+        this.openInfoWindow(marker, deviceid, that.mapInstance.getZoom());
     }
 }
 
