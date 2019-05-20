@@ -729,8 +729,8 @@ var vRoot = new Vue({
         var data = resp.devicemsg;
         communicate.$emit("reminddevicemsg", data);
       } else if (action == "reminddevicemedia") {
-        let devicemedia = resp.devicemedia;
-        this.addPushMediaToLocalStore(devicemedia);
+        var devicemediatemp = resp.devicemedia;
+        this.addPushMediaToLocalStore(devicemediatemp);
       };;
     }
   },
