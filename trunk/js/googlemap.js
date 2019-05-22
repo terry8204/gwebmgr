@@ -32,6 +32,7 @@ GoogleMap.pt.setMarkerClusterer = function (lastTracks) {
         }
 
         this.markerClusterer = new GMarkerClusterer(this.mapInstance, markers, { imagePath: imgPath });
+        this.markerClusterer.setMaxZoom(20);
     }
 }
 
@@ -142,7 +143,7 @@ GoogleMap.pt.getDevAddress = function (track) {
 
 GoogleMap.pt.getInfoWindow = function (track, address) {
     var content = utils.getWindowContent(track, address);
-    var infoWindow = new google.maps.InfoWindow({ content: '<div id="windowInfo" style="width:320px;">' + content + '</div>' });
+    var infoWindow = new google.maps.InfoWindow({ content: '<div id="windowInfo" style="width:360px;">' + content + '</div>' });
     return infoWindow;
 }
 
