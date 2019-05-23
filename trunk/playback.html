@@ -33,7 +33,11 @@
             width: 32px;
             height: 32px;
         }
-
+        div.pull-up{
+            position: absolute;
+            right: 10px;
+            bottom: 10px;
+        }
         div.right-button-wrap{
             position: absolute;
             right: 10px;
@@ -122,12 +126,19 @@
             -webkit-line-clamp: 3;
             overflow: hidden;
         }
-        .fade-enter-active, .fade-leave-active {
-            transition: all .3s;
+        .el-zoom-in-bottom-enter-active,.el-zoom-in-bottom-leave-active{
+            opacity:1;
+            -webkit-transform:scaleY(1);
+            transform:scaleY(1);
+            -webkit-transition:opacity .3s cubic-bezier(.23,1,.32,1),-webkit-transform .3s cubic-bezier(.23,1,.32,1);
+            transition:opacity .3s cubic-bezier(.23,1,.32,1),-webkit-transform .3s cubic-bezier(.23,1,.32,1);
+            transition:transform .3s cubic-bezier(.23,1,.32,1),opacity .3s cubic-bezier(.23,1,.32,1);
+            transition:transform .3s cubic-bezier(.23,1,.32,1),opacity .3s cubic-bezier(.23,1,.32,1),-webkit-transform .3s cubic-bezier(.23,1,.32,1);
+            -webkit-transform-origin:center bottom;
+            transform-origin:center bottom;
         }
-        .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
-            opacity: 0;
-            transform: translateY(300px);
+        .el-zoom-in-bottom-enter,.el-zoom-in-bottom-leave-active{
+            opacity:0;-webkit-transform:scaleY(0);transform:scaleY(0)
         }
         [v-cloak]{
             display: none;
@@ -156,77 +167,80 @@
         <div class="right-button-wrap-ceju">
             <i-button @click="openDistance" size="small" style="width:100%;">{{isZh ? '测距' : 'Ranging'}}</i-button>
         </div>
-        <div class="controller">
-            <div class="close-icon" @click="onShowCtrl">
-                <i-button shape="circle" icon="ios-arrow-down" v-if="isShowCtrl"></i-button>
-                <i-button shape="circle" icon="ios-arrow-up" v-else></i-button>
-            </div>
-            <transition name="fade">
-                    <div style="width: 500px;height: 300px;background: #E8F0F7;border: 1px solid #C3CEDE;" v-show="isShowCtrl">
-                            <Row>
-                                <i-col :span="4" style="text-align: center;height:45px;">{{$t("main.selectDate")}} : &nbsp;</i-col>
-                                <i-col :span="11" style="height:45px;">
-                                    <date-picker type="date" style="width: 100%;height:45px;" v-model="startTime"  :clearable="false" :editable="false"></date-picker>
-                                </i-col>
-                                <i-col :span="4" style="text-align: center;height:45px;">
-                                    <i-button @click="prevDay">{{$t("main.prevDay")}}</i-button>
-                                </i-col>
-                                <i-col :span="4" style="text-align: center;height:45px;">
-                                    <i-button @click="nextDay">{{$t("main.nextDay")}}</i-button>
-                                </i-col>
-                            </Row>
+        <transition name="el-zoom-in-bottom">
+            <div class="controller" v-show="isShowCtrl">
+                <div class="close-icon" @click="onShowCtrl">
+                    <i-button shape="circle" icon="ios-arrow-down"></i-button>
+                </div>
+                <div style="width: 500px;height: 300px;background: #E8F0F7;border: 1px solid #C3CEDE;" >
+                        <Row>
+                            <i-col :span="4" style="text-align: center;height:45px;">{{$t("main.selectDate")}} : &nbsp;</i-col>
+                            <i-col :span="11" style="height:45px;">
+                                <date-picker type="date" style="width: 100%;height:45px;" v-model="startTime"  :clearable="false" :editable="false"></date-picker>
+                            </i-col>
+                            <i-col :span="4" style="text-align: center;height:45px;">
+                                <i-button @click="prevDay">{{$t("main.prevDay")}}</i-button>
+                            </i-col>
+                            <i-col :span="4" style="text-align: center;height:45px;">
+                                <i-button @click="nextDay">{{$t("main.nextDay")}}</i-button>
+                            </i-col>
+                        </Row>
+            
+                        <Row>
+                            <i-col :span="9" style="text-align: center;height:45px;">{{$t("main.startDate")}} : {{startTimeStr}} </i-col>
+                            <i-col :span="9" style="text-align: center;height:45px;">{{$t("main.endDate")}} : {{endTimeStr}} </i-col>
+                            <i-col :span="5" style="text-align: center;height:45px;">
+                                <i-button @click="sosoTracks">{{$t("main.queryBtn")}}</i-button>
+                            </i-col>
+                            <i-col :span="1" style="height:45px;">&nbsp;</i-col>
+                        </Row>
+            
                 
-                            <Row>
-                                <i-col :span="9" style="text-align: center;height:45px;">{{$t("main.startDate")}} : {{startTimeStr}} </i-col>
-                                <i-col :span="9" style="text-align: center;height:45px;">{{$t("main.endDate")}} : {{endTimeStr}} </i-col>
-                                <i-col :span="5" style="text-align: center;height:45px;">
-                                    <i-button @click="sosoTracks">{{$t("main.queryBtn")}}</i-button>
+                        <Row> 
+                                <i-col :span="4" style="line-height:60px;text-align:center;"> {{$t("main.playSpeed")}} : &nbsp;</i-col>
+                                <i-col :span="18" style="height:60px; padding-top: 12px;">
+                                    <Slider v-model="velocity" :min="100" :max="5000" show-input :step="100"></Slider>
                                 </i-col>
-                                <i-col :span="1" style="height:45px;">&nbsp;</i-col>
-                            </Row>
-                
-                    
-                            <Row> 
-                                    <i-col :span="4" style="line-height:60px;text-align:center;"> {{$t("main.playSpeed")}} : &nbsp;</i-col>
-                                    <i-col :span="18" style="height:60px; padding-top: 12px;">
-                                        <Slider v-model="velocity" :min="100" :max="5000" show-input :step="100"></Slider>
-                                    </i-col>
-                                    <i-col :span="2" style="line-height:60px;text-align:center;"> {{$t("main.msec")}} </i-col>
-                            </Row>
-                            <Row>
-                                <i-col :span="21" style="padding:0 10px;height:35px;line-height: 35px;">
-                                    {{(isZh ? '总里程数' : 'Mileage')}} : {{totalMileage}}
-                                </i-col>
-                            </Row>
-                
-                            <Row>
+                                <i-col :span="2" style="line-height:60px;text-align:center;"> {{$t("main.msec")}} </i-col>
+                        </Row>
+                        <Row>
+                            <i-col :span="21" style="padding:0 10px;height:35px;line-height: 35px;">
+                                {{(isZh ? '总里程数' : 'Mileage')}} : {{totalMileage}}
+                            </i-col>
+                        </Row>
+            
+                        <Row>
+                            <i-col :span="6" :offset="3" style="padding:0 5px;height:45px;">
+                                <i-button style="width: 100%" @click="beginPlay">{{$t("main.play")}}</i-button>
+                            </i-col>
+                            <i-col :span="6" style="padding:0 5px;height:45px;">
+                                <i-button style="width: 100%" @click="pause">{{$t("main.pause")}}</i-button>
+                            </i-col>
+                            <i-col :span="6" style="padding:0 5px;height:45px;">
+                                <i-button style="width: 100%" @click="replay">{{$t("main.replay")}}</i-button> 
+                            </i-col>
+                        </Row>
+                        <Row>
                                 <i-col :span="6" :offset="3" style="padding:0 5px;height:45px;">
-                                    <i-button style="width: 100%" @click="beginPlay">{{$t("main.play")}}</i-button>
+                                    <i-button style="width: 100%" @click="prevStep">{{$t("main.prevStep")}}</i-button>
                                 </i-col>
                                 <i-col :span="6" style="padding:0 5px;height:45px;">
-                                    <i-button style="width: 100%" @click="pause">{{$t("main.pause")}}</i-button>
+                                    <i-button style="width: 100%" @click="pause">
+                                        {{ isExtract ? (extractRecords.length == 0 ? 0 : index + 1) :  (records.length == 0 ? 0 : index + 1)}} 
+                                        / 
+                                        {{ isExtract ? extractRecords.length : records.length }}
+                                    </i-button>
                                 </i-col>
                                 <i-col :span="6" style="padding:0 5px;height:45px;">
-                                    <i-button style="width: 100%" @click="replay">{{$t("main.replay")}}</i-button> 
+                                    <i-button style="width: 100%" @click="nextStep">{{$t("main.nextStep")}}</i-button>
                                 </i-col>
-                            </Row>
-                            <Row>
-                                    <i-col :span="6" :offset="3" style="padding:0 5px;height:45px;">
-                                        <i-button style="width: 100%" @click="prevStep">{{$t("main.prevStep")}}</i-button>
-                                    </i-col>
-                                    <i-col :span="6" style="padding:0 5px;height:45px;">
-                                        <i-button style="width: 100%" @click="pause">
-                                            {{ isExtract ? (extractRecords.length == 0 ? 0 : index + 1) :  (records.length == 0 ? 0 : index + 1)}} 
-                                            / 
-                                            {{ isExtract ? extractRecords.length : records.length }}
-                                        </i-button>
-                                    </i-col>
-                                    <i-col :span="6" style="padding:0 5px;height:45px;">
-                                        <i-button style="width: 100%" @click="nextStep">{{$t("main.nextStep")}}</i-button>
-                                    </i-col>
-                            </Row>
-                    </div>
-            </transition>
+                        </Row>
+                </div>
+        
+            </div>
+        </transition>
+        <div class="pull-up" v-show="isShowCtrl==false">
+            <i-button shape="circle" icon="ios-arrow-up" @click="isShowCtrl=true"></i-button>
         </div>
         <Modal v-model="modal" width="600">
             <p slot="header" style="color:#2D8CF0;text-align:center">

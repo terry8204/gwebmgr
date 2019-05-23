@@ -59,50 +59,88 @@
             margin-left: -30px;
             margin-top: -76px;
         }
-        .address{
-            position: absolute;
-            left: 65px;
-            top: 5px;
-            height: 30px;
-            background: #e6e6e6;
-            border: 1px solid forestgreen;
-            line-height: 30px;
-            padding-left: 15px;
-            padding-right: 15px;
-        }
         .interval{
             position: absolute;
-            right: 10px;
-            bottom: 10px;
-            width: 40px;
-            height: 40px;
+            top: 11px;
+            left:65px;
+            width: 30px;
+            height: 30px;
             background: #e4393c;
             border-radius:50%;
             color: #fff;
-            line-height:  40px;
+            line-height:  30px;
             text-align: center;
-            font-size: 16px;
+            font-size: 15px;
         }
         .last-address{
             white-space:normal;
             width:296px;
         }
+        .down-wrapper{
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            width: 320px;
+            background: #e4393c;
+            border: 1px solid #e6e6e6;
+        }
+        .track-info{
+            padding: 10px;
+            background-color: #fff;
+            border: 1px solid #dbd5d5
+        }
         [v-cloak] {
             display: none;
+        }
+        .el-zoom-in-bottom-enter-active,.el-zoom-in-bottom-leave-active{
+            opacity:1;
+            -webkit-transform:scaleY(1);
+            transform:scaleY(1);
+            -webkit-transition:opacity .3s cubic-bezier(.23,1,.32,1),-webkit-transform .3s cubic-bezier(.23,1,.32,1);
+            transition:opacity .3s cubic-bezier(.23,1,.32,1),-webkit-transform .3s cubic-bezier(.23,1,.32,1);
+            transition:transform .3s cubic-bezier(.23,1,.32,1),opacity .3s cubic-bezier(.23,1,.32,1);
+            transition:transform .3s cubic-bezier(.23,1,.32,1),opacity .3s cubic-bezier(.23,1,.32,1),-webkit-transform .3s cubic-bezier(.23,1,.32,1);
+            -webkit-transform-origin:center bottom;
+            transform-origin:center bottom;
+        }
+        .el-zoom-in-bottom-enter,.el-zoom-in-bottom-leave-active{
+            opacity:0;-webkit-transform:scaleY(0);transform:scaleY(0)
+        }
+
+        .pull-up{
+            position: absolute;
+            right: 10px;
+            bottom: 10px;
+        }
+        .down-button{
+            position: absolute;
+            top: -35px;
+            right: 0px;
         }
     </style>
     <script src="js/js.cookie.min.js"></script>
     <script>
         var token = Cookies.get("token");
+      
     </script>
 </head>
 <body>
     <div id="container"  v-cloak>
         <div id="bmap"></div>
-        <div class="address">
-            地址 ： {{address}}
-        </div>
         <div class="interval">{{interval}}</div>
+      
+        <transition name="el-zoom-in-bottom">
+            <div class="down-wrapper" v-show="isDown">
+                <div class="down-button">
+                    <i-button shape="circle" icon="ios-arrow-down"  @click="isDown=false"></i-button>
+                </div>
+                <div class="track-info" v-html="trackHtml"></div>
+            </div>
+        </transition>
+       
+        <div class="pull-up" v-show="!isDown">
+            <i-button shape="circle" icon="ios-arrow-up" @click="isDown=true"></i-button>
+        </div>
     </div>
     <script src="dist/vue.min.js"></script>
     <script src="dist/iview.min.js"></script>
@@ -117,8 +155,9 @@
     <script src="http://api.map.baidu.com/api?v=3.0&ak=e7SC5rvmn2FsRNE4R1ygg44n"></script>
     <!-- <script type="text/javascript" src="http://api.map.baidu.com/library/DistanceTool/1.2/src/DistanceTool_min.js"></script> -->
     <script>
+        var isZh = utils.locale === 'zh';
         (function () { 
-            var isZh = utils.locale === 'zh';
+
             document.title = isZh ? "跟踪" : "Track";
             var startIcon = new BMap.Icon("./images/map/marker_qidian.png", new BMap.Size(32, 32), { imageOffset: new BMap.Size(0, 0)});
             var vm = new Vue({
@@ -132,6 +171,8 @@
                         markerLabel:null,
                         carMarker:null,
                         address:"",
+                        isDown:true,
+                        trackHtml:""
                     },
                     methods: {
                         initMap : function(){
@@ -141,38 +182,52 @@
                             this.map.disableDoubleClickZoom();
                             var top_left_control = new BMap.ScaleControl({anchor: BMAP_ANCHOR_BOTTOM_LEFT});
                             var top_left_navigation = new BMap.NavigationControl() //左上角，添加默认缩放平移控件
-                            this.map.addControl(top_left_control)
-                            this.map.addControl(top_left_navigation)
+                            var mapType = new BMap.MapTypeControl({mapTypes: [BMAP_NORMAL_MAP, BMAP_HYBRID_MAP]})
+                            this.map.addControl(top_left_control);
+                            this.map.addControl(top_left_navigation);
+                            this.map.addControl(mapType);
                             this.map.centerAndZoom(new BMap.Point(108.0017245,35.926895),5);
                         },
-                        drawingLine:function(){
-                          
-                        },
-                        getLableContent:function(info){
-                            var address = this.getAddress(info);
-                            var deviceIdStr =  isZh ? "设备序号" :"Device Number";
-                            var ageStr = isZh ? "角度" : "Angle";
-                            var lon_lat_str = isZh ? "经纬度" :"Lon_lat";
-                            var lastDateStr = isZh ? "最后时间" : "Last Date";
-                            var addressStr = isZh ? "详细地址" : "Address";
-                            var speed = info.speed == 0 ? "0km/h" : (info.speed / 1000).toFixed(2) + "km/h";
-                            var strstatus = null;
+                        getWindowContent: function (track, b_address) {
+                            var strstatus = '';
+                            var posiType = utils.getPosiType(track);
                             if (isZh) {
-                                strstatus = info.strstatus ? info.strstatus : '';
+                            strstatus = track.strstatus ? track.strstatus : '';
                             } else {
-                                strstatus = info.strstatusen ? info.strstatusen : '';
+                            strstatus = track.strstatusen ? track.strstatusen : '';
                             }
-                            var sContent = '<div style="width:296px;">' +
-                                '<p> '+ deviceIdStr +': ' +info.deviceid+'</p>' +
-                                '<p> '+ ageStr +': ' + utils.getAngle(info.course) +'</p>' +
-                                '<p> '+ lon_lat_str +': ' +info.callon.toFixed(6)+","+ info.callat.toFixed(6) +'</p>' +
-                                '<p> '+ lastDateStr +': ' +DateFormat.longToDateTimeStr(info.updatetime,0)+'</p>' +
-                                '<p> ' + (isZh ? '速度' : 'Speed') + ': ' + speed +'('+(isZh ? '信号:' : 'Signal:')+ info.rxlevel+'%)</p>' +
-                                '<p> ' + (isZh ? '状态' : 'Status') + ': ' + strstatus + '</p>' +   
-                                '<p class="last-address"> '+ addressStr +': '+address+'</p></div><div class="guiji"><span class="guiji_sanjiao"></span><span class="guiji_sanjiao_2"></span></div>';
-                            return sContent;
+                            if (track.radius > 0) {
+                            var radiuDesc = null;
+                            if (isZh) {
+                                radiuDesc = ' (误差范围:' + track.radius + '米)';
+                            } else {
+                                radiuDesc = ' (Error range:' + track.radius + 'm)';
+                            }
+                            posiType += radiuDesc;
+                            };
+                            if (track.gotsrc === 'gps' && track.gpsvalidnum) {
+                            posiType += "(" + track.gpsvalidnum + ")";
+                            };
+                            if (isZh) {
+                            var isOnineStr = utils.getIsOnline(track) ? "在线" : "离线";
+                            } else {
+                            var isOnineStr = utils.getIsOnline(track) ? "online" : "offline";
+                            };
+                            var speed = track.speed == 0 ? "0km/h" : (track.speed / 1000).toFixed(2) + "km/h";
+                            var rxlevel = track.rxlevel === 0 ? '' : ('(' + (isZh ? '信号' : 'Signal') + ':' + track.rxlevel + '%)');
+                            var content =
+                            '<p> ' + (isZh ? '设备序号' : 'Device Number') + ': ' + track.deviceid + '</p>' +
+                            '<p> ' + (isZh ? '定位类型' : 'Position Type') + ': ' + posiType + '</p>' +
+                            '<p> ' + (isZh ? '经纬度' : 'Longitude and latitude') + ': ' + track.callon.toFixed(6) + ',' + track.callat.toFixed(6) + '</p>' +
+                            '<p> ' + (isZh ? '更新时间' : 'Update time') + ': ' + DateFormat.longToDateTimeStr(track.updatetime, 0) + '(' + isOnineStr + ')</p>' +
+                            '<p> ' + (isZh ? '定位时间' : 'Posi time') + ': ' + DateFormat.longToDateTimeStr(track.validpoistiontime, 0) + '</p>' +
+                            '<p> ' + (isZh ? '速度' : 'Speed') + ': ' + speed + rxlevel + '</p>' +
+                            '<p> ' + (isZh ? '总里程' : 'Mileage') + ': ' + utils.getMileage(track.totaldistance) + '</p>' +
+                            '<p> ' + (isZh ? '状态' : 'Status') + ': ' + strstatus + '</p>' +
+                            '<p class="last-address"> ' + (isZh ? '详细地址' : 'Address') + ': ' + b_address + '</p>';
+                            return content;
                         },
-                        getAddress:function (info) {
+                        getAddress:function (info,callback) {
                             var me = this;
                             var callon = info.callon;
                             var callat = info.callat;
@@ -182,22 +237,19 @@
                         
                             var address = LocalCacheMgr.getAddress(lng,lat);
                             if(address !== null){
-                                me.address = address;
-                                return address;
+                                callback(address);
+                                return;
                             }
                             utils.getBaiduAddressFromBaidu(lng,lat,function (resp) {
-                                var addressStr = isZh ? "详细地址" : "Address";
                                 if(resp.length){
                                     address = resp;
-                                    me.address = address;
-                                    $("p.last-address").html(addressStr + " : " + address);
                                     LocalCacheMgr.setAddress(lng,lat,address);
+                                    callback(address);
                                 }else{
                                     utils.getJiuHuAddressSyn(callon,callat,function (resp) {
                                             address = resp.address
-                                            me.address = address;
-                                            $("p.last-address").html(addressStr + " : " + address);
                                             LocalCacheMgr.setAddress(lng,lat,address);
+                                            callback(address);
                                     });
                                 }
                             });
@@ -260,7 +312,7 @@
                                         this.map.setCenter(point);
                                     };
                                     this.carMarker.setIcon(carIcon);
-                                    this.markerLabel.setContent(this.getLableContent(record));
+                                    // this.markerLabel.setContent(this.getLableContent(record));
                                 }else{
                                     this.tracks.push(record);
                                       
@@ -268,25 +320,33 @@
                                             position : point,   
                                             offset   : new BMap.Size(30, -60)
                                         };                                   
-                                    this.markerLabel = new BMap.Label(this.getLableContent(record),lableOptions);
+                                    // this.markerLabel = new BMap.Label(this.getLableContent(record),lableOptions);
                                     this.carMarker = new BMap.Marker(point,{icon:carIcon});    
-                                    this.markerLabel.setStyle({
-                                        color : "#000000",
-                                        border:"1px solid #D0D1D1",
-                                        fontSize : "14px",
-                                        lineHeight : "18px",
-                                        borderRadius:"5px",
-                                        padding:"10px",
-                                        fontFamily:"微软雅黑"
-                                    });
+                                    // this.markerLabel.setStyle({
+                                    //     color : "#000000",
+                                    //     border:"1px solid #D0D1D1",
+                                    //     fontSize : "14px",
+                                    //     lineHeight : "18px",
+                                    //     borderRadius:"5px",
+                                    //     padding:"10px",
+                                    //     fontFamily:"微软雅黑"
+                                    // });
                                     var firstMarker = new BMap.Marker(point,{icon:startIcon,offset:new BMap.Size(0, -10)});  
                                     this.carMarker.setLabel(this.markerLabel);     
                                     this.map.addOverlay(this.carMarker);
                                     this.map.addOverlay(firstMarker);
                                     this.map.centerAndZoom(point,16);     
+                                 
                                 };
-                                
+                                var me = this;
+                                this.getAddress(record,function (address) { 
+                                    console.log('address', address);
+                                    me.trackHtml = me.getWindowContent(record,address);
+                                }) 
                             }
+                        },
+                        handleDown:function(){
+                            this.isDown = !this.isDown;
                         }
                     },
                     computed:{
