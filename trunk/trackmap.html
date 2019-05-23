@@ -176,7 +176,7 @@
                     },
                     methods: {
                         initMap : function(){
-                            this.map = new BMap.Map("bmap",{minZoom:4,maxZoom:18});
+                            this.map = new BMap.Map("bmap",{minZoom:4,maxZoom:20});
                             this.map.enableScrollWheelZoom();
                             this.map.enableAutoResize();
                             this.map.disableDoubleClickZoom();
@@ -320,22 +320,13 @@
                                             position : point,   
                                             offset   : new BMap.Size(30, -60)
                                         };                                   
-                                    // this.markerLabel = new BMap.Label(this.getLableContent(record),lableOptions);
+
                                     this.carMarker = new BMap.Marker(point,{icon:carIcon});    
-                                    // this.markerLabel.setStyle({
-                                    //     color : "#000000",
-                                    //     border:"1px solid #D0D1D1",
-                                    //     fontSize : "14px",
-                                    //     lineHeight : "18px",
-                                    //     borderRadius:"5px",
-                                    //     padding:"10px",
-                                    //     fontFamily:"微软雅黑"
-                                    // });
                                     var firstMarker = new BMap.Marker(point,{icon:startIcon,offset:new BMap.Size(0, -10)});  
                                     this.carMarker.setLabel(this.markerLabel);     
                                     this.map.addOverlay(this.carMarker);
                                     this.map.addOverlay(firstMarker);
-                                    this.map.centerAndZoom(point,16);     
+                                    this.map.centerAndZoom(point,19);     
                                  
                                 };
                                 var me = this;
@@ -363,7 +354,7 @@
                             if(this.tracks.length >=2){
                                 var firstPoint = this.tracks[this.tracks.length-2].point;
                                 var lastPoint = this.tracks[this.tracks.length-1].point;
-                                var polyline = new BMap.Polyline([firstPoint,lastPoint] ,{strokeColor:"#0000AA",strokeWeight:3,strokeOpacity:1.5})
+                                var polyline = new BMap.Polyline([firstPoint,lastPoint] ,{strokeColor:"#e4393c",strokeWeight:3,strokeOpacity:1.5})
                                 this.map.addOverlay(polyline);
                             };
                         }
