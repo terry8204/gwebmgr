@@ -376,8 +376,10 @@
                             },1000);
                             
                             initWebSocket(wsHost,userName + "-trackmap",function (data) { 
-                                console.log('push data', data)
-                                me.doLastPosition(data);
+                                var action = data.action;
+                                if(action === "positionlast"){
+                                    data.positionLast && me.doLastPosition(data.positionLast);
+                                };
                             })
                         }else{
                             this.$Message.error("设备序号不能为空!");
