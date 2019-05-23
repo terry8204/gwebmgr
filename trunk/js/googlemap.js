@@ -32,7 +32,7 @@ GoogleMap.pt.setMarkerClusterer = function (lastTracks) {
         }
 
         this.markerClusterer = new GMarkerClusterer(this.mapInstance, markers, { imagePath: imgPath });
-        this.markerClusterer.setMaxZoom(20);
+        this.markerClusterer.setMaxZoom(18);
     }
 }
 
@@ -148,16 +148,6 @@ GoogleMap.pt.getInfoWindow = function (track, address) {
 }
 
 GoogleMap.pt.onClickDevice = function (deviceid) {
-    // var markers = this.markerClusterer.getMarkers();
-    // for (var i = 0; i < markers.length; i++) {
-    //     var marker = markers[i];
-    //     if (marker.deviceid == deviceid) {
-    //         this.mapInstance.getZoom() != 22 ? this.mapInstance.setZoom(22) : '';
-    //         this.mapInstance.panTo(marker.position);
-    //         this.openInfoWindow(marker, deviceid);
-    //         break;
-    //     }
-    // }
     var marker = this.markerHashMap[deviceid];
     if (marker) {
         this.mapInstance.getZoom() != 22 ? this.mapInstance.setZoom(22) : '';
