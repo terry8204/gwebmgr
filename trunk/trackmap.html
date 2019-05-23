@@ -153,17 +153,20 @@
     <script src="js/dateformat.js"></script>
     <script src="js/util.js"></script>
     <script src="js/websocketmgr.js"></script>
+    <script src="js/vue-i18n.min.js"></script>
+    <script src="js/language.js"></script>
     <script src="http://api.map.baidu.com/api?v=3.0&ak=e7SC5rvmn2FsRNE4R1ygg44n"></script>
     <!-- <script type="text/javascript" src="http://api.map.baidu.com/library/DistanceTool/1.2/src/DistanceTool_min.js"></script> -->
     <script>
         var isZh = utils.locale === 'zh';
+        var vRoot = null;
         (function () { 
-
             document.title = isZh ? "跟踪" : "Track";
             var userName = Cookies.get('name');
             var startIcon = new BMap.Icon("./images/map/marker_qidian.png", new BMap.Size(32, 32), { imageOffset: new BMap.Size(0, 0)});
-            var vm = new Vue({
+            var vm = vRoot = new Vue({
                     el:"#container",
+                    i18n: utils.getI18n(),
                     data:{
                         map:null,
                         deviceid:"",
@@ -183,8 +186,8 @@
                             this.map.enableAutoResize();
                             this.map.disableDoubleClickZoom();
                             var top_left_control = new BMap.ScaleControl({anchor: BMAP_ANCHOR_BOTTOM_LEFT});
-                            var top_left_navigation = new BMap.NavigationControl() //左上角，添加默认缩放平移控件
-                            var mapType = new BMap.MapTypeControl({mapTypes: [BMAP_NORMAL_MAP, BMAP_HYBRID_MAP]})
+                            var top_left_navigation = new BMap.NavigationControl();
+                            var mapType = new BMap.MapTypeControl({mapTypes: [BMAP_NORMAL_MAP, BMAP_HYBRID_MAP]});
                             this.map.addControl(top_left_control);
                             this.map.addControl(top_left_navigation);
                             this.map.addControl(mapType);
@@ -377,7 +380,8 @@
                             
                             initWebSocket(wsHost,userName + "-trackmap",function (data) { 
                                 var action = data.action;
-                                if(action === "positionlast"){
+                                console.log("data.positionLast",data.positionLast.deviceid)
+                                if(action === "positionlast" && data.positionLast.deviceid == deviceid){
                                     data.positionLast && me.doLastPosition(data.positionLast);
                                 };
                             })
