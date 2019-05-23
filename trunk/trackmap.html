@@ -152,6 +152,7 @@
     <script src="js/transformlatlon.js"></script>
     <script src="js/dateformat.js"></script>
     <script src="js/util.js"></script>
+    <script src="js/websocketmgr.js"></script>
     <script src="http://api.map.baidu.com/api?v=3.0&ak=e7SC5rvmn2FsRNE4R1ygg44n"></script>
     <!-- <script type="text/javascript" src="http://api.map.baidu.com/library/DistanceTool/1.2/src/DistanceTool_min.js"></script> -->
     <script>
@@ -159,6 +160,7 @@
         (function () { 
 
             document.title = isZh ? "跟踪" : "Track";
+            var userName = Cookies.get('name');
             var startIcon = new BMap.Icon("./images/map/marker_qidian.png", new BMap.Size(32, 32), { imageOffset: new BMap.Size(0, 0)});
             var vm = new Vue({
                     el:"#container",
@@ -331,7 +333,6 @@
                                 };
                                 var me = this;
                                 this.getAddress(record,function (address) { 
-                                    console.log('address', address);
                                     me.trackHtml = me.getWindowContent(record,address);
                                 }) 
                             }
@@ -373,6 +374,11 @@
                                     me.interval = 10; 
                                 };
                             },1000);
+                            
+                            initWebSocket(wsHost,userName + "-webtrackmap",function (data) { 
+                                console.log('push data', data)
+                                me.doLastPosition(data);
+                            })
                         }else{
                             this.$Message.error("设备序号不能为空!");
                         };  
