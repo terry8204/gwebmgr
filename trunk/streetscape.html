@@ -72,6 +72,7 @@
             var blat =  lat ? lat : 22.566936;
             mapInstance = new BMap.Map('my-map', { minZoom: 4, maxZoom: 19, enableMapClick: false })
             mapInstance.enableScrollWheelZoom();
+            mapInstance.enableDoubleClickZoom();
             mapInstance.enableAutoResize();
             mapInstance.disableDoubleClickZoom();
             mapInstance.centerAndZoom(new BMap.Point ( blon, blat ), 19);

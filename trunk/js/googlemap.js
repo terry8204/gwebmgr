@@ -127,13 +127,13 @@ GoogleMap.pt.getDevAddress = function (track) {
     utils.getGoogleAddressSyn(track.g_lat, track.g_lon, function (b_address) {
         if (b_address.length) {
             var content = utils.getWindowContent(track, b_address);
-            self.mapInfoWindow.setContent(content);
+            self.mapInfoWindow && self.mapInfoWindow.setContent(content);
             LocalCacheMgr.setAddress(callon, callat, b_address);
         } else {
             utils.getJiuHuAddressSyn(callon, callat, function (resp) {
                 var j_address = resp.address
                 var content = utils.getWindowContent(track, j_address);
-                self.mapInfoWindow.setContent(content);
+                self.mapInfoWindow && self.mapInfoWindow.setContent(content);
                 LocalCacheMgr.setAddress(callon, callat, j_address);
             });
         }

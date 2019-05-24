@@ -21,7 +21,6 @@
 
         div.controller {
             position: absolute;
-            right: 10px;
             bottom: 10px;
             line-height: 60px;
         }
@@ -33,18 +32,34 @@
             width: 32px;
             height: 32px;
         }
+
         div.pull-up{
             position: absolute;
-            right: 10px;
             bottom: 10px;
         }
-        div.right-button-wrap{
+        div.right-ctrl{
             position: absolute;
             right: 10px;
+            width: 80px; 
+        }
+        .top-10{
             top: 10px;
+        }
+        .top-65{
+            top:65px;
+        }
+        .right-10{
+            right: 10px;
+        }
+        .right-65{
+            right:65px;
+        }
+        div.right-button-wrap{
+            position: relative;
             width: 80px;
             height: 35px;
             cursor: pointer;
+            margin-top:10px; 
         }
         div.right-button-wrap img,.right-button-wrap-marker img{
             width: 100%;
@@ -52,20 +67,18 @@
             border: 0;
         }
         .right-button-wrap-marker{
-            position: absolute;
-            right: 10px;
-            top: 70px;
+            position: relative;
             width: 80px;
             height: 35px;
             cursor: pointer;
+            margin-top:20px; 
         }
         div.right-button-wrap-ceju{
-            position: absolute;
-            right: 10px;
-            top: 135px;
+            position: relative;
             width: 80px;
             height: 35px;
             padding: 0 5px;
+            margin-top:20px; 
         }
         div.btn-label{
             position: absolute;
@@ -154,21 +167,28 @@
 <body>
     <div id="container" v-cloak>
         <div id="bmap"></div>
-        <div class="right-button-wrap" @click="changePosiType">
-            <img v-if="isExtract" src="./images/ic_fine_network_off.png">
-            <img v-else src="./images/ic_fine_network_on.png">
-            <div class="btn-label">{{isZh ? '精 / 粗' : 'Fine / Coarse'}} </div>
-        </div>
-        <div class="right-button-wrap-marker" @click="onShowMarker">
-            <img v-if="isShowMarker" src="./images/ic_on.png">
-            <img v-else src="./images/ic_off.png">
-            <div class="btn-label">  {{isZh ? '显示点' : 'Marker'}}</div>
-        </div>
-        <div class="right-button-wrap-ceju">
-            <i-button @click="openDistance" size="small" style="width:100%;">{{isZh ? '测距' : 'Ranging'}}</i-button>
+        <div class="right-ctrl" :class="rightTopCtrl">
+            <div class="right-map-type">
+                <i-select v-model="mapType" size="small">
+                    <i-option v-for="item in mapList" :value="item.value" :key="item.value">{{ item.label }}</i-option>
+                </i-select>
+            </div>
+            <div class="right-button-wrap" @click="changePosiType">
+                <img v-if="isExtract" src="./images/ic_fine_network_off.png">
+                <img v-else src="./images/ic_fine_network_on.png">
+                <div class="btn-label">{{isZh ? '精 / 粗' : 'Fine / Coarse'}} </div>
+            </div>
+            <div class="right-button-wrap-marker" @click="onShowMarker">
+                <img v-if="isShowMarker" src="./images/ic_on.png">
+                <img v-else src="./images/ic_off.png">
+                <div class="btn-label">  {{isZh ? '显示点' : 'Marker'}}</div>
+            </div>
+            <div class="right-button-wrap-ceju" v-show="mapType === 'baidu'">
+                <i-button @click="openDistance" size="small" style="width:100%;">{{isZh ? '测距' : 'Ranging'}}</i-button>
+            </div>
         </div>
         <transition name="el-zoom-in-bottom">
-            <div class="controller" v-show="isShowCtrl">
+            <div class="controller" v-show="isShowCtrl" :class="rightBottomCtrl">
                 <div class="close-icon" @click="onShowCtrl">
                     <i-button shape="circle" icon="ios-arrow-down"></i-button>
                 </div>
@@ -239,7 +259,7 @@
         
             </div>
         </transition>
-        <div class="pull-up" v-show="isShowCtrl==false">
+        <div class="pull-up" v-show="isShowCtrl==false" :class="rightBottomCtrl">
             <i-button shape="circle" icon="ios-arrow-up" @click="isShowCtrl=true"></i-button>
         </div>
         <Modal v-model="modal" width="600">
@@ -280,8 +300,8 @@
     <script src="./js/js.cookie.min.js"></script>
     <script src="./js/en-US.js"></script>
     <script src="./js/zh-CN.js"></script>
-    <script src="http://api.map.baidu.com/api?v=3.0&ak=e7SC5rvmn2FsRNE4R1ygg44n"></script>
-    <script type="text/javascript" src="http://api.map.baidu.com/library/DistanceTool/1.2/src/DistanceTool_min.js"></script>
+    <!-- <script src="http://api.map.baidu.com/api?v=3.0&ak=e7SC5rvmn2FsRNE4R1ygg44n"></script>
+    <script type="text/javascript" src="http://api.map.baidu.com/library/DistanceTool/1.2/src/DistanceTool_min.js"></script> -->
     <script>
         Vue.use(iview);
         Vue.use(VueI18n);
@@ -290,6 +310,8 @@
         iview.lang(isZh ? 'zh-CN' : 'en-US');
         var currentTrack = null;
         var vRoot = null;
+        var isLoadBMap = false;
+        var googleInfoWindow = null;
         function queryTrackDetail(deviceid){
             var data = {
                 deviceid:deviceid,
@@ -383,10 +405,10 @@
             }
         };
         (function () {   //utils.getAngle
-            var carIcon = new BMap.Icon("images/carstate/green_0.gif", new BMap.Size(17, 17), { imageOffset: new BMap.Size(0, 0) });
-            var startIcon = new BMap.Icon("./images/map/marker_qidian.png", new BMap.Size(32, 32), { imageOffset: new BMap.Size(0, 0) });
-            var endIcon = new BMap.Icon("./images/map/marker_zhongdian.png", new BMap.Size(32, 32), { imageOffset: new BMap.Size(0, 0) });
-            
+            var carIcon = null;
+            var startIcon = null;
+            var endIcon = null;
+            var mapType = utils.getMapType();
             vRoot = new Vue({
                 el: "#container",
                 i18n: utils.getI18n(),
@@ -426,10 +448,41 @@
                     xList:'',
                     wList:'',
                     trackid:'',
-                    trackStringify:""
+                    trackStringify:"",
+                    mapList: [{ label: isZh ? "百度地图" : "BaiduMap", value: "baidu" }, { label: isZh ? "谷歌地图" : "GoogleMap", value: "google" }],
+                    mapType:mapType === 'bMap' ? 'baidu' :'google'
                 },
                 methods: {
-                    initMap: function () {
+                    initMap: function (callback) {
+                        var me = this;
+                        if(this.mapType === 'baidu'){
+                            try {
+                                me.initBMap();
+                                callback && callback();
+                            } catch (error) {
+                                asyncLoadJs(this.mapType, function () {
+                                    asyncLoadJs('distancetool', function () {
+                                        me.initBMap();
+                                        callback && callback();
+                                    })
+                                }); 
+                            }
+                        }else{
+                            try {
+                                me.iniGMap();
+                                callback && callback();
+                            } catch (error) {
+                                asyncLoadJs(this.mapType, function () {
+                                    me.iniGMap();
+                                    callback && callback();
+                                }); 
+                            }
+                        }
+                    },
+                    initBMap:function(){
+                        carIcon = new BMap.Icon("images/carstate/green_0.gif", new BMap.Size(17, 17), { imageOffset: new BMap.Size(0, 0) });
+                        startIcon = new BMap.Icon("./images/map/marker_qidian.png", new BMap.Size(32, 32), { imageOffset: new BMap.Size(0, 0) });
+                        endIcon = new BMap.Icon("./images/map/marker_zhongdian.png", new BMap.Size(32, 32), { imageOffset: new BMap.Size(0, 0) });
                         this.map = new BMap.Map("bmap", { minZoom: 4, maxZoom: 19 ,enableMapClick: false });
                         this.map.enableScrollWheelZoom();
                         this.map.enableAutoResize();
@@ -439,7 +492,14 @@
                         this.map.addControl(top_left_control);
                         this.map.addControl(top_left_navigation);
                         this.map.centerAndZoom(new BMap.Point(108.0017245, 35.926895), 5);
-
+                    },
+                    iniGMap:function(){
+                        var center = new google.maps.LatLng(35.129163, 102.264435);
+                        this.map = new google.maps.Map(document.getElementById('bmap'), {
+                            zoom: 4,
+                            center: center,
+                            mapTypeId: google.maps.MapTypeId.ROADMAP
+                        });
                     },
                     openDistance: function () {
                         if (this.myDis != null) {
@@ -467,6 +527,7 @@
                         if (this.intervalInstanse != null) {
                             clearInterval(this.intervalInstanse);
                         };
+                        if (this.getTypeRecords().length < 2) { return;}
                         this.index--;
                         if(this.isExtract){
                             if(this.index < 0 ){
@@ -479,14 +540,13 @@
                             }
                             var track = this.records[this.index];
                         }
-                  
-                        var marker = this.getPointMarker();
-                        this.openInfoWindow(marker,track);
+                        this.openInfoWindow(this.carMarker,track);
                     },
                     nextStep:function(){
                         if (this.intervalInstanse != null) {
                             clearInterval(this.intervalInstanse);
                         };
+                        if (this.getTypeRecords().length < 2) { return; }
                         this.index++;
                         if(this.isExtract){
                              if(this.index > this.extractRecords.length-1){
@@ -499,8 +559,8 @@
                             }
                             var track = this.records[this.index];
                         }
-                        var marker = this.getPointMarker();
-                        this.openInfoWindow(marker,track);
+                        // var marker = this.getPointMarker();
+                        this.openInfoWindow(this.carMarker,track);
                     },
                     getPointMarker:function(){
                         var index = this.index;
@@ -519,7 +579,6 @@
                     sosoTracks: function () {
                         var me = this;
                         me.resetMapState();
-
                         me.requestTracks(this.startTimeStr, this.endTimeStr, function (resp) {
                             var records = resp.records;
                             me.spinShow = false;
@@ -559,10 +618,13 @@
                         var newRecords = [];
                         for (var i = 0; i < records.length; i++) {
                             var track = records[i];
-                            var direction = utils.getAngle(track.course);
-                            var lng_lat = wgs84tobd09(track.callon, track.callat);
-                            track.direction = direction;
-                            track.point = new BMap.Point(lng_lat[0], lng_lat[1]);
+                            var g_lon_lat = wgs84togcj02(track.callon, track.callat);
+                            track.gpoint = {lat:g_lon_lat[1],lng:g_lon_lat[0]};
+                            track.direction = utils.getAngle(track.course);
+                            if(this.mapType === 'baidu'){
+                                var lng_lat = wgs84tobd09(track.callon, track.callat);
+                                track.point = new BMap.Point(lng_lat[0], lng_lat[1]);
+                            };
                             newRecords.push(track);
                             if(track.gotsrc == "gps"){
                                 extractRecords.push(track);
@@ -574,112 +636,220 @@
                     drawingLine: function () {
                         var records = this.getTypeRecords();
                      
-                        // var sy = new BMap.Symbol(BMap_Symbol_SHAPE_BACKWARD_OPEN_ARROW, {
-                        //             scale: 0.6,//图标缩放大小
-                        //             strokeColor:'#fff',//设置矢量图标的线填充颜色
-                        //             strokeWeight: '2',//设置线宽
-                        //         });
-                          
-                        // var lineIcon = new BMap.IconSequence(sy, '10', '30'); 
                         var lines;
                         if (records.length > 1) {
              
                             var firstRecord = records[0];
                             var lastRecord = records[records.length - 1];
-                            this.firstMarker = new BMap.Marker(firstRecord.point, { icon: startIcon });
-                            this.lastMakrker = new BMap.Marker(lastRecord.point, { icon: endIcon });
-                            this.firstMarker.index = 0;
-                            this.lastMakrker.index = records.length-1;
-                       
-                            this.map.addOverlay(this.firstMarker);
-                            this.map.addOverlay(this.lastMakrker);
-                            this.addEventListenerToMarker(this.firstMarker);
-                            this.addEventListenerToMarker(this.lastMakrker);
 
-                            lines = [];
-                               
+                            if(this.mapType === 'baidu'){
+                                this.firstMarker = new BMap.Marker(firstRecord.point, { icon: this.getFirstMarkerIcon(true) });
+                                this.lastMakrker = new BMap.Marker(lastRecord.point, { icon:  this.getFirstMarkerIcon(false) });
+                                this.firstMarker.index = 0;
+                                this.lastMakrker.index = records.length-1;
+                        
+                                this.map.addOverlay(this.firstMarker);
+                                this.map.addOverlay(this.lastMakrker);
+                                this.addEventListenerToMarker(this.firstMarker);
+                                this.addEventListenerToMarker(this.lastMakrker);
 
-                            for (var i = 0; i < records.length; i++) {
-                                var point = records[i].point;
-                                lines.push(point);
+                                lines = [];
+                                
+                                for (var i = 0; i < records.length; i++) {
+                                    var point = records[i].point;
+                                    lines.push(point);
 
-                                if(i !=0 && i != records.length-1){
-                                    var makrker = new BMap.Marker(point);
-                                    makrker.index = i;
-                                    this.isShowMarker && this.map.addOverlay(makrker);
-                                    this.addEventListenerToMarker(makrker);
-                                    this.markers.push(makrker);
+                                    if(i !=0 && i != records.length-1){
+                                        var makrker = new BMap.Marker(point);
+                                        makrker.index = i;
+                                        this.isShowMarker && this.map.addOverlay(makrker);
+                                        this.addEventListenerToMarker(makrker);
+                                        this.markers.push(makrker);
+                                    }
+                                };
+                                this.markers.unshift(this.firstMarker);
+                                this.markers.push(this.lastMakrker);
+
+                                // this.polyline = new BMap.Polyline(lines, { strokeColor: "#e4393c", strokeWeight: 8, strokeOpacity: 1.5 ,icons:[icons]});
+                            
+                                this.polyline = new BMap.Polyline(lines, { 
+                                    enableEditing: false,//是否启用线编辑，默认为false
+                                    enableClicking: true,//是否响应点击事件，默认为true
+                                    enableMassClear:true,
+                                    strokeWeight:'3',//折线的宽度，以像素为单位
+                                    strokeOpacity: 0.8,//折线的透明度，取值范围0 - 1
+                                    strokeColor:"#F41C2E" //折线颜色
+                                });
+                    
+                                this.map.addOverlay(this.polyline);
+                                // 设置中心点
+                                this.carMarker = new BMap.Marker(lines[0], { icon: this.getDirectionIcon(records[0].direction) });
+                                this.map.addOverlay(this.carMarker);
+                                this.setViewPortCenter(lines);
+                            }else{
+                                var maxLen = records.length - 1;
+                                var points = []
+                                for (var i = 0; i < records.length; i ++) {
+                                    var record = records[i];
+                                    points.push(record.gpoint);
+                                    if(i === 0){
+                                        this.firstMarker = new google.maps.Marker({
+                                            position: record.gpoint,
+                                            map: this.map,
+                                            icon: this.getFirstMarkerIcon(true)
+                                        })
+                                        this.firstMarker.index = i;
+                                        this.carMarker = new google.maps.Marker({
+                                            position: record.gpoint,
+                                            map: this.map,
+                                            icon: this.getDirectionIcon(record.direction)
+                                        })
+                                        this.addEventListenerToMarker(this.firstMarker)
+                                    }else if( i === maxLen){
+                                     
+                                        this.lastMakrker = new google.maps.Marker({
+                                            position: record.gpoint,
+                                            map: this.map,
+                                            icon: this.getFirstMarkerIcon(false)
+                                        })
+                                        this.lastMakrker.index = i;
+                                        this.addEventListenerToMarker(this.lastMakrker)
+                                    }else{
+                                        if(this.isShowMarker){
+                                          var marker = new google.maps.Marker({
+                                                position: record.gpoint,
+                                                map: this.map,
+                                            })
+                                            marker.index = i;
+                                            this.addEventListenerToMarker(marker)
+                                        }else{
+                                            var marker = new google.maps.Marker({
+                                                position: record.gpoint,
+                                            })
+                                            marker.index = i; 
+                                            this.markers.push(marker);
+                                            this.addEventListenerToMarker(marker)
+                                        }
+                                    }
                                 }
-                            };
-                            this.markers.unshift(this.firstMarker);
-                            this.markers.push(this.lastMakrker);
 
-                            // this.polyline = new BMap.Polyline(lines, { strokeColor: "#e4393c", strokeWeight: 8, strokeOpacity: 1.5 ,icons:[icons]});
-                           
-                            this.polyline = new BMap.Polyline(lines, { 
-                                enableEditing: false,//是否启用线编辑，默认为false
-                                enableClicking: true,//是否响应点击事件，默认为true
-                                enableMassClear:true,
-                                // icons:[lineIcon],
-                                strokeWeight:'8',//折线的宽度，以像素为单位
-                                strokeOpacity: 0.8,//折线的透明度，取值范围0 - 1
-                                strokeColor:"#F41C2E" //折线颜色
-                            });
-                 
-                            this.map.addOverlay(this.polyline);
-                            // 设置中心点
+                                this.polyline  = new google.maps.Polyline({
+                                        path: points,
+                                        geodesic: true,
+                                        strokeColor: '#e4393c',
+                                        strokeOpacity: 1.5,
+                                        strokeWeight: 3
+                                    });
+                                this.polyline .setMap(this.map);
+                                this.map.setZoom(20)    
+                                this.map.setCenter(points[0])    
+                            }
+                            this.openInfoWindow(this.carMarker,lastRecord);  
                             this.getTotalMileage(records);
-                            this.setViewPortCenter(lines);
-                            this.runAnimeate(records);
+                            // this.runAnimeate(records);
 
                         }else if(records.length == 1){
                                 var lastRecord = records[records.length - 1];
                                 this.totalMileage = '0km';
-                                this.firstMarker = new BMap.Marker(lastRecord.point, { icon: endIcon });
-                                
-                                this.map.addOverlay(this.firstMarker);
-                                lines = [];
 
-                                for (var i = 0; i < records.length; i++) {
-                                    lines.push(records[i].point);
-                                };
-                  
-                                 // 设置中心点
-                                this.setViewPortCenter(lines);
-                                this.runAnimeate(records);
-                        };
-                        
+                                if(this.mapType === 'baidu'){
+                                    this.firstMarker = new BMap.Marker(lastRecord.point, { icon: this.getFirstMarkerIcon(false) });
+                                    this.map.addOverlay(this.firstMarker);
+                                    lines = [];
+
+                                    for (var i = 0; i < records.length; i++) {
+                                        lines.push(records[i].point);
+                                    };
+                    
+                                    // 设置中心点
+                                    this.setViewPortCenter(lines);
+                                    this.addEventListenerToMarker(this.firstMarker);
+                                }else{
+                                    this.firstMarker = new google.maps.Marker({
+                                        position: lastRecord.gpoint,
+                                        map: this.map,
+                                        icon: this.getFirstMarkerIcon(false)
+                                    })
+                                    this.map.setZoom(16)    
+                                    this.map.setCenter(lastRecord.gpoint)
+                                }
+                                this.openInfoWindow(this.carMarker,lastRecord);  
+                                // this.runAnimeate(records);
+                        };  
                     },
+
+                    getFirstMarkerIcon:function(isStart){
+                        var iconName =  isStart ? 'marker_qidian.png' : 'marker_zhongdian.png';
+                        if(this.mapType == 'baidu'){
+                            return new BMap.Icon("./images/map/" + iconName, new BMap.Size(32, 32), { imageOffset: new BMap.Size(0, 0)});
+                        }else{
+                            var pathname = location.pathname
+                            var imgPath = ''
+                            if (pathname.indexOf('gpsserver') != -1) {
+                                imgPath = myUrls.host + 'images/map/' + iconName;
+                            } else {
+                                imgPath = '../images/map/' + iconName;
+                            }
+                            return imgPath;
+                        }
+                },
                     getTotalMileage:function(records){
                         var totaldistance = records[records.length-1].totaldistance - records[0].totaldistance;
                         this.totalMileage = utils.getMileage(totaldistance);
                     },
                     addEventListenerToMarker:function(marker){
                         var me = this;
-                        marker.addEventListener("click",function () { 
+                       
+                        if(this.mapType === 'baidu'){
+                            marker.addEventListener("click",function () { 
                             var index = marker.index;
-                            var track = (function () { 
-                                var track = null;
-                                if(me.isExtract){
-                                    track = me.extractRecords[index];
-                                }else{
-                                    track = me.records[index];
-                                }
-                                return track;
-                            })();
-
                             me.index = index;
-                            me.openInfoWindow(marker,track);
+                            var track = (function () { 
+                                    var track = null;
+                                    if(me.isExtract){
+                                        track = me.extractRecords[index];
+                                    }else{
+                                        track = me.records[index];
+                                    }
+                                    return track;
+                            })();
+                            me.openInfoWindow(me.carMarker,track);
                         });
+                        }else{
+                            google.maps.event.addListener(marker, "click", function (e) {
+                                var index = marker.index;
+                                me.index = index;
+                                var track = (function () { 
+                                var track = null;
+                                        if(me.isExtract){
+                                            track = me.extractRecords[index];
+                                        }else{
+                                            track = me.records[index];
+                                        }
+                                        return track;
+                                })();
+                                me.openInfoWindow(me.carMarker,track);
+                            });
+                        }
+                      
                     },
                     openInfoWindow:function(marker,track){
                         var sContent = this.getLableContent(track);
-                        var windowInfo = new BMap.InfoWindow(sContent);
-                            windowInfo.disableCloseOnClick();
-                            this.isShowMarker && marker.openInfoWindow(windowInfo);
-                            this.carMarker.setPosition(track.point);
-                            this.carMarker.setIcon(this.getDirectionIcon(track.direction));
-                            
+                        if(this.mapType === 'baidu'){
+                            var windowInfo = new BMap.InfoWindow(sContent);
+                                windowInfo.disableCloseOnClick();
+                                this.isShowMarker && marker.openInfoWindow(windowInfo);
+                                this.carMarker.setPosition(track.point); 
+                        }else{
+                            if(googleInfoWindow){
+                                googleInfoWindow.close();
+                                googleInfoWindow.setMap(null);
+                            }
+                            googleInfoWindow = new google.maps.InfoWindow({ content: '<div id="windowInfo" style="width:360px;">' + sContent + '</div>' });
+                            this.isShowMarker && googleInfoWindow.open(this.map, marker);
+                            this.carMarker.setPosition(track.gpoint);
+                        }
+                        this.carMarker.setIcon(this.getDirectionIcon(track.direction));
                     },
                     setViewPortCenter: function (lines) {
                         var view = this.map.getViewport(eval(lines));
@@ -688,13 +858,7 @@
                         this.map.centerAndZoom(centerPoint, mapZoom);
                     },
                     runAnimeate: function (records) {
-                        var firstRecord = records[0];
-                        var lableOptions = {
-                            position: firstRecord.point,
-                            offset: new BMap.Size(30, -60)
-                        };
-                        this.carMarker = new BMap.Marker(firstRecord.point, { icon: carIcon });
-                        this.map.addOverlay(this.carMarker);
+
                         this.openInfoWindow(this.firstMarker,firstRecord);
                     },
                     getTypeRecords:function(){
@@ -719,17 +883,25 @@
                                 me.index++;
                                 if (me.index >= paths) {
                                     clearInterval(me.intervalInstanse);
-                                    me.index = 0;
-                                    me.openInfoWindow(me.firstMarker,records[me.index]);
+                                    // me.index = 0;
+                                    // me.openInfoWindow(me.firstMarker,records[me.index]);
                                 };
                                 var track = records[me.index];
-                                me.carMarker.setPosition(track.point);
-                                me.carMarker.setIcon(me.getDirectionIcon(track.direction));
-                                // me.markerLabel.setContent(me.getLableContent(track));
-                                var sContent = me.getLableContent(track);
-                                var windowInfo = new BMap.InfoWindow(sContent);
-                                me.isShowMarker && me.carMarker.openInfoWindow(windowInfo);
+                                if(track){
+                                    me.openInfoWindow(me.carMarker,track);
+                                }else{
+                                    me.index = me.index -1;
+                                }
+                               
+                                // if(me.mapType === 'baidu'){
+                                //     me.carMarker.setPosition(track.point);
+                                //     me.carMarker.setIcon(me.getDirectionIcon(track.direction));
+                                //     var sContent = me.getLableContent(track);
+                                //     var windowInfo = new BMap.InfoWindow(sContent);
+                                //     me.isShowMarker && me.carMarker.openInfoWindow(windowInfo);
+                                // }else{
 
+                                // }
                             }, me.velocity);
                         };
                     },
@@ -753,6 +925,7 @@
                         clearInterval(this.intervalInstanse);
                     },
                     getLableContent: function (info) {
+                        if(!info) return;
                         currentTrack = info;
                         var address = this.getAddress(info);
                         var posiType = utils.getPosiType(info);
@@ -806,44 +979,82 @@
                         if (address !== null) {
                             return address;
                         }
-                        utils.getBaiduAddressFromBaidu(lng, lat, function (resp) {
-
-                            if (resp.length) {
-                                address = resp;
-                                $("p.last-address").html(" 详细地址: " + address);
-                                LocalCacheMgr.setAddress(lng, lat, address);
-                            } else {
-                                utils.getJiuHuAddressSyn(callon, callat, function (resp) {
-                                    address = resp.address
+                        if(this.mapType === 'baidu'){
+                            utils.getBaiduAddressFromBaidu(lng, lat, function (resp) {
+                                if (resp.length) {
+                                    address = resp;
                                     $("p.last-address").html(" 详细地址: " + address);
                                     LocalCacheMgr.setAddress(lng, lat, address);
-                                });
-                            }
-
-                        });
+                                } else {
+                                    utils.getJiuHuAddressSyn(callon, callat, function (resp) {
+                                        address = resp.address
+                                        $("p.last-address").html(" 详细地址: " + address);
+                                        LocalCacheMgr.setAddress(lng, lat, address);
+                                    });
+                                }
+                            });
+                        }else{
+                            var google_lng_lat = wgs84togcj02(callon,callat);
+                            utils.getGoogleAddressSyn(google_lng_lat[1],google_lng_lat[0],function (address) { 
+                                $("p.last-address").html(" 详细地址: " + address);
+                                LocalCacheMgr.setAddress(lng, lat, address);                               
+                            })
+                        }
                         return "地址正在解析..."
                     },
                     resetMapState: function () {
-                        if (this.carMarker) {
-                            this.carMarker = null;
-                        };
-                        if (this.markers.length) {
-                            this.markers = [];
-                            this.firstMarker = null;
-                            this.lastMakrker = null;
-                        };
-
-                        if (this.polyline) {
-                            this.polyline = null;
-                        };
-                        if (this.markerLabel) {
-                            this.markerLabel = null;
-                        };
                         if (this.intervalInstanse) {
                             clearInterval(this.intervalInstanse);
                             this.intervalInstanse = null;
                         };
-                        this.map.clearOverlays();
+                        if(this.mapType === 'baidu'){
+                            if (this.carMarker) {
+                                this.carMarker = null;
+                            };
+                            if (this.markers.length) {
+                                this.markers = [];
+                                this.firstMarker = null;
+                                this.lastMakrker = null;
+                            };
+
+                            if (this.polyline) {
+                                this.polyline = null;
+                            };
+                            if (this.markerLabel) {
+                                this.markerLabel = null;
+                            };
+                            this.map.clearOverlays();
+                        }else{
+                            if (this.carMarker) {
+                                this.carMarker.setMap(null);
+                                this.carMarker = null;
+                            };
+                            if (this.firstMarker) {
+                                this.firstMarker.setMap(null);
+                                this.firstMarker = null;
+                            };
+                            if (this.lastMakrker) {
+                                this.lastMakrker.setMap(null);
+                                this.lastMakrker = null;
+                            };
+
+                            if (this.markers.length) {
+                                this.markers.forEach(function (marker) { 
+                
+                                    marker.setMap(null);
+                                })
+                                this.markers = [];
+                            };
+
+                            if (this.polyline) {
+                                this.polyline.setMap(null);
+                                this.polyline = null;
+                            };
+                            if (this.markerLabel) {
+                                this.markerLabel = null;
+                            };
+                        }
+                        
                         this.index = 0;
                         // this.records = [];
                         // this.extractRecords = [];    
@@ -853,14 +1064,29 @@
                         // };
                     },
                     getDirectionIcon: function (angle) {
-                        return new BMap.Icon("images/carstate/green_" + angle + ".gif", new BMap.Size(17, 17), { imageOffset: new BMap.Size(0, 0) });
+                        if(this.mapType === 'baidu'){
+                            return new BMap.Icon("images/carstate/green_"+ angle +".gif", new BMap.Size(17, 17), { imageOffset: new BMap.Size(0, 0)}); 
+                        }else{
+                            var pathname = location.pathname
+                            var imgPath = ''
+                            if (pathname.indexOf('gpsserver') != -1) {
+                                imgPath = myUrls.host + 'images/carstate';
+                            } else {
+                                imgPath = '../images/carstate';
+                            }
+                            return imgPath += '/green_' + angle + '.png';
+                        }
                     },
                     onShowCtrl:function(){
                         this.isShowCtrl = !this.isShowCtrl;
                     },
                     onShowMarker:function(){
                         if(this.isShowMarker){
-                            this.map.closeInfoWindow();
+                            if(this.mapType === 'baidu'){
+                                this.map.closeInfoWindow();
+                            }else{
+                                googleInfoWindow ? googleInfoWindow.close() : '';
+                            } 
                         }
                         this.isShowMarker = !this.isShowMarker;
                     }
@@ -868,7 +1094,13 @@
                 computed: {
                     token: function () {
                         return Cookies.get("token");
-                    }
+                    },
+                    rightTopCtrl:function(){
+                        return [this.mapType === 'baidu' ? 'top-10':'top-65'];
+                    },
+                    rightBottomCtrl:function(){
+                        return [this.mapType === 'baidu' ? 'right-10':'right-65'];
+                    },
                 },
                 watch: {
                     startTime: function () {
@@ -886,19 +1118,50 @@
                     isShowMarker:function(){
                         var mkLength = this.markers.length;
                         if(mkLength > 2){
-                            var markers = this.markers.slice(1,mkLength - 1);
-                       
-                            for(var i = 0 ; i < markers.length ; i++ ){
-                                var marker = markers[i];
-                                if(this.isShowMarker){
-                                    this.map.addOverlay(marker);
-                                }else{
-                                    this.map.removeOverlay(marker);
-                                }
-                                    
-                            };
-                            
+                            if(this.mapType === 'baidu'){
+                                var markers = this.markers.slice(1,mkLength - 1);
+                                for(var i = 0 ; i < markers.length ; i++ ){
+                                    var marker = markers[i];
+                                    if(this.isShowMarker){
+                                        this.map.addOverlay(marker);
+                                    }else{
+                                        this.map.removeOverlay(marker);
+                                    }      
+                                };
+                            }else{
+                                for(var i = 0 ; i < this.markers.length ; i++ ){
+                                    var marker = this.markers[i];
+                                    if(this.isShowMarker){
+                                        marker.setMap(this.map);
+                                    }else{
+                                        marker.setMap(null);
+                                    }
+                                };
+                            }
                         };
+                    },
+                    mapType:function(){
+                        var me = this;
+                        this.markers = [];
+                        this.initMap(function () { 
+                            me.requestTracks(me.startTimeStr, me.endTimeStr, function (resp) {
+                                var records = resp.records;
+                                me.spinShow = false;
+                                if (resp.status == 0 && records) { 
+                                    records.sort(function (a, b) {
+                                        return a.updatetime - b.updatetime;
+                                    });
+                                    me.filtertracks(records);
+                                    me.drawingLine();
+                                }else  if (resp.status == 3 ) {
+                                    me.totalMileage = '0km';
+                                    me.$Message.error(resp.cause);
+                                }else{
+                                    me.totalMileage = '0km';
+                                    me.$Message.error("没有当天轨迹");
+                                } 
+                            });
+                        });
                     }
                 },
                 mounted: function () {
