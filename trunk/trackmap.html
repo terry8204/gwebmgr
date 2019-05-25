@@ -64,7 +64,7 @@
             top: 11px;
             width: 30px;
             height: 30px;
-            background: #e4393c;
+            background: red;
             border-radius:50%;
             color: #fff;
             line-height:  30px;
@@ -79,7 +79,7 @@
             position: absolute;
             bottom: 10px;
             width: 320px;
-            background: #e4393c;
+            background: red;
             border: 1px solid #e6e6e6;
         }
         .track-info{
@@ -529,13 +529,13 @@
                                 return points;
                              })()
                             if(this.mapType === 'baidu'){
-                                    var polyline = new BMap.Polyline(points ,{strokeColor:"#e4393c",strokeWeight:8,strokeOpacity:1.5})
+                                    var polyline = new BMap.Polyline(points ,{strokeColor:"red",strokeWeight:8,strokeOpacity:1.5})
                                     this.map.addOverlay(polyline);
                             }else{
                                     var flightPath = new google.maps.Polyline({
                                         path: points,
                                         geodesic: true,
-                                        strokeColor: '#e4393c',
+                                        strokeColor: 'red',
                                         strokeOpacity: 1.5,
                                         strokeWeight: 8
                                     });
@@ -569,14 +569,14 @@
                                 var firstPoint = this.getPoint(this.tracks[this.tracks.length-2]);
                                 var lastPoint = this.getPoint(this.tracks[this.tracks.length-1]);    
                                 if(this.mapType === 'baidu'){
-                                    var polyline = new BMap.Polyline([firstPoint,lastPoint] ,{strokeColor:"#e4393c",strokeWeight:8,strokeOpacity:1.5})
+                                    var polyline = new BMap.Polyline([firstPoint,lastPoint] ,{strokeColor:"red",strokeWeight:8,strokeOpacity:1.5})
                                     this.map.addOverlay(polyline);
                                 }else{
                                      var flightPlanCoordinates = [firstPoint,lastPoint]
                                      var flightPath = new google.maps.Polyline({
                                             path: flightPlanCoordinates,
                                             geodesic: true,
-                                            strokeColor: '#e4393c',
+                                            strokeColor: 'red',
                                             strokeOpacity: 1.5,
                                             strokeWeight: 8
                                       });

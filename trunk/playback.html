@@ -675,7 +675,7 @@
                                 this.markers.unshift(this.firstMarker);
                                 this.markers.push(this.lastMakrker);
 
-                                // this.polyline = new BMap.Polyline(lines, { strokeColor: "#e4393c", strokeWeight: 8, strokeOpacity: 1.5 ,icons:[icons]});
+                                // this.polyline = new BMap.Polyline(lines, { strokeColor: "red", strokeWeight: 8, strokeOpacity: 1.5 ,icons:[icons]});
                             
                                 this.polyline = new BMap.Polyline(lines, { 
                                     enableEditing: false,//是否启用线编辑，默认为false
@@ -683,7 +683,7 @@
                                     enableMassClear:true,
                                     strokeWeight:'8',//折线的宽度，以像素为单位
                                     strokeOpacity: 0.8,//折线的透明度，取值范围0 - 1
-                                    strokeColor:"#F41C2E" //折线颜色
+                                    strokeColor:"red" //折线颜色
                                 });
                     
                                 this.map.addOverlay(this.polyline);
@@ -743,7 +743,7 @@
                                 this.polyline  = new google.maps.Polyline({
                                         path: points,
                                         geodesic: true,
-                                        strokeColor: '#e4393c',
+                                        strokeColor: 'red',
                                         strokeOpacity: 1.5,
                                         strokeWeight: 8
                                     });
