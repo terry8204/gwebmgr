@@ -1015,10 +1015,18 @@
                             this.intervalInstanse = null;
                         };
                         if (this.markers.length) {
-                            try {
-                                this.markers.forEach(function (item) { 
-                                    item.setMap(null);
-                                })
+                            try {   
+                                var me = this;
+                                   if(this.mapType === 'baidu'){
+                                        this.markers.forEach(function (item) { 
+                                            me.map.removeOverlay(item);
+                                        })  
+                                    }else{
+                                        this.markers.forEach(function (item) { 
+                                            item.setMap(null);
+                                        })  
+                                    }
+                                                
                             } catch (error) {}
                          
                         };
@@ -1032,12 +1040,6 @@
                         this.polyline = null;
   
                         this.index = 0;
-                        // this.records = [];
-                        // this.extractRecords = [];    
-                        // var centerPoint = this.map.getCenter();
-                        // if (this.map.getZoom() != 5 || centerPoint.lng !== 108.0017245 || centerPoint.lat !== 35.926895) {
-                        //     this.map.centerAndZoom(new BMap.Point(108.0017245, 35.926895), 5);
-                        // };
                     },
                     getDirectionIcon: function (angle) {
                         if(this.mapType === 'baidu'){
