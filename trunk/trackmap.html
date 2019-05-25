@@ -528,7 +528,7 @@
                                 return points;
                              })()
                             if(this.mapType === 'baidu'){
-                                    var polyline = new BMap.Polyline(points ,{strokeColor:"#e4393c",strokeWeight:3,strokeOpacity:1.5})
+                                    var polyline = new BMap.Polyline(points ,{strokeColor:"#e4393c",strokeWeight:8,strokeOpacity:1.5})
                                     this.map.addOverlay(polyline);
                             }else{
                                     var flightPath = new google.maps.Polyline({
