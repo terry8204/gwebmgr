@@ -42,6 +42,12 @@
             right: 10px;
             width: 80px; 
         }
+        .right-map-type{
+            position: absolute;
+            right: 90px;
+            width: 100px;
+            top: 15px
+        }
         .top-10{
             top: 10px;
         }
@@ -59,7 +65,6 @@
             width: 80px;
             height: 35px;
             cursor: pointer;
-            margin-top:10px; 
         }
         div.right-button-wrap img,.right-button-wrap-marker img{
             width: 100%;
@@ -167,12 +172,12 @@
 <body>
     <div id="container" v-cloak>
         <div id="bmap"></div>
-        <div class="right-ctrl" :class="rightTopCtrl">
-            <div class="right-map-type">
-                <i-select v-model="mapType" size="small">
-                    <i-option v-for="item in mapList" :value="item.value" :key="item.value">{{ item.label }}</i-option>
-                </i-select>
-            </div>
+        <div class="right-map-type">
+            <i-select v-model="mapType" size="small">
+                <i-option v-for="item in mapList" :value="item.value" :key="item.value">{{ item.label }}</i-option>
+            </i-select>
+        </div>
+        <div class="right-ctrl" :class="rightTopCtrl">          
             <div class="right-button-wrap" @click="changePosiType">
                 <img v-if="isExtract" src="./images/ic_fine_network_off.png">
                 <img v-else src="./images/ic_fine_network_on.png">
@@ -436,7 +441,6 @@
                     velocity: 1000,         // 半秒
                     intervalInstanse: null,
                     carMarker: null,
-                    markerLabel: null,
                     index: 0,
                     isPlay: true,
                     firstMarker: null,
@@ -637,6 +641,7 @@
                         var records = this.getTypeRecords();
                      
                         var lines;
+                        var markers = [];
                         if (records.length > 1) {
              
                             var firstRecord = records[0];
@@ -658,15 +663,15 @@
                                 for (var i = 0; i < records.length; i++) {
                                     var point = records[i].point;
                                     lines.push(point);
-
                                     if(i !=0 && i != records.length-1){
                                         var makrker = new BMap.Marker(point);
                                         makrker.index = i;
                                         this.isShowMarker && this.map.addOverlay(makrker);
                                         this.addEventListenerToMarker(makrker);
-                                        this.markers.push(makrker);
+                                        markers.push(makrker);
                                     }
                                 };
+                                this.markers = markers;
                                 this.markers.unshift(this.firstMarker);
                                 this.markers.push(this.lastMakrker);
 
@@ -676,7 +681,7 @@
                                     enableEditing: false,//是否启用线编辑，默认为false
                                     enableClicking: true,//是否响应点击事件，默认为true
                                     enableMassClear:true,
-                                    strokeWeight:'3',//折线的宽度，以像素为单位
+                                    strokeWeight:'8',//折线的宽度，以像素为单位
                                     strokeOpacity: 0.8,//折线的透明度，取值范围0 - 1
                                     strokeColor:"#F41C2E" //折线颜色
                                 });
@@ -727,24 +732,26 @@
                                                 position: record.gpoint,
                                             })
                                             marker.index = i; 
-                                            this.markers.push(marker);
-                                            this.addEventListenerToMarker(marker)
+                                           
+                                            this.addEventListenerToMarker(marker);
                                         }
+                                        markers.push(marker);
                                     }
                                 }
-
+                                this.markers = markers;
+                             
                                 this.polyline  = new google.maps.Polyline({
                                         path: points,
                                         geodesic: true,
                                         strokeColor: '#e4393c',
                                         strokeOpacity: 1.5,
-                                        strokeWeight: 3
+                                        strokeWeight: 8
                                     });
                                 this.polyline .setMap(this.map);
-                                this.map.setZoom(20)    
+                                this.map.setZoom(16)    
                                 this.map.setCenter(points[0])    
                             }
-                            this.openInfoWindow(this.carMarker,lastRecord);  
+                            this.openInfoWindow(this.carMarker,records[0]);  
                             this.getTotalMileage(records);
                             // this.runAnimeate(records);
 
@@ -773,7 +780,7 @@
                                     this.map.setZoom(16)    
                                     this.map.setCenter(lastRecord.gpoint)
                                 }
-                                this.openInfoWindow(this.carMarker,lastRecord);  
+                                this.openInfoWindow(this.carMarker,records[0]);  
                                 // this.runAnimeate(records);
                         };  
                     },
@@ -1007,54 +1014,23 @@
                             clearInterval(this.intervalInstanse);
                             this.intervalInstanse = null;
                         };
-                        if(this.mapType === 'baidu'){
-                            if (this.carMarker) {
-                                this.carMarker = null;
-                            };
-                            if (this.markers.length) {
-                                this.markers = [];
-                                this.firstMarker = null;
-                                this.lastMakrker = null;
-                            };
-
-                            if (this.polyline) {
-                                this.polyline = null;
-                            };
-                            if (this.markerLabel) {
-                                this.markerLabel = null;
-                            };
-                            this.map.clearOverlays();
-                        }else{
-                            if (this.carMarker) {
-                                this.carMarker.setMap(null);
-                                this.carMarker = null;
-                            };
-                            if (this.firstMarker) {
-                                this.firstMarker.setMap(null);
-                                this.firstMarker = null;
-                            };
-                            if (this.lastMakrker) {
-                                this.lastMakrker.setMap(null);
-                                this.lastMakrker = null;
-                            };
-
-                            if (this.markers.length) {
-                                this.markers.forEach(function (marker) { 
-                
-                                    marker.setMap(null);
+                        if (this.markers.length) {
+                            try {
+                                this.markers.forEach(function (item) { 
+                                    item.setMap(null);
                                 })
-                                this.markers = [];
-                            };
-
-                            if (this.polyline) {
-                                this.polyline.setMap(null);
-                                this.polyline = null;
-                            };
-                            if (this.markerLabel) {
-                                this.markerLabel = null;
-                            };
-                        }
-                        
+                            } catch (error) {}
+                         
+                        };
+                        this.firstMarker && this.firstMarker.setMap && this.firstMarker.setMap(null);
+                        this.lastMakrker && this.lastMakrker.setMap && this.lastMakrker.setMap(null);
+                        this.carMarker && this.carMarker.setMap && this.carMarker.setMap(null);
+                        this.polyline && this.polyline.setMap && this.polyline.setMap(null);
+                        this.firstMarker = null;
+                        this.lastMakrker = null;
+                        this.carMarker = null;
+                        this.polyline = null;
+  
                         this.index = 0;
                         // this.records = [];
                         // this.extractRecords = [];    
