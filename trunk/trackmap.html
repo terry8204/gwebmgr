@@ -569,7 +569,7 @@
                                 var firstPoint = this.getPoint(this.tracks[this.tracks.length-2]);
                                 var lastPoint = this.getPoint(this.tracks[this.tracks.length-1]);    
                                 if(this.mapType === 'baidu'){
-                                    var polyline = new BMap.Polyline([firstPoint,lastPoint] ,{strokeColor:"#e4393c",strokeWeight:3,strokeOpacity:1.5})
+                                    var polyline = new BMap.Polyline([firstPoint,lastPoint] ,{strokeColor:"#e4393c",strokeWeight:8,strokeOpacity:1.5})
                                     this.map.addOverlay(polyline);
                                 }else{
                                      var flightPlanCoordinates = [firstPoint,lastPoint]
