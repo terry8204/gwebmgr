@@ -1093,7 +1093,7 @@
                     velocity: function () {
                         this.action();
                     },
-                    isShowMarker:function(){
+                    isShowMarker:function(newVal){
                         var mkLength = this.markers.length;
                         if(mkLength > 2){
                             if(this.mapType === 'baidu'){
@@ -1117,6 +1117,10 @@
                                 };
                             }
                         };
+                        if(newVal){
+                            var records = this.getTypeRecords();
+                            this.openInfoWindow(this.carMarker,records[this.index]);
+                        }              
                     },
                     mapType:function(){
                         var me = this;
