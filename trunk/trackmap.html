@@ -403,7 +403,6 @@
                                 var prveTrack = this.tracks[this.tracks.length-1];
                                 if(prveTrack){
                                     if(prveTrack.updatetime === record.updatetime){
-                                        console.log('更新时间相同', '')
                                         return;
                                     }
                                 }
@@ -419,7 +418,9 @@
                                             this.carMarker.setPosition(point);
                                             this.map.setCenter(point);
                                         };
+                                        var carIcon = this.getDirectionIcon(0); 
                                         this.carMarker.setIcon(carIcon);
+                                        this.carMarker.setRotation(record.course);
                                     }else{
                                         this.carMarker.setMap(this.map);
                                         this.carMarker.setPosition(point);

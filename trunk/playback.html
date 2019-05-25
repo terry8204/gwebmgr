@@ -847,6 +847,8 @@
                                 windowInfo.disableCloseOnClick();
                                 this.isShowMarker && marker.openInfoWindow(windowInfo);
                                 this.carMarker.setPosition(track.point); 
+                                this.carMarker.setIcon(this.getDirectionIcon(0)); 
+                                this.carMarker.setRotation(track.course);
                         }else{
                             if(googleInfoWindow){
                                 googleInfoWindow.close();
