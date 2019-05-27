@@ -294,6 +294,7 @@ var monitor = {
             var me = this;
             var url = myUrls.queryAllCmdRecords();
             utils.sendAjax(url, { deviceid: this.currentDeviceId }, function (resp) {
+
                 if (resp.status === 0) {
                     resp.cacherecords.forEach(function (record, index) {
                         record.index = ++index;

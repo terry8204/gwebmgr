@@ -1020,9 +1020,7 @@
                             try {   
                                 var me = this;
                                    if(this.mapType === 'baidu'){
-                                        this.markers.forEach(function (item) { 
-                                            me.map.removeOverlay(item);
-                                        })  
+                                        me.map.clearOverlays();
                                     }else{
                                         this.markers.forEach(function (item) { 
                                             item.setMap(null);
