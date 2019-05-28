@@ -40,6 +40,7 @@ var bgManager = {
                     icon: 'md-phone-portrait',
                     children: [
                         { title: me.$t("bgMgr.addDev"), name: 'addDevice', icon: 'md-add' },
+                        { title: "批量添加", name: 'batchAddDevice', icon: 'md-add' },
                         { title: me.$t("bgMgr.queryDev"), name: 'queryDevice', icon: 'md-search' }
                     ]
                 }
@@ -67,6 +68,9 @@ var bgManager = {
                     break
                 case 'addDevice':
                     page = 'adddevice.html'
+                    break
+                case 'batchAddDevice':
+                    page = 'batchadddevice.html'
                     break
                 case 'queryDevice':
                     page = 'querydevice.html'

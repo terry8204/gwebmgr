@@ -284,6 +284,7 @@ div.ivu-steps-head-inner .ivu-icon{
         bottom: 0;
         right: 0;
         left: 240px;
+        overflow-y: auto;
     }
     .ivu-icon {
         margin-top:-3px; 

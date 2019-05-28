@@ -1,0 +1,514 @@
+<meta charset="UTF-8">
+<style>
+    #batchadddevice div.full>div{width: 700px;margin: 0 auto;}
+    #batchadddevice .ivu-select-dropdown-list{
+        max-height: 300px;
+    }
+</style>
+<div id="batchadddevice">
+    <div class="full" style="padding:10px 10px 0 10px;">
+        <h3 class="h3-title">{{$t("bgMgr.addDev")}}</h3>
+        <div>
+            <Row style="margin: 10px 0" v-if="userType == 0">
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;"><i style="color: red;display: inline-block;">*</i>&nbsp;选择账号 : &nbsp;</i-col>
+                <i-col span="8">
+                    <div class="search-wrapper">
+                        <i-input v-model.trim="createrToUser"  :icon="iconState" @on-change="sosoValueChange" @on-blur="blur" @on-focus="focus"></i-input>
+                        <transition name="fade">
+                            <ul class="search-item-wrapper" v-show="isShowMatchDev" style="cursor: pointer;">
+                                <li v-for="item in userlists" style="padding:5px 10px;" @click="selectedCmd(item)" :class="{'ivu-select-item-focus':item == createrToUser}">
+                                    <Option :value="item" :key="item">
+                                        <span style="cursor: pointer;">{{ item }}</span>
+                                    </Option>
+                                </li>
+                            </ul>
+                        </transition>
+                    </div>
+                </i-col>
+            </Row>
+            <Row style="margin: 10px 0">
+
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;{{$t("user.client")}} : &nbsp;</i-col>
+                <i-col span="8">
+                    <i-select v-model="companyid" style="width: 100%">
+                        <i-option v-for="item in customersList" :value="item.value" :key="item.value">{{ item.label }}</i-option>
+                    </i-select>
+                </i-col>
+            </Row>
+
+            <Row style="margin: 10px 0">
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;"><i style="color: red;display: inline-block;">*</i>&nbsp;{{$t("user.devType")}} : &nbsp;</i-col>
+                <i-col span="8">  
+                    <!-- devicetype -->
+                    <i-select v-model="devicetype" style="width: 100%">
+                        <i-option v-for="item in deviceTypeList" :value="item.value" :key="item.value">{{ item.label }}</i-option>
+                    </i-select>
+                </i-col>
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">{{$t("user.grouping")}} : &nbsp;</i-col>
+                <i-col span="8">
+                    <i-select v-model="groupid">
+                        <i-option v-for="item in groupsList" :value="item.value" :key="item.value">{{ item.label }}</i-option>
+                    </i-select>
+                </i-col>
+            </Row>
+
+            <Row style="margin: 10px 0">
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;"><i style="color: red;display: inline-block;">*</i>&nbsp;终身免费 : &nbsp;</i-col>
+                <i-col span="8">  
+                    <i-select v-model="isfree" style="width: 100%">
+                        <i-option value="1">是</i-option>
+                        <i-option value="0">否</i-option>
+                    </i-select>
+                </i-col>
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;{{$t("alarm.overdueTime")}} : &nbsp;</i-col>
+                <i-col span="8">
+                    <date-picker type="date" v-model="overduetime" :options="dateOptions" style="width: 100%"></date-picker>
+                </i-col>
+            </Row>
+
+
+            <Row style="margin: 10px 0">
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">{{$t("device.reportCount")}}
+                    : &nbsp;</i-col>
+                <i-col span="8">
+                    <i-input v-model.trim="reportedpoint"></i-input>
+                </i-col>
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">{{$t("device.allReportCount")}} : &nbsp;</i-col>
+                <i-col span="8">
+                    <i-input v-model.trim="totalpoint"></i-input>
+                </i-col>
+            </Row>
+
+            <Row style="margin: 10px 0">
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">{{$t("device.allowLogin")}} : &nbsp;</i-col>
+                <i-col span="8">
+                    <i-select v-model="loginenable">
+                        <i-option value="0">{{$t("user.ban")}}</i-option>
+                        <i-option value="1">{{$t("user.allow")}}</i-option>
+                    </i-select>
+                </i-col> 
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">{{$t("device.isUse")}} : &nbsp;</i-col>
+                <i-col span="8">
+                    <i-select v-model="deviceenable">
+                        <i-option value="0">{{$t("user.ban")}}</i-option>
+                        <i-option value="1">{{$t("user.allow")}}</i-option>                     
+                    </i-select>
+                </i-col>                  
+            </Row>
+
+
+            <Row style="margin: 10px 0">
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;转发地址 : &nbsp;</i-col>
+                <i-col span="20">
+                    <i-input v-model.trim="forwardurl"></i-input>
+                </i-col>
+            </Row>
+            
+            <Row style="margin: 10px 0">
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;设备序号 : &nbsp;</i-col>
+                <i-col span="8">
+                    <i-input v-model.trim="deviceid" type="textarea" placeholder="复制批量序号" :autosize="{minRows: 2,maxRows: 15}"></i-input>
+                </i-col>
+
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;提示 : &nbsp;</i-col>
+                <i-col span="8">
+                    <i-input v-model.trim="errorTips" :style="fontColor" type="textarea" disabled :autosize="{minRows: 2,maxRows: 15}"></i-input>
+                </i-col> 
+            </Row>
+
+            <Row style="margin: 10px 0">
+                <i-col span="6" :offset="7">
+                    <i-button style="width: 100%" @click="handleSubmit">{{$t("bgMgr.submit")}}</i-button>
+                </i-col>
+                <i-col span="6" :offset="1">
+                    <i-button style="width: 100%" @click="resetInfo">{{$t("bgMgr.reset")}}</i-button>
+                </i-col>
+            </Row>           
+        </div>
+    </div>
+    <script>
+        new Vue({
+            el:"#batchadddevice",
+            i18n: utils.getI18n(),
+            data:{
+                errorTips:"12",
+                dateOptions:{
+                    disabledDate:function(date) {
+                        return date && date.valueOf() < Date.now() - 86400000;
+                    }
+                },
+                iconState:"ios-arrow-down",
+                deviceid:"",
+                deviceIds:[],
+                devicetype:"",
+                overduetime:"",
+                loginpwd:"",
+                loginenable:"1",
+                deviceenable:"1",
+                groupsList:[],
+                customersList:[],
+                deviceTypeList:[],
+                groupid:'',
+                companyid:'',
+                reportedpoint:0,
+                totalpoint:1500,
+                checkboxObj:{},
+                forwardurl:"",
+                createrToUser:"",
+                userlists:[],
+                userType:null,
+                timeoutIns:null,
+                isShowMatchDev:false,
+                isfree:"1",
+                isOk:false
+            },
+            methods: {
+                selectedCmd:function(item){
+                    var me = this;
+                    setTimeout(function () {
+                        me.isShowMatchDev = false;
+                        me.createrToUser = item;
+                    }, 100)
+                },
+                sosoValueChange:function(){
+                    var me = this;
+                    var value = this.createrToUser.toLowerCase();
+
+                    if (this.timeoutIns != null) {
+                        clearTimeout(this.timeoutIns);
+                    }
+
+                    if (!value.trim()) {
+                        this.userlists = userlists;
+                        return;
+                    }
+
+                    this.timeoutIns = setTimeout(function () {
+                        me.filterMethod(value);
+                    }, 100);
+                },
+                focus: function () {
+                    this.isShowMatchDev = true;
+                },
+                blur: function () {
+                    var me = this
+                    setTimeout(function () {
+                        me.isShowMatchDev = false;
+                    }, 300)
+                },
+                filterMethod:function(value){
+                    var list = [];
+                    userlists.forEach(function (itme) { 
+                        if(itme.toLowerCase().indexOf(value) != -1){
+                            list.push(itme);
+                        }
+                    })
+                    this.userlists = list;
+                },
+                handleSubmit:function(){
+                    var me = this;
+                    var url = myUrls.addDevices();
+
+                    if(!this.isOk){ 
+                        me.$Message.error("请添加正确的imeis");
+                        // me.$Message.error(me.$t("device.devIdTips"));
+                        return;
+                    };
+                    var deviceids = this.deviceid.split('\n').filter(function (item) { if(item){return item }});
+                    if(deviceids.length > 500){
+                        me.$Message.error("一次添加设备不得超过500");
+                        return;
+                    }
+
+                    if(this.overduetime == ""){
+                        me.$Message.error(me.$t("message.fullComplete"));
+                        return;
+                    };
+                    console.log("deviceids",deviceids)
+                    var data = {
+                        deviceids:  deviceids,                 
+                        devicetype:this.devicetype,
+                        isfree:Number(this.isfree),
+                        overduetime:new Date(this.overduetime).getTime(),
+                        loginenable:Number(this.loginenable),
+                        deviceenable:Number(this.deviceenable),
+                    };      
+                    
+
+                    if(this.companyid){data.companyid = this.companyid;}
+
+                    if(this.groupid){
+                        data.groupid = this.groupid;
+                    };
+
+                    if( this.reportedpoint == 0 || this.reportedpoint && !isNaN(this.reportedpoint)){
+                        data.reportedpoint = Number(this.reportedpoint);
+                    }
+
+                    if(this.totalpoint && !isNaN(this.totalpoint)){
+                        data.totalpoint = Number(this.totalpoint);
+                    }
+                    
+                    this.forwardurl && (data.forwardurl = this.forwardurl);
+
+                    if(this.userType == 0){
+                        data.creater = this.createrToUser;
+                    }else{
+                        data.creater = userName;
+                    };
+
+                    utils.sendAjax(url,data,function (resp) { 
+                        if(resp.status == 0){
+                            isNeedRefresh = true;
+                            me.$Message.success(me.$t("message.addSucc"));
+                        }else if(resp.status == -1){
+                            if( resp.cause!== null && resp.cause.indexOf("token")!=-1){
+                                window.location.href = "index.html";
+                            }else{
+                                me.$Message.error(me.$t("message.addFail"));
+                            }
+                        }else if(resp.status == 1 ){
+                            me.$Message.error(me.$t("message.IDRepeat"));
+                        }else if(resp.status == 2 ){
+                            me.$Message.error(me.$t('message.IDError'));
+                        }else if(resp.status == 3 ){
+                            me.$Message.error(me.$t('message.reqFail'));
+                        };
+                    });
+                },
+                resetInfo:function(){
+                    this.deviceid = "";
+                    this.devicetype = "";
+                    // this.overduetime = "";
+                    this.loginenable = "1";
+                    this.deviceenable = "1";
+                    this.groupid = "";
+                    this.companyid = "";
+                },
+                queryAllCompanyInfo:function(claaback){
+                    var url = myUrls.queryCompanyByCreater();
+                    utils.sendAjax(url,{},claaback)
+                },
+                doQueryAllCompanyInfo:function(resp){
+                    var me = this;
+                    if(resp.status == 0){
+                        resp.records.forEach(function(item){
+                            me.customersList.push({
+                                label:item.companyname,
+                                value:item.companyid
+                            })
+                        });
+                    }
+                },
+                getGroupsList:function(){
+                    var me = this; 
+                    var url = myUrls.queryCompanyGroup();                        
+                    utils.sendAjax(url,{companyid:this.companyid},function (resp) { 
+                        me.groupList = [];
+                        me.groupids = [];
+                        if(resp.status == 0){
+                            var companys = resp.companys
+                            for(var i = 0 ; i < companys.length ; i++){
+                                var item = companys[i];
+                                if(item.companyid == me.companyid && item.groups != null){
+                                    var groups = item.groups;
+                                    groups.forEach(function(group){
+                                        me.groupsList.push({label:group.groupname,value:group.groupid});
+                                    });
+                                }
+                            }
+                        }
+                    });
+                },
+                getDeviceType:function () {
+                    var me = this;
+                    vstore.state.deviceTypes .forEach(function (item) { 
+                        var label = item.typename;
+                        if(item.remark){
+                            label += "("+item.remark+")";
+                        }
+                        me.deviceTypeList.push({value:item.devicetypeid,label:label});
+                    })
+                    me.devicetype = 1;
+                },
+                getRegularPattern:function(str){
+                    var res = {};
+                    var reg = /[a-z0-9a-z]{15}/;
+                    if(reg.test(str)){
+                        if(str.length >15){
+                            var newStr = str.slice(15);
+                            var i = 0;
+                            var charArray = [];
+                            while(true){
+                                var char = newStr[i];
+                                var isTrue = /[A-Z0-9a-z]/.test(char);
+                                if(!isTrue){
+                                    charArray.push(char);
+                                }else{
+                                    break;
+                                }
+                                i++;
+                            };
+                            if(charArray.length>0){
+                                res.errormsg="OK";
+                                res.content = charArray.join("");
+                            }else{
+                                res.errormsg="start id error!";
+                                res.content = null;
+                            }
+                        }else{
+                            if(str.length == 15){
+                                res.errormsg="OK";
+                                res.content = str;
+                            }else{
+                                res.errormsg="start id error!";
+                                res.content = null;
+                            }
+                        }
+                    }else{
+                        res.content = null;
+                        res.errormsg="start id error!";
+                    }
+                    return res;
+                },
+                matchingDeviceIds:utils.debounce(function (vm,testIds) {
+                    var relu = this.getRegularPattern(testIds);
+                    console.log('relu', relu)
+                    if(relu.content && relu.errormsg === 'OK'){
+                        var guilv = relu.content;
+							if(/^[a-z0-9a-z]{15}$/.test(guilv)){
+                                vm.isOk = true;
+                                vm.deviceid = guilv+ "\n";
+                                vm.errorTips ="总数 : 1";
+							}else{
+									var isOk = true; // 数据是否合法！
+									var textStr = "";
+									var array = testIds.split(guilv);
+									var errorStr = "";
+									var idx = null;
+									for(var i=0;i<array.length;i++){
+											var line = array[i];
+											if(/^[0-9A-Za-z]{15}$/.test(line)){
+												if(array.length-1 == i){
+													textStr += line ;
+												}else{
+													textStr += line + "\n";
+												}
+											}else{
+												idx = i;
+												if(line.length%15 === 0){
+                                                    var count = line.length/15;
+                                                    var j = 0;
+                                                    while(count > -1 && j <= count){
+                                                        textStr += line.slice( j*15 , 15*(j+1))+ "\n";
+                                                        j++;
+                                                        count--;
+                                                    }
+                                                }else{
+                                                    errorStr = array[i-1]+guilv+ array[i];
+                                                    if(array[i+1]){
+                                                        errorStr += guilv+array[i+1];
+                                                    }
+                                                    isOk = false;
+                                                }
+											}	
+									}
+                                    vm.isOk = isOk;
+									if(isOk){ 
+                                            var newArr = vm.filtered(textStr)
+                                            var len = newArr.length;
+											vm.deviceid = newArr.join("\n") +"\n";
+											vm.errorTips = "总数  : "+len;
+									}else{
+										vm.errorTips =("可能在第"+(idx+1)+"个ID号不合法或者分隔符不一致; \n" +errorStr);
+                                    }
+                                  
+					
+                            }
+
+                    }else{
+                        vm.errorTips = "首个ID号不合法";
+                    }
+
+                },500) ,
+                filtered:function(textStr){
+                    function uniq(array){
+                        var temp = []; 
+                        for(var i = 0; i < array.length; i++){
+                            if(temp.indexOf(array[i]) == -1){
+                                temp.push(array[i]);
+                            }
+                        }
+                        return temp;
+                    }
+                    var newArr = [];
+                    textStr.split("\n").forEach(function (item) { 
+                        if(item){
+                            newArr.push(item);
+                        }
+                    })
+                    return uniq(newArr);
+                }   
+            },
+            watch:{
+                companyid:function(){
+                    this.groupsList = [];
+                    this.groupid = "";
+                    this.getGroupsList();  
+                },
+                isShowMatchDev:function(){
+                    if(!this.isShowMatchDev){
+                        this.iconState = "ios-arrow-down";
+                    }else{
+                        this.iconState = "ios-arrow-up";
+                    }
+                },
+                createrToUser:function(){
+                    var me = this, url = myUrls.queryCompanyByCreater();
+                    utils.sendAjax(url,{username:this.createrToUser},function (resp) { 
+                        if(resp.status === 0){
+                            var customersList = [];
+                            resp.records.forEach(function(item){
+                                customersList.push({
+                                    label:item.companyname,
+                                    value:item.companyid
+                                });
+                            });
+                            me.customersList = customersList;
+                            if(me.userType == 0){
+                                me.companyid = customersList.length ? customersList[0].companyid : "";
+                            }else{
+                                me.companyid = editObject.companyid;
+                            }    
+                        }
+                    });
+                },
+                deviceid:function(newVal){
+                    var exec = /[0-9A-Za-z]/g.exec(newVal);
+                    if(exec){
+                        var idx = exec.index;
+                        var newText = newVal.slice(idx);
+                        this.matchingDeviceIds(this,newText); 
+                    }else{
+                        this.isOk = false;
+                        this.errorTips = "序列号必须是数字或者字母";
+                    }
+                }
+            },
+            computed: {
+                fontColor:function(){
+                    return {
+                        color: this.isOk ?'#1AA034':'red' 
+                    }
+                } 
+            },
+            mounted:function () {
+                this.queryAllCompanyInfo(this.doQueryAllCompanyInfo);
+                this.getDeviceType();
+                this.userlists = userlists;
+                this.overduetime = new Date(Date.now() + 365*24*3600*1000) ;
+                this.userType = vstore.state.userType;
+            } 
+        })
+    </script>
+</div>

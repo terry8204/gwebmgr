@@ -96,6 +96,9 @@ var myUrls = {
   addDevice: function () {
     return this.host + 'webapi?action=adddevice&token=' + token
   },
+  addDevices: function () {
+    return this.host + 'webapi?action=adddevices&token=' + token
+  },
   queryDeviceInfo: function () {
     return this.host + 'webapi?action=deviceinfo&token=' + token
   },
