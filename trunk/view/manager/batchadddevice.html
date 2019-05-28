@@ -109,6 +109,13 @@
             </Row>
 
             <Row style="margin: 10px 0">
+                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">序号长度: &nbsp;</i-col>
+                    <i-col span="8">
+                        <input-number v-model.number="idLength" :max="15" :min="11" :editable="false" style="width: 100%;"></input-number>
+                    </i-col>
+            </Row>
+
+            <Row style="margin: 10px 0">
                 <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;设备序号 : &nbsp;</i-col>
                 <i-col span="8">
                     <i-input v-model.trim="deviceid" type="textarea" placeholder="复制批量序号" :autosize="{minRows: 2,maxRows: 15}"></i-input>
@@ -141,6 +148,7 @@
                         return date && date.valueOf() < Date.now() - 86400000;
                     }
                 },
+                idLength:15,
                 iconState:"ios-arrow-down",
                 deviceid:"",
                 deviceIds:[],
@@ -349,10 +357,11 @@
                 },
                 getRegularPattern:function(str){
                     var res = {};
-                    var reg = /[a-z0-9a-z]{15}/;
+                    // var reg = /^[a-z0-9a-z]{15}/;
+                    var reg = new RegExp("^[A-Z0-9a-z]{"+this.idLength+"}");
                     if(reg.test(str)){
-                        if(str.length >15){
-                            var newStr = str.slice(15);
+                        if(str.length >this.idLength){
+                            var newStr = str.slice(this.idLength);
                             var i = 0;
                             var charArray = [];
                             while(true){
@@ -373,7 +382,7 @@
                                 res.content = null;
                             }
                         }else{
-                            if(str.length == 15){
+                            if(str.length == this.idLength){
                                 res.errormsg="OK";
                                 res.content = str;
                             }else{
@@ -391,7 +400,8 @@
                     var relu = this.getRegularPattern(testIds);
                     if(relu.content && relu.errormsg === 'OK'){
                         var guilv = relu.content;
-							if(/^[a-z0-9a-z]{15}$/.test(guilv)){
+                        var reg = new RegExp("^[a-z0-9a-z]{"+vm.idLength+"}$"); 
+							if(reg.test(guilv)){
                                 vm.isOk = true;
                                 vm.deviceid = guilv+ "\n";
                                 vm.errorTips ="总数 : 1";
@@ -403,7 +413,7 @@
 									var idx = null;
 									for(var i=0;i<array.length;i++){
 											var line = array[i];
-											if(/^[0-9A-Za-z]{15}$/.test(line)){
+											if(reg.test(line)){
 												if(array.length-1 == i){
 													textStr += line ;
 												}else{
@@ -411,11 +421,11 @@
 												}
 											}else{
 												idx = i;
-												if(line.length%15 === 0){
-                                                    var count = line.length/15;
+												if(line.length%vm.idLength === 0){
+                                                    var count = line.length/vm.idLength;
                                                     var j = 0;
                                                     while(count > -1 && j <= count){
-                                                        textStr += line.slice( j*15 , 15*(j+1))+ "\n";
+                                                        textStr += line.slice( j*vm.idLength , vm.idLength*(j+1))+ "\n";
                                                         j++;
                                                         count--;
                                                     }
@@ -443,6 +453,7 @@
 
                     }else{
                         vm.errorTips = "首个ID号不合法";
+                        this.isOk = false;
                     }
 
                 },500) ,
