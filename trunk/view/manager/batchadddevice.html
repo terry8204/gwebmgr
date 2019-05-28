@@ -4,6 +4,12 @@
     #batchadddevice .ivu-select-dropdown-list{
         max-height: 300px;
     }
+    #batchadddevice div.error textarea{
+        color: red
+    }
+    #batchadddevice div.succ textarea{
+        color:rgb(26, 160, 52);
+    }
 </style>
 <div id="batchadddevice">
     <div class="full" style="padding:10px 10px 0 10px;">
@@ -27,11 +33,17 @@
                 </i-col>
             </Row>
             <Row style="margin: 10px 0">
-
                 <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;{{$t("user.client")}} : &nbsp;</i-col>
                 <i-col span="8">
                     <i-select v-model="companyid" style="width: 100%">
                         <i-option v-for="item in customersList" :value="item.value" :key="item.value">{{ item.label }}</i-option>
+                    </i-select>
+                </i-col>
+
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">{{$t("user.grouping")}} : &nbsp;</i-col>
+                <i-col span="8">
+                    <i-select v-model="groupid">
+                        <i-option v-for="item in groupsList" :value="item.value" :key="item.value">{{ item.label }}</i-option>
                     </i-select>
                 </i-col>
             </Row>
@@ -44,12 +56,12 @@
                         <i-option v-for="item in deviceTypeList" :value="item.value" :key="item.value">{{ item.label }}</i-option>
                     </i-select>
                 </i-col>
-                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">{{$t("user.grouping")}} : &nbsp;</i-col>
+                
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;转发地址 : &nbsp;</i-col>
                 <i-col span="8">
-                    <i-select v-model="groupid">
-                        <i-option v-for="item in groupsList" :value="item.value" :key="item.value">{{ item.label }}</i-option>
-                    </i-select>
+                    <i-input v-model.trim="forwardurl"></i-input>
                 </i-col>
+
             </Row>
 
             <Row style="margin: 10px 0">
@@ -96,14 +108,6 @@
                 </i-col>                  
             </Row>
 
-
-            <Row style="margin: 10px 0">
-                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;转发地址 : &nbsp;</i-col>
-                <i-col span="20">
-                    <i-input v-model.trim="forwardurl"></i-input>
-                </i-col>
-            </Row>
-            
             <Row style="margin: 10px 0">
                 <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;设备序号 : &nbsp;</i-col>
                 <i-col span="8">
@@ -112,7 +116,7 @@
 
                 <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;提示 : &nbsp;</i-col>
                 <i-col span="8">
-                    <i-input v-model.trim="errorTips" :style="fontColor" type="textarea" disabled :autosize="{minRows: 2,maxRows: 15}"></i-input>
+                    <i-input v-model.trim="errorTips" :class="fontColor" type="textarea" disabled :autosize="{minRows: 2,maxRows: 15}"></i-input>
                 </i-col> 
             </Row>
 
@@ -131,7 +135,7 @@
             el:"#batchadddevice",
             i18n: utils.getI18n(),
             data:{
-                errorTips:"12",
+                errorTips:"",
                 dateOptions:{
                     disabledDate:function(date) {
                         return date && date.valueOf() < Date.now() - 86400000;
@@ -224,7 +228,7 @@
                         me.$Message.error(me.$t("message.fullComplete"));
                         return;
                     };
-                    console.log("deviceids",deviceids)
+
                     var data = {
                         deviceids:  deviceids,                 
                         devicetype:this.devicetype,
@@ -260,7 +264,19 @@
                     utils.sendAjax(url,data,function (resp) { 
                         if(resp.status == 0){
                             isNeedRefresh = true;
-                            me.$Message.success(me.$t("message.addSucc"));
+                            if(resp.total === resp.success){
+                                me.$Message.success(me.$t("message.addSucc"));
+                            }else{
+                                me.$Message.error("成功 : "+resp.success+"个,失败 : "+resp.fail+"个");
+                                if(resp.errorrecords.length){
+                                    var errorTips = "添加失败的设备号:" +"\n"; 
+                                    resp.errorrecords.forEach(function (item) { 
+                                        errorTips += item.deviceid + " : " +  item.cause + "\n";
+                                    });
+                                    me.errorTips = errorTips;
+                                    me.isOk = false;
+                                };
+                            }
                         }else if(resp.status == -1){
                             if( resp.cause!== null && resp.cause.indexOf("token")!=-1){
                                 window.location.href = "index.html";
@@ -373,7 +389,6 @@
                 },
                 matchingDeviceIds:utils.debounce(function (vm,testIds) {
                     var relu = this.getRegularPattern(testIds);
-                    console.log('relu', relu)
                     if(relu.content && relu.errormsg === 'OK'){
                         var guilv = relu.content;
 							if(/^[a-z0-9a-z]{15}$/.test(guilv)){
@@ -415,10 +430,10 @@
 									}
                                     vm.isOk = isOk;
 									if(isOk){ 
-                                            var newArr = vm.filtered(textStr)
-                                            var len = newArr.length;
-											vm.deviceid = newArr.join("\n") +"\n";
-											vm.errorTips = "总数  : "+len;
+                                        var newArr = vm.filtered(textStr)
+                                        var len = newArr.length;
+                                        vm.deviceid = newArr.join("\n") +"\n";
+                                        vm.errorTips = "总数  : "+len;
 									}else{
 										vm.errorTips =("可能在第"+(idx+1)+"个ID号不合法或者分隔符不一致; \n" +errorStr);
                                     }
@@ -497,9 +512,7 @@
             },
             computed: {
                 fontColor:function(){
-                    return {
-                        color: this.isOk ?'#1AA034':'red' 
-                    }
+                    return [ this.isOk ? 'succ':'error'];
                 } 
             },
             mounted:function () {
