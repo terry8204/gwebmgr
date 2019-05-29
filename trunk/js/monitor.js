@@ -365,14 +365,13 @@ var monitor = {
         },
         filterMethod: function (value) {
             this.filterData = []
-            var firstLetter = __pinyin.getFirstLetter(value)
-            var pinyin = __pinyin.getPinyin(value)
+            value = value.toLowerCase();
             for (var i = 0; i < this.groups.length; i++) {
                 var group = this.groups[i]
                 if (
-                    group.groupname.toUpperCase().indexOf(value.toUpperCase()) !== -1 ||
-                    group.firstLetter.indexOf(firstLetter) !== -1 ||
-                    group.pinyin.indexOf(pinyin) !== -1
+                    group.groupname.toLowerCase().indexOf(value) !== -1 ||
+                    group.firstLetter.indexOf(value) !== -1 ||
+                    group.pinyin.indexOf(value) !== -1
                 ) {
                     this.filterData.push(group)
                 } else {
@@ -385,11 +384,11 @@ var monitor = {
                         var device = devices[j]
                         var devicename = device.devicename;
                         if (
-                            device.devicetitle.toUpperCase().indexOf(value.toUpperCase()) !== -1 ||
-                            devicename.toUpperCase().indexOf(value.toUpperCase()) !== -1 ||
-                            device.firstLetter.indexOf(firstLetter) !== -1 ||
-                            device.pinyin.indexOf(pinyin) !== -1 ||
-                            device.deviceid.indexOf(pinyin) !== -1
+                            device.devicetitle.toLowerCase().indexOf(value) !== -1 ||
+                            devicename.toLowerCase().indexOf(value) !== -1 ||
+                            device.firstLetter.indexOf(value) !== -1 ||
+                            device.pinyin.indexOf(value) !== -1 ||
+                            device.deviceid.indexOf(value) !== -1
                         ) {
                             obj.devices.push(device)
                         } else {
