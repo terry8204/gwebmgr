@@ -171,13 +171,12 @@
                 },
                 filterMethod:function(value){
                     var list = [];
-                    var firstLetter = __pinyin.getFirstLetter(value);
-                    var pinyin = __pinyin.getPinyin(value);
+                    value = value.toLowerCase();
                     this.listCmdAction.forEach(function (itme) { 
                         if(
                             itme.label.indexOf(value)!=-1 ||
-                            itme.firstLetter.indexOf(firstLetter)!=-1 ||
-                            itme.pinyin.indexOf(pinyin)!=-1 
+                            itme.firstLetter.indexOf(value)!=-1 ||
+                            itme.pinyin.indexOf(value)!=-1 
                         ){
                             list.push(itme);
                         }

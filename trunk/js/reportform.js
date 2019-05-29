@@ -61,14 +61,13 @@ var reportMixin = {
         filterMethod: function (value) {
             var filterData = [];
             this.queryDeviceId = '';
-            var firstLetter = __pinyin.getFirstLetter(value)
-            var pinyin = __pinyin.getPinyin(value)
+            value = value.toLowerCase();
             for (var i = 0; i < this.groupslist.length; i++) {
                 var group = this.groupslist[i];
                 if (
-                    group.groupname.toUpperCase().indexOf(value.toUpperCase()) !== -1 ||
-                    group.firstLetter.indexOf(firstLetter) !== -1 ||
-                    group.pinyin.indexOf(pinyin) !== -1
+                    group.groupname.toLowerCase().indexOf(value) !== -1 ||
+                    group.firstLetter.indexOf(value) !== -1 ||
+                    group.pinyin.indexOf(value) !== -1
                 ) {
                     filterData.push(group)
                 } else {
@@ -81,9 +80,9 @@ var reportMixin = {
                         var device = devices[j]
                         var title = device.title
                         if (
-                            title.toUpperCase().indexOf(value.toUpperCase()) !== -1 ||
-                            device.firstLetter.indexOf(firstLetter) !== -1 ||
-                            device.pinyin.indexOf(pinyin) !== -1
+                            title.toLowerCase().indexOf(value) !== -1 ||
+                            device.firstLetter.indexOf(value) !== -1 ||
+                            device.pinyin.indexOf(value) !== -1
                         ) {
                             obj.devices.push(device)
                         } else {
