@@ -10,6 +10,13 @@
     #batchadddevice div.succ textarea{
         color:rgb(26, 160, 52);
     }
+    div.spin-container{
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+    }
 </style>
 <div id="batchadddevice">
     <div class="full" style="padding:10px 10px 0 10px;">
@@ -117,24 +124,29 @@
 
             <Row style="margin: 10px 0">
                 <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;设备序号 : &nbsp;</i-col>
-                <i-col span="8">
+                <i-col span="6">
                     <i-input v-model.trim="deviceid" type="textarea" placeholder="复制批量序号" :autosize="{minRows: 2,maxRows: 15}"></i-input>
                 </i-col>
 
-                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;提示 : &nbsp;</i-col>
-                <i-col span="8">
+                <i-col span="13" :offset="1">
                     <i-input v-model.trim="errorTips" :class="fontColor" type="textarea" disabled :autosize="{minRows: 2,maxRows: 15}"></i-input>
                 </i-col> 
             </Row>
 
             <Row style="margin: 10px 0">
-                <i-col span="6" :offset="7">
+                <i-col span="6" :offset="2">
                     <i-button style="width: 100%" @click="handleSubmit">{{$t("bgMgr.submit")}}</i-button>
                 </i-col>
                 <i-col span="6" :offset="1">
                     <i-button style="width: 100%" @click="resetInfo">{{$t("bgMgr.reset")}}</i-button>
                 </i-col>
+                <i-col span="6" :offset="1">
+                    <i-button style="width: 100%" @click="batchUpdateUrl">批量修改转发地址</i-button>
+                </i-col>
             </Row>           
+        </div>
+        <div class="spin-container" v-show="loading">
+            <Spin fix></Spin>
         </div>
     </div>
     <script>
@@ -148,6 +160,7 @@
                         return date && date.valueOf() < Date.now() - 86400000;
                     }
                 },
+                loading:false,
                 idLength:15,
                 iconState:"ios-arrow-down",
                 deviceid:"",
@@ -175,6 +188,41 @@
                 isOk:false
             },
             methods: {
+                batchUpdateUrl:function(){
+                    if(!this.isOk){ 
+                        this.$Message.error("请添加正确的imeis");
+                        return;
+                    };
+
+                    var pattern = /[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]/g;
+                    var deviceids = this.deviceid.split('\n').filter(function (item) { if(item){return item }}), me = this;
+                    var url = myUrls.editDevicesForwardUrl();
+                    if(pattern.test(this.forwardurl)){
+                        this.loading = true;
+                        utils.sendAjax(url,{deviceids:deviceids,forwardurl:this.forwardurl},function (resp) { 
+                            me.loading = false;
+                            if(resp.status === 0){
+                                if(resp.success === resp.total){
+                                    me.$Message.success("修改成功"); 
+                                }else{
+                                    me.$Message.error("成功 : "+resp.success+"个,失败 : "+resp.fail+"个");
+                                    if(resp.errorrecords.length){
+                                        var errorTips = "修改失败的设备号:" +"\n"; 
+                                        resp.errorrecords.forEach(function (item) { 
+                                            errorTips += item.deviceid + " : " +  item.cause + "\n";
+                                        });
+                                        me.errorTips = errorTips;
+                                        me.isOk = false;
+                                    }; 
+                                }
+                            }else{
+                                me.$Message.error("修改失败");  
+                            }
+                        });
+                    }else{
+                        this.$Message.error("请输入正确的网址"); 
+                    }
+                },
                 selectedCmd:function(item){
                     var me = this;
                     setTimeout(function () {
@@ -268,8 +316,9 @@
                     }else{
                         data.creater = userName;
                     };
-
+                    this.loading = true;
                     utils.sendAjax(url,data,function (resp) { 
+                        me.loading = false;
                         if(resp.status == 0){
                             isNeedRefresh = true;
                             if(resp.total === resp.success){

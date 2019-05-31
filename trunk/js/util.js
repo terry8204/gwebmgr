@@ -472,9 +472,7 @@ Vue.component('expand-row', {
       console.log(item)
     }
   },
-  mounted: function () {
-    console.log(this.devices)
-  }
+  mounted: function () { }
 })
 
 // 后台管理
@@ -483,8 +481,22 @@ var mixIn = {
     changePage: function (index) {
       var offset = index * 10;
       var start = (index - 1) * 10;
+      var me = this;
       this.currentIndex = index;
-      this.tableData = this.recordsList.slice(start, offset);
+      if (me.selectedIds && me.prevSelected) {
+        var tableData = this.recordsList.slice(start, offset);
+        tableData.forEach(function (item1) {
+          me.selectedIds.forEach(function (item2) {
+            if (item1.deviceid === item2.deviceid) {
+              item1._checked = true;
+            }
+          })
+        });
+        this.tableData = tableData;
+      } else {
+        this.tableData = this.recordsList.slice(start, offset);
+      }
+
     },
   },
   watch: {

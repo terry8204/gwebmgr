@@ -9,10 +9,18 @@
             <li>
                 <i-button type="primary" @click="handlerClickQuery">{{$t("reportForm.query")}}</i-button>
             </li>
+            <li style="float:right;width:auto;">
+                <i-button @click="exportDevice">导出当前设备</i-button>
+            </li>
         </ul>
 
         <div class="table-wraper">
-            <i-table border ref="tables" :columns="columns" :data="tableData" height="520" :loading="loading"></i-table>
+            <i-table border 
+                ref="table" 
+                :columns="columns" 
+                :data="tableData" 
+                height="520" 
+                :loading="loading"></i-table>
         </div>
         <div class="my-page" style="margin: 5px 0;">
             <Page :total="total" simple :page-size="10" :current="currentIndex"  @on-change="changePage"></Page>
@@ -29,98 +37,100 @@ vueInstanse = new Vue({
                 total:0,
                 currentIndex:1,
                 columns: [
-                        {
-                            title: vRoot.$t("alarm.devName"),
-                            key: 'devicename',
-                        },
-                        {
-                            title: vRoot.$t("alarm.devNum"),
-                            key: 'deviceid'
-                        },
-                        {
-                            title: vRoot.$t("monitor.phoneNumber"),
-                            key: 'simnum'
-                        },
-                        {
-                            title: vRoot.$t("bgMgr.addTime"),
-                            key: 'createtimestr'
-                        },
-                        {
-                            title: vRoot.$t("monitor.expireTime"),
-                            key: 'overduetimestr'
-                        },
-                        {
-                            title: vRoot.$t("monitor.customer"),  
-                            key: 'companyname'
-                        },
-                        {
-                            title: vRoot.$t("user.grouping"),
-                            key: 'groupname'
-                        },
-                        {
-                            title: vRoot.$t("bgMgr.action"),
-                            key: 'action',
-                            width: 240,
-                            render: function(h, params) {
-                                return h('div', [
-                                    h('Button', {
-                                        props: {
-                                            type: 'primary',
-                                            size: 'small'
-                                        },
-                                        style: {
-                                            marginRight: '5px'
-                                        },
-                                        on: {
-                                            click: function() {
-                                                vueInstanse.editDevice(params.index);
-                                            }
+                    {
+                        title: vRoot.$t("alarm.devName"),
+                        key: 'devicename',
+                    },
+                    {
+                        title: vRoot.$t("alarm.devNum"),
+                        key: 'deviceid'
+                    },
+                    {
+                        title: vRoot.$t("monitor.phoneNumber"),
+                        key: 'simnum'
+                    },
+                    {
+                        title: vRoot.$t("bgMgr.addTime"),
+                        key: 'createtimestr'
+                    },
+                    {
+                        title: vRoot.$t("monitor.expireTime"),
+                        key: 'overduetimestr'
+                    },
+                    {
+                        title: vRoot.$t("monitor.customer"),  
+                        key: 'companyname'
+                    },
+                    {
+                        title: vRoot.$t("user.grouping"),
+                        key: 'groupname'
+                    },
+                    {
+                        title: vRoot.$t("bgMgr.action"),
+                        key: 'action',
+                        width: 240,
+                        render: function(h, params) {
+                            return h('div', [
+                                h('Button', {
+                                    props: {
+                                        type: 'primary',
+                                        size: 'small'
+                                    },
+                                    style: {
+                                        marginRight: '5px'
+                                    },
+                                    on: {
+                                        click: function() {
+                                            vueInstanse.editDevice(params.index);
                                         }
-                                    }, vRoot.$t("bgMgr.edit")),
-                                    h('Poptip', {
-                                        props: {
-                                            confirm: true,
-                                            title: vRoot.$t("message.confirmDel")  
-                                        },
-                                        style: {
-                                            marginRight: '5px'
-                                        },
-                                        on: {
-                                            'on-ok': function () {
-                                                vueInstanse.handleDelete(params.row.deviceid);
-                                            }
+                                    }
+                                }, vRoot.$t("bgMgr.edit")),
+                                h('Poptip', {
+                                    props: {
+                                        confirm: true,
+                                        title: vRoot.$t("message.confirmDel")  
+                                    },
+                                    style: {
+                                        marginRight: '5px'
+                                    },
+                                    on: {
+                                        'on-ok': function () {
+                                            vueInstanse.handleDelete(params.row.deviceid);
                                         }
-                                    },[
-                                    h('Button', {
-                                            props: {
-                                            type: 'error',
-                                            size: 'small'
-                                            }
-                                        },vRoot.$t("bgMgr.delete")) 
-                                    ])  ,
-                                    h('Button', {
+                                    }
+                                },[
+                                h('Button', {
                                         props: {
-                                            type: 'primary',
-                                            size: 'small'
-                                        },
-                                        style: {
-                                            marginRight: '5px'
-                                        },
-                                        on: {
-                                            click: function() {
-                                                vueInstanse.resetDevicePwd(params.index);
-                                            }
+                                        type: 'error',
+                                        size: 'small'
                                         }
-                                    }, vRoot.$t("user.resetPwd")),
-                                    
-                                ]);
-                            }
+                                    },vRoot.$t("bgMgr.delete")) 
+                                ])  ,
+                                h('Button', {
+                                    props: {
+                                        type: 'primary',
+                                        size: 'small'
+                                    },
+                                    style: {
+                                        marginRight: '5px'
+                                    },
+                                    on: {
+                                        click: function() {
+                                            vueInstanse.resetDevicePwd(params.index);
+                                        }
+                                    }
+                                }, vRoot.$t("user.resetPwd")),
+                                
+                            ]);
                         }
-                    ],
+                    }
+                ],
                 tableData: [],
                 recordsList:[],
                 customersList:null,
                 groupsList:[],
+                selectedIds:[],
+                prevSelected:[]
             },
             methods: {
                 handlerClickQuery () {
@@ -146,13 +156,18 @@ vueInstanse = new Vue({
                     var me = this;
                     var data = [];
                     devList.forEach(function (dev) { 
-                        dev.createtimestr = DateFormat.longToDateTimeStr(dev.createtime,0);
-                        dev.overduetimestr = DateFormat.longToDateTimeStr(dev.overduetime,0);
-                        dev.companyname = me.getCustimerName(dev.companyid);
-                        dev.groupname = me.getGroupName(dev.groupid);
-                        dev.pinYin = __pinyin.getPinyin(dev.devicename);
-                        dev.firstLetter = __pinyin.getFirstLetter(dev.devicename);
-                        data.push(dev);
+                        data.push({
+                            devicename:dev.devicename,
+                            deviceid:dev.deviceid,
+                            simnum:dev.simnum,
+                            createtimestr: DateFormat.longToDateTimeStr(dev.createtime,0),
+                            overduetimestr: DateFormat.longToDateTimeStr(dev.overduetime,0),
+                            companyname : me.getCustimerName(dev.companyid),
+                            groupname : me.getGroupName(dev.groupid),
+                            pinYin : __pinyin.getPinyin(dev.devicename),
+                            firstLetter : __pinyin.getFirstLetter(dev.devicename),
+                            _checked : false,
+                        });
                     });
                     return data;
                 },
@@ -269,10 +284,21 @@ vueInstanse = new Vue({
                        
                     });
                 }
+                ,
+                exportDevice:function(){
+                    if(this.tableData.length){
+                        this.$refs.table.exportCsv({
+                            filename: 'deviceids',
+                            columns: this.columns.filter((col, index) => index < 3),
+                            data: this.tableData,
+                            quoted:true,
+                        });
+                    }
+                }
             },
             mixins:[mixIn],
             mounted:function () {
-                this.queryAllCompanyInfo(this.doQueryAllCompanyInfo);     
+                this.queryAllCompanyInfo(this.doQueryAllCompanyInfo);  
             }
         })
     </script>

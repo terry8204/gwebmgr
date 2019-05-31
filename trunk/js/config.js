@@ -331,6 +331,10 @@ var myUrls = {
   reportChargeCall: function () {
     return this.host + 'webapi?action=reportchargecall&token=' + token;
   },
+  editDevicesForwardUrl: function () {
+    return this.host + 'webapi?action=editdevicesforwardurl&token=' + token;
+  },
+
 }
 
 
