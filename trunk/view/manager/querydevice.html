@@ -81,7 +81,7 @@ vueInstanse = new Vue({
                                     },
                                     on: {
                                         click: function() {
-                                            vueInstanse.editDevice(params.index);
+                                            vueInstanse.editDevice(params.row);
                                         }
                                     }
                                 }, vRoot.$t("bgMgr.edit")),
@@ -167,6 +167,11 @@ vueInstanse = new Vue({
                             pinYin : __pinyin.getPinyin(dev.devicename),
                             firstLetter : __pinyin.getFirstLetter(dev.devicename),
                             _checked : false,
+                            isfree:dev.isfree,
+                            devicetype:dev.devicetype,
+                            companyid:dev.companyid,
+                            groupid:dev.groupid,
+                            creater:dev.creater,
                         });
                     });
                     return data;
@@ -237,9 +242,9 @@ vueInstanse = new Vue({
                     }
                     me.getDeviceList();  
                 },
-                editDevice:function(index){
+                editDevice:function(row){
                     var me = this;
-                    editObject = this.tableData[index];
+                    editObject = row;
                     var pagePath = null
                         if (myUrls.host.indexOf('gpsserver') != -1) {
                             pagePath = myUrls.host + 'view/manager/editdevice.html';
