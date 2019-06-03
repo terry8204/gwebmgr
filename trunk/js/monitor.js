@@ -447,6 +447,7 @@ var monitor = {
             this.scrollToCurruntDevice(deviceid);
         },
         scrollToCurruntDevice: function (deviceid) {
+
             var me = this;
             setTimeout(function () {
                 var elWraper = me.$refs.treeWraper;
@@ -456,23 +457,24 @@ var monitor = {
                     for (var i = 0; i < me.currentStateData.length; i++) {
                         var company = me.currentStateData[i];
                         var isBreak = false;
-                        sHeight += 32;
+                        sHeight += 34;
                         if (company.expand) {
                             var groups = company.children;
                             for (var j = 0; j < groups.length; j++) {
                                 var group = groups[j];
-                                sHeight += 32;
+                                sHeight += 34;
                                 if (group.expand) {
                                     var devices = group.children;
                                     for (var h = 0; h < devices.length; h++) {
                                         var device = devices[h];
-                                        sHeight += 27;
+                                        sHeight += 29;
                                         if (device.deviceid === deviceid) {
                                             isBreak = true;
                                             sHeight += 60;
                                             break;
                                         }
                                     }
+                                    sHeight += 10;
                                 }
                                 if (isBreak) break;
                             }
@@ -483,18 +485,19 @@ var monitor = {
                     for (var i = 0; i < me.groups.length; i++) {
                         var group = me.groups[i]
                         var isBreak = false;
-                        sHeight += 32;
+                        sHeight += 34;
                         if (group.expand) {
                             var devices = group.devices;
                             for (var j = 0; j < devices.length; j++) {
                                 var device = devices[j];
-                                sHeight += 27;
+                                sHeight += 29;
                                 if (device.deviceid === deviceid) {
                                     isBreak = true;
                                     sHeight += 60;
                                     break;
                                 }
                             }
+                            sHeight += 10;
                         }
                         if (isBreak) break;
                     };
@@ -502,8 +505,9 @@ var monitor = {
                 if (sHeight < wrapHeight) {
                     $(elWraper).animate({ scrollTop: 0 }, 500);
                 } else {
-                    $(elWraper).animate({ scrollTop: sHeight - (wrapHeight / 2) }, 500);
+                    $(elWraper).animate({ scrollTop: sHeight - (wrapHeight / 3) }, 500);
                 }
+                console.log(`TREE - ${wrapHeight}`, `sHeight - : ${sHeight}`);
             }, 500);
         },
         sosoValueChange: function () {
