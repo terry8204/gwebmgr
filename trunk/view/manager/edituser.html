@@ -209,9 +209,8 @@
                         username:this.username,
                         usertype:userType,
                         companyid:this.companyid,
-                        multilogin:Number(this.multilogin)
                     }
-                    
+
                     for(var key in data){
                         if(data.hasOwnProperty(key)){
                             if(data[key] == "" || data[key] == NaN ){
@@ -220,7 +219,7 @@
                             }
                         };
                     };    
-
+                    data.multilogin = Number(this.multilogin);
                     this.qq?data.qq=this.qq:"";
                     this.email?data.email=this.email:"";
                     this.phone?data.phone=this.phone:"";

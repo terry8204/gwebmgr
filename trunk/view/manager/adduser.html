@@ -190,7 +190,7 @@
                         password:"",
                         usertype:userType,
                         companyid:this.companyid,
-                        multilogin:Number(this.multilogin)
+                        
                     };    
 
                     if(this.password !== this.confirmPassword){
@@ -200,6 +200,7 @@
                         data.password = $.md5(this.password);
                     }
                   
+
                     if(!reg.test(this.username)){
                         this.$Message.error(this.$t("message.usernameRule"));  
                         return;
@@ -213,7 +214,7 @@
                             }
                         };
                     };
-                    
+                    data.multilogin = Number(this.multilogin);
                     this.qq?data.qq=this.qq:"";
                     this.email?data.email=this.email:"";
                     this.phone?data.phone=this.phone:"";
