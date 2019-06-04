@@ -130,6 +130,15 @@
                             </i-col>
                         </Row>
                         <Row style="margin: 10px 0">
+                            <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">多点登陆 : &nbsp;</i-col>
+                            <i-col span="16">
+                                <i-select v-model="multilogin" style="text-align:center;">
+                                    <i-option value="1" style="text-align:center;">是</i-option>
+                                    <i-option value="0" style="text-align:center;">否</i-option>
+                                </i-select>
+                            </i-col>
+                        </Row>
+                        <Row style="margin: 10px 0">
                             <i-col span="16" :offset="5">
                                 <i-button type="primary" style="width:100%;" @click="handleEditMyInfo">{{$t("header.submit")}}</i-button>
                             </i-col>

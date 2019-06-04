@@ -507,7 +507,7 @@ var monitor = {
                 } else {
                     $(elWraper).animate({ scrollTop: sHeight - (wrapHeight / 3) }, 500);
                 }
-                console.log(`TREE - ${wrapHeight}`, `sHeight - : ${sHeight}`);
+
             }, 500);
         },
         sosoValueChange: function () {

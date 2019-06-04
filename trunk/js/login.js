@@ -122,6 +122,7 @@ new Vue({
                     Cookies.set("token", resp.token);
                     Cookies.set("userType", resp.usertype);
                     Cookies.set("name", me.username);
+                    Cookies.set(me.username + "-multilogin", resp.multilogin);
                     // window.location.href = "main.html?token=" + resp.token + "&usertype=" + resp.usertype;
                     window.location.href = "main.html";
                 } else if (resp.status == -1) {

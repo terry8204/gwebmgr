@@ -122,8 +122,19 @@
         }
         div.map-type{
             position: absolute;
-            top: 11px;
-            
+            top: 11px; 
+            width: 82px;
+        }
+        .exact-btn{
+            width: 100%;
+            height: 40px;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+        .exact-btn>img{
+            width: 100%;
+            height: 100%;
+            border: 0;
         }
         .right-100{
             right: 100px;
@@ -165,6 +176,10 @@
             <i-select v-model="mapType" size="small">
                 <i-option v-for="item in mapList" :value="item.value" :key="item.value">{{ item.label }}</i-option>
             </i-select>
+
+            <div class="exact-btn" @click="isExact = !isExact">
+                <img :src="imgSrc">
+            </div>
         </div>
     </div>
     <script src="dist/vue.min.js"></script>
@@ -185,7 +200,8 @@
     <script>
         // 百度地图是否加载完成 改变全局变量
         var isLoadBMap = false;
-
+        var firstMarker = null;
+        var flightPathArrList = [];
         var isZh = utils.locale === 'zh';
         var mapType = utils.getMapType();
         var vRoot = null;
@@ -197,12 +213,12 @@
                     el:"#container",
                     i18n: utils.getI18n(),
                     data:{
+                        isExact:false, //是否精确
                         map:null,
                         deviceid:"",
                         tracks:[],
+                        exactTracks:[],
                         interval:10,
-                        lastTrack:{},
-                        markerLabel:null,
                         carMarker:null,
                         address:"",
                         isDown:true,
@@ -398,20 +414,29 @@
                             });
                         },
                         doLastPosition:function (record) {
+
                             if(record){
-                                this.lastTrack = record;
                                 var prveTrack = this.tracks[this.tracks.length-1];
                                 if(prveTrack){
                                     if(prveTrack.updatetime === record.updatetime){
                                         return;
                                     }
                                 }
+
                                 var carIcon = this.getDirectionIcon(this.getAge(record.course)); 
-                           
                                 var point = this.getPoint(record);     
                            
                                 if(this.tracks.length > 0){
                                    
+                                    this.tracks.push(record);
+                                    if(record.gotsrc === 'gps'){
+                                        this.exactTracks.push(record);
+                                    }else{
+                                        if(this.isExact){
+                                            return;
+                                        }
+                                    }
+
                                     if(this.mapType === 'baidu'){
                                         var rice = this.map.getDistance(this.getPoint(prveTrack),point); 
                                         if(rice > 10){
@@ -426,13 +451,22 @@
                                         this.carMarker.setPosition(point);
                                         this.carMarker.setIcon(carIcon);
                                     }
-                                    this.tracks.push(record);
+                                   
                                 }else if(this.tracks.length === 0){
                                     this.tracks.push(record);
+                                    
+                                    if(record.gotsrc === 'gps'){
+                                        this.exactTracks.push(record);
+                                    }else{
+                                        if(this.isExact){
+                                            return;
+                                        }
+                                    }
+                                    
+
                                     if(this.mapType === 'baidu'){
                                         this.carMarker = new BMap.Marker(point,{icon:carIcon});    
-                                        var firstMarker = new BMap.Marker(point,{icon:startIcon,offset:new BMap.Size(0, -10)});  
-                                        this.carMarker.setLabel(this.markerLabel);     
+                                        firstMarker = new BMap.Marker(point,{icon:startIcon,offset:new BMap.Size(0, -10)});     
                                         this.map.addOverlay(this.carMarker);
                                         this.map.addOverlay(firstMarker);
                                         this.map.centerAndZoom(point,19);   
@@ -492,13 +526,14 @@
                             })
                         },
                         reDrawMap:function(newVal){
-                            if(this.tracks[0] == null) return;
-                            var firstPoint = this.getPoint(this.tracks[0]);
-                            var lastPoint =  this.getPoint(this.tracks[this.tracks.length - 1]);
-                            var carIcon = this.getDirectionIcon(this.getAge(this.tracks[this.tracks.length - 1].course));     
+                            var tracks = this.isExact ? this.exactTracks : this.tracks;
+                            if(tracks[0] == null) return;
+                            var firstPoint = this.getPoint(tracks[0]);
+                            var lastPoint =  this.getPoint(tracks[tracks.length - 1]);
+                            var carIcon = this.getDirectionIcon(this.getAge(tracks[tracks.length - 1].course));     
                             if(newVal === 'baidu'){
                                 this.carMarker = new BMap.Marker(lastPoint,{icon:carIcon});     
-                                var firstMarker = new BMap.Marker(firstPoint,{icon:this.getFirstMarkerIcon(),offset:new BMap.Size(0, -10)});     
+                                firstMarker = new BMap.Marker(firstPoint,{icon:this.getFirstMarkerIcon(),offset:new BMap.Size(0, -10)});     
                                 this.map.addOverlay(this.carMarker);
                                 this.map.addOverlay(firstMarker);
                                 this.map.centerAndZoom(lastPoint,19);   
@@ -520,7 +555,7 @@
                         },
                         addMapOverlayLine:function(){
                             var me = this;
-                            var tracks = this.tracks;
+                            var tracks = this.isExact ? this.exactTracks : this.tracks;
                             var points = (function () { 
                                 var points = [];
                                     tracks.forEach(function (item) { 
@@ -540,7 +575,6 @@
                                         strokeWeight: 8
                                     });
                                     flightPath.setMap(this.map);
-
                             } 
                         }
                     },
@@ -560,16 +594,22 @@
                         },
                         trackInfoCls:function(){
                             return [this.mapType === 'baidu' ? 'right-10' :'right-60'];
+                        },
+                        imgSrc:function(){
+                            if(this.isExact){
+                                return "./images/ic_fine_network_off.png";
+                            }else{
+                                return "./images/ic_fine_network_on.png";
+                            }
                         }
                     },
                     watch: {
                         tracks:function(){
-                            if(this.tracks.length >=2){
-
-                                var firstPoint = this.getPoint(this.tracks[this.tracks.length-2]);
-                                var lastPoint = this.getPoint(this.tracks[this.tracks.length-1]);    
+                            var tracks = this.isExact ? this.exactTracks : this.tracks;
+                            if(tracks.length >=2){
+                                var firstPoint = this.getPoint(tracks[tracks.length-2]);
+                                var lastPoint = this.getPoint(tracks[tracks.length-1]);    
                                 if(this.mapType === 'baidu'){
-                                   
                                     var polyline = new BMap.Polyline([firstPoint,lastPoint] ,{strokeColor:'#FF0000',strokeWeight:8,strokeOpacity:1})
                                     this.map.addOverlay(polyline);
                                 }else{
@@ -582,18 +622,32 @@
                                             strokeWeight: 8
                                       });
                                      flightPath.setMap(this.map);
-
+                                     flightPathArrList.push(flightPath);   
                                 }   
                             };
+                        },
+                        isExact:function(){
+                            if(this.mapType === 'baidu'){
+                                this.map.clearOverlays();
+                            }else{
+                                firstMarker && firstMarker.setMap && firstMarker.setMap(null);
+                                this.carMarker && this.carMarker.setMap && this.carMarker.setMap(null);
+                                flightPathArrList.forEach(function (item) { 
+                                    item && item.setMap && item.setMap(null); 
+                                });
+                                flightPathArrList = [];
+                            }
+                            this.reDrawMap(this.mapType);
                         },
                         mapType:function(newVal){
                             var me = this;
                             isLoadBMap = false;
                             this.initMap();
                             // Cookies.set('app-map-type', newVal === 'baidu' ? 'bMap' :'GMap');
+                            flightPathArrList = [];
+                            firstMarker = null;
                            setTimeout(function () { 
                                 (function poll () {
-                                    console.log('poll', 55)
                                     if (isLoadBMap ) {
                                         me.reDrawMap(newVal);
                                     } else {
@@ -601,6 +655,7 @@
                                     }
                                 }());
                             },1000)
+                        
                         }
                     },
                     mounted : function() { 

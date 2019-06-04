@@ -138,6 +138,7 @@ var appHeader = {
       isManager: true,
       modal: false,
       intervalTime: null,
+      multilogin: Cookies.get(userName + "-multilogin"),
       isShowCompany: false,
       serviceModal: false,
       headMenuList: [
@@ -286,12 +287,14 @@ var appHeader = {
         phone: this.phone,
         qq: this.qq,
         wechat: this.wechat,
-        username: userName
+        username: userName,
+        multilogin: Number(this.multilogin)
       };
       utils.sendAjax(url, data, function (resp) {
         if (resp.status === 0) {
           delete data.username;
           me.selfConcatInfo = data;
+          Cookies.set(userName + "-multilogin", me.multilogin);
           me.$Message.success(me.$t("message.changeSucc"));
         } else {
           me.$Message.error(me.$t("message.changeFail"));
@@ -337,6 +340,7 @@ var appHeader = {
         this.phone = this.selfConcatInfo.phone;
         this.qq = this.selfConcatInfo.qq;
         this.wechat = this.selfConcatInfo.wechat;
+        this.multilogin = Cookies.get(userName + "-multilogin");
       }
     }
   }
