@@ -1016,20 +1016,18 @@
                             clearInterval(this.intervalInstanse);
                             this.intervalInstanse = null;
                         };
-                        if (this.markers.length) {
-                            try {   
-                                var me = this;
-                                   if(this.mapType === 'baidu'){
-                                        me.map.clearOverlays();
-                                    }else{
-                                        this.markers.forEach(function (item) { 
-                                            item.setMap(null);
-                                        })  
-                                    }
-                                                
-                            } catch (error) {}
-                         
-                        };
+              
+                        try {   
+                            var me = this;
+                                if(this.mapType === 'baidu'){
+                                    me.map.clearOverlays();
+                                }else{
+                                    this.markers.forEach(function (item) { 
+                                        item.setMap(null);
+                                    })  
+                                }          
+                        } catch (error) {}
+                        
                         this.firstMarker && this.firstMarker.setMap && this.firstMarker.setMap(null);
                         this.lastMakrker && this.lastMakrker.setMap && this.lastMakrker.setMap(null);
                         this.carMarker && this.carMarker.setMap && this.carMarker.setMap(null);
