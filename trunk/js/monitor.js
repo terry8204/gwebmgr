@@ -365,6 +365,7 @@ var monitor = {
         },
         filterMethod: function (value) {
             this.filterData = []
+            var me = this;
             value = value.toLowerCase();
             for (var i = 0; i < this.groups.length; i++) {
                 var group = this.groups[i]
@@ -373,7 +374,11 @@ var monitor = {
                     group.firstLetter.indexOf(value) !== -1 ||
                     group.pinyin.indexOf(value) !== -1
                 ) {
-                    this.filterData.push(group)
+                    group.devices.forEach(function (device) {
+                        var isOnline = me.getIsOnline(device.deviceid);
+                        device.isOnline = isOnline;
+                    })
+                    this.filterData.push(group);
                 } else {
                     var devices = group.devices
                     var obj = {
@@ -390,6 +395,9 @@ var monitor = {
                             device.pinyin.indexOf(value) !== -1 ||
                             device.deviceid.indexOf(value) !== -1
                         ) {
+
+                            var isOnline = this.getIsOnline(device.deviceid);
+                            device.isOnline = isOnline;
                             obj.devices.push(device)
                         } else {
                             if (device.remark) {
