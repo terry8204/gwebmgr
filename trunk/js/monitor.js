@@ -388,6 +388,8 @@ var monitor = {
                     for (var j = 0; j < devices.length; j++) {
                         var device = devices[j]
                         var devicename = device.devicename;
+                        var isOnline = this.getIsOnline(device.deviceid);
+                        device.isOnline = isOnline;
                         if (
                             device.devicetitle.toLowerCase().indexOf(value) !== -1 ||
                             devicename.toLowerCase().indexOf(value) !== -1 ||
@@ -396,8 +398,7 @@ var monitor = {
                             device.deviceid.indexOf(value) !== -1
                         ) {
 
-                            var isOnline = this.getIsOnline(device.deviceid);
-                            device.isOnline = isOnline;
+
                             obj.devices.push(device)
                         } else {
                             if (device.remark) {

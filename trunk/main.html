@@ -248,7 +248,7 @@
                                             <span>{{ item.groupname }}</span>
                                         </div>
                                         <i-option v-for="option in item.devices" :value="option.groupname" :key="option.groupname">
-                                            <span @click="sosoSelect(option)" class="demo-auto-complete-title" >{{ option.allDeviceIdTitle }}</span>
+                                            <span :style="{color:option.isOnline ? '#33DAD0':'#B1BBC2'}" @click="sosoSelect(option)" class="demo-auto-complete-title" >{{ option.allDeviceIdTitle }}</span>
                                         </i-option>
                                     </li>
                                 </ul>

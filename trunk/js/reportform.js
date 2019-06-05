@@ -42,6 +42,11 @@ var reportMixin = {
             if (this.sosoValue.trim()) {
                 me.sosoValueChange()
             } else {
+                this.groupslist.forEach(function (group) {
+                    group.devices.forEach(function (device) {
+                        device.isOnline = vstore.state.deviceInfos[device.deviceid] ? vstore.state.deviceInfos[device.deviceid].isOnline : false;
+                    })
+                });
                 this.filterData = this.groupslist;
                 this.isShowMatchDev = true;
             }
@@ -69,6 +74,9 @@ var reportMixin = {
                     group.firstLetter.indexOf(value) !== -1 ||
                     group.pinyin.indexOf(value) !== -1
                 ) {
+                    group.devices.forEach(function (device) {
+                        device.isOnline = vstore.state.deviceInfos[device.deviceid] ? vstore.state.deviceInfos[device.deviceid].isOnline : false;
+                    })
                     filterData.push(group)
                 } else {
                     var devices = group.devices
@@ -79,6 +87,7 @@ var reportMixin = {
                     for (var j = 0; j < devices.length; j++) {
                         var device = devices[j]
                         var title = device.title
+                        device.isOnline = vstore.state.deviceInfos[device.deviceid] ? vstore.state.deviceInfos[device.deviceid].isOnline : false;
                         if (
                             title.toLowerCase().indexOf(value) !== -1 ||
                             device.firstLetter.indexOf(value) !== -1 ||
