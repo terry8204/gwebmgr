@@ -131,6 +131,9 @@ var myUrls = {
   lastPosition: function () {
     return this.host + 'webapi?action=lastposition&token=' + token
   },
+  shareTrackLastPosition: function () {
+    return this.host + 'webapi?action=sharetracklastposition'
+  },
   // 查询轨迹
   queryTracks: function () {
     return this.host + 'webapi?action=querytracks&token=' + token

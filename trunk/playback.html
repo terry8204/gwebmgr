@@ -317,6 +317,7 @@
         var vRoot = null;
         var isLoadBMap = false;
         var googleInfoWindow = null;
+
         function queryTrackDetail(deviceid){
             var data = {
                 deviceid:deviceid,
@@ -484,16 +485,16 @@
                         }
                     },
                     initBMap:function(){
-                        carIcon = new BMap.Icon("images/carstate/green_0.gif", new BMap.Size(17, 17), { imageOffset: new BMap.Size(0, 0) });
+                        carIcon = new BMap.Icon("images/carstate/green_0.png", new BMap.Size(17, 17), { imageOffset: new BMap.Size(0, 0) });
                         startIcon = new BMap.Icon("./images/map/marker_qidian.png", new BMap.Size(32, 32), { imageOffset: new BMap.Size(0, 0) });
                         endIcon = new BMap.Icon("./images/map/marker_zhongdian.png", new BMap.Size(32, 32), { imageOffset: new BMap.Size(0, 0) });
                         this.map = new BMap.Map("bmap", { minZoom: 4, maxZoom: 19 ,enableMapClick: false });
                         this.map.enableScrollWheelZoom();
                         this.map.enableAutoResize();
-                        this.map.disableDoubleClickZoom();
-                        var top_left_control = new BMap.ScaleControl({anchor: BMAP_ANCHOR_BOTTOM_LEFT});
+                        this.map.enableDoubleClickZoom();
+                        var top_left_control = new BMap.ScaleControl({anchor: BMAP_ANCHOR_BOTTOM_LEFT});			
                         var top_left_navigation = new BMap.NavigationControl(); //左上角，添加默认缩放平移控件
-                        this.map.addControl(top_left_control);
+                        // this.map.addControl(top_left_control);
                         this.map.addControl(top_left_navigation);
                         this.map.centerAndZoom(new BMap.Point(108.0017245, 35.926895), 5);
                     },
@@ -1041,7 +1042,7 @@
                     },
                     getDirectionIcon: function (angle) {
                         if(this.mapType === 'baidu'){
-                            return new BMap.Icon("images/carstate/green_"+ angle +".gif", new BMap.Size(17, 17), { imageOffset: new BMap.Size(0, 0)}); 
+                            return new BMap.Icon("images/carstate/green_"+ angle +".png", new BMap.Size(17, 17), { imageOffset: new BMap.Size(0, 0)}); 
                         }else{
                             var pathname = location.pathname
                             var imgPath = ''

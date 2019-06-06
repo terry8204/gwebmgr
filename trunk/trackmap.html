@@ -12,6 +12,7 @@
             width: 100%;
             height: 100%;  
             position: relative;
+            overflow: hidden;
         }
         div.controller{
             position: absolute;
@@ -73,12 +74,12 @@
         }
         .last-address{
             white-space:normal;
-            width:296px;
+            width:260px;
         }
         .down-wrapper{
             position: absolute;
             bottom: 10px;
-            width: 320px;
+            width: 280px;
             background: red;
             border: 1px solid #e6e6e6;
         }
@@ -120,40 +121,33 @@
             top: -35px;
             right: 0px;
         }
-        div.map-type{
-            position: absolute;
-            top: 11px; 
-            width: 82px;
-        }
+
         .exact-btn{
             width: 100%;
             height: 40px;
             margin-top: 10px;
             cursor: pointer;
         }
-        .exact-btn>img{
-            width: 100%;
-            height: 100%;
-            border: 0;
-        }
+
         .right-100{
-            right: 100px;
+            top: 50px;
         }
         .left-65{
             left:65px;
         }
+        div.map-type{
+            position: absolute;
+            width: 82px;
+            right: 10px;
+        }
         .right-65{
-            right:65px;
+            top:65px;
         }
         .left-205{
             left:205px;
         }
     </style>
     <script src="js/js.cookie.min.js"></script>
-    <script>
-        var token = Cookies.get("token");
-      
-    </script>
 </head>
 <body>
     <div id="container"  v-cloak>
@@ -177,9 +171,7 @@
                 <i-option v-for="item in mapList" :value="item.value" :key="item.value">{{ item.label }}</i-option>
             </i-select>
 
-            <div class="exact-btn" @click="isExact = !isExact">
-                <img :src="imgSrc">
-            </div>
+            <div class="exact-btn" :style="imgSrcBg" @click="isExact = !isExact"></div>
         </div>
     </div>
     <script src="dist/vue.min.js"></script>
@@ -198,6 +190,14 @@
     <!-- <script src="http://api.map.baidu.com/api?v=3.0&ak=e7SC5rvmn2FsRNE4R1ygg44n"></script> -->
     <!-- <script type="text/javascript" src="http://api.map.baidu.com/library/DistanceTool/1.2/src/DistanceTool_min.js"></script> -->
     <script>
+       
+        var isShare = utils.getParameterByName("isshare") == 1 ? true :false;
+        var authcode = utils.getParameterByName("authcode");
+        var isValid = utils.getParameterByName("isvalid");
+        var expire = utils.getParameterByName("expire");
+
+        var isOverdue = false; 
+        var token = Cookies.get("token");
         // 百度地图是否加载完成 改变全局变量
         var isLoadBMap = false;
         var firstMarker = null;
@@ -205,6 +205,31 @@
         var isZh = utils.locale === 'zh';
         var mapType = utils.getMapType();
         var vRoot = null;
+        var isMobile =null;
+        var browser = {
+				versions: function() {
+					var u = navigator.userAgent,
+						app = navigator.appVersion;
+					return { //移动终端浏览器版本信息 
+						trident: u.indexOf('Trident') > -1, //IE内核 
+						presto: u.indexOf('Presto') > -1, //opera内核 
+						webKit: u.indexOf('AppleWebKit') > -1, //苹果、谷歌内核 
+						gecko: u.indexOf('Gecko') > -1 && u.indexOf('KHTML') == -1, //火狐内核 
+						mobile: !!u.match(/AppleWebKit.*Mobile.*/) || !!u.match(/AppleWebKit/), //是否为移动终端 
+						ios: !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/), //ios终端 
+						android: u.indexOf('Android') > -1 || u.indexOf('Linux') > -1, //android终端或者uc浏览器 
+						iPhone: u.indexOf('iPhone') > -1 || u.indexOf('Mac') > -1, //是否为iPhone或者QQ HD浏览器 
+						iPad: u.indexOf('iPad') > -1, //是否iPad 
+						webApp: u.indexOf('Safari') == -1 //是否web应该程序，没有头部与底部 
+					};
+				}(),
+				language: (navigator.browserLanguage || navigator.language).toLowerCase()
+			}
+            if(browser.versions.ios==false && browser.versions.android==false){
+                isMobile = false;         
+            }else{
+                isMobile = true;            
+            }      
         (function () { 
             document.title = isZh ? "跟踪" : "Track";
             var userName = Cookies.get('name');
@@ -253,14 +278,14 @@
                             } 
                         },
                         initBMap:function(){
-                            this.map = new BMap.Map("bmap",{minZoom:4,maxZoom:20});
+                            this.map = new BMap.Map("bmap",{minZoom:4,maxZoom:20, enableMapClick: false});
                             this.map.enableScrollWheelZoom();
                             this.map.enableAutoResize();
-                            this.map.disableDoubleClickZoom();
-                            var top_left_control = new BMap.ScaleControl({anchor: BMAP_ANCHOR_BOTTOM_LEFT});
+                            this.map.enableDoubleClickZoom();
+                            // var top_left_control = new BMap.ScaleControl({anchor: BMAP_ANCHOR_BOTTOM_LEFT});
                             var top_left_navigation = new BMap.NavigationControl();
                             var mapType = new BMap.MapTypeControl({mapTypes: [BMAP_NORMAL_MAP, BMAP_HYBRID_MAP]});
-                            this.map.addControl(top_left_control);
+                            // this.map.addControl(top_left_control);
                             this.map.addControl(top_left_navigation);
                             this.map.addControl(mapType);
                             this.map.centerAndZoom(new BMap.Point(108.0017245,35.926895),5);
@@ -363,7 +388,7 @@
                         
                         getDirectionIcon:function(angle){
                             if(this.mapType === 'baidu'){
-                                return new BMap.Icon("images/carstate/green_"+ angle +".gif", new BMap.Size(17, 17), { imageOffset: new BMap.Size(0, 0)}); 
+                                return new BMap.Icon("images/carstate/green_"+ angle +".png", new BMap.Size(17, 17), { imageOffset: new BMap.Size(0, 0)}); 
                             }else{
                                 var pathname = location.pathname
                                 var imgPath = ''
@@ -416,6 +441,7 @@
                         doLastPosition:function (record) {
 
                             if(record){
+                           
                                 var prveTrack = this.tracks[this.tracks.length-1];
                                 if(prveTrack){
                                     if(prveTrack.updatetime === record.updatetime){
@@ -506,24 +532,59 @@
                         handleDown:function(){
                             this.isDown = !this.isDown;
                         },
+                        getShareLastPosition:function(callback){
+                            var me = this;
+                            var url = myUrls.shareTrackLastPosition();
+                            var data = {
+                                authcode:authcode,
+                                deviceid: this.deviceid
+                            };
+                            utils.sendAjax(url,data,function (resp) {
+                                if(resp.status == 0){
+                                    isOverdue =  resp.isvalid == 1 ? false : true;
+                                    if(isOverdue){
+                                        me.$Message.error("账号已过期");
+                                        return;
+                                    }
+                                    callback(resp.records[0]);
+                                }else{
+                                    me.$Message.error("轨迹查询失败!")
+                                };   
+                            });
+                        },
                         initApp:function(deviceid){
                             var me = this;
-                            this.getLastPosition(this.doLastPosition);
-                            setInterval(function () { 
-                                me.interval--;
-                                if( me.interval == 0 || me.interval < 0){
-                                    me.getLastPosition(me.doLastPosition); 
-                                    me.interval = 10; 
-                                };
-                            },1000);
-                            
-                            initWebSocket(wsHost,userName + "-trackmap",function (data) { 
-                                var action = data.action;
-                                if(action === "positionlast" && data.positionLast && data.positionLast.deviceid == deviceid){
-                                    console.log("data.positionLast",data.positionLast);
-                                    data.positionLast && me.doLastPosition(data.positionLast);
-                                };
-                            })
+                           if(isShare){
+                               this.getShareLastPosition(this.doLastPosition);
+                               setInterval(function () { 
+                                    me.interval--;
+                                    if( me.interval == 0 || me.interval < 0){
+                                        if(isOverdue){ 
+                                            me.$Message.error("账号已过期");
+                                            return ;
+                                        }
+                                        me.getShareLastPosition(me.doLastPosition); 
+                                        me.interval = 10; 
+                                    };
+                                },1000);
+                           }else{
+                                this.getLastPosition(this.doLastPosition);
+                                setInterval(function () { 
+                                    me.interval--;
+                                    if( me.interval == 0 || me.interval < 0){
+                                        me.getLastPosition(me.doLastPosition); 
+                                        me.interval = 10; 
+                                    };
+                                },1000);
+                                
+                                initWebSocket(wsHost,userName + "-trackmap",function (data) { 
+                                    var action = data.action;
+                                    if(action === "positionlast" && data.positionLast && data.positionLast.deviceid == deviceid){
+                                        console.log("data.positionLast",data.positionLast);
+                                        data.positionLast && me.doLastPosition(data.positionLast);
+                                    };
+                                })
+                           }
                         },
                         reDrawMap:function(newVal){
                             var tracks = this.isExact ? this.exactTracks : this.tracks;
@@ -593,13 +654,12 @@
                             return [this.mapType === 'baidu' ? 'right-100' :'right-65'];
                         },
                         trackInfoCls:function(){
-                            return [this.mapType === 'baidu' ? 'right-10' :'right-60'];
+                            return [(this.mapType === 'baidu' && !isMobile) ? 'right-10' :'right-60'];
                         },
-                        imgSrc:function(){
-                            if(this.isExact){
-                                return "./images/ic_fine_network_off.png";
-                            }else{
-                                return "./images/ic_fine_network_on.png";
+                        imgSrcBg:function(){
+                            return {
+                                backgroundImage:this.isExact ? "url('./images/ic_fine_network_off.png')" : "url('./images/ic_fine_network_on.png')",
+                                backgroundSize:'cover'
                             }
                         }
                     },
