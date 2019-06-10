@@ -594,7 +594,7 @@
                             var lastPoint =  this.getPoint(tracks[tracks.length - 1]);
                             var carIcon = this.getDirectionIcon(this.getAge(tracks[tracks.length - 1].course));     
                             if(newVal === 'baidu'){
-                                this.carMarker = new BMap.Marker(lastPoint,{icon:carIcon});     
+                                this.carMarker = new BMap.Marker(lastPoint,{icon:carIcon,rotation: tracks[tracks.length - 1].course});     
                                 firstMarker = new BMap.Marker(firstPoint,{icon:this.getFirstMarkerIcon(),offset:new BMap.Size(0, -10)});     
                                 this.map.addOverlay(this.carMarker);
                                 this.map.addOverlay(firstMarker);
