@@ -491,7 +491,7 @@
                                     
 
                                     if(this.mapType === 'baidu'){
-                                        this.carMarker = new BMap.Marker(point,{icon:carIcon});    
+                                        this.carMarker = new BMap.Marker(point,{icon:carIcon , rotation: track.course });    
                                         firstMarker = new BMap.Marker(point,{icon:startIcon,offset:new BMap.Size(0, -10)});     
                                         this.map.addOverlay(this.carMarker);
                                         this.map.addOverlay(firstMarker);
@@ -555,7 +555,6 @@
                         initApp:function(deviceid){
                             var me = this;
                            if(isShare){
-                               alert(111);
                                this.getShareLastPosition(this.doLastPosition);
                                setInterval(function () { 
                                     me.interval--;
