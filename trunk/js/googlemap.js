@@ -106,9 +106,9 @@ GoogleMap.pt.getIcon = function (track) {
         imgPath = '../images/carstate';
     }
     if (track.online) {
-        imgPath += '/green_' + utils.getAngle(track.course) + '.png';
+        imgPath += '/a_green_' + utils.getAngle(track.course) + '.png';
     } else {
-        imgPath += '/gray_' + utils.getAngle(track.course) + '.png';
+        imgPath += '/a_gray_' + utils.getAngle(track.course) + '.png';
     }
     return imgPath;
 }

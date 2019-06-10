@@ -174,9 +174,9 @@ var utils = {
       imgPath = '../images/carstate'
     }
     if (isOnline) {
-      imgPath += '/green_' + angle + '.png'
+      imgPath += '/a_green_' + angle + '.png'
     } else {
-      imgPath += '/gray_' + angle + '.png'
+      imgPath += '/a_gray_' + angle + '.png'
     }
     return imgPath
   },

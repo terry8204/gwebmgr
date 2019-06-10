@@ -101,7 +101,7 @@ BMapClass.pt.openInfoWindow = function (marker, deviceid, zoom) {
 
 BMapClass.pt.getCarLabel = function (track) {
     var label = new BMap.Label(track.devicename, {
-        offset: new BMap.Size(20, 0)
+        offset: new BMap.Size(35, 0)
     });
     label.setStyle({
         border: 0,
@@ -121,11 +121,11 @@ BMapClass.pt.getIcon = function (track) {
         imgPath = '../images/carstate'
     }
     if (track.online) {
-        imgPath += '/green_0.png'
+        imgPath += '/a_green_0.png'
     } else {
-        imgPath += '/gray_0.png'
+        imgPath += '/a_gray_0.png'
     }
-    return new BMap.Icon(imgPath, new BMap.Size(17, 17));
+    return new BMap.Icon(imgPath, new BMap.Size(32, 32));
 }
 
 

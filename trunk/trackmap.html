@@ -388,7 +388,7 @@
                         
                         getDirectionIcon:function(angle){
                             if(this.mapType === 'baidu'){
-                                return new BMap.Icon("images/carstate/green_"+ angle +".png", new BMap.Size(17, 17), { imageOffset: new BMap.Size(0, 0)}); 
+                                return new BMap.Icon("images/carstate/a_green_"+ angle +".png", new BMap.Size(32, 32), { imageOffset: new BMap.Size(0, 0)}); 
                             }else{
                                 var pathname = location.pathname
                                 var imgPath = ''
@@ -397,7 +397,7 @@
                                 } else {
                                     imgPath = '../images/carstate';
                                 }
-                               return imgPath += '/green_' + angle + '.png';
+                               return imgPath += '/a_green_' + angle + '.png';
                             }
                         },
                         getAge:function(course){
@@ -555,6 +555,7 @@
                         initApp:function(deviceid){
                             var me = this;
                            if(isShare){
+                               alert(111);
                                this.getShareLastPosition(this.doLastPosition);
                                setInterval(function () { 
                                     me.interval--;

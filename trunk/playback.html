@@ -410,6 +410,7 @@
                 }
             }
         };
+    
         (function () {   //utils.getAngle
             var carIcon = null;
             var startIcon = null;
@@ -485,7 +486,7 @@
                         }
                     },
                     initBMap:function(){
-                        carIcon = new BMap.Icon("images/carstate/green_0.png", new BMap.Size(17, 17), { imageOffset: new BMap.Size(0, 0) });
+                        carIcon = new BMap.Icon("images/carstate/a_green_0.png", new BMap.Size(32, 32), { imageOffset: new BMap.Size(0, 0) });
                         startIcon = new BMap.Icon("./images/map/marker_qidian.png", new BMap.Size(32, 32), { imageOffset: new BMap.Size(0, 0) });
                         endIcon = new BMap.Icon("./images/map/marker_zhongdian.png", new BMap.Size(32, 32), { imageOffset: new BMap.Size(0, 0) });
                         this.map = new BMap.Map("bmap", { minZoom: 4, maxZoom: 19 ,enableMapClick: false });
@@ -847,9 +848,12 @@
                             var windowInfo = new BMap.InfoWindow(sContent);
                                 windowInfo.disableCloseOnClick();
                                 this.isShowMarker && marker.openInfoWindow(windowInfo);
-                                this.carMarker.setPosition(track.point); 
-                                this.carMarker.setIcon(this.getDirectionIcon(0)); 
-                                this.carMarker.setRotation(track.course);
+                                if(this.carMarker){
+                                    this.carMarker.setPosition && this.carMarker.setPosition(track.point); 
+                                    this.carMarker.setIcon && this.carMarker.setIcon(this.getDirectionIcon(0)); 
+                                    this.carMarker.setRotation && this.carMarker.setRotation(track.course);
+                                }
+                             
                         }else{
                             if(googleInfoWindow){
                                 googleInfoWindow.close();
@@ -1028,7 +1032,8 @@
                                     })  
                                 }          
                         } catch (error) {}
-                        
+
+                        this.markers = [];
                         this.firstMarker && this.firstMarker.setMap && this.firstMarker.setMap(null);
                         this.lastMakrker && this.lastMakrker.setMap && this.lastMakrker.setMap(null);
                         this.carMarker && this.carMarker.setMap && this.carMarker.setMap(null);
@@ -1042,7 +1047,7 @@
                     },
                     getDirectionIcon: function (angle) {
                         if(this.mapType === 'baidu'){
-                            return new BMap.Icon("images/carstate/green_"+ angle +".png", new BMap.Size(17, 17), { imageOffset: new BMap.Size(0, 0)}); 
+                            return new BMap.Icon("images/carstate/a_green_"+ angle +".png", new BMap.Size(32, 32), { imageOffset: new BMap.Size(0, 0)}); 
                         }else{
                             var pathname = location.pathname
                             var imgPath = ''
@@ -1051,7 +1056,7 @@
                             } else {
                                 imgPath = '../images/carstate';
                             }
-                            return imgPath += '/green_' + angle + '.png';
+                            return imgPath += '/a_green_' + angle + '.png';
                         }
                     },
                     onShowCtrl:function(){
