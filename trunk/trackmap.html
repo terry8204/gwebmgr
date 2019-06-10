@@ -439,9 +439,9 @@
                             });
                         },
                         doLastPosition:function (record) {
-
+   
                             if(record){
-                           
+                              
                                 var prveTrack = this.tracks[this.tracks.length-1];
                                 if(prveTrack){
                                     if(prveTrack.updatetime === record.updatetime){
@@ -453,7 +453,7 @@
                                 var point = this.getPoint(record);     
                            
                                 if(this.tracks.length > 0){
-                                   
+               
                                     this.tracks.push(record);
                                     if(record.gotsrc === 'gps'){
                                         this.exactTracks.push(record);
@@ -489,15 +489,15 @@
                                         }
                                     }
                                     
-
+                                    
                                     if(this.mapType === 'baidu'){
-                                        this.carMarker = new BMap.Marker(point,{icon:carIcon , rotation: track.course });    
+                                        this.carMarker = new BMap.Marker(point,{icon:carIcon , rotation: record.course });    
                                         firstMarker = new BMap.Marker(point,{icon:startIcon,offset:new BMap.Size(0, -10)});     
                                         this.map.addOverlay(this.carMarker);
                                         this.map.addOverlay(firstMarker);
                                         this.map.centerAndZoom(point,19);   
                                     }else{
-
+                                    
                                         new google.maps.Marker({
                                             position: point,
                                             map: this.map,
@@ -511,6 +511,7 @@
                                 };
                                 var me = this;
                                 this.getAddress(record,function (address) { 
+                                    console.log('address', address);
                                     me.trackHtml = me.getWindowContent(record,address);
                                 }) 
                             }
