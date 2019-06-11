@@ -388,7 +388,7 @@
                         
                         getDirectionIcon:function(angle){
                             if(this.mapType === 'baidu'){
-                                return new BMap.Icon("images/carstate/a_green_"+ angle +".png", new BMap.Size(32, 32), { imageOffset: new BMap.Size(0, 0)}); 
+                                return new BMap.Icon("images/carstate/a_green_0.png", new BMap.Size(32, 32), { imageOffset: new BMap.Size(0, 0)}); 
                             }else{
                                 var pathname = location.pathname
                                 var imgPath = ''
@@ -593,7 +593,8 @@
                             if(tracks[0]){
                                 var firstPoint = this.getPoint(tracks[0]);
                                 var lastPoint =  this.getPoint(tracks[tracks.length - 1]);
-                                var carIcon = this.getDirectionIcon(this.getAge(tracks[tracks.length - 1].course));     
+                                var carIcon = this.getDirectionIcon(this.getAge(tracks[tracks.length - 1].course));  
+                                   console.log("tracks[tracks.length - 1].course",tracks[tracks.length - 1].course);
                                 if(newVal === 'baidu'){
                                     this.carMarker = new BMap.Marker(lastPoint,{icon:carIcon,rotation: tracks[tracks.length - 1].course});     
                                     firstMarker = new BMap.Marker(firstPoint,{icon:this.getFirstMarkerIcon(),offset:new BMap.Size(0, -10)});     
@@ -601,6 +602,7 @@
                                     this.map.addOverlay(firstMarker);
                                     this.map.centerAndZoom(lastPoint,19);   
                                 }else{
+                                    
                                     new google.maps.Marker({
                                         position: firstPoint,
                                         map: this.map,
