@@ -575,7 +575,6 @@
                             return this.carMarker;
                         };
                         for(var i = 0 ;  i < this.markers.length ; i ++){
-
                             marker = this.markers[i];
                             if(marker.index == index){
                                 return marker;
@@ -784,6 +783,8 @@
                                 }
                                 this.openInfoWindow(this.carMarker,records[0]);  
                                 // this.runAnimeate(records);
+                        }else{
+                            this.$Message.error("没有当天轨迹");
                         };  
                     },
 
