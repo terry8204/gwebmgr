@@ -485,6 +485,7 @@
                                         this.exactTracks.push(record);
                                     }else{
                                         if(this.isExact){
+                                            this.isDown = false;
                                             return;
                                         }
                                     }
@@ -589,31 +590,39 @@
                         },
                         reDrawMap:function(newVal){
                             var tracks = this.isExact ? this.exactTracks : this.tracks;
-                            if(tracks[0] == null) return;
-                            var firstPoint = this.getPoint(tracks[0]);
-                            var lastPoint =  this.getPoint(tracks[tracks.length - 1]);
-                            var carIcon = this.getDirectionIcon(this.getAge(tracks[tracks.length - 1].course));     
-                            if(newVal === 'baidu'){
-                                this.carMarker = new BMap.Marker(lastPoint,{icon:carIcon,rotation: tracks[tracks.length - 1].course});     
-                                firstMarker = new BMap.Marker(firstPoint,{icon:this.getFirstMarkerIcon(),offset:new BMap.Size(0, -10)});     
-                                this.map.addOverlay(this.carMarker);
-                                this.map.addOverlay(firstMarker);
-                                this.map.centerAndZoom(lastPoint,19);   
-                            }else{
-                                new google.maps.Marker({
-                                    position: firstPoint,
-                                    map: this.map,
-                                    icon: this.getFirstMarkerIcon()
-                                })
-                                this.carMarker = new google.maps.Marker({
-                                    icon:carIcon,
-                                    position:lastPoint,
-                                    map: this.map,
+                            if(tracks[0]){
+                                var firstPoint = this.getPoint(tracks[0]);
+                                var lastPoint =  this.getPoint(tracks[tracks.length - 1]);
+                                var carIcon = this.getDirectionIcon(this.getAge(tracks[tracks.length - 1].course));     
+                                if(newVal === 'baidu'){
+                                    this.carMarker = new BMap.Marker(lastPoint,{icon:carIcon,rotation: tracks[tracks.length - 1].course});     
+                                    firstMarker = new BMap.Marker(firstPoint,{icon:this.getFirstMarkerIcon(),offset:new BMap.Size(0, -10)});     
+                                    this.map.addOverlay(this.carMarker);
+                                    this.map.addOverlay(firstMarker);
+                                    this.map.centerAndZoom(lastPoint,19);   
+                                }else{
+                                    new google.maps.Marker({
+                                        position: firstPoint,
+                                        map: this.map,
+                                        icon: this.getFirstMarkerIcon()
+                                    })
+                                    this.carMarker = new google.maps.Marker({
+                                        icon:carIcon,
+                                        position:lastPoint,
+                                        map: this.map,
+                                    });
+                                    this.map.setCenter(lastPoint);
+                                    this.map.setZoom(20);
+                                }
+                                this.addMapOverlayLine();
+                                var me = this;
+                                this.getAddress(tracks[tracks.length - 1],function (address) { 
+                                    me.trackHtml = me.getWindowContent(tracks[tracks.length - 1],address);
                                 });
-                                this.map.setCenter(lastPoint);
-                                this.map.setZoom(20);
+                            }else{
+                                this.trackHtml = '';
+                                this.isDown = false;
                             }
-                            this.addMapOverlayLine();
                         },
                         addMapOverlayLine:function(){
                             var me = this;
@@ -699,6 +708,7 @@
                                 flightPathArrList = [];
                             }
                             this.reDrawMap(this.mapType);
+
                         },
                         mapType:function(newVal){
                             var me = this;
