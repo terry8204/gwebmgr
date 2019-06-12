@@ -689,7 +689,8 @@
                     
                                 this.map.addOverlay(this.polyline);
                                 // 设置中心点
-                                this.carMarker = new BMap.Marker(lines[0], { icon: this.getDirectionIcon(records[0].direction) });
+                                var icon = this.getDirectionIcon(records[0].direction);
+                                this.carMarker = new BMap.Marker(lines[0], { icon: icon });
                                 this.map.addOverlay(this.carMarker);
                                 this.setViewPortCenter(lines);
                             }else{
@@ -863,6 +864,8 @@
                             googleInfoWindow = new google.maps.InfoWindow({ content: '<div id="windowInfo" style="width:360px;">' + sContent + '</div>' });
                             this.isShowMarker && googleInfoWindow.open(this.map, marker);
                             this.carMarker.setPosition(track.gpoint);
+                            var icon = this.getDirectionIcon(track.direction);
+                            this.carMarker.setIcon(icon);
                         }
                         this.carMarker.setIcon(this.getDirectionIcon(track.direction));
                     },
@@ -907,16 +910,6 @@
                                 }else{
                                     me.index = me.index -1;
                                 }
-                               
-                                // if(me.mapType === 'baidu'){
-                                //     me.carMarker.setPosition(track.point);
-                                //     me.carMarker.setIcon(me.getDirectionIcon(track.direction));
-                                //     var sContent = me.getLableContent(track);
-                                //     var windowInfo = new BMap.InfoWindow(sContent);
-                                //     me.isShowMarker && me.carMarker.openInfoWindow(windowInfo);
-                                // }else{
-
-                                // }
                             }, me.velocity);
                         };
                     },
@@ -1057,7 +1050,12 @@
                             } else {
                                 imgPath = '../images/carstate';
                             }
-                            return imgPath += '/a_green_' + angle + '.png';
+                            
+                            return {                                
+                                url:imgPath += '/a_green_'+angle+'.png',
+                                size:{width:32,height:32},
+                                anchor:new google.maps.Point(16,16),
+                            };
                         }
                     },
                     onShowCtrl:function(){

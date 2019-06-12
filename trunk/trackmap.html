@@ -397,7 +397,11 @@
                                 } else {
                                     imgPath = '../images/carstate';
                                 }
-                               return imgPath += '/a_green_' + angle + '.png';
+                               return {                                
+                                        url:imgPath += '/a_green_' + angle + '.png',
+                                        size:{width:32,height:32},
+                                        anchor:new google.maps.Point(16,16)
+                                    } 
                             }
                         },
                         getAge:function(course){
@@ -502,7 +506,7 @@
                                         new google.maps.Marker({
                                             position: point,
                                             map: this.map,
-                                            icon: this.getFirstMarkerIcon()
+                                            icon: this.getFirstMarkerIcon(),
                                         })
 
                                         this.carMarker = new google.maps.Marker({});

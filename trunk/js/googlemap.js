@@ -98,7 +98,7 @@ GoogleMap.pt.openInfoWindow = function (marker, deviceid) {
 
 
 GoogleMap.pt.getIcon = function (track) {
-    var pathname = location.pathname
+    var pathname = location.pathname;
     var imgPath = ''
     if (pathname.indexOf('gpsserver') != -1) {
         imgPath = myUrls.host + 'images/carstate';
@@ -110,7 +110,11 @@ GoogleMap.pt.getIcon = function (track) {
     } else {
         imgPath += '/a_gray_' + utils.getAngle(track.course) + '.png';
     }
-    return imgPath;
+    return {
+        url: imgPath,
+        size: { width: 32, height: 32 },
+        anchor: new google.maps.Point(16, 16)
+    };
 }
 
 
