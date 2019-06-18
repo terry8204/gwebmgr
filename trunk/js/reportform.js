@@ -1459,9 +1459,8 @@ var reportForm = {
             this.loadPage(pageName);
         },
         loadPage: function (page) {
-            console.log('page', page);
-            var me = this
-            var pagePath = null
+            var me = this;
+            var pagePath = null;
             if (myUrls.host.indexOf('gpsserver') != -1) {
                 pagePath = myUrls.host + 'view/reportform/' + page
             } else {

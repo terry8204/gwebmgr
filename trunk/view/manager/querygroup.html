@@ -35,17 +35,17 @@ vueInstanse=new Vue({
                 recordsList:[],
                 tableData:[],
                 columnsList:[
-                   {
-                        type: 'expand',
-                        width: 50,
-                        render: function(h, params){
-                            return h(expandRow, {
-                                props: {
-                                    devices: params.row.devices
-                                }
-                            })
-                        }
-                    },
+                //    {
+                //         type: 'expand',
+                //         width: 50,
+                //         render: function(h, params){
+                //             return h(expandRow, {
+                //                 props: {
+                //                     devices: params.row.devices
+                //                 }
+                //             })
+                //         }
+                //     },
                     {
                         title: vRoot.$t("group.groupName"),
                         key: 'groupname'
