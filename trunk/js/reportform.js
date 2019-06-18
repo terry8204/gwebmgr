@@ -1260,6 +1260,160 @@ function rechargeRecords (groupslist) {
 }
 
 
+function insureRecords (groupslist) {
+    new Vue({
+        el: '#insure-records',
+        i18n: utils.getI18n(),
+        data: {
+            error: 123,
+            columns: [
+                {
+                    title: '是否付费', key: 'isPay', width: 100,
+                    render: function (h, parmas) {
+                        return h('span', {}, parmas.row.insurestate == 1 ? '已付款' : '未付款');
+                    }
+                },
+                { title: '姓名', key: 'name', width: 100 },
+                { title: '身份证号', key: 'cardid', width: 150 },
+                { title: '地址', key: 'usingaddress', width: 150 },
+                { title: '手机号', key: 'phonenum', width: 150 },
+                // { title: '电动车类型', key: 'phonenum', width: 150 },
+                { title: '品牌型号', key: 'brandtype', width: 100 },
+                { title: '车架号', key: 'vinno', width: 150 },
+                { title: 'GPS序列号', key: 'deviceid', width: 150 },
+                { title: '购车日期', key: 'buycarday', width: 100 },
+                { title: '销售价格', key: 'carvalue', width: 100 },
+                { title: '保险金额', key: 'insureprice', width: 100 },
+                { title: '保费', key: 'insurefee', width: 80 },
+                {
+                    title: '合格证', key: 'carpicurl', width: 100,
+                    render: function (h, parmas) {
+                        return h('a', { attrs: { href: parmas.row.carpicurl, target: '_blank' } }, '点击预览');
+                    }
+                },
+                {
+                    title: '身份证正面', key: 'positivecardidurl', width: 100,
+                    render: function (h, parmas) {
+                        return h('a', { attrs: { href: parmas.row.positivecardidurl, target: '_blank' } }, '点击预览');
+                    }
+                },
+                {
+                    title: '身份证反面', key: 'negativecardidurl', width: 100,
+                    render: function (h, parmas) {
+                        return h('a', { attrs: { href: parmas.row.negativecardidurl, target: '_blank' } }, '点击预览');
+                    }
+                },
+                {
+                    title: '购车发票', key: 'invoiceurl', width: 100,
+                    render: function (h, parmas) {
+                        return h('a', { attrs: { href: parmas.row.invoiceurl, target: '_blank' } }, '点击预览');
+                    }
+                },
+                {
+                    title: '车主与车合影', key: 'groupphotourl', width: 120,
+                    render: function (h, parmas) {
+                        return h('a', { attrs: { href: parmas.row.groupphotourl, target: '_blank' } }, '点击预览');
+                    }
+                },
+            ],
+            tableHeight: 300,
+            tableData: [],
+            loading: false,
+            isFilter: true
+        },
+        methods: {
+            calcTableHeight: function () {
+                var wHeight = window.innerHeight;
+                this.tableHeight = wHeight - 125;
+            },
+            changeTableColumns: function () {
+                this.columns = this.getTableColumns();
+            },
+            queryInsures: function () {
+                this.loading = true;
+                var url = myUrls.queryInsures(), me = this;
+                utils.sendAjax(url, { username: userName }, function (resp) {
+                    console.log('resp', resp);
+                    if (resp.status === 0) {
+                        if (me.isFilter) {
+                            me.tableData = (function () {
+                                var tableData = [];
+                                resp.insures.forEach(function (item) {
+                                    if (item.insurestate === 1) {
+                                        tableData.push(item);
+                                    };
+                                })
+                                return tableData;
+                            })();
+                        } else {
+                            me.tableData = resp.insures;
+                        }
+                    }
+                    me.loading = false;
+                })
+            },
+            exportData: function () {
+                // this.$refs.table.exportCsv({
+                //     filename: 'device info'
+                // });
+                var jsonData = this.tableData.map(function (item) {
+                    return {
+                        name: item.name,
+                        cardid: item.cardid,
+                        usingaddress: item.usingaddress,
+                        phonenum: item.phonenum,
+                        brandtype: item.brandtype,
+                        vinno: item.vinno,
+                        deviceid: item.deviceid,
+                        buycarday: item.buycarday,
+                        carvalue: item.carvalue,
+                        insureprice: item.insureprice,
+                        insurefee: item.insurefee,
+                        carpicurl: item.carpicurl,
+                        positivecardidurl: item.positivecardidurl,
+                        negativecardidurl: item.negativecardidurl,
+                        invoiceurl: item.invoiceurl,
+                        groupphotourl: item.groupphotourl,
+                    };
+                });
+
+                var columnsStr = [
+                    '姓名', '身份证号', '地址', '手机号', '品牌型号',
+                    '车架号', 'GPS序列号', '购车日期', '销售价格', '保险金额',
+                    '保费', '合格证', '身份证正面', '身份证反面', '购车发票', '车主与车合影'
+                ].map(function (item) { return "<td>" + item + "</td>"; });
+                var str = '<tr>' + columnsStr.join('') + '</tr>';
+                for (var i = 0; i < jsonData.length; i++) {
+                    str += '<tr>';
+                    for (var item in jsonData[i]) {
+                        str += `<td>${jsonData[i][item] + '\t'}</td>`;
+                    }
+                    str += '</tr>';
+                }
+
+                var worksheet = 'Sheet1'
+                var uri = 'data:application/vnd.ms-excel;base64,';
+                //下载的表格模板数据
+                var template = `<html xmlns:o="urn:schemas-microsoft-com:office:office" 
+                xmlns:x="urn:schemas-microsoft-com:office:excel" 
+                xmlns="http://www.w3.org/TR/REC-html40">
+                <head><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet>
+                    <x:Name>${worksheet}</x:Name>
+                    <x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet>
+                    </x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]-->
+                    </head><body><table>${str}</table></body></html>`;
+                //下载模板
+                window.location.href = uri + base64(template)
+
+                function base64 (s) { return window.btoa(unescape(encodeURIComponent(s))) }
+            },
+        },
+        mounted: function () {
+            this.calcTableHeight();
+            this.queryInsures();
+        },
+    })
+}
 
 // 统计报表
 var reportForm = {
@@ -1293,6 +1447,7 @@ var reportForm = {
                         { title: me.$t("reportForm.allAlarm"), name: 'allAlarm', icon: 'md-warning' },
                         { title: me.$t("reportForm.phoneAlarm"), name: 'phoneAlarm', icon: 'ios-call' },
                         { title: me.$t("reportForm.rechargeRecords"), name: 'rechargeRecords', icon: 'ios-list-box-outline' },
+                        { title: "保险记录", name: 'insureRecords', icon: 'ios-list-box-outline' },
                     ]
                 },
             ]
@@ -1317,24 +1472,37 @@ var reportForm = {
                 me.$Loading.finish();
                 var groupslist = deepClone(me.groupslist);
                 window.onresize = null;
-                if (page.indexOf('rechargerecords') !== -1) {
-                    rechargeRecords(groupslist);
-                } else if (page.indexOf('cmdreport') !== -1) {
-                    cmdReport(groupslist);
-                } else if (page.indexOf('allalarm') !== -1) {
-                    allAlarm(groupslist);
-                } else if (page.indexOf('posireport') !== -1) {
-                    posiReport(groupslist);
-                } else if (page.indexOf('mileagedetail') !== -1) {
-                    reportMileageDetail(groupslist);
-                } else if (page.indexOf('parkdetails') !== -1) {
-                    parkDetails(groupslist);
-                } else if (page.indexOf('accdetails') !== -1) {
-                    accDetails(groupslist);
-                } else if (page.indexOf('records') !== -1) {
-                    devRecords(groupslist);
-                } else if (page.indexOf('phonealarm') !== -1) {
-                    phoneAlarm(groupslist);
+                switch (page) {
+                    case 'rechargerecords.html':
+                        rechargeRecords(groupslist);
+                        break;
+                    case 'cmdreport.html':
+                        cmdReport(groupslist);
+                        break;
+                    case 'allalarm.html':
+                        allAlarm(groupslist);
+                        break;
+                    case 'posireport.html':
+                        posiReport(groupslist);
+                        break;
+                    case 'mileagedetail.html':
+                        reportMileageDetail(groupslist);
+                        break;
+                    case 'parkdetails.html':
+                        parkDetails(groupslist);
+                        break;
+                    case 'accdetails.html':
+                        accDetails(groupslist);
+                        break;
+                    case 'records.html':
+                        devRecords(groupslist);
+                        break;
+                    case 'phonealarm.html':
+                        phoneAlarm(groupslist);
+                        break;
+                    case 'insurerecords.html':
+                        insureRecords(groupslist);
+                        break;
                 }
             });
         },

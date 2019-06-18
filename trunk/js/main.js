@@ -24,8 +24,7 @@ vstore = new Vuex.Store({
       { "name": isZh ? "一级管理员" : 'Supervisor', "type": 1 },
       { "name": isZh ? "二级管理员" : 'Manager', "type": 2 },
       { "name": isZh ? "普通监控员" : 'Monitor', "type": 20 },
-      { "name": isZh ? "设备" : 'Device', "type": 99 },
-      { "name": isZh ? "体验帐号" : 'Demo', "type": 10 }],     // 用户类型描述
+      { "name": isZh ? "设备" : 'Device', "type": 99 }],     // 用户类型描述
     allCmdList: [],              // 所有的指令
     deviceTypes: [],
     headerActiveName: 'monitor', // 选中的header 

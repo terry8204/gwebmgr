@@ -19,23 +19,6 @@
             <Page :total="total" simple :page-size="10" :current="currentIndex" @on-change="changePage"></Page>
         </div>
     </div>
-
-    <Modal v-model="selectMonitorModal" width="560" class-name="vertical-center-modal">
-        <p slot="header" style="color:rgb(0, 119, 255);text-align:center;font-size: 18px">
-            <Icon type="ios-add"></Icon>
-            <span>{{$t("group.addMonitors")}}</span>
-        </p>
-        <div style="text-align:center">
-            <checkbox-group v-model="monitorPerson">
-                <Checkbox v-for="item in monitorPersonList" :key="item.label" :label="item.label" :value="item.value"></Checkbox>
-            </checkbox-group>   
-            <div v-show="monitorPersonList.length == 0" style="color:rgb(0, 119, 255);text-align:center;padding: 10px"> {{$t("group.noMonitors")}}</div>
-        </div>
-        <div slot="footer">
-            <i-button type="primary"  @click="submitMonitor" style="width: 100%">{{$t("bgMgr.submit")}}</i-button>
-        </div>
-    </Modal>
-
     <script>
         
 vueInstanse=new Vue({
@@ -43,7 +26,6 @@ vueInstanse=new Vue({
             i18n: utils.getI18n(),
             data:{
                 loading:true,
-                selectMonitorModal:false,
                 delGroupObj:{},
                 monitorPerson:[],
                 monitorPersonList:[],
@@ -117,18 +99,7 @@ vueInstanse=new Vue({
                                             size: 'small'
                                             }
                                         },vRoot.$t("bgMgr.delete")) 
-                                    ])  ,
-                                    h('Button', {
-                                        props: {
-                                            type: 'primary',
-                                            size: 'small'
-                                        },
-                                        on: {
-                                            click: function() {
-                                                vueInstanse.openSelectMonitorModal(params.index);
-                                            }
-                                        }
-                                    }, vRoot.$t("group.monitors")) 
+                                    ]) 
                                 ]);
                             }
                         }
@@ -157,7 +128,6 @@ vueInstanse=new Vue({
                     utils.sendAjax(url,{},this.doQueryAllgroupsInfo);
                 },
                 doQueryAllgroupsInfo:function(resp){
-                    console.log(resp.grouplist)
                     if(resp.status === 0){
                         this.recordsList = resp.grouplist !==null ? resp.grouplist : [];
                         this.recordsList.forEach(function (group) { 
@@ -208,43 +178,6 @@ vueInstanse=new Vue({
                         }else{
                             me.$Message.error(resp.cause);
                         }
-                    });
-                },
-                // changePage:function(index){
-                //     var offset = index * 5;
-                //     var start = (index-1) *5;
-                //     this.tableData =  this.recordsList.slice(start,offset);
-                // },
-                openSelectMonitorModal:function(index){
-                    var me = this;
-                    this.delGroupObj = this.tableData[index];
-                    this.monitorPerson = [];
-                    this.selectMonitorModal = true;
-                    if(this.delGroupObj.users!=null && this.delGroupObj.users.length > 0){
-                        this.delGroupObj.users.forEach(function(item){
-                            me.monitorPerson.push(item.username);
-                        });
-                    }
-                },
-                submitMonitor:function(){
-                    var me = this;
-                    var url = myUrls.editGroupMonitor();
-                    var data = {
-                        groupid: this.delGroupObj.groupid ,
-                        monitors:this.monitorPerson
-                    };
-                    utils.sendAjax(url,data,function (resp) { 
-                        if(resp.status == 0){
-                            me.$Message.success(me.$t("message.addSucc"));
-                            me.delGroupObj.users = [];
-                            me.monitorPerson.forEach(function (item) {
-                                me.delGroupObj.users.push({username:item});
-                            })
-                          
-                        }else{
-                            me.$Message.success(resp.cause);
-                        }
-                        me.selectMonitorModal = false;
                     });
                 },
                 getUserInfoList:function(){

@@ -337,6 +337,9 @@ var myUrls = {
   editDevicesForwardUrl: function () {
     return this.host + 'webapi?action=editdevicesforwardurl&token=' + token;
   },
+  queryInsures: function () {
+    return this.host + 'webapi?action=queryinsures&token=' + token;
+  },
 
 }
 

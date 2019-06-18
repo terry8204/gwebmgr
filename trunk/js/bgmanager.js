@@ -17,15 +17,6 @@ var bgManager = {
                     ]
                 },
                 {
-                    title: me.$t("bgMgr.groupMgr"),
-                    name: 'groupMar',
-                    icon: 'ios-albums',
-                    children: [
-                        { title: me.$t("bgMgr.addGroup"), name: 'addGroup', icon: 'ios-photos-outline' },
-                        { title: me.$t("bgMgr.queryGroup"), name: 'queryGroup', icon: 'md-search' }
-                    ]
-                },
-                {
                     title: me.$t("bgMgr.userMgr"),
                     name: 'userMar',
                     icon: 'md-person',
@@ -35,13 +26,22 @@ var bgManager = {
                     ]
                 },
                 {
+                    title: me.$t("bgMgr.groupMgr"),
+                    name: 'groupMar',
+                    icon: 'ios-albums',
+                    children: [
+                        { title: me.$t("bgMgr.addGroup"), name: 'addGroup', icon: 'ios-photos-outline' },
+                        { title: me.$t("bgMgr.queryGroup"), name: 'queryGroup', icon: 'md-search' }
+                    ]
+                },
+                {
                     title: me.$t("bgMgr.devMgr"),
                     name: 'deviceMar',
                     icon: 'md-phone-portrait',
                     children: [
+                        { title: me.$t("bgMgr.queryDev"), name: 'queryDevice', icon: 'md-search' },
                         { title: me.$t("bgMgr.addDev"), name: 'addDevice', icon: 'md-add' },
-                        { title: "批量添加", name: 'batchAddDevice', icon: 'md-add' },
-                        { title: me.$t("bgMgr.queryDev"), name: 'queryDevice', icon: 'md-search' }
+                        { title: "批量添加", name: 'batchAddDevice', icon: 'md-add' }
                     ]
                 }
             ]

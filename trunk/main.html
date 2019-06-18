@@ -84,18 +84,11 @@
                 </p>
                 <div style="text-align:center">
                     <Row style="margin: 10px 0">
-                        <i-col span="8" style="height: 100%;text-align:right;line-height:32px;">{{$t("header.showCustomer")}} : &nbsp;</i-col>
-                        <i-col span="16" style="height: 100%;line-height:32px;">
-                            <i-switch v-model="isShowCompany" @on-change="changeShowCompany" />
-                        </i-col>
-                    </Row>
-                    <Row style="margin: 10px 0">
                         <i-col span="8" style="height: 100%;text-align:right;line-height:32px;">{{$t("header.setIntaival")}} : &nbsp;</i-col>
                         <i-col span="16" style="height: 100%;line-height:32px;">
                             <input-number :max="1800" :min="5" v-model="intervalTime"></input-number>
                         </i-col>
                     </Row>
-
                 </div>
                 <div slot="footer" style="padding:12.5px 0;">
                     <div v-if="userType < 10">
@@ -397,67 +390,7 @@
                                     </div>
                                 </dd>
                         </template>
-
-                    </dl>
-                    <!-- left tree controller显示公司名 -->        
-                    <dl class="noselect" v-else class="dl-inner-wrapper">
-                        <template v-for="(company , index) in currentStateData" :key="index">
-                            <div style="padding:5px;border-bottom:1px solid #ddd;cursor: pointer;" @click="openCompany(company)">
-                                {{company.title}} 
-                                <span style="float:right;width:16px;height20px;font-size:16px;margin-top:-2px">
-                                    <Icon type="ios-arrow-dropright" v-if="!company.expand"/>
-                                    <Icon type="ios-arrow-dropdown" v-else="!company.expand"/> 
-                                </span>
-                            </div>
-                            <template v-for="(group , index) in company.children" :key="index">
-                                <div v-if="company.expand">
-                                        <dt style="padding:5px;border-bottom:1px solid #ddd;cursor: pointer;" @click="openGroupItem(group)">
-                                                <Icon type="ios-arrow-down" v-if="group.expand"/>
-                                                <Icon type="ios-arrow-forward" v-else/>
-                                                <b v-text="group.title"></b>
-                                            </dt>
-                                            <dd style="padding:5px;border-bottom:1px solid #ddd" v-if="group.expand">
-                                                <div v-for="(device , index) in group.children" :key="device.deviceid" style="padding-left:15px">
-                                                    <div :class="{'active-dev-offline':device.isSelected}" style="margin:3px 0;" :ref="device.deviceid">
-                                                        <div style="padding:3px 5px;cursor: pointer;" :style="{color: device.isOnline ? '#33DAD0' : '#B1BBC2'}" @click="selectedDev(device)">
-                                                            <Icon type="md-person"/> 
-                                                            <span v-text="device.title"></span>   
-                                                        </div>
-                                                        <ul class="device-controller" v-if="device.isSelected">
-                                                            <li @click="editDevice(device)"><Icon type="ios-create"/><p>{{$t("monitor.edit")}}</p><li>
-                                                            <li @click="playBack(device.deviceid)"><Icon type="md-planet"/><p>{{$t("monitor.track")}}</p><li>
-                                                            <li @click="trackMap(device.deviceid)"><Icon type="md-person"/><p>{{$t("monitor.following")}}</p><li> 
-                                                                <li @mouseover="handleMousemove($event)">
-                                                                    <Dropdown trigger="click" transfer :placement="placement" @on-click="handleClickMore">
-                                                                                <Icon type="ios-list"/><p>{{$t("monitor.more")}}</p>
-                                                                                <i-dropdown-menu slot="list">
-                                                                                    <DropdownItem name="name1"  style="width:100%;">
-                                                                                        <Dropdown transfer placement="right-start" @on-click="handleClickDirective">
-                                                                                            {{$t("monitor.deviceCmd")}}
-                                                                                            <Icon type="ios-arrow-forward"></Icon>
-                                                                                            <i-dropdown-menu slot="list">
-                                                                                                <template v-for="(item, index) in currentDevDirectiveList" :key="item.cmdcode">
-                                                                                                    <DropdownItem :name="item.cmdcode" >{{item.cmdname}}</DropdownItem>
-                                                                                                </template>
-                                                                                            </i-dropdown-menu>
-                                                                                        </Dropdown>
-                                                                                    </DropdownItem>                                       
-                                                                                    <DropdownItem name="luyin" v-show="isShowRecordBtn">{{$t("monitor.media")}}</DropdownItem>
-                                                                                    <DropdownItem name="cmdrecord">{{$t("monitor.cmdRecord")}}</DropdownItem>
-                                                                                    <DropdownItem name="alarmList">{{$t("monitor.alarmRecords")}}</DropdownItem>
-                                                                                    <DropdownItem name="phoneAlarm">{{$t("reportForm.phoneAlarm")}}</DropdownItem>
-                                                                                    <DropdownItem name="devbaseinfo">{{$t("monitor.devBaseInfo")}}</DropdownItem>
-                                                                                </i-dropdown-menu>
-                                                                    </Dropdown>
-                                                                <li> 
-                                                        </ul>
-                                                    </div>
-                                                </div>
-                                            </dd>
-                                </div>
-                            </template>
-                        </template>
-                    </dl>
+                    </dl>      
                 </div>
                 <div class="group-spin-wraper" v-if="isLoadGroup">
                     <Spin fix size="large"></Spin>

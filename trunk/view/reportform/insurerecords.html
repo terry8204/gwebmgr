@@ -1,0 +1,16 @@
+<div id="insure-records">
+    <div style="margin:10px;height: 32px;">
+        <div style="margin-right:20px;float: left;line-height: 30px;">
+            <Checkbox v-model="isFilter">已付款</Checkbox>
+        </div>
+        <div style="margin-right:20px;float: left;">
+            <i-button @click="queryInsures" >{{$t("reportForm.query")}}</i-button>
+        </div>
+        <div style="margin-right:20px;float: right;">
+            <i-button @click="exportData" type="primary">导出数据</i-button>
+        </div>
+    </div>
+    <div style="margin:10px;">
+        <i-table :columns="columns" border ref="table" :height="tableHeight" :data="tableData" :loading="loading"></i-table>
+    </div>
+</div>

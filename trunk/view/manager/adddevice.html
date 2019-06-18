@@ -65,17 +65,15 @@
             </Row>
 
             <Row style="margin: 10px 0">
-                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;{{$t("user.client")}} : &nbsp;</i-col>
-                <i-col span="8">
-                    <i-select v-model="companyid" style="width: 100%">
-                        <i-option v-for="item in customersList" :value="item.value" :key="item.value">{{ item.label }}</i-option>
-                    </i-select>
-                </i-col>
                 <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">{{$t("user.grouping")}} : &nbsp;</i-col>
                 <i-col span="8">
                     <i-select v-model="groupid">
                         <i-option v-for="item in groupsList" :value="item.value" :key="item.value">{{ item.label }}</i-option>
                     </i-select>
+                </i-col>
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;转发地址 : &nbsp;</i-col>
+                <i-col span="20">
+                    <i-input v-model.trim="forwardurl"></i-input>
                 </i-col>
             </Row>
 
@@ -120,12 +118,7 @@
                 </i-col>
             </Row>
 
-            <Row style="margin: 10px 0">
-                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;转发地址 : &nbsp;</i-col>
-                <i-col span="20">
-                    <i-input v-model.trim="forwardurl"></i-input>
-                </i-col>
-            </Row>
+
 
             <Row style="margin: 10px 0">
                 <i-col span="6" :offset="7">
@@ -157,7 +150,6 @@
                 loginenable:"1",
                 deviceenable:"1",
                 groupsList:[],
-                customersList:[],
                 deviceTypeList:[],
                 groupid:'',
                 companyid:'',
@@ -241,7 +233,6 @@
                     
                     if(this.devicename) data.devicename = this.devicename;
 
-                    if(this.companyid){data.companyid = this.companyid;}
                     if(this.monitor){ data.monitor = this.monitor;}
 
                     if(this.loginpwd){
@@ -306,39 +297,17 @@
                     this.groupid = "";
                     this.companyid = "";
                 },
-                queryAllCompanyInfo:function(claaback){
-                    var url = myUrls.queryCompanyByCreater();
-                    utils.sendAjax(url,{},claaback)
-                },
-                doQueryAllCompanyInfo:function(resp){
-                    var me = this;
-                    if(resp.status == 0){
-                        resp.records.forEach(function(item){
-                            me.customersList.push({
-                                label:item.companyname,
-                                value:item.companyid
-                            })
-                        });
-                    }
-                },
                 getGroupsList:function(){
                     var me = this; 
-                    var url = myUrls.queryCompanyGroup();                        
-                    utils.sendAjax(url,{companyid:this.companyid},function (resp) { 
-                        me.groupList = [];
-                        me.groupids = [];
-                        if(resp.status == 0){
-                            var companys = resp.companys
-                            for(var i = 0 ; i < companys.length ; i++){
-                                var item = companys[i];
-                                if(item.companyid == me.companyid && item.groups != null){
-                                    var groups = item.groups;
-                                    groups.forEach(function(group){
-                                        me.groupsList.push({label:group.groupname,value:group.groupid});
-                                    });
-                                }
-                            }
+                    var url = myUrls.queryGroupByUser();                  
+                    utils.sendAjax(url,{},function (resp) { 
+                        var groupList = [];
+                        if(resp.status === 0 && resp.grouplist){
+                            resp.grouplist.forEach(function (group) { 
+                                groupList.push({label:group.groupname,value:group.groupid});
+                            })
                         }
+                        me.groupsList = groupList;
                     });
                 },
                 getDeviceType:function () {
@@ -355,11 +324,6 @@
                    
             },
             watch:{
-                companyid:function(){
-                    this.groupsList = [];
-                    this.groupid = "";
-                    this.getGroupsList();  
-                },
                 isShowMatchDev:function(){
                     if(!this.isShowMatchDev){
                         this.iconState = "ios-arrow-down";
@@ -367,30 +331,11 @@
                         this.iconState = "ios-arrow-up";
                     }
                 },
-                createrToUser:function(){
-                    var me = this, url = myUrls.queryCompanyByCreater();
-                    utils.sendAjax(url,{username:this.createrToUser},function (resp) { 
-                        if(resp.status === 0){
-                            var customersList = [];
-                            resp.records.forEach(function(item){
-                                customersList.push({
-                                    label:item.companyname,
-                                    value:item.companyid
-                                });
-                            });
-                            me.customersList = customersList;
-                            if(me.userType == 0){
-                                me.companyid = customersList.length ? customersList[0].companyid : "";
-                            }else{
-                                me.companyid = editObject.companyid;
-                            }    
-                        }
-                    });
-                }
+
             },
             mounted:function () {
-                this.queryAllCompanyInfo(this.doQueryAllCompanyInfo);
                 this.getDeviceType();
+                this.getGroupsList();  
                 this.userlists = userlists;
                 this.overduetime = new Date(Date.now() + 365*24*3600*1000) ;
                 this.userType = vstore.state.userType;

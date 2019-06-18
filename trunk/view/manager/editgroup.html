@@ -6,20 +6,6 @@
         <h3 class="h3-title">{{$t("group.editGroup")}} <span> <i-button style="width: 100%" @click="back">{{$t("bgMgr.back")}}</i-button> </h3>
         <div>
             <Row style="margin: 10px 0">
-                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;" :offset="2"><i style="color: red;display: inline-block;">*</i>&nbsp;{{$t("customer.customerName")}} : &nbsp;</i-col>
-                <i-col span="8">
-                        <i-select v-model="companyid">
-                            <i-option v-for="item in customerList" :value="item.value" :key="item.value">{{ item.label }}</i-option>
-                        </i-select>
-                </i-col>
-                <i-col span="10" style="height: 100%;line-height:32px;padding-left:20px;">
-                    <span>
-                        <Icon type="star"></Icon> {{$t("group.kehuName")}}
-                    </span>
-                </i-col>
-            </Row>
-
-            <Row style="margin: 10px 0">
                     <i-col span="4" style="height: 100%;text-align:right;line-height:32px;" :offset="2"><i style="color: red;display: inline-block;">*</i>&nbsp;{{$t("group.groupName")}} : &nbsp;</i-col>
                     <i-col span="8">
                         <i-input v-model.trim="groupname"></i-input>
@@ -102,8 +88,7 @@
                 usercount:"",
                 devicecount:"",
                 groupname:"",
-                customerList:[],
-                companyid:"",
+
             },
             methods:{
                 handleSubmit:function(){
@@ -150,23 +135,6 @@
                     this.usercount = "";
                     this.devicecount = "";
                     this.groupname = "";
-                    this.companyid = ""; 
-                },
-                queryAllCompanyInfo:function(claaback){
-                    var url = myUrls.queryCompanyByCreater();
-                    utils.sendAjax(url,{},claaback)
-                },
-                doQueryAllCompanyInfo:function(resp){
-                    var me = this;
-                    if(resp.status == 0){
-                        resp.records.forEach(function(item){
-                            me.customerList.push({
-                                label:item.companyname,
-                                value:item.companyid
-                            });
-                        });
-                        this.setGroupInfo();
-                    }
                 },
                 back:function(){
                     var me = this;
@@ -182,19 +150,16 @@
                     });
                 },
                 setGroupInfo:function(){
-
                     this.groupname    = editObject.groupname;
                     this.mintime      = editObject.mintime;
                     this.maxtime      = editObject.maxtime;
                     this.usercount    = editObject.usercount;
                     this.devicecount  = editObject.devicecount;
                     this.groupname    = editObject.groupname;
-                    this.companyid    = editObject.companyid;
-                    
                 }
             },
             mounted:function(){
-                this.queryAllCompanyInfo(this.doQueryAllCompanyInfo);
+                this.setGroupInfo();
             }
         })
     </script>

@@ -858,7 +858,7 @@ var monitor = {
         },
         filterGroups: function (groups) {
             var me = this, all = 0;
-            groups.forEach(function (group) {
+            groups.forEach(function (group, index) {
                 var devCount = 0;
                 if (group.groupname == 'Default') {
                     isZh ? group.groupname = me.$t("monitor.defaultGroup") : '';
@@ -868,6 +868,7 @@ var monitor = {
                 group.firstLetter = __pinyin.getFirstLetter(group.groupname);
                 group.pinyin = __pinyin.getPinyin(group.groupname);
                 group.expand = false;
+
                 group.devices.forEach(function (device) {
                     all++;
                     devCount++;
@@ -882,12 +883,13 @@ var monitor = {
                     }
                     device.allDeviceIdTitle = device.devicetitle + "-" + device.deviceid;
                 });
+
                 group.title = group.groupname + "(0/" + devCount + ")";
             });
             this.allDevCount = all;
             this.onlineCount = 0;
             this.offlineDevCount = all;
-            return groups;
+            return groups.filter(function (group) { return group.devices.length });
         },
         getAllShowCompanyTreeData: function () {
             var me = this;
