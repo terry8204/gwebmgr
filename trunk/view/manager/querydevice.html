@@ -129,15 +129,17 @@ vueInstanse = new Vue({
                 recordsList:[],
                 customersList:null,
                 groupsList:[],
-                selectedIds:[],
-                prevSelected:[]
+                queryTableData:[]        
             },
             methods: {
                 handlerClickQuery () {
                     var self = this;
                     var queryTableData = [];
                     var queryParameterLowerCase = this.queryParameter.toLowerCase();
-                    if (!self.queryParameter) return;
+                    if (!self.queryParameter){
+
+                        return;
+                    };
                     this.recordsList.forEach(function (record) {
                         var deviceid = record.deviceid;
                         var devicename = record.devicename;
@@ -150,8 +152,11 @@ vueInstanse = new Vue({
                         ){        
                             queryTableData.push(record);
                         }
-                    })
-                    this.tableData = queryTableData;
+                    });
+                    this.queryTableData = queryTableData;
+                    this.tableData = this.queryTableData.slice(0,10);
+                    this.total = this.queryTableData.length;
+
                 },
                 filterDataInfo:function(devList){
                     var me = this;

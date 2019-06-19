@@ -483,16 +483,8 @@ var mixIn = {
       var start = (index - 1) * 10;
       var me = this;
       this.currentIndex = index;
-      if (me.selectedIds && me.prevSelected) {
-        var tableData = this.recordsList.slice(start, offset);
-        tableData.forEach(function (item1) {
-          me.selectedIds.forEach(function (item2) {
-            if (item1.deviceid === item2.deviceid) {
-              item1._checked = true;
-            }
-          })
-        });
-        this.tableData = tableData;
+      if (this.queryParameter != "") {
+        this.tableData = this.queryTableData.slice(start, offset);
       } else {
         this.tableData = this.recordsList.slice(start, offset);
       }
@@ -504,6 +496,7 @@ var mixIn = {
       if (!this.queryParameter) {
         this.tableData = this.recordsList.slice(0, 10);
         this.currentIndex = 1;
+        this.total = this.recordsList.length;
       }
     }
   },
