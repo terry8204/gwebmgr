@@ -153,6 +153,7 @@ vueInstanse = new Vue({
                             queryTableData.push(record);
                         }
                     });
+                    this.currentIndex = 1;
                     this.queryTableData = queryTableData;
                     this.tableData = this.queryTableData.slice(0,10);
                     this.total = this.queryTableData.length;
