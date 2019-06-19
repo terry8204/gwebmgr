@@ -122,7 +122,7 @@
                 phoneLogin:"0",
                 weixinLogin:"0",
                 companyid:"",
-                multilogin:null,
+                multilogin:"1",
                 groupcount:10,
                 devicecount:500,
                 usercount:10,
@@ -130,16 +130,7 @@
                 groupids:[],
                 groupList:[],
                 userTypeList:[],
-                dateOptions: {
-                    disabledDate:function(date) {
-                        return date && date.valueOf() < Date.now() - 86400000;
-                    }
-                },
                 isShowGroup:false,
-                devicetypes:[],
-                directiveList:[], 
-                hadDeviceCmd:[],
-                directiveInfo:{},
                 qq:"",
                 email:"",
                 phone:"",
@@ -279,6 +270,14 @@
                     }
                     this.userTypeList = newArray;
                     this.usertype = editObject.usertype;    
+                },
+                setUserInfo:function(){
+                    this.username = editObject.username;
+                    this.qq = editObject.qq;
+                    this.email = editObject.email;
+                    this.phone = editObject.phone;
+                    this.wechat = editObject.wechat;
+                    this.multilogin = String(editObject.multilogin) ;
                 }
             },
             watch:{
@@ -288,52 +287,13 @@
                     }else{
                         this.isShowGroup = false;
                     }
-                },
-                devicetypes:function(){
-                    var devicetypes = this.devicetypes;
-                    var directiveList = this.directiveList;
-                    var datas = [];
-                    
-                    devicetypes.forEach(function (type) { 
-
-                        var children = [];
-                        var typeObj = {
-                            title:type.typename,
-                            typecode:type.typecode,
-                            devicetype:type.devicetypeid,
-                            expand: true,
-                            children:children
-                        };
-                        directiveList.forEach(function (directive) { 
-                            if(type.devicetypeid == directive.devicetype){
-                                var directiveObj = {
-                                    title:directive.cmdname,
-                                    checked: false,
-                                    cmdcode:directive.cmdcode,
-                                    params:directive.params,
-                                    typename:type.typename,
-                                    devicetype:type.devicetypeid,
-                                    cmdpwd: directive.cmdpwd
-                                }
-                                children.push(directiveObj)
-                            }
-                        });
-                        datas.push(typeObj);
-                    })
-                    this.treeData[0].children = datas;    
-                    this.queryHadDeviceCmdByUser();    
-                }   
+                },   
             },
             mounted:function () {
                 var me = this;
                 this.queryAllCompanyInfo(this.doQueryAllCompanyInfo);
                 this.queryAllgroupsInfo();
-                this.username = editObject.username;
-                this.qq = editObject.qq;
-                this.email = editObject.email;
-                this.phone = editObject.phone;
-                this.wechat = editObject.wechat;
-                this.multilogin = String(editObject.multilogin) ;
+                this.setUserInfo();
             }
         })
     </script>

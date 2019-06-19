@@ -18,6 +18,81 @@
         <div class="my-page" style="margin: 5px 0;">
             <Page :total="total" simple :page-size="10" :current="currentIndex" @on-change="changePage"></Page>
         </div>
+
+        <Modal v-model="modal" width="900" title="编辑分组">
+            <div style="width:850px;margin:10px auto">
+                <Row style="margin: 10px 0">
+                        <i-col span="4" style="height: 100%;text-align:right;line-height:32px;" :offset="2"><i style="color: red;display: inline-block;">*</i>&nbsp;{{$t("group.groupName")}} : &nbsp;</i-col>
+                        <i-col span="8">
+                            <i-input v-model.trim="groupname"></i-input>
+                        </i-col>
+                        <i-col span="10" style="height: 100%;line-height:32px;padding-left:20px;">
+                            <span>
+                                <Icon type="star"></Icon> {{$t("group.groupNameTip")}}
+                            </span>
+                        </i-col>
+                </Row>
+
+                <Row style="margin: 10px 0">
+                        <i-col span="4" style="height: 100%;text-align:right;line-height:32px;" :offset="2"><i style="color: red;display: inline-block;">*</i>&nbsp;{{$t("group.mintime")}} : &nbsp;</i-col>
+                        <i-col span="8">
+                            <input-number :max="3600" :min="30" :step="30" v-model="mintime" style="width: 210px;"></input-number>&nbsp;s
+                        </i-col>
+                        <i-col span="10" style="height: 100%;line-height:32px;padding-left:20px;">
+                            <span>
+                                <Icon type="star"></Icon> {{$t("group.mintimeTip")}}
+                            </span>
+                        </i-col>
+                </Row>
+
+                <Row style="margin: 10px 0">
+                        <i-col span="4" style="height: 100%;text-align:right;line-height:32px;" :offset="2"><i style="color: red;display: inline-block;">*</i>&nbsp;{{$t("group.maxtime")}} : &nbsp;</i-col>
+                        <i-col span="8">
+                            <input-number :max="3600" :min="30" :step="30" v-model="maxtime" style="width: 210px;"></input-number>&nbsp;s
+                        </i-col>
+                        <i-col span="10" style="height: 100%;line-height:32px;padding-left:20px;">
+                            <span>
+                                <Icon type="star"></Icon> {{$t("group.maxtimeTip")}}
+                            </span>
+                        </i-col>
+                </Row>
+
+
+                <Row style="margin: 10px 0">
+                        <i-col span="4" style="height: 100%;text-align:right;line-height:32px;" :offset="2">{{$t("group.userCount")}} : &nbsp;</i-col>
+                        <i-col span="8">
+                            <i-input v-model.trim.number="usercount"></i-input>
+                        </i-col>
+                        <i-col span="10" style="height: 100%;line-height:32px;padding-left:20px;">
+                            <span>
+                                <Icon type="star"></Icon> {{$t("group.userCountTip")}}
+                            </span>
+                        </i-col>
+                </Row>
+
+                <Row style="margin: 10px 0">
+                        <i-col span="4" style="height: 100%;text-align:right;line-height:32px;" :offset="2">{{$t("group.devCount")}} : &nbsp;</i-col>
+                        <i-col span="8">
+                            <i-input v-model.trim.number="devicecount"></i-input>
+                        </i-col>
+                        <i-col span="10" style="height: 100%;line-height:32px;padding-left:20px;">
+                            <span>
+                                <Icon type="star"></Icon> {{$t("group.devCountTip")}}
+                            </span>
+                        </i-col>
+                </Row>
+
+                <Row style="margin: 10px 0">
+                        <i-col span="6" :offset="6">
+                            <i-button style="width: 100%" @click="handleSubmit">{{$t("bgMgr.submit")}}</i-button>
+                        </i-col>
+                        <i-col span="6" :offset="1">
+                            <i-button style="width: 100%" @click="resetInfo">{{$t("bgMgr.reset")}}</i-button>
+                        </i-col>
+                </Row>
+            </div>
+            <div slot="footer" style="height:20px;"></div>
+        </Modal>
     </div>
     <script>
         
@@ -25,6 +100,9 @@ vueInstanse=new Vue({
             el:"#querygroup",
             i18n: utils.getI18n(),
             data:{
+                modal:false,
+                editDeviceIndex:null,
+                queryTableData:[],
                 loading:true,
                 delGroupObj:{},
                 monitorPerson:[],
@@ -35,17 +113,6 @@ vueInstanse=new Vue({
                 recordsList:[],
                 tableData:[],
                 columnsList:[
-                //    {
-                //         type: 'expand',
-                //         width: 50,
-                //         render: function(h, params){
-                //             return h(expandRow, {
-                //                 props: {
-                //                     devices: params.row.devices
-                //                 }
-                //             })
-                //         }
-                //     },
                     {
                         title: vRoot.$t("group.groupName"),
                         key: 'groupname'
@@ -74,7 +141,10 @@ vueInstanse=new Vue({
                                         },
                                         on: {
                                             click: function() {
-                                                vueInstanse.editGroup(params.index);
+                                                vueInstanse.editDeviceIndex = params.index;
+                                                editObject = params.row;
+                                                vueInstanse.setGroupInfo();
+                                                vueInstanse.modal = true;
                                             }
                                         }
                                     }, vRoot.$t("bgMgr.edit")),
@@ -104,6 +174,13 @@ vueInstanse=new Vue({
                             }
                         }
                 ]
+                        ,
+                groupname:"",
+                mintime:30,
+                maxtime:3600,
+                usercount:"",
+                devicecount:"",
+                groupname:"",            
             },
             methods:{
                 handlerClickQuery () {
@@ -121,7 +198,10 @@ vueInstanse=new Vue({
                             queryTableData.push(record);
                         }
                     })
-                    this.tableData = queryTableData;
+                    this.currentIndex = 1;
+                    this.queryTableData = queryTableData;
+                    this.tableData = this.queryTableData.slice(0,10);
+                    this.total = this.queryTableData.length;
                 },
                 queryAllgroupsInfo:function(){
                     var url = myUrls.queryGroupByUser();
@@ -138,20 +218,6 @@ vueInstanse=new Vue({
                         this.tableData = this.recordsList.slice( 0 , 10);
                     }
                     this.loading = false;
-                },
-                editGroup:function(index){
-                    var me = this;
-                    editObject = this.tableData[index];
-                    var pagePath = null
-                        if (myUrls.host.indexOf('gpsserver') != -1) {
-                            pagePath = myUrls.host + 'view/manager/editgroup.html' 
-                        } else {
-                            pagePath = '../view/manager/editgroup.html' 
-                        }
-                    this.$Loading.start();
-                    $("#mar-view").load(pagePath,function(){
-                        me.$Loading.finish();
-                    });
                 },
                 del:function(groupid){
                     var me = this;
@@ -197,6 +263,62 @@ vueInstanse=new Vue({
                         });
                     }
                 },
+
+                handleSubmit:function(){
+                    if(this.companyid == ""){
+                        this.$Message.error(this.$t("message.selectCustomersTip"));
+                        return;
+                    };
+                    if(this.groupname == ""){
+                        this.$Message.error(this.$t("message.fillGroupNameTip"));
+                        return;
+                    };
+                    var url = myUrls.editGroup() ,me = this;
+                    var data = {
+                        groupid:editObject.groupid,
+                        groupname:this.groupname,
+                        mintime:this.mintime,
+                        maxtime:this.maxtime,
+                        groupname:this.groupname,
+                        companyid:this.companyid,
+                    };
+                    if(this.usercount == ""){
+                        data.usercount = 0;
+                    }else{
+                        data.usercount = this.usercount;
+                    }
+                    if(this.devicecount == ""){
+                        data.devicecount = 0;
+                    }else{
+                        data.devicecount = this.devicecount;
+                    }
+                    utils.sendAjax(url,data,function (resp) { 
+                        if(resp.status == 0){
+                            var newData = Object.assign(editObject,data);
+                            me.tableData[me.editDeviceIndex] = newData; 
+                            utils.changeSingleItemData(me.recordsList,newData,'groupid');
+                            me.$Message.success(me.$t("message.changeSucc"));
+                        }else{
+                            me.$Message.error(resp.cause);
+                        }
+                    });
+                },
+                resetInfo:function(){
+                    this.groupname = "";
+                    this.mintime = 30;
+                    this.maxtime = 3600;
+                    this.usercount = "";
+                    this.devicecount = "";
+                    this.groupname = "";
+                },
+                setGroupInfo:function(){
+                    this.groupname    = editObject.groupname;
+                    this.mintime      = editObject.mintime;
+                    this.maxtime      = editObject.maxtime;
+                    this.usercount    = editObject.usercount;
+                    this.devicecount  = editObject.devicecount;
+                    this.groupname    = editObject.groupname;
+                }
             },
             mixins:[mixIn],
             mounted:function(){

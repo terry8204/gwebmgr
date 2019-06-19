@@ -1,4 +1,14 @@
 var utils = {
+  changeSingleItemData: function (records, item, propertyType) {
+    console.log('records', records[0], item);
+    for (var i = 0; i < records.length; i++) {
+      var record = records[i];
+      if (record[propertyType] === item[propertyType]) {
+        records[i] = item;
+        break;
+      }
+    }
+  },
   locale: Cookies.get("PATH_LANG") || 'zh',
   getMapType: function () {
     var mapType = Cookies.get('app-map-type');
@@ -441,7 +451,7 @@ var utils = {
       }
       return result;
     };
-  }
+  },
 }
 
 try {

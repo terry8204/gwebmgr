@@ -108,6 +108,7 @@
                 remark:"",      //备注
                 type:"",  // 运营级别
                 operationList:[{value:1,label: isZh ? '1级资质' : 'Level 1'},{value:2,label: isZh ? '2级资质' : 'Level 2'},{value:3,label: isZh ? '3级资质' : 'Level 3'}]
+      
             },
             methods:{
                 handleSubmit:function(){
@@ -157,6 +158,21 @@
                     this.type = ""; 
                     this.registeraddr = "";
                 },
+                setCompanyData:function(){
+                    this.companyname = editObject.companyname;
+                    this.orgcode = editObject.orgcode;
+                    this.companyphone = editObject.companyphone;
+                    this.registerdate = DateFormat.longToDateStr(editObject.registerdate,0);
+                    this.jurdcperson = editObject.jurdcperson;
+                    this.alldayphone =editObject.alldayphone;
+                    this.empcount = editObject.empcount;
+                    this.empcount = editObject.empcount;
+                    this.officeaddr = editObject.officeaddr;
+                    this.remark = editObject.companyname; 
+                    this.type = editObject.type;
+                    this.companyperson = editObject.companyperson;
+                    this.registeraddr = editObject.registeraddr;
+                },
                 back:function(){
                     var me = this;         
                     var pagePath = null
@@ -174,19 +190,7 @@
             mounted:function(){
                 var me = this;
                 this.$nextTick(function(){                  
-                    this.companyname = editObject.companyname;
-                    this.orgcode = editObject.orgcode;
-                    this.companyphone = editObject.companyphone;
-                    this.registerdate = DateFormat.longToDateStr(editObject.registerdate,0);
-                    this.jurdcperson = editObject.jurdcperson;
-                    this.alldayphone =editObject.alldayphone;
-                    this.empcount = editObject.empcount;
-                    this.empcount = editObject.empcount;
-                    this.officeaddr = editObject.officeaddr;
-                    this.remark = editObject.companyname; 
-                    this.type = editObject.type;
-                    this.companyperson = editObject.companyperson;
-                    this.registeraddr = editObject.registeraddr;
+                    this.setCompanyData();
                 });
             }
         })
