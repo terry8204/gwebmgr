@@ -310,8 +310,8 @@
                             item.usedDeviceCount = item.company?item.currdevicecount + "/" + item.devicecount :"";
                             item.usedGroupCount = item.company?item.currgroupcount + "/" + item.groupcount :"";
                             item.companyname = item.company?item.company.companyname:"";
-                            currdevicecount += item.company?item.currdevicecount:"";
-                            currgroupcount += item.company?item.currgroupcount:"";
+                            currdevicecount += item.company?item.currdevicecount:0;
+                            currgroupcount += item.company?item.currgroupcount:0;
 
                             item.userTypeStr = me.getUserTypeStr(item.usertype);
                             item.createtime = me.timeToDateStr(item.createtime);
@@ -399,7 +399,6 @@
                                 value:item.companyid
                             })
                         });
-
                         me.$nextTick(function () { 
                             me.setUserTypeByUser();
                             me.companyid = editObject.company ? editObject.company.companyid : "";
@@ -467,6 +466,9 @@
                     utils.sendAjax(url,data,function (resp) {
                         if(resp.status == 0){
                             var newData = Object.assign(editObject,data);
+                            newData.usedUserCount = newData.company?newData.currusercount + "/" + data.usercount :"";
+                            newData.usedDeviceCount = newData.company?newData.currdevicecount + "/" + data.devicecount :"";
+                            newData.usedGroupCount = newData.company?newData.currgroupcount + "/" + data.groupcount :"";
                             me.tableData[me.editDeviceIndex] = newData; 
                             utils.changeSingleItemData(me.recordsList,newData,'username');
                             me.$Message.success(me.$t("message.changeSucc"));
