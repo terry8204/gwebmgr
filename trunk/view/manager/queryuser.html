@@ -387,8 +387,15 @@
                     });
                 },
                 queryAllCompanyInfo:function(claaback){
-                    var url = myUrls.queryCompanyByCreater();
-                    utils.sendAjax(url,{},claaback)
+                    var me = this;
+                    if(this.companyList.length){
+                        me.setUserInfo();
+                        me.modal = true;
+                    }else{
+                        var url = myUrls.queryCompanyByCreater();
+                        utils.sendAjax(url,{},claaback)
+                    }
+
                 },
                 doQueryAllCompanyInfo:function(resp){
                     var me = this;
@@ -402,9 +409,10 @@
                         me.$nextTick(function () { 
                             me.setUserTypeByUser();
                             me.companyid = editObject.company ? editObject.company.companyid : "";
-                            me.queryAllgroupsInfo();
+                            // me.queryAllgroupsInfo();
                         });
-                        
+                        me.setUserInfo();
+                        me.modal = true;
                     }
                 },
                 queryAllgroupsInfo:function(){
@@ -425,9 +433,9 @@
                                 me.groupids.push(item.groupid);
                             });
                         }  
-                        me.setUserInfo();
-                        me.modal = true;
                     }
+                    me.setUserInfo();
+                    me.modal = true;
                 },
                 handleSubmit:function(){
                     var me = this;
