@@ -60,8 +60,8 @@ var utils = {
     return result;
   },
   getBaiduAddressFromBaidu: function (offsetlon, offsetlat, callback) {
-    var point = new BMap.Point(offsetlon, offsetlat)
-    var geoc = new BMap.Geocoder()
+    var point = new BMap.Point(offsetlon, offsetlat);
+    var geoc = new BMap.Geocoder();
     geoc.getLocation(point, function (rs) {
 
       if (rs) {
@@ -94,7 +94,7 @@ var utils = {
       }
     });
   },
-  getJiuHuAddressSyn: function (lat, lon, callback) {
+  getJiuHuAddressSyn: function (lon, lat, callback) {
     $.ajax({
       type: 'get',
       url: 'http://www.jh.tt/w?lat=' + lat + '&lon=' + lon,

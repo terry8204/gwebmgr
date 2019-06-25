@@ -32,7 +32,11 @@ var monitor = {
             map: null,
             placement: "right-start",
             mapType: mapType ? mapType : 'bMap',
-            mapList: [{ label: isZh ? "百度地图" : "BaiduMap", value: "bMap" }, { label: isZh ? "谷歌地图" : "GoogleMap", value: "gMap" }],
+            mapList: [
+                { label: isZh ? "百度地图" : "BaiduMap", value: "bMap" },
+                { label: isZh ? "谷歌地图" : "GoogleMap", value: "gMap" },
+                { label: "OpenStreeMap", value: "oMap" },
+            ],
             sosoValue: '', // 搜索框的值
             sosoData: [], // 搜索框里面的数据
             openGroupIds: {},
@@ -190,6 +194,19 @@ var monitor = {
                             });
                         });
                     }
+                    break;
+                case 'oMap':
+                    (function poll4 () {
+                        if (isLoadLastPositon) {
+                            me.isSpin = false;
+                            me.map = new OpenStreeMapCls();
+                            me.$nextTick(function () {
+                                me.map.setMarkerClusterer(me.positionLastrecords);
+                            })
+                        } else {
+                            setTimeout(poll4, 100);
+                        }
+                    }());
                     break;
             };
 
@@ -1178,7 +1195,7 @@ var monitor = {
         setIntervalReqRecords: function () {
             var me = this
             this.intervalInstanse = setInterval(function () {
-                me.intervalTime--
+                me.intervalTime--;
                 if (me.intervalTime <= 0) {
                     me.intervalTime = me.stateIntervalTime;
                     // var devIdList = Object.keys(me.deviceInfos);

@@ -205,6 +205,54 @@ div.ivu-steps-head-inner .ivu-icon{
         display: inline-block;
         background: rgba(0, 0, 0, 0.5);
     }
+
+/* popup css  start */
+
+.ol-popup
+        {
+            position:absolute;
+            background-color:white;
+            padding:11px;
+            border:1px solid #cccccc;
+            bottom:12px;
+            left:-191px;
+            width: 382px;
+            box-sizing: border-box;
+        }
+        .ol-popup:after,.ol-popup:before
+        {
+            top:100%;
+            border:solid transparent;
+            content:" ";
+            height:0px;
+            width:0px;
+            position:absolute;
+            pointer-events:none;
+        }
+        .ol-popup:after
+        {
+            border-top-color:white;
+            border-width:10px;
+            left:191px;
+            margin-left:-10px;
+        }
+        /* .ol-popup:before
+        {
+            border-top-color:#cccccc;
+            border-width:11px;
+            left: 191px;
+            left:-11px;
+        } */
+        #popup-close{
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+/* popup css  end */
+
     ul.ul-manager-wraper{
         overflow: hidden;
         float: right;

@@ -7,6 +7,7 @@
     <link rel="shortcut icon" href="./favicon.ico" />
     <title>跟踪</title>
     <link rel="stylesheet" href="dist/styles/iview.css">
+    <link rel="stylesheet" href="css/ol.css">
     <style>
         html,body,#container,#bmap{
             width: 100%;
@@ -177,6 +178,7 @@
     <script src="dist/vue.min.js"></script>
     <script src="dist/iview.min.js"></script>
     <script src="js/jquery.js"></script>
+    <script src="js/ol.js"></script>
     <script src="js/js.cookie.min.js"></script>
     <script src="js/config.js"></script>
     <script src="js/hashmap.js"></script>
@@ -206,6 +208,7 @@
         var mapType = utils.getMapType();
         var vRoot = null;
         var isMobile =null;
+        var layerVector  = null;
         var browser = {
 				versions: function() {
 					var u = navigator.userAgent,
@@ -248,34 +251,40 @@
                         address:"",
                         isDown:true,
                         trackHtml:"",
-                        mapList: [{ label: isZh ? "百度地图" : "BaiduMap", value: "baidu" }, { label: isZh ? "谷歌地图" : "GoogleMap", value: "google" }],
-                        mapType:mapType === 'bMap' ? 'baidu' :'google'
+                        mapList: [
+                            { label: isZh ? "百度地图" : "BaiduMap", value: "bMap" },
+                            { label: isZh ? "谷歌地图" : "GoogleMap", value: "gMap" },
+                            { label: "OpenStreeMap", value: "oMap" },
+                        ],
+                        mapType:mapType 
                     },
                     methods: {
                         initMap : function(){
                             var me = this; 
-                            if(this.mapType === 'baidu'){
+                            if(this.mapType === 'bMap'){
                                 try {
                                     if(BMap){
                                         me.initBMap();
                                     }    
                                 } catch (error) {
-                                    asyncLoadJs(this.mapType, function () {
+                                    asyncLoadJs('baidu', function () {
                                         startIcon = me.getFirstMarkerIcon();
                                         me.initBMap();
                                     }); 
                                 };
-                            }else{
+                            }else if(this.mapType === 'gMap'){
                                 try {
                                     if(google){
                                         me.initGMap();
                                     }    
                                 } catch (error) {
-                                    asyncLoadJs(this.mapType, function () {
+                                    asyncLoadJs('google', function () {
                                         me.initGMap();
                                     }); 
                                 };
-                            } 
+                            }else if(this.mapType === 'oMap'){
+                                me.initOMap();
+                            }
                         },
                         initBMap:function(){
                             this.map = new BMap.Map("bmap",{minZoom:4,maxZoom:20, enableMapClick: false});
@@ -300,14 +309,51 @@
                             });
                             loadBMapSucc();
                         },
+                        initOMap:function(){
+                            layerVector = new ol.layer.Vector({
+                                    source:new ol.source.Vector({
+                                        features: []
+                                    }) ,
+                                    style: new ol.style.Style({
+                                        stroke: new ol.style.Stroke({
+                                            width: 3,
+                                            color: [255, 0, 0, 1]
+                                        }),
+                                        fill: new ol.style.Fill({
+                                            color: [0, 0, 255, 0.6]
+                                        })
+                                    })
+                            })
+                            var projection = ol.proj.get('EPSG:4326'),me = this;
+                            this.map = new ol.Map({
+                                target: 'bmap',
+                                projection: projection,
+                                layers: [
+                                    new ol.layer.Tile({
+                                        source: new ol.source.OSM()
+                                    }),      
+                                    layerVector                             
+                                ],
+                                view: new ol.View({
+                                    center: ol.proj.fromLonLat([108.0017245, 35.926895]),
+                                    zoom: 4,
+                                    minZoom: 3,
+                                    maxZoom: 20
+                                }),
+                            });
+
+                            loadBMapSucc();
+                        },
                         getPoint:function (record) { 
                             var point = null;
-                            if(this.mapType === 'baidu'){
+                            if(this.mapType === 'bMap'){
                                 var baidu_lng_lat = wgs84tobd09(record.callon,record.callat);
                                 point = new BMap.Point(baidu_lng_lat[0],baidu_lng_lat[1]);
-                            }else{
+                            }else if(this.mapType === 'gMap'){
                                 var google_lng_lat = wgs84togcj02(record.callon,record.callat);
                                 point = {lat: google_lng_lat[1], lng: google_lng_lat[0]}
+                            }else if(this.mapType === 'oMap'){
+                                point = ol.proj.fromLonLat([record.callon,record.callat]);
                             }
                             return point;
                         },
@@ -363,7 +409,7 @@
                                 callback(address);
                                 return;
                             }
-                            if(this.mapType === 'baidu'){
+                            if(this.mapType === 'bMap'){
                                 utils.getBaiduAddressFromBaidu(lng,lat,function (resp) {
                                     if(resp.length){
                                         address = resp;
@@ -377,31 +423,51 @@
                                         });
                                     }
                                 });
-                            }else{
+                            }else if(this.mapType === 'gMap'){
                                 var google_lng_lat = wgs84togcj02(callon,callat);
                                 utils.getGoogleAddressSyn(google_lng_lat[1],google_lng_lat[0],function (address) { 
                                     callback(address);
                                 })
+                            }else if(this.mapType === 'oMap'){
+                                utils.getJiuHuAddressSyn(callon, callat, function (respAddress) {
+                                    if (respAddress.address) {
+                                        LocalCacheMgr.setAddress(lng,lat,respAddress.address);
+                                        callback(respAddress.address);
+                                    }else{
+                                        callback('地址正在解析中...');
+                                    }
+                                })
                             }
+
                             return isZh  ? "地址正在解析..." : "Address is being resolved...";
                         },
                         
                         getDirectionIcon:function(angle){
-                            if(this.mapType === 'baidu'){
-                                return new BMap.Icon("images/carstate/a_green_0.png", new BMap.Size(32, 32), { imageOffset: new BMap.Size(0, 0)}); 
-                            }else{
-                                var pathname = location.pathname
+                            var pathname = location.pathname
                                 var imgPath = ''
                                 if (pathname.indexOf('gpsserver') != -1) {
                                     imgPath = myUrls.host + 'images/carstate';
                                 } else {
                                     imgPath = '../images/carstate';
                                 }
+                            if(this.mapType === 'bMap'){
+                                return new BMap.Icon("images/carstate/a_green_0.png", new BMap.Size(32, 32), { imageOffset: new BMap.Size(0, 0)}); 
+                            }else if(this.mapType === 'gMap'){
+                              
                                return {                                
                                         url:imgPath += '/a_green_' + angle + '.png',
                                         size:{width:32,height:32},
                                         anchor:new google.maps.Point(16,16)
                                     } 
+                            }else if(this.mapType === 'oMap'){
+                                return new ol.style.Style({
+                                            image: new ol.style.Icon(({
+                                                crossOrigin: 'anonymous',
+                                                src: imgPath+'/a_green_0.png',
+                                                rotation: angle * Math.PI / 180,//角度转化为弧度
+                                                imgSize: [32, 32]
+                                            }))
+                                        });
                             }
                         },
                         getAge:function(course){
@@ -443,9 +509,7 @@
                             });
                         },
                         doLastPosition:function (record) {
-   
                             if(record){
-                              
                                 var prveTrack = this.tracks[this.tracks.length-1];
                                 if(prveTrack){
                                     if(prveTrack.updatetime === record.updatetime){
@@ -455,7 +519,7 @@
 
                                 var carIcon = this.getDirectionIcon(this.getAge(record.course)); 
                                 var point = this.getPoint(record);     
-                           
+    
                                 if(this.tracks.length > 0){
                
                                     this.tracks.push(record);
@@ -467,7 +531,7 @@
                                         }
                                     }
 
-                                    if(this.mapType === 'baidu'){
+                                    if(this.mapType === 'bMap'){
                                         var rice = this.map.getDistance(this.getPoint(prveTrack),point); 
                                         if(rice > 10){
                                             this.carMarker.setPosition(point);
@@ -476,15 +540,41 @@
                                         var carIcon = this.getDirectionIcon(0); 
                                         this.carMarker.setIcon(carIcon);
                                         this.carMarker.setRotation(record.course);
-                                    }else{
+                                    }else if(this.mapType === 'gMap'){
                                         this.carMarker.setMap(this.map);
                                         this.carMarker.setPosition(point);
                                         this.carMarker.setIcon(carIcon);
-                                    }
+                                    }else if(this.mapType === 'oMap'){
+                                        var records = this.isExact ? this.exactTracks : this.tracks;
+
+                                        var markerFeature = new ol.Feature({
+                                            geometry: new ol.geom.Point(point),
+                                        });
+                                        markerFeature.setStyle(carIcon);
+
+                                        var firstMarkerFeature = new ol.Feature({
+                                            geometry: new ol.geom.Point(this.getPoint(records[0])),
+                                        });
+
+                                        var arrayList = [];
+                                        records.forEach(function (track) { 
+                                            arrayList.push(ol.proj.fromLonLat([track.callon, track.callat]));
+                                        });
+
+                                        var lineFeature = new ol.Feature(new ol.geom.LineString(arrayList));
+
+                                        firstMarkerFeature.setStyle(this.getFirstMarkerIcon());    
+
+                                        layerVector.setSource(new ol.source.Vector({
+                                            features: [markerFeature,firstMarkerFeature,lineFeature]
+                                        }));
+
+                                        
+                                    }   
                                    
                                 }else if(this.tracks.length === 0){
                                     this.tracks.push(record);
-                                    
+
                                     if(record.gotsrc === 'gps'){
                                         this.exactTracks.push(record);
                                     }else{
@@ -494,45 +584,71 @@
                                         }
                                     }
                                     
-                                    
-                                    if(this.mapType === 'baidu'){
+             
+
+                                    if(this.mapType === 'bMap'){
                                         this.carMarker = new BMap.Marker(point,{icon:carIcon , rotation: record.course });    
                                         firstMarker = new BMap.Marker(point,{icon:startIcon,offset:new BMap.Size(0, -10)});     
                                         this.map.addOverlay(this.carMarker);
                                         this.map.addOverlay(firstMarker);
                                         this.map.centerAndZoom(point,19);   
-                                    }else{
-                                    
+                                    }else if(this.mapType === 'gMap'){
+                                        
                                         new google.maps.Marker({
                                             position: point,
                                             map: this.map,
-                                            icon: this.getFirstMarkerIcon(),
+                                            icon: this.getFirstMarkerIcon(), 
                                         })
 
                                         this.carMarker = new google.maps.Marker({});
                                         this.map.setCenter(point);
                                         this.map.setZoom(20);
+                                    }else if(this.mapType === 'oMap'){
+                             
+                                     var firstMarkerFeature = new ol.Feature({
+                                            geometry: new ol.geom.Point(point),
+                                        });
+
+                                        firstMarkerFeature.setStyle(this.getFirstMarkerIcon());
+
+                                       
+
+                                        layerVector.setSource(new ol.source.Vector({
+                                                    features: [firstMarkerFeature]
+                                                }));
+
+                                        this.map.getView().setCenter(point);
+                                        this.map.getView().setZoom(17);
+
                                     }
                                 };
                                 var me = this;
                                 this.getAddress(record,function (address) { 
-                                    console.log('address', address);
                                     me.trackHtml = me.getWindowContent(record,address);
                                 }) 
                             }
                         },
                         getFirstMarkerIcon:function(){
-                            if(this.mapType == 'baidu'){
+                            var pathname = location.pathname
+                            var imgPath = ''
+                            if (pathname.indexOf('gpsserver') != -1) {
+                                imgPath = myUrls.host + 'images/map/marker_qidian.png';
+                            } else {
+                                imgPath = '../images/map/marker_qidian.png';
+                            };
+                            if(this.mapType == 'bMap'){
                                 return new BMap.Icon("./images/map/marker_qidian.png", new BMap.Size(32, 32), { imageOffset: new BMap.Size(0, 0)});
-                            }else{
-                                var pathname = location.pathname
-                                var imgPath = ''
-                                if (pathname.indexOf('gpsserver') != -1) {
-                                    imgPath = myUrls.host + 'images/map/marker_qidian.png';
-                                } else {
-                                    imgPath = '../images/map/marker_qidian.png';
-                                }
+                            }else if(this.mapType == 'gMap'){
                                 return imgPath;
+                            }else if(this.mapType == 'oMap'){
+                                return new ol.style.Style({
+                                            image: new ol.style.Icon(({
+                                                crossOrigin: 'anonymous',
+                                                src: imgPath,
+                                                rotation: 0,//角度转化为弧度
+                                                imgSize: [32, 32]
+                                            }))
+                                        });
                             }
                         },
                         handleDown:function(){
@@ -598,15 +714,16 @@
                                 var firstPoint = this.getPoint(tracks[0]);
                                 var lastPoint =  this.getPoint(tracks[tracks.length - 1]);
                                 var carIcon = this.getDirectionIcon(this.getAge(tracks[tracks.length - 1].course));  
-                                   console.log("tracks[tracks.length - 1].course",tracks[tracks.length - 1].course);
-                                if(newVal === 'baidu'){
+
+                                if(newVal === 'bMap'){
                                     this.carMarker = new BMap.Marker(lastPoint,{icon:carIcon,rotation: tracks[tracks.length - 1].course});     
                                     firstMarker = new BMap.Marker(firstPoint,{icon:this.getFirstMarkerIcon(),offset:new BMap.Size(0, -10)});     
                                     this.map.addOverlay(this.carMarker);
                                     this.map.addOverlay(firstMarker);
-                                    this.map.centerAndZoom(lastPoint,19);   
-                                }else{
-                                    
+                                    this.map.centerAndZoom(lastPoint,19);  
+                                    this.addMapOverlayLine(); 
+                                }else if(newVal === 'gMap'){
+
                                     new google.maps.Marker({
                                         position: firstPoint,
                                         map: this.map,
@@ -619,8 +736,36 @@
                                     });
                                     this.map.setCenter(lastPoint);
                                     this.map.setZoom(20);
+                                    this.addMapOverlayLine();
+                                }else if(newVal === 'oMap'){
+                                    var records = this.isExact ? this.exactTracks : this.tracks;
+
+                                    var markerFeature = new ol.Feature({
+                                        geometry: new ol.geom.Point(lastPoint),
+                                    });
+                                    markerFeature.setStyle(carIcon);
+
+                                    var firstMarkerFeature = new ol.Feature({
+                                        geometry: new ol.geom.Point(firstPoint),
+                                    });
+                                    firstMarkerFeature.setStyle(this.getFirstMarkerIcon());    
+
+                                    var arrayList = [];
+                                    records.forEach(function (track) { 
+                                        arrayList.push(ol.proj.fromLonLat([track.callon, track.callat]));
+                                    });
+
+                                    var lineFeature = new ol.Feature(new ol.geom.LineString(arrayList));
+
+                                    layerVector.setSource(new ol.source.Vector({
+                                        features: [markerFeature,firstMarkerFeature,lineFeature]
+                                    }));
+
+                                    this.map.getView().setCenter(lastPoint);
+                                    this.map.getView().setZoom(16);
                                 }
-                                this.addMapOverlayLine();
+
+                    
                                 var me = this;
                                 this.getAddress(tracks[tracks.length - 1],function (address) { 
                                     me.trackHtml = me.getWindowContent(tracks[tracks.length - 1],address);
@@ -640,10 +785,10 @@
                                     })
                                 return points;
                              })()
-                            if(this.mapType === 'baidu'){
+                            if(this.mapType === 'bMap'){
                                     var polyline = new BMap.Polyline(points ,{strokeColor:'#FF0000',strokeWeight:8,strokeOpacity:1})
                                     this.map.addOverlay(polyline);
-                            }else{
+                            }else if(this.mapType === 'gMap'){
                                     var flightPath = new google.maps.Polyline({
                                         path: points,
                                         geodesic: true,
@@ -652,7 +797,9 @@
                                         strokeWeight: 8
                                     });
                                     flightPath.setMap(this.map);
-                            } 
+                            }else if(this.mapType === 'oMap'){
+
+                            }
                         }
                     },
                     computed:{
@@ -664,13 +811,13 @@
                             return Cookies.get("name");
                         },
                         intervalCls:function(){
-                            return [this.mapType === 'baidu' ? 'left-65' :'left-205'];
+                            return [(this.mapType === 'bMap'||this.mapType === 'oMap') ? 'left-65' :'left-205'];
                         },
                         mapTypeCls:function(){
-                            return [this.mapType === 'baidu' ? 'right-100' :'right-65'];
+                            return [(this.mapType === 'bMap'||this.mapType === 'oMap')  ? 'right-100' :'right-65'];
                         },
                         trackInfoCls:function(){
-                            return [(this.mapType === 'baidu' && !isMobile) ? 'right-10' :'right-60'];
+                            return [((this.mapType === 'bMap'||this.mapType === 'oMap') && !isMobile) ? 'right-10' :'right-60'];
                         },
                         imgSrcBg:function(){
                             return {
@@ -685,10 +832,10 @@
                             if(tracks.length >=2){
                                 var firstPoint = this.getPoint(tracks[tracks.length-2]);
                                 var lastPoint = this.getPoint(tracks[tracks.length-1]);    
-                                if(this.mapType === 'baidu'){
+                                if(this.mapType === 'bMap'){
                                     var polyline = new BMap.Polyline([firstPoint,lastPoint] ,{strokeColor:'#FF0000',strokeWeight:8,strokeOpacity:1})
                                     this.map.addOverlay(polyline);
-                                }else{
+                                }else if(this.mapType === 'gMap'){
                                      var flightPlanCoordinates = [firstPoint,lastPoint]
                                      var flightPath = new google.maps.Polyline({
                                             path: flightPlanCoordinates,
@@ -699,19 +846,23 @@
                                       });
                                      flightPath.setMap(this.map);
                                      flightPathArrList.push(flightPath);   
+                                }else if(this.mapType === 'oMap'){
+
                                 }   
                             };
                         },
                         isExact:function(){
-                            if(this.mapType === 'baidu'){
+                            if(this.mapType === 'bMap'){
                                 this.map.clearOverlays();
-                            }else{
+                            }else if(this.mapType === 'gMap'){
                                 firstMarker && firstMarker.setMap && firstMarker.setMap(null);
                                 this.carMarker && this.carMarker.setMap && this.carMarker.setMap(null);
                                 flightPathArrList.forEach(function (item) { 
                                     item && item.setMap && item.setMap(null); 
                                 });
                                 flightPathArrList = [];
+                            }else if(this.mapType === 'oMap'){
+
                             }
                             this.reDrawMap(this.mapType);
 
