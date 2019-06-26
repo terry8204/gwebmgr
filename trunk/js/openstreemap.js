@@ -24,7 +24,7 @@ OpenStreeMapCls.pt.getIcon = function (track) {
     if (pathname.indexOf('gpsserver') != -1) {
         imgPath = myUrls.host + 'images/carstate/' + (isOnline ? 'a_green' : 'a_gray') + '_0.png';
     } else {
-        imgPath = '../images/carstate/' + (isOnline ? 'a_green' : 'a_gray') + '0.png';
+        imgPath = '../images/carstate/' + (isOnline ? 'a_green' : 'a_gray') + '_0.png';
     };
     return new ol.style.Style({
         image: new ol.style.Icon(/** @type {module:ol/style/Icon~Options} */({
