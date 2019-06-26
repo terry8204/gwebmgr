@@ -734,9 +734,19 @@
                             }else  if (resp.status == 3 ) {
                                 me.totalMileage = '0km';
                                 me.$Message.error(resp.cause);
+                                if(me.mapType === 'oMap'){
+                                    layerVector.setSource(new ol.source.Vector({
+                                        features:[]
+                                    }));
+                                }
                             }else{
                                 me.totalMileage = '0km';
                                 me.$Message.error("没有当天轨迹");
+                                if(me.mapType === 'oMap'){
+                                    layerVector.setSource(new ol.source.Vector({
+                                        features:[]
+                                    }));
+                                }
                             } 
                         });
 
