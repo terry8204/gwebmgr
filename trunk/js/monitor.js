@@ -291,16 +291,21 @@ var monitor = {
             this.selectedCmdInfo.type = cmdInfo.cmdtype;
 
             if (cmdInfo.params) {
+
                 var paramsXMLObj = utils.parseXML(cmdInfo.params);
                 // this.selectedCmdInfo.type = paramsXMLObj.type;
                 this.selectedCmdInfo.params = paramsXMLObj.paramsListObj;
                 this.selectedCmdInfo.params.forEach(function (param, index) {
-
                     if (cmdVal && cmdVal.length && cmdVal[0]) {
-                        me.cmdParams[param.type] = cmdVal[index];
+                        if (cmdInfo.cmdtype === 'timeperiod') {
+                            me.cmdParams[param.type] = cmdVal[index].split(",");
+                        } else {
+                            me.cmdParams[param.type] = cmdVal[index];
+                        }
                     } else {
                         if (cmdInfo.cmdtype === 'timeperiod') {
-                            var timerArr = param.value ? param.value.split(",") : ["00:00", "00:00"];
+                            var timerArr = param.value ? param.value.split("-") : ["00:00", "00:00"];
+                            console.log('timerArr', timerArr);
                             me.cmdParams[param.type] = timerArr;
                         } else {
                             me.cmdParams[param.type] = param.value;
@@ -351,7 +356,7 @@ var monitor = {
                     break;
                 case 'timeperiod':
                     for (var key in this.cmdParams) {
-                        params.push(this.cmdParams[key].join(","))
+                        params.push(this.cmdParams[key].join("-"))
                     };
                     break;
                 default:
