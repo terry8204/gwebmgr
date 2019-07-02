@@ -302,8 +302,6 @@ var monitor = {
                         if (cmdInfo.cmdtype === 'timeperiod') {
                             var timerArr = param.value ? param.value.split(",") : ["00:00", "00:00"];
                             me.cmdParams[param.type] = timerArr;
-                            Vue.set(me.cmdParams[param.type], 0, timerArr[0]);
-                            Vue.set(me.cmdParams[param.type], 1, timerArr[1]);
                         } else {
                             me.cmdParams[param.type] = param.value;
                         }
