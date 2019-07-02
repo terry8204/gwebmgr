@@ -483,6 +483,13 @@
                                 <i-input v-model.trim="cmdParams[item.type]"></i-input>
                             </i-col>
                         </Row>
+    
+                        <Row style="margin: 10px 0" v-for="item in selectedCmdInfo.params" :key="item.desc" v-if="selectedCmdInfo.type === 'timeperiod'">
+                            <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{item.desc}} : &nbsp;</i-col>
+                            <i-col span="16">
+                                <Time-Picker format="HH:mm"  type="timerange" placeholder="选择时间段" :value="cmdParams[item.type]"></Time-Picker>
+                            </i-col>
+                        </Row>
 
                         <Row style="margin: 10px 0" v-show="selectedCmdInfo.cmdpwd">
                             <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">密码 : &nbsp;</i-col>

@@ -289,18 +289,30 @@ var monitor = {
             this.selectedCmdInfo.cmddescr = cmdInfo.cmddescr;
             this.selectedCmdInfo.cmdpwd = cmdInfo.cmdpwd;
             this.selectedCmdInfo.type = cmdInfo.cmdtype;
+
             if (cmdInfo.params) {
                 var paramsXMLObj = utils.parseXML(cmdInfo.params);
                 // this.selectedCmdInfo.type = paramsXMLObj.type;
                 this.selectedCmdInfo.params = paramsXMLObj.paramsListObj;
                 this.selectedCmdInfo.params.forEach(function (param, index) {
-                    if (cmdVal) {
+
+                    if (cmdVal && cmdVal.length && cmdVal[0]) {
                         me.cmdParams[param.type] = cmdVal[index];
                     } else {
-                        me.cmdParams[param.type] = param.value;
+                        if (cmdInfo.cmdtype === 'timeperiod') {
+                            var timerArr = param.value ? param.value.split(",") : ["00:00", "00:00"];
+                            me.cmdParams[param.type] = timerArr;
+                            Vue.set(me.cmdParams[param.type], 0, timerArr[0]);
+                            Vue.set(me.cmdParams[param.type], 1, timerArr[1]);
+                        } else {
+                            me.cmdParams[param.type] = param.value;
+                        }
+
                     }
                 });
-                cmdInfo.cmdtype !== 'text' ? this.selectedTypeVal = (cmdVal ? cmdVal[0] : "") : '';
+
+
+                (cmdInfo.cmdtype !== 'text' || cmdInfo.cmdtype === 'timeperiod') ? this.selectedTypeVal = (cmdVal ? cmdVal[0] : "") : '';
             };
 
             this.dispatchDirectiveModal = true;
@@ -333,7 +345,18 @@ var monitor = {
         disposeDirectiveFn: function () {
             var me = this;
             var url = myUrls.sendCmd();
-            var params = this.selectedCmdInfo.type === 'text' ? Object.values(this.cmdParams) : [this.selectedTypeVal];
+            var params = [];
+            console.log('cmdParams', this.cmdParams);
+            switch (this.selectedCmdInfo.type) {
+                case 'text':
+                    params = Object.values(this.cmdParams);
+                    break;
+                case 'timeperiod':
+                    params = Object.values(this.cmdParams);
+                    break;
+                default:
+                    params = [this.selectedTypeVal]
+            };
             var data = {
                 devicetype: this.currentDeviceType,
                 cmdcode: this.selectedCmdInfo.cmdcode,

@@ -119,6 +119,7 @@
                 <i-select v-model="selectParamType">
                     <i-option value="text">文本输入</i-option>
                     <i-option value="list">下拉选择</i-option>
+                    <i-option value="timeperiod">时间段</i-option>
                 </i-select> 
             </i-col>
         </Row>
@@ -149,6 +150,15 @@
                         <i-select v-model="preview">
                             <i-option v-for="item in previewObjList" :value="item.type" :key="item.type">{{ item.value }}</i-option>
                         </i-select>
+                    </i-col>
+                </Row>
+            </i-col>
+            <i-col span="20" v-if="selectParamType==='timeperiod'">
+                <Row style="margin: 5px 0">
+                    <i-col span="15" offset="5">
+                        <p v-for="item in previewObjList" :key="item.type" style="margin: 5px 0">
+                            {{item.title}} : &nbsp;  <Time-Picker format="HH:mm"  type="timerange" placeholder="选择时间段"></Time-Picker>
+                        </p>
                     </i-col>
                 </Row>
             </i-col>
@@ -593,7 +603,7 @@
                     
                     if(data.params){
                         var paramsArr = data.params.split('\n');
-                        if(data.cmdtype !== 'text' && data.cmdtype !== 'list'){
+                        if(data.cmdtype !== 'text' && data.cmdtype !== 'list' && data.cmdtype !== 'timeperiod'){
                             this.params = data.params;
                         }else{
                             this.params=paramsArr.join("\n");
