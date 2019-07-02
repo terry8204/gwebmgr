@@ -350,7 +350,9 @@ var monitor = {
                     params = Object.values(this.cmdParams);
                     break;
                 case 'timeperiod':
-                    params = Object.values(this.cmdParams);
+                    for (var key in this.cmdParams) {
+                        params.push(this.cmdParams[key].join(","))
+                    };
                     break;
                 default:
                     params = [this.selectedTypeVal]
