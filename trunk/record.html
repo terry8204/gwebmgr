@@ -300,7 +300,7 @@ div.delete-media>div{
         <div class='record-body' ref="recordsWrapper">
             <template v-for="(item,index) in tableData" :key="index">
 
-                            <div class='body-item' v-if="item.type === 0">
+                            <div class='body-item' v-if="item.senddirection === 1">
                                     <div class='person'>
                                         <Icon type="md-tablet-portrait" size="24" />
                                         <!-- <span class="icon iconfont icon-iconmydevices" style='font-size:24px;'></span>   -->
