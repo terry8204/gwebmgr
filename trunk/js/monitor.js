@@ -42,7 +42,6 @@ var monitor = {
             openGroupIds: {},
             openCompanyIds: {},
             selectedState: 'all', // 选择nav的状态 all online offline;
-            currentStateData: [], // 当前tree的数据
             positionLastrecords: {}, // 全部设备最后一次位置记录
             companys: [], //公司名称id
             groups: [], // 原始列表数据
@@ -295,17 +294,18 @@ var monitor = {
                 var paramsXMLObj = utils.parseXML(cmdInfo.params);
                 // this.selectedCmdInfo.type = paramsXMLObj.type;
                 this.selectedCmdInfo.params = paramsXMLObj.paramsListObj;
+                console.log('paramsXMLObj', paramsXMLObj);
+                console.log('cmdVal', cmdVal);
                 this.selectedCmdInfo.params.forEach(function (param, index) {
                     if (cmdVal && cmdVal.length && cmdVal[0]) {
                         if (cmdInfo.cmdtype === 'timeperiod') {
-                            me.cmdParams[param.type] = cmdVal[index].split(",");
+                            me.cmdParams[param.type] = cmdVal[index].split("-");
                         } else {
                             me.cmdParams[param.type] = cmdVal[index];
                         }
                     } else {
                         if (cmdInfo.cmdtype === 'timeperiod') {
                             var timerArr = param.value ? param.value.split("-") : ["00:00", "00:00"];
-                            console.log('timerArr', timerArr);
                             me.cmdParams[param.type] = timerArr;
                         } else {
                             me.cmdParams[param.type] = param.value;
@@ -349,7 +349,7 @@ var monitor = {
             var me = this;
             var url = myUrls.sendCmd();
             var params = [];
-            console.log('cmdParams', this.cmdParams);
+
             switch (this.selectedCmdInfo.type) {
                 case 'text':
                     params = Object.values(this.cmdParams);
@@ -464,40 +464,21 @@ var monitor = {
             this.filterData = [];
             var me = this;
             var deviceid = null
-            if (this.isShowCompanyName) {
-                this.currentStateData.forEach(function (company) {
-                    company.children.forEach(function (group) {
-                        group.children.forEach(function (dev) {
-                            if (dev.deviceid == value.deviceid) {
-                                dev.isSelected = true;
-                                deviceid = dev.deviceid;
-                                me.currentDeviceType = dev.devicetype;
-                                me.openCompanyIds[company.companyid] = "";
-                                me.openGroupIds[group.groupid] = "";
-                                company.expand = true;
-                                group.expand = true;
-                                me.handleClickDev(dev.deviceid);
-                            } else {
-                                dev.isSelected = false;
-                            };
-                        });
-                    });
+
+            this.groups.forEach(function (group) {
+                group.devices.forEach(function (dev) {
+                    if (dev.deviceid == value.deviceid) {
+                        dev.isSelected = true;
+                        group.expand = true;
+                        deviceid = dev.deviceid;
+                        me.currentDeviceType = dev.devicetype;
+                        me.handleClickDev(dev.deviceid);
+                    } else {
+                        dev.isSelected = false;
+                    };
                 });
-            } else {
-                this.groups.forEach(function (group) {
-                    group.devices.forEach(function (dev) {
-                        if (dev.deviceid == value.deviceid) {
-                            dev.isSelected = true;
-                            group.expand = true;
-                            deviceid = dev.deviceid;
-                            me.currentDeviceType = dev.devicetype;
-                            me.handleClickDev(dev.deviceid);
-                        } else {
-                            dev.isSelected = false;
-                        };
-                    });
-                });
-            }
+            });
+
             this.scrollToCurruntDevice(deviceid);
         },
         scrollToCurruntDevice: function (deviceid) {
@@ -507,55 +488,27 @@ var monitor = {
                 var elWraper = me.$refs.treeWraper;
                 var wrapHeight = elWraper.getBoundingClientRect().height;
                 var sHeight = 0;
-                if (me.isShowCompanyName) {
-                    for (var i = 0; i < me.currentStateData.length; i++) {
-                        var company = me.currentStateData[i];
-                        var isBreak = false;
-                        sHeight += 34;
-                        if (company.expand) {
-                            var groups = company.children;
-                            for (var j = 0; j < groups.length; j++) {
-                                var group = groups[j];
-                                sHeight += 34;
-                                if (group.expand) {
-                                    var devices = group.children;
-                                    for (var h = 0; h < devices.length; h++) {
-                                        var device = devices[h];
-                                        sHeight += 29;
-                                        if (device.deviceid === deviceid) {
-                                            isBreak = true;
-                                            sHeight += 60;
-                                            break;
-                                        }
-                                    }
-                                    sHeight += 10;
-                                }
-                                if (isBreak) break;
+
+                for (var i = 0; i < me.groups.length; i++) {
+                    var group = me.groups[i]
+                    var isBreak = false;
+                    sHeight += 34;
+                    if (group.expand) {
+                        var devices = group.devices;
+                        for (var j = 0; j < devices.length; j++) {
+                            var device = devices[j];
+                            sHeight += 29;
+                            if (device.deviceid === deviceid) {
+                                isBreak = true;
+                                sHeight += 60;
+                                break;
                             }
                         }
-                        if (isBreak) break;
-                    };
-                } else {
-                    for (var i = 0; i < me.groups.length; i++) {
-                        var group = me.groups[i]
-                        var isBreak = false;
-                        sHeight += 34;
-                        if (group.expand) {
-                            var devices = group.devices;
-                            for (var j = 0; j < devices.length; j++) {
-                                var device = devices[j];
-                                sHeight += 29;
-                                if (device.deviceid === deviceid) {
-                                    isBreak = true;
-                                    sHeight += 60;
-                                    break;
-                                }
-                            }
-                            sHeight += 10;
-                        }
-                        if (isBreak) break;
-                    };
+                        sHeight += 10;
+                    }
+                    if (isBreak) break;
                 };
+
                 if (sHeight < wrapHeight) {
                     $(elWraper).animate({ scrollTop: 0 }, 500);
                 } else {
@@ -640,25 +593,16 @@ var monitor = {
             })
         },
         updateTreeOnlineState: function () {
-            this.getCurrentStateTreeData(this.selectedState, this.isShowCompanyName);
+            this.getCurrentStateTreeData(this.selectedState);
         },
         cancelSelected: function () {
-            //currentStateData
-            if (this.isShowCompanyName) {
-                this.currentStateData.forEach(function (company) {
-                    company.children.forEach(function (group) {
-                        group.children.forEach(function (dev) {
-                            dev.isSelected = false
-                        })
-                    })
+
+            this.groups.forEach(function (group) {
+                group.devices.forEach(function (dev) {
+                    dev.isSelected = false
                 })
-            } else {
-                this.groups.forEach(function (group) {
-                    group.devices.forEach(function (dev) {
-                        dev.isSelected = false
-                    })
-                })
-            }
+            })
+
         },
         getMonitorListByUser: function (data, callback) {
             var me = this
@@ -731,34 +675,18 @@ var monitor = {
             me.$store.commit('currentDeviceId', deviceid);
             me.$store.commit('currentDeviceRecord', devLastInfo);
             globalDeviceId = deviceid;
-            if (me.isShowCompanyName) {
-                me.currentStateData.forEach(function (company) {
-                    company.children.forEach(function (group) {
-                        group.children.forEach(function (dev) {
-                            if (dev.deviceid == deviceid) {
-                                company.expand = true;
-                                dev.isSelected = true;
-                                group.expand = true;
-                                me.openCompanyIds[company.companyid] = "";
-                                me.openGroupIds[group.groupid] = "";
-                            } else {
-                                dev.isSelected = false;
-                            }
-                        })
-                    })
-                })
-            } else {
-                me.groups.forEach(function (group) {
-                    group.devices.forEach(function (device) {
-                        if (device.deviceid == deviceid) {
-                            device.isSelected = true;
-                            group.expand = true;
-                        } else {
-                            device.isSelected = false;
-                        };
-                    });
+
+            me.groups.forEach(function (group) {
+                group.devices.forEach(function (device) {
+                    if (device.deviceid == deviceid) {
+                        device.isSelected = true;
+                        group.expand = true;
+                    } else {
+                        device.isSelected = false;
+                    };
                 });
-            }
+            });
+
             this.scrollToCurruntDevice(deviceid);
         },
         getSingleDeviceInfo: function (deviceid) {
@@ -824,82 +752,26 @@ var monitor = {
         trackMap: function (deviceid) {
             trackMap(deviceid)
         },
-        getCurrentStateTreeData: function (state, isShowCompanyName) {
+        getCurrentStateTreeData: function (state) {
             var me = this;
-            this.currentStateData = [];
+
             this.sosoData = [];
             if (state === 'all') {
-                if (isShowCompanyName) {
-                    this.getAllShowCompanyTreeData();
-                } else {
-                    this.getAllHideCompanyTreeData();
-                };
+
+                this.getAllHideCompanyTreeData();
+
             } else if (state === 'online') {
-                if (isShowCompanyName) {
-                    this.getOnlineShowCompanyTreeData();
-                } else {
-                    this.getOnlineHideCompanyTreeData();
-                };
+
+                this.getOnlineHideCompanyTreeData();
+
             } else if (state === 'offline') {
-                if (isShowCompanyName) {
-                    this.getOfflineShowCompanyTreeData();
-                } else {
-                    this.getOfflineHideCompanyTreeData();
-                };
+
+                this.getOfflineHideCompanyTreeData();
+
             };
 
-            if (isShowCompanyName) {
-                this.currentStateData.forEach(function (company) {
-                    company.children.forEach(function (group) {
-                        group.children.forEach(function (dev) {
-                            me.sosoData.push(dev.title)
-                        });
-                    });
-                });
-            } else {
-                this.currentStateData.forEach(function (item) {
-                    item.children.forEach(function (dev) {
-                        me.sosoData.push(dev.title)
-                    });
-                });
-            };
-        },
-        getNewCompanyArr: function () {
-            var newArray = [];
-            var me = this;
-            this.companys.forEach(function (company) {
-                var companyid = company.companyid
-                var companyObj = {
-                    title: company.companyname,
-                    companyname: company.companyname,
-                    companyid: companyid,
-                    children: [],
-                    expand: Object.keys(me.openCompanyIds).includes(company.companyid + "")
-                };
-                newArray.push(companyObj);
-            });
-            var logintype = Cookies.get('logintype')
-            if (logintype !== 'DEVICE' && this.isShowCompanyName) {
-                newArray.unshift({
-                    title: this.$t("monitor.defaultCustomer"),
-                    companyname: this.$t("monitor.defaultCustomer"),
-                    companyid: 0,
-                    children: [],
-                    expand: Object.keys(me.openCompanyIds).includes("0")
-                })
-            }
-            if (newArray.length === 0) {
-                if (logintype == 'DEVICE') {
-                    newArray.push({
-                        title: this.$t("monitor.defaultCustomer"),
-                        children: [],
-                        companyname: this.$t("monitor.defaultCustomer"),
-                        expand: Object.keys(me.openCompanyIds).includes("0"),
-                        companyid: 0
-                    })
-                }
-            }
-            return newArray
+
+
         },
         filterGroups: function (groups) {
             var me = this, all = 0;
@@ -936,73 +808,7 @@ var monitor = {
             this.offlineDevCount = all;
             return groups.filter(function (group) { return group.devices.length });
         },
-        getAllShowCompanyTreeData: function () {
-            var me = this;
-            var newArray = me.getNewCompanyArr();
-            me.groups.forEach(function (group) {
-                var companyid = group.companyid
-                var onlineCount = 0
-                var groupObj = {
-                    companyid: companyid,
-                    title: group.groupname,
-                    expand: Object.keys(me.openGroupIds).includes(group.groupid + ""),
-                    name: group.groupname,
-                    children: [],
-                    groupid: group.groupid
-                };
-                group.devices.forEach(function (device, index) {
-                    var isOnline = me.getIsOnline(device.deviceid)
-                    var deviceTypeName = me.getDeviceTypeName(device.devicetype);
-                    if (deviceTypeName) {
-                        deviceTypeName = deviceTypeName + "-" + device.devicename;
-                    } else {
-                        deviceTypeName = device.devicename;
-                    }
-                    var deviceObj = {
-                        title: deviceTypeName,
-                        deviceid: device.deviceid,
-                        isOnline: isOnline,
-                        isSelected: false,
-                        devicetype: device.devicetype
-                    }
-                    if (isOnline) {
-                        onlineCount++
-                    }
-                    if (device.deviceid == me.currentDeviceId) {
-                        groupObj.expand = true
-                        deviceObj.isSelected = true
-                    }
-                    groupObj.children.push(deviceObj)
-                })
-                groupObj.title +=
-                    '(' + onlineCount + '/' + groupObj.children.length + ')'
 
-                newArray.forEach(function (company) {
-                    if (company.companyid == companyid) {
-                        if (groupObj.children.length) {
-                            company.children.push(groupObj)
-                        }
-                        company.title =
-                            company.companyname + '(' + company.children.length + ')'
-                    } else {
-                        var logintype = Cookies.get('logintype')
-                        if (logintype == 'DEVICE') {
-                            company.children.push(groupObj)
-                            company.title =
-                                company.companyname + '(' + company.children.length + ')'
-                        }
-                    }
-                })
-            })
-            var treeData = []
-            for (var i = 0; i < newArray.length; i++) {
-                var item = newArray[i]
-                if (item.children.length !== 0) {
-                    treeData.push(item)
-                }
-            }
-            me.currentStateData = treeData
-        },
         getAllHideCompanyTreeData: function () {
             var me = this;
             this.groups.forEach(function (group) {
@@ -1019,73 +825,6 @@ var monitor = {
                 group.isShow = true;
                 group.title = group.groupname + "(" + online + "/" + count + ")";
             });
-        },
-        getOnlineShowCompanyTreeData: function () {
-            var me = this
-            var newArray = me.getNewCompanyArr()
-            var groupsArray = []
-
-            me.groups.forEach(function (group) {
-                var companyid = group.companyid
-                var onlineCount = 0
-                var groupObj = {
-                    companyid: companyid,
-                    title: group.groupname,
-                    expand: Object.keys(me.openGroupIds).includes(group.groupid + ""),
-                    children: [],
-                    name: group.groupname,
-                    groupid: group.groupid
-                }
-
-                group.devices.forEach(function (device) {
-                    var isOnline = me.getIsOnline(device.deviceid)
-                    var deviceTypeName = me.getDeviceTypeName(device.devicetype);
-                    if (deviceTypeName) {
-                        deviceTypeName = deviceTypeName + "-" + device.devicename;
-                    } else {
-                        deviceTypeName = device.devicename;
-                    }
-                    var deviceObj = {
-                        title: deviceTypeName,
-                        deviceid: device.deviceid,
-                        isOnline: isOnline,
-                        isSelected: false,
-                        devicetype: device.devicetype
-                    }
-
-                    if (device.deviceid == me.currentDeviceId) {
-                        groupObj.expand = true
-                        deviceObj.isSelected = true
-                    }
-                    if (isOnline) {
-                        onlineCount++
-                        groupObj.children.push(deviceObj)
-                    }
-                })
-                if (groupObj.children.length) {
-                    groupObj.title += '(' + groupObj.children.length + ')'
-                    groupsArray.push(groupObj)
-                }
-            })
-
-            newArray.forEach(function (company, index) {
-                var companyid = company.companyid
-                groupsArray.forEach(function (group) {
-                    if (companyid == group.companyid) {
-                        company.children.push(group)
-                    } else {
-                        var logintype = Cookies.get('logintype')
-                        if (logintype == 'DEVICE') {
-                            company.children.push(group)
-                        }
-                    }
-                })
-                if (company.children.length) {
-                    company.title =
-                        company.companyname + '(' + company.children.length + ')'
-                    me.currentStateData.push(company)
-                }
-            })
         },
         getOnlineHideCompanyTreeData: function () {
             var me = this;
@@ -1105,71 +844,6 @@ var monitor = {
                 }
                 group.title = group.groupname + "(" + online + ")";
             });
-        },
-        getOfflineShowCompanyTreeData: function () {
-            var me = this
-            var newArray = me.getNewCompanyArr()
-            var groupsArray = []
-
-            me.groups.forEach(function (group) {
-                var companyid = group.companyid
-
-                var groupObj = {
-                    companyid: companyid,
-                    title: group.groupname,
-                    expand: Object.keys(me.openGroupIds).includes(group.groupid + ""),
-                    children: [],
-                    name: group.groupname,
-                    groupid: group.groupid
-                }
-
-                group.devices.forEach(function (device) {
-                    var isOnline = me.getIsOnline(device.deviceid)
-                    var deviceTypeName = me.getDeviceTypeName(device.devicetype);
-                    if (deviceTypeName) {
-                        deviceTypeName = deviceTypeName + "-" + device.devicename;
-                    } else {
-                        deviceTypeName = device.devicename;
-                    }
-                    var deviceObj = {
-                        title: deviceTypeName,
-                        deviceid: device.deviceid,
-                        isOnline: isOnline,
-                        isSelected: false,
-                        devicetype: device.devicetype
-                    }
-
-                    if (device.deviceid == me.currentDeviceId) {
-                        groupObj.expand = true
-                        deviceObj.isSelected = true
-                    }
-                    if (!isOnline) {
-                        groupObj.children.push(deviceObj)
-                    }
-                })
-                if (groupObj.children.length) {
-                    groupObj.title += '(' + groupObj.children.length + ')'
-                    groupsArray.push(groupObj)
-                }
-            })
-            newArray.forEach(function (company, index) {
-                var companyid = company.companyid
-                groupsArray.forEach(function (group) {
-                    if (companyid == group.companyid) {
-                        company.children.push(group)
-                    } else {
-                        var logintype = Cookies.get('logintype')
-                        if (logintype == 'DEVICE') {
-                            company.children.push(group)
-                        }
-                    }
-                })
-                if (company.children.length) {
-                    company.title =
-                        company.companyname + '(' + company.children.length + ')'
-                    me.currentStateData.push(company)
-                }
-            })
         },
         getOfflineHideCompanyTreeData: function () {
             var me = this;
@@ -1258,18 +932,11 @@ var monitor = {
             this.offlineDevCount = this.allDevCount - this.onlineDevCount;
         },
         onSelectState: function () {
-            var me = this
-            if (this.isShowCompanyName && this.companys.length == 0) {
-                this.queryCompanyTree(function (response) {
-                    me.companys = response.companys
-                    me.getCurrentStateTreeData(me.selectedState, me.isShowCompanyName)
-                });
-            } else {
-                this.getCurrentStateTreeData(
-                    this.selectedState,
-                    this.isShowCompanyName
-                )
-            }
+
+            this.getCurrentStateTreeData(
+                this.selectedState
+            )
+
         },
         isShowRecordBtnByDeviceType: function () {
             var deviceTypes = this.deviceTypes;
@@ -1302,7 +969,6 @@ var monitor = {
             this.getMonitorListByUser({ username: userName }, function (resp) {
                 me.groups = me.filterGroups(resp.groups)
                 me.$store.dispatch('setdeviceInfos', me.groups);
-                me.isShowCompanyName && me.onSelectState();
                 me.getLastPosition([], function (resp) {
                     me.lastquerypositiontime = DateFormat.getCurrentUTC();
                     me.caclOnlineCount();
@@ -1317,39 +983,21 @@ var monitor = {
         refreshMonitorRestartOpen: function () {
             var me = this;
             if (globalDeviceId) {
-                if (me.isShowCompanyName) {
-                    for (var i = 0; i < me.currentStateData.length; i++) {
-                        var company = me.currentStateData[i];
-                        for (var j = 0; j < company.children.length; j++) {
-                            var group = company.children[j];
-                            for (var o = 0; o < group.children.length; o++) {
-                                var device = group.children[o];
-                                if (device.deviceid === globalDeviceId) {
-                                    device.isSelected = true;
-                                    group.expand = true;
-                                    me.selectedDevObj = device;
-                                    company.expand = true;
-                                    setTimeout(function () { me.handleClickDev(device.deviceid); }, 300);
-                                    return;
-                                }
-                            }
-                        }
-                    }
-                } else {
-                    for (var i = 0; i < me.groups.length; i++) {
-                        var group = me.groups[i];
-                        for (var j = 0; j < group.devices.length; j++) {
-                            var device = group.devices[j];
-                            if (device.deviceid === globalDeviceId) {
-                                device.isSelected = true;
-                                group.expand = true;
-                                me.selectedDevObj = device;
-                                setTimeout(function () { me.handleClickDev(device.deviceid); }, 300);
-                                return;
-                            }
+
+                for (var i = 0; i < me.groups.length; i++) {
+                    var group = me.groups[i];
+                    for (var j = 0; j < group.devices.length; j++) {
+                        var device = group.devices[j];
+                        if (device.deviceid === globalDeviceId) {
+                            device.isSelected = true;
+                            group.expand = true;
+                            me.selectedDevObj = device;
+                            setTimeout(function () { me.handleClickDev(device.deviceid); }, 300);
+                            return;
                         }
                     }
                 }
+
             }
         }
     },
@@ -1414,20 +1062,6 @@ var monitor = {
         selectedState: function () {
             this.onSelectState();
         },
-        isShowCompanyName: function () {
-            var me = this;
-            if (this.isShowCompanyName) {
-                me.queryCompanyTree(function (response) {
-                    me.companys = response.companys
-                    me.getCurrentStateTreeData(me.selectedState, me.isShowCompanyName)
-                });
-            } else {
-                this.getCurrentStateTreeData(
-                    this.selectedState,
-                    this.isShowCompanyName
-                )
-            }
-        },
         deviceTypes: function () {
             this.getMonitorList();
         }
@@ -1446,7 +1080,6 @@ var monitor = {
             this.getMonitorListByUser({ username: userName }, function (resp) {
                 me.groups = me.filterGroups(resp.groups);
                 me.$store.dispatch('setdeviceInfos', me.groups);
-                me.isShowCompanyName && me.onSelectState();
                 me.refreshMonitorRestartOpen();
                 me.updateTreeOnlineState();
                 isNeedRefresh = false;
