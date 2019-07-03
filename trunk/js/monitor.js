@@ -283,6 +283,7 @@ var monitor = {
                     cmdInfo = cmd;
                 }
             });
+            console.log('cmdVal', cmdVal);
             this.selectedCmdInfo.cmdName = cmdInfo.cmdname;
             this.selectedCmdInfo.cmdcode = cmdInfo.cmdcode;
             this.selectedCmdInfo.cmddescr = cmdInfo.cmddescr;
@@ -294,12 +295,13 @@ var monitor = {
                 var paramsXMLObj = utils.parseXML(cmdInfo.params);
                 // this.selectedCmdInfo.type = paramsXMLObj.type;
                 this.selectedCmdInfo.params = paramsXMLObj.paramsListObj;
-                console.log('paramsXMLObj', paramsXMLObj);
-                console.log('cmdVal', cmdVal);
+
                 this.selectedCmdInfo.params.forEach(function (param, index) {
                     if (cmdVal && cmdVal.length && cmdVal[0]) {
                         if (cmdInfo.cmdtype === 'timeperiod') {
                             me.cmdParams[param.type] = cmdVal[index].split("-");
+                        } else if (cmdInfo.cmdtype === 'remind') {
+                            me.cmdParams[param.type] = me.parserToRemindJson(cmdVal[index]);
                         } else {
                             me.cmdParams[param.type] = cmdVal[index];
                         }
@@ -307,6 +309,9 @@ var monitor = {
                         if (cmdInfo.cmdtype === 'timeperiod') {
                             var timerArr = param.value ? param.value.split("-") : ["00:00", "00:00"];
                             me.cmdParams[param.type] = timerArr;
+                        } else if (cmdInfo.cmdtype === 'remind') {
+                            var remindJson = me.parserToRemindJson(param.value);
+                            me.cmdParams[param.type] = remindJson;
                         } else {
                             me.cmdParams[param.type] = param.value;
                         }
@@ -320,7 +325,56 @@ var monitor = {
 
             this.dispatchDirectiveModal = true;
         },
+        parserToRemindJson: function (value) {
+            var valueArr = value.split("-"),
+                len = valueArr.length,
+                remindJson = {};
 
+            remindJson.time = valueArr[0];
+            remindJson.switch = valueArr[1] == 1 ? true : false;
+            remindJson.type = valueArr[2];
+            remindJson.weekselected = [];
+            if (len === 4) {
+                var weekStr = valueArr[3];
+                var week1 = weekStr.charAt(0) == 1 ? '一' : false;
+                var week2 = weekStr.charAt(1) == 1 ? '二' : false;
+                var week3 = weekStr.charAt(2) == 1 ? '三' : false;
+                var week4 = weekStr.charAt(3) == 1 ? '四' : false;
+                var week5 = weekStr.charAt(4) == 1 ? '五' : false;
+                var week6 = weekStr.charAt(5) == 1 ? '六' : false;
+                var week7 = weekStr.charAt(6) == 1 ? '日' : false;
+
+                week1 && remindJson.weekselected.push(week1);
+                week2 && remindJson.weekselected.push(week2);
+                week3 && remindJson.weekselected.push(week3);
+                week4 && remindJson.weekselected.push(week4);
+                week5 && remindJson.weekselected.push(week5);
+                week6 && remindJson.weekselected.push(week6);
+                week7 && remindJson.weekselected.push(week7);
+            }
+            return remindJson;
+        },
+        encodeRemindParams: function (paramsObj) {
+            var resultArr = [];
+            for (var key in paramsObj) {
+                var item = paramsObj[key];
+                if (item.type == '3') {
+                    var weekStr = "",
+                        weekArr = item.weekselected;
+                    weekArr.indexOf("一") !== -1 ? weekStr += '1' : weekStr += '0';
+                    weekArr.indexOf("二") !== -1 ? weekStr += '1' : weekStr += '0';
+                    weekArr.indexOf("三") !== -1 ? weekStr += '1' : weekStr += '0';
+                    weekArr.indexOf("四") !== -1 ? weekStr += '1' : weekStr += '0';
+                    weekArr.indexOf("五") !== -1 ? weekStr += '1' : weekStr += '0';
+                    weekArr.indexOf("六") !== -1 ? weekStr += '1' : weekStr += '0';
+                    weekArr.indexOf("日") !== -1 ? weekStr += '1' : weekStr += '0';
+                    resultArr.push(item.time + "-" + (item.switch ? '1' : '0') + '-' + item.type + "-" + weekStr)
+                } else {
+                    resultArr.push(item.time + "-" + (item.switch ? '1' : '0') + '-' + item.type);
+                };
+            }
+            return resultArr;
+        },
         queryAllCmdRecords: function () {
             this.loading = true;
             var me = this;
@@ -359,6 +413,10 @@ var monitor = {
                         params.push(this.cmdParams[key].join("-"))
                     };
                     break;
+                case 'remind':
+                    params = this.encodeRemindParams(this.cmdParams);
+                    console.log('params', params);
+                    break;
                 default:
                     params = [this.selectedTypeVal]
             };
@@ -396,6 +454,7 @@ var monitor = {
                 }
             });
         },
+
         focus: function () {
             var me = this;
             if (this.sosoValue.trim()) {

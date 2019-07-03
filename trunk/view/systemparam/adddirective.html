@@ -72,6 +72,7 @@
                         <i-option value="text">文本输入</i-option>
                         <i-option value="list">下拉选择</i-option>
                         <i-option value="timeperiod">时间段</i-option>
+                        <i-option value="remind">闹钟</i-option>
                     </i-select> 
                 </i-col>
             </Row>
@@ -109,7 +110,16 @@
                     <Row style="margin: 5px 0">
                         <i-col span="15" offset="5">
                             <p v-for="item in previewObjList" :key="item.type" style="margin: 5px 0">
-                                {{item.title}} : &nbsp;  <Time-Picker format="HH:mm"  type="timerange" placeholder="选择时间段"></Time-Picker>
+                                {{item.title}} : &nbsp;  <Time-Picker format="HH:mm" :value="item.formatVlaue"  type="timerange" placeholder="选择时间段"></Time-Picker>
+                            </p>
+                        </i-col>
+                    </Row>
+                </i-col>
+                <i-col span="20" v-if="selectParamType==='remind'">
+                    <Row style="margin: 5px 0">
+                        <i-col span="15" offset="5">
+                            <p v-for="item in previewObjList" :key="item.type" style="margin: 5px 0">
+                                remind
                             </p>
                         </i-col>
                     </Row>
@@ -243,8 +253,16 @@
                         var title = item.innerHTML;
                         var value = item.getAttribute("value");
                         var type = item.getAttribute("type");
-                        if (type && value) {
-                            this.previewObjList.push({ type: type, value: value , title:title });
+                        var previewObj = null;
+                        if (type) {
+                            if(this.selectParamType === 'timeperiod'){
+                                value = value || "00:00-00:00";
+                                var formatVlaue = value.split("-");
+                                previewObj = { type: type, value: value , title:title ,formatVlaue:formatVlaue};
+                            }else{
+                                previewObj = { type: type, value: value , title:title };
+                            }
+                            this.previewObjList.push(previewObj);
                         }
                     } 
                 },
