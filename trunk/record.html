@@ -320,7 +320,7 @@ div.delete-media>div{
                                         <div @click="deleteRecord(item)"><img src="./images/ic_close.png" style="width:100%;height:100%;"></div>
                                     </div>
                                 </div>
-                                <div v-else class='send-item'>
+                                <div v-if="item.senddirection === 2" class='send-item'>
                                     <div class='person'>
                                         <Icon type="ios-contact" size="24" />
                                         <!-- <span class="icon iconfont icon-shenfenzheng" style='font-size:24px;'></span>   -->

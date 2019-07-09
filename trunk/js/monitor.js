@@ -29,6 +29,7 @@ var monitor = {
             isLoadGroup: true,
             isSpin: true,
             isShowRecordBtn: false,
+            isShowBmsBtn: false,
             map: null,
             placement: "right-start",
             mapType: mapType ? mapType : 'bMap',
@@ -255,18 +256,19 @@ var monitor = {
                     isToPhoneAlarmRecords = true;
                     this.$emit("jump-report", "reportForm");
                     break;
+                case 'bms':
+                    open('bmssys.html')
+                    break;
             }
         },
         queryDeviceBaseInfo: function () {
             this.deviceBaseInfo = {};
             var me = this;
-            var deviceId = me.selectedDevObj.deviceid;
             var url = myUrls.queryDeviceBaseInfo();
             var data = {
-                deviceid: deviceId
+                deviceid: globalDeviceId
             };
             utils.sendAjax(url, data, function (resp) {
-
                 resp.overdueDateStr = DateFormat.longToDateStr(resp.overduetime, 0);
                 me.deviceBaseInfo = resp;
             })
@@ -999,18 +1001,23 @@ var monitor = {
         },
         isShowRecordBtnByDeviceType: function () {
             var deviceTypes = this.deviceTypes;
-            var result = false;
+            var result1 = false;
+            var result2 = false;
             for (var i = 0; i < deviceTypes.length; i++) {
                 if (this.currentDeviceType == deviceTypes[i].devicetypeid) {
                     var functions = deviceTypes[i].functions;
                     if (functions) {
                         if (functions.indexOf("audio") != -1) {
-                            result = true;
+                            result1 = true;
+                        }
+                        if (functions.indexOf("bms") != -1) {
+                            result2 = true;
                         }
                     }
                 }
             };
-            this.isShowRecordBtn = result;
+            this.isShowRecordBtn = result1;
+            this.isShowBmsBtn = result2;
         },
         getDeviceTypeName: function (deviceTypeId) {
             var typeName = "", deviceTypes = this.deviceTypes;

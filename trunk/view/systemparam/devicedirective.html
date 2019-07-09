@@ -158,7 +158,7 @@
                 <Row style="margin: 5px 0">
                     <i-col span="15" offset="5">
                         <p v-for="item in previewObjList" :key="item.type" style="margin: 5px 0">
-                            {{item.title}} : &nbsp;  <Time-Picker format="HH:mm"  type="timerange" placeholder="选择时间段"></Time-Picker>
+                            {{item.title}} : &nbsp;  <Time-Picker format="HH:mm"  type="timerange" :value="item.formatVlaue" placeholder="选择时间段"></Time-Picker>
                         </p>
                     </i-col>
                 </Row>
@@ -564,10 +564,21 @@
                         var item = children[i]
                         var title = item.innerHTML;
                         var value = item.getAttribute("value");
-                        var type = item.getAttribute("type");
+                        var type = item.getAttribute("type") , previewObj = null;
         
+                        // if (type) {
+                        //     previewObjList.push({ type: type, value: (value?value:" ") ,title:title});
+                        // }
+
                         if (type) {
-                            previewObjList.push({ type: type, value: (value?value:" ") ,title:title});
+                            if(this.selectParamType === 'timeperiod'){
+                                value = value || "00:00-00:00";
+                                var formatVlaue = value.split("-");
+                                previewObj = { type: type, value: value , title:title ,formatVlaue:formatVlaue};
+                            }else{
+                                previewObj = { type: type, value:(value?value:" ") , title:title };
+                            }
+                            previewObjList.push(previewObj);
                         }
                     }   
                     this.previewObjList = previewObjList;
