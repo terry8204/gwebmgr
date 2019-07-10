@@ -30,6 +30,9 @@ var monitor = {
             isSpin: true,
             isShowRecordBtn: false,
             isShowBmsBtn: false,
+            isShowObdBtn: false,
+            isShowWeightBtn: false,
+
             map: null,
             placement: "right-start",
             mapType: mapType ? mapType : 'bMap',
@@ -258,6 +261,12 @@ var monitor = {
                     break;
                 case 'bms':
                     open('bmssys.html')
+                    break;
+                case 'obd':
+                    alert('obd');
+                    break;
+                case 'weight':
+                    alert('weight');
                     break;
             }
         },
@@ -1003,21 +1012,32 @@ var monitor = {
             var deviceTypes = this.deviceTypes;
             var result1 = false;
             var result2 = false;
+            var result3 = false;
+            var result4 = false;
+
             for (var i = 0; i < deviceTypes.length; i++) {
                 if (this.currentDeviceType == deviceTypes[i].devicetypeid) {
                     var functions = deviceTypes[i].functions;
                     if (functions) {
                         if (functions.indexOf("audio") != -1) {
                             result1 = true;
-                        }
+                        };
                         if (functions.indexOf("bms") != -1) {
                             result2 = true;
-                        }
+                        };
+                        if (functions.indexOf("obd") != -1) {
+                            result3 = true;
+                        };
+                        if (functions.indexOf("weight") != -1) {
+                            result4 = true;
+                        };
                     }
                 }
             };
             this.isShowRecordBtn = result1;
             this.isShowBmsBtn = result2;
+            this.isShowObdBtn = result3;
+            this.isShowWeightBtn = result4;
         },
         getDeviceTypeName: function (deviceTypeId) {
             var typeName = "", deviceTypes = this.deviceTypes;

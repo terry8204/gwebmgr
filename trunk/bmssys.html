@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>电池管理</title>
+    <link rel="shortcut icon" href="./favicon.ico" />
+    <link rel="stylesheet" href="dist/styles/iview.css">
+    <style>
+        html,body,#app{width:100%;height:100%;};
+        [v-cloak] {display: none;}
+        .width-100{width:100%;}
+        table.default-table{
+            /* -moz-border-radius: 5px;
+            -webkit-border-radius:5px;
+            border-radius:5px; */
+            width: 100%;
+            border:solid #333; 
+            border-width:1px 0px 0px 1px;
+            font-size: #333;
+            border-collapse: collapse;
+            border-spacing: 0;
+        }
+
+        table.default-table tbody tr{
+            height: 20px;
+            line-height: 20px;
+        }
+        table.default-table tbody tr.odd{
+            background-color: #fff;
+        }
+        table.default-table tbody tr.even{
+            background-color: #F5F5F5;
+        }
+        table.default-table tbody tr:hover{
+            background-color: #eee;
+        }
+        table.default-table tbody tr th,table.default-table tbody tr td,table.default-table thead  th{
+            padding:3px 5px;
+            text-align: left;
+            /* border: 1px solid #ddd; */
+            border:solid #333; 
+            border-width:0px 1px 1px 0px; 
+            text-align: center;
+            width: 33.333%;
+        }
+        table.default-table tbody tr th{
+            font-weight: bold;
+            text-align: center;
+        }
+
+        table.default-table tbody tr td.tac{
+            text-align: center;
+        }
+        table.default-table tbody tr td a:hover{
+            color:#0080c0;
+        }        
+    </style>
+</head>
+<body>
+    <div id='app' v-cloak>
+        <Layout style="height:100%;">
+            <i-Header>
+                <Row>   
+                    <i-Col span="15">
+                        <h2 style="color:#fff;">电池参数</h2>
+                    </i-Col>
+                    <i-Col span="5" offset="4">
+                        <Button-Group shape="circle">
+                            <i-button type="primary">Read</i-button>
+                            <i-button type="success">LoopRead</i-button>
+                            <i-button type="error">StopRead</i-button>
+                        </Button-Group>
+                    </i-Col>
+                </Row>   
+            </i-Header>
+            <i-Content>
+                <Row>
+                    <i-Col span="12" style="padding:10px;">
+                        <Card>
+                            <table class="default-table">
+                                <thead>
+                                    <th>Name</th>
+                                    <th>Value</th>
+                                    <th>Unit</th>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="item in batteryInfo1" :key="item.name">
+                                        <td>{{item.name}}</td>
+                                        <td>{{item.value}}</td>
+                                        <td>{{item.unit}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </Card>
+                    </i-Col>
+                    <i-Col span="12" style="padding:10px;">
+                            <Card>
+                                <table class="default-table">
+                                    <thead>
+                                        <th>Name</th>
+                                        <th>Value</th>
+                                        <th>Unit</th>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="item in batteryInfo2" :key="item.name">
+                                            <td>{{item.name}}</td>
+                                            <td>{{item.value}}</td>
+                                            <td>{{item.unit}}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </Card>                   
+                    </i-Col>
+                </Row>
+            </i-Content>
+        </Layout>
+    </div>
+    <script src="dist/vue.min.js"></script>
+    <script src="dist/iview.min.js"></script>
+    <script>
+        new Vue({
+            el:'#app',
+            data:{
+                batteryInfo1:[
+                    {name:'vcells1',value:'',unit:'MV'},
+                    {name:'vcells2',value:'',unit:'MV'},
+                    {name:'vcells3',value:'',unit:'MV'},
+                    {name:'vcells4',value:'',unit:'MV'},
+                    {name:'vcells5',value:'',unit:'MV'},
+                    {name:'vcells6',value:'',unit:'MV'},
+                    {name:'vcells7',value:'',unit:'MV'},
+                    {name:'vcells8',value:'',unit:'MV'},
+                    {name:'vcells9',value:'',unit:'MV'},
+                    {name:'vcells10',value:'',unit:'MV'},
+                    {name:'vcells11',value:'',unit:'MV'},
+                    {name:'vcells12',value:'',unit:'MV'},
+                    {name:'vcells13',value:'',unit:'MV'},
+                    {name:'vcells14',value:'',unit:'MV'},
+                    {name:'vcells15',value:'',unit:'MV'},
+                    {name:'vcells16',value:'',unit:'MV'},
+                    {name:'vcells17',value:'',unit:'MV'},
+                    {name:'vcells18',value:'',unit:'MV'},
+                    {name:'vcells19',value:'',unit:'MV'},
+                    {name:'vcells20',value:'',unit:'MV'},
+                    {name:'vcells21',value:'',unit:'MV'},
+                    {name:'vcells22',value:'',unit:'MV'},
+                    {name:'vcells23',value:'',unit:'MV'},
+                    {name:'vcells24',value:'',unit:'MV'},
+                ],
+                batteryInfo2:[
+                    {name:'voltagePack',value:'',unit:'MV'},
+                    {name:'currentMa',value:'',unit:'MA'},
+                    {name:'temperature1',value:'',unit:'℃'},
+                    {name:'remainingCapacityMah',value:'',unit:'Mah'},
+                    {name:'designCapacityMah',value:'',unit:'Mah'},
+                    {name:'chargestatus',value:'',unit:'Mah'},
+                    {name:'dischargestatus',value:'',unit:'Mah'},
+                    {name:'chargewarning',value:'',unit:'Mah'},
+                    {name:'dischargewarning',value:'',unit:'Mah'},
+                    {name:'relativeStateOfCharge',value:'',unit:'Mah'},
+                    {name:'designVoltageMv',value:'',unit:'Mv'},
+                    {name:'fullChargeMah',value:'',unit:'Mv'},
+                    {name:'fullChargeVoltageMv',value:'',unit:'Mv'},
+                    {name:'chargingCurrentMa',value:'',unit:'Ma'},
+                    {name:'cycleCount',value:'',unit:'%'},
+                    {name:'serialNumber',value:'',unit:'%'},
+                    {name:'manufactureDate',value:'',unit:'Ymd'},
+                    {name:'year',value:'',unit:''},
+                    {name:'month',value:'',unit:''},
+                    {name:'day',value:'',unit:''},
+                    {name:'manufacturerName',value:'',unit:''},
+                    {name:'deviceName',value:'',unit:''},
+                    {name:'deviceChemistry',value:'',unit:''},
+
+         
+                ],
+            },
+            methods: {
+
+            },
+        })
+    </script>
+</body>
+</html>
