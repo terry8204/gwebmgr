@@ -260,7 +260,7 @@ var monitor = {
                     this.$emit("jump-report", "reportForm");
                     break;
                 case 'bms':
-                    open('bmssys.html')
+                    open('bmssys.html?deviceid=' + this.currentDeviceId);
                     break;
                 case 'obd':
                     alert('obd');

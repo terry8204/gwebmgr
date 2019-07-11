@@ -9,7 +9,9 @@
     <link rel="stylesheet" href="dist/styles/iview.css">
     <style>
         html,body,#app{width:100%;height:100%;};
-        [v-cloak] {display: none;}
+        [v-cloak] {
+            display: none;
+        }
         .width-100{width:100%;}
         table.default-table{
             /* -moz-border-radius: 5px;
@@ -59,16 +61,16 @@
     </style>
 </head>
 <body>
-    <div id='app' v-cloak>
+    <div id='app'>
         <Layout style="height:100%;">
             <i-Header>
                 <Row>   
                     <i-Col span="15">
-                        <h2 style="color:#fff;">电池参数</h2>
+                        <h2 style="color:#fff;">电池参数 &nbsp;&nbsp;更新时间:{{updatetimeStr}}</h2>
                     </i-Col>
                     <i-Col span="5" offset="4">
                         <Button-Group shape="circle">
-                            <i-button type="primary">Read</i-button>
+                            <i-button type="primary" @click="readInfo">Read</i-button>
                             <i-button type="success">LoopRead</i-button>
                             <i-button type="error">StopRead</i-button>
                         </Button-Group>
@@ -79,7 +81,7 @@
                 <Row>
                     <i-Col span="12" style="padding:10px;">
                         <Card>
-                            <table class="default-table">
+                            <table class="default-table" v-cloak>
                                 <thead>
                                     <th>Name</th>
                                     <th>Value</th>
@@ -97,7 +99,7 @@
                     </i-Col>
                     <i-Col span="12" style="padding:10px;">
                             <Card>
-                                <table class="default-table">
+                                <table class="default-table" v-cloak>
                                     <thead>
                                         <th>Name</th>
                                         <th>Value</th>
@@ -117,37 +119,51 @@
             </i-Content>
         </Layout>
     </div>
+
     <script src="dist/vue.min.js"></script>
     <script src="dist/iview.min.js"></script>
+    <script src="./js/jquery.js"></script>
+    <script src="./js/js.cookie.min.js"></script>
+    <script src="./js/dateformat.js"></script>
+
+    <script>
+        var token = Cookies.get("token");
+        if (token == undefined) {
+            window.location.href = "index.html";
+        };
+    </script>
+    <script src="./js/config.js"></script>
+    <script src="./js/util.js"></script>
     <script>
         new Vue({
             el:'#app',
             data:{
+                updatetimeStr:'',
                 batteryInfo1:[
-                    {name:'vcells1',value:'',unit:'MV'},
-                    {name:'vcells2',value:'',unit:'MV'},
-                    {name:'vcells3',value:'',unit:'MV'},
-                    {name:'vcells4',value:'',unit:'MV'},
-                    {name:'vcells5',value:'',unit:'MV'},
-                    {name:'vcells6',value:'',unit:'MV'},
-                    {name:'vcells7',value:'',unit:'MV'},
-                    {name:'vcells8',value:'',unit:'MV'},
-                    {name:'vcells9',value:'',unit:'MV'},
-                    {name:'vcells10',value:'',unit:'MV'},
-                    {name:'vcells11',value:'',unit:'MV'},
-                    {name:'vcells12',value:'',unit:'MV'},
-                    {name:'vcells13',value:'',unit:'MV'},
-                    {name:'vcells14',value:'',unit:'MV'},
-                    {name:'vcells15',value:'',unit:'MV'},
-                    {name:'vcells16',value:'',unit:'MV'},
-                    {name:'vcells17',value:'',unit:'MV'},
-                    {name:'vcells18',value:'',unit:'MV'},
-                    {name:'vcells19',value:'',unit:'MV'},
-                    {name:'vcells20',value:'',unit:'MV'},
-                    {name:'vcells21',value:'',unit:'MV'},
-                    {name:'vcells22',value:'',unit:'MV'},
-                    {name:'vcells23',value:'',unit:'MV'},
-                    {name:'vcells24',value:'',unit:'MV'},
+                    {name:'vcell1',value:'',unit:'MV'},
+                    {name:'vcell2',value:'',unit:'MV'},
+                    {name:'vcell3',value:'',unit:'MV'},
+                    {name:'vcell4',value:'',unit:'MV'},
+                    {name:'vcell5',value:'',unit:'MV'},
+                    {name:'vcell6',value:'',unit:'MV'},
+                    {name:'vcell7',value:'',unit:'MV'},
+                    {name:'vcell8',value:'',unit:'MV'},
+                    {name:'vcell9',value:'',unit:'MV'},
+                    {name:'vcell10',value:'',unit:'MV'},
+                    {name:'vcell11',value:'',unit:'MV'},
+                    {name:'vcell12',value:'',unit:'MV'},
+                    {name:'vcell13',value:'',unit:'MV'},
+                    {name:'vcell14',value:'',unit:'MV'},
+                    {name:'vcell15',value:'',unit:'MV'},
+                    {name:'vcell16',value:'',unit:'MV'},
+                    {name:'vcell17',value:'',unit:'MV'},
+                    {name:'vcell18',value:'',unit:'MV'},
+                    {name:'vcell19',value:'',unit:'MV'},
+                    {name:'vcell20',value:'',unit:'MV'},
+                    {name:'vcell21',value:'',unit:'MV'},
+                    {name:'vcell22',value:'',unit:'MV'},
+                    {name:'vcell23',value:'',unit:'MV'},
+                    {name:'vcell24',value:'',unit:'MV'},
                 ],
                 batteryInfo2:[
                     {name:'voltagePack',value:'',unit:'MV'},
@@ -178,8 +194,48 @@
                 ],
             },
             methods: {
+                readInfo:function(){
+                    this.queryBmsInfo();
+                },
+                queryBmsInfo:function(){
+                    var url = myUrls.queryBmsInfo() , me = this;
+                    utils.sendAjax(url,{deviceid:this.deviceid},function (resp) { 
+                        console.log('resp', resp);
+                        if(resp.status === 0){
+                            if(resp.bms){
+                                resp.bms.manufacturedate = resp.bms.year + '-' + resp.bms.month + '-' + resp.bms.day;
+                                me.setValue(resp.bms);
+                            }else{
 
+                            }
+                        };
+                    })
+                },
+                setValue:function(bms){
+                    var batteryInfo1 = this.batteryInfo1;
+                    var batteryInfo2 = this.batteryInfo2;
+                    var newBatteryInfo1 = [];
+                    var newBatteryInfo2 = [];
+                    
+                    batteryInfo1.forEach(function (item,index) {
+                        var key = item.name.toLowerCase();
+                        item.value = bms[key];
+                        newBatteryInfo1.push(item);
+                    })
+                    batteryInfo2.forEach(function (item,index) {
+                        var key = item.name.toLowerCase();
+                        item.value = bms[key];
+                        newBatteryInfo2.push(item);
+                    })
+                    this.batteryInfo1 = newBatteryInfo1;
+                    this.batteryInfo2 = newBatteryInfo2;
+                    this.updatetimeStr = DateFormat.longToDateTimeStr(bms.updatetime, 0);
+                }
             },
+            mounted:function(){
+                this.deviceid = utils.getParameterByName('deviceid');
+                this.queryBmsInfo();
+            }
         })
     </script>
 </body>

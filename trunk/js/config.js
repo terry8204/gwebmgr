@@ -340,6 +340,9 @@ var myUrls = {
   queryInsures: function () {
     return this.host + 'webapi?action=queryinsures&token=' + token;
   },
+  queryBmsInfo: function () {
+    return this.host + 'webapi?action=querybmsinfo&token=' + token;
+  },
 
 }
 
