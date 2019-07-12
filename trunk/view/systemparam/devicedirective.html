@@ -544,7 +544,20 @@
 
                     utils.sendAjax(url, data, function (resp) {
                         if (resp.status == 0) {
+                            me.allDirectiveList.forEach(function (item) { 
+                                if(item.devicetype == data.devicetype &&item.predictcmdid === data.predictcmdid){
+                                    data.isSync = data.sync == 1 ? '同步':'异步';
+                                    Object.assign(item,data)
+                                }
+                            }); 
+                            me.tableData.forEach(function (item) { 
+                                if(item.devicetype == data.devicetype &&item.predictcmdid === data.predictcmdid){
+                                    data.isSync = data.sync == 1 ? '同步':'异步';
+                                    Object.assign(item,data);
+                                }
+                            });
                             me.$Message.success("编辑成功");
+                            me.editDirectiveModal = false;
                         }else{
                             me.$Message.error(resp.cause);
                         };
