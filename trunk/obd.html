@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="dist/styles/iview.css">
+    <style>
+        html,body,#app,.height-100{width:100%;height:100%;box-sizing: border-box};
+        [v-cloak] {
+            display: none;
+        }
+        .speed-wrapper{
+            height: 100%;
+        }
+        .i-col{
+            height:100%;padding: 10px
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <Layout style="height:100%;">
+            <i-Header>
+            
+            </i-Header>
+            <i-Content>
+                <div style="position: absolute;left: 0;right: 0; top: 64px;bottom: 0;">
+                        <Row style="height: 60%;">   
+                            <i-Col span="12" style="height: 100%;">
+                                <div class="speed-wrapper" id="speed"></div>
+                            </i-Col>
+                            <i-Col span="12" style="height: 100%;"> 
+                                <div class="speed-wrapper" id="rpm"></div>
+                            </i-Col>
+                        </Row> 
+                        <Row style="height:40%">   
+                            <i-Col span="8" style="height:100%" v-for="(item,index) in counterList" :key="index">
+                                <Row style="height: 50%;">   
+                                    <i-Col span="12"  class="i-col">
+                                        <count-to :end="item.end1" :title="item.title1" :icon="item.icon1" :unit="item.unit1"></count-to>
+                                    </i-Col>
+                                    <i-Col span="12" class="i-col">
+                                        <count-to :end="item.end2" :title="item.title2" :icon="item.icon2" :unit="item.unit2"></count-to>
+                                    </i-Col>
+                                </Row>
+                                <Row style="height: 50%;">   
+                                    <i-Col span="12" class="i-col">
+                                        <count-to :end="item.end3" :title="item.title3" :icon="item.icon3" :unit="item.unit3"></count-to>
+                                    </i-Col>
+                                    <i-Col span="12" class="i-col" v-if="item.title4">
+                                        <count-to :end="item.end4" :title="item.title4" :icon="item.icon4" :unit="item.unit4"></count-to>
+                                    </i-Col>
+                                </Row>
+                            </i-Col>
+                        </Row> 
+                </div>
+            </i-Content>
+        </Layout>   
+    </div>
+    <style>
+        .count-to-wrap{
+            width: 100%;height: 100%;
+            border-radius: 10px;
+            border:1px solid #EFF1F3;
+            background-color: #ffffff;
+        }
+        .count-to-wrap>div{
+            float: left;
+            height: 100%;
+        }
+        .count-to-wrap>div.left{
+            width: 30%;
+            background: red;
+            border-radius: 10px 0 0 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #ffffff;
+        }
+        .count-to-wrap>div.right{
+            width: 70%;
+            border-radius: 0px 10px 10px 0px;
+        }
+        .count-to-wrap>div.right>.conut{
+            height: 70%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 30px;
+            font-weight: 600;
+        }
+        .count-to-wrap>div.right>.title{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    </style>
+    <script type="text/template" id="count-to">
+        <div class='count-to-wrap'>
+             <div class="left" :style="{backgroundColor:randomColor}">
+                <Icon :type="icon" :size="28" />
+             </div> 
+             <div class="right">
+                 <div class='conut'>
+                     <span :id="countid">{{end}}</span>
+                     <span>{{unit}}</span>
+                </div>
+                 <div class='title'>
+                     {{title}}
+                 </div>
+             </div> 
+        </div>
+    </script>
+    <script src="dist/vue.min.js"></script>
+    <script src="dist/iview.min.js"></script>
+    <script src="./js/jquery.js"></script>
+    <script src="./js/js.cookie.min.js"></script>
+    <script src="./js/dateformat.js"></script>
+    <script src="./js/echarts.min.js"></script>
+    <script src="./js/countup.min.js"></script>
+    <script>
+        Vue.component('count-to',{
+            template:document.getElementById('count-to').innerHTML,
+            props:{
+                start:{
+                    type:Number,
+                    default:0,
+                },
+                end:{
+                    type:Number,
+                    required: true
+                },
+                title:{
+                    type:String,
+                    required: true
+                },
+                duration: {
+                    type: Number,
+                    default: 2
+                },
+                icon: {
+                    type: String,
+                    default: "ios-albums"
+                },
+                unit: {
+                    type: String,
+                    default: ""
+                },
+            },
+            data:function () {  
+                return {
+                    counter:null,
+                }
+            },
+            computed:{
+                countid:function(){
+                    return 'count-to'+ this._uid;
+                },
+                randomColor:function(){
+                    function randomNumber() {
+                        return Math.floor(Math.random()*255-1)
+                    }
+                    return ('rgb(' +  randomNumber() +','+  randomNumber()+','+  randomNumber()+ ')')
+                }
+            },
+            methods: {
+                initCountTo() {
+                    var that = this;
+                    this.counter = new CountUp(this.countid, this.start, this.end,0, this.duration, {
+                        useEasing: true,
+                        useGrouping: false,
+                        decimal: false
+                    })
+                    setTimeout(function (){
+                        if (!that.counter.error) that.counter.start();
+                    }, 0)
+                }
+            },
+            mounted:function(){
+                var that = this;
+                this.$nextTick(function () { 
+                    that.initCountTo();
+                });
+            }
+        })
+        new Vue({
+            el:"#app",
+            data : {
+                speedChart:null,
+                rpmChart:null,
+                title:"你好呀",
+                counterList:[
+                    {
+                        end1:103,end2:203,end3:303,end4:403,
+                        title1:"发动机负荷",title2:"电瓶电压",title3:"行驶瞬间油耗",title4:"怠速瞬间油耗",
+                        icon1:"md-body",icon2:"md-body",icon3:"md-body",icon4:"md-body", 
+                        unit1:'%',unit2:'V',unit3:'L/100km',unit4:'L/h',
+                    },
+                    {
+                        end1:103,end2:203,end3:303,end4:403,
+                        title1:"冷却液温度",title2:"空气流量",title3:"节气门位置",title4:"燃油压力",
+                        icon1:"md-body",icon2:"md-body",icon3:"md-body",icon4:"md-body", 
+                        unit1:'℃',unit2:'g/s',unit3:'%',unit4:'kPa',
+                    },
+                    {
+                        end1:103,end2:203,end3:303,end4:false,
+                        title1:"进气温度",title2:"进气压力",title3:"油量百分比",title4:false,
+                        icon1:"md-body",icon2:"md-body",icon3:"md-body",icon4:false, 
+                        unit1:'℃',unit2:'kPa',unit3:'%',unit4:false,
+                    },
+                ]
+            },
+            methods: {
+                initApp:function() {
+                    var that = this;
+                    this.speedChart = echarts.init(document.getElementById('speed'));
+                    this.rpmChart = echarts.init(document.getElementById('rpm'));
+                    this.setOptionSpeedChart();
+                    this.setOptionRpmChart();
+                    window.onresize = function () { 
+                        that.speedChart.resize();
+                        that.rpmChart.resize();
+                    }
+                },
+                setOptionSpeedChart:function(){
+                    var option = {
+                            tooltip : {
+                                formatter: "{b} : {c}km/h"
+                            },
+                            series: [
+                                {
+                                    name: '速度',
+                                    type: 'gauge',
+                                    detail: {formatter:'{value}km/h'},
+                                    data: [{value: 80, name: '速度'}]
+                                }
+                            ]
+                        };
+                    // 使用刚指定的配置项和数据显示图表。
+                    this.speedChart.setOption(option);
+                },
+                setOptionRpmChart:function(){
+                    var option = {
+                            tooltip : {
+                                formatter: "{a} <br/>{b} : {c}%"
+                            },
+                            series: [
+                                {
+                                    name: '业务指标',
+                                    type: 'gauge',
+                                    detail: {formatter:'{value}%'},
+                                    data: [{value: 50, name: '完成率'}]
+                                }
+                            ]
+                        };
+                    // 使用刚指定的配置项和数据显示图表。
+                    this.rpmChart.setOption(option);
+                },
+            },
+            mounted:function(){
+                this.initApp();
+
+            }
+        })
+    </script>
+</body>
+</html>

@@ -27,7 +27,7 @@ var utils = {
       url: url,
       type: 'post',
       data: encode,
-      timeout: 10000,
+      timeout: 30000,
       dataType: 'json',
       success: function (resp) {
         if (resp) {

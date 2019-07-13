@@ -149,12 +149,12 @@ new Vue({
                 type: "post",
                 data: encode,
                 dataType: "json",
+                timeout: 30000,
                 success: function (resp) {
                     callback(resp)
                 },
                 error: function (e) {
-                    console.log(e);
-                    me.$Message.error('服务器错误!');
+                    me.$Message.error('login error:' + JSON.stringify(e));
                 },
                 complete: function () {
                     me.loading = false;

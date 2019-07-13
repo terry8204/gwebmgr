@@ -263,7 +263,7 @@ var monitor = {
                     open('bmssys.html?deviceid=' + this.currentDeviceId);
                     break;
                 case 'obd':
-                    alert('obd');
+                    window.open("obd.html?deviceid=" + this.currentDeviceId);
                     break;
                 case 'weight':
                     alert('weight');
