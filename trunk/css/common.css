@@ -160,6 +160,8 @@ ul,ol,li{
 #directive-wraper div.directive-type-wraper>div.device-type{
     left: 0;
     width: 240px;
+    bottom: 0;
+    overflow-y: auto;
 }
 #directive-wraper div.directive-type-wraper>div.directive-type{
     right: 0;

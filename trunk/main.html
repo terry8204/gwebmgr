@@ -536,6 +536,42 @@
                             </i-col>
                         </Row>
 
+                        <Row style="margin: 10px 0" v-for="item in selectedCmdInfo.params" :key="item.desc" v-if="selectedCmdInfo.type === 'time'">
+                            <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{item.desc}} : &nbsp;</i-col>
+                            <i-col span="16">
+                                <Time-Picker format="HH:mm"  type="time" placeholder="选择时间" v-model="cmdParams[item.type]"></Time-Picker>
+                            </i-col>
+                        </Row>
+
+                        <Row style="margin: 10px 0" v-for="item in selectedCmdInfo.params" :key="item.desc" v-if="selectedCmdInfo.type === 'weektime'">
+                            <i-col span="3" style="height: 100%;text-align:right;line-height:32px;">
+                                    <Row style="margin: 10px 0">
+                                        <i-col span="24">
+                                            {{item.desc}} : &nbsp;    
+                                        </i-col>       
+                                    </Row>  
+                            </i-col>
+                            <i-col span="18">                  
+                                    <Row style="margin: 10px 0">
+                                        <i-col span="24">
+                                            <Time-Picker format="HH:mm"  type="time" placeholder="选择时间" v-model="cmdParams[item.type].time"></Time-Picker>
+                                        </i-col>       
+                                    </Row>                                                 
+                                    <Row style="margin: 10px 0">
+                                        <i-col span="24">
+                                            <CheckboxGroup v-model="cmdParams[item.type].weekselected">
+                                                <Checkbox label="一"><span>一</span></Checkbox>
+                                                <Checkbox label="二"><span>二</span></Checkbox>
+                                                <Checkbox label="三"><span>三</span></Checkbox>
+                                                <Checkbox label="四"><span>四</span></Checkbox>
+                                                <Checkbox label="五"><span>五</span></Checkbox>
+                                                <Checkbox label="六"><span>六</span></Checkbox>
+                                                <Checkbox label="日"><span>日</span></Checkbox>
+                                            </CheckboxGroup>
+                                        </i-col>       
+                                    </Row>                                                 
+                            </i-col>
+                        </Row>
                         <Row style="margin: 10px 0" v-show="selectedCmdInfo.cmdpwd">
                             <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">密码 : &nbsp;</i-col>
                             <i-col span="16">

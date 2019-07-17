@@ -73,6 +73,8 @@
                         <i-option value="list">下拉选择</i-option>
                         <i-option value="timeperiod">时间段</i-option>
                         <i-option value="remind">闹钟</i-option>
+                        <i-option value="time">时间</i-option>
+                        <i-option value="weektime">星期时间</i-option>
                     </i-select> 
                 </i-col>
             </Row>
@@ -124,6 +126,17 @@
                         </i-col>
                     </Row>
                 </i-col>
+                
+                <!-- <i-col span="20" v-if="selectParamType==='time'">
+                    <Row style="margin: 5px 0">
+                        <i-col span="15" offset="5">
+                            <p v-for="item in previewObjList" :key="item.type" style="margin: 5px 0">
+                                {{item.title}} : &nbsp; <Time-Picker format="HH:mm"  type="time" placeholder="选择时间" v-model="item.formatVlaue"></Time-Picker>
+                            </p>
+                        </i-col>
+                    </Row>
+                </i-col> -->
+
             </Row>
             <Row style="margin: 10px 0">
                 <i-col span="10" :offset="8">

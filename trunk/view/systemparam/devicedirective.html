@@ -121,6 +121,8 @@
                     <i-option value="list">下拉选择</i-option>
                     <i-option value="timeperiod">时间段</i-option>
                     <i-option value="remind">闹钟</i-option>
+                    <i-option value="time">时间</i-option>
+                    <i-option value="weektime">星期时间</i-option>
                 </i-select> 
             </i-col>
         </Row>
@@ -618,7 +620,7 @@
                     this.cmddescren=data.cmddescren;
                     this.cmddescrtw=data.cmddescrtw;
 
-                    
+                  
                     this.paramsen=data.paramsen;
                     this.paramstw=data.paramstw;
                     this.common = data.common;
@@ -628,7 +630,14 @@
                     
                     if(data.params){
                         var paramsArr = data.params.split('\n');
-                        if(data.cmdtype !== 'text' && data.cmdtype !== 'list' && data.cmdtype !== 'timeperiod'){
+                        if(
+                            data.cmdtype !== 'text' 
+                            && data.cmdtype !== 'list' 
+                            && data.cmdtype !== 'timeperiod' 
+                            && data.cmdtype !== 'remind'
+                            && data.cmdtype !== 'time'
+                            && data.cmdtype !== 'weektime'  
+                        ){
                             this.params = data.params;
                         }else{
                             this.params=paramsArr.join("\n");

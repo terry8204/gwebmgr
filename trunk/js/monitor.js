@@ -305,6 +305,7 @@ var monitor = {
 
                 var paramsXMLObj = utils.parseXML(cmdInfo.params);
                 // this.selectedCmdInfo.type = paramsXMLObj.type;
+                console.log('cmdVal', cmdVal);
                 this.selectedCmdInfo.params = paramsXMLObj.paramsListObj;
 
                 this.selectedCmdInfo.params.forEach(function (param, index) {
@@ -313,6 +314,8 @@ var monitor = {
                             me.cmdParams[param.type] = cmdVal[index].split("-");
                         } else if (cmdInfo.cmdtype === 'remind') {
                             me.cmdParams[param.type] = me.parserToRemindJson(cmdVal[index]);
+                        } else if (cmdInfo.cmdtype === 'weektime') {
+                            me.cmdParams[param.type] = me.parserToWeekTimeJson(cmdVal[index]);
                         } else {
                             me.cmdParams[param.type] = cmdVal[index];
                         }
@@ -323,6 +326,8 @@ var monitor = {
                         } else if (cmdInfo.cmdtype === 'remind') {
                             var remindJson = me.parserToRemindJson(param.value);
                             me.cmdParams[param.type] = remindJson;
+                        } else if (cmdInfo.cmdtype === 'weektime') {
+                            me.cmdParams[param.type] = me.parserToWeekTimeJson(param.value);
                         } else {
                             me.cmdParams[param.type] = param.value;
                         }
@@ -335,6 +340,32 @@ var monitor = {
             };
 
             this.dispatchDirectiveModal = true;
+        },
+        parserToWeekTimeJson: function (value) {
+            var valueArr = value.split("-"),
+                remindJson = {
+                    time: valueArr[0],
+                    weekselected: []
+                };
+
+            var weekStr = valueArr[1];
+            var week1 = weekStr.charAt(0) == 1 ? '一' : false;
+            var week2 = weekStr.charAt(1) == 1 ? '二' : false;
+            var week3 = weekStr.charAt(2) == 1 ? '三' : false;
+            var week4 = weekStr.charAt(3) == 1 ? '四' : false;
+            var week5 = weekStr.charAt(4) == 1 ? '五' : false;
+            var week6 = weekStr.charAt(5) == 1 ? '六' : false;
+            var week7 = weekStr.charAt(6) == 1 ? '日' : false;
+
+            week1 && remindJson.weekselected.push(week1);
+            week2 && remindJson.weekselected.push(week2);
+            week3 && remindJson.weekselected.push(week3);
+            week4 && remindJson.weekselected.push(week4);
+            week5 && remindJson.weekselected.push(week5);
+            week6 && remindJson.weekselected.push(week6);
+            week7 && remindJson.weekselected.push(week7);
+
+            return remindJson;
         },
         parserToRemindJson: function (value) {
             var valueArr = value.split("-"),
@@ -364,6 +395,25 @@ var monitor = {
                 week7 && remindJson.weekselected.push(week7);
             }
             return remindJson;
+        },
+        encodeWeekTimeParams: function (paramsObj) {
+
+            var resultArr = [];
+            for (var key in paramsObj) {
+                var item = paramsObj[key];
+                var weekStr = "",
+                    weekArr = item.weekselected;
+
+                weekArr.indexOf("一") !== -1 ? weekStr += '1' : weekStr += '0';
+                weekArr.indexOf("二") !== -1 ? weekStr += '1' : weekStr += '0';
+                weekArr.indexOf("三") !== -1 ? weekStr += '1' : weekStr += '0';
+                weekArr.indexOf("四") !== -1 ? weekStr += '1' : weekStr += '0';
+                weekArr.indexOf("五") !== -1 ? weekStr += '1' : weekStr += '0';
+                weekArr.indexOf("六") !== -1 ? weekStr += '1' : weekStr += '0';
+                weekArr.indexOf("日") !== -1 ? weekStr += '1' : weekStr += '0';
+                resultArr.push(item.time + "-" + weekStr);
+            }
+            return resultArr;
         },
         encodeRemindParams: function (paramsObj) {
             var resultArr = [];
@@ -419,6 +469,9 @@ var monitor = {
                 case 'text':
                     params = Object.values(this.cmdParams);
                     break;
+                case 'time':
+                    params = Object.values(this.cmdParams);
+                    break;
                 case 'timeperiod':
                     for (var key in this.cmdParams) {
                         params.push(this.cmdParams[key].join("-"))
@@ -426,7 +479,9 @@ var monitor = {
                     break;
                 case 'remind':
                     params = this.encodeRemindParams(this.cmdParams);
-                    console.log('params', params);
+                    break;
+                case 'weektime':
+                    params = this.encodeWeekTimeParams(this.cmdParams);
                     break;
                 default:
                     params = [this.selectedTypeVal]
