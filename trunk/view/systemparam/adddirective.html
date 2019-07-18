@@ -121,22 +121,77 @@
                     <Row style="margin: 5px 0">
                         <i-col span="15" offset="5">
                             <p v-for="item in previewObjList" :key="item.type" style="margin: 5px 0">
-                                remind
+                                    <Row>
+                                            <i-col span="16">
+                                                <Time-Picker format="HH:mm" placeholder="选择时间"></Time-Picker>
+                                            </i-col>    
+                                            <i-col span="8" style="height: 100%;line-height:32px;">
+                                                <i-switch />
+                                            </i-col>    
+                                        </Row>
+                                        <Row style="margin: 10px 0">
+                                            <i-col span="16">
+                                                <Radio-Group>
+                                                    <Radio label="1"> <span>一次</span></Radio>
+                                                    <Radio label="2"> <span>每天</span></Radio>
+                                                    <Radio label="3"><span>每周</span></Radio>
+                                                </Radio-Group>
+                                            </i-col>       
+                                        </Row>
+                                        <Row style="margin: 10px 0">
+                                            <i-col span="24">
+                                                <CheckboxGroup>
+                                                    <Checkbox label="一"><span>一</span></Checkbox>
+                                                    <Checkbox label="二"><span>二</span></Checkbox>
+                                                    <Checkbox label="三"><span>三</span></Checkbox>
+                                                    <Checkbox label="四"><span>四</span></Checkbox>
+                                                    <Checkbox label="五"><span>五</span></Checkbox>
+                                                    <Checkbox label="六"><span>六</span></Checkbox>
+                                                    <Checkbox label="日"><span>日</span></Checkbox>
+                                                </CheckboxGroup>
+                                            </i-col>       
+                                        </Row>
                             </p>
                         </i-col>
                     </Row>
                 </i-col>
-                
-                <!-- <i-col span="20" v-if="selectParamType==='time'">
-                    <Row style="margin: 5px 0">
-                        <i-col span="15" offset="5">
-                            <p v-for="item in previewObjList" :key="item.type" style="margin: 5px 0">
-                                {{item.title}} : &nbsp; <Time-Picker format="HH:mm"  type="time" placeholder="选择时间" v-model="item.formatVlaue"></Time-Picker>
-                            </p>
-                        </i-col>
-                    </Row>
-                </i-col> -->
 
+                <i-col span="20" v-if="selectParamType==='time'">
+                        <Row style="margin: 5px 0">
+                            <i-col span="15" offset="5">
+                                <p v-for="item in previewObjList" :key="item.type" style="margin: 5px 0">
+                                    {{item.title}} : &nbsp;  <Time-Picker format="HH:mm"  type="time" :value="item.value" placeholder="选择时间"></Time-Picker>
+                                </p>
+                            </i-col>
+                        </Row>
+                </i-col>
+
+                <i-col span="20" v-if="selectParamType==='weektime'">
+                        <Row style="margin: 5px 0">
+                            <i-col span="15" offset="5">
+                                <p v-for="item in previewObjList" :key="item.type" style="margin: 5px 0">
+                                        <Row style="margin: 10px 0">
+                                            <i-col span="24">
+                                                {{item.title}} &nbsp; <Time-Picker format="HH:mm"  type="time" placeholder="选择时间" v-model="item.time"></Time-Picker>
+                                            </i-col>       
+                                        </Row>                                                 
+                                        <Row style="margin: 10px 0">
+                                                <i-col span="24">
+                                                    <CheckboxGroup v-model="item.weekselected">
+                                                        <Checkbox label="一"><span>一</span></Checkbox>
+                                                        <Checkbox label="二"><span>二</span></Checkbox>
+                                                        <Checkbox label="三"><span>三</span></Checkbox>
+                                                        <Checkbox label="四"><span>四</span></Checkbox>
+                                                        <Checkbox label="五"><span>五</span></Checkbox>
+                                                        <Checkbox label="六"><span>六</span></Checkbox>
+                                                        <Checkbox label="日"><span>日</span></Checkbox>
+                                                    </CheckboxGroup>
+                                                </i-col>       
+                                        </Row>   
+                                </p>
+                            </i-col>
+                        </Row>
+                </i-col>
             </Row>
             <Row style="margin: 10px 0">
                 <i-col span="10" :offset="8">
@@ -272,6 +327,25 @@
                                 value = value || "00:00-00:00";
                                 var formatVlaue = value.split("-");
                                 previewObj = { type: type, value: value , title:title ,formatVlaue:formatVlaue};
+                            }else if(this.selectParamType === 'weektime'){
+                                var formatVlaue = value.split("-");
+                                var weekStr = formatVlaue[1] , weekselected = [];
+                                var week1 = weekStr.charAt(0) == 1 ? '一' : false;
+                                var week2 = weekStr.charAt(1) == 1 ? '二' : false;
+                                var week3 = weekStr.charAt(2) == 1 ? '三' : false;
+                                var week4 = weekStr.charAt(3) == 1 ? '四' : false;
+                                var week5 = weekStr.charAt(4) == 1 ? '五' : false;
+                                var week6 = weekStr.charAt(5) == 1 ? '六' : false;
+                                var week7 = weekStr.charAt(6) == 1 ? '日' : false;
+
+                                week1 && weekselected.push(week1);
+                                week2 && weekselected.push(week2);
+                                week3 && weekselected.push(week3);
+                                week4 && weekselected.push(week4);
+                                week5 && weekselected.push(week5);
+                                week6 && weekselected.push(week6);
+                                week7 && weekselected.push(week7);
+                                previewObj = { type: type , time: formatVlaue[0],weekselected:weekselected, title:title };
                             }else{
                                 previewObj = { type: type, value: value , title:title };
                             }
