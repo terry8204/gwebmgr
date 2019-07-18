@@ -166,6 +166,8 @@ ul,ol,li{
 #directive-wraper div.directive-type-wraper>div.directive-type{
     right: 0;
     left: 250px;
+    bottom: 0;
+    overflow-y: auto;
 }
 .ivu-select-selection .ivu-icon{
     margin-top:-7px;

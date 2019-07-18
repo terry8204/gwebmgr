@@ -32,6 +32,7 @@ var monitor = {
             isShowBmsBtn: false,
             isShowObdBtn: false,
             isShowWeightBtn: false,
+            isShowWatermeterBtn: false,
 
             map: null,
             placement: "right-start",
@@ -268,6 +269,9 @@ var monitor = {
                 case 'weight':
                     alert('weight');
                     break;
+                case 'watermeter':
+                    alert('watermeter');
+                    break;
             }
         },
         queryDeviceBaseInfo: function () {
@@ -347,7 +351,6 @@ var monitor = {
                     time: valueArr[0],
                     weekselected: []
                 };
-
             var weekStr = valueArr[1];
             var week1 = weekStr.charAt(0) == 1 ? '一' : false;
             var week2 = weekStr.charAt(1) == 1 ? '二' : false;
@@ -1069,6 +1072,7 @@ var monitor = {
             var result2 = false;
             var result3 = false;
             var result4 = false;
+            var result5 = false;
 
             for (var i = 0; i < deviceTypes.length; i++) {
                 if (this.currentDeviceType == deviceTypes[i].devicetypeid) {
@@ -1086,6 +1090,9 @@ var monitor = {
                         if (functions.indexOf("weight") != -1) {
                             result4 = true;
                         };
+                        if (functions.indexOf("watermeter") != -1) {
+                            result5 = true;
+                        };
                     }
                 }
             };
@@ -1093,6 +1100,7 @@ var monitor = {
             this.isShowBmsBtn = result2;
             this.isShowObdBtn = result3;
             this.isShowWeightBtn = result4;
+            this.isShowWatermeterBtn = result5;
         },
         getDeviceTypeName: function (deviceTypeId) {
             var typeName = "", deviceTypes = this.deviceTypes;
