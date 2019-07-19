@@ -343,7 +343,9 @@ var myUrls = {
   queryBmsInfo: function () {
     return this.host + 'webapi?action=querybmsinfo&token=' + token;
   },
-
+  queryObdInfo: function () {
+    return this.host + 'webapi?action=queryobdinfo&token=' + token;
+  }
 }
 
 

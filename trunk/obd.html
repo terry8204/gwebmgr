@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <title>ODB信息</title>
     <link rel="stylesheet" href="dist/styles/iview.css">
     <style>
         html,body,#app,.height-100{width:100%;height:100%;box-sizing: border-box;overflow: hidden;};
@@ -18,6 +18,13 @@
             height:100%;padding: 10px
         }
     </style>
+    <script src="./js/js.cookie.min.js"></script>
+    <script>
+        var token = Cookies.get("token");
+        if (token == undefined) {
+            window.location.href = "index.html";
+        };
+    </script>
 </head>
 <body>
     <div id="app">
@@ -25,7 +32,7 @@
             <i-Header>
                 <Row style="height: 100%;">   
                     <i-Col span="12" style="height: 100%;color: #ffffff">
-                        <h1>On-Board Diagnostics</h1>
+                        <h1 v-show="updatetime">On-Board Diagnostics</h1>
                     </i-Col>
                     <i-Col span="12" style="height: 100%;color: #ffffff;text-align: right;"> 
                         <h2>更新时间 : {{updatetime}}</h2>
@@ -123,7 +130,8 @@
     <script src="dist/vue.min.js"></script>
     <script src="dist/iview.min.js"></script>
     <script src="./js/jquery.js"></script>
-    <script src="./js/js.cookie.min.js"></script>
+    <script src="./js/config.js"></script>
+    <script src="./js/util.js"></script>
     <script src="./js/dateformat.js"></script>
     <script src="./js/echarts.min.js"></script>
     <script src="./js/countup.min.js"></script>
@@ -161,6 +169,11 @@
                     counter:null,
                 }
             },
+            watch: {
+                end:function(newVal){
+                    this.counter.update(newVal);
+                }
+            },
             computed:{
                 countid:function(){
                     return 'count-to'+ this._uid;
@@ -195,24 +208,25 @@
         new Vue({
             el:"#app",
             data : {
+                deviceid:utils.getParameterByName('deviceid'),
                 speedChart:null,
                 rpmChart:null,
-                title:"你好呀",
+                updatetime:'' ,
                 counterList:[
                     {
-                        end1:103,end2:203,end3:7,end4:10,
+                        end1:0,end2:0,end3:0,end4:0,
                         title1:"发动机负荷",title2:"电瓶电压",title3:"行驶瞬间油耗",title4:"怠速瞬间油耗",
                         icon1:"md-body",icon2:"md-body",icon3:"md-body",icon4:"md-body", 
                         unit1:'%',unit2:'V',unit3:'L/100km',unit4:'L/h',
                     },
                     {
-                        end1:103,end2:203,end3:303,end4:403,
+                        end1:0,end2:0,end3:0,end4:0,
                         title1:"冷却液温度",title2:"空气流量",title3:"节气门位置",title4:"燃油压力",
                         icon1:"md-body",icon2:"md-body",icon3:"md-body",icon4:"md-body", 
                         unit1:'℃',unit2:'g/s',unit3:'%',unit4:'kPa',
                     },
                     {
-                        end1:103,end2:203,end3:303,end4:false,
+                        end1:0,end2:0,end3:0,end4:false,
                         title1:"进气温度",title2:"进气压力",title3:"油量百分比",title4:false,
                         icon1:"md-body",icon2:"md-body",icon3:"md-body",icon4:false, 
                         unit1:'℃',unit2:'kPa',unit3:'%',unit4:false,
@@ -226,12 +240,46 @@
                     this.rpmChart = echarts.init(document.getElementById('rpm'));
                     this.setOptionSpeedChart();
                     this.setOptionRpmChart();
+
                     window.onresize = function () { 
                         that.speedChart.resize();
-                        that.rpmChart.resize();
+                        that.rpmChart.resize();  // queryobdinfo
                     }
+
+                    this.$nextTick(()=>{
+                        this.deviceid && this.queryObdInfo();
+                    })
+                },  
+                queryObdInfo:function () { 
+                    var url = myUrls.queryObdInfo() , me = this;
+                    utils.sendAjax(url,{deviceid:this.deviceid},function (resp) { 
+                        if(resp.status == 0 && resp.record){
+                            me.setInfoValue(resp.record);
+                        }
+                    })
+                },
+                setInfoValue:function(record){
+                    this.updatetime = DateFormat.longToDateTimeStr(record.updatetime, 0);
+                    this.counterList[0].end1 = record.overloadcalculate;            // 发动机负荷
+                    this.counterList[0].end2 = record.controlvoltage;               // 电瓶电压
+                    this.counterList[0].end3 = record.gasolineconsumptionperhunkm;  // 行驶瞬时油耗
+                    this.counterList[0].end4 = record.gasolineconsumptionperhour;   // 怠速瞬时油耗
+                    this.counterList[1].end1 = record.coolanttemperature;           // 冷却液温度
+                    this.counterList[1].end2 = record.airmassflow;                 // 空气流量
+                    this.counterList[1].end3 = record.throttleposition;           // 节气门绝对位置
+                    this.counterList[1].end4 = record.oilpressure;                // 燃油压力 
+                    this.counterList[2].end1 = record.inlettemperature;           // 进气温度 
+                    this.counterList[2].end2 = record.inletbranchpressure;        // 进气管压力
+                    this.counterList[2].end3 = record.oilvalue;                   // 剩余油量 
+
+                    this.speedChart.setOption(this.getSeedOption(record.speed)); 
+                    this.rpmChart.setOption(this.getRpmOption(record.engineturnrate)); 
+               
                 },
                 setOptionSpeedChart:function(){
+                    this.speedChart.setOption(this.getSeedOption(0));
+                },
+                getSeedOption:function(value){
                     var option = {
                             backgroundColor: '#1E2542',
                             tooltip : {
@@ -305,14 +353,16 @@
                                             color: '#fff'
                                         }
                                     },
-                                    data: [{value: 80, name: 'km/h'}]
+                                    data: [{value: value, name: 'km/h'}]
                                 }
                             ]
                         };
-                    // 使用刚指定的配置项和数据显示图表。
-                    this.speedChart.setOption(option);
+                        return option
                 },
                 setOptionRpmChart:function(){
+                    this.rpmChart.setOption(this.getRpmOption(0));
+                },
+                getRpmOption:function (value) {
                     var option = {
                             backgroundColor: '#1E2542',
                             tooltip : {
@@ -321,11 +371,11 @@
                             series: [
                                 {
                                     min:0,
-                                    max:100,
+                                    max:10000,
                                     name: '业务指标',
                                     type: 'gauge',
                                     detail: {formatter:'{value}'},
-                                    data: [{value: 50, name: 'RPM'}],
+                                    data: [{value: value, name: 'RPM'}],
                                     title : {
                                         textStyle: {       // 其余属性默认使用全局文本样式，详见TEXTSTYLE
                                             fontWeight: 'bolder',
@@ -339,13 +389,7 @@
                                 }
                             ]
                         };
-                    // 使用刚指定的配置项和数据显示图表。
-                    this.rpmChart.setOption(option);
-                },
-            },
-            computed:{
-                updatetime:function(){
-                    return DateFormat.longToDateTimeStr(Date.now(), 0);
+                        return option
                 }
             },
             mounted:function(){
