@@ -375,13 +375,13 @@
                     var option = {
                             backgroundColor: '#1E2542',
                             tooltip : {
-                                formatter: "{a} <br/>{b} : {c}%"
+                                formatter: "{b} : {c}"
                             },
                             series: [
                                 {
                                     min:0,
                                     max:10000,
-                                    name: '业务指标',
+                                    name: 'RPM',
                                     type: 'gauge',
                                     detail: {formatter:'{value}'},
                                     data: [{value: value, name: 'RPM'}],

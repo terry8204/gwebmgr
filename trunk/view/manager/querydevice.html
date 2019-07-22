@@ -28,7 +28,7 @@
 
         <Modal v-model="modal" width="900" title="编辑设备">
             <div style="width:700px;margin:10px auto">
-                <Row style="margin: 10px 0" v-if="userType == 0">
+                <Row style="margin: 10px 0" v-if="userType == 0 || userType == 1">
                     <i-col span="4" style="height: 100%;text-align:right;line-height:32px;"><i style="color: red;display: inline-block;">*</i>&nbsp;选择账号 : &nbsp;</i-col>
                     <i-col span="8">
                         <div class="search-wrapper">
@@ -479,7 +479,7 @@ vueInstanse = new Vue({
                     
                     this.forwardurl && (data.forwardurl = this.forwardurl);
 
-                    if(this.userType == 0){
+                    if(this.userType == 0 || this.userType == 1 ){
                         data.creater = this.createrToUser;
                     }else{
                         data.creater = userName;
@@ -599,6 +599,7 @@ vueInstanse = new Vue({
             mixins:[mixIn],
             mounted:function () {
                 this.queryAllCompanyInfo(this.doQueryAllCompanyInfo);
+                userlists.push(userName);
                 this.userlists = userlists;
                 this.userType = vstore.state.userType;
                 this.getDeviceType();  
