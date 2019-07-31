@@ -73,7 +73,7 @@ vstore = new Vuex.Store({
             var cmdList = resp.records;
             context.commit('setAllCmdList', cmdList);
           } else {
-            Window.location.href = 'index.html';
+            window.location.href = 'index.html';
           }
         }
       );
