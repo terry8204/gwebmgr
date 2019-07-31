@@ -293,14 +293,14 @@ vueInstanse = new Vue({
                         var deviceid = record.deviceid;
                         var devicename = record.devicename;
                         var monitor = record.monitor;
-                  
+                   
                         if (
                             devicename.indexOf(self.queryParameter) != -1 || 
                             deviceid.indexOf(self.queryParameter) != -1 ||
                             record.pinYin.indexOf(queryParameterLowerCase) != -1 ||
                             record.firstLetter.indexOf(queryParameterLowerCase) != -1 ||
                             (record.forwardurl && record.forwardurl.indexOf(queryParameterLowerCase) != -1 )||
-                            (monitor && monitor.indexOf(this.queryParameter) != -1 )
+                            (monitor && (monitor.indexOf(self.queryParameter) != -1 ))
                         ){      
                             queryTableData.push(record);
                         }
