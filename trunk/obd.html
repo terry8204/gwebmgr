@@ -221,23 +221,23 @@
                 counterList:[
                     {
                         end1:0,end2:0,end3:0,end4:0,
-                        title1:"发动机负荷",title2:"电瓶电压",title3:"行驶瞬间油耗",title4:"怠速瞬间油耗",
+                        title1:"发动机负荷",title2:"电瓶电压",title3:"行驶瞬间油耗",title4:"怠速瞬间油耗", 
                         decimals1:0,decimals2:1,decimals3:2,decimals4:2,
-                        icon1:"md-body",icon2:"md-body",icon3:"md-body",icon4:"md-body", 
+                        icon1:"ios-car",icon2:"md-analytics",icon3:"ios-analytics",icon4:"ios-beaker-outline",
                         unit1:'%',unit2:'V',unit3:'L/100km',unit4:'L/h',
                     },
                     {
                         end1:0,end2:0,end3:0,end4:0,
                         title1:"冷却液温度",title2:"空气流量",title3:"节气门位置",title4:"燃油压力",
                         decimals1:0,decimals2:0,decimals3:0,decimals4:0,
-                        icon1:"md-body",icon2:"md-body",icon3:"md-body",icon4:"md-body", 
+                        icon1:"md-snow",icon2:"ios-aperture",icon3:"ios-hammer",icon4:"ios-water",
                         unit1:'℃',unit2:'g/s',unit3:'%',unit4:'kPa',
                     },
                     {
                         end1:0,end2:0,end3:0,end4:false,
                         title1:"进气温度",title2:"进气压力",title3:"油量百分比",title4:false,
                         decimals1:0,decimals2:0,decimals3:0,decimals4:0,
-                        icon1:"md-body",icon2:"md-body",icon3:"md-body",icon4:false, 
+                        icon1:"ios-thermometer-outline",icon2:"md-aperture",icon3:"ios-trending-up",icon4:false, 
                         unit1:'℃',unit2:'kPa',unit3:'%',unit4:false,
                     },
                 ]
@@ -252,11 +252,12 @@
 
                     window.onresize = function () { 
                         that.speedChart.resize();
-                        that.rpmChart.resize();  // queryobdinfo
+                        that.rpmChart.resize();
                     }
 
-                    this.$nextTick(()=>{
-                        this.deviceid && this.queryObdInfo();
+                    that.$nextTick(function(){
+                        that.deviceid && that.queryObdInfo();
+                        setInterval(function () {  that.queryObdInfo(); },10000);
                     })
                 },  
                 queryObdInfo:function () { 
