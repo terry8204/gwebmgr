@@ -17,6 +17,23 @@
         .i-col{
             height:100%;padding: 10px
         }
+        div.total-mileage{
+            position: absolute;
+            left: 0;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            margin: auto;
+            width: 200px;
+            height: 60px;
+            border-radius: 60px;
+            background-color: #3B4161;
+            text-align: center;
+            line-height: 60px;
+            color: #ffffff;
+            font-size: 18px;
+            font-weight: 600;
+        }
     </style>
     <script src="./js/js.cookie.min.js"></script>
     <script>
@@ -42,10 +59,15 @@
             <i-Content  style="background-color:#1E2542">
                 <div style="position: absolute;left: 0;right: 0; top: 64px;bottom: 0;">
                         <Row style="height: 60%;">   
-                            <i-Col span="12" style="height: 100%;">
+                            <i-Col span="10" style="height: 100%;">
                                 <div class="speed-wrapper" id="speed"></div>
                             </i-Col>
-                            <i-Col span="12" style="height: 100%;"> 
+                            <i-Col span="4" style="height: 100%;position: relative;">
+                                <div class="total-mileage">
+                                    总里程:{{totalMileage}}km
+                                </div>
+                            </i-Col>
+                            <i-Col span="10" style="height: 100%;"> 
                                 <div class="speed-wrapper" id="rpm"></div>
                             </i-Col>
                         </Row> 
@@ -218,6 +240,7 @@
                 speedChart:null,
                 rpmChart:null,
                 updatetime:'' ,
+                totalMileage:0,
                 counterList:[
                     {
                         end1:0,end2:0,end3:0,end4:0,
@@ -257,7 +280,7 @@
 
                     that.$nextTick(function(){
                         that.deviceid && that.queryObdInfo();
-                        setInterval(function () {  that.queryObdInfo(); },10000);
+                        that.deviceid && setInterval(function () {  that.queryObdInfo(); },10000);
                     })
                 },  
                 queryObdInfo:function () { 
@@ -281,7 +304,7 @@
                     this.counterList[2].end1 = record.inlettemperature;           // 进气温度 
                     this.counterList[2].end2 = record.inletbranchpressure;        // 进气管压力
                     this.counterList[2].end3 = record.oilvalue;                   // 剩余油量 
-
+                    this.totalMileage = record.mileage;
                     this.speedChart.setOption(this.getSeedOption(record.speed)); 
                     this.rpmChart.setOption(this.getRpmOption(record.engineturnrate)); 
                
