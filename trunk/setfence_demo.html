@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="shortcut icon" href="./favicon.ico" />
+    <title>电子围栏</title>
+    <link rel="stylesheet" href="dist/styles/iview.css">
+    <style>
+        html,body,#container{
+            width: 100%;
+            height: 100%;  
+            position: relative;
+        }
+        #bmap{
+            position: absolute;
+            top: 0;
+            left: 400px;
+            bottom: 0; 
+            right: 0;
+        }
+        #controller{
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            width: 400px;
+            border-right: 1px solid #A4D4F5;
+            padding: 10px;
+            box-sizing: border-box;
+            
+        }  
+        #controller .controller-inner{
+            width: 100%;
+            height: 100%;
+            background: #ffffff;
+        }
+        .el-zoom-in-bottom-enter-active,.el-zoom-in-bottom-leave-active{
+            opacity:1;
+            -webkit-transform:scaleY(1);
+            transform:scaleY(1);
+            -webkit-transition:opacity .3s cubic-bezier(.23,1,.32,1),-webkit-transform .3s cubic-bezier(.23,1,.32,1);
+            transition:opacity .3s cubic-bezier(.23,1,.32,1),-webkit-transform .3s cubic-bezier(.23,1,.32,1);
+            transition:transform .3s cubic-bezier(.23,1,.32,1),opacity .3s cubic-bezier(.23,1,.32,1);
+            transition:transform .3s cubic-bezier(.23,1,.32,1),opacity .3s cubic-bezier(.23,1,.32,1),-webkit-transform .3s cubic-bezier(.23,1,.32,1);
+            -webkit-transform-origin:center bottom;
+            transform-origin:center bottom;
+        }
+        .el-zoom-in-bottom-enter,.el-zoom-in-bottom-leave-active{
+            opacity:0;-webkit-transform:scaleY(0);transform:scaleY(0)
+        }
+        #container .circular-ctrl{
+            position: absolute;
+            width: 400px;
+            height: 250px;
+            bottom: 10px;
+            right: 10px;
+            border: 1px solid #A4D4F5;
+            background-color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <div id="controller">
+            <div class="controller-inner">
+                <Row style="padding:0 0 10px 0">
+                    <i-col :span="8" style="text-align:center;">
+                        <i-button style="width:100px;" @click="drawCircular">圆</i-button>
+                    </i-col>
+                    <i-col :span="8" style="text-align:center;">
+                        <i-button style="width:100px;" @click="drawPolygon">多边形</i-button>
+                    </i-col>
+                    <i-col :span="8" style="text-align:center;">
+                        <i-button @click="areaModal" style="width:100px;">行政区域</i-button>
+                    </i-col>
+                </Row>
+                <i-table border stripe :columns="columns" :data="tableData" :loading="loading"></i-table>
+            </div>
+        </div>
+        <div id="bmap"></div>
+        <transition name="el-zoom-in-bottom">
+            <div class="circular-ctrl" v-show="isCircular">
+                <Row>
+                    <i-col :span="24" style="padding:10px;text-align:center;">
+                        <h3>半径:{{radius}}米</h3>
+                    </i-col>
+                </Row>
+                <Row>
+                    <i-col :span="4" style="text-align:center;line-height:36px;">200米</i-col>
+                    <i-col :span="16">
+                        <Slider v-model="radius" :step="10" :min="min" :max="max" @on-change="changeValue"></Slider>
+                    </i-col>
+                    <i-col :span="4" style="text-align:center;line-height:36px;">100公里</i-col>
+                </Row>
+                <Row>
+                    <i-col :span="24" style="padding:10px;text-align:center;">
+                        <i-button @click="addCircular" style="width:200px;">添加</i-button>
+                    </i-col>
+                </Row>
+            </div>
+        </transition>
+        <Modal v-model="modal" width="400" title="添加区域围栏">
+            <Row style="padding: 10px">
+                <i-col :span="6" style="text-align:center;line-height:32px;">
+                     选择区域:   
+                </i-col>
+                <i-col :span="16">
+                    <Cascader :data="provinceList" v-model="areaAddress"></Cascader>
+                </i-col>
+            </Row>
+        </Modal>
+    </div>
+    <script src="dist/vue.min.js"></script>
+    <script src="dist/iview.min.js"></script>
+    <script src="js/jquery.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/hashmap.js"></script>
+    <script src="js/localcachemgr.js"></script>
+    <script src="js/transformlatlon.js"></script>
+    <script src="js/dateformat.js"></script>
+    <script src="js/js.cookie.min.js"></script>
+    <script src="js/util.js"></script>
+    <script src="js/area.js"></script>
+    <script src="http://api.map.baidu.com/api?v=3.0&ak=e7SC5rvmn2FsRNE4R1ygg44n"></script>
+    <script>
+        var deviceid = utils.getParameterByName("deviceid");
+        var token = utils.getParameterByName("token");
+        var map = null;
+        var vRoot = null;
+        (function () { 
+            vRoot = new Vue({
+                    el:"#container",
+                    data:{
+                        map:null,
+                        columns:[
+                            {
+                                type:'index',
+                                width:60,
+                                align:'center',
+                            },
+                            {
+                                title: '名称',
+                                key: 'geoname'
+                            },
+                            {
+                                title: '操作',
+                                key: 'action',
+                                width: 160,
+                                render: function(h, params) {
+                                    return h('div', [
+                                        h('Button', {
+                                            props: {
+                                                type: 'primary',
+                                                size: 'small'
+                                            },
+                                            style: {
+                                                marginRight: '5px'
+                                            },
+                                            on: {
+                                                click: function() {
+     
+                                                }
+                                            }
+                                        }, "编辑"),
+                                        h('Button', {
+                                                props: {
+                                                type: 'error',
+                                                size: 'small'
+                                                }
+                                        },"删除") 
+                                    ]);
+                                }
+                            }
+                        ],
+                        tableData:[{geoname:"哈哈哈"}],
+                        loading:false,
+                        isCircular:false,
+                        markerIns:null,
+                        circularIns:null,
+                        radius:2000,
+                        min:200,
+                        max:100000,
+                        modal:false,
+                        type:null, // 1 是圈 2是多边形 3是行政区域'
+                        areaAddress:[],
+                        mapCenterPoint:null,
+                        provinceList:provinceList
+                    },
+                    methods: {
+                        initMap : function(){
+                            var self = this;
+                            var point = null;
+                            this.map = new BMap.Map("bmap",{minZoom:4,maxZoom:20});           
+                            this.map.enableScrollWheelZoom();
+                            this.map.enableAutoResize();
+                            this.map.disableDoubleClickZoom();
+                            this.map.centerAndZoom(new BMap.Point(108.0017245, 35.926895), 5)
+                            this.map.addControl(new BMap.CityListControl({
+                                anchor: BMAP_ANCHOR_TOP_LEFT,
+                                offset: new BMap.Size(10, 20),
+                                // 切换城市之间事件
+                                // onChangeBefore: function(){
+                                //    alert('before');
+                                // },
+                                // 切换城市之后事件
+                                onChangeAfter:function(){
+                                    console.log('tag12121', )
+                                }
+                            }));
+                            // if(this.isSetFence){
+                            //     var b_lon_lat = wgs84tobd09(this.gpslon,this.gpslat);
+                            //     this.b_lon = b_lon_lat[0];
+                            //     this.b_lat = b_lon_lat[1];
+                            //     point = new BMap.Point(this.b_lon,this.b_lat);
+                            //     this.map.centerAndZoom(point,5);
+                            //     this.radius = this.fr;
+                            //     this.setMapZoom(this.fr);
+                      
+                            //     this.circle = new BMap.Circle(point,this.fr,{strokeWeight:2,strokeColor:"#F37A5A"});
+                            // }else{
+                            //     point = new BMap.Point(108.0017245,35.926895);
+                            //     this.map.centerAndZoom(point,5);
+                            //     this.circle = new BMap.Circle(point,this.radius,{strokeWeight:2,strokeColor:"#F37A5A"});
+                            // };
+
+                            // this.mapCenterPoint = point;
+                            // this.map.addOverlay(this.circle); 
+
+                            this.map.addEventListener("moveend",function(e){   
+                                if(!self.isCircular) return;	
+                                self.getMapCenterPoint();
+                                self.markerIns.setPosition(self.mapCenterPoint);
+                                self.circularIns.setCenter(self.mapCenterPoint);
+                            },false);   
+
+                            // this.map.addEventListener("zoomend",function(e){   	  
+                            //     console.log('self.mapCenterPoint', self.mapCenterPoint);			
+                            //     self.map.setCenter(self.mapCenterPoint);
+                            // },false);
+
+                            // this.map.addEventListener("resize",function(e){   	  			
+                            //     self.map.setCenter(self.mapCenterPoint);
+                            // },false);  bd09towgs84
+
+                            map = this.map;
+
+                        },
+                        changeValue:function(e){
+                            this.circularIns.setRadius(e);
+                        },
+                        areaModal:function(){
+                            this.claerOverlay();
+                            this.type = 3;
+                            this.modal = true;
+  
+                        },
+                        drawCircular:function(){
+                            this.getMapCenterPoint();
+                            this.isCircular = true;
+                            this.type = 1;
+                            this.markerIns = new BMap.Marker(this.mapCenterPoint);
+                            this.markerIns .enableDragging();
+                            this.map.addOverlay(this.markerIns);  
+                            this.circularIns = new BMap.Circle(this.mapCenterPoint,this.radius,{strokeWeight:2,strokeColor:"#F37A5A"});
+                            this.map.addOverlay(this.circularIns);  
+                        },
+                        addCircular:function(){
+                            var url = myUrls.addGeoRecord() , me = this;
+                            var lng_lat = bd09towgs84(this.mapCenterPoint.lng,this.mapCenterPoint.lat);  	
+                            var data = {
+                                deviceid:deviceid,
+                                type:this.type,
+                                lat1: lng_lat[1],   
+                                lon1: lng_lat[0],   
+                                radius1:this.radius
+                            };
+                            utils.sendAjax(url,data,function (resp) { 
+                                console.log(' resp', resp);
+                                if(resp.status === 0){
+                                    me.claerOverlay();
+                                    me.$Message.success("保存围栏成功");
+                                }else{
+                                    me.$Message.error("保存围栏失败");
+                                }
+                            });
+                        },
+                        drawPolygon:function(){
+                            this.type = 2;
+                            this.claerOverlay();
+                        },
+                        claerOverlay:function(){
+                            this.isCircular = false;
+                            this.markerIns && this.map.removeOverlay(this.markerIns);
+                            this.circularIns && this.map.removeOverlay(this.circularIns); 
+                            this.markerIns = null;
+                            this.circularIns = null;
+                        },
+                        getMapCenterPoint:function(){
+                            var pt = this.map.getCenter();							
+                                this.mapCenterPoint = pt;                               
+                        },
+                        bd09towgs84:function(){
+                            var lng_lat = bd09towgs84(this.b_lon,this.b_lat);  	
+                                this.gpslon = lng_lat[0];
+                                this.gpslat = lng_lat[1];
+                        },
+                        getFenceInfo:function(){
+                            var url = myUrls.queryGeoRecords();
+                            utils.sendAjax(url,{deviceid:deviceid},this.doFenceInfo);
+                        },
+                        doFenceInfo:function(resp){
+                            console.log(resp);
+                        },
+                        setMapZoom:function(value){
+                            var zoom = 4;
+                            if(value > 90000){
+                                zoom = 5;
+                            }else if(value > 90000){
+                                zoom = 6;
+                            }else if(value > 70000){
+                                zoom = 7;
+                            }else if(value > 50000){
+                                zoom = 8;
+                            }else if(value > 40000){
+                                zoom = 9;
+                            }else if(value > 30000){
+                                zoom = 10;
+                            }else if(value > 20000){
+                                zoom = 11;
+                            }else if(value > 10000){
+                                zoom = 12;
+                            }else if(value > 5000){
+                                zoom = 13;
+                            }else if(value > 1000){
+                                zoom = 14;
+                            }else{
+                                zoom = 16;
+                            }
+
+                        
+                            this.map.setZoom(zoom);
+                        },
+                    },
+                    mounted:function () {
+                        this.initMap();
+                        this.getFenceInfo();
+                    }
+            });
+        })();
+    </script>
+</body>
+</html>

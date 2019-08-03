@@ -557,7 +557,7 @@ function refreshPostion (deviceid) {
 
 // 设置围栏
 function setFence (deviceid) {
-  var url = 'setfence.html?deviceid=' + deviceid + '&token=' + token;
+  var url = 'setfence_demo.html?deviceid=' + deviceid + '&token=' + token;
   window.open(url);
 }
 

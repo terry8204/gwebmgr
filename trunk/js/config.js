@@ -345,7 +345,20 @@ var myUrls = {
   },
   queryObdInfo: function () {
     return this.host + 'webapi?action=queryobdinfo&token=' + token;
-  }
+  },
+  //复杂围栏
+  addGeoRecord: function () {
+    return this.host + 'webapi?action=addgeorecord&token=' + token;
+  },
+  queryGeoRecords: function () {
+    return this.host + 'webapi?action=querygeorecords&token=' + token;
+  },
+  delGeoRecord: function () {
+    return this.host + 'webapi?action=delgeorecord&token=' + token;
+  },
+  editGeoRecord: function () {
+    return this.host + 'webapi?action=editgeorecord&token=' + token;
+  },
 }
 
 
