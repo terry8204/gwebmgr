@@ -53,7 +53,6 @@
         #container .circular-ctrl{
             position: absolute;
             width: 400px;
-            height: 250px;
             bottom: 10px;
             right: 10px;
             border: 1px solid #A4D4F5;
@@ -76,7 +75,7 @@
                         <i-button @click="areaModal" style="width:100px;">行政区域</i-button>
                     </i-col>
                 </Row>
-                <i-table border stripe :columns="columns" :data="tableData" :loading="loading"></i-table>
+                <i-table border stripe :columns="columns" :data="tableData" :loading="loading" @on-row-click="handleClickRow"></i-table>
             </div>
         </div>
         <div id="bmap"></div>
@@ -84,7 +83,7 @@
             <div class="circular-ctrl" v-show="isCircular">
                 <Row>
                     <i-col :span="24" style="padding:10px;text-align:center;">
-                        <h3>半径:{{radius}}米</h3>
+                        <h3>{{isEidt?'编辑围栏':'新增围栏'}} - 半径:{{radius}}米</h3>
                     </i-col>
                 </Row>
                 <Row>
@@ -111,6 +110,19 @@
                 </i-col>
             </Row>
         </Modal>
+        <Modal v-model="geoNameModal" width="400" title="修改围栏名称">
+            <Row style="padding: 10px">
+                <i-col :span="6" style="text-align:center;line-height:32px;">
+                    围栏名称:   
+                </i-col>
+                <i-col :span="16">
+                    <i-input v-model.trim="geoName"></i-input>
+                </i-col>
+            </Row>
+            <div slot="footer" style="text-align:center;">
+                <i-button style="width:80%;" @click="changeGeoName">确定</i-button>
+            </div>
+        </Modal>
     </div>
     <script src="dist/vue.min.js"></script>
     <script src="dist/iview.min.js"></script>
@@ -124,16 +136,41 @@
     <script src="js/util.js"></script>
     <script src="js/area.js"></script>
     <script src="http://api.map.baidu.com/api?v=3.0&ak=e7SC5rvmn2FsRNE4R1ygg44n"></script>
+    <script type="text/javascript" src="http://api.map.baidu.com/library/DrawingManager/1.4/src/DrawingManager_min.js"></script>  
+    <link rel="stylesheet" href="http://api.map.baidu.com/library/DrawingManager/1.4/src/DrawingManager_min.css" />  
     <script>
         var deviceid = utils.getParameterByName("deviceid");
         var token = utils.getParameterByName("token");
         var map = null;
         var vRoot = null;
+        var rowData = null;
+ 
+        var styleOptions = {  
+            strokeColor:"red",    //边线颜色。  
+            fillColor:"red",      //填充颜色。当参数为空时，圆形将没有填充效果。  
+            strokeWeight: 3,       //边线的宽度，以像素为单位。  
+            strokeOpacity: 0.8,    //边线透明度，取值范围0 - 1。  
+            fillOpacity: 0.6,      //填充的透明度，取值范围0 - 1。  
+            strokeStyle: 'solid' //边线的样式，solid或dashed。  
+        }  
+
+        //实例化鼠标绘制工具  
+        var drawingManager = null;  
+
+ 
+        function startDrawPolygon(type){  
+            drawingManager.open();   
+            drawingManager.setDrawingMode(type);  
+        }  
+
         (function () { 
             vRoot = new Vue({
                     el:"#container",
                     data:{
+                        isEidt:false,
                         map:null,
+                        geoName:'',
+                        geoNameModal:false,
                         columns:[
                             {
                                 type:'index',
@@ -142,39 +179,80 @@
                             },
                             {
                                 title: '名称',
-                                key: 'geoname'
+                                key: 'geoname',
+                                render: function(h, params) {
+                                    return h('div',[
+                                    h('span', {                                       
+                                        }, params.row.name),
+                                    ,
+                                    h('Icon', {
+                                            props: {
+                                                size: 20,
+                                                type:"md-create" 
+                                            },
+                                            style: {
+                                                marginLeft:'5px'
+                                            },
+                                            on: {
+                                                click: function(e) {
+                                                    e.preventDefault(); 
+                                                    e.stopPropagation();
+                                                   vRoot.geoNameModal = true;
+                                                   rowData = params.row;
+                                                   return false;
+                                                }
+                                            }
+                                        }, ""),
+                                    ])
+                                }
                             },
                             {
                                 title: '操作',
                                 key: 'action',
-                                width: 160,
+                                width: 100,
                                 render: function(h, params) {
                                     return h('div', [
                                         h('Button', {
                                             props: {
-                                                type: 'primary',
+                                                type: 'error',
                                                 size: 'small'
                                             },
                                             style: {
                                                 marginRight: '5px'
                                             },
                                             on: {
-                                                click: function() {
-     
+                                                click: function(e) {
+                                                    e.preventDefault();
+                                                    e.stopPropagation();
+                                                    vRoot.$Modal.confirm({
+                                                        title: "温馨提示",
+                                                        content:"确定要删除围栏吗?",
+                                                        onOk:function(){
+                                                            var url = myUrls.delGeoRecord() , index = params.index , row = params.row ;
+                                                            var data = {
+                                                                deviceid:deviceid,
+                                                                georecordid:row.georecordid
+                                                            };
+                                                            utils.sendAjax(url,data,function (resp) {
+                                                                if(resp.status === 0){
+                                                                    vRoot.tableData.splice(index,1);
+                                                                    vRoot.$Message.success("删除成功");
+                                                                    vRoot.map.clearOverlays();
+                                                                }else{
+                                                                    vRoot.$Message.success("删除失败");
+                                                                }
+                                                            })
+                                                        }
+                                                    })
+                                                    return false;
                                                 }
                                             }
-                                        }, "编辑"),
-                                        h('Button', {
-                                                props: {
-                                                type: 'error',
-                                                size: 'small'
-                                                }
-                                        },"删除") 
+                                        }, "删除"),
                                     ]);
                                 }
                             }
                         ],
-                        tableData:[{geoname:"哈哈哈"}],
+                        tableData:[],
                         loading:false,
                         isCircular:false,
                         markerIns:null,
@@ -209,24 +287,7 @@
                                  
                                 // }
                             }));
-                            // if(this.isSetFence){
-                            //     var b_lon_lat = wgs84tobd09(this.gpslon,this.gpslat);
-                            //     this.b_lon = b_lon_lat[0];
-                            //     this.b_lat = b_lon_lat[1];
-                            //     point = new BMap.Point(this.b_lon,this.b_lat);
-                            //     this.map.centerAndZoom(point,5);
-                            //     this.radius = this.fr;
-                            //     this.setMapZoom(this.fr);
-                      
-                            //     this.circle = new BMap.Circle(point,this.fr,{strokeWeight:2,strokeColor:"#F37A5A"});
-                            // }else{
-                            //     point = new BMap.Point(108.0017245,35.926895);
-                            //     this.map.centerAndZoom(point,5);
-                            //     this.circle = new BMap.Circle(point,this.radius,{strokeWeight:2,strokeColor:"#F37A5A"});
-                            // };
 
-                            // this.mapCenterPoint = point;
-                            // this.map.addOverlay(this.circle); 
 
                             this.map.addEventListener("moveend",function(e){   
                                 if(!self.isCircular) return;	
@@ -235,67 +296,211 @@
                                 self.circularIns.setCenter(self.mapCenterPoint);
                             },false);   
 
-                            // this.map.addEventListener("zoomend",function(e){   	  
-                            //     console.log('self.mapCenterPoint', self.mapCenterPoint);			
-                            //     self.map.setCenter(self.mapCenterPoint);
-                            // },false);
+                            this.map.addEventListener("zoomend",function(e){   	  
+                                if(!self.isCircular) return;	
+                                self.getMapCenterPoint();
+                                self.markerIns.setPosition(self.mapCenterPoint);
+                                self.circularIns.setCenter(self.mapCenterPoint);
+                            },false);
 
-                            // this.map.addEventListener("resize",function(e){   	  			
-                            //     self.map.setCenter(self.mapCenterPoint);
-                            // },false);  bd09towgs84
+
+                            // this.map.addEventListener("rightclick",function(e){  
+                            //     if(self.type!== 2) return;
+                            //     drawingManager.close();  
+                            // }); 
+
+                            drawingManager = new BMapLib.DrawingManager(this.map, {  
+                                isOpen: false, //是否开启绘制模式  
+                                enableDrawingTool: false, //是否显示工具栏  
+                                drawingToolOptions: {  
+                                    anchor: BMAP_ANCHOR_TOP_RIGHT, //位置  
+                                    offset: new BMap.Size(5, 5), //偏离值  
+                                },  
+                                circleOptions: styleOptions, //圆的样式  
+                                polylineOptions: styleOptions, //线的样式  
+                                polygonOptions: styleOptions, //多边形的样式  
+                                rectangleOptions: styleOptions //矩形的样式  
+                            });    
+
+                            //添加鼠标绘制工具监听事件，用于获取绘制结果  
+                            drawingManager.addEventListener('polygoncomplete', this.overlaycomplete);  
 
                             map = this.map;
 
                         },
+                        overlaycomplete : function(overlay){  
+                            var path = overlay.getPath() , self = this;
+                            self.$Modal.confirm({
+                                    title: "温馨提示",
+                                    content:"是否提交多边形围栏?",
+                                    onOk:function(){
+                                        console.log('overlay', overlay);
+                                        var mapPath = function (item) {  
+                                            var lon_lat = bd09towgs84(item.lng,item.lat);
+                                            wgs84Path.push({
+                                                lon:lon_lat[0].toFixed(6),
+                                                lat:lon_lat[1].toFixed(6)
+                                            });
+                                        };
+                                        var wgs84Path = [];
+                                        path.forEach(mapPath);
+                                        var url = myUrls.addGeoRecord(),
+                                            data = {
+                                                points2:JSON.stringify(wgs84Path),
+                                                type:self.type,
+                                                deviceid:deviceid
+                                            };
+
+                                        utils.sendAjax(url,data,function (resp) {     
+                                            if(resp.status === 0){
+                                                self.$Message.success("添加成功")
+                                                self.getFenceInfo();
+                                            }else{
+                                                self.$Message.error("添加失败")
+                                            };
+                                            self.map.removeOverlay(overlay)
+                                        })
+                                    },
+                                    onCancel:function(){
+                                        self.map.removeOverlay(overlay);
+                                        // startDrawPolygon(BMAP_DRAWING_POLYGON);
+                                    }
+                                })
+                        },
                         changeValue:function(e){
                             this.circularIns.setRadius(e);
                         },
+                        changeGeoName:function(){
+                            if(this.geoName.trim()!==""){
+                                var url = myUrls.editGeoRecord() , me = this;
+                                var data = deepClone(rowData);
+                                data.name = me.geoName;
+                                utils.sendAjax(url,data,function (resp) { 
+                                    if(resp.status === 0){
+                                        rowData.name = me.geoName;
+                                        me.geoNameModal = false;
+                                        me.geoName = "";
+                                        me.$Message.success("修改成功");
+                                    }else{
+                                        me.$Message.error("修改失败");
+                                    }
+                                })
+                            }else{
+                                this.$Message.error("请填写名称");
+                            }
+                        },
                         areaModal:function(){
-                            this.claerOverlay();
+                            this.isCircular = false;
                             this.type = 3;
                             this.modal = true;
-  
+                            this.map.clearOverlays();
+                        },
+                        handleClickRow:function(row,index){
+                            rowData = row;
+                            var type = row.type , me = this;
+                            this.map.clearOverlays();
+                            switch(type){
+                                case 1 :
+                                var lon_lan = wgs84tobd09(row.lon1,row.lat1);
+                                var point = new BMap.Point(lon_lan[0],lon_lan[1]);
+                                    me.radius = row.radius1;
+                                    me.map.setCenter(point);
+                                    me.setMapZoom(me.radius);
+                                    setTimeout(function () { 
+                                        me.drawCircular();
+                                        me.isEidt = true;     
+                                    },300);
+                                    break;
+                                case 2 :
+                                    this.isCircular = false;
+                                    this.redrawPolygon(row);
+                                    break;
+                                case 3 :
+                                alert(3);
+                                    break;
+                            }
                         },
                         drawCircular:function(){
+                            this.map.clearOverlays();   
+                            this.isEidt = false;
                             this.getMapCenterPoint();
                             this.isCircular = true;
                             this.type = 1;
                             this.markerIns = new BMap.Marker(this.mapCenterPoint);
-                            this.markerIns .enableDragging();
+                            // this.markerIns .enableDragging();
                             this.map.addOverlay(this.markerIns);  
-                            this.circularIns = new BMap.Circle(this.mapCenterPoint,this.radius,{strokeWeight:2,strokeColor:"#F37A5A"});
+                            this.circularIns = new BMap.Circle(this.mapCenterPoint,this.radius,{
+                                strokeWeight:3,
+                                strokeColor:"#F37A5A",
+                                strokeColor:"red",      
+                                strokeWeight: 3,      
+                                strokeOpacity: 0.8,     
+                                fillOpacity: 0.6,   
+                            });
                             this.map.addOverlay(this.circularIns);  
                         },
                         addCircular:function(){
-                            var url = myUrls.addGeoRecord() , me = this;
+                            var url = null , me = this , data = null;
                             var lng_lat = bd09towgs84(this.mapCenterPoint.lng,this.mapCenterPoint.lat);  	
-                            var data = {
-                                deviceid:deviceid,
-                                type:this.type,
-                                lat1: lng_lat[1],   
-                                lon1: lng_lat[0],   
-                                radius1:this.radius
-                            };
+                 
+                            if(this.isEidt){
+                                url = myUrls.editGeoRecord() ;
+                                data = deepClone(rowData);
+                                data.lat1 = lng_lat[1];
+                                data.lon1 = lng_lat[0];
+                                data.radius1 = this.radius;
+                            }else{
+                                url = myUrls.addGeoRecord() ;
+                                data = {
+                                    deviceid:deviceid,
+                                    type:this.type,
+                                    lat1: lng_lat[1],   
+                                    lon1: lng_lat[0],   
+                                    radius1:this.radius
+                                };
+                            }
                             utils.sendAjax(url,data,function (resp) { 
-                                console.log(' resp', resp);
                                 if(resp.status === 0){
-                                    me.claerOverlay();
-                                    me.$Message.success("保存围栏成功");
+                                    me.map.clearOverlays();
+                                    me.getFenceInfo();
+                                    me.isCircular = false;
+                                    if(me.isEidt){
+                                        me.$Message.success("编辑围栏成功");
+                                    }else{
+                                        me.$Message.success("保存围栏成功");
+                                    }; 
                                 }else{
                                     me.$Message.error("保存围栏失败");
-                                }
+                                };
                             });
                         },
                         drawPolygon:function(){
                             this.type = 2;
-                            this.claerOverlay();
+                            this.map.clearOverlays();
+                            startDrawPolygon(BMAP_DRAWING_POLYGON);
                         },
-                        claerOverlay:function(){
-                            this.isCircular = false;
-                            this.markerIns && this.map.removeOverlay(this.markerIns);
-                            this.circularIns && this.map.removeOverlay(this.circularIns); 
-                            this.markerIns = null;
-                            this.circularIns = null;
+                        redrawPolygon:function(row){
+                            var points = JSON.parse(row.points2);
+                            var bdpoints = [];
+                                points.forEach(function (item) { 
+                                    var lon_lat = wgs84tobd09(Number(item.lon),Number(item.lat));                     
+                                    bdpoints.push(new BMap.Point(lon_lat[0],lon_lat[1]))
+                                });
+                            var polygon = new BMap.Polygon(bdpoints, {
+                                            strokeColor:"red",     
+                                            fillColor:"red",    
+                                            strokeWeight: 3,      
+                                            strokeOpacity: 0.8,     
+                                            fillOpacity: 0.6,       
+                                    });  
+                            this.map.addOverlay(polygon); 
+                            this.setViewPortCenter(bdpoints);
+                        },
+                        setViewPortCenter: function (lines) {
+                            var view = this.map.getViewport(eval(lines));
+                            var mapZoom = view.zoom;
+                            var centerPoint = view.center;
+                            this.map.centerAndZoom(centerPoint, mapZoom);
                         },
                         getMapCenterPoint:function(){
                             var pt = this.map.getCenter();							
@@ -312,6 +517,9 @@
                         },
                         doFenceInfo:function(resp){
                             console.log(resp);
+                            if(resp.status === 0 && resp.records && resp.records.length){
+                                this.tableData = resp.records;
+                            }
                         },
                         setMapZoom:function(value){
                             var zoom = 4;

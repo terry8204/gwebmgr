@@ -240,6 +240,7 @@ var utils = {
     };
   },
   getPosiType: function (track) {
+    console.log('track', track);
     var type = null;
     var gotsrc = track.gotsrc;  //cell gps wifi
     switch (gotsrc) {
@@ -287,6 +288,7 @@ var utils = {
     };
     var speed = track.speed == 0 ? "0km/h" : (track.speed / 1000).toFixed(2) + "km/h";
     var rxlevel = track.rxlevel === 0 ? '' : ('(' + (isZh ? '信号' : 'Signal') + ':' + track.rxlevel + '%)');
+    var deviceid = "'" + track.deviceid + "'";
     var content =
       '<p> ' + (isZh ? '设备名称' : 'Device Name') + ': ' + track.devicename + '</p>' +
       '<p> ' + (isZh ? '设备序号' : 'Device Number') + ': ' + track.deviceid + '</p>' +
@@ -300,18 +302,18 @@ var utils = {
       '<p class="last-address"> ' + (isZh ? '详细地址' : 'Address') + ': ' + b_address + '</p>' +
       '<p class="operation">' +
       '<span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="playBack(' +
-      track.deviceid +
+      deviceid +
       ')">' + (isZh ? '轨迹' : 'Track') + '</span>' +
       '<span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="trackMap(' +
-      track.deviceid +
+      deviceid +
       ')">' + (isZh ? '跟踪' : 'Stalker') + '</span><span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="refreshPostion(' +
-      track.deviceid +
+      deviceid +
       ')">' + (isZh ? '刷新位置' : 'RefreshPosi') + '</span><span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="openSim(' +
-      track.deviceid +
+      deviceid +
       ')">SIM</span><span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="setFence(' +
-      track.deviceid +
+      deviceid +
       ')">' + (isZh ? '设置围栏' : 'SetFence') + '</span><span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="setPanorama(' +
-      track.deviceid +
+      deviceid +
       ')">' + (isZh ? '查看街景' : 'Panorama') + '</span></p>';
     return content;
   },
@@ -518,7 +520,8 @@ var expandRow = Vue.component('expand-row')
 
 // 轨迹回放
 function playBack (deviceid) {
-  window.open('playback.html?deviceid=' + deviceid)
+  console.log('playBack-deviceid', deviceid);
+  window.open('playback.html?deviceid=' + deviceid);
 }
 
 // 跟踪
