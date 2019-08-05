@@ -1,6 +1,6 @@
 var utils = {
   changeSingleItemData: function (records, item, propertyType) {
-    console.log('records', records[0], item);
+
     for (var i = 0; i < records.length; i++) {
       var record = records[i];
       if (record[propertyType] === item[propertyType]) {
@@ -191,7 +191,6 @@ var utils = {
     return imgPath
   },
   changeGroupsDevName: function (changeInfo, groups) {
-    console.log(changeInfo, groups);
     var deviceid = changeInfo.deviceid
     var devicename = changeInfo.devicename
     var simnum = changeInfo.simnum
@@ -240,7 +239,7 @@ var utils = {
     };
   },
   getPosiType: function (track) {
-    console.log('track', track);
+
     var type = null;
     var gotsrc = track.gotsrc;  //cell gps wifi
     switch (gotsrc) {
@@ -481,7 +480,7 @@ Vue.component('expand-row', {
   },
   methods: {
     clickMe: function (item) {
-      console.log(item)
+
     }
   },
   mounted: function () { }
@@ -520,7 +519,6 @@ var expandRow = Vue.component('expand-row')
 
 // 轨迹回放
 function playBack (deviceid) {
-  console.log('playBack-deviceid', deviceid);
   window.open('playback.html?deviceid=' + deviceid);
 }
 
@@ -540,7 +538,7 @@ function refreshPostion (deviceid) {
     var b_lon_lat = wgs84tobd09(track.callon, track.callat);
     utils.getBaiduAddressFromBaidu(b_lon_lat[0], b_lon_lat[1], function (b_address) {
       if (b_address) {
-        console.log('b_address', b_address);
+
         $("p.last-address").html((isZh ? "详细地址: " : "Address: ") + b_address);
         LocalCacheMgr.setAddress(lon, lat, b_address);
       };
@@ -549,7 +547,7 @@ function refreshPostion (deviceid) {
     var g_lon_lat = wgs84togcj02(track.callon, track.callat);
     utils.getGoogleAddressSyn(g_lon_lat[1], g_lon_lat[0], function (g_address) {
       if (g_address) {
-        console.log('g_address', g_address);
+
         $("p.last-address").html((isZh ? "详细地址: " : "Address: ") + g_address);
         LocalCacheMgr.setAddress(lon, lat, g_address);
       }

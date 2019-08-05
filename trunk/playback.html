@@ -1223,6 +1223,7 @@
                         if (info.gotsrc === 'gps' && info.gpsvalidnum) {
                             posiType += "(" + info.gpsvalidnum + ")";
                         };
+                        var deviceid = "'"+ this.deviceid +"'";
                         var speed = info.speed == 0 ? "0km/h" : (info.speed / 1000).toFixed(2) + "km/h";
                         var sContent = '<div style="max-width:296px;">' +
                             '<p> ' + (isZh ? '设备名称' : 'Device Name') + ': ' + this.deviceid + '</p>' +
@@ -1235,8 +1236,8 @@
                             '<p> ' + (isZh ? '状态' : 'Status') + ': ' + strstatus + '</p>' +
                             '<p class="last-address"> ' + (isZh ? '详细地址' : 'Address') + ': ' + address + '</p>'+
                             '<p>'+
-                                '<span style="margin-right:5px;" class="ivu-btn ivu-btn-default ivu-btn-small" onclick="queryTrackDetail(' + this.deviceid +')">' + (isZh ? '详细信息' : 'Detailed info') + '</span>'+
-                                '<span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="refreshTrackPosition(' +this.deviceid +')" style="color:'+color+';">' + (isZh ? '刷新位置' : 'Refresh position') + '</span>'+
+                                '<span style="margin-right:5px;" class="ivu-btn ivu-btn-default ivu-btn-small" onclick="queryTrackDetail(' + deviceid +')">' + (isZh ? '详细信息' : 'Detailed info') + '</span>'+
+                                '<span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="refreshTrackPosition(' +deviceid +')" style="color:'+color+';">' + (isZh ? '刷新位置' : 'Refresh position') + '</span>'+
                             '</p>'+
                             '</div>';
                         return sContent;
