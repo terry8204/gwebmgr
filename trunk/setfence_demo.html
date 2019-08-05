@@ -100,7 +100,7 @@
                 </Row>
             </div>
         </transition>
-        <Modal v-model="modal" width="400" title="添加区域围栏">
+        <Modal v-model="modal" width="400" title="添加区域围栏" @on-ok="handleSubmitArea">
             <Row style="padding: 10px">
                 <i-col :span="6" style="text-align:center;line-height:32px;">
                      选择区域:   
@@ -367,6 +367,13 @@
                                     }
                                 })
                         },
+                        handleSubmitArea:function(){
+                            console.log('areaAddress', this.areaAddress);
+                            var myBoundary  = new BMap.Boundary();
+                            myBoundary.get("深圳市南山区",function(resp){
+                                console.log('resp', resp);
+                            })
+                        },
                         changeValue:function(e){
                             this.circularIns.setRadius(e);
                         },
@@ -505,11 +512,6 @@
                         getMapCenterPoint:function(){
                             var pt = this.map.getCenter();							
                                 this.mapCenterPoint = pt;                               
-                        },
-                        bd09towgs84:function(){
-                            var lng_lat = bd09towgs84(this.b_lon,this.b_lat);  	
-                                this.gpslon = lng_lat[0];
-                                this.gpslat = lng_lat[1];
                         },
                         getFenceInfo:function(){
                             var url = myUrls.queryGeoRecords();

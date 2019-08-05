@@ -844,7 +844,7 @@
                     drawingLine: function () {
                         var records = this.getTypeRecords();
                      
-                        var lines;
+                        var lines , me = this;
                         var markers = [];
                         if (records.length > 1) {
              
@@ -861,7 +861,7 @@
                                 this.map.addOverlay(this.lastMakrker);
                                 this.addEventListenerToMarker(this.firstMarker);
                                 this.addEventListenerToMarker(this.lastMakrker);
-
+                                
                                 lines = [];
                                 
                                 for (var i = 0; i < records.length; i++) {
@@ -983,7 +983,11 @@
                     
                                     // 设置中心点
                                     this.setViewPortCenter(lines);
-                                    this.addEventListenerToMarker(this.firstMarker);
+                                    this.firstMarker.index = 0;
+                                    // this.addEventListenerToMarker(this.firstMarker);
+                                    this.firstMarker.addEventListener("click",function () { 
+                                        me.firstMarker.openInfoWindow( new BMap.InfoWindow(me.getLableContent(lastRecord)) , lastRecord.point);
+                                    });
                                 }else if(this.mapType === 'gMap'){
                                     this.firstMarker = new google.maps.Marker({
                                         position: lastRecord.gpoint,
@@ -1064,7 +1068,7 @@
                         if(this.mapType === 'bMap'){
                             marker.addEventListener("click",function () { 
                             var index = marker.index;
-                            me.index = index;
+                                me.index = index;
                                 var track = (function () { 
                                         var track = null;
                                         if(me.isExtract){
