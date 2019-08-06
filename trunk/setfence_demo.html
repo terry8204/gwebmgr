@@ -100,7 +100,7 @@
                 </Row>
             </div>
         </transition>
-        <Modal v-model="modal" width="400" title="添加区域围栏" @on-ok="handleSubmitArea">
+        <Modal v-model="modal" width="400" :title="areaTitle" @on-ok="handleSubmitArea">
             <Row style="padding: 10px">
                 <i-col :span="6" style="text-align:center;line-height:32px;">
                      选择区域:   
@@ -178,6 +178,26 @@
                                 align:'center',
                             },
                             {
+                                title: '类型',
+                                key: 'type',
+                                width:90,
+                                render: function(h, params) {
+                                    var type = '';
+                                    switch(params.row.type){
+                                        case 1 :
+                                            type = '圆'
+                                            break;
+                                        case 2 :
+                                            type = '多边形'
+                                            break;
+                                        case 3 :
+                                            type = '行政区域'
+                                            break;
+                                    }
+                                    return h('div',[h('span', {}, type)]);
+                                } 
+                            },
+                            {
                                 title: '名称',
                                 key: 'geoname',
                                 render: function(h, params) {
@@ -209,7 +229,7 @@
                             {
                                 title: '操作',
                                 key: 'action',
-                                width: 100,
+                                width: 80,
                                 render: function(h, params) {
                                     return h('div', [
                                         h('Button', {
@@ -367,12 +387,104 @@
                                     }
                                 })
                         },
-                        handleSubmitArea:function(){
-                            console.log('areaAddress', this.areaAddress);
-                            var myBoundary  = new BMap.Boundary();
-                            myBoundary.get("深圳市南山区",function(resp){
-                                console.log('resp', resp);
+                        getAreaName:function(province,city,county){
+                            var result = [];
+                             for (var index = 0; index < provinceList.length; index++) {
+                                 var provinceInfo = provinceList[index];
+                                 if(provinceInfo.value == province){
+                                     var cityList = provinceInfo.children;
+                                     result.push(provinceInfo.label);
+                                     cityList.forEach(function (cityInfo) { 
+                                         if(cityInfo.value == city){
+                                            result.push(cityInfo.label);
+                                            var countyList = cityInfo.children;
+                                            countyList.forEach(function (countyInfo) {
+                                                if(countyInfo.value == county){
+                                                    result.push(countyInfo.label);
+                                                    return false;
+                                                }
+                                            })
+                                            return false;
+                                         }
+                                     });
+                                     break;
+                                 }
+                             } 
+                            return result;
+                        },
+                        transformPoint:function(pointList){
+                            var points = [];
+                            var iteratior = function (item) { 
+                                var pointStr = item.split(',')
+                                var pointArr = bd09towgs84(Number(pointStr[0].trim()),Number(pointStr[1].trim()));
+                                points.push({
+                                    lon:pointArr[0].toFixed(6),
+                                    lat:pointArr[1].toFixed(6),
+                                })
+                            }
+                            pointList.forEach(iteratior);
+                            return points;
+                        },
+                        getWgs84Boundaries:function(boundaries){
+                            var pointList = [] , me = this;
+                            boundaries.forEach(function (item) { 
+                                var points = me.transformPoint(item.split(";"));
+                                pointList = pointList.concat(points);
                             })
+                            return pointList;
+                        },
+                        handleSubmitArea:function(){
+                            if(this.areaAddress.length){
+                                var areaName = this.getAreaName(this.areaAddress[0],this.areaAddress[1],this.areaAddress[2]) , me = this;
+                                var myBoundary  = new BMap.Boundary();
+                                myBoundary.get(areaName.join(','),function(resp){
+                                    if(resp.boundaries.length){
+                                        var points3 = me.getWgs84Boundaries(resp.boundaries);
+                                        if(me.isEidt){
+                                            var url = myUrls.editGeoRecord();
+                                            var data = deepClone(rowData);
+                                            data.points3 = JSON.stringify(points3);
+                                            data.provinceindex3=Number(me.areaAddress[0]);
+                                            data.cityindex3=Number(me.areaAddress[1]);
+                                            data.areaindex3=Number(me.areaAddress[2]);
+                                            data.provincestr3=areaName[0];
+                                            data.citystr3=areaName[1];
+                                            data.areastr3=areaName[2];
+                                        }else{
+                                            var url = myUrls.addGeoRecord();
+                                            var data = {
+                                                points3:JSON.stringify(points3),
+                                                deviceid:deviceid,
+                                                provinceindex3:Number(me.areaAddress[0]),
+                                                cityindex3:Number(me.areaAddress[1]),
+                                                areaindex3:Number(me.areaAddress[2]),
+                                                provincestr3:areaName[0],
+                                                citystr3:areaName[1],
+                                                areastr3:areaName[2],
+                                                type:me.type,
+                                            }
+                                        }
+
+                                        utils.sendAjax(url,data,function (resp) { 
+                                            if(resp.status === 0){
+                                                if(me.isEidt){
+                                                    me.$Message.success("编辑成功");
+                                                }else{
+                                                    me.$Message.success("添加成功");
+                                                }
+                                                me.getFenceInfo();
+                                            }else{
+                                                me.$Message.error("操作失败");
+                                            }
+                                        })
+                                    }else{
+
+                                    }
+                                });
+                            }else{
+                                this.$Message.error("请选择地区");
+                            }
+
                         },
                         changeValue:function(e){
                             this.circularIns.setRadius(e);
@@ -400,11 +512,13 @@
                             this.isCircular = false;
                             this.type = 3;
                             this.modal = true;
+                            this.isEidt = false;
                             this.map.clearOverlays();
                         },
                         handleClickRow:function(row,index){
                             rowData = row;
                             var type = row.type , me = this;
+
                             this.map.clearOverlays();
                             switch(type){
                                 case 1 :
@@ -423,7 +537,9 @@
                                     this.redrawPolygon(row);
                                     break;
                                 case 3 :
-                                alert(3);
+                                    me.areaAddress = [String(row.provinceindex3),String(row.cityindex3),String(row.areaindex3)];
+                                    me.isEidt = true;
+                                    me.modal = true;
                                     break;
                             }
                         },
@@ -484,6 +600,7 @@
                         drawPolygon:function(){
                             this.type = 2;
                             this.map.clearOverlays();
+                            this.isCircular = false;
                             startDrawPolygon(BMAP_DRAWING_POLYGON);
                         },
                         redrawPolygon:function(row){
@@ -547,11 +664,18 @@
                                 zoom = 14;
                             }else{
                                 zoom = 16;
-                            }
-
-                        
+                            };
                             this.map.setZoom(zoom);
                         },
+                    },
+                    computed:{
+                        areaTitle:function(){
+                            if(this.isEidt){
+                                return '编辑区域围栏';
+                            }else{
+                                return '添加区域围栏';
+                            }
+                        }
                     },
                     mounted:function () {
                         this.initMap();

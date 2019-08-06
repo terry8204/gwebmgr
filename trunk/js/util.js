@@ -32,7 +32,11 @@ var utils = {
       success: function (resp) {
         if (resp) {
           if (resp.status > 9000) {
-            vRoot.$Message.error(vRoot.$t("monitor.reLogin"))
+            if (vRoot.$t) {
+              vRoot.$Message.error(vRoot.$t("monitor.reLogin"));
+            } else {
+              vRoot.$Message.error('token失效请从新登陆');
+            }
             Cookies.remove('token')
             setTimeout(function () {
               window.location.href = 'index.html'
