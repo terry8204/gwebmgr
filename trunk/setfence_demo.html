@@ -453,6 +453,7 @@
                                         }else{
                                             var url = myUrls.addGeoRecord();
                                             var data = {
+                                                name:areaName.join(','),
                                                 points3:JSON.stringify(points3),
                                                 deviceid:deviceid,
                                                 provinceindex3:Number(me.areaAddress[0]),
