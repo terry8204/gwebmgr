@@ -16,7 +16,7 @@
         #bmap{
             position: absolute;
             top: 0;
-            left: 400px;
+            left: 460px;
             bottom: 0; 
             right: 0;
         }
@@ -25,11 +25,11 @@
             top: 0;
             left: 0;
             bottom: 0;
-            width: 400px;
+            width: 460px;
             border-right: 1px solid #A4D4F5;
             padding: 10px;
             box-sizing: border-box;
-            
+            overflow-y: auto;
         }  
         #controller .controller-inner{
             width: 100%;
@@ -62,7 +62,7 @@
             position: absolute;
             width: 400px;
             bottom: 10px;
-            left:410px;
+            left:470px;
             border: 1px solid #A4D4F5;
             background-color: #ffffff;
         }
@@ -83,7 +83,13 @@
                         <i-button @click="areaModal" style="width:100px;" icon="md-add">行政区域</i-button>
                     </i-col>
                 </Row>
-                <i-table border stripe :columns="columns" :data="tableData" :loading="loading" @on-row-click="handleClickRow"></i-table>
+                <i-table border stripe 
+                    ref="selection"
+                    :columns="columns" 
+                    :data="tableData" 
+                    :loading="loading" 
+                    @on-row-click="handleClickRow" 
+                    @on-selection-change="handleSelectChange"></i-table>
             </div>
         </div>
         <div id="bmap"></div>
@@ -213,6 +219,11 @@
                         geoName:'',
                         geoNameModal:false,
                         columns:[
+                            {
+                                type: 'selection',
+                                width: 60,
+                                align: 'center'
+                            },
                             {
                                 type:'index',
                                 width:60,
@@ -523,7 +534,7 @@
                                                     me.$Message.success("添加成功");
                                                 }
                                                 me.map.clearOverlays();
-                                                me.redrawArea(points3Str);
+                                                me.redrawAreaAndViewPortCenter(points3Str);
                                                 me.getFenceInfo();
                                             }else{
                                                 me.$Message.error("操作失败");
@@ -572,7 +583,7 @@
                         handleClickRow:function(row,index){
                             rowData = row;
                             var type = row.type , me = this;
-
+                            this.$refs.selection.selectAll(false);
                             this.map.clearOverlays();
                             this.isEidt = true;
                             switch(type){
@@ -598,7 +609,55 @@
                                     me.isCircular = false;
                                     me.areaAddress = [String(row.provinceindex3),String(row.cityindex3),String(row.areaindex3)];
                                     me.modal = true;
-                                    me.redrawArea(row.points3);
+                                    me.redrawAreaAndViewPortCenter(row.points3);
+                                    break;
+                            }
+                        },
+                        handleSelectChange:function(selection){
+                            this.modal = false;
+                            this.isCircular = false;
+                            this.isPolygon = false;
+                            this.map.clearOverlays();
+                            if(selection.length){
+                                var points = []
+                                for (var index = 0; index < selection.length; index++) {
+                                    var element = selection[index];
+                                    this.drawAllOverlays(element);
+                                    switch(element.type){
+                                        case 1 :
+                                            var lon_lan = wgs84tobd09(element.lon1,element.lat1);
+                                            var point = new BMap.Point(lon_lan[0],lon_lan[1]);
+                                            points.push(point);
+                                            break;
+                                        case 2 :
+                                            points = points.concat(this.wgs84tobd09Points(element.points2))
+                                            break;
+                                        case 3 :
+                                            points = points.concat(this.wgs84tobd09Points(element.points3))
+                                            break;
+                                    }
+                                }
+                                this.setViewPortCenter(points);
+                            }
+                        },
+                        drawAllOverlays:function(row){
+                            var type = row.type , me = this;
+                            switch(type){
+                                case 1 :
+                                    var lon_lan = wgs84tobd09(row.lon1,row.lat1);
+                                    var markerPoint = new BMap.Point(lon_lan[0],lon_lan[1]);
+                                    var marker = new BMap.Marker(markerPoint);
+                                    var circular = new BMap.Circle(markerPoint,row.radius1,styleOptions);
+                                    this.map.addOverlay(marker);  
+                                    this.map.addOverlay(circular); 
+                                    break;
+                                case 2 :
+                                    var bdpoints = this.wgs84tobd09Points(row.points2);
+                                    var polygon = new BMap.Polygon(bdpoints, styleOptions);  
+                                    this.map.addOverlay(polygon); 
+                                    break;
+                                case 3 :
+                                    this.redrawArea(row.points3);
                                     break;
                             }
                         },
@@ -612,14 +671,7 @@
                             this.markerIns = new BMap.Marker(this.mapCenterPoint);
                             // this.markerIns .enableDragging();
                             this.map.addOverlay(this.markerIns);  
-                            this.circularIns = new BMap.Circle(this.mapCenterPoint,this.radius,{
-                                strokeWeight:3,
-                                strokeColor:"#F37A5A",
-                                strokeColor:"red",      
-                                strokeWeight: 3,      
-                                strokeOpacity: 0.8,     
-                                fillOpacity: 0.6,   
-                            });
+                            this.circularIns = new BMap.Circle(this.mapCenterPoint,this.radius,styleOptions);
                             this.map.addOverlay(this.circularIns);  
                         },
                         addCircular:function(){
@@ -666,37 +718,29 @@
                             this.isEidt = false;
                             startDrawPolygon(BMAP_DRAWING_POLYGON);
                         },
-                        redrawPolygon:function(row){
-                            var points = JSON.parse(row.points2);
+                        wgs84tobd09Points:function(pointsStr){
+                            var points = JSON.parse(pointsStr);
                             var bdpoints = [];
                                 points.forEach(function (item) { 
                                     var lon_lat = wgs84tobd09(Number(item.lon),Number(item.lat));                     
                                     bdpoints.push(new BMap.Point(lon_lat[0],lon_lat[1]))
                                 });
-                            var polygon = new BMap.Polygon(bdpoints, {
-                                            strokeColor:"red",     
-                                            fillColor:"red",    
-                                            strokeWeight: 3,      
-                                            strokeOpacity: 0.8,     
-                                            fillOpacity: 0.6,       
-                                    });  
+                            return bdpoints;
+                        },
+                        redrawPolygon:function(row){
+                            var bdpoints = this.wgs84tobd09Points(row.points2);
+                            var polygon = new BMap.Polygon(bdpoints, styleOptions);  
                             this.map.addOverlay(polygon); 
                             this.setViewPortCenter(bdpoints);
                         },
-                        redrawArea:function(points){
-                            var points = JSON.parse(points);
-                            var bdpoints = [];
-                                points.forEach(function (item) { 
-                                    var lon_lat = wgs84tobd09(Number(item.lon),Number(item.lat));                     
-                                    bdpoints.push(new BMap.Point(lon_lat[0],lon_lat[1]))
-                                });
-                            var polygon = new BMap.Polygon(bdpoints, {
-                                            strokeColor:"red",     
-                                            fillColor:"red",    
-                                            strokeWeight: 3,      
-                                            strokeOpacity: 0.8,     
-                                            fillOpacity: 0.6,       
-                                    });  
+                        redrawArea:function(pointsStr){
+                            var bdpoints = this.wgs84tobd09Points(pointsStr);
+                            var polygon = new BMap.Polygon(bdpoints, styleOptions);  
+                            this.map.addOverlay(polygon); 
+                        },
+                        redrawAreaAndViewPortCenter:function(pointsStr){
+                            var bdpoints = this.wgs84tobd09Points(pointsStr);
+                            var polygon = new BMap.Polygon(bdpoints,styleOptions);  
                             this.map.addOverlay(polygon); 
                             this.setViewPortCenter(bdpoints);
                         },
@@ -718,7 +762,7 @@
                             if(resp.status === 0 && resp.records && resp.records.length){
                                 this.tableData = resp.records;
                             }else{
-                                this.$Message.error('数据请求失败');
+                                this.$Message.error('没有数据');
                             }
                         },
                         setMapZoom:function(value){
