@@ -58,6 +58,14 @@
             border: 1px solid #A4D4F5;
             background-color: #ffffff;
         }
+        #container .area-ctrl{
+            position: absolute;
+            width: 400px;
+            bottom: 10px;
+            left:410px;
+            border: 1px solid #A4D4F5;
+            background-color: #ffffff;
+        }
     </style>
 </head>
 <body>
@@ -66,13 +74,13 @@
             <div class="controller-inner">
                 <Row style="padding:0 0 10px 0">
                     <i-col :span="8" style="text-align:center;">
-                        <i-button style="width:100px;" @click="drawCircular">圆</i-button>
+                        <i-button style="width:100px;" @click="drawCircular" icon="md-add">圆</i-button>
                     </i-col>
                     <i-col :span="8" style="text-align:center;">
-                        <i-button style="width:100px;" @click="drawPolygon">多边形</i-button>
+                        <i-button style="width:100px;" @click="drawPolygon" icon="md-add">多边形</i-button>
                     </i-col>
                     <i-col :span="8" style="text-align:center;">
-                        <i-button @click="areaModal" style="width:100px;">行政区域</i-button>
+                        <i-button @click="areaModal" style="width:100px;" icon="md-add">行政区域</i-button>
                     </i-col>
                 </Row>
                 <i-table border stripe :columns="columns" :data="tableData" :loading="loading" @on-row-click="handleClickRow"></i-table>
@@ -80,7 +88,7 @@
         </div>
         <div id="bmap"></div>
         <transition name="el-zoom-in-bottom">
-            <div class="circular-ctrl" v-show="isCircular">
+            <div class="area-ctrl" v-show="isCircular">
                 <Row>
                     <i-col :span="24" style="padding:10px;text-align:center;">
                         <h3>{{isEidt?'编辑围栏':'新增围栏'}} - 半径:{{radius}}米</h3>
@@ -95,21 +103,52 @@
                 </Row>
                 <Row>
                     <i-col :span="24" style="padding:10px;text-align:center;">
-                        <i-button @click="addCircular" style="width:200px;">添加</i-button>
+                        <i-button @click="addCircular" style="width:200px;">保存</i-button>
                     </i-col>
                 </Row>
             </div>
         </transition>
-        <Modal v-model="modal" width="400" :title="areaTitle" @on-ok="handleSubmitArea">
-            <Row style="padding: 10px">
-                <i-col :span="6" style="text-align:center;line-height:32px;">
-                     选择区域:   
-                </i-col>
-                <i-col :span="16">
-                    <Cascader :data="provinceList" v-model="areaAddress"></Cascader>
-                </i-col>
-            </Row>
-        </Modal>
+        <transition name="el-zoom-in-bottom">
+            <div class="area-ctrl" v-show="isPolygon">
+                <Row>
+                    <i-col :span="24" style="padding:10px;text-align:center;">
+                        <h3>{{ isEidt ? "编辑多边形":"添加多边形" }}</h3>
+                    </i-col>
+                </Row>
+                <Row>
+                    <i-col :span="22" offset="2" style="padding:10px 0 10px 0;">
+                        1 、 把鼠标移到 地图上单击开始绘制，双击结束绘制
+                    </i-col>
+                </Row>
+                <Row>
+                    <i-col :span="22" offset="2" style="padding:10px 0 20px 0;">
+                        2 、 右键取消绘画
+                    </i-col>
+                </Row>
+            </div>
+        </transition>
+        <transition name="el-zoom-in-bottom">
+            <div class="area-ctrl" v-show="modal">
+                <Row>
+                    <i-col :span="24" style="padding:10px;text-align:center;">
+                        <h3>{{areaTitle}}</h3>
+                    </i-col>
+                </Row>
+                <Row style="padding: 10px">
+                    <i-col :span="6" style="text-align:center;line-height:32px;">
+                         选择区域:   
+                    </i-col>
+                    <i-col :span="16">
+                        <Cascader :data="provinceList" v-model="areaAddress"></Cascader>
+                    </i-col>
+                </Row>
+                <Row style="padding: 10px">
+                    <i-col :span="24" style="padding:10px;text-align:center;">
+                        <i-button @click="handleSubmitArea" style="width:200px;">保存</i-button>
+                    </i-col>
+                </Row>
+            </div>
+        </transition>
         <Modal v-model="geoNameModal" width="400" title="修改围栏名称">
             <Row style="padding: 10px">
                 <i-col :span="6" style="text-align:center;line-height:32px;">
@@ -167,6 +206,8 @@
             vRoot = new Vue({
                     el:"#container",
                     data:{
+                        tipTitle:"多边形提示",
+                        tipContent:'点击多边形按钮,单击画图,双击结束',
                         isEidt:false,
                         map:null,
                         geoName:'',
@@ -219,6 +260,7 @@
                                                     e.stopPropagation();
                                                    vRoot.geoNameModal = true;
                                                    rowData = params.row;
+                                                   vRoot.geoName = params.row.name;
                                                    return false;
                                                 }
                                             }
@@ -275,6 +317,7 @@
                         tableData:[],
                         loading:false,
                         isCircular:false,
+                        isPolygon:false,
                         markerIns:null,
                         circularIns:null,
                         radius:2000,
@@ -324,10 +367,11 @@
                             },false);
 
 
-                            // this.map.addEventListener("rightclick",function(e){  
-                            //     if(self.type!== 2) return;
-                            //     drawingManager.close();  
-                            // }); 
+                            this.map.addEventListener("rightclick",function(e){  
+                                if(self.type!== 2) return;
+                                drawingManager.close();  
+                                self.map.clearOverlays();
+                            }); 
 
                             drawingManager = new BMapLib.DrawingManager(this.map, {  
                                 isOpen: false, //是否开启绘制模式  
@@ -383,9 +427,13 @@
                                     },
                                     onCancel:function(){
                                         self.map.removeOverlay(overlay);
-                                        // startDrawPolygon(BMAP_DRAWING_POLYGON);
                                     }
                                 })
+                        },
+                        claerPolygon:function(){
+                            this.map.clearOverlays();
+                            this.drawingManager.close(); 
+                            startDrawPolygon(BMAP_DRAWING_POLYGON);
                         },
                         getAreaName:function(province,city,county){
                             var result = [];
@@ -439,11 +487,12 @@
                                 var myBoundary  = new BMap.Boundary();
                                 myBoundary.get(areaName.join(','),function(resp){
                                     if(resp.boundaries.length){
-                                        var points3 = me.getWgs84Boundaries(resp.boundaries);
+                                        var points3 = me.getWgs84Boundaries(resp.boundaries);                                        
+                                        var points3Str = JSON.stringify(points3);
                                         if(me.isEidt){
                                             var url = myUrls.editGeoRecord();
                                             var data = deepClone(rowData);
-                                            data.points3 = JSON.stringify(points3);
+                                            data.points3 = points3Str;
                                             data.provinceindex3=Number(me.areaAddress[0]);
                                             data.cityindex3=Number(me.areaAddress[1]);
                                             data.areaindex3=Number(me.areaAddress[2]);
@@ -454,7 +503,7 @@
                                             var url = myUrls.addGeoRecord();
                                             var data = {
                                                 name:areaName.join(','),
-                                                points3:JSON.stringify(points3),
+                                                points3:points3Str,
                                                 deviceid:deviceid,
                                                 provinceindex3:Number(me.areaAddress[0]),
                                                 cityindex3:Number(me.areaAddress[1]),
@@ -465,7 +514,7 @@
                                                 type:me.type,
                                             }
                                         }
-
+                                        
                                         utils.sendAjax(url,data,function (resp) { 
                                             if(resp.status === 0){
                                                 if(me.isEidt){
@@ -473,6 +522,8 @@
                                                 }else{
                                                     me.$Message.success("添加成功");
                                                 }
+                                                me.map.clearOverlays();
+                                                me.redrawArea(points3Str);
                                                 me.getFenceInfo();
                                             }else{
                                                 me.$Message.error("操作失败");
@@ -511,9 +562,11 @@
                         },
                         areaModal:function(){
                             this.isCircular = false;
+                            this.isPolygon = false;
                             this.type = 3;
                             this.modal = true;
                             this.isEidt = false;
+                            this.areaAddress = [];
                             this.map.clearOverlays();
                         },
                         handleClickRow:function(row,index){
@@ -521,8 +574,10 @@
                             var type = row.type , me = this;
 
                             this.map.clearOverlays();
+                            this.isEidt = true;
                             switch(type){
                                 case 1 :
+                                me.modal = false;
                                 var lon_lan = wgs84tobd09(row.lon1,row.lat1);
                                 var point = new BMap.Point(lon_lan[0],lon_lan[1]);
                                     me.radius = row.radius1;
@@ -534,13 +589,16 @@
                                     },300);
                                     break;
                                 case 2 :
+                                    this.modal = false;
                                     this.isCircular = false;
+                                    this.isPolygon = true;
                                     this.redrawPolygon(row);
                                     break;
                                 case 3 :
+                                    me.isCircular = false;
                                     me.areaAddress = [String(row.provinceindex3),String(row.cityindex3),String(row.areaindex3)];
-                                    me.isEidt = true;
                                     me.modal = true;
+                                    me.redrawArea(row.points3);
                                     break;
                             }
                         },
@@ -549,6 +607,7 @@
                             this.isEidt = false;
                             this.getMapCenterPoint();
                             this.isCircular = true;
+                            this.isPolygon = false;
                             this.type = 1;
                             this.markerIns = new BMap.Marker(this.mapCenterPoint);
                             // this.markerIns .enableDragging();
@@ -602,10 +661,30 @@
                             this.type = 2;
                             this.map.clearOverlays();
                             this.isCircular = false;
+                            this.modal = false;
+                            this.isPolygon = true;
+                            this.isEidt = false;
                             startDrawPolygon(BMAP_DRAWING_POLYGON);
                         },
                         redrawPolygon:function(row){
                             var points = JSON.parse(row.points2);
+                            var bdpoints = [];
+                                points.forEach(function (item) { 
+                                    var lon_lat = wgs84tobd09(Number(item.lon),Number(item.lat));                     
+                                    bdpoints.push(new BMap.Point(lon_lat[0],lon_lat[1]))
+                                });
+                            var polygon = new BMap.Polygon(bdpoints, {
+                                            strokeColor:"red",     
+                                            fillColor:"red",    
+                                            strokeWeight: 3,      
+                                            strokeOpacity: 0.8,     
+                                            fillOpacity: 0.6,       
+                                    });  
+                            this.map.addOverlay(polygon); 
+                            this.setViewPortCenter(bdpoints);
+                        },
+                        redrawArea:function(points){
+                            var points = JSON.parse(points);
                             var bdpoints = [];
                                 points.forEach(function (item) { 
                                     var lon_lat = wgs84tobd09(Number(item.lon),Number(item.lat));                     

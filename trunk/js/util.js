@@ -137,21 +137,21 @@ var utils = {
   },
   getCarDirection: function (course) {
     var direction = null
-    if (course == 0) {
+    if ((course <= 22.5 && course >= 0) || (course >= 337.5)) {
       direction = isZh ? '正北' : 'Due north';
-    } else if (course == 90) {
+    } else if (course <= 112.5 && course >= 67.5) {
       direction = isZh ? '正东' : 'Due east';
-    } else if (course == 180) {
+    } else if (course <= 202.5 && course >= 157.5) {
       direction = isZh ? '正南' : 'Due south';
-    } else if (course == 270) {
+    } else if (course <= 292.5 && course >= 247.5) {
       direction = isZh ? '正西' : 'due west';
-    } else if (course > 0 && course < 90) {
+    } else if (course > 22.5 && course < 67.5) {
       direction = isZh ? '东北' : 'Northeast';
-    } else if (course > 90 && course < 180) {
+    } else if (course > 112.5 && course < 157.5) {
       direction = isZh ? '东南' : 'Southeast';
-    } else if (course > 180 && course < 270) {
+    } else if (course > 202.5 && course < 247.5) {
       direction = isZh ? '西南' : 'Southwest';
-    } else if (course > 270 && course <= 360) {
+    } else if (course > 292.5 && course < 337.5) {
       direction = isZh ? '西北' : 'Northwest';
     }
     return direction + "(" + course + "°)";
