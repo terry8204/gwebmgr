@@ -715,9 +715,10 @@
                             utils.sendAjax(url,{deviceid:deviceid},this.doFenceInfo);
                         },
                         doFenceInfo:function(resp){
-                            console.log(resp);
                             if(resp.status === 0 && resp.records && resp.records.length){
                                 this.tableData = resp.records;
+                            }else{
+                                this.$Message.error('数据请求失败');
                             }
                         },
                         setMapZoom:function(value){
