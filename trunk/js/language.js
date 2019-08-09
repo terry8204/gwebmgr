@@ -222,6 +222,7 @@
                 stalling: 'Stalling'
             },
             bgMgr: {
+                bindpwd: "Bind pwd",
                 customerMgr: "Customer Manager",
                 addCustomer: "Add Customer",
                 queryCustomer: "Query Customer",
@@ -531,6 +532,7 @@
                 stalling: '熄火'
             },
             bgMgr: {
+                bindpwd: "绑定密码",
                 customerMgr: "客户管理",
                 addCustomer: "添加客户",
                 queryCustomer: "查询客户",
