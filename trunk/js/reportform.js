@@ -1090,9 +1090,9 @@ function allAlarm (groupslist) {
                                     stralarm: record.stralarm,
                                     stralarmen: record.stralarmen,
                                     disposeperson: record.disposeperson ? record.disposeperson : '',
-                                })
+                                });
                             });
-                            self.alarmData = alarmRecords
+                            self.alarmData = alarmRecords;
                         } else {
                             self.alarmData = [];
                         }

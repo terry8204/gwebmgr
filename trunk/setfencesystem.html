@@ -113,7 +113,7 @@
                     </Row>
                 </div>
                 <div class="tree-box">
-                    <Tree :data="treeData"></Tree>
+                    <Tree :data="treeData" show-checkbox @on-check-change="onCheckChange"></Tree>
                 </div>
             </div>
         </div>
@@ -377,6 +377,7 @@
                                         },
                                         on: {
                                             click:function ()  { 
+                                                vRoot.cancelSelected();
                                                 rowData = data;
                                                 vRoot.isEidt = true;     
                                                 vRoot.map.clearOverlays();
@@ -497,7 +498,7 @@
                             },false);   
 
                             this.map.addEventListener("zoomend",function(e){   	  
-                                if(!self.isCircular) return;	
+                                if(!self.isCircular && isMove ) return;	
                                 self.getMapCenterPoint();
                                 self.markerIns && self.markerIns.setPosition(self.mapCenterPoint);
                                 self.circularIns && self.circularIns.setCenter(self.mapCenterPoint);
@@ -705,6 +706,7 @@
                         },
                         drawCircular:function(){
                             drawingManager.close();
+                            this.cancelSelected();
                             this.map.clearOverlays();   
                             this.isEidt = false;
                             this.getMapCenterPoint();
@@ -725,6 +727,7 @@
                             this.isPolygon = true;
                             this.isEidt = false;
                             this.geoName = "";
+                            this.cancelSelected();
                             startDrawPolygon(BMAP_DRAWING_POLYGON);
                         },
                         handleAddPolygon:function(){
@@ -800,6 +803,60 @@
                             this.originalData = originalData;
                             this.treeData = originalData;
                         },
+                        onCheckChange:function(selecteds){
+                            this.isCircular = false;
+                            this.isPolygon = false;
+                            this.map.clearOverlays();
+                            var points = [] , me = this;
+                            selecteds.forEach(function(select){
+                                if(!select.children){
+                                    switch(select.type){
+                                        case 1 :
+                                            var lon_lan = wgs84tobd09(select.lon1,select.lat1);
+                                            var point = new BMap.Point(lon_lan[0],lon_lan[1]);
+                                            points.push(point);
+                                            break;
+                                        case 2 :
+                                            points = points.concat(me.wgs84tobd09Points(select.points2))
+                                            break;
+                                    }
+                                    me.drawAllOverlays(select);
+                                }   
+                            });
+                            this.setViewPortCenter(points);
+                        },
+                        cancelSelected:function(){
+                            this.originalData.forEach(function (item) { 
+                                item.checked = false;
+                                item.children.forEach(function(record){
+                                    record.checked = false;
+                                });
+                            });
+                            this.treeData.forEach(function (item) { 
+                                item.checked = false;
+                                item.children.forEach(function(record){
+                                    record.checked = false;
+                                });
+                            });
+                        },
+                        drawAllOverlays:function(row){
+                            var type = row.type , me = this;
+                            switch(type){
+                                case 1 :
+                                    var lon_lan = wgs84tobd09(row.lon1,row.lat1);
+                                    var markerPoint = new BMap.Point(lon_lan[0],lon_lan[1]);
+                                    var marker = new BMap.Marker(markerPoint);
+                                    var circular = new BMap.Circle(markerPoint,row.radius1,styleOptions);
+                                    this.map.addOverlay(marker);  
+                                    this.map.addOverlay(circular); 
+                                    break;
+                                case 2 :
+                                    var bdpoints = this.wgs84tobd09Points(row.points2);
+                                    var polygon = new BMap.Polygon(bdpoints, styleOptions);  
+                                    this.map.addOverlay(polygon); 
+                                    break;
+                            }
+                        },
                         handleSaveCircular:function(){
                             var url = null ,data = null, me = this;
                             var lng_lat = bd09towgs84(this.mapCenterPoint.lng,this.mapCenterPoint.lat);  
@@ -838,6 +895,7 @@
                                                 var children = [];
                                                 item.children.forEach(function(record){
                                                     if(record.geosystemrecordid == data.geosystemrecordid){
+                                                        data.title = me.geoName
                                                         children.push(data);
                                                     }else{
                                                         children.push(record);
@@ -852,6 +910,7 @@
                                                 var children = [];
                                                 item.children.forEach(function(record){
                                                     if(record.geosystemrecordid == data.geosystemrecordid){
+                                                        data.title = me.geoName
                                                         children.push(data);
                                                     }else{
                                                         children.push(record);
