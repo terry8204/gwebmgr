@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="shortcut icon" href="./favicon.ico" />
+    <title>电子围栏</title>
+    <link rel="stylesheet" href="dist/styles/iview.css">
+    <style>
+        html,body,#container{
+            width: 100%;
+            height: 100%;  
+            position: relative;
+        }
+        #bmap{
+            position: absolute;
+            top: 0;
+            left: 400px;
+            bottom: 0; 
+            right: 0;
+        }
+        #controller{
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            width: 400px;
+            border-right: 1px solid #A4D4F5;
+            padding: 10px;
+            box-sizing: border-box;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }  
+        #controller .controller-inner{
+            width: 100%;
+            height: 100%;
+            background: #ffffff;
+            position: relative;
+            overflow-x: hidden;
+        }
+        .el-zoom-in-bottom-enter-active,.el-zoom-in-bottom-leave-active{
+            opacity:1;
+            -webkit-transform:scaleY(1);
+            transform:scaleY(1);
+            -webkit-transition:opacity .3s cubic-bezier(.23,1,.32,1),-webkit-transform .3s cubic-bezier(.23,1,.32,1);
+            transition:opacity .3s cubic-bezier(.23,1,.32,1),-webkit-transform .3s cubic-bezier(.23,1,.32,1);
+            transition:transform .3s cubic-bezier(.23,1,.32,1),opacity .3s cubic-bezier(.23,1,.32,1);
+            transition:transform .3s cubic-bezier(.23,1,.32,1),opacity .3s cubic-bezier(.23,1,.32,1),-webkit-transform .3s cubic-bezier(.23,1,.32,1);
+            -webkit-transform-origin:center bottom;
+            transform-origin:center bottom;
+        }
+        .el-zoom-in-bottom-enter,.el-zoom-in-bottom-leave-active{
+            opacity:0;-webkit-transform:scaleY(0);transform:scaleY(0)
+        }
+  
+        #container .area-ctrl{
+            position: absolute;
+            width: 400px;
+            bottom: 10px;
+            left:410px;
+            border: 1px solid #A4D4F5;
+            background-color: #ffffff;
+        }
+        .search-box{
+            width: 100px;
+            height: 41px;
+        }
+        .tree-box{
+            position: absolute;
+            right: 0;
+            left: 0;
+            bottom: 0;
+            top: 82px;
+            overflow-y: auto;
+        }
+        #container .ivu-icon {
+            margin-top: -3px;
+        }
+        #container .ivu-btn .ivu-icon{
+            margin-top: 0px;
+        }
+        #container .ivu-select-arrow{
+            margin-top: -7px important;
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <div id="controller">
+            <div class="controller-inner">
+                <div style="height:41px">
+                    <Row>
+                        <i-col :span="8" style="text-align:center;">
+                            <i-button style="width:100px;" @click="drawCircular" icon="md-add">圆</i-button>
+                        </i-col>
+                        <i-col :span="8" style="text-align:center;">
+                            <i-button style="width:100px;" @click="drawPolygon" icon="md-add">多边形</i-button>
+                        </i-col>
+                        <i-col :span="8" style="text-align:center;">
+                            <i-button  style="width:100px;" icon="md-add" @click="openClassModal">分类</i-button>
+                        </i-col>
+                    </Row>
+                </div>
+                <div class="search-box" style="width:100%">
+                    <Row style="width:100%">
+                        <i-col :span="4" style="text-align:center;line-height:32px;">
+                            搜索:
+                        </i-col>
+                        <i-col :span="20">
+                            <i-input style="width:100%;" v-model="searchValue"></i-input>
+                        </i-col>
+                    </Row>
+                </div>
+                <div class="tree-box">
+                    <Tree :data="treeData"></Tree>
+                </div>
+            </div>
+        </div>
+        <div id="bmap"></div>
+
+        <transition name="el-zoom-in-bottom">
+            <div class="area-ctrl" v-show="isCircular">
+                <Row>
+                    <i-col :span="24" style="padding:10px;text-align:center;">
+                        <h3>{{isEidt?'编辑':'添加'}}圆 - 半径:{{radius}}米</h3>
+                    </i-col>
+                </Row>
+                <Row>
+                    <i-col :span="4" style="text-align:center;line-height:36px;">200米</i-col>
+                    <i-col :span="16">
+                        <Slider v-model="radius" :step="10" :min="min" :max="max" @on-change="changeValue"></Slider>
+                    </i-col>
+                    <i-col :span="4" style="text-align:center;line-height:36px;">100公里</i-col>
+                </Row>
+                <Row style="padding: 10px">
+                    <i-col :span="6" style="text-align:center;line-height:32px;">
+                        围栏名称:   
+                    </i-col>
+                    <i-col :span="16">
+                        <i-input v-model.trim="geoName"></i-input>
+                    </i-col>
+                </Row>
+                <Row style="padding: 10px">
+                    <i-col :span="6" style="text-align:center;line-height:32px;">
+                        选择类型:   
+                    </i-col>
+                    <i-col :span="16">
+                        <i-select v-model="classId" style="width: 100%;">
+                            <i-option :value="item.value" v-for="item in selectTypeList" :key="item.categoryid">{{item.label}}</i-option>
+                        </i-select>
+                    </i-col>
+                </Row>
+                <Row>
+                    <i-col :span="24" style="padding:10px;text-align:center;">
+                        <i-button style="width:200px;" @click="handleSaveCircular">保存</i-button>
+                    </i-col>
+                </Row>
+            </div>
+        </transition>
+
+        <transition name="el-zoom-in-bottom">
+            <div class="area-ctrl" v-show="isPolygon">
+                <Row>
+                    <i-col :span="24" style="padding:10px;text-align:center;">
+                        <h3>添加多边形</h3>
+                    </i-col>
+                </Row>
+                <Row>
+                    <i-col :span="22" offset="2" style="padding:10px 0 10px 0;">
+                        1 、 把鼠标移到 地图上单击开始绘制，双击结束绘制
+                    </i-col>
+                </Row>
+                <Row>
+                    <i-col :span="22" offset="2" style="padding:10px 0 20px 0;">
+                        2 、 右键取消绘画
+                    </i-col>
+                </Row>
+            </div>
+        </transition>
+       
+        <Modal v-model="addClassModal" width="400" title="添加分类">
+            <Row style="padding: 10px">
+                <i-col :span="6" style="text-align:center;line-height:32px;">
+                    类型名称:   
+                </i-col>
+                <i-col :span="16">
+                    <i-input v-model.trim="typeName"></i-input>
+                </i-col>
+            </Row>
+            <div slot="footer" style="text-align:center;">
+                <i-button style="width:80%;" @click="handleAddType">确定</i-button>
+            </div>
+        </Modal>
+
+        <Modal v-model="addPolygonModal" width="400" title="添加多边形">
+            <Row style="padding: 10px">
+                <i-col :span="6" style="text-align:center;line-height:32px;">
+                    围栏名称:   
+                </i-col>
+                <i-col :span="16">
+                    <i-input v-model.trim="geoName"></i-input>
+                </i-col>
+            </Row>
+            <Row style="padding: 10px">
+                <i-col :span="6" style="text-align:center;line-height:32px;">
+                    选择类型:   
+                </i-col>
+                <i-col :span="16">
+                    <i-select v-model="classId" style="width: 100%;">
+                        <i-option :value="item.value" v-for="item in selectTypeList" :key="item.categoryid">{{item.label}}</i-option>
+                    </i-select>
+                </i-col>
+            </Row>
+            <div slot="footer" style="text-align:center;">
+                <i-button style="width:80%;" @click="handleAddPolygon">确定</i-button>
+            </div>
+        </Modal>
+
+    </div>
+    <script src="dist/vue.min.js"></script>
+    <script src="dist/iview.min.js"></script>
+    <script src="js/jquery.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/hashmap.js"></script>
+    <script src="js/localcachemgr.js"></script>
+    <script src="js/transformlatlon.js"></script>
+    <script src="js/dateformat.js"></script>
+    <script src="js/js.cookie.min.js"></script>
+    <script src="js/util.js"></script>
+    <script src="http://api.map.baidu.com/api?v=3.0&ak=e7SC5rvmn2FsRNE4R1ygg44n"></script>
+    <script type="text/javascript" src="http://api.map.baidu.com/library/DrawingManager/1.4/src/DrawingManager_min.js"></script>  
+    <link rel="stylesheet" href="http://api.map.baidu.com/library/DrawingManager/1.4/src/DrawingManager_min.css" />  
+    <script>
+        var token = utils.getParameterByName("token");
+        var map = null;
+        var vRoot = null;
+        var rowData = null;
+        var polygonIns = null;
+
+        var styleOptions = {  
+            strokeColor:"red",    //边线颜色。  
+            fillColor:"red",      //填充颜色。当参数为空时，圆形将没有填充效果。  
+            strokeWeight: 3,       //边线的宽度，以像素为单位。  
+            strokeOpacity: 0.8,    //边线透明度，取值范围0 - 1。  
+            fillOpacity: 0.6,      //填充的透明度，取值范围0 - 1。  
+            strokeStyle: 'solid' //边线的样式，solid或dashed。  
+        }  
+
+        //实例化鼠标绘制工具  
+        var drawingManager = null;  
+
+ 
+        function startDrawPolygon(type){  
+            drawingManager.open();   
+            drawingManager.setDrawingMode(type);  
+        }  
+
+        function debounce (func, wait, immediate) {
+            var timeout, args, context, timestamp, result;
+
+            var later = function () {
+            // 定时器设置的回调 later 方法的触发时间，和连续事件触发的最后一次时间戳的间隔
+            // 如果间隔为 wait（或者刚好大于 wait），则触发事件
+            var last = Date.now() - timestamp;
+
+            // 时间间隔 last 在 [0, wait) 中
+            // 还没到触发的点，则继续设置定时器
+            // last 值应该不会小于 0 吧？
+            if (last < wait && last >= 0) {
+                timeout = setTimeout(later, wait - last);
+            } else {
+                // 到了可以触发的时间点
+                timeout = null;
+                // 可以触发了
+                // 并且不是设置为立即触发的
+                // 因为如果是立即触发（callNow），也会进入这个回调中
+                // 主要是为了将 timeout 值置为空，使之不影响下次连续事件的触发
+                // 如果不是立即执行，随即执行 func 方法
+                if (!immediate) {
+                // 执行 func 函数
+                result = func.apply(context, args);
+                // 这里的 timeout 一定是 null 了吧
+                // 感觉这个判断多余了
+                if (!timeout)
+                    context = args = null;
+                }
+            }
+            };
+
+            return function () {
+                context = this;
+                args = arguments;
+                timestamp = Date.now();
+                var callNow = immediate && !timeout;
+                if (!timeout)
+                    timeout = setTimeout(later, wait);
+
+                if (callNow) {
+                    result = func.apply(context, args);
+                    context = args = null;
+                }
+
+                return result;
+            };
+        };
+        function treeItemRender (h, { root, node, data }) {
+                            return h('span', {
+                                style: {
+                                    display: 'inline-block',
+                                    width: '100%'
+                                }
+                            }, [
+                                h('span', [
+                                    h('span',{
+                                        style: {
+                                            lineHeight: '23px'
+                                        }  
+                                    }, data.title)
+                                ]),
+                                h('span', {
+                                    style: {
+                                        display: 'inline-block',
+                                        float: 'right',
+                                        marginRight: '32px'
+                                    }
+                                }, [
+                                    h('Button', {
+                                        props:{
+                                            type: 'default',
+                                            size: 'small',
+                                            icon: 'ios-remove',
+                                            type: 'error'
+                                        }, 
+                                        style: {
+                                            width: '64px'
+                                        },
+                                        on: {
+                                            click: () => { this.append(data) }
+                                        }
+                                    })
+                                ])
+                            ]);
+                        }
+                        function treeChilrenRender (h, params) {
+                            var root = params.root, node = params.node, data = params.data;
+                            return h('span', {
+                                style: {
+                                    display: 'inline-block',
+                                    width: '343px'
+                                }
+                            }, [
+                                h('span', [
+                                    h('span',{
+                                        style: {
+                                            lineHeight: '23px'
+                                        }  
+                                    }, data.title)
+                                ]),
+                                h('span', {
+                                    style: {
+                                        display: 'inline-block',
+                                        float: 'right',
+                                        marginRight: '32px'
+                                    }
+                                }, [
+                                    !data.children ? h('Button', {
+                                        props: {
+                                            type: 'default',
+                                            size: 'small',
+                                            type: 'primary'
+                                        },
+                                        style: {
+                                            width: '54px',
+                                            marginRight:"5px"
+                                        },
+                                        on: {
+                                            click:function ()  { 
+                                                rowData = data;
+                                                vRoot.isEidt = true;     
+                                                vRoot.map.clearOverlays();
+                                                drawingManager.close();  
+                                                switch(data.type){
+                                                    case  1:
+                                                        var lon_lan = wgs84tobd09(data.lon1,data.lat1);
+                                                        var markerPoint = new BMap.Point(lon_lan[0],lon_lan[1]);
+                                                        vRoot.map.setCenter(markerPoint);
+                                                        vRoot.setMapZoom(data.radius1);
+                                                        setTimeout(function () { 
+                                                            var marker = new BMap.Marker(markerPoint);
+                                                            var circular = new BMap.Circle(markerPoint,data.radius1,styleOptions);
+                                                            vRoot.map.addOverlay(marker);  
+                                                            vRoot.map.addOverlay(circular); 
+                                                            vRoot.mapCenterPoint = markerPoint;
+                                                            vRoot.markerIns = marker;
+                                                            vRoot.circularIns = circular;
+                                                            vRoot.isCircular = true;
+                                                            vRoot.isPolygon = false;
+                                                            vRoot.geoName = data.name;
+                                                            vRoot.classId = data.categoryid;
+                                                            vRoot.radius = data.radius1;    
+                                                        },500);
+                                                        break;
+                                                    case 2:
+                                                        vRoot.isCircular = false;
+                                                        vRoot.redrawPolygon(data);
+                                                        break;    
+                                                }
+                                            }
+                                        }
+                                    },"查看") : '',
+                                    h('Button', {
+                                        props: {
+                                            type: 'default',
+                                            size: 'small',
+                                            type: 'error'
+                                        },
+                                        style: {
+                                            width: '54px'
+                                        },
+                                        on: {
+                                            click:function ()  { 
+                                                var content = data.children ?"确定要删除分类吗?" :"确定要删除围栏吗?";
+                                                vRoot.$Modal.confirm({
+                                                        title: "温馨提示",
+                                                        content:content,
+                                                        onOk:function(){
+                                                            if(data.children){
+                                                                vRoot.deleteTreeItem(data);
+                                                            }else{
+                                                                vRoot.deleteTreeChildren(data);
+                                                            }
+                                                        }
+                                                    })
+                                            }
+                                        }
+                                    },"删除")
+                                ])
+                            ]);
+                        }
+        (function () { 
+            vRoot = new Vue({
+                    el:"#container",
+                    data:{
+                        searchValue:"",
+                        isEidt:false,
+                        map:null,
+                        typeName:'',
+                        classId:"",
+                        geoName:"",
+                        addClassModal:false,
+                        addPolygonModal:false,
+                        isCircular:false,
+                        isPolygon:false,
+                        markerIns:null,
+                        circularIns:null,
+                        radius:2000,
+                        min:200,
+                        max:100000,
+                        modal:false,
+                        type:null, // 1 是圈 2是多边形 3是行政区域'
+                        mapCenterPoint:null,
+                        treeData:[],
+                        originalData:[]
+                    },
+                    methods: {
+                        initMap : function(){
+                            var self = this;
+                            var point = null;
+                            this.map = new BMap.Map("bmap",{minZoom:4,maxZoom:20});           
+                            this.map.enableScrollWheelZoom();
+                            this.map.enableAutoResize();
+                            this.map.disableDoubleClickZoom();
+                            this.map.centerAndZoom(new BMap.Point(108.0017245, 35.926895), 5)
+                            this.map.addControl(new BMap.CityListControl({
+                                anchor: BMAP_ANCHOR_TOP_LEFT,
+                                offset: new BMap.Size(10, 20),
+                                // 切换城市之间事件
+                                // onChangeBefore: function(){
+                                //    alert('before');
+                                // },
+                                // 切换城市之后事件
+                                // onChangeAfter:function(){
+                                 
+                                // }
+                            }));
+
+
+                            this.map.addEventListener("moveend",function(e){   
+                                if(!self.isCircular) return;	
+                                self.getMapCenterPoint();
+                                self.markerIns && self.markerIns.setPosition(self.mapCenterPoint);
+                                self.circularIns && self.circularIns.setCenter(self.mapCenterPoint);
+                            },false);   
+
+                            this.map.addEventListener("zoomend",function(e){   	  
+                                if(!self.isCircular) return;	
+                                self.getMapCenterPoint();
+                                self.markerIns && self.markerIns.setPosition(self.mapCenterPoint);
+                                self.circularIns && self.circularIns.setCenter(self.mapCenterPoint);
+                            },false);
+
+
+                            this.map.addEventListener("rightclick",function(e){  
+                                if(self.type!== 2) return;
+                                drawingManager.close();  
+                                self.map.clearOverlays();
+                            }); 
+
+                            drawingManager = new BMapLib.DrawingManager(this.map, {  
+                                isOpen: false, //是否开启绘制模式  
+                                enableDrawingTool: false, //是否显示工具栏  
+                                drawingToolOptions: {  
+                                    anchor: BMAP_ANCHOR_TOP_RIGHT, //位置  
+                                    offset: new BMap.Size(5, 5), //偏离值  
+                                },  
+                                circleOptions: styleOptions, //圆的样式  
+                                polylineOptions: styleOptions, //线的样式  
+                                polygonOptions: styleOptions, //多边形的样式  
+                                rectangleOptions: styleOptions //矩形的样式  
+                            });    
+
+                            //添加鼠标绘制工具监听事件，用于获取绘制结果  
+                            drawingManager.addEventListener('polygoncomplete', this.overlaycomplete);  
+
+                            map = this.map;
+
+                        },
+                        overlaycomplete : function(overlay){  
+                            polygonIns = overlay;
+                            this.addPolygonModal = true;
+                        },
+                        redrawPolygon:function(row){
+                            var bdpoints = this.wgs84tobd09Points(row.points2);
+                            var polygon = new BMap.Polygon(bdpoints, styleOptions);  
+                            this.map.addOverlay(polygon); 
+                            this.setViewPortCenter(bdpoints);
+                        },
+                        wgs84tobd09Points:function(pointsStr){
+                            var points = JSON.parse(pointsStr);
+                            var bdpoints = [];
+                                points.forEach(function (item) { 
+                                    var lon_lat = wgs84tobd09(Number(item.lon),Number(item.lat));                     
+                                    bdpoints.push(new BMap.Point(lon_lat[0],lon_lat[1]))
+                                });
+                            return bdpoints;
+                        },
+                        setViewPortCenter: function (lines) {
+                            var view = this.map.getViewport(eval(lines));
+                            var mapZoom = view.zoom;
+                            var centerPoint = view.center;
+                            this.map.centerAndZoom(centerPoint, mapZoom);
+                        },
+                        openClassModal:function(){
+                            this.addClassModal = true;
+                        },
+                        handleAddType:function(){
+                            if(this.typeName){
+                                var url = myUrls.addGeoSystemCategory() , me = this;
+                                var  data = {
+                                    name:this.typeName
+                                };
+                                utils.sendAjax(url,data,function(resp){
+                                    if(resp.status === 0 && resp.record){
+                                        var record = resp.record;
+                                        record.title = record.name,
+                                        record.children = [];
+                                        record.render = treeChilrenRender;
+                                        me.originalData.push(record)
+                                        me.$Message.error("添加成功");
+                                        me.addClassModal = false;
+                                        me.typeName = '';
+                                    }else{
+                                        me.$Message.error("添加失败");
+                                    }
+                                });
+                            }else{
+                                this.$Message.error("请填写类型名称");
+                            }
+                        }, 
+                        searchChange:debounce(function(vm,value){
+                            if(value){
+                                var filterData = [];
+                                var originalData = deepClone(vm.originalData);
+                                originalData.forEach(function (item) {
+                                    item.expand = true;
+                                    if(item.title.indexOf(value)!=-1){
+                                        filterData.push(item);     
+                                    }else{
+                                        var children = []
+                                        item.children.forEach(function(record){
+                                            if(record.title.indexOf(value)!=-1){
+                                                children.push(record);
+                                            }
+                                        });
+                                        if(children.length){
+                                            item.children = children;
+                                            filterData.push(item);  
+                                        }
+                                    }
+                                });
+                                vm.treeData = filterData;
+                            }else{
+                                vm.treeData = vm.originalData; 
+                            }
+                            
+                        },500),
+                        changeValue:function(e){
+                            this.circularIns.setRadius(e);
+                        },
+                        claerPolygon:function(){
+                            this.map.clearOverlays();
+                            this.drawingManager.close(); 
+                            startDrawPolygon(BMAP_DRAWING_POLYGON);
+                        },
+                        deleteTreeItem:function(data){
+                            var url = myUrls.delGeoSystemCategory() , me = this;
+                            utils.sendAjax(url,{categoryid:data.categoryid},function(resp){
+                                console.log('resp', resp)
+                                if(resp.status === 0){
+                                    var index = null;
+                                    me.originalData.forEach(function(item,idx){
+                                        if(item.categoryid === data.categoryid){
+                                            index = idx;
+                                        }
+                                    });
+                                    me.originalData.splice(index,1);
+                                    me.treeData = me.originalData;
+                                }else if(resp.status === 1){
+                                    me.$Message.error("不能删除这个分类,还有围栏没删除");
+                                }
+                            })
+                        },
+                        deleteTreeChildren:function(data){
+                            var url = myUrls.delGeoSystemRecord() , me = this;
+                            utils.sendAjax(url,{categoryid:data.categoryid,geosystemrecordid:data.geosystemrecordid},function(resp){
+                                console.log('resp', resp)
+                                if(resp.status === 0){
+                                    me.originalData.forEach(function(item,idx){
+                                        if(item.categoryid === data.categoryid){
+                                            var i = null;
+                                            item.children.forEach(function(item,j){
+                                                if(item.geosystemrecordid === data.geosystemrecordid){
+                                                    i = j;
+                                                }
+                                            });
+                                            item.children.splice(i,1);
+                                        }
+                                    });
+                                }else{
+                                    me.$Message.error("删除失败");
+                                }
+                            })
+                        },
+                        transformPoint:function(pointList){
+                            var points = [];
+                            var iteratior = function (item) { 
+                                var pointStr = item.split(',')
+                                var pointArr = bd09towgs84(Number(pointStr[0].trim()),Number(pointStr[1].trim()));
+                                points.push({
+                                    lon:pointArr[0].toFixed(6),
+                                    lat:pointArr[1].toFixed(6),
+                                })
+                            }
+                            pointList.forEach(iteratior);
+                            return points;
+                        },
+                        getWgs84Boundaries:function(boundaries){
+                            var pointList = [] , me = this;
+                            boundaries.forEach(function (item) { 
+                                var points = me.transformPoint(item.split(";"));
+                                pointList = pointList.concat(points);
+                            })
+                            return pointList;
+                        },
+                        setMapZoom:function(value){
+                            var zoom = 4;
+                            if(value > 90000){
+                                zoom = 5;
+                            }else if(value > 90000){
+                                zoom = 6;
+                            }else if(value > 70000){
+                                zoom = 7;
+                            }else if(value > 50000){
+                                zoom = 8;
+                            }else if(value > 40000){
+                                zoom = 9;
+                            }else if(value > 30000){
+                                zoom = 10;
+                            }else if(value > 20000){
+                                zoom = 11;
+                            }else if(value > 10000){
+                                zoom = 12;
+                            }else if(value > 5000){
+                                zoom = 13;
+                            }else if(value > 1000){
+                                zoom = 14;
+                            }else{
+                                zoom = 16;
+                            };
+                            this.map.setZoom(zoom);
+                        },
+                        drawCircular:function(){
+                            drawingManager.close();
+                            this.map.clearOverlays();   
+                            this.isEidt = false;
+                            this.getMapCenterPoint();
+                            this.isCircular = true;
+                            this.isPolygon = false;
+                            this.type = 1;
+                            this.geoName = "";
+                            this.markerIns = new BMap.Marker(this.mapCenterPoint);
+                            // this.markerIns .enableDragging();
+                            this.map.addOverlay(this.markerIns);  
+                            this.circularIns = new BMap.Circle(this.mapCenterPoint,this.radius,styleOptions);
+                            this.map.addOverlay(this.circularIns);  
+                        },
+                        drawPolygon:function(){
+                            this.type = 2;
+                            this.map.clearOverlays();
+                            this.isCircular = false;
+                            this.isPolygon = true;
+                            this.isEidt = false;
+                            this.geoName = "";
+                            startDrawPolygon(BMAP_DRAWING_POLYGON);
+                        },
+                        handleAddPolygon:function(){
+                            var path = polygonIns.getPath();
+                            var mapPath = function (item) {  
+                                var lon_lat = bd09towgs84(item.lng,item.lat);
+                                wgs84Path.push({
+                                    lon:lon_lat[0].toFixed(6),
+                                    lat:lon_lat[1].toFixed(6)
+                                });
+                            };
+                            var wgs84Path = [];
+                            path.forEach(mapPath);
+                            if(this.geoName == ""){ 
+                                this.$Message.error("请填写围栏名称");
+                                return;
+                            }
+                            var data = {
+                                    categoryid:this.classId,
+                                    points2:JSON.stringify(wgs84Path),
+                                    type:2,
+                                    name:this.geoName,
+                                };
+                            var url = myUrls.addGeoSystemRecord() , me = this;
+                            utils.sendAjax(url,data,function(resp){
+                                if(resp.status === 0 && resp.record){
+                                    me.originalData.forEach(function(item){
+                                        if(data.categoryid === item.categoryid){
+                                            resp.record.title = resp.record.name;
+                                            resp.record.categoryid = data.categoryid; 
+                                            resp.record.render = treeChilrenRender;
+                                            item.children.push(resp.record);
+                                        }
+                                    })
+                                    me.$Message.error("添加成功");
+                                    me.map.removeOverlay(polygonIns);
+                                    polygonIns = null;
+                                    me.isPolygon = false;
+                                    me.addPolygonModal = false;
+                                }else{
+                                    me.$Message.error("添加失败");
+                                }
+                            });     
+                            
+                                console.log('data', data);
+                        },
+                        getMapCenterPoint:function(){
+                            var pt = this.map.getCenter();							
+                                this.mapCenterPoint = pt;                               
+                        },
+                        filterOriginalData:function(categorys){
+                            var originalData = [];
+                            categorys.forEach(function(item){
+                                var treeItem = {
+                                    title:item.name,
+                                    categoryid:item.categoryid,
+                                    children:[],
+                                    render:treeChilrenRender
+                                };
+                                item.records.forEach(function(record){
+                                    record.title = record.name;
+                                    record.render = treeChilrenRender;
+                                    record.categoryid = item.categoryid,
+                                    treeItem.children.push(record);
+                                
+                                });
+                                // treeItem.children.push({
+                                //   title:"ssss",
+                                // })
+                                originalData.push(treeItem);
+                            });
+                            console.log('originalData', originalData);
+                            this.originalData = originalData;
+                            this.treeData = originalData;
+                        },
+                        handleSaveCircular:function(){
+                            var url = null ,data = null, me = this;
+                            var lng_lat = bd09towgs84(this.mapCenterPoint.lng,this.mapCenterPoint.lat);  
+                            if(this.geoName == ""){ 
+                                this.$Message.error("请填写围栏名称");
+                                return;
+                            }
+                            if(this.isEidt){
+                                url = myUrls.editGeoSystemCategory();
+                                data = deepClone(rowData);
+                                data.lat1 = lng_lat[1];  
+                                data.lon1 = lng_lat[0];  
+                                data.radius1 = this.radius;
+                                data.name = this.geoName;
+                                data.categoryid = this.classId;
+                            }else{
+                                url = myUrls.addGeoSystemRecord();
+                                data = {
+                                    categoryid:this.classId,
+                                    type:1,
+                                    lat1: lng_lat[1],   
+                                    lon1: lng_lat[0],   
+                                    radius1:this.radius,
+                                    name:this.geoName
+                                };
+                            }
+ 
+                            utils.sendAjax(url,data,function(resp){
+                                console.log('resp', resp);
+                                if(resp.status === 0 ){
+                                    if(me.isEidt){
+                                        me.originalData.forEach(function(item){
+                                            if(data.categoryid === item.categoryid){
+                                                item.children.forEach(function(record){
+                                                    if(record.geosystemrecordid == data.geosystemrecordid){
+                                                        record = data;
+                                                    }
+                                                });
+                                            }
+                                        });
+                                        me.treeData.forEach(function(item){
+                                            if(data.categoryid === item.categoryid){
+                                                item.children.forEach(function(record){
+                                                    if(record.geosystemrecordid == data.geosystemrecordid){
+                                                        record = data;
+                                                    }
+                                                });
+                                            }
+                                        });
+                                        me.$Message.success("编辑成功");
+                                    }else{
+                                        me.originalData.forEach(function(item){
+                                            if(data.categoryid === item.categoryid){
+                                                resp.record.title = resp.record.name;
+                                                resp.record.categoryid = data.categoryid; 
+                                                resp.record.render = treeChilrenRender;
+                                                item.children.push(resp.record);
+                                            }
+                                        })
+                                        me.treeData.forEach(function(item){
+                                            if(data.categoryid === item.categoryid){
+                                                resp.record.title = resp.record.name;
+                                                resp.record.categoryid = data.categoryid; 
+                                                resp.record.render = treeChilrenRender;
+                                                item.children.push(resp.record);
+                                            }
+                                        })
+                                        me.$Message.success("添加成功");
+                                    }
+                                  
+                                }else{
+                                    me.isEidt ?me.$Message.error("编辑失败") : me.$Message.error("添加失败");
+                                }
+                            });            
+                        },
+                        _queryGeoSystemRecords:function(){
+                            var url = myUrls.queryGeoSystemRecords() , me = this;
+                            utils.sendAjax(url,{},function(resp){
+                                if(resp.status == 0){
+                                    if(resp.categorys){
+                                        me.filterOriginalData(resp.categorys);
+                                    }
+                                }
+                            })
+                        }
+                    },
+                    computed:{
+                        selectTypeList:function(){
+                            var typeList = [];
+                            this.originalData.forEach(function(item){
+                                typeList.push({
+                                    label:item.title,
+                                    value:item.categoryid
+                                });
+                            });
+                            return typeList;
+                        }
+                    },
+                    watch: {
+                        searchValue:function(newValue){
+                            this.searchChange(this,newValue);   
+                        },
+                    },
+                    mounted:function () {
+                        this.initMap();
+                        this._queryGeoSystemRecords();
+                    }
+            });
+        })();
+    </script>
+</body>
+</html>

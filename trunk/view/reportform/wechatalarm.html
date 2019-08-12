@@ -1,0 +1,36 @@
+<meta charset="UTF-8">
+<style>
+    #phone-alarm .search-wrapper .ivu-icon{
+        margin-top: 0px;
+    }
+</style>
+<div id="phone-alarm">
+    <div style="margin:10px;height: 35px;">
+        <div style="float: left;">
+            <div style="height: 35px; line-height: 35px;">{{$t("reportForm.selectDev")}}:&nbsp;</div> 
+        </div>
+        <div style="float: left;position: relative;width: 300px;">
+            <div class="search-wrapper" v-click-outside.capture="onClickOutside">
+                <i-input v-model.trim="sosoValue"  icon="ios-search-outline" @on-change="sosoValueChange" @on-blur="blur" @on-focus="focus" :placeholder="placeholder"></i-input>
+                <transition name="fade">
+                    <ul class="search-item-wrapper" v-show="isShowMatchDev">
+                        <li  class="demo-auto-complete-item" v-for="item in filterData">
+                            <div class="demo-auto-complete-group">
+                                <span>{{ item.groupname }}</span>
+                            </div>
+                            <div v-for="option in item.devices" :value="option.groupname" :key="option.groupname" class="ivu-select-item">
+                                <span :style="{color:option.isOnline ? '#33DAD0':'#B1BBC2'}" @click="sosoSelect(option)" class="demo-auto-complete-title">{{ option.title }}</span>
+                            </div>
+                        </li>
+                    </ul>
+                </transition>
+            </div>
+        </div>
+        <div style="margin-left:20px;float: left;">
+            <i-button @click="onClickQuery" >{{$t("reportForm.query")}}</i-button>
+        </div>
+    </div>
+    <div style="margin:10px;">
+        <i-table :columns="columns" :height="tableHeight" :data="tableData" :loading="loading"></i-table>
+    </div>
+</div>

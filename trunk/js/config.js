@@ -280,6 +280,10 @@ var myUrls = {
   reportMileageDetail: function () {
     return this.host + 'webapi?action=reportmileagedetail&token=' + token;
   },
+  // 查询微信报警记录
+  queryWechatAlarm: function () {
+    return this.host + 'webapi?action=querywechatalarm&token=' + token;
+  },
   // 停留报表
   reportParkDetail: function () {
     return this.host + 'webapi?action=reportparkdetail&token=' + token;
@@ -359,8 +363,25 @@ var myUrls = {
   editGeoRecord: function () {
     return this.host + 'webapi?action=editgeorecord&token=' + token;
   },
+  addGeoSystemCategory: function () {
+    return this.host + 'webapi?action=addgeosystemcategory&token=' + token;
+  },
+  addGeoSystemRecord: function () {
+    return this.host + 'webapi?action=addgeosystemrecord&token=' + token;
+  },
+  delGeoSystemCategory: function () {
+    return this.host + 'webapi?action=delgeosystemcategory&token=' + token;
+  },
+  delGeoSystemRecord: function () {
+    return this.host + 'webapi?action=delgeosystemrecord&token=' + token;
+  },
+  editGeoSystemCategory: function () {
+    return this.host + 'webapi?action=editgeosystemcategory&token=' + token;
+  },
+  queryGeoSystemRecords: function () {
+    return this.host + 'webapi?action=querygeosystemrecords&token=' + token;
+  },
 }
-
 
 
 

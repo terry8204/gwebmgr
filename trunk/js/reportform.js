@@ -1151,12 +1151,16 @@ function phoneAlarm (groupslist) {
                 this.tableHeight = wHeight - 125;
             },
             onClickQuery: function () {
-                if (this.queryDeviceId == "") { return };
+                if (this.queryDeviceId == "") {
+                    this.$Message.error("请选择设备");
+                    return
+                };
                 var me = this;
                 var url = myUrls.queryCallAlarm();
                 var data = {
                     deviceid: this.queryDeviceId
                 }
+                this.loading = true;
                 utils.sendAjax(url, data, function (resp) {
                     if (resp.status === 0) {
                         var records = resp.records;
@@ -1171,6 +1175,80 @@ function phoneAlarm (groupslist) {
                         });
                         me.tableData = tableData;
                     }
+                    me.loading = false;
+                })
+            },
+        },
+        mounted: function () {
+            var me = this;
+            this.groupslist = groupslist;
+            this.calcTableHeight();
+            this.$nextTick(function () {
+                if (isToPhoneAlarmRecords) {
+                    isToPhoneAlarmRecords = false;
+                    me.sosoValue = me.getDeviceTitle(globalDeviceId);
+                    me.queryDeviceId = globalDeviceId;
+                    me.onClickQuery();
+                }
+            });
+            window.onresize = function () {
+                me.calcTableHeight();
+            }
+        }
+    });
+}
+
+function wechatAlarm (groupslist) {
+    new Vue({
+        el: '#phone-alarm',
+        i18n: utils.getI18n(),
+        mixins: [reportMixin],
+        data: {
+            loading: false,
+            tableHeight: 100,
+            groupslist: [],
+            timeoutIns: null,
+            isShowMatchDev: true,
+            columns: [
+                { type: 'index', width: 60, align: 'center' },
+                { title: vRoot.$t("alarm.devNum"), key: 'deviceid', width: 200 },
+                { title: isZh ? '报警类型' : 'alarm Type', key: 'stralarm' },
+                { title: isZh ? '时间' : 'date', key: 'datestr' },
+                { title: isZh ? '结果' : 'result', key: 'notifyresult' },
+            ],
+            tableData: []
+        },
+        methods: {
+            calcTableHeight: function () {
+                var wHeight = window.innerHeight;
+                this.tableHeight = wHeight - 125;
+            },
+            onClickQuery: function () {
+                if (this.queryDeviceId == "") {
+                    this.$Message.error("请选择设备");
+                    return
+                };
+                var me = this;
+                var url = myUrls.queryWechatAlarm();
+                var data = {
+                    deviceid: this.queryDeviceId
+                }
+                this.loading = true;
+                utils.sendAjax(url, data, function (resp) {
+                    if (resp.status === 0) {
+                        var records = resp.records;
+                        var tableData = [];
+                        records.forEach(function (record) {
+                            tableData.push({
+                                deviceid: me.queryDeviceId,
+                                notifyresult: record.notifyresult,
+                                datestr: DateFormat.longToDateTimeStr(new Date(record.lastalarmtime), 0),
+                                stralarm: record.stralarm
+                            })
+                        });
+                        me.tableData = tableData;
+                    }
+                    me.loading = false;
                 })
             },
         },
@@ -1446,6 +1524,7 @@ var reportForm = {
                     children: [
                         { title: me.$t("reportForm.allAlarm"), name: 'allAlarm', icon: 'md-warning' },
                         { title: me.$t("reportForm.phoneAlarm"), name: 'phoneAlarm', icon: 'ios-call' },
+                        { title: "微信报警", name: 'wechatAlarm', icon: 'ios-call' },
                         { title: me.$t("reportForm.rechargeRecords"), name: 'rechargeRecords', icon: 'ios-list-box-outline' },
                         { title: "保险记录", name: 'insureRecords', icon: 'ios-list-box-outline' },
                     ]
@@ -1501,6 +1580,9 @@ var reportForm = {
                         break;
                     case 'insurerecords.html':
                         insureRecords(groupslist);
+                        break;
+                    case 'wechatalarm.html':
+                        wechatAlarm(groupslist);
                         break;
                 }
             });
