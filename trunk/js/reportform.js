@@ -1524,7 +1524,7 @@ var reportForm = {
                     children: [
                         { title: me.$t("reportForm.allAlarm"), name: 'allAlarm', icon: 'md-warning' },
                         { title: me.$t("reportForm.phoneAlarm"), name: 'phoneAlarm', icon: 'ios-call' },
-                        { title: "微信报警", name: 'wechatAlarm', icon: 'ios-call' },
+                        { title: "微信报警", name: 'wechatAlarm', icon: 'md-ionitron' },
                         { title: me.$t("reportForm.rechargeRecords"), name: 'rechargeRecords', icon: 'ios-list-box-outline' },
                         { title: "保险记录", name: 'insureRecords', icon: 'ios-list-box-outline' },
                     ]
