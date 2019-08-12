@@ -237,6 +237,7 @@
         var vRoot = null;
         var rowData = null;
         var polygonIns = null;
+        var isMove = true;
 
         var styleOptions = {  
             strokeColor:"red",    //边线颜色。  
@@ -386,7 +387,9 @@
                                                         var markerPoint = new BMap.Point(lon_lan[0],lon_lan[1]);
                                                         vRoot.map.setCenter(markerPoint);
                                                         vRoot.setMapZoom(data.radius1);
+                                                        isMove = false;
                                                         setTimeout(function () { 
+                                                            isMove = true;
                                                             var marker = new BMap.Marker(markerPoint);
                                                             var circular = new BMap.Circle(markerPoint,data.radius1,styleOptions);
                                                             vRoot.map.addOverlay(marker);  
@@ -399,7 +402,7 @@
                                                             vRoot.geoName = data.name;
                                                             vRoot.classId = data.categoryid;
                                                             vRoot.radius = data.radius1;    
-                                                        },500);
+                                                        },1000);
                                                         break;
                                                     case 2:
                                                         vRoot.isCircular = false;
@@ -487,7 +490,7 @@
 
 
                             this.map.addEventListener("moveend",function(e){   
-                                if(!self.isCircular) return;	
+                                if(!self.isCircular && isMove ) return;	
                                 self.getMapCenterPoint();
                                 self.markerIns && self.markerIns.setPosition(self.mapCenterPoint);
                                 self.circularIns && self.circularIns.setCenter(self.mapCenterPoint);
@@ -805,7 +808,7 @@
                                 return;
                             }
                             if(this.isEidt){
-                                url = myUrls.editGeoSystemCategory();
+                                url = myUrls.editGeoSystemRecord();
                                 data = deepClone(rowData);
                                 data.lat1 = lng_lat[1];  
                                 data.lon1 = lng_lat[0];  
@@ -828,24 +831,39 @@
                                 console.log('resp', resp);
                                 if(resp.status === 0 ){
                                     if(me.isEidt){
+                                        var originalData = [] , treeData = [];
+
                                         me.originalData.forEach(function(item){
                                             if(data.categoryid === item.categoryid){
+                                                var children = [];
                                                 item.children.forEach(function(record){
                                                     if(record.geosystemrecordid == data.geosystemrecordid){
-                                                        record = data;
+                                                        children.push(data);
+                                                    }else{
+                                                        children.push(record);
                                                     }
                                                 });
+                                                item.children = children;
                                             }
+                                            originalData.push(item);
                                         });
                                         me.treeData.forEach(function(item){
                                             if(data.categoryid === item.categoryid){
+                                                var children = [];
                                                 item.children.forEach(function(record){
                                                     if(record.geosystemrecordid == data.geosystemrecordid){
-                                                        record = data;
+                                                        children.push(data);
+                                                    }else{
+                                                        children.push(record);
                                                     }
                                                 });
+                                                item.children = children;
                                             }
+                                            treeData.push(item);
                                         });
+                                        me.treeData = treeData;
+                                        me.originalData = originalData;
+                                        console.log('treeData', treeData);
                                         me.$Message.success("编辑成功");
                                     }else{
                                         me.originalData.forEach(function(item){

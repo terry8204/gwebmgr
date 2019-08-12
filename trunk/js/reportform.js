@@ -1078,6 +1078,7 @@ function allAlarm (groupslist) {
                     if (resp.status == 0) {
                         var alarmRecords = [];
                         if (resp.alarmrecords && resp.alarmrecords.length) {
+                            resp.alarmrecords.sort(function (a, b) { return a.lastalarmtime < b.lastalarmtime; });
                             resp.alarmrecords.forEach(function (record) {
                                 var isdispose = record.disposestatus === 0 ? self.$t("reportForm.untreated") : self.$t("reportForm.handled");
                                 alarmRecords.push({
@@ -1091,7 +1092,7 @@ function allAlarm (groupslist) {
                                     disposeperson: record.disposeperson ? record.disposeperson : '',
                                 })
                             });
-                            self.alarmData = alarmRecords;
+                            self.alarmData = alarmRecords
                         } else {
                             self.alarmData = [];
                         }

@@ -378,6 +378,9 @@ var myUrls = {
   editGeoSystemCategory: function () {
     return this.host + 'webapi?action=editgeosystemcategory&token=' + token;
   },
+  editGeoSystemRecord: function () {
+    return this.host + 'webapi?action=editgeosystemrecord&token=' + token;
+  },
   queryGeoSystemRecords: function () {
     return this.host + 'webapi?action=querygeosystemrecords&token=' + token;
   },
