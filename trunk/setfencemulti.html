@@ -578,6 +578,7 @@
                             this.modal = true;
                             this.isEidt = false;
                             this.areaAddress = [];
+                            drawingManager.close();  
                             this.map.clearOverlays();
                         },
                         handleClickRow:function(row,index){
@@ -586,6 +587,7 @@
                             this.$refs.selection.selectAll(false);
                             this.map.clearOverlays();
                             this.isEidt = true;
+                            drawingManager.close();  
                             switch(type){
                                 case 1 :
                                 me.modal = false;
@@ -641,6 +643,7 @@
                             }
                         },
                         drawAllOverlays:function(row){
+                            drawingManager.close();  
                             var type = row.type , me = this;
                             switch(type){
                                 case 1 :
@@ -662,6 +665,7 @@
                             }
                         },
                         drawCircular:function(){
+                            drawingManager.close(); 
                             this.map.clearOverlays();   
                             this.isEidt = false;
                             this.getMapCenterPoint();
@@ -677,7 +681,7 @@
                         addCircular:function(){
                             var url = null , me = this , data = null;
                             var lng_lat = bd09towgs84(this.mapCenterPoint.lng,this.mapCenterPoint.lat);  	
-                 
+                            
                             if(this.isEidt){
                                 url = myUrls.editGeoRecord() ;
                                 data = deepClone(rowData);

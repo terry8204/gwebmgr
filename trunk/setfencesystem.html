@@ -77,7 +77,7 @@
         #container .ivu-icon {
             margin-top: -3px;
         }
-        #container .ivu-btn .ivu-icon{
+        #container .ivu-btn .ivu-icon ,#container .ivu-input-wrapper .ivu-icon {
             margin-top: 0px;
         }
         #container .ivu-select-arrow{
@@ -104,11 +104,8 @@
                 </div>
                 <div class="search-box" style="width:100%">
                     <Row style="width:100%">
-                        <i-col :span="4" style="text-align:center;line-height:32px;">
-                            搜索:
-                        </i-col>
-                        <i-col :span="20">
-                            <i-input style="width:100%;" v-model="searchValue"></i-input>
+                        <i-col :span="24">
+                            <i-input style="width:100%;" v-model="searchValue" suffix="ios-search" placeholder="搜索"></i-input>
                         </i-col>
                     </Row>
                 </div>
