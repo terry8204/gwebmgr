@@ -6,6 +6,7 @@ var isZh = utils.locale === 'zh';
 var mapType = utils.getMapType();
 var isLoadBMap = false;
 var globalDeviceId = "";
+var reportDeviceId = null;
 var userlists = [];
 var isNeedRefresh = false;
 var isToAlarmListRecords = false;

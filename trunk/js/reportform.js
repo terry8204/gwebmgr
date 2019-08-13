@@ -49,6 +49,8 @@ var reportMixin = {
                 });
                 this.filterData = this.groupslist;
                 this.isShowMatchDev = true;
+                this.queryDeviceId = '';
+                reportDeviceId = null;
             }
         },
         sosoValueChange: function () {
@@ -65,7 +67,6 @@ var reportMixin = {
         },
         filterMethod: function (value) {
             var filterData = [];
-            this.queryDeviceId = '';
             value = value.toLowerCase();
             for (var i = 0; i < this.groupslist.length; i++) {
                 var group = this.groupslist[i];
@@ -111,14 +112,19 @@ var reportMixin = {
             if (!this.isShowMatchDev) {
                 this.isShowMatchDev = true;
             };
+            if (!value) {
+                this.queryDeviceId = '';
+                reportDeviceId = null;
+            }
         },
         sosoSelect: function (item) {
+            reportDeviceId = item.deviceid;
             this.sosoValue = item.title;
             this.queryDeviceId = item.deviceid;
             this.isShowMatchDev = false;
         },
         getDeviceTitle: function (deviceid) {
-            var title = "1-";
+            var title = "";
             this.groupslist.forEach(function (group) {
                 var isReturn = false;
                 group.devices.forEach(function (device) {
@@ -136,6 +142,12 @@ var reportMixin = {
     mounted: function () {
         var me = this;
         this.calcTableHeight();
+        this.$nextTick(function () {
+            if (reportDeviceId) {
+                me.queryDeviceId = reportDeviceId;
+                me.sosoValue = me.getDeviceTitle(reportDeviceId);
+            }
+        });
         window.onresize = function () {
             me.calcTableHeight();
         }
