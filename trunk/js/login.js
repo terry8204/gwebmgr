@@ -79,7 +79,7 @@ new Vue({
             var me = this;
             var user = this.username;
             var pass = this.password;
-
+            if (!$) { return; };
             if (user.length < 2) {
                 this.$Message.error(this.$t("login.error_1"));
                 return;
