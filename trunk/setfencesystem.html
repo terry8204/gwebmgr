@@ -83,6 +83,9 @@
         #container .ivu-select-arrow{
             margin-top: -7px important;
         }
+        .selectTreeClass{
+            background:#DEE1E6;
+        }
     </style>
 </head>
 <body>
@@ -223,6 +226,7 @@
     <script src="js/localcachemgr.js"></script>
     <script src="js/transformlatlon.js"></script>
     <script src="js/dateformat.js"></script>
+    <script src="js/gps51-jquery.js"></script>
     <script src="js/js.cookie.min.js"></script>
     <script src="js/util.js"></script>
     <script src="http://api.map.baidu.com/api?v=3.0&ak=e7SC5rvmn2FsRNE4R1ygg44n"></script>
@@ -301,143 +305,155 @@
                 return result;
             };
         };
-        function treeItemRender (h, { root, node, data }) {
-                            return h('span', {
-                                style: {
-                                    display: 'inline-block',
-                                    width: '100%'
-                                }
-                            }, [
-                                h('span', [
-                                    h('span',{
-                                        style: {
-                                            lineHeight: '23px'
-                                        }  
-                                    }, data.title)
-                                ]),
-                                h('span', {
-                                    style: {
-                                        display: 'inline-block',
-                                        float: 'right',
-                                        marginRight: '32px'
-                                    }
-                                }, [
-                                    h('Button', {
-                                        props:{
-                                            type: 'default',
-                                            size: 'small',
-                                            icon: 'ios-remove',
-                                            type: 'error'
-                                        }, 
-                                        style: {
-                                            width: '64px'
-                                        },
-                                        on: {
-                                            click: () => { this.append(data) }
-                                        }
-                                    })
-                                ])
-                            ]);
-                        }
-                        function treeChilrenRender (h, params) {
-                            var root = params.root, node = params.node, data = params.data;
+        function treeItemRender (h, params) {
+            var root = params.root, node = params.node, data = params.data;
                             return h('span', {
                                 style: {
                                     display: 'inline-block',
                                     width: '343px'
-                                }
+                                },
                             }, [
                                 h('span', [
                                     h('span',{
                                         style: {
-                                            lineHeight: '23px'
+                                            width: '271px',
+                                            lineHeight: '23px',
+                                            display: 'inline-block',
                                         }  
                                     }, data.title)
                                 ]),
-                                h('span', {
+                               
+                                h('Icon', {
+                                    props: {
+                                        size: 18,
+                                        type:"md-close",
+                                    },  
                                     style: {
-                                        display: 'inline-block',
-                                        float: 'right',
-                                        marginRight: '32px'
-                                    }
-                                }, [
-                                    !data.children ? h('Button', {
-                                        props: {
-                                            type: 'default',
-                                            size: 'small',
-                                            type: 'primary'
-                                        },
-                                        style: {
-                                            width: '54px',
-                                            marginRight:"5px"
-                                        },
-                                        on: {
-                                            click:function ()  { 
-                                                vRoot.cancelSelected();
-                                                rowData = data;
-                                                vRoot.isEidt = true;     
-                                                vRoot.map.clearOverlays();
-                                                drawingManager.close();  
-                                                switch(data.type){
-                                                    case  1:
-                                                        var lon_lan = wgs84tobd09(data.lon1,data.lat1);
-                                                        var markerPoint = new BMap.Point(lon_lan[0],lon_lan[1]);
-                                                        vRoot.map.setCenter(markerPoint);
-                                                        vRoot.setMapZoom(data.radius1);
-                                                        isMove = false;
-                                                        setTimeout(function () { 
-                                                            isMove = true;
-                                                            var marker = new BMap.Marker(markerPoint);
-                                                            var circular = new BMap.Circle(markerPoint,data.radius1,styleOptions);
-                                                            vRoot.map.addOverlay(marker);  
-                                                            vRoot.map.addOverlay(circular); 
-                                                            vRoot.mapCenterPoint = markerPoint;
-                                                            vRoot.markerIns = marker;
-                                                            vRoot.circularIns = circular;
-                                                            vRoot.isCircular = true;
-                                                            vRoot.isPolygon = false;
-                                                            vRoot.geoName = data.name;
-                                                            vRoot.classId = data.categoryid;
-                                                            vRoot.radius = data.radius1;    
-                                                        },1000);
-                                                        break;
-                                                    case 2:
-                                                        vRoot.isCircular = false;
-                                                        vRoot.redrawPolygon(data);
-                                                        break;    
-                                                }
-                                            }
-                                        }
-                                    },"查看") : '',
-                                    h('Button', {
-                                        props: {
-                                            type: 'default',
-                                            size: 'small',
-                                            type: 'error'
-                                        },
-                                        style: {
-                                            width: '54px'
-                                        },
-                                        on: {
-                                            click:function ()  { 
-                                                var content = data.children ?"确定要删除分类吗?" :"确定要删除围栏吗?";
-                                                vRoot.$Modal.confirm({
-                                                        title: "温馨提示",
-                                                        content:content,
-                                                        onOk:function(){
-                                                            if(data.children){
-                                                                vRoot.deleteTreeItem(data);
-                                                            }else{
-                                                                vRoot.deleteTreeChildren(data);
-                                                            }
+                                        // width: '54px'
+                                        color:"#DEE1E6",
+                                        border:"1px solid #DEE1E6",
+                                        borderRadius:"50%",
+                                    },
+                                    on: {
+                                        click:function (e)  { 
+                                            e.preventDefault(); 
+                                            e.stopPropagation();
+                                            var content = data.children ?"确定要删除分类吗?" :"确定要删除围栏吗?";
+                                            vRoot.$Modal.confirm({
+                                                    title: "温馨提示",
+                                                    content:content,
+                                                    onOk:function(){
+                                                        if(data.children){
+                                                            vRoot.deleteTreeItem(data);
+                                                        }else{
+                                                            vRoot.deleteTreeChildren(data);
                                                         }
-                                                    })
+                                                    }
+                                                })
+                                            return false;
+                                        }
+                                    }
+                                },'')
+                            ]);
+                    }
+        function treeChilrenRender (h, params) {
+            var root = params.root, node = params.node, data = params.data;
+         
+            return h('span', {
+                style: {
+                    display: 'inline-block',
+                    width: '343px',
+                    height: '23.5px'
+                },
+                on:{
+                    click:function(e){
+                    }
+                }
+            }, [
+                h('span', {
+                    style: {
+                            lineHeight: '24px',
+                            width: '253px',
+                            display: 'inline-block',
+                        }, 
+                        attrs:{
+                            class:'show'
+                        },
+                        on:{
+                            click:function(e){
+                                $(".show").removeClass("selectTreeClass");
+                                $(e.target).addClass("selectTreeClass");
+                                vRoot.cancelSelected();
+                                        rowData = data;
+                                        if(data.children) return;
+                                        vRoot.isEidt = true;     
+                                        vRoot.map.clearOverlays();
+                                        drawingManager.close();  
+                                        switch(data.type){
+                                            case  1:
+                                                var lon_lan = wgs84tobd09(data.lon1,data.lat1);
+                                                var markerPoint = new BMap.Point(lon_lan[0],lon_lan[1]);
+                                                vRoot.map.setCenter(markerPoint);
+                                                vRoot.setMapZoom(data.radius1);
+                                                isMove = false;
+                                                setTimeout(function () { 
+                                                    isMove = true;
+                                                    var marker = new BMap.Marker(markerPoint);
+                                                    var circular = new BMap.Circle(markerPoint,data.radius1,styleOptions);
+                                                    vRoot.map.addOverlay(marker);  
+                                                    vRoot.map.addOverlay(circular); 
+                                                    vRoot.mapCenterPoint = markerPoint;
+                                                    vRoot.markerIns = marker;
+                                                    vRoot.circularIns = circular;
+                                                    vRoot.isCircular = true;
+                                                    vRoot.isPolygon = false;
+                                                    vRoot.geoName = data.name;
+                                                    vRoot.classId = data.categoryid;
+                                                    vRoot.radius = data.radius1;    
+                                                },1000);
+                                                break;
+                                            case 2:
+                                                vRoot.isCircular = false;
+                                                vRoot.redrawPolygon(data);
+                                                break;    
+                                        }
+                                } 
+                            
+                        }
+                },
+                data.title),
+                h('Icon', {
+                        props: {
+                            size: 18,
+                            type:"md-close",
+                        },  
+                        style: {
+                            border:"1px solid #DEE1E6",
+                            borderRadius:"50%",
+                            color:"#DEE1E6"
+                        },
+                        on: {
+                            click:function (e)  { 
+                                e.preventDefault(); 
+                                e.stopPropagation();
+                                var content = data.children ?"确定要删除分类吗?" :"确定要删除围栏吗?";
+                                vRoot.$Modal.confirm({
+                                        title: "温馨提示",
+                                        content:content,
+                                        onOk:function(){
+                                            if(data.children){
+                                                vRoot.deleteTreeItem(data);
+                                            }else{
+                                                vRoot.deleteTreeChildren(data);
                                             }
                                         }
-                                    },"删除")
-                                ])
-                            ]);
+                                    })
+                                return false;
+                            }
                         }
+                    },'')
+            ]);
+        }
         (function () { 
             vRoot = new Vue({
                     el:"#container",
@@ -565,7 +581,7 @@
                                         var record = resp.record;
                                         record.title = record.name,
                                         record.children = [];
-                                        record.render = treeChilrenRender;
+                                        record.render = treeItemRender;
                                         me.originalData.push(record)
                                         me.$Message.error("添加成功");
                                         me.addClassModal = false;
@@ -781,7 +797,7 @@
                                     title:item.name,
                                     categoryid:item.categoryid,
                                     children:[],
-                                    render:treeChilrenRender
+                                    render:treeItemRender
                                 };
                                 item.records.forEach(function(record){
                                     record.title = record.name;
