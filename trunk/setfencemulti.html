@@ -541,7 +541,15 @@
             </div>
         </Modal>
         <Drawer title="添加系统围栏" width="400" v-model="drawerModal">
-            <Row style="width:100%">
+            <Row style="width:100%" v-if="userType < 2">
+                <i-col :span="16">
+                    <i-input style="width:100%;" v-model="searchValue" suffix="ios-search" placeholder="搜索"></i-input>
+                </i-col>
+                <i-col :span="8" style="padding:0 0 0 10px;">
+                   <i-button @click="jumpSystemFence" style="width:100%;">设置系统围栏</i-button>
+                </i-col>
+            </Row>
+            <Row style="width:100%" v-else>
                 <i-col :span="24">
                     <i-input style="width:100%;" v-model="searchValue" suffix="ios-search" placeholder="搜索"></i-input>
                 </i-col>
@@ -1025,7 +1033,7 @@
         }  
 
          function treeItemRender (h, params) {
-            var root = params.root, node = params.node, data = params.data;
+            var root = params.root, node = params.node, row = params.data;
                             return h('span', {
                                 style: {
                                     display: 'inline-block',
@@ -1043,15 +1051,15 @@
                                             click:function(e){
                                                 e.preventDefault(); 
                                                 e.stopPropagation();
-                                                if(data.children){
-                                                    vRoot.handleSelectChange(data.children);
+                                                if(row.children){
+                                                    vRoot.handleSelectChange(row.children);
                                                 }     
                                                 return false;
                                             },
                                         } 
-                                    }, data.title)
+                                    }, row.title)
                                 ]),
-                                data.children? 
+                                row.children? 
                                 h('Button', {
                                             props: {
                                                 type: 'primary',
@@ -1064,14 +1072,15 @@
                                                 click:function (e)  { 
                                                     e.preventDefault(); 
                                                     e.stopPropagation();
-                                                    
+                                             
                                                     var url = myUrls.addGeoRecord();
-                                                    data = {
+                                                    var data = {
                                                         type:4,
-                                                        categoryid4:data.categoryid,
-                                                        name:data.title,
+                                                        categoryid4:row.categoryid,
+                                                        name:row.title,
+                                                        deviceid:deviceid
                                                     };
-
+                                                    console.log('data', data);
                                                     utils.sendAjax(url,data,function (resp) { 
                                                         if(resp.status == 0){
                                                             vRoot.$Message.success("添加成功");
@@ -1125,6 +1134,9 @@
                                             break;
                                         case 3 :
                                             type = '行政区域'
+                                            break;
+                                        case 4 :
+                                            type = '系统围栏'
                                             break;
                                     }
                                     return h('div',[h('span', {}, type)]);
@@ -1221,9 +1233,14 @@
                         type:null, // 1 是圈 2是多边形 3是行政区域'
                         areaAddress:[],
                         mapCenterPoint:null,
-                        provinceList:provinceList
+                        provinceList:provinceList,
+                        userType:Cookies.get('userType')
                     },
                     methods: {
+                        jumpSystemFence:function(){
+                            var url = 'setfencesystem.html?deviceid=' + deviceid + '&token=' + token;
+                            window.open(url);
+                        },
                         initMap : function(){
                             var self = this;
                             var point = null;
@@ -1496,7 +1513,21 @@
                                     me.modal = true;
                                     me.redrawAreaAndViewPortCenter(row.points3);
                                     break;
+                                case 4 :
+                                    var categoryid = row.categoryid4;
+                                    var info = me.getTreeItemData(categoryid);
+                                    me.handleSelectChange(info.children)                                  
+                                    break;
                             }
+                        },
+                        getTreeItemData:function(categoryid){
+                            var result = null;
+                            this.originalData.forEach(function(record){
+                                if(record.categoryid === categoryid){
+                                    result = record;
+                                }
+                            });
+                            return result;
                         },
                         handleSelectChange:function(selection){
                             this.modal = false;
@@ -1504,6 +1535,7 @@
                             this.isPolygon = false;
                             this.map.clearOverlays();
                             drawingManager.close(); 
+                            var me = this;
                             if(selection.length){
                                 var points = []
                                 for (var index = 0; index < selection.length; index++) {
@@ -1516,10 +1548,29 @@
                                             points.push(point);
                                             break;
                                         case 2 :
-                                            points = points.concat(this.wgs84tobd09Points(element.points2))
+                                            points = points.concat(this.wgs84tobd09Points(element.points2));
                                             break;
                                         case 3 :
-                                            points = points.concat(this.wgs84tobd09Points(element.points3))
+                                            points = points.concat(this.wgs84tobd09Points(element.points3));
+                                            break;
+                                        case 4 :
+                                            var categoryid = element.categoryid4; 
+                                            var info = this.getTreeItemData(categoryid);
+                                            if(info){
+                                                info.children.forEach(function(record){
+                                                    me.drawAllOverlays(record);
+                                                    switch(record.type){
+                                                        case 1 :
+                                                            var lon_lan = wgs84tobd09(record.lon1,record.lat1);
+                                                            var point = new BMap.Point(lon_lan[0],lon_lan[1]);
+                                                            points.push(point);
+                                                            break;
+                                                        case 2 :
+                                                            points = points.concat(me.wgs84tobd09Points(record.points2));
+                                                            break;
+                                                    }
+                                                });
+                                            }
                                             break;
                                     }
                                 }
@@ -1713,6 +1764,32 @@
                             this.originalData = originalData;
                             this.treeData = originalData;
                         },
+                        searchChange:utils.debounce(function(vm,value){
+                            if(value){
+                                var filterData = [];
+                                var originalData = deepClone(vm.originalData);
+                                originalData.forEach(function (item) {
+                                    item.expand = true;
+                                    if(item.title.indexOf(value)!=-1){
+                                        filterData.push(item);     
+                                    }else{
+                                        var children = []
+                                        item.children.forEach(function(record){
+                                            if(record.title.indexOf(value)!=-1){
+                                                children.push(record);
+                                            }
+                                        });
+                                        if(children.length){
+                                            item.children = children;
+                                            filterData.push(item);  
+                                        }
+                                    }
+                                });
+                                vm.treeData = filterData;
+                            }else{
+                                vm.treeData = vm.originalData; 
+                            } 
+                        },500),
                     },
                     computed:{
                         areaTitle:function(){
@@ -1722,6 +1799,11 @@
                                 return '添加区域围栏';
                             }
                         }
+                    },
+                    watch: {
+                        searchValue:function(newValue){
+                            this.searchChange(this,newValue);   
+                        },
                     },
                     mounted:function () {
                         this.initMap();

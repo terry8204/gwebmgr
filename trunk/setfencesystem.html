@@ -257,54 +257,7 @@
             drawingManager.setDrawingMode(type);  
         }  
 
-        function debounce (func, wait, immediate) {
-            var timeout, args, context, timestamp, result;
 
-            var later = function () {
-            // 定时器设置的回调 later 方法的触发时间，和连续事件触发的最后一次时间戳的间隔
-            // 如果间隔为 wait（或者刚好大于 wait），则触发事件
-            var last = Date.now() - timestamp;
-
-            // 时间间隔 last 在 [0, wait) 中
-            // 还没到触发的点，则继续设置定时器
-            // last 值应该不会小于 0 吧？
-            if (last < wait && last >= 0) {
-                timeout = setTimeout(later, wait - last);
-            } else {
-                // 到了可以触发的时间点
-                timeout = null;
-                // 可以触发了
-                // 并且不是设置为立即触发的
-                // 因为如果是立即触发（callNow），也会进入这个回调中
-                // 主要是为了将 timeout 值置为空，使之不影响下次连续事件的触发
-                // 如果不是立即执行，随即执行 func 方法
-                if (!immediate) {
-                // 执行 func 函数
-                result = func.apply(context, args);
-                // 这里的 timeout 一定是 null 了吧
-                // 感觉这个判断多余了
-                if (!timeout)
-                    context = args = null;
-                }
-            }
-            };
-
-            return function () {
-                context = this;
-                args = arguments;
-                timestamp = Date.now();
-                var callNow = immediate && !timeout;
-                if (!timeout)
-                    timeout = setTimeout(later, wait);
-
-                if (callNow) {
-                    result = func.apply(context, args);
-                    context = args = null;
-                }
-
-                return result;
-            };
-        };
         function treeItemRender (h, params) {
             var root = params.root, node = params.node, data = params.data;
                             return h('span', {
@@ -594,7 +547,7 @@
                                 this.$Message.error("请填写类型名称");
                             }
                         }, 
-                        searchChange:debounce(function(vm,value){
+                        searchChange:utils.debounce(function(vm,value){
                             if(value){
                                 var filterData = [];
                                 var originalData = deepClone(vm.originalData);
