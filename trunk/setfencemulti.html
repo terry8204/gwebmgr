@@ -66,6 +66,375 @@
             border: 1px solid #A4D4F5;
             background-color: #ffffff;
         }
+
+        
+        .ivu-drawer {
+            width: auto;
+            height: 100%;
+            position: fixed;
+            top: 0
+        }
+
+        .ivu-drawer-inner {
+            position: absolute
+        }
+
+        .ivu-drawer-left {
+            left: 0
+        }
+
+        .ivu-drawer-right {
+            right: 0
+        }
+
+        .ivu-drawer-hidden {
+            display: none!important
+        }
+
+        .ivu-drawer-wrap {
+            position: fixed;
+            overflow: auto;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            z-index: 1000;
+            -webkit-overflow-scrolling: touch;
+            outline: 0
+        }
+
+        .ivu-drawer-wrap-inner {
+            position: absolute;
+            overflow: hidden
+        }
+
+        .ivu-drawer-wrap * {
+            -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent
+        }
+
+        .ivu-drawer-mask {
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: rgba(55, 55, 55, .6);
+            height: 100%;
+            z-index: 1000
+        }
+
+        .ivu-drawer-mask-hidden {
+            display: none
+        }
+
+        .ivu-drawer-mask-inner {
+            position: absolute
+        }
+
+        .ivu-drawer-content {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            background-color: #fff;
+            border: 0;
+            background-clip: padding-box;
+            -webkit-box-shadow: 0 4px 12px rgba(0, 0, 0, .15);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, .15)
+        }
+
+        .ivu-drawer-content-no-mask {
+            pointer-events: auto
+        }
+
+        .ivu-drawer-header {
+            border-bottom: 1px solid #e8eaec;
+            padding: 14px 16px;
+            line-height: 1
+        }
+
+        .ivu-drawer-header p, .ivu-drawer-header-inner {
+            display: inline-block;
+            width: 100%;
+            height: 20px;
+            line-height: 20px;
+            font-size: 14px;
+            color: #17233d;
+            font-weight: 700;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap
+        }
+
+        .ivu-drawer-header p i, .ivu-drawer-header p span {
+            vertical-align: middle
+        }
+
+        .ivu-drawer-close {
+            z-index: 1;
+            font-size: 12px;
+            position: absolute;
+            right: 8px;
+            top: 8px;
+            overflow: hidden;
+            cursor: pointer
+        }
+
+        .ivu-drawer-close .ivu-icon-ios-close {
+            font-size: 31px;
+            color: #999;
+            -webkit-transition: color .2s ease;
+            transition: color .2s ease;
+            position: relative;
+            top: 1px
+        }
+
+        .ivu-drawer-close .ivu-icon-ios-close:hover {
+            color: #444
+        }
+
+        .ivu-drawer-body {
+            width: 100%;
+            height: calc(100% - 51px);
+            padding: 16px;
+            font-size: 12px;
+            line-height: 1.5;
+            word-wrap: break-word;
+            position: absolute;
+            overflow: auto
+        }
+
+        .ivu-drawer-no-header .ivu-drawer-body {
+            height: 100%
+        }
+
+        .ivu-drawer-no-mask {
+            pointer-events: none
+        }
+
+        .move-left-appear, .move-left-enter-active {
+            -webkit-animation-duration: .3s;
+            animation-duration: .3s;
+            -webkit-animation-fill-mode: both;
+            animation-fill-mode: both;
+            -webkit-animation-play-state: paused;
+            animation-play-state: paused
+        }
+
+        .move-left-leave-active {
+            -webkit-animation-duration: .3s;
+            animation-duration: .3s;
+            -webkit-animation-fill-mode: both;
+            animation-fill-mode: both;
+            -webkit-animation-play-state: paused;
+            animation-play-state: paused
+        }
+
+        .move-left-appear, .move-left-enter-active {
+            -webkit-animation-name: ivuMoveLeftIn;
+            animation-name: ivuMoveLeftIn;
+            -webkit-animation-play-state: running;
+            animation-play-state: running
+        }
+
+        .move-left-leave-active {
+            -webkit-animation-name: ivuMoveLeftOut;
+            animation-name: ivuMoveLeftOut;
+            -webkit-animation-play-state: running;
+            animation-play-state: running
+        }
+
+        .move-left-appear, .move-left-enter-active {
+            opacity: 0;
+            -webkit-animation-timing-function: ease-in-out;
+            animation-timing-function: ease-in-out
+        }
+
+        .move-left-leave-active {
+            -webkit-animation-timing-function: ease-in-out;
+            animation-timing-function: ease-in-out
+        }
+
+        .move-right-appear, .move-right-enter-active {
+            -webkit-animation-duration: .3s;
+            animation-duration: .3s;
+            -webkit-animation-fill-mode: both;
+            animation-fill-mode: both;
+            -webkit-animation-play-state: paused;
+            animation-play-state: paused
+        }
+
+        .move-right-leave-active {
+            -webkit-animation-duration: .3s;
+            animation-duration: .3s;
+            -webkit-animation-fill-mode: both;
+            animation-fill-mode: both;
+            -webkit-animation-play-state: paused;
+            animation-play-state: paused
+        }
+
+        .move-right-appear, .move-right-enter-active {
+            -webkit-animation-name: ivuMoveRightIn;
+            animation-name: ivuMoveRightIn;
+            -webkit-animation-play-state: running;
+            animation-play-state: running
+        }
+
+        .move-right-leave-active {
+            -webkit-animation-name: ivuMoveRightOut;
+            animation-name: ivuMoveRightOut;
+            -webkit-animation-play-state: running;
+            animation-play-state: running
+        }
+
+        .move-right-appear, .move-right-enter-active {
+            opacity: 0;
+            -webkit-animation-timing-function: ease-in-out;
+            animation-timing-function: ease-in-out
+        }
+
+        .move-right-leave-active {
+            -webkit-animation-timing-function: ease-in-out;
+            animation-timing-function: ease-in-out
+        }
+        @-webkit-keyframes ivuMoveLeftIn {
+            0% {
+                -webkit-transform-origin: 0 0;
+                transform-origin: 0 0;
+                -webkit-transform: translateX(-100%);
+                transform: translateX(-100%);
+                opacity: 0
+            }
+            100% {
+                -webkit-transform-origin: 0 0;
+                transform-origin: 0 0;
+                -webkit-transform: translateX(0);
+                transform: translateX(0);
+                opacity: 1
+            }
+        }
+
+        @keyframes ivuMoveLeftIn {
+            0% {
+                -webkit-transform-origin: 0 0;
+                transform-origin: 0 0;
+                -webkit-transform: translateX(-100%);
+                transform: translateX(-100%);
+                opacity: 0
+            }
+            100% {
+                -webkit-transform-origin: 0 0;
+                transform-origin: 0 0;
+                -webkit-transform: translateX(0);
+                transform: translateX(0);
+                opacity: 1
+            }
+        }
+
+        @-webkit-keyframes ivuMoveLeftOut {
+            0% {
+                -webkit-transform-origin: 0 0;
+                transform-origin: 0 0;
+                -webkit-transform: translateX(0);
+                transform: translateX(0);
+                opacity: 1
+            }
+            100% {
+                -webkit-transform-origin: 0 0;
+                transform-origin: 0 0;
+                -webkit-transform: translateX(-100%);
+                transform: translateX(-100%);
+                opacity: 0
+            }
+        }
+
+        @keyframes ivuMoveLeftOut {
+            0% {
+                -webkit-transform-origin: 0 0;
+                transform-origin: 0 0;
+                -webkit-transform: translateX(0);
+                transform: translateX(0);
+                opacity: 1
+            }
+            100% {
+                -webkit-transform-origin: 0 0;
+                transform-origin: 0 0;
+                -webkit-transform: translateX(-100%);
+                transform: translateX(-100%);
+                opacity: 0
+            }
+        }
+
+        @-webkit-keyframes ivuMoveRightIn {
+            0% {
+                opacity: 0;
+                -webkit-transform-origin: 0 0;
+                transform-origin: 0 0;
+                -webkit-transform: translateX(100%);
+                transform: translateX(100%)
+            }
+            100% {
+                opacity: 1;
+                -webkit-transform-origin: 0 0;
+                transform-origin: 0 0;
+                -webkit-transform: translateX(0);
+                transform: translateX(0)
+            }
+        }
+
+        @keyframes ivuMoveRightIn {
+            0% {
+                opacity: 0;
+                -webkit-transform-origin: 0 0;
+                transform-origin: 0 0;
+                -webkit-transform: translateX(100%);
+                transform: translateX(100%)
+            }
+            100% {
+                opacity: 1;
+                -webkit-transform-origin: 0 0;
+                transform-origin: 0 0;
+                -webkit-transform: translateX(0);
+                transform: translateX(0)
+            }
+        }
+
+        @-webkit-keyframes ivuMoveRightOut {
+            0% {
+                -webkit-transform-origin: 0 0;
+                transform-origin: 0 0;
+                -webkit-transform: translateX(0);
+                transform: translateX(0);
+                opacity: 1
+            }
+            100% {
+                -webkit-transform-origin: 0 0;
+                transform-origin: 0 0;
+                -webkit-transform: translateX(100%);
+                transform: translateX(100%);
+                opacity: 0
+            }
+        }
+
+        @keyframes ivuMoveRightOut {
+            0% {
+                -webkit-transform-origin: 0 0;
+                transform-origin: 0 0;
+                -webkit-transform: translateX(0);
+                transform: translateX(0);
+                opacity: 1
+            }
+            100% {
+                -webkit-transform-origin: 0 0;
+                transform-origin: 0 0;
+                -webkit-transform: translateX(100%);
+                transform: translateX(100%);
+                opacity: 0
+            }
+        }
     </style>
 </head>
 <body>
@@ -73,14 +442,17 @@
         <div id="controller">
             <div class="controller-inner">
                 <Row style="padding:0 0 10px 0">
-                    <i-col :span="8" style="text-align:center;">
+                    <i-col :span="6" style="text-align:center;">
                         <i-button style="width:100px;" @click="drawCircular" icon="md-add">圆</i-button>
                     </i-col>
-                    <i-col :span="8" style="text-align:center;">
+                    <i-col :span="6" style="text-align:center;">
                         <i-button style="width:100px;" @click="drawPolygon" icon="md-add">多边形</i-button>
                     </i-col>
-                    <i-col :span="8" style="text-align:center;">
+                    <i-col :span="6" style="text-align:center;">
                         <i-button @click="areaModal" style="width:100px;" icon="md-add">行政区域</i-button>
+                    </i-col>
+                    <i-col :span="6" style="text-align:center;">
+                        <i-button style="width:100px;" icon="md-add" @click="openDrawer">系统围栏</i-button>
                     </i-col>
                 </Row>
                 <i-table border stripe 
@@ -168,7 +540,40 @@
                 <i-button style="width:80%;" @click="changeGeoName">确定</i-button>
             </div>
         </Modal>
+        <Drawer title="添加系统围栏" width="400" v-model="drawerModal">
+            <Row style="width:100%">
+                <i-col :span="24">
+                    <i-input style="width:100%;" v-model="searchValue" suffix="ios-search" placeholder="搜索"></i-input>
+                </i-col>
+            </Row>
+            <div class="tree-box">
+                <Tree :data="treeData"></Tree>
+            </div>
+        </Drawer>
     </div>
+    <script type="text/template" id="drawer-template">
+        <div v-transfer-dom :data-transfer="transfer">
+            <transition name="fade">
+                <div :class="maskClasses" :style="maskStyle" v-show="visible" v-if="mask" @click="handleMask"></div>
+            </transition>
+            <div :class="wrapClasses" @click="handleWrapClick">
+                <transition :name="'move-' + placement">
+                    <div :class="classes" :style="mainStyles" v-show="visible">
+                        <div :class="contentClasses" ref="content">
+                            <a class="ivu-drawer-close" v-if="closable" @click="close">
+                                <slot name="close">
+                                    <Icon type="ios-close"></Icon>
+                                </slot>
+                            </a>
+                            <div :class="[prefixCls + '-header']" v-if="showHead"><slot name="header"><div :class="[prefixCls + '-header-inner']">{{ title }}</div></slot></div>
+                            <div :class="[prefixCls + '-body']" :style="styles"><slot></slot></div>
+                        </div>
+                    </div>
+                </transition>
+            </div>
+        </div>
+    </script>
+
     <script src="dist/vue.min.js"></script>
     <script src="dist/iview.min.js"></script>
     <script src="js/gps51-jquery.js"></script>
@@ -184,6 +589,417 @@
     <script type="text/javascript" src="http://api.map.baidu.com/library/DrawingManager/1.4/src/DrawingManager_min.js"></script>  
     <link rel="stylesheet" href="http://api.map.baidu.com/library/DrawingManager/1.4/src/DrawingManager_min.css" />  
     <script>
+
+        function getTarget (node) {
+            if (node === void 0) {
+                node = document.body
+            }
+            if (node === true) { return document.body }
+            return node instanceof window.Node ? node : document.querySelector(node)
+        };
+
+        function findComponentsUpward (context, componentName) {
+            let parents = [];
+            const parent = context.$parent;
+            if (parent) {
+                if (parent.$options.name === componentName) parents.push(parent);
+                return parents.concat(findComponentsUpward(parent, componentName));
+            } else {
+                return [];
+            }
+        }
+
+        function findBrothersComponents (context, componentName, exceptMe = true) {
+            let res = context.$parent.$children.filter(item => {
+                return item.$options.name === componentName;
+            });
+            let index = res.findIndex(item => item._uid === context._uid);
+            if (exceptMe) res.splice(index, 1);
+            return res;
+        }
+
+        function oneOf (value, validList) {
+            for (let i = 0; i < validList.length; i++) {
+                if (value === validList[i]) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        function broadcast(componentName, eventName, params) {
+            this.$children.forEach(child => {
+                const name = child.$options.name;
+
+                if (name === componentName) {
+                    child.$emit.apply(child, [eventName].concat(params));
+                } else {
+                    // todo 如果 params 是空数组，接收到的会是 undefined
+                    broadcast.apply(child, [componentName, eventName].concat([params]));
+                }
+            });
+        }
+
+        function getScrollBarSize (fresh) {
+            if (isServer) return 0;
+            if (fresh || cached === undefined) {
+                const inner = document.createElement('div');
+                inner.style.width = '100%';
+                inner.style.height = '200px';
+
+                const outer = document.createElement('div');
+                const outerStyle = outer.style;
+
+                outerStyle.position = 'absolute';
+                outerStyle.top = 0;
+                outerStyle.left = 0;
+                outerStyle.pointerEvents = 'none';
+                outerStyle.visibility = 'hidden';
+                outerStyle.width = '200px';
+                outerStyle.height = '150px';
+                outerStyle.overflow = 'hidden';
+
+                outer.appendChild(inner);
+
+                document.body.appendChild(outer);
+
+                const widthContained = inner.offsetWidth;
+                outer.style.overflow = 'scroll';
+                let widthScroll = inner.offsetWidth;
+
+                if (widthContained === widthScroll) {
+                    widthScroll = outer.clientWidth;
+                }
+
+                document.body.removeChild(outer);
+
+                cached = widthContained - widthScroll;
+            }
+            return cached;
+        }
+        var prefixCls = 'ivu-drawer';
+        var emitter = {
+            methods: {
+                dispatch(componentName, eventName, params) {
+                    let parent = this.$parent || this.$root;
+                    let name = parent.$options.name;
+
+                    while (parent && (!name || name !== componentName)) {
+                        parent = parent.$parent;
+
+                        if (parent) {
+                            name = parent.$options.name;
+                        }
+                    }
+                    if (parent) {
+                        parent.$emit.apply(parent, [eventName].concat(params));
+                    }
+                },
+                broadcast(componentName, eventName, params) {
+                    broadcast.call(this, componentName, eventName, params);
+                }
+            }
+        }
+
+        var ScrollbarMixins = {
+            methods: {
+                checkScrollBar () {
+                    let fullWindowWidth = window.innerWidth;
+                    if (!fullWindowWidth) { // workaround for missing window.innerWidth in IE8
+                        const documentElementRect = document.documentElement.getBoundingClientRect();
+                        fullWindowWidth = documentElementRect.right - Math.abs(documentElementRect.left);
+                    }
+                    this.bodyIsOverflowing = document.body.clientWidth < fullWindowWidth;
+                    if (this.bodyIsOverflowing) {
+                        this.scrollBarWidth = getScrollBarSize();
+                    }
+                },
+                checkMaskInVisible () {
+                    let masks = document.getElementsByClassName('ivu-modal-mask') || [];
+                    return Array.from(masks).every(m => m.style.display === 'none' || m.classList.contains('fade-leave-to'));
+                },
+                setScrollBar () {
+                    if (this.bodyIsOverflowing && this.scrollBarWidth !== undefined) {
+                        document.body.style.paddingRight = `${this.scrollBarWidth}px`;
+                    }
+                },
+                resetScrollBar () {
+                    document.body.style.paddingRight = '';
+                },
+                addScrollEffect () {
+                    this.checkScrollBar();
+                    this.setScrollBar();
+                    document.body.style.overflow = 'hidden';
+                },
+                removeScrollEffect() {
+                    if (this.checkMaskInVisible()) {
+                        document.body.style.overflow = '';
+                        this.resetScrollBar();
+                    }
+                }
+            }
+        };
+        Vue.component('Drawer',{
+            template:document.getElementById("drawer-template").innerHTML,
+            directives:{
+                TransferDom:{
+                    inserted (el, { value }, vnode) {
+                        if ( el.dataset && el.dataset.transfer !== 'true') return false;
+                        el.className = el.className ? el.className + ' v-transfer-dom' : 'v-transfer-dom';
+                        const parentNode = el.parentNode;
+                        if (!parentNode) return;
+                        const home = document.createComment('');
+                        let hasMovedOut = false;
+
+                        if (value !== false) {
+                            parentNode.replaceChild(home, el); // moving out, el is no longer in the document
+                            getTarget(value).appendChild(el); // moving into new place
+                            hasMovedOut = true
+                        }
+                        if (!el.__transferDomData) {
+                            el.__transferDomData = {
+                                parentNode: parentNode,
+                                home: home,
+                                target: getTarget(value),
+                                hasMovedOut: hasMovedOut
+                            }
+                        }
+                    },
+                    componentUpdated (el, { value }) {
+                        if ( el.dataset && el.dataset.transfer !== 'true') return false;
+                        // need to make sure children are done updating (vs. `update`)
+                        const ref$1 = el.__transferDomData;
+                        if (!ref$1) return;
+                        // homes.get(el)
+                        const parentNode = ref$1.parentNode;
+                        const home = ref$1.home;
+                        const hasMovedOut = ref$1.hasMovedOut; // recall where home is
+
+                        if (!hasMovedOut && value) {
+                            // remove from document and leave placeholder
+                            parentNode.replaceChild(home, el);
+                            // append to target
+                            getTarget(value).appendChild(el);
+                            el.__transferDomData = Object.assign({}, el.__transferDomData, { hasMovedOut: true, target: getTarget(value) });
+                        } else if (hasMovedOut && value === false) {
+                            // previously moved, coming back home
+                            parentNode.replaceChild(el, home);
+                            el.__transferDomData = Object.assign({}, el.__transferDomData, { hasMovedOut: false, target: getTarget(value) });
+                        } else if (value) {
+                            // already moved, going somewhere else
+                            getTarget(value).appendChild(el);
+                        }
+                    },
+                    unbind (el) {
+                        if (el.dataset && el.dataset.transfer !== 'true') return false;
+                        el.className = el.className.replace('v-transfer-dom', '');
+                        const ref$1 = el.__transferDomData;
+                        if (!ref$1) return;
+                        if (el.__transferDomData.hasMovedOut === true) {
+                            el.__transferDomData.parentNode && el.__transferDomData.parentNode.appendChild(el)
+                        }
+                        el.__transferDomData = null
+                    }
+                }
+            },
+            mixins:[emitter,ScrollbarMixins],
+            props: {
+                value: {
+                    type: Boolean,
+                    default: false
+                },
+                title: {
+                    type: String
+                },
+                width: {
+                    type: [Number, String],
+                    default: 256
+                },
+                closable: {
+                    type: Boolean,
+                    default: true
+                },
+                maskClosable: {
+                    type: Boolean,
+                    default: true
+                },
+                mask: {
+                    type: Boolean,
+                    default: true
+                },
+                maskStyle: {
+                    type: Object
+                },
+                styles: {
+                    type: Object
+                },
+                scrollable: {
+                    type: Boolean,
+                    default: false
+                },
+                placement: {
+                    validator (value) {
+                        return oneOf(value, ['left', 'right']);
+                    },
+                    default: 'right'
+                },
+                zIndex: {
+                    type: Number,
+                    default: 1000
+                },
+                transfer: {
+                    type: Boolean,
+                    default () {
+                        return !this.$IVIEW || this.$IVIEW.transfer === '' ? true : this.$IVIEW.transfer;
+                    }
+                },
+                className: {
+                    type: String
+                },
+                inner: {
+                    type: Boolean,
+                    default: false
+                }
+            },
+            data () {
+                return {
+                    prefixCls:prefixCls,
+                    visible: this.value,
+                    wrapShow: false,
+                    showHead: true,
+                };
+            },
+            computed: {
+                wrapClasses () {
+                    return [
+                        `${prefixCls}-wrap`,
+                        {
+                            [`${prefixCls}-hidden`]: !this.wrapShow,
+                            [`${this.className}`]: !!this.className,
+                            [`${prefixCls}-no-mask`]: !this.mask,
+                            [`${prefixCls}-wrap-inner`]: this.inner
+                        }
+                    ];
+                },
+                mainStyles () {
+                    let style = {};
+
+                    const width = parseInt(this.width);
+
+                    const styleWidth = {
+                        width: width <= 100 ? `${width}%` : `${width}px`
+                    };
+
+                    Object.assign(style, styleWidth);
+
+                    return style;
+                },
+                contentClasses () {
+                    return [
+                        `${prefixCls}-content`,
+                        {
+                            [`${prefixCls}-content-no-mask`]: !this.mask
+                        }
+                    ];
+                },
+                classes () {
+                    return [
+                        `${prefixCls}`,
+                        `${prefixCls}-${this.placement}`,
+                        {
+                            [`${prefixCls}-no-header`]: !this.showHead,
+                            [`${prefixCls}-inner`]: this.inner
+                        }
+                    ];
+                },
+                maskClasses () {
+                    return [
+                        `${prefixCls}-mask`,
+                        {
+                            [`${prefixCls}-mask-inner`]: this.inner
+                        }
+                    ];
+                }
+            },
+            methods: {
+                close () {
+                    this.visible = false;
+                    this.$emit('input', false);
+                    this.$emit('on-close');
+                },
+                handleMask () {
+                    if (this.maskClosable && this.mask) {
+                        this.close();
+                    }
+                },
+                handleWrapClick (event) {
+                    // use indexOf,do not use === ,because ivu-modal-wrap can have other custom className
+                    const className = event.target.getAttribute('class');
+                    if (className && className.indexOf(`${prefixCls}-wrap`) > -1) this.handleMask();
+                },
+            },
+            mounted () {
+                if (this.visible) {
+                    this.wrapShow = true;
+                }
+
+                let showHead = true;
+
+                if (this.$slots.header === undefined && !this.title) {
+                    showHead = false;
+                }
+
+                this.showHead = showHead;
+            },
+            beforeDestroy () {
+                this.removeScrollEffect();
+            },
+            watch: {
+                value (val) {
+                    this.visible = val;
+                },
+                visible (val) {
+                    if (val === false) {
+                        this.timer = setTimeout(() => {
+                            this.wrapShow = false;
+                            // #4831 Check if there are any drawers left at the parent level
+                            const brotherDrawers = findBrothersComponents(this, 'Drawer') || [];
+                            const parentDrawers = findComponentsUpward(this, 'Drawer') || [];
+
+                            const otherDrawers = [].concat(brotherDrawers).concat(parentDrawers);
+
+                            const isScrollDrawer = otherDrawers.some(item => item.visible && !item.scrollable);
+
+                            if (!isScrollDrawer) {
+                                this.removeScrollEffect();
+                            }
+                        }, 300);
+                    } else {
+                        if (this.timer) clearTimeout(this.timer);
+                        this.wrapShow = true;
+                        if (!this.scrollable) {
+                            this.addScrollEffect();
+                        }
+                    }
+                    this.broadcast('Table', 'on-visible-change', val);
+                    this.broadcast('Slider', 'on-visible-change', val);  // #2852
+                    this.$emit('on-visible-change', val);
+                },
+                scrollable (val) {
+                    if (!val) {
+                        this.addScrollEffect();
+                    } else {
+                        this.removeScrollEffect();
+                    }
+                },
+                title (val) {
+                    if (this.$slots.header === undefined) {
+                        this.showHead = !!val;
+                    }
+                }
+            }
+        });
+
         var deviceid = utils.getParameterByName("deviceid");
         var token = utils.getParameterByName("token");
         var map = null;
@@ -208,6 +1024,69 @@
             drawingManager.setDrawingMode(type);  
         }  
 
+         function treeItemRender (h, params) {
+            var root = params.root, node = params.node, data = params.data;
+                            return h('span', {
+                                style: {
+                                    display: 'inline-block',
+                                    width: '343px'
+                                },
+                            }, [
+                                h('span', [
+                                    h('span',{
+                                        style: {
+                                            width: '271px',
+                                            lineHeight: '23px',
+                                            display: 'inline-block',
+                                        } ,
+                                        on:{
+                                            click:function(e){
+                                                e.preventDefault(); 
+                                                e.stopPropagation();
+                                                if(data.children){
+                                                    vRoot.handleSelectChange(data.children);
+                                                }     
+                                                return false;
+                                            },
+                                        } 
+                                    }, data.title)
+                                ]),
+                                data.children? 
+                                h('Button', {
+                                            props: {
+                                                type: 'primary',
+                                                size: 'small'
+                                            },
+                                            style: {
+                                                
+                                            } ,
+                                            on: {
+                                                click:function (e)  { 
+                                                    e.preventDefault(); 
+                                                    e.stopPropagation();
+                                                    
+                                                    var url = myUrls.addGeoRecord();
+                                                    data = {
+                                                        type:4,
+                                                        categoryid4:data.categoryid,
+                                                        name:data.title,
+                                                    };
+
+                                                    utils.sendAjax(url,data,function (resp) { 
+                                                        if(resp.status == 0){
+                                                            vRoot.$Message.success("添加成功");
+                                                            vRoot.getFenceInfo();
+                                                        }else{
+                                                            vRoot.$Message.error("添加失败");
+                                                        }
+                                                    })
+                                                    return false;
+                                                }
+                                            }
+                                },"添加"):null,
+                            ]);
+                    }
+
         (function () { 
             vRoot = new Vue({
                     el:"#container",
@@ -218,6 +1097,8 @@
                         map:null,
                         geoName:'',
                         geoNameModal:false,
+                        drawerModal:false,
+                        searchValue:'',
                         columns:[
                             {
                                 type: 'selection',
@@ -326,6 +1207,8 @@
                             }
                         ],
                         tableData:[],
+                        treeData:[],
+                        originalData:[],
                         loading:false,
                         isCircular:false,
                         isPolygon:false,
@@ -620,6 +1503,7 @@
                             this.isCircular = false;
                             this.isPolygon = false;
                             this.map.clearOverlays();
+                            drawingManager.close(); 
                             if(selection.length){
                                 var points = []
                                 for (var index = 0; index < selection.length; index++) {
@@ -643,7 +1527,6 @@
                             }
                         },
                         drawAllOverlays:function(row){
-                            drawingManager.close();  
                             var type = row.type , me = this;
                             switch(type){
                                 case 1 :
@@ -796,6 +1679,40 @@
                             };
                             this.map.setZoom(zoom);
                         },
+                        openDrawer:function(){
+                            this.drawerModal = true;
+                        },
+                        _queryGeoSystemRecords:function(){
+                            var url = myUrls.queryGeoSystemRecords() , me = this;
+                            utils.sendAjax(url,{},function(resp){
+                                if(resp.status == 0){
+                                    if(resp.categorys){
+                                        me.filterOriginalData(resp.categorys);
+                                    }
+                                }
+                            })
+                        },
+                        filterOriginalData:function(categorys){
+                            var originalData = [];
+                            categorys.forEach(function(item){
+                                var treeItem = {
+                                    title:item.name,
+                                    categoryid:item.categoryid,
+                                    children:[],
+                                    render:treeItemRender
+                                };
+                                item.records.forEach(function(record){
+                                    record.title = record.name;
+                                    record.render = treeItemRender;
+                                    record.categoryid = item.categoryid,
+                                    treeItem.children.push(record);
+                                
+                                });
+                                originalData.push(treeItem);
+                            });
+                            this.originalData = originalData;
+                            this.treeData = originalData;
+                        },
                     },
                     computed:{
                         areaTitle:function(){
@@ -809,6 +1726,7 @@
                     mounted:function () {
                         this.initMap();
                         this.getFenceInfo();
+                        this._queryGeoSystemRecords();
                     }
             });
         })();
