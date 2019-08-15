@@ -28,7 +28,7 @@
                         <h1>称重</h1>
                     </i-Col>
                     <i-Col span="12" style="height: 100%;color: #ffffff;text-align: right;"> 
-                        <h2>更新时间 : 2019-08-15</h2>
+                        <h2>更新时间 : {{updateTimeStr}}</h2>
                     </i-Col>
                 </Row> 
             </i-Header>
@@ -58,6 +58,11 @@
                 weighChart:null,
                 speedChart:null,
                 contentHeight:500,
+                dateArr : [],
+                weightArr:[],
+                speedArr:[],
+                fixedWeightArr:[],
+                
             },
             methods: {
                 getWeighChartOption:function(){
@@ -69,7 +74,7 @@
                             trigger: 'axis'
                         },
                         legend: {
-                            data:['邮件营销','联盟广告']
+                            data:['重量','修正重量']
                         },
                         grid: {
                             left: '3%',
@@ -85,23 +90,29 @@
                         xAxis: {
                             type: 'category',
                             boundaryGap: false,
-                            data: ['周一','周二','周三','周四','周五','周六','周日']
+                            data: this.dateArr
                         },
                         yAxis: {
-                            type: 'value'
+                            type: 'value',
+                            min: function(value) {
+                                return value.min - 100;
+                            },
+                            max: function(value) {
+                                return value.max + 100;
+                            }
                         },
                         series: [
                             {
-                                name:'邮件营销',
+                                name:'重量',
                                 type:'line',
-                                stack: '总量',
-                                data:[120, 132, 101, 134, 90, 230, 210]
+                                stack: '重量',
+                                data:this.weightArr
                             },
                             {
-                                name:'联盟广告',
+                                name:'修正重量',
                                 type:'line',
-                                stack: '总量',
-                                data:[220, 182, 191, 234, 290, 330, 310]
+                                stack: '修正重量',
+                                data:this.fixedWeightArr
                             }
                         ]
                     };
@@ -116,7 +127,7 @@
                             trigger: 'axis'
                         },
                         legend: {
-                            data:['邮件营销','联盟广告']
+                            data:['速度']
                         },
                         grid: {
                             left: '3%',
@@ -132,23 +143,17 @@
                         xAxis: {
                             type: 'category',
                             boundaryGap: false,
-                            data: ['周一','周二','周三','周四','周五','周六','周日']
+                            data: this.dateArr
                         },
                         yAxis: {
-                            type: 'value'
+                            type: 'value',
                         },
                         series: [
                             {
-                                name:'邮件营销',
+                                name:'速度',
                                 type:'line',
                                 stack: '总量',
-                                data:[120, 132, 101, 134, 90, 230, 210]
-                            },
-                            {
-                                name:'联盟广告',
-                                type:'line',
-                                stack: '总量',
-                                data:[220, 182, 191, 234, 290, 330, 310]
+                                data:this.speedArr
                             }
                         ]
                     };
@@ -159,7 +164,7 @@
                     this.contentHeight = wHeight - 64;
                 },
                 getWeighingInfo:function(){
-                    var url = myUrls.queryWeightDynamic();
+                    var url = myUrls.queryWeightDynamic() , me = this;
                     var date = new Date();
                     var year = date.getFullYear();
                     var month = date.getMonth() + 1;
@@ -172,18 +177,43 @@
                         begintime:startTimeStr,
                         endtime:endTimeStr,
                         timezone : 8,
-                        interval:0,
+                        interval:5,
                     }
                     utils.sendAjax(url,data,function(resp){
-                        console.log('resp', resp);
+                        if(resp.status === 0){
+                            var records = resp.records,
+                                dateArr = [],
+                                weightArr = [],
+                                speedArr = [],
+                                fixedWeightArr = [];
+
+                            records.forEach(function(record){
+                                dateArr.push(DateFormat.longToDateTimeStr(record.updatetime, 0));
+                                weightArr.push(record.weight);
+                                speedArr.push(record.speed);
+                                fixedWeightArr.push(record.fixedweight);
+                            });
+                            
+                            me.dateArr = dateArr;
+                            me.weightArr = weightArr;
+                            me.speedArr = speedArr;
+                            me.fixedWeightArr = fixedWeightArr;
+                            me.weighChart.setOption(me.getWeighChartOption());
+                            me.speedChart.setOption(me.getSpeedChartOption());
+                        }
                     })
-                }
+                },
+           
             },
             computed:{
                 contentCls:function(){
                     return {
                         height :this.contentHeight + 'px'
                     }
+                },
+                updateTimeStr:function(){
+                    var dateArr = this.dateArr , len = this.dateArr.length;
+                    return dateArr[len-1] ? dateArr[len-1] :'';
                 }
             },
             mounted :function() {
