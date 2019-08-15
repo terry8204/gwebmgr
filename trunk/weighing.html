@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="shortcut icon" href="./favicon.ico" />
+    <title>称重</title>
+    <link rel="stylesheet" href="dist/styles/iview.css">
+    <style>
+        html,body,#container{
+            width: 100%;
+            height: 100%;  
+            position: relative;
+        }
+        .weigh-box,.speed-box{
+            height: 50%;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <Layout style="height:100%;">
+            <i-Header>
+                <Row style="height: 100%;">   
+                    <i-Col span="12" style="height: 100%;color: #ffffff">
+                        <h1>称重</h1>
+                    </i-Col>
+                    <i-Col span="12" style="height: 100%;color: #ffffff;text-align: right;"> 
+                        <h2>更新时间 : 2019-08-15</h2>
+                    </i-Col>
+                </Row> 
+            </i-Header>
+            <i-Content :style="contentCls">
+                <div id="weigh-box" class="weigh-box"></div>
+                <div id="speed-box" class="speed-box"></div>   
+            </i-Content>
+        </Layout>   
+    </div>
+    <script src="js/polyfill.min.js"></script>
+    <script src="dist/vue.min.js"></script>
+    <script src="dist/iview.min.js"></script>
+    <script src="js/gps51-jquery.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/dateformat.js"></script>
+    <script src="js/js.cookie.min.js"></script>
+    <script src="js/util.js"></script>
+    <script src="js/echarts.min.js"></script>
+
+    <script>
+        var deviceid = utils.getParameterByName("deviceid");
+        var token = utils.getParameterByName("token");
+
+        new Vue({
+            el:"#container",
+            data:{
+                weighChart:null,
+                speedChart:null,
+                contentHeight:500,
+            },
+            methods: {
+                getWeighChartOption:function(){
+                  var option = {
+                        title: {
+                            text: '重量'
+                        },
+                        tooltip: {
+                            trigger: 'axis'
+                        },
+                        legend: {
+                            data:['邮件营销','联盟广告']
+                        },
+                        grid: {
+                            left: '3%',
+                            right: '3%',
+                            bottom: '3%',
+                            containLabel: true
+                        },
+                        toolbox: {
+                            feature: {
+                                saveAsImage: {}
+                            }
+                        },
+                        xAxis: {
+                            type: 'category',
+                            boundaryGap: false,
+                            data: ['周一','周二','周三','周四','周五','周六','周日']
+                        },
+                        yAxis: {
+                            type: 'value'
+                        },
+                        series: [
+                            {
+                                name:'邮件营销',
+                                type:'line',
+                                stack: '总量',
+                                data:[120, 132, 101, 134, 90, 230, 210]
+                            },
+                            {
+                                name:'联盟广告',
+                                type:'line',
+                                stack: '总量',
+                                data:[220, 182, 191, 234, 290, 330, 310]
+                            }
+                        ]
+                    };
+                    return option;
+                },
+                getSpeedChartOption:function(){
+                    var option = {
+                        title: {
+                            text: '速度'
+                        },
+                        tooltip: {
+                            trigger: 'axis'
+                        },
+                        legend: {
+                            data:['邮件营销','联盟广告']
+                        },
+                        grid: {
+                            left: '3%',
+                            right: '3%',
+                            bottom: '3%',
+                            containLabel: true
+                        },
+                        toolbox: {
+                            feature: {
+                                saveAsImage: {}
+                            }
+                        },
+                        xAxis: {
+                            type: 'category',
+                            boundaryGap: false,
+                            data: ['周一','周二','周三','周四','周五','周六','周日']
+                        },
+                        yAxis: {
+                            type: 'value'
+                        },
+                        series: [
+                            {
+                                name:'邮件营销',
+                                type:'line',
+                                stack: '总量',
+                                data:[120, 132, 101, 134, 90, 230, 210]
+                            },
+                            {
+                                name:'联盟广告',
+                                type:'line',
+                                stack: '总量',
+                                data:[220, 182, 191, 234, 290, 330, 310]
+                            }
+                        ]
+                    };
+                    return option;
+                },
+                setContentHeight:function(){
+                    var wHeight = document.documentElement.clientHeight || document.body.clientHeight;
+                    this.contentHeight = wHeight - 64;
+                },
+                getWeighingInfo:function(){
+                    var url = myUrls.queryWeightDynamic();
+                    var date = new Date();
+                    var year = date.getFullYear();
+                    var month = date.getMonth() + 1;
+                    var day = date.getDate();
+                    var dateStr = year + "-" + (month<10?'0'+month:month) + "-" + (day<10?'0'+day:day);
+                    var startTimeStr = dateStr + " 00:00:00";
+                    var endTimeStr = dateStr + " 23:59:00";
+                    var data = {
+                        deviceid:deviceid,
+                        begintime:startTimeStr,
+                        endtime:endTimeStr,
+                        timezone : 8,
+                        interval:0,
+                    }
+                    utils.sendAjax(url,data,function(resp){
+                        console.log('resp', resp);
+                    })
+                }
+            },
+            computed:{
+                contentCls:function(){
+                    return {
+                        height :this.contentHeight + 'px'
+                    }
+                }
+            },
+            mounted :function() {
+                var vm = this;
+                vm.$nextTick(function(){
+                    vm.weighChart = echarts.init(document.getElementById('weigh-box'));
+                    vm.speedChart = echarts.init(document.getElementById('speed-box'));
+                    vm.weighChart.setOption(vm.getWeighChartOption());
+                    vm.speedChart.setOption(vm.getSpeedChartOption());
+                    vm.setContentHeight();
+                    vm.getWeighingInfo();
+                });
+                window.onresize = function () { 
+                    vm.setContentHeight();
+                    vm.weighChart.resize();
+                    vm.speedChart.resize();
+                }
+            },
+        })
+    </script>
+</body>
+</html>

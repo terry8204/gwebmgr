@@ -384,6 +384,9 @@ var myUrls = {
   queryGeoSystemRecords: function () {
     return this.host + 'webapi?action=querygeosystemrecords&token=' + token;
   },
+  queryWeightDynamic: function () {
+    return this.host + 'webapi?action=queryweightdynamic&token=' + token;
+  },
 }
 
 

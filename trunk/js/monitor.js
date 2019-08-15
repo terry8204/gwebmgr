@@ -267,7 +267,7 @@ var monitor = {
                     window.open("obd.html?deviceid=" + this.currentDeviceId);
                     break;
                 case 'weight':
-                    alert('weight');
+                    window.open("weighing.html?deviceid=" + this.currentDeviceId + "&token=" + token);
                     break;
                 case 'watermeter':
                     alert('watermeter');

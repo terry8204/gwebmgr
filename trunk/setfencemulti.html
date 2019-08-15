@@ -581,7 +581,7 @@
             </div>
         </div>
     </script>
-
+    <script src="js/polyfill.min.js"></script>
     <script src="dist/vue.min.js"></script>
     <script src="dist/iview.min.js"></script>
     <script src="js/gps51-jquery.js"></script>
@@ -607,8 +607,8 @@
         };
 
         function findComponentsUpward (context, componentName) {
-            let parents = [];
-            const parent = context.$parent;
+            var parents = [];
+            var parent = context.$parent;
             if (parent) {
                 if (parent.$options.name === componentName) parents.push(parent);
                 return parents.concat(findComponentsUpward(parent, componentName));
@@ -617,11 +617,11 @@
             }
         }
 
-        function findBrothersComponents (context, componentName, exceptMe = true) {
-            let res = context.$parent.$children.filter(item => {
+        function findBrothersComponents (context, componentName, exceptMe) {
+            var res = context.$parent.$children.filter(item => {
                 return item.$options.name === componentName;
             });
-            let index = res.findIndex(item => item._uid === context._uid);
+            var index = res.findIndex(item => item._uid === context._uid);
             if (exceptMe) res.splice(index, 1);
             return res;
         }
@@ -637,12 +637,10 @@
 
         function broadcast(componentName, eventName, params) {
             this.$children.forEach(child => {
-                const name = child.$options.name;
-
+                var name = child.$options.name;
                 if (name === componentName) {
                     child.$emit.apply(child, [eventName].concat(params));
                 } else {
-                    // todo 如果 params 是空数组，接收到的会是 undefined
                     broadcast.apply(child, [componentName, eventName].concat([params]));
                 }
             });
@@ -651,12 +649,12 @@
         function getScrollBarSize (fresh) {
             if (isServer) return 0;
             if (fresh || cached === undefined) {
-                const inner = document.createElement('div');
+                var inner = document.createElement('div');
                 inner.style.width = '100%';
                 inner.style.height = '200px';
 
-                const outer = document.createElement('div');
-                const outerStyle = outer.style;
+                var outer = document.createElement('div');
+                var outerStyle = outer.style;
 
                 outerStyle.position = 'absolute';
                 outerStyle.top = 0;
@@ -671,9 +669,9 @@
 
                 document.body.appendChild(outer);
 
-                const widthContained = inner.offsetWidth;
+                var widthContained = inner.offsetWidth;
                 outer.style.overflow = 'scroll';
-                let widthScroll = inner.offsetWidth;
+                var widthScroll = inner.offsetWidth;
 
                 if (widthContained === widthScroll) {
                     widthScroll = outer.clientWidth;
@@ -688,9 +686,9 @@
         var prefixCls = 'ivu-drawer';
         var emitter = {
             methods: {
-                dispatch(componentName, eventName, params) {
-                    let parent = this.$parent || this.$root;
-                    let name = parent.$options.name;
+                dispatch :function (componentName, eventName, params) {
+                    var parent = this.$parent || this.$root;
+                    var name = parent.$options.name;
 
                     while (parent && (!name || name !== componentName)) {
                         parent = parent.$parent;
@@ -703,7 +701,7 @@
                         parent.$emit.apply(parent, [eventName].concat(params));
                     }
                 },
-                broadcast(componentName, eventName, params) {
+                broadcast:function(componentName, eventName, params) {
                     broadcast.call(this, componentName, eventName, params);
                 }
             }
@@ -711,10 +709,10 @@
 
         var ScrollbarMixins = {
             methods: {
-                checkScrollBar () {
-                    let fullWindowWidth = window.innerWidth;
+                checkScrollBar :function() {
+                    var fullWindowWidth = window.innerWidth;
                     if (!fullWindowWidth) { // workaround for missing window.innerWidth in IE8
-                        const documentElementRect = document.documentElement.getBoundingClientRect();
+                        var documentElementRect = document.documentElement.getBoundingClientRect();
                         fullWindowWidth = documentElementRect.right - Math.abs(documentElementRect.left);
                     }
                     this.bodyIsOverflowing = document.body.clientWidth < fullWindowWidth;
@@ -722,24 +720,24 @@
                         this.scrollBarWidth = getScrollBarSize();
                     }
                 },
-                checkMaskInVisible () {
-                    let masks = document.getElementsByClassName('ivu-modal-mask') || [];
+                checkMaskInVisible :function() {
+                    var masks = document.getElementsByClassName('ivu-modal-mask') || [];
                     return Array.from(masks).every(m => m.style.display === 'none' || m.classList.contains('fade-leave-to'));
                 },
-                setScrollBar () {
+                setScrollBar :function() {
                     if (this.bodyIsOverflowing && this.scrollBarWidth !== undefined) {
                         document.body.style.paddingRight = `${this.scrollBarWidth}px`;
                     }
                 },
-                resetScrollBar () {
+                resetScrollBar :function() {
                     document.body.style.paddingRight = '';
                 },
-                addScrollEffect () {
+                addScrollEffect :function() {
                     this.checkScrollBar();
                     this.setScrollBar();
                     document.body.style.overflow = 'hidden';
                 },
-                removeScrollEffect() {
+                removeScrollEffect:function() {
                     if (this.checkMaskInVisible()) {
                         document.body.style.overflow = '';
                         this.resetScrollBar();
@@ -751,13 +749,14 @@
             template:document.getElementById("drawer-template").innerHTML,
             directives:{
                 TransferDom:{
-                    inserted (el, { value }, vnode) {
+                    inserted :function(el, params, vnode) {
+                        var value = params.value;
                         if ( el.dataset && el.dataset.transfer !== 'true') return false;
                         el.className = el.className ? el.className + ' v-transfer-dom' : 'v-transfer-dom';
-                        const parentNode = el.parentNode;
+                        var parentNode = el.parentNode;
                         if (!parentNode) return;
-                        const home = document.createComment('');
-                        let hasMovedOut = false;
+                        var home = document.createComment('');
+                        var hasMovedOut = false;
 
                         if (value !== false) {
                             parentNode.replaceChild(home, el); // moving out, el is no longer in the document
@@ -773,15 +772,16 @@
                             }
                         }
                     },
-                    componentUpdated (el, { value }) {
+                    componentUpdated :function(el, params) {
+                        var value = params.value;
                         if ( el.dataset && el.dataset.transfer !== 'true') return false;
                         // need to make sure children are done updating (vs. `update`)
-                        const ref$1 = el.__transferDomData;
+                        var ref$1 = el.__transferDomData;
                         if (!ref$1) return;
                         // homes.get(el)
-                        const parentNode = ref$1.parentNode;
-                        const home = ref$1.home;
-                        const hasMovedOut = ref$1.hasMovedOut; // recall where home is
+                        var parentNode = ref$1.parentNode;
+                        var home = ref$1.home;
+                        var hasMovedOut = ref$1.hasMovedOut; // recall where home is
 
                         if (!hasMovedOut && value) {
                             // remove from document and leave placeholder
@@ -798,10 +798,10 @@
                             getTarget(value).appendChild(el);
                         }
                     },
-                    unbind (el) {
+                    unbind  :function(el) {
                         if (el.dataset && el.dataset.transfer !== 'true') return false;
                         el.className = el.className.replace('v-transfer-dom', '');
-                        const ref$1 = el.__transferDomData;
+                        var ref$1 = el.__transferDomData;
                         if (!ref$1) return;
                         if (el.__transferDomData.hasMovedOut === true) {
                             el.__transferDomData.parentNode && el.__transferDomData.parentNode.appendChild(el)
@@ -869,7 +869,7 @@
                     default: false
                 }
             },
-            data () {
+            data  :function() {
                 return {
                     prefixCls:prefixCls,
                     visible: this.value,
@@ -878,7 +878,7 @@
                 };
             },
             computed: {
-                wrapClasses () {
+                wrapClasses  :function() {
                     return [
                         `${prefixCls}-wrap`,
                         {
@@ -889,12 +889,12 @@
                         }
                     ];
                 },
-                mainStyles () {
-                    let style = {};
+                mainStyles  :function() {
+                    var style = {};
 
-                    const width = parseInt(this.width);
+                    var width = parseInt(this.width);
 
-                    const styleWidth = {
+                    var styleWidth = {
                         width: width <= 100 ? `${width}%` : `${width}px`
                     };
 
@@ -902,7 +902,7 @@
 
                     return style;
                 },
-                contentClasses () {
+                contentClasses  :function() {
                     return [
                         `${prefixCls}-content`,
                         {
@@ -910,7 +910,7 @@
                         }
                     ];
                 },
-                classes () {
+                classes  :function() {
                     return [
                         `${prefixCls}`,
                         `${prefixCls}-${this.placement}`,
@@ -920,7 +920,7 @@
                         }
                     ];
                 },
-                maskClasses () {
+                maskClasses  :function() {
                     return [
                         `${prefixCls}-mask`,
                         {
@@ -930,28 +930,28 @@
                 }
             },
             methods: {
-                close () {
+                close  :function() {
                     this.visible = false;
                     this.$emit('input', false);
                     this.$emit('on-close');
                 },
-                handleMask () {
+                handleMask  :function() {
                     if (this.maskClosable && this.mask) {
                         this.close();
                     }
                 },
-                handleWrapClick (event) {
+                handleWrapClick  :function(event) {
                     // use indexOf,do not use === ,because ivu-modal-wrap can have other custom className
-                    const className = event.target.getAttribute('class');
+                    var className = event.target.getAttribute('class');
                     if (className && className.indexOf(`${prefixCls}-wrap`) > -1) this.handleMask();
                 },
             },
-            mounted () {
+            mounted  :function() {
                 if (this.visible) {
                     this.wrapShow = true;
                 }
 
-                let showHead = true;
+                var showHead = true;
 
                 if (this.$slots.header === undefined && !this.title) {
                     showHead = false;
@@ -959,24 +959,24 @@
 
                 this.showHead = showHead;
             },
-            beforeDestroy () {
+            beforeDestroy :function() {
                 this.removeScrollEffect();
             },
             watch: {
-                value (val) {
+                value  : function(val) {
                     this.visible = val;
                 },
-                visible (val) {
+                visible : function(val) {
                     if (val === false) {
                         this.timer = setTimeout(() => {
                             this.wrapShow = false;
                             // #4831 Check if there are any drawers left at the parent level
-                            const brotherDrawers = findBrothersComponents(this, 'Drawer') || [];
-                            const parentDrawers = findComponentsUpward(this, 'Drawer') || [];
+                            var brotherDrawers = findBrothersComponents(this, 'Drawer',true) || [];
+                            var parentDrawers = findComponentsUpward(this, 'Drawer') || [];
 
-                            const otherDrawers = [].concat(brotherDrawers).concat(parentDrawers);
+                            var otherDrawers = [].concat(brotherDrawers).concat(parentDrawers);
 
-                            const isScrollDrawer = otherDrawers.some(item => item.visible && !item.scrollable);
+                            var isScrollDrawer = otherDrawers.some(item => item.visible && !item.scrollable);
 
                             if (!isScrollDrawer) {
                                 this.removeScrollEffect();
@@ -993,14 +993,14 @@
                     this.broadcast('Slider', 'on-visible-change', val);  // #2852
                     this.$emit('on-visible-change', val);
                 },
-                scrollable (val) {
+                scrollable :function(val) {
                     if (!val) {
                         this.addScrollEffect();
                     } else {
                         this.removeScrollEffect();
                     }
                 },
-                title (val) {
+                title :function(val) {
                     if (this.$slots.header === undefined) {
                         this.showHead = !!val;
                     }
