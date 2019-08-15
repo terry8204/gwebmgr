@@ -24,8 +24,14 @@
         <Layout style="height:100%;">
             <i-Header>
                 <Row style="height: 100%;">   
-                    <i-Col span="12" style="height: 100%;color: #ffffff">
+                    <i-Col span="4" style="height: 100%;color: #ffffff">
                         <h1>称重</h1>
+                    </i-Col>
+                    <i-Col span="4" style="height: 100%;color: #ffffff">
+                        <i-input v-model="interval"></i-input>
+                    </i-Col>
+                    <i-Col span="4" style="padding: 0 10px;">
+                        <i-button @click="getWeighingInfo" style="width:150px;">查询</i-button>
                     </i-Col>
                     <i-Col span="12" style="height: 100%;color: #ffffff;text-align: right;"> 
                         <h2>更新时间 : {{updateTimeStr}}</h2>
@@ -62,7 +68,7 @@
                 weightArr:[],
                 speedArr:[],
                 fixedWeightArr:[],
-                
+                interval:5
             },
             methods: {
                 getWeighChartOption:function(){
@@ -95,10 +101,10 @@
                         yAxis: {
                             type: 'value',
                             min: function(value) {
-                                return value.min - 100;
+                                return value.min - 10;
                             },
                             max: function(value) {
-                                return value.max + 100;
+                                return value.max + 10;
                             }
                         },
                         series: [
@@ -181,12 +187,16 @@
                     }
                     utils.sendAjax(url,data,function(resp){
                         if(resp.status === 0){
+
                             var records = resp.records,
                                 dateArr = [],
                                 weightArr = [],
                                 speedArr = [],
                                 fixedWeightArr = [];
-
+                            if(!records && records.length){
+                                me.$Message.success("没有数据");
+                                return ;
+                            }
                             records.forEach(function(record){
                                 dateArr.push(DateFormat.longToDateTimeStr(record.updatetime, 0));
                                 weightArr.push(record.weight);
@@ -200,6 +210,9 @@
                             me.fixedWeightArr = fixedWeightArr;
                             me.weighChart.setOption(me.getWeighChartOption());
                             me.speedChart.setOption(me.getSpeedChartOption());
+                            me.$Message.success("查询成功");
+                        }else{
+                            me.$Message.error("查询失败");
                         }
                     })
                 },
