@@ -178,12 +178,16 @@
                     var dateStr = year + "-" + (month<10?'0'+month:month) + "-" + (day<10?'0'+day:day);
                     var startTimeStr = dateStr + " 00:00:00";
                     var endTimeStr = dateStr + " 23:59:00";
+                    if(isNaN(Number(this.interval))){
+                        this.$Message.error("请填入数字");
+                        return;
+                    }
                     var data = {
                         deviceid:deviceid,
                         begintime:startTimeStr,
                         endtime:endTimeStr,
                         timezone : 8,
-                        interval:5,
+                        interval:this.interval,
                     }
                     utils.sendAjax(url,data,function(resp){
                         if(resp.status === 0){
