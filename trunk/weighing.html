@@ -14,8 +14,12 @@
             position: relative;
         }
         .weigh-box,.speed-box{
-            height: 50%;
             width: 100%;
+            overflow: hidden;
+        }
+        .weigh-box>div,.speed-box>div{
+            width: 100%;
+            height: 100%;
         }
     </style>
 </head>
@@ -28,19 +32,43 @@
                         <h1>称重</h1>
                     </i-Col>
                     <i-Col span="4" style="height: 100%;color: #ffffff">
-                        <i-input v-model="interval"></i-input>
+                       <Row>
+                           <i-Col span="8" >
+                                空载重量(千克) :
+                           </i-Col>
+                           <i-Col span="16" style="padding:0 10px 0 0;">
+                                <i-input v-model.trim="deadweight"></i-input>
+                           </i-Col>
+                       </Row>
+                    </i-Col>
+                    <i-Col span="4" style="height: 100%;color: #ffffff">
+                        <Row>
+                            <i-Col span="6" >
+                                过滤(千克) :
+                            </i-Col>
+                            <i-Col span="18" style="padding:0 10px 0 0;">
+                                 <i-input v-model.trim="interval"></i-input>
+                            </i-Col>
+                        </Row>
                     </i-Col>
                     <i-Col span="4" style="padding: 0 10px;">
                         <i-button @click="getWeighingInfo" style="width:150px;">查询</i-button>
                     </i-Col>
-                    <i-Col span="12" style="height: 100%;color: #ffffff;text-align: right;"> 
+                    <i-Col span="6" style="height: 100%;color: #ffffff;text-align: right;"> 
                         <h2>更新时间 : {{updateTimeStr}}</h2>
+                    </i-Col>
+                    <i-Col span="2" style="height: 100%;color: #ffffff;text-align: right;"> 
+                        <i-button @click="fullScreen">全屏</i-button>
                     </i-Col>
                 </Row> 
             </i-Header>
             <i-Content :style="contentCls">
-                <div id="weigh-box" class="weigh-box"></div>
-                <div id="speed-box" class="speed-box"></div>   
+                <div class="weigh-box" :style="weighBoxStyle">
+                    <div id="weigh-box"></div>
+                </div>
+                <div class="speed-box" :style="speedBoxStyle">
+                    <div id="speed-box"></div>
+                </div>   
             </i-Content>
         </Layout>   
     </div>
@@ -68,7 +96,9 @@
                 weightArr:[],
                 speedArr:[],
                 fixedWeightArr:[],
-                interval:5
+                interval:5,
+                deadweight:5000,
+                isFullScreen:false,
             },
             methods: {
                 getWeighChartOption:function(){
@@ -112,13 +142,21 @@
                                 name:'重量',
                                 type:'line',
                                 stack: '重量',
-                                data:this.weightArr
+                                data:this.weightArr,
+                                lineStyle :{
+                                    color:"red"
+                                },
+                                smooth :true
                             },
                             {
                                 name:'修正重量',
                                 type:'line',
                                 stack: '修正重量',
-                                data:this.fixedWeightArr
+                                data:this.fixedWeightArr,
+                                lineStyle :{
+                                    color:"green"
+                                },
+                                smooth :true
                             }
                         ]
                     };
@@ -159,11 +197,21 @@
                                 name:'速度',
                                 type:'line',
                                 stack: '总量',
-                                data:this.speedArr
+                                data:this.speedArr,
+                                smooth :true
+
                             }
                         ]
                     };
                     return option;
+                },
+                fullScreen:function(){
+                    this.isFullScreen = !this.isFullScreen;
+                    var me = this;
+                    setTimeout(function () { 
+                        me.weighChart.resize();
+                        me.speedChart.resize();
+                    },500)
                 },
                 setContentHeight:function(){
                     var wHeight = document.documentElement.clientHeight || document.body.clientHeight;
@@ -179,7 +227,11 @@
                     var startTimeStr = dateStr + " 00:00:00";
                     var endTimeStr = dateStr + " 23:59:00";
                     if(isNaN(Number(this.interval))){
-                        this.$Message.error("请填入数字");
+                        this.$Message.error("过滤,请填入数字");
+                        return;
+                    }
+                    if(isNaN(Number(this.deadweight))){
+                        this.$Message.error("低重,请填入数字");
                         return;
                     }
                     var data = {
@@ -188,6 +240,7 @@
                         endtime:endTimeStr,
                         timezone : 8,
                         interval:this.interval,
+                        deadweight:this.deadweight,
                     }
                     utils.sendAjax(url,data,function(resp){
                         if(resp.status === 0){
@@ -226,6 +279,16 @@
                 contentCls:function(){
                     return {
                         height :this.contentHeight + 'px'
+                    }
+                },
+                weighBoxStyle:function(){
+                    return {
+                        height:this.isFullScreen?'100%':'50%'
+                    }
+                },
+                speedBoxStyle:function(){
+                    return {
+                        height:this.isFullScreen?'0':'50%'
                     }
                 },
                 updateTimeStr:function(){
