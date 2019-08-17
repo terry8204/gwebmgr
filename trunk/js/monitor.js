@@ -800,6 +800,10 @@ var monitor = {
         openTreeDeviceNav: function (deviceid) {
             var me = this;
             var devLastInfo = me.getSingleDeviceInfo(deviceid);
+            var device = this.deviceInfos[deviceid];
+            var devicetype = device.devicetype;
+            this.currentDeviceType = devicetype;
+
             me.$store.commit('currentDeviceId', deviceid);
             me.$store.commit('currentDeviceRecord', devLastInfo);
             globalDeviceId = deviceid;

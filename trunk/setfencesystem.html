@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="shortcut icon" href="./favicon.ico" />
-    <title>电子围栏</title>
+    <title>系统围栏</title>
     <link rel="stylesheet" href="dist/styles/iview.css">
     <style>
         html,body,#container{
@@ -535,7 +535,8 @@
                                         record.title = record.name,
                                         record.children = [];
                                         record.render = treeItemRender;
-                                        me.originalData.push(record)
+                                        me.originalData.push(record);
+                                        me.treeData =  me.originalData;
                                         me.$Message.error("添加成功");
                                         me.addClassModal = false;
                                         me.typeName = '';
@@ -696,6 +697,18 @@
                             startDrawPolygon(BMAP_DRAWING_POLYGON);
                         },
                         handleAddPolygon:function(){
+                            if(this.selectTypeList.length === 0){
+                                this.$Message.error("请先添加分类");
+                                return;
+                            }
+                            if(this.geoName == ""){ 
+                                this.$Message.error("请填写围栏名称");
+                                return;
+                            }
+                            if(!this.classId) {
+                                me.$Message.success("请选择类型")
+                                return ;
+                            }
                             var path = polygonIns.getPath();
                             var mapPath = function (item) {  
                                 var lon_lat = bd09towgs84(item.lng,item.lat);
@@ -824,9 +837,17 @@
                         handleSaveCircular:function(){
                             var url = null ,data = null, me = this;
                             var lng_lat = bd09towgs84(this.mapCenterPoint.lng,this.mapCenterPoint.lat);  
+                            if(this.selectTypeList.length === 0){
+                                this.$Message.error("请先添加类型");
+                                return;
+                            }
                             if(this.geoName == ""){ 
                                 this.$Message.error("请填写围栏名称");
                                 return;
+                            }
+                            if(!this.classId) {
+                                me.$Message.success("请选择类型")
+                                return ;
                             }
                             if(this.isEidt){
                                 url = myUrls.editGeoSystemRecord();
@@ -849,11 +870,9 @@
                             }
  
                             utils.sendAjax(url,data,function(resp){
-                                console.log('resp', resp);
                                 if(resp.status === 0 ){
                                     if(me.isEidt){
                                         var originalData = [] , treeData = [];
-
                                         me.originalData.forEach(function(item){
                                             if(data.categoryid === item.categoryid){
                                                 var children = [];
@@ -886,7 +905,6 @@
                                         });
                                         me.treeData = treeData;
                                         me.originalData = originalData;
-                                        console.log('treeData', treeData);
                                         me.$Message.success("编辑成功");
                                     }else{
                                         me.originalData.forEach(function(item){
@@ -897,15 +915,21 @@
                                                 item.children.push(resp.record);
                                             }
                                         })
-                                        me.treeData.forEach(function(item){
-                                            if(data.categoryid === item.categoryid){
-                                                resp.record.title = resp.record.name;
-                                                resp.record.categoryid = data.categoryid; 
-                                                resp.record.render = treeChilrenRender;
-                                                item.children.push(resp.record);
-                                            }
-                                        })
+                                        if(me.originalData !== me.treeData){
+                                            me.treeData.forEach(function(item){
+                                                if(data.categoryid === item.categoryid){
+                                                    resp.record.title = resp.record.name;
+                                                    resp.record.categoryid = data.categoryid; 
+                                                    resp.record.render = treeChilrenRender;
+                                                    item.children.push(resp.record);
+                                                }
+                                            })
+                                        }
+
+                                        
+
                                         me.$Message.success("添加成功");
+
                                     }
                                   
                                 }else{
