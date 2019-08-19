@@ -93,10 +93,10 @@
                         return;
                     }
                     if(checkedData.length){
-                        var toaccounts = [] , isAll = false , data = {};
+                        var toaccounts = [] , isAll = 0 , data = {};
                         checkedData.forEach(function (item) { 
                             if(item.children){
-                                isAll = true;
+                                isAll = 1;
                             }else{
                                 toaccounts.push(item.title);
                             }
