@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="shortcut icon" href="./favicon.ico" />
+    <title>发送消息</title>
+    <link rel="stylesheet" href="dist/styles/iview.css">
+    <style>
+        html,body{
+            width: 100%;
+            height: 100%;  
+            position: relative;
+        }
+        #container{
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            right: 0;
+            margin: auto;
+            width: 800px;
+            height: 600px;
+        }
+        .content{
+            box-sizing: border-box;
+            padding: 10px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <Layout style="height:100%;">
+            <i-Header>
+                <Row style="height: 100%;">   
+                    <i-col :span="24">
+                        1212
+                    </i-col>
+                </Row> 
+            </i-Header>
+            <Layout>
+                <Sider hide-trigger style="background:#eee;padding:10px;overflow-y: auto;">
+                    <Tree :data="treeData" show-checkbox ref="treeIns"></Tree>
+                </Sider>
+                <i-Content>
+                    <Row style="padding: 10px">   
+                        <i-col :span="24">
+                            <i-input v-model="msgValue" type="textarea" :rows="14" placeholder="请输入消息" />
+                        </i-col>
+                    </Row> 
+                    <Row style="padding:0 10px;">   
+                        <i-col :span="8" offset="8">
+                            <i-button @click="submitMsg" style="width:100%;">提交</i-button>
+                        </i-col>
+                    </Row>
+
+                </i-Content>
+            </Layout>
+        </Layout>      
+    </div>
+    <script src="js/polyfill.min.js"></script>
+    <script src="dist/vue.min.js"></script>
+    <script src="dist/iview.min.js"></script>
+    <script src="js/gps51-jquery.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/dateformat.js"></script>
+    <script src="js/js.cookie.min.js"></script>
+    <script src="js/util.js"></script>
+    <script>
+        var token = utils.getParameterByName("token");
+        var userName = Cookies.get('name');
+        new Vue({
+            el:'#container',
+            data:{
+                msgValue:'',
+                treeData:[
+                    {
+                        title: '全部',
+                        expand: true,
+                        children:[],
+                    },
+                ]
+            },
+            methods: {
+                submitMsg:function(){
+                    var url = myUrls.sendSystemMsg() , me = this;
+                    var checkedData = this.$refs.treeIns.getCheckedNodes();
+                    console.log('checkedData', checkedData);
+                    if(!this.msgValue){
+                        this.$Message.error("请填写消息");
+                        return;
+                    }
+                    if(checkedData.length){
+                        var toaccounts = [] , isAll = false , data = {};
+                        checkedData.forEach(function (item) { 
+                            if(item.children){
+                                isAll = true;
+                            }else{
+                                toaccounts.push(item.title);
+                            }
+                        })
+                        data.isAll = isAll;
+                        data.content = this.msgValue;
+                        if(!isAll){
+                            data.toaccounts = toaccounts;
+                        };
+                        utils.sendAjax(url,data,function (resp) { 
+                            if(resp.status === 0){
+                                me.$Message.success("发送成功");
+                            }else{
+                                me.$Message.error("发送失败");
+                            }
+                        });
+                    }else{
+                        this.$Message.error("请选择用户");
+                    }
+                },
+                queryUser:function(){
+                    var url = myUrls.queryUser() , me = this;
+                    utils.sendAjax(url,{username: userName},function (resp) { 
+                        if(resp.status === 0){
+                            var userlists = resp.userlists;
+                            var children = [];
+                            userlists.forEach(function(item){
+                                children.push({
+                                    title:item.username,
+                                })
+                            });
+                            me.treeData[0].children = children;
+                        }
+                    });
+                }
+            },
+            mounted:function() {
+                this.queryUser();
+            },
+        })
+    </script>
+</body>
+</html>

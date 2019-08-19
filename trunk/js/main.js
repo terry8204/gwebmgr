@@ -172,6 +172,9 @@ var appHeader = {
     }
   },
   methods: {
+    jumpMessageHtml: function () {
+      open("message.html?token=" + token);
+    },
     changeNav: function (navName) {
       this.$emit('change-nav', navName);
     },

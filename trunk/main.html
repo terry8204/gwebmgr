@@ -59,6 +59,10 @@
                     <li>
                         {{$t("header.hello")}}! {{name}}
                     </li>
+                    <li style="padding:0" v-if="userType < 3">|</li>
+                    <li v-if="userType < 3">  
+                        <span  @click="jumpMessageHtml"><Icon type="ios-text" style="margin-right:3px"></Icon>{{$t("alarm.message")}}</span>
+                    </li>
                     <li style="padding:0">|</li>
                     <li>
                         <span  @click="serviceModal=true"><Icon type="ios-contact" style="margin-right:3px"></Icon>{{$t("header.contact")}}</span>
@@ -208,7 +212,6 @@
                         </i-col>
                     </Row>
                 </div>
-                
             </Modal>
         </div>
     </script>

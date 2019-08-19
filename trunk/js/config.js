@@ -387,6 +387,19 @@ var myUrls = {
   queryWeightDynamic: function () {
     return this.host + 'webapi?action=queryweightdynamic&token=' + token;
   },
+  querySystemMsg: function () {
+    return this.host + 'webapi?action=querysystemmsg&token=' + token;
+  },
+  deleteSystemMsg: function () {
+    return this.host + 'webapi?action=deletesystemmsg&token=' + token;
+  },
+  recallSystemMsg: function () {
+    return this.host + 'webapi?action=recallsystemmsg&token=' + token;
+  },
+  sendSystemMsg: function () {
+    return this.host + 'webapi?action=sendsystemmsg&token=' + token;
+  },
+
 }
 
 
