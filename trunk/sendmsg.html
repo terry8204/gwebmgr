@@ -87,7 +87,10 @@
                 submitMsg:function(){
                     var url = myUrls.sendSystemMsg() , me = this;
                     var checkedData = this.$refs.treeIns.getCheckedNodes();
-                    console.log('checkedData', checkedData);
+                    if(me.treeData[0].children.length === 0){
+                        this.$Message.error("没有用户列表");
+                        return 
+                    }
                     if(!this.msgValue){
                         this.$Message.error("请填写消息");
                         return;

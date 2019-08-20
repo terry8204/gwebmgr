@@ -60,7 +60,12 @@
                             {
                                 title: '发送者名称',
                                 key: 'creatername',
-                                width:200,
+                                width:200,  
+                            },
+                            {
+                                title: '发送时间',
+                                key: 'createtimeStr',
+                                width:160, 
                             },
                             {
                                 title: '内容',
@@ -128,6 +133,9 @@
                             var url = myUrls.querySystemMsg() , me = this;
                             utils.sendAjax( url , { username:userName } , function (resp) { 
                                 if(resp.status === 0){
+                                    resp.records.forEach(function (record) { 
+                                        record.createtimeStr = DateFormat.longToDateTimeStr(record.createtime, 0)
+                                    })
                                     me.data = resp.records;
                                 };
                             });
