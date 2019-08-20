@@ -92,18 +92,28 @@
                                                     }
                                                 },"删除") 
                                             ]) ,
-                                        h('Button',{
-                                            props: {
-                                                size:'small',
-                                                type:'error',
-                                                disabled:disabled,
-                                            },
-                                            on:{
-                                                click:function(){
-                                                    vRoot.recallSystemMsg(row.systemmsgid,row.systemmsguuid,params.index)
+                                        h('Poptip', {
+                                                props: {
+                                                    confirm: true,
+                                                    title: '确定撤回吗?'
+                                                },
+                                                style: {
+                                               
+                                                },
+                                                on: {
+                                                    'on-ok': function () {
+                                                        vRoot.recallSystemMsg(row.systemmsgid,row.systemmsguuid,params.index);
+                                                    }
                                                 }
-                                            }
-                                        },"撤回"),
+                                            },[
+                                            h('Button', {
+                                                    props: {
+                                                        type: 'error',
+                                                        size: 'small',
+                                                        disabled:disabled
+                                                    }
+                                                },"撤回") 
+                                            ]) ,
                                     ])
                                 }
                             },
@@ -134,7 +144,7 @@
                             });
                         },
                         recallSystemMsg:function(systemmsgid,systemmsguuid,index){
-                            var url = myUrls.recallSystemMsg();
+                            var url = myUrls.recallSystemMsg() , me = this;
                             utils.sendAjax(url,{systemmsgid:systemmsgid,systemmsguuid:systemmsguuid},function (resp) {
                                 if(resp.status == 0){
                                     me.data.splice(index,1);

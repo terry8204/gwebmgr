@@ -36,7 +36,7 @@
             <i-Header>
                 <Row style="height: 100%;">   
                     <i-col :span="24">
-                        1212
+                        <h1 style="color:#ffffff;">发送消息</h1>
                     </i-col>
                 </Row> 
             </i-Header>
@@ -109,6 +109,7 @@
                         utils.sendAjax(url,data,function (resp) { 
                             if(resp.status === 0){
                                 me.$Message.success("发送成功");
+                                me.msgValue = '';
                             }else{
                                 me.$Message.error("发送失败");
                             }
