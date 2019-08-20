@@ -52,7 +52,7 @@
                     </Row> 
                     <Row style="padding:0 10px;">   
                         <i-col :span="8" offset="8">
-                            <i-button @click="submitMsg" style="width:100%;">提交</i-button>
+                            <i-button @click="submitMsg" style="width:100%;" type="primary">提交</i-button>
                         </i-col>
                     </Row>
 
@@ -123,13 +123,17 @@
                     utils.sendAjax(url,{username: userName},function (resp) { 
                         if(resp.status === 0){
                             var userlists = resp.userlists;
-                            var children = [];
-                            userlists.forEach(function(item){
-                                children.push({
-                                    title:item.username,
-                                })
-                            });
-                            me.treeData[0].children = children;
+                            if(userlists){
+                                var children = [];
+                                userlists.forEach(function(item){
+                                    children.push({
+                                        title:item.username,
+                                    })
+                                });
+                                me.treeData[0].children = children;
+                            }else{
+                                me.$Message.error("没有用户列表");
+                            }
                         }
                     });
                 }
