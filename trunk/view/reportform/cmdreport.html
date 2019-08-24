@@ -31,7 +31,7 @@
                     <transition name="fade">
                         <ul class="search-item-wrapper" v-show="isShowMatchDev">
                             <li  class="demo-auto-complete-item" v-for="item in filterData">
-                                <div class="demo-auto-complete-group">
+                                <div class="demo-auto-complete-group" v-show="item.devices.length">
                                     <span>{{ item.groupname }}</span>
                                 </div>
                                 <div v-for="option in item.devices" :value="option.groupname" :key="option.groupname" class="ivu-select-item">

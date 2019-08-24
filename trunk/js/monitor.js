@@ -33,7 +33,7 @@ var monitor = {
             isShowObdBtn: false,
             isShowWeightBtn: false,
             isShowWatermeterBtn: false,
-
+            isShowCameraBtn: false,
             map: null,
             placement: "right-start",
             mapType: mapType ? mapType : 'bMap',
@@ -271,6 +271,9 @@ var monitor = {
                     break;
                 case 'watermeter':
                     alert('watermeter');
+                    break;
+                case 'camera':
+                    window.open("camera.html?deviceid=" + this.currentDeviceId + "&token=" + token);
                     break;
             }
         },
@@ -1077,6 +1080,7 @@ var monitor = {
             var result3 = false;
             var result4 = false;
             var result5 = false;
+            var result6 = false;
 
             for (var i = 0; i < deviceTypes.length; i++) {
                 if (this.currentDeviceType == deviceTypes[i].devicetypeid) {
@@ -1097,6 +1101,9 @@ var monitor = {
                         if (functions.indexOf("watermeter") != -1) {
                             result5 = true;
                         };
+                        if (functions.indexOf("camera") != -1) {
+                            result6 = true;
+                        };
                     }
                 }
             };
@@ -1105,6 +1112,7 @@ var monitor = {
             this.isShowObdBtn = result3;
             this.isShowWeightBtn = result4;
             this.isShowWatermeterBtn = result5;
+            this.isShowCameraBtn = result6;
         },
         getDeviceTypeName: function (deviceTypeId) {
             var typeName = "", deviceTypes = this.deviceTypes;

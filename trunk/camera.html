@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="shortcut icon" href="./favicon.ico" />
+    <title>视频</title>
+    <link rel="stylesheet" href="dist/styles/iview.css">
+    <style>
+        html,body,#container,.full{
+            width: 100%;
+            height: 100%;  
+            position: relative;
+        }
+        .col-cls{
+            text-align: center;
+            line-height: 32px;
+        }
+        .row-cls{
+            margin-bottom: 10px;
+        }
+    </style>
+    <link href="https://vjs.zencdn.net/7.0.3/video-js.css" rel="stylesheet">
+</head>
+<body>
+    <div id="container">
+        <Layout style="height:100%;">
+            <i-Header>
+                <Row style="height: 100%;">   
+                    <i-Col span="12" style="height: 100%;color: #ffffff">
+                        <h1 style="color:#ffffff">汽车视频平台</h1>
+                    </i-Col>
+                </Row> 
+            </i-Header>
+            <Layout>
+                <Sider hide-trigger width="300" style="background-color:#ffffff;padding:10px;">
+                    <div class="full">
+                        <Row class="row-cls">   
+                            <i-Col span="6" class="col-cls">
+                                通道编号:
+                            </i-Col>
+                            <i-Col span="18">
+                                <i-select v-model="selectType">
+                                    <i-option value="ch1">CH1</i-option>
+                                    <i-option value="ch2">CH2</i-option>
+                                    <i-option value="ch3">CH3</i-option>
+                                    <i-option value="ch4">CH4</i-option>
+                                </i-select>     
+                            </i-Col>
+                        </Row>
+                        <Row class="row-cls">   
+                            <i-Col span="6" class="col-cls">
+                                选择日期:
+                            </i-Col>
+                            <i-Col span="18">
+                                <Date-Picker type="date" placeholder="选择日期" style="width:100%" v-model="date"></Date-Picker>
+                            </i-Col>
+                        </Row>
+                        <Row class="row-cls">   
+                            <i-Col span="6" class="col-cls">
+                                时间范围:
+                            </i-Col>
+                            <i-Col span="18">
+                                <Time-Picker 
+                                    confirm 
+                                    type="timerange" 
+                                    placement="bottom-end" 
+                                    placeholder="选择时间范围"
+                                    style="width:100%;"
+                                    v-model="timeRange"
+                                    ></Time-Picker> 
+                            </i-Col>
+                        </Row>
+                        <div>
+                            <Row>   
+                                <i-Col span="6" class="col-cls">存储类型</i-Col>
+                            </Row>
+                            <div style="padding-left:30px;">
+                                <Radio-Group v-model="storageType" vertical>
+                                    <Radio label="apple">
+                                        <span>主存储器或灾备存储器</span>
+                                    </Radio>
+                                    <Radio label="android">
+                                        <span>主存储器</span>
+                                    </Radio>
+                                    <Radio label="windows">
+                                        <span>灾备存储器</span>
+                                    </Radio>
+                                </Radio-Group>
+                            </div>
+                        </div>
+                        <div style="padding:15px 0;border-top:1px solid #eee;border-bottom:1px solid #eee;">
+                            <Row>   
+                                <i-Col span="6" class="col-cls">文件类型</i-Col>
+                            </Row>
+                            <Row>   
+                                <i-Col span="24" style="padding-left:30px;height: 32px;line-height: 32px;">
+                                    <Radio v-model="videotape">录像</Radio>
+                                </i-Col>
+                            </Row>
+                        </div>
+                        <div>
+                            <Row>   
+                                <i-Col span="6" class="col-cls">录像类型</i-Col>
+                            </Row>
+                            <Row>   
+                                <i-Col span="24" style="padding-left:30px;">
+                                    <Radio-Group v-model="fileType">
+                                        <Radio label="apple">
+                                            <span>常规</span>
+                                        </Radio>
+                                        <Radio label="android">
+                                            <span>报警</span>
+                                        </Radio>
+                                        <Radio label="windows">
+                                            <span>所有</span>
+                                        </Radio>
+                                    </Radio-Group>
+                                </i-Col>
+                            </Row>
+                        </div>
+                        <div style="margin-top:30px;">
+                            <Row>
+                                <i-col span="18" offset="3">
+                                    <i-button style="width:100%;" type="primry">搜索</i-button>
+                                </i-col>
+                            </Row>
+                        </div>
+                    </div>
+                </Sider>
+                <i-Content>
+                        <Layout class="full">
+                            <Layout class="full">
+                                <i-Content style="padding:10px;">
+                                    <video id="myVideo" class="video-js vjs-default-skin vjs-big-play-centered" controls preload="auto" width="1080" height="708" data-setup='{}'>      
+                                        <source id="source" src="http://120.24.177.115/hls/test.m3u8"  type="application/vnd.apple.mpegurl">  
+                                    </video>                                    
+                                </i-Content>
+                            </Layout>
+                            <!-- <i-Footer style="padding:10px;background-color:#ffffff;">
+                              <div style="height:300px;"> </div>
+                            </i-Footer> -->
+                        </Layout>
+                </i-Content>
+            </Layout>   
+        </Layout>   
+    </div>
+    <script src="js/polyfill.min.js"></script>
+    <script src="dist/vue.min.js"></script>
+    <script src="dist/iview.min.js"></script>
+    <script src="js/gps51-jquery.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/dateformat.js"></script>
+    <script src="js/js.cookie.min.js"></script>
+    <script src="js/util.js"></script>
+    <script src="https://vjs.zencdn.net/7.0.3/video.js"></script>
+    <script>
+        var deviceid = utils.getParameterByName("deviceid");
+        var token = utils.getParameterByName("token");
+
+        var vRoot = new Vue({
+            el:"#container",
+            data:{
+                selectType:'ch1',
+                date:new Date(),
+                timeRange:["00-00-00","23-59-59"],
+                storageType:'apple',
+                fileType:'apple',
+                videotape:true,
+            },
+            methods: {
+                handleClick:function(){
+                    console.log('timeRange', this.timeRange);
+                }
+           
+            },
+            computed:{
+                
+            },
+            mounted :function() {
+                
+            },
+        })
+    </script>
+</body>
+</html>
