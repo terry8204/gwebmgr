@@ -399,6 +399,9 @@ var myUrls = {
   sendSystemMsg: function () {
     return this.host + 'webapi?action=sendsystemmsg&token=' + token;
   },
+  startVideos: function () {
+    return this.host + 'webapi?action=startvideos&token=' + token;
+  },
 
 }
 
