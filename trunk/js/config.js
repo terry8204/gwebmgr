@@ -402,7 +402,9 @@ var myUrls = {
   startVideos: function () {
     return this.host + 'webapi?action=startvideos&token=' + token;
   },
-
+  stopVideos: function () {
+    return this.host + 'webapi?action=stopvideos&token=' + token;
+  },
 }
 
 

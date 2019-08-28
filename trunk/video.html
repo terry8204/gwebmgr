@@ -60,7 +60,9 @@
         }
     </style>
     <!-- <link href="https://vjs.zencdn.net/7.0.3/video-js.css" rel="stylesheet">
-    <script src="https://vjs.zencdn.net/7.0.3/video.js"></script> -->
+    <script src="https://vjs.zencdn.net/7.0.3/video.js"></script> --> 
+    <link rel="stylesheet" href="./hls/video-js-demo.css">
+    <script src="./hls/video.js"></script>
 </head>
 <body>
     <div id="container">
@@ -107,8 +109,7 @@
                                     placement="bottom-end" 
                                     placeholder="选择时间范围"
                                     style="width:100%;"
-                                    v-model="timeRange"
-                                    ></Time-Picker> 
+                                    v-model="timeRange"></Time-Picker> 
                             </i-Col>
                         </Row>
                         <div>
@@ -175,7 +176,7 @@
                                     <Row style="height: 100%; text-align: right;">   
                                         <i-Col span="24" style="height: 100%;color: #ffffff">
                                             <i-button color="primary" @click="handleStartVideos" size="small">开始</i-button>
-                                            <i-button color="success" @click="" size="small">结束</i-button>
+                                            <i-button color="success" @click="handleStopVideos" size="small">结束</i-button>
                                             <i-button color="primary" @click="videoCount=1" size="small">一</i-button>
                                             <i-button color="success" @click="videoCount=4" size="small">四</i-button>
                                             <i-button color="error" size="small" @click="videoCount=6">六</i-button>
@@ -187,33 +188,33 @@
                                 <i-Content style="padding:10px;height: 100%;">
                                     <div class="full" ref="videoContent">
                                         <div class="full" v-if="videoCount == 1">
-                                            <video id="myVideo" 
+                                            <video 
+                                                id="video"
                                                 class="video-js vjs-default-skin vjs-big-play-centered" 
                                                 controls 
                                                 preload="auto" 
-                                                :width="videoContentWH.width" 
-                                                :height="videoContentWH.height" data-setup='{}'>      
-                                                <source id="source1" src="http://120.24.177.115/hls/123456789123_channel.m3u8"  type="application/vnd.apple.mpegurl">  
+                                                :width="videoContentWH.width"
+                                                :height="videoContentWH.height"
+                                                data-setup='{}'>      
+                                                <source src="http://120.24.177.115/hls/123456789123_1.m3u8"  type="application/vnd.apple.mpegurl">  
                                             </video> 
                                         </div>  
                                         <div class="full video-wrapper-4" v-if="videoCount == 4">
-                                            <div v-for="(item ,index) in videoUrls" :key="index">
-                                                <video 
-                                                    controls 
-                                                    preload="auto" 
-                                                    data-setup='{}'>      
-                                                    <source  src=""  type="application/vnd.apple.mpegurl">  
-                                                </video> 
+                                            <div v-for="(item ,index) in videoUrls" :key="index" style="position:relative;">
+                                                12121
                                             </div>
                                         </div>  
                                         <div class="full video-wrapper-6" v-if="videoCount == 6">
-                                            <div v-for="(item ,index) in videoUrls" :key="index">
+                                            <div v-for="(item ,index) in videoUrls" :key="index" style="position:relative;">
                                                 <video 
+                                                    class="video-js vjs-default-skin vjs-big-play-centered" 
                                                     controls 
                                                     preload="auto" 
+                                                    :width="videoWrapper4.width"
+                                                    :height="videoWrapper4.height"
                                                     data-setup='{}'>      
-                                                    <source  src=""  type="application/vnd.apple.mpegurl">  
-                                                </video> 
+                                                    <source src="http://120.24.177.115/hls/123456789123.m3u8"  type="application/vnd.apple.mpegurl">  
+                                                </video>
                                             </div>
                                         </div>  
                                         <div class="full video-wrapper-8" v-if="videoCount == 8">
@@ -285,25 +286,33 @@
             },
             methods: {
                 handleStartVideos:function(){
-                    var url = myUrls.startVideos();
+                    var url = myUrls.startVideos() , me = this;
                     utils.sendAjax(url,{deviceid:deviceid, channels:[1]},function (resp) {
-                        console.log('resp', resp);
+                        me.$Message.success("开始成功")
+                    })
+                },
+                handleStopVideos:function(){
+                    var url = myUrls.startVideos() , me = this;
+                    utils.sendAjax(url,{deviceid:deviceid, channels:[1]},function (resp) {
+                        if(resp.status === 0){
+                            me.$Message.success("停止成功")
+                        }
                     })
                 },
             },
             computed:{
-                // videoWrapper4:function () {  
-                //     return   {
-                //         width:this.videoContentWH.width/2 + 'px',
-                //         height:this.videoContentWH.height/2 + 'px',
-                //     }
-                // },
-                // videoWrapper16:function () {  
-                //     return   {
-                //         width:this.videoContentWH.width/4 + 'px',
-                //         height:this.videoContentWH.height/4 + 'px',
-                //     }
-                // },
+                videoWrapper4:function () {  
+                    return   {
+                        width:this.videoContentWH.width/2 + 'px',
+                        height:this.videoContentWH.height/2 + 'px',
+                    }
+                },
+                videoWrapper16:function () {  
+                    return   {
+                        width:this.videoContentWH.width/4 + 'px',
+                        height:this.videoContentWH.height/4 + 'px',
+                    }
+                },
             },
             watch: {
                 videoCount:function(newVal){
@@ -317,8 +326,8 @@
             },
             mounted :function() {
                 this.$nextTick(()=>{
-                    // this.videoContentWH = this.$refs.videoContent.getBoundingClientRect();
-                    // console.log('videoContent', this.$refs.videoContent.getBoundingClientRect());
+                    this.videoContentWH = this.$refs.videoContent.getBoundingClientRect();
+                    console.log('videoContent', this.$refs.videoContent.getBoundingClientRect());
                 });
 
             },
