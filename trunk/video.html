@@ -187,8 +187,8 @@
                                 </i-Header>
                                 <i-Content style="padding:10px;height: 100%;">
                                     <div class="full" ref="videoContent">
-                                        <div class="full" v-if="videoCount == 1">
-                                            <video 
+                                        <div class="full">
+                                            <video
                                                 id="video"
                                                 class="video-js vjs-default-skin vjs-big-play-centered" 
                                                 controls 
@@ -198,54 +198,6 @@
                                                 data-setup='{}'>      
                                                 <source src="http://120.24.177.115/hls/123456789123_1.m3u8"  type="application/vnd.apple.mpegurl">  
                                             </video> 
-                                        </div>  
-                                        <div class="full video-wrapper-4" v-if="videoCount == 4">
-                                            <div v-for="(item ,index) in videoUrls" :key="index" style="position:relative;">
-                                                12121
-                                            </div>
-                                        </div>  
-                                        <div class="full video-wrapper-6" v-if="videoCount == 6">
-                                            <div v-for="(item ,index) in videoUrls" :key="index" style="position:relative;">
-                                                <video 
-                                                    class="video-js vjs-default-skin vjs-big-play-centered" 
-                                                    controls 
-                                                    preload="auto" 
-                                                    :width="videoWrapper4.width"
-                                                    :height="videoWrapper4.height"
-                                                    data-setup='{}'>      
-                                                    <source src="http://120.24.177.115/hls/123456789123.m3u8"  type="application/vnd.apple.mpegurl">  
-                                                </video>
-                                            </div>
-                                        </div>  
-                                        <div class="full video-wrapper-8" v-if="videoCount == 8">
-                                            <div v-for="(item ,index) in videoUrls" :key="index">
-                                                <video 
-                                                    controls 
-                                                    preload="auto" 
-                                                    data-setup='{}'>      
-                                                    <source src="" type="application/vnd.apple.mpegurl">  
-                                                </video> 
-                                            </div>
-                                        </div>  
-                                        <div class="full video-wrapper-9" v-if="videoCount == 9">
-                                            <div v-for="(item ,index) in videoUrls" :key="index">
-                                                <video 
-                                                    controls 
-                                                    preload="auto" 
-                                                    data-setup='{}'>      
-                                                    <source  src=""  type="application/vnd.apple.mpegurl">  
-                                                </video> 
-                                            </div>
-                                        </div>  
-                                        <div class="full video-wrapper-16" v-if="videoCount == 16">
-                                            <div v-for="(item ,index) in videoUrls" :key="index">
-                                                <video 
-                                                    controls 
-                                                    preload="auto" 
-                                                     data-setup='{}'>      
-                                                    <source  src=""  type="application/vnd.apple.mpegurl">  
-                                                </video> 
-                                            </div>
                                         </div>  
                                     </div>                                 
                                 </i-Content>
@@ -292,8 +244,8 @@
                     })
                 },
                 handleStopVideos:function(){
-                    var url = myUrls.startVideos() , me = this;
-                    utils.sendAjax(url,{deviceid:deviceid, channels:[1]},function (resp) {
+                    var url = myUrls.stopVideos() , me = this;
+                    utils.sendAjax(url,{deviceid:deviceid, channels:[1],videoclosetype:0},function (resp) {
                         if(resp.status === 0){
                             me.$Message.success("停止成功")
                         }
