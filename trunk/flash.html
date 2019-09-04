@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="shortcut icon" href="./favicon.ico" />
+    <title>视频</title>
+    <link rel="stylesheet" href="dist/styles/iview.css">
+    <style>
+        html,body,#container,.full{
+            width: 100%;
+            height: 100%;  
+            position: relative;
+        }
+        .col-cls{
+            text-align: center;
+            line-height: 32px;
+        }
+        .row-cls{
+            margin-bottom: 10px;
+        }
+        video{
+            object-fit: fill;
+            width: 100%;
+            height: 100%;
+        }
+        #videoContent > div{
+            float: left;
+        }
+    </style>
+    <!-- <link href="https://vjs.zencdn.net/7.0.3/video-js.css" rel="stylesheet">
+    <script src="https://vjs.zencdn.net/7.0.3/video.js"></script> --> 
+
+    <link rel="stylesheet" href="./hls/test/video-js.css">
+    <script src="./hls/test/video.js"></script>
+    <script>
+        videojs.options.flash.swf = "./hls/test/video-js.swf";
+    </script>
+</head>
+<body>
+    <div id="container">
+        <Layout style="height:100%;">
+            <i-Header>
+                <Row style="height: 100%;">   
+                    <i-Col span="12" style="height: 100%;color: #ffffff">
+                        <h1 style="color:#ffffff">汽车视频平台</h1>
+                    </i-Col>
+                </Row> 
+            </i-Header>
+            <Layout>
+                <Sider hide-trigger width="300" style="background-color:#ffffff;padding:10px;">
+                    <div class="full">
+                        <Row class="row-cls">   
+                            <i-Col span="6" class="col-cls">
+                                通道编号:
+                            </i-Col>
+                            <i-Col span="18">
+                                <i-select v-model="selectType">
+                                    <i-option value="ch1">CH1</i-option>
+                                    <i-option value="ch2">CH2</i-option>
+                                    <i-option value="ch3">CH3</i-option>
+                                    <i-option value="ch4">CH4</i-option>
+                                </i-select>     
+                            </i-Col>
+                        </Row>
+                        <Row class="row-cls">   
+                            <i-Col span="6" class="col-cls">
+                                选择日期:
+                            </i-Col>
+                            <i-Col span="18">
+                                <Date-Picker type="date" placeholder="选择日期" style="width:100%" v-model="date"></Date-Picker>
+                            </i-Col>
+                        </Row>
+                        <Row class="row-cls">   
+                            <i-Col span="6" class="col-cls">
+                                时间范围:
+                            </i-Col>
+                            <i-Col span="18">
+                                <Time-Picker 
+                                    confirm 
+                                    type="timerange" 
+                                    placement="bottom-end" 
+                                    placeholder="选择时间范围"
+                                    style="width:100%;"
+                                    v-model="timeRange"></Time-Picker> 
+                            </i-Col>
+                        </Row>
+                        <div>
+                            <Row>   
+                                <i-Col span="6" class="col-cls">存储类型</i-Col>
+                            </Row>
+                            <div style="padding-left:30px;">
+                                <Radio-Group v-model="storageType" vertical>
+                                    <Radio label="apple">
+                                        <span>主存储器或灾备存储器</span>
+                                    </Radio>
+                                    <Radio label="android">
+                                        <span>主存储器</span>
+                                    </Radio>
+                                    <Radio label="windows">
+                                        <span>灾备存储器</span>
+                                    </Radio>
+                                </Radio-Group>
+                            </div>
+                        </div>
+                        <div style="padding:15px 0;border-top:1px solid #eee;border-bottom:1px solid #eee;">
+                            <Row>   
+                                <i-Col span="6" class="col-cls">文件类型</i-Col>
+                            </Row>
+                            <Row>   
+                                <i-Col span="24" style="padding-left:30px;height: 32px;line-height: 32px;">
+                                    <Radio v-model="videotape">录像</Radio>
+                                </i-Col>
+                            </Row>
+                        </div>
+                        <div>
+                            <Row>   
+                                <i-Col span="6" class="col-cls">录像类型</i-Col>
+                            </Row>
+                            <Row>   
+                                <i-Col span="24" style="padding-left:30px;">
+                                    <Radio-Group v-model="fileType">
+                                        <Radio label="apple">
+                                            <span>常规</span>
+                                        </Radio>
+                                        <Radio label="android">
+                                            <span>报警</span>
+                                        </Radio>
+                                        <Radio label="windows">
+                                            <span>所有</span>
+                                        </Radio>
+                                    </Radio-Group>
+                                </i-Col>
+                            </Row>
+                        </div>
+                        <div style="margin-top:30px;">
+                            <Row>
+                                <i-col span="18" offset="3">
+                                    <i-button style="width:100%;" type="primry">搜索</i-button>
+                                </i-col>
+                            </Row>
+                        </div>
+                    </div>
+                </Sider>
+                <i-Content>
+                        <Layout class="full">
+                            <Layout class="full">
+                                <i-Header style="background-color: #eee;height:45px;line-height:45px;padding: 0 10px;">
+                                    <Row style="height: 100%; text-align: right;">   
+                                        <i-Col span="24" style="height: 100%;color: #ffffff">
+                                            <i-button color="primary" @click="handleStartVideos" size="small">开始</i-button>
+                                            <i-button color="success" @click="handleStopVideos" size="small">结束</i-button>
+                                            <i-button color="primary" @click="videoCount=1" size="small">一</i-button>
+                                            <i-button color="success" @click="videoCount=4" size="small">四</i-button>
+                                            <i-button color="error" size="small" @click="videoCount=6">六</i-button>
+                                            <i-button color="warning" size="small" @click="videoCount=9">九</i-button>
+                                            <i-button color="magenta" @click="videoCount=16" size="small">十六</i-button>
+                                        </i-Col>
+                                    </Row> 
+                                </i-Header>
+                                <i-Content style="padding:10px;height: 100%;">
+                                    <div class="full" id="videoContent" ref="videoContent">
+                                        <video id="my-video" class="video-js vjs-default-skin vjs-big-play-centered"
+                                                poster="./hls/test.jpg" width="800" height="600">
+                                            <source src='rtmp://58.200.131.2:1935/livetv/hunantv' type='rtmp/flv'/>
+                                        </video>
+                                    </div>                                 
+                                </i-Content>
+                            </Layout>
+                        </Layout>
+                </i-Content>
+            </Layout>   
+        </Layout>   
+    </div>
+    <script src="js/polyfill.min.js"></script>
+    <script src="dist/vue.min.js"></script>
+    <script src="dist/iview.min.js"></script>
+    <script src="js/gps51-jquery.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/dateformat.js"></script>
+    <script src="js/js.cookie.min.js"></script>
+    <script src="js/util.js"></script>
+
+    <script>
+        var deviceid = utils.getParameterByName("deviceid");
+        var token = utils.getParameterByName("token");
+
+        var vRoot = new Vue({
+            el:"#container",
+            data:{
+                selectType:'ch1',
+                date:new Date(),
+                timeRange:["00-00-00","23-59-59"],
+                storageType:'apple',
+                fileType:'apple',
+                videotape:true,
+                videoContentWH:{
+                    width:0,
+                    height:0
+                },
+                videoCount:1,
+                videoIns:[]
+            },
+            methods: {
+                handleStartVideos:function(){
+                    var url = myUrls.startVideos() , me = this;
+                    utils.sendAjax(url,{deviceid:deviceid, channels:[1]},function (resp) {
+                        me.$Message.success("开始成功")
+                    })
+                },
+                handleStopVideos:function(){
+                    var url = myUrls.stopVideos() , me = this;
+                    utils.sendAjax(url,{deviceid:deviceid, channels:[1],videoclosetype:0},function (resp) {
+                        if(resp.status === 0){
+                            me.$Message.success("停止成功")
+                        }
+                    })
+                },
+                initApp:function(){
+                    var videoContent = this.$refs.videoContent;
+                    this.videoContentWH = videoContent.getBoundingClientRect();
+                    var player = videojs('my-video');
+                    player.play();
+                    player.width(this.videoContentWH.width)
+                    player.height(this.videoContentWH.height)
+                },
+                setVideoContentStyle:function(videoCount,index){
+                    
+                }
+            },
+            computed:{
+                videoWrapper4:function () {  
+                    return   {
+                        width:this.videoContentWH.width/2 + 'px',
+                        height:this.videoContentWH.height/2 + 'px',
+                    }
+                },
+                videoWrapper16:function () {  
+                    return   {
+                        width:this.videoContentWH.width/4 + 'px',
+                        height:this.videoContentWH.height/4 + 'px',
+                    }
+                },
+            },
+            watch: {
+                videoCount:function(newVal,oldVal){
+                   
+                }
+            },
+            mounted :function() {
+                var me = this; 
+                this.$nextTick(function(){ me.initApp(); });
+            },
+        })
+    </script>
+</body>
+</html>

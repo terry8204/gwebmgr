@@ -25,38 +25,8 @@
             width: 100%;
             height: 100%;
         }
-        .video-wrapper-4 >div{
+        #videoContent > div{
             float: left;
-            width: 50%;
-            height: 50%;
-            position: relative;
-        }
-        .video-wrapper-6 >div,.video-wrapper-9>div{
-            float: left;
-            position: relative;
-        }
-        .video-wrapper-6 >div:first-child{
-            width: 66.66%;
-            height: 66.66%;
-        }
-        .video-wrapper-6 >div,.video-wrapper-9 >div{
-            width: 33.33%;
-            height: 33.33%;
-        }
-        .video-wrapper-8 >div{
-            float: left;
-            width: 25%;
-            height: 33.33%;
-        }
-        .video-wrapper-8 >div:first-child{
-            width: 75%;
-            height: 66.66%;
-        }
-        .video-wrapper-16 >div{
-            float: left;
-            width: 25%;
-            height: 25%;
-            position: relative;
         }
     </style>
     <!-- <link href="https://vjs.zencdn.net/7.0.3/video-js.css" rel="stylesheet">
@@ -186,19 +156,19 @@
                                     </Row> 
                                 </i-Header>
                                 <i-Content style="padding:10px;height: 100%;">
-                                    <div class="full" ref="videoContent">
-                                        <div class="full">
-                                            <video
-                                                id="video"
+                                    <div class="full" id="videoContent" ref="videoContent">
+
+                                            <!-- <video
+                                                id="video10"
                                                 class="video-js vjs-default-skin vjs-big-play-centered" 
                                                 controls 
                                                 preload="auto" 
-                                                :width="videoContentWH.width"
-                                                :height="videoContentWH.height"
+                                                width="500"
+                                                height="360"
                                                 data-setup='{}'>      
                                                 <source src="http://120.24.177.115/hls/123456789123_1.m3u8"  type="application/vnd.apple.mpegurl">  
-                                            </video> 
-                                        </div>  
+                                            </video>  -->
+                            
                                     </div>                                 
                                 </i-Content>
                             </Layout>
@@ -234,7 +204,7 @@
                     height:0
                 },
                 videoCount:1,
-                videoUrls:[1]
+                videoIns:[]
             },
             methods: {
                 handleStartVideos:function(){
@@ -251,6 +221,67 @@
                         }
                     })
                 },
+                createdVideoElement:function(index){
+                    var divWrap = document.createElement("div");
+                    var video = document.createElement("video");  
+                    var source = document.createElement("source");
+                    divWrap.setAttribute( 'id' , 'video-wrapper' + index );  
+                    video.setAttribute( 'id' , 'video' + index );
+                    video.className = "video-js vjs-default-skin vjs-big-play-centered";
+                    source.setAttribute('type','application/vnd.apple.mpegurl');
+                    video.appendChild(source);
+                    divWrap.appendChild(video);
+                    // if(index === 0){
+                    //     if(this.videoCount == 1){
+                    //         divWrap.className = 'full';
+                    //     }else if(this.videoCount == 4){
+                    //         divWrap.style.width = '50%';
+                    //         divWrap.style.height = '50%';
+                    //     }
+                    // }else{
+                    //     if(this.videoCount == 1){
+                    //         divWrap.className = 'full';
+                    //     }else if(this.videoCount == 4){
+                    //         divWrap.style.width = '50%';
+                    //         divWrap.style.height = '50%';
+                    //     }
+                    // }
+                    return divWrap;
+                },
+                initVideo:function(index){
+                    var videoWrap = document.getElementById("video-wrapper"+index);
+                    var height = videoWrap.offsetHeight;
+                    var width = videoWrap.offsetWidth;
+ 
+                    videojs('video'+index , {
+                        controls: true , // 是否显示控制条
+                        preload: 'auto' ,
+                        autoplay: true ,
+                        fluid: false ,
+                        width:width ,
+                        height:height ,
+                        sources:[
+                            {
+                                // src:"http://120.24.177.115/hls/"+ deviceid + "_"+ ( index+1 ) +".m3u8",
+                                // type:"application/vnd.apple.mpegurl",
+                                src:"rtmp://120.24.177.115/live/14145311577_2",
+                                type:"rtmp/flv",
+                            }
+                        ]
+                    });
+                },
+                initApp:function(){
+                    var videoContent = this.$refs.videoContent;
+                    this.videoContentWH = videoContent.getBoundingClientRect();
+                    for(var i = 0 ; i < this.videoCount ; i++){
+                        videoContent.appendChild(this.createdVideoElement(i));
+                        this.setVideoContentStyle(this.videoCount,i);
+                        this.initVideo(i);
+                    }
+                },
+                setVideoContentStyle:function(videoCount,index){
+                    
+                }
             },
             computed:{
                 videoWrapper4:function () {  
@@ -267,21 +298,25 @@
                 },
             },
             watch: {
-                videoCount:function(newVal){
-                    var result = [] , i = 0;
-                    while(i < newVal){
-                        result.push(1);
-                        i++;
+                videoCount:function(newVal,oldVal){
+                    var videoContent = this.$refs.videoContent;
+                    var conut = Math.abs(newVal-oldVal);
+                    if(newVal > oldVal){
+                        for(var i = oldVal;i < newVal ;i++){
+                            videoContent.appendChild(this.createdVideoElement(i));
+                            this.initVideo(i);  
+                        }
+                        for(var i = oldVal; i < newVal; i++ ){
+                            this.setVideoContentStyle(newVal,index);
+                        }
+                    }else{
+
                     }
-                    this.videoUrls = result;
                 }
             },
             mounted :function() {
-                this.$nextTick(()=>{
-                    this.videoContentWH = this.$refs.videoContent.getBoundingClientRect();
-                    console.log('videoContent', this.$refs.videoContent.getBoundingClientRect());
-                });
-
+                var me = this; 
+                this.$nextTick(function(){ me.initApp(); });
             },
         })
     </script>
