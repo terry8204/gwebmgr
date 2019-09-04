@@ -276,7 +276,9 @@ var monitor = {
 
                     break;
                 case 'video':
-                    window.open("./hls/index.html?deviceid=" + this.currentDeviceId + "&token=" + token);
+                    Cookies.set('video-deviceid', this.currentDeviceId);
+                    Cookies.set('token', token);
+                    window.open("./hls/index.html");
                     break;
             }
         },
