@@ -155,7 +155,7 @@
                                 </i-Header>
                                 <i-Content style="padding:10px;height: 100%;">
                                     <div class="full" id="videoContent" ref="videoContent">
-                                        <div class="prism-player" id="player-con"></div>
+                                        <div class="prism-player" id="player-con" style="width:100%;height:100%"></div>
                                     </div>                                 
                                 </i-Content>
                             </Layout>
@@ -174,6 +174,7 @@
     <script src="js/util.js"></script>
 
     <script>
+        var player = null;
         var deviceid = utils.getParameterByName("deviceid");
         var token = utils.getParameterByName("token");
 
@@ -212,12 +213,12 @@
                     var videoContent = this.$refs.videoContent;
                     this.videoContentWH = videoContent.getBoundingClientRect();
 
-                    var player = new Aliplayer({
+                     player = new Aliplayer({
                             id: 'player-con',
-                            width: '600px',
+                            width: '100%',
                             autoplay: false,
-                            source : 'rtmp://video.gps51.com/live?vhost=online.com/15700616833_4'   
-                        }) 
+                            source : 'rtmp://video.gps51.com/live?vhost=online.com/15700616833_1'   
+                    }) 
 
                 },
                 setVideoContentStyle:function(videoCount,index){
