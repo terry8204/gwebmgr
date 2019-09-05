@@ -29,14 +29,8 @@
             float: left;
         }
     </style>
-    <!-- <link href="https://vjs.zencdn.net/7.0.3/video-js.css" rel="stylesheet">
-    <script src="https://vjs.zencdn.net/7.0.3/video.js"></script> --> 
-
-    <link rel="stylesheet" href="./hls/test/video-js.css">
-    <script src="./hls/test/video.js"></script>
-    <script>
-        videojs.options.flash.swf = "./hls/test/video-js.swf";
-    </script>
+    <link rel="stylesheet" href="https://g.alicdn.com/de/prismplayer/2.8.2/skins/default/aliplayer-min.css" />
+    <script type="text/javascript" charset="utf-8" src="https://g.alicdn.com/de/prismplayer/2.8.2/aliplayer-min.js"></script>
 </head>
 <body>
     <div id="container">
@@ -161,10 +155,7 @@
                                 </i-Header>
                                 <i-Content style="padding:10px;height: 100%;">
                                     <div class="full" id="videoContent" ref="videoContent">
-                                        <video id="my-video" class="video-js vjs-default-skin vjs-big-play-centered"
-                                                poster="./hls/test.jpg" width="800" height="600">
-                                            <source src='rtmp://58.200.131.2:1935/livetv/hunantv' type='rtmp/flv'/>
-                                        </video>
+                                        <div class="prism-player" id="player-con"></div>
                                     </div>                                 
                                 </i-Content>
                             </Layout>
@@ -220,10 +211,14 @@
                 initApp:function(){
                     var videoContent = this.$refs.videoContent;
                     this.videoContentWH = videoContent.getBoundingClientRect();
-                    var player = videojs('my-video');
-                    player.play();
-                    player.width(this.videoContentWH.width)
-                    player.height(this.videoContentWH.height)
+
+                    var player = new Aliplayer({
+                            id: 'player-con',
+                            width: '600px',
+                            autoplay: false,
+                            source : 'rtmp://video.gps51.com/live?vhost=online.com/15700616833_1'   
+                        }) 
+
                 },
                 setVideoContentStyle:function(videoCount,index){
                     
@@ -256,3 +251,16 @@
     </script>
 </body>
 </html>
+
+
+//     audiocodec:data.audiocodec,          //输入音频编码方式
+//     audiocodecstr:data.audiocodecstr,          //输入音频编码方式字符
+//     audiochannelcount;       //输入音频声道数
+//     audiosamplerate;         //输入音频采样率
+//     audiosamplebits;         //输入音频采样位数
+//     audioframelength;          //音频帧长度
+//     audiooutputsupport;      //是否支持音频输出
+//     videocodec;              //视频编码方式
+//     videocodecstr;          //视频编码方式字符
+//     audiomaxsupport;         //终端支持最大音频物理通道数
+//     videomaxsupport:               //终端支持最大视频物理通道数
