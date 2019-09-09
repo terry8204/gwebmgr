@@ -408,6 +408,9 @@ var myUrls = {
   queryVideoProperty: function () {
     return this.host + 'webapi?action=queryvideoproperty_sync&token=' + token;
   },
+  queryVideosPlayUrl: function () {
+    return this.host + 'webapi?action=queryvideosplayurl&token=' + token;
+  },
 }
 
 
