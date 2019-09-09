@@ -246,7 +246,8 @@
                 videoNumber:16,
                 videoIns:[],
                 Spin:false,
-                allPlayUrls:[]
+                allPlayUrls:[],
+                videoTimes:{}
             },
             methods: {
                 queryVideoProperty:function(){
@@ -296,7 +297,7 @@
                     })    
                 },
                 handleStopAllVideos:function(){
-                    var url = myUrls.startVideos() , me = this;
+                    var url = myUrls.stopVideos() , me = this;
                     utils.sendAjax(url,{deviceid:deviceid, channels:[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16]},function (resp) {
                         var records = resp.records , status = resp.status ;
                         if(status === 0 && records.length){
