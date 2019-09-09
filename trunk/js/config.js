@@ -411,6 +411,9 @@ var myUrls = {
   queryVideosPlayUrl: function () {
     return this.host + 'webapi?action=queryvideosplayurl&token=' + token;
   },
+  queryClientParameters: function () {
+    return this.host + 'webapi?action=queryclientparameters_sync&token=' + token;
+  },
 }
 
 

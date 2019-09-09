@@ -38,6 +38,26 @@
         #videoContent > div{
             float: left;
         }
+        .layui-elem-field {
+            margin-bottom: 10px;
+            padding: 0;
+            border-width: 1px;
+            border-style: solid;
+        }
+        fieldset {
+            display: block;
+            margin-inline-start: 2px;
+            margin-inline-end: 2px;
+            padding-block-start: 0.35em;
+            padding-inline-start: 0.75em;
+            padding-inline-end: 0.75em;
+            padding-block-end: 0.625em;
+            min-inline-size: min-content;
+            border-width: 2px;
+            border-style: groove;
+            border-color: threedface;
+            border-image: initial;
+        }
     </style>
     <link href="./videojs/video-js.css" rel="stylesheet">
     <script src="./videojs/video.js"></script>
@@ -140,7 +160,135 @@
                                                     <div slot="footer">
                                                         <i-button type="primary"  @click="videoPropertyModal=false" style="width: 100%">确定</i-button>
                                                     </div>
-                                                </Modal>   
+                                                </Modal> 
+                                                <Modal v-model="setupModal" width="800">
+                                                    <Tabs value="" :animated="false">
+                                                        <Tab-Pane label="音视频参数" name="videoSetup">
+                                                            <Row style="height:32px;margin: 10px 0;">
+                                                                <i-Col span="24" style="height: 100%;line-height:32px;text-align: right;">
+                                                                    <i-button type="info" @click="queryClientParameters">查询</i-button>
+                                                                    <i-button type="primary" @click="queryClientParameters">发送</i-button>
+                                                                </i-Col>
+                                                            </Row>   
+                                                            <Row style="height:32px;margin: 10px 0;">
+                                                                <i-Col span="5" style="height: 100%;line-height:32px;text-align: center;">
+                                                                    实时流编码模式 :
+                                                                </i-Col>
+                                                                <i-Col span="7" style="height: 100%;line-height:32px;">
+                                                                    <i-select>
+                                                                        <i-option>哈哈哈</i-option>
+                                                                    </i-select>
+                                                                </i-Col>
+                                                                <i-Col span="5" style="height: 100%;line-height:32px;text-align: center;">
+                                                                    存储流编码模式 :
+                                                                </i-Col>
+                                                                <i-Col span="7" style="height: 100%;line-height:32px;">
+                                                                    <i-select>
+                                                                        <i-option>哈哈哈</i-option>
+                                                                    </i-select>
+                                                                </i-Col>
+                                                            </Row>   
+                                                            <Row style="height:32px;margin: 10px 0;">
+                                                                <i-Col span="5" style="height: 100%;line-height:32px;text-align: center;">
+                                                                    实时流分辨率 :
+                                                                </i-Col>
+                                                                <i-Col span="7" style="height: 100%;line-height:32px;">
+                                                                    <i-select>
+                                                                        <i-option>哈哈哈</i-option>
+                                                                    </i-select>
+                                                                </i-Col>
+                                                                <i-Col span="5" style="height: 100%;line-height:32px;text-align: center;">
+                                                                    存储流分辨率 :
+                                                                </i-Col>
+                                                                <i-Col span="7" style="height: 100%;line-height:32px;">
+                                                                    <i-select>
+                                                                        <i-option>哈哈哈</i-option>
+                                                                    </i-select>
+                                                                </i-Col>
+                                                            </Row>   
+                                                            <Row style="height:32px;margin: 10px 0;">
+                                                                <i-Col span="5" style="height: 100%;line-height:32px;text-align: center;">
+                                                                    实时流关键帧间隔 :
+                                                                </i-Col>
+                                                                <i-Col span="7" style="height: 100%;line-height:32px;">
+                                                                    <Input-Number :max="1000" :min="1" v-model="realtimeKeyFrameInterval"></Input-Number>
+                                                                    范围1~1000
+                                                                </i-Col>
+                                                                <i-Col span="5" style="height: 100%;line-height:32px;text-align: center;">
+                                                                    存储流关键帧间隔 :
+                                                                </i-Col>
+                                                                <i-Col span="7" style="height: 100%;line-height:32px;">
+                                                                    <Input-Number :max="1000" :min="1" v-model="realtimeKeyFrameInterval"></Input-Number>
+                                                                    范围1~1000
+                                                                </i-Col>
+                                                            </Row>   
+                                                            <Row style="height:32px;margin: 10px 0;">
+                                                                <i-Col span="5" style="height: 100%;line-height:32px;text-align: center;">
+                                                                    实时流目标帧率 :
+                                                                </i-Col>
+                                                                <i-Col span="7" style="height: 100%;line-height:32px;">
+                                                                    <Input-Number :max="120" :min="1" v-model="realtimeKeyFrameInterval"></Input-Number>
+                                                                    范围1~120 帧/秒
+                                                                </i-Col>
+                                                                <i-Col span="5" style="height: 100%;line-height:32px;text-align: center;">
+                                                                    存储流目标帧率 :
+                                                                </i-Col>
+                                                                <i-Col span="7" style="height: 100%;line-height:32px;">
+                                                                    <Input-Number :max="120" :min="1" v-model="realtimeKeyFrameInterval"></Input-Number>
+                                                                    范围1~120 帧/秒
+                                                                </i-Col>
+                                                            </Row>   
+                                                            <Row style="height:32px;margin: 10px 0;">
+                                                                <i-Col span="5" style="height: 100%;line-height:32px;text-align: center;">
+                                                                    实时流目标码率 :
+                                                                </i-Col>
+                                                                <i-Col span="7" style="height: 100%;line-height:32px;">
+                                                                    <Input-Number :max="1000" :min="1" v-model="realtimeKeyFrameInterval"></Input-Number>
+                                                                    kbps
+                                                                </i-Col>
+                                                                <i-Col span="5" style="height: 100%;line-height:32px;text-align: center;">
+                                                                    存储流目标码率 :
+                                                                </i-Col>
+                                                                <i-Col span="7" style="height: 100%;line-height:32px;">
+                                                                    <Input-Number :max="1000" :min="1" v-model="realtimeKeyFrameInterval"></Input-Number>
+                                                                    kbps
+                                                                </i-Col>
+                                                            </Row> 
+                                                            <hr/>  
+                                                            <fieldset class="layui-elem-field fieldset" style="margin-top:5px;">
+                                                                <legend style="margin-left:20px;">OSD 字幕叠加设置</legend>
+                                                                <Row style="height:32px;margin: 10px 0;">
+                                                                    <i-Col span="24" style="height: 100%;line-height:32px;">
+                                                                        <checkbox-group v-model="videoCheckboxGroup">
+                                                                            <Checkbox label="日期和时间">
+                                                                                <span>日期和时间</span>
+                                                                            </Checkbox>
+                                                                            <Checkbox label="车牌号码"></Checkbox>
+                                                                            <Checkbox label="逻辑通道号"></Checkbox>
+                                                                            <Checkbox label=" 经纬度"></Checkbox>
+                                                                            <Checkbox label="行驶记录速度"></Checkbox>
+                                                                            <Checkbox label=" 卫星定位速度"></Checkbox>
+                                                                            <Checkbox label=" 连续驾驶时间"></Checkbox>
+                                                                        </checkbox-group>
+                                                                    </i-Col>
+                                                                </Row> 
+                                                            </fieldset>
+                                                            <Row style="height:32px;margin: 10px 0;">
+                                                                <i-Col span="5" style="height: 100%;line-height:32px;text-align: center;">
+                                                                    是否启用音频输出 :
+                                                                </i-Col>
+                                                                <i-Col span="7" style="height: 100%;line-height:32px;">
+                                                                    <i-select>
+                                                                        <i-option>启用</i-option>
+                                                                        <i-option>不启用</i-option>
+                                                                    </i-select>
+                                                                </i-Col>
+                                                            </Row>
+                                                        </Tab-Pane>
+                                                        <Tab-Pane label="标签二" name="name2">标签二的内容</Tab-Pane>
+                                                    </Tabs>
+                                                    <div slot="footer" style="padding:10px;"></div>
+                                                </Modal>     
                                         </i-Col>
                                         <i-Col span="12" style="height: 100%;text-align: right;" class="tv_box">
                                             <span><i class="icon icon_num1" @click="openAndCloseVideoWindows(1)"></i></span>
@@ -156,7 +304,7 @@
                                                     <li><a id="clearAll" href="#"><i class="icon icon_gou"></i>清除所有视频</a></li>
                                                 </ul>
                                             </span>
-                                            <span><i class="icon icon_num9"></i></span>
+                                            <span @click="setupModal=true"><i class="icon icon_num9"></i></span>
                                         </i-Col>
                                     </Row> 
                                 </i-Header>
@@ -236,20 +384,32 @@
         var vRoot = new Vue({
             el:"#container",
             data:{
+                activeMenuItem:'video',
                 videoContentWH:{
                     width:0,
                     height:0
                 },
                 videoProperty:{},
+                setupModal:true,
                 videoPropertyModal:false,
                 isFullScreen:false,
                 videoNumber:16,
                 videoIns:[],
                 Spin:false,
                 allPlayUrls:[],
-                videoTimes:{}
+                videoTimes:{},
+
+                // 音视频参数设置
+                realtimeKeyFrameInterval:1,
+                videoCheckboxGroup:[]
             },
             methods: {
+                queryClientParameters:function(){
+                    var url = myUrls.queryClientParameters();
+                    utils.sendAjax(url,{deviceid:deviceid},function (data) { 
+                        console.log('data', data);
+                    });
+                },
                 queryVideoProperty:function(){
                     this.Spin = true;
                     var url = myUrls.queryVideoProperty(), that = this;
@@ -488,7 +648,7 @@
                         this.on('pause',function () { 
                             document.getElementsByClassName('vjs-big-play-button')[index].style.display = 'block';
                             self.handleStopVideos(index);
-                            delete this.videoTimes['videoPlayer'+(index)];
+                            delete self.videoTimes['videoPlayer'+(index)];
                         });
                         // this.on('loadeddata',function () { 
                         //     console.log('loadeddata', '')
@@ -525,7 +685,28 @@
 
                         }
                     });
-                }
+                },
+                stopVideoPlayer(){
+                    var videoIns = this.videoIns;
+                    for(var i = 0 ; i < videoIns.length;i++){
+                        var key = 'videoPlayer'+i;
+                        var nowTime = Date.now();
+                        var oldTime = this.videoTimes[key];
+                        if(oldTime){
+                            console.log('nowTime - oldTime', nowTime - oldTime)
+                            if((nowTime - oldTime) > 1000*60){
+                                var player = videoIns[i];
+                                player.pause();
+                                delete this.videoTimes[key];
+                            }
+                        }
+                    }
+                },
+                checkVideoPlayerTime(){
+                    this.myInterval = setInterval(()=>{
+                        this.stopVideoPlayer();
+                    },5000);
+                },
             },
             computed:{
                
@@ -546,6 +727,8 @@
                         console.log('data', data);
                         that.initApp(); 
                     });
+
+                    that.checkVideoPlayerTime();
                 });
 
             },
