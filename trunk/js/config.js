@@ -405,6 +405,9 @@ var myUrls = {
   stopVideos: function () {
     return this.host + 'webapi?action=stopvideos&token=' + token;
   },
+  queryVideoProperty: function () {
+    return this.host + 'webapi?action=queryvideoproperty_sync&token=' + token;
+  },
 }
 
 

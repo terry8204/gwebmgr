@@ -5,13 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="shortcut icon" href="./favicon.ico" />
-    <title>视频</title>
+    <title>汽车视频平台</title>
     <link rel="stylesheet" href="dist/styles/iview.css">
+    <link rel="stylesheet" href="./videojs/bin.css">
     <style>
         html,body,#container,.full{
             width: 100%;
             height: 100%;  
             position: relative;
+            overflow: hidden;
         }
         .col-cls{
             text-align: center;
@@ -25,141 +27,192 @@
             width: 100%;
             height: 100%;
         }
+        #videoContent{
+            overflow: hidden;
+            position: absolute;
+            left: 0px;
+            right:  10px;
+            top:  0px;
+            bottom:  10px;
+        }
         #videoContent > div{
             float: left;
         }
     </style>
-    <!-- <link href="https://vjs.zencdn.net/7.0.3/video-js.css" rel="stylesheet">
-    <script src="https://vjs.zencdn.net/7.0.3/video.js"></script> --> 
-    <link rel="stylesheet" href="./hls/video-js-demo.css">
-    <script src="./hls/video.js"></script>
+    <link href="./videojs/video-js.css" rel="stylesheet">
+    <script src="./videojs/video.js"></script>
+    <script src="./videojs/videojs-flash.min.js"></script>
 </head>
 <body>
     <div id="container">
+        <Spin fix style="z-index:9999;" v-show="Spin">查询中,请稍后...</Spin> 
         <Layout style="height:100%;">
             <i-Header>
                 <Row style="height: 100%;">   
                     <i-Col span="12" style="height: 100%;color: #ffffff">
-                        <h1 style="color:#ffffff">汽车视频平台</h1>
+                        <h1 style="color:#ffffff">汽车视频平台-视频监控</h1>
                     </i-Col>
                 </Row> 
             </i-Header>
             <Layout>
                 <Sider hide-trigger width="300" style="background-color:#ffffff;padding:10px;">
                     <div class="full">
-                        <Row class="row-cls">   
-                            <i-Col span="6" class="col-cls">
-                                通道编号:
-                            </i-Col>
-                            <i-Col span="18">
-                                <i-select v-model="selectType">
-                                    <i-option value="ch1">CH1</i-option>
-                                    <i-option value="ch2">CH2</i-option>
-                                    <i-option value="ch3">CH3</i-option>
-                                    <i-option value="ch4">CH4</i-option>
-                                </i-select>     
-                            </i-Col>
-                        </Row>
-                        <Row class="row-cls">   
-                            <i-Col span="6" class="col-cls">
-                                选择日期:
-                            </i-Col>
-                            <i-Col span="18">
-                                <Date-Picker type="date" placeholder="选择日期" style="width:100%" v-model="date"></Date-Picker>
-                            </i-Col>
-                        </Row>
-                        <Row class="row-cls">   
-                            <i-Col span="6" class="col-cls">
-                                时间范围:
-                            </i-Col>
-                            <i-Col span="18">
-                                <Time-Picker 
-                                    confirm 
-                                    type="timerange" 
-                                    placement="bottom-end" 
-                                    placeholder="选择时间范围"
-                                    style="width:100%;"
-                                    v-model="timeRange"></Time-Picker> 
-                            </i-Col>
-                        </Row>
-                        <div>
-                            <Row>   
-                                <i-Col span="6" class="col-cls">存储类型</i-Col>
-                            </Row>
-                            <div style="padding-left:30px;">
-                                <Radio-Group v-model="storageType" vertical>
-                                    <Radio label="apple">
-                                        <span>主存储器或灾备存储器</span>
-                                    </Radio>
-                                    <Radio label="android">
-                                        <span>主存储器</span>
-                                    </Radio>
-                                    <Radio label="windows">
-                                        <span>灾备存储器</span>
-                                    </Radio>
-                                </Radio-Group>
-                            </div>
-                        </div>
-                        <div style="padding:15px 0;border-top:1px solid #eee;border-bottom:1px solid #eee;">
-                            <Row>   
-                                <i-Col span="6" class="col-cls">文件类型</i-Col>
-                            </Row>
-                            <Row>   
-                                <i-Col span="24" style="padding-left:30px;height: 32px;line-height: 32px;">
-                                    <Radio v-model="videotape">录像</Radio>
-                                </i-Col>
-                            </Row>
-                        </div>
-                        <div>
-                            <Row>   
-                                <i-Col span="6" class="col-cls">录像类型</i-Col>
-                            </Row>
-                            <Row>   
-                                <i-Col span="24" style="padding-left:30px;">
-                                    <Radio-Group v-model="fileType">
-                                        <Radio label="apple">
-                                            <span>常规</span>
-                                        </Radio>
-                                        <Radio label="android">
-                                            <span>报警</span>
-                                        </Radio>
-                                        <Radio label="windows">
-                                            <span>所有</span>
-                                        </Radio>
-                                    </Radio-Group>
-                                </i-Col>
-                            </Row>
-                        </div>
-                        <div style="margin-top:30px;">
-                            <Row>
-                                <i-col span="18" offset="3">
-                                    <i-button style="width:100%;" type="primry">搜索</i-button>
-                                </i-col>
-                            </Row>
-                        </div>
+                       1212
                     </div>
                 </Sider>
                 <i-Content>
                         <Layout class="full">
                             <Layout class="full">
                                 <i-Header style="background-color: #eee;height:45px;line-height:45px;padding: 0 10px;">
-                                    <Row style="height: 100%; text-align: right;">   
-                                        <i-Col span="24" style="height: 100%;color: #ffffff">
-                                            <i-button color="primary" @click="handleStartVideos" size="small">开始</i-button>
-                                            <i-button color="success" @click="handleStopVideos" size="small">结束</i-button>
-                                            <i-button color="primary" @click="videoCount=1" size="small">一</i-button>
-                                            <i-button color="success" @click="videoCount=4" size="small">四</i-button>
-                                            <i-button color="error" size="small" @click="videoCount=6">六</i-button>
-                                            <i-button color="warning" size="small" @click="videoCount=9">九</i-button>
-                                            <i-button color="magenta" @click="videoCount=16" size="small">十六</i-button>
+                                    <Row style="height: 100%;">   
+                                        <i-Col span="12" style="height: 100%;color: #ffffff">
+                                            <i-button type="primary" @click="handleStartVideos" size="small">开始</i-button>
+                                            <i-button type="success" @click="handleStopVideos" size="small">结束</i-button>
+                                            <i-button type="success" @click="handleFullScreen" size="small">全屏显示</i-button>
+                                            <i-button type="success" @click="queryVideoProperty" size="small">参数查询</i-button>
+                                            <Modal v-model="videoPropertyModal" width="500">
+                                                    <p slot="header" style="color:#f60;text-align:center">
+                                                        <Icon type="ios-create-outline"></Icon>
+                                                        <span>视频参数</span>
+                                                    </p>
+                                                    <div style="text-align:center">
+                                                        <Row style="height:32px;">
+                                                            <i-Col span="8" style="height: 100%;text-align:right;line-height:32px;">音频编码方式 : &nbsp;</i-Col>
+                                                            <i-Col span="16" style="height: 100%;line-height:32px;">
+                                                                {{videoProperty.audiocodec}}
+                                                            </i-Col>
+                                                        </Row>
+                                                        <Row style="height:32px;">
+                                                            <i-Col span="8" style="height: 100%;text-align:right;line-height:32px;">音频编码方式字符 : &nbsp;</i-Col>
+                                                            <i-Col span="16" style="height: 100%;line-height:32px;">
+                                                                {{videoProperty.audiocodecstr}}
+                                                            </i-Col>
+                                                        </Row>
+                                                        <Row style="height:32px;">
+                                                            <i-Col span="8" style="height: 100%;text-align:right;line-height:32px;">音频声道数 : &nbsp;</i-Col>
+                                                            <i-Col span="16" style="height: 100%;line-height:32px;">
+                                                                {{videoProperty.audiosamplerate}}
+                                                            </i-Col>
+                                                        </Row>
+                                                        <Row style="height:32px;">
+                                                            <i-Col span="8" style="height: 100%;text-align:right;line-height:32px;">音频采样位数 : &nbsp;</i-Col>
+                                                            <i-Col span="16" style="height: 100%;line-height:32px;">
+                                                                {{videoProperty.audiosamplebits}}
+                                                            </i-Col>
+                                                        </Row>
+                                                        <Row style="height:32px;">
+                                                            <i-Col span="8" style="height: 100%;text-align:right;line-height:32px;">音频帧长度 : &nbsp;</i-Col>
+                                                            <i-Col span="16" style="height: 100%;line-height:32px;">
+                                                                {{videoProperty.audioframelength}}
+                                                            </i-Col>
+                                                        </Row>
+                                                        <Row style="height:32px;">
+                                                            <i-Col span="8" style="height: 100%;text-align:right;line-height:32px;">是否支持音频输出 : &nbsp;</i-Col>
+                                                            <i-Col span="16" style="height: 100%;line-height:32px;">
+                                                                {{videoProperty.audiooutputsupport}}
+                                                            </i-Col>
+                                                        </Row>
+                                                        <Row style="height:32px;">
+                                                            <i-Col span="8" style="height: 100%;text-align:right;line-height:32px;">视频编码方式 : &nbsp;</i-Col>
+                                                            <i-Col span="16" style="height: 100%;line-height:32px;">
+                                                                {{videoProperty.videocodec}}
+                                                            </i-Col>
+                                                        </Row>
+                                                        <Row style="height:32px;">
+                                                            <i-Col span="8" style="height: 100%;text-align:right;line-height:32px;">视频编码方式字符 : &nbsp;</i-Col>
+                                                            <i-Col span="16" style="height: 100%;line-height:32px;">
+                                                                {{videoProperty.videocodecstr}}
+                                                            </i-Col>
+                                                        </Row>
+                                                        <Row style="height:32px;">
+                                                            <i-Col span="8" style="height: 100%;text-align:right;line-height:32px;">终端支持最大音频物理通道数 : &nbsp;</i-Col>
+                                                            <i-Col span="16" style="height: 100%;line-height:32px;">
+                                                                {{videoProperty.audiomaxsupport}}
+                                                            </i-Col>
+                                                        </Row>
+                                                        <Row style="height:32px;">
+                                                            <i-Col span="8" style="height: 100%;text-align:right;line-height:32px;">终端支持最大视频物理通道数 : &nbsp;</i-Col>
+                                                            <i-Col span="16" style="height: 100%;line-height:32px;">
+                                                                {{videoProperty.videomaxsupport}}
+                                                            </i-Col>
+                                                        </Row>
+                                                    </div>
+                                                    <div slot="footer">
+                                                        <i-button type="primary"  @click="videoPropertyModal=false" style="width: 100%">确定</i-button>
+                                                    </div>
+                                                </Modal>   
+                                        </i-Col>
+                                        <i-Col span="12" style="height: 100%;text-align: right;" class="tv_box">
+                                            <span><i class="icon icon_num1" @click="openAndCloseVideoWindows(1)"></i></span>
+                                            <span><i class="icon icon_num2" @click="openAndCloseVideoWindows(4)"></i></span>
+                                            <span><i class="icon icon_num3" @click="openAndCloseVideoWindows(6)"></i></span>
+                                            <span><i class="icon icon_num4" @click="openAndCloseVideoWindows(8)"></i></span>
+                                            <span><i class="icon icon_num5" @click="openAndCloseVideoWindows(9)"></i></span>
+                                            <span><i class="icon icon_num6" @click="openAndCloseVideoWindows(16)"></i></span>
+                                            <span id="box_stop">
+                                                <i class="icon icon_close_show"></i><i class="icon icon_xl"></i>
+                                                <ul class="tc_box" style="display: none;">
+                                                    <li><a id="stopAll" href="#"><i class="icon icon_gou"></i>停止所有视频</a></li>
+                                                    <li><a id="clearAll" href="#"><i class="icon icon_gou"></i>清除所有视频</a></li>
+                                                </ul>
+                                            </span>
+                                            <span><i class="icon icon_num9"></i></span>
                                         </i-Col>
                                     </Row> 
                                 </i-Header>
-                                <i-Content style="padding:10px;height: 100%;">
-                                    <div class="full" id="videoContent" ref="videoContent">
-
-
-                                    </div>                                 
+                                <i-Content style="height:100%;padding: 10px;">
+                                    <div class="full" style="position: relative;">
+                                        <div class="full" id="videoContent" ref="videoContent">
+                                            <div>
+                                                <video id="video0" class="video-js" controls poster="" >  
+                                            </div>
+                                            <div>
+                                                <video id="video1" class="video-js" controls poster="" >  
+                                            </div>
+                                            <div>
+                                                <video id="video2" class="video-js" controls poster="" >  
+                                            </div>
+                                            <div>
+                                                <video id="video3" class="video-js" controls poster="" >  
+                                            </div>
+                                            <div>
+                                                <video id="video4" class="video-js" controls poster="" >  
+                                            </div>
+                                            <div>
+                                                <video id="video5" class="video-js" controls poster="" >  
+                                            </div>
+                                            <div>
+                                                <video id="video6" class="video-js" controls poster="" >  
+                                            </div>
+                                            <div>
+                                                <video id="video7" class="video-js" controls poster="" >  
+                                            </div>
+                                            <div>
+                                                <video id="video8" class="video-js" controls poster="" >  
+                                            </div>
+                                            <div>
+                                                <video id="video9" class="video-js" controls poster="" >  
+                                            </div>
+                                            <div>
+                                                <video id="video10" class="video-js" controls poster="" >  
+                                            </div>
+                                            <div>
+                                                <video id="video11" class="video-js" controls poster="" >  
+                                            </div>
+                                            <div>
+                                                <video id="video12" class="video-js" controls poster="" >  
+                                            </div>
+                                            <div>
+                                                <video id="video13" class="video-js" controls poster="" >  
+                                            </div>
+                                            <div>
+                                                <video id="video14" class="video-js" controls poster="" >  
+                                            </div>
+                                            <div>
+                                                <video id="video15" class="video-js" controls poster="" >  
+                                            </div>
+                                        </div>                                 
+                                    </div>
                                 </i-Content>
                             </Layout>
                         </Layout>
@@ -183,24 +236,64 @@
         var vRoot = new Vue({
             el:"#container",
             data:{
-                selectType:'ch1',
-                date:new Date(),
-                timeRange:["00-00-00","23-59-59"],
-                storageType:'apple',
-                fileType:'apple',
-                videotape:true,
                 videoContentWH:{
                     width:0,
                     height:0
                 },
-                videoCount:1,
-                videoIns:[]
+                videoProperty:{},
+                videoPropertyModal:false,
+                isFullScreen:false,
+                videoNumber:16,
+                videoIns:[],
+                Spin:false,
             },
             methods: {
+                queryVideoProperty:function(){
+                    this.Spin = true;
+                    var url = myUrls.queryVideoProperty(), that = this;
+                    utils.sendAjax(url,{deviceid:deviceid},function (data) { 
+                        var status = data.status ;
+                        if(status === 0 ){
+                            that.$Message.success("查询成功");  
+                            that.videoProperty = data;
+                            that.videoPropertyModal = true;
+                        }else if(status === 1){
+                            that.$Message.error();
+                        }else if(status === 2){
+                            that.$Message.error("设备不在线");   
+                        }else if(status === 3){
+        
+                        }else if(status === 4){
+
+                        }else if(status === 5){
+                            that.$Message.error("错误:" + data.cause);
+                        }
+                        that.Spin = false;
+                    })
+                },
                 handleStartVideos:function(){
                     var url = myUrls.startVideos() , me = this;
                     utils.sendAjax(url,{deviceid:deviceid, channels:[1]},function (resp) {
-                        me.$Message.success("开始成功")
+                        var records = resp.records , status = resp.status ;
+                        if(status === 0 && records.length){
+                            me.$Message.success("开始成功")
+                            for(var i = 0; i < records.length;i++){
+                                var item = records[i];
+                                var player = me.videoIns[i];
+                                player.src(item.playurl);
+                                player.play();
+                            }
+                        }else if(status === 1){
+                            me.$Message.error();
+                        }else if(status === 2){
+                            me.$Message.error("设备不在线");   
+                        }else if(status === 3){
+        
+                        }else if(status === 4){
+
+                        }else if(status === 5){
+                            me.$Message.error("错误:" + resp.cause);
+                        }
                     })
                 },
                 handleStopVideos:function(){
@@ -208,105 +301,173 @@
                     utils.sendAjax(url,{deviceid:deviceid, channels:[1],videoclosetype:0},function (resp) {
                         if(resp.status === 0){
                             me.$Message.success("停止成功")
+                        }else if(status === 1){
+
+                        }else if(status === 2){
+                            me.$Message.error("设备不在线");   
+                        }else if(status === 3){
+        
+                        }else if(status === 4){
+
+                        }else if(status === 5){
+                            me.$Message.error("错误:" + resp.cause);
                         }
                     })
                 },
-                createdVideoElement:function(index){
-                    var divWrap = document.createElement("div");
-                    var video = document.createElement("video");  
-                    var source = document.createElement("source");
-                    divWrap.setAttribute( 'id' , 'video-wrapper' + index );  
-                    video.setAttribute( 'id' , 'video' + index );
-                    video.className = "video-js vjs-default-skin vjs-big-play-centered";
-                    source.setAttribute('type','application/vnd.apple.mpegurl');
-                    video.appendChild(source);
-                    divWrap.appendChild(video);
-                    // if(index === 0){
-                    //     if(this.videoCount == 1){
-                    //         divWrap.className = 'full';
-                    //     }else if(this.videoCount == 4){
-                    //         divWrap.style.width = '50%';
-                    //         divWrap.style.height = '50%';
-                    //     }
-                    // }else{
-                    //     if(this.videoCount == 1){
-                    //         divWrap.className = 'full';
-                    //     }else if(this.videoCount == 4){
-                    //         divWrap.style.width = '50%';
-                    //         divWrap.style.height = '50%';
-                    //     }
-                    // }
-                    return divWrap;
+                handleFullScreen:function(){
+                    var main = this.$refs.videoContent;
+                    if (this.isFullScreen) {
+                        if (document.exitFullscreen) {
+                        document.exitFullscreen()
+                        } else if (document.mozCancelFullScreen) {
+                        document.mozCancelFullScreen()
+                        } else if (document.webkitCancelFullScreen) {
+                        document.webkitCancelFullScreen()
+                        } else if (document.msExitFullscreen) {
+                        document.msExitFullscreen()
+                        }
+                    } else {
+                        if (main.requestFullscreen) {
+                        main.requestFullscreen()
+                        } else if (main.mozRequestFullScreen) {
+                        main.mozRequestFullScreen()
+                        } else if (main.webkitRequestFullScreen) {
+                        main.webkitRequestFullScreen()
+                        } else if (main.msRequestFullscreen) {
+                        main.msRequestFullscreen()
+                        }
+                    }
+                    this.isFullScreen = false;
+                },
+                displayAndHideVideos:function(toOpensIndex){
+                    for(var i = 0 ; i < 16 ;i++){
+                        var player =this.videoIns[i];
+                        if(i < toOpensIndex)
+                        {
+                            // if(player.paused())
+                            // {
+                            //     player.play();
+                            // }
+                        }
+                        else
+                        {
+                            player.pause();
+                            
+                        }                         
+                    }
+                },
+                openAndCloseVideoWindows:function(toOpensIndex){
+                    this.videoNumber = toOpensIndex;
+                    this.resizeVideoWindows(toOpensIndex);
+                },
+                resizeVideoWindows:function(count){
+                    var width = this.videoContentWH.width;
+                    var height = this.videoContentWH.height;
+                    this.displayAndHideVideos(count);
+
+                    switch(count)
+                    {
+                        case 1:
+                            var player = this.videoIns[0];
+                            player.width(width);
+                            player.height(height);
+                            break;
+                        case 4:
+                            for(var i = 0 ; i < 4;i++){
+                                var player = this.videoIns[i];
+                                //player.stopTrackingCurrentTime();
+                                player.width(width/2);
+                                player.height(height/2);    
+                            }
+                            break;
+                        case 6:
+                            var singlewidth = width/3;
+                            var singleheight = height/3;
+                            for(var i = 0 ; i < 6;i++){
+                                var player =  this.videoIns[i];
+                                if(i === 0){
+                                    player.width(singlewidth*2);
+                                    player.height(singleheight*2);  
+                                } else {
+                                    player.width(singlewidth);
+                                    player.height(singleheight);   
+                                }
+                            }
+                            break;
+                        case 8:
+                            var singlewidth = width/4;
+                            var singleheight = height/4;
+                            for(var i = 0 ; i < 8;i++){
+                                var player =  this.videoIns[i];
+                                if(i === 0){
+                                    player.width(singlewidth*3);
+                                    player.height(singleheight*3);  
+                                } else {
+                                    player.width(singlewidth);
+                                    player.height(singleheight);   
+                                }
+                            }
+                            break;
+                        case 9: 
+                            for(var i = 0 ; i < 9;i++){
+                                var player =  this.videoIns[i];
+                                player.width(width/3);
+                                player.height(height/3);    
+                            }
+                        break;
+                        case 16:
+                            for(var i = 0 ; i < 16;i++){
+                                var player =  this.videoIns[i];
+                                player.width(width/4);
+                                player.height(height/4);    
+                            }
+                        break;
+                        }
                 },
                 initVideo:function(index){
-                    var videoWrap = document.getElementById("video-wrapper"+index);
-                    var height = videoWrap.offsetHeight;
-                    var width = videoWrap.offsetWidth;
- 
-                    videojs('video'+index , {
-                        controls: true , // 是否显示控制条
-                        preload: 'auto' ,
-                        autoplay: true ,
-                        fluid: false ,
-                        width:width ,
-                        height:height ,
-                        sources:[
-                            {
-                                // src:"http://120.24.177.115/hls/"+ deviceid + "_"+ ( index+1 ) +".m3u8",
-                                // type:"application/vnd.apple.mpegurl",
-                                src:"rtmp://120.24.177.115/live/14145311577_2",
-                                type:"rtmp/flv",
-                            }
-                        ]
+                    var player = videojs('video'+index , {
+                        autoplay: false ,
+                        preload:false,
+                        controlBar: {
+                            progressControl: false,
+                            liveDisplay: true,
+                        },
+                        techOrder: ['html5','flash'],
+                        sources: [
+                                // { 
+                                //     // src: 'rtmp://58.200.131.2:1935/livetv/hunantv',
+                                //     src:'',
+                                //     type: 'rtmp/flv'
+                                // }
+                            ],
                     });
+                    this.videoIns.push(player);
                 },
                 initApp:function(){
                     var videoContent = this.$refs.videoContent;
                     this.videoContentWH = videoContent.getBoundingClientRect();
-                    for(var i = 0 ; i < this.videoCount ; i++){
-                        videoContent.appendChild(this.createdVideoElement(i));
-                        this.setVideoContentStyle(this.videoCount,i);
+                    for(var i = 0 ; i < 16 ; i++){
                         this.initVideo(i);
                     }
-                },
-                setVideoContentStyle:function(videoCount,index){
-                    
+                    this.resizeVideoWindows(this.videoNumber);
                 }
             },
             computed:{
-                videoWrapper4:function () {  
-                    return   {
-                        width:this.videoContentWH.width/2 + 'px',
-                        height:this.videoContentWH.height/2 + 'px',
-                    }
-                },
-                videoWrapper16:function () {  
-                    return   {
-                        width:this.videoContentWH.width/4 + 'px',
-                        height:this.videoContentWH.height/4 + 'px',
-                    }
-                },
+               
             },
             watch: {
-                videoCount:function(newVal,oldVal){
-                    var videoContent = this.$refs.videoContent;
-                    var conut = Math.abs(newVal-oldVal);
-                    if(newVal > oldVal){
-                        for(var i = oldVal;i < newVal ;i++){
-                            videoContent.appendChild(this.createdVideoElement(i));
-                            this.initVideo(i);  
-                        }
-                        for(var i = oldVal; i < newVal; i++ ){
-                            this.setVideoContentStyle(newVal,index);
-                        }
-                    }else{
-
-                    }
-                }
             },
             mounted :function() {
-                var me = this; 
-                this.$nextTick(function(){ me.initApp(); });
+                var that = this; 
+                videojs.options.flash.swf = "./videojs/video-js.5.4.2.swf";
+                this.$nextTick(function(){ 
+                    that.initApp(); 
+                    window.onresize = function (){
+                        that.videoContentWH = that.$refs.videoContent.getBoundingClientRect();
+                        that.resizeVideoWindows(that.videoNumber);
+                    }
+                });
+
             },
         })
     </script>

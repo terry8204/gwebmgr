@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+
+<head>  
+  <title>视频直播</title>  
+  <meta charset="utf-8">  
+  <link href="./video-js.css" rel="stylesheet">
+  <script src="./video.js"></script>
+  <script src="./videojs-flash.min.js"></script>
+</head>  
+<body>  
+
+  <h1>直播测试</h1>  
+ <video id="my-video" class="video-js" controls preload="auto" width="640" height="264" poster="" >  
+   <script>
+    videojs.options.flash.swf = "./video-js.5.4.2.swf";
+    var options = { 
+    sources: [
+    //   { 
+    //     src: '', //rtmp://58.200.131.2:1935/livetv/hunantv
+    //     type: 'rtmp/flv'
+    // }] ,
+    techOrder: ['html5','flash']
+    };
+    var player = videojs("#my-video",options);
+    //player.play();
+  </script>
+
+    <p class="vjs-no-js">播放视频需要启用 JavaScript，推荐使用支持HTML5的浏览器访问。  
+      To view this video please enable JavaScript, and consider upgrading to a web browser that  
+      <a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>  
+    </p>  
+ </video>  
+
+</body>
+</html>

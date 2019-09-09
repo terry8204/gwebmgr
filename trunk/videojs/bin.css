@@ -1,0 +1,168 @@
+﻿/* CSS Document */
+/*公共*/
+@charset "UTF-8";
+
+i{
+	display:inline-block;
+	font-style:normal;
+	vertical-align:middle;
+}
+
+.tv_box{
+	height:18px;
+	line-height:18px;
+	}
+.tv_box span{
+	height:22px;
+	line-height:18px;
+	display:inline-block;
+	padding:0 5px;
+	position:relative;
+	margin-top:13px;
+	}
+.tv_box span i.icon_num7, .tv_box span i.icon_num8, .tv_box span i.icon_num9 {
+	background:url(images/icon_s_for.png) 0 0 no-repeat;
+	width:16px;
+	height:16px;
+}
+.tv_box span i.icon_num7 {
+	background-position: -424px -225px;
+}
+.tv_box span:hover i.icon_num7 {
+	background-position: -449px -225px;
+}
+.tv_box span i.icon_num8 {
+	background-position: -424px -254px;
+}
+.tv_box span:hover i.icon_num8 {
+	background-position: -449px -254px;
+}
+.tv_box span i.icon_num9 {
+	background-position: -358px -104px;
+}
+.tv_box span:hover i.icon_num9 {
+	background-position: -379px -104px;
+}
+.tv_box span i{
+	background:url(images/icon_s.png) 0 0 no-repeat;
+	width:14px;
+	height:14px;
+	cursor:pointer;
+}
+.tv_box span i.icon_num1 {
+	background-position: -100px -326px;
+}
+.tv_box span i.icon_num2 {
+	background-position: -120px -326px;
+}
+.tv_box span i.icon_num3 {
+	background-position: -140px -326px;
+}
+.tv_box span i.icon_num4 {
+	background-position: -160px -326px;
+}
+.tv_box span i.icon_num5 {
+	background-position: -180px -326px;
+}
+.tv_box span i.icon_num6 {
+	background-position: -200px -326px;
+}
+.tv_box span:hover i.icon_num1 {
+	background-position: -100px -346px;
+}
+.tv_box span:hover i.icon_num2 {
+	background-position: -120px -346px;
+}
+.tv_box span:hover i.icon_num3 {
+	background-position: -140px -346px;
+}
+.tv_box span:hover i.icon_num4 {
+	background-position: -160px -346px;
+}
+.tv_box span:hover i.icon_num5 {
+	background-position: -180px -346px;
+}
+.tv_box span:hover i.icon_num6 {
+	background-position: -200px -346px;
+}
+.tv_box span i.icon_top{
+	background-position:-20px -50px;
+	}
+.tv_box span i.icon_bottom{
+	background-position:-40px -50px;
+	}
+.tv_box span i.icon_view{
+	background-position:-60px -50px;
+	}
+.tv_box span i.icon_sslc{
+	background-position:-80px -50px;
+	}
+.tv_box span i.icon_phone{
+	background-position:-101px -50px;
+	}
+.tv_box span i.icon_voice{
+	background-position:-124px -50px;
+	}
+.tv_box span i.icon_play_all{
+	background-position:-145px -50px;
+	}
+.tv_box span i.icon_close_show{
+	background-position:-164px -50px;
+	}
+.tv_box span:hover i.icon_top{
+	background-position:-241px -50px;
+	}
+.tv_box span:hover i.icon_bottom{
+	background-position:-261px -50px;
+	}
+.tv_box span:hover i.icon_view{
+	background-position:-281px -50px;
+	}
+.tv_box span:hover i.icon_sslc{
+	background-position:-301px -50px;
+	}
+.tv_box span:hover i.icon_phone{
+	background-position:-322px -50px;
+	}
+.tv_box span:hover i.icon_voice{
+	background-position:-345px -50px;
+	}
+.tv_box span:hover i.icon_play_all{
+	background-position:-366px -50px;
+	}
+.tv_box span:hover i.icon_close_show{
+	background-position:-385px -50px;
+	}
+.tv_box span i.icon_xl{
+	background-position:-193px -50px;
+	width:5px;
+	height:14px;
+	margin-left:2px;
+	}
+.tv_box span:hover i.icon_xl{
+	background-position:-414px -50px;
+	width:5px;
+	height:14px;
+	margin-left:2px;
+	}	
+.tv_box span i.icon_gou{
+	background:url(images/icon_s.png) -217px -56px no-repeat;
+	width:20px;
+	height:12px;
+	display:none;
+	}
+.tv_box span i.icon_select{
+	background:url(images/icon_s.png) -217px -52px no-repeat;
+	display:inline-block;
+	width:20px;
+	height:12px;
+	}
+.tv_box span ul{
+	top:20px;
+	left:-95px;
+	width:120px;
+	}
+/*.tv_box span ul li:hover i{
+	display:inline-block;
+	background:url(images/icon_s.png) -217px -52px no-repeat;
+	}*/
