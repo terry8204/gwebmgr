@@ -82,7 +82,6 @@
                 </Sider>
                 <i-Content class="full">
                         <Layout class="full">
-                            <Layout class="full">
                                 <i-Header style="background-color: #eee;height:45px;line-height:45px;padding: 0 10px;">
                                     <Row style="height: 100%;">   
                                         <i-Col span="12" style="height: 100%;color: #ffffff">
@@ -390,7 +389,7 @@
                                         </div>                                 
                                     </div>
                                 </i-Content>
-                            </Layout>
+
                         </Layout>
                 </i-Content>
             </Layout>   
@@ -473,7 +472,6 @@
                     });
                 },
                 setClientParameters:function () { 
-                    var url = myUrls.setAudioVideoParameters_Sync();
                     var parameters = {};
                     if(
                         this.realtimebitratemode &&
@@ -487,18 +485,57 @@
                         this.storeframebitrate &&
                         this.usingaudio !== '' 
                     ){
-                        parameters.realtimebitratemode = this.realtimebitratemode;
-                        parameters.storebitratemode = this.storebitratemode;
-                        parameters.realtimeresolution = this.realtimeresolution;
-                        parameters.storeresolution = this.storeresolution;
+                    
+                        parameters.realtimebitratemode = Number(this.realtimebitratemode);
+                        parameters.storebitratemode = Number(this.storebitratemode);
+                        parameters.realtimeresolution = Number(this.realtimeresolution);
+                        parameters.storeresolution = Number(this.storeresolution);
                         parameters.realtimekeyframeinterval = this.realtimekeyframeinterval;
                         parameters.storekeyframeinterval = this.storekeyframeinterval;
                         parameters.realtimeframerate = this.realtimeframerate;
                         parameters.realtimeframebitrate = this.realtimeframebitrate;
                         parameters.storeframebitrate = this.storeframebitrate;
+                        parameters.usingaudio = Number(this.usingaudio);
+
+                        var options = ['dateandtime','carnum','channel','latlon','recorderspeed','gpsspeed','drivingtime'];
+                        var videoCheckboxGroup = this.videoCheckboxGroup;
+                        var url = myUrls.setAudioVideoParameters_Sync() , me = this;
+                        options.forEach(function (item) { 
+                            if(videoCheckboxGroup.indexOf(item)!=-1){
+                                parameters[item] = true;
+                            }else{
+                                parameters[item] = false;
+                            }  
+                        })
+                        parameters.deviceid = deviceid;
+                        utils.sendAjax(url,parameters,function (resp) { 
+                            console.log('resp', resp);
+                            if(resp.status === 0){
+                                me.$Message.success("成功");
+                            }else if(resp.status === 1){
+
+                            }else if(resp.status === 2){
+
+                            }else if(resp.status === 3){
+
+                            }else if(resp.status === 4){
+
+                            }else if(resp.status === 5){
+
+                            }else if(resp.status === 6){
+
+                            }else if(resp.status === 6){
+
+                            }else if(resp.status === 7){
+
+                            }else if(resp.status === 8){
+                                me.$Message.error("超时");
+                            }
+                        })
                     }else{
                         this.$Message.error("请填写全部参数")
                     }
+                    
                 },
                 queryVideoProperty:function(){
                     this.Spin = true;
@@ -814,7 +851,6 @@
                     }
 
                     that.queryVideosPlayUrl(function (data) { 
-                        console.log('data', data);
                         that.initApp(); 
                     });
 
