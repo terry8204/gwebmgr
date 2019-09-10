@@ -66,7 +66,7 @@
 <body>
     <div id="container">
         <Spin fix style="z-index:9999;" v-show="Spin">查询中,请稍后...</Spin> 
-        <Layout style="height:100%;">
+        <Layout class="full">
             <i-Header>
                 <Row style="height: 100%;">   
                     <i-Col span="12" style="height: 100%;color: #ffffff">
@@ -74,13 +74,13 @@
                     </i-Col>
                 </Row> 
             </i-Header>
-            <Layout>
+            <Layout class="full">
                 <Sider hide-trigger width="300" style="background-color:#ffffff;padding:10px;">
                     <div class="full">
                        1212
                     </div>
                 </Sider>
-                <i-Content>
+                <i-Content class="full">
                         <Layout class="full">
                             <Layout class="full">
                                 <i-Header style="background-color: #eee;height:45px;line-height:45px;padding: 0 10px;">
@@ -445,10 +445,10 @@
                 queryClientParameters:function(){
                     var url = myUrls.queryClientParameters() , me = this;
                     utils.sendAjax(url,{deviceid:deviceid},function (data) { 
-                        if(data.status === 0){
+                        if(data.status === 6){
                             var videoCheckboxGroup = [];
                             var audiovideoparameters = data.audiovideoparameters;
-                            me.realtimebitratemode = audiovideoparameters.realtimebitratemode +''; realtimebitratemode
+                            me.realtimebitratemode = audiovideoparameters.realtimebitratemode +''; 
                             me.storebitratemode = audiovideoparameters.storebitratemode+'';
                             me.realtimeresolution = audiovideoparameters.realtimeresolution+'';
                             me.storeresolution = audiovideoparameters.storeresolution+'';
@@ -467,6 +467,8 @@
                             audiovideoparameters.latlon ? videoCheckboxGroup.push('latlon') : null;
                             me.videoCheckboxGroup = videoCheckboxGroup;
                             console.log('audiovideoparameters', audiovideoparameters);     
+                        }else{
+                            me.$Message.error("查询失败");
                         }
                     });
                 },
@@ -474,20 +476,28 @@
                     var url = myUrls.setAudioVideoParameters_Sync();
                     var parameters = {};
                     if(
-                        !this.realtimebitratemode &&
-                        !this.storebitratemode &&
-                        !this.realtimeresolution &&
-                        !this.storeresolution &&
-                        !this.realtimekeyframeinterval &&
-                        !this.storekeyframeinterval &&
-                        !this.realtimeframerate &&
-                        !this.realtimeframebitrate &&
-                        !this.storeframebitrate &&
-                        this.usingaudio === '' 
+                        this.realtimebitratemode &&
+                        this.storebitratemode &&
+                        this.realtimeresolution &&
+                        this.storeresolution &&
+                        this.realtimekeyframeinterval &&
+                        this.storekeyframeinterval &&
+                        this.realtimeframerate &&
+                        this.realtimeframebitrate &&
+                        this.storeframebitrate &&
+                        this.usingaudio !== '' 
                     ){
-
+                        parameters.realtimebitratemode = this.realtimebitratemode;
+                        parameters.storebitratemode = this.storebitratemode;
+                        parameters.realtimeresolution = this.realtimeresolution;
+                        parameters.storeresolution = this.storeresolution;
+                        parameters.realtimekeyframeinterval = this.realtimekeyframeinterval;
+                        parameters.storekeyframeinterval = this.storekeyframeinterval;
+                        parameters.realtimeframerate = this.realtimeframerate;
+                        parameters.realtimeframebitrate = this.realtimeframebitrate;
+                        parameters.storeframebitrate = this.storeframebitrate;
                     }else{
-                        
+                        this.$Message.error("请填写全部参数")
                     }
                 },
                 queryVideoProperty:function(){
