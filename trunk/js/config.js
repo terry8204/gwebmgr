@@ -412,7 +412,10 @@ var myUrls = {
     return this.host + 'webapi?action=queryvideosplayurl&token=' + token;
   },
   queryClientParameters: function () {
-    return this.host + 'webapi?action=queryclientparameters_sync&token=' + token;
+    return this.host + 'webapi?action=queryaudiovideoparameters_sync&token=' + token;
+  },
+  setAudioVideoParameters_Sync: function () {
+    return this.host + 'webapi?action=setaudiovideoparameters_sync&token=' + token;
   },
 }
 
