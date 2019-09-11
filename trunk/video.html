@@ -58,6 +58,9 @@
             border-color: threedface;
             border-image: initial;
         }
+        #videoContent .vjs-picture-in-picture-control{
+            display: none;
+        }
     </style>
     <link href="./videojs/video-js.css" rel="stylesheet">
     <script src="./videojs/video.js"></script>
@@ -417,10 +420,10 @@
                     height:0
                 },
                 videoProperty:{},
-                setupModal:true,
+                setupModal:false,
                 videoPropertyModal:false,
                 isFullScreen:false,
-                videoNumber:16,
+                videoNumber:4,
                 videoIns:[],
                 Spin:false,
                 allPlayUrls:[],
@@ -509,7 +512,6 @@
                         })
                         parameters.deviceid = deviceid;
                         utils.sendAjax(url,parameters,function (resp) { 
-                            console.log('resp', resp);
                             if(resp.status === 0){
                                 me.$Message.success("成功");
                             }else if(resp.status === 1){
@@ -710,13 +712,19 @@
                             var singleheight = height/3;
                             for(var i = 0 ; i < 6;i++){
                                 var player =  this.videoIns[i];
-                                if(i === 0){
-                                    player.width(singlewidth*2);
-                                    player.height(singleheight*2);  
-                                } else {
-                                    player.width(singlewidth);
-                                    player.height(singleheight);   
-                                }
+                                (function poll(player,i) { 
+                                    try {
+                                        if(i === 0){
+                                            player.width(singlewidth*2);
+                                            player.height(singleheight*2);  
+                                        } else {
+                                            player.width(singlewidth);
+                                            player.height(singleheight);   
+                                        } 
+                                    } catch (error) {
+                                        setTimeout(poll, 300);
+                                    }
+                                })(player,i)
                             }
                             break;
                         case 8:
@@ -755,6 +763,7 @@
                         autoplay: false ,
                         preload:false,
                         controlBar: {
+                            remainingTimeDisplay:false,
                             progressControl: false,
                             liveDisplay: true,
                         },
@@ -777,21 +786,7 @@
                             self.handleStopVideos(index);
                             delete self.videoTimes['videoPlayer'+(index)];
                         });
-                        // this.on('loadeddata',function () { 
-                        //     console.log('loadeddata', '')
-                        // });
-                        // this.on('canplaythrough',function () { 
-                        //     console.log('canplaythrough', '')
-                        // });
-                        // this.on('waiting',function () { 
-                        //     console.log('waiting', '')
-                        // });
-                        // this.on('ended',function () { 
-                        //     console.log('ended', '')
-                        // });
-    
                     });
-
                     this.videoIns.push(player);
                 },
                 initApp:function(){
@@ -820,8 +815,7 @@
                         var nowTime = Date.now();
                         var oldTime = this.videoTimes[key];
                         if(oldTime){
-                            console.log('nowTime - oldTime', nowTime - oldTime)
-                            if((nowTime - oldTime) > 1000*60){
+                            if((nowTime - oldTime) > 1000*60*5){
                                 var player = videoIns[i];
                                 player.pause();
                                 delete this.videoTimes[key];
