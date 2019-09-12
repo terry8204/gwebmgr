@@ -355,7 +355,29 @@
                                                                 </i-Col>
                                                             </Row>
                                                         </Tab-Pane>
-                                                        <Tab-Pane label="标签二" name="name2">标签二的内容</Tab-Pane>
+                                                        <Tab-Pane label="视频播放参数" name="name2">
+                                                            <Row style="height:32px;margin: 10px 0;">
+                                                                <i-Col span="5" style="height: 100%;line-height:32px;text-align: center;">
+                                                                    播放帧率 :
+                                                                </i-Col>
+                                                                <i-Col span="12" style="height: 100%;line-height:32px;">
+                                                                    <i-input v-model="videoplayframerate" style="width:300px"></i-input>
+                                                                    帧/秒
+                                                                </i-Col>
+                                
+                                                            </Row>
+                                                            <Row style="height:32px;margin: 10px 0;">
+                                                                <i-Col span="5" style="height: 100%;line-height:32px;text-align: center;">
+                                                                    传输模式 :
+                                                                </i-Col>
+                                                                <i-Col span="12" style="height: 100%;line-height:32px;">
+                                                                    <i-select placement="top" v-model="videotranstype" style="width:300px">
+                                                                        <i-option value="0">TCP</i-option>
+                                                                        <i-option value="1">UTP</i-option>
+                                                                    </i-select>
+                                                                </i-Col>
+                                                            </Row>
+                                                        </Tab-Pane>
                                                     </Tabs>
                                                     <div slot="footer" style="padding:10px;"></div>
                                                 </Modal>     
@@ -438,6 +460,10 @@
                 storeframebitrate:'',
                 videoCheckboxGroup:[],
                 usingaudio:'',
+
+                // 视频播放参数
+                videoplayframerate:'',
+                videotranstype:'',
 
             },
             methods: {
@@ -799,6 +825,17 @@
                         this.stopVideoPlayer();
                     },5000);
                 },
+                queryDeviceById:function(){
+                    var url = myUrls.queryDeviceById() , that = this;
+                    utils.sendAjax(url,{deviceid:deviceid},function (data) { 
+                        console.log('data.videoplayframerate', data.videoplayframerate)
+                        console.log('data.videotranstype', data.videotranstype)
+                        if(data.status == 0){
+                            that.videoplayframerate = data.videoplayframerate ;
+                            that.videotranstype = data.videotranstype + '';
+                        }else{}
+                    })
+                }
             },
             computed:{
                videoContentCls:function(){
@@ -840,6 +877,8 @@
                     that.checkVideoPlayerTime();
 
                     that.queryVideosPlayUrl(function (data) {});
+
+                    that.queryDeviceById();
                 });
 
             },
