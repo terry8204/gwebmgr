@@ -123,9 +123,9 @@
                        1212
                     </div>
                 </Sider>
-                <i-Content class="full">
-                        <Layout class="full">
-                                <i-Header style="background-color: #eee;height:45px;line-height:45px;padding: 0 10px;">
+                <i-Content class="full" style="position: relative;">
+                  
+                                <div style="background-color: #eee;height:45px;line-height:45px;padding: 0 10px; position: absolute;left: 0;right: 0;top: 0;">
                                     <Row style="height: 100%;">   
                                         <i-Col span="12" style="height: 100%;color: #ffffff">
                                             <i-button type="primary" @click="handleStartAllVideos" size="small">开始</i-button>
@@ -404,18 +404,19 @@
                                             <span @click="setupModal=true"><i class="icon icon_num9"></i></span>
                                         </i-Col>
                                     </Row> 
-                                </i-Header>
-                                <i-Content style="height:100%;padding: 10px;">
-                                    <div class="full" style="position: relative;">
+                                </div>
+                                <div style="position: absolute;left: 0;right: 0;top: 45px;bottom: 0;padding: 10px">
+                                    <div class="full">
                                         <div :class="videoContentCls" id="videoContent" ref="videoContent" class="full">
                                             <!-- <div v-for="(item , index) in videoNumber" :key="index">
                                                 <video :id="'video'+index" class="video-js" controls poster="" >  
                                             </div> -->
                                         </div>                                 
                                     </div>
-                                </i-Content>
+                                </div>    
+                         
 
-                        </Layout>
+                        
                 </i-Content>
             </Layout>   
         </Layout>   
