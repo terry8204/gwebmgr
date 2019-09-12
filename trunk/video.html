@@ -414,9 +414,6 @@
                                         </div>                                 
                                     </div>
                                 </div>    
-                         
-
-                        
                 </div>
             </Layout>   
         </Layout>   
@@ -716,27 +713,21 @@
                 },
                 openAndCloseVideoWindows:function(toOpensIndex){
 
-                    var oldVal = this.videoNumber;
-                    var newVal = toOpensIndex;
                     this.videoNumber = toOpensIndex;
                     document.getElementById('videoContent').className = 'videoContent-' + this.videoNumber;     
 
-                    // setTimeout(()=>{
-                        for(var i = 0 ; i < toOpensIndex; i++){
-                            var player = this.videoIns[i];
-                            if(player){
-                                var wrapper = document.getElementById('videoContent').children[i]; 
-                                !player.src && player.src(this.allPlayUrls[i].playurl);
-                                player.height($(wrapper).height());
-                                player.width($(wrapper).width());
-                                console.log('height',$(wrapper).height())
-                                console.log('width',$(wrapper).width())
-                            }else{
-                                console.log('i', i);
-                                this.initVideo(i);
-                            }
+                    for(var i = 0 ; i < toOpensIndex; i++){
+                        var player = this.videoIns[i];
+                        if(player){
+                            var wrapper = document.getElementById('videoContent').children[i]; 
+                            !player.src && player.src(this.allPlayUrls[i].playurl);
+                            player.height($(wrapper).height());
+                            player.width($(wrapper).width());
+                        }else{
+                            this.initVideo(i);
                         }
-                    // },100)
+                    }
+
               
                 },
                 createVideoElement:function(index){
