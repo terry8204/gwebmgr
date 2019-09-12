@@ -377,6 +377,11 @@
                                                                     </i-select>
                                                                 </i-Col>
                                                             </Row>
+                                                            <Row style="height:32px;margin: 10px 0;">
+                                                                <i-Col span="17" style="height: 100%;line-height:32px;text-align: center;">
+                                                                    <i-button type='primary' @click='handleSetPlayParamter'>设置播放视频参数</i-button>
+                                                                </i-Col>
+                                                            </Row>
                                                         </Tab-Pane>
                                                     </Tabs>
                                                     <div slot="footer" style="padding:10px;"></div>
@@ -723,6 +728,8 @@
                                 !player.src && player.src(this.allPlayUrls[i].playurl);
                                 player.height($(wrapper).height());
                                 player.width($(wrapper).width());
+                                console.log('height',$(wrapper).height())
+                                console.log('width',$(wrapper).width())
                             }else{
                                 console.log('i', i);
                                 this.initVideo(i);
@@ -828,13 +835,34 @@
                 queryDeviceById:function(){
                     var url = myUrls.queryDeviceById() , that = this;
                     utils.sendAjax(url,{deviceid:deviceid},function (data) { 
-                        console.log('data.videoplayframerate', data.videoplayframerate)
-                        console.log('data.videotranstype', data.videotranstype)
                         if(data.status == 0){
-                            that.videoplayframerate = data.videoplayframerate ;
-                            that.videotranstype = data.videotranstype + '';
+                            that.videoplayframerate = data.device.videoplayframerate ;
+                            that.videotranstype = data.device.videotranstype + '';
                         }else{}
                     })
+                },
+                handleSetPlayParamter:function(){
+                    var url = myUrls.setVideoPlayParameters() , that = this;
+                    if(!isNaN(this.videoplayframerate) && Number(this.videoplayframerate) >= 0){
+                        var data = {
+                            deviceid:deviceid,
+                            videoplayframerate:Number(this.videoplayframerate),
+                            videotranstype:Number(this.videotranstype),
+                        }
+
+                        utils.sendAjax(url,data,function (data) { 
+
+                            if(data.status === 0){
+                                that.$Message.success('设置成功')
+                            }else{
+                                that.$Message.error('设置失败')
+                            }
+
+                        })
+
+                    }else{
+                        that.$Message.error('请正确填写帧率')
+                    }
                 }
             },
             computed:{

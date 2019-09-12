@@ -417,6 +417,9 @@ var myUrls = {
   setAudioVideoParameters_Sync: function () {
     return this.host + 'webapi?action=setaudiovideoparameters_sync&token=' + token;
   },
+  setVideoPlayParameters: function () {
+    return this.host + 'webapi?action=setvideoplayparameters&token=' + token;
+  }
 }
 
 
