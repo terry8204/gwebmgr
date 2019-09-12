@@ -11,15 +11,16 @@
 <body>  
 
   <h1>直播测试</h1>  
- <video id="my-video" class="video-js" controls preload="auto" width="640" height="264" poster="" >  
+ <video id="my-video" class="video-js" controls preload="auto" poster="" >  
    <script>
     videojs.options.flash.swf = "./video-js.5.4.2.swf";
     var options = { 
+
     sources: [
     //   { 
     //     src: '', //rtmp://58.200.131.2:1935/livetv/hunantv
-    //     type: 'rtmp/flv'
-    // }] ,
+    //     type: 'rtmp/flv'}
+  ] ,
     techOrder: ['html5','flash']
     };
     var player = videojs("#my-video",options);

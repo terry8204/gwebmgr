@@ -31,12 +31,13 @@
             overflow: hidden;
             position: absolute;
             left: 0px;
-            right:  10px;
+            right:  0px;
             top:  0px;
-            bottom:  10px;
+            bottom:  0px;
         }
         #videoContent > div{
             float: left;
+            overflow: hidden;
         }
         .layui-elem-field {
             margin-bottom: 10px;
@@ -61,10 +62,49 @@
         #videoContent .vjs-picture-in-picture-control{
             display: none;
         }
+
+        .videoContent-1>div:first-child{
+            width: 100%;
+            height: 100%;
+        }
+        .videoContent-4>div{
+            width: 50%;
+            height: 50%;
+        }
+
+        .videoContent-6>div:first-child{
+            width: 66.66%;
+            height: 66.655%;
+        }
+        .videoContent-6>div{
+            width: 33.33%;
+            height: 33.33333% ;
+        }
+
+        .videoContent-8>div:first-child{
+            width: 75%;
+            height: 75%;
+        }
+        .videoContent-8>div{
+            width: 25%;
+            height: 25%;
+        }
+
+        .videoContent-9>div{
+            width: 33.33%;
+            height: 33.33%;
+        }
+
+        .videoContent-16>div{
+            width: 25%;
+            height: 25%;
+        }
+
     </style>
     <link href="./videojs/video-js.css" rel="stylesheet">
     <script src="./videojs/video.js"></script>
     <script src="./videojs/videojs-flash.min.js"></script>
+
 </head>
 <body>
     <div id="container">
@@ -340,55 +380,10 @@
                                 </i-Header>
                                 <i-Content style="height:100%;padding: 10px;">
                                     <div class="full" style="position: relative;">
-                                        <div class="full" id="videoContent" ref="videoContent">
-                                            <div>
-                                                <video id="video0" class="video-js" controls poster="" >  
-                                            </div>
-                                            <div>
-                                                <video id="video1" class="video-js" controls poster="" >  
-                                            </div>
-                                            <div>
-                                                <video id="video2" class="video-js" controls poster="" >  
-                                            </div>
-                                            <div>
-                                                <video id="video3" class="video-js" controls poster="" >  
-                                            </div>
-                                            <div>
-                                                <video id="video4" class="video-js" controls poster="" >  
-                                            </div>
-                                            <div>
-                                                <video id="video5" class="video-js" controls poster="" >  
-                                            </div>
-                                            <div>
-                                                <video id="video6" class="video-js" controls poster="" >  
-                                            </div>
-                                            <div>
-                                                <video id="video7" class="video-js" controls poster="" >  
-                                            </div>
-                                            <div>
-                                                <video id="video8" class="video-js" controls poster="" >  
-                                            </div>
-                                            <div>
-                                                <video id="video9" class="video-js" controls poster="" >  
-                                            </div>
-                                            <div>
-                                                <video id="video10" class="video-js" controls poster="" >  
-                                            </div>
-                                            <div>
-                                                <video id="video11" class="video-js" controls poster="" >  
-                                            </div>
-                                            <div>
-                                                <video id="video12" class="video-js" controls poster="" >  
-                                            </div>
-                                            <div>
-                                                <video id="video13" class="video-js" controls poster="" >  
-                                            </div>
-                                            <div>
-                                                <video id="video14" class="video-js" controls poster="" >  
-                                            </div>
-                                            <div>
-                                                <video id="video15" class="video-js" controls poster="" >  
-                                            </div>
+                                        <div :class="videoContentCls" id="videoContent" ref="videoContent" class="full">
+                                            <!-- <div v-for="(item , index) in videoNumber" :key="index">
+                                                <video :id="'video'+index" class="video-js" controls poster="" >  
+                                            </div> -->
                                         </div>                                 
                                     </div>
                                 </i-Content>
@@ -419,12 +414,13 @@
                     width:0,
                     height:0
                 },
+
                 videoProperty:{},
                 setupModal:false,
                 videoPropertyModal:false,
                 isFullScreen:false,
                 videoNumber:4,
-                videoIns:[],
+                videoIns:{}, // videojs 实例
                 Spin:false,
                 allPlayUrls:[],
                 videoTimes:{},
@@ -441,7 +437,8 @@
                 realtimeframebitrate:'',
                 storeframebitrate:'',
                 videoCheckboxGroup:[],
-                usingaudio:''
+                usingaudio:'',
+
             },
             methods: {
                 queryClientParameters:function(){
@@ -667,6 +664,7 @@
                     this.isFullScreen = false;
                 },
                 displayAndHideVideos:function(toOpensIndex){
+                    var wrapper = document.getElementById('videoContent').children;  
                     for(var i = 0 ; i < 16 ;i++){
                         var player =this.videoIns[i];
                         if(i < toOpensIndex)
@@ -675,133 +673,106 @@
                             // {
                             //     player.play();
                             // }
+                            // wrapper[i].style.display = 'block';
                         }
                         else
                         {
-                            player.pause();
-                            
+                            player && player.pause();
+                            // wrapper[i].style.display = 'none';
                         }                         
                     }
                 },
                 openAndCloseVideoWindows:function(toOpensIndex){
-                    this.videoNumber = toOpensIndex;
-                    this.resizeVideoWindows(toOpensIndex);
-                },
-                resizeVideoWindows:function(count){
-                    var width = this.videoContentWH.width;
-                    var height = this.videoContentWH.height;
-                    this.displayAndHideVideos(count);
 
-                    switch(count)
-                    {
-                        case 1:
-                            var player = this.videoIns[0];
-                            player.width(width);
-                            player.height(height);
-                            break;
-                        case 4:
-                            for(var i = 0 ; i < 4;i++){
-                                var player = this.videoIns[i];
-                                //player.stopTrackingCurrentTime();
-                                player.width(width/2);
-                                player.height(height/2);    
+                    var oldVal = this.videoNumber;
+                    var newVal = toOpensIndex;
+                    this.videoNumber = toOpensIndex;
+                    document.getElementById('videoContent').className = 'videoContent-' + this.videoNumber;     
+
+                    // setTimeout(()=>{
+                        for(var i = 0 ; i < toOpensIndex; i++){
+                            var player = this.videoIns[i];
+                            if(player){
+                                var wrapper = document.getElementById('videoContent').children[i]; 
+                                !player.src && player.src(this.allPlayUrls[i].playurl);
+                                player.height($(wrapper).height());
+                                player.width($(wrapper).width());
+                            }else{
+                                console.log('i', i);
+                                this.initVideo(i);
                             }
-                            break;
-                        case 6:
-                            var singlewidth = width/3;
-                            var singleheight = height/3;
-                            for(var i = 0 ; i < 6;i++){
-                                var player =  this.videoIns[i];
-                                (function poll(player,i) { 
-                                    try {
-                                        if(i === 0){
-                                            player.width(singlewidth*2);
-                                            player.height(singleheight*2);  
-                                        } else {
-                                            player.width(singlewidth);
-                                            player.height(singleheight);   
-                                        } 
-                                    } catch (error) {
-                                        setTimeout(poll, 300);
-                                    }
-                                })(player,i)
-                            }
-                            break;
-                        case 8:
-                            var singlewidth = width/4;
-                            var singleheight = height/4;
-                            for(var i = 0 ; i < 8;i++){
-                                var player =  this.videoIns[i];
-                                if(i === 0){
-                                    player.width(singlewidth*3);
-                                    player.height(singleheight*3);  
-                                } else {
-                                    player.width(singlewidth);
-                                    player.height(singleheight);   
-                                }
-                            }
-                            break;
-                        case 9: 
-                            for(var i = 0 ; i < 9;i++){
-                                var player =  this.videoIns[i];
-                                player.width(width/3);
-                                player.height(height/3);    
-                            }
-                        break;
-                        case 16:
-                            for(var i = 0 ; i < 16;i++){
-                                var player =  this.videoIns[i];
-                                player.width(width/4);
-                                player.height(height/4);    
-                            }
-                        break;
                         }
+                    // },100)
+              
+                },
+                createVideoElement:function(index){
+                    var div = document.createElement('div');
+                    var videoEl = document.createElement('video');
+                        videoEl.setAttribute( 'id' , 'video' + index );
+                        videoEl.setAttribute( 'controls' , 'true' );
+                        videoEl.setAttribute( 'poster' , '');
+                        videoEl.className ="video-js";
+                        div.appendChild(videoEl);
+                        document.getElementById('videoContent').appendChild(div);
                 },
                 initVideo:function(index){
-                    var self = this;
-                    var player = videojs('video'+index , {
-                        autoplay: false ,
-                        preload:false,
-                        controlBar: {
-                            remainingTimeDisplay:false,
-                            progressControl: false,
-                            liveDisplay: true,
-                        },
-                        techOrder: ['html5','flash'],
-                        sources: [
-                                { 
-                                    // src: 'rtmp://58.200.131.2:1935/livetv/hunantv',
-                                    src:this.allPlayUrls[index].playurl,
-                                    type: 'rtmp/flv'
-                                }
-                            ],
-                    },function(){
-                        this.on('play',function () { 
-                            document.getElementsByClassName('vjs-big-play-button')[index].style.display = 'none';
-                            self.handleStartVideos(index);
-                            self.videoTimes['videoPlayer'+(index)] = Date.now();
+                        var self = this;
+                        this.createVideoElement(index);
+                        var wrapper = document.getElementById('videoContent').children[index]; 
+
+                        var player = videojs('video'+index , {
+                            autoplay: false ,
+                            preload:false,
+                            height:$(wrapper).height(),
+                            width:$(wrapper).width(),
+                            controlBar: {
+                                remainingTimeDisplay:false,
+                                progressControl: false,
+                                liveDisplay: true,
+                            },
+                            techOrder: ['html5','flash'],
+                            sources: [
+                                    // { 
+                                        // src: 'rtmp://58.200.131.2:1935/livetv/hunantv',
+                                        // src:this.allPlayUrls[index].playurl,
+                                        // type: 'rtmp/flv'
+                                    // }
+                                ],
+                        },function(){
+                            this.on('play',function () { 
+                                document.getElementsByClassName('vjs-big-play-button')[index].style.display = 'none';
+                                self.handleStartVideos(index);
+                                self.videoTimes['videoPlayer'+(index)] = Date.now();
+                            });
+                            this.on('pause',function () { 
+                                document.getElementsByClassName('vjs-big-play-button')[index].style.display = 'block';
+                                self.handleStopVideos(index);
+                                delete self.videoTimes['videoPlayer'+(index)];
+                            });
+                            // this.src(self.allPlayUrls[index].playurl);
+                            // console.log('type', this.type)
                         });
-                        this.on('pause',function () { 
-                            document.getElementsByClassName('vjs-big-play-button')[index].style.display = 'block';
-                            self.handleStopVideos(index);
-                            delete self.videoTimes['videoPlayer'+(index)];
-                        });
-                    });
-                    this.videoIns.push(player);
+                        this.videoIns[index] = player;
                 },
                 initApp:function(){
                     var videoContent = this.$refs.videoContent;
                     this.videoContentWH = videoContent.getBoundingClientRect();
-                    for(var i = 0 ; i < 16 ; i++){
+                    for(var i = 0 ; i < this.videoNumber ; i++){
                         this.initVideo(i);
                     }
-                    this.resizeVideoWindows(this.videoNumber);
+
+
                 },
                 queryVideosPlayUrl:function(callback){
                     var url = myUrls.queryVideosPlayUrl() ,me = this;
                     utils.sendAjax(url,{deviceid:deviceid},function (data) { 
                         if(data.status === 0){
                             me.allPlayUrls = data.records;
+                            me.allPlayUrls.forEach(function (item,index) { 
+                                if(index<me.videoNumber){
+                                    me.videoIns[index].src(item.playurl);
+                                }
+                            })
                             callback(data)
                         }else if(data.status === 3){
 
@@ -830,25 +801,45 @@
                 },
             },
             computed:{
-               
+               videoContentCls:function(){
+                   return {
+                    //    'videoContent-1':this.videoNumber === 1,
+                    //    'videoContent-4':this.videoNumber === 4,
+                    //    'videoContent-6':this.videoNumber === 6,
+                    //    'videoContent-8':this.videoNumber === 8,
+                    //    'videoContent-9':this.videoNumber === 9,
+                    //    'videoContent-16':this.videoNumber === 16,
+                    //    'full':true
+                   }
+               }
             },
             watch: {
+                // videoNumber:function(newVal,oldVal){
+                    
+                // }
             },
             mounted :function() {
                 var that = this; 
-                videojs.options.flash.swf = "./videojs/video-js.5.4.2.swf";
+                // videojs.options.flash.swf = "./videojs/video-js.5.4.2.swf";
                 this.$nextTick(function(){ 
-                  
+                    document.getElementById('videoContent').className = 'videoContent-4';
+                    that.initApp(); 
+                    
                     window.onresize = function (){
-                        that.videoContentWH = that.$refs.videoContent.getBoundingClientRect();
-                        that.resizeVideoWindows(that.videoNumber);
+                        for(var i = 0 ; i < that.videoNumber; i++){
+                            var player = that.videoIns[i];
+                            if(player){
+                                var wrapper = document.getElementById('videoContent').children[i]; 
+                                !player.src && player.src(that.allPlayUrls[i].playurl);
+                                player.height($(wrapper).height());
+                                player.width($(wrapper).width());
+                            }
+                        }
                     }
 
-                    that.queryVideosPlayUrl(function (data) { 
-                        that.initApp(); 
-                    });
-
                     that.checkVideoPlayerTime();
+
+                    that.queryVideosPlayUrl(function (data) {});
                 });
 
             },
