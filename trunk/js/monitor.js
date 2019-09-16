@@ -276,9 +276,7 @@ var monitor = {
 
                     break;
                 case 'video':
-                    // Cookies.set('video-deviceid', this.currentDeviceId);
-                    // Cookies.set('token', token);
-                    window.open("video.html?deviceid=" + this.currentDeviceId + "&token=" + token);
+                    window.open("video.html?deviceid=" + this.currentDeviceId + "&token=" + token + '&name=' + this.deviceInfos[this.currentDeviceId].devicename);
                     break;
             }
         },

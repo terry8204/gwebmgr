@@ -166,3 +166,36 @@ i{
 	display:inline-block;
 	background:url(images/icon_s.png) -217px -52px no-repeat;
 	}*/
+#box_viewSize,#box_stop{
+	position: relative;
+}
+
+.tc_box{
+	width:100px;
+	background-color:#fff;
+	border:#d6d6d6 solid 1px;
+	line-height:18px;
+	text-align:center;
+	position:absolute;
+	top:20px;
+	left:0px;
+	display:none;
+	z-index:999;
+	text-align:left;
+	box-shadow:rgba(0,0,0,0.1) 0px 2px 4px;
+	list-style: none;
+}
+.tc_box li a{
+	padding:5px 10px;
+	display:block;
+	}
+.tc_box li a:hover{
+	display:block;
+	background-color:#0b8ae8;
+	color:#fff;
+	text-decoration: none;
+}
+
+#box_viewSize:hover .tc_box ,#box_stop:hover .tc_box  {
+	display: block;
+}
