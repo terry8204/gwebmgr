@@ -56,9 +56,7 @@
             </div>
             <div class="site_links">
                 <ul>
-                    <li>
-                        {{$t("header.hello")}}! {{name}}
-                    </li>
+                    <li style="padding-right:8px;">{{name}}</li>
                     <li style="padding:0" v-if="userType < 3">|</li>
                     <li v-if="userType < 3">  
                         <span  @click="jumpMessageHtml"><Icon type="ios-text" style="margin-right:3px"></Icon>{{$t("alarm.message")}}</span>
