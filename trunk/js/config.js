@@ -400,7 +400,7 @@ var myUrls = {
     return this.host + 'webapi?action=sendsystemmsg&token=' + token;
   },
   startVideos: function () {
-    return this.host + 'webapi?action=startvideos&token=' + token;
+    return this.host + 'webapi?action=startvideos_sync&token=' + token;
   },
   stopVideos: function () {
     return this.host + 'webapi?action=stopvideos&token=' + token;
@@ -438,3 +438,15 @@ var ws = null; // webSocket
  * 普通监控员 xiaoxu      123456
  * 设备账号   13128804768 123456  
  */
+
+
+var CMD_SEND_RESULT_UNKONWN = -1;                  //未知错误
+var CMD_SEND_RESULT_UNCONFIRM = 0;                //发送成功，未收到确认
+var CMD_SEND_RESULT_PASSWORD_ERROR = 1;           //密码错误
+var CMD_SEND_RESULT_OFFLINE_NOT_CACHE = 2;        //设备离线，未缓存
+var CMD_SEND_RESULT_OFFLINE_CACHED = 3;           //设备离线，已缓存
+var CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD = 4;  //需要修改默认密码
+var CMD_SEND_RESULT_DETAIL_ERROR = 5;             //发送错误，需要显示具体cause内容
+var CMD_SEND_CONFIRMED = 6;                       //发送成功,并确认收到
+var CMD_SEND_OVER_RETRY_TIMES = 7;                //尝试发送3次失败
+var CMD_SEND_SYNC_TIMEOUT = 8;                    //同步消息发送后超过6秒没收到回应
