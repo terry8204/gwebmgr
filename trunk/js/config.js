@@ -419,7 +419,11 @@ var myUrls = {
   },
   setVideoPlayParameters: function () {
     return this.host + 'webapi?action=setvideoplayparameters&token=' + token;
-  }
+  },
+  querySingleAudioVideoParameters: function () {
+    return this.host + 'webapi?action=querysingleaudiovideoparameters_sync&token=' + token;
+  },
+
 }
 
 
