@@ -138,7 +138,7 @@
                                 <i-button type="success" @click="handleStopAllVideos" size="small">结束</i-button> -->
                                 <!-- <i-button type="success" @click="handleFullScreen" size="small">全屏显示</i-button> -->
                                 <!-- <i-button type="success" @click="queryVideoProperty" size="small">参数查询</i-button> -->
-                                <Modal v-model="videoPropertyModal" width="500">
+                                <!-- <Modal v-model="videoPropertyModal" width="500">
                                         <p slot="header" style="color:#f60;text-align:center">
                                             <Icon type="ios-create-outline"></Icon>
                                             <span>视频参数</span>
@@ -208,7 +208,7 @@
                                         <div slot="footer">
                                             <i-button type="primary"  @click="videoPropertyModal=false" style="width: 100%">确定</i-button>
                                         </div>
-                                    </Modal> 
+                                    </Modal>  -->
                                     <Modal v-model="setupModal" width="800">
                                         <Tabs value="" :animated="false">
                                             <Tab-Pane label="音视频参数" name="videoSetup">
@@ -401,20 +401,15 @@
                                                 </Row>
                                             </Tab-Pane>
                                             <Tab-Pane label="单独通道视频参数" name="aloneVideoSetup">
+                                                <i-button type="info" @click="querySingleAudioVideoParameters" style="width:180px;margin-bottom:10px;">查询</i-button>
                                                 <Tabs value="" :animated="false" type="card">
-                                                    <Tab-Pane label="音视频参数" name="videoSetup">
-                                                            <Row style="height:32px;margin: 10px 0;">
-                                                                <i-Col span="24" style="height: 100%;line-height:32px;text-align: right;">
-                                                                    <i-button type="info" @click="queryClientParameters">查询</i-button>
-                                                                    <i-button type="primary" @click="setClientParameters">发送</i-button>
-                                                                </i-Col>
-                                                            </Row>   
+                                                    <Tab-Pane :label="item.channelnum" v-for="(item,index) in channelsData" :key="index">  
                                                             <Row style="height:32px;margin: 10px 0;">
                                                                 <i-Col span="5" style="height: 100%;line-height:32px;text-align: center;">
                                                                     实时流编码模式 :
                                                                 </i-Col>
                                                                 <i-Col span="7" style="height: 100%;line-height:32px;">
-                                                                    <i-select v-model="realtimebitratemode">
+                                                                    <i-select v-model="item.realtimebitratemode">
                                                                         <i-option value="0">CBR(固定码率)</i-option>
                                                                         <i-option value="1">VBR(可变码率)</i-option>
                                                                         <i-option value="2">ABR(平均码率)</i-option>
@@ -424,7 +419,7 @@
                                                                     存储流编码模式 :
                                                                 </i-Col>
                                                                 <i-Col span="7" style="height: 100%;line-height:32px;">
-                                                                    <i-select v-model="storebitratemode">
+                                                                    <i-select v-model="item.storebitratemode">
                                                                         <i-option value="0">CBR(固定码率)</i-option>
                                                                         <i-option value="1">VBR(可变码率)</i-option>
                                                                         <i-option value="2">ABR(平均码率)</i-option>
@@ -436,7 +431,7 @@
                                                                     实时流分辨率 :
                                                                 </i-Col>
                                                                 <i-Col span="7" style="height: 100%;line-height:32px;">
-                                                                    <i-select v-model="realtimeresolution">
+                                                                    <i-select v-model="item.realtimeresolution">
                                                                         <i-option value="0">QCIF</i-option>
                                                                         <i-option value="1">CIF</i-option>
                                                                         <i-option value="2">WCIF</i-option>
@@ -450,7 +445,7 @@
                                                                     存储流分辨率 :
                                                                 </i-Col>
                                                                 <i-Col span="7" style="height: 100%;line-height:32px;">
-                                                                    <i-select v-model="storeresolution">
+                                                                    <i-select v-model="item.storeresolution">
                                                                         <i-option value="0">QCIF</i-option>
                                                                         <i-option value="1">CIF</i-option>
                                                                         <i-option value="2">WCIF</i-option>
@@ -466,14 +461,14 @@
                                                                     实时流关键帧间隔 :
                                                                 </i-Col>
                                                                 <i-Col span="7" style="height: 100%;line-height:32px;">
-                                                                    <Input-Number :max="1000" :min="1" v-model="realtimekeyframeinterval"></Input-Number>
+                                                                    <Input-Number :max="1000" :min="1" v-model="item.realtimekeyframeinterval"></Input-Number>
                                                                     范围1~1000
                                                                 </i-Col>
                                                                 <i-Col span="5" style="height: 100%;line-height:32px;text-align: center;">
                                                                     存储流关键帧间隔 :
                                                                 </i-Col>
                                                                 <i-Col span="7" style="height: 100%;line-height:32px;">
-                                                                    <Input-Number :max="1000" :min="1" v-model="storekeyframeinterval"></Input-Number>
+                                                                    <Input-Number :max="1000" :min="1" v-model="item.storekeyframeinterval"></Input-Number>
                                                                     范围1~1000
                                                                 </i-Col>
                                                             </Row>   
@@ -482,14 +477,14 @@
                                                                     实时流目标帧率 :
                                                                 </i-Col>
                                                                 <i-Col span="7" style="height: 100%;line-height:32px;">
-                                                                    <Input-Number :max="120" :min="1" v-model="realtimeframerate"></Input-Number>
+                                                                    <Input-Number :max="120" :min="1" v-model="item.realtimeframerate"></Input-Number>
                                                                     范围1~120 帧/秒
                                                                 </i-Col>
                                                                 <i-Col span="5" style="height: 100%;line-height:32px;text-align: center;">
                                                                     存储流目标帧率 :
                                                                 </i-Col>
                                                                 <i-Col span="7" style="height: 100%;line-height:32px;">
-                                                                    <Input-Number :max="120" :min="1" v-model="storeframerate"></Input-Number>
+                                                                    <Input-Number :max="120" :min="1" v-model="item.storeframerate"></Input-Number>
                                                                     范围1~120 帧/秒
                                                                 </i-Col>
                                                             </Row>   
@@ -498,14 +493,14 @@
                                                                     实时流目标码率 :
                                                                 </i-Col>
                                                                 <i-Col span="7" style="height: 100%;line-height:32px;">
-                                                                    <Input-Number :max="1000" :min="1" v-model="realtimeframebitrate"></Input-Number>
+                                                                    <Input-Number :max="1000" :min="1" v-model="item.realtimeframebitrate"></Input-Number>
                                                                     kbps
                                                                 </i-Col>
                                                                 <i-Col span="5" style="height: 100%;line-height:32px;text-align: center;">
                                                                     存储流目标码率 :
                                                                 </i-Col>
                                                                 <i-Col span="7" style="height: 100%;line-height:32px;">
-                                                                    <Input-Number :max="1000" :min="1" v-model="storeframebitrate"></Input-Number>
+                                                                    <Input-Number :max="1000" :min="1" v-model="item.storeframebitrate"></Input-Number>
                                                                     kbps
                                                                 </i-Col>
                                                             </Row> 
@@ -514,7 +509,7 @@
                                                                 <legend style="margin-left:20px;">OSD 字幕叠加设置</legend>
                                                                 <Row style="height:32px;margin: 10px 0;">
                                                                     <i-Col span="24" style="height: 100%;line-height:32px;">
-                                                                        <checkbox-group v-model="videoCheckboxGroup">
+                                                                        <checkbox-group v-model="item.videoCheckboxGroup">
                                                                             <Checkbox label="dateandtime">
                                                                                 <span>日期和时间</span>
                                                                             </Checkbox>
@@ -541,16 +536,10 @@
                                                                 </Row> 
                                                             </fieldset>
                                                             <Row style="height:32px;margin: 10px 0;">
-                                                                <i-Col span="5" style="height: 100%;line-height:32px;text-align: center;">
-                                                                    是否启用音频输出 :
+                                                                <i-Col span="24" style="height: 100%;line-height:32px;text-align: center;">
+                                                                    <i-button style="width:200px;" type="primary" @click="setSingleAudioVideoParameters(index)">发送</i-button>
                                                                 </i-Col>
-                                                                <i-Col span="7" style="height: 100%;line-height:32px;">
-                                                                    <i-select placement="top" v-model="usingaudio">
-                                                                        <i-option value="1">启用</i-option>
-                                                                        <i-option value="0">不启用</i-option>
-                                                                    </i-select>
-                                                                </i-Col>
-                                                            </Row>
+                                                            </Row> 
                                                         </Tab-Pane>
                                                 </Tabs>
                                             </Tab-Pane>
@@ -656,6 +645,9 @@
                 videoplayframerate:'',
                 videotranstype:'',
                 videostreamtype:'',
+
+                // channelnum
+                channelsData:[],
 
             },
             methods: {
@@ -1173,10 +1165,112 @@
                     }
                 },
                 querySingleAudioVideoParameters:function(){
-                    var url = myUrls.querySingleAudioVideoParameters();
+                    var url = myUrls.querySingleAudioVideoParameters() , me = this;
                     utils.sendAjax(url,{deviceid:deviceid},function (data) { 
                         console.log('data', data);
+                        if(data.status === 6){
+
+                          
+                            var audiovideoparameters = data.audiovideoparameters;
+                            var channelsData = [];
+                            audiovideoparameters.forEach(function (item,index) { 
+                                var dataInfo = {
+                                    channelnum:'通道'+(++index),
+                                };
+                                var videoCheckboxGroup = [];
+                                dataInfo.realtimebitratemode = item.realtimebitratemode +''; 
+                                dataInfo.storebitratemode = item.storebitratemode+'';
+                                dataInfo.realtimeresolution = item.realtimeresolution+'';
+                                dataInfo.storeresolution = item.storeresolution+'';
+                                dataInfo.realtimekeyframeinterval = item.realtimekeyframeinterval;
+                                dataInfo.storekeyframeinterval = item.storekeyframeinterval;
+                                dataInfo.realtimeframerate = item.realtimeframerate;
+                                dataInfo.storeframerate = item.storeframerate;
+                                dataInfo.realtimeframebitrate = item.realtimeframebitrate;
+                                dataInfo.storeframebitrate = item.storeframebitrate;
+    
+                                item.carnum ? videoCheckboxGroup.push('carnum') : null;
+                                item.channel ? videoCheckboxGroup.push('channel') : null;
+                                item.dateandtime ? videoCheckboxGroup.push('dateandtime') : null;
+                                item.drivingtime ? videoCheckboxGroup.push('drivingtime') : null;
+                                item.gpsspeed ? videoCheckboxGroup.push('gpsspeed') : null;
+                                item.latlon ? videoCheckboxGroup.push('latlon') : null;
+                                dataInfo.videoCheckboxGroup = videoCheckboxGroup;
+                                
+                                channelsData.push(dataInfo);
+
+                                
+                            });
+                            console.log('channelsData', channelsData);
+                            me.channelsData = channelsData;
+
+                        }else{
+                            me.$Message.error("查询失败");
+                        }
                     });
+                },
+                setSingleAudioVideoParameters:function(index){
+                    var originalData = this.channelsData[index];
+                    var parameters = {};
+                    if(
+                        originalData.realtimebitratemode &&
+                        originalData.storebitratemode &&
+                        originalData.realtimeresolution &&
+                        originalData.storeresolution &&
+                        originalData.realtimekeyframeinterval &&
+                        originalData.storekeyframeinterval &&
+                        originalData.realtimeframerate &&
+                        originalData.realtimeframebitrate &&
+                        originalData.storeframebitrate 
+                    ){
+                    
+                        parameters.realtimebitratemode = Number(originalData.realtimebitratemode);
+                        parameters.storebitratemode = Number(originalData.storebitratemode);
+                        parameters.realtimeresolution = Number(originalData.realtimeresolution);
+                        parameters.storeresolution = Number(originalData.storeresolution);
+                        parameters.realtimekeyframeinterval = originalData.realtimekeyframeinterval;
+                        parameters.storekeyframeinterval = originalData.storekeyframeinterval;
+                        parameters.realtimeframerate = originalData.realtimeframerate;
+                        parameters.realtimeframebitrate = originalData.realtimeframebitrate;
+                        parameters.storeframebitrate = originalData.storeframebitrate;
+
+
+                        var options = ['dateandtime','carnum','channel','latlon','recorderspeed','gpsspeed','drivingtime'];
+                        var videoCheckboxGroup = originalData.videoCheckboxGroup;
+                        var url = myUrls.setSingleAudioVideoParameters() , me = this;
+                        options.forEach(function (item) { 
+                            if(videoCheckboxGroup.indexOf(item)!=-1){
+                                parameters[item] = true;
+                            }else{
+                                parameters[item] = false;
+                            }  
+                        })
+                        parameters.deviceid = deviceid;
+                        parameters.channelnum = index; 
+                        console.log('parameters', parameters);
+                        utils.sendAjax(url,parameters,function (data) { 
+                            var status = data.status;
+                            if(status == CMD_SEND_RESULT_UNCONFIRM){
+                                me.$Message.error('发送成功，未收到确认'); 
+                            }else if(status === CMD_SEND_RESULT_PASSWORD_ERROR){
+                                me.$Message.error('密码错误');
+                            }else if(status === CMD_SEND_RESULT_OFFLINE_NOT_CACHE){
+                                me.$Message.error("设备离线，未缓存");   
+                            }else if(status === CMD_SEND_RESULT_OFFLINE_CACHED){
+                                me.$Message.error("设备离线，已缓存");
+                            }else if(status === CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD){
+                                me.$Message.error("需要修改默认密码");
+                            }else if(status === CMD_SEND_RESULT_DETAIL_ERROR){
+                                me.$Message.error("错误:" + resp.cause);
+                            }else if(status === CMD_SEND_CONFIRMED){
+                                me.$Message.success("发送成功");
+                            }else if(status === CMD_SEND_OVER_RETRY_TIMES){
+                                me.$Message.error("尝试发送3次失败");
+                            }else if(status === CMD_SEND_SYNC_TIMEOUT){
+                                me.$Message.error("发送超时");
+                            }
+                        })
+                    }
                 }
             },
             computed:{
@@ -1191,11 +1285,6 @@
                     //    'full':true
                    }
                }
-            },
-            watch: {
-                // videoNumber:function(newVal,oldVal){
-                    
-                // }
             },
             mounted :function() {
                 var that = this; 
@@ -1224,7 +1313,7 @@
     
                     that.queryDeviceById();
 
-                    that.querySingleAudioVideoParameters();
+                    // that.querySingleAudioVideoParameters();
 
                 });
 
