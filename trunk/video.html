@@ -411,26 +411,25 @@
                                 <span><i class="icon icon_num4" @click="openAndCloseVideoWindows(8)"></i></span>
                                 <span><i class="icon icon_num5" @click="openAndCloseVideoWindows(9)"></i></span>
                                 <span><i class="icon icon_num6" @click="openAndCloseVideoWindows(16)"></i></span>
-                                <span id="box_viewSize">
-                                    <i class="icon icon_view"></i><i class="icon icon_xl"></i>
-                                    <ul class="tc_box">
+                                <span id="box_viewSize" @click="handleFullScreen">
+                                    <i class="icon icon_view" title="全屏"></i><i class="icon icon_xl"></i>
+                                    <!-- <ul class="tc_box">
                                         <li id="liViewFull" @click="handleScreenSize(1)"><a id="viewFull">
                                             <i v-show="viewSize == 1" class="icon_select"></i>满画面显示</a></li>
                                         <li id="liView4X3" @click="handleScreenSize(2)"><a id="view4X3">
                                             <i class="icon_select" v-show="viewSize == 2"></i>4:3显示</a></li>
                                         <li id="liView16X9" @click="handleScreenSize(3)"><a id="view16X9">
                                             <i class="icon_select" v-show="viewSize == 3"></i>16:9显示</a></li>
-                                    </ul>
+                                    </ul> -->
                                 </span>
                                 <span  @click="handlePlayAllVideos">
                                     <i class="icon icon_play_all" title="播放所有视频"></i>
                                 </span>
-                                <span id="box_stop">
-                                    <i class="icon icon_close_show"></i><i class="icon icon_xl"></i>
-                                    <ul class="tc_box">
+                                <span id="box_stop" @click="handleStopAllVideos">
+                                    <i class="icon icon_close_show" title="停止所有视频"></i><i class="icon icon_xl"></i>
+                                    <!-- <ul class="tc_box">
                                         <li @click="handleStopAllVideos"><a id="stopAll" ><i class="icon icon_gou"></i>停止所有视频</a></li>
-                                        <li><a @click="handleFullScreen"><i class="icon icon_gou"></i>全屏</a></li>
-                                    </ul>
+                                    </ul> -->
                                 </span>
                                 <span @click="setupModal=true"><i class="icon icon_num9"></i></span>
                             </i-Col>
