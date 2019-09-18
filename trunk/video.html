@@ -1245,10 +1245,10 @@
                                 parameters[item] = false;
                             }  
                         })
-                        parameters.deviceid = deviceid;
-                        parameters.channelnum = index; 
-                        console.log('parameters', parameters);
-                        utils.sendAjax(url,parameters,function (data) { 
+                        // parameters.deviceid = deviceid;
+                        parameters.channelnum = ++index; 
+   
+                        utils.sendAjax(url,{deviceid:deviceid,parameters:[parameters]},function (data) {  
                             var status = data.status;
                             if(status == CMD_SEND_RESULT_UNCONFIRM){
                                 me.$Message.error('发送成功，未收到确认'); 
