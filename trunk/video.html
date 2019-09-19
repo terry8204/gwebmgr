@@ -685,9 +685,24 @@
                 queryClientParameters:function(){
                     var url = myUrls.queryClientParameters() , me = this;
                     utils.sendAjax(url,{deviceid:deviceid},function (data) { 
-                        if(data.status === 6){
+                        var status = data.status ;
+                        var audiovideoparameters = data.audiovideoparameters;
+
+                        if(status == CMD_SEND_RESULT_UNCONFIRM){
+                            me.$Message.error('发送成功，未收到确认'); 
+                        }else if(status === CMD_SEND_RESULT_PASSWORD_ERROR){
+                            me.$Message.error('密码错误');
+                        }else if(status === CMD_SEND_RESULT_OFFLINE_NOT_CACHE){
+                            me.$Message.error("设备离线，未缓存");   
+                        }else if(status === CMD_SEND_RESULT_OFFLINE_CACHED){
+                            me.$Message.error("设备离线，已缓存");
+                        }else if(status === CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD){
+                            me.$Message.error("需要修改默认密码");
+                        }else if(status === CMD_SEND_RESULT_DETAIL_ERROR){
+                            me.$Message.error("错误:" + resp.cause);
+                        }else if(status === CMD_SEND_CONFIRMED){
+                            me.$Message.success("查询成功!");
                             var videoCheckboxGroup = [];
-                            var audiovideoparameters = data.audiovideoparameters;
                             me.realtimebitratemode = audiovideoparameters.realtimebitratemode +''; 
                             me.storebitratemode = audiovideoparameters.storebitratemode+'';
                             me.realtimeresolution = audiovideoparameters.realtimeresolution+'';
@@ -705,10 +720,13 @@
                             audiovideoparameters.drivingtime ? videoCheckboxGroup.push('drivingtime') : null;
                             audiovideoparameters.gpsspeed ? videoCheckboxGroup.push('gpsspeed') : null;
                             audiovideoparameters.latlon ? videoCheckboxGroup.push('latlon') : null;
+                            audiovideoparameters.recorderspeed ? videoCheckboxGroup.push('recorderspeed') : null;
                             me.videoCheckboxGroup = videoCheckboxGroup;
-                            console.log('audiovideoparameters', audiovideoparameters);     
-                        }else{
-                            me.$Message.error("查询失败");
+
+                        }else if(status === CMD_SEND_OVER_RETRY_TIMES){
+                            me.$Message.error("尝试发送3次失败");
+                        }else if(status === CMD_SEND_SYNC_TIMEOUT){
+                            me.$Message.error("发送超时");
                         }
                     });
                 },
@@ -750,26 +768,25 @@
                         })
                         parameters.deviceid = deviceid;
                         utils.sendAjax(url,parameters,function (resp) { 
-                            if(resp.status === 0){
-                                me.$Message.success("成功");
-                            }else if(resp.status === 1){
-
-                            }else if(resp.status === 2){
-
-                            }else if(resp.status === 3){
-
-                            }else if(resp.status === 4){
-
-                            }else if(resp.status === 5){
-
-                            }else if(resp.status === 6){
-
-                            }else if(resp.status === 6){
-
-                            }else if(resp.status === 7){
-
-                            }else if(resp.status === 8){
-                                me.$Message.error("超时");
+                            var status = resp.status;
+                            if(status == CMD_SEND_RESULT_UNCONFIRM){
+                                me.$Message.error('发送成功，未收到确认'); 
+                            }else if(status === CMD_SEND_RESULT_PASSWORD_ERROR){
+                                me.$Message.error('密码错误');
+                            }else if(status === CMD_SEND_RESULT_OFFLINE_NOT_CACHE){
+                                me.$Message.error("设备离线，未缓存");   
+                            }else if(status === CMD_SEND_RESULT_OFFLINE_CACHED){
+                                me.$Message.error("设备离线，已缓存");
+                            }else if(status === CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD){
+                                me.$Message.error("需要修改默认密码");
+                            }else if(status === CMD_SEND_RESULT_DETAIL_ERROR){
+                                me.$Message.error("错误:" + resp.cause);
+                            }else if(status === CMD_SEND_CONFIRMED){
+                                me.$Message.success("发送成功");
+                            }else if(status === CMD_SEND_OVER_RETRY_TIMES){
+                                me.$Message.error("尝试发送3次失败");
+                            }else if(status === CMD_SEND_SYNC_TIMEOUT){
+                                me.$Message.error("发送超时");
                             }
                         })
                     }else{
