@@ -124,9 +124,147 @@
         <Layout class="full" style="position: relative;">
                 <Sider hide-trigger width="300" style="background-color:#ffffff;">
                     <div class="full" style="position: relative;">
-                       <div class="device-info-wrapper">
-                           设备序号:{{deviceid}}
-                           设备名称:{{devName}}
+                       <div class="device-info-wrapper" v-text="devInfo">
+                        
+                       </div>
+                       <div>
+                        <Tabs value="" :animated="false">
+                            <Tab-Pane label="云台">
+                                <div id="tab_state_1" class="tab_state_pane">
+                                    <div class="state_1_yt" style="margin-left:15px">
+                                        <div class="fl icon_yt_box">
+                                            <a class="icon_yt_0" title=""></a>
+                                            <a class="icon_yt_1" title=""></a>
+                                            <a class="icon_yt_2" title=""></a>
+                                            <a class="icon_yt_3" title=""></a>
+                                            <a class="icon_yt_4" title=""></a>
+                                            <a class="icon_yt_5" title=""></a>
+                                            <a class="icon_yt_6" title=""></a>
+                                            <a class="icon_yt_7" title=""></a>
+                                            <a class="icon_yt_8" title=""></a>
+                                            <div id="yt_handle" class="yt" style="margin:3px;">
+                                                <Slider></Slider>
+                                            </div>
+                                        </div>
+                                        <div class="fr yt_state2">
+                                            <span>
+                                                <a class="icon_f0_0" title=""></a>
+                                                <a class="icon_f0_1" title=""></a>
+                                            </span>
+                                            <span>
+                                                <a class="icon_y0_0" title=""></a>
+                                                <a class="icon_y0_1" title=""></a>
+                                            </span>
+                                            <span>
+                                                <a class="icon_k0_0" title=""></a>
+                                                <a class="icon_k0_1" title=""></a>
+                                            </span>
+                                            <span>
+                                                <a class="icon_light0_0" title=""></a>
+                                                <a class="icon_biao0_1" title=""></a>
+                                            </span>
+                                        </div>
+                                        <div class="spacer"></div>
+                                    </div>
+                                    <div class="yt_footer">
+                                        <Row>
+                                            <i-Col span="6" style="padding: 0 5px;">
+                                                <Input-Number :max="1000" :min="1" style="width:60px;"></Input-Number>
+                                            </i-Col>
+                                            <i-Col span="6" style="padding: 0 5px;">
+                                                <i-button style="width:100%;">调用</i-button>
+                                            </i-Col>
+                                            <i-Col span="6" style="padding: 0 5px;">
+                                                <i-button style="width:100%;">设置</i-button>
+                                            </i-Col>
+                                            <i-Col span="6" style="padding: 0 5px;">
+                                                <i-button style="width:100%;">删除</i-button>
+                                            </i-Col>
+                                        </Row>
+                                    </div>
+                                </div>
+                            </Tab-Pane>      
+                            <Tab-Pane label="色彩">
+                                <Row class="state_color">
+                                    <i-Col span="6" style="line-height:35px;">
+                                        <i class="state_co_0"></i>
+                                    </i-Col>
+                                    <i-Col span="12">
+                                        <Slider></Slider>
+                                    </i-Col>
+                                    <i-Col span="6" class="state_co_value" style="line-height:35px;height: 35px;">
+                                        <input value="128" name="" type="text" disabled>
+                                    </i-Col>
+                                </Row>
+                                <Row class="state_color">
+                                    <i-Col span="6" style="line-height:35px;">
+                                        <i class="state_co_1"></i>
+                                    </i-Col>
+                                    <i-Col span="12">
+                                        <Slider></Slider>
+                                    </i-Col>
+                                    <i-Col span="6" class="state_co_value" style="line-height:35px;height: 35px;">
+                                        <input value="128" name="" type="text" disabled>
+                                    </i-Col>
+                                </Row>
+                                <Row class="state_color">
+                                    <i-Col span="6" style="line-height:35px;">
+                                        <i class="state_co_2"></i>
+                                    </i-Col>
+                                    <i-Col span="12">
+                                        <Slider></Slider>
+                                    </i-Col>
+                                    <i-Col span="6" class="state_co_value" style="line-height:35px;height: 35px;">
+                                        <input value="128" name="" type="text" disabled>
+                                    </i-Col>
+                                </Row>
+                                <Row class="state_color">
+                                    <i-Col span="6" style="line-height:35px;">
+                                        <i class="state_co_3"></i>
+                                    </i-Col>
+                                    <i-Col span="12">
+                                        <Slider></Slider>
+                                    </i-Col>
+                                    <i-Col span="6" class="state_co_value" style="line-height:35px;height: 35px;">
+                                        <input value="128" name="" type="text" disabled>
+                                    </i-Col>
+                                </Row>
+                                <Row class="state_color">
+                                    <i-Col span="6" style="line-height:35px;">
+                                        <i class="state_co_4"></i>
+                                    </i-Col>
+                                    <i-Col span="12">
+                                        <Slider></Slider>
+                                    </i-Col>
+                                    <i-Col span="6" class="state_co_value" style="line-height:35px;height: 35px;">
+                                        <input value="128" name="" type="text" disabled>
+                                    </i-Col>
+                                </Row>
+                                <div class="yt_footer">
+                                    <i-button style="width:120px;">默认</i-button>
+                                </div>
+                            </Tab-Pane>      
+                            <Tab-Pane label="语音">
+                                <div class="listing_choice">
+                                    <Radio-Group v-model="listingChoice">
+                                        <Radio label="duijiang"><span>对讲</span></Radio>
+                                        <Radio label="jianting"><span>监听</span></Radio>
+                                    </Radio-Group>
+                                </div>
+                                <div class="listing_box" v-if="listingChoice == 'duijiang'">
+                                    <i class="icon_dj"></i>
+                                    <div class="yt_footer">
+                                        <i-button style="width:120px;">开启</i-button>
+                                    </div>
+                                </div>
+                                <div class="listing_box" v-else>
+                                    <i class="icon_jt"></i>
+                                    <div class="yt_footer">
+                                            <i-button style="width:120px;">开启</i-button>
+                                    </div>
+                                </div>
+                            </Tab-Pane>      
+                        </Tabs>
                        </div>
                     </div>
                 </Sider>
@@ -615,8 +753,7 @@
                     width:0,
                     height:0
                 },
-                deviceid:deviceid,
-                devName:devName,
+                devInfo:'',
                 videoProperty:{},
                 setupModal:false,
                 videoPropertyModal:false,
@@ -648,6 +785,10 @@
 
                 // channelnum
                 channelsData:[],
+
+                //云台
+                isShowYunTai:false,
+                listingChoice:'duijiang'
 
             },
             methods: {
@@ -1224,10 +1365,7 @@
                                 item.recorderspeed ? videoCheckboxGroup.push('recorderspeed') : null;
                                 dataInfo.videoCheckboxGroup = videoCheckboxGroup;
                                 channelsData.push(dataInfo);
-
-                                
                             });
-                            console.log('channelsData', channelsData);
                             me.channelsData = channelsData;
 
                         }else{
@@ -1320,7 +1458,7 @@
                     that.initApp(); 
                     
              
-
+                    that.devInfo = '设备序号:' + deviceid + ' 设备名称:' + devName;
                     window.onresize = function (){
                         for(var i = 0 ; i < that.videoNumber; i++){
                             var player = that.videoIns[i];
