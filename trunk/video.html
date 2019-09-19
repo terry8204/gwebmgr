@@ -1117,7 +1117,7 @@
                         var nowTime = Date.now();
                         var oldTime = this.videoTimes[key];
                         if(oldTime){
-                            if((nowTime - oldTime) > 1000*60*5){
+                            if((nowTime - oldTime) > 1000*60*3){
                                 var player = videoIns[i];
                                 player.pause();
                                 delete this.videoTimes[key];
@@ -1195,8 +1195,8 @@
                                 item.drivingtime ? videoCheckboxGroup.push('drivingtime') : null;
                                 item.gpsspeed ? videoCheckboxGroup.push('gpsspeed') : null;
                                 item.latlon ? videoCheckboxGroup.push('latlon') : null;
+                                item.recorderspeed ? videoCheckboxGroup.push('recorderspeed') : null;
                                 dataInfo.videoCheckboxGroup = videoCheckboxGroup;
-                                
                                 channelsData.push(dataInfo);
 
                                 
