@@ -808,7 +808,10 @@
                             me.$Message.success("全部开始成功")
                             for(var i = 0 ; i < me.videoIns.length;i++){
                                 var player = me.videoIns[i];
+                                if(player.paused())
+                                {
                                     player.play();
+                                }
                             }
                         }else if(status === 1){
                             me.$Message.error();
@@ -838,7 +841,9 @@
                     })
                     for(var key in this.videoIns){
                         var player = this.videoIns[key];
-                        var src = player.src();
+                        if(!player.paused())
+                        {
+                        	var src = player.src();
                             player.dispose();
                             var wrapper = document.getElementById('videoContent').children[key];  
                             var videoEl = document.createElement('video');
@@ -849,6 +854,7 @@
                             wrapper.appendChild(videoEl);
                             this.initVideo(key,false);
                             this.videoIns[key].src(src);
+                        }
                     }
 
 
@@ -914,6 +920,8 @@
 
                         if(isNeedRecreate)
                         {
+                            if(!player.paused())
+                            {
                             var src = player.src();
                             player.dispose();
                             var wrapper = document.getElementById('videoContent').children[index];  
@@ -925,6 +933,7 @@
                             wrapper.appendChild(videoEl);
                             me.initVideo(index,false);
                             me.videoIns[index].src(src);
+                            }
                         }
                     })
                 },
