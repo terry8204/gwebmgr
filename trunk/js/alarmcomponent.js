@@ -74,13 +74,17 @@ var waringComponent = {
         changeWrapperCls: function () {
             var type = this.isLargen;
             if (type === 0) {
+
                 this.wrapperWidth = 130;
                 this.wrapperHeight = 22;
+
             } else if (type === 1) {
+
                 this.wrapperWidth = 900;
                 this.wrapperHeight = 400;
 
             } else if (type === 2) {
+
                 var clientWidth = document.documentElement.clientWidth || document.body.clientWidth;
                 var clientHeight = document.documentElement.clientHeight || document.body.clientHeight;
                 if (clientWidth < 1300) {
@@ -91,8 +95,11 @@ var waringComponent = {
                 }
                 this.wrapperWidth = clientWidth - 295;
                 this.wrapperHeight = clientHeight - 65;
+
             }
+
             this.setWaringWraperStyle();
+
         },
         setWaringWraperStyle: function () {
             this.waringWraperStyle = { width: this.wrapperWidth + 'px', height: this.wrapperHeight + 'px' };
@@ -112,11 +119,11 @@ var waringComponent = {
             this.index = index
             switch (index) {
                 case 1:
-                    this.componentName = 'waringMsg';
-                    break
+                    this.componentName = 'waringMsg'
+                    break;
                 case 2:
-                    this.componentName = 'deviceMsg';
-                    break
+                    this.componentName = 'deviceMsg'
+                    break;
             }
         },
         queryWaringMsg: function () {
