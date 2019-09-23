@@ -120,7 +120,7 @@
 </head>
 <body>
     <div id="container">
-        <Spin fix style="z-index:9999;" v-show="Spin"><span v-text="tipStr"></span></Spin> 
+        <Spin fix style="z-index:9999;" v-show="Spin"></Spin> 
         <Layout class="full" style="position: relative;">
                 <Sider hide-trigger width="300" style="background-color:#ffffff;">
                     <div class="full" style="position: relative;">
@@ -272,418 +272,416 @@
                     <div style="background-color: #eee;height:45px;line-height:45px;padding: 0 10px; position: absolute;left: 0;right: 0;top: 0;">
                         <Row style="height: 100%;">   
                             <i-Col span="12" style="height: 100%;color: #ffffff">
-                                <!-- <i-button type="primary" @click="handleStartAllVideos" size="small">开始</i-button>
-                                <i-button type="success" @click="handleStopAllVideos" size="small">结束</i-button> -->
-                                <!-- <i-button type="success" @click="handleFullScreen" size="small">全屏显示</i-button> -->
-                                <!-- <i-button type="success" @click="queryVideoProperty" size="small">参数查询</i-button> -->
-                                <!-- <Modal v-model="videoPropertyModal" width="500">
-                                        <p slot="header" style="color:#f60;text-align:center">
-                                            <Icon type="ios-create-outline"></Icon>
-                                            <span>视频参数</span>
-                                        </p>
-                                        <div style="text-align:center">
-                                            <Row style="height:32px;">
-                                                <i-Col span="8" style="height: 100%;text-align:right;line-height:32px;">音频编码方式 : &nbsp;</i-Col>
-                                                <i-Col span="16" style="height: 100%;line-height:32px;">
-                                                    {{videoProperty.audiocodec}}
-                                                </i-Col>
-                                            </Row>
-                                            <Row style="height:32px;">
-                                                <i-Col span="8" style="height: 100%;text-align:right;line-height:32px;">音频编码方式字符 : &nbsp;</i-Col>
-                                                <i-Col span="16" style="height: 100%;line-height:32px;">
-                                                    {{videoProperty.audiocodecstr}}
-                                                </i-Col>
-                                            </Row>
-                                            <Row style="height:32px;">
-                                                <i-Col span="8" style="height: 100%;text-align:right;line-height:32px;">音频声道数 : &nbsp;</i-Col>
-                                                <i-Col span="16" style="height: 100%;line-height:32px;">
-                                                    {{videoProperty.audiosamplerate}}
-                                                </i-Col>
-                                            </Row>
-                                            <Row style="height:32px;">
-                                                <i-Col span="8" style="height: 100%;text-align:right;line-height:32px;">音频采样位数 : &nbsp;</i-Col>
-                                                <i-Col span="16" style="height: 100%;line-height:32px;">
-                                                    {{videoProperty.audiosamplebits}}
-                                                </i-Col>
-                                            </Row>
-                                            <Row style="height:32px;">
-                                                <i-Col span="8" style="height: 100%;text-align:right;line-height:32px;">音频帧长度 : &nbsp;</i-Col>
-                                                <i-Col span="16" style="height: 100%;line-height:32px;">
-                                                    {{videoProperty.audioframelength}}
-                                                </i-Col>
-                                            </Row>
-                                            <Row style="height:32px;">
-                                                <i-Col span="8" style="height: 100%;text-align:right;line-height:32px;">是否支持音频输出 : &nbsp;</i-Col>
-                                                <i-Col span="16" style="height: 100%;line-height:32px;">
-                                                    {{videoProperty.audiooutputsupport}}
-                                                </i-Col>
-                                            </Row>
-                                            <Row style="height:32px;">
-                                                <i-Col span="8" style="height: 100%;text-align:right;line-height:32px;">视频编码方式 : &nbsp;</i-Col>
-                                                <i-Col span="16" style="height: 100%;line-height:32px;">
-                                                    {{videoProperty.videocodec}}
-                                                </i-Col>
-                                            </Row>
-                                            <Row style="height:32px;">
-                                                <i-Col span="8" style="height: 100%;text-align:right;line-height:32px;">视频编码方式字符 : &nbsp;</i-Col>
-                                                <i-Col span="16" style="height: 100%;line-height:32px;">
-                                                    {{videoProperty.videocodecstr}}
-                                                </i-Col>
-                                            </Row>
-                                            <Row style="height:32px;">
-                                                <i-Col span="8" style="height: 100%;text-align:right;line-height:32px;">终端支持最大音频物理通道数 : &nbsp;</i-Col>
-                                                <i-Col span="16" style="height: 100%;line-height:32px;">
-                                                    {{videoProperty.audiomaxsupport}}
-                                                </i-Col>
-                                            </Row>
-                                            <Row style="height:32px;">
-                                                <i-Col span="8" style="height: 100%;text-align:right;line-height:32px;">终端支持最大视频物理通道数 : &nbsp;</i-Col>
-                                                <i-Col span="16" style="height: 100%;line-height:32px;">
-                                                    {{videoProperty.videomaxsupport}}
-                                                </i-Col>
-                                            </Row>
-                                        </div>
-                                        <div slot="footer">
-                                            <i-button type="primary"  @click="videoPropertyModal=false" style="width: 100%">确定</i-button>
-                                        </div>
-                                    </Modal>  -->
+          
                                     <Modal v-model="setupModal" width="800">
-                                        <Tabs value="" :animated="false">
-                                            <Tab-Pane label="音视频参数" name="videoSetup">
-                                                <Row style="height:32px;margin: 10px 0;">
-                                                    <i-Col span="24" style="height: 100%;line-height:32px;text-align: right;">
-                                                        <i-button type="info" @click="queryClientParameters">查询</i-button>
-                                                        <i-button type="primary" @click="setClientParameters">发送</i-button>
-                                                    </i-Col>
-                                                </Row>   
-                                                <Row style="height:32px;margin: 10px 0;">
-                                                    <i-Col span="5" style="height: 100%;line-height:32px;text-align: center;">
-                                                        实时流编码模式 :
-                                                    </i-Col>
-                                                    <i-Col span="7" style="height: 100%;line-height:32px;">
-                                                        <i-select v-model="realtimebitratemode">
-                                                            <i-option value="0">CBR(固定码率)</i-option>
-                                                            <i-option value="1">VBR(可变码率)</i-option>
-                                                            <i-option value="2">ABR(平均码率)</i-option>
-                                                        </i-select>
-                                                    </i-Col>
-                                                    <i-Col span="5" style="height: 100%;line-height:32px;text-align: center;">
-                                                        存储流编码模式 :
-                                                    </i-Col>
-                                                    <i-Col span="7" style="height: 100%;line-height:32px;">
-                                                        <i-select v-model="storebitratemode">
-                                                            <i-option value="0">CBR(固定码率)</i-option>
-                                                            <i-option value="1">VBR(可变码率)</i-option>
-                                                            <i-option value="2">ABR(平均码率)</i-option>
-                                                        </i-select>
-                                                    </i-Col>
-                                                </Row>   
-                                                <Row style="height:32px;margin: 10px 0;">
-                                                    <i-Col span="5" style="height: 100%;line-height:32px;text-align: center;">
-                                                        实时流分辨率 :
-                                                    </i-Col>
-                                                    <i-Col span="7" style="height: 100%;line-height:32px;">
-                                                        <i-select v-model="realtimeresolution">
-                                                            <i-option value="0">QCIF</i-option>
-                                                            <i-option value="1">CIF</i-option>
-                                                            <i-option value="2">WCIF</i-option>
-                                                            <i-option value="3">D1</i-option>
-                                                            <i-option value="4">WD1</i-option>
-                                                            <i-option value="5">720p</i-option>
-                                                            <i-option value="6">1080p</i-option>
-                                                        </i-select>
-                                                    </i-Col>
-                                                    <i-Col span="5" style="height: 100%;line-height:32px;text-align: center;">
-                                                        存储流分辨率 :
-                                                    </i-Col>
-                                                    <i-Col span="7" style="height: 100%;line-height:32px;">
-                                                        <i-select v-model="storeresolution">
-                                                            <i-option value="0">QCIF</i-option>
-                                                            <i-option value="1">CIF</i-option>
-                                                            <i-option value="2">WCIF</i-option>
-                                                            <i-option value="3">D1</i-option>
-                                                            <i-option value="4">WD1</i-option>
-                                                            <i-option value="5">720p</i-option>
-                                                            <i-option value="6">1080p</i-option>
-                                                        </i-select>
-                                                    </i-Col>
-                                                </Row>   
-                                                <Row style="height:32px;margin: 10px 0;">
-                                                    <i-Col span="5" style="height: 100%;line-height:32px;text-align: center;">
-                                                        实时流关键帧间隔 :
-                                                    </i-Col>
-                                                    <i-Col span="7" style="height: 100%;line-height:32px;">
-                                                        <Input-Number :max="1000" :min="1" v-model="realtimekeyframeinterval"></Input-Number>
-                                                        范围1~1000
-                                                    </i-Col>
-                                                    <i-Col span="5" style="height: 100%;line-height:32px;text-align: center;">
-                                                        存储流关键帧间隔 :
-                                                    </i-Col>
-                                                    <i-Col span="7" style="height: 100%;line-height:32px;">
-                                                        <Input-Number :max="1000" :min="1" v-model="storekeyframeinterval"></Input-Number>
-                                                        范围1~1000
-                                                    </i-Col>
-                                                </Row>   
-                                                <Row style="height:32px;margin: 10px 0;">
-                                                    <i-Col span="5" style="height: 100%;line-height:32px;text-align: center;">
-                                                        实时流目标帧率 :
-                                                    </i-Col>
-                                                    <i-Col span="7" style="height: 100%;line-height:32px;">
-                                                        <Input-Number :max="120" :min="1" v-model="realtimeframerate"></Input-Number>
-                                                        范围1~120 帧/秒
-                                                    </i-Col>
-                                                    <i-Col span="5" style="height: 100%;line-height:32px;text-align: center;">
-                                                        存储流目标帧率 :
-                                                    </i-Col>
-                                                    <i-Col span="7" style="height: 100%;line-height:32px;">
-                                                        <Input-Number :max="120" :min="1" v-model="storeframerate"></Input-Number>
-                                                        范围1~120 帧/秒
-                                                    </i-Col>
-                                                </Row>   
-                                                <Row style="height:32px;margin: 10px 0;">
-                                                    <i-Col span="5" style="height: 100%;line-height:32px;text-align: center;">
-                                                        实时流目标码率 :
-                                                    </i-Col>
-                                                    <i-Col span="7" style="height: 100%;line-height:32px;">
-                                                        <Input-Number :max="1000" :min="1" v-model="realtimeframebitrate"></Input-Number>
-                                                        kbps
-                                                    </i-Col>
-                                                    <i-Col span="5" style="height: 100%;line-height:32px;text-align: center;">
-                                                        存储流目标码率 :
-                                                    </i-Col>
-                                                    <i-Col span="7" style="height: 100%;line-height:32px;">
-                                                        <Input-Number :max="1000" :min="1" v-model="storeframebitrate"></Input-Number>
-                                                        kbps
-                                                    </i-Col>
-                                                </Row> 
-                                                <hr/>  
-                                                <fieldset class="layui-elem-field fieldset" style="margin-top:5px;padding-left: 10px;">
-                                                    <legend style="margin-left:20px;">OSD 字幕叠加设置</legend>
+                                            <p slot="header" style="color:#f60;text-align:center">
+                                                    <Icon type="ios-search-outline"></Icon>
+                                                    <span>视频参数</span> 
+                                            </p>
+                                            <Tabs value="" :animated="false">
+                                                <Tab-Pane label="音视频参数" name="videoSetup">
                                                     <Row style="height:32px;margin: 10px 0;">
-                                                        <i-Col span="24" style="height: 100%;line-height:32px;">
-                                                            <checkbox-group v-model="videoCheckboxGroup">
-                                                                <Checkbox label="dateandtime">
-                                                                    <span>日期和时间</span>
-                                                                </Checkbox>
-                                                                <Checkbox label="carnum">
-                                                                    <span>车牌号码</span>
-                                                                </Checkbox>
-                                                                <Checkbox label="channel">
-                                                                    <span>逻辑通道号</span>     
-                                                                </Checkbox>
-                                                                <Checkbox label="latlon">
-                                                                    <span>经纬度</span>   
-                                                                </Checkbox>
-                                                                <Checkbox label="recorderspeed">
-                                                                    <span>行驶记录速度</span>
-                                                                </Checkbox>
-                                                                <Checkbox label="gpsspeed">
-                                                                    <span>卫星定位速度</span>
-                                                                </Checkbox>
-                                                                <Checkbox label="drivingtime">
-                                                                    <span>连续驾驶时间</span>
-                                                                </Checkbox>
-                                                            </checkbox-group>
+                                                        <i-Col span="24" style="height: 100%;line-height:32px;text-align: right;">
+                                                            <i-button type="info" @click="queryClientParameters">查询</i-button>
+                                                            <i-button type="primary" @click="setClientParameters">发送</i-button>
+                                                        </i-Col>
+                                                    </Row>   
+                                                    <Row style="height:32px;margin: 10px 0;">
+                                                        <i-Col span="5" style="height: 100%;line-height:32px;text-align: center;">
+                                                            实时流编码模式 :
+                                                        </i-Col>
+                                                        <i-Col span="7" style="height: 100%;line-height:32px;">
+                                                            <i-select v-model="realtimebitratemode">
+                                                                <i-option value="0">CBR(固定码率)</i-option>
+                                                                <i-option value="1">VBR(可变码率)</i-option>
+                                                                <i-option value="2">ABR(平均码率)</i-option>
+                                                            </i-select>
+                                                        </i-Col>
+                                                        <i-Col span="5" style="height: 100%;line-height:32px;text-align: center;">
+                                                            存储流编码模式 :
+                                                        </i-Col>
+                                                        <i-Col span="7" style="height: 100%;line-height:32px;">
+                                                            <i-select v-model="storebitratemode">
+                                                                <i-option value="0">CBR(固定码率)</i-option>
+                                                                <i-option value="1">VBR(可变码率)</i-option>
+                                                                <i-option value="2">ABR(平均码率)</i-option>
+                                                            </i-select>
+                                                        </i-Col>
+                                                    </Row>   
+                                                    <Row style="height:32px;margin: 10px 0;">
+                                                        <i-Col span="5" style="height: 100%;line-height:32px;text-align: center;">
+                                                            实时流分辨率 :
+                                                        </i-Col>
+                                                        <i-Col span="7" style="height: 100%;line-height:32px;">
+                                                            <i-select v-model="realtimeresolution">
+                                                                <i-option value="0">QCIF</i-option>
+                                                                <i-option value="1">CIF</i-option>
+                                                                <i-option value="2">WCIF</i-option>
+                                                                <i-option value="3">D1</i-option>
+                                                                <i-option value="4">WD1</i-option>
+                                                                <i-option value="5">720p</i-option>
+                                                                <i-option value="6">1080p</i-option>
+                                                            </i-select>
+                                                        </i-Col>
+                                                        <i-Col span="5" style="height: 100%;line-height:32px;text-align: center;">
+                                                            存储流分辨率 :
+                                                        </i-Col>
+                                                        <i-Col span="7" style="height: 100%;line-height:32px;">
+                                                            <i-select v-model="storeresolution">
+                                                                <i-option value="0">QCIF</i-option>
+                                                                <i-option value="1">CIF</i-option>
+                                                                <i-option value="2">WCIF</i-option>
+                                                                <i-option value="3">D1</i-option>
+                                                                <i-option value="4">WD1</i-option>
+                                                                <i-option value="5">720p</i-option>
+                                                                <i-option value="6">1080p</i-option>
+                                                            </i-select>
+                                                        </i-Col>
+                                                    </Row>   
+                                                    <Row style="height:32px;margin: 10px 0;">
+                                                        <i-Col span="5" style="height: 100%;line-height:32px;text-align: center;">
+                                                            实时流关键帧间隔 :
+                                                        </i-Col>
+                                                        <i-Col span="7" style="height: 100%;line-height:32px;">
+                                                            <Input-Number :max="1000" :min="1" v-model="realtimekeyframeinterval"></Input-Number>
+                                                            范围1~1000
+                                                        </i-Col>
+                                                        <i-Col span="5" style="height: 100%;line-height:32px;text-align: center;">
+                                                            存储流关键帧间隔 :
+                                                        </i-Col>
+                                                        <i-Col span="7" style="height: 100%;line-height:32px;">
+                                                            <Input-Number :max="1000" :min="1" v-model="storekeyframeinterval"></Input-Number>
+                                                            范围1~1000
+                                                        </i-Col>
+                                                    </Row>   
+                                                    <Row style="height:32px;margin: 10px 0;">
+                                                        <i-Col span="5" style="height: 100%;line-height:32px;text-align: center;">
+                                                            实时流目标帧率 :
+                                                        </i-Col>
+                                                        <i-Col span="7" style="height: 100%;line-height:32px;">
+                                                            <Input-Number :max="120" :min="1" v-model="realtimeframerate"></Input-Number>
+                                                            范围1~120 帧/秒
+                                                        </i-Col>
+                                                        <i-Col span="5" style="height: 100%;line-height:32px;text-align: center;">
+                                                            存储流目标帧率 :
+                                                        </i-Col>
+                                                        <i-Col span="7" style="height: 100%;line-height:32px;">
+                                                            <Input-Number :max="120" :min="1" v-model="storeframerate"></Input-Number>
+                                                            范围1~120 帧/秒
+                                                        </i-Col>
+                                                    </Row>   
+                                                    <Row style="height:32px;margin: 10px 0;">
+                                                        <i-Col span="5" style="height: 100%;line-height:32px;text-align: center;">
+                                                            实时流目标码率 :
+                                                        </i-Col>
+                                                        <i-Col span="7" style="height: 100%;line-height:32px;">
+                                                            <Input-Number :max="1000" :min="1" v-model="realtimeframebitrate"></Input-Number>
+                                                            kbps
+                                                        </i-Col>
+                                                        <i-Col span="5" style="height: 100%;line-height:32px;text-align: center;">
+                                                            存储流目标码率 :
+                                                        </i-Col>
+                                                        <i-Col span="7" style="height: 100%;line-height:32px;">
+                                                            <Input-Number :max="1000" :min="1" v-model="storeframebitrate"></Input-Number>
+                                                            kbps
                                                         </i-Col>
                                                     </Row> 
-                                                </fieldset>
-                                                <Row style="height:32px;margin: 10px 0;">
-                                                    <i-Col span="5" style="height: 100%;line-height:32px;text-align: center;">
-                                                        是否启用音频输出 :
-                                                    </i-Col>
-                                                    <i-Col span="7" style="height: 100%;line-height:32px;">
-                                                        <i-select placement="top" v-model="usingaudio">
-                                                            <i-option value="1">启用</i-option>
-                                                            <i-option value="0">不启用</i-option>
-                                                        </i-select>
-                                                    </i-Col>
-                                                </Row>
-                                            </Tab-Pane>
-                                            <Tab-Pane label="视频播放参数" name="videoPlay">
-                                                <Row style="height:32px;margin: 10px 0;">
-                                                    <i-Col span="5" style="height: 100%;line-height:32px;text-align: center;">
-                                                        播放帧率 :
-                                                    </i-Col>
-                                                    <i-Col span="12" style="height: 100%;line-height:32px;">
-                                                        <i-input v-model="videoplayframerate" style="width:300px"></i-input>
-                                                        帧/秒
-                                                    </i-Col>
-                    
-                                                </Row>
-                                                <Row style="height:32px;margin: 10px 0;">
-                                                    <i-Col span="5" style="height: 100%;line-height:32px;text-align: center;">
-                                                        传输模式 :
-                                                    </i-Col>
-                                                    <i-Col span="12" style="height: 100%;line-height:32px;">
-                                                        <i-select v-model="videotranstype" style="width:300px">
-                                                            <i-option value="0">TCP</i-option>
-                                                            <i-option value="1">UDP</i-option>
-                                                        </i-select>
-                                                    </i-Col>
-                                                </Row>
-                                                <Row style="height:32px;margin: 10px 0;">
-                                                    <i-Col span="5" style="height: 100%;line-height:32px;text-align: center;">
-                                                        实时性 :
-                                                    </i-Col>
-                                                    <i-Col span="12" style="height: 100%;line-height:32px;">
-                                                        <i-select placement="top" v-model="videostreamtype" style="width:300px">
-                                                            <i-option value="0">一般</i-option>
-                                                            <i-option value="1">好</i-option>
-                                                        </i-select>
-                                                    </i-Col>
-                                                </Row>
-                                                <Row style="height:32px;margin: 10px 0;">
-                                                    <i-Col span="17" style="height: 100%;line-height:32px;text-align: center;">
-                                                        <i-button type='primary' @click='handleSetPlayParamter'>设置播放视频参数</i-button>
-                                                    </i-Col>
-                                                </Row>
-                                            </Tab-Pane>
-                                            <Tab-Pane label="单独通道视频参数" name="aloneVideoSetup">
-                                                <i-button type="info" @click="querySingleAudioVideoParameters" style="width:180px;margin-bottom:10px;">查询</i-button>
-                                                <Tabs value="" :animated="false" type="card">
-                                                    <Tab-Pane :label="item.channelnum" v-for="(item,index) in channelsData" :key="index">  
-                                                            <Row style="height:32px;margin: 10px 0;">
-                                                                <i-Col span="5" style="height: 100%;line-height:32px;text-align: center;">
-                                                                    实时流编码模式 :
-                                                                </i-Col>
-                                                                <i-Col span="7" style="height: 100%;line-height:32px;">
-                                                                    <i-select v-model="item.realtimebitratemode">
-                                                                        <i-option value="0">CBR(固定码率)</i-option>
-                                                                        <i-option value="1">VBR(可变码率)</i-option>
-                                                                        <i-option value="2">ABR(平均码率)</i-option>
-                                                                    </i-select>
-                                                                </i-Col>
-                                                                <i-Col span="5" style="height: 100%;line-height:32px;text-align: center;">
-                                                                    存储流编码模式 :
-                                                                </i-Col>
-                                                                <i-Col span="7" style="height: 100%;line-height:32px;">
-                                                                    <i-select v-model="item.storebitratemode">
-                                                                        <i-option value="0">CBR(固定码率)</i-option>
-                                                                        <i-option value="1">VBR(可变码率)</i-option>
-                                                                        <i-option value="2">ABR(平均码率)</i-option>
-                                                                    </i-select>
-                                                                </i-Col>
-                                                            </Row>   
-                                                            <Row style="height:32px;margin: 10px 0;">
-                                                                <i-Col span="5" style="height: 100%;line-height:32px;text-align: center;">
-                                                                    实时流分辨率 :
-                                                                </i-Col>
-                                                                <i-Col span="7" style="height: 100%;line-height:32px;">
-                                                                    <i-select v-model="item.realtimeresolution">
-                                                                        <i-option value="0">QCIF</i-option>
-                                                                        <i-option value="1">CIF</i-option>
-                                                                        <i-option value="2">WCIF</i-option>
-                                                                        <i-option value="3">D1</i-option>
-                                                                        <i-option value="4">WD1</i-option>
-                                                                        <i-option value="5">720p</i-option>
-                                                                        <i-option value="6">1080p</i-option>
-                                                                    </i-select>
-                                                                </i-Col>
-                                                                <i-Col span="5" style="height: 100%;line-height:32px;text-align: center;">
-                                                                    存储流分辨率 :
-                                                                </i-Col>
-                                                                <i-Col span="7" style="height: 100%;line-height:32px;">
-                                                                    <i-select v-model="item.storeresolution">
-                                                                        <i-option value="0">QCIF</i-option>
-                                                                        <i-option value="1">CIF</i-option>
-                                                                        <i-option value="2">WCIF</i-option>
-                                                                        <i-option value="3">D1</i-option>
-                                                                        <i-option value="4">WD1</i-option>
-                                                                        <i-option value="5">720p</i-option>
-                                                                        <i-option value="6">1080p</i-option>
-                                                                    </i-select>
-                                                                </i-Col>
-                                                            </Row>   
-                                                            <Row style="height:32px;margin: 10px 0;">
-                                                                <i-Col span="5" style="height: 100%;line-height:32px;text-align: center;">
-                                                                    实时流关键帧间隔 :
-                                                                </i-Col>
-                                                                <i-Col span="7" style="height: 100%;line-height:32px;">
-                                                                    <Input-Number :max="1000" :min="1" v-model="item.realtimekeyframeinterval"></Input-Number>
-                                                                    范围1~1000
-                                                                </i-Col>
-                                                                <i-Col span="5" style="height: 100%;line-height:32px;text-align: center;">
-                                                                    存储流关键帧间隔 :
-                                                                </i-Col>
-                                                                <i-Col span="7" style="height: 100%;line-height:32px;">
-                                                                    <Input-Number :max="1000" :min="1" v-model="item.storekeyframeinterval"></Input-Number>
-                                                                    范围1~1000
-                                                                </i-Col>
-                                                            </Row>   
-                                                            <Row style="height:32px;margin: 10px 0;">
-                                                                <i-Col span="5" style="height: 100%;line-height:32px;text-align: center;">
-                                                                    实时流目标帧率 :
-                                                                </i-Col>
-                                                                <i-Col span="7" style="height: 100%;line-height:32px;">
-                                                                    <Input-Number :max="120" :min="1" v-model="item.realtimeframerate"></Input-Number>
-                                                                    范围1~120 帧/秒
-                                                                </i-Col>
-                                                                <i-Col span="5" style="height: 100%;line-height:32px;text-align: center;">
-                                                                    存储流目标帧率 :
-                                                                </i-Col>
-                                                                <i-Col span="7" style="height: 100%;line-height:32px;">
-                                                                    <Input-Number :max="120" :min="1" v-model="item.storeframerate"></Input-Number>
-                                                                    范围1~120 帧/秒
-                                                                </i-Col>
-                                                            </Row>   
-                                                            <Row style="height:32px;margin: 10px 0;">
-                                                                <i-Col span="5" style="height: 100%;line-height:32px;text-align: center;">
-                                                                    实时流目标码率 :
-                                                                </i-Col>
-                                                                <i-Col span="7" style="height: 100%;line-height:32px;">
-                                                                    <Input-Number :max="1000" :min="1" v-model="item.realtimeframebitrate"></Input-Number>
-                                                                    kbps
-                                                                </i-Col>
-                                                                <i-Col span="5" style="height: 100%;line-height:32px;text-align: center;">
-                                                                    存储流目标码率 :
-                                                                </i-Col>
-                                                                <i-Col span="7" style="height: 100%;line-height:32px;">
-                                                                    <Input-Number :max="1000" :min="1" v-model="item.storeframebitrate"></Input-Number>
-                                                                    kbps
-                                                                </i-Col>
-                                                            </Row> 
-                                                            <hr/>  
-                                                            <fieldset class="layui-elem-field fieldset" style="margin-top:5px;padding-left: 10px;">
-                                                                <legend style="margin-left:20px;">OSD 字幕叠加设置</legend>
+                                                    <hr/>  
+                                                    <fieldset class="layui-elem-field fieldset" style="margin-top:5px;padding-left: 10px;">
+                                                        <legend style="margin-left:20px;">OSD 字幕叠加设置</legend>
+                                                        <Row style="height:32px;margin: 10px 0;">
+                                                            <i-Col span="24" style="height: 100%;line-height:32px;">
+                                                                <checkbox-group v-model="videoCheckboxGroup">
+                                                                    <Checkbox label="dateandtime">
+                                                                        <span>日期和时间</span>
+                                                                    </Checkbox>
+                                                                    <Checkbox label="carnum">
+                                                                        <span>车牌号码</span>
+                                                                    </Checkbox>
+                                                                    <Checkbox label="channel">
+                                                                        <span>逻辑通道号</span>     
+                                                                    </Checkbox>
+                                                                    <Checkbox label="latlon">
+                                                                        <span>经纬度</span>   
+                                                                    </Checkbox>
+                                                                    <Checkbox label="recorderspeed">
+                                                                        <span>行驶记录速度</span>
+                                                                    </Checkbox>
+                                                                    <Checkbox label="gpsspeed">
+                                                                        <span>卫星定位速度</span>
+                                                                    </Checkbox>
+                                                                    <Checkbox label="drivingtime">
+                                                                        <span>连续驾驶时间</span>
+                                                                    </Checkbox>
+                                                                </checkbox-group>
+                                                            </i-Col>
+                                                        </Row> 
+                                                    </fieldset>
+                                                    <Row style="height:32px;margin: 10px 0;">
+                                                        <i-Col span="5" style="height: 100%;line-height:32px;text-align: center;">
+                                                            是否启用音频输出 :
+                                                        </i-Col>
+                                                        <i-Col span="7" style="height: 100%;line-height:32px;">
+                                                            <i-select placement="top" v-model="usingaudio">
+                                                                <i-option value="1">启用</i-option>
+                                                                <i-option value="0">不启用</i-option>
+                                                            </i-select>
+                                                        </i-Col>
+                                                    </Row>
+                                                </Tab-Pane>
+                                                <Tab-Pane label="视频播放参数" name="videoPlay">
+                                                    <Row style="height:32px;margin: 10px 0;">
+                                                        <i-Col span="5" style="height: 100%;line-height:32px;text-align: center;">
+                                                            播放帧率 :
+                                                        </i-Col>
+                                                        <i-Col span="12" style="height: 100%;line-height:32px;">
+                                                            <i-input v-model="videoplayframerate" style="width:300px"></i-input>
+                                                            帧/秒
+                                                        </i-Col>
+                        
+                                                    </Row>
+                                                    <Row style="height:32px;margin: 10px 0;">
+                                                        <i-Col span="5" style="height: 100%;line-height:32px;text-align: center;">
+                                                            传输模式 :
+                                                        </i-Col>
+                                                        <i-Col span="12" style="height: 100%;line-height:32px;">
+                                                            <i-select v-model="videotranstype" style="width:300px">
+                                                                <i-option value="0">TCP</i-option>
+                                                                <i-option value="1">UDP</i-option>
+                                                            </i-select>
+                                                        </i-Col>
+                                                    </Row>
+                                                    <Row style="height:32px;margin: 10px 0;">
+                                                        <i-Col span="5" style="height: 100%;line-height:32px;text-align: center;">
+                                                            实时性 :
+                                                        </i-Col>
+                                                        <i-Col span="12" style="height: 100%;line-height:32px;">
+                                                            <i-select placement="top" v-model="videostreamtype" style="width:300px">
+                                                                <i-option value="0">一般</i-option>
+                                                                <i-option value="1">好</i-option>
+                                                            </i-select>
+                                                        </i-Col>
+                                                    </Row>
+                                                    <Row style="height:32px;margin: 10px 0;">
+                                                        <i-Col span="17" style="height: 100%;line-height:32px;text-align: center;">
+                                                            <i-button type='primary' @click='handleSetPlayParamter'>设置播放视频参数</i-button>
+                                                        </i-Col>
+                                                    </Row>
+                                                </Tab-Pane>
+                                                <Tab-Pane label="单独通道视频参数" name="aloneVideoSetup">
+                                                    <i-button type="info" @click="querySingleAudioVideoParameters" style="width:180px;margin-bottom:10px;">查询</i-button>
+                                                    <Tabs value="" :animated="false" type="card">
+                                                        <Tab-Pane :label="item.channelnum" v-for="(item,index) in channelsData" :key="index">  
                                                                 <Row style="height:32px;margin: 10px 0;">
-                                                                    <i-Col span="24" style="height: 100%;line-height:32px;">
-                                                                        <checkbox-group v-model="item.videoCheckboxGroup">
-                                                                            <Checkbox label="dateandtime">
-                                                                                <span>日期和时间</span>
-                                                                            </Checkbox>
-                                                                            <Checkbox label="carnum">
-                                                                                <span>车牌号码</span>
-                                                                            </Checkbox>
-                                                                            <Checkbox label="channel">
-                                                                                <span>逻辑通道号</span>     
-                                                                            </Checkbox>
-                                                                            <Checkbox label="latlon">
-                                                                                <span>经纬度</span>   
-                                                                            </Checkbox>
-                                                                            <Checkbox label="recorderspeed">
-                                                                                <span>行驶记录速度</span>
-                                                                            </Checkbox>
-                                                                            <Checkbox label="gpsspeed">
-                                                                                <span>卫星定位速度</span>
-                                                                            </Checkbox>
-                                                                            <Checkbox label="drivingtime">
-                                                                                <span>连续驾驶时间</span>
-                                                                            </Checkbox>
-                                                                        </checkbox-group>
+                                                                    <i-Col span="5" style="height: 100%;line-height:32px;text-align: center;">
+                                                                        实时流编码模式 :
+                                                                    </i-Col>
+                                                                    <i-Col span="7" style="height: 100%;line-height:32px;">
+                                                                        <i-select v-model="item.realtimebitratemode">
+                                                                            <i-option value="0">CBR(固定码率)</i-option>
+                                                                            <i-option value="1">VBR(可变码率)</i-option>
+                                                                            <i-option value="2">ABR(平均码率)</i-option>
+                                                                        </i-select>
+                                                                    </i-Col>
+                                                                    <i-Col span="5" style="height: 100%;line-height:32px;text-align: center;">
+                                                                        存储流编码模式 :
+                                                                    </i-Col>
+                                                                    <i-Col span="7" style="height: 100%;line-height:32px;">
+                                                                        <i-select v-model="item.storebitratemode">
+                                                                            <i-option value="0">CBR(固定码率)</i-option>
+                                                                            <i-option value="1">VBR(可变码率)</i-option>
+                                                                            <i-option value="2">ABR(平均码率)</i-option>
+                                                                        </i-select>
+                                                                    </i-Col>
+                                                                </Row>   
+                                                                <Row style="height:32px;margin: 10px 0;">
+                                                                    <i-Col span="5" style="height: 100%;line-height:32px;text-align: center;">
+                                                                        实时流分辨率 :
+                                                                    </i-Col>
+                                                                    <i-Col span="7" style="height: 100%;line-height:32px;">
+                                                                        <i-select v-model="item.realtimeresolution">
+                                                                            <i-option value="0">QCIF</i-option>
+                                                                            <i-option value="1">CIF</i-option>
+                                                                            <i-option value="2">WCIF</i-option>
+                                                                            <i-option value="3">D1</i-option>
+                                                                            <i-option value="4">WD1</i-option>
+                                                                            <i-option value="5">720p</i-option>
+                                                                            <i-option value="6">1080p</i-option>
+                                                                        </i-select>
+                                                                    </i-Col>
+                                                                    <i-Col span="5" style="height: 100%;line-height:32px;text-align: center;">
+                                                                        存储流分辨率 :
+                                                                    </i-Col>
+                                                                    <i-Col span="7" style="height: 100%;line-height:32px;">
+                                                                        <i-select v-model="item.storeresolution">
+                                                                            <i-option value="0">QCIF</i-option>
+                                                                            <i-option value="1">CIF</i-option>
+                                                                            <i-option value="2">WCIF</i-option>
+                                                                            <i-option value="3">D1</i-option>
+                                                                            <i-option value="4">WD1</i-option>
+                                                                            <i-option value="5">720p</i-option>
+                                                                            <i-option value="6">1080p</i-option>
+                                                                        </i-select>
+                                                                    </i-Col>
+                                                                </Row>   
+                                                                <Row style="height:32px;margin: 10px 0;">
+                                                                    <i-Col span="5" style="height: 100%;line-height:32px;text-align: center;">
+                                                                        实时流关键帧间隔 :
+                                                                    </i-Col>
+                                                                    <i-Col span="7" style="height: 100%;line-height:32px;">
+                                                                        <Input-Number :max="1000" :min="1" v-model="item.realtimekeyframeinterval"></Input-Number>
+                                                                        范围1~1000
+                                                                    </i-Col>
+                                                                    <i-Col span="5" style="height: 100%;line-height:32px;text-align: center;">
+                                                                        存储流关键帧间隔 :
+                                                                    </i-Col>
+                                                                    <i-Col span="7" style="height: 100%;line-height:32px;">
+                                                                        <Input-Number :max="1000" :min="1" v-model="item.storekeyframeinterval"></Input-Number>
+                                                                        范围1~1000
+                                                                    </i-Col>
+                                                                </Row>   
+                                                                <Row style="height:32px;margin: 10px 0;">
+                                                                    <i-Col span="5" style="height: 100%;line-height:32px;text-align: center;">
+                                                                        实时流目标帧率 :
+                                                                    </i-Col>
+                                                                    <i-Col span="7" style="height: 100%;line-height:32px;">
+                                                                        <Input-Number :max="120" :min="1" v-model="item.realtimeframerate"></Input-Number>
+                                                                        范围1~120 帧/秒
+                                                                    </i-Col>
+                                                                    <i-Col span="5" style="height: 100%;line-height:32px;text-align: center;">
+                                                                        存储流目标帧率 :
+                                                                    </i-Col>
+                                                                    <i-Col span="7" style="height: 100%;line-height:32px;">
+                                                                        <Input-Number :max="120" :min="1" v-model="item.storeframerate"></Input-Number>
+                                                                        范围1~120 帧/秒
+                                                                    </i-Col>
+                                                                </Row>   
+                                                                <Row style="height:32px;margin: 10px 0;">
+                                                                    <i-Col span="5" style="height: 100%;line-height:32px;text-align: center;">
+                                                                        实时流目标码率 :
+                                                                    </i-Col>
+                                                                    <i-Col span="7" style="height: 100%;line-height:32px;">
+                                                                        <Input-Number :max="1000" :min="1" v-model="item.realtimeframebitrate"></Input-Number>
+                                                                        kbps
+                                                                    </i-Col>
+                                                                    <i-Col span="5" style="height: 100%;line-height:32px;text-align: center;">
+                                                                        存储流目标码率 :
+                                                                    </i-Col>
+                                                                    <i-Col span="7" style="height: 100%;line-height:32px;">
+                                                                        <Input-Number :max="1000" :min="1" v-model="item.storeframebitrate"></Input-Number>
+                                                                        kbps
                                                                     </i-Col>
                                                                 </Row> 
-                                                            </fieldset>
-                                                            <Row style="height:32px;margin: 10px 0;">
-                                                                <i-Col span="24" style="height: 100%;line-height:32px;text-align: center;">
-                                                                    <i-button style="width:200px;" type="primary" @click="setSingleAudioVideoParameters(index)">发送</i-button>
+                                                                <hr/>  
+                                                                <fieldset class="layui-elem-field fieldset" style="margin-top:5px;padding-left: 10px;">
+                                                                    <legend style="margin-left:20px;">OSD 字幕叠加设置</legend>
+                                                                    <Row style="height:32px;margin: 10px 0;">
+                                                                        <i-Col span="24" style="height: 100%;line-height:32px;">
+                                                                            <checkbox-group v-model="item.videoCheckboxGroup">
+                                                                                <Checkbox label="dateandtime">
+                                                                                    <span>日期和时间</span>
+                                                                                </Checkbox>
+                                                                                <Checkbox label="carnum">
+                                                                                    <span>车牌号码</span>
+                                                                                </Checkbox>
+                                                                                <Checkbox label="channel">
+                                                                                    <span>逻辑通道号</span>     
+                                                                                </Checkbox>
+                                                                                <Checkbox label="latlon">
+                                                                                    <span>经纬度</span>   
+                                                                                </Checkbox>
+                                                                                <Checkbox label="recorderspeed">
+                                                                                    <span>行驶记录速度</span>
+                                                                                </Checkbox>
+                                                                                <Checkbox label="gpsspeed">
+                                                                                    <span>卫星定位速度</span>
+                                                                                </Checkbox>
+                                                                                <Checkbox label="drivingtime">
+                                                                                    <span>连续驾驶时间</span>
+                                                                                </Checkbox>
+                                                                            </checkbox-group>
+                                                                        </i-Col>
+                                                                    </Row> 
+                                                                </fieldset>
+                                                                <Row style="height:32px;margin: 10px 0;">
+                                                                    <i-Col span="24" style="height: 100%;line-height:32px;text-align: center;">
+                                                                        <i-button style="width:200px;" type="primary" @click="setSingleAudioVideoParameters(index)">发送</i-button>
+                                                                    </i-Col>
+                                                                </Row> 
+                                                            </Tab-Pane>
+                                                    </Tabs>
+                                                </Tab-Pane>
+                                                <Tab-Pane label="音视频终端属性" name="videoProperty">
+                                                        <Row style="height:32px;margin: 10px 0;">
+                                                            <i-Col span="7" offset="7" style="height: 100%;line-height:32px;">
+                                                                <i-button @click="queryVideoProperty" style="width:120px;" type="primary">查询</i-button>
+                                                            </i-Col>
+                                                        </Row> 
+                                                        <Row style="height:32px;">
+                                                                <i-Col span="8" style="height: 100%;text-align:right;line-height:32px;">音频编码方式 : &nbsp;</i-Col>
+                                                                <i-Col span="16" style="height: 100%;line-height:32px;">
+                                                                    {{videoProperty.audiocodec}}
                                                                 </i-Col>
-                                                            </Row> 
-                                                        </Tab-Pane>
-                                                </Tabs>
-                                            </Tab-Pane>
-                                        </Tabs>
-                                        <div slot="footer" style="padding:10px;"></div>
-                                    </Modal>     
+                                                            </Row>
+                                                            <Row style="height:32px;">
+                                                                <i-Col span="8" style="height: 100%;text-align:right;line-height:32px;">音频编码方式字符 : &nbsp;</i-Col>
+                                                                <i-Col span="16" style="height: 100%;line-height:32px;">
+                                                                    {{videoProperty.audiocodecstr}}
+                                                                </i-Col>
+                                                            </Row>
+                                                            <Row style="height:32px;">
+                                                                <i-Col span="8" style="height: 100%;text-align:right;line-height:32px;">音频声道数 : &nbsp;</i-Col>
+                                                                <i-Col span="16" style="height: 100%;line-height:32px;">
+                                                                    {{videoProperty.audiosamplerate}}
+                                                                </i-Col>
+                                                            </Row>
+                                                            <Row style="height:32px;">
+                                                                <i-Col span="8" style="height: 100%;text-align:right;line-height:32px;">音频采样位数 : &nbsp;</i-Col>
+                                                                <i-Col span="16" style="height: 100%;line-height:32px;">
+                                                                    {{videoProperty.audiosamplebits}}
+                                                                </i-Col>
+                                                            </Row>
+                                                            <Row style="height:32px;">
+                                                                <i-Col span="8" style="height: 100%;text-align:right;line-height:32px;">音频帧长度 : &nbsp;</i-Col>
+                                                                <i-Col span="16" style="height: 100%;line-height:32px;">
+                                                                    {{videoProperty.audioframelength}}
+                                                                </i-Col>
+                                                            </Row>
+                                                            <Row style="height:32px;">
+                                                                <i-Col span="8" style="height: 100%;text-align:right;line-height:32px;">是否支持音频输出 : &nbsp;</i-Col>
+                                                                <i-Col span="16" style="height: 100%;line-height:32px;">
+                                                                    {{videoProperty.audiooutputsupport}}
+                                                                </i-Col>
+                                                            </Row>
+                                                            <Row style="height:32px;">
+                                                                <i-Col span="8" style="height: 100%;text-align:right;line-height:32px;">视频编码方式 : &nbsp;</i-Col>
+                                                                <i-Col span="16" style="height: 100%;line-height:32px;">
+                                                                    {{videoProperty.videocodec}}
+                                                                </i-Col>
+                                                            </Row>
+                                                            <Row style="height:32px;">
+                                                                <i-Col span="8" style="height: 100%;text-align:right;line-height:32px;">视频编码方式字符 : &nbsp;</i-Col>
+                                                                <i-Col span="16" style="height: 100%;line-height:32px;">
+                                                                    {{videoProperty.videocodecstr}}
+                                                                </i-Col>
+                                                            </Row>
+                                                            <Row style="height:32px;">
+                                                                <i-Col span="8" style="height: 100%;text-align:right;line-height:32px;">终端支持最大音频物理通道数 : &nbsp;</i-Col>
+                                                                <i-Col span="16" style="height: 100%;line-height:32px;">
+                                                                    {{videoProperty.audiomaxsupport}}
+                                                                </i-Col>
+                                                            </Row>
+                                                            <Row style="height:32px;">
+                                                                <i-Col span="8" style="height: 100%;text-align:right;line-height:32px;">终端支持最大视频物理通道数 : &nbsp;</i-Col>
+                                                                <i-Col span="16" style="height: 100%;line-height:32px;">
+                                                                    {{videoProperty.videomaxsupport}}
+                                                                </i-Col>
+                                                            </Row>   
+                                                    </Tab-Pane>
+    
+                                            </Tabs>
+                                            <div slot="footer" style="padding:10px;"></div>
+                                        </Modal>         
                             </i-Col>
                             <i-Col span="12" style="height: 100%;text-align: right;" class="tv_box">
                                 <span><i class="icon icon_num1" @click="openAndCloseVideoWindows(1)"></i></span>
@@ -724,7 +722,8 @@
                                 </div> -->
                             </div>                                 
                         </div>
-                    </div>    
+                    </div>
+                        
                 </div>
          
         </Layout>   
@@ -746,7 +745,6 @@
         var vRoot = new Vue({
             el:"#container",
             data:{
-                tipStr:'查询中,请稍后...',
                 viewSize:2,  // 1 1:1  2
                 activeMenuItem:'video',
                 videoContentWH:{
@@ -824,11 +822,12 @@
                     }
                 },
                 queryClientParameters:function(){
+                    this.Spin = true;
                     var url = myUrls.queryClientParameters() , me = this;
                     utils.sendAjax(url,{deviceid:deviceid},function (data) { 
                         var status = data.status ;
                         var audiovideoparameters = data.audiovideoparameters;
-
+                        me.Spin = false;    
                         if(status == CMD_SEND_RESULT_UNCONFIRM){
                             me.$Message.error('发送成功，未收到确认'); 
                         }else if(status === CMD_SEND_RESULT_PASSWORD_ERROR){
@@ -908,8 +907,10 @@
                             }  
                         })
                         parameters.deviceid = deviceid;
+                        me.Spin = true;
                         utils.sendAjax(url,parameters,function (resp) { 
                             var status = resp.status;
+                            me.Spin = false;
                             if(status == CMD_SEND_RESULT_UNCONFIRM){
                                 me.$Message.error('发送成功，未收到确认'); 
                             }else if(status === CMD_SEND_RESULT_PASSWORD_ERROR){
@@ -941,7 +942,22 @@
                     utils.sendAjax(url,{deviceid:deviceid},function (data) { 
                         var status = data.status ;
                         if(status === 0 ){
+                            var audiosamplebits = data.audiosamplebits;
                             that.$Message.success("查询成功");  
+                             switch(audiosamplebits){
+                                case 0:
+                                    data.audiosamplebits = '8 kHz';
+                                    break;
+                                case 1:
+                                    data.audiosamplebits = '22.05 kHz';
+                                    break;
+                                case 2:
+                                    data.audiosamplebits = '44.1 kHz';
+                                    break;
+                                case 3:
+                                    data.audiosamplebits = '48 kHz';
+                                    break;
+                             }   
                             that.videoProperty = data;
                             that.videoPropertyModal = true;
                         }else if(status === 1){
@@ -1332,9 +1348,10 @@
                     }
                 },
                 querySingleAudioVideoParameters:function(){
+                    this.Spin = true;
                     var url = myUrls.querySingleAudioVideoParameters() , me = this;
                     utils.sendAjax(url,{deviceid:deviceid},function (data) { 
-                        console.log('data', data);
+                        me.Spin = false;
                         if(data.status === 6){
 
                           
@@ -1454,6 +1471,7 @@
                 var that = this; 
                 // videojs.options.flash.swf = "./videojs/video-js.5.4.2.swf";
                 this.$nextTick(function(){ 
+                    console.log('videoContent', this.$refs);
                     document.getElementById('videoContent').className = 'videoContent-4';
                     that.initApp(); 
                     
