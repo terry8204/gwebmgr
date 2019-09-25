@@ -1530,9 +1530,8 @@
             return { f: hasFlash, v: flashVersion };
         }
         var fls = flashChecker();
-        var s = "";
         if (!fls.f) {
-            vRoot.$Message.error("请安装flash");
+            vRoot.$Message.error("请安装flash或者允许网页flash播放");
         }
     </script>
 </body>
