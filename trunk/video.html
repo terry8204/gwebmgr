@@ -632,7 +632,7 @@
                                                             <Row style="height:32px;">
                                                                 <i-Col span="8" style="height: 100%;text-align:right;line-height:32px;">音频声道数 : &nbsp;</i-Col>
                                                                 <i-Col span="16" style="height: 100%;line-height:32px;">
-                                                                    {{videoProperty.audiosamplerate}}
+                                                                    {{videoProperty.audiochannelcount}}
                                                                 </i-Col>
                                                             </Row>
                                                             <Row style="height:32px;">
@@ -941,10 +941,22 @@
                     var url = myUrls.queryVideoProperty(), that = this;
                     utils.sendAjax(url,{deviceid:deviceid},function (data) { 
                         var status = data.status ;
-                        if(status === 0 ){
+                        if(status == CMD_SEND_RESULT_UNCONFIRM){
+                            that.$Message.error('发送成功，未收到确认'); 
+                        }else if(status === CMD_SEND_RESULT_PASSWORD_ERROR){
+                            that.$Message.error('密码错误');
+                        }else if(status === CMD_SEND_RESULT_OFFLINE_NOT_CACHE){
+                            that.$Message.error("设备离线，未缓存");   
+                        }else if(status === CMD_SEND_RESULT_OFFLINE_CACHED){
+                            that.$Message.error("设备离线，已缓存");
+                        }else if(status === CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD){
+                            that.$Message.error("需要修改默认密码");
+                        }else if(status === CMD_SEND_RESULT_DETAIL_ERROR){
+                            that.$Message.error("错误:" + resp.cause);
+                        }else if(status === CMD_SEND_CONFIRMED){
                             var audiosamplebits = data.audiosamplebits;
                             that.$Message.success("查询成功");  
-                             switch(audiosamplebits){
+                            switch(audiosamplebits){
                                 case 0:
                                     data.audiosamplebits = '8 kHz';
                                     break;
@@ -957,19 +969,13 @@
                                 case 3:
                                     data.audiosamplebits = '48 kHz';
                                     break;
-                             }   
+                            }   
                             that.videoProperty = data;
                             that.videoPropertyModal = true;
-                        }else if(status === 1){
-                            that.$Message.error();
-                        }else if(status === 2){
-                            that.$Message.error("设备不在线");   
-                        }else if(status === 3){
-        
-                        }else if(status === 4){
-
-                        }else if(status === 5){
-                            that.$Message.error("错误:" + data.cause);
+                        }else if(status === CMD_SEND_OVER_RETRY_TIMES){
+                            that.$Message.error("尝试发送3次失败");
+                        }else if(status === CMD_SEND_SYNC_TIMEOUT){
+                            that.$Message.error("发送超时");
                         }
                         that.Spin = false;
                     })
