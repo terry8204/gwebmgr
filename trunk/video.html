@@ -588,7 +588,7 @@
                                                                                     <span>逻辑通道号</span>     
                                                                                 </Checkbox>
                                                                                 <Checkbox label="latlon">
-                                                                                    <span>经纬度</span>   
+                                                                                    <span>经纬度</span>
                                                                                 </Checkbox>
                                                                                 <Checkbox label="recorderspeed">
                                                                                     <span>行驶记录速度</span>
@@ -604,7 +604,7 @@
                                                                     </Row> 
                                                                 </fieldset>
                                                                 <Row style="height:32px;margin: 10px 0;">
-                                                                    <i-Col span="24" style="height: 100%;line-height:32px;text-align: center;">
+                                                                    <i-Col span="24" style="height:100%;line-height:32px;text-align:center;">
                                                                         <i-button style="width:200px;" type="primary" @click="setSingleAudioVideoParameters(index)">发送</i-button>
                                                                     </i-Col>
                                                                 </Row> 
@@ -712,7 +712,7 @@
                                 </span>
                                 <span @click="setupModal=true"><i class="icon icon_num9"></i></span>
                             </i-Col>
-                        </Row> 
+                        </Row>
                     </div>
                     <div style="position: absolute;left: 0;right: 0;top: 45px;bottom: 0;padding: 10px">
                         <div class="full">
@@ -1295,11 +1295,12 @@
                 },
                 stopVideoPlayer(){
                     var videoIns = this.videoIns;
-                    for(var i = 0 ; i < videoIns.length;i++){
+                    for(var i in videoIns){
                         var key = 'videoPlayer'+i;
                         var nowTime = Date.now();
                         var oldTime = this.videoTimes[key];
                         if(oldTime){
+                            console.log(nowTime - oldTime);
                             if((nowTime - oldTime) > 1000*60*3){
                                 var player = videoIns[i];
                                 player.pause();
@@ -1309,8 +1310,9 @@
                     }
                 },
                 checkVideoPlayerTime(){
-                    this.myInterval = setInterval(()=>{
-                        this.stopVideoPlayer();
+                    var me = this;
+                    this.myInterval = setInterval(function(){
+                        me.stopVideoPlayer();
                     },5000);
                 },
                 queryDeviceById:function(){
@@ -1501,6 +1503,37 @@
 
             },
         })
+
+        function flashChecker() {
+            var hasFlash = 0; //是否安装了flash
+            var flashVersion = 0; //flash版本
+            if (document.all) {
+            var swf = new ActiveXObject('ShockwaveFlash.ShockwaveFlash');
+            if (swf) {
+                hasFlash = 1;
+                VSwf = swf.GetVariable("$version");
+                flashVersion = parseInt(VSwf.split(" ")[1].split(",")[0]);
+            }
+            } else {
+            if (navigator.plugins && navigator.plugins.length > 0) {
+                var swf = navigator.plugins["Shockwave Flash"];
+                if (swf) {
+                hasFlash = 1;
+                var words = swf.description.split(" ");
+                for (var i = 0; i < words.length; ++i) {
+                    if (isNaN(parseInt(words[i]))) continue;
+                    flashVersion = parseInt(words[i]);
+                }
+                }
+            }
+            }
+            return { f: hasFlash, v: flashVersion };
+        }
+        var fls = flashChecker();
+        var s = "";
+        if (!fls.f) {
+            vRoot.$Message.error("请安装flash");
+        }
     </script>
 </body>
 </html>
