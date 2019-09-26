@@ -132,26 +132,14 @@
             width: 300px;
             top: 45px;
         }
-        .mask-wrapper1{
+        .mask-wrapper{
             position: absolute;
-            width: 300px;
+            right: 0px;
             bottom: 0px;
-            top: 45px;
+            top: 55px;
             left: 0px;
             z-index: 9999;
             background-color: rgb(255, 255, 255);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        .mask-wrapper2{
-            position: absolute;
-            right: 10px;
-            bottom: 10px;
-            top: 55px;
-            left: 310px;
-            z-index: 9999;
-            background-color: rgba(255, 255, 255, 0.9);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -199,6 +187,13 @@
                 transform: rotate(360deg);
             }
         }
+        .text-tip{
+            position: absolute;
+            bottom: -25px;
+            left: -20px;
+            right: -20px;
+            text-align: center;
+        }
     </style>
     <link href="./videojs/video-js.css" rel="stylesheet">
     <script src="./videojs/video.js"></script>
@@ -206,14 +201,11 @@
 
 </head>
 <body>
-    <div class="mask-wrapper1" id="mask-wrapper1">
-        <div class="box">
+
+    <div class="mask-wrapper" id="mask-wrapper">
+        <div class="box" style="position:relative;">
             <div class="loader-05"></div>
-        </div>
-    </div>
-    <div class="mask-wrapper2" id="mask-wrapper2">
-        <div class="box">
-            <div class="loader-05"></div>
+            <div class="text-tip">正在载入播放器</div>
         </div>
     </div>
 
@@ -1597,8 +1589,9 @@
                     that.queryDeviceById();
 
                     // that.querySingleAudioVideoParameters();
-                    document.getElementById('mask-wrapper1').style.display = 'none';
-                    document.getElementById('mask-wrapper2').style.display = 'none';
+                    setTimeout(function() {
+                        document.getElementById('mask-wrapper').style.display = 'none';
+                    }, 1000);
                 });
 
             },
