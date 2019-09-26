@@ -14,6 +14,7 @@
             height: 100%;  
             position: relative;
             overflow: hidden;
+            visibility:visible;
         }
         .col-cls{
             text-align: center;
@@ -112,6 +113,61 @@
             align-items: center;
             justify-content: left;
         }
+        .mask-wrapper{
+            position: absolute;
+            right: 10px;
+            bottom: 10px;
+            top: 55px;
+            left: 310px;
+            z-index: 9999;
+            background-color: rgba(255, 255, 255, 0.9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .loader-05 {
+            width: 50px;
+            height: 50px;
+            border: .2em solid transparent;
+            border-top-color: currentcolor;
+            border-radius: 50%;
+            -webkit-animation: 1s loader-05 linear infinite;
+            animation: 1s loader-05 linear infinite;
+            position: relative;
+        }
+        .loader-05:before {
+            content: '';
+            display: block;
+            width: inherit;
+            height: inherit;
+            position: absolute;
+            top: -.2em;
+            left: -.2em;
+            border: .2em solid currentcolor;
+            border-radius: 50%;
+            opacity: .5;
+        }
+
+        @-webkit-keyframes loader-05 {
+            0% {
+                -webkit-transform: rotate(0deg);
+                transform: rotate(0deg);
+            }
+            100% {
+                -webkit-transform: rotate(360deg);
+                transform: rotate(360deg);
+            }
+        }
+        @keyframes loader-05 {
+            0% {
+                -webkit-transform: rotate(0deg);
+                transform: rotate(0deg);
+            }
+            100% {
+                -webkit-transform: rotate(360deg);
+                transform: rotate(360deg);
+            }
+        }
     </style>
     <link href="./videojs/video-js.css" rel="stylesheet">
     <script src="./videojs/video.js"></script>
@@ -119,6 +175,11 @@
 
 </head>
 <body>
+    <div class="mask-wrapper" id="mask-wrapper">
+        <div class="box">
+            <div class="loader-05"></div>
+        </div>
+    </div>
     <div id="container">
         <Spin fix style="z-index:9999;" v-show="Spin"></Spin> 
         <Layout class="full" style="position: relative;">
@@ -1079,9 +1140,7 @@
                             var oldSrc = player.src();
                             var newSrc = records[0].playurl;
                             // var newSrc = 'rtmp://58.200.131.2:1935/livetv/hunantv';
-                            console.log("newSrc" , newSrc);
-                            console.log("oldSrc" , oldSrc);
-                            console.log(oldSrc == newSrc);
+                     
                             if(oldSrc !== newSrc)
                             {
                                 // player.reset();
@@ -1251,9 +1310,9 @@
                             });
                             // this.src(self.allPlayUrls[index].playurl);
                             // console.log('type', this.type)
-                               //------events    绑定事件用on    移除事件用off
+                            //------events    绑定事件用on    移除事件用off
                             this.on('loadstart',function () {
-                                console.log('loadstart------------' ,index)
+                                console.log('开始加载------------' ,index);
                             });
                             this.on('loadedmetadata',function () {
                                 console.log('loadedmetadata---视频源数据加载完成----',index)
@@ -1265,8 +1324,8 @@
                                 console.log('progress-------加载过程----',index)
                             });
                             this.on('timeupdate',function () {
-                            //    const curTime = this.currentTime();
-                            // console.log('timeupdate-------------',curTime);
+                                // const curTime = this.currentTime();
+                                // console.log('timeupdate-------------',curTime);
                             })
                           
 
@@ -1306,7 +1365,6 @@
                         var nowTime = Date.now();
                         var oldTime = this.videoTimes[key];
                         if(oldTime){
-                            console.log(nowTime - oldTime);
                             if((nowTime - oldTime) > 1000*60*3){
                                 var player = videoIns[i];
                                 player.pause();
@@ -1504,7 +1562,7 @@
                     that.queryDeviceById();
 
                     // that.querySingleAudioVideoParameters();
-
+                    document.getElementById('mask-wrapper').style.display = 'none';
                 });
 
             },
