@@ -426,6 +426,9 @@ var myUrls = {
   setSingleAudioVideoParameters: function () {
     return this.host + 'webapi?action=setsingleaudiovideoparameters_sync&token=' + token;
   },
+  queryMediaList: function () {
+    return this.host + 'webapi?action=querymedialist_sync&token=' + token;
+  },
 }
 
 

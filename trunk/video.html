@@ -114,7 +114,7 @@
         }
         .device-info-wrapper{
             background-color: #EEEEEE;
-            height: 45px;
+            height: 50px;
             padding-left: 10px;
             vertical-align: middle;
             display: flex;
@@ -122,15 +122,15 @@
             justify-content: left;
             position: absolute;
             left: 0;
-            width: 350px;
-            height: 45px;
+            width: 300px;
+            height: 50px;
             top: 0px;
         }
         .tab-wrapper{
             position: absolute;
             left: 0;
             width: 300px;
-            top: 45px;
+            top: 50px;
         }
         .mask-wrapper{
             position: absolute;
@@ -193,6 +193,17 @@
             left: -20px;
             right: -20px;
             text-align: center;
+        }
+        .video-back{
+            width: 90px;
+            background-color: #5C98DF;
+            position: absolute;left: 10px;top: 0;height: 50px;
+            cursor: pointer;
+        }
+        .video-back img{
+            border: 0;
+            width: 100%;
+            height: 45px;
         }
     </style>
     <link href="./videojs/video-js.css" rel="stylesheet">
@@ -358,7 +369,10 @@
                     </div>
                 </div>
                 <div style="position: absolute; left: 300px;bottom: 0;right: 0;top: 0;">           
-                    <div style="height:45px;line-height:45px;padding: 0 10px; position: absolute;left: 0;right: 0;top: 0;overflow: hidden;background-color: #eee;">
+                    <div style="height:50px;line-height:50px;padding: 0 10px; position: absolute;left: 0;right: 0;top: 0;overflow: hidden;background-color: #eee;">
+                        <div class="video-back" @click='videoBack'>
+                            <img src="./images/videoback.png">
+                        </div>
                         <div style="height: 100%;text-align: right;" class="tv_box">   
                                 <span><i class="icon icon_num1" @click="openAndCloseVideoWindows(1)"></i></span>
                                 <span><i class="icon icon_num2" @click="openAndCloseVideoWindows(4)"></i></span>
@@ -799,7 +813,7 @@
                                 <div slot="footer" style="padding:10px;"></div>
                             </Modal>         
                     </div>
-                    <div style="position: absolute;left: 0;right: 0;top: 45px;bottom: 0;padding: 10px">
+                    <div style="position: absolute;left: 0;right: 0;top: 50px;bottom: 0;padding: 10px">
                         <div class="full">
                             <div :class="videoContentCls" id="videoContent" ref="videoContent" class="full">
                                 <!-- <div v-for="(item , index) in videoNumber" :key="index">
@@ -876,6 +890,9 @@
 
             },
             methods: {
+                videoBack:function(){
+                    window.open('videoback.html?deviceid='+deviceid +'&token=' + token);
+                },
                 handlePlayAllVideos:function(){
 
                     for(var i = 0 ; i < this.videoNumber; i++){
