@@ -118,7 +118,7 @@
             right: 10px;
             bottom: 10px;
             top: 55px;
-            left: 310px;
+            left: 10px;
             z-index: 9999;
             background-color: rgba(255, 255, 255, 0.9);
             display: flex;
@@ -184,7 +184,7 @@
         <Spin fix style="z-index:9999;" v-show="Spin"></Spin> 
         <Layout class="full" style="position: relative;">
                 <Sider hide-trigger width="300" style="background-color:#ffffff;">
-                    <div class="full" style="position: relative;">
+                    <div class="full" style="position: relative;overflow: hidden;">
                        <div class="device-info-wrapper" v-text="devInfo">
                         
                        </div>
@@ -330,14 +330,14 @@
                     </div>
                 </Sider>
                 <div style="position: absolute; left: 300px;bottom: 0;right: 0;top: 0;">           
-                    <div style="background-color: #eee;height:45px;line-height:45px;padding: 0 10px; position: absolute;left: 0;right: 0;top: 0;">
+                    <div style="background-color: #eee;height:45px;line-height:45px;padding: 0 10px; position: absolute;left: 0;right: 0;top: 0;overflow: hidden;">
                         <Row style="height: 100%;">   
-                            <i-Col span="12" style="height: 100%;color: #ffffff">
+                            <i-Col span="12" style="height: 100%;color: #ffffff;overflow: hidden;">
           
                                     <Modal v-model="setupModal" width="800">
                                             <p slot="header" style="color:#f60;text-align:center">
-                                                    <Icon type="ios-search-outline"></Icon>
-                                                    <span>视频参数</span> 
+                                                <Icon type="ios-search-outline"></Icon>
+                                                <span v-text="modalHader"></span> 
                                             </p>
                                             <Tabs value="" :animated="false">
                                                 <Tab-Pane label="音视频参数" name="videoSetup">
@@ -806,6 +806,7 @@
         var vRoot = new Vue({
             el:"#container",
             data:{
+                modalHader:'视频参数',
                 viewSize:2,  // 1 1:1  2
                 activeMenuItem:'video',
                 videoContentWH:{
