@@ -429,6 +429,10 @@ var myUrls = {
   queryMediaList: function () {
     return this.host + 'webapi?action=querymedialist_sync&token=' + token;
   },
+  //视频回放
+  playRecord: function () {
+    return this.host + 'webapi?action=playrecord_sync&token=' + token;
+  },
 }
 
 
