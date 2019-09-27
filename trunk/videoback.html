@@ -28,6 +28,7 @@
         #videoContent > div{
             float: left;
         }
+
     </style>
     <link href="./videojs/video-js.css" rel="stylesheet">
     <script src="./videojs/video.js"></script>
@@ -138,11 +139,11 @@
                         </i-Content>
                         <i-Footer style="height:300px;padding: 0px;">
                             <div style="height:50px;line-height: 50px;">
-                                <i-button type="primary" shape="circle" icon="ios-search"></i-button>
-                                <i-button type="primary" shape="circle" icon="ios-search"></i-button>
-                                <i-button type="primary" shape="circle" icon="ios-search"></i-button>
-                                <i-button type="primary" shape="circle" icon="ios-search"></i-button>
-                                <i-button type="primary" shape="circle" icon="ios-search"></i-button>
+                                <i-button shape="circle" icon="ios-play"></i-button> 
+                                <i-button shape="circle" icon="ios-square"></i-button> 
+                                <i-button shape="circle" icon="ios-skip-forward"></i-button>
+                                <i-button shape="circle" icon="ios-rewind"></i-button>
+                                <i-button shape="circle" icon="ios-fastforward"></i-button>
                             </div>
                             <i-table border 
                                 ref="table" 
@@ -223,7 +224,13 @@
                         title: '文件大小',
                         key: 'filesize',
                         render:function(h,params){
-                            var filesize = (params.row.filesize/1024) + "M";
+                            var mSize = (params.row.filesize/1024/1024).toFixed(2);
+                            var filesize = "";
+                            if(mSize>1024){
+                                filesize = mSize/1024 + "G";
+                            }else{
+                                filesize = mSize + 'M'
+                            }
                             return h('span',{},filesize)
                         }
                     },
@@ -236,11 +243,10 @@
                                 [
                                     h('Button',{
                                         props:{
-                                            type:"primary",
-                                            shape:"circle", 
-                                            icon:"ios-search"   
+                                            shape:"circle",  
+                                            icon:"ios-play"   
                                         }
-                                    },"")
+                                    },null)
                                 ]
                             )
                         } 
@@ -249,7 +255,41 @@
             },
             methods: {
                 handleDblclick:function(row){
-
+         
+                    var url = myUrls.playRecord(), 
+                        me = this,
+                        data = {
+                            deviceid: deviceid,
+                            channel:row.channel,
+                            starttime: row.starttime  
+                        };
+                    utils.sendAjax(url,data,function (resp) {
+             
+                        var record = resp.record , status = resp.status ;
+                        console.log('data', record);
+                        if(status == CMD_SEND_RESULT_UNCONFIRM){
+                            me.$Message.error('发送成功，未收到确认'); 
+                        }else if(status === CMD_SEND_RESULT_PASSWORD_ERROR){
+                            me.$Message.error('密码错误');
+                        }else if(status === CMD_SEND_RESULT_OFFLINE_NOT_CACHE){           
+                            me.$Message.error("设备离线，未缓存");   
+                        }else if(status === CMD_SEND_RESULT_OFFLINE_CACHED){
+                            me.$Message.error("设备离线，已缓存");
+                        }else if(status === CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD){
+                            me.$Message.error("需要修改默认密码");
+                        }else if(status === CMD_SEND_RESULT_DETAIL_ERROR){
+                            me.$Message.error("错误:" + resp.cause);
+                        }else if(status === CMD_SEND_CONFIRMED){
+                            console.log('CMD_SEND_CONFIRMED', 6);
+                            player.pause()
+                            player.src(record.playurl);
+                            player.play();
+                        }else if(status === CMD_SEND_OVER_RETRY_TIMES){
+                            me.$Message.error("尝试发送3次失败");
+                        }else if(status === CMD_SEND_SYNC_TIMEOUT){
+                            me.$Message.error("发送超时");
+                        }
+                    });
                 },
                 queryMedia:function(){
                     if(!(this.date&&this.timeRange[0]&&this.timeRange[1])){
