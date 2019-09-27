@@ -134,7 +134,7 @@
                     <Layout class="full">       
                         <i-Content style="height: 100%;">
                             <div class="full" id="videoContent" ref="videoContent">
-                                <video id="video" class="video-js" controls poster="" >  
+                                <!-- <video id="video" class="video-js" controls poster="" >   -->
                             </div>                             
                         </i-Content>
                         <i-Footer style="height:300px;padding: 0px;">
@@ -281,8 +281,8 @@
                             me.$Message.error("错误:" + resp.cause);
                         }else if(status === CMD_SEND_CONFIRMED){
                             console.log('CMD_SEND_CONFIRMED', 6);
-                            player.pause()
-                            player.src(record.playurl);
+                            player.dispose();
+                            me.initVideo(record.playurl);
                             player.play();
                         }else if(status === CMD_SEND_OVER_RETRY_TIMES){
                             me.$Message.error("尝试发送3次失败");
@@ -370,8 +370,21 @@
                         }
                     })
                 },
-                initApp:function(){
-                    var videoContent = this.$refs.videoContent;
+                createVideoElement:function(){
+          
+                    var videoEl = document.createElement('video');
+                        videoEl.setAttribute( 'id' , 'video');
+                        videoEl.setAttribute( 'controls' , 'true' );
+                        videoEl.setAttribute( 'poster' , '');
+                        videoEl.className ="video-js";
+                        this.$refs.videoContent.appendChild(videoEl);
+                
+                },
+                initVideo:function(url){
+                    this.createVideoElement();
+                    var videoContent = this.$refs.videoContent,
+                        sources = [{src: 'rtmp://58.200.131.2:1935/livetv/hunantv',type: 'rtmp/flv'}];
+                        if(url) sources = [{src: url,type: 'rtmp/flv'}]; 
                     player = videojs('video', {
                         poster:"./images/tv_default.jpg",
                         autoplay: false ,
@@ -385,13 +398,7 @@
                             liveDisplay: true,
                         },
                         techOrder: ['html5','flash'],
-                        sources: [
-                                { 
-                                    src: 'rtmp://58.200.131.2:1935/livetv/hunantv',
-                                    // src:this.allPlayUrls[index].playurl,
-                                    type: 'rtmp/flv'
-                                }
-                            ],
+                        sources: sources,
                     },function(){
                         
                         document.getElementsByClassName('vjs-picture-in-picture-control')[0].style.display = 'none';
@@ -418,7 +425,7 @@
             mounted :function() {
                 var that = this; 
                 that.$nextTick(function(){ 
-                    that.initApp(); 
+                    that.initVideo(); 
                     that.onWindowResize();
                 });
             },
