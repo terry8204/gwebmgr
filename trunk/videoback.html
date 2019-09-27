@@ -179,7 +179,7 @@
                 selectType:'1',
                 date:new Date(),
                 timeRange:["00-00-00","23-59-59"],
-                storageType:'c',
+                storageType:'a',
                 fileType:'apple',
                 videotppe:true,
                 tableData:[],
@@ -191,10 +191,17 @@
                     {
                         title: '开始时间',
                         key: 'starttime',
+                        render:function(h,params){
+                            return h('span',{},DateFormat.format(new Date(params.row.starttime),'yyyy-MM-dd'))
+                        }
                     },
                     {
                         title: '结束时间',
                         key: 'endtime',
+                        render:function(h,params){
+                            console.log('params', params);
+                            return h('span',{},DateFormat.format(new Date(params.row.endtime),'yyyy-MM-dd'))
+                        }
                     },
                     {
                         title: '报警标志',
@@ -227,12 +234,12 @@
 
                     var url = myUrls.queryMediaList(),
                         that = this,
-                        dateStr = DateFormat.format(this.date,'yyyy-MM-dd'),
+                        dateStr = DateFormat.format(this.date,'yyyy-MM-dd').substr(2),
                         data = {
                             deviceid:deviceid,
                             channel:Number(this.selectType),                //需要查询的通道号
-                            starttime:dateStr + ' ' + this.timeRange[0],              //开始时间YY-MM-DD-HH-MM-SS
-                            endtime:dateStr + ' ' + this.timeRange[1],              //结束时间YY-MM-DD-HH-MM-SS
+                            starttime:(dateStr + '-' + this.timeRange[0].split(":").join("-")).split("-").join(""),              //开始时间YY-MM-DD-HH-MM-SS
+                            endtime:(dateStr + '-' + this.timeRange[1].split(":").join("-")).split("-").join(""),              //结束时间YY-MM-DD-HH-MM-SS
                             alarmtype:0,                //报警标志
                             mediatype:2,               //资源类型     0：音视频 1音频 2视频 3视频或者音视频
                             streamtype:0,              //码流类型     0：全部码流 1主码流2子码流
@@ -257,7 +264,7 @@
                             that.$Message.error("错误:" + resp.cause);
                         }else if(status === CMD_SEND_CONFIRMED){
                             if(records.length){
-
+                                that.tableData = records;
                             }else{
                                 that.$Message.error("没有存储记录");
                             }
