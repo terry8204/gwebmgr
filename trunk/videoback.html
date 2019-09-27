@@ -181,7 +181,7 @@
                 timeRange:["00-00-00","23-59-59"],
                 storageType:'c',
                 fileType:'apple',
-                videotppe:2,
+                videotppe:true,
                 tableData:[],
                 columns:[
                     {
@@ -234,7 +234,7 @@
                             starttime:dateStr + ' ' + this.timeRange[0],              //开始时间YY-MM-DD-HH-MM-SS
                             endtime:dateStr + ' ' + this.timeRange[1],              //结束时间YY-MM-DD-HH-MM-SS
                             alarmtype:0,                //报警标志
-                            mediatype:this.videotppe,               //资源类型     0：音视频 1音频 2视频 3视频或者音视频
+                            mediatype:2,               //资源类型     0：音视频 1音频 2视频 3视频或者音视频
                             streamtype:0,              //码流类型     0：全部码流 1主码流2子码流
                             storetype:storetype,
                         };
@@ -335,6 +335,36 @@
                 });
             },
         })
+
+        function flashChecker() {
+            var hasFlash = 0; //是否安装了flash
+            var flashVersion = 0; //flash版本
+            if (document.all) {
+            var swf = new ActiveXObject('ShockwaveFlash.ShockwaveFlash');
+            if (swf) {
+                hasFlash = 1;
+                VSwf = swf.GetVariable("$version");
+                flashVersion = parseInt(VSwf.split(" ")[1].split(",")[0]);
+            }
+            } else {
+            if (navigator.plugins && navigator.plugins.length > 0) {
+                var swf = navigator.plugins["Shockwave Flash"];
+                if (swf) {
+                hasFlash = 1;
+                var words = swf.description.split(" ");
+                for (var i = 0; i < words.length; ++i) {
+                    if (isNaN(parseInt(words[i]))) continue;
+                    flashVersion = parseInt(words[i]);
+                }
+                }
+            }
+            }
+            return { f: hasFlash, v: flashVersion };
+        }
+        var fls = flashChecker();
+        if (!fls.f) {
+            vRoot.$Message.error("请安装flash或者允许网页flash播放");
+        }
     </script>
 </body>
 </html>
