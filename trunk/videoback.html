@@ -261,7 +261,8 @@
                         data = {
                             deviceid: deviceid,
                             channel:row.channel,
-                            starttime: row.starttime  
+                            starttime: row.starttime ,
+                            endtime: row.endtime  
                         };
                     utils.sendAjax(url,data,function (resp) {
              
