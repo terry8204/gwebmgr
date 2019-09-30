@@ -30,8 +30,8 @@
         }
         .mask{
             position: absolute;
-            left: 42px;
-            right: 9px;
+            left: 17px;
+            right: 10px;
             top: 10px;
             bottom: 44px;
         }
@@ -281,6 +281,7 @@
         var token = utils.getParameterByName("token");
         var startPlayerTimer = null;
         var isRequsetPlaying = false;    // 防止连续点击
+        var isResize = false;
         function getzf(num) {
             if (parseInt(num) < 10) {  num = '0' + num; }  
             return num; 
@@ -705,7 +706,7 @@
                             }
                         },
                         yAxis: {
-                            data: ['视频']
+                            data: ['']
                         },
                         series: [
                             {
@@ -761,17 +762,23 @@
  
                 },
                 onWindowResize:function(){
-                    var videoContent = this.$refs.videoContent;
+                    var videoContent = this.$refs.videoContent , that = this;
                     window.onresize = function () { 
                         player.width($(videoContent).width());
                         player.height($(videoContent).height());
-                        chart.resize();
+                        if(!that.isTable){
+                            chart.resize();
+                        }else{
+                            isResize = true;
+                        }
                     }
                 }
             },
             watch: {
-                isTable:function(newVal){
-                   setTimeout(function () { chart.resize();  },100)
+                isTable:function(newVal){ 
+                    if(isResize && !newVal){
+                        setTimeout(function () { chart.resize();  },100)
+                    }
                 },
                 tableData:function(newVal){
                     if(newVal.length){
@@ -783,11 +790,11 @@
             
                             data.push({
                                 itemStyle: { normal: { color: '#e4393c' } },
-                                name: '视频',
+                                name: '',
                                 value: [0, starttimeStr, endtimeStr]
                             })
                         })
-                        console.log('data', data);
+       
                         chart.setOption(this.getEchartOption(DateFormat.format(this.date,'yyyy-MM-dd'),data));    
                     }else{
                         chart.setOption(this.getEchartOption(DateFormat.format(this.date,'yyyy-MM-dd'),[])); 
