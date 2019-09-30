@@ -59,15 +59,8 @@
 <body>
     <div id="container">
         <Layout style="height:100%;">
-            <i-Header>
-                <Row style="height: 100%;">   
-                    <i-Col span="12" style="height: 100%;color: #ffffff">
-                        <h1 style="color:#ffffff">汽车视频平台</h1>
-                    </i-Col>
-                </Row> 
-            </i-Header>
             <Layout>
-                <Sider hide-trigger width="300" style="background-color:#ffffff;padding:10px;">
+                <Sider hide-trigger width="260" style="background-color:#ffffff;padding:10px;">
                     <div class="full">
                         <Row class="row-cls">   
                             <i-Col span="6" class="col-cls">
@@ -152,14 +145,14 @@
                         </div>
                     </div>
                 </Sider>
-                <i-Content style="padding:10px;height: 100%;">
-                    <Layout class="full">       
-                        <i-Content style="height: 100%;">
+                <div style="padding:10px;position: absolute;left: 260px;top:0px;right: 0;bottom: 0;">
+                    <div class="full" style="position:relative;">       
+                        <div style="position: absolute;left: 0px;top:0px;right: 0;bottom: 300px;">
                             <div class="full" id="videoContent" ref="videoContent">
                                 <!-- <video id="video" class="video-js" controls poster="" >   -->
                             </div>                             
-                        </i-Content>
-                        <i-Footer style="height:300px;padding: 0px;">
+                        </div>
+                        <div style="position: absolute;left: 0px;right: 0;bottom: 0px;height: 300px;">
                             <div style="height:50px;line-height: 50px;">
                                <div style="float:left;">
                                     <Button-Group shape="circle">
@@ -199,9 +192,9 @@
                                 </div>
                             </div>
                             
-                        </i-Footer>
-                    </Layout>                          
-                </i-Content>
+                        </div>
+                    </div>                          
+                </div>
             </Layout>   
         </Layout>   
     </div>
@@ -220,7 +213,7 @@
         var deviceid = utils.getParameterByName("deviceid");
         var token = utils.getParameterByName("token");
         var startPlayerTimer = null;
-        var lock = true;    // 防止连续点击
+        var isRequsetPlaying = false;    // 防止连续点击
         function getzf(num) {
             if (parseInt(num) < 10) {  num = '0' + num; }  
             return num; 
@@ -331,9 +324,9 @@
                     }
                 },  
                 handleClickMask:function(){
-                    if(!lock) return;
-                    lock = false;
-                    setTimeout(function () { lock = true; },2000);
+                    if(isRequsetPlaying) return;
+                    isRequsetPlaying = true;
+
                     var startTimeStr = DateFormat.format(this.date,'yyyy-MM-dd') + " " + this.timeReminder ;
                     var endTimeStr = null;
                     var channel = null;
@@ -358,7 +351,7 @@
                             starttime:startTimeStr,
                             endtime:endTimeStr
                         },function (resp) { 
-                    
+                            isRequsetPlaying = false;
                             var record = resp.record , status = resp.status ;
                             if(status == CMD_SEND_RESULT_UNCONFIRM){
                                 me.$Message.error('发送成功，未收到确认'); 
@@ -400,9 +393,9 @@
                 // short playrate;                //快进或快退倍数 0：无效 1：1倍 2:2倍 3:4倍 4:8倍 5:16倍
                 // String starttime;              //拖动回放位置，回放控制为5时有效
                 handleDblclick:function(row){
-                    if(!lock) return;
-                    lock = false;
-                    setTimeout(function () { lock = true; },2000);
+                    if(isRequsetPlaying) return;
+                    isRequsetPlaying = true;
+    
 
                     var url = myUrls.playRecord(), 
                         me = this,
@@ -413,7 +406,7 @@
                             endtime: row.endtime  
                         };
                     utils.sendAjax(url,data,function (resp) {
-             
+                        isRequsetPlaying = false;
                         var record = resp.record , status = resp.status ;
             
                         if(status == CMD_SEND_RESULT_UNCONFIRM){
