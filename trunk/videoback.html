@@ -302,6 +302,11 @@
                 tableData:[],
                 columns:[
                     {
+                        title: '序号',
+                        width:60,
+                        key:'index'
+                    },
+                    {
                         title: '通道号',
                         key: 'channel',
                         width:80,
@@ -435,18 +440,18 @@
                             }else if(status === CMD_SEND_RESULT_DETAIL_ERROR){
                                 me.$Message.error("错误:" + resp.cause);
                             }else if(status === CMD_SEND_CONFIRMED){
-                                if(player.src() !== record.playurl){
+                                // if(player.src() !== record.playurl){
                                     if(startPlayerTimer){
                                         clearTimeout(startPlayerTimer);
                                     }
                                     player.dispose();
                                     me.initVideo(record.playurl);
                                     player.play();
-                                }else{
-                                    if(player.paused()){
-                                        player.play();
-                                    }
-                                }
+                                // }else{
+                                //     if(player.paused()){
+                                //         player.play();
+                                //     }
+                                // }
                             }else if(status === CMD_SEND_OVER_RETRY_TIMES){
                                 me.$Message.error("尝试发送3次失败");
                             }else if(status === CMD_SEND_SYNC_TIMEOUT){
@@ -571,6 +576,14 @@
                         }
 
                         if(isSucc){
+                            that.$Message.success("查询成功");
+                         
+                            records.sort(function (a,b) {
+                                return DateFormat.dateStrToLong(b.starttime,0) - DateFormat.dateStrToLong(a.starttime,0)  ;
+                            });
+                            records.forEach(function (item,index) { 
+                                item.index = ++index;
+                            });
                             that.tableData = records;
                         }else{
                             that.tableData =[];
@@ -604,7 +617,7 @@
                 initVideo:function(url){
                     this.createVideoElement();
                     var videoContent = this.$refs.videoContent,
-                        sources = [{src: 'rtmp://58.200.131.2:1935/livetv/hunantv',type: 'rtmp/flv'}];
+                        sources = [];  //[{src: 'rtmp://58.200.131.2:1935/livetv/hunantv',type: 'rtmp/flv'}];
                         if(url) sources = [{src: url,type: 'rtmp/flv'}]; 
                     player = videojs('video', {
                         poster:"./images/tv_default.jpg",
@@ -677,11 +690,14 @@
                             type: 'time',               
                             interval: 3600*1000,   //以一个小时递增 
                             min:dateStr + ' 00:00', //将data里最小时间的整点时间设为min,否则min会以data里面的min为开始进行整点递增
-                            max:dateStr +' 23:59',
+                            max:dateStr +' 24:00',
                             axisLabel: {
-                                formatter: function (value) { 
+                                formatter: function (value,index) { 
                                     var date = new Date(value); 
-                                    return getzf(date.getHours()) + ':00';  
+                                    if(index === 24){
+                                        return '24:00'; 
+                                    }
+                                    return getzf(date.getHours()) + ':00' ;  
 
                                     function getzf(num) {
                                         if (parseInt(num) < 10) {  num = '0' + num; }  
