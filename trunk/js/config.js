@@ -433,6 +433,9 @@ var myUrls = {
   playRecord: function () {
     return this.host + 'webapi?action=playrecord_sync&token=' + token;
   },
+  playRecordControl: function () {
+    return this.host + 'webapi?action=playrecordcontrol_sync&token=' + token;
+  },
 }
 
 
