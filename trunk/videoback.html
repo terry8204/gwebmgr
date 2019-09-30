@@ -193,8 +193,8 @@
                                 <div v-show="!isTable" style="width:100%;height:250px;position: relative;">
                                     <div id="videoTime" style="width:100%;height:250px;" ></div>
                                     <div class="mask" @click="handleClickMask" ref="videoTimeMask">
-                                        <span class="time-reminder" :style='timeReminderElStyle' v-text="timeReminder"></span>
                                         <div class="time-line" :style='timeLineElStyle'></div>
+                                        <span class="time-reminder" :style='timeReminderElStyle' v-text="timeReminder"></span>
                                     </div>
                                 </div>
                             </div>
@@ -219,6 +219,8 @@
         var chart = null;
         var deviceid = utils.getParameterByName("deviceid");
         var token = utils.getParameterByName("token");
+        var startPlayerTimer = null;
+        var lock = true;    // 防止连续点击
         function getzf(num) {
             if (parseInt(num) < 10) {  num = '0' + num; }  
             return num; 
@@ -329,12 +331,15 @@
                     }
                 },  
                 handleClickMask:function(){
+                    if(!lock) return;
+                    lock = false;
+                    setTimeout(function () { lock = true; },2000);
                     var startTimeStr = DateFormat.format(this.date,'yyyy-MM-dd') + " " + this.timeReminder ;
                     var endTimeStr = null;
                     var channel = null;
                     var startTime = new Date(startTimeStr).getTime();
                     var me = this;
-                    
+
                     this.tableData.forEach(function (item) { 
                         var itemStartTime = new Date(item.starttime).getTime();
                         var itemEndTime = new Date(item.endtime).getTime();
@@ -369,6 +374,9 @@
                                 me.$Message.error("错误:" + resp.cause);
                             }else if(status === CMD_SEND_CONFIRMED){
                                 if(player.src() !== record.playurl){
+                                    if(startPlayerTimer){
+                                        clearTimeout(startPlayerTimer);
+                                    }
                                     player.dispose();
                                     me.initVideo(record.playurl);
                                     player.play();
@@ -392,7 +400,10 @@
                 // short playrate;                //快进或快退倍数 0：无效 1：1倍 2:2倍 3:4倍 4:8倍 5:16倍
                 // String starttime;              //拖动回放位置，回放控制为5时有效
                 handleDblclick:function(row){
-         
+                    if(!lock) return;
+                    lock = false;
+                    setTimeout(function () { lock = true; },2000);
+
                     var url = myUrls.playRecord(), 
                         me = this,
                         data = {
@@ -404,7 +415,7 @@
                     utils.sendAjax(url,data,function (resp) {
              
                         var record = resp.record , status = resp.status ;
-                        console.log('data', record);
+            
                         if(status == CMD_SEND_RESULT_UNCONFIRM){
                             me.$Message.error('发送成功，未收到确认'); 
                         }else if(status === CMD_SEND_RESULT_PASSWORD_ERROR){
@@ -418,7 +429,9 @@
                         }else if(status === CMD_SEND_RESULT_DETAIL_ERROR){
                             me.$Message.error("错误:" + resp.cause);
                         }else if(status === CMD_SEND_CONFIRMED){
-             
+                            if(startPlayerTimer){
+                                clearTimeout(startPlayerTimer);
+                            }
                             player.dispose();
                             me.initVideo(record.playurl);
                             player.play();
@@ -551,11 +564,16 @@
 
                         this.on('play',function () { 
                             document.getElementsByClassName('vjs-big-play-button')[0].style.display = 'none';
-    
+                            if(!startPlayerTimer){
+                                clearTimeout(startPlayerTimer);
+                            }
+                            startPlayerTimer = setTimeout(function () { 
+                                player.pause();
+                            },60*3*1000);    
                         });
                         this.on('pause',function () { 
                             document.getElementsByClassName('vjs-big-play-button')[0].style.display = 'block';
-
+                            startPlayerTimer = null;
                         });
                     });
                  
@@ -569,7 +587,7 @@
                     var colors = ['#e4393c']; //三种状态的颜色
                     var state = ['视频']; //三种状态
                     dateStr = dateStr.replace('-','/').replace('-','/');
-                    console.log('dateStr', dateStr)
+          
                     // echart配置
                     return {
                         color: colors,
