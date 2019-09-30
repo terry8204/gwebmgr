@@ -7,7 +7,6 @@
     <link rel="shortcut icon" href="./favicon.ico" />
     <title>视频</title>
     <link rel="stylesheet" href="dist/styles/iview.css">
-    <link rel="stylesheet" href="css/timelineInfo.css">
     <style>
         html,body,#container,.full{
             width: 100%;
@@ -33,8 +32,24 @@
             position: absolute;
             left: 42px;
             right: 9px;
+            top: 10px;
+            bottom: 44px;
+        }
+        .time-reminder{
+            position: absolute;
+            padding: 3px;
+            color: #ffffff;
+            background-color: #0071C6;
+            top: 0px;
+            left: 0px;
+        }
+        .time-line{
+            position: absolute;
+            left: 0;
             top: 0;
             bottom: 0;
+            width: 1px;
+            background-color: #0071C6;
         }
     </style>
     <link href="./videojs/video-js.css" rel="stylesheet">
@@ -131,7 +146,7 @@
                         <div style="margin-top:30px;">
                             <Row>
                                 <i-col span="18" offset="3">
-                                    <i-button style="width:100%;" type="primry" @click="queryMedia">搜索</i-button>
+                                    <i-button style="width:100%;" type="primry" @click="queryMedia" :loading="loading">搜索</i-button>
                                 </i-col>
                             </Row>
                         </div>
@@ -177,7 +192,10 @@
                                     :loading="loading"></i-table>
                                 <div v-show="!isTable" style="width:100%;height:250px;position: relative;">
                                     <div id="videoTime" style="width:100%;height:250px;" ></div>
-                                    <div class="mask" @click="handleClickMask" ref="videoTimeMask"></div>
+                                    <div class="mask" @click="handleClickMask" ref="videoTimeMask">
+                                        <span class="time-reminder" :style='timeReminderElStyle' v-text="timeReminder"></span>
+                                        <div class="time-line" :style='timeLineElStyle'></div>
+                                    </div>
                                 </div>
                             </div>
                             
@@ -196,19 +214,21 @@
     <script src="js/js.cookie.min.js"></script>
     <script src="js/util.js"></script>
     <script src="js/echarts.min.js"></script>
-    <script src="js/timelineinfo.js"></script>
-
     <script>
         var player = null;
         var chart = null;
         var deviceid = utils.getParameterByName("deviceid");
         var token = utils.getParameterByName("token");
-
+        function getzf(num) {
+            if (parseInt(num) < 10) {  num = '0' + num; }  
+            return num; 
+        } 
         var vRoot = new Vue({
             el:"#container",
             data:{
                 isTable:false,
                 loading:false,
+                maskEl:null,
                 selectType:'1',
                 date:new Date(),
                 timeRange:["00-00-00","23-59-59"],
@@ -225,33 +245,12 @@
                     {
                         title: '开始时间',
                         key: 'starttime',
-                        render:function(h,params){
-                            var fullStartTime = '20' + params.row.starttime;
-                            var yy = fullStartTime.slice(0,4);
-                                MM = fullStartTime.slice(4,6),
-                                dd = fullStartTime.slice(6,8),
-                                hh = fullStartTime.slice(8,10),
-                                mm = fullStartTime.slice(10,12),
-                                ss = fullStartTime.slice(12,14),
-                                dateStr = yy+'-'+MM +'-' + dd + ' ' + hh+':'+mm +':' + ss ;
-
-                            return h('span',{},dateStr)
-                        }
+                        
                     },
                     {
                         title: '结束时间',
                         key: 'endtime',
-                        render:function(h,params){
-                            var fullStartTime = '20' + params.row.endtime;
-                            var yy = fullStartTime.slice(0,4);
-                                MM = fullStartTime.slice(4,6),
-                                dd = fullStartTime.slice(6,8),
-                                hh = fullStartTime.slice(8,10),
-                                mm = fullStartTime.slice(10,12),
-                                ss = fullStartTime.slice(12,14),
-                                dateStr = yy+'-'+MM +'-' + dd + ' ' + hh+':'+mm +':' + ss ;
-                            return h('span',{},dateStr)
-                        }
+                        
                     },
                     {
                         title: '文件大小',
@@ -278,21 +277,29 @@
                                         props:{
                                             shape:"circle",  
                                             icon:"ios-play"   
+                                        },
+                                        on:{
+                                            click : function(){
+                                                vRoot.handleDblclick(params.row);
+                                            }
                                         }
                                     },null)
                                 ]
                             )
                         } 
                     }
-                ]
+                ],
+                timeReminder:'',
+                timeReminderElStyle:{},
+                timeLineElStyle:{},
             },
             methods: {
-                handleClickMask:function(e){
-                    var mask = this.$refs.videoTimeMask;
-                    var rect = mask.getBoundingClientRect()
-                    var elx = rect.x;
+                onMouseMove:function(e){
+                
+                    var rect = this.maskEl.getBoundingClientRect()
                     var elWidth = rect.width;
-                    var offsetX = e.offsetX;
+                    var offsetX = e.clientX - rect.left;
+
                     var currentSecond = offsetX * 24*60*60 / elWidth;
                  
                     var hours = parseInt(currentSecond / 3600) ;
@@ -300,15 +307,85 @@
                     var mins = parseInt(remainSeconds / 60);
                     remainSeconds = remainSeconds - mins * 60;
                     var seconds = parseInt(remainSeconds);
-                    var hoursMinsSecondsStr =  getzf(hours) + ':' + getzf(mins) + ':' + getzf(seconds);
+                    this.timeReminder =  getzf(hours) + ':' + getzf(mins) + ':' + getzf(seconds);
+           
+                    var top = (e.clientY - rect.top - 30);
+                    var left = (e.clientX - rect.left);
+            
+                    if(top < 0){
+                        top = 0;
+                    }
 
+                    if(left > (elWidth - 60)){
+                        left = elWidth - 60;
+                    }
 
-                       console.log('hoursMinsSecondsStr', hoursMinsSecondsStr);
-                    function getzf(num) {
-                        if (parseInt(num) < 10) {  num = '0' + num; }  
-                        return num; 
-                    }      
+                    this.timeReminderElStyle = {
+                        left: left   + 'px',
+                        top: top + 'px',
+                    };
+                    this.timeLineElStyle = {
+                        left: (e.clientX - rect.left)  + 'px',
+                    }
+                },  
+                handleClickMask:function(){
+                    var startTimeStr = DateFormat.format(this.date,'yyyy-MM-dd') + " " + this.timeReminder ;
+                    var endTimeStr = null;
+                    var channel = null;
+                    var startTime = new Date(startTimeStr).getTime();
+                    var me = this;
+                    
+                    this.tableData.forEach(function (item) { 
+                        var itemStartTime = new Date(item.starttime).getTime();
+                        var itemEndTime = new Date(item.endtime).getTime();
+                        if(itemStartTime <=  startTime && startTime <= itemEndTime){
+                            endTimeStr = item.endtime;
+                            channel = item.channel;
+                        }
+                    })
+                    if(endTimeStr){
+                        var url = myUrls.playRecordControl();
+                        utils.sendAjax(url,{
+                            deviceid:deviceid,
+                            channel:channel,
+                            playrate:0,
+                            playcontrol:0,
+                            starttime:startTimeStr,
+                            endtime:endTimeStr
+                        },function (resp) { 
+                    
+                            var record = resp.record , status = resp.status ;
+                            if(status == CMD_SEND_RESULT_UNCONFIRM){
+                                me.$Message.error('发送成功，未收到确认'); 
+                            }else if(status === CMD_SEND_RESULT_PASSWORD_ERROR){
+                                me.$Message.error('密码错误');
+                            }else if(status === CMD_SEND_RESULT_OFFLINE_NOT_CACHE){           
+                                me.$Message.error("设备离线，未缓存");   
+                            }else if(status === CMD_SEND_RESULT_OFFLINE_CACHED){
+                                me.$Message.error("设备离线，已缓存");
+                            }else if(status === CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD){
+                                me.$Message.error("需要修改默认密码");
+                            }else if(status === CMD_SEND_RESULT_DETAIL_ERROR){
+                                me.$Message.error("错误:" + resp.cause);
+                            }else if(status === CMD_SEND_CONFIRMED){
+                                if(player.src() !== record.playurl){
+                                    player.dispose();
+                                    me.initVideo(record.playurl);
+                                    player.play();
+                                }else{
+                                    if(player.paused()){
+                                        player.play();
+                                    }
+                                }
+                            }else if(status === CMD_SEND_OVER_RETRY_TIMES){
+                                me.$Message.error("尝试发送3次失败");
+                            }else if(status === CMD_SEND_SYNC_TIMEOUT){
+                                me.$Message.error("发送超时");
+                            }
+                        });
+                    }
                 },
+
                 // String deviceid;
                 // short channel;
                 // short playcontrol; //回放控制 0：开始回放 1:暂停回放 2:结束回放3:快进回放4:关键帧快退回放5:拖动回放6：关键帧回放
@@ -341,7 +418,7 @@
                         }else if(status === CMD_SEND_RESULT_DETAIL_ERROR){
                             me.$Message.error("错误:" + resp.cause);
                         }else if(status === CMD_SEND_CONFIRMED){
-                            console.log('CMD_SEND_CONFIRMED', 6);
+             
                             player.dispose();
                             me.initVideo(record.playurl);
                             player.play();
@@ -485,12 +562,14 @@
                 },
                 initChart:function(){
                    chart = echarts.init(document.getElementById('videoTime'));
-                   chart.setOption(this.getEchartOption([]));
+                   chart.setOption(this.getEchartOption(DateFormat.format(this.date,'yyyy-MM-dd'),[]));
                 },
-                getEchartOption:function(data){
+                getEchartOption:function(dateStr,data){
+
                     var colors = ['#e4393c']; //三种状态的颜色
                     var state = ['视频']; //三种状态
-                
+                    dateStr = dateStr.replace('-','/').replace('-','/');
+                    console.log('dateStr', dateStr)
                     // echart配置
                     return {
                         color: colors,
@@ -517,8 +596,8 @@
                         xAxis: {                   
                             type: 'time',               
                             interval: 3600*1000,   //以一个小时递增 
-                            min:'2019/10/01 00:00', //将data里最小时间的整点时间设为min,否则min会以data里面的min为开始进行整点递增
-                            max:'2019/10/01 23:59',
+                            min:dateStr + ' 00:00', //将data里最小时间的整点时间设为min,否则min会以data里面的min为开始进行整点递增
+                            max:dateStr +' 23:59',
                             axisLabel: {
                                 formatter: function (value) { 
                                     var date = new Date(value); 
@@ -564,22 +643,22 @@
                                     y: 0// data 中『维度0』对应到 Y 轴
                                 },
                                 data: data
-                                    //[
+                                //     [
      
-                                    // {
-                                    //     itemStyle: { normal: { color: colors[0] } },//条形颜色
-                                    //     name: '视频',
-                                    //     value: [0, '2019/10/01 01:28:00', '2019/10/01 05:59:12']//0,1,2代表y轴的索引，后两位代表x轴数据开始和结束
-                                    // },
+                                //     {
+                                //         itemStyle: { normal: { color: colors[0] } },//条形颜色
+                                //         name: '视频',
+                                //         value: [0, '2019/10/01 01:28:00', '2019/10/01 05:59:12']//0,1,2代表y轴的索引，后两位代表x轴数据开始和结束
+                                //     },
                                   
-                                    // {
-                                    //     itemStyle: { normal: { color: colors[0] } },
-                                    //     name: '视频',
-                                    //     value: [0, '2019/10/01 06:13:12', '2019/10/01 08:22:14']
-                                    // },
+                                //     {
+                                //         itemStyle: { normal: { color: colors[0] } },
+                                //         name: '视频',
+                                //         value: [0, '2019/10/01 06:13:12', '2019/10/01 08:22:14']
+                                //     },
                 
                                  
-                                //]
+                                // ]
                             }
                         ]
                     };
@@ -603,16 +682,21 @@
                 tableData:function(newVal){
                     if(newVal.length){
                         var data = [];
+                    
                         newVal.forEach(function (item) { 
-                            
+                            var starttimeStr = item.starttime.replace('-','/').replace('-','/');
+                            var endtimeStr = item.endtime.replace('-','/').replace('-','/');
+            
                             data.push({
-                                        itemStyle: { normal: { color: '#e4393c' } },//条形颜色
-                                        name: '视频',
-                                        value: [0, '2019/10/01 01:28:00', '2019/10/01 05:59:12']//0,1,2代表y轴的索引，后两位代表x轴数据开始和结束
-                                    })
+                                itemStyle: { normal: { color: '#e4393c' } },
+                                name: '视频',
+                                value: [0, starttimeStr, endtimeStr]
+                            })
                         })
+                        console.log('data', data);
+                        chart.setOption(this.getEchartOption(DateFormat.format(this.date,'yyyy-MM-dd'),data));    
                     }else{
-                        chart.setOption(this.getEchartOption([])); 
+                        chart.setOption(this.getEchartOption(DateFormat.format(this.date,'yyyy-MM-dd'),[])); 
                     }
                 }
             },
@@ -622,6 +706,10 @@
                     that.initVideo(); 
                     that.initChart();
                     that.onWindowResize();
+                    that.maskEl = that.$refs.videoTimeMask;
+                    that.maskEl.onmousemove = function (e) { 
+                        that.onMouseMove(e);
+                    }
                 });
             },
         })
