@@ -483,10 +483,11 @@
                             starttime: row.starttime ,
                             endtime: row.endtime  
                         };
+                        player.dispose();
+                        me.initVideo();
                     utils.sendAjax(url,data,function (resp) {
                         isRequsetPlaying = false;
                         var record = resp.record , status = resp.status ;
-            
                         if(status == CMD_SEND_RESULT_UNCONFIRM){
                             me.$Message.error('发送成功，未收到确认'); 
                         }else if(status === CMD_SEND_RESULT_PASSWORD_ERROR){
@@ -503,8 +504,7 @@
                             if(startPlayerTimer){
                                 clearTimeout(startPlayerTimer);
                             }
-                            player.dispose();
-                            me.initVideo(record.playurl);
+                            player.src(record.playurl);
                             player.play();
                         }else if(status === CMD_SEND_OVER_RETRY_TIMES){
                             me.$Message.error("尝试发送3次失败");
