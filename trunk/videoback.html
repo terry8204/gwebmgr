@@ -30,8 +30,8 @@
         }
         .mask{
             position: absolute;
-            left: 17px;
-            right: 10px;
+            left: 18px;
+            right: 13px;
             top: 10px;
             bottom: 44px;
         }
@@ -367,14 +367,17 @@
                     var rect = this.maskEl.getBoundingClientRect()
                     var elWidth = rect.width;
                     var offsetX = e.clientX - rect.left;
-
+                    if(offsetX == elWidth - 1)
+                    {
+                        offsetX = elWidth;
+                    }
                     var currentSecond = offsetX * 24*60*60 / elWidth;
-                 
                     var hours = parseInt(currentSecond / 3600) ;
                     var remainSeconds = currentSecond - 3600* hours;
                     var mins = parseInt(remainSeconds / 60);
                     remainSeconds = remainSeconds - mins * 60;
-                    var seconds = parseInt(remainSeconds);
+                    // var seconds = parseInt(remainSeconds);
+                    var seconds = parseInt((currentSecond%3600)%60);
                     this.timeReminder =  getzf(hours) + ':' + getzf(mins) + ':' + getzf(seconds);
            
                     var top = (e.clientY - rect.top - 30);
@@ -384,17 +387,19 @@
                         top = 0;
                     }
 
-                    if(left > (elWidth - 60)){
-                        left = elWidth - 60;
+                    if(left > (elWidth - 54)){
+                        left = elWidth - 54;
                     }
 
                     this.timeReminderElStyle = {
                         left: left   + 'px',
                         top: top + 'px',
                     };
+
                     this.timeLineElStyle = {
-                        left: (e.clientX - rect.left)  + 'px',
+                        left: (e.clientX - rect.left -1 ) + 'px',
                     }
+
                 },  
                 handleClickMask:function(){
                     if(isRequsetPlaying) return;
@@ -680,7 +685,7 @@
                         },
                         grid: {//绘图网格
                             left: '10',
-                            right: '10',
+                            right: '15',
                             top: '10',
                             bottom: '10%',
                             containLabel: true
