@@ -403,8 +403,7 @@
                 },  
                 handleClickMask:function(){
                     if(isRequsetPlaying) return;
-                    isRequsetPlaying = true;
-
+        
                     var startTimeStr = DateFormat.format(this.date,'yyyy-MM-dd') + " " + this.timeReminder ;
                     var endTimeStr = null;
                     var channel = null;
@@ -420,6 +419,7 @@
                         }
                     })
                     if(endTimeStr){
+                        isRequsetPlaying = true;
                         var url = myUrls.playRecordControl();
                         utils.sendAjax(url,{
                             deviceid:deviceid,
@@ -445,6 +445,7 @@
                                 me.$Message.error("错误:" + resp.cause);
                             }else if(status === CMD_SEND_CONFIRMED){
                                 // if(player.src() !== record.playurl){
+                                    me.$Message.success('请求播放成功，请稍后...'); 
                                     if(startPlayerTimer){
                                         clearTimeout(startPlayerTimer);
                                     }
@@ -501,6 +502,7 @@
                         }else if(status === CMD_SEND_RESULT_DETAIL_ERROR){
                             me.$Message.error("错误:" + resp.cause);
                         }else if(status === CMD_SEND_CONFIRMED){
+                            me.$Message.success('请求播放成功，请稍后...'); 
                             if(startPlayerTimer){
                                 clearTimeout(startPlayerTimer);
                             }
