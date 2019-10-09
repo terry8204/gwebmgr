@@ -113,7 +113,7 @@
             height: 25%;
         }
         .device-info-wrapper{
-            background-color: #EEEEEE;
+            background-color: #495060;
             height: 50px;
             padding-left: 10px;
             vertical-align: middle;
@@ -125,6 +125,7 @@
             width: 300px;
             height: 50px;
             top: 0px;
+            color: #ffffff;
         }
         .tab-wrapper{
             position: absolute;
@@ -196,14 +197,25 @@
         }
         .video-back{
             width: 90px;
-            background-color: #5C98DF;
+            background-color: #495060;
             position: absolute;left: 10px;top: 0;height: 50px;
             cursor: pointer;
         }
-        .video-back img{
+        .video-back .bg-img{
+            height: 30px;
+        }
+        .video-back .text{
+            height: 20px;
+            line-height: 20px;
+            text-align: center;
+            color: #ffffff;
+        }
+        .video-back .bg-img{
+            text-align: center;
+        }
+        .video-back .bg-img img{
             border: 0;
-            width: 100%;
-            height: 45px;
+            margin-top: 3px;
         }
     </style>
     <link href="./videojs/video-js.css" rel="stylesheet">
@@ -368,10 +380,13 @@
                        </div>
                     </div>
                 </div>
-                <div style="position: absolute; left: 300px;bottom: 0;right: 0;top: 0;">           
-                    <div style="height:50px;line-height:50px;padding: 0 10px; position: absolute;left: 0;right: 0;top: 0;overflow: hidden;background-color: #eee;">
+                <div style="position: absolute; left: 300px;bottom: 0;right: 0;top: 0;">      
+                    <div style="height:50px;line-height:50px;padding: 0 10px; position: absolute;left: 0;right: 0;top: 0;overflow: hidden;background-color: #495060;">
                         <div class="video-back" @click='videoBack'>
-                            <img src="./images/videoback.png">
+                            <div class="bg-img">
+                                <img src="./videojs/images/videoback.png" width="30" height="30">
+                            </div>
+                            <div class="text">视频回放</div>
                         </div>
                         <div style="height: 100%;text-align: right;" class="tv_box">   
                                 <span><i class="icon icon_num1" @click="openAndCloseVideoWindows(1)"></i></span>
