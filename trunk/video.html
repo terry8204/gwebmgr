@@ -204,9 +204,22 @@
         .video-back .bg-img{
             height: 30px;
         }
+        .video-back .bg-img>div{
+            width: 30px;
+            height: 30px;
+            margin:2px auto;
+            background-image: url('./videojs/images/videoback.png');
+            background-size: cover;
+        }
+        .video-back:hover .bg-img>div{
+            background-image: url('./videojs/images/videoback_h.png');
+        }
+        .video-back:hover .text{
+            color: #1186DD;
+        }
         .video-back .text{
             height: 20px;
-            line-height: 20px;
+            line-height: 18px;
             text-align: center;
             color: #ffffff;
         }
@@ -384,7 +397,8 @@
                     <div style="height:50px;line-height:50px;padding: 0 10px; position: absolute;left: 0;right: 0;top: 0;overflow: hidden;background-color: #495060;">
                         <div class="video-back" @click='videoBack'>
                             <div class="bg-img">
-                                <img src="./videojs/images/videoback.png" width="30" height="30">
+                                <!-- <img src="./videojs/images/videoback.png" width="30" height="30"> -->
+                                <div>1</div>
                             </div>
                             <div class="text">视频回放</div>
                         </div>
