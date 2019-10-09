@@ -320,7 +320,7 @@ var utils = {
       ')">' + (isZh ? '查看街景' : 'Panorama') + '</span></p>';
     var extendsBtns = this.getIsAddExtendBtns(), extendsStr = '';
     if (extendsBtns.video) {
-      extendsStr += '<span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="openVdeio(' + deviceid + ')">视频</span>'
+      extendsStr += '<span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="openVdeio(' + deviceid + ',' + track.devicename + ')">视频</span>'
     };
     if (extendsBtns.audio) {
       extendsStr += '<span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="openAudio(' + deviceid + ')">音频</span>'
@@ -636,8 +636,8 @@ function openAudio (deviceid) {
   window.open(url);
 }
 
-function openVdeio (deviceid) {
-  var url = 'video.html?deviceid=' + deviceid + '&token=' + token;
+function openVdeio (deviceid, name) {
+  var url = 'video.html?deviceid=' + deviceid + '&token=' + token + '&name=' + name;
   window.open(url);
 }
 
