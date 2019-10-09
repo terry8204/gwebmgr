@@ -637,6 +637,7 @@ function openAudio (deviceid) {
 }
 
 function openVdeio (deviceid, name) {
+  name = encodeURIComponent(name);
   var url = 'video.html?deviceid=' + deviceid + '&token=' + token + '&name=' + name;
   window.open(url);
 }

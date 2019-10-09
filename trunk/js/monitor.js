@@ -276,7 +276,7 @@ var monitor = {
 
                     break;
                 case 'video':
-                    window.open("video.html?deviceid=" + this.currentDeviceId + "&token=" + token + '&name=' + this.deviceInfos[this.currentDeviceId].devicename);
+                    window.open("video.html?deviceid=" + this.currentDeviceId + "&token=" + token + '&name=' + encodeURIComponent(this.deviceInfos[this.currentDeviceId].devicename));
                     break;
             }
         },
