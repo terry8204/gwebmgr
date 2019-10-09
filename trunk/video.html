@@ -1185,17 +1185,7 @@
 
                             me.$Message.error('密码错误');
                         }else if(status === CMD_SEND_RESULT_OFFLINE_NOT_CACHE){
-                            //player.currentTime(0);
-                            //player.resetControlBarUI_();
-                            //player.dispose();
-                            //me.videoIns[index]
-                            //player.currentTime(0);
-                            //player.pause();
-                            //player.posterImage.el.style.display = 'block';
-                            //player.reset();
-                            //player.currentTime(0);
- 
-             
+
                             me.$Message.error("设备离线，未缓存");   
                         }else if(status === CMD_SEND_RESULT_OFFLINE_CACHED){
              
@@ -1207,6 +1197,7 @@
                             
                             me.$Message.error("错误:" + resp.cause);
                         }else if(status === CMD_SEND_CONFIRMED){
+                            me.$Message.success("请求播放成功,请稍后...");
                             isNeedRecreate = false;
                             var oldSrc = player.src();
                             var newSrc = records[0].playurl;
