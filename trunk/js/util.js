@@ -318,7 +318,72 @@ var utils = {
       ')">' + (isZh ? '设置围栏' : 'SetFence') + '</span><span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="setPanorama(' +
       deviceid +
       ')">' + (isZh ? '查看街景' : 'Panorama') + '</span></p>';
+    var extendsBtns = this.getIsAddExtendBtns(), extendsStr = '';
+    if (extendsBtns.video) {
+      extendsStr += '<span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="openVdeio(' + deviceid + ')">视频</span>'
+    };
+    if (extendsBtns.audio) {
+      extendsStr += '<span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="openAudio(' + deviceid + ')">音频</span>'
+    };
+    if (extendsBtns.bms) {
+      extendsStr += '<span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="openBms(' + deviceid + ')">BMS</span>'
+    };
+    if (extendsBtns.obd) {
+      extendsStr += '<span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="openObd(' + deviceid + ')">OBD</span>'
+    };
+    if (extendsBtns.weight) {
+      extendsStr += '<span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="openWeight(' + deviceid + ')">称重</span>'
+    };
+    if (extendsBtns.watermeter) {
+      extendsStr += '<span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="openWatermeter(' + deviceid + ')">水表</span>'
+    };
+    if (extendsStr.length) {
+      content += '<p class="operation" style="margin-top:3px;">' + extendsStr + '</p>';
+    }
     return content;
+  },
+  getIsAddExtendBtns: function () {
+    var deviceTypes = vRoot.$children[1].deviceTypes;
+    var currentDeviceType = vRoot.$children[1].currentDeviceType;
+    var result1 = false;
+    var result2 = false;
+    var result3 = false;
+    var result4 = false;
+    var result5 = false;
+    var result6 = false;
+    for (var i = 0; i < deviceTypes.length; i++) {
+      if (currentDeviceType == deviceTypes[i].devicetypeid) {
+        var functions = deviceTypes[i].functions;
+        if (functions) {
+          if (functions.indexOf("audio") != -1) {
+            result1 = true;
+          };
+          if (functions.indexOf("bms") != -1) {
+            result2 = true;
+          };
+          if (functions.indexOf("obd") != -1) {
+            result3 = true;
+          };
+          if (functions.indexOf("weight") != -1) {
+            result4 = true;
+          };
+          if (functions.indexOf("watermeter") != -1) {
+            result5 = true;
+          };
+          if (functions.indexOf("video") != -1) {
+            result6 = true;
+          };
+        }
+      }
+    };
+    return {
+      audio: result1,
+      bms: result2,
+      obd: result3,
+      weight: result4,
+      watermeter: result5,
+      video: result6,
+    }
   },
   getMileage: function (totaldistance) {
     if (totaldistance == 0) {
@@ -565,6 +630,40 @@ function setFence (deviceid) {
   var url = 'setfencemulti.html?deviceid=' + deviceid + '&token=' + token;
   window.open(url);
 }
+
+function openAudio (deviceid) {
+  var url = 'record.html?deviceid=' + deviceid + '&token=' + token;
+  window.open(url);
+}
+
+function openVdeio (deviceid) {
+  var url = 'video.html?deviceid=' + deviceid + '&token=' + token;
+  window.open(url);
+}
+
+function openObd (deviceid) {
+  var url = 'obd.html?deviceid=' + deviceid + '&token=' + token;
+  window.open(url);
+}
+
+function openBms (deviceid) {
+  var url = 'bmssys.html?deviceid=' + deviceid + '&token=' + token;
+  window.open(url);
+}
+
+function openWatermeter (deviceid) {
+  // var url = 'bmssys.html?deviceid=' + deviceid + '&token=' + token;
+  // window.open(url);
+}
+
+function openWeight (deviceid) {
+  var url = 'weighing.html?deviceid=' + deviceid + '&token=' + token;
+  window.open(url);
+}
+
+
+
+
 
 // 全景
 function setPanorama (deviceid) {
