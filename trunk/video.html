@@ -1197,12 +1197,13 @@
                             
                             me.$Message.error("错误:" + resp.cause);
                         }else if(status === CMD_SEND_CONFIRMED){
-                            me.$Message.success("请求播放成功,请稍后...");
                             isNeedRecreate = false;
                             var oldSrc = player.src();
                             var newSrc = records[0].playurl;
                             // var newSrc = 'rtmp://58.200.131.2:1935/livetv/hunantv';
-                     
+                            if(player.paused()){
+                                me.$Message.success("请求播放成功,请稍后...");
+                            };
                             if(oldSrc !== newSrc)
                             {
                                 // player.reset();
@@ -1211,6 +1212,7 @@
                                 // player.load(newSrc);
                                 player.play();
                             }
+                          
                         }else if(status === CMD_SEND_OVER_RETRY_TIMES){
                           
                             me.$Message.error("尝试发送3次失败");
