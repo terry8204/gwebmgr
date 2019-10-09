@@ -869,7 +869,7 @@
         var deviceid = utils.getParameterByName("deviceid");
         var token = utils.getParameterByName("token");
         var devName = utils.getParameterByName("name");
-
+        var playerStates = {};
         var vRoot = new Vue({
             el:"#container",
             data:{
@@ -1178,6 +1178,7 @@
                         var records = resp.records , status = resp.status ;
                         var player = me.videoIns[index];
                         var isNeedRecreate = true;
+                        console.log('index',index);
                         if(status == CMD_SEND_RESULT_UNCONFIRM){
 
                             me.$Message.error('发送成功，未收到确认'); 
@@ -1201,9 +1202,10 @@
                             var oldSrc = player.src();
                             var newSrc = records[0].playurl;
                             // var newSrc = 'rtmp://58.200.131.2:1935/livetv/hunantv';
-                            if(player.paused()){
+                            if(!playerStates[index]){
                                 me.$Message.success("请求播放成功,请稍后...");
                             };
+          
                             if(oldSrc !== newSrc)
                             {
                                 // player.reset();
@@ -1371,21 +1373,26 @@
                                 document.getElementsByClassName('vjs-big-play-button')[index].style.display = 'block';
                                 self.handleStopVideos(index);
                                 delete self.videoTimes['videoPlayer'+(index)];
+                                delete playerStates[index];
                             });
                             // this.src(self.allPlayUrls[index].playurl);
                             // console.log('type', this.type)
                             //------events    绑定事件用on    移除事件用off
                             this.on('loadstart',function () {
                                 console.log('开始加载------------' ,index);
+                                // playerStates[index] = "loadstart";
                             });
                             this.on('loadedmetadata',function () {
-                                console.log('loadedmetadata---视频源数据加载完成----',index)
+                                console.log('playerStates---视频源数据加载完成----',index)
+                                // playerStates[index] = "loadedmetadata";
                             });
                             this.on('loadeddata',function () {
                                 console.log('loadeddata---渲染播放画面----',index);//autoPlay必须为false
+                                playerStates[index] = "loadeddata";
                             });
                             this.on('progress',function () {
-                                console.log('progress-------加载过程----',index)
+                                console.log('progress-------加载过程----',index);
+                                // playerStates[index] = "progress";
                             });
                             this.on('timeupdate',function () {
                                 // const curTime = this.currentTime();
