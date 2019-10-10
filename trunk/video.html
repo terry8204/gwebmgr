@@ -1364,6 +1364,16 @@
                                     // }
                                 ],
                         },function(){
+
+                            var vjsControlBar = document.getElementsByClassName('vjs-control-bar')[index];
+                            var tipEl = document.createElement('div');
+
+                            tipEl.setAttribute('id','video-tip'+index);
+                            tipEl.className = 'vjs-volume-panel vjs-volume-panel-horizontal';
+                            tipEl.style.lineHeight = '30px';
+                            tipEl.style.paddingLeft = '15px';
+                            vjsControlBar.appendChild(tipEl);
+          
                             this.on('play',function () { 
                                 document.getElementsByClassName('vjs-big-play-button')[index].style.display = 'none';
                                 self.handleStartVideos(index);
@@ -1379,28 +1389,21 @@
                             // console.log('type', this.type)
                             //------events    绑定事件用on    移除事件用off
                             this.on('loadstart',function () {
-                                console.log('开始加载------------' ,index);
                                 // playerStates[index] = "loadstart";
+                                tipEl.innerText = '开始加载';
                             });
                             this.on('loadedmetadata',function () {
-                                console.log('playerStates---视频源数据加载完成----',index)
                                 // playerStates[index] = "loadedmetadata";
+                                tipEl.innerText = '视频源数据加载完成';
                             });
                             this.on('loadeddata',function () {
-                                console.log('loadeddata---渲染播放画面----',index);//autoPlay必须为false
                                 playerStates[index] = "loadeddata";
+                                tipEl.innerText = '渲染播放画面';
                             });
                             this.on('progress',function () {
-                                console.log('progress-------加载过程----',index);
-                                // playerStates[index] = "progress";
+                                tipEl.innerText = '加载中...';
                             });
-                            this.on('timeupdate',function () {
-                                // const curTime = this.currentTime();
-                                // console.log('timeupdate-------------',curTime);
-                            })
-                          
-
-
+                            this.on('timeupdate',function () {});
                         });
 
                         this.videoIns[index] = player;
@@ -1440,6 +1443,7 @@
                                 var player = videoIns[i];
                                 player.pause();
                                 delete this.videoTimes[key];
+                                document.getElementById('video-tip'+i).innerText = '单次播放时间限制已到，暂停播放';
                             }
                         }
                     }

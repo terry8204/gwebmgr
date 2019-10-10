@@ -643,18 +643,41 @@
                         
                         document.getElementsByClassName('vjs-picture-in-picture-control')[0].style.display = 'none';
 
+                        var vjsControlBar = document.getElementsByClassName('vjs-control-bar')[0];
+                        var tipEl = document.createElement('div');
+                        tipEl.setAttribute('id','video-tip');
+                        tipEl.className = 'vjs-volume-panel vjs-volume-panel-horizontal';
+                        tipEl.style.lineHeight = '30px';
+                        tipEl.style.paddingLeft = '15px';
+                        vjsControlBar.appendChild(tipEl);
+
                         this.on('play',function () { 
+                            
                             document.getElementsByClassName('vjs-big-play-button')[0].style.display = 'none';
                             if(!startPlayerTimer){
                                 clearTimeout(startPlayerTimer);
                             }
                             startPlayerTimer = setTimeout(function () { 
                                 player.pause();
+                                tipEl.innerText = '单次播放时间限制已到，暂停播放';
                             },60*3*1000);    
                         });
                         this.on('pause',function () { 
                             document.getElementsByClassName('vjs-big-play-button')[0].style.display = 'block';
                             startPlayerTimer = null;
+                        });
+
+                        this.on('loadstart',function () {
+                            tipEl.innerText = '开始加载';
+                        });
+                        this.on('loadedmetadata',function () {
+                            tipEl.innerText = '视频源数据加载完成';
+                        });
+                        this.on('loadeddata',function () {
+                            tipEl.innerText = '渲染播放画面';
+                        });
+                        this.on('progress',function () {
+                            tipEl.innerText = '加载中...';
                         });
                     });
                  
