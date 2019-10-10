@@ -123,18 +123,20 @@ var utils = {
     })
   },
   getParameterByName: function (name) {
-    var url = location.search;
+    var resulturl = null;
+    var allurl = location.search;
     var theRequest = new Object();
-    if (url.indexOf('?') != -1) {
-      var str = url.substr(1)
+    if (allurl.indexOf('?') != -1) {
+      var str = allurl.substr(1)
       var strs = str.split('&')
       for (var i = 0; i < strs.length; i++) {
-        theRequest[strs[i].split('=')[0]] = unescape(strs[i].split('=')[1])
+        var value = strs[i].split('=')[1];
+        theRequest[strs[i].split('=')[0]] = value;
       }
     }
-    url = theRequest[name];
-    url = decodeURIComponent(url);
-    return url;
+    resulturl = theRequest[name];
+    resulturl = decodeURIComponent(resulturl);
+    return resulturl;
   },
   getCarDirection: function (course) {
     var direction = null
@@ -321,7 +323,9 @@ var utils = {
       ')">' + (isZh ? '查看街景' : 'Panorama') + '</span></p>';
     var extendsBtns = this.getIsAddExtendBtns(), extendsStr = '';
     if (extendsBtns.video) {
-      extendsStr += '<span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="openVdeio(' + deviceid + ',' + track.devicename + ')">视频</span>'
+      var devicename = "'" + track.devicename + "'";
+      devicename = encodeURIComponent(devicename);
+      extendsStr += '<span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="openVdeio(' + deviceid + ',' + devicename + ')">视频</span>'
     };
     if (extendsBtns.audio) {
       extendsStr += '<span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="openAudio(' + deviceid + ')">音频</span>'
@@ -638,7 +642,6 @@ function openAudio (deviceid) {
 }
 
 function openVdeio (deviceid, name) {
-  name = encodeURIComponent(name);
   var url = 'video.html?deviceid=' + deviceid + '&token=' + token + '&name=' + name;
   window.open(url);
 }
