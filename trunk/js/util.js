@@ -123,9 +123,8 @@ var utils = {
     })
   },
   getParameterByName: function (name) {
-    var url = location.search
-    url = decodeURIComponent(url)
-    var theRequest = new Object()
+    var url = location.search;
+    var theRequest = new Object();
     if (url.indexOf('?') != -1) {
       var str = url.substr(1)
       var strs = str.split('&')
@@ -133,7 +132,9 @@ var utils = {
         theRequest[strs[i].split('=')[0]] = unescape(strs[i].split('=')[1])
       }
     }
-    return theRequest[name]
+    url = theRequest[name];
+    url = decodeURIComponent(url);
+    return url;
   },
   getCarDirection: function (course) {
     var direction = null
