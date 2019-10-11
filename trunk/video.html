@@ -591,16 +591,6 @@
                                     <Tab-Pane label="视频播放参数" name="videoPlay">
                                         <Row style="height:32px;margin: 10px 0;">
                                             <i-Col span="5" style="height: 100%;line-height:32px;text-align: center;">
-                                                播放帧率 :
-                                            </i-Col>
-                                            <i-Col span="12" style="height: 100%;line-height:32px;">
-                                                <i-input v-model="videoplayframerate" style="width:300px"></i-input>
-                                                帧/秒
-                                            </i-Col>
-            
-                                        </Row>
-                                        <Row style="height:32px;margin: 10px 0;">
-                                            <i-Col span="5" style="height: 100%;line-height:32px;text-align: center;">
                                                 传输模式 :
                                             </i-Col>
                                             <i-Col span="12" style="height: 100%;line-height:32px;">
@@ -906,7 +896,6 @@
                 usingaudio:'',
 
                 // 视频播放参数
-                videoplayframerate:'',
                 videotranstype:'',
                 videostreamtype:'',
 
@@ -1458,7 +1447,7 @@
                     var url = myUrls.queryDeviceById() , that = this;
                     utils.sendAjax(url,{deviceid:deviceid},function (data) { 
                         if(data.status == 0){
-                            that.videoplayframerate = data.device.videoplayframerate ;
+                         
                             that.videotranstype = data.device.videotranstype + '';
                             that.videostreamtype = data.device.videostreamtype + '';
                         }else{}
@@ -1466,10 +1455,10 @@
                 },
                 handleSetPlayParamter:function(){
                     var url = myUrls.setVideoPlayParameters() , that = this;
-                    if(!isNaN(this.videoplayframerate) && Number(this.videoplayframerate) >= 0){
+            
                         var data = {
                             deviceid:deviceid,
-                            videoplayframerate:Number(this.videoplayframerate),
+                  
                             videotranstype:Number(this.videotranstype),
                             videostreamtype:Number(this.videostreamtype),
                         }
@@ -1484,9 +1473,7 @@
 
                         })
 
-                    }else{
-                        that.$Message.error('请正确填写帧率')
-                    }
+                    
                 },
                 querySingleAudioVideoParameters:function(){
                     this.Spin = true;
