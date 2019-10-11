@@ -1380,6 +1380,7 @@
                                 self.videoTimes['videoPlayer'+(index)] = Date.now();
                             });
                             this.on('pause',function () { 
+                                tipEl.innerText = '暂停播放';
                                 document.getElementsByClassName('vjs-big-play-button')[index].style.display = 'block';
                                 self.handleStopVideos(index);
                                 delete self.videoTimes['videoPlayer'+(index)];
