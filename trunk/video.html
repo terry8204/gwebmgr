@@ -1369,12 +1369,12 @@
                             var tipEl = document.createElement('div');
 
                             tipEl.setAttribute('id','video-tip'+index);
-                            tipEl.className = 'vjs-volume-panel vjs-volume-panel-horizontal';
                             tipEl.style.lineHeight = '30px';
                             tipEl.style.paddingLeft = '15px';
                             vjsControlBar.appendChild(tipEl);
           
                             this.on('play',function () { 
+                                tipEl.innerText = '正在请求播放';
                                 document.getElementsByClassName('vjs-big-play-button')[index].style.display = 'none';
                                 self.handleStartVideos(index);
                                 self.videoTimes['videoPlayer'+(index)] = Date.now();
