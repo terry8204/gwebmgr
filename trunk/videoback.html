@@ -474,8 +474,9 @@
                 handleDblclick:function(row){
                     if(isRequsetPlaying) return;
                     isRequsetPlaying = true;
-    
-
+                    if(startPlayerTimer){
+                        clearTimeout(startPlayerTimer); 
+                    }
                     var url = myUrls.playRecord(), 
                         me = this,
                         data = {
@@ -663,6 +664,9 @@
                         });
                         this.on('pause',function () { 
                             document.getElementsByClassName('vjs-big-play-button')[0].style.display = 'block';
+                            if(startPlayerTimer){
+                                clearTimeout(startPlayerTimer);
+                            }
                             startPlayerTimer = null;
                         });
 
@@ -675,9 +679,9 @@
                         this.on('loadeddata',function () {
                             tipEl.innerText = '渲染播放画面';
                         });
-                        this.on('progress',function () {
-                            tipEl.innerText = '加载中...';
-                        });
+                        // this.on('progress',function () {
+                        //     tipEl.innerText = '加载中...';
+                        // });
                     });
                  
                 },
