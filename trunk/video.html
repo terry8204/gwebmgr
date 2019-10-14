@@ -1661,7 +1661,10 @@
         }
         var fls = flashChecker();
         if (!fls.f) {
-            vRoot.$Message.error("请安装flash或者允许网页flash播放");
+            vRoot.$Modal.confirm({
+                title:'提示',
+                content:'请安装flash或者允许网页flash播放'
+            });
         }
     </script>
 </body>
