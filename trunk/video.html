@@ -246,6 +246,14 @@
     </div>
 
     <div id="container">
+        <Modal v-model="tipModal"  title="提示" width="300" :mask-closable="false">
+            <div style="text-align:center">
+                请安装flash或者允许网页flash播放
+            </div>
+            <div slot="footer" >
+                <i-button style="width: 100%" @click="tipModal=false" type="primary">确定</i-button>
+            </div>
+        </Modal>
         <Spin fix style="z-index:9999;" v-show="Spin"></Spin> 
                 <div class="left-sider" style="background-color:#ffffff;">
                     <div class="full" style="position: relative;">
@@ -863,6 +871,7 @@
         var vRoot = new Vue({
             el:"#container",
             data:{
+                tipModal:false,
                 modalHader:'视频参数',
                 viewSize:2,  // 1 1:1  2
                 activeMenuItem:'video',
@@ -1598,6 +1607,10 @@
             mounted :function() {
                 var that = this; 
                 // videojs.options.flash.swf = "./videojs/video-js.5.4.2.swf";
+                var fls = flashChecker();
+                if (!fls.f) {
+                    this.tipModal = true;
+                }
                 this.$nextTick(function(){ 
                     console.log('videoContent', this.$refs);
                     document.getElementById('videoContent').className = 'videoContent-4';
@@ -1659,13 +1672,7 @@
             }
             return { f: hasFlash, v: flashVersion };
         }
-        var fls = flashChecker();
-        if (!fls.f) {
-            vRoot.$Modal.confirm({
-                title:'提示',
-                content:'请安装flash或者允许网页flash播放'
-            });
-        }
+       
     </script>
 </body>
 </html>

@@ -127,6 +127,14 @@
                 </div>
         </div>
     <div id="container">
+        <Modal v-model="tipModal"  title="提示" width="300" :mask-closable="false">
+            <div style="text-align:center">
+                请安装flash或者允许网页flash播放
+            </div>
+            <div slot="footer" >
+                <i-button style="width: 100%" @click="tipModal=false" type="primary">确定</i-button>
+            </div>
+        </Modal>
         <Layout style="height:100%;">
             <Layout>
                 <Sider hide-trigger width="260" style="background-color:#ffffff;padding:10px;">
@@ -286,11 +294,40 @@
             if (parseInt(num) < 10) {  num = '0' + num; }  
             return num; 
         } 
+
+         function flashChecker() {
+            var hasFlash = 0; //是否安装了flash
+            var flashVersion = 0; //flash版本
+            if (document.all) {
+            var swf = new ActiveXObject('ShockwaveFlash.ShockwaveFlash');
+            if (swf) {
+                hasFlash = 1;
+                VSwf = swf.GetVariable("$version");
+                flashVersion = parseInt(VSwf.split(" ")[1].split(",")[0]);
+            }
+            } else {
+            if (navigator.plugins && navigator.plugins.length > 0) {
+                var swf = navigator.plugins["Shockwave Flash"];
+                if (swf) {
+                hasFlash = 1;
+                var words = swf.description.split(" ");
+                for (var i = 0; i < words.length; ++i) {
+                    if (isNaN(parseInt(words[i]))) continue;
+                    flashVersion = parseInt(words[i]);
+                }
+                }
+            }
+            }
+            return { f: hasFlash, v: flashVersion };
+        }
+        var fls = flashChecker();
+
         var vRoot = new Vue({
             el:"#container",
             data:{
                 isTable:false,
                 loading:false,
+                tipModal:false,
                 maskEl:null,
                 selectType:'1',
                 date:new Date(),
@@ -835,7 +872,10 @@
                 }
             },
             mounted :function() {
-                var that = this; 
+                var that = this;
+                if (!fls.f) {
+                    this.tipModal = true;
+                } 
                 that.$nextTick(function(){ 
                     that.initVideo(); 
                     that.initChart();
@@ -849,38 +889,7 @@
             },
         })
 
-        function flashChecker() {
-            var hasFlash = 0; //是否安装了flash
-            var flashVersion = 0; //flash版本
-            if (document.all) {
-            var swf = new ActiveXObject('ShockwaveFlash.ShockwaveFlash');
-            if (swf) {
-                hasFlash = 1;
-                VSwf = swf.GetVariable("$version");
-                flashVersion = parseInt(VSwf.split(" ")[1].split(",")[0]);
-            }
-            } else {
-            if (navigator.plugins && navigator.plugins.length > 0) {
-                var swf = navigator.plugins["Shockwave Flash"];
-                if (swf) {
-                hasFlash = 1;
-                var words = swf.description.split(" ");
-                for (var i = 0; i < words.length; ++i) {
-                    if (isNaN(parseInt(words[i]))) continue;
-                    flashVersion = parseInt(words[i]);
-                }
-                }
-            }
-            }
-            return { f: hasFlash, v: flashVersion };
-        }
-        var fls = flashChecker();
-        if (!fls.f) {
-            vRoot.$Modal.confirm({
-                title:'提示',
-                content:'请安装flash或者允许网页flash播放'
-            });
-        }
+       
     </script>
 </body>
 </html>
