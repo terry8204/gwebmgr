@@ -50,7 +50,11 @@ var utils = {
       },
       error: function (e) {
         // Cookies.remove('token');
-        isRequsetPlaying && (isRequsetPlaying = false);
+        try {
+          isRequsetPlaying && (isRequsetPlaying = false);
+        } catch (e) {
+
+        }
         new Vue().$Loading.error();
       },
       complete: function () { }
