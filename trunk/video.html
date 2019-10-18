@@ -387,7 +387,7 @@
                                 <div class="listing_box" v-if="listingChoice == 'duijiang'">
                                     <i class="icon_dj"></i>
                                     <div class="yt_footer">
-                                        <i-button style="width:120px;">开启</i-button>
+                                        <i-button style="width:120px;" @click="openDuijiang">开启</i-button>
                                     </div>
                                 </div>
                                 <div class="listing_box" v-else>
@@ -964,6 +964,17 @@
                 tableData:[],
             },
             methods: {
+                openDuijiang:function(){
+                    var url = myUrls.startVideos() , me = this;
+                    var data = {
+                        channels:[99],
+                        datatype:2
+                    }
+                    utils.sendAjax(url,data,function (resp) { 
+                        console.log('resp', reps);
+                        me.$Message.success("发送成功");
+                    });
+                },
                 queryVideoChannels:function(){
                     var url = myUrls.queryAudioVideoChannels(), me = this;
                     me.loading = true;
