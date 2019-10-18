@@ -436,6 +436,9 @@ var myUrls = {
   playRecordControl: function () {
     return this.host + 'webapi?action=playrecordcontrol_sync&token=' + token;
   },
+  queryAudioVideoChannels: function () {
+    return this.host + 'webapi?action=queryaudiovideochannels_sync&token=' + token;
+  },
 }
 
 

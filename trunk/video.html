@@ -835,7 +835,19 @@
                                                     </i-Col>
                                                 </Row>   
                                         </Tab-Pane>
-
+                                        <Tab-Pane label="音视频通道列表" name="videoChannelsList">
+                                            <Row style="height:32px;margin: 10px 0;">
+                                                <i-Col span="7" offset="7" style="height: 100%;line-height:32px;">
+                                                    <i-button @click="queryVideoChannels" style="width:120px;" type="primary">查询</i-button>
+                                                </i-Col>
+                                            </Row>   
+                                            <i-table border 
+                                                ref="table"
+                                                :columns="columns"
+                                                :data="tableData"
+                                                height="520"
+                                                :loading="loading"></i-table>    
+                                        </Tab-Pane>                                 
                                 </Tabs>
                                 <div slot="footer" style="padding:10px;"></div>
                             </Modal>         
@@ -913,10 +925,19 @@
 
                 //云台
                 isShowYunTai:false,
-                listingChoice:'duijiang'
-
+                listingChoice:'duijiang',
+                
+                loading:false,
+                columns:[],
+                tableData:[],
             },
             methods: {
+                queryVideoChannels:function(){
+                    var url = myUrls.queryAudioVideoChannels();
+                    utils.sendAjax(url,{deviceid:deviceid},function (resp) { 
+                        console.log('resp', resp);
+                    });
+                },
                 videoBack:function(){
                     window.open('videoback.html?deviceid='+deviceid +'&token=' + token);
                 },
