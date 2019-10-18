@@ -845,7 +845,7 @@
                                                 ref="table"
                                                 :columns="columns"
                                                 :data="tableData"
-                                                height="520"
+                                                height="234"
                                                 :loading="loading"></i-table>    
                                         </Tab-Pane>                                 
                                 </Tabs>
@@ -928,14 +928,51 @@
                 listingChoice:'duijiang',
                 
                 loading:false,
-                columns:[],
+                columns:[
+                    {
+                        key:'physicalchannel',
+                        title:'物理通道号',
+                    },
+                    {
+                        key:'logicalchannel',
+                        title:'逻辑通道号',
+                    },
+                    {
+                        key:'channeltype',
+                        title:'通道类型',
+                        render:function(h,params){
+                            var channeltype = params.row.channeltype ,type;
+                            if(channeltype === 0){
+                                type = '音视频'
+                            }else if(channeltype === 1){
+                                type = '音频'
+                            }else if(channeltype === 2){
+                                type = '视频'
+                            }
+                            return h('span',{}, type); 
+                        }
+                    },
+                    {
+                        key:'connectptz',
+                        title:'是否连接云台',
+                        render:function(h,params){
+                            var connectptz = params.row.connectptz;
+                            return h('span',{},connectptz === 0?'未连接':'已连接'); 
+                        }
+                    },
+                ],
                 tableData:[],
             },
             methods: {
                 queryVideoChannels:function(){
-                    var url = myUrls.queryAudioVideoChannels();
+                    var url = myUrls.queryAudioVideoChannels(), me = this;
                     utils.sendAjax(url,{deviceid:deviceid},function (resp) { 
                         console.log('resp', resp);
+                        if(resp.status === 6){
+                            me.tableData = resp.uniaudiovideochannels.channels;
+                        }else{
+                            me.$Message.error('查询失败');
+                        }
                     });
                 },
                 videoBack:function(){
