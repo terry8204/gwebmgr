@@ -388,7 +388,7 @@
                                 <div class="listing_box" v-if="listingChoice == 'duijiang'">
                                     <i class="icon_dj"></i>
                                     <div class="yt_footer">
-                                        <i-button style="width:120px;" @click="openDuijiang" :loading="loading">开启</i-button>
+                                        <i-button style="width:120px;" @click="openDuijiang" :loading="loading">{{isOpenJianting?'关闭':'开启'}}</i-button>
                                     </div>
                                 </div>
                                 <div class="listing_box" v-else>
@@ -888,6 +888,7 @@
         var vRoot = new Vue({
             el:"#container",
             data:{
+                isOpenJianting:false,
                 tipModal:false,
                 modalHader:'视频参数',
                 viewSize:2,  // 1 1:1  2
@@ -970,23 +971,33 @@
             },
             methods: {
                 openDuijiang:function(){
-                    this.loading = true;
-                    var url = myUrls.startVideos() , me = this;
-                    var data = {
-                        deviceid:deviceid,
-                        channels:[99],
-                        datatype:2
-                    }
-                    utils.sendAjax(url,data,function (resp) {
-                        me.loading = false;  
-                        if(resp.status === 6){
-                            me.$Message.success("开启成功");
-                            audioPlayer.src(resp.records[0].playurl);
-                            audioPlayer.play();
-                        }else{
-                            me.$Message.success("开启失败,超时或者设备不在线");
+                    var  me = this;
+                    if(this.isOpenJianting){
+                        this.isOpenJianting = false;
+                        audioPlayer.pause();
+                        me.$Message.success("关闭成功");
+                    }else{
+                        this.loading = true;
+                       
+                        var url = myUrls.startVideos() ;
+                        var data = {
+                            deviceid:deviceid,
+                            channels:[99],
+                            datatype:2
                         }
-                    });
+                        utils.sendAjax(url,data,function (resp) {
+                            me.loading = false;  
+                            if(resp.status === 6){
+                                me.isOpenJianting = true;
+                                me.$Message.success("开启成功");
+                                audioPlayer.src(resp.records[0].playurl);
+                                audioPlayer.play();
+                            }else{
+                                me.$Message.success("开启失败,超时或者设备不在线");
+                            }
+                        });
+                    }
+                    
                 },
                 queryVideoChannels:function(){
                     var url = myUrls.queryAudioVideoChannels(), me = this;
