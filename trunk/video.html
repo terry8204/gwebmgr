@@ -399,10 +399,8 @@
                                 </div>
                             </Tab-Pane>      
                         </Tabs>
-                        <div>
-                            <audio id="audioVideo1" class="video-js vjs-default-skin" 
-                                controls  width="240" height="150" data-setup="{}">
-                            </audio>
+                        <div style="visibility: hidden;">
+                            <div id="audio-wrap" ></div>
                         </div>
                        </div>
                     </div>
@@ -1421,6 +1419,7 @@
                             player = this.videoIns[i];
                         }
                         !player.src() && player.src(this.allPlayUrls[i].playurl);
+                        
                     }
 
               
@@ -1453,6 +1452,7 @@
                                 progressControl: false,
                                 liveDisplay: true,
                             },
+                            
                             techOrder: ['html5','flash'],
                             sources: [
                                     // { 
@@ -1463,7 +1463,7 @@
                                 ],
                         },function(){
 
-                            var vjsControlBar = document.getElementsByClassName('vjs-control-bar')[index];
+                            var vjsControlBar = document.getElementsByClassName('vjs-control-bar')[index+1];
                             var tipEl = document.createElement('div');
 
                             tipEl.setAttribute('id','video-tip'+index);
@@ -1473,12 +1473,12 @@
           
                             this.on('play',function () { 
                                 tipEl.innerText = '正在请求播放';
-                                document.getElementsByClassName('vjs-big-play-button')[index].style.display = 'none';
+                                document.getElementsByClassName('vjs-big-play-button')[index+1].style.display = 'none';
                                 self.handleStartVideos(index);
                                 self.videoTimes['videoPlayer'+(index)] = Date.now();
                             });
                             this.on('pause',function () { 
-                                document.getElementsByClassName('vjs-big-play-button')[index].style.display = 'block';
+                                document.getElementsByClassName('vjs-big-play-button')[index+1].style.display = 'block';
                                 self.handleStopVideos(index);
                                 delete self.videoTimes['videoPlayer'+(index)];
                                 delete playerStates[index];
@@ -1521,7 +1521,7 @@
                             me.allPlayUrls = data.records;
                             me.allPlayUrls.forEach(function (item,index) { 
                                 if(index<me.videoNumber){
-                                    me.videoIns[index].src(item.playurl);
+                                    me.videoIns[index].src(item.playurl);    
                                 }
                             })
                             callback(data)
@@ -1585,10 +1585,18 @@
                     
                 },
                 initAudioPlayer:function(){
-                      audioPlayer = videojs('audioVideo1' , {
+                    var videoEl = document.createElement('video');
+                        videoEl.setAttribute( 'id' , 'audio1');
+                        videoEl.setAttribute( 'controls' , 'true' );
+                        videoEl.setAttribute( 'poster' , '');
+                        videoEl.className ="video-js";
+                        document.getElementById('audio-wrap').appendChild(videoEl);    
+
+                      audioPlayer = videojs('audio1', {
                             poster:"./images/tv_default.jpg",
                             autoplay: false ,
                             preload:"none",
+                            controls:false,
                             controlBar: {
                                 remainingTimeDisplay:false,
                                 progressControl: false,
@@ -1604,6 +1612,30 @@
                                 ],
                         },function(){
 
+                            this.on('play',function () { 
+                               
+                            });
+                            this.on('pause',function () { 
+                              
+                
+                            });
+                            // this.src(self.allPlayUrls[index].playurl);
+                            // console.log('type', this.type)
+                            //------events    绑定事件用on    移除事件用off
+                            this.on('loadstart',function () {
+                                // playerStates[index] = "loadstart";
+                        
+                            });
+                            this.on('loadedmetadata',function () {
+                                // playerStates[index] = "loadedmetadata";
+                          
+                            });
+                            this.on('loadeddata',function () {
+                            
+                            });
+                            this.on('progress',function () {
+                             
+                            });
                         });
 
                 },
@@ -1664,7 +1696,6 @@
                         originalData.realtimeframebitrate &&
                         originalData.storeframebitrate 
                     ){
-                    
                         parameters.realtimebitratemode = Number(originalData.realtimebitratemode);
                         parameters.storebitratemode = Number(originalData.storebitratemode);
                         parameters.realtimeresolution = Number(originalData.realtimeresolution);
@@ -1714,7 +1745,19 @@
                     }
                 }
             },
-            mounted :function() {
+            computed:{
+               videoContentCls:function(){
+                   return {
+                    //    'videoContent-1':this.videoNumber === 1,
+                    //    'videoContent-4':this.videoNumber === 4,
+                    //    'videoContent-6':this.videoNumber === 6,
+                    //    'videoContent-8':this.videoNumber === 8,
+                    //    'videoContent-9':this.videoNumber === 9,
+                    //    'videoContent-16':this.videoNumber === 16,
+                    //    'full':true
+                   }
+               }
+            },            mounted :function() {
                 var that = this; 
                 // videojs.options.flash.swf = "./videojs/video-js.5.4.2.swf";
                 var fls = flashChecker();
@@ -1725,18 +1768,7 @@
 
                     document.getElementById('videoContent').className = 'videoContent-4';
         
-                    that.devInfo = '设备序号:' + deviceid + ' 设备名称:' + devName;
-                    window.onresize = function (){
-                        for(var i = 0 ; i < that.videoNumber; i++){
-                            var player = that.videoIns[i];
-                            if(player){
-                                var wrapper = document.getElementById('videoContent').children[i]; 
-                                !player.src && player.src(that.allPlayUrls[i].playurl);
-                                player.height($(wrapper).height());
-                                player.width($(wrapper).width());
-                            }
-                        }
-                    } 
+                    that.devInfo = '设备序号:' + deviceid + ' 设备名称:' + devName; 
                     
                     that.initApp(); 
 
@@ -1752,7 +1784,21 @@
                         document.getElementById('mask-wrapper').style.display = 'none';
                     }, 1000);
 
-
+                    window.onresize = function (){
+                        for(var i = 0 ; i < that.videoNumber; i++){
+                            var player = that.videoIns[i];
+                            if(player){
+                                var wrapper = document.getElementById('videoContent').children[i]; 
+                                !player.src && player.src(that.allPlayUrls[i].playurl);
+                                try {
+                                    player.height($(wrapper).height());
+                                    player.width($(wrapper).width());
+                                } catch (error) {
+                                    
+                                }
+                            }
+                        }
+                    }
                 });
 
             },
