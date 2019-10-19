@@ -132,6 +132,7 @@
             left: 0;
             width: 300px;
             top: 50px;
+            
         }
         .mask-wrapper{
             position: absolute;
@@ -398,9 +399,11 @@
                                 </div>
                             </Tab-Pane>      
                         </Tabs>
-                        <video id="audioVideo" class="video-js vjs-default-skin" 
-                            controls  width="240" height="150" data-setup="{}">
-                       </video>
+                        <div>
+                            <audio id="audioVideo1" class="video-js vjs-default-skin" 
+                                controls  width="240" height="150" data-setup="{}">
+                            </audio>
+                        </div>
                        </div>
                     </div>
                 </div>
@@ -1582,7 +1585,7 @@
                     
                 },
                 initAudioPlayer:function(){
-                      audioPlayer = videojs('audioVideo' , {
+                      audioPlayer = videojs('audioVideo1' , {
                             poster:"./images/tv_default.jpg",
                             autoplay: false ,
                             preload:"none",
@@ -1601,33 +1604,6 @@
                                 ],
                         },function(){
 
-                            var vjsControlBar = document.getElementsByClassName('vjs-control-bar')[0];
-                            var tipEl = document.createElement('div');
-
-                            tipEl.style.lineHeight = '30px';
-                            tipEl.style.paddingLeft = '15px';
-                            vjsControlBar.appendChild(tipEl);
-          
-                            this.on('play',function () { 
-                                tipEl.innerText = '正在请求播放';
-                            });
-                            this.on('pause',function () { 
-                            });
-
-                            this.on('loadstart',function () {
-                                tipEl.innerText = '开始加载';
-                            });
-                            this.on('loadedmetadata',function () {
-                                // playerStates[index] = "loadedmetadata";
-                                tipEl.innerText = '视频源数据加载完成';
-                            });
-                            this.on('loadeddata',function () {
-                                playerStates[index] = "loadeddata";
-                                tipEl.innerText = '渲染播放画面';
-                            });
-                            this.on('progress',function () {
-                                tipEl.innerText = '加载中...';
-                            });
                         });
 
                 },
@@ -1746,11 +1722,9 @@
                     this.tipModal = true;
                 }
                 this.$nextTick(function(){ 
-                    console.log('videoContent', this.$refs);
+
                     document.getElementById('videoContent').className = 'videoContent-4';
         
-                    
-             
                     that.devInfo = '设备序号:' + deviceid + ' 设备名称:' + devName;
                     window.onresize = function (){
                         for(var i = 0 ; i < that.videoNumber; i++){
@@ -1771,11 +1745,11 @@
                     that.queryVideosPlayUrl(function (data) {});
     
                     that.queryDeviceById();
-
+                    
+                    that.initAudioPlayer();
                     // that.querySingleAudioVideoParameters();
                     setTimeout(function() {
                         document.getElementById('mask-wrapper').style.display = 'none';
-                        that.initAudioPlayer();
                     }, 1000);
 
 
