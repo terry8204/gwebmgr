@@ -387,7 +387,7 @@
                                 <div class="listing_box" v-if="listingChoice == 'duijiang'">
                                     <i class="icon_dj"></i>
                                     <div class="yt_footer">
-                                        <i-button style="width:120px;" @click="openDuijiang">开启</i-button>
+                                        <i-button style="width:120px;" @click="openDuijiang" :loading="loading">开启</i-button>
                                     </div>
                                 </div>
                                 <div class="listing_box" v-else>
@@ -398,6 +398,9 @@
                                 </div>
                             </Tab-Pane>      
                         </Tabs>
+                        <video id="audioVideo" class="video-js vjs-default-skin" 
+                            controls  width="240" height="150" data-setup="{}">
+                       </video>
                        </div>
                     </div>
                 </div>
@@ -854,7 +857,7 @@
                     </div>
                     <div style="position: absolute;left: 0;right: 0;top: 50px;bottom: 0;padding: 10px">
                         <div class="full">
-                            <div :class="videoContentCls" id="videoContent" ref="videoContent" class="full">
+                            <div id="videoContent" ref="videoContent" class="full">
                                 <!-- <div v-for="(item , index) in videoNumber" :key="index">
                                     <video :id="'video'+index" class="video-js" controls poster="" >  
                                 </div> -->
@@ -880,6 +883,7 @@
         var token = utils.getParameterByName("token");
         var devName =utils.getParameterByName("name");
         var playerStates = {};
+        var audioPlayer = null;
         var vRoot = new Vue({
             el:"#container",
             data:{
@@ -965,15 +969,22 @@
             },
             methods: {
                 openDuijiang:function(){
+                    this.loading = true;
                     var url = myUrls.startVideos() , me = this;
                     var data = {
                         deviceid:deviceid,
                         channels:[99],
                         datatype:2
                     }
-                    utils.sendAjax(url,data,function (resp) { 
-                        console.log('resp', resp);
-                        me.$Message.success("发送成功");
+                    utils.sendAjax(url,data,function (resp) {
+                        me.loading = false;  
+                        if(resp.status === 6){
+                            me.$Message.success("开启成功");
+                            audioPlayer.src(resp.records[0].playurl);
+                            audioPlayer.play();
+                        }else{
+                            me.$Message.success("开启失败,超时或者设备不在线");
+                        }
                     });
                 },
                 queryVideoChannels:function(){
@@ -1570,6 +1581,56 @@
 
                     
                 },
+                initAudioPlayer:function(){
+                      audioPlayer = videojs('audioVideo' , {
+                            poster:"./images/tv_default.jpg",
+                            autoplay: false ,
+                            preload:"none",
+                            controlBar: {
+                                remainingTimeDisplay:false,
+                                progressControl: false,
+                                liveDisplay: true,
+                            },
+                            techOrder: ['html5','flash'],
+                            sources: [
+                                    // { 
+                                        // src: 'rtmp://58.200.131.2:1935/livetv/hunantv',
+                                        // src:this.allPlayUrls[index].playurl,
+                                        // type: 'rtmp/flv'
+                                    // }
+                                ],
+                        },function(){
+
+                            var vjsControlBar = document.getElementsByClassName('vjs-control-bar')[0];
+                            var tipEl = document.createElement('div');
+
+                            tipEl.style.lineHeight = '30px';
+                            tipEl.style.paddingLeft = '15px';
+                            vjsControlBar.appendChild(tipEl);
+          
+                            this.on('play',function () { 
+                                tipEl.innerText = '正在请求播放';
+                            });
+                            this.on('pause',function () { 
+                            });
+
+                            this.on('loadstart',function () {
+                                tipEl.innerText = '开始加载';
+                            });
+                            this.on('loadedmetadata',function () {
+                                // playerStates[index] = "loadedmetadata";
+                                tipEl.innerText = '视频源数据加载完成';
+                            });
+                            this.on('loadeddata',function () {
+                                playerStates[index] = "loadeddata";
+                                tipEl.innerText = '渲染播放画面';
+                            });
+                            this.on('progress',function () {
+                                tipEl.innerText = '加载中...';
+                            });
+                        });
+
+                },
                 querySingleAudioVideoParameters:function(){
                     this.Spin = true;
                     var url = myUrls.querySingleAudioVideoParameters() , me = this;
@@ -1677,19 +1738,6 @@
                     }
                 }
             },
-            computed:{
-               videoContentCls:function(){
-                   return {
-                    //    'videoContent-1':this.videoNumber === 1,
-                    //    'videoContent-4':this.videoNumber === 4,
-                    //    'videoContent-6':this.videoNumber === 6,
-                    //    'videoContent-8':this.videoNumber === 8,
-                    //    'videoContent-9':this.videoNumber === 9,
-                    //    'videoContent-16':this.videoNumber === 16,
-                    //    'full':true
-                   }
-               }
-            },
             mounted :function() {
                 var that = this; 
                 // videojs.options.flash.swf = "./videojs/video-js.5.4.2.swf";
@@ -1727,7 +1775,10 @@
                     // that.querySingleAudioVideoParameters();
                     setTimeout(function() {
                         document.getElementById('mask-wrapper').style.display = 'none';
+                        that.initAudioPlayer();
                     }, 1000);
+
+
                 });
 
             },

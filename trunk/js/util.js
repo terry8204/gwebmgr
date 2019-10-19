@@ -51,6 +51,7 @@ var utils = {
       error: function (e) {
         // Cookies.remove('token');
         try {
+          vRoot.loading = false;
           isRequsetPlaying && (isRequsetPlaying = false);
         } catch (e) {
 
