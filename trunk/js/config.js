@@ -6,14 +6,18 @@ var host = null;
 var wsHost = null;
 if (pathname.indexOf('gpsserver') != -1) {
   host = 'http://localhost:8080/gpsserver/';
+  hosts = 'http://localhost:8080/gpsserver/';
   wsHost = "ws://localhost:90";
 } else {
   host = 'http://112.74.186.169/';
+  hosts = 'https://www.gps51.com/';
   wsHost = "ws://112.74.186.169:90";
 }
 
+
 var myUrls = {
   host: host,
+  hosts: hosts,
   login: function () {
     return this.host + 'webapi?action=login'
   },
@@ -112,7 +116,7 @@ var myUrls = {
     return this.host + 'webapi?action=deletedevice&token=' + token
   },
   queryDeviceById: function () {
-    return this.host + 'webapi?action=querydevicebyid&token=' + token
+    return this.hosts + 'webapi?action=querydevicebyid&token=' + token
   },
   queryDeviceListWithGroupInfo: function () {
     return this.host + 'webapi?action=querydevicelistwithgroupinfo&token=' + token
@@ -409,25 +413,25 @@ var myUrls = {
     return this.host + 'webapi?action=queryvideoproperty_sync&token=' + token;
   },
   queryVideosPlayUrl: function () {
-    return this.host + 'webapi?action=queryvideosplayurl&token=' + token;
+    return this.hosts + 'webapi?action=queryvideosplayurl&token=' + token;
   },
   queryClientParameters: function () {
-    return this.host + 'webapi?action=queryaudiovideoparameters_sync&token=' + token;
+    return this.hosts + 'webapi?action=queryaudiovideoparameters_sync&token=' + token;
   },
   setAudioVideoParameters_Sync: function () {
-    return this.host + 'webapi?action=setaudiovideoparameters_sync&token=' + token;
+    return this.hosts + 'webapi?action=setaudiovideoparameters_sync&token=' + token;
   },
   setVideoPlayParameters: function () {
-    return this.host + 'webapi?action=setvideoplayparameters&token=' + token;
+    return this.hosts + 'webapi?action=setvideoplayparameters&token=' + token;
   },
   querySingleAudioVideoParameters: function () {
-    return this.host + 'webapi?action=querysingleaudiovideoparameters_sync&token=' + token;
+    return this.hosts + 'webapi?action=querysingleaudiovideoparameters_sync&token=' + token;
   },
   setSingleAudioVideoParameters: function () {
-    return this.host + 'webapi?action=setsingleaudiovideoparameters_sync&token=' + token;
+    return this.hosts + 'webapi?action=setsingleaudiovideoparameters_sync&token=' + token;
   },
   queryMediaList: function () {
-    return this.host + 'webapi?action=querymedialist_sync&token=' + token;
+    return this.hosts + 'webapi?action=querymedialist_sync&token=' + token;
   },
   //视频回放
   playRecord: function () {
@@ -437,7 +441,10 @@ var myUrls = {
     return this.host + 'webapi?action=playrecordcontrol_sync&token=' + token;
   },
   queryAudioVideoChannels: function () {
-    return this.host + 'webapi?action=queryaudiovideochannels_sync&token=' + token;
+    return this.hosts + 'webapi?action=queryaudiovideochannels_sync&token=' + token;
+  },
+  uploadAudio: function () {
+    return this.hosts + 'webapi?action=uploadaudio&token=' + token;
   },
 }
 

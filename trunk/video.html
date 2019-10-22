@@ -394,7 +394,9 @@
                                 <div class="listing_box" v-else>
                                     <i class="icon_jt"></i>
                                     <div class="yt_footer">
-                                            <i-button style="width:120px;">开启</i-button>
+                                        <div @mousedown="onMousedown">
+                                            <i-button style="width:120px;">按住说话</i-button>
+                                        </div>
                                     </div>
                                 </div>
                             </Tab-Pane>      
@@ -880,6 +882,93 @@
     <script src="js/util.js"></script>
 
     <script>
+        function MyRecorder(availableDataFn) { 
+            this.duration = 1000;
+            this.auth = false;
+            this.stream = null;
+            this.mediaRecorder = null;
+            this.availableDataFn = availableDataFn;
+            this.authorization();
+        }
+
+        MyRecorder.prototype.authorization = function () { 
+            var that = this;
+            const constraints = { 
+                audio: true 
+            };
+            navigator.mediaDevices.getUserMedia(constraints).then(function (stream) { 
+                that.auth = true;
+                that.stream = stream;
+                that.initMediaRecorder();
+                vRoot.$Message.success("有录音权限")
+            },function () { 
+                that.auth = false;
+                vRoot.$Message.error("没有录音权限")
+            })
+        }
+
+        MyRecorder.prototype.initMediaRecorder = function () { 
+            var that = this;
+            this.mediaRecorder = new MediaRecorder(this.stream);
+
+            this.mediaRecorder.ondataavailable = function (e) { 
+                that.availableDataFn(e.data);
+            }
+        }
+
+        MyRecorder.prototype.start = function () { 
+            if(!this.auth){
+                this.authorization();
+                this.initMediaRecorder();
+            }
+            this.mediaRecorder.start(this.duration);
+            
+        }
+        
+        MyRecorder.prototype.stop = function () {
+            this.mediaRecorder.stop();
+        }
+
+
+    
+
+        var myRecorder = new MyRecorder((data)=>{
+                            console.log('data', data);
+                            var reader = new FileReader();
+                            reader.readAsArrayBuffer(data);
+                            reader.onload = function (e) {
+                                
+                               
+                                var buf = new Uint8Array(reader.result);
+                                var url = myUrls.uploadAudio();
+                    
+                                function arrayBufferToBase64( buffer ) {
+                                    var binary = '';
+                                    var bytes = new Uint8Array( buffer );
+                                    var len = bytes.byteLength;
+                                    for (var i = 0; i < len; i++) {
+                                        binary += String.fromCharCode( bytes[ i ] );
+                                    }
+                                    return window.btoa( binary );
+                                }
+
+                                var data = {
+                                    deviceid: deviceid,
+                                    codec:'webm',
+                                    channel:1,
+                                    data:arrayBufferToBase64(buf),
+                                    numberofchannels:1,
+                                    samplerate:8000,
+                                };
+
+                                utils.sendAjax(url,data,function (resp) { 
+                                    console.log('resp', resp);
+                                })
+                                
+                            }
+                        
+                           
+                        })
         var deviceid = utils.getParameterByName("deviceid");
         var token = utils.getParameterByName("token");
         var devName =utils.getParameterByName("name");
@@ -970,6 +1059,21 @@
                 tableData:[],
             },
             methods: {
+                onMousedown:function(){
+                   try {
+                        console.log('haha', '')
+                        myRecorder.start();
+                        document.onmouseup = function () {
+                            console.log('bbb','stop');
+                            myRecorder.stop();
+                            document.onmousemove = null;
+                            document.onmouseup = null;
+                        };
+                   } catch (error) {
+                       vRoot.$Message.error('浏览器不支持录音功能')
+                   }
+                    return false;    
+                },
                 openDuijiang:function(){
                     var  me = this;
                     if(this.isOpenJianting){
@@ -1275,9 +1379,6 @@
                             this.videoIns[key].src(src);
                         }
                     }
-
-
-
                 },
                 handleStartVideos:function(index){
                     var url = myUrls.startVideos() , me = this;
