@@ -231,6 +231,58 @@
             border: 0;
             margin-top: 3px;
         }
+
+
+    .blackBoxSpeak {
+            width: 176px;
+            height: 176px;
+            position: fixed;
+            left: 0;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            margin: auto;
+            /* background: url("../../images/luyin/ic_record@2x.png") no-repeat 28px 16px/65px 104px,
+            url("../../images/luyin/ic_record_ripple@2x-9.png") no-repeat 111.2px 32px/28.8px 88px; */
+            background: rgba(0, 0, 0, .7);
+            /* display: none; */
+            border-radius: 12px;
+            z-index: 9999;
+        }
+
+    .img-box{
+        position: absolute;
+        left: 10px;
+        top: 10px;
+        right: 10px;
+        bottom: 48px;
+        display: flex;
+        flex-direction: row;
+    }  
+    .img-box>div{
+        width: 50%;
+        padding: 10px;
+    }
+    .img-box>div:last-child{
+    padding: 10px 20px;
+    box-sizing: border-box;
+    }
+
+    .blackBoxSpeakConent {
+            font: 14.4px '微软雅黑 Light';
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 12px;
+            display: block;
+            text-align: center;
+            width: 90%;
+            padding: 8px 0;
+            margin: auto;
+            color: #ffffff;
+            font-weight: 200;
+            border-radius: 4px;
+        }
     </style>
     <link href="./videojs/video-js.css" rel="stylesheet">
     <script src="./videojs/video.js"></script>
@@ -255,6 +307,17 @@
                 <i-button style="width: 100%" @click="tipModal=false" type="primary">确定</i-button>
             </div>
         </Modal>
+        <div class="blackBoxSpeak" v-if="isLuyin">
+            <div class='img-box'>
+                <div>
+                    <img src="./images/luyin/ic_record@2x.png" alt="" style='width:100%;height:100%'>
+                </div>
+                <div>
+                    <img :src='imgSrc' style='width:100%;height:100%'>
+                </div>
+            </div>
+            <div class="blackBoxSpeakConent">正在录音，请说话</div>
+        </div>
         <Spin fix style="z-index:9999;" v-show="Spin"></Spin> 
                 <div class="left-sider" style="background-color:#ffffff;">
                     <div class="full" style="position: relative;">
@@ -388,14 +451,19 @@
                                 <div class="listing_box" v-if="listingChoice == 'duijiang'">
                                     <i class="icon_dj"></i>
                                     <div class="yt_footer">
-                                        <i-button style="width:120px;" @click="openDuijiang" :loading="loading">{{isOpenJianting?'关闭':'开启'}}</i-button>
+                                        <div>
+                                            <i-button style="width:120px;" @click="openDuijiang" :loading="loading">{{isOpenJianting?'关闭':'开启'}}</i-button>
+                                        </div>
+                                        <div @mousedown="onMousedown" style="margin-top:10px;">
+                                            <i-button style="width:120px;">按住通话</i-button>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="listing_box" v-else>
                                     <i class="icon_jt"></i>
                                     <div class="yt_footer">
-                                        <div @mousedown="onMousedown">
-                                            <i-button style="width:120px;">按住说话</i-button>
+                                        <div>
+                                            <i-button style="width:120px;" @click="openDuijiang" :loading="loading">{{isOpenJianting?'关闭':'开启'}}</i-button>
                                         </div>
                                     </div>
                                 </div>
@@ -977,6 +1045,9 @@
         var vRoot = new Vue({
             el:"#container",
             data:{
+                isLuyin:false,
+                speechTimer:null,
+                imgSrc:'./images/luyin/ic_record_ripple@2x-9.png',
                 isOpenJianting:false,
                 tipModal:false,
                 modalHader:'视频参数',
@@ -1060,14 +1131,17 @@
             },
             methods: {
                 onMousedown:function(){
+                    var that = this;
                    try {
-                        console.log('haha', '')
+                        that.isLuyin = true;
+                        that.setSpeechTimer();
                         myRecorder.start();
                         document.onmouseup = function () {
-                            console.log('bbb','stop');
+                            that.isLuyin = false;
                             myRecorder.stop();
                             document.onmousemove = null;
                             document.onmouseup = null;
+                            clearTimeout(that.speechTimer);
                         };
                    } catch (error) {
                        vRoot.$Message.error('浏览器不支持录音功能')
@@ -1657,6 +1731,19 @@
                             }
                         }
                     }
+                },
+                setSpeechTimer:function () {
+                    let index = [9, 8, 7, 6, 5, 4, 3, 2, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+                    let num = index.length , that = this; 
+                    this.speechTimer = setInterval(function () {
+                    setTimeout(function () {
+                        num++;
+                        that.imgSrc = "./images/luyin/ic_record_ripple@2x-" + index[num]+".png";
+                    }, 70);
+                    if (num >= index.length - 1) {
+                        num = 0;
+                    }
+                    }, 70);
                 },
                 checkVideoPlayerTime(){
                     var me = this;
