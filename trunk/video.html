@@ -1001,7 +1001,9 @@
     
 
         var myRecorder = new MyRecorder((data)=>{
-                            console.log('data', data);
+                        
+                            var size = data.size;
+                            console.log('size', size);
                             var reader = new FileReader();
                             reader.readAsArrayBuffer(data);
                             reader.onload = function (e) {
@@ -1023,6 +1025,7 @@
                                 var data = {
                                     deviceid: deviceid,
                                     codec:'webm',
+                                    datasize:size,
                                     channel:1,
                                     data:arrayBufferToBase64(buf),
                                     numberofchannels:1,
