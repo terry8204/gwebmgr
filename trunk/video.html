@@ -1252,7 +1252,7 @@
     //抛出异常
     HZRecorder.throwError = function (message) {
         alert(message);
-        throw new function () { this.toString = function () { return message; } }
+        // throw new function () { this.toString = function () { return message; } }
     }
     //是否支持录音
     HZRecorder.canRecording = (navigator.getUserMedia != null);
