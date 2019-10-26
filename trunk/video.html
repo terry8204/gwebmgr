@@ -1947,22 +1947,41 @@
                                 ],
                         },function(){
 
-                            var vjsControlBar = document.getElementsByClassName('vjs-control-bar')[index+1];
+                     
                             var tipEl = document.createElement('div');
+                                tipEl.setAttribute('id','video-tip'+index);
+                                tipEl.style.lineHeight = '30px';
+                                tipEl.style.paddingLeft = '15px';
+                             var vjsControlBar = document.getElementsByClassName('vjs-control-bar')[index+1];
 
-                            tipEl.setAttribute('id','video-tip'+index);
-                            tipEl.style.lineHeight = '30px';
-                            tipEl.style.paddingLeft = '15px';
-                            vjsControlBar.appendChild(tipEl);
+                            (function poll() {
+                                if(vjsControlBar){
+                                    vjsControlBar.appendChild(tipEl)
+                                }else{
+                                    vjsControlBar = document.getElementsByClassName('vjs-control-bar')[index+1];
+                                    setTimeout(poll,4)
+                                }
+                            })()
+                            
+                            var bigPlayButton = document.getElementsByClassName('vjs-big-play-button')[index+1];
+
+                             (function poll1() {
+                                if(bigPlayButton){
+                                    
+                                }else{
+                                    setTimeout(poll1,4)
+                                }
+                            })()
+                     
           
                             this.on('play',function () { 
                                 tipEl.innerText = '正在请求播放';
-                                document.getElementsByClassName('vjs-big-play-button')[index+1].style.display = 'none';
+                                bigPlayButton && (bigPlayButton.style.display = 'none');
                                 self.handleStartVideos(index);
                                 self.videoTimes['videoPlayer'+(index)] = Date.now();
                             });
                             this.on('pause',function () { 
-                                document.getElementsByClassName('vjs-big-play-button')[index+1].style.display = 'block';
+                                bigPlayButton && (bigPlayButton.style.display = 'block');
                                 self.handleStopVideos(index);
                                 delete self.videoTimes['videoPlayer'+(index)];
                                 delete playerStates[index];

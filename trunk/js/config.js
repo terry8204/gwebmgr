@@ -404,10 +404,10 @@ var myUrls = {
     return this.host + 'webapi?action=sendsystemmsg&token=' + token;
   },
   startVideos: function () {
-    return this.host + 'webapi?action=startvideos_sync&token=' + token;
+    return this.hosts + 'webapi?action=startvideos_sync&token=' + token;
   },
   stopVideos: function () {
-    return this.host + 'webapi?action=stopvideos&token=' + token;
+    return this.hosts + 'webapi?action=stopvideos&token=' + token;
   },
   queryVideoProperty: function () {
     return this.hosts + 'webapi?action=queryvideoproperty_sync&token=' + token;
