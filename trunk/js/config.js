@@ -410,7 +410,7 @@ var myUrls = {
     return this.host + 'webapi?action=stopvideos&token=' + token;
   },
   queryVideoProperty: function () {
-    return this.host + 'webapi?action=queryvideoproperty_sync&token=' + token;
+    return this.hosts + 'webapi?action=queryvideoproperty_sync&token=' + token;
   },
   queryVideosPlayUrl: function () {
     return this.hosts + 'webapi?action=queryvideosplayurl&token=' + token;
