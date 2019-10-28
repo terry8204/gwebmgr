@@ -1102,6 +1102,7 @@
                 //this.buffer = new Float32Array(data);
                 this.size += data.length;
                 this.encodePCM();
+
             }
             , compress: function () { 
                 // 合并压缩
@@ -1125,18 +1126,51 @@
                 }
                 return result;
             },encodePCM:function(){
+                var that = this;
                 var sampleRate = Math.min(this.inputSampleRate, this.outputSampleRate);
                 var sampleBits = Math.min(this.inputSampleBits, this.oututSampleBits);
-                // var float32bytes = this.compress();
+            //     // var float32bytes = this.compress();
                 
-                //var dataLength = float32bytes.length * (sampleBits / 8);
-               var arrayBuffer = this.buffer.buffer;
-                //Float32Array to Uint8Array
-                var uint8Array = new Uint8Array(arrayBuffer);
-                var dataLength = arrayBuffer.byteLength;
+            //     //var dataLength = float32bytes.length * (sampleBits / 8);
+            //    var arrayBuffer = this.buffer.buffer;
+            //    var data = new DataView(arrayBuffer);
+            //    var offset = 0;
+            //                   // 写入采样数据 
+            //    if (sampleBits === 8) {
+            //         for (var i = 0; i < bytes.length; i++, offset++) {
+            //             var s = Math.max(-1, Math.min(1, bytes[i]));
+            //             var val = s < 0 ? s * 0x8000 : s * 0x7FFF;
+            //             val = parseInt(255 / (65535 / (val + 32768)));
+            //             data.setInt8(offset, val, true);
+            //         }
+            //     } else {
+            //         for (var i = 0; i < bytes.length; i++, offset += 2) {
+            //             var s = Math.max(-1, Math.min(1, bytes[i]));
+            //             data.setInt16(offset, s < 0 ? s * 0x8000 : s * 0x7FFF, true);
+            //         }
+            //     }
+            //    var blob =  new Blob([data], { type: 'audio/mp3' });
+                // //Float32Array to Uint8Array
+                // console.log('arrayBuffer', arrayBuffer);
+                // var uint8Array = new Uint8Array(arrayBuffer);
+                // var dataLength = arrayBuffer.byteLength;
+                var blob = this.encodeMP3();
+                console.log('blob', blob);
+                var reader = new FileReader();
+                reader.readAsArrayBuffer(blob);
+                reader.onload = function (e) {
+                    var buf = new Uint8Array(reader.result);
+                    var dataLength = buf.length;
+                    console.log('dataLength', dataLength);
+                    that.callback && that.callback(sampleRate,sampleBits,dataLength,buf);
+                }
+                                
+                                
+
+
   
 
-                this.callback && this.callback(sampleRate,sampleBits,dataLength,uint8Array);
+
 
             }, encodeWAV: function () {
                 var sampleRate = Math.min(this.inputSampleRate, this.outputSampleRate);
@@ -1181,6 +1215,33 @@
                 writeString('data'); offset += 4;
                 // 采样数据总数,即数据总大小-44 
                 data.setUint32(offset, dataLength, true); offset += 4;
+                // 写入采样数据 
+                if (sampleBits === 8) {
+                    for (var i = 0; i < bytes.length; i++, offset++) {
+                        var s = Math.max(-1, Math.min(1, bytes[i]));
+                        var val = s < 0 ? s * 0x8000 : s * 0x7FFF;
+                        val = parseInt(255 / (65535 / (val + 32768)));
+                        data.setInt8(offset, val, true);
+                    }
+                } else {
+                    for (var i = 0; i < bytes.length; i++, offset += 2) {
+                        var s = Math.max(-1, Math.min(1, bytes[i]));
+                        data.setInt16(offset, s < 0 ? s * 0x8000 : s * 0x7FFF, true);
+                    }
+                }
+ 
+                return new Blob([data], { type: 'audio/mp3' });
+            },
+            encodeMP3: function () {
+                var sampleRate = Math.min(this.inputSampleRate, this.outputSampleRate);
+                var sampleBits = Math.min(this.inputSampleBits, this.oututSampleBits);
+                var bytes = this.compress();
+                var dataLength = bytes.length * (sampleBits / 8);
+                var buffer = new ArrayBuffer(44 + dataLength);
+                var data = new DataView(buffer);
+ 
+                var channelCount = 1;//单声道
+                var offset = 0;
                 // 写入采样数据 
                 if (sampleBits === 8) {
                     for (var i = 0; i < bytes.length; i++, offset++) {
@@ -1331,7 +1392,7 @@
                     var url = myUrls.uploadAudio();
                     var data = {
                             deviceid: deviceid,
-                            codec:'floatpcm',
+                            codec:'mp3',
                             datasize:dataLength,
                             samplebits:32,
                             littleedian:HZRecorder.littleEdian,
