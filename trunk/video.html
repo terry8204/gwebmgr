@@ -694,6 +694,14 @@
                                             </i-Col>
                                         </Row>
                                         <Row style="height:32px;margin: 10px 0;">
+                                            <i-Col span="5" style="height: 100%;line-height:32px;text-align: center;">
+                                                对讲通道 :
+                                            </i-Col>
+                                            <i-Col span="12" style="height: 100%;line-height:32px;">
+                                                <i-input v-model="audiochannel" style="width:300px"></i-input>
+                                            </i-Col>
+                                        </Row>
+                                        <Row style="height:32px;margin: 10px 0;">
                                             <i-Col span="17" style="height: 100%;line-height:32px;text-align: center;">
                                                 <i-button type='primary' @click='handleSetPlayParamter'>设置播放视频参数</i-button>
                                             </i-Col>
@@ -1382,6 +1390,7 @@
                 // 视频播放参数
                 videotranstype:'',
                 videostreamtype:'',
+                audiochannel:'',
 
                 // channelnum
                 channelsData:[],
@@ -2075,15 +2084,20 @@
                          
                             that.videotranstype = data.device.videotranstype + '';
                             that.videostreamtype = data.device.videostreamtype + '';
+                            that.audiochannel = data.device.audiochannel;
                         }else{}
                     })
                 },
                 handleSetPlayParamter:function(){
                     var url = myUrls.setVideoPlayParameters() , that = this;
-            
+                   if(!(typeof this.audiochannel === 'number' && !isNaN(this.audiochannel))){
+                        that.$Message.error('通道号必须是1到99的数字')
+                       return;
+                   }
+
                         var data = {
                             deviceid:deviceid,
-                  
+                            audiochannel:Number(this.audiochannel),
                             videotranstype:Number(this.videotranstype),
                             videostreamtype:Number(this.videostreamtype),
                         }
