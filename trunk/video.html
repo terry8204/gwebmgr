@@ -1478,7 +1478,7 @@
                             if(resp.status === 6){
                                 me.isOpenJianting = true;
                                 me.$Message.success("开启成功");
-                                audioPlayer.src(resp.record);
+                                audioPlayer.src(resp.record.playurl);
                                 audioPlayer.play();
                             }else{
                                 me.$Message.success("开启失败,超时或者设备不在线");
@@ -2093,7 +2093,7 @@
                 },
                 handleSetPlayParamter:function(){
                     var url = myUrls.setVideoPlayParameters() , that = this;
-                   if(!(typeof this.audiochannel === 'number' && !isNaN(this.audiochannel))){
+                   if(!(typeof Number(this.audiochannel) === 'number' && !isNaN(this.audiochannel))){
                         that.$Message.error('通道号必须是1到99的数字')
                        return;
                    }
