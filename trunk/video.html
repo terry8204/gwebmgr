@@ -485,14 +485,14 @@
                             <div class="text">录像回放</div>
                         </div>
                         <div style="height: 100%;text-align: right;" class="tv_box">   
-                                <span><i class="icon icon_num1" @click="openAndCloseVideoWindows(1)"></i></span>
-                                <span><i class="icon icon_num2" @click="openAndCloseVideoWindows(4)"></i></span>
-                                <span><i class="icon icon_num3" @click="openAndCloseVideoWindows(6)"></i></span>
-                                <span><i class="icon icon_num4" @click="openAndCloseVideoWindows(8)"></i></span>
-                                <span><i class="icon icon_num5" @click="openAndCloseVideoWindows(9)"></i></span>
-                                <span><i class="icon icon_num6" @click="openAndCloseVideoWindows(16)"></i></span>
-                                <span id="box_viewSize" @click="handleFullScreen">
-                                    <i class="icon icon_view" title="全屏"></i>
+                                <span title="显示一个通道"><i class="icon icon_num1" @click="openAndCloseVideoWindows(1)"></i></span>
+                                <span title="显示四个通道"><i class="icon icon_num2" @click="openAndCloseVideoWindows(4)"></i></span>
+                                <span title="显示六个通道"><i class="icon icon_num3" @click="openAndCloseVideoWindows(6)"></i></span>
+                                <span title="显示八个通道"><i class="icon icon_num4" @click="openAndCloseVideoWindows(8)"></i></span>
+                                <span title="显示九个通道"><i class="icon icon_num5" @click="openAndCloseVideoWindows(9)"></i></span>
+                                <span title="显示十六个通道"><i class="icon icon_num6" @click="openAndCloseVideoWindows(16)"></i></span>
+                                <span id="box_viewSize" @click="handleFullScreen" title="全屏">
+                                    <i class="icon icon_view"></i>
                                     <!-- <ul class="tc_box">
                                         <li id="liViewFull" @click="handleScreenSize(1)"><a id="viewFull">
                                             <i v-show="viewSize == 1" class="icon_select"></i>满画面显示</a></li>
@@ -502,16 +502,16 @@
                                             <i class="icon_select" v-show="viewSize == 3"></i>16:9显示</a></li>
                                     </ul> -->
                                 </span>
-                                <span  @click="handlePlayAllVideos">
-                                    <i class="icon icon_play_all" title="播放所有视频"></i>
+                                <span  @click="handlePlayAllVideos" title="播放所有视频">
+                                    <i class="icon icon_play_all"></i>
                                 </span>
-                                <span id="box_stop" @click="handleStopAllVideos">
-                                    <i class="icon icon_close_show" title="停止所有视频"></i>
+                                <span id="box_stop" @click="handleStopAllVideos" title="停止所有视频">
+                                    <i class="icon icon_close_show"></i>
                                     <!-- <ul class="tc_box">
                                         <li @click="handleStopAllVideos"><a id="stopAll" ><i class="icon icon_gou"></i>停止所有视频</a></li>
                                     </ul> -->
                                 </span>
-                                <span @click="setupModal=true"><i class="icon icon_num9"></i></span>
+                                <span @click="setupModal=true"><i class="icon icon_num9"  title="视频播放设置"></i></span>
                       
                         </div>
                         <Modal v-model="setupModal" width="800">
@@ -1103,9 +1103,10 @@
                 this.size += data.length;
                 this.encodePCM();
             }
-            , compress: function () { //合并压缩
-                //合并
-                //var data = new Float32Array(this.size);
+            , compress: function () { 
+                // 合并压缩
+                // 合并
+                // var data = new Float32Array(this.size);
                 // var offset = 0;
                 // for (var i = 0; i < this.buffer.length; i++) {
                 //     data.set(this.buffer[i], offset);
@@ -1334,7 +1335,7 @@
                             datasize:dataLength,
                             samplebits:32,
                             littleedian:HZRecorder.littleEdian,
-                            channel:99,
+                            channel:vRoot.audiochannel,
                             sn:sn,
                             // data:arrayBufferToBase64(buf),
                             hexdata:utils.Bytes2HexStr(bytes),
@@ -1461,13 +1462,15 @@
                         this.isOpenJianting = false;
                         audioPlayer.pause();
                         me.$Message.success("关闭成功");
+                        var url = myUrls.stopAudio();
+                        utils.sendAjax(url,{  deviceid:deviceid, channel:Number(this.audiochannel),},function () {});
                     }else{
                         this.loading = true;
                        
-                        var url = myUrls.startVideos() ;
+                        var url = myUrls.startAudio() ;
                         var data = {
                             deviceid:deviceid,
-                            channels:[99],
+                            channel:Number(this.audiochannel),
                             datatype:2
                         }
                         utils.sendAjax(url,data,function (resp) {
@@ -1475,7 +1478,7 @@
                             if(resp.status === 6){
                                 me.isOpenJianting = true;
                                 me.$Message.success("开启成功");
-                                audioPlayer.src(resp.records[0].playurl);
+                                audioPlayer.src(resp.record);
                                 audioPlayer.play();
                             }else{
                                 me.$Message.success("开启失败,超时或者设备不在线");

@@ -406,6 +406,12 @@ var myUrls = {
   startVideos: function () {
     return this.hosts + 'webapi?action=startvideos_sync&token=' + token;
   },
+  startAudio: function () {
+    return this.hosts + 'webapi?action=startaudio_sync&token=' + token;
+  },
+  stopAudio: function () {
+    return this.hosts + 'webapi?action=stopaudio&token=' + token;
+  },
   stopVideos: function () {
     return this.hosts + 'webapi?action=stopvideos&token=' + token;
   },
