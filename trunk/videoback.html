@@ -608,7 +608,7 @@
                         }else if(status === CMD_SEND_RESULT_DETAIL_ERROR){
                             that.$Message.error("错误:" + resp.cause);
                         }else if(status === CMD_SEND_CONFIRMED){
-                            if(records.length){
+                            if(records && records.length){
                                 isSucc = true;
                             }else{
                                 that.$Message.error("没有存储记录");

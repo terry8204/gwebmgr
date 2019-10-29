@@ -596,26 +596,26 @@ try {
 
 
 //  vue组件   配合查询分组表格使用
-Vue.component('expand-row', {
-  template:
-    '<div>' +
-    '<span v-for="(item , index) in devices" style="display:inline-block;margin:5px">' +
-    '<i-button icon="md-phone-portrait" @click="clickMe(item)"> {{item.deviceid}}</i-button>' +
-    '</span>' +
-    '</div>',
-  props: {
-    devices: Array
-  },
-  data: function () {
-    return {}
-  },
-  methods: {
-    clickMe: function (item) {
+// Vue.component('expand-row', {
+//   template:
+//     '<div>' +
+//     '<span v-for="(item , index) in devices" style="display:inline-block;margin:5px">' +
+//     '<i-button icon="md-phone-portrait" @click="clickMe(item)"> {{item.deviceid}}</i-button>' +
+//     '</span>' +
+//     '</div>',
+//   props: {
+//     devices: Array
+//   },
+//   data: function () {
+//     return {}
+//   },
+//   methods: {
+//     clickMe: function (item) {
 
-    }
-  },
-  mounted: function () { }
-})
+//     }
+//   },
+//   mounted: function () { }
+// })
 
 // 后台管理
 var mixIn = {
@@ -646,7 +646,7 @@ var mixIn = {
 
 
 //  得到表格row组建
-var expandRow = Vue.component('expand-row')
+// var expandRow = Vue.component('expand-row')
 
 // 轨迹回放
 function playBack (deviceid) {
