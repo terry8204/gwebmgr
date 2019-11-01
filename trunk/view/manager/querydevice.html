@@ -506,6 +506,7 @@ vueInstanse = new Vue({
 
                     utils.sendAjax(url,data,function (resp) { 
                         if(resp.status == 0){
+                            editObject.teltype = String(data.teltype);
                             var newData = Object.assign(editObject,data);
                                 newData.overduetimestr = DateFormat.longToDateTimeStr(data.overduetime,0);
                             me.tableData[me.editDeviceIndex] = newData; 
