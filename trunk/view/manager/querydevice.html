@@ -93,13 +93,14 @@
                             <i-option v-for="item in groupList" :value="item.value" :key="item.value">{{ item.label }}</i-option>
                         </i-select>
                     </i-col>
-                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">{{$t("device.allowLogin")}} : &nbsp;</i-col>
+                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;网络类型 : &nbsp;</i-col>
                     <i-col span="8">
-                        <i-select v-model="loginenable">
-                            <i-option value="0">{{$t("user.ban")}}</i-option>
-                            <i-option value="1">{{$t("user.allow")}}</i-option>     
+                        <i-select v-model="teltype">
+                            <i-option value="1">2G</i-option>
+                            <i-option value="2">3G</i-option>
+                            <i-option value="3">4G</i-option>
                         </i-select>
-                    </i-col>  
+                    </i-col> 
                 </Row>
     
                 <Row style="margin: 10px 0">
@@ -131,9 +132,16 @@
     
                 <Row style="margin: 10px 0">
                     <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;转发地址 : &nbsp;</i-col>
-                    <i-col span="20">
+                    <i-col span="8">
                         <i-input v-model.trim="forwardurl"></i-input>
                     </i-col>
+                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">{{$t("device.allowLogin")}} : &nbsp;</i-col>
+                    <i-col span="8">
+                        <i-select v-model="loginenable">
+                            <i-option value="0">{{$t("user.ban")}}</i-option>
+                            <i-option value="1">{{$t("user.allow")}}</i-option>     
+                        </i-select>
+                    </i-col>     
                 </Row>    
     
                 <Row style="margin: 10px 0">
@@ -158,6 +166,7 @@ vueInstanse = new Vue({
                 loading:true,
                 total:0,
                 currentIndex:1,
+                teltype:'1',
                 columns: [
                     {
                         title: vRoot.$t("alarm.devName"),
@@ -465,6 +474,7 @@ vueInstanse = new Vue({
                     };      
                     
                     if(this.devicename){ data.devicename = this.devicename;};
+                    if(this.teltype){ data.teltype = Number(this.teltype);};
                     
 
                     if(this.simnum !== ""){
@@ -541,6 +551,7 @@ vueInstanse = new Vue({
                     me.createrToUser = editObject.creater;
                     me.monitor = editObject.monitor;
                     me.isfree = String(editObject.isfree);
+                    me.teltype = String(editObject.teltype);
                 },
                 getDeviceType:function () { 
                     var me = this;

@@ -71,9 +71,13 @@
                         <i-option v-for="item in groupsList" :value="item.value" :key="item.value">{{ item.label }}</i-option>
                     </i-select>
                 </i-col>
-                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;转发地址 : &nbsp;</i-col>
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;网络类型 : &nbsp;</i-col>
                 <i-col span="8">
-                    <i-input v-model.trim="forwardurl"></i-input>
+                    <i-select v-model="teltype">
+                        <i-option value="1">2G</i-option>
+                        <i-option value="2">3G</i-option>
+                        <i-option value="3">4G</i-option>
+                    </i-select>
                 </i-col>
             </Row>
 
@@ -118,6 +122,13 @@
                 </i-col>
             </Row>
 
+            <Row style="margin: 10px 0">
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;转发地址 : &nbsp;</i-col>
+                <i-col span="8">
+                    <i-input v-model.trim="forwardurl"></i-input>
+                </i-col>
+            </Row>
+
 
 
             <Row style="margin: 10px 0">
@@ -140,6 +151,7 @@
                         return date && date.valueOf() < Date.now() - 86400000;
                     }
                 },
+                teltype:'',
                 iconState:"ios-arrow-down",
                 deviceid:"",
                 devicename:"",
@@ -232,6 +244,7 @@
                     };      
                     
                     if(this.devicename) data.devicename = this.devicename;
+                    if(this.teltype) data.teltype = Number(this.teltype);
 
                     if(this.monitor){ data.monitor = this.monitor;}
 

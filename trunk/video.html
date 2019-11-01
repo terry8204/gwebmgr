@@ -283,6 +283,13 @@
             font-weight: 200;
             border-radius: 4px;
         }
+    .audioPlayerTip{
+        height: 30px;
+        line-height: 30px;
+        background-color: rgba(0, 0, 0, .7);
+        color: #ffffff;
+        margin-top: 10px;
+    }
     </style>
     <link href="./videojs/video-js.css" rel="stylesheet">
     <script src="./videojs/video.js"></script>
@@ -450,6 +457,7 @@
                                 </div>
                                 <div class="listing_box" v-if="listingChoice == 'duijiang'">
                                     <i class="icon_dj"></i>
+                                    <div class="audioPlayerTip">{{audioPlayerTip}}</div>
                                     <div class="yt_footer">
                                         <div>
                                             <i-button style="width:120px;" @click="openDuijiang" :loading="loading">{{isOpenJianting?'关闭':'开启'}}</i-button>
@@ -461,6 +469,7 @@
                                 </div>
                                 <div class="listing_box" v-else>
                                     <i class="icon_jt"></i>
+                                    <div class="audioPlayerTip">{{audioPlayerTip}}</div>
                                     <div class="yt_footer">
                                         <div>
                                             <i-button style="width:120px;" @click="openDuijiang" :loading="loading">{{isOpenJianting?'关闭':'开启'}}</i-button>
@@ -1117,6 +1126,7 @@
         var devName =utils.getParameterByName("name");
         var playerStates = {};
         var audioPlayer = null;
+        var audioPlayerTime = 0;
         HZRecorder.get(
             function (rec) {myRecorder = rec;},
             {
@@ -1147,6 +1157,7 @@
         var vRoot = new Vue({
             el:"#container",
             data:{
+                audioPlayerTip:'对讲请先点击以下按钮',
                 isLuyin:false,
                 speechTimer:null,
                 imgSrc:'./images/luyin/ic_record_ripple@2x-9.png',
@@ -1235,6 +1246,10 @@
             methods: {
                 onMousedown:function(){
                     var that = this;
+                    if(!that.isOpenJianting){
+                        that.$Message.success("请先开启监听");
+                        return;
+                    }
                    try {
                         that.isLuyin = true;
                         that.setSpeechTimer();
@@ -1257,7 +1272,9 @@
                     if(this.isOpenJianting){
                         this.isOpenJianting = false;
                         audioPlayer.pause();
+                        audioPlayerTime = 0;
                         me.$Message.success("关闭成功");
+                        me.audioPlayerTip = '监听已关闭';
                         var url = myUrls.stopAudio();
                         utils.sendAjax(url,{  deviceid:deviceid, channel:Number(this.audiochannel),},function () {});
                     }else{
@@ -1274,8 +1291,10 @@
                             if(resp.status === 6){
                                 me.isOpenJianting = true;
                                 me.$Message.success("开启成功");
+                                audioPlayerTime = Date.now();
                                 audioPlayer.src(resp.record.playurl);
                                 audioPlayer.play();
+                                me.audioPlayerTip = '监听已打开，请按住说话'
                             }else{
                                 me.$Message.success("开启失败,超时或者设备不在线");
                             }
@@ -1881,6 +1900,14 @@
                     var me = this;
                     this.myInterval = setInterval(function(){
                         me.stopVideoPlayer();
+                        if(audioPlayerTime !== 0 ){
+                            if((Date.now() - audioPlayerTime) > 1000*60*3){
+                                audioPlayer.pause();
+                                me.isOpenJianting = false;
+                                me.audioPlayerTip = '3分钟播放时间到,已关闭';
+                                audioPlayerTime = 0;
+                            }
+                        }
                     },5000);
                 },
                 queryDeviceById:function(){
