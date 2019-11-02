@@ -1327,7 +1327,7 @@ function rechargeRecords (groupslist) {
                         var tableData = [];
                         records.forEach(function (record) {
                             tableData.push({
-                                username: userName,
+                                username: record.username,
                                 deviceid: record.deviceid,
                                 chargetimeStr: DateFormat.longToDateTimeStr(record.chargetime, 0),
                                 outtradeno: record.outtradeno,
