@@ -452,6 +452,9 @@ var myUrls = {
   uploadAudio: function () {
     return this.hosts + 'webapi?action=uploadaudio&token=' + token;
   },
+  reqUploadFile: function () {
+    return this.hosts + 'webapi?action=requploadfile&token=' + token;
+  },
 }
 
 

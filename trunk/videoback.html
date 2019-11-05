@@ -220,6 +220,42 @@
                                 </i-col>
                             </Row>
                         </div>
+                        
+                        <Modal v-model="modal" title="分段下载" width="460">                   
+                            <Row style="margin:10px 0;">
+                                <i-col span="4" style="height:35px;line-height:35px;">
+                                    开始日期 : 
+                                </i-col>
+                                <i-col span="8">
+                                    <i-input :value='dateStr' disabled style="width: 100%;" />
+                                </i-col>
+                            </Row>
+                            <Row style="margin:10px 0;">
+                                <i-col span="4"style="height:35px;line-height:35px;">
+                                    开始时间 :
+                                </i-col>
+                                <i-col span="8">
+                                    <Time-Picker type="time" :value="startValue" style="width: 100%;"></Time-Picker>
+                                </i-col>
+                                <i-col span="11" offset="1" style="height:35px;line-height:35px;color:red;">
+                                    <span> ( >= {{startVideoTime}} )</span>
+                                </i-col>
+                            </Row>
+                            <Row style="margin:10px 0;">
+                                <i-col span="4"style="height:35px;line-height:35px;">
+                                    结束时间 :
+                                </i-col>
+                                <i-col span="8">
+                                    <Time-Picker type="time" :value="endValue" style="width: 100%;"></Time-Picker>
+                                </i-col>
+                                <i-col span="11" offset="1" style="height:35px;line-height:35px;color:red;">
+                                        <span>( <= {{endVideoTime}} )</span>
+                                </i-col>
+                            </Row>
+                            <div slot="footer" >
+                                <i-button style="width: 100%" type="primary">下载</i-button>
+                            </div>
+                        </Modal>
                     </div>
                 </Sider>
                 <div style="padding:10px;position: absolute;left: 260px;top:0px;right: 0;bottom: 0;">
@@ -325,12 +361,18 @@
         var vRoot = new Vue({
             el:"#container",
             data:{
+                modal:false,
                 isTable:false,
                 loading:false,
                 tipModal:false,
                 maskEl:null,
                 selectType:'1',
                 date:new Date(),
+                dateStr:"",
+                startValue:'',
+                endValue:'',
+                startVideoTime:'',
+                endVideoTime:'',
                 timeRange:["00-00-00","23-59-59"],
                 storageType:'mainAndBackupStore',
                 mediatype:'all',
@@ -343,37 +385,9 @@
                         key:'index'
                     },
                     {
-                        title: '通道号',
-                        key: 'channel',
-                        width:80,
-                    },
-                    {
-                        title: '开始时间',
-                        key: 'starttime',
-                        
-                    },
-                    {
-                        title: '结束时间',
-                        key: 'endtime',
-                        
-                    },
-                    {
-                        title: '文件大小',
-                        key: 'filesize',
-                        render:function(h,params){
-                            var mSize = (params.row.filesize/1024/1024).toFixed(2);
-                            var filesize = "";
-                            if(mSize>1024){
-                                filesize = mSize/1024 + "G";
-                            }else{
-                                filesize = mSize + 'M'
-                            }
-                            return h('span',{},filesize)
-                        }
-                    },
-                    {
-                        title: '操作',
+                        title: '播放',
                         key: 'action',
+                        width:70,
                         render:function(h,params){
                             
                             return h('div',{},
@@ -392,6 +406,79 @@
                                 ]
                             )
                         } 
+                    },
+                    {
+                        title: '通道号',
+                        key: 'channel',
+                        width:80,
+                    },
+                    {
+                        title: '开始时间',
+                        key: 'starttime',
+                        width:160,
+                    },
+                    {
+                        title: '结束时间',
+                        key: 'endtime',
+                        width:160,
+                    },
+                    {
+                        title: '文件大小',
+                        key: 'filesize',
+                        width:100,
+                        render:function(h,params){
+                            var mSize = (params.row.filesize/1024/1024).toFixed(2);
+                            var filesize = "";
+                            if(mSize>1024){
+                                filesize = mSize/1024 + "G";
+                            }else{
+                                filesize = mSize + 'M'
+                            }
+                            return h('span',{},filesize)
+                        }
+                    },
+                    {
+                        title: '路径',
+                        key: 'path',
+                    },
+                    {
+                        title: '操作',
+                        key: 'action',
+                        width:180,
+                        render:function(h,params){ 
+                            var row = params.row;
+                            return h('div',{},
+                                [
+                                    h('Button',{
+                                        props:{
+                                            shape:"circle",  
+                                            icon:"md-arrow-down"   
+                                        },
+                                        on:{ 
+                                            click : function(){
+                                                vRoot.reqUploadFile(row);
+                                            }
+                                        }
+                                    },null),
+                                    h('Button',{
+                                        style:{
+                                            'marginLeft':'10px'
+                                        },
+                                        on:{ 
+                                            click : function(){
+                                                console.log('that', row);
+                                                vRoot.dateStr = row.starttime.split(' ')[0];
+                                                vRoot.startValue = row.starttime.split(' ')[1];
+                                                vRoot.endValue = row.endtime.split(' ')[1];
+                                                vRoot.startVideoTime = row.starttime;
+                                                vRoot.endVideoTime = row.endtime;
+                                                vRoot.modal = true;
+                                            }
+                                        }
+                                    },'分段下载'),
+                                ]
+                            )
+                        } 
                     }
                 ],
                 timeReminder:'',
@@ -399,8 +486,71 @@
                 timeLineElStyle:{},
             },
             methods: {
+                splitUploadFile:function(){
+                    var url = myUrls.reqUploadFile();
+                    var mediatype = '';
+                    if(this.mediatype=='all'){
+                        mediatype = 0;
+                    }else if(this.mediatype=='audio'){
+                        mediatype = 1;
+                    }else if(this.mediatype=='video'){
+                        mediatype = 2;
+                    }
+                    var storetype = '';
+                    if(this.storageType=='mainAndBackupStore'){
+                        storetype = 0;
+                    }else if(this.storageType=='mainstore'){
+                        storetype = 1;
+                    }else if(this.storageType=='backupstore'){
+                        storetype = 2;
+                    }
+                    var data = {
+                        deviceid:deviceid,
+                        channel:this.selectType,
+                        starttime:this.dateStr + ' ' + this.startVideoTime,
+                        endtime:this.dateStr + ' ' + this.endVideoTime,
+                        alarmtype:0,
+                        mediatype:mediatype,
+                        streamtype:0,
+                        storetype:storetype,
+                    };
+                    utils.sendAjax(url,data,function (resp) { 
+                        console.log('resp', resp);
+                    });
+                },
+                reqUploadFile:function(row){
+                    var url = myUrls.reqUploadFile();
+                    var mediatype = '';
+                    if(this.mediatype=='all'){
+                        mediatype = 0;
+                    }else if(this.mediatype=='audio'){
+                        mediatype = 1;
+                    }else if(this.mediatype=='video'){
+                        mediatype = 2;
+                    }
+                    var storetype = '';
+                    if(this.storageType=='mainAndBackupStore'){
+                        storetype = 0;
+                    }else if(this.storageType=='mainstore'){
+                        storetype = 1;
+                    }else if(this.storageType=='backupstore'){
+                        storetype = 2;
+                    }
+                    var data = {
+                        deviceid:deviceid,
+                        channel:this.selectType,
+                        starttime:row.starttime,
+                        endtime:row.endtime,
+                        alarmtype:0,
+                        mediatype:mediatype,
+                        streamtype:0,
+                        storetype:storetype,
+                    };
+                    utils.sendAjax(url,data,function (resp) { 
+                        console.log('resp', resp);
+                    });
+                },
                 onMouseMove:function(e){
-                
                     var rect = this.maskEl.getBoundingClientRect()
                     var elWidth = rect.width;
                     var offsetX = e.clientX - rect.left;
