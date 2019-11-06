@@ -463,9 +463,16 @@
                                             }
                                         }
                                     },null),
-                                    h('Button',{
+                                    h('Button',{ 
                                         style:{
                                             'marginLeft':'10px'
+                                        },
+                                        props:{
+                                            shape:"circle",  
+                                            icon:"md-download"   
+                                        },
+                                        attrs:{
+                                            title:'分段下载'
                                         },
                                         on:{ 
                                             click : function(){
@@ -477,7 +484,7 @@
                                                 vRoot.modal = true;
                                             }
                                         }
-                                    },'分段下载'),
+                                    },null),
                                 ]
                             )
                         } 
@@ -510,8 +517,8 @@
                     var data = {
                         deviceid:deviceid,
                         channel:this.selectType,
-                        starttime:this.dateStr + ' ' + this.startVideoTime,
-                        endtime:this.dateStr + ' ' + this.endVideoTime,
+                        starttime:this.dateStr + ' ' + this.startValue,
+                        endtime:this.dateStr + ' ' + this.endVideo,
                         alarmtype:0,
                         mediatype:mediatype,
                         streamtype:0,
