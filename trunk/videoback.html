@@ -415,12 +415,10 @@
                     {
                         title: '开始时间',
                         key: 'starttime',
-                        width:160,
                     },
                     {
                         title: '结束时间',
                         key: 'endtime',
-                        width:160,
                     },
                     {
                         title: '文件大小',
@@ -436,10 +434,6 @@
                             }
                             return h('span',{},filesize)
                         }
-                    },
-                    {
-                        title: '路径',
-                        key: 'path',
                     },
                     {
                         title: '操作',
@@ -519,7 +513,7 @@
                     });
                 },
                 reqUploadFile:function(row){
-                    var url = myUrls.reqUploadFile();
+                    var url = myUrls.reqUploadFile() , that = this;
                     var mediatype = '';
                     if(this.mediatype=='all'){
                         mediatype = 0;
@@ -545,13 +539,37 @@
                         mediatype:mediatype,
                         streamtype:0,
                         storetype:storetype,
+                        filesize:row.filesize
                     };
                     utils.sendAjax(url,data,function (resp) { 
                         console.log('resp', resp);
+                        var record = resp.record , status = resp.status ;
+                            if(status == CMD_SEND_RESULT_UNCONFIRM){
+                                me.$Message.error('发送成功，未收到确认'); 
+                            }else if(status === CMD_SEND_RESULT_PASSWORD_ERROR){
+                                me.$Message.error('密码错误');
+                            }else if(status === CMD_SEND_RESULT_OFFLINE_NOT_CACHE){           
+                                me.$Message.error("设备离线，未缓存");   
+                            }else if(status === CMD_SEND_RESULT_OFFLINE_CACHED){
+                                me.$Message.error("设备离线，已缓存");
+                            }else if(status === CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD){
+                                me.$Message.error("需要修改默认密码");
+                            }else if(status === CMD_SEND_RESULT_DETAIL_ERROR){
+                                me.$Message.error("错误:" + resp.cause);
+                            }else if(status === CMD_SEND_CONFIRMED){
+                                var ele = document.createElement('a');
+                                ele.setAttribute('href',res.url); //设置下载文件的url地址
+                                ele.setAttribute('download' , 'download');//用于设置下载文件的文件名
+                                ele.click();
+                            }else if(status === CMD_SEND_OVER_RETRY_TIMES){
+                                me.$Message.error("尝试发送3次失败");
+                            }else if(status === CMD_SEND_SYNC_TIMEOUT){
+                                me.$Message.error("发送超时");
+                            }
                     });
                 },
                 onMouseMove:function(e){
-                    var rect = this.maskEl.getBoundingClientRect()
+                    var rect = this.maskEl.getBoundingClientRect();
                     var elWidth = rect.width;
                     var offsetX = e.clientX - rect.left;
                     if(offsetX == elWidth - 1)
