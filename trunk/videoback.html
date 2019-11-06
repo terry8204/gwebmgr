@@ -542,8 +542,8 @@
                         filesize:row.filesize
                     };
                     utils.sendAjax(url,data,function (resp) { 
-                        console.log('resp', resp);
-                        var record = resp.record , status = resp.status ;
+                        console.log('resp',resp)
+                        var status = resp.status ;
                             if(status == CMD_SEND_RESULT_UNCONFIRM){
                                 me.$Message.error('发送成功，未收到确认'); 
                             }else if(status === CMD_SEND_RESULT_PASSWORD_ERROR){
@@ -557,8 +557,9 @@
                             }else if(status === CMD_SEND_RESULT_DETAIL_ERROR){
                                 me.$Message.error("错误:" + resp.cause);
                             }else if(status === CMD_SEND_CONFIRMED){
+                                console.log('开始下载', '')
                                 var ele = document.createElement('a');
-                                ele.setAttribute('href',res.url); //设置下载文件的url地址
+                                ele.setAttribute('href',resp.downloadurl); //设置下载文件的url地址
                                 ele.setAttribute('download' , 'download');//用于设置下载文件的文件名
                                 ele.click();
                             }else if(status === CMD_SEND_OVER_RETRY_TIMES){
