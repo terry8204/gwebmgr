@@ -252,8 +252,17 @@
                                         <span>( <= {{endVideoTime}} )</span>
                                 </i-col>
                             </Row>
+                            <Row style="margin:10px 0;">
+                                <i-col span="4"style="height:35px;line-height:35px;">
+                                    标签 :
+                                </i-col>
+                                <i-col span="8">
+                                    <i-input v-model="tag"></i-input>
+                                </i-col>
+                            </Row>
+
                             <div slot="footer" >
-                                <i-button style="width: 100%" type="primary">下载</i-button>
+                                <i-button style="width: 100%" type="primary" @click='splitUploadFile'>下载</i-button>
                             </div>
                         </Modal>
                     </div>
@@ -478,10 +487,11 @@
                 timeReminder:'',
                 timeReminderElStyle:{},
                 timeLineElStyle:{},
+                tag:'',
             },
             methods: {
                 splitUploadFile:function(){
-                    var url = myUrls.reqUploadFile();
+                    var url = myUrls.reqUploadFile() , me = this;
                     var mediatype = '';
                     if(this.mediatype=='all'){
                         mediatype = 0;
@@ -508,8 +518,33 @@
                         streamtype:0,
                         storetype:storetype,
                     };
+                    this.tag && ( data.tag = this.tag );
+                    console.log('tag', this.tag )
                     utils.sendAjax(url,data,function (resp) { 
-                        console.log('resp', resp);
+                        var status = resp.status ;
+                            if(status == CMD_SEND_RESULT_UNCONFIRM){
+                                me.$Message.error('发送成功，未收到确认'); 
+                            }else if(status === CMD_SEND_RESULT_PASSWORD_ERROR){
+                                me.$Message.error('密码错误');
+                            }else if(status === CMD_SEND_RESULT_OFFLINE_NOT_CACHE){           
+                                me.$Message.error("设备离线，未缓存");   
+                            }else if(status === CMD_SEND_RESULT_OFFLINE_CACHED){
+                                me.$Message.error("设备离线，已缓存");
+                            }else if(status === CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD){
+                                me.$Message.error("需要修改默认密码");
+                            }else if(status === CMD_SEND_RESULT_DETAIL_ERROR){
+                                me.$Message.error("错误:" + resp.cause);
+                            }else if(status === CMD_SEND_CONFIRMED){
+                                me.$Message.success("请求下载成功,开始下载");
+                                var ele = document.createElement('a');
+                                ele.setAttribute('href',resp.downloadurl); //设置下载文件的url地址
+                                ele.setAttribute('download' , resp.tag);//用于设置下载文件的文件名
+                                ele.click();
+                            }else if(status === CMD_SEND_OVER_RETRY_TIMES){
+                                me.$Message.error("尝试发送3次失败");
+                            }else if(status === CMD_SEND_SYNC_TIMEOUT){
+                                me.$Message.error("发送超时");
+                            }
                     });
                 },
                 reqUploadFile:function(row){
