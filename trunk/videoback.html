@@ -469,7 +469,6 @@
                                         },
                                         on:{ 
                                             click : function(){
-                                                console.log('that', row);
                                                 vRoot.dateStr = row.starttime.split(' ')[0];
                                                 vRoot.startValue = row.starttime.split(' ')[1];
                                                 vRoot.endValue = row.endtime.split(' ')[1];
@@ -519,7 +518,7 @@
                         storetype:storetype,
                     };
                     this.tag && ( data.tag = this.tag );
-                    console.log('tag', this.tag )
+    
                     utils.sendAjax(url,data,function (resp) { 
                         var status = resp.status ;
                             if(status == CMD_SEND_RESULT_UNCONFIRM){
@@ -540,6 +539,8 @@
                                 ele.setAttribute('href',resp.downloadurl); //设置下载文件的url地址
                                 ele.setAttribute('download' , resp.tag);//用于设置下载文件的文件名
                                 ele.click();
+                                me.modal = false;
+                                me.tag = '';
                             }else if(status === CMD_SEND_OVER_RETRY_TIMES){
                                 me.$Message.error("尝试发送3次失败");
                             }else if(status === CMD_SEND_SYNC_TIMEOUT){
