@@ -557,7 +557,7 @@
                             }else if(status === CMD_SEND_RESULT_DETAIL_ERROR){
                                 me.$Message.error("错误:" + resp.cause);
                             }else if(status === CMD_SEND_CONFIRMED){
-                                console.log('开始下载', '')
+                                me.$Message.success("请求下载成功,开始下载");
                                 var ele = document.createElement('a');
                                 ele.setAttribute('href',resp.downloadurl); //设置下载文件的url地址
                                 ele.setAttribute('download' , 'download');//用于设置下载文件的文件名
