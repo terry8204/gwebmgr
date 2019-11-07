@@ -265,6 +265,44 @@
                                 <i-button style="width: 100%" type="primary" @click='splitUploadFile'>下载</i-button>
                             </div>
                         </Modal>
+                        <Modal v-model="downloadModal" title="文件下载" width="960">
+                                <Row style="margin:10px 0;">
+                                        <i-col span="2" style="height:35px;line-height:35px;">
+                                            文件开始时间 :
+                                        </i-col>
+                                        <i-col span="5">
+                                            <Date-Picker type="datetime" v-model="searchStartTime" placeholder="选择开始时间" style="width:100%;"></Date-Picker>
+                                        </i-col>
+                                        <i-col span="2" offset="1" style="height:35px;line-height:35px;">
+                                            文件结束时间 :
+                                        </i-col>
+                                        <i-col span="5">
+                                            <Date-Picker type="datetime" v-model="searchEndTime" placeholder="选择结束时间" style="width:100%;"></Date-Picker>
+                                        </i-col>
+                                        <i-col span="1" offset="1" style="height:35px;line-height:35px;">
+                                            下载: 
+                                        </i-col>
+                                        <i-col span="3">
+                                            <i-select v-model="searchType">
+                                                <i-option value="all">全部</i-option>
+                                                <i-option>dsff</i-option>
+                                            </i-select>
+                                        </i-col>
+                                        <i-col span="2" offset="1">
+                                            <i-button>搜索</i-button>
+                                        </i-col>
+                                </Row>
+                                <Row>
+                                    <i-col span="24">
+                                        <i-table border
+                                            :columns="downloadColumns" 
+                                            :data="tableData" 
+                                            height="400" 
+                                            :loading="loading"></i-table>
+                                    </i-col>
+                                </Row>
+                            <div slot="footer"></div>
+                        </Modal>
                     </div>
                 </Sider>
                 <div style="padding:10px;position: absolute;left: 260px;top:0px;right: 0;bottom: 0;">
@@ -286,12 +324,8 @@
                                         </i-button>
                                     </Button-Group>
                                </div>
-                               <div style="float:left;margin-left: 20px;">
-                                    <!-- <i-button shape="circle" icon="ios-play"></i-button> 
-                                    <i-button shape="circle" icon="ios-square"></i-button> 
-                                    <i-button shape="circle" icon="ios-skip-forward"></i-button>
-                                    <i-button shape="circle" icon="ios-rewind"></i-button>
-                                    <i-button shape="circle" icon="ios-fastforward"></i-button> -->
+                               <div style="float:right;">
+                                    <i-button @click="downloadModal=true">文件下载</i-button>
                                </div>
                             </div>
                             <div style="height:250px;">
@@ -371,6 +405,7 @@
             el:"#container",
             data:{
                 modal:false,
+                downloadModal:false,
                 isTable:false,
                 loading:false,
                 tipModal:false,
@@ -382,6 +417,9 @@
                 endValue:'',
                 startVideoTime:'',
                 endVideoTime:'',
+                searchStartTime:null,
+                searchEndTime:null,
+                searchType:'all',
                 timeRange:["00-00-00","23-59-59"],
                 storageType:'mainAndBackupStore',
                 mediatype:'all',
@@ -481,6 +519,7 @@
                                                 vRoot.endValue = row.endtime.split(' ')[1];
                                                 vRoot.startVideoTime = row.starttime;
                                                 vRoot.endVideoTime = row.endtime;
+                                                vRoot.row = row;
                                                 vRoot.modal = true;
                                             }
                                         }
@@ -490,10 +529,37 @@
                         } 
                     }
                 ],
+                downloadColumns:[
+                    {
+                        title:'操作',
+                        width:100,
+                    },
+                    {
+                        title:'序号',
+                        width:100,
+                    },
+                    {
+                        title:'提交时间',
+                        width:200,
+                    },
+                    {
+                        title:'文件开始时间',
+                        width:200,
+                    },
+                    {
+                        title:'文件结束日期',
+                        width:200,
+                    },
+                    {
+                        title:'下载开始时间',
+                        width:200,
+                    },
+                ],
                 timeReminder:'',
                 timeReminderElStyle:{},
                 timeLineElStyle:{},
                 tag:'',
+                row:{},
             },
             methods: {
                 splitUploadFile:function(){
@@ -517,8 +583,11 @@
                     var data = {
                         deviceid:deviceid,
                         channel:this.selectType,
-                        starttime:this.dateStr + ' ' + this.startValue,
-                        endtime:this.dateStr + ' ' + this.endValue,
+                        totalstarttime:this.row.starttime,
+                        totalendtime:this.row.endtime,
+                        totalfilesize:this.row.filesize,
+                        needstarttime:this.dateStr + ' ' + this.startValue,
+                        needendtime:this.dateStr + ' ' + this.endValue,
                         alarmtype:0,
                         mediatype:mediatype,
                         streamtype:0,
@@ -576,13 +645,16 @@
                     var data = {
                         deviceid:deviceid,
                         channel:this.selectType,
-                        starttime:row.starttime,
-                        endtime:row.endtime,
+                        totalstarttime:row.starttime,
+                        totalendtime:row.endtime,
+                        totalfilesize:row.filesize,
+                        needstarttime:row.starttime,
+                        needendtime:row.endtime,
                         alarmtype:0,
                         mediatype:mediatype,
                         streamtype:0,
                         storetype:storetype,
-                        filesize:row.filesize
+                    
                     };
                     utils.sendAjax(url,data,function (resp) { 
                         console.log('resp',resp)
