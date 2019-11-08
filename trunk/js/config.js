@@ -458,6 +458,9 @@ var myUrls = {
   queryDownloadTasks: function () {
     return this.hosts + 'webapi?action=querydownloadtasks&token=' + token;
   },
+  controlUploadFile: function () {
+    return this.hosts + 'webapi?action=controluploadfile_sync&token=' + token;
+  },
 }
 
 

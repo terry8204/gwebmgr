@@ -310,7 +310,7 @@
                                     <i-table border 
                                         @on-row-dblclick="handleDblclick"
                                         :columns="downloadColumns" 
-                                        :data="tableData" 
+                                        :data="downloadTableData" 
                                         height="250" 
                                         :loading="loading"></i-table>
                                 </div>
@@ -391,6 +391,7 @@
                 mediatype:'all',
                 videotppe:true,
                 tableData:[],
+                downloadTableData:[],
                 columns:[
                     {
                         title: '序号',
@@ -501,24 +502,157 @@
                 downloadColumns:[
                     {
                         title:'操作',
-                        width:300,
+                        width:340,
+                        render:function(h,params){
+                            var row = params.row , index = params.index;
+                            return h('div',{},
+                                [
+                                    h('Button',{
+                                        props:{
+                                            size:"small",  
+                                            icon:"ios-square"
+                                        },
+                                        on:{
+                                            click : function(){
+                                                var data = {
+                                                    deviceid:row.deviceid,
+                                                    action:0,
+                                                    downloadtaskid:row.downloadtaskid
+                                                }
+                                                vRoot.controlUploadFileFn(data,function (resp) { 
+                                                    vRoot.$Message.success('暂停成功');
+                                                }); 
+                                            }
+                                        }
+                                    },'暂停'),
+                                    h('Button',{
+                                        props:{
+                                            size:"small",  
+                                            icon:"ios-play"   
+                                        },
+                                        style:{
+                                            'marginLeft':'10px'
+                                        },
+                                        on:{
+                                            click : function(){
+                                                var data = {
+                                                    deviceid:row.deviceid,
+                                                    action:1,
+                                                    downloadtaskid:row.downloadtaskid
+                                                }
+                                                vRoot.controlUploadFileFn(data,function (resp) { 
+                                                    vRoot.$Message.success('继续成功');
+                                                });
+                                            }
+                                        }
+                                    },'继续'),
+                                    h('Button',{
+                                        props:{
+                                            size:"small",  
+                                            icon:"md-close-circle"   
+                                        },
+                                        style:{
+                                            'marginLeft':'10px'
+                                        },
+                                        on:{
+                                            click : function(){
+                                                var data = {
+                                                    deviceid:row.deviceid,
+                                                    action:2,
+                                                    downloadtaskid:row.downloadtaskid
+                                                };
+                                                vRoot.controlUploadFileFn(data,function (resp) { 
+                                                    vRoot.$Message.success('取消成功');
+                                                    vRoot.downloadTableData.split(index,1);
+                                                });
+                                            }
+                                        }
+                                    },'取消'), 
+                                    h('Button',{
+                                        props:{
+                                            size:"small",  
+                                            icon:"md-arrow-down"   
+                                        },
+                                        style:{
+                                            'marginLeft':'10px'
+                                        },
+                                        on:{
+                                            click : function(){
+                                                if(row.downloadstatus!= 3){
+                                                    vRoot.$Message.error("文件还上传完成不能下载");
+                                                    return;
+                                                } ;
+                                                vRoot.$Message.success("请求下载成功,开始下载");
+                                                var ele = document.createElement('a');
+                                                ele.setAttribute('href',row.downloadurl); //设置下载文件的url地址
+                                                ele.setAttribute('download' , 'download');//用于设置下载文件的文件名
+                                                ele.click();
+                                            }
+                                        }
+                                    },'下载到本地'), 
+                                ]
+                            )
+                        } 
                     },
                     {
                         title:'序号',
+                        key:'deviceid',
+                        width:120
+                    },
+                    {
+                        title:'标签',
+                        key:'tag',
+                        width:100
                     },
                     {
                         title:'通道号',
+                        key:'channel',
+                        width:80,
                     },
                     {
                         title:'文件开始时间',
+                        key:'needstarttime'
                     },
                     {
                         title:'文件结束日期',
-
+                        key:'needendtime'
+                    },
+                    {
+                        title:'开始下载时间',
+                        key:'downloadstarttime'
+                    },
+                    {
+                        title:'下载结束时间',
+                        key:'downloadendtime',
                     },
                     {
                         title:'下载状态',
+                        width:100,
+                        key:'downloadstatus',
+                        render:function(h,params){
+                            var state = '' , downloadstatus = params.row.downloadstatus;
+                            switch(downloadstatus){
+                                case 0 :
+                                    state = '未开始上传';
+                                    break;
+                                case 1 :
+                                    state = '开始上传';
+                                    break;
+                                case 2 :
+                                    state = '上传失败';
+                                    break;
+                                case 3 :
+                                    state = '上传成功';
+                                    break;
+                            }
+                            return h('span',{},state);
+                        } 
                     },
+                    {
+                        title:'失败次数',
+                        key:'retrytimes',
+                        width:90,
+                    }
                 ],
                 timeReminder:'',
                 timeReminderElStyle:{},
@@ -527,6 +661,31 @@
                 row:{},
             },
             methods: {
+                controlUploadFileFn:function(data,callback){
+                    var url = myUrls.controlUploadFile() , me = this;
+                    utils.sendAjax(url,data,function (resp) { 
+                        var status = resp.status;    
+                        if(status == CMD_SEND_RESULT_UNCONFIRM){
+                            me.$Message.error('发送成功，未收到确认'); 
+                        }else if(status === CMD_SEND_RESULT_PASSWORD_ERROR){
+                            me.$Message.error('密码错误');
+                        }else if(status === CMD_SEND_RESULT_OFFLINE_NOT_CACHE){           
+                            me.$Message.error("设备离线，未缓存");   
+                        }else if(status === CMD_SEND_RESULT_OFFLINE_CACHED){
+                            me.$Message.error("设备离线，已缓存");
+                        }else if(status === CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD){
+                            me.$Message.error("需要修改默认密码");
+                        }else if(status === CMD_SEND_RESULT_DETAIL_ERROR){
+                            me.$Message.error("错误:" + resp.cause);
+                        }else if(status === CMD_SEND_CONFIRMED){
+                            callback();
+                        }else if(status === CMD_SEND_OVER_RETRY_TIMES){
+                            me.$Message.error("尝试发送3次失败");
+                        }else if(status === CMD_SEND_SYNC_TIMEOUT){
+                            me.$Message.error("发送超时");
+                        }
+                    });
+                },
                 splitUploadFile:function(){
                     var url = myUrls.reqUploadFile() , me = this;
                     var mediatype = '';
@@ -704,9 +863,12 @@
 
                 },  
                 queryDownloadTasks:function(){
-                    var url = myUrls.queryDownloadTasks();
+                    var url = myUrls.queryDownloadTasks() , me = this;
                     utils.sendAjax(url,{deviceid:deviceid},function (resp) { 
                         console.log('queryDownloadTasks',resp);
+                        if(resp.status == 0){
+                            me.downloadTableData = resp.tasks ? resp.tasks : [];
+                        }
                     });
                 },
                 handleClickMask:function(){
