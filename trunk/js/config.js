@@ -455,6 +455,9 @@ var myUrls = {
   reqUploadFile: function () {
     return this.hosts + 'webapi?action=requploadfile&token=' + token;
   },
+  queryDownloadTasks: function () {
+    return this.hosts + 'webapi?action=querydownloadtasks&token=' + token;
+  },
 }
 
 
