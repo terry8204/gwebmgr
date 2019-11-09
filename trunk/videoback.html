@@ -521,6 +521,7 @@
                                                 }
                                                 vRoot.controlUploadFileFn(data,function (resp) { 
                                                     vRoot.$Message.success('暂停成功');
+                                                    vRoot.downloadTableData.splice(index,1,resp.task);              
                                                 }); 
                                             }
                                         }
@@ -542,6 +543,7 @@
                                                 }
                                                 vRoot.controlUploadFileFn(data,function (resp) { 
                                                     vRoot.$Message.success('继续成功');
+                                                    vRoot.downloadTableData.splice(index,1,resp.task);
                                                 });
                                             }
                                         }
@@ -563,7 +565,7 @@
                                                 };
                                                 vRoot.controlUploadFileFn(data,function (resp) { 
                                                     vRoot.$Message.success('取消成功');
-                                                    vRoot.downloadTableData.split(index,1);
+                                                    vRoot.downloadTableData.splice(index,1);
                                                 });
                                             }
                                         }
@@ -644,6 +646,9 @@
                                 case 3 :
                                     state = '上传成功';
                                     break;
+                                case 4 :
+                                    state = '暂停';
+                                    break;
                             }
                             return h('span',{},state);
                         } 
@@ -678,7 +683,7 @@
                         }else if(status === CMD_SEND_RESULT_DETAIL_ERROR){
                             me.$Message.error("错误:" + resp.cause);
                         }else if(status === CMD_SEND_CONFIRMED){
-                            callback();
+                            callback(resp);
                         }else if(status === CMD_SEND_OVER_RETRY_TIMES){
                             me.$Message.error("尝试发送3次失败");
                         }else if(status === CMD_SEND_SYNC_TIMEOUT){
