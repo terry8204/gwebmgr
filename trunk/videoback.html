@@ -510,7 +510,8 @@
                                     h('Button',{
                                         props:{
                                             size:"small",  
-                                            icon:"ios-square"
+                                            icon:"ios-square",
+                                            disabled:row.downloadstatus == 3
                                         },
                                         on:{
                                             click : function(){
@@ -529,7 +530,8 @@
                                     h('Button',{
                                         props:{
                                             size:"small",  
-                                            icon:"ios-play"   
+                                            icon:"ios-play",
+                                            disabled:row.downloadstatus == 3
                                         },
                                         style:{
                                             'marginLeft':'10px'
