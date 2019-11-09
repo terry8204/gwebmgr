@@ -632,7 +632,7 @@
                     {
                         title:'通道号',
                         key:'channel',
-                        width:10,
+                        width:80,
                     },
                     {
                         title:'文件开始时间',
@@ -640,15 +640,24 @@
                     },
                     {
                         title:'文件结束日期',
-                        key:'needendtime'
+                        key:'needendtime',
                     },
                     {
                         title:'开始下载时间',
-                        key:'downloadstarttime'
+                        key:'downloadstarttime',
+                        render:function(h,params){
+                            var row = params.row;
+                            return h('span',{},DateFormat.longToDateTimeStr(row.downloadstarttime, 8))
+                        }
+
                     },
                     {
                         title:'下载结束时间',
                         key:'downloadendtime',
+                        render:function(h,params){
+                            var row = params.row;
+                            return row.downloadendtime ? h('span',{},DateFormat.longToDateTimeStr(row.downloadendtime, 8)) : '';
+                        }
                     }
                 ],
                 timeReminder:'',
