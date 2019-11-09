@@ -285,7 +285,7 @@
                                             文件
                                         </i-button>
                                         <i-button :type="isTable=='downloadfile'?'primary':'default'" @click="isTable='downloadfile'">
-                                            文件任务
+                                            下载任务
                                         </i-button>
                                     </Button-Group>
                                </div>
@@ -308,7 +308,6 @@
                                 </div> 
                                 <div v-show="isTable=='downloadfile'" style="width:100%;height:250px;position: relative;">
                                     <i-table border 
-                                        @on-row-dblclick="handleDblclick"
                                         :columns="downloadColumns" 
                                         :data="downloadTableData" 
                                         height="250" 
