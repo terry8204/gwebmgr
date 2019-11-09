@@ -285,7 +285,7 @@
                                             文件
                                         </i-button>
                                         <i-button :type="isTable=='downloadfile'?'primary':'default'" @click="isTable='downloadfile'">
-                                            文件下载
+                                            文件任务
                                         </i-button>
                                     </Button-Group>
                                </div>
@@ -597,37 +597,6 @@
                         } 
                     },
                     {
-                        title:'序号',
-                        key:'deviceid',
-                        width:120
-                    },
-                    {
-                        title:'标签',
-                        key:'tag',
-                        width:100
-                    },
-                    {
-                        title:'通道号',
-                        key:'channel',
-                        width:80,
-                    },
-                    {
-                        title:'文件开始时间',
-                        key:'needstarttime'
-                    },
-                    {
-                        title:'文件结束日期',
-                        key:'needendtime'
-                    },
-                    {
-                        title:'开始下载时间',
-                        key:'downloadstarttime'
-                    },
-                    {
-                        title:'下载结束时间',
-                        key:'downloadendtime',
-                    },
-                    {
                         title:'下载状态',
                         width:100,
                         key:'downloadstatus',
@@ -652,11 +621,32 @@
                             }
                             return h('span',{},state);
                         } 
+                    }                    ,
+                    {
+                        title:'标签',
+                        key:'tag',
+                        width:100
                     },
                     {
-                        title:'失败次数',
-                        key:'retrytimes',
-                        width:90,
+                        title:'通道号',
+                        key:'channel',
+                        width:10,
+                    },
+                    {
+                        title:'文件开始时间',
+                        key:'needstarttime'
+                    },
+                    {
+                        title:'文件结束日期',
+                        key:'needendtime'
+                    },
+                    {
+                        title:'开始下载时间',
+                        key:'downloadstarttime'
+                    },
+                    {
+                        title:'下载结束时间',
+                        key:'downloadendtime',
                     }
                 ],
                 timeReminder:'',
