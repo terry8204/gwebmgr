@@ -872,12 +872,12 @@ var asyncLoadJs = function (jsName, callback) {
     timeout = 1,
     head = document.getElementsByTagName('head')[0],
     urls = {
-      baidu: 'http://api.map.baidu.com/api?v=3.0&ak=e7SC5rvmn2FsRNE4R1ygg44n&callback=loadBMapSucc',
-      textIconoverlay: 'http://api.map.baidu.com/library/TextIconOverlay/1.2/src/TextIconOverlay_min.js',
+      baidu: 'https://api.map.baidu.com/api?v=3.0&ak=e7SC5rvmn2FsRNE4R1ygg44n&callback=loadBMapSucc',
+      textIconoverlay: 'https://api.map.baidu.com/library/TextIconOverlay/1.2/src/TextIconOverlay_min.js',
       distancetool: getPath + 'distancetool_min.js',
       bmarkerclusterer: getPath + "markerclusterer.js",
 
-      google: "http://ditu.google.cn/maps/api/js?v=3.1&sensor=false&language=" + (isZh ? 'cn' : 'en') + "&key=AIzaSyAjWE3yINoltrJcma3fq73wCp04jjEo1zA&cb=loadBMapSucc",
+      google: "https://ditu.google.cn/maps/api/js?v=3.1&sensor=false&language=" + (isZh ? 'cn' : 'en') + "&key=AIzaSyAjWE3yINoltrJcma3fq73wCp04jjEo1zA&cb=loadBMapSucc",
       gmarkerclusterer: getPath + "gmarkerclusterer.js",
       markerwithlabel: getPath + "markerwithlabel.js",
     };
