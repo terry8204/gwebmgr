@@ -48,7 +48,7 @@
                 <Row style="margin: 10px 0">
                     <i-col span="4" style="height: 100%;text-align:right;line-height:32px;"><i style="color: red;display: inline-block;">*</i>&nbsp;终身免费 : &nbsp;</i-col>
                     <i-col span="8">  
-                        <i-select v-model="isfree" style="width: 100%">
+                        <i-select v-model="isfree" style="width: 100%" :disabled="disabled">
                             <i-option value="1">是</i-option>
                             <i-option value="0">否</i-option>
                         </i-select>
@@ -61,7 +61,7 @@
                 <Row style="margin: 10px 0">
                     <i-col span="4" style="height: 100%;text-align:right;line-height:32px;"><i style="color: red;display: inline-block;">*</i>&nbsp;{{$t("alarm.overdueTime")}} : &nbsp;</i-col>
                     <i-col span="8">
-                        <date-picker type="date" v-model="overduetime"></date-picker>
+                        <date-picker type="date" v-model="overduetime" :disabled="disabled"></date-picker>
                     </i-col>
     
                     <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;{{$t("alarm.devName")}} : &nbsp;</i-col>
@@ -75,7 +75,7 @@
                     <i-col span="4" style="height: 100%;text-align:right;line-height:32px;"><i style="color: red;display: inline-block;">*</i>&nbsp;{{$t("user.devType")}} : &nbsp;</i-col>
                     <i-col span="8">  
                         <!-- devicetype -->
-                        <i-select v-model="devicetype">
+                        <i-select v-model="devicetype" :disabled="disabled">
                             <i-option v-for="item in deviceTypeList" :value="item.value" :key="item.value">{{ item.label }}</i-option>
                         </i-select>
                     </i-col>
@@ -161,6 +161,7 @@ vueInstanse = new Vue({
             el:"#querydev",
             i18n: utils.getI18n(),
             data:{
+                userType:Cookies.get('userType'),
                 modal:false,
                 queryParameter:"",
                 loading:true,
@@ -226,7 +227,7 @@ vueInstanse = new Vue({
                                         }
                                     }
                                 }, vRoot.$t("bgMgr.edit")),
-                                h('Poptip', {
+                                 h('Poptip', {
                                     props: {
                                         confirm: true,
                                         title: vRoot.$t("message.confirmDel")  
@@ -240,13 +241,15 @@ vueInstanse = new Vue({
                                         }
                                     }
                                 },[
-                                h('Button', {
+                                    h('Button', {
                                         props: {
-                                        type: 'error',
-                                        size: 'small'
-                                        }
-                                    },vRoot.$t("bgMgr.delete")) 
-                                ])  ,
+                                            type: 'error',
+                                            size: 'small',
+                                            disabled: Cookies.get('userType') !== '0'
+
+                                        }},vRoot.$t("bgMgr.delete")) 
+                                 ]
+                                ) ,
                                 h('Button', {
                                     props: {
                                         type: 'primary',
@@ -617,6 +620,11 @@ vueInstanse = new Vue({
                     }
                 },
             },
+            computed:{
+                disabled:function(){
+                    return this.userType !== '0';
+                }
+            },
             mixins:[mixIn],
             mounted:function () {
                 this.queryAllCompanyInfo(this.doQueryAllCompanyInfo);
@@ -624,6 +632,7 @@ vueInstanse = new Vue({
                 this.userlists = userlists;
                 this.userType = vstore.state.userType;
                 this.getDeviceType();  
+                console.log('disabled', this.disabled);
             }
         })
     </script>
