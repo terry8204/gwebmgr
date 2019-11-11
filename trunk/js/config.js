@@ -12,7 +12,7 @@ if (pathname.indexOf('gpsserver') != -1) {
   // host = 'https://112.74.186.169/';
   host = 'https://www.gps51.com/';
   hosts = 'https://www.gps51.com/';
-  wsHost = "wss://112.74.186.169:90";
+  wsHost = "wss://www.gps51.com/wss";
 }
 
 
