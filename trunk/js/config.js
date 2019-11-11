@@ -9,9 +9,9 @@ if (pathname.indexOf('gpsserver') != -1) {
   hosts = 'http://localhost:8080/gpsserver/';
   wsHost = "ws://localhost:90";
 } else {
-  host = 'http://112.74.186.169/';
+  host = 'https://112.74.186.169/';
   hosts = 'https://www.gps51.com/';
-  wsHost = "ws://112.74.186.169:90";
+  wsHost = "wss://112.74.186.169:90";
 }
 
 
