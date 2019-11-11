@@ -873,7 +873,7 @@ var asyncLoadJs = function (jsName, callback) {
     head = document.getElementsByTagName('head')[0],
     urls = {
       baidu: 'https://api.map.baidu.com/api?v=3.0&ak=e7SC5rvmn2FsRNE4R1ygg44n&callback=loadBMapSucc',
-      textIconoverlay: 'https://api.map.baidu.com/library/TextIconOverlay/1.2/src/TextIconOverlay_min.js',
+      textIconoverlay: getPath + 'texticonoverlay_min.js',
       distancetool: getPath + 'distancetool_min.js',
       bmarkerclusterer: getPath + "markerclusterer.js",
 
