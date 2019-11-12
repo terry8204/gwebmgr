@@ -158,7 +158,7 @@ var utils = {
   getJiuHuAddressSyn: function (lon, lat, callback) {
     $.ajax({
       type: 'get',
-      url: 'http://www.jh.tt/w?lat=' + lat + '&lon=' + lon,
+      url: 'https://www.jh.tt/w?lat=' + lat + '&lon=' + lon,
       success: function (data) {
         if (data && data.status == 0) {
           callback(data)
