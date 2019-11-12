@@ -934,7 +934,13 @@
                             }else if(status === CMD_SEND_OVER_RETRY_TIMES){
                                 me.$Message.error("尝试发送3次失败");
                             }else if(status === CMD_SEND_SYNC_TIMEOUT){
-                                me.$Message.error("发送超时");
+                                me.$Message.error("请求播放发送超时");
+                                if(startPlayerTimer){
+                                    clearTimeout(startPlayerTimer);
+                                }
+                                player.dispose();
+                                me.initVideo(record.playurl);
+                                player.play();
                             }
                         });
                     }
