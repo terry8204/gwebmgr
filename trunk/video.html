@@ -1617,7 +1617,7 @@
                                 }else if(acc === 2 ){
                                     accState = 'ACC关,'
                                 }
-                                me.$Message.success(accState + "请求播放超时...");
+                                me.$Message.error(accState + "请求播放超时");
                             };
           
                             if(oldSrc !== newSrc)
@@ -1626,7 +1626,7 @@
                                 player.play();
                             }
                         }
-                        
+
                         if(isNeedRecreate)
                         {
                             if(!player.paused())
