@@ -462,6 +462,9 @@ var myUrls = {
   controlUploadFile: function () {
     return this.hosts + 'webapi?action=controluploadfile_sync&token=' + token;
   },
+  setImageQuality: function () {
+    return this.hosts + 'webapi?action=setimagequality&token=' + token;
+  },
 }
 
 
