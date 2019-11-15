@@ -405,7 +405,7 @@
                                         <i class="state_co_1" title="对比度"></i>
                                     </i-Col>
                                     <i-Col span="12">
-                                        <Slider v-model="constract" :min="0" :max="127"></Slider>
+                                        <Slider v-model="constract" :min="-127" :max="127"></Slider>
                                     </i-Col>
                                     <i-Col span="6" class="state_co_value" style="line-height:35px;height: 35px;">
                                         <input :value="constract" name="" type="text" disabled>
@@ -416,7 +416,7 @@
                                         <i class="state_co_2" title="色度"></i>
                                     </i-Col>
                                     <i-Col span="12">
-                                        <Slider v-model="hue" :min="0" :max="255"></Slider>
+                                        <Slider v-model="hue" :min="-127" :max="127"></Slider>
                                     </i-Col>
                                     <i-Col span="6" class="state_co_value" style="line-height:35px;height: 35px;">
                                         <input :value="hue" name="" type="text" disabled>
@@ -427,7 +427,7 @@
                                         <i class="state_co_3" title="饱和度"></i>
                                     </i-Col>
                                     <i-Col span="12">
-                                        <Slider v-model="saturate" :min="0" :max="127"></Slider>
+                                        <Slider v-model="saturate" :min="0" :max="255"></Slider>
                                     </i-Col>
                                     <i-Col span="6" class="state_co_value" style="line-height:35px;height: 35px;">
                                         <input :value="saturate" name="" type="text" disabled>
@@ -438,7 +438,7 @@
                                         <i class="state_co_4" title="曝光"></i>
                                     </i-Col>
                                     <i-Col span="12">
-                                        <Slider v-model="exposure" :min="1" :max="10"></Slider>
+                                        <Slider v-model="exposure" :min="0" :max="255"></Slider>
                                     </i-Col>
                                     <i-Col span="6" class="state_co_value" style="line-height:35px;height: 35px;">
                                         <input :value="exposure" name="" type="text" disabled>
@@ -1158,10 +1158,10 @@
             el:"#container",
             data:{
                 brightness:128, //1     亮度
-                constract:64,    // 2      对比度
-                hue:128,         //         色度                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
-                saturate:64,   // 4       饱和度                                                                                  
-                exposure:5,   // 5 
+                constract:0,    // 2      对比度
+                hue:0,         //         色度                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
+                saturate:128,   // 4       饱和度                                                                                  
+                exposure:128,   // 5 
                 audioPlayerTip:'对讲请先点击以下按钮',
                 isLuyin:false,
                 speechTimer:null,
@@ -1250,26 +1250,12 @@
             },
             methods: {  
                 defaultQualityParams:function(){
-                    var url = myUrls.setImageQuality() , me = this;
-                    //    data = {
-                    //     deviceid:deviceid,
-                    //     channel:2,
-                    //     brightness:128,
-                    //     constract:64,
-                    //     hue:128, 
-                    //     saturate:64,                                                                               
-                    //     exposure:5
-                    //    };
-                    // utils.sendAjax(url,data,function (resp) { 
-                    //     console.log('resp', resp);
-                    //     if(resp.status === 6){
-                            me.brightness = 128;
-                            me.constract = 64;
-                            me.hue = 128;
-                            me.saturate = 64;                                                                         
-                            me.exposure = 5;
-                    //     }
-                    // });
+                    var me = this;
+                    me.brightness = 128;
+                    me.constract = 0;
+                    me.hue = 0;
+                    me.saturate = 128;                                                                         
+                    me.exposure = 128;
                 },
                 sendPaneColorControl:utils.debounce(function(vm){
                     var url = myUrls.setImageQuality(),
