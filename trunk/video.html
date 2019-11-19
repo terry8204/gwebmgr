@@ -397,7 +397,7 @@
                                         <Slider v-model="brightness" :min="0" :max="255"></Slider>
                                     </i-Col>
                                     <i-Col span="6" class="state_co_value" style="line-height:35px;height: 35px;">
-                                        <input :value="brightness" name="" type="text" disabled>
+                                        <input v-model="brightness" name="" type="text">
                                     </i-Col>
                                 </Row>
                                 <Row class="state_color">
@@ -408,7 +408,7 @@
                                         <Slider v-model="constract" :min="-127" :max="127"></Slider>
                                     </i-Col>
                                     <i-Col span="6" class="state_co_value" style="line-height:35px;height: 35px;">
-                                        <input :value="constract" name="" type="text" disabled>
+                                        <input v-model="constract" name="" type="text">
                                     </i-Col>
                                 </Row>
                                 <Row class="state_color">
@@ -419,7 +419,7 @@
                                         <Slider v-model="hue" :min="-127" :max="127"></Slider>
                                     </i-Col>
                                     <i-Col span="6" class="state_co_value" style="line-height:35px;height: 35px;">
-                                        <input :value="hue" name="" type="text" disabled>
+                                        <input v-model="hue" name="" type="text">
                                     </i-Col>
                                 </Row>
                                 <Row class="state_color">
@@ -430,7 +430,7 @@
                                         <Slider v-model="saturate" :min="0" :max="255"></Slider>
                                     </i-Col>
                                     <i-Col span="6" class="state_co_value" style="line-height:35px;height: 35px;">
-                                        <input :value="saturate" name="" type="text" disabled>
+                                        <input v-model="saturate" name="" type="text">
                                     </i-Col>
                                 </Row>
                                 <Row class="state_color">
@@ -441,7 +441,7 @@
                                         <Slider v-model="exposure" :min="0" :max="255"></Slider>
                                     </i-Col>
                                     <i-Col span="6" class="state_co_value" style="line-height:35px;height: 35px;">
-                                        <input :value="exposure" name="" type="text" disabled>
+                                        <input v-model="exposure" name="" type="text">
                                     </i-Col>
                                 </Row>
                                 <div class="yt_footer">
