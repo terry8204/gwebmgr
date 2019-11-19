@@ -689,12 +689,12 @@ function refreshPostion (deviceid) {
 
 // 设置围栏
 function setFence (deviceid) {
-  var url = 'setfencemulti.html?deviceid=' + deviceid + '&token=' + token;
+  var url = myUrls.hosts + 'setfencemulti.html?deviceid=' + deviceid + '&token=' + token;
   window.open(url);
 }
 
 function openAudio (deviceid) {
-  var url = 'record.html?deviceid=' + deviceid + '&token=' + token;
+  var url = myUrls.hosts + 'record.html?deviceid=' + deviceid + '&token=' + token;
   window.open(url);
 }
 
@@ -704,12 +704,12 @@ function openVdeio (deviceid, name) {
 }
 
 function openObd (deviceid) {
-  var url = 'obd.html?deviceid=' + deviceid + '&token=' + token;
+  var url = myUrls.hosts + 'obd.html?deviceid=' + deviceid + '&token=' + token;
   window.open(url);
 }
 
 function openBms (deviceid) {
-  var url = 'bmssys.html?deviceid=' + deviceid + '&token=' + token;
+  var url = myUrls.hosts + 'bmssys.html?deviceid=' + deviceid + '&token=' + token;
   window.open(url);
 }
 
@@ -719,7 +719,7 @@ function openWatermeter (deviceid) {
 }
 
 function openWeight (deviceid) {
-  var url = 'weighing.html?deviceid=' + deviceid + '&token=' + token;
+  var url = myUrls.hosts + 'weighing.html?deviceid=' + deviceid + '&token=' + token;
   window.open(url);
 }
 
