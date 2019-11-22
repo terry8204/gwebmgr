@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>主动安全</title>
+    <link rel="shortcut icon" href="./favicon.ico"  type="image/x-icon" />
+    <link rel="stylesheet" href="dist/styles/iview.css">
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="css/login.css">
+    <script src="js/config.js"></script>
+</head>
+<body>
+    <div id="dsm-wraper">
+        <i-table :data="tableData" :columns="columns" border></i-table>
+    </div>
+    <script src="dist/vue.min.js"></script>
+    <script src="js/js.cookie.min.js"></script>
+    <script src="dist/iview.min.js"></script>
+    <script src="js/gps51-jquery.js"></script>
+    <script src="js/util.js"></script>
+    <script type="text/javascript">
+        var vRoot = new Vue({
+            el:'#dsm-wraper',
+            data:{
+                columns:[
+                    { title:"通道21" , key:"cskj4d" },
+                    { title:"通道" , key:"cskj4d" },
+                    { title:"通道3" , key:"cskj4d" },
+                    { title:"通道4" , key:"cs4kjd" }
+                ],
+                tableData:[],
+            }
+        })
+
+        // `activesafetyid`  int(11) NOT NULL AUTO_INCREMENT ,
+        // `deviceid`  varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '设备id' ,
+        // `alarmtype`  int(11) NULL DEFAULT 0 COMMENT '报警类型0x64 高级驾驶辅助系统报警信息 0x65 驾驶员状态监测系统报警信息 0x66 胎压监测系统报警信息 0x67 盲区监测系统报警信息' ,
+        // `alarmid`  int(11) NULL DEFAULT 0 COMMENT '按照报警先后，从 0 开始循环累加，不区分报警类型。' ,
+        // `statusflag`  int(11) NULL DEFAULT 0 COMMENT '标志状态 0x00：不可用\r\n0x01：开始标志\r\n0x02：结束标志' ,
+        // `alarmevent`  int(255) NULL DEFAULT 0 COMMENT '报警/事件类型\r\n0x01:疲劳驾驶报警\r\n0x02:接打电话报警\r\n0x03:抽烟报警 \nT/JSATL 12—2017\r\n14\r\n0x04:分神驾驶报警\r\n0x05:驾驶员异常报警\r\n0x06~0x0F：用户自定义\r\n0x10：自动抓拍事件\r\n0x11：驾驶员变更事件\r\n0x12~0x1F：用户自定义' ,
+        // `alarmlevel`  int(11) NULL DEFAULT 0 COMMENT '报警级别\r\n0x01：一级报警\r\n0x02：二级报警' ,
+        // `tiredlevel`  int(11) NULL DEFAULT 0 COMMENT '疲劳程度 BYTE 范围 1~10。数值越大表示疲劳程度越严重，仅在报警\r\n类型为 0x01 时有效' ,
+        // `speed`  int(11) NULL DEFAULT 0 COMMENT '车速 单位 Km/h。范围 0~250 ' ,
+        // `altitude`  double NULL DEFAULT 0 COMMENT '海拔高度，单位为米（m） ' ,
+        // `lat`  double NULL DEFAULT 0 COMMENT '计算出来的纬度' ,
+        // `lon`  double NULL DEFAULT 0 COMMENT '计算出来的经度' ,
+        // `carstatus`  int(11) NULL DEFAULT 0 COMMENT '车辆 状态' ,
+        // `alarmflag`  int(11) NULL DEFAULT 0 COMMENT '报警标识号' ,
+        // `arrivedtime`  bigint(20) NULL DEFAULT 0 COMMENT '服务器时间' ,
+        // `devicetime`  bigint(20) NULL DEFAULT 0 COMMENT '设备时间' ,
+        // `updatetime`  bigint(20) NULL DEFAULT NULL COMMENT '更新时间' ,
+
+    </script>
+</body>
+</html>

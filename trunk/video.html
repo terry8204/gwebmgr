@@ -197,37 +197,42 @@
             text-align: center;
         }
         .video-back{
-            width: 90px;
+            width: 80px;
             background-color: #495060;
             position: absolute;left: 10px;top: 0;height: 50px;
             cursor: pointer;
         }
-        .video-back .bg-img{
+        .video-dsm{
+            width: 80px;
+            position: absolute;left: 90px;top: 0;height: 50px;
+            cursor: pointer;
+        }
+        .video-back .bg-img,.video-dsm .bg-img{
             height: 30px;
         }
-        .video-back .bg-img>div{
+        .video-back .bg-img>div,.video-dsm .bg-img>div{
             width: 30px;
             height: 30px;
             margin:2px auto;
             background-image: url('./videojs/images/videoback.png');
             background-size: cover;
         }
-        .video-back:hover .bg-img>div{
+        .video-back:hover .bg-img>div,.video-dsm:hover .bg-img>div{
             background-image: url('./videojs/images/videoback_h.png');
         }
-        .video-back:hover .text{
+        .video-back:hover .text,.video-dsm:hover .text{
             color: #1186DD;
         }
-        .video-back .text{
+        .video-back .text,.video-dsm .text{
             height: 20px;
             line-height: 18px;
             text-align: center;
             color: #ffffff;
         }
-        .video-back .bg-img{
+        .video-back .bg-img,.video-dsm .bg-img{
             text-align: center;
         }
-        .video-back .bg-img img{
+        .video-back .bg-img img,.video-dsm .bg-img img{
             border: 0;
             margin-top: 3px;
         }
@@ -492,6 +497,13 @@
                                 <div></div>
                             </div>
                             <div class="text">录像回放</div>
+                        </div>
+                        <div class="video-dsm" @click='videoDsm'>
+                            <div class="bg-img">
+                                <!-- <img src="./videojs/images/videoback.png" width="30" height="30"> -->
+                                <div></div>
+                            </div>
+                            <div class="text">主动安全</div>
                         </div>
                         <div style="height: 100%;text-align: right;" class="tv_box">   
                                 <span title="显示一个通道"><i class="icon icon_num1" @click="openAndCloseVideoWindows(1)"></i></span>
@@ -939,6 +951,22 @@
                                                 height="234"
                                                 :loading="loading"></i-table>    
                                         </Tab-Pane>                                 
+                                        <Tab-Pane label="主动安全外设" name="activeSecurityPeripheral">
+                                            <Tabs type="card" :animated="false">
+                                                <Tab-Pane label="高级驾驶辅助" name="activeSecurityPeripheral1">
+                                                    <i-button type="primary" @click="queryActiveSafetyDeviceInfo('adas')">查询</i-button>
+                                                </Tab-Pane>
+                                                <Tab-Pane label="驾驶员状态监测" name="activeSecurityPeripheral2">
+                                                    <i-button type="primary" @click="queryActiveSafetyDeviceInfo('dsm')">查询</i-button>
+                                                </Tab-Pane>
+                                                <Tab-Pane label="轮胎气压监测" name="activeSecurityPeripheral3">
+                                                    <i-button type="primary" @click="queryActiveSafetyDeviceInfo('tpms')">查询</i-button>
+                                                </Tab-Pane>
+                                                <Tab-Pane label="盲点监测" name="activeSecurityPeripheral4">
+                                                    <i-button type="primary" @click="queryActiveSafetyDeviceInfo('bsd')">查询</i-button>
+                                                </Tab-Pane>
+                                            </Tabs> 
+                                        </Tab-Pane>                                 
                                 </Tabs>
                                 <div slot="footer" style="padding:10px;"></div>
                             </Modal>         
@@ -1249,6 +1277,48 @@
                 tableData:[],
             },
             methods: {  
+                queryActiveSafetyDeviceInfo:function(exdevicename){
+                    var url = myUrls.queryActiveSafetyDeviceInfo() , me = this;
+                    var data = {
+                        deviceid:deviceid,
+                        exdevicename:exdevicename,
+                        action:'info'
+                    };
+                    utils.sendAjax(url,data,function (resp) { 
+                        console.log('resp', resp);
+                        var status = resp.status;
+                        if(status == CMD_SEND_RESULT_UNCONFIRM){
+                            me.$Message.error('发送成功，未收到确认'); 
+                        }else if(status === CMD_SEND_RESULT_PASSWORD_ERROR){
+                            me.$Message.error('密码错误');
+                        }else if(status === CMD_SEND_RESULT_OFFLINE_NOT_CACHE){
+                            me.$Message.error("设备离线，未缓存");   
+                        }else if(status === CMD_SEND_RESULT_OFFLINE_CACHED){
+                            me.$Message.error("设备离线，已缓存");
+                        }else if(status === CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD){
+                            me.$Message.error("需要修改默认密码");
+                        }else if(status === CMD_SEND_RESULT_DETAIL_ERROR){
+                            me.$Message.error("错误:" + resp.cause);
+                        }else if(status === CMD_SEND_CONFIRMED){
+                            switch(exdevicename){
+                                case 'adas':
+                                    break; 
+                                case  'dsm':
+                                    break; 
+                                case  'tpms':
+                                    break; 
+                                case  'bsd':
+                                    break;
+                                default :
+                                console.log('tag', '');                                     
+                            }
+                        }else if(status === CMD_SEND_OVER_RETRY_TIMES){
+                            me.$Message.error("尝试发送3次失败");
+                        }else if(status === CMD_SEND_SYNC_TIMEOUT){
+                            me.$Message.error("发送超时");
+                        }
+                    })
+                },
                 defaultQualityParams:function(){
                     var me = this;
                     me.brightness = 128;
@@ -1359,6 +1429,9 @@
                 },
                 videoBack:function(){
                     window.open('videoback.html?deviceid='+deviceid +'&token=' + token);
+                },
+                videoDsm:function(){
+                    window.open('activesafety.html?deviceid='+deviceid +'&token=' + token);
                 },
                 handlePlayAllVideos:function(){
 

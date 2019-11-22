@@ -465,6 +465,9 @@ var myUrls = {
   setImageQuality: function () {
     return this.hosts + 'webapi?action=setimagequality&token=' + token;
   },
+  queryActiveSafetyDeviceInfo: function () {
+    return this.hosts + 'webapi?action=queryactivesafetydeviceinfo_sync&token=' + token;
+  },
 }
 
 
