@@ -295,6 +295,9 @@
         color: #ffffff;
         margin-top: 10px;
     }
+    .ivu-row .ivu-input{
+        color: #000;
+    }
     </style>
     <link href="./videojs/video-js.css" rel="stylesheet">
     <script src="./videojs/video.js"></script>
@@ -953,17 +956,201 @@
                                         </Tab-Pane>                                 
                                         <Tab-Pane label="主动安全外设" name="activeSecurityPeripheral">
                                             <Tabs type="card" :animated="false">
-                                                <Tab-Pane label="高级驾驶辅助" name="activeSecurityPeripheral1">
-                                                    <i-button type="primary" @click="queryActiveSafetyDeviceInfo('adas')">查询</i-button>
+                                                <Tab-Pane label="高级驾驶辅助" name="activeSecurityPeripheral1">  
+                                                    <Row>
+                                                        <i-col span="6">
+                                                            <i-button type="primary" @click="queryActiveSafetyDeviceInfo('adas')">查询</i-button>
+                                                        </i-col>
+                                                    </Row>
+                                                    <Row style="line-height:32px">
+                                                        <i-col :span="3">
+                                                           公司名称:
+                                                        </i-col>
+                                                        <i-col :span="8">
+                                                            <i-input v-model.trim="safetyDeviceAdas.companyname" disabled style="color:#000"></i-input>
+                                                        </i-col>
+                                                        <i-col span="3" offset="2">
+                                                            产品型号:
+                                                        </i-col>
+                                                        <i-col :span="8">
+                                                            <i-input v-model.trim="safetyDeviceAdas.modelname" disabled style="color:#000"></i-input>
+                                                        </i-col>
+                                                    </Row>
+                                                    <Row style="line-height:32px">
+                                                        <i-col span="3">
+                                                            设备版本号:
+                                                        </i-col>
+                                                        <i-col span="8">
+                                                            <i-input v-model.trim="safetyDeviceAdas.hardwareversion" disabled></i-input>
+                                                        </i-col>
+                                                        <i-col span="3" offset="2">
+                                                            软件版本号:
+                                                        </i-col>
+                                                        <i-col span="8">
+                                                            <i-input v-model.trim="safetyDeviceAdas.softwareversion" disabled></i-input>
+                                                        </i-col>
+                                                    </Row>
+                                                    <Row style="line-height:32px">
+                                                        <i-col span="3">
+                                                            设备ID:
+                                                        </i-col>
+                                                        <i-col span="8">
+                                                            <i-input v-model.trim="safetyDeviceAdas.exdeviceid" disabled></i-input>
+                                                        </i-col>
+                                                        <i-col span="3" offset="2">
+                                                            客户代码:
+                                                        </i-col>
+                                                        <i-col span="8">
+                                                            <i-input v-model.trim="safetyDeviceAdas.customcode" disabled></i-input>
+                                                        </i-col>
+                                                    </Row>
                                                 </Tab-Pane>
                                                 <Tab-Pane label="驾驶员状态监测" name="activeSecurityPeripheral2">
-                                                    <i-button type="primary" @click="queryActiveSafetyDeviceInfo('dsm')">查询</i-button>
+                                                    <row>
+                                                        <i-col span="6">
+                                                            <i-button type="primary" @click="queryActiveSafetyDeviceInfo('dsm')">查询</i-button>
+                                                        </i-col>
+                                                    </row>
+                                                    <Row style="line-height:32px">
+                                                        <i-col span="3">
+                                                           公司名称:
+                                                        </i-col>
+                                                        <i-col span="8">
+                                                            <i-input v-model.trim="safetyDeviceDsm.companyname" disabled></i-input>
+                                                        </i-col>
+                                                        <i-col span="3" offset="2">
+                                                            产品型号:
+                                                        </i-col>
+                                                        <i-col span="8">
+                                                            <i-input v-model.trim="safetyDeviceDsm.modelname" disabled></i-input>
+                                                        </i-col>
+                                                    </Row>
+                                                    <Row style="line-height:32px">
+                                                        <i-col span="3">
+                                                            设备版本号:
+                                                        </i-col>
+                                                        <i-col span="8">
+                                                            <i-input v-model.trim="safetyDeviceDsm.hardwareversion" disabled></i-input>
+                                                        </i-col>
+                                                        <i-col span="3" offset="2">
+                                                            软件版本号:
+                                                        </i-col>
+                                                        <i-col span="8">
+                                                            <i-input v-model.trim="safetyDeviceDsm.softwareversion" disabled></i-input>
+                                                        </i-col>
+                                                    </Row>
+                                                    <Row style="line-height:32px">
+                                                        <i-col span="3">
+                                                            设备ID:
+                                                        </i-col>
+                                                        <i-col span="8">
+                                                            <i-input v-model.trim="safetyDeviceDsm.exdeviceid" disabled></i-input>
+                                                        </i-col>
+                                                        <i-col span="3" offset="2">
+                                                            客户代码:
+                                                        </i-col>
+                                                        <i-col span="8">
+                                                            <i-input v-model.trim="safetyDeviceDsm.customcode" disabled></i-input>
+                                                        </i-col>
+                                                    </Row>    
                                                 </Tab-Pane>
-                                                <Tab-Pane label="轮胎气压监测" name="activeSecurityPeripheral3">
-                                                    <i-button type="primary" @click="queryActiveSafetyDeviceInfo('tpms')">查询</i-button>
+                                                <Tab-Pane label="轮胎气压监测" name="activeSecurityPeripheral3">                                                  
+                                                    <row>
+                                                        <i-col span="6">
+                                                            <i-button type="primary" @click="queryActiveSafetyDeviceInfo('tpms')">查询</i-button>
+                                                        </i-col>
+                                                    </row>
+                                                    <Row style="line-height:32px">
+                                                        <i-col span="3">
+                                                           公司名称:
+                                                        </i-col>
+                                                        <i-col span="8">
+                                                            <i-input v-model.trim="safetyDeviceTpms.companyname" disabled></i-input>
+                                                        </i-col>
+                                                        <i-col span="3" offset="2">
+                                                            产品型号:
+                                                        </i-col>
+                                                        <i-col span="8">
+                                                            <i-input v-model.trim="safetyDeviceTpms.modelname" disabled></i-input>
+                                                        </i-col>
+                                                    </Row>
+                                                    <Row style="line-height:32px">
+                                                        <i-col span="3">
+                                                            设备版本号:
+                                                        </i-col>
+                                                        <i-col span="8">
+                                                            <i-input v-model.trim="safetyDeviceTpms.hardwareversion" disabled></i-input>
+                                                        </i-col>
+                                                        <i-col span="3" offset="2">
+                                                            软件版本号:
+                                                        </i-col>
+                                                        <i-col span="8">
+                                                            <i-input v-model.trim="safetyDeviceTpms.softwareversion" disabled></i-input>
+                                                        </i-col>
+                                                    </Row>
+                                                    <Row style="line-height:32px">
+                                                        <i-col span="3">
+                                                            设备ID:
+                                                        </i-col>
+                                                        <i-col span="8">
+                                                            <i-input v-model.trim="safetyDeviceTpms.exdeviceid" disabled></i-input>
+                                                        </i-col>
+                                                        <i-col span="3" offset="2">
+                                                            客户代码:
+                                                        </i-col>
+                                                        <i-col span="8">
+                                                            <i-input v-model.trim="safetyDeviceTpms.customcode" disabled></i-input>
+                                                        </i-col>
+                                                    </Row>    
                                                 </Tab-Pane>
                                                 <Tab-Pane label="盲点监测" name="activeSecurityPeripheral4">
-                                                    <i-button type="primary" @click="queryActiveSafetyDeviceInfo('bsd')">查询</i-button>
+                                                    <row>
+                                                        <i-col span="6">
+                                                            <i-button type="primary" @click="queryActiveSafetyDeviceInfo('bsd')">查询</i-button>
+                                                        </i-col>
+                                                    </row>
+                                                    <Row style="line-height:32px;">
+                                                        <i-col span="3">
+                                                           公司名称:
+                                                        </i-col>
+                                                        <i-col span="8">
+                                                            <i-input v-model.trim="safetyDeviceBsd.companyname" disabled></i-input>
+                                                        </i-col>
+                                                        <i-col span="3" offset="2">
+                                                            产品型号:
+                                                        </i-col>
+                                                        <i-col span="8">
+                                                            <i-input v-model.trim="safetyDeviceBsd.modelname" disabled></i-input>
+                                                        </i-col>
+                                                    </Row>
+                                                    <Row style="line-height:32px">
+                                                        <i-col span="3">
+                                                            设备版本号:
+                                                        </i-col>
+                                                        <i-col span="8">
+                                                            <i-input v-model.trim="safetyDeviceBsd.hardwareversion" disabled></i-input>
+                                                        </i-col>
+                                                        <i-col span="3" offset="2">
+                                                            软件版本号:
+                                                        </i-col>
+                                                        <i-col span="8">
+                                                            <i-input v-model.trim="safetyDeviceBsd.softwareversion" disabled></i-input>
+                                                        </i-col>
+                                                    </Row>
+                                                    <Row style="line-height:32px">
+                                                        <i-col span="3">
+                                                            设备ID:
+                                                        </i-col>
+                                                        <i-col span="8">
+                                                            <i-input v-model.trim="safetyDeviceBsd.exdeviceid" disabled></i-input>
+                                                        </i-col>
+                                                        <i-col span="3" offset="2">
+                                                            客户代码:
+                                                        </i-col>
+                                                        <i-col span="8">
+                                                            <i-input v-model.trim="safetyDeviceBsd.customcode" disabled></i-input>
+                                                        </i-col>
+                                                    </Row>  
                                                 </Tab-Pane>
                                             </Tabs> 
                                         </Tab-Pane>                                 
@@ -1275,6 +1462,10 @@
                     },
                 ],
                 tableData:[],
+                safetyDeviceAdas:{},
+                safetyDeviceDsm:{},
+                safetyDeviceTpms:{},
+                safetyDeviceBsd:{},
             },
             methods: {  
                 queryActiveSafetyDeviceInfo:function(exdevicename){
@@ -1284,8 +1475,10 @@
                         exdevicename:exdevicename,
                         action:'info'
                     };
+                    me.Spin = true;
                     utils.sendAjax(url,data,function (resp) { 
                         console.log('resp', resp);
+                        me.Spin = false;
                         var status = resp.status;
                         if(status == CMD_SEND_RESULT_UNCONFIRM){
                             me.$Message.error('发送成功，未收到确认'); 
@@ -1302,12 +1495,16 @@
                         }else if(status === CMD_SEND_CONFIRMED){
                             switch(exdevicename){
                                 case 'adas':
+                                    me.safetyDeviceAdas = resp;
                                     break; 
                                 case  'dsm':
+                                    me.safetyDeviceDsm = resp;
                                     break; 
                                 case  'tpms':
+                                    me.safetyDeviceTpms = resp;
                                     break; 
                                 case  'bsd':
+                                    me.safetyDeviceBsd = resp;
                                     break;
                                 default :
                                 console.log('tag', '');                                     
