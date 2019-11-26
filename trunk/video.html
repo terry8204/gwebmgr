@@ -210,15 +210,25 @@
         .video-back .bg-img,.video-dsm .bg-img{
             height: 30px;
         }
-        .video-back .bg-img>div,.video-dsm .bg-img>div{
+        .video-back .bg-img>div{
             width: 30px;
             height: 30px;
             margin:2px auto;
             background-image: url('./videojs/images/videoback.png');
             background-size: cover;
         }
+        .video-dsm .bg-img>div{
+            width: 30px;
+            height: 30px;
+            margin:2px auto;
+            background-image: url('./videojs/images/ai.png') ;
+            background-size: cover;
+        }
         .video-back:hover .bg-img>div,.video-dsm:hover .bg-img>div{
             background-image: url('./videojs/images/videoback_h.png');
+        }
+        .video-dsm:hover .bg-img>div,.video-dsm:hover .bg-img>div{
+            background-image: url('./videojs/images/ai_h.png');
         }
         .video-back:hover .text,.video-dsm:hover .text{
             color: #1186DD;
