@@ -468,6 +468,9 @@ var myUrls = {
   queryActiveSafetyDeviceInfo: function () {
     return this.hosts + 'webapi?action=queryactivesafetydeviceinfo_sync&token=' + token;
   },
+  queryActiveSafetyTrack: function () {
+    return this.hosts + 'webapi?action=queryactivesafetytrack&token=' + token;
+  },
 }
 
 

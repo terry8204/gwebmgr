@@ -10,28 +10,111 @@
     <link rel="stylesheet" href="css/common.css">
     <link rel="stylesheet" href="css/login.css">
     <script src="js/config.js"></script>
+    <style>
+         html,body,#dsm-wraper{width: 100%;height: 100%;}
+         div.content-box{position:absolute;left: 0;right: 0;top: 0;bottom: 260px;}
+         div.table-wrapper{position:absolute;left: 0;right: 0;bottom: 0;height: 260px;}
+         #dsm-wraper .ivu-tabs-bar{margin-bottom: 0;}
+        /* content-box start*/
+        div.content-box>div{float: left;height: 100%;width: 30%;}
+        #video-wrapper{width: 40%}
+        /* content-box end */
+    </style>
 </head>
 <body>
     <div id="dsm-wraper">
-        <i-table :data="tableData" :columns="columns" border></i-table>
+        <div class="content-box">
+            <div>
+                <div id="map" style="width:100%;height:100%;"></div>
+            </div>
+            <div id="video-wrapper"></div>
+            <div>
+                <i-table border 
+                    :columns="alarmSummaryColumns"
+                    :data="tableData"
+                    :height="tableHeight"></i-table>   
+            </div>
+        </div>
+        <div class="table-wrapper">
+            <Tabs value="" :animated="false">
+                <Tab-Pane label="前向报警" name="forwardAlarm">
+                    <i-table border 
+                        :columns="alarmSummaryColumns"
+                        :data="tableData" height="223"></i-table>   
+                </Tab-Pane>
+                <Tab-Pane label="驾驶异常" name="abnormalDriving">
+                    <i-table border 
+                        :columns="alarmSummaryColumns"
+                        :data="tableData" height="223"></i-table>   
+                </Tab-Pane>
+            </Tabs>
+        </div>
     </div>
     <script src="dist/vue.min.js"></script>
     <script src="js/js.cookie.min.js"></script>
     <script src="dist/iview.min.js"></script>
     <script src="js/gps51-jquery.js"></script>
+    <script src="js/config.js"></script>
     <script src="js/util.js"></script>
+    <script src="js/dateformat.js"></script>
+    <script src="https://api.map.baidu.com/api?v=3.0&ak=e7SC5rvmn2FsRNE4R1ygg44n"></script>
     <script type="text/javascript">
+        var deviceid = utils.getParameterByName("deviceid");
+        var token = utils.getParameterByName("token");
         var vRoot = new Vue({
             el:'#dsm-wraper',
             data:{
+                tableHeight:100,
                 columns:[
                     { title:"通道21" , key:"cskj4d" },
                     { title:"通道" , key:"cskj4d" },
                     { title:"通道3" , key:"cskj4d" },
                     { title:"通道4" , key:"cs4kjd" }
                 ],
-                tableData:[],
-            }
+                alarmSummaryColumns:[
+                    { title:"车牌号" , key:"carid" },
+                    { title:"报警类型" , key:"alarmtype" },
+                    { title:"等级" , key:"grade" },
+                    { title:"报警时间" , key:"alarmtime" }
+                ],
+                tableData:[{carid:"11",alarmtype:'alarmtypealarmtype',grade:'1',alarmtime:'2018-12-12'}],
+            },
+            map:null,
+            methods: {
+                initMap : function(){
+                    var self = this;
+                    this.map = new BMap.Map("map",{minZoom:4,maxZoom:20});           
+                    this.map.enableScrollWheelZoom();
+                    this.map.enableAutoResize();
+                    this.map.disableDoubleClickZoom();
+                    this.map.centerAndZoom(new BMap.Point(108.0017245, 35.926895), 5)
+                    this.map.addControl(new BMap.CityListControl({anchor: BMAP_ANCHOR_TOP_LEFT,offset: new BMap.Size(10, 20),}));
+                },
+                getTableHeight:function(){
+                    var wHeight = document.documentElement.clientHeight || document.body.clientHeight ;
+                    return wHeight - 260;
+                },
+                queryActiveSafety:function() {
+                    var url = myUrls.queryActiveSafetyTrack();
+                    var data = {
+                        deviceid:deviceid,
+                        begintime:DateFormat.format(new Date(),'yyyy-MM-dd')+' 00:00:00',
+                        endtime:DateFormat.format(new Date(),'yyyy-MM-dd')+' 23:59:59',
+                        timezone : 8
+                    };
+                    utils.sendAjax(url,data,function (resp) { 
+                        console.log('resp',resp );
+                    })
+                },
+                initApp:function(){
+                    this.initMap();
+                    this.tableHeight = this.getTableHeight();
+                    this.queryActiveSafety();
+                }
+            },
+            mounted :function() {
+                this.initApp();
+            },
         })
 
         // `activesafetyid`  int(11) NOT NULL AUTO_INCREMENT ,
