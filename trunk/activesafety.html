@@ -308,32 +308,77 @@
                     this.imageAndVideoList = this.getImageAndVideoList(current);
                     
                 },
-                getImageAndVideoList:function(data){
-                    console.log('data', data);
-                    var imageAndVideoList = [];
+
+                getMediaTypeWithIndex(data, filetype, index)
+                {
+                    var playURL = null;
+                    var foundCount = 0;
                     for(var i = 1 ; i < 5 ; i++ ){
                         var attachfile = data['attachfile'+i];
                         if(attachfile && data['attachstatus' + i] === 1){
-                            if(data['attachfiletype'+i] === 0){
-                                imageAndVideoList.push({
-                                    image:true,
-                                    imageUrl:this.playRootPath + attachfile
-                                })
-                            }else if(data['attachfiletype'+i] === 2){
-                                imageAndVideoList.push({
-                                    image:false,
-                                    videoUrl:this.playRootPath + attachfile
-                                })
+                            if(data['attachfiletype'+i] === filetype){
+                                foundCount++;
+                                if(foundCount === index)
+                                {
+                                    playURL = this.playRootPath + attachfile;
+                                    break;
+                                }
                             }
-                        }else{
-                            imageAndVideoList.push({
-                                image:true,
-                                imageUrl:'./images/tv_default.jpg'
-                            })
                         };
-                        
                     }
-
+                    return playURL;
+                },
+                getImageAndVideoList:function(data){
+                    var defaultUrl = './images/tv_default.jpg';
+                    var imageAndVideoList = [];
+                    var videoUrl = this.getMediaTypeWithIndex(data,2,1);
+                    var imageUrl1 = this.getMediaTypeWithIndex(data,0,1);
+                    var imageUrl2 = this.getMediaTypeWithIndex(data,0,2);
+                    var imageUrl3 = this.getMediaTypeWithIndex(data,0,3);
+                    if(videoUrl){
+                        imageAndVideoList.push({
+                            image:false,
+                            videoUrl:videoUrl
+                        })
+                    }else{
+                        imageAndVideoList.push({
+                            image:true,
+                            imageUrl:defaultUrl
+                        }) 
+                    }
+                    if(imageUrl1){
+                        imageAndVideoList.push({
+                            image:true,
+                            imageUrl:imageUrl1
+                        })
+                    }else{
+                        imageAndVideoList.push({
+                            image:true,
+                            imageUrl:defaultUrl
+                        }) 
+                    }
+                    if(imageUrl2){
+                        imageAndVideoList.push({
+                            image:true,
+                            imageUrl:imageUrl2
+                        })
+                    }else{
+                        imageAndVideoList.push({
+                            image:true,
+                            imageUrl:defaultUrl
+                        }) 
+                    }
+                    if(imageUrl3){
+                        imageAndVideoList.push({
+                            image:true,
+                            imageUrl:imageUrl3
+                        })
+                    }else{
+                        imageAndVideoList.push({
+                            image:true,
+                            imageUrl:defaultUrl
+                        }) 
+                    }
                     return imageAndVideoList;
                 },
                 queryAddress:function(callon,callat,callback){
