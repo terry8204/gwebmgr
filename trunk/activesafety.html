@@ -345,7 +345,7 @@
                             image:true,
                             imageUrl:defaultUrl
                         }) 
-                    }
+                    };
                     if(imageUrl1){
                         imageAndVideoList.push({
                             image:true,
@@ -356,7 +356,7 @@
                             image:true,
                             imageUrl:defaultUrl
                         }) 
-                    }
+                    };
                     if(imageUrl2){
                         imageAndVideoList.push({
                             image:true,
@@ -367,7 +367,7 @@
                             image:true,
                             imageUrl:defaultUrl
                         }) 
-                    }
+                    };
                     if(imageUrl3){
                         imageAndVideoList.push({
                             image:true,
@@ -378,7 +378,7 @@
                             image:true,
                             imageUrl:defaultUrl
                         }) 
-                    }
+                    };
                     return imageAndVideoList;
                 },
                 queryAddress:function(callon,callat,callback){
@@ -505,10 +505,10 @@
                     var url = myUrls.queryActiveSafetyTrack() , that = this;
                     var data = {
                         deviceid:deviceid,
-                        begintime:'2019-11-27 00:00:00',
-                        endtime:'2019-11-27 23:59:59',
-                        // begintime:DateFormat.format(new Date(),'yyyy-MM-dd')+' 00:00:00',
-                        // endtime:DateFormat.format(new Date(),'yyyy-MM-dd')+' 23:59:59',
+                        // begintime:'2019-11-28 00:00:00',
+                        // endtime:'2019-11-28 23:59:59',
+                        begintime:DateFormat.format(new Date(),'yyyy-MM-dd')+' 00:00:00',
+                        endtime:DateFormat.format(new Date(),'yyyy-MM-dd')+' 23:59:59',
                         timezone : 8
                     };
                     utils.sendAjax(url,data,function (resp) { 
