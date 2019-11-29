@@ -554,11 +554,8 @@
                             }
                         }
                     }
-                    this.abnormalDrivingList = abnormalDrivingList;
-                    return {
-                        abnormalDrivingList:abnormalDrivingList,
-                        forwardAlarmList:forwardAlarmList,
-                    }
+                    this.forwardAlarmList = forwardAlarmList.sort(function (a,b) { return b.endalarmtime - a.endalarmtime ;});
+                    this.abnormalDrivingList = abnormalDrivingList.sort(function (a,b) { return b.endalarmtime - a.endalarmtime ;});
                 },
                 queryActiveSafety:function() {
                     var url = myUrls.queryActiveSafetyTrack() , that = this;
