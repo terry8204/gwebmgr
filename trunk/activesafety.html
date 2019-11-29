@@ -575,7 +575,7 @@
                         if(resp.status == 0){
                             var records = resp.records;
                             if(records.length){
-                                records.sort(function (a,b) { return a.updatetime - b.updatetime;});
+                                records.sort(function (a,b) { return b.updatetime - a.updatetime ;});
                                 that.playRootPath = resp.playrootpath;
                                 that.handleAlarmTypeClassify(records);
                             }else{
