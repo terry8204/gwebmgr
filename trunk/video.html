@@ -2165,7 +2165,7 @@
                         }
                     });
                 },
-                stopVideoPlayer(){
+                stopVideoPlayer:function(){
                     var videoIns = this.videoIns;
                     for(var i in videoIns){
                         var key = 'videoPlayer'+i;
@@ -2194,7 +2194,7 @@
                     }
                     }, 70);
                 },
-                checkVideoPlayerTime(){
+                checkVideoPlayerTime:function(){
                     var me = this;
                     this.myInterval = setInterval(function(){
                         me.stopVideoPlayer();
