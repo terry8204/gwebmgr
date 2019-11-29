@@ -329,9 +329,9 @@
                 请安装flash或者允许网页flash播放
             </div>
             <div slot="footer" >
-                <i-button style="width: 100%" @click="tipModal=false" type="primary">确定</i-button>
+                <i-button style="width: 100%" @click="onClickTipBtn" type="primary">确定</i-button>
             </div>
-        </Modal>
+        </Modal> 
         <div class="blackBoxSpeak" v-if="isLuyin">
             <div class='img-box'>
                 <div>
@@ -1301,7 +1301,7 @@
         if (callback) {
             if (navigator.getUserMedia) {
                 navigator.getUserMedia(
-                    { audio: true } //只启用音频
+                    { audio: true , audio:true } //只启用音频
                     , function (stream) {
                         var rec = new HZRecorder(stream, config);
                         callback(rec);
@@ -1319,6 +1319,9 @@
                             case 'MANDATORY_UNSATISFIED_ERROR':
                             case 'MandatoryUnsatisfiedError':
                                 HZRecorder.throwError('无法发现指定的硬件设备。');
+                                break;
+                            case 8:
+                                HZRecorder.throwError('没有检测到录音设备,无法录音。');
                                 break;
                             default:
                                 HZRecorder.throwError('无法打开麦克风。异常信息:' + (error.code || error.name));
@@ -1478,6 +1481,13 @@
                 safetyDeviceBsd:{},
             },
             methods: {  
+                onClickTipBtn:function(){
+                
+                    var aElement = document.createElement('a');
+                    aElement.setAttribute('href','http://www.adobe.com/go/getflashplayer');
+                    aElement.click(); 
+                    this.tipModal = false;
+                }, 
                 queryActiveSafetyDeviceInfo:function(exdevicename){
                     var url = myUrls.queryActiveSafetyDeviceInfo() , me = this;
                     var data = {
