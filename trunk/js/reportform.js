@@ -1477,7 +1477,7 @@ function insureRecords (groupslist) {
                 for (var i = 0; i < jsonData.length; i++) {
                     str += '<tr>';
                     for (var item in jsonData[i]) {
-                        str += `<td>${jsonData[i][item] + '\t'}</td>`;
+                        str += '<td>' + jsonData[i][item] + '\t' + '</td>';
                     }
                     str += '</tr>';
                 }
