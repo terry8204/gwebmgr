@@ -30,9 +30,69 @@
             background-size: cover;
         }
         /* content-box end */
+        .mask-wrapper{
+            position: absolute;
+            right: 0px;
+            bottom: 0px;
+            top: 0px;
+            left: 0px;
+            z-index: 9999;
+            background-color: rgb(255, 255, 255);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .loader-05 {
+            width: 50px;
+            height: 50px;
+            border: .2em solid transparent;
+            border-top-color: currentcolor;
+            border-radius: 50%;
+            -webkit-animation: 1s loader-05 linear infinite;
+            animation: 1s loader-05 linear infinite;
+            position: relative;
+        }
+        .loader-05:before {
+            content: '';
+            display: block;
+            width: inherit;
+            height: inherit;
+            position: absolute;
+            top: -.2em;
+            left: -.2em;
+            border: .2em solid currentcolor;
+            border-radius: 50%;
+            opacity: .5;
+        }
+        @keyframes loader-05 {
+            0% {
+                -webkit-transform: rotate(0deg);
+                transform: rotate(0deg);
+            }
+            100% {
+                -webkit-transform: rotate(360deg);
+                transform: rotate(360deg);
+            }
+        }
+        @-webkit-keyframes loader-05 {
+            0% {
+                -webkit-transform: rotate(0deg);
+                transform: rotate(0deg);
+            }
+            100% {
+                -webkit-transform: rotate(360deg);
+                transform: rotate(360deg);
+            }
+        }
     </style>
 </head>
 <body>
+    <div class="mask-wrapper" id="mask-wrapper">
+        <div class="box" style="position:relative;">
+            <div class="loader-05"></div>
+            <div class="text-tip">正在载入播放器</div>
+        </div>
+    </div>
     <div id="dsm-wraper">
         <div class="content-box">
             <div>
@@ -530,6 +590,7 @@
                     this.initMap();
                     this.tableHeight = this.getTableHeight();
                     this.queryActiveSafety();
+                    document.getElementById('mask-wrapper').style.display = 'none';
                 }
             },
             computed:{
