@@ -4,7 +4,7 @@
 // distancetool: getPath + 'distancetool_min.js',
 // bmarkerclusterer: getPath + "markerclusterer.js",
 
-// google: "http://ditu.google.cn/maps/api/js?v=3.1&sensor=false&language=cn&key=AIzaSyAjWE3yINoltrJcma3fq73wCp04jjEo1zA",
+// google: "http://ditu.google.cn/maps/api/js?v=3.1&sensor=false&language=cn&key=AIzaSyDXQKVS1Tdp3VlrzBsZbBlLj_uYHVDHe6M",
 // gmarkerclusterer: getPath + "gmarkerclusterer.js",
 // markerwithlabel: getPath + "markerwithlabel.js",
 
@@ -14,7 +14,7 @@
 //     <!-- <script src="js/textIconoverlay_min.js"></script>
 //     <script src="js/distancetool_min.js"></script>
 //     <script src="js/markerclusterer.js"></script> -->
-//     <!-- <script src="http://ditu.google.cn/maps/api/js?v=3.1&sensor=false&language=cn&key=AIzaSyAjWE3yINoltrJcma3fq73wCp04jjEo1zA" type="text/javascript"></script>
+//     <!-- <script src="http://ditu.google.cn/maps/api/js?v=3.1&sensor=false&language=cn&key=AIzaSyDXQKVS1Tdp3VlrzBsZbBlLj_uYHVDHe6M" type="text/javascript"></script>
 //     <script src="js/gmarkerclusterer.js"></script>
 //     <script src="js/markerwithlabel.js"></script> -->
 var isLoadLastPositon = false;
