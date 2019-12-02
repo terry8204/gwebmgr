@@ -140,10 +140,7 @@
                             :columns="abnormalDrivingColumns"
                             :data="abnormalDrivingList" height="223"></i-table>   
                     </Tab-Pane>
-                    <i-button size="small" slot="extra">增加</i-button>
-                    <i-button size="small" slot="extra">增加</i-button>
-                    <i-button size="small" slot="extra">增加</i-button>
-                    <i-button size="small" slot="extra">增加</i-button>
+                    <i-button size="small" slot="extra" type="success" style="margin-top:5px;margin-right:5px;">轨迹回放</i-button>
                 </Tabs>
             </keep-alive>
         </div>
@@ -645,8 +642,14 @@
                             }),
                         });
                     }
-                   
-
+                },
+                createMarker : function (track) {
+                    var tempPoint = ol.proj.fromLonLat([track.callon, track.callat]), iconFeature;
+                    iconFeature = new ol.Feature({
+                        geometry: new ol.geom.Point(tempPoint),
+                    });
+                    iconFeature.setStyle(this.getIcon(track));
+                    return iconFeature;
                 },
                 selectedDetailFirstRow:function(){
                     var that = this;
@@ -675,15 +678,36 @@
                         this.map.setZoom(18);
                         this.map.setCenter(point);
                     }else if( this.mapType == 'gMap'){
-                       
+                        var g_lon_and_g_lat = wgs84togcj02( current.lon, current.lat);
+                        var myLatLng = {lat:g_lon_and_g_lat[1], lng:g_lon_and_g_lat[0]};
+                        if(!this.markerIns){
+                            this.markerIns = new google.maps.Marker({
+                                position: myLatLng,
+                                map: this.map,
+                            });
+                        }else{
+                            this.markerIns.setPosition(myLatLng);
+                        }
+                        this.map.setCenter(myLatLng);
+                        this.map.setZoom(18);
+                        
                     }else if( this.mapType == 'oMap'){
                         var tempPoint = ol.proj.fromLonLat([current.lon, current.lat]);
-                        if(!this.markerIns){
-                            this.markerIns = new ol.Feature({
+                        var iconFeature = new ol.Feature({
                                 geometry: new ol.geom.Point(tempPoint),
                             });
+                        if(!this.markerIns){
+                            var features = [iconFeature];
+                            this.markerIns = new ol.layer.Vector({
+                                source: new ol.source.Vector({
+                                    features:features
+                                }),
+                            });
+                            this.map.addLayer(this.markerIns);
+                        }else{
+                            this.markerIns.setSource(new ol.source.Vector({features:[iconFeature]}));
+                            this.map.getView().setCenter(tempPoint);
                         }
-                        
                     }
 
                     this.imageAndVideoList = this.getImageAndVideoList(current);

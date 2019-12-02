@@ -174,7 +174,6 @@ var utils = {
     geocoder.geocode(request, function (resp) {
       if (resp && resp.length) {
         var address = resp[0].formatted_address;
-
         callback(address);
       }
     })
