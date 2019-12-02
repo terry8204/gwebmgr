@@ -62,7 +62,8 @@ var utils = {
   },
   locale: Cookies.get("PATH_LANG") || 'zh',
   getMapType: function () {
-    var mapType = Cookies.get('app-map-type');
+    // var mapType = Cookies.get('app-map-type');
+    var mapType = localStorage.getItem('app-map-type');
     if (!mapType) {
       if (this.locale === 'zh') {
         mapType = "bMap";

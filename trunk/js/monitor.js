@@ -1196,6 +1196,7 @@ var monitor = {
             this.initMap();
             // this.map.setMarkerClusterer(this.positionLastrecords);
             Cookies.set('app-map-type', this.mapType);
+            localStorage.setItem('app-map-type', this.mapType);
         },
         filterData: function () {
             if (this.filterData.length) {

@@ -162,6 +162,7 @@
         var token = utils.getParameterByName("token");
         var mapType = utils.getMapType();
         var isZh = utils.locale === 'zh';
+        var isLoadingMap = false;
         var vRoot = new Vue({
             el:'#dsm-wraper',
             data:{
