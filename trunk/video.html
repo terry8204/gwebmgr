@@ -511,12 +511,11 @@
                             </div>
                             <div class="text">录像回放</div>
                         </div>
-                        <div class="video-dsm" @click='videoDsm'>
+                        <div :class="activeSafety?'video-dsm':''" @click='videoDsm' v-if="activeSafety">
                             <div class="bg-img">
-                                <!-- <img src="./videojs/images/videoback.png" width="30" height="30"> -->
                                 <div></div>
                             </div>
-                            <div class="text">主动安全</div>
+                            <div class="text" v-text="activeSafetyStr"></div>
                         </div>
                         <div style="height: 100%;text-align: right;" class="tv_box">   
                                 <span title="显示一个通道"><i class="icon icon_num1" @click="openAndCloseVideoWindows(1)"></i></span>
@@ -1353,6 +1352,7 @@
         var token = utils.getParameterByName("token");
         var mapType = utils.getParameterByName("maptype");
         var devName =utils.getParameterByName("name");
+        var activeSafety =utils.getParameterByName("activesafety");
         var playerStates = {};
         var audioPlayer = null;
         var audioPlayerTime = 0;
@@ -1388,6 +1388,8 @@
         var vRoot = new Vue({
             el:"#container",
             data:{
+                activeSafety: activeSafety == '1' ? true : false,
+                activeSafetyStr: '主动安全',
                 brightness:128, //1     亮度
                 constract:0,    // 2      对比度
                 hue:0,         //         色度                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      

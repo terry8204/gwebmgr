@@ -380,9 +380,17 @@ var utils = {
     var extendsBtns = this.getIsAddExtendBtns(), extendsStr = '';
     if (extendsBtns.video) {
       var devicename = "'" + track.devicename + "'";
+      var activeSafety = extendsBtns.activesafety ? 1 : 0;
       devicename = encodeURIComponent(devicename);
-      extendsStr += '<span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="openVdeio(' + deviceid + ',' + devicename + ')">视频</span>'
+      extendsStr += '<span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="openVdeio(' + deviceid + ',' + devicename + ',' + activeSafety + ')">视频</span>'
     };
+
+    if (extendsBtns.activesafety) {
+      var devicename = "'" + track.devicename + "'";
+      devicename = encodeURIComponent(devicename);
+      extendsStr += '<span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="openActiveSafety(' + deviceid + ',' + devicename + ')">主动安全</span>'
+    };
+
     if (extendsBtns.audio) {
       extendsStr += '<span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="openAudio(' + deviceid + ')">录音</span>'
     };
@@ -412,6 +420,7 @@ var utils = {
     var result4 = false;
     var result5 = false;
     var result6 = false;
+    var result7 = false;
     for (var i = 0; i < deviceTypes.length; i++) {
       if (currentDeviceType == deviceTypes[i].devicetypeid) {
         var functions = deviceTypes[i].functions;
@@ -434,8 +443,11 @@ var utils = {
           if (functions.indexOf("video") != -1) {
             result6 = true;
           };
-        }
-      }
+          if (functions.indexOf("activesafety") != -1) {
+            result7 = true;
+          };
+        };
+      };
     };
     return {
       audio: result1,
@@ -444,6 +456,7 @@ var utils = {
       weight: result4,
       watermeter: result5,
       video: result6,
+      activesafety: result7,
     }
   },
   getMileage: function (totaldistance) {
@@ -697,10 +710,17 @@ function openAudio (deviceid) {
   window.open(url);
 }
 
-function openVdeio (deviceid, name) {
+function openVdeio (deviceid, name, activesafety) {
   var mapType = utils.getMapType();
   mapType = mapType ? mapType : 'bMap';
-  var url = myUrls.hosts + 'video.html?deviceid=' + deviceid + "&maptype=" + mapType + '&token=' + token + '&name=' + name;
+  var url = myUrls.hosts + 'video.html?deviceid=' + deviceid + "&maptype=" + mapType + '&token=' + token + '&name=' + name + "&activesafety=" + activesafety;
+  window.open(url);
+}
+
+function openActiveSafety (deviceid, name) {
+  var mapType = utils.getMapType();
+  mapType = mapType ? mapType : 'bMap';
+  var url = myUrls.hosts + 'activesafety.html?deviceid=' + deviceid + "&maptype=" + mapType + '&token=' + token + '&name=' + name;
   window.open(url);
 }
 

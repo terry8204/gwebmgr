@@ -12,8 +12,8 @@
     <script src="js/config.js"></script>
     <style>
          html,body,#dsm-wraper{width: 100%;height: 100%;}
-         div.content-box{position:absolute;left: 0;right: 0;top: 0;bottom: 260px;}
-         div.table-wrapper{position:absolute;left: 0;right: 0;bottom: 0;height: 260px;}
+         div.content-box{position:absolute;left: 0;right: 0;top: 0;bottom: 320px;}
+         div.table-wrapper{position:absolute;left: 0;right: 0;bottom: 0;height: 320px;}
          #dsm-wraper .ivu-tabs-bar{margin-bottom: 0;}
         /* content-box start*/
         div.content-box>div{float: left;height: 100%;width: 30%;}
@@ -28,6 +28,9 @@
         div.video{
             background-image: url('./images/tv_default.jpg');
             background-size: cover;
+        }
+        #dsm-wraper .ivu-tabs{
+            /* overflow: visible; */
         }
         /* content-box end */
         .mask-wrapper{
@@ -113,6 +116,7 @@
                     border 
                     highlight-row
                     ref="detailTable"
+                    :loading="loading"
                     @on-current-change="onDetailChange"
                     :columns="alarmSummaryColumns"
                     :data="detailTableData"
@@ -126,25 +130,29 @@
                         <i-table 
                             border 
                             highlight-row
+                            :loading="loading"
                             ref="forwardTable"
                             @on-current-change="onForwardAlarmChange"
                             :columns="forwardAlarmColumns"
-                            :data="forwardAlarmList" height="223"></i-table>   
+                            :data="forwardAlarmList" height="283"></i-table>   
                     </Tab-Pane>
                     <Tab-Pane label="驾驶异常" name="abnormalDriving">
                         <i-table 
                             border 
+                            :loading="loading"
                             highlight-row
                             ref="abnormalTable"
                             @on-current-change="onAbnormalDrivingChange"
                             :columns="abnormalDrivingColumns"
-                            :data="abnormalDrivingList" height="223"></i-table>   
+                            :data="abnormalDrivingList" height="283"></i-table>  
                     </Tab-Pane>
-                    <i-button size="small" slot="extra" type="primary" style="margin-top:5px;margin-right:35px;">证据中心</i-button>
-                    <i-button size="small" slot="extra" type="success" style="margin-top:5px;margin-right:5px;" @click="prevArticle">上一条</i-button>
-                    <i-button size="small"  v-if="detailTableData.length" slot="extra" style="margin-top:5px;margin-right:5px;width:100px;" >{{detailIndex+1}}/{{detailTableData.length}}条</i-button>
-                    <i-button size="small"  v-else="detailTableData.length" slot="extra"  style="margin-top:5px;margin-right:5px;width:100px;" >0/0条</i-button>
-                    <i-button size="small" slot="extra" type="success" style="margin-top:5px;margin-right:5px;" @click="nextArticle">下一条</i-button>
+                    <date-picker type="date" v-model="date" slot="extra" size="small" style="margin-top:5px;margin-right:8px;"></date-picker>
+                    <i-button size="small" slot="extra" type="primary" style="margin-top:1px;margin-right:5px;" @click="queryActiveSafety">查询</i-button>
+                    <i-button size="small" slot="extra" type="primary" style="margin-top:1px;margin-right:35px;">证据中心</i-button>
+                    <i-button size="small" slot="extra" type="success" style="margin-top:1px;margin-right:5px;" @click="prevArticle">上一条</i-button>
+                    <i-button size="small"  v-if="detailTableData.length" slot="extra" style="margin-top:1px;margin-right:5px;width:100px;" >{{detailIndex+1}}/{{detailTableData.length}}条</i-button>
+                    <i-button size="small"  v-else="detailTableData.length" slot="extra"  style="margin-top:1px;margin-right:5px;width:100px;" >0/0条</i-button>
+                    <i-button size="small" slot="extra" type="success" style="margin-top:1px;margin-right:5px;" @click="nextArticle">下一条</i-button>
                 </Tabs>
             </keep-alive>
         </div>
@@ -170,6 +178,8 @@
         var vRoot = new Vue({
             el:'#dsm-wraper',
             data:{
+                loading:false,
+                date:new Date(),
                 mapType: mapType ? mapType : 'bMap',
                 tabsKey:'forwardAlarm',
                 tableHeight:100,
@@ -843,7 +853,7 @@
                 },
                 getTableHeight:function(){
                     var wHeight = document.documentElement.clientHeight || document.body.clientHeight ;
-                    return wHeight - 260;
+                    return wHeight - 320;
                 },
                 handleAlarmEventClassify:function(alarmTypeObject, record){
                    var alarmevent = record.alarmevent;
@@ -953,13 +963,13 @@
                     var url = myUrls.queryActiveSafetyTrack() , that = this;
                     var data = {
                         deviceid:deviceid,
-                        begintime:'2019-12-02 00:00:00',
-                        endtime:'2019-12-02 23:59:59',
-                        // begintime:DateFormat.format(new Date(),'yyyy-MM-dd')+' 00:00:00',
-                        // endtime:DateFormat.format(new Date(),'yyyy-MM-dd')+' 23:59:59',
+                        begintime:DateFormat.format(this.date,'yyyy-MM-dd')+' 00:00:00',
+                        endtime:DateFormat.format(this.date,'yyyy-MM-dd')+' 23:59:59',
                         timezone : 8
                     };
+                    that.loading = true;
                     utils.sendAjax(url,data,function (resp) { 
+                        that.loading = false;
                         if(resp.status == 0){
                             var records = resp.records;
                             if(records.length){
@@ -967,9 +977,13 @@
                                 that.playRootPath = resp.playrootpath;
                                 that.handleAlarmTypeClassify(records);
                             }else{
-                                that.$Message.error('没有数据'); 
+                                that.$Message.error('没有数据');
+                                that.forwardAlarmList = [];
+                                that.abnormalDrivingList = []; 
+                                that.detailTableData = [];
                             }
                         }else{
+
                             that.$Message.error('查询失败');
                         }
                         document.getElementById('mask-wrapper').style.display = 'none';

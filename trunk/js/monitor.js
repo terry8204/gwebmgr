@@ -34,6 +34,7 @@ var monitor = {
             isShowWeightBtn: false,
             isShowWatermeterBtn: false,
             isShowVideoBtn: false,
+            isShowActiveSafetyBtn: false,
             map: null,
             placement: "right-start",
             mapType: mapType ? mapType : 'bMap',
@@ -276,7 +277,13 @@ var monitor = {
 
                     break;
                 case 'video':
-                    window.open(myUrls.hosts + "video.html?deviceid=" + this.currentDeviceId + "&maptype=" + this.mapType + "&token=" + token + '&name=' + encodeURIComponent(this.deviceInfos[this.currentDeviceId].devicename));
+                    window.open(
+                        myUrls.hosts + "video.html?deviceid=" +
+                        this.currentDeviceId + "&maptype=" +
+                        this.mapType + "&token=" +
+                        token + '&name=' + encodeURIComponent(this.deviceInfos[this.currentDeviceId].devicename) +
+                        '&activesafety=' + (this.isShowActiveSafetyBtn ? 1 : 0)
+                    );
                     break;
             }
         },
@@ -1084,6 +1091,7 @@ var monitor = {
             var result4 = false;
             var result5 = false;
             var result6 = false;
+            var result7 = false;
 
             for (var i = 0; i < deviceTypes.length; i++) {
                 if (this.currentDeviceType == deviceTypes[i].devicetypeid) {
@@ -1107,6 +1115,9 @@ var monitor = {
                         if (functions.indexOf("video") != -1) {
                             result6 = true;
                         };
+                        if (functions.indexOf("activesafety") != -1) {
+                            result7 = true;
+                        };
                     }
                 }
             };
@@ -1116,6 +1127,7 @@ var monitor = {
             this.isShowWeightBtn = result4;
             this.isShowWatermeterBtn = result5;
             this.isShowVideoBtn = result6;
+            this.isShowActiveSafetyBtn = result7;
         },
         getDeviceTypeName: function (deviceTypeId) {
             var typeName = "", deviceTypes = this.deviceTypes;
