@@ -989,21 +989,18 @@
                 tabsKey:function(newVal){
                     var that = this;
                     this.detailIndex = 0;
+                    that.detailTableData = [];
                     setTimeout(()=>{
                         if(newVal == 'forwardAlarm'){
                             if(this.forwardAlarmList.length){
                                 that.$refs.forwardTable.$refs.tbody.clickCurrentRow(that.detailIndex);
                                 that.selectedDetailFirstRow();
-                            }else{
-                                that.detailTableData = [];
                             }
                           
                         }else if(newVal == 'abnormalDriving'){
                             if(this.abnormalDrivingList){
                                 that.$refs.abnormalTable.$refs.tbody.clickCurrentRow(that.detailIndex);
                                 that.selectedDetailFirstRow();
-                            }else{
-                                that.detailTableData = [];
                             }
                         }
                     
