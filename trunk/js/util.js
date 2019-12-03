@@ -62,8 +62,7 @@ var utils = {
   },
   locale: Cookies.get("PATH_LANG") || 'zh',
   getMapType: function () {
-    // var mapType = Cookies.get('app-map-type');
-    var mapType = localStorage.getItem('app-map-type');
+    var mapType = Cookies.get('app-map-type');
     if (!mapType) {
       if (this.locale === 'zh') {
         mapType = "bMap";
@@ -699,7 +698,9 @@ function openAudio (deviceid) {
 }
 
 function openVdeio (deviceid, name) {
-  var url = myUrls.hosts + 'video.html?deviceid=' + deviceid + '&token=' + token + '&name=' + name;
+  var mapType = utils.getMapType();
+  mapType = mapType ? mapType : 'bMap';
+  var url = myUrls.hosts + 'video.html?deviceid=' + deviceid + "&maptype=" + mapType + '&token=' + token + '&name=' + name;
   window.open(url);
 }
 

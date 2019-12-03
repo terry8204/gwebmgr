@@ -160,7 +160,7 @@
     <script type="text/javascript">
         var deviceid = utils.getParameterByName("deviceid");
         var token = utils.getParameterByName("token");
-        var mapType = utils.getMapType();
+        var mapType = utils.getParameterByName("maptype");
         var isZh = utils.locale === 'zh';
         var isLoadingMap = false;
         var vRoot = new Vue({
@@ -929,6 +929,7 @@
                         }else{
                             that.$Message.error('查询失败');
                         }
+                        document.getElementById('mask-wrapper').style.display = 'none';
                     })
                 },
                 initApp:function(){
@@ -936,7 +937,6 @@
                     this.initMap();
                     this.tableHeight = this.getTableHeight();
                     this.queryActiveSafety();
-                    document.getElementById('mask-wrapper').style.display = 'none';
                     window.onresize = function () { 
                         me.tableHeight = me.getTableHeight();
                     };

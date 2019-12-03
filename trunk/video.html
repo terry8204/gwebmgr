@@ -1351,10 +1351,13 @@
         var sn = 0;
         var deviceid = utils.getParameterByName("deviceid");
         var token = utils.getParameterByName("token");
+        var mapType = utils.getParameterByName("maptype");
         var devName =utils.getParameterByName("name");
         var playerStates = {};
         var audioPlayer = null;
         var audioPlayerTime = 0;
+     
+
         HZRecorder.get(
             function (rec) {myRecorder = rec;},
             {
@@ -1648,7 +1651,7 @@
                     window.open('videoback.html?deviceid='+deviceid +'&token=' + token);
                 },
                 videoDsm:function(){
-                    window.open('activesafety.html?deviceid='+deviceid +'&token=' + token);
+                    window.open('activesafety.html?deviceid='+deviceid +'&token=' + token+"&maptype="+mapType);
                 },
                 handlePlayAllVideos:function(){
 

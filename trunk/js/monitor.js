@@ -276,7 +276,7 @@ var monitor = {
 
                     break;
                 case 'video':
-                    window.open(myUrls.hosts + "video.html?deviceid=" + this.currentDeviceId + "&token=" + token + '&name=' + encodeURIComponent(this.deviceInfos[this.currentDeviceId].devicename));
+                    window.open(myUrls.hosts + "video.html?deviceid=" + this.currentDeviceId + "&maptype=" + this.mapType + "&token=" + token + '&name=' + encodeURIComponent(this.deviceInfos[this.currentDeviceId].devicename));
                     break;
             }
         },
@@ -1192,11 +1192,10 @@ var monitor = {
         }
     },
     watch: {
-        mapType: function () {
+        mapType: function (newType) {
             this.initMap();
-            // this.map.setMarkerClusterer(this.positionLastrecords);
+            console.log('mapType', mapType);
             Cookies.set('app-map-type', this.mapType);
-            localStorage.setItem('app-map-type', this.mapType);
         },
         filterData: function () {
             if (this.filterData.length) {
