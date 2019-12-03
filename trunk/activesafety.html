@@ -140,7 +140,11 @@
                             :columns="abnormalDrivingColumns"
                             :data="abnormalDrivingList" height="223"></i-table>   
                     </Tab-Pane>
-                    <i-button size="small" slot="extra" type="success" style="margin-top:5px;margin-right:5px;">轨迹回放</i-button>
+                    <i-button size="small" slot="extra" type="primary" style="margin-top:5px;margin-right:35px;">证据中心</i-button>
+                    <i-button size="small" slot="extra" type="success" style="margin-top:5px;margin-right:5px;" @click="prevArticle">上一条</i-button>
+                    <i-button size="small"  v-if="detailTableData.length" slot="extra" style="margin-top:5px;margin-right:5px;width:100px;" >{{detailIndex+1}}/{{detailTableData.length}}条</i-button>
+                    <i-button size="small"  v-else="detailTableData.length" slot="extra"  style="margin-top:5px;margin-right:5px;width:100px;" >0/0条</i-button>
+                    <i-button size="small" slot="extra" type="success" style="margin-top:5px;margin-right:5px;" @click="nextArticle">下一条</i-button>
                 </Tabs>
             </keep-alive>
         </div>
@@ -169,7 +173,13 @@
                 mapType: mapType ? mapType : 'bMap',
                 tabsKey:'forwardAlarm',
                 tableHeight:100,
+                detailIndex:0,
                 alarmSummaryColumns:[
+                    {
+                        type: 'index',
+                        width: 60,
+                        align: 'center'
+                    },
                     { 
                         title:'报警事件',key:'alarmevent',width:120,
                         render:function(h,params){ 
@@ -604,6 +614,24 @@
                 ]
             },
             methods: {
+                prevArticle:function(){
+                    if(this.detailTableData.length){
+                        this.detailIndex --;
+                        if(this.detailIndex<0){
+                            this.detailIndex = this.detailTableData.length-1;
+                        }
+                        this.$refs.detailTable.$refs.tbody.clickCurrentRow(this.detailIndex);
+                    }
+                },
+                nextArticle:function(){
+                    if(this.detailTableData.length){
+                        this.detailIndex++;
+                        if(this.detailIndex> this.detailTableData.length-1){
+                            this.detailIndex = 0;
+                        }
+                        this.$refs.detailTable.$refs.tbody.clickCurrentRow(this.detailIndex);
+                    }
+                },
                 onClickTabs:function(name){
                     this.tabsKey = name;
                 },
@@ -655,15 +683,19 @@
                 selectedDetailFirstRow:function(){
                     var that = this;
                     setTimeout(()=>{
+                        if(that.detailTableData.length){
                             that.$refs.detailTable.$refs.tbody.clickCurrentRow(0);
+                        }
                     },500);
                 },
                 onAbnormalDrivingChange:function(current){
                     this.detailTableData = current.records;
+                    this.detailIndex = 0;
                     this.selectedDetailFirstRow();
                 },
                 onForwardAlarmChange:function(current){
                     this.detailTableData = current.records;
+                    this.detailIndex = 0;
                     this.selectedDetailFirstRow();
                 },
                 onDetailChange:function(current){
@@ -902,18 +934,20 @@
                     this.forwardAlarmList = forwardAlarmList.sort(function (a,b) { return b.endalarmtime - a.endalarmtime ;});
                     this.abnormalDrivingList = abnormalDrivingList.sort(function (a,b) { return b.endalarmtime - a.endalarmtime ;});
                     setTimeout(()=>{
-                        that.$refs.forwardTable.$refs.tbody.clickCurrentRow(0);
-                        that.selectedDetailFirstRow();
+                        if(that.forwardAlarmList.length){
+                            that.$refs.forwardTable.$refs.tbody.clickCurrentRow(0);
+                            that.selectedDetailFirstRow();
+                        }
                     },500)
                 },
                 queryActiveSafety:function() {
                     var url = myUrls.queryActiveSafetyTrack() , that = this;
                     var data = {
                         deviceid:deviceid,
-                        // begintime:'2019-11-28 00:00:00',
-                        // endtime:'2019-11-28 23:59:59',
-                        begintime:DateFormat.format(new Date(),'yyyy-MM-dd')+' 00:00:00',
-                        endtime:DateFormat.format(new Date(),'yyyy-MM-dd')+' 23:59:59',
+                        begintime:'2019-12-02 00:00:00',
+                        endtime:'2019-12-02 23:59:59',
+                        // begintime:DateFormat.format(new Date(),'yyyy-MM-dd')+' 00:00:00',
+                        // endtime:DateFormat.format(new Date(),'yyyy-MM-dd')+' 23:59:59',
                         timezone : 8
                     };
                     utils.sendAjax(url,data,function (resp) { 
@@ -954,13 +988,25 @@
             watch: {
                 tabsKey:function(newVal){
                     var that = this;
+                    this.detailIndex = 0;
                     setTimeout(()=>{
                         if(newVal == 'forwardAlarm'){
-                            that.$refs.forwardTable.$refs.tbody.clickCurrentRow(0);
+                            if(this.forwardAlarmList.length){
+                                that.$refs.forwardTable.$refs.tbody.clickCurrentRow(that.detailIndex);
+                                that.selectedDetailFirstRow();
+                            }else{
+                                that.detailTableData = [];
+                            }
+                          
                         }else if(newVal == 'abnormalDriving'){
-                            that.$refs.abnormalTable.$refs.tbody.clickCurrentRow(0);
+                            if(this.abnormalDrivingList){
+                                that.$refs.abnormalTable.$refs.tbody.clickCurrentRow(that.detailIndex);
+                                that.selectedDetailFirstRow();
+                            }else{
+                                that.detailTableData = [];
+                            }
                         }
-                        that.selectedDetailFirstRow();
+                    
                     },500)
                 }
             },
