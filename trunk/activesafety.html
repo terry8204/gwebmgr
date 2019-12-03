@@ -407,7 +407,7 @@
                                         click: function (e) {
                                             e.preventDefault();
                                             vRoot.queryAddress(callon,callat,function (address) { 
-                                                console.log('address', address);
+                    
                                                 if(vRoot.tabsKey === 'abnormalDriving'){
                                                     vRoot.abnormalDrivingList[params.index].address = address;
                                                 }else{
@@ -440,11 +440,9 @@
                                             e.preventDefault();
                                             e.preventDefault();
                                             vRoot.queryAddress(callon,callat,function (address) { 
-                                                console.log('address', address);
                                                 if(vRoot.tabsKey === 'abnormalDriving'){
                                                     vRoot.abnormalDrivingList[params.index].address = address;
                                                 }else{
-                                                    alert(1)
                                                     vRoot.forwardAlarmList[params.index].address = address;
                                                 }
                                                 LocalCacheMgr.setAddress(callon, callat, address);
@@ -553,7 +551,7 @@
                                         click: function (e) {
                                             e.preventDefault();
                                             vRoot.queryAddress(callon,callat,function (address) { 
-                                                console.log('address', address);
+        
                                                 if(vRoot.tabsKey === 'abnormalDriving'){
                                                     vRoot.abnormalDrivingList[params.index].address = address;
                                                 }else{
@@ -587,7 +585,6 @@
                                             e.preventDefault();
                                             e.preventDefault();
                                             vRoot.queryAddress(callon,callat,function (address) { 
-                                                console.log('address', address);
                                                 if(vRoot.tabsKey === 'abnormalDriving'){
                                                     vRoot.abnormalDrivingList[params.index].address = address;
                                                 }else{
@@ -683,23 +680,35 @@
                 selectedDetailFirstRow:function(){
                     var that = this;
                     setTimeout(()=>{
-                        if(that.detailTableData.length){
-                            that.$refs.detailTable.$refs.tbody.clickCurrentRow(0);
+                        try {
+                            if(that.detailTableData.length){
+                                that.$refs.detailTable.$refs.tbody.clickCurrentRow(0);
+                            } 
+                        } catch (error) {
+                            
                         }
                     },500);
                 },
                 onAbnormalDrivingChange:function(current){
-                    this.detailTableData = current.records;
+                    this.detailTableData = current?current.records:[];
                     this.detailIndex = 0;
+                    if(this.detailTableData.length === 0) return;
                     this.selectedDetailFirstRow();
                 },
                 onForwardAlarmChange:function(current){
-                    this.detailTableData = current.records;
+
+                    this.detailTableData =  current?current.records:[];
                     this.detailIndex = 0;
+                    if(this.detailTableData.length === 0) return;
                     this.selectedDetailFirstRow();
                 },
                 onDetailChange:function(current){
-
+                    var that = this;
+                    this.detailTableData.forEach(function (item,index) { 
+                        if(current.activesafetyid === item.activesafetyid){
+                            that.detailIndex = index;
+                        }
+                    });
                     if( this.mapType == 'bMap'){
                         var b_lon_lat = wgs84tobd09(Number(current.lon), Number(current.lat));
                         var point = new BMap.Point(b_lon_lat[0],b_lon_lat[1]);
@@ -992,18 +1001,20 @@
                     that.detailTableData = [];
                     setTimeout(()=>{
                         if(newVal == 'forwardAlarm'){
+                            that.$refs.abnormalTable.clearCurrentRow(that.detailIndex);
                             if(this.forwardAlarmList.length){
                                 that.$refs.forwardTable.$refs.tbody.clickCurrentRow(that.detailIndex);
                                 that.selectedDetailFirstRow();
                             }
                           
                         }else if(newVal == 'abnormalDriving'){
+                            that.$refs.forwardTable.clearCurrentRow();
                             if(this.abnormalDrivingList){
                                 that.$refs.abnormalTable.$refs.tbody.clickCurrentRow(that.detailIndex);
                                 that.selectedDetailFirstRow();
                             }
                         }
-                    
+
                     },500)
                 }
             },
