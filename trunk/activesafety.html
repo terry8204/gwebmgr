@@ -765,8 +765,7 @@
                     this.imageAndVideoList = this.getImageAndVideoList(current);
                     
                 },
-
-                getMediaTypeWithIndex(data, filetype, index)
+                getMediaTypeWithIndex:function(data, filetype, index)
                 {
                     var playURL = null;
                     var foundCount = 0;
@@ -983,7 +982,6 @@
                                 that.detailTableData = [];
                             }
                         }else{
-
                             that.$Message.error('查询失败');
                         }
                         document.getElementById('mask-wrapper').style.display = 'none';
@@ -1013,17 +1011,17 @@
                     var that = this;
                     this.detailIndex = 0;
                     that.detailTableData = [];
-                    setTimeout(()=>{
+                    setTimeout(function(){
                         if(newVal == 'forwardAlarm'){
                             that.$refs.abnormalTable.clearCurrentRow(that.detailIndex);
-                            if(this.forwardAlarmList.length){
+                            if(that.forwardAlarmList.length){
                                 that.$refs.forwardTable.$refs.tbody.clickCurrentRow(that.detailIndex);
                                 that.selectedDetailFirstRow();
                             }
                           
                         }else if(newVal == 'abnormalDriving'){
                             that.$refs.forwardTable.clearCurrentRow();
-                            if(this.abnormalDrivingList){
+                            if(that.abnormalDrivingList.length){
                                 that.$refs.abnormalTable.$refs.tbody.clickCurrentRow(that.detailIndex);
                                 that.selectedDetailFirstRow();
                             }
