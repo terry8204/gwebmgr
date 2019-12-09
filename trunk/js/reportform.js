@@ -1018,7 +1018,166 @@ function devRecords (groupslist) {
 }
 
 
+function messageRecords (groupslist) {
+    new Vue({
+        el: '#messageRecords',
+        i18n: utils.getI18n(),
+        mixins: [reportMixin],
+        data: {
+            loading: false,
+            isShowCard: false,
+            tableHeight: 100,
+            groupslist: [],
+            timeoutIns: null,
+            isShowMatchDev: true,
+            startDate: new Date(),
+            columns: [
+                { title: 'trackid', key: 'trackid', fixed: 'left', width: 80 },
+                { title: 'sn', key: 'sn', width: 80, "sortable": true },
+                { title: 'messagetype', key: 'messagetype', width: 80 },
+                { title: 'typedescr', key: 'typedescr', width: 120 },
+                { title: 'status', key: 'status', width: 80 },
+                { title: 'strstatus', key: 'strstatus', width: 220 },
+                { title: 'updatetime', key: 'updatetimeStr', width: 160 },
+                { title: 'reportmode', key: 'reportmodeStr', width: 120 },
+                { title: 're', key: 'reissue', width: 80 },
+                { title: 'callat', key: 'callat', width: 120 },
+                { title: 'callon', key: 'callon', width: 120 },
+                { title: 'radius', key: 'radius', width: 80 },
+                { title: 'speed', key: 'speed', width: 80 },
+                { title: 'totaldistance', key: 'totaldistance', width: 120 },
+                { title: 'altitude', key: 'altitude', width: 80 },
+                { title: 'course', key: 'course', width: 80 },
+                { title: 'gotsrc', key: 'gotsrc', width: 80 },
+                { title: 'rxlevel', key: 'rxlevel', width: 80 },
+                { title: 'servicealive', key: 'servicealive', width: 80 },
+                { title: 'connectalive', key: 'connectalive', width: 80 },
+            ],
+            tableData: [],
+            data: [],
+            currentIndex: 1,
+            total: 0,
+            contentString: "",
+            filterStr: '',
+        },
+        methods: {
+            onRowClick: function (row) {
+                var me = this;
+                this.isShowCard = true;
+                this.queryTrackDetail(row, function (resp) {
+                    if (resp.track) {
+                        me.contentString = JSON.stringify(resp.track);
+                    } else {
+                        vm.$Message.error("没有查询到数据");
+                    }
+                });
+            },
+            queryTrackDetail: function (row, callback) {
+                var data = {
+                    deviceid: this.queryDeviceId,
+                    updatetime: row.updatetime,
+                    trackid: row.trackid
+                }
+                var url = myUrls.queryTrackDetail();
+                utils.sendAjax(url, data, function (resp) {
+                    if (resp.status == 0) {
+                        callback(resp);
+                    }
+                })
+            },
+            closeCard: function () {
+                this.isShowCard = false;
+            },
+            filterTypeDesc: function () {
+                if (this.filterStr) {
+                    var that = this;
+                    var filterArr = [];
+                    this.data.forEach(function (item) {
+                        if (item.typedescr && item.typedescr.indexOf(that.filterStr) != -1) {
+                            filterArr.push(item);
+                        }
+                    });
+                    this.tableData = filterArr;
+                };
+            },
+            onChange: function (index) {
+                this.isShowCard = false;
+                this.currentIndex = index;
+                this.tableData = this.data.slice((index - 1) * 30, (index - 1) * 30 + 30);
+            },
+            calcTableHeight: function () {
+                var wHeight = window.innerHeight;
+                this.tableHeight = wHeight - 165;
+            },
+            nextDay: function () {
+                this.startDate = new Date(this.startDate.getTime() + this.dayTime);
+            },
+            prevDay: function () {
+                this.startDate = new Date(this.startDate.getTime() - this.dayTime);
 
+            },
+            requestTracks: function (callback) {
+                if (!this.queryDeviceId) return;
+                this.loading = true;
+                var url = myUrls.queryTracks(), me = this;
+                var startTimeStr = DateFormat.format(this.startDate, 'yyyy-MM-dd') + ' 00:00:00';
+                var endTimeStr = DateFormat.format(this.startDate, 'yyyy-MM-dd') + ' 23:59:00';
+                var data = {
+                    deviceid: this.queryDeviceId,
+                    lbs: 1,
+                    timeorder: 0,
+                    interval: -1,
+                    begintime: startTimeStr,
+                    endtime: endTimeStr
+                };
+                utils.sendAjax(url, data, function (resp) {
+                    me.loading = false;
+                    callback(resp)
+                });
+            },
+            onClickQuery: function () {
+                var me = this;
+                this.requestTracks(function (resp) {
+                    if (resp.status == 0 && resp.records) {
+                        resp.records.forEach(function (record) {
+                            var type = "0x" + parseInt(record.messagetype, 10).toString(16) + '(' + record.messagetype + ')';
+                            record.messagetype = type;
+                            record.reportmodeStr = getReportModeStr(record.reportmode);
+                            record.updatetimeStr = DateFormat.longToDateTimeStr(record.updatetime, 0);
+                        });
+                        resp.records.sort(function (a, b) {
+                            return b.updatetime - a.updatetime;
+                        });
+                        me.data = Object.freeze(resp.records);
+                        me.total = me.data.length;
+                        me.tableData = me.data.slice(0, 30);
+                        me.currentIndex = 1;
+                    } else {
+                        me.total = 0;
+                        me.data = [];
+                        me.tableData = [];
+                    }
+                })
+            }
+        },
+        watch: {
+            filterStr: function () {
+                if (this.filterStr == '') {
+                    this.tableData = this.data.slice((this.currentIndex - 1) * 30, (this.currentIndex - 1) * 30 + 30);
+                }
+            }
+        },
+        mounted () {
+            var me = this;
+            this.groupslist = groupslist;
+            this.calcTableHeight();
+            this.dayTime = 60 * 60 * 24 * 1000;
+            window.onresize = function () {
+                me.calcTableHeight();
+            };
+        },
+    })
+}
 
 
 // 查询报警
@@ -1526,6 +1685,7 @@ var reportForm = {
                         { title: me.$t("reportForm.parkDetails"), name: 'parkDetails', icon: 'md-analytics' },
                         { title: me.$t("reportForm.acc"), name: 'accDetails', icon: 'md-bulb' },
                         { title: isZh ? '语音报表' : 'Voice report', name: 'records', icon: 'md-volume-up' },
+                        { title: isZh ? '报文报表' : 'Message report', name: 'messageRecords', icon: 'ios-book' },
                     ]
                 },
                 {
@@ -1585,6 +1745,9 @@ var reportForm = {
                         break;
                     case 'records.html':
                         devRecords(groupslist);
+                        break;
+                    case 'messagerecords.html':
+                        messageRecords(groupslist);
                         break;
                     case 'phonealarm.html':
                         phoneAlarm(groupslist);

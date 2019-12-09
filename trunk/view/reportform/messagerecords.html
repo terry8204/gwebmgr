@@ -1,0 +1,84 @@
+<meta charset="UTF-8">
+<style>
+    #messageRecords{position: relative;}
+    #messageRecords .search-wrapper .ivu-icon , #messageRecords .ivu-date-picker-rel .ivu-icon ,#messageRecords .ivu-input-wrapper .ivu-icon{
+        margin-top: 0px;
+    }
+    #messageRecords .content-wrap{
+        position: absolute;
+        right: 10px;
+        bottom: 65px;
+    }
+</style>
+<div id="messageRecords">
+    <div style="margin:10px;height: 35px;">
+        <div style="float: left;">
+            <div style="height: 35px; line-height: 35px;">{{$t("reportForm.selectDev")}}:&nbsp;</div> 
+        </div>
+        <div style="float: left;position: relative;width: 300px;">
+            <div class="search-wrapper" v-click-outside.capture="onClickOutside">
+                <i-input v-model.trim="sosoValue"  icon="ios-search-outline" @on-change="sosoValueChange" @on-blur="blur" @on-focus="focus" :placeholder="placeholder"></i-input>
+                <transition name="fade">
+                    <ul class="search-item-wrapper" v-show="isShowMatchDev">
+                        <li  class="demo-auto-complete-item" v-for="item in filterData">
+                            <div class="demo-auto-complete-group" v-show="item.devices.length">
+                                <span>{{ item.groupname }}</span>
+                            </div>
+                            <div v-for="option in item.devices" :value="option.groupname" :key="option.groupname" class="ivu-select-item">
+                                <span :style="{color:option.isOnline ? '#33DAD0':'#B1BBC2'}" @click="sosoSelect(option)" class="demo-auto-complete-title">{{ option.title }}</span>
+                            </div>
+                        </li>
+                    </ul>
+                </transition>
+            </div>
+        </div>
+        <div style="margin-left:20px;float: left;">
+            <date-picker type="date" 
+                style="width: 180px;" 
+                v-model="startDate"  
+                :clearable="false" 
+                :editable="false"></date-picker>
+        </div>
+        <div style="margin-left:20px;float: left;">
+            <i-button @click="prevDay">上一天</i-button>
+        </div>
+        <div style="margin-left:20px;float: left;">
+            <i-button @click="nextDay">下一天</i-button>
+        </div>
+        <div style="margin-left:20px;float: left;">
+            <i-button @click="onClickQuery">{{$t("reportForm.query")}}</i-button>
+        </div>
+        <div style="margin-left:20px;float: left;">
+            <i-input 
+                style="width: auto;width:100%;" 
+                v-model.trim="filterStr" 
+                placeholder="过滤">
+                <Icon type="ios-search" slot="suffix" />
+            </i-input>
+        </div>
+        <div style="margin-left:20px;float: left;">
+            <i-button @click="filterTypeDesc">过滤</i-button>
+        </div>
+    </div>
+    <div style="margin:10px;">
+        <i-table :columns="columns" :height="tableHeight" :data="tableData" :loading="loading" @on-row-click="onRowClick"></i-table>
+    </div>
+    <div style="padding-left:10px;">
+        <Page :total="total" show-total @on-change="onChange" :page-size="30" :current="currentIndex" />
+    </div>
+    <div class="content-wrap" v-show="isShowCard">
+        <Card style="width:650px">
+            <p slot="title" style="text-align:center;">
+                <Icon type="ios-film-outline"></Icon>
+                Content
+            </p>
+            <a href="#" slot="extra" @click.prevent="closeCard">
+                <Icon type="ios-loop-strong"></Icon>
+                X
+            </a>
+            <div id="content-string" style="max-height:400px;overflow-y:auto;">
+                {{contentString}}
+            </div>
+        </Card>
+    </div>
+</div>

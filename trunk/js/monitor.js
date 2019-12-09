@@ -48,7 +48,6 @@ var monitor = {
             openGroupIds: {},
             openCompanyIds: {},
             selectedState: 'all', // 选择nav的状态 all online offline;
-            positionLastrecords: {}, // 全部设备最后一次位置记录
             companys: [], //公司名称id
             groups: [], // 原始列表数据
             intervalTime: null, // 多久刷新一次设备
@@ -1249,6 +1248,9 @@ var monitor = {
         if (this.deviceTypes.length) {
             this.getMonitorList();
         }
+    },
+    created: function () {
+        this.positionLastrecords = {}; // 全部设备最后一次位置记录
     },
     activated: function () {
         if (isNeedRefresh) {

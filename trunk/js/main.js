@@ -454,7 +454,8 @@ var trackDebug = {
       ],
       data: [],
       tableData: [],
-      deleteRecordsObject: {}
+      deleteRecordsObject: {},
+      filterStr: "",
     }
   },
   methods: {
