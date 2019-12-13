@@ -995,6 +995,11 @@
                             me.$Message.error("尝试发送3次失败");
                         }else if(status === CMD_SEND_SYNC_TIMEOUT){
                             me.$Message.error("发送超时");
+                            if(startPlayerTimer){
+                                clearTimeout(startPlayerTimer);
+                            }
+                            player.src(record.playurl);
+                            player.play();
                         }
                     });
                 },
@@ -1074,6 +1079,9 @@
                                 item.index = ++index;
                             });
                             that.tableData = records;
+                            if(records.length){
+                                that.handleDblclick(records[0]);
+                            }
                         }else{
                             that.tableData =[];
                         }
