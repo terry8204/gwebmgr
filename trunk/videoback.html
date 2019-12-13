@@ -938,9 +938,11 @@
                                 if(startPlayerTimer){
                                     clearTimeout(startPlayerTimer);
                                 }
-                                player.dispose();
-                                me.initVideo(record.playurl);
-                                player.play();
+                                if(record){
+                                    player.dispose();
+                                    me.initVideo(record.playurl);
+                                    player.play();
+                                }
                             }
                         });
                     }

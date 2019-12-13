@@ -105,9 +105,6 @@ var bgManager = {
             this.navList.splice(0, 1);
             this.navList[0].children.splice(0, 1);
         };
-        if (this.userType !== "0") {
-            this.navList[3].children.splice(1, 2);
-        }
     }
 }
 
