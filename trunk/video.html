@@ -2064,6 +2064,7 @@
                         var wrapper = document.getElementById('videoContent').children[index]; 
                 },
                 initVideo:function(index,isCreate){
+                        index = Number(index);
                         var self = this;
                         isCreate && this.createVideoElement(index);
                         var wrapper = document.getElementById('videoContent').children[index]; 
@@ -2091,31 +2092,32 @@
                                 ],
                         },function(){
 
-                     
                             var tipEl = document.createElement('div');
                                 tipEl.setAttribute('id','video-tip'+index);
                                 tipEl.style.lineHeight = '30px';
                                 tipEl.style.paddingLeft = '15px';
-                             var vjsControlBar = document.getElementsByClassName('vjs-control-bar')[index+1];
+                           
+                             var vjsControlBar = null;
 
                             (function poll() {
                                 if(vjsControlBar){
                                     vjsControlBar.appendChild(tipEl)
                                 }else{
                                     vjsControlBar = document.getElementsByClassName('vjs-control-bar')[index+1];
-                                    setTimeout(poll,4)
+                                    setTimeout(poll,100)
                                 }
-                            })()
+                            })();
                             
                             var bigPlayButton = document.getElementsByClassName('vjs-big-play-button')[index+1];
 
                              (function poll1() {
+                                 console.log('bigPlayButton', bigPlayButton,index+1);
                                 if(bigPlayButton){
                                     bigPlayButton = document.getElementsByClassName('vjs-big-play-button')[index+1];
                                 }else{
-                                    setTimeout(poll1,4)
+                                    setTimeout(poll1,100)
                                 }
-                            })()
+                            })();
                      
           
                             this.on('play',function () { 
