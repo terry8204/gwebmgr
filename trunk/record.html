@@ -363,6 +363,7 @@ div.delete-media>div{
         var token = utils.getParameterByName("token");
         
         var vRoot = new Vue({
+            i18n: utils.getI18n(),
             el:"#app",
             data:{
                 intervalNumber:60,
