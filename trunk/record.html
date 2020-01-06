@@ -360,7 +360,7 @@ div.delete-media>div{
     <script src="js/util.js"></script>
     <script src="js/dateformat.js"></script>
     <script>
-        var token = Cookies.get("token");
+        var token = utils.getParameterByName("token");
         
         var vRoot = new Vue({
             el:"#app",
