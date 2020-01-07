@@ -662,12 +662,12 @@ var mixIn = {
 
 // 轨迹回放
 function playBack (deviceid) {
-  window.open('playback.html?deviceid=' + deviceid);
+  window.open('playback.html?deviceid=' + deviceid + '&token=' + token);
 }
 
 // 跟踪
 function trackMap (deviceid) {
-  window.open('trackmap.html?deviceid=' + deviceid)
+  window.open('trackmap.html?deviceid=' + deviceid + '&token=' + token);
 }
 
 //刷新位置信息

@@ -459,8 +459,11 @@ var trackDebug = {
     }
   },
   methods: {
+    openServersetting: function () {
+      window.open('serversetting.html?token=' + token);
+    },
     loginRecords: function () {
-      window.open("loginrecords.html");
+      window.open("loginrecords.html?token=" + token);
     },
     onSettingLicheng: function () {
       if (!this.deviceId && typeof this.meter !== "number") { return; };

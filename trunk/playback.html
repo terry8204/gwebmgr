@@ -211,9 +211,6 @@
     </style>
     <script src="js/js.cookie.min.js"></script>
     <script src="js/distancetool_min.js"></script>
-    <script>
-        var token = Cookies.get("token");
-    </script>
 </head>
 
 <body>
@@ -356,6 +353,7 @@
     <!-- <script src="http://api.map.baidu.com/api?v=3.0&ak=e7SC5rvmn2FsRNE4R1ygg44n"></script>
     <script type="text/javascript" src="http://api.map.baidu.com/library/DistanceTool/1.2/src/DistanceTool_min.js"></script> -->
     <script>
+        var token = utils.getParameterByName("token");
         Vue.use(iview);
         Vue.use(VueI18n);
         var isZh = utils.locale === 'zh'; 

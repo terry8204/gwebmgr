@@ -127,7 +127,7 @@
     <script src="./js/dateformat.js"></script>
 
     <script>
-        var token = Cookies.get("token");
+        var token = utils.getParameterByName('token');
         if (token == undefined) {
             window.location.href = "index.html";
         };

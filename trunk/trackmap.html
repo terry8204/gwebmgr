@@ -192,14 +192,14 @@
     <!-- <script src="http://api.map.baidu.com/api?v=3.0&ak=e7SC5rvmn2FsRNE4R1ygg44n"></script> -->
     <!-- <script type="text/javascript" src="http://api.map.baidu.com/library/DistanceTool/1.2/src/DistanceTool_min.js"></script> -->
     <script>
-       
+
         var isShare = utils.getParameterByName("isshare") == 1 ? true :false;
         var authcode = utils.getParameterByName("authcode");
         var isValid = utils.getParameterByName("isvalid");
         var expire = utils.getParameterByName("expire");
 
         var isOverdue = false; 
-        var token = Cookies.get("token");
+        var token = utils.getParameterByName("token");
         // 百度地图是否加载完成 改变全局变量
         var isLoadBMap = false;
         var firstMarker = null;
