@@ -1143,6 +1143,9 @@ var monitor = {
             var me = this;
             this.getMonitorListByUser({ username: userName }, function (resp) {
                 me.groups = me.filterGroups(resp.groups)
+                me.groups.sort(function (a, b) {
+                    return a.groupname.localeCompare(b.groupname);
+                });
                 me.$store.dispatch('setdeviceInfos', me.groups);
                 me.getLastPosition([], function (resp) {
                     me.lastquerypositiontime = DateFormat.getCurrentUTC();

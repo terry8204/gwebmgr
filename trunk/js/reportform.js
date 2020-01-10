@@ -1170,6 +1170,7 @@ function messageRecords (groupslist) {
         mounted () {
             var me = this;
             this.groupslist = groupslist;
+
             this.calcTableHeight();
             this.dayTime = 60 * 60 * 24 * 1000;
             window.onresize = function () {
