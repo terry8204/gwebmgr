@@ -72,6 +72,31 @@ var utils = {
     };
     return mapType;
   },
+  timeStamp: function (mss, isZh) {
+    var days = parseInt(mss / (1000 * 60 * 60 * 24));
+    var hours = parseInt((mss % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    var minutes = parseInt((mss % (1000 * 60 * 60)) / (1000 * 60));
+    var seconds = (mss % (1000 * 60)) / 1000;
+    if (days > 0) {
+      if (days > 999) {
+        return isZh ? "999天" : "999day";
+      } else {
+        return isZh ? `${days}天` : `${days}day`;
+      }
+    } else {
+      if (hours > 0) {
+        return isZh ? `${hours}小时` : `${hours}hours`;
+      } else {
+        if (minutes > 0) {
+          return isZh ? `${minutes}分钟` : `${minutes}minutes`;
+        } else {
+          return isZh ? `1分钟` : `1minutes`;
+        }
+
+      }
+
+    }
+  },
   sendAjax: function (url, data, callback) {
     var encode = JSON.stringify(data);
     $.ajax({
@@ -344,9 +369,9 @@ var utils = {
       posiType += "(" + track.gpsvalidnum + ")";
     };
     if (isZh) {
-      var isOnineStr = utils.getIsOnline(track) ? "在线" : "离线";
+      var isOnineStr = utils.getIsOnline(track) ? "在线" : "离线" + utils.timeStamp(Date.now() - track.updatetime, isZh);
     } else {
-      var isOnineStr = utils.getIsOnline(track) ? "online" : "offline";
+      var isOnineStr = utils.getIsOnline(track) ? "online" : "offline" + utils.timeStamp(Date.now() - track.updatetime, isZh);
     };
     var speed = track.speed == 0 ? "0km/h" : (track.speed / 1000).toFixed(2) + "km/h";
     var rxlevel = track.rxlevel === 0 ? '' : ('(' + (isZh ? '信号' : 'Signal') + ':' + track.rxlevel + '%)');
