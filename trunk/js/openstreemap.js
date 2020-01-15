@@ -22,9 +22,17 @@ OpenStreeMapCls.pt.getIcon = function (track) {
     var pathname = location.pathname
     var imgPath = '';
     if (pathname.indexOf('gpsserver') != -1) {
-        imgPath = myUrls.host + 'images/carstate/' + (isOnline ? 'a_green' : 'a_gray') + '_0.png';
+        if (track.moving == 0) {
+            imgPath = myUrls.host + 'images/carstate/' + (isOnline ? 'a_red' : 'a_gray') + '_0.png';
+        } else {
+            imgPath = myUrls.host + 'images/carstate/' + (isOnline ? 'a_green' : 'a_gray') + '_0.png';
+        }
     } else {
-        imgPath = '../images/carstate/' + (isOnline ? 'a_green' : 'a_gray') + '_0.png';
+        if (track.moving == 0) {
+            imgPath = '../images/carstate/' + (isOnline ? 'a_red' : 'a_gray') + '_0.png';
+        } else {
+            imgPath = '../images/carstate/' + (isOnline ? 'a_green' : 'a_gray') + '_0.png';
+        }
     };
     return new ol.style.Style({
         image: new ol.style.Icon(/** @type {module:ol/style/Icon~Options} */({

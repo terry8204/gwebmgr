@@ -106,7 +106,12 @@ GoogleMap.pt.getIcon = function (track) {
         imgPath = '../images/carstate';
     }
     if (track.online) {
-        imgPath += '/a_green_' + utils.getAngle(track.course) + '.png';
+        if (track.moving == 0) {
+            imgPath += '/a_red_' + utils.getAngle(track.course) + '.png';
+        } else {
+            imgPath += '/a_green_' + utils.getAngle(track.course) + '.png';
+        }
+
     } else {
         imgPath += '/a_gray_' + utils.getAngle(track.course) + '.png';
     }

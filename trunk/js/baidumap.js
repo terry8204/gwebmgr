@@ -122,7 +122,12 @@ BMapClass.pt.getIcon = function (track) {
         imgPath = '../images/carstate'
     }
     if (track.online) {
-        imgPath += '/a_green_0.png'
+        if (track.moving == 0) {
+            imgPath += '/a_red_0.png'
+        } else {
+            imgPath += '/a_green_0.png'
+        }
+
     } else {
         imgPath += '/a_gray_0.png'
     }
