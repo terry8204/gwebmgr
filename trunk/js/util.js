@@ -777,7 +777,7 @@ function openWeight (deviceid) {
 function setPanorama (deviceid) {
   var monitorIns = vRoot.$children[1];
   if (monitorIns.mapType === 'bMap') {
-    var track = monitorIns.$data.positionLastrecords[deviceid];
+    var track = monitorIns.positionLastrecords[deviceid];
     var panoramaService = new BMap.PanoramaService();
     panoramaService.getPanoramaByLocation(new BMap.Point(track.b_lon, track.b_lat), function (data) {
       if (data == null) {
