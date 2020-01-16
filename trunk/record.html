@@ -416,8 +416,8 @@ div.delete-media>div{
                     var url = myUrls.recordAudio();
                     utils.sendAjax(url, { deviceid: this.deviceId, interval: parseFloat(this.selectVal)} ,function (resp) { 
                         if(resp.status == 0){
-                            me.tableData.push({ updatetimeStr: DateFormat.longToDateTimeStr(Date.now(), 0), intervalseconds: parseFloat(me.selectVal)})
                             setTimeout(function () { document.getElementsByClassName("record-body")[0].scrollTop = 10000; },10);
+                            me.queryMedia();
                             me.$Message.success("发送成功");
                         }else{
                             me.$Message.error("发送失败");
@@ -448,28 +448,37 @@ div.delete-media>div{
                     })
                 },
                 getLocalMediaByDeviceId:function(deviceId){
-                    var newMedia = null;
-                    var newPushLocalMedia = localStorage.getItem("devicemedia");
+                    var isHas = true; 
+                    var newPushLocalMedia = localStorage.getItem("devicemedia-" + deviceId);
                     if(newPushLocalMedia !== null && newPushLocalMedia !== "null"){
                         var newPushLocalMediaObject = JSON.parse(newPushLocalMedia);
-                        if(newPushLocalMediaObject.deviceid === deviceId){
-                            newMedia =  newPushLocalMediaObject;
+                        var mediaid = newPushLocalMediaObject.mediaid;
+                        for(var i = 0 ; i < this.tableData.length ;i++){
+                            if(mediaid == this.tableData[i].mediaid){
+                                isHas = false;
+                                break;
+                            }
                         }
+                    }else{
+                        isHas = false;
                     }
-                    return newMedia;
+                    return isHas;
                 },
                 clearLocalMedia:function(){
                     localStorage.setItem("devicemedia",null);
                 },
                 queryLocalMedia:function(){
-                    var newMedia = this.getLocalMediaByDeviceId(this.deviceId);
-                    if(newMedia !== null)
+                    var newMedia = this.getLocalMediaByDeviceId(this.deviceId) , me = this;
+                    console.log('newMedia', newMedia);
+                    if(newMedia == true)
                     {
-                        newMedia.show = false;
-                        newMedia.updatetimeStr = DateFormat.longToDateTimeStr(newMedia.updatetime, 0);
-                        this.tableData.push(newMedia);
-                        this.clearLocalMedia();
-                        setTimeout(function () { document.getElementsByClassName("record-body")[0].scrollTop = 10000; },10);
+
+                        // newMedia.show = false;
+                        // newMedia.updatetimeStr = DateFormat.longToDateTimeStr(newMedia.updatetime, 0);
+                        // this.tableData.push(newMedia);
+                        // this.clearLocalMedia();
+                        // setTimeout(function () { document.getElementsByClassName("record-body")[0].scrollTop = 10000; },10);
+                        me.queryMedia();
                     }
                 }
             },
@@ -488,7 +497,7 @@ div.delete-media>div{
                         me.intervalNumber = 60;
                         me.queryMedia();
                     };
-                 },1000)
+                 },1000);
             }
         })
     </script>
