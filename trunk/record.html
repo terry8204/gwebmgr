@@ -450,16 +450,20 @@ div.delete-media>div{
                 getLocalMediaByDeviceId:function(deviceId){
                     var isHas = true; 
                     var newPushLocalMedia = localStorage.getItem("devicemedia-" + deviceId);
+                    console.log("newPushLocalMedia", newPushLocalMedia);
                     if(newPushLocalMedia !== null && newPushLocalMedia !== "null"){
+
                         var newPushLocalMediaObject = JSON.parse(newPushLocalMedia);
                         var mediaid = newPushLocalMediaObject.mediaid;
                         for(var i = 0 ; i < this.tableData.length ;i++){
+                            console.log(mediaid, this.tableData[i].mediaid);
                             if(mediaid == this.tableData[i].mediaid){
                                 isHas = false;
                                 break;
                             }
                         }
                     }else{
+                        console.log("没有");
                         isHas = false;
                     }
                     return isHas;
@@ -492,10 +496,12 @@ div.delete-media>div{
                 }
                 setInterval(function () { 
                     me.intervalNumber = --me.intervalNumber;
-                    me.queryLocalMedia();
+                    if(me.intervalNumber%5 == 0){
+                        me.queryMedia();
+                    }
                     if(me.intervalNumber < 1){
                         me.intervalNumber = 60;
-                        me.queryMedia();
+                        // me.queryMedia();
                     };
                  },1000);
             }

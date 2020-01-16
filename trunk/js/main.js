@@ -652,7 +652,6 @@ var vRoot = new Vue({
       this.$store.commit('setHeaderActiveName', activeName);
     },
     addPushMediaToLocalStore: function (devicemedia) {
-      console.log('addPushMediaToLocalStore devicemedia', devicemedia);
       var deviceid = devicemedia.deviceid;
       localStorage.setItem("devicemedia-" + deviceid, JSON.stringify(devicemedia));
     },
