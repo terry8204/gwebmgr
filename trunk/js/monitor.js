@@ -559,11 +559,40 @@ var monitor = {
                     group.firstLetter.indexOf(value) !== -1 ||
                     group.pinyin.indexOf(value) !== -1
                 ) {
-                    group.devices.forEach(function (device) {
-                        var isOnline = me.getIsOnline(device.deviceid);
-                        device.isOnline = isOnline;
-                    })
-                    this.filterData.push(group);
+
+                    if (me.selectedState == "all") {
+                        group.devices.forEach(function (device) {
+                            var isOnline = me.getIsOnline(device.deviceid);
+                            device.isOnline = isOnline;
+                        })
+                        this.filterData.push(group);
+                    } else if (me.selectedState == "online") {
+                        var cloneGroup = deepClone(group);
+                        cloneGroup.devices = [];
+                        group.devices.forEach(function (device) {
+                            var isOnline = me.getIsOnline(device.deviceid);
+                            device.isOnline = isOnline;
+                            if (isOnline) {
+                                cloneGroup.devices.push(device);
+                            }
+                        })
+                        if (cloneGroup.devices.length > 0) {
+                            this.filterData.push(group);
+                        }
+                    } else if (me.selectedState == "offline") {
+                        var cloneGroup = deepClone(group);
+                        cloneGroup.devices = [];
+                        group.devices.forEach(function (device) {
+                            var isOnline = me.getIsOnline(device.deviceid);
+                            device.isOnline = isOnline;
+                            if (!isOnline) {
+                                cloneGroup.devices.push(device);
+                            }
+                        })
+                        if (cloneGroup.devices.length > 0) {
+                            this.filterData.push(group);
+                        }
+                    };
                 } else {
                     var devices = group.devices
                     var obj = {
@@ -582,13 +611,31 @@ var monitor = {
                             device.pinyin.indexOf(value) !== -1 ||
                             device.deviceid.indexOf(value) !== -1
                         ) {
-
-
-                            obj.devices.push(device)
+                            if (me.selectedState == "all") {
+                                obj.devices.push(device)
+                            } else if (me.selectedState == "online") {
+                                if (isOnline) {
+                                    obj.devices.push(device)
+                                }
+                            } else if (me.selectedState == "offline") {
+                                if (!isOnline) {
+                                    obj.devices.push(device)
+                                }
+                            }
                         } else {
                             if (device.remark) {
                                 if (device.remark.indexOf(value) !== -1) {
-                                    obj.devices.push(device);
+                                    if (me.selectedState == "all") {
+                                        obj.devices.push(device)
+                                    } else if (me.selectedState == "online") {
+                                        if (isOnline) {
+                                            obj.devices.push(device)
+                                        }
+                                    } else if (me.selectedState == "offline") {
+                                        if (!isOnline) {
+                                            obj.devices.push(device)
+                                        }
+                                    }
                                 };
                             };
                         };
