@@ -985,11 +985,16 @@ var monitor = {
                     device.pinyin = __pinyin.getPinyin(device.devicename);
                     var deviceTypeName = me.getDeviceTypeName(device.devicetype);
                     if (deviceTypeName) {
+                        device.deviceTypeName = deviceTypeName ;
                         device.devicetitle = deviceTypeName + "-" + device.devicename;
                     } else {
                         device.devicetitle = device.devicename;
                     }
                     device.allDeviceIdTitle = device.devicetitle + "-" + device.deviceid;
+                });
+
+                group.devices.sort(function (a, b) {
+                    return a.deviceTypeName .localeCompare(b.deviceTypeName);
                 });
 
                 group.title = group.groupname + "(0/" + devCount + ")";
