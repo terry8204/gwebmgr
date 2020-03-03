@@ -988,6 +988,7 @@ var monitor = {
                         device.deviceTypeName = deviceTypeName ;
                         device.devicetitle = deviceTypeName + "-" + device.devicename;
                     } else {
+                        device.deviceTypeName = "" ;
                         device.devicetitle = device.devicename;
                     }
                     device.allDeviceIdTitle = device.devicetitle + "-" + device.deviceid;
