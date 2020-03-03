@@ -995,7 +995,7 @@ var monitor = {
                 });
 
                 group.devices.sort(function (a, b) {
-                    return a.deviceTypeName .localeCompare(b.deviceTypeName);
+                    return a.devicetitle .localeCompare(b.devicetitle);
                 });
 
                 group.title = group.groupname + "(0/" + devCount + ")";
