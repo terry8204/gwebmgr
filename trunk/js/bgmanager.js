@@ -41,7 +41,8 @@ var bgManager = {
                     children: [
                         { title: me.$t("bgMgr.queryDev"), name: 'queryDevice', icon: 'md-search' },
                         { title: me.$t("bgMgr.addDev"), name: 'addDevice', icon: 'md-add' },
-                        { title: "批量添加", name: 'batchAddDevice', icon: 'md-add' }
+                        { title: "批量添加", name: 'batchAddDevice', icon: 'md-add' },
+                        { title: "续费管理", name: 'chargeMgr', icon: 'ios-apps-outline' }
                     ]
                 }
             ]
@@ -81,6 +82,9 @@ var bgManager = {
                 case 'queryUser':
                     page = 'queryuser.html'
                     break
+                case 'chargeMgr':
+                    page = 'chargemgr.html'
+                    break
             }
             this.currentPage = name
             this.loadPage(page)
@@ -88,6 +92,16 @@ var bgManager = {
         loadPage: function (page) {
             var me = this
             var pagePath = null
+            if(page == "chargemgr.html"){
+                if (myUrls.host.indexOf('gpsserver') != -1) {
+                    pagePath = myUrls.host + '/' + page
+                } else {
+                    pagePath = './' + page
+                }
+                window.open(pagePath+ '?token=' + token);
+                $('#mar-view').html("");
+                return;
+            }
             if (myUrls.host.indexOf('gpsserver') != -1) {
                 pagePath = myUrls.host + 'view/manager/' + page
             } else {
@@ -148,7 +162,7 @@ var systemParam = {
     },
     methods: {
         selectditem: function (name) {
-            if (this.selectdItemName != name) {
+            if (this.selectdItemName != name  && name != "") {
                 this.selectdItemName = name
                 this.changeItem()
             }

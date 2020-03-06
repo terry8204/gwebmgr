@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>续费管理</title>
+    <link rel="shortcut icon" href="./favicon.ico" />
+    <link rel="stylesheet" href="dist/styles/iview.css">
+    <style>
+        html,body,#app{width:100%;height:100%;position: relative;};
+        [v-cloak] {
+            display: none;
+        }
+        .header{
+            position: absolute;left: 0;right: 0;top: 0;height: 60px;
+            padding: 10px;
+            line-height: 40px;
+        }
+        .header > div{float: left;margin:0 10px 0 10px;}
+        .table-body{
+            position: absolute;left: 10px;right: 10px;top: 60px;bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div id='app'>
+        <div class="header">
+            <div class="label">
+                搜索内容:
+            </div>
+            <div>
+                <i-input v-model.trim="searchValue"></i-input>
+            </div>
+            <div>
+                <Checkbox v-model="isIncludeSub">是否包含下级</Checkbox>
+            </div>
+            <div>
+                <i-button  :loading="loading">查询</i-button>
+            </div>
+            <div>
+                <i-button type="primary">充值</i-button>
+            </div>
+        </div>
+        <div class="table-body">
+            <i-Table border ref="selection" :columns="columns" :data="tableData" :height="tHeight"></i-Table>
+        </div>
+    </div>
+    <script src="dist/vue.min.js"></script>
+    <script src="dist/iview.min.js"></script>
+    <script src="./js/gps51-jquery.js"></script>
+    <script src="./js/js.cookie.min.js"></script>
+    <script src="./js/dateformat.js"></script>
+    <script src="./js/util.js"></script>
+    <script src="js/config.js"></script>
+    <script>
+        var token = utils.getParameterByName("token");
+        var filterDeviceTypes = [];
+
+        function getDeviceTypes(){
+            var url =  myUrls.queryDeviceTypeByUser();
+            utils.sendAjax(url,{},function(data){
+                if(data.status == 0 ){
+                    data.devicetypes.forEach(function(item,index){
+                        filterDeviceTypes.push({label:item.typename,value:item.devicetypeid});
+                    });
+                }
+                initVue();
+            })
+        }
+
+        getDeviceTypes();
+
+        function initVue(){
+            new Vue({
+                el:"#app",
+                data:{
+                    loading:false,
+                    searchValue:"",
+                    isIncludeSub : false,
+                    tHeight:100,
+                    columns: [
+                        {
+                            type: 'selection',
+                            width: 60,
+                            align: 'center'
+                        },
+                        {
+                            type: 'index',
+                            width: 60,
+                            align: 'center'
+                        },
+                        {
+                            title: '管理账号',
+                            key: 'username'
+                        },
+                        {
+                            title: '设备序号',
+                            key: 'deviceid'
+                        },
+                        {
+                            title: '设备名称',
+                            key: 'devicename'
+                        },
+                        {
+                            title: '设备型号',
+                            key: 'devicetype',
+                            filters:filterDeviceTypes,
+                            filterMultiple: false,
+                            filterMethod (value, row) {
+                                for(var i = 0 ; i < filterDeviceTypes.length; i++){
+                                    var item = filterDeviceTypes[i];
+                                    var label = item.label;
+                                    if(row.devicetypeid == value){
+                                        return true;
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            title: '终身',
+                            key: 'lifelong',
+                            filters: [
+                                {
+                                    label: '是',
+                                    value: 1
+                                },
+                                {
+                                    label: '否',
+                                    value: 0
+                                }
+                            ],
+                            filterMultiple: false,
+                            filterMethod (value, row) {
+                                if (value === 1) {
+                                    return row.lifelong == "是";
+                                } else if (value === 0) {
+                                    return row.lifelong == "否";
+                                }
+                            }
+                        },
+                        {
+                            title: '过期时间',
+                            key: 'overduedate'
+                        }
+                    ],
+                    tableData:[
+                        {
+                            username:"abc",
+                            deviceid:"13642818912",
+                            devicename:"张飞",
+                            lifelong:"是",
+                            devicetype:'JT808',
+                            devicetypeid:1,
+                            overduedate:"2019-09-12"
+                        },
+                    ],
+                },
+                methods: {
+                getTableHeight:function(){
+                    var winHeight = document.documentElement.clientHeight || document.body.clientHeight;
+                    return winHeight - 70;
+                },
+                },
+                mounted () {
+                    var me = this;
+                    this.tHeight = this.getTableHeight();
+                    window.onresize  = function(){
+                        me.tHeight = me.getTableHeight();
+                    }
+                },
+            })
+        }
+
+    </script>
+</body>
+</html>

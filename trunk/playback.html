@@ -793,10 +793,14 @@
                                 var lng_lat = wgs84tobd09(track.callon, track.callat);
                                 track.point = new BMap.Point(lng_lat[0], lng_lat[1]);
                             };
-                            newRecords.push(track);
+                      
                             if(track.gotsrc == "gps"){
+                                track.isextract = true;
                                 extractRecords.push(track);
+                            }else{
+                                track.isextract = false;
                             }
+                            newRecords.push(track);
                         };
                         this.records = newRecords;
                         this.extractRecords = extractRecords;
@@ -827,7 +831,7 @@
                                         iconFeature = new ol.Feature({
                                             geometry: new ol.geom.Point(tempPoint),
                                         });
-                                        iconFeature.setStyle(this.getFeatureMarkr());
+                                        iconFeature.setStyle(this.getFeatureMarkr(record));
                                         iconFeature.index = i;
                                         features.push(iconFeature);
                                     }
@@ -866,7 +870,13 @@
                                     var point = records[i].point;
                                     lines.push(point);
                                     if(i !=0 && i != records.length-1){
-                                        var makrker = new BMap.Marker(point);
+                                        var icon = null;
+                                        if(records[i].isextract){
+                                            icon = new BMap.Icon("images/marker_green_sprite.png", new BMap.Size(32, 32), { imageOffset: new BMap.Size(0, 0)})
+                                        }else{
+                                            icon = new BMap.Icon("images/marker_red_sprite.png", new BMap.Size(32, 32), { imageOffset: new BMap.Size(0, 0)})
+                                        }
+                                        var makrker = new BMap.Marker(point,{icon:icon});
                                         makrker.index = i;
                                         this.isShowMarker && this.map.addOverlay(makrker);
                                         this.addEventListenerToMarker(makrker);
@@ -995,6 +1005,7 @@
                                     this.map.setZoom(16)    
                                     this.map.setCenter(lastRecord.gpoint)
                                 }else if(this.mapType === 'oMap'){
+                                    var tempPoint = ol.proj.fromLonLat([lastRecord.callon, lastRecord.callat]);
                                     var lastMarker = new ol.Feature({
                                         geometry: new ol.geom.Point(tempPoint),
                                     });
@@ -1012,13 +1023,17 @@
                             this.$Message.error("没有当天轨迹");
                         };  
                     },
-                    getFeatureMarkr:function(){
+                    getFeatureMarkr:function(track){
                         var imgPath = '';
                         if (pathname.indexOf('gpsserver') != -1) {
-                            imgPath = myUrls.host + 'images/pin.png';
-                        } else {
-                            imgPath = '../images/map/pin.png';
+                            imgPath = myUrls.host ;
+                        } 
+                        if(track.isextract){
+                            imgPath += 'images/marker_green_sprite.png'
+                        }else{
+                            imgPath += 'images/marker_red_sprite.png'
                         };
+              
                         return  new ol.style.Style({
                                 image: new ol.style.Icon(({
                                     // anchor: [-16*Math.PI/180, 24*Math.PI/180],
@@ -1026,7 +1041,7 @@
                                     crossOrigin: 'anonymous',
                                     src: imgPath,
                                     rotation: 0,//角度转化为弧度
-                                    imgSize: [32, 48],
+                                    imgSize: [48, 48],
                                     scale:0.6
                                 }))
                         });
