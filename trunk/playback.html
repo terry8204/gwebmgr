@@ -872,11 +872,19 @@
                                     if(i !=0 && i != records.length-1){
                                         var icon = null;
                                         if(records[i].isextract){
-                                            icon = new BMap.Icon("images/marker_green_sprite.png", new BMap.Size(32, 32), { imageOffset: new BMap.Size(0, 0)})
+                                            icon = new BMap.Icon("images/marker_red.png", new BMap.Size(32, 32), 
+                                            { 
+                                                imageSize:new BMap.Size(32, 32),
+                                                imageOffset: new BMap.Size(0, 0)
+                                            })
                                         }else{
-                                            icon = new BMap.Icon("images/marker_red_sprite.png", new BMap.Size(32, 32), { imageOffset: new BMap.Size(0, 0)})
+                                            icon = new BMap.Icon("images/marker_yellow.png", new BMap.Size(32, 32),
+                                            { 
+                                                imageSize:new BMap.Size(32, 32),
+                                                imageOffset: new BMap.Size(0, 0)
+                                            })
                                         }
-                                        var makrker = new BMap.Marker(point,{icon:icon});
+                                        var makrker = new BMap.Marker(point,{icon:icon,offset:new BMap.Size(0, -13)});
                                         makrker.index = i;
                                         this.isShowMarker && this.map.addOverlay(makrker);
                                         this.addEventListenerToMarker(makrker);
@@ -1029,9 +1037,9 @@
                             imgPath = myUrls.host ;
                         } 
                         if(track.isextract){
-                            imgPath += 'images/marker_green_sprite.png'
+                            imgPath += 'images/marker_red.png'
                         }else{
-                            imgPath += 'images/marker_red_sprite.png'
+                            imgPath += 'images/marker_yellow.png'
                         };
               
                         return  new ol.style.Style({
