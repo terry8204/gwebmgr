@@ -1260,8 +1260,12 @@ var monitor = {
     },
     watch: {
         mapType: function (newType) {
-            this.initMap();
-            console.log('mapType', mapType);
+            try {
+                this.initMap();
+            } catch (error) {
+                this.isSpin = false;
+            }
+       
             Cookies.set('app-map-type', this.mapType);
         },
         filterData: function () {

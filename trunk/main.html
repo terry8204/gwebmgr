@@ -416,7 +416,7 @@
             <div class="map-wraper">
                 <div class="map_manager">
                     <div style="float:left;height:35px; line-height:35px;padding-left:15px;color:red;font-size:12px;">{{intervalTime}}{{$t("monitor.refreshAfter")}}</div>
-                    <ul class="ul-manager-wraper">
+                    <ul class="ul-manager-wraper"> 
                         <li class="maps">
                             <i-select v-model="mapType" size="small" style="width:100px">
                                 <i-option v-for="item in mapList" :value="item.value" :key="item.value">{{ item.label }}</i-option>
@@ -436,7 +436,7 @@
                         </li>
                     </ul>
                 </div>
-                <div class="spin-wraper" v-if="isSpin">
+                <div class="spin-wraper" v-if="isSpin" style="z-index:10">
                     <Spin fix size="large"></Spin>
                 </div>
                 <div id="my-map"></div>

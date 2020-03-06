@@ -922,8 +922,8 @@ var asyncLoadJs = function (jsName, callback) {
       textIconoverlay: getPath + 'texticonoverlay_min.js',
       distancetool: getPath + 'distancetool_min.js',
       bmarkerclusterer: getPath + "markerclusterer.js",
-
-      google: "https://ditu.google.cn/maps/api/js?v=3.1&sensor=false&language=" + (isZh ? 'cn' : 'en') + "&key=AIzaSyDXQKVS1Tdp3VlrzBsZbBlLj_uYHVDHe6M&cb=loadBMapSucc",
+      
+      google: "https://maps.google.com/maps/api/js?v=3.1&sensor=false&language=" + (isZh ? 'cn' : 'en') + "&key=AIzaSyDXQKVS1Tdp3VlrzBsZbBlLj_uYHVDHe6M&cb=loadBMapSucc",
       gmarkerclusterer: getPath + "gmarkerclusterer.js",
       markerwithlabel: getPath + "markerwithlabel.js",
     };
