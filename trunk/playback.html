@@ -884,7 +884,7 @@
                                                 imageOffset: new BMap.Size(0, 0)
                                             })
                                         }
-                                        var makrker = new BMap.Marker(point,{icon:icon,offset:new BMap.Size(0, -13)});
+                                        var makrker = new BMap.Marker(point,{icon:icon,offset:new BMap.Size(13, -13)});
                                         makrker.index = i;
                                         this.isShowMarker && this.map.addOverlay(makrker);
                                         this.addEventListenerToMarker(makrker);
@@ -1049,8 +1049,8 @@
                                     crossOrigin: 'anonymous',
                                     src: imgPath,
                                     rotation: 0,//角度转化为弧度
-                                    imgSize: [48, 48],
-                                    scale:0.6
+                                    imgSize: [39, 25],
+                                    scale:1
                                 }))
                         });
                     },
