@@ -82,6 +82,8 @@ BMapClass.pt.addMarkerEvent = function (marker) {
     });
 }
 
+
+
 BMapClass.pt.openInfoWindow = function (marker, deviceid, zoom) {
     var track = this.lastTracks[deviceid];
     var address = this.getDevAddress(track);
@@ -179,6 +181,14 @@ BMapClass.pt.getInfoWindow = function (track, address) {
 
 BMapClass.pt.onClickDevice = function (deviceid) {
     var marker = this.markerHashMap[deviceid];
+    for(var key in this.markerHashMap){
+        var itemMarker = this.markerHashMap[key];
+        if(key != deviceid){
+            itemMarker.setZIndex(99);
+        }else{
+            marker.setZIndex(999);
+        }
+    }
     if (marker) {
         var that = this;
         this.openInfoWindow(marker, deviceid, that.mapInstance.getZoom());
