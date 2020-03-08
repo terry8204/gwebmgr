@@ -158,6 +158,8 @@ OpenStreeMapCls.pt.onClickDevice = function (deviceid) {
     this.popup.setPosition(posi);
     this.mapInstance.getView().setCenter(posi);
     this.mapInstance.getView().setZoom(20);
+    var marker = this.markerHashMap[deviceid];
+    console.log('marker', marker.setZindex);
 }
 
 
@@ -233,6 +235,14 @@ OpenStreeMapCls.pt.updateLastTracks = function (lastTracks) {
         this.layerVector.setSource(layerVectorSource);
     }
 }
+
+OpenStreeMapCls.pt.updateSingleMarkerState = function (deviceid) {
+    var track = this.lastTracks[deviceid];
+    var marker = this.markerHashMap[deviceid];
+    marker.setStyle(this.getIcon(track));
+    marker.setGeometry(new ol.geom.Point(this.fromLonLat(track.callon, track.callat)));
+}
+
 
 OpenStreeMapCls.pt.updateMarkersState = function (currentDeviceId) {
     for (var key in this.markerHashMap) {

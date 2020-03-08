@@ -184,7 +184,7 @@ BMapClass.pt.onClickDevice = function (deviceid) {
     for(var key in this.markerHashMap){
         var itemMarker = this.markerHashMap[key];
         if(key != deviceid){
-            itemMarker.setZIndex(99);
+            itemMarker.setZIndex(99); 
         }else{
             marker.setZIndex(999);
         }

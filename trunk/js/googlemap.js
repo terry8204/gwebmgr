@@ -157,6 +157,14 @@ GoogleMap.pt.getInfoWindow = function (track, address) {
 }
 
 GoogleMap.pt.onClickDevice = function (deviceid) {
+    for(var key in this.markerHashMap){
+        var itemMarker = this.markerHashMap[key];
+        if(key != deviceid){
+            itemMarker.setZIndex(99); 
+        }else{
+            marker.setZIndex(999);
+        }
+    }
     var marker = this.markerHashMap[deviceid];
     if (marker) {
         this.mapInstance.getZoom() != 22 ? this.mapInstance.setZoom(22) : '';
