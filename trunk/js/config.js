@@ -471,6 +471,9 @@ var myUrls = {
   queryActiveSafetyTrack: function () {
     return this.hosts + 'webapi?action=queryactivesafetytrack&token=' + token;
   },
+  queryChargeDeviceList: function () {
+    return this.hosts + 'webapi?action=querychargedevicelist&token=' + token;
+  },
 }
 
 
