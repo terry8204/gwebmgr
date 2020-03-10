@@ -471,8 +471,13 @@ var myUrls = {
   queryActiveSafetyTrack: function () {
     return this.hosts + 'webapi?action=queryactivesafetytrack&token=' + token;
   },
+  // 查询设备是否充值
   queryChargeDeviceList: function () {
     return this.hosts + 'webapi?action=querychargedevicelist&token=' + token;
+  },
+  // 设备充值
+  chargeDevices: function () {
+    return this.hosts + 'webapi?action=chargedevices&token=' + token;
   },
 }
 

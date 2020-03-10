@@ -35,6 +35,9 @@
                     <i-option value="2">设备序号</i-option>
                 </i-select>
             </div> 
+            <div class="label">
+                充值状态:
+            </div>
             <div style="width:100px;position:relative;">
                 <i-select v-model="chargeStatus">
                     <i-option value="0">全部</i-option>
@@ -55,7 +58,7 @@
                 <i-button  :loading="loading" @click="handleQuery">查询</i-button>
             </div>
             <div>
-                <i-button type="primary" @click="modal=true">充值</i-button>
+                <i-button type="primary" @click="modal=true" :disabled="isDisabled">充值</i-button>
             </div>
         </div>
         <div class="table-body">
@@ -65,7 +68,22 @@
             <p slot="header" style="color:#2D8CF0;text-align:center">
                 操作
             </p>
-            <div>
+            <div> 
+                <Row style="margin: 10px 0">
+                    <i-col span="6" style="height: 100%;line-height:32px;text-align:center">操作类型:</i-col>
+                    <i-col span="12" style="height: 100%;line-height:32px;">
+                        <i-select v-model="activeType">
+                            <i-option value="1">充值</i-option>
+                            <i-option value="0">取消充值</i-option>
+                        </i-select>
+                    </i-col>
+                </Row>
+                <Row style="margin: 10px 0">
+                    <i-col span="6" style="height: 100%;line-height:32px;text-align:center">选中个数:</i-col>
+                    <i-col span="12" style="height: 100%;line-height:32px;">
+                        {{selectionArray.length}}
+                    </i-col>
+                </Row>
                 <Row style="margin: 10px 0">
                     <i-col span="6" style="height: 100%;line-height:32px;text-align:center">是否终身:</i-col>
                     <i-col span="12" style="height: 100%;line-height:32px;">
@@ -75,12 +93,24 @@
                 <Row style="margin: 10px 0">
                     <i-col span="6" style="height: 100%;line-height:32px;text-align:center">选择时间:</i-col>
                     <i-col span="17" style="height: 100%;line-height:32px;">
+                        <Radio-Group v-model="years">
+                            <Radio label="1年" :disabled="isLifelong"></Radio>
+                            <Radio label="2年" :disabled="isLifelong"></Radio>
+                            <Radio label="3年" :disabled="isLifelong"></Radio>
+                            <Radio label="4年" :disabled="isLifelong"></Radio>
+                            <Radio label="5年" :disabled="isLifelong"></Radio>
+                        </Radio-Group>
+                    </i-col>
+                </Row>
+                <Row style="margin: 10px 0">
+                    <i-col span="6" style="height: 100%;line-height:32px;text-align:center">选择日期:</i-col>
+                    <i-col span="17" style="height: 100%;line-height:32px;">
                         <date-picker type="date" v-model="overdueDate" :disabled="isLifelong" style="width: 100%"></date-picker>
                     </i-col>
                 </Row>
             </div>
             <div slot="footer" style="padding:6.5px 15px;">
-              <i-button style="width:100%;" type="primary">提交</i-button>
+              <i-button style="width:100%;" type="primary" @click="handlerChargeDevices">提交</i-button>
             </div>
         </Modal>
     </div>
@@ -93,6 +123,7 @@
     <script src="js/config.js"></script>
     <script>
         var token = utils.getParameterByName("token");
+        var userName = utils.getParameterByName("username");
         var filterDeviceTypes = [];
         var deviceTypeMap = {}
         function getDeviceTypes(){
@@ -115,13 +146,17 @@
             new Vue({
                 el:"#app",
                 data:{
+                    years:"1年",
                     chargeStatus:'0',
                     queryType:'1',
-                    overdueDate:new Date( new Date().getTime() + yearTime ),
+                    overdueDate:DateFormat.addYear(new Date(),1),
                     isLifelong: true,
+                    selectionArray:[],
+                    activeType:"1",
                     modal : false,
                     loading:false,
-                    searchValue:"",
+                    userName:userName,
+                    searchValue:userName,
                     isIncludeSub : false,
                     tHeight:100,
                     columns: [
@@ -177,15 +212,15 @@
                                 },
                                 {
                                     label: '未充值',
-                                    value: 2
+                                    value: 0
                                 }
                             ],
                             filterMultiple: false,
                             filterMethod (value, row) {
                                 if (value == 1) {
                                     return row.chargestatus == 1;
-                                } else{
-                                    return true;
+                                } else if (value == 0) {
+                                    return row.chargestatus == 0;
                                 }
                             }
                         },
@@ -219,24 +254,60 @@
                         }
                     ],
                     tableData:[
-                        {
-                            username:"abc",
-                            deviceid:"13642818912",
-                            devicename:"张飞",
-                            lifelong:"是",
-                            devicetype:'JT808',
-                            devicetypeid:1,
-                            overduedate:"2019-09-12",
-                            chargestatus:1
-                        },
+                        // {
+                        //     username:"abc",
+                        //     deviceid:"13642818912",
+                        //     devicename:"张飞",
+                        //     lifelong:"是",
+                        //     devicetype:'JT808',
+                        //     devicetypeid:1,
+                        //     overduedate:"2019-09-12",
+                        //     chargestatus:1
+                        // },
                     ],
                 },
+                computed:{
+                    isDisabled:function(){
+                        return this.userName !== 'admin';
+                    }
+                },
+                watch: {
+                    years:function(newVal){
+                       this.overdueDate = DateFormat.addYear(new Date(),parseFloat(newVal)) ;
+                    }
+                },
                 methods: {
+                    handlerChargeDevices:function(){
+                        if(this.selectionArray.length == 0){
+                            this.$Message.error("请选择要充值的设备");
+                            return;
+                        };
+                        var url = myUrls.chargeDevices() , me = this;
+                        var data = {
+                            chargestatus : Number(this.activeType),
+                            isfree:this.isLifelong ? 1 : 0,
+                            deviceids:[],
+                            overduetime:DateFormat.format(this.overdueDate,'yyyy-MM-dd HH:mm:ss')
+                        }
+                        this.selectionArray.forEach(function (item) {
+                            data.deviceids.push(item.deviceid);
+                        });
+
+                        utils.sendAjax(url,data,function (respData) { 
+                            if(respData.status == 0){
+                                me.modal = false;
+                                me.$Message.success("充值成功:" + respData.successcount + "个");
+                            }else{
+                                me.$Message.error("充值失败");
+                            }
+                        });
+                    },
                     handleQuery:function(){
                         if(this.searchValue.length == 0){
                             this.$Message.error("填写搜索内容");
                             return;
                         };
+                        this.selectionArray  = [];
                         var data = {
                             querytype:Number(this.queryType), //1是 账号 2是设备
                             querykey:this.searchValue,
@@ -247,33 +318,34 @@
                         var url = myUrls.queryChargeDeviceList() , me = this;
                         utils.sendAjax(url,data,function (respData) { 
                             me.loading = false;
-                            if(respData.status == 0 && respData.devices.length){
-                                
-                                var resultArray = [];
-                                respData.devices.forEach(function (item,index) { 
-                                    console.log('item.chargestatus', item.chargestatus);
-                                    resultArray.push({
-                                        username:item.creater,
-                                        deviceid:item.deviceid,
-                                        devicename:item.devicename,
-                                        devicetype:deviceTypeMap[item.devicetype],
-                                        devicetypeid:item.devicetype,
-                                        lifelong:item.isfree == 1 ? '是' : '否',
-                                        chargestatus:item.chargestatus,
-                                        overduedate:DateFormat.longToDateStr(item.overduetime,0),
-                                        overduetime:item.overduetime
+                            if(respData.status == 0){
+                               if(respData.devices.length){
+                                    var resultArray = [];
+                                    respData.devices.forEach(function (item,index) { 
+                                        resultArray.push({
+                                            username:item.creater,
+                                            deviceid:item.deviceid,
+                                            devicename:item.devicename,
+                                            devicetype:deviceTypeMap[item.devicetype],
+                                            devicetypeid:item.devicetype,
+                                            lifelong:item.isfree == 1 ? '是' : '否',
+                                            chargestatus:item.chargestatus,
+                                            overduedate:DateFormat.longToDateStr(item.overduetime,0),
+                                            overduetime:item.overduetime
+                                        });
                                     });
-                                });
-                                me.tableData = resultArray;
-                                console.log('resultArray', resultArray);
+                                    me.tableData = resultArray;
+                               }else{
+                                    me.$Message.error("没有搜索到内容");
+                               }
                             }else{
-                                me.$Message.error("没有搜索到内容");
+                                me.$Message.error("没有该用户权限");
                             }
                         });
     
                     },
                     onSelection:function(result){
-                        console.log('result', result);
+                        this.selectionArray = result;
                     },
                     getTableHeight:function(){
                         var winHeight = document.documentElement.clientHeight || document.body.clientHeight;

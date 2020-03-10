@@ -92,13 +92,13 @@ var bgManager = {
         loadPage: function (page) {
             var me = this
             var pagePath = null
-            if(page == "chargemgr.html"){
+            if (page == "chargemgr.html") {
                 if (myUrls.host.indexOf('gpsserver') != -1) {
                     pagePath = myUrls.host + '/' + page
                 } else {
                     pagePath = './' + page
                 }
-                window.open(pagePath+ '?token=' + token);
+                window.open(pagePath + '?token=' + token + "&username=" + userName);
                 $('#mar-view').html("");
                 return;
             }
@@ -162,7 +162,7 @@ var systemParam = {
     },
     methods: {
         selectditem: function (name) {
-            if (this.selectdItemName != name  && name != "") {
+            if (this.selectdItemName != name && name != "") {
                 this.selectdItemName = name
                 this.changeItem()
             }
