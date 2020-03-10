@@ -14,7 +14,7 @@ function OpenStreeMapCls () {
 OpenStreeMapCls.pt = OpenStreeMapCls.prototype;
 
 
-OpenStreeMapCls.pt.getIcon = function (track) {
+OpenStreeMapCls.pt.getIcon = function (track, zIndex) {
 
     var isOnline = utils.getIsOnline(track);
 
@@ -53,7 +53,8 @@ OpenStreeMapCls.pt.getIcon = function (track) {
             padding: [5, 5, 5, 5],
             offsetX: 5,
             offsetY: 35
-        })
+        }),
+        zIndex: zIndex
     });
 };
 
@@ -123,7 +124,7 @@ OpenStreeMapCls.pt.createMarkr = function (track) {
     iconFeature = new ol.Feature({
         geometry: new ol.geom.Point(tempPoint),
     });
-    iconFeature.setStyle(this.getIcon(track));
+    iconFeature.setStyle(this.getIcon(track, 1));
     return iconFeature;
 }
 
@@ -159,7 +160,15 @@ OpenStreeMapCls.pt.onClickDevice = function (deviceid) {
     this.mapInstance.getView().setCenter(posi);
     this.mapInstance.getView().setZoom(20);
     var marker = this.markerHashMap[deviceid];
-    console.log('marker', marker.setZindex);
+
+    for (var key in this.markerHashMap) {
+        if (key == deviceid) {
+            marker.getStyle().setZIndex(99);
+        } else {
+            this.markerHashMap[key].getStyle().setZIndex(1);
+        }
+    }
+
 }
 
 
@@ -239,7 +248,7 @@ OpenStreeMapCls.pt.updateLastTracks = function (lastTracks) {
 OpenStreeMapCls.pt.updateSingleMarkerState = function (deviceid) {
     var track = this.lastTracks[deviceid];
     var marker = this.markerHashMap[deviceid];
-    marker.setStyle(this.getIcon(track));
+    marker.setStyle(this.getIcon(track, 1));
     marker.setGeometry(new ol.geom.Point(this.fromLonLat(track.callon, track.callat)));
 }
 
@@ -248,7 +257,7 @@ OpenStreeMapCls.pt.updateMarkersState = function (currentDeviceId) {
     for (var key in this.markerHashMap) {
         var track = this.lastTracks[key];
         var marker = this.markerHashMap[key];
-        marker.setStyle(this.getIcon(track));
+        marker.setStyle(this.getIcon(track, 1));
         marker.setGeometry(new ol.geom.Point(this.fromLonLat(track.callon, track.callat)));
         if (currentDeviceId && key === currentDeviceId && document.getElementById('popup').style.display === 'block') {
             var track = this.lastTracks[currentDeviceId];
