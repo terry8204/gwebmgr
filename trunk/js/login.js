@@ -81,7 +81,6 @@ new Vue({
             var type = "USER";
             var data = { type: type, from: "web", username: "minigps", password: $.md5("123456"), browser: me.getBrowserInfo() };
             var encode = JSON.stringify(data);
-            me.loading = true;
             $.ajax({
                 url: url,
                 type: "post",
