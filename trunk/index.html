@@ -74,6 +74,7 @@
                                 </p>
                                 <p>
                                     <Checkbox v-model="keepPass">{{$t("login.pememberPwd")}}</Checkbox>
+                                    <a style="font-size:12px;float: right;text-decoration:underline;" @click="experienced">我要体验</a>
                                 </p>
                                 <p>
                                     <i-button type="primary" @click="handleSubmit" style="width: 100%" :loading="loading">{{$t("login.logining")}}</i-button>

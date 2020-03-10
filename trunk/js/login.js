@@ -75,6 +75,50 @@ new Vue({
                 return getVersion("Chrome");
             }
         },
+        experienced: function () {
+            var me = this;
+            var url = myUrls.login();
+            var type = "USER";
+            var data = { type: type, from: "web", username: "minigps", password: $.md5("123456"), browser: me.getBrowserInfo() };
+            var encode = JSON.stringify(data);
+            me.loading = true;
+            $.ajax({
+                url: url,
+                type: "post",
+                data: encode,
+                dataType: "json",
+                timeout: 30000,
+                success: function (resp) {
+                    if (resp.status == 0) {
+                        sessionStorage.setItem("creatername", resp.creatername ? resp.creatername : "");
+                        sessionStorage.setItem("createremail", resp.createremail ? resp.createremail : "");
+                        sessionStorage.setItem("createrphone", resp.createrphone ? resp.createrphone : "");
+                        sessionStorage.setItem("createrqq", resp.createrqq ? resp.createrqq : "");
+                        sessionStorage.setItem("createrwechat", resp.createrwechat ? resp.createrwechat : "");
+
+                        sessionStorage.setItem("email", resp.email ? resp.email : "");
+                        sessionStorage.setItem("nickname", resp.nickname ? resp.nickname : "");
+                        sessionStorage.setItem("phone", resp.phone ? resp.phone : "");
+                        sessionStorage.setItem("qq", resp.qq ? resp.qq : "");
+                        sessionStorage.setItem("wechat", resp.wechat ? resp.wechat : "");
+                        Cookies.set("token", resp.token);
+                        Cookies.set("userType", resp.usertype);
+                        Cookies.set("name", me.username);
+                        Cookies.set(me.username + "-multilogin", resp.multilogin);
+                        // window.location.href = "main.html?token=" + resp.token + "&usertype=" + resp.usertype;
+                        window.location.href = "main.html";
+                    } else {
+                        me.$Message.error("登录失败");
+                    }
+                },
+                error: function (e) {
+                    me.$Message.error('login error:' + JSON.stringify(e));
+                },
+                complete: function () {
+                    me.loading = false;
+                }
+            })
+        },
         handleSubmit: function () {
             var me = this;
             var user = this.username;
