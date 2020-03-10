@@ -100,10 +100,11 @@ new Vue({
                         sessionStorage.setItem("phone", resp.phone ? resp.phone : "");
                         sessionStorage.setItem("qq", resp.qq ? resp.qq : "");
                         sessionStorage.setItem("wechat", resp.wechat ? resp.wechat : "");
+
                         Cookies.set("token", resp.token);
                         Cookies.set("userType", resp.usertype);
-                        Cookies.set("name", me.username);
-                        Cookies.set(me.username + "-multilogin", resp.multilogin);
+                        Cookies.set("name", "minigps");
+                        Cookies.set("minigps" + "-multilogin", resp.multilogin);
                         // window.location.href = "main.html?token=" + resp.token + "&usertype=" + resp.usertype;
                         window.location.href = "main.html";
                     } else {
