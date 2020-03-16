@@ -930,12 +930,17 @@ var monitor = {
             this.$store.commit('editDeviceInfo', device);
             var deviceid = device.deviceid;
             var deviceInfo = this.deviceInfos[deviceid];
-            console.log('deviceInfo', deviceInfo);
+            var disabled = true;
+            if (Number(this.userType) <= 1) {
+                disabled = false;
+            } else {
+                disabled = deviceInfo.allowedit == 0;
+            }
             this.editDevData.devicename = deviceInfo.devicename;
             this.editDevData.simnum = deviceInfo.simnum;
             this.editDevData.deviceid = deviceid;
             this.editDevData.remark = deviceInfo.remark;
-            this.editDevData.disabled = deviceInfo.allowedit == 0;
+            this.editDevData.disabled = disabled;
             this.editDevModal = true;
         },
         playBack: function (deviceid) {
@@ -1257,6 +1262,9 @@ var monitor = {
         },
         deviceTypes: function () {
             return this.$store.state.deviceTypes;
+        },
+        userType: function () {
+            return this.$store.state.userType;
         }
     },
     watch: {
