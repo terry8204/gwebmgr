@@ -930,11 +930,12 @@ var monitor = {
             this.$store.commit('editDeviceInfo', device);
             var deviceid = device.deviceid;
             var deviceInfo = this.deviceInfos[deviceid];
-
+            console.log('deviceInfo', deviceInfo);
             this.editDevData.devicename = deviceInfo.devicename;
             this.editDevData.simnum = deviceInfo.simnum;
             this.editDevData.deviceid = deviceid;
             this.editDevData.remark = deviceInfo.remark;
+            this.editDevData.disabled = deviceInfo.allowedit == 0;
             this.editDevModal = true;
         },
         playBack: function (deviceid) {
@@ -985,17 +986,17 @@ var monitor = {
                     device.pinyin = __pinyin.getPinyin(device.devicename);
                     var deviceTypeName = me.getDeviceTypeName(device.devicetype);
                     if (deviceTypeName) {
-                        device.deviceTypeName = deviceTypeName ;
+                        device.deviceTypeName = deviceTypeName;
                         device.devicetitle = deviceTypeName + "-" + device.devicename;
                     } else {
-                        device.deviceTypeName = "" ;
+                        device.deviceTypeName = "";
                         device.devicetitle = device.devicename;
                     }
                     device.allDeviceIdTitle = device.devicetitle + "-" + device.deviceid;
                 });
 
                 group.devices.sort(function (a, b) {
-                    return a.devicetitle .localeCompare(b.devicetitle);
+                    return a.devicetitle.localeCompare(b.devicetitle);
                 });
 
                 group.title = group.groupname + "(0/" + devCount + ")";
@@ -1265,7 +1266,7 @@ var monitor = {
             } catch (error) {
                 this.isSpin = false;
             }
-       
+
             Cookies.set('app-map-type', this.mapType);
         },
         filterData: function () {

@@ -131,9 +131,12 @@
                
     
                 <Row style="margin: 10px 0">
-                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;转发地址 : &nbsp;</i-col>
+                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;下级编辑 : &nbsp;</i-col>
                     <i-col span="8">
-                        <i-input v-model.trim="forwardurl"></i-input>
+                        <i-select v-model="allowedit" :disabled="isAlloweditDisabled">  
+                            <i-option value="0">{{$t("user.ban")}}</i-option>
+                            <i-option value="1">{{$t("user.allow")}}</i-option> 
+                        </i-select>
                     </i-col>
                     <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">{{$t("device.allowLogin")}} : &nbsp;</i-col>
                     <i-col span="8">
@@ -143,7 +146,12 @@
                         </i-select>
                     </i-col>     
                 </Row>    
-    
+                <Row style="margin: 10px 0">  
+                        <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;转发地址 : &nbsp;</i-col>
+                        <i-col span="20">
+                            <i-input v-model.trim="forwardurl"></i-input>
+                        </i-col>
+                </Row>              
                 <Row style="margin: 10px 0">
                     <i-col span="6" :offset="7">
                         <i-button style="width: 100%" @click="handleSubmit">{{$t("bgMgr.submit")}}</i-button>
@@ -291,9 +299,9 @@ vueInstanse = new Vue({
                 groupid:'',
                 companyid:'',
                 forwardurl:"",
+                allowedit:'0',
                 createrToUser:"",
                 userlists:[],
-                userType:null,
                 isShowMatchDev:false,
                 monitor:"",
                 isfree:'1'
@@ -473,7 +481,8 @@ vueInstanse = new Vue({
                         overduetime:new Date(this.overduetime).getTime(),
                         loginenable:Number(this.loginenable),
                         deviceenable:Number(this.deviceenable),
-                        isfree:Number(this.isfree)
+                        isfree:Number(this.isfree),
+                        allowedit:Number(this.allowedit)
                     };      
                     
                     if(this.devicename){ data.devicename = this.devicename;};
@@ -556,6 +565,7 @@ vueInstanse = new Vue({
                     me.monitor = editObject.monitor;
                     me.isfree = String(editObject.isfree);
                     me.teltype = String(editObject.teltype);
+                    me.allowedit = String(editObject.allowedit);
                 },
                 getDeviceType:function () { 
                     var me = this;
@@ -623,6 +633,9 @@ vueInstanse = new Vue({
             computed:{
                 disabled:function(){
                     return this.userType !== '0';
+                },
+                isAlloweditDisabled:function(){
+                    return !(Number( this.userType ) <= 1); 
                 }
             },
             mixins:[mixIn],
@@ -632,7 +645,6 @@ vueInstanse = new Vue({
                 this.userlists = userlists;
                 this.userType = vstore.state.userType;
                 this.getDeviceType();  
-                console.log('disabled', this.disabled);
             }
         })
     </script>
