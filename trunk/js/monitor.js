@@ -951,7 +951,6 @@ var monitor = {
         },
         getCurrentStateTreeData: function (state) {
             var me = this;
-
             this.sosoData = [];
             if (state === 'all') {
 

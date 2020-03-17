@@ -289,6 +289,7 @@ var utils = {
           if (device.devicename != devicename) {
             device.devicename = devicename;
             device.devicetitle = device.devicetitle.split("-")[0] + "-" + devicename;
+            device.allDeviceIdTitle = device.devicetitle + "-" + deviceid;
             device.firstLetter = __pinyin.getFirstLetter(devicename)
             device.pinyin = __pinyin.getPinyin(devicename)
           }
