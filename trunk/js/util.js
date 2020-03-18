@@ -294,7 +294,7 @@ var utils = {
             device.pinyin = __pinyin.getPinyin(devicename)
           }
           if (simnum) {
-            device.simnum = simnum
+            device.simnum = simnum;
           }
         }
       })
