@@ -21,7 +21,7 @@
             <i-table border :columns="columns" height="520" :data="tableData" :loading="loading"></i-table>
         </div>
         <div class="my-page" style="margin: 5px 0;">
-            <Page :total="total" simple :page-size="10" :current="currentIndex" @on-change="changePage"></Page>
+            <Page :total="total" :page-size="10" :current="currentIndex" @on-change="changePage"></Page>
         </div>
 
         <Modal v-model="modal" width="900" title="编辑用户">
