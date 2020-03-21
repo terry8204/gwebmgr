@@ -223,7 +223,8 @@
                 accstatus: 'Acc State',
                 duration: 'Duration',
                 open: 'Open',
-                stalling: 'Stalling'
+                stalling: 'Stalling',
+                notEnabled: 'not enabled',
             },
             bgMgr: {
                 bindpwd: "Bind pwd",
@@ -537,7 +538,8 @@
                 accstatus: 'ACC状态',
                 duration: '时长',
                 open: '开启',
-                stalling: '熄火'
+                stalling: '熄火',
+                notEnabled: '未启用',
             },
             bgMgr: {
                 bindpwd: "绑定密码",

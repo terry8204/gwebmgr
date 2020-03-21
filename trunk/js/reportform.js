@@ -877,12 +877,20 @@ function accDetails (groupslist) {
                                 var deviceName = vstore.state.deviceInfos[me.queryDeviceId].devicename;
                                 resp.records.forEach(function (item) {
                                     var duration = me.getParkTime(item.endtime - item.begintime);
+                                    var accStatus = "";
+                                    if (item.accstate == 0) {
+                                        accStatus = me.$t("reportForm.notEnabled");
+                                    } else if (item.accstate == 1) {
+                                        accStatus = me.$t("reportForm.open");
+                                    } else if (item.accstate == 2) {
+                                        accStatus = me.$t("reportForm.stalling");
+                                    }
                                     newRecords.push({
                                         deviceid: item.deviceid,
                                         deviceName: deviceName,
                                         startDate: DateFormat.longToDateTimeStr(item.begintime, 0),
                                         endDate: DateFormat.longToDateTimeStr(item.endtime, 0),
-                                        accStatus: item.accstate === 1 ? me.$t("reportForm.open") : me.$t("reportForm.stalling"),
+                                        accStatus: accStatus,
                                         duration: duration
                                     });
                                 });
