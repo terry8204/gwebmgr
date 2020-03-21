@@ -1104,8 +1104,8 @@ var monitor = {
                     me.intervalTime = me.stateIntervalTime;
                     // var devIdList = Object.keys(me.deviceInfos);
                     me.getLastPosition([], function () {
-                        me.map.updateLastTracks && me.map.updateLastTracks(me.positionLastrecords);
-                        me.map.updateMarkersState && me.map.updateMarkersState(me.currentDeviceId);
+                        me.map && me.map.updateLastTracks && me.map.updateLastTracks(me.positionLastrecords);
+                        me.map && me.map.updateMarkersState && me.map.updateMarkersState(me.currentDeviceId);
                         me.updateTreeOnlineState();
                         me.caclOnlineCount();
                     }, function (error) { });

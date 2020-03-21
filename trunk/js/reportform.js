@@ -875,6 +875,9 @@ function accDetails (groupslist) {
                             if (resp.records && resp.records.length) {
                                 var newRecords = [];
                                 var deviceName = vstore.state.deviceInfos[me.queryDeviceId].devicename;
+                                resp.records.sort(function (a, b) {
+                                    return a.begintime - b.begintime;
+                                });
                                 resp.records.forEach(function (item) {
                                     var duration = me.getParkTime(item.endtime - item.begintime);
                                     var accStatus = "";
@@ -897,6 +900,7 @@ function accDetails (groupslist) {
                                 me.tableData = newRecords;
                             } else {
                                 me.tableData = [];
+                                me.$Message.error("没有数据");
                             }
                         } else {
                             me.tableData = [];
