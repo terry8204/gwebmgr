@@ -880,7 +880,7 @@ function accDetails (groupslist) {
                                     var accStatus = "";
                                     if (item.accstate == 0) {
                                         accStatus = me.$t("reportForm.notEnabled");
-                                    } else if (item.accstate == 1) {
+                                    } else if (item.accstate == 3) {
                                         accStatus = me.$t("reportForm.open");
                                     } else if (item.accstate == 2) {
                                         accStatus = me.$t("reportForm.stalling");
