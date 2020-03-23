@@ -835,7 +835,9 @@ function accDetails (groupslist) {
                 { title: vRoot.$t("reportForm.endDate"), key: 'endDate', width: 180 },
                 { title: vRoot.$t("reportForm.duration"), key: 'duration' },
             ],
-            tableData: []
+            tableData: [],
+            accOnTime: 0,
+            accOffTime: 0,
         },
         methods: {
             onChange: function (value) {
@@ -874,18 +876,23 @@ function accDetails (groupslist) {
                         if (resp.status == 0) {
                             if (resp.records && resp.records.length) {
                                 var newRecords = [];
+                                var accOnTime = 0;
+                                var accOffTime = 0;
                                 var deviceName = vstore.state.deviceInfos[me.queryDeviceId].devicename;
                                 resp.records.sort(function (a, b) {
                                     return a.begintime - b.begintime;
                                 });
                                 resp.records.forEach(function (item) {
-                                    var duration = me.getParkTime(item.endtime - item.begintime);
+                                    var duration = item.endtime - item.begintime;
+                                    var durationStr = me.getParkTime(duration);
                                     var accStatus = "";
                                     if (item.accstate == 0) {
                                         accStatus = me.$t("reportForm.notEnabled");
                                     } else if (item.accstate == 3) {
                                         accStatus = me.$t("reportForm.open");
+                                        accOnTime += duration;
                                     } else if (item.accstate == 2) {
+                                        accOffTime += duration;
                                         accStatus = me.$t("reportForm.stalling");
                                     }
                                     newRecords.push({
@@ -894,9 +901,11 @@ function accDetails (groupslist) {
                                         startDate: DateFormat.longToDateTimeStr(item.begintime, 0),
                                         endDate: DateFormat.longToDateTimeStr(item.endtime, 0),
                                         accStatus: accStatus,
-                                        duration: duration
+                                        duration: durationStr
                                     });
                                 });
+                                me.accOffTime = accOffTime;
+                                me.accOnTime = accOnTime;
                                 me.tableData = newRecords;
                             } else {
                                 me.tableData = [];
@@ -921,6 +930,14 @@ function accDetails (groupslist) {
                 minutes ? (strTime += minutes + this.$t("reportForm.m")) : '';
                 seconds ? (strTime += seconds + this.$t("reportForm.s")) : '';
                 return strTime == '' ? 0 : strTime;
+            },
+        },
+        computed: {
+            accOnTimeStr: function () {
+                return this.getParkTime(this.accOnTime);
+            },
+            accOffTimeStr: function () {
+                return this.getParkTime(this.accOffTime);
             },
         },
         mounted: function () {
