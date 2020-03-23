@@ -48,4 +48,7 @@
     <div style="margin:10px;">
         <i-table :columns="columns" :height="lastTableHeight" :data="tableData" :loading="loading"></i-table>
     </div>
+    <div style="line-height: 45px;height: 45px;padding-left: 10px;">
+        {{$t("reportForm.accOnTime")}} : {{accOnTimeStr}} ,   {{$t("reportForm.accOffTime")}} : {{accOffTimeStr}} 
+    </div>
 </div>

@@ -225,6 +225,8 @@
                 open: 'Open',
                 stalling: 'Stalling',
                 notEnabled: 'not enabled',
+                accOffTime: 'ACC off time',
+                accOnTime: 'ACC on time',
             },
             bgMgr: {
                 bindpwd: "Bind pwd",
@@ -540,6 +542,8 @@
                 open: '开启',
                 stalling: '熄火',
                 notEnabled: '未启用',
+                accOffTime: 'ACC熄火时间',
+                accOnTime: 'ACC开启时间',
             },
             bgMgr: {
                 bindpwd: "绑定密码",

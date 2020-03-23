@@ -1,7 +1,7 @@
 
 var reportMixin = {
     data: {
-        dateVal: [DateFormat.longToDateStr(Date.now(), 0), DateFormat.longToDateStr(Date.now(), 0)],
+        dateVal: [DateFormat.longToDateStr(Date.now(), DateFormat.getOffset()), DateFormat.longToDateStr(Date.now(), DateFormat.getOffset())],
         total: 0,
         currentPageIndex: 1,
         lastTableHeight: 100,
@@ -28,13 +28,13 @@ var reportMixin = {
         handleSelectdDate: function (dayNumber) {
             var dayTime = 24 * 60 * 60 * 1000;
             if (dayNumber == 0) {
-                this.dateVal = [DateFormat.longToDateStr(Date.now(), 0), DateFormat.longToDateStr(Date.now(), 0)];
+                this.dateVal = [DateFormat.longToDateStr(Date.now(), DateFormat.getOffset()), DateFormat.longToDateStr(Date.now(), DateFormat.getOffset())];
             } else if (dayNumber == 1) {
-                this.dateVal = [DateFormat.longToDateStr(Date.now() - dayTime, 0), DateFormat.longToDateStr(Date.now() - dayTime, 0)];
+                this.dateVal = [DateFormat.longToDateStr(Date.now() - dayTime, DateFormat.getOffset()), DateFormat.longToDateStr(Date.now() - dayTime, DateFormat.getOffset())];
             } else if (dayNumber == 3) {
-                this.dateVal = [DateFormat.longToDateStr(Date.now() - dayTime * 2, 0), DateFormat.longToDateStr(Date.now(), 0)];
+                this.dateVal = [DateFormat.longToDateStr(Date.now() - dayTime * 2, DateFormat.getOffset()), DateFormat.longToDateStr(Date.now(), DateFormat.getOffset())];
             } else if (dayNumber == 7) {
-                this.dateVal = [DateFormat.longToDateStr(Date.now() - dayTime * 6, 0), DateFormat.longToDateStr(Date.now(), 0)];
+                this.dateVal = [DateFormat.longToDateStr(Date.now() - dayTime * 6, DateFormat.getOffset()), DateFormat.longToDateStr(Date.now(), DateFormat.getOffset())];
             }
         },
         focus: function () {
@@ -528,7 +528,7 @@ function reportMileageDetail (groupslist) {
         mixins: [reportMixin],
         data: {
             loading: false,
-            dateVal: [DateFormat.longToDateStr(Date.now(), 0), DateFormat.longToDateStr(Date.now(), 0)],
+            dateVal: [DateFormat.longToDateStr(Date.now(), DateFormat.getOffset()), DateFormat.longToDateStr(Date.now(), DateFormat.getOffset())],
             lastTableHeight: 100,
             groupslist: [],
             timeoutIns: null,
@@ -549,13 +549,13 @@ function reportMileageDetail (groupslist) {
             handleSelectdDate: function (dayNumber) {
                 var dayTime = 24 * 60 * 60 * 1000;
                 if (dayNumber == 0) {
-                    this.dateVal = [DateFormat.longToDateStr(Date.now(), 0), DateFormat.longToDateStr(Date.now(), 0)];
+                    this.dateVal = [DateFormat.longToDateStr(Date.now(), DateFormat.getOffset()), DateFormat.longToDateStr(Date.now(), DateFormat.getOffset())];
                 } else if (dayNumber == 1) {
-                    this.dateVal = [DateFormat.longToDateStr(Date.now() - dayTime, 0), DateFormat.longToDateStr(Date.now() - dayTime, 0)];
+                    this.dateVal = [DateFormat.longToDateStr(Date.now() - dayTime, DateFormat.getOffset()), DateFormat.longToDateStr(Date.now() - dayTime, DateFormat.getOffset())];
                 } else if (dayNumber == 3) {
-                    this.dateVal = [DateFormat.longToDateStr(Date.now() - dayTime * 2, 0), DateFormat.longToDateStr(Date.now(), 0)];
+                    this.dateVal = [DateFormat.longToDateStr(Date.now() - dayTime * 2, DateFormat.getOffset()), DateFormat.longToDateStr(Date.now(), DateFormat.getOffset())];
                 } else if (dayNumber == 7) {
-                    this.dateVal = [DateFormat.longToDateStr(Date.now() - dayTime * 6, 0), DateFormat.longToDateStr(Date.now(), 0)];
+                    this.dateVal = [DateFormat.longToDateStr(Date.now() - dayTime * 6, DateFormat.getOffset()), DateFormat.longToDateStr(Date.now(), DateFormat.getOffset())];
                 }
             },
             calcTableHeight: function () {
@@ -625,7 +625,7 @@ function parkDetails (groupslist) {
             mapInstance: null,
             markerIns: null,
             loading: false,
-            dateVal: [DateFormat.longToDateStr(Date.now(), 0), DateFormat.longToDateStr(Date.now(), 0)],
+            dateVal: [DateFormat.longToDateStr(Date.now(), DateFormat.getOffset()), DateFormat.longToDateStr(Date.now(), DateFormat.getOffset())],
             lastTableHeight: 100,
             groupslist: [],
             timeoutIns: null,
@@ -697,13 +697,13 @@ function parkDetails (groupslist) {
             handleSelectdDate: function (dayNumber) {
                 var dayTime = 24 * 60 * 60 * 1000;
                 if (dayNumber == 0) {
-                    this.dateVal = [DateFormat.longToDateStr(Date.now(), 0), DateFormat.longToDateStr(Date.now(), 0)];
+                    this.dateVal = [DateFormat.longToDateStr(Date.now(), DateFormat.getOffset()), DateFormat.longToDateStr(Date.now(), DateFormat.getOffset())];
                 } else if (dayNumber == 1) {
-                    this.dateVal = [DateFormat.longToDateStr(Date.now() - dayTime, 0), DateFormat.longToDateStr(Date.now() - dayTime, 0)];
+                    this.dateVal = [DateFormat.longToDateStr(Date.now() - dayTime, DateFormat.getOffset()), DateFormat.longToDateStr(Date.now() - dayTime, DateFormat.getOffset())];
                 } else if (dayNumber == 3) {
-                    this.dateVal = [DateFormat.longToDateStr(Date.now() - dayTime * 2, 0), DateFormat.longToDateStr(Date.now(), 0)];
+                    this.dateVal = [DateFormat.longToDateStr(Date.now() - dayTime * 2, DateFormat.getOffset()), DateFormat.longToDateStr(Date.now(), DateFormat.getOffset())];
                 } else if (dayNumber == 7) {
-                    this.dateVal = [DateFormat.longToDateStr(Date.now() - dayTime * 6, 0), DateFormat.longToDateStr(Date.now(), 0)];
+                    this.dateVal = [DateFormat.longToDateStr(Date.now() - dayTime * 6, DateFormat.getOffset()), DateFormat.longToDateStr(Date.now(), DateFormat.getOffset())];
                 }
             },
             calcTableHeight: function () {
@@ -821,7 +821,7 @@ function accDetails (groupslist) {
             mapInstance: null,
             markerIns: null,
             loading: false,
-            dateVal: [DateFormat.longToDateStr(Date.now(), 0), DateFormat.longToDateStr(Date.now(), 0)],
+            dateVal: [DateFormat.longToDateStr(Date.now(), DateFormat.getOffset()), DateFormat.longToDateStr(Date.now(), DateFormat.getOffset())],
             lastTableHeight: 100,
             groupslist: [],
             timeoutIns: null,
@@ -844,19 +844,19 @@ function accDetails (groupslist) {
             handleSelectdDate: function (dayNumber) {
                 var dayTime = 24 * 60 * 60 * 1000;
                 if (dayNumber == 0) {
-                    this.dateVal = [DateFormat.longToDateStr(Date.now(), 0), DateFormat.longToDateStr(Date.now(), 0)];
+                    this.dateVal = [DateFormat.longToDateStr(Date.now(), DateFormat.getOffset()), DateFormat.longToDateStr(Date.now(), DateFormat.getOffset())];
                 } else if (dayNumber == 1) {
-                    this.dateVal = [DateFormat.longToDateStr(Date.now() - dayTime, 0), DateFormat.longToDateStr(Date.now() - dayTime, 0)];
+                    this.dateVal = [DateFormat.longToDateStr(Date.now() - dayTime, DateFormat.getOffset()), DateFormat.longToDateStr(Date.now() - dayTime, DateFormat.getOffset())];
                 } else if (dayNumber == 3) {
-                    this.dateVal = [DateFormat.longToDateStr(Date.now() - dayTime * 2, 0), DateFormat.longToDateStr(Date.now(), 0)];
+                    this.dateVal = [DateFormat.longToDateStr(Date.now() - dayTime * 2, DateFormat.getOffset()), DateFormat.longToDateStr(Date.now(), DateFormat.getOffset())];
                 } else if (dayNumber == 7) {
-                    this.dateVal = [DateFormat.longToDateStr(Date.now() - dayTime * 6, 0), DateFormat.longToDateStr(Date.now(), 0)];
+                    this.dateVal = [DateFormat.longToDateStr(Date.now() - dayTime * 6, DateFormat.getOffset()), DateFormat.longToDateStr(Date.now(), DateFormat.getOffset())];
                 }
             },
             calcTableHeight: function () {
                 var wHeight = window.innerHeight;
-                this.lastTableHeight = wHeight - 170;
-                this.posiDetailHeight = wHeight - 144;
+                this.lastTableHeight = wHeight - 215;
+                console.log("lastTableHeight", this.lastTableHeight);
             },
             onClickQuery: function () {
                 if (this.queryDeviceId) {
