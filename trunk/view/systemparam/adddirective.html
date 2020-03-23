@@ -25,9 +25,9 @@
                         <transition name="fade">
                             <ul class="search-item-wrapper" v-show="isShowMatchDev" style="cursor: pointer;">
                                 <li v-for="item in cmdList" style="padding:5px 10px;" @click="selectedCmd(item)">
-                                    <Option :value="item.value" :key="item.label">
+                                    <div :value="item.value" :key="item.label">
                                         <span style="cursor: pointer;">{{ item.label }}</span>
-                                    </Option>
+                                    </div>
                                 </li>
                             </ul>
                         </transition>
