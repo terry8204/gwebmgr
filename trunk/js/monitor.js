@@ -17,6 +17,7 @@
 //     <!-- <script src="http://ditu.google.cn/maps/api/js?v=3.1&sensor=false&language=cn&key=AIzaSyDXQKVS1Tdp3VlrzBsZbBlLj_uYHVDHe6M" type="text/javascript"></script>
 //     <script src="js/gmarkerclusterer.js"></script>
 //     <script src="js/markerwithlabel.js"></script> -->
+
 var isLoadLastPositon = false;
 // 定位监控
 var monitor = {

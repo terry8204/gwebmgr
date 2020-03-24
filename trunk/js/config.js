@@ -15,6 +15,10 @@ if (pathname.indexOf('gpsserver') != -1) {
   wsHost = "wss://www.gps51.com/wss";
 }
 
+// 百度和谷歌地图的key;
+var baiduMapKey = "e7SC5rvmn2FsRNE4R1ygg44n";
+var googleMapKey = "AIzaSyDXQKVS1Tdp3VlrzBsZbBlLj_uYHVDHe6M";
+
 
 var myUrls = {
   host: host,

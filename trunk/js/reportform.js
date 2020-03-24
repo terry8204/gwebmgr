@@ -913,6 +913,8 @@ function accDetails (groupslist) {
                             }
                         } else {
                             me.tableData = [];
+                            me.accOnTime = 0;
+                            me.tableData = 0;
                         }
                     });
                 } else {

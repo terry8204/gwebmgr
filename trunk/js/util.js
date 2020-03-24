@@ -919,12 +919,12 @@ var asyncLoadJs = function (jsName, callback) {
     timeout = 1,
     head = document.getElementsByTagName('head')[0],
     urls = {
-      baidu: 'https://api.map.baidu.com/api?v=3.0&ak=e7SC5rvmn2FsRNE4R1ygg44n&callback=loadBMapSucc',
+      baidu: 'https://api.map.baidu.com/api?v=3.0&ak=' + baiduMapKey + '&callback=loadBMapSucc',
       textIconoverlay: getPath + 'texticonoverlay_min.js',
       distancetool: getPath + 'distancetool_min.js',
       bmarkerclusterer: getPath + "markerclusterer.js",
 
-      google: "https://maps.google.com/maps/api/js?v=3.1&sensor=false&language=" + (isZh ? 'cn' : 'en') + "&key=AIzaSyDXQKVS1Tdp3VlrzBsZbBlLj_uYHVDHe6M&cb=loadBMapSucc",
+      google: "https://maps.google.com/maps/api/js?v=3.1&sensor=false&language=" + (isZh ? 'cn' : 'en') + "&key=" + googleMapKey + "&cb=loadBMapSucc",
       gmarkerclusterer: getPath + "gmarkerclusterer.js",
       markerwithlabel: getPath + "markerwithlabel.js",
     };
