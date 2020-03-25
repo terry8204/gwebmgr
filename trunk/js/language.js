@@ -26,7 +26,8 @@
                 plSelectTime: "Please choose the time",
                 IDRepeat: "Device ID repeat",
                 IDError: "Device ID error",
-                reqFail: "Request fail"
+                reqFail: "Request fail",
+                selectCorrectAccount: "Please select the correct account!",
             },
             login: {
                 title: "Location information service platform",
@@ -343,7 +344,8 @@
                 plSelectTime: "请选择时间",
                 IDRepeat: "设备序号重复",
                 IDError: "设备序号错误",
-                reqFail: "请求失败"
+                reqFail: "请求失败",
+                selectCorrectAccount: "请选择正确的账号!",
             },
             login: {
                 title: "位置信息服务平台",

@@ -36,9 +36,9 @@
                             <transition name="fade">
                                 <ul class="search-item-wrapper" v-show="isShowMatchDev" style="cursor: pointer;">
                                     <li v-for="item in userlists" style="padding:5px 10px;" @click="selectedCmd(item)" :class="{'ivu-select-item-focus':item == createrToUser}">
-                                        <Option :value="item" :key="item">
+                                        <div :value="item" :key="item">
                                             <span style="cursor: pointer;">{{ item }}</span>
-                                        </Option>
+                                        </div>
                                     </li>
                                 </ul>
                             </transition>
@@ -510,6 +510,11 @@ vueInstanse = new Vue({
                     
                     this.forwardurl && (data.forwardurl = this.forwardurl);
 
+                    if(userlists.indexOf(this.createrToUser) == -1){
+                        me.$Message.error(me.$t("message.selectCorrectAccount"));  
+                        return;
+                    }
+                    
                     if(this.userType == 0 || this.userType == 1 ){
                         data.creater = this.createrToUser;
                     }else{
@@ -641,7 +646,9 @@ vueInstanse = new Vue({
             mixins:[mixIn],
             mounted:function () {
                 this.queryAllCompanyInfo(this.doQueryAllCompanyInfo);
-                userlists.push(userName);
+                if(userlists.indexOf(userName) == -1){
+                    userlists.push(userName);
+                };
                 this.userlists = userlists;
                 this.userType = vstore.state.userType;
                 this.getDeviceType();  
