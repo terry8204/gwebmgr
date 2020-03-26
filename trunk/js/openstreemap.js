@@ -18,14 +18,13 @@ OpenStreeMapCls.pt.getIcon = function (track, zIndex) {
 
     var isOnline = utils.getIsOnline(track);
 
-    // var img = isOnline ? '../gpsserver/images/carstate/a_green_0.png' : '../gpsserver/images/carstate/';
     var pathname = location.pathname
     var imgPath = '';
-    if (pathname.indexOf('gpsserver') != -1) {
+    if (utils.isLocalhost()) {
         if (track.moving == 0) {
-            imgPath = myUrls.host + 'images/carstate/' + (isOnline ? 'a_red' : 'a_gray') + '_0.png';
+            imgPath = myUrls.viewhost + 'images/carstate/' + (isOnline ? 'a_red' : 'a_gray') + '_0.png';
         } else {
-            imgPath = myUrls.host + 'images/carstate/' + (isOnline ? 'a_green' : 'a_gray') + '_0.png';
+            imgPath = myUrls.viewhost + 'images/carstate/' + (isOnline ? 'a_green' : 'a_gray') + '_0.png';
         }
     } else {
         if (track.moving == 0) {

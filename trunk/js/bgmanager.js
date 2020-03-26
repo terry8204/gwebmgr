@@ -93,8 +93,8 @@ var bgManager = {
             var me = this
             var pagePath = null
             if (page == "chargemgr.html") {
-                if (myUrls.host.indexOf('gpsserver') != -1) {
-                    pagePath = myUrls.host + '/' + page
+                if (utils.isLocalhost()) {
+                    pagePath = myUrls.viewhost + '/' + page
                 } else {
                     pagePath = './' + page
                 }
@@ -102,8 +102,8 @@ var bgManager = {
                 $('#mar-view').html("");
                 return;
             }
-            if (myUrls.host.indexOf('gpsserver') != -1) {
-                pagePath = myUrls.host + 'view/manager/' + page
+            if (utils.isLocalhost()) {
+                pagePath = myUrls.viewhost + 'view/manager/' + page
             } else {
                 pagePath = '../view/manager/' + page
             }
@@ -190,8 +190,8 @@ var systemParam = {
         loadPage: function (page) {
             var me = this
             var pagePath = null
-            if (myUrls.host.indexOf('gpsserver') != -1) {
-                pagePath = myUrls.host + 'view/systemparam/' + page
+            if (utils.isLocalhost()) {
+                pagePath = myUrls.viewhost + 'view/systemparam/' + page
             } else {
                 pagePath = '../view/systemparam/' + page
             }

@@ -278,7 +278,7 @@ var monitor = {
                     break;
                 case 'video':
                     window.open(
-                        myUrls.hosts + "video.html?deviceid=" +
+                        myUrls.viewhosts + "video.html?deviceid=" +
                         this.currentDeviceId + "&maptype=" +
                         this.mapType + "&token=" +
                         token + '&name=' + encodeURIComponent(this.deviceInfos[this.currentDeviceId].devicename) +

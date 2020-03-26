@@ -25,8 +25,8 @@ GoogleMap.pt.setMarkerClusterer = function (lastTracks) {
         var markers = this.getMarkers(lastTracks);
         var pathname = location.pathname;
         var imgPath = '';
-        if (pathname.indexOf('gpsserver') != -1) {
-            imgPath = myUrls.host + '/images/m';
+        if (utils.isLocalhost()) {
+            imgPath = myUrls.viewhost + '/images/m';
         } else {
             imgPath = '/images/m';
         }
@@ -100,8 +100,8 @@ GoogleMap.pt.openInfoWindow = function (marker, deviceid) {
 GoogleMap.pt.getIcon = function (track) {
     var pathname = location.pathname;
     var imgPath = ''
-    if (pathname.indexOf('gpsserver') != -1) {
-        imgPath = myUrls.host + 'images/carstate';
+    if (utils.isLocalhost()) {
+        imgPath = myUrls.viewhost + 'images/carstate';
     } else {
         imgPath = '../images/carstate';
     }

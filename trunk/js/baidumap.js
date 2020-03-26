@@ -116,10 +116,9 @@ BMapClass.pt.getCarLabel = function (track) {
 }
 
 BMapClass.pt.getIcon = function (track) {
-    var pathname = location.pathname
     var imgPath = ''
-    if (pathname.indexOf('gpsserver') != -1) {
-        imgPath = myUrls.host + 'images/carstate'
+    if (utils.isLocalhost()) {
+        imgPath = myUrls.viewhost + 'images/carstate'
     } else {
         imgPath = '../images/carstate'
     }
@@ -181,11 +180,11 @@ BMapClass.pt.getInfoWindow = function (track, address) {
 
 BMapClass.pt.onClickDevice = function (deviceid) {
     var marker = this.markerHashMap[deviceid];
-    for(var key in this.markerHashMap){
+    for (var key in this.markerHashMap) {
         var itemMarker = this.markerHashMap[key];
-        if(key != deviceid){
-            itemMarker.setZIndex(99); 
-        }else{
+        if (key != deviceid) {
+            itemMarker.setZIndex(99);
+        } else {
             marker.setZIndex(999);
         }
     }

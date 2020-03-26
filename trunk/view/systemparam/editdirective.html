@@ -212,8 +212,8 @@
                 back:function(){
                     var me = this;
                     var pagePath = null
-                        if (myUrls.host.indexOf('gpsserver') != -1) {
-                            pagePath = myUrls.host + 'view/systemparam/devicedirective.html'
+                        if (utils.isLocalhost()) {
+                            pagePath = myUrls.viewhost + 'view/systemparam/devicedirective.html'
                         } else {
                             pagePath = '../view/systemparam/devicedirective.html'
                         }   

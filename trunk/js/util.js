@@ -266,8 +266,8 @@ var utils = {
   getDirectionImage: function (isOnline, angle) {
     var pathname = location.pathname
     var imgPath = ''
-    if (pathname.indexOf('gpsserver') != -1) {
-      imgPath = myUrls.host + 'images/carstate'
+    if (utils.isLocalhost()) {
+      imgPath = myUrls.viewhost + 'images/carstate'
     } else {
       imgPath = '../images/carstate'
     }
@@ -622,6 +622,9 @@ var utils = {
       return result;
     };
   },
+  isLocalhost: function () {
+    return location.hostname.indexOf('localhost') != -1 || location.hostname.indexOf('127.0.0.1') != -1;
+  }
 }
 
 try {
@@ -727,36 +730,36 @@ function refreshPostion (deviceid) {
 
 // 设置围栏
 function setFence (deviceid) {
-  var url = myUrls.hosts + 'setfencemulti.html?deviceid=' + deviceid + '&token=' + token;
+  var url = myUrls.viewhosts + 'setfencemulti.html?deviceid=' + deviceid + '&token=' + token;
   window.open(url);
 }
 
 function openAudio (deviceid) {
-  var url = myUrls.hosts + 'record.html?deviceid=' + deviceid + '&token=' + token;
+  var url = myUrls.viewhosts + 'record.html?deviceid=' + deviceid + '&token=' + token;
   window.open(url);
 }
 
 function openVdeio (deviceid, name, activesafety) {
   var mapType = utils.getMapType();
   mapType = mapType ? mapType : 'bMap';
-  var url = myUrls.hosts + 'video.html?deviceid=' + deviceid + "&maptype=" + mapType + '&token=' + token + '&name=' + name + "&activesafety=" + activesafety;
+  var url = myUrls.viewhosts + 'video.html?deviceid=' + deviceid + "&maptype=" + mapType + '&token=' + token + '&name=' + name + "&activesafety=" + activesafety;
   window.open(url);
 }
 
 function openActiveSafety (deviceid, name) {
   var mapType = utils.getMapType();
   mapType = mapType ? mapType : 'bMap';
-  var url = myUrls.hosts + 'activesafety.html?deviceid=' + deviceid + "&maptype=" + mapType + '&token=' + token + '&name=' + name;
+  var url = myUrls.viewhosts + 'activesafety.html?deviceid=' + deviceid + "&maptype=" + mapType + '&token=' + token + '&name=' + name;
   window.open(url);
 }
 
 function openObd (deviceid) {
-  var url = myUrls.hosts + 'obd.html?deviceid=' + deviceid + '&token=' + token;
+  var url = myUrls.viewhosts + 'obd.html?deviceid=' + deviceid + '&token=' + token;
   window.open(url);
 }
 
 function openBms (deviceid) {
-  var url = myUrls.hosts + 'bmssys.html?deviceid=' + deviceid + '&token=' + token;
+  var url = myUrls.viewhosts + 'bmssys.html?deviceid=' + deviceid + '&token=' + token;
   window.open(url);
 }
 
@@ -766,7 +769,7 @@ function openWatermeter (deviceid) {
 }
 
 function openWeight (deviceid) {
-  var url = myUrls.hosts + 'weighing.html?deviceid=' + deviceid + '&token=' + token;
+  var url = myUrls.viewhosts + 'weighing.html?deviceid=' + deviceid + '&token=' + token;
   window.open(url);
 }
 

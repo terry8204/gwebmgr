@@ -1743,8 +1743,8 @@ var reportForm = {
         loadPage: function (page) {
             var me = this;
             var pagePath = null;
-            if (myUrls.host.indexOf('gpsserver') != -1) {
-                pagePath = myUrls.host + 'view/reportform/' + page
+            if (utils.isLocalhost()) {
+                pagePath = myUrls.viewhost + 'view/reportform/' + page
             } else {
                 pagePath = '../view/reportform/' + page
             }
