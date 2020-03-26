@@ -16,12 +16,12 @@ viewhost = location.protocol + "//" + location.host + path + "/";
 if (location.hostname.indexOf('localhost') != -1 || location.hostname.indexOf('127.0.0.1') != -1) {
   viewhosts = viewhost;
   if (location.pathname.indexOf("gpsserver") != -1) {
-    apihost = 'https://www.gps51.com/';
-    apihosts = 'https://www.gps51.com/';
+	    apihost = viewhost;
+	    apihosts = viewhosts;
   }
   else {
-    apihost = viewhost;
-    apihosts = viewhosts;
+    apihost = 'https://www.gps51.com/';
+    apihosts = 'https://www.gps51.com/';
   }
   wsHost = "ws://localhost:90";
 } else {
