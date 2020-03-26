@@ -98,7 +98,7 @@
         left: 0;
         top: 50%;
         margin-top: -175px;
-        background: url("../images/loginbg1.jpg") no-repeat center center;
+        background: url("../custom/loginbg1.jpg") no-repeat center center;
         background-size:cover;  
     }
     div.login-form-box{

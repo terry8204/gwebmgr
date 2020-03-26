@@ -54,6 +54,8 @@
                 appstep1: "1.Search for gps51 app store",
                 appstep2: "2.Or scan QR Code",
                 appstep3: "3.For iPhone/Android",
+                beiAn1: "Copyright © 2015-2017 gps51.com All Rights Reserved",
+                beiAn2: "粤ICP备17068924号",
             },
             header: {
                 monitor: "Monitor",
@@ -372,6 +374,8 @@
                 error_4: "账号或密码错误",
                 error_5: "禁止登陆",
                 error_6: "账号过期",
+                beiAn1: "Copyright © 2015-2017 gps51.com All Rights Reserved",
+                beiAn2: "粤ICP备17068924号",
             },
             header: {
                 monitor: "定位监控",
