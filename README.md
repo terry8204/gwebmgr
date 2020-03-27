@@ -40,6 +40,10 @@ https://www.apiview.com/doc/12232#/doc/dashbord
 4.  启动tomcat
 5.  输入ip地址测试是否出现网页登录界面
 
+#### 修改登录背景图片和备案信息
+1. 在目录下找到custom目录，替换loginbg1.jpg 文件
+2. 在路面下找到custom目录，打开language.js搜索beiAn1 beiAn2，替换beiAn1 beiAn2的文字
+
 #### 参与贡献
 
 1.  Fork 本仓库
