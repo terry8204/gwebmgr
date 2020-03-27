@@ -25,7 +25,7 @@ if (location.hostname.indexOf('localhost') != -1 || location.hostname.indexOf('1
   }
   wsHost = "ws://localhost:90";
 } else {
-  viewhosts = location.protocol + "s://" + location.host + path + "/";
+   viewhosts =  "https://" + location.host + path + "/";
   apihost = 'https://www.gps51.com/';
   apihosts = 'https://www.gps51.com/';
   wsHost = "wss://www.gps51.com/wss";
