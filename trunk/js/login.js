@@ -30,7 +30,7 @@ new Vue({
             if (isIE) {
                 var reIE = new RegExp("MSIE (\\d+\\.\\d+);");
                 reIE.test(userAgent);
-                var fIEVersion = parseFloat(RegExp["$1"]);
+                var fIEVersion = parseFloat(RegExp["$1"]); 
                 if (fIEVersion == 7) {
                     return "IE7";
                 } else if (fIEVersion == 8) {

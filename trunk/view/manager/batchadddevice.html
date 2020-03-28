@@ -22,7 +22,7 @@
     <div class="full" style="padding:10px 10px 0 10px;">
         <h3 class="h3-title">{{$t("bgMgr.addDev")}}</h3>
         <div>
-            <Row style="margin: 10px 0" v-if="userType == 0">
+            <Row style="margin: 10px 0" v-if="userType < 3">
                 <i-col span="4" style="height: 100%;text-align:right;line-height:32px;"><i style="color: red;display: inline-block;">*</i>&nbsp;选择账号 : &nbsp;</i-col>
                 <i-col span="8">
                     <div class="search-wrapper">
@@ -30,9 +30,9 @@
                         <transition name="fade">
                             <ul class="search-item-wrapper" v-show="isShowMatchDev" style="cursor: pointer;">
                                 <li v-for="item in userlists" style="padding:5px 10px;" @click="selectedCmd(item)" :class="{'ivu-select-item-focus':item == createrToUser}">
-                                    <Option :value="item" :key="item">
+                                    <div :value="item" :key="item">
                                         <span style="cursor: pointer;">{{ item }}</span>
-                                    </Option>
+                                    </div>
                                 </li>
                             </ul>
                         </transition>
@@ -318,14 +318,20 @@
                     if(this.totalpoint && !isNaN(this.totalpoint)){
                         data.totalpoint = Number(this.totalpoint);
                     }
+
+                    if(userlists.indexOf(this.createrToUser) == -1){
+                        me.$Message.error(me.$t("message.selectCorrectAccount"));  
+                        return;
+                    }
                     
                     this.forwardurl && (data.forwardurl = this.forwardurl);
 
-                    if(this.userType == 0){
+                    if(this.userType == 3){
                         data.creater = this.createrToUser;
                     }else{
                         data.creater = userName;
                     };
+
                     this.loading = true;
                     utils.sendAjax(url,data,function (resp) { 
                         me.loading = false;

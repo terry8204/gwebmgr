@@ -254,7 +254,8 @@
                 userTotal: "User Total",
                 deviceTotal: "Device Total",
                 groupTotal: "Group Total",
-                addTime: "Add Time"
+                addTime: "Add Time",
+                creater:"creater"
             },
             customer: {
                 kehuName: "Customer name",
@@ -574,7 +575,8 @@
                 userTotal: "用户总数",
                 deviceTotal: "设备总数",
                 groupTotal: "分组总数",
-                addTime: "添加时间"
+                addTime: "添加时间",
+                creater:"创建者",
             },
             customer: {
                 kehuName: "客户名称",

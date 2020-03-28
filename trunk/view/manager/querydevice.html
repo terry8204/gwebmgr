@@ -28,7 +28,7 @@
 
         <Modal v-model="modal" width="900" title="编辑设备">
             <div style="width:700px;margin:10px auto">
-                <Row style="margin: 10px 0" v-if="userType == 0 || userType == 1">
+                <Row style="margin: 10px 0" v-if="userType < 3">
                     <i-col span="4" style="height: 100%;text-align:right;line-height:32px;"><i style="color: red;display: inline-block;">*</i>&nbsp;选择账号 : &nbsp;</i-col>
                     <i-col span="8">
                         <div class="search-wrapper">
@@ -204,8 +204,8 @@ vueInstanse = new Vue({
                         key: 'overduetimestr'
                     },
                     {
-                        title: vRoot.$t("monitor.customer"),  
-                        key: 'companyname'
+                        title: vRoot.$t("bgMgr.creater"),  
+                        key: 'creater'
                     },
                     {
                         title: vRoot.$t("user.grouping"),
@@ -515,7 +515,7 @@ vueInstanse = new Vue({
                         return;
                     }
                     
-                    if(this.userType == 0 || this.userType == 1 ){
+                    if(this.userType < 3 ){
                         data.creater = this.createrToUser;
                     }else{
                         data.creater = userName;
