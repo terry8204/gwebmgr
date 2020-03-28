@@ -117,7 +117,7 @@ var bgManager = {
         this.userType = Cookies.get('userType');
         if (this.userType == "2") {
             this.navList.splice(0, 1);
-            this.navList[0].children.splice(0, 1);
+            // this.navList[0].children.splice(0, 1);
         };
     }
 }
