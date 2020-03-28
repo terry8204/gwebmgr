@@ -796,7 +796,9 @@ var monitor = {
             var me = this
             var url = myUrls.monitorListByUser()
             utils.sendAjax(url, data, function (resp) {
+
                 if (resp.status == 0) {
+                    alert(121);
                     callback(resp)
                 } else {
                     if (resp.cause) {
