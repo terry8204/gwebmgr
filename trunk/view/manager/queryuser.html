@@ -368,6 +368,9 @@
                             });   
                             me.total = me.recordsList.length;
                             me.tableData = me.recordsList.slice( me.currentIndex - 1 , 10);
+                            if(userlists.indexOf(username)!=-1){
+                                userlists.splice(userlists.indexOf(username),1)
+                            }
                         }else{
                             me.$Message.error(resp.cause);
                         }
