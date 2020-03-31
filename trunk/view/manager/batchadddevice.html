@@ -40,13 +40,6 @@
                 </i-col>
             </Row>
             <Row style="margin: 10px 0">
-                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;{{$t("user.client")}} : &nbsp;</i-col>
-                <i-col span="8">
-                    <i-select v-model="companyid" style="width: 100%">
-                        <i-option v-for="item in customersList" :value="item.value" :key="item.value">{{ item.label }}</i-option>
-                    </i-select>
-                </i-col>
-
                 <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">{{$t("user.grouping")}} : &nbsp;</i-col>
                 <i-col span="8">
                     <i-select v-model="groupid">
@@ -180,7 +173,6 @@
                 loginenable:"1",
                 deviceenable:"1",
                 groupsList:[],
-                customersList:[],
                 deviceTypeList:[],
                 groupid:'',
                 companyid:'',
@@ -539,7 +531,20 @@
                         }
                     })
                     return uniq(newArr);
-                }   
+                },
+                queryGroupsByUserName:utils.debounce(function(userName){
+                    var data = { username:userName },
+                        url = myUrls.queryGroupsByUserName() , me = this;
+                    utils.sendAjax(url,data,function(resp){
+                        var groupList = [];
+                        if(resp.status === 0 && resp.grouplist){
+                            resp.grouplist.forEach(function (group) { 
+                                groupList.push({label:group.groupname,value:group.groupid});
+                            })
+                        }
+                        me.groupsList = groupList;
+                    });
+                },1000) 
             },
             watch:{
                 companyid:function(){
@@ -554,25 +559,29 @@
                         this.iconState = "ios-arrow-up";
                     }
                 },
-                createrToUser:function(){
-                    var me = this, url = myUrls.queryCompanyByCreater();
-                    utils.sendAjax(url,{username:this.createrToUser},function (resp) { 
-                        if(resp.status === 0){
-                            var customersList = [];
-                            resp.records.forEach(function(item){
-                                customersList.push({
-                                    label:item.companyname,
-                                    value:item.companyid
-                                });
-                            });
-                            me.customersList = customersList;
-                            if(me.userType == 0){
-                                me.companyid = customersList.length ? customersList[0].companyid : "";
-                            }else{
-                                me.companyid = editObject.companyid;
-                            }    
-                        }
-                    });
+                createrToUser:function(newVal){
+                    // var me = this, url = myUrls.queryCompanyByCreater();
+                    // utils.sendAjax(url,{username:this.createrToUser},function (resp) { 
+                    //     if(resp.status === 0){
+                    //         var customersList = [];
+                    //         resp.records.forEach(function(item){
+                    //             customersList.push({
+                    //                 label:item.companyname,
+                    //                 value:item.companyid
+                    //             });
+                    //         });
+                    //         me.customersList = customersList;
+                    //         if(me.userType == 0){
+                    //             me.companyid = customersList.length ? customersList[0].companyid : "";
+                    //         }else{
+                    //             me.companyid = editObject.companyid;
+                    //         }    
+                    //     }
+                    // });
+                    if(userlists.indexOf(newVal)!=-1){
+                        this.groupid = "";
+                        this.queryGroupsByUserName(newVal);
+                    }
                 },
                 deviceid:function(newVal){
                     var exec = /[0-9A-Za-z]/g.exec(newVal);
@@ -592,7 +601,7 @@
                 } 
             },
             mounted:function () {
-                this.queryAllCompanyInfo(this.doQueryAllCompanyInfo);
+                // this.queryAllCompanyInfo(this.doQueryAllCompanyInfo);
                 this.getDeviceType();
                 this.createrToUser = userName;
                 this.userlists = userlists;

@@ -165,6 +165,7 @@
         </Modal>
     </div>
     <script>
+
 vueInstanse = new Vue({
             el:"#querydev",
             i18n: utils.getI18n(),
@@ -186,6 +187,23 @@ vueInstanse = new Vue({
                         key: 'deviceid'
                     },
                     {
+                        title: vRoot.$t("user.devType"),
+                        render:function(h,params){
+                            var row = params.row;
+                            var devType = "";
+                            vstore.state.deviceTypes.forEach(function (item) { 
+                                var label = item.typename;
+                                if(item.remark){
+                                    label += "("+item.remark+")";
+                                }
+                                if(item.devicetypeid == row.devicetype){
+                                    devType = label;
+                                }
+                            })
+                            return h('span',{},devType)
+                        }
+                    },
+                    {
                         title: vRoot.$t("monitor.phoneNumber"),
                         key: 'simnum'
                     },
@@ -205,7 +223,7 @@ vueInstanse = new Vue({
                     },
                     {
                         title: vRoot.$t("bgMgr.creater"),  
-                        key: 'creater'
+                        key: 'creater',
                     },
                     {
                         title: vRoot.$t("user.grouping"),
@@ -319,8 +337,9 @@ vueInstanse = new Vue({
                         var deviceid = record.deviceid;
                         var devicename = record.devicename;
                         var monitor = record.monitor;
-                   
+                        var creater = record.creater;
                         if (
+                            creater.indexOf(self.queryParameter) != -1 || 
                             devicename.indexOf(self.queryParameter) != -1 || 
                             deviceid.indexOf(self.queryParameter) != -1 ||
                             record.pinYin.indexOf(queryParameterLowerCase) != -1 ||
@@ -574,7 +593,7 @@ vueInstanse = new Vue({
                 },
                 getDeviceType:function () { 
                     var me = this;
-                    vstore.state.deviceTypes .forEach(function (item) { 
+                    vstore.state.deviceTypes.forEach(function (item) { 
                         var label = item.typename;
                         if(item.remark){
                             label += "("+item.remark+")";

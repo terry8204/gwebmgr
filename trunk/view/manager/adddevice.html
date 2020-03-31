@@ -339,7 +339,19 @@
                     })
                     me.devicetype = 1;
                 },
-                   
+                queryGroupsByUserName:utils.debounce(function(userName){
+                    var data = { username:userName },
+                        url = myUrls.queryGroupsByUserName() , me = this;
+                    utils.sendAjax(url,data,function(resp){
+                        var groupList = [];
+                        if(resp.status === 0 && resp.grouplist){
+                            resp.grouplist.forEach(function (group) { 
+                                groupList.push({label:group.groupname,value:group.groupid});
+                            })
+                        }
+                        me.groupsList = groupList;
+                    });
+                },1000)
             },
             watch:{
                 isShowMatchDev:function(){
@@ -349,11 +361,16 @@
                         this.iconState = "ios-arrow-up";
                     }
                 },
-
+                createrToUser:function(newVal){
+                    if(userlists.indexOf(newVal)!=-1){
+                        this.groupid = "";
+                        this.queryGroupsByUserName(newVal);
+                    }
+                }
             },
             mounted:function () {
                 this.getDeviceType();
-                this.getGroupsList();  
+                // this.getGroupsList();  
                 this.createrToUser = userName;
                 this.userlists = userlists;
                 this.overduetime = new Date(Date.now() + 365*24*3600*1000) ;

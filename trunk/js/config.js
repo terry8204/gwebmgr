@@ -501,6 +501,10 @@ var myUrls = {
   chargeDevices: function () {
     return this.apihosts + 'webapi?action=chargedevices&token=' + token;
   },
+  // cc查询分组
+  queryGroupsByUserName: function () {
+    return this.apihosts + 'webapi?action=querygroupsbyusername&token=' + token;
+  },
 }
 
 
