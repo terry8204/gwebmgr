@@ -505,6 +505,10 @@ var myUrls = {
   queryGroupsByUserName: function () {
     return this.apihosts + 'webapi?action=querygroupsbyusername&token=' + token;
   },
+  // cc查询分组
+  deleteDevices: function () {
+    return this.apihosts + 'webapi?action=deletedevices&token=' + token;
+  },
 }
 
 

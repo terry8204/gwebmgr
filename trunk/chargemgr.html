@@ -63,6 +63,9 @@
             <div>
                 <i-button type="primary" @click="modal=true" :disabled="isDisabled">充值</i-button>
             </div>
+            <div>
+                <i-button type="error" @click="manyDelete">批量删除</i-button>
+            </div>
         </div>
         <div class="table-body">
             <i-Table border ref="selection" :columns="columns" :data="tableData" :height="tHeight" @on-selection-change="onSelection"></i-Table>
@@ -128,7 +131,8 @@
         var token = utils.getParameterByName("token");
         var userName = utils.getParameterByName("username");
         var filterDeviceTypes = [];
-        var deviceTypeMap = {}
+        var deviceTypeMap = {};
+        var vRoot = new Vue();
         function getDeviceTypes(){
             var url =  myUrls.queryDeviceTypeByUser();
             utils.sendAjax(url,{},function(data){
@@ -146,7 +150,7 @@
 
         function initVue(){
             var yearTime = 60*60*24*365*1000;
-            new Vue({
+            vRoot = new Vue({
                 el:"#app",
                 data:{
                     years:"1年",
@@ -280,6 +284,28 @@
                     }
                 },
                 methods: {
+                    manyDelete:function(){
+                        if(this.selectionArray.length == 0){
+                            this.$Message.error("请选择要删除的设备");
+                        }else{
+                            if(confirm('确定删除吗?')){
+                                var url = myUrls.deleteDevices() , me = this;
+                                var deviceids = this.selectionArray.map(function(item){ return item.deviceid});
+                                    if(deviceids.length >= 100){
+                                        this.$Message.error("一次性删除不能超过100个设备");
+                                        return;
+                                    }
+                                utils.sendAjax(url,{deviceids:deviceids},function(resp){
+                                    if(resp.status == 0){
+                                        me.handleQuery();
+                                        me.$Message.success("删除成功");
+                                    }else{
+                                        me.$Message.error("删除失败");
+                                    }
+                                });
+                            }
+                        }
+                    },
                     handlerChargeDevices:function(){
                         if(this.selectionArray.length == 0){
                             this.$Message.error("请选择要充值的设备");
