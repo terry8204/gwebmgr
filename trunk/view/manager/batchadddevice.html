@@ -318,7 +318,7 @@
                     
                     this.forwardurl && (data.forwardurl = this.forwardurl);
 
-                    if(this.userType == 3){
+                    if(this.userType < 3){
                         data.creater = this.createrToUser;
                     }else{
                         data.creater = userName;
