@@ -646,9 +646,9 @@ vueInstanse = new Vue({
             mixins:[mixIn],
             mounted:function () {
                 this.queryAllCompanyInfo(this.doQueryAllCompanyInfo);
-                if(userlists.indexOf(userName) == -1){
-                    userlists.push(userName);
-                };
+                // if(userlists.indexOf(userName) == -1){
+                //     userlists.push(userName);
+                // };
                 this.userlists = userlists;
                 this.userType = vstore.state.userType;
                 this.getDeviceType();  

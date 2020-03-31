@@ -588,6 +588,7 @@ var utils = {
           })
         }
       }
+      userlists.push(userName);
     });
   },
   debounce: function (func, wait, immediate) {
