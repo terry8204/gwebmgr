@@ -1138,7 +1138,7 @@ function accDetails (groupslist) {
                     });
                 });
                 newRecords.push({
-                    duration: this.$t("reportForm.accOnTime") + ':' + this.getParkTime(accOffTime) + ',' +   this.$t("reportForm.accOffTime") + ':' +  this.getParkTime(accOnTime) 
+                    duration: this.$t("reportForm.accOnTime") + ':' + this.getParkTime(accOnTime) + ',' +   this.$t("reportForm.accOffTime") + ':' +  this.getParkTime(accOffTime) 
                 })
                 me.tableData = newRecords;
             },
