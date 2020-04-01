@@ -1,4 +1,126 @@
 
+var treeMixin = {
+    data: {
+        dateVal: [DateFormat.longToDateStr(Date.now(), DateFormat.getOffset()), DateFormat.longToDateStr(Date.now(), DateFormat.getOffset())],
+        total: 0,
+        currentPageIndex: 1,
+        lastTableHeight: 100,
+        posiDetailHeight: 100,
+        placeholder: "",
+        sosoValue: '',
+        isShowMatchDev: true,
+        treeData: [],
+        queryDeviceId: '',
+    },
+    methods: {
+        changePage: function (index) {
+            var offset = index * 10;
+            var start = (index - 1) * 10;
+            this.currentPageIndex = index;
+            this.tableData = this.cmdRecords.slice(start, offset);
+        },
+        onClickOutside: function () {
+            this.isShowMatchDev = false;
+        },
+        onChange: function (value) {
+            this.dateVal = value;
+        },
+        handleSelectdDate: function (dayNumber) {
+            var dayTime = 24 * 60 * 60 * 1000;
+            if (dayNumber == 0) {
+                this.dateVal = [DateFormat.longToDateStr(Date.now(), DateFormat.getOffset()), DateFormat.longToDateStr(Date.now(), DateFormat.getOffset())];
+            } else if (dayNumber == 1) {
+                this.dateVal = [DateFormat.longToDateStr(Date.now() - dayTime, DateFormat.getOffset()), DateFormat.longToDateStr(Date.now() - dayTime, DateFormat.getOffset())];
+            } else if (dayNumber == 3) {
+                this.dateVal = [DateFormat.longToDateStr(Date.now() - dayTime * 2, DateFormat.getOffset()), DateFormat.longToDateStr(Date.now(), DateFormat.getOffset())];
+            } else if (dayNumber == 7) {
+                this.dateVal = [DateFormat.longToDateStr(Date.now() - dayTime * 6, DateFormat.getOffset()), DateFormat.longToDateStr(Date.now(), DateFormat.getOffset())];
+            }
+        },
+        focus: function () {
+            this.isShowMatchDev = true;
+        },
+        sosoValueChange: function () {
+            var me = this;
+            var value = this.sosoValue;
+
+            if (this.timeoutIns != null) {
+                clearTimeout(this.timeoutIns);
+            };
+
+            this.timeoutIns = setTimeout(function () {
+                me.filterMethod(value);
+            }, 300);
+        },
+        filterMethod: function (value) {
+            var filterData = [];
+            value = value.toLowerCase();
+            for (var i = 0; i < this.groupslist.length; i++) {
+                var group = this.groupslist[i];
+                if (
+                    group.title.toLowerCase().indexOf(value) !== -1 ||
+                    group.firstLetter.indexOf(value) !== -1 ||
+                    group.pinyin.indexOf(value) !== -1
+                ) {
+                    filterData.push(group)
+                } else {
+                    var devices = group.children
+                    var obj = {
+                        expand: true,
+                        title: group.groupname,
+                        children:[],
+                        firstLetter:group.firstLetter,
+                        pinyin:group.pinyin
+                    }
+                    for (var j = 0; j < devices.length; j++) {
+                        var device = devices[j]
+                        var title = device.title
+                        if (
+                            title.toLowerCase().indexOf(value) !== -1 ||
+                            device.firstLetter.indexOf(value) !== -1 ||
+                            device.pinyin.indexOf(value) !== -1
+                        ) {
+                            obj.children.push(device)
+                        } 
+                    }
+                    if (obj.children.length) {
+                        filterData.push(obj);
+                    };
+                };
+            };
+            this.treeData = filterData;
+        },
+        sosoSelect: function (item) {
+            reportDeviceId = item.deviceid;
+            this.sosoValue = item.title;
+            this.queryDeviceId = item.deviceid;
+            this.isShowMatchDev = false;
+        },
+        getDeviceTitle: function (deviceid) {
+            var title = "";
+            this.groupslist.forEach(function (group) {
+                var isReturn = false;
+                group.devices.forEach(function (device) {
+                    if (device.deviceid === deviceid) {
+                        isReturn = true;
+                        title = device.title;
+                        return false;
+                    }
+                });
+                if (isReturn) { return false };
+            });
+            return title;
+        }
+    },
+    mounted: function () {
+        var me = this;
+        this.calcTableHeight();
+        window.onresize = function () {
+            me.calcTableHeight();
+        }
+    }
+}
+
 var reportMixin = {
     data: {
         dateVal: [DateFormat.longToDateStr(Date.now(), DateFormat.getOffset()), DateFormat.longToDateStr(Date.now(), DateFormat.getOffset())],
@@ -153,7 +275,6 @@ var reportMixin = {
         }
     }
 }
-
 
 
 //  指令查询 DateFormat.longToDateStr(Date.now(),0)
@@ -814,7 +935,7 @@ function accDetails (groupslist) {
     vueInstanse = new Vue({
         el: '#acc-details',
         i18n: utils.getI18n(),
-        mixins: [reportMixin],
+        mixins: [treeMixin],
         data: {
             mapModal: false,
             mapType: utils.getMapType(),
@@ -933,6 +1054,33 @@ function accDetails (groupslist) {
                 seconds ? (strTime += seconds + this.$t("reportForm.s")) : '';
                 return strTime == '' ? 0 : strTime;
             },
+            getTreeGroupslist:function(groupslist){
+                var treeLists = [];
+                groupslist.forEach(function(group){
+                    var children = []
+                    var treeItem = {
+                        expand: true,
+                        title: group.groupname,
+                        children:children,
+                        firstLetter:group.firstLetter,
+                        pinyin:group.pinyin
+                    }
+                    if(group.devices && group.devices.length != 0){
+                        group.devices.forEach(function(device){
+                            children.push({
+                                title:device.devicename,
+                                deviceid:device.deviceid,
+                                firstLetter:device.firstLetter,
+                                pinyin:device.pinyin
+                            })
+                        });
+                    }
+                    if(children.length){
+                        treeLists.push(treeItem);
+                    }
+                });
+                return treeLists;
+            }
         },
         computed: {
             accOnTimeStr: function () {
@@ -944,7 +1092,8 @@ function accDetails (groupslist) {
         },
         mounted: function () {
             var me = this;
-            this.groupslist = groupslist;
+            this.groupslist = this.getTreeGroupslist(groupslist);
+            this.treeData = this.getTreeGroupslist(groupslist);
             this.calcTableHeight();
             window.onresize = function () {
                 me.calcTableHeight();

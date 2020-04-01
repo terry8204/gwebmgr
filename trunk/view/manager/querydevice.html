@@ -90,7 +90,7 @@
                     <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">{{$t("user.grouping")}} : &nbsp;</i-col>
                     <i-col span="8">
                         <i-select v-model="groupid">
-                            <i-option v-for="item in groupList" :value="item.value" :key="item.value">{{ item.label }}</i-option>
+                            <i-option v-for="item in groupsList" :value="item.value" :key="item.value">{{ item.label }}</i-option>
                         </i-select>
                     </i-col>
                     <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;网络类型 : &nbsp;</i-col>
@@ -301,7 +301,7 @@ vueInstanse = new Vue({
                 recordsList:[],
                 customersList:null,
                 groupsList:[],
-                
+                grouplist:[],
                 iconState:"ios-arrow-down",
                 deviceid:"",
                 devicename:"",
@@ -310,7 +310,6 @@ vueInstanse = new Vue({
                 overduetime:"",
                 loginenable:"1",
                 deviceenable:"0",
-                groupList:[],
                 deviceTypeList:[],
                 reportedpoint:0,
                 totalpoint:1500,
@@ -565,7 +564,7 @@ vueInstanse = new Vue({
                     this.overduetime = "";
                     this.loginenable = "0";
                     this.deviceenable = "0";
-                    this.groupsList = "";
+                    this.groupsList = [];
                     this.groupid = "";
                     this.reportedpoint = 0;
                     this.totalpoint = 1500;
@@ -644,6 +643,20 @@ vueInstanse = new Vue({
                     })
                     this.userlists = list;
                 },
+                queryGroupsByUserName:utils.debounce(function(userName){
+                    var data = { username:userName },
+                        url = myUrls.queryGroupsByUserName() , me = this;
+                    utils.sendAjax(url,data,function(resp){
+                        var groupsList = [];
+                        if(resp.status === 0 && resp.grouplist){
+                            resp.grouplist.forEach(function (group) { 
+                                groupsList.push({label:group.groupname,value:group.groupid});
+                            })
+                        }
+                        console.log("groupList",groupsList)
+                        me.groupsList = groupsList;
+                    });
+                },1000)
             },
             watch: {
                 isShowMatchDev:function(){
@@ -653,6 +666,12 @@ vueInstanse = new Vue({
                         this.iconState = "ios-arrow-up";
                     }
                 },
+                createrToUser:function(newVal){
+                    if(userlists.indexOf(newVal)!=-1){
+                        this.groupid = "";
+                        this.queryGroupsByUserName(newVal);
+                    }
+                }
             },
             computed:{
                 disabled:function(){
