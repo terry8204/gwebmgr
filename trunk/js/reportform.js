@@ -1065,8 +1065,7 @@ function accDetails (groupslist) {
                     utils.sendAjax(url, data, function (resp) {
                         me.loading = false;
                         if (resp.status == 0) {
-                            if (resp.records && resp.records.length) {
-                               me.activeTab = "totalTable";
+                            if (resp.records && resp.records.length) {                    
                                me.tableData = [];
                                me.allAccTableData = me.getAllAccTableData(resp.records);
                             } else {
@@ -1077,6 +1076,9 @@ function accDetails (groupslist) {
                         } else {
                             me.tableData = [];
                             me.allAccTableData = [];
+                        }
+                        if(me.activeTab != "tabTotal"){
+                            me.onClickTab("tabTotal");
                         }
                     });
                 } else {
