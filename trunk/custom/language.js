@@ -549,8 +549,8 @@
                 open: '开启',
                 stalling: '熄火',
                 notEnabled: '未启用',
-                accOffTime: 'ACC熄火时长',
-                accOnTime: 'ACC开启时长',
+                accOffTime: '熄火时长',
+                accOnTime: '开启时长',
             },
             bgMgr: {
                 bindpwd: "绑定密码",

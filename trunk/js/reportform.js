@@ -8,7 +8,7 @@ var treeMixin = {
         posiDetailHeight: 100,
         placeholder: "",
         sosoValue: '',
-        isShowMatchDev: true,
+        isShowMatchDev: false,
         treeData: [],
     },
     methods: {
@@ -81,6 +81,10 @@ var treeMixin = {
                 };
             };
             this.treeData = filterData;
+            this.checkedDevice = [];
+            if(this.isShowMatchDev ==false){
+                this.isShowMatchDev = true;
+            }
         },500),
         sosoSelect: function (item) {
             reportDeviceId = item.deviceid;
@@ -104,8 +108,16 @@ var treeMixin = {
             return title;
         },
         onCheckedDevice:function(arr){
-            console.log(arr);
             this.checkedDevice = arr;
+            var sosoValue = "";
+            arr.forEach(function(item){
+                if(item.children){
+                    sosoValue += item.title + ","
+                }else{
+                    sosoValue += item.title + ","
+                }
+            });
+            this.sosoValue = sosoValue;
         }
     },
     mounted: function () {
@@ -936,6 +948,7 @@ function accDetails (groupslist) {
         i18n: utils.getI18n(),
         mixins: [treeMixin],
         data: {
+            activeTab:'tabTotal',
             mapModal: false,
             mapType: utils.getMapType(),
             mapInstance: null,
@@ -946,20 +959,72 @@ function accDetails (groupslist) {
             groupslist: [],
             timeoutIns: null,
             isShowMatchDev: true,
+            allAccColumns:[
+                { title: '序号', width: 60 , key:'index'},
+                {
+                    title:"操作",
+                    width:100,
+                    render:function(h,params){
+
+                        return h('span',{
+                            on:{
+                                click:function(){
+                                    vueInstanse.activeTab = "tabDetail";
+                                    vueInstanse.getAccDetailTableData(params.row.records);
+                                }
+                            },
+                            style:{
+                                color:'#e4393c',
+                                cursor: 'pointer'
+                            }
+                        },"[点火明细]")
+                    }
+                },
+                {
+                    title:'设备名称',
+                    key:'devicename'
+                },
+                {
+                    title:'设备序号',
+                    key:'deviceid',
+                    width:160,
+                },
+                {
+                    title:'点火次数',
+                    key:'opennumber',
+                    width:100,
+                },
+                {
+                    title:'点火时长',
+                    key:'duration'
+                }
+            ],
+            allAccTableData:[],
             columns: [
-                { type: 'index', width: 60, align: 'center' },
+                { title: '序号', width: 60 , key:'index'},
                 { title: vRoot.$t("alarm.devName"), key: 'deviceName', width: 160 },
                 { title: vRoot.$t("alarm.devNum"), key: 'deviceid', width: 160 },
-                { title: vRoot.$t("reportForm.accstatus"), key: 'accStatus' },
+                { title: vRoot.$t("reportForm.accstatus"), key: 'accStatus',width: 100 },
                 { title: vRoot.$t("reportForm.startDate"), key: 'startDate', width: 180 },
                 { title: vRoot.$t("reportForm.endDate"), key: 'endDate', width: 180 },
                 { title: vRoot.$t("reportForm.duration"), key: 'duration' },
             ],
             tableData: [],
-            accOnTime: 0,
-            accOffTime: 0,
         },
         methods: {
+            exportData:function(){
+                var startday = this.dateVal[0];
+                var  endday = this.dateVal[1];
+                this.$refs.totalTable.exportCsv({      
+                    filename: '点火统计数据' + startday +'-'+ endday,
+                    original: false,
+                    columns: this.allAccColumns.filter((col, index) => index != 1),
+                    data:this.allAccTableData
+                });
+            },
+            onClickTab:function(name){
+                this.activeTab = name;
+            },
             onChange: function (value) {
                 this.dateVal = value;
             },
@@ -1001,51 +1066,81 @@ function accDetails (groupslist) {
                         me.loading = false;
                         if (resp.status == 0) {
                             if (resp.records && resp.records.length) {
-                                var newRecords = [];
-                                var accOnTime = 0;
-                                var accOffTime = 0;
-                                var deviceName = vstore.state.deviceInfos[me.queryDeviceId].devicename;
-                                resp.records.sort(function (a, b) {
-                                    return a.begintime - b.begintime;
-                                });
-                                resp.records.forEach(function (item) {
-                                    var duration = item.endtime - item.begintime;
-                                    var durationStr = me.getParkTime(duration);
-                                    var accStatus = "";
-                                    if (item.accstate == 0) {
-                                        accStatus = me.$t("reportForm.notEnabled");
-                                    } else if (item.accstate == 3) {
-                                        accStatus = me.$t("reportForm.open");
-                                        accOnTime += duration;
-                                    } else if (item.accstate == 2) {
-                                        accOffTime += duration;
-                                        accStatus = me.$t("reportForm.stalling");
-                                    }
-                                    newRecords.push({
-                                        deviceid: item.deviceid,
-                                        deviceName: deviceName,
-                                        startDate: DateFormat.longToDateTimeStr(item.begintime, 0),
-                                        endDate: DateFormat.longToDateTimeStr(item.endtime, 0),
-                                        accStatus: accStatus,
-                                        duration: durationStr
-                                    });
-                                });
-                                me.accOffTime = accOffTime;
-                                me.accOnTime = accOnTime;
-                                me.tableData = newRecords;
+                               me.activeTab = "totalTable";
+                               me.tableData = [];
+                               me.allAccTableData = me.getAllAccTableData(resp.records);
                             } else {
                                 me.tableData = [];
+                                me.allAccTableData = [];
                                 me.$Message.error("没有数据");
                             }
                         } else {
                             me.tableData = [];
-                            me.accOnTime = 0;
-                            me.tableData = 0;
+                            me.allAccTableData = [];
                         }
                     });
                 } else {
                     this.$Message.error(this.$t("reportForm.selectDevTip"));
                 }
+            },
+            getAllAccTableData:function(records){
+                var allAccTableData = [] , me = this;
+                records.forEach(function(item,index){
+                    var accObj = {
+                        index:index+1,
+                        deviceid:"\t" + item.deviceid,
+                        opennumber:0,
+                        duration:"",
+                        devicename:vstore.state.deviceInfos[item.deviceid].devicename,
+                        records:item.records
+                    },
+                    duration = 0;
+                    item.records.forEach(function(deviceAcc){
+                        if(deviceAcc.accstate == 3){
+                            duration += deviceAcc.endtime - deviceAcc.begintime;
+                            accObj.opennumber++;
+                        }
+                    });
+                    accObj.duration = me.getParkTime(duration);
+                    allAccTableData.push(accObj);
+                });    
+                return allAccTableData ;
+            },
+            getAccDetailTableData:function(records){
+                var newRecords = [] , me = this;
+                var accOnTime = 0;
+                var accOffTime = 0;
+                records.sort(function (a, b) {
+                    return a.begintime - b.begintime;
+                });
+                records.forEach(function (item,index) {
+                    var deviceName = vstore.state.deviceInfos[item.deviceid].devicename;
+                    var duration = item.endtime - item.begintime;
+                    var durationStr = me.getParkTime(duration);
+                    var accStatus = "";
+                    if (item.accstate == 0) {
+                        accStatus = me.$t("reportForm.notEnabled");
+                    } else if (item.accstate == 3) {
+                        accStatus = me.$t("reportForm.open");
+                        accOnTime += duration;
+                    } else if (item.accstate == 2) {
+                        accOffTime += duration;
+                        accStatus = me.$t("reportForm.stalling");
+                    }
+                    newRecords.push({
+                        index:index+1,
+                        deviceid: item.deviceid,
+                        deviceName: deviceName,
+                        startDate: DateFormat.longToDateTimeStr(item.begintime, 0),
+                        endDate: DateFormat.longToDateTimeStr(item.endtime, 0),
+                        accStatus: accStatus,
+                        duration: durationStr
+                    });
+                });
+                newRecords.push({
+                    duration: this.$t("reportForm.accOnTime") + ':' + this.getParkTime(accOffTime) + ',' +   this.$t("reportForm.accOffTime") + ':' +  this.getParkTime(accOnTime) 
+                })
+                me.tableData = newRecords;
             },
             getParkTime: function (mss) {
                 var strTime = '';
@@ -1064,7 +1159,7 @@ function accDetails (groupslist) {
                 groupslist.forEach(function(group){
                     var children = []
                     var treeItem = {
-                        expand: true,
+                        expand: false,
                         title: group.groupname,
                         children:children,
                         firstLetter:group.firstLetter,
@@ -1084,16 +1179,14 @@ function accDetails (groupslist) {
                         treeLists.push(treeItem);
                     }
                 });
-                return treeLists;
+                return [
+                    {
+                        title:"所有设备",
+                        children:treeLists,
+                        expand: true,
+                    }
+                ];
             }
-        },
-        computed: {
-            accOnTimeStr: function () {
-                return this.getParkTime(this.accOnTime);
-            },
-            accOffTimeStr: function () {
-                return this.getParkTime(this.accOffTime);
-            },
         },
         mounted: function () {
             var me = this;

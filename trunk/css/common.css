@@ -132,6 +132,21 @@ ul,ol,li{
     overflow-y:auto; 
     overflow-x:hidden; 
 }
+.search-wrapper div.search-item-wrapper{
+    position: absolute;
+    left: 0;
+    right:0;
+    top: 38px;
+    background-color: #fff;
+    box-sizing: border-box;
+    border-radius: 4px;
+    box-shadow: 0 1px 6px rgba(0,0,0,.2);
+    max-height: 300px;
+    z-index: 10000;
+    overflow-y:auto; 
+    overflow-x:hidden; 
+    padding: 5px;
+}
 
 .search-wrapper ul.search-item-wrapper .ivu-select-item,
 .search-wrapper ul.search-item-wrapper .ivu-select-item span{

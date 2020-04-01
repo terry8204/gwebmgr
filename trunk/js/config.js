@@ -1,7 +1,7 @@
 /*
  * 所有的urls
  */
-
+var isNeedTalk = true;
 var wsHost = null;
 var viewhost = null;
 var viewhosts = null;
@@ -25,7 +25,14 @@ if (location.hostname.indexOf('localhost') != -1 || location.hostname.indexOf('1
   }
   wsHost = "ws://localhost:90";
 } else {
-   viewhosts =  "https://" + location.host + path + "/";
+  if(isNeedTalk == true)
+ {
+  viewhosts =  "https://" + location.host + path + "/";
+ }
+ else
+ {
+  viewhosts =  "http://" + location.host + path + "/";
+ }
   apihost = 'https://www.gps51.com/';
   apihosts = 'https://www.gps51.com/';
   wsHost = "wss://www.gps51.com/wss";
