@@ -319,6 +319,10 @@ var myUrls = {
   reportAcc: function () {
     return this.apihost + 'webapi?action=reportacc&token=' + token;
   },
+  // acc报表
+  reportAccs: function () {
+    return this.apihost + 'webapi?action=reportaccs&token=' + token;
+  },
   queryMedia: function () {
     return this.apihost + 'webapi?action=querymedia&token=' + token;
   },

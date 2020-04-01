@@ -10,7 +10,6 @@ var treeMixin = {
         sosoValue: '',
         isShowMatchDev: true,
         treeData: [],
-        queryDeviceId: '',
     },
     methods: {
         changePage: function (index) {
@@ -43,16 +42,9 @@ var treeMixin = {
         sosoValueChange: function () {
             var me = this;
             var value = this.sosoValue;
-
-            if (this.timeoutIns != null) {
-                clearTimeout(this.timeoutIns);
-            };
-
-            this.timeoutIns = setTimeout(function () {
-                me.filterMethod(value);
-            }, 300);
+            this.filterMethod(this.sosoValue);
         },
-        filterMethod: function (value) {
+        filterMethod:utils.debounce(function (value) {
             var filterData = [];
             value = value.toLowerCase();
             for (var i = 0; i < this.groupslist.length; i++) {
@@ -67,7 +59,7 @@ var treeMixin = {
                     var devices = group.children
                     var obj = {
                         expand: true,
-                        title: group.groupname,
+                        title: group.title,
                         children:[],
                         firstLetter:group.firstLetter,
                         pinyin:group.pinyin
@@ -89,7 +81,7 @@ var treeMixin = {
                 };
             };
             this.treeData = filterData;
-        },
+        },500),
         sosoSelect: function (item) {
             reportDeviceId = item.deviceid;
             this.sosoValue = item.title;
@@ -110,6 +102,10 @@ var treeMixin = {
                 if (isReturn) { return false };
             });
             return title;
+        },
+        onCheckedDevice:function(arr){
+            console.log(arr);
+            this.checkedDevice = arr;
         }
     },
     mounted: function () {
@@ -118,7 +114,10 @@ var treeMixin = {
         window.onresize = function () {
             me.calcTableHeight();
         }
-    }
+    },
+    created:function() {
+        this.checkedDevice = [];
+    },
 }
 
 var reportMixin = {
@@ -982,14 +981,20 @@ function accDetails (groupslist) {
                 console.log("lastTableHeight", this.lastTableHeight);
             },
             onClickQuery: function () {
-                if (this.queryDeviceId) {
+                var deviceids = [] ;
+                this.checkedDevice.forEach(function(group){
+                    if(!group.children){
+                        deviceids.push(group.deviceid);
+                    }
+                });
+                if (deviceids.length) {
                     var me = this;
-                    var url = myUrls.reportAcc();
+                    var url = myUrls.reportAccs();
                     var data = {
                         startday: this.dateVal[0],
                         endday: this.dateVal[1],
                         offset: DateFormat.getOffset(),
-                        deviceid: this.queryDeviceId
+                        deviceids: deviceids
                     }
                     me.loading = true;
                     utils.sendAjax(url, data, function (resp) {
