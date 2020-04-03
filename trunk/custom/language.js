@@ -323,7 +323,7 @@
                 allReportCount: "all report count",
                 allowLogin: "Allow login",
                 isUse: "Is use",
-                devIdTips: "The serial number of the device must be between 11 and 15 bits."
+                devIdTips: "The serial number of the device must be between 8 and 15 bits."
             }
         },
         //简体中文
@@ -645,7 +645,7 @@
                 allReportCount: "总上报次数",
                 allowLogin: "允许登录",
                 isUse: "是否使用",
-                devIdTips: "设备序号必须是11-15位之间的"
+                devIdTips: "设备序号必须是8-15位之间的"
             }
         }
     }

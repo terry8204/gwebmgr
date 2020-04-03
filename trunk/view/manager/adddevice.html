@@ -224,7 +224,7 @@
                     var me = this;
                     var url = myUrls.addDevice();
 
-                    if(this.deviceid.length < 11  || this.deviceid.length > 15 ){ 
+                    if(this.deviceid.length < 8  || this.deviceid.length > 15 ){ 
                         me.$Message.error(me.$t("device.devIdTips"));
                         return;
                     };

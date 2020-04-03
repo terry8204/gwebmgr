@@ -1019,10 +1019,14 @@ var monitor = {
                 var online = 0;
                 group.devices.forEach(function (device, index) {
                     count++;
+                    
                     var isOnline = me.getIsOnline(device.deviceid);
                     device.isOnline = isOnline;
                     if (isOnline) {
+                        device.isMoving =  me.positionLastrecords[device.deviceid].moving != 0;
                         online++;
+                    }else{
+                        device.isMoving = null;
                     };
                 });
                 group.isShow = true;
@@ -1037,6 +1041,7 @@ var monitor = {
                     var isOnline = me.getIsOnline(device.deviceid);
                     device.isOnline = isOnline;
                     if (isOnline) {
+                        device.isMoving =  me.positionLastrecords[device.deviceid].moving != 0;
                         online++;
                     };
                 });
