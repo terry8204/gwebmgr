@@ -264,7 +264,7 @@
                             <dd style="padding:5px;border-bottom:1px solid #ddd" v-if="group.expand">
                                 <div v-for="(device , index) in group.devices" :key="device.deviceid" :data-id="device.deviceid" style="padding-left:15px">
                                     <div :class="{'active-dev-offline':device.isSelected}" style="margin:3px 0;" :ref="device.deviceid">
-                                        <div style="padding:3px 5px;cursor: pointer;" :style="{color: device.isOnline ? (device.isMoving ? '#33DAD0' :'red') : '#B1BBC2'}" @click="selectedDev(device)">
+                                        <div style="padding:3px 5px;cursor: pointer;" :style="{color: device.isOnline ? (device.isMoving ? '#33DAD0' :'#F69679') : '#B1BBC2'}" @click="selectedDev(device)">
                                             <Icon type="md-person"/> 
                                             <span v-text="device.devicetitle"></span> 
                                         </div>
@@ -315,7 +315,7 @@
                                 <dd style="padding:5px;border-bottom:1px solid #ddd" v-if="group.expand && group.isShow">
                                     <div v-for="(device , index) in group.devices" :key="device.deviceid" style="padding-left:15px" v-if="device.isOnline">
                                         <div :class="{'active-dev-offline':device.isSelected}" style="margin:3px 0;" :ref="device.deviceid">
-                                            <div style="padding:3px 5px;cursor: pointer;" :style="{color: device.isOnline ? (device.isMoving ? '#33DAD0' :'red') : '#B1BBC2'}" @click="selectedDev(device)">
+                                            <div style="padding:3px 5px;cursor: pointer;" :style="{color: device.isOnline ? (device.isMoving ? '#33DAD0' :'#F69679') : '#B1BBC2'}" @click="selectedDev(device)">
                                                 <Icon type="md-person"/> 
                                                 <span v-text="device.devicetitle"></span> 
                                             </div>
