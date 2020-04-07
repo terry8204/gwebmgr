@@ -71,7 +71,7 @@
                     <i-option v-for="item in listCmdAction" :value="item.value" :key="item.value">{{ item.label }}</i-option>
                 </i-select> -->
                 <div class="search-wrapper">
-                    <i-input v-model.trim="cmdCodeName" :icon="iconState" @on-change="sosoValueChange" @on-blur="blur" @on-focus="focus"></i-input>
+                    <i-input v-model.trim="cmdCodeName" :icon="iconState" @on-change="sosoValueChange" @on-blur="blur" @on-focus="focus" @on-click="focus"></i-input>
                     <transition name="fade">
                         <ul class="search-item-wrapper" v-show="isShowMatchDev" style="cursor: pointer;">
                             <li v-for="item in cmdList" style="padding:5px 10px;" @click="selectedCmd(item)">

@@ -26,7 +26,7 @@
         </div>
         <div style="float: left;position: relative;width: 300px;">
             <div class="search-wrapper" v-click-outside.capture="onClickOutside">
-                <i-input v-model.trim="sosoValue"  icon="ios-search-outline" @on-change="sosoValueChange" @on-blur="blur" @on-focus="focus" :placeholder="placeholder"></i-input>
+                <i-input v-model.trim="sosoValue"  icon="ios-search-outline" @on-change="sosoValueChange" @on-blur="blur" @on-focus="focus" :placeholder="placeholder" @on-click="focus"></i-input>
                 <transition name="fade">
                     <ul class="search-item-wrapper" v-show="isShowMatchDev">
                         <li  class="demo-auto-complete-item" v-for="item in filterData">
