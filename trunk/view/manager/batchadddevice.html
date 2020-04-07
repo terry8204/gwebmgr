@@ -26,7 +26,7 @@
                 <i-col span="4" style="height: 100%;text-align:right;line-height:32px;"><i style="color: red;display: inline-block;">*</i>&nbsp;选择账号 : &nbsp;</i-col>
                 <i-col span="8">
                     <div class="search-wrapper">
-                        <i-input v-model.trim="createrToUser"  :icon="iconState" @on-change="sosoValueChange" @on-blur="blur" @on-focus="focus"></i-input>
+                        <i-input v-model.trim="createrToUser"  :icon="iconState" @on-change="sosoValueChange" @on-blur="blur" @on-focus="focus" @on-click="focus"></i-input>
                         <transition name="fade">
                             <ul class="search-item-wrapper" v-show="isShowMatchDev" style="cursor: pointer;">
                                 <li v-for="item in userlists" style="padding:5px 10px;" @click="selectedCmd(item)" :class="{'ivu-select-item-focus':item == createrToUser}">
