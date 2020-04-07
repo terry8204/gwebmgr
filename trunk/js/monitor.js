@@ -1206,6 +1206,7 @@ var monitor = {
         getMonitorList: function () {
             var me = this;
             this.getMonitorListByUser({ username: userName }, function (resp) {
+                communicate.$emit("monitorlist", resp.groups);
                 me.groups = me.filterGroups(resp.groups)
                 me.groups.sort(function (a, b) {
                     return a.groupname.localeCompare(b.groupname);

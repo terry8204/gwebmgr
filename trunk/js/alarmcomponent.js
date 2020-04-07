@@ -14,6 +14,7 @@ var waringComponent = {
             waringRecords: [],
             overdueDevice: [],
             alarmTypeList: [],
+            overdueinfolist:[],
             // alarmCmdList: [[]],
             isWaring: false,
             interval: 10000,
@@ -123,6 +124,9 @@ var waringComponent = {
                     break;
                 case 2:
                     this.componentName = 'deviceMsg'
+                    break;
+                case 3:
+                    this.componentName = 'overdueInfo'
                     break;
             }
         },
@@ -272,7 +276,6 @@ var waringComponent = {
             this.waringModal = false
         },
         showDisposeModalFrame: function (param) {
-            console.log('param', param);
             this.waringRowIndex = param.index;
             var deviceInfos = this.$store.state.deviceInfos;
 
@@ -353,6 +356,26 @@ var waringComponent = {
                     me.queryWaringMsg();
                 }
             })
+        },
+        getOverdueInfoList:function(groups){
+            var list = [];
+            var monthTime = 30 * 24 *60 * 60 * 1000;
+            groups.forEach(function(group){
+                group.devices.forEach(function(device){
+                    if(device.expirenotifytime > 0){
+                        var time = device.expirenotifytime - Date.now();
+                        if(time < monthTime){
+                            list.push({
+                                devicename:device.devicename,
+                                deviceid:device.deviceid,
+                                overduetime:device.overduetime,
+                                days:time
+                            });
+                        }
+                    }
+                });
+            });
+            return list;
         }
     },
     components: {
@@ -512,6 +535,54 @@ var waringComponent = {
             mounted: function () {
 
             }
+        },
+        overdueInfo:{
+            template:'<Table :height="tabheight" border :columns="columns" :data="overdueinfolist"></Table>',
+            props: ['overdueinfolist', 'tabletype', 'wrapperheight'],
+            data:function(){
+                var me = this;
+                return {
+                    columns:[
+                        {
+                            type:'index',width:60
+                        },
+                        {
+                            title: me.$t("alarm.devName"),
+                            key: 'devicename'
+                        },
+                        {
+                            title: me.$t("alarm.devNum"),
+                            key: 'deviceid'
+                        },
+                        {
+                            title: me.$t("alarm.overdueTime"),
+                            render:function(h,params){
+                                var overduetime = params.row.overduetime;
+                                return h('span',{},DateFormat.format(new Date(overduetime),'yyyy-MM-dd'));
+                            }
+                        },
+                        {   
+                            title:'到期天数',
+                            render:function(h,params){
+                                var mss = params.row.days;
+                                var days = parseInt(mss / (1000 * 60 * 60 * 24));
+                                var dayStr = "";
+                                if(mss > 0){
+                                    dayStr += "剩" + days + "天过期";
+                                }else if(mss < 0){
+                                    dayStr += "已过期" + Math.abs(days) + "天";
+                                }
+                                return h('span',{}, dayStr);
+                            }
+                        }
+                    ]
+                }
+            },
+            computed: {
+                tabheight: function () {
+                    return this.wrapperheight - 24;
+                },
+            },
         }
     },
     mounted: function () {
@@ -523,6 +594,7 @@ var waringComponent = {
         this.timingRequestMsg();
         this.queryAlarmDescr();
         this.changeWrapperCls();
+
         communicate.$on("remindmsg", function (data) {
             me.alarmMgr.addRecord(data);
             me.refreshAlarmToUi();
@@ -536,6 +608,9 @@ var waringComponent = {
             data.createtimeStr = DateFormat.longToDateTimeStr(data.createtime, 0);
             me.msgListObj.addMsg(data);
             me.overdueDevice = me.msgListObj.getMsgList().reverse();
+        });
+        communicate.$on("monitorlist", function (groups) {
+           me.overdueinfolist = me.getOverdueInfoList(groups);
         });
         // timeout定时器
         var timeout = null;

@@ -667,7 +667,7 @@ var mixIn = {
       var start = (index - 1) * 10;
       var me = this;
       this.currentIndex = index;
-      if (this.queryParameter != "") {
+      if (this.queryParameter != "" || this.isQuery) {
         this.tableData = this.queryTableData.slice(start, offset);
       } else {
         this.tableData = this.recordsList.slice(start, offset);
@@ -677,6 +677,9 @@ var mixIn = {
   },
   watch: {
     queryParameter: function () {
+      if( this.isQuery !== undefined ){
+        this.isQuery = false;
+      }
       if (!this.queryParameter) {
         this.tableData = this.recordsList.slice(0, 10);
         this.currentIndex = 1;

@@ -46,6 +46,10 @@
                         <i-option v-for="item in groupsList" :value="item.value" :key="item.value">{{ item.label }}</i-option>
                     </i-select>
                 </i-col>
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;转发地址 : &nbsp;</i-col>
+                <i-col span="8">
+                    <i-input v-model.trim="forwardurl"></i-input>
+                </i-col>
             </Row>
 
             <Row style="margin: 10px 0">
@@ -69,12 +73,9 @@
             </Row>
 
             <Row style="margin: 10px 0">
-                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;"><i style="color: red;display: inline-block;">*</i>&nbsp;终身免费 : &nbsp;</i-col>
-                <i-col span="8">  
-                    <i-select v-model="isfree" style="width: 100%">
-                        <i-option value="1">是</i-option>
-                        <i-option value="0">否</i-option>
-                    </i-select>
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">序号长度: &nbsp;</i-col>
+                <i-col span="8">
+                    <input-number v-model.number="idLength" :max="15" :min="8" :editable="false" style="width: 100%;"></input-number>
                 </i-col>
                 <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;{{$t("alarm.overdueTime")}} : &nbsp;</i-col>
                 <i-col span="8">
@@ -110,17 +111,6 @@
                         <i-option value="1">{{$t("user.allow")}}</i-option>                     
                     </i-select>
                 </i-col>                  
-            </Row>
-
-            <Row style="margin: 10px 0">
-                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">序号长度: &nbsp;</i-col>
-                    <i-col span="8">
-                        <input-number v-model.number="idLength" :max="15" :min="8" :editable="false" style="width: 100%;"></input-number>
-                    </i-col>
-                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;转发地址 : &nbsp;</i-col>
-                    <i-col span="8">
-                        <i-input v-model.trim="forwardurl"></i-input>
-                    </i-col>
             </Row>
 
             <Row style="margin: 10px 0">
@@ -185,7 +175,6 @@
                 userType:null,
                 timeoutIns:null,
                 isShowMatchDev:false,
-                isfree:"1",
                 isOk:false
             },
             methods: {
@@ -289,8 +278,7 @@
                     var data = {
                         deviceids:  deviceids,                 
                         devicetype:this.devicetype,
-                        isfree:Number(this.isfree),
-                        overduetime:new Date(this.overduetime).getTime(),
+                        expirenotifytime:new Date(this.overduetime).getTime(),
                         loginenable:Number(this.loginenable),
                         deviceenable:Number(this.deviceenable),
                     };      

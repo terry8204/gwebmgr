@@ -50,9 +50,7 @@ var treeMixin = {
             for (var i = 0; i < this.groupslist.length; i++) {
                 var group = this.groupslist[i];
                 if (
-                    group.title.toLowerCase().indexOf(value) !== -1 ||
-                    group.firstLetter.indexOf(value) !== -1 ||
-                    group.pinyin.indexOf(value) !== -1
+                    group.title.toLowerCase().indexOf(value) !== -1 
                 ) {
                     filterData.push(group)
                 } else {
@@ -1170,7 +1168,7 @@ function accDetails (groupslist) {
                     if(group.devices && group.devices.length != 0){
                         group.devices.forEach(function(device){
                             children.push({
-                                title:device.devicename,
+                                title:device.title,
                                 deviceid:device.deviceid,
                                 firstLetter:device.firstLetter,
                                 pinyin:device.pinyin
@@ -1193,7 +1191,7 @@ function accDetails (groupslist) {
         mounted: function () {
             var me = this;
             this.groupslist = this.getTreeGroupslist(groupslist);
-            this.treeData = this.getTreeGroupslist(groupslist);
+            this.treeData = this.groupslist;
             this.calcTableHeight();
             window.onresize = function () {
                 me.calcTableHeight();
@@ -2049,8 +2047,9 @@ var reportForm = {
                 if (resp.status == 0) {
                     if (resp.groups && resp.groups.length) {
                         callback(resp.groups);
+                    }else{
+                        callback([]);
                     }
-
                 } else if (resp.status == 3) {
                     me.$Message.error(me.$t("monitor.reLogin"));
                     Cookies.remove('token');
@@ -2072,12 +2071,37 @@ var reportForm = {
                 me.$refs.navMenu.updateOpened();
                 me.loadPage(pageHtml);
             })
-        }
+        },
+        getDeviceTypeName: function (deviceTypeId) {
+            var typeName = "", deviceTypes = this.deviceTypes;
+            for (var index = 0; index < deviceTypes.length; index++) {
+                var element = deviceTypes[index];
+                if (element.devicetypeid === deviceTypeId) {
+                    typeName = element.typename;
+                    break
+                }
+            }
+            return typeName;
+        },
+    },
+    computed:{
+        deviceTypes: function () {
+            return this.$store.state.deviceTypes;
+        },
     },
     mounted: function () {
         var me = this;
         this.getMonitorListByUser(function (groups) {
+            console.log('groups',groups);
             me.groupslist = utils.getPinyin(groups);
+            me.groupslist.sort(function (a, b) {
+                return a.groupname.localeCompare(b.groupname);
+            });
+            me.groupslist.forEach(function (group) {
+                group.devices.sort(function (a,b) {
+                    return a.title.localeCompare(b.title);
+                });
+            });
             if (isToAlarmListRecords) {
                 me.toAlarmRecords("allAlarm", "allalarm.html");
             } else if (isToPhoneAlarmRecords) {

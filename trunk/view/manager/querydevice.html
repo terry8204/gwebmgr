@@ -12,6 +12,19 @@
             <li style="float:right;width:auto;">
                 <i-button @click="exportDevice">导出当前设备</i-button>
             </li>
+            <li style="float:right;width:auto;">
+                <i-button @click="expireNotifyTime(365)">过期一年</i-button>
+            </li>
+            <li style="float:right;width:auto;">
+                <i-button @click="expireNotifyTime(180)">过期半年</i-button>
+            </li>
+            <li style="float:right;width:auto;">
+                <i-button @click="expireNotifyTime(30)">过期一个月</i-button>
+            </li>
+     
+            <li style="float:right;width:auto;">
+                <i-button @click="expireNotifyTime(7)">过期7天</i-button>
+            </li>
         </ul>
 
         <div class="table-wraper">
@@ -46,11 +59,10 @@
                     </i-col>
                 </Row>
                 <Row style="margin: 10px 0">
-                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;"><i style="color: red;display: inline-block;">*</i>&nbsp;终身免费 : &nbsp;</i-col>
-                    <i-col span="8">  
-                        <i-select v-model="isfree" style="width: 100%" :disabled="disabled">
-                            <i-option value="1">是</i-option>
-                            <i-option value="0">否</i-option>
+                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">{{$t("user.grouping")}} : &nbsp;</i-col>
+                    <i-col span="8">
+                        <i-select v-model="groupid">
+                            <i-option v-for="item in groupsList" :value="item.value" :key="item.value">{{ item.label }}</i-option>
                         </i-select>
                     </i-col>
                     <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">SIM : &nbsp;</i-col>
@@ -87,12 +99,6 @@
                 </Row>
     
                 <Row style="margin: 10px 0"> 
-                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">{{$t("user.grouping")}} : &nbsp;</i-col>
-                    <i-col span="8">
-                        <i-select v-model="groupid">
-                            <i-option v-for="item in groupsList" :value="item.value" :key="item.value">{{ item.label }}</i-option>
-                        </i-select>
-                    </i-col>
                     <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;网络类型 : &nbsp;</i-col>
                     <i-col span="8">
                         <i-select v-model="teltype">
@@ -101,6 +107,10 @@
                             <i-option value="3">4G</i-option>
                         </i-select>
                     </i-col> 
+                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;转发地址 : &nbsp;</i-col>
+                    <i-col span="8">
+                        <i-input v-model.trim="forwardurl"></i-input>
+                    </i-col>
                 </Row>
     
                 <Row style="margin: 10px 0">
@@ -146,12 +156,7 @@
                         </i-select>
                     </i-col>     
                 </Row>    
-                <Row style="margin: 10px 0">  
-                        <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;转发地址 : &nbsp;</i-col>
-                        <i-col span="20">
-                            <i-input v-model.trim="forwardurl"></i-input>
-                        </i-col>
-                </Row>              
+            
                 <Row style="margin: 10px 0">
                     <i-col span="6" :offset="7">
                         <i-button style="width: 100%" @click="handleSubmit">{{$t("bgMgr.submit")}}</i-button>
@@ -170,6 +175,7 @@ vueInstanse = new Vue({
             el:"#querydev",
             i18n: utils.getI18n(),
             data:{
+                isQuery:true,
                 userType:Cookies.get('userType'),
                 modal:false,
                 queryParameter:"",
@@ -321,7 +327,6 @@ vueInstanse = new Vue({
                 userlists:[],
                 isShowMatchDev:false,
                 monitor:"",
-                isfree:'1'
             },
             methods: {
                 handlerClickQuery () {
@@ -356,12 +361,32 @@ vueInstanse = new Vue({
                     this.total = this.queryTableData.length;
 
                 },
+                expireNotifyTime:function(dayNumber){
+                    this.isQuery = true;
+                    var queryTableData = [];
+                    this.recordsList.forEach(function (record) {
+                        if(record.expirenotifytime > 0){
+                            var time = record.expirenotifytime - Date.now();
+                            var days = parseInt(time / (1000 * 60 * 60 * 24));
+                            if(days <= 0){
+                                if(Math.abs(days) <= dayNumber){
+                                    queryTableData.push(record);
+                                }
+                            }
+                        }
+                    });
+
+                    this.currentIndex = 1;
+                    this.queryTableData = queryTableData;
+                    this.tableData = this.queryTableData.slice(0,10);
+                    this.total = this.queryTableData.length;
+                },
                 filterDataInfo:function(devList){
                     var me = this;
                     var data = [];
                     devList.forEach(function (dev) { 
                         dev.createtimestr = DateFormat.longToDateTimeStr(dev.createtime,0);
-                        dev.overduetimestr = DateFormat.longToDateTimeStr(dev.overduetime,0);
+                        dev.overduetimestr = DateFormat.longToDateTimeStr(dev.expirenotifytime,0);
                         dev.companyname = me.getCustimerName(dev.companyid);
                         dev.groupname = me.getGroupName(dev.groupid);
                         dev.pinYin = __pinyin.getPinyin(dev.devicename);
@@ -496,10 +521,9 @@ vueInstanse = new Vue({
                     var data = {
                         deviceid:this.deviceid,
                         devicetype:this.devicetype,
-                        overduetime:new Date(this.overduetime).getTime(),
+                        expirenotifytime:new Date(this.overduetime).getTime(),
                         loginenable:Number(this.loginenable),
                         deviceenable:Number(this.deviceenable),
-                        isfree:Number(this.isfree),
                         allowedit:Number(this.allowedit)
                     };      
                     
@@ -543,7 +567,7 @@ vueInstanse = new Vue({
                         if(resp.status == 0){
                             editObject.teltype = String(data.teltype);
                             var newData = Object.assign(editObject,data);
-                                newData.overduetimestr = DateFormat.longToDateTimeStr(data.overduetime,0);
+                                newData.overduetimestr = DateFormat.longToDateTimeStr(data.expirenotifytime,0);
                             me.tableData[me.editDeviceIndex] = newData; 
                             utils.changeSingleItemData(me.recordsList,newData,'deviceid');
                             isNeedRefresh = true;                     
@@ -586,7 +610,6 @@ vueInstanse = new Vue({
                     me.forwardurl = editObject.forwardurl;
                     me.createrToUser = editObject.creater;
                     me.monitor = editObject.monitor;
-                    me.isfree = String(editObject.isfree);
                     me.teltype = String(editObject.teltype);
                     me.allowedit = String(editObject.allowedit);
                 },
@@ -653,7 +676,6 @@ vueInstanse = new Vue({
                                 groupsList.push({label:group.groupname,value:group.groupid});
                             })
                         }
-                        console.log("groupList",groupsList)
                         me.groupsList = groupsList;
                     });
                 },1000)
