@@ -13,17 +13,14 @@
                 <i-button @click="exportDevice">导出当前设备</i-button>
             </li>
             <li style="float:right;width:auto;">
-                <i-button @click="expireNotifyTime(365)">过期一年</i-button>
+                <i-button @click="expireNotifyTime(180)">已过期</i-button>
             </li>
             <li style="float:right;width:auto;">
-                <i-button @click="expireNotifyTime(180)">过期半年</i-button>
-            </li>
-            <li style="float:right;width:auto;">
-                <i-button @click="expireNotifyTime(30)">过期一个月</i-button>
+                <i-button @click="expireNotifyTime(30)">一个月内过期</i-button>
             </li>
      
             <li style="float:right;width:auto;">
-                <i-button @click="expireNotifyTime(7)">过期7天</i-button>
+                <i-button @click="expireNotifyTime(7)">7天内过期</i-button>
             </li>
         </ul>
 
@@ -364,13 +361,20 @@ vueInstanse = new Vue({
                 expireNotifyTime:function(dayNumber){
                     this.isQuery = true;
                     var queryTableData = [];
+                    
                     this.recordsList.forEach(function (record) {
                         if(record.expirenotifytime > 0){
                             var time = record.expirenotifytime - Date.now();
                             var days = parseInt(time / (1000 * 60 * 60 * 24));
-                            if(days <= 0){
-                                if(Math.abs(days) <= dayNumber){
+                            if(dayNumber == 180){
+                                if(days < 0){
                                     queryTableData.push(record);
+                                }
+                            }else{
+                                if(days >= 0){
+                                    if(days <= dayNumber){
+                                        queryTableData.push(record);
+                                    }
                                 }
                             }
                         }
@@ -697,7 +701,7 @@ vueInstanse = new Vue({
             },
             computed:{
                 disabled:function(){
-                    return this.userType !== '0';
+                    return this.userType >= Number('3');
                 },
                 isAlloweditDisabled:function(){
                     return !(Number( this.userType ) <= 1); 

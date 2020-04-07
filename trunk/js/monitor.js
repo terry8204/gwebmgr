@@ -72,8 +72,9 @@ var monitor = {
                 devicename: '',
                 simnum: '',
                 deviceid: '',
-                remark: ''
+                remark: '',
             },
+            expirenotifytime:DateFormat.longToDateTimeStr(Date.now(),0),
             currentDeviceType: null,  // 选中设备的类型
             currentDevDirectiveList: [],  // 选中设备的类型对应的设备指令
             selectedCmdInfo: {},  // 选中设备指令的信息
@@ -865,7 +866,9 @@ var monitor = {
             this.currentDeviceType = devicetype;
 
             me.$store.commit('currentDeviceId', deviceid);
-            me.$store.commit('currentDeviceRecord', devLastInfo);
+            if(devLastInfo){
+                me.$store.commit('currentDeviceRecord', devLastInfo);
+            }
             globalDeviceId = deviceid;
 
             me.groups.forEach(function (group) {
@@ -896,7 +899,8 @@ var monitor = {
             var sendData = {
                 deviceid: data.deviceid,
                 devicename: data.devicename,
-                remark: data.remark
+                remark: data.remark,
+                expirenotifytime:new Date(this.expirenotifytime).getTime()
             };
             var url = myUrls.editDeviceSimple();
             if (data.devicename.length == 0 || data.devicename == '') {
@@ -916,6 +920,7 @@ var monitor = {
                     me.$Message.success(me.$t("message.changeSucc"));
                     me.deviceInfos[data.deviceid].simnum = sendData.simnum;
                     me.deviceInfos[data.deviceid].remark = data.remark;
+                    me.deviceInfos[data.deviceid].expirenotifytime = data.expirenotifytime;
                     var record = me.getSingleDeviceInfo(data.deviceid);
                     if (record) {
                         me.positionLastrecords[data.deviceid].devicename = sendData.devicename;
@@ -927,21 +932,22 @@ var monitor = {
                 }
             })
         },
-        editDevice: function (device) {
-            this.$store.commit('editDeviceInfo', device);
-            var deviceid = device.deviceid;
+        editDevice: function (deviceid) {
             var deviceInfo = this.deviceInfos[deviceid];
+            this.$store.commit('editDeviceInfo', deviceInfo);
             var disabled = true;
             if (Number(this.userType) <= 1) {
                 disabled = false;
             } else {
                 disabled = deviceInfo.allowedit == 0;
             }
+            console.log(deviceInfo.expirenotifytime);
             this.editDevData.devicename = deviceInfo.devicename;
             this.editDevData.simnum = deviceInfo.simnum;
             this.editDevData.deviceid = deviceid;
             this.editDevData.remark = deviceInfo.remark;
             this.editDevData.disabled = disabled;
+            this.expirenotifytime = DateFormat.longToDateTimeStr(deviceInfo.expirenotifytime,0);
             this.editDevModal = true;
         },
         playBack: function (deviceid) {
@@ -1218,6 +1224,10 @@ var monitor = {
                     me.updateTreeOnlineState();
                     communicate.$on("positionlast", me.handleWebSocket);
                     communicate.$on("on-click-marker", me.openTreeDeviceNav);
+                    communicate.$on("on-click-expiration", function(deviceid){
+                        me.editDevice(deviceid);
+                        me.openTreeDeviceNav(deviceid);
+                    });
                 }, function (error) { });
                 me.isLoadGroup = false;
                 me.setIntervalReqRecords();

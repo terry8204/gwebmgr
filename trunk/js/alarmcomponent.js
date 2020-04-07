@@ -368,12 +368,15 @@ var waringComponent = {
                             list.push({
                                 devicename:device.devicename,
                                 deviceid:device.deviceid,
-                                overduetime:device.overduetime,
+                                expirenotifytime:device.expirenotifytime,
                                 days:time
                             });
                         }
                     }
                 });
+            });
+            list.sort(function(a,b){
+                return  b.days - a.days;
             });
             return list;
         }
@@ -557,8 +560,8 @@ var waringComponent = {
                         {
                             title: me.$t("alarm.overdueTime"),
                             render:function(h,params){
-                                var overduetime = params.row.overduetime;
-                                return h('span',{},DateFormat.format(new Date(overduetime),'yyyy-MM-dd'));
+                                var expirenotifytime = params.row.expirenotifytime;
+                                return h('span',{},DateFormat.format(new Date(expirenotifytime),'yyyy-MM-dd'));
                             }
                         },
                         {   
@@ -573,6 +576,30 @@ var waringComponent = {
                                     dayStr += "已过期" + Math.abs(days) + "天";
                                 }
                                 return h('span',{}, dayStr);
+                            }
+                        },
+                        {
+                            title: me.$t("alarm.action"),
+                            key: 'action',
+                            width: 120,
+                            render: function (h, params, a) {
+                                return h('div', [
+                                    h(
+                                        'Button',
+                                        {
+                                            props: {
+                                                type: 'primary',
+                                                size: 'small'
+                                            },
+                                            on: {
+                                                click: function () {
+                                                    communicate.$emit('on-click-expiration', params.row.deviceid);
+                                                }
+                                            }
+                                        },
+                                        me.$t("monitor.edit")
+                                    )
+                                ])
                             }
                         }
                     ]

@@ -107,7 +107,8 @@
                 overdueTime: "Overdue Date",
                 isOverdue: "Overdue",
                 createTime: "Create time",
-                content: 'Content'
+                content: 'Content',
+                expirationInfo:'ExpirationInfo',
             },
             monitor: {
                 devGroup: "Devices",
@@ -428,7 +429,8 @@
                 overdueTime: "过期时间",
                 isOverdue: "是否过期",
                 createTime: "创建时间",
-                content: '内容'
+                content: '内容',
+                expirationInfo:'过期信息',
             },
             monitor: {
                 devGroup: "设备组",

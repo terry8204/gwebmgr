@@ -115,6 +115,7 @@ vstore = new Vuex.Store({
       state.editDeviceInfo = editDeviceInfo;
     },
     currentDeviceRecord: function (state, record) {
+      console.log("record",record)
       state.currentDeviceRecord = record;
       state.currentDeviceId = record.deviceid;
     },

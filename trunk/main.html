@@ -269,7 +269,7 @@
                                             <span v-text="device.devicetitle"></span> 
                                         </div>
                                         <ul class="device-controller" v-if="device.isSelected">
-                                            <li @click="editDevice(device)"><Icon type="ios-create"/><p>{{$t("monitor.edit")}}</p><li>
+                                            <li @click="editDevice(device.deviceid)"><Icon type="ios-create"/><p>{{$t("monitor.edit")}}</p><li>
                                             <li @click="playBack(device.deviceid)"><Icon type="md-planet"/><p>{{$t("monitor.track")}}</p><li>
                                             <li @click="trackMap(device.deviceid)"><Icon type="md-person"/><p>{{$t("monitor.following")}}</p><li> 
                                             <li  @mouseover="handleMousemove($event)">
@@ -464,6 +464,12 @@
                         <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t("monitor.phoneNumber")}} : &nbsp;</i-col>
                         <i-col span="16">
                             <i-input v-model.trim="editDevData.simnum" :disabled="editDevData.disabled"></i-input>
+                        </i-col>
+                    </Row>
+                    <Row style="margin: 10px 0">
+                        <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t("alarm.overdueTime")}} : &nbsp;</i-col>
+                        <i-col span="16">
+                            <date-picker type="date" v-model="expirenotifytime" style="width:100%" :disabled="editDevData.disabled"></date-picker>
                         </i-col>
                     </Row>
                     <Row style="margin: 10px 0">
@@ -919,7 +925,7 @@
                     <ul>
                         <li :class="{selected:index == 1}" @click="changeComponent(1)">{{$t("alarm.alarmMsg")}}</li>
                         <li :class="{selected:index == 2}" @click="changeComponent(2)">{{$t("alarm.devMsg")}}</li>
-                        <li :class="{selected:index == 3}" @click="changeComponent(3)">过期信息</li>
+                        <li :class="{selected:index == 3}" @click="changeComponent(3)">{{$t("alarm.expirationInfo")}}({{overdueinfolist.length}})</li>
                         <!-- <li @click="filterWaringType"> [{{$t("alarm.filterAlarmType")}}] </li> -->
                     </ul> 
                     <div class="shrink-btn">
