@@ -578,17 +578,14 @@ var utils = {
     return typeName;
   },
   getUserInfoList: function () {
-    var url = myUrls.queryUser();
+    var url = myUrls.querySubUserNameList();
     utils.sendAjax(url, { username: userName }, function (resp) {
       if (resp.status == 0) {
-        if (resp.userlists) {
-          resp.userlists.forEach(function (user) {
-            // userlists.push({ label: user.username, value: user.username });
-            userlists.push(user.username);
-          })
+        if (resp.usernames) {
+          userlists = resp.usernames;
         }
       }
-      userlists.push(userName);
+
     });
   },
   debounce: function (func, wait, immediate) {

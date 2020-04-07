@@ -2092,7 +2092,6 @@ var reportForm = {
     mounted: function () {
         var me = this;
         this.getMonitorListByUser(function (groups) {
-            console.log('groups',groups);
             me.groupslist = utils.getPinyin(groups);
             me.groupslist.sort(function (a, b) {
                 return a.groupname.localeCompare(b.groupname);

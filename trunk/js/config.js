@@ -114,6 +114,9 @@ var myUrls = {
   queryUser: function () {
     return this.apihost + 'webapi?action=queryuserlist&token=' + token
   },
+  querySubUserNameList: function () {
+    return this.apihost + 'webapi?action=querysubusernamelist&token=' + token
+  },
   resetUserLoginPwd: function () {
     return this.apihost + 'webapi?action=resetuserpwd&token=' + token
   },
