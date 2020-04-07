@@ -582,6 +582,9 @@ var utils = {
     utils.sendAjax(url, { username: userName }, function (resp) {
       if (resp.status == 0) {
         if (resp.usernames) {
+          resp.usernames.sort(function (a, b) {
+              return a.localeCompare(b);
+          });
           userlists = resp.usernames;
         }
       }
