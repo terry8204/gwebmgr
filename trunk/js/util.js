@@ -677,10 +677,10 @@ var mixIn = {
   },
   watch: {
     queryParameter: function () {
-      if( this.isQuery !== undefined ){
-        this.isQuery = false;
-      }
       if (!this.queryParameter) {
+        if( this.isQuery !== undefined ){
+          this.isQuery = false;
+        }
         this.tableData = this.recordsList.slice(0, 10);
         this.currentIndex = 1;
         this.total = this.recordsList.length;

@@ -172,7 +172,7 @@ vueInstanse = new Vue({
             el:"#querydev",
             i18n: utils.getI18n(),
             data:{
-                isQuery:true,
+                isQuery:false,
                 userType:Cookies.get('userType'),
                 modal:false,
                 queryParameter:"",
@@ -333,7 +333,7 @@ vueInstanse = new Vue({
                     if (!self.queryParameter){
                         return;
                     };
-
+                    this.isQuery = false;
                     this.recordsList.forEach(function (record) {
                         var deviceid = record.deviceid;
                         var devicename = record.devicename;
