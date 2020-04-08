@@ -320,7 +320,7 @@
                                                 <span v-text="device.devicetitle"></span> 
                                             </div>
                                             <ul class="device-controller" v-if="device.isSelected">
-                                                <li @click="editDevice(device)"><Icon type="ios-create"/><p>{{$t("monitor.edit")}}</p><li>
+                                                <li @click="editDevice(device.deviceid)"><Icon type="ios-create"/><p>{{$t("monitor.edit")}}</p><li>
                                                 <li @click="playBack(device.deviceid)"><Icon type="md-planet"/><p>{{$t("monitor.track")}}</p><li>
                                                 <li @click="trackMap(device.deviceid)"><Icon type="md-person"/><p>{{$t("monitor.following")}}</p><li> 
                                                 <li  @mouseover="handleMousemove($event)">
@@ -371,7 +371,7 @@
                                                 <span v-text="device.devicetitle"></span> 
                                             </div>
                                             <ul class="device-controller" v-if="device.isSelected">
-                                                <li @click="editDevice(device)"><Icon type="ios-create"/><p>{{$t("monitor.edit")}}</p><li>
+                                                <li @click="editDevice(device.deviceid)"><Icon type="ios-create"/><p>{{$t("monitor.edit")}}</p><li>
                                                 <li @click="playBack(device.deviceid)"><Icon type="md-planet"/><p>{{$t("monitor.track")}}</p><li>
                                                 <li @click="trackMap(device.deviceid)"><Icon type="md-person"/><p>{{$t("monitor.following")}}</p><li> 
                                                 <li  @mouseover="handleMousemove($event)">
