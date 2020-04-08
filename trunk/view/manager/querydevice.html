@@ -685,8 +685,6 @@ vueInstanse = new Vue({
                 },
                 createrToUser:function(newVal){
                     if(userlists.indexOf(newVal)!=-1){
-                        console.log('createrToUser',newVal);
-                        console.log('找到对应的用户');
                         this.queryGroupsByUserName(newVal);
                     }
                     else
