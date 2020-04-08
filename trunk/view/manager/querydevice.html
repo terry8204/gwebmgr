@@ -58,7 +58,7 @@
                 <Row style="margin: 10px 0">
                     <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">{{$t("user.grouping")}} : &nbsp;</i-col>
                     <i-col span="8">
-                        <i-select v-model="groupid">
+                        <i-select v-model.sync="groupid">
                             <i-option v-for="item in groupsList" :value="item.value" :key="item.value">{{ item.label }}</i-option>
                         </i-select>
                     </i-col>
@@ -251,6 +251,8 @@ vueInstanse = new Vue({
                                             // vueInstanse.editDevice(params.row);
                                             vueInstanse.editDeviceIndex = params.index;
                                             editObject = params.row;
+                                            vueInstanse.groupid = editObject.groupid;
+                                            vueInstanse.createrToUser = editObject.creater;
                                             vueInstanse.setDeviceData();
                                             vueInstanse.modal = true;
                                         }
@@ -302,9 +304,8 @@ vueInstanse = new Vue({
                 queryTableData:[],
                 tableData: [],
                 recordsList:[],
-                customersList:null,
                 groupsList:[],
-                grouplist:[],
+                
                 iconState:"ios-arrow-down",
                 deviceid:"",
                 devicename:"",
@@ -391,7 +392,6 @@ vueInstanse = new Vue({
                     devList.forEach(function (dev) { 
                         dev.createtimestr = DateFormat.longToDateTimeStr(dev.createtime,0);
                         dev.overduetimestr = DateFormat.longToDateTimeStr(dev.expirenotifytime,0);
-                        dev.companyname = me.getCustimerName(dev.companyid);
                         dev.groupname = me.getGroupName(dev.groupid);
                         dev.pinYin = __pinyin.getPinyin(dev.devicename);
                         dev.firstLetter = __pinyin.getFirstLetter(dev.devicename);
@@ -411,22 +411,11 @@ vueInstanse = new Vue({
                         }
                     });
                 },
-                getCustimerName:function (custimerId) { 
-                    var custimerName = "";
-                    this.customersList.forEach(function (item) { 
-                        if(item.companyid == custimerId){
-                            custimerName = item.companyname;
-                        }
-                    });
-                    return custimerName;
-                },
                 getGroupName:function (groupId) { 
                     var groupName = "";
-                    this.groupsList.forEach(function (item) { 
-                        if(item.groupid == groupId){
-                            groupName = item.groupname;
-                        }
-                    });
+                    if(this.allGroups[groupId]!==undefined){
+                        groupName = this.allGroups[groupId].groupname;
+                    }
                     return groupName;
                 },
                 getDeviceList:function(){
@@ -434,40 +423,18 @@ vueInstanse = new Vue({
                     var url = myUrls.queryDeviceListWithGroupInfo();
                     utils.sendAjax(url,{},function(resp){
                         me.loading = false;
-                        if(resp.status == 0 && resp.devices != null){           
+                        if(resp.status == 0 && resp.devices != null){   
+                            resp.groups.forEach(function(item){
+                                me.allGroups[item.groupid] = item;
+                            });    
                             me.recordsList = me.filterDataInfo(resp.devices);
                             me.tableData = me.recordsList.slice(0,10);
                             me.total = me.recordsList.length;
+
                         }else{
                             me.$Message.error(resp.cause);
                         }
                     });
-                },
-                queryAllCompanyInfo:function(claaback){
-                    var url = myUrls.queryCompanyByCreater();
-                    utils.sendAjax(url,{},claaback)
-                },
-                doQueryAllCompanyInfo:function(resp){
-                    var me = this;
-                    if(resp.status===0 && resp.records != null){
-                        me.customersList = resp.records;
-                    }
-                    me.queryAllgroupsInfo();
-                },
-                queryAllgroupsInfo:function(){
-                    var url = myUrls.queryGroupByUser();
-                    utils.sendAjax(url,{},this.doQueryAllgroupsInfo);
-                },
-                doQueryAllgroupsInfo:function(resp){
-                    var me = this,groupList = [];
-                    if(resp.status === 0 && resp.grouplist!==null){
-                        me.groupsList = resp.grouplist; 
-                        resp.grouplist.forEach(function (group) { 
-                            groupList.push({label:group.groupname,value:group.groupid});
-                        })
-                        me.groupList = groupList; 
-                    }
-                    me.getDeviceList();  
                 },
                 handleDelete:function(deviceid){
                     var me = this;
@@ -605,14 +572,13 @@ vueInstanse = new Vue({
                     me.simnum = editObject.simnum;
                     me.overduetime = editObject.overduetimestr;
                     me.devicename  = editObject.devicename;
-                    me.groupid = editObject.groupid;
                     me.devicetype = editObject.devicetype;
                     me.loginenable = editObject.loginenable + "";
                     me.deviceenable = "" +  editObject.deviceenable;
                     me.reportedpoint = editObject.reportedpoint ;
                     me.totalpoint = editObject.totalpoint ;
                     me.forwardurl = editObject.forwardurl;
-                    me.createrToUser = editObject.creater;
+                    // me.createrToUser = editObject.creater;
                     me.monitor = editObject.monitor;
                     me.teltype = String(editObject.teltype);
                     me.allowedit = String(editObject.allowedit);
@@ -626,7 +592,6 @@ vueInstanse = new Vue({
                         }
                         me.deviceTypeList.push({value:item.devicetypeid,label:label});
                     })
-
                 },
                 selectedCmd:function(item){
                     var me = this;
@@ -670,19 +635,45 @@ vueInstanse = new Vue({
                     })
                     this.userlists = list;
                 },
-                queryGroupsByUserName:utils.debounce(function(userName){
-                    var data = { username:userName },
-                        url = myUrls.queryGroupsByUserName() , me = this;
-                    utils.sendAjax(url,data,function(resp){
-                        var groupsList = [];
-                        if(resp.status === 0 && resp.grouplist){
-                            resp.grouplist.forEach(function (group) { 
-                                groupsList.push({label:group.groupname,value:group.groupid});
-                            })
-                        }
-                        me.groupsList = groupsList;
-                    });
-                },1000)
+                queryGroupsByUserName:function(userName){
+                    me = this;
+                     groupsList = [];
+
+                    // utils.sendAjax(url,data,function(resp){
+                    //     var groupsList = [];
+                    //     if(resp.status === 0 && resp.grouplist){
+                    //         resp.grouplist.forEach(function (group) { 
+                    //             groupsList.push({label:group.groupname,value:group.groupid});
+                    //         })
+                    //     }
+                    //     me.groupsList = groupsList;
+                    // });
+                      var groupid = editObject.groupid;
+                      var foundGroupId = false;
+                      for(var key in me.allGroups){
+                          var item = me.allGroups[key];
+                          if(item.creater == userName){
+                            groupsList.push({label:item.groupname,value:item.groupid});
+                            if(item.groupid == groupid)
+                            {
+                                foundGroupId = true;
+                            }
+                          }
+                      }   
+                      
+                      me.groupsList = groupsList;
+                      me.groupid = editObject.groupid;
+                      if(foundGroupId)
+                      {
+                        vueInstanse.groupid = editObject.groupid;
+                      }
+                      else
+                      {
+                        vueInstanse.groupid = 0;
+                      }
+                      
+                                   
+                },
             },
             watch: {
                 isShowMatchDev:function(){
@@ -694,8 +685,14 @@ vueInstanse = new Vue({
                 },
                 createrToUser:function(newVal){
                     if(userlists.indexOf(newVal)!=-1){
-                        this.groupid = "";
+                        console.log('createrToUser',newVal);
+                        console.log('找到对应的用户');
                         this.queryGroupsByUserName(newVal);
+                    }
+                    else
+                    {
+                        this.groupsList = [];
+                        this.groupid = 0;
                     }
                 }
             },
@@ -709,12 +706,10 @@ vueInstanse = new Vue({
             },
             mixins:[mixIn],
             mounted:function () {
-                this.queryAllCompanyInfo(this.doQueryAllCompanyInfo);
-                // if(userlists.indexOf(userName) == -1){
-                //     userlists.push(userName);
-                // };
                 this.userlists = userlists;
                 this.userType = vstore.state.userType;
+                this.allGroups = {};
+                this.getDeviceList();
                 this.getDeviceType();  
             }
         })
