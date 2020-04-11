@@ -50,6 +50,7 @@ var bgManager = {
     },
     methods: {
         selectditem: function(name) {
+            window.onresize = null;
             utils.deviceInfos = null;
             if (this.currentPage == name) {
                 return

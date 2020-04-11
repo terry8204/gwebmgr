@@ -7,8 +7,22 @@
     .error {
         color: #e4393c;
     }
+    
+    .demo-spin-container {
+        display: inline-block;
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        background-color: rgba(255, 255, 255, .6);
+        z-index: 999;
+    }
 </style>
 <div id="batchmgr" class="full" style="padding: 10px;">
+    <div class="demo-spin-container" v-if="loading">
+        <Spin size="large" fix></Spin>
+    </div>
     <div class="full">
         <h3 class="h3-title">{{$t("bgMgr.batchMgr")}}</h3>
         <Row>
@@ -66,11 +80,11 @@
         </Modal>
         <Modal v-model="batchModal" width="400" title="批量修改">
             <Row v-if="showBatchModalType == 1">
-                <i-col span="4" offset="4" style="line-height: 32px;">
+                <i-col span="4" style="line-height: 32px;">
                     转发地址:
                 </i-col>
-                <i-col span="12">
-                    <i-input v-model.trim="pathAddress"></i-input>
+                <i-col span="20">
+                    <i-input v-model.trim="pathAddress" style="width: 100%;"></i-input>
                 </i-col>
             </Row>
             <Row v-if="showBatchModalType == 2">
@@ -87,7 +101,7 @@
                 </i-col>
                 <i-col span="12">
                     <i-select v-model="resetpasswordtype">
-                        <i-option value="1">密码后四位</i-option>
+                        <i-option value="1">设备序号后四位</i-option>
                         <i-option value="2">固定密码</i-option>
                     </i-select>
                 </i-col>
@@ -125,6 +139,7 @@
         el: "#batchmgr",
         i18n: utils.getI18n(),
         data: {
+            loading: true,
             showBatchModalType: 1, // 1批量地址  2
             importModal: false,
             batchModal: false,
@@ -149,7 +164,7 @@
                 key: 'devicename'
             }, {
                 title: '设备序号',
-                key: 'deviceid'
+                key: 'deviceid',
             }, {
                 title: '所属账号',
                 key: 'username'
@@ -176,7 +191,38 @@
                         },
                         '删除')
                 }
-            }, ],
+            }, {
+                title: '操作结果',
+                width: 90,
+                render: function(h, params) {
+                    var result = '',
+                        color = '',
+                        resultType = params.row.resultType;
+                    switch (resultType) {
+                        case 0:
+                            color = "#2D8CF0";
+                            result = "操作成功";
+                            break;
+                        case 1:
+                            color = "#E4393C";
+                            result = "操作失败";
+                            break;
+                        case 2:
+                            color = "#000";
+                            result = "未操作";
+                            break;
+                        case 3:
+                            color = "red";
+                            result = "没有该设备";
+                            break;
+                    }
+                    return h('span', {
+                        style: {
+                            color: color
+                        }
+                    }, result);
+                }
+            }],
             selectedGroupId: null,
             selectedGroupName: null,
             selectedUserName: null,
@@ -225,17 +271,27 @@
                     data.action = 'changedevicetype';
                     data.devicetype = this.deviceType;
                 }
+                var lock = true;
                 this.tableData.forEach(function(item) {
+                    if (item.resultType === 3) {
+                        lock = false;
+                    }
                     data.deviceids.push(item.deviceid);
                 });
+                if (!lock) {
+                    me.$Message.error('导入的设备不存在该账户下，请确认');
+                    return;
+                }
                 var url = myUrls.batchOperate();
                 utils.sendAjax(url, data, function(respData) {
-                    if (respData.status === 0) {
-                        me.showBatchModal = false;
-                        me.$Message.success('批量修改成功');
+                    if (respData.total == respData.success) {
+                        me.$Message.success('全部修改成功');
                     } else {
-                        me.$Message.error('批量修改失败');
+                        var successArr = [];
+                        me.$Message.error('修改失败' + respData.fail + '个');
                     }
+                    me.updatedActionState(respData.errorrecords);
+                    me.showBatchModal = false;
                 });
             },
             handleBatchTransfer: function() {
@@ -255,18 +311,38 @@
                     targetgroupid: this.selectedGroupId,
                     targetusername: this.selectedUserName,
                 }
+                var lock = true;
                 this.tableData.forEach(function(item) {
+                    if (item.resultType === 3) {
+                        lock = false;
+                    }
                     data.deviceids.push(item.deviceid);
                 });
+                if (!lock) {
+                    me.$Message.error('导入的设备不存在该账户下，请确认');
+                    return;
+                }
                 utils.sendAjax(url, data, function(respData) {
                     if (respData.status === 0) {
                         if (respData.total == respData.success) {
-                            me.$Message.success('转移成功');
+                            me.$Message.success('全部转移成功');
                         } else {
-                            me.$Message.error('转移失败' + respData.fail + '个, ' + respData.errorrecords.toString());
+                            var successArr = [];
+                            me.$Message.error('转移失败' + respData.fail + '个');
                         }
+                        me.updatedActionState(respData.errorrecords);
+                        me.queryDevicesTree();
                     }
                 });
+            },
+            updatedActionState: function(errorrecords) {
+                this.tableData.forEach(function(item) {
+                    if (errorrecords.indexOf(item.deviceid) != -1) {
+                        item.resultType = 1;
+                    } else {
+                        item.resultType = 0;
+                    }
+                })
             },
             handleBatchImport: function() {
                 if (!this.isOk) {
@@ -283,9 +359,11 @@
                 deviceids.forEach(function(deviceid) {
                     var device = utils.deviceInfos[deviceid];
                     if (device) {
+                        device.resultType = 2;
                         tableData.push(device)
                     } else {
                         tableData.push({
+                            resultType: 3,
                             deviceid: deviceid
                         });
                     }
@@ -298,19 +376,21 @@
                 selectArr.forEach(function(item) {
                     var deviceid = item.deviceid;
                     if (deviceid) {
+                        utils.deviceInfos[deviceid].resultType = 2;
                         tableData.push(utils.deviceInfos[deviceid]);
                     }
                 })
                 this.tableData = tableData;
             },
             queryDevicesTree: function() {
+                this.loading = true;
                 var url = myUrls.queryDevicesTree(),
                     me = this;
                 var data = {
                     username: userName
                 };
                 utils.sendAjax(url, data, function(respData) {
-                    console.log(respData);
+                    me.loading = false;
                     if (respData.status === 0) {
                         me.setTreeDataList(respData.rootuser);
                     }
@@ -624,6 +704,13 @@
                     'height': this.taleHeight + 'px',
                     'overflow-y': 'auto'
                 }
+            },
+            deviceids: function() {
+                var deviceids = [];
+                this.tableData.forEach(function(item) {
+                    deviceids.push(item.deviceid);
+                });
+                return deviceids;
             }
         },
         watch: {
