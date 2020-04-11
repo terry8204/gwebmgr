@@ -194,7 +194,7 @@
                                 }
                             }
                         },
-                        '删除')
+                        '移除')
                 }
             }, {
                 title: '操作结果',
@@ -705,9 +705,9 @@
 
                 var childTemp = [];
                 var that = this;
-                for (let i = 0; i < treeDataFilter.length; i++) {
+                for (var i = 0; i < treeDataFilter.length; i++) {
                     var copyItem = null;
-                    let item = treeDataFilter[i];
+                    var item = treeDataFilter[i];
                     if (item != null) {
 
                         var isFound = false;
@@ -720,7 +720,7 @@
                         if (isFound == false && item.children && item.children.length > 0) {
                             // item.expand = true;
                             // childTemp.push(item);
-                            let rs = that.variableDeepSearch(item.children, searchWord, limitcount);
+                            var rs = that.variableDeepSearch(item.children, searchWord, limitcount);
                             if (rs && rs.length > 0) {
                                 copyItem = deepClone(item);
                                 copyItem.children = rs;
