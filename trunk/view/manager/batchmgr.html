@@ -1,36 +1,46 @@
 <meta charset="UTF-8">
+<style>
+    .succ {
+        color: #2D8CF0;
+    }
+    
+    .error {
+        color: #e4393c;
+    }
+</style>
 <div id="batchmgr" class="full" style="padding: 10px;">
     <div class="full">
         <h3 class="h3-title">{{$t("bgMgr.batchMgr")}}</h3>
         <Row>
             <i-col span="6" style="padding: 10px;">
-                <Tree :data="treeDeviceList" show-checkbox style="height: 520px;overflow-y: auto;" @on-check-change="onCheckChange"></Tree>
+                全部设备列表
             </i-col>
-            <i-col span="12" style="padding: 10px;">
-                <i-table border ref="table" :columns="columns" :data="tableData" height="520"></i-table>
+            <i-col span="14" style="padding: 10px;">
+                已选中设备列表
             </i-col>
-            <i-col span="6" style="padding: 10px;">
-                <Tree :data="treeGroupList" style="height: 520px;overflow-y: auto;"></Tree>
+            <i-col span="4" style="padding: 10px;">
+                转入用户分组列表
             </i-col>
         </Row>
         <Row>
-            <i-col span="2">
-                <i-button @click="handleBatchTransfer">批量转移</i-button>
+            <i-col span="6" style="padding: 10px;">
+                <Tree :data="treeDeviceList" show-checkbox :style="treeStyle" @on-check-change="onCheckChange"></Tree>
             </i-col>
-            <i-col span="2">
-                <i-button @click="handleBatchImport">导入设备</i-button>
+            <i-col span="14" style="padding: 10px;">
+                <i-table border ref="table" :columns="columns" :data="tableData" :height="taleHeight"></i-table>
             </i-col>
-            <i-col span="3">
-                <i-button>批量修改转发地址</i-button>
+            <i-col span="4" style="padding: 10px;">
+                <Tree :data="treeGroupList" :style="treeStyle"></Tree>
             </i-col>
-            <i-col span="3">
-                <i-button>批量修改到期提醒</i-button>
-            </i-col>
-            <i-col span="3">
-                <i-button>批量修改设备类型</i-button>
-            </i-col>
-            <i-col span="3">
-                <i-button>批量重置密码</i-button>
+        </Row>
+        <Row>
+            <i-col span="24" style="text-align: center;border: 1px solid #DCDEE2;padding: 5px;">
+                <i-button @click="handleBatchTransfer" style="margin: 0 10px;">批量转移</i-button>
+                <i-button @click="importModal=true" style="margin: 0 10px;">导入设备</i-button>
+                <i-button @click="showBatchModal(1)" style="margin: 0 10px;">批量修改转发地址</i-button>
+                <i-button @click="showBatchModal(2)" style="margin: 0 10px;">批量修改到期时间</i-button>
+                <i-button @click="showBatchModal(3)" style="margin: 0 10px;">批量重置密码</i-button>
+                <i-button @click="showBatchModal(4)" style="margin: 0 10px;" v-if="userName == 'admin'">批量修改设备类型</i-button>
             </i-col>
         </Row>
         <Modal v-model="importModal" width="700" title="导入">
@@ -49,16 +59,61 @@
                         <input-number v-model.number="idLength" :max="15" :min="8" :editable="false" style="width: 100%;"></input-number>
                     </i-col>
                     <i-col span="8" offset="4">
-                        <i-button style="width: 100%">{{$t("bgMgr.submit")}}</i-button>
+                        <i-button style="width: 100%" @click="handleBatchImport">导入</i-button>
                     </i-col>
                 </Row>
             </div>
         </Modal>
-        <Modal v-model="batchModal" width="700" title="批量修改">
+        <Modal v-model="batchModal" width="400" title="批量修改">
+            <Row v-if="showBatchModalType == 1">
+                <i-col span="4" offset="4" style="line-height: 32px;">
+                    转发地址:
+                </i-col>
+                <i-col span="12">
+                    <i-input v-model.trim="pathAddress"></i-input>
+                </i-col>
+            </Row>
+            <Row v-if="showBatchModalType == 2">
+                <i-col span="4" offset="4" style="line-height: 32px;">
+                    到期时间:
+                </i-col>
+                <i-col span="12">
+                    <date-picker type="date" v-model="expirationDate"></date-picker>
+                </i-col>
+            </Row>
+            <Row v-if="showBatchModalType == 3">
+                <i-col span="4" offset="4" style="line-height: 32px;">
+                    密码模式:
+                </i-col>
+                <i-col span="12">
+                    <i-select v-model="resetpasswordtype">
+                        <i-option value="1">密码后四位</i-option>
+                        <i-option value="2">固定密码</i-option>
+                    </i-select>
+                </i-col>
+            </Row>
+            <Row v-if="showBatchModalType == 3 && resetpasswordtype == '2'" style="margin-top: 10px;">
+                <i-col span="4" offset="4" style="line-height: 32px;">
+                    新密码:
+                </i-col>
+                <i-col span="12">
+                    <i-input v-model.trim="newPassword"></i-input>
+                </i-col>
+            </Row>
+            <Row v-if="showBatchModalType == 4">
+                <i-col span="4" offset="4" style="line-height: 32px;">
+                    设备类型:
+                </i-col>
+                <i-col span="12">
+                    <i-select v-model="deviceType">
+                        <i-option v-for="item in deviceTypeList" :value="item.value" :key="item.value">{{ item.label }}</i-option>
+                    </i-select>
+                </i-col>
+            </Row>
             <div slot="footer" style="height:40px;">
                 <Row style="margin: 5px 0">
-                    <i-col span="6" :offset="9">
-                        <i-button style="width: 100%">{{$t("bgMgr.submit")}}</i-button>
+                    <i-col span="24" style="text-align: center;">
+                        <i-button @click="handleBatchEdit" style="width:300px;">{{$t("bgMgr.submit")}}</i-button>
                     </i-col>
                 </Row>
             </div>
@@ -66,14 +121,21 @@
     </div>
 </div>
 <script>
-    new Vue({
+    vueInstanse = new Vue({
         el: "#batchmgr",
         i18n: utils.getI18n(),
         data: {
+            showBatchModalType: 1, // 1批量地址  2
             importModal: false,
             batchModal: false,
             idLength: 11,
             isOk: false,
+            pathAddress: "",
+            newPassword: '',
+            expirationDate: new Date(),
+            resetpasswordtype: '1',
+            deviceType: '',
+            deviceTypeList: [],
             errorTips: '',
             deviceid: '',
             treeDeviceList: [], //    expand: true,
@@ -94,20 +156,99 @@
             }, {
                 title: '所属分组',
                 key: 'groupname'
-            }],
+            }, {
+                title: '操作',
+                width: 85,
+                render: function(h, params) {
+                    return h('Button', {
+                            props: {
+                                type: 'error',
+                                size: 'small'
+                            },
+                            style: {
+                                marginRight: '5px'
+                            },
+                            on: {
+                                click: function() {
+                                    vueInstanse.tableData.splice(params.index, 1);
+                                }
+                            }
+                        },
+                        '删除')
+                }
+            }, ],
             selectedGroupId: null,
             selectedGroupName: null,
             selectedUserName: null,
+            taleHeight: 100
         },
         methods: {
+            showBatchModal: function(type) {
+                this.showBatchModalType = type;
+                this.batchModal = true;
+                this.pathAddress = '';
+                this.newPassword = '';
+            },
+            handleBatchEdit: function() {
+                if (this.tableData.length == 0) {
+                    this.$Message.error('请选择设备');
+                    return
+                }
+                var data = {
+                        deviceids: []
+                    },
+                    me = this;
+                if (this.showBatchModalType == 1) {
+                    if (this.pathAddress.length < 10) {
+                        this.$Message.error('地址路径必须大于10');
+                        return;
+                    }
+                    data.action = 'modifyforwardurl';
+                    data.forwardurl = this.pathAddress;
+                } else if (this.showBatchModalType == 2) {
+                    data.action = 'modifyexpiretime';
+                    data.expiretime = new Date(this.expirationDate).getTime();
+                } else if (this.showBatchModalType == 3) {
+                    data.action = 'resetpassword';
+                    if (this.resetpasswordtype == '2') {
+                        if (this.newPassword.length >= 4) {
+                            data.resetpasswordtype = 2;
+                            data.passwordnotmd5 = this.newPassword;
+                        } else {
+                            this.$Message.error('密码必须大于或等于4位数');
+                            return;
+                        }
+                    } else {
+                        data.resetpasswordtype = 1;
+                    }
+                } else if (this.showBatchModalType == 4) {
+                    data.action = 'changedevicetype';
+                    data.devicetype = this.deviceType;
+                }
+                this.tableData.forEach(function(item) {
+                    data.deviceids.push(item.deviceid);
+                });
+                var url = myUrls.batchOperate();
+                utils.sendAjax(url, data, function(respData) {
+                    if (respData.status === 0) {
+                        me.showBatchModal = false;
+                        me.$Message.success('批量修改成功');
+                    } else {
+                        me.$Message.error('批量修改失败');
+                    }
+                });
+            },
             handleBatchTransfer: function() {
                 if (this.tableData.length == 0) {
-                    return this.$Message.error('请选择设备');
+                    this.$Message.error('请选择设备');
+                    return;
                 }
                 if (this.selectedGroupName === null) {
-                    return this.$Message.error('请选择要转入的组');
+                    this.$Message.error('请选择要转入的组');
+                    return;
                 }
-                var url = myUrls.batchOperate();
+                var url = myUrls.batchOperate(),
+                    me = this;
                 var data = {
                     action: 'move',
                     deviceids: [],
@@ -118,11 +259,39 @@
                     data.deviceids.push(item.deviceid);
                 });
                 utils.sendAjax(url, data, function(respData) {
-                    console.log(respData);
+                    if (respData.status === 0) {
+                        if (respData.total == respData.success) {
+                            me.$Message.success('转移成功');
+                        } else {
+                            me.$Message.error('转移失败' + respData.fail + '个, ' + respData.errorrecords.toString());
+                        }
+                    }
                 });
             },
             handleBatchImport: function() {
-                this.importModal = true;
+                if (!this.isOk) {
+                    this.$Message.error("请添加正确的imeis");
+                    // me.$Message.error(me.$t("device.devIdTips"));
+                    return;
+                };
+                var deviceids = this.deviceid.split('\n').filter(function(item) {
+                    if (item) {
+                        return item
+                    }
+                });
+                var tableData = [];
+                deviceids.forEach(function(deviceid) {
+                    var device = utils.deviceInfos[deviceid];
+                    if (device) {
+                        tableData.push(device)
+                    } else {
+                        tableData.push({
+                            deviceid: deviceid
+                        });
+                    }
+                });
+                this.tableData = this.tableData.concat(tableData);
+                this.importModal = false;
             },
             onCheckChange: function(selectArr) {
                 var tableData = [];
@@ -382,6 +551,28 @@
                 }
 
             }, 500),
+            calcTableHeight: function() {
+                var wHeight = window.innerHeight;
+                this.taleHeight = wHeight - 204;
+            },
+            getDeviceType: function() {
+                var me = this;
+                var url = myUrls.queryDeviceTypeByUser();
+                utils.sendAjax(url, {}, function(resp) {
+                    if (resp.status == 0 && resp.devicetypes != null) {
+                        resp.devicetypes.forEach(function(item, index) {
+                            if (index === 0) {
+                                me.deviceType = item.devicetypeid;
+                            }
+                            me.deviceTypeList.push({
+                                value: item.devicetypeid,
+                                label: item.typename
+                            });
+                        })
+
+                    }
+                });
+            },
             getRegularPattern: function(str) {
                 var res = {};
                 // var reg = /^[a-z0-9a-z]{15}/;
@@ -427,6 +618,12 @@
         computed: {
             fontColor: function() {
                 return [this.isOk ? 'succ' : 'error'];
+            },
+            treeStyle: function() {
+                return {
+                    'height': this.taleHeight + 'px',
+                    'overflow-y': 'auto'
+                }
             }
         },
         watch: {
@@ -443,8 +640,15 @@
             }
         },
         mounted: function() {
+            var me = this;
             utils.deviceInfos = {};
+            this.calcTableHeight();
+            window.onresize = function() {
+                me.calcTableHeight();
+            }
             this.queryDevicesTree();
+            this.getDeviceType();
+            this.userName = userName;
         },
     })
 </script>
