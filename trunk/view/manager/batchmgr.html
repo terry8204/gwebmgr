@@ -38,7 +38,10 @@
         </Row>
         <Row>
             <i-col span="6" style="padding: 10px;">
-                <Tree :data="treeDeviceList" show-checkbox :style="treeStyle" @on-check-change="onCheckChange"></Tree>
+                <div style="line-height: 45px;">
+                    <i-input v-model.trim="searchDeviceVal" style="width: 100%;" icon="search"></i-input>
+                </div>
+                <Tree :data="searchDeviceList" show-checkbox :style="streeStyle" @on-check-change="onCheckChange"></Tree>
             </i-col>
             <i-col span="14" style="padding: 10px;">
                 <i-table border ref="table" :columns="columns" :data="tableData" :height="taleHeight"></i-table>
@@ -153,7 +156,9 @@
             deviceTypeList: [],
             errorTips: '',
             deviceid: '',
+            searchDeviceVal: '',
             treeDeviceList: [], //    expand: true,
+            searchDeviceList: [],
             treeGroupList: [],
             tableData: [],
             columns: [{
@@ -291,7 +296,7 @@
                         me.$Message.error('修改失败' + respData.fail + '个');
                     }
                     me.updatedActionState(respData.errorrecords);
-                    me.showBatchModal = false;
+                    me.batchModal = false;
                 });
             },
             handleBatchTransfer: function() {
@@ -397,7 +402,8 @@
                 });
             },
             setTreeDataList: function(rootuser) {
-                this.treeDeviceList = [this.castUsersTreeToDevicesTree(rootuser, true)];
+                this.searchDeviceList = [this.castUsersTreeToDevicesTree(rootuser, true)];
+                this.treeDeviceList = deepClone(this.searchDeviceList);
                 this.treeGroupList = [this.castUsersTreeToDevicesTree(rootuser, false)];
             },
             filtered: function(textStr) {
@@ -694,6 +700,48 @@
                 }
                 return res;
             },
+
+            variableDeepSearch: function(treeDataFilter, searchWord, limitcount) {
+
+                var childTemp = [];
+                var that = this;
+                for (let i = 0; i < treeDataFilter.length; i++) {
+                    var copyItem = null;
+                    let item = treeDataFilter[i];
+                    if (item != null) {
+
+                        var isFound = false;
+
+                        if (item.title.indexOf(searchWord) != -1) {
+                            copyItem = item;
+                            copyItem.expand = false;
+                            isFound = true;
+                        }
+                        if (isFound == false && item.children && item.children.length > 0) {
+                            // item.expand = true;
+                            // childTemp.push(item);
+                            let rs = that.variableDeepSearch(item.children, searchWord, limitcount);
+                            if (rs && rs.length > 0) {
+                                copyItem = deepClone(item);
+                                copyItem.children = rs;
+                                copyItem.expand = true;
+                                isFound = true;
+                            }
+                        }
+
+                        if (isFound == true) {
+                            limitcount++;
+
+                            childTemp.push(copyItem);
+                            if (limitcount > 10) {
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                return childTemp;
+            }
         },
         computed: {
             fontColor: function() {
@@ -702,6 +750,12 @@
             treeStyle: function() {
                 return {
                     'height': this.taleHeight + 'px',
+                    'overflow-y': 'auto'
+                }
+            },
+            streeStyle: function() {
+                return {
+                    'height': (this.taleHeight - 45) + 'px',
                     'overflow-y': 'auto'
                 }
             },
@@ -724,6 +778,17 @@
                     this.isOk = false;
                     this.errorTips = "序列号必须是数字或者字母";
                 }
+            },
+            searchDeviceVal: function(newVal) {
+
+                if (newVal === '') {
+                    this.searchDeviceList = this.treeDeviceList;
+                } else {
+                    var limitcount = 0;
+                    this.searchDeviceList = this.variableDeepSearch(this.treeDeviceList, newVal, limitcount);
+                }
+
+                console.log("searchDeviceVal gameover", this.searchDeviceList);
             }
         },
         mounted: function() {
