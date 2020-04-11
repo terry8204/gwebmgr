@@ -1,13 +1,12 @@
 // 后台管理
 var bgManager = {
     template: document.getElementById('manager-template').innerHTML,
-    data: function () {
+    data: function() {
         var me = this;
         return {
             userType: null,
             theme: 'light',
-            navList: [
-                {
+            navList: [{
                     title: me.$t("bgMgr.customerMgr"),
                     name: 'customerMar',
                     icon: 'md-contact',
@@ -42,6 +41,7 @@ var bgManager = {
                         { title: me.$t("bgMgr.queryDev"), name: 'queryDevice', icon: 'md-search' },
                         { title: me.$t("bgMgr.addDev"), name: 'addDevice', icon: 'md-add' },
                         { title: "批量添加", name: 'batchAddDevice', icon: 'md-add' },
+                        { title: "批量管理", name: 'batchMgrDevice', icon: 'ios-folder-outline' },
                         { title: "续费管理", name: 'chargeMgr', icon: 'ios-apps-outline' }
                     ]
                 }
@@ -49,7 +49,8 @@ var bgManager = {
         }
     },
     methods: {
-        selectditem: function (name) {
+        selectditem: function(name) {
+            utils.deviceInfos = null;
             if (this.currentPage == name) {
                 return
             }
@@ -85,11 +86,14 @@ var bgManager = {
                 case 'chargeMgr':
                     page = 'chargemgr.html'
                     break
+                case 'batchMgrDevice':
+                    page = 'batchmgr.html'
+                    break
             }
             this.currentPage = name
             this.loadPage(page)
         },
-        loadPage: function (page) {
+        loadPage: function(page) {
             var me = this
             var pagePath = null
             if (page == "chargemgr.html") {
@@ -108,12 +112,12 @@ var bgManager = {
                 pagePath = '../view/manager/' + page
             }
             this.$Loading.start()
-            $('#mar-view').load(pagePath, function () {
+            $('#mar-view').load(pagePath, function() {
                 me.$Loading.finish()
             })
         }
     },
-    mounted: function () {
+    mounted: function() {
         this.userType = Cookies.get('userType');
         if (this.userType == "3") {
             this.navList.splice(0, 1);
@@ -125,12 +129,11 @@ var bgManager = {
 // 系统参数
 var systemParam = {
     template: document.getElementById('systemparam-template'),
-    data: function () {
+    data: function() {
         return {
             selectdItemName: null,
             theme: 'light',
-            navList: [
-                {
+            navList: [{
                     title: '设备指令',
                     name: 'deviceDirective',
                     icon: 'ios-pricetag-outline',
@@ -143,31 +146,31 @@ var systemParam = {
                     title: '设备类型',
                     name: 'deviceType',
                     icon: 'ios-albums'
-                    // children:[
-                    //     {title:"新增设备类型",name:"addDeviceType",icon:"md-add"},
-                    //     {title:"查询设备类型",name:"queryDeviceType",icon:"md-search"}
-                    // ]
+                        // children:[
+                        //     {title:"新增设备类型",name:"addDeviceType",icon:"md-add"},
+                        //     {title:"查询设备类型",name:"queryDeviceType",icon:"md-search"}
+                        // ]
                 },
                 {
                     title: '车辆类型',
                     name: 'carType',
                     icon: 'ios-car'
-                    // children:[
-                    //     {title:"新增车辆类型",name:"addCarType",icon:"md-add"},
-                    //     {title:"查询车辆类型",name:"queryCarType",icon:"md-search"}
-                    // ]
+                        // children:[
+                        //     {title:"新增车辆类型",name:"addCarType",icon:"md-add"},
+                        //     {title:"查询车辆类型",name:"queryCarType",icon:"md-search"}
+                        // ]
                 }
             ]
         }
     },
     methods: {
-        selectditem: function (name) {
+        selectditem: function(name) {
             if (this.selectdItemName != name && name != "") {
                 this.selectdItemName = name
                 this.changeItem()
             }
         },
-        changeItem: function () {
+        changeItem: function() {
             var page = null
 
             switch (this.selectdItemName) {
@@ -187,7 +190,7 @@ var systemParam = {
 
             this.loadPage(page)
         },
-        loadPage: function (page) {
+        loadPage: function(page) {
             var me = this
             var pagePath = null
             if (utils.isLocalhost()) {
@@ -196,7 +199,7 @@ var systemParam = {
                 pagePath = '../view/systemparam/' + page
             }
             this.$Loading.start()
-            $('#system-view').load(pagePath, function () {
+            $('#system-view').load(pagePath, function() {
                 me.$Loading.finish();
             });
         }

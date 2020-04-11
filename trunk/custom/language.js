@@ -3,7 +3,7 @@
  *  {{ $t("message.hello") }}
  *   this.$i18n.locale='zh'
  */
-(function (win) {
+(function(win) {
     Vue.use(VueI18n);
     var messages = {
         en: {
@@ -108,7 +108,7 @@
                 isOverdue: "Overdue",
                 createTime: "Create time",
                 content: 'Content',
-                expirationInfo:'ExpirationInfo',
+                expirationInfo: 'ExpirationInfo',
             },
             monitor: {
                 devGroup: "Devices",
@@ -256,7 +256,8 @@
                 deviceTotal: "Device Total",
                 groupTotal: "Group Total",
                 addTime: "Add Time",
-                creater:"creater"
+                creater: "creater",
+                batchMgr: "batchManage"
             },
             customer: {
                 kehuName: "Customer name",
@@ -430,7 +431,7 @@
                 isOverdue: "是否过期",
                 createTime: "创建时间",
                 content: '内容',
-                expirationInfo:'过期信息',
+                expirationInfo: '过期信息',
             },
             monitor: {
                 devGroup: "设备组",
@@ -578,7 +579,8 @@
                 deviceTotal: "设备总数",
                 groupTotal: "分组总数",
                 addTime: "添加时间",
-                creater:"创建者",
+                creater: "创建者",
+                batchMgr: "批量管理"
             },
             customer: {
                 kehuName: "客户名称",

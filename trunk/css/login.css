@@ -1,5 +1,4 @@
-
-#login-wraper{
+#login-wraper {
     position: relative;
     height: 100%;
     width: 100%;
@@ -7,172 +6,192 @@
     min-height: 580px;
 }
 
-.center{
+.center {
     margin: 0 auto;
     width: 1200px;
     position: relative;
     overflow: hidden;
 }
 
-.cursor{
+.cursor {
     cursor: pointer;
 }
 
-.active{
-    color:#2D8CF0;
+.active {
+    color: #2D8CF0;
 }
 
+
 /* 头部开始 */
-    div.header{
-        position: absolute;
-        left: 0;
-        top: 0;
-        height: 80px;
-        width:100%;
-        background: #E8F0F7;
-    }
-    div.logo-wrap{
-        line-height: 80px;
-        height: 80px;
-        float: left;
-    }
-    div.language{  
-        line-height: 80px;
-        height: 80px;
-        float: right;
-    }
-    div.language > span{  
-       display: inline-block;
-       padding: 0 10px;
-       cursor: pointer;
-    }
-    span.logo{
-        font-size: 40px;
-        margin-left: 15px;
-    }
-    span.logo-title{
-        font-size: 21px;
-        vertical-align: top;
-    }
-    div.logo-wrap b{
-        margin: 0px 10px;
-        vertical-align: top;
-        display: inline-block;
-        font-size: 21px;
-        margin-top: -2px; 
-    }
-    span.version{
-        vertical-align: top;
-    }
+
+div.header {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 80px;
+    width: 100%;
+    background: #E8F0F7;
+}
+
+div.logo-wrap {
+    line-height: 80px;
+    height: 80px;
+    float: left;
+}
+
+div.language {
+    line-height: 80px;
+    height: 80px;
+    float: right;
+}
+
+div.language>span {
+    display: inline-block;
+    padding: 0 10px;
+    cursor: pointer;
+}
+
+span.logo {
+    font-size: 40px;
+    margin-left: 15px;
+}
+
+span.logo-title {
+    font-size: 21px;
+    vertical-align: top;
+}
+
+div.logo-wrap b {
+    margin: 0px 10px;
+    vertical-align: top;
+    display: inline-block;
+    font-size: 21px;
+    margin-top: -2px;
+}
+
+span.version {
+    vertical-align: top;
+}
+
+
 /* 头部结束 */
 
 
-
 /* main开始 */
-    div.main{
-        position: absolute;
-        left: 0;
-        top: 80px;
-        bottom: 160px;
-        width:100%; 
-        border-top: 1px solid #C3CEDE;
-        border-bottom: 1px solid #C3CEDE;
-        background: #FFFFFF;
-        min-height: 352px;
-    }
 
-    div.main>div.center{
-        height: 100%;     
-    }
+div.main {
+    position: absolute;
+    left: 0;
+    top: 80px;
+    bottom: 160px;
+    width: 100%;
+    border-top: 1px solid #C3CEDE;
+    border-bottom: 1px solid #C3CEDE;
+    background: #FFFFFF;
+    min-height: 352px;
+}
 
-    div.main>div.center>div{
-        width: 50%;
-        height: 100%;
-        float: left;
-        position: relative;
-    }
-    div.left-wraper>div{
-        width: 100%;
-        height: 350px;
-        position: absolute;
-        left: 0;
-        top: 50%;
-        margin-top: -175px;
-        background: url("../custom/loginbg1.jpg") no-repeat center center;
-        background-size:cover;  
-    }
-    div.login-form-box{
-        position: absolute;
-        left: 50%;
-        top: 50%;
-        width: 350px;
-        height: 277px;
-        margin-left: -175px;
-        margin-top: -138.5px;
-    }
+div.main>div.center {
+    height: 100%;
+}
 
-    .ivu-card-head .ivu-icon {
-        margin-top:-3px; 
-    }
-    div.inputs p {
-        margin: 15px ;
-    }
-  
+div.main>div.center>div {
+    width: 50%;
+    height: 100%;
+    float: left;
+    position: relative;
+}
+
+div.left-wraper>div {
+    width: 100%;
+    height: 350px;
+    position: absolute;
+    left: 0;
+    top: 50%;
+    margin-top: -175px;
+    background: url("../custom/loginbg1.jpg") no-repeat center center;
+    background-size: cover;
+}
+
+div.login-form-box {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 350px;
+    height: 277px;
+    margin-left: -175px;
+    margin-top: -138.5px;
+}
+
+.ivu-card-head .ivu-icon {
+    margin-top: -3px;
+}
+
+div.inputs p {
+    margin: 15px;
+}
+
+
 /* main结束 */
 
 
-
 /* 底部开始 */
-    div.footer{
-        position: absolute;
-        left: 0;
-        bottom: 0px;
-        height: 160px;
-        width:100%;  
-    }
 
-    .footer-wrap{
-        width: 1000px;
-        margin: 0 auto;
-        height: 140px;
-    }
+div.footer {
+    position: absolute;
+    left: 0;
+    bottom: 0px;
+    height: 160px;
+    width: 100%;
+}
 
-    .footer-wrap>div{
-        float: left;
-        width: 50%;
-        height: 140px;
-        padding: 10px 10px 0 10px;
-    }
+.footer-wrap {
+    width: 1000px;
+    margin: 0 auto;
+    height: 140px;
+}
 
-    .footer-wrap>div>div{
-        float: left;
-    }
+.footer-wrap>div {
+    float: left;
+    width: 50%;
+    height: 140px;
+    padding: 10px 10px 0 10px;
+}
 
-    .img-wrap{
-        border: 1px solid #BFC4C9;
-        height: 130px;
-    }
+.footer-wrap>div>div {
+    float: left;
+}
 
-    .desc{
-        height: 100%;
-        margin-left: 10px;
-    }
-    .desc h3{
-        margin-top: 15px;
-        margin-bottom: 5px;
-    }
-    .desc ul li{
-        list-style-type: disc;
-        margin-left: 15px;
-    }
+.img-wrap {
+    border: 1px solid #BFC4C9;
+    height: 130px;
+}
 
-    .beian{
-        font-size: 12px;
-        height: 20px;
-        line-height: 20px;
-        text-align: center;
-    }
-    .beian a{
-        text-decoration: none;
-    }
+.desc {
+    height: 100%;
+    margin-left: 10px;
+}
+
+.desc h3 {
+    margin-top: 15px;
+    margin-bottom: 5px;
+}
+
+.desc ul li {
+    list-style-type: disc;
+    margin-left: 15px;
+}
+
+.beian {
+    font-size: 12px;
+    height: 20px;
+    line-height: 20px;
+    text-align: center;
+}
+
+.beian a {
+    text-decoration: none;
+}
+
+
 /* 底部结束 */
