@@ -131,7 +131,31 @@ var utils = {
         hours ? (strTime += hours + vRoot.$t("reportForm.h")) : '';
         minutes ? (strTime += minutes + vRoot.$t("reportForm.m")) : '';
         seconds ? (strTime += seconds + vRoot.$t("reportForm.s")) : '';
-        return strTime == '' ? 0 : strTime;
+        return strTime == '' ? '0' + vRoot.$t("reportForm.m") : strTime;
+    },
+    timeStampNoSecond: function(mss) {
+        var days = parseInt(mss / (1000 * 60 * 60 * 24));
+        var hours = parseInt((mss % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        var minutes = parseInt((mss % (1000 * 60 * 60)) / (1000 * 60));
+        var seconds = (mss % (1000 * 60)) / 1000;
+        if (days > 0) {
+            if (days > 999) {
+                return "999>=" + vRoot.$t("reportForm.d");
+            } else {
+                return days + vRoot.$t("reportForm.d");
+            }
+        } else {
+            if (hours > 0) {
+                return hours + vRoot.$t("reportForm.h");
+            } else {
+                if (minutes > 0) {
+                    return minutes + vRoot.$t("reportForm.m");
+                } else {
+                    return "1" + vRoot.$t("reportForm.m");
+                }
+
+            }
+        }
     },
     sendAjax: function(url, data, callback) {
         var encode = JSON.stringify(data);

@@ -138,7 +138,7 @@ div.devices-container {
     position: absolute;
     left: 0;
     top: 0;
-    width: 360px;
+    width: 320px;
     bottom: 0;
     padding: 10px;
     box-sizing: border-box;
@@ -148,7 +148,7 @@ div.devices-container {
 ul.device-state>li {
     float: left;
     width: 25%;
-    height: 70px;
+    height: 50px;
     background: #ECF2F6;
     cursor: pointer;
 }
@@ -162,11 +162,11 @@ ul.device-state p {
 }
 
 ul.device-state p.p-icon {
-    margin-top: 13px;
+    margin-top: 6px;
 }
 
 div.monitor-wraper ul.device-state p.dev-count {
-    font-size: 14px;
+    font-size: 12px;
 }
 
 div.device-soso {
@@ -181,7 +181,7 @@ div.group-spin-wraper {
     left: 10px;
     right: 10px;
     bottom: 10px;
-    top: 130px;
+    top: 103px;
     overflow-x: hidden;
     overflow-y: auto;
 }
@@ -214,7 +214,7 @@ div.group-spin-wraper {
 
 div.map-wraper {
     position: absolute;
-    left: 360px;
+    left: 320px;
     top: 0;
     right: 0;
     bottom: 0;

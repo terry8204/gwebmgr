@@ -312,7 +312,6 @@ var monitor = {
                     cmdInfo = cmd;
                 }
             });
-            console.log('cmdVal', cmdVal);
             this.selectedCmdInfo.cmdName = cmdInfo.cmdname;
             this.selectedCmdInfo.cmdcode = cmdInfo.cmdcode;
             this.selectedCmdInfo.cmddescr = cmdInfo.cmddescr;
@@ -323,7 +322,6 @@ var monitor = {
 
                 var paramsXMLObj = utils.parseXML(cmdInfo.params);
                 // this.selectedCmdInfo.type = paramsXMLObj.type;
-                console.log('cmdVal', cmdVal);
                 this.selectedCmdInfo.params = paramsXMLObj.paramsListObj;
 
                 this.selectedCmdInfo.params.forEach(function(param, index) {
@@ -942,7 +940,7 @@ var monitor = {
             } else {
                 disabled = deviceInfo.allowedit == 0;
             }
-            console.log(deviceInfo.expirenotifytime);
+
             this.editDevData.devicename = deviceInfo.devicename;
             this.editDevData.simnum = deviceInfo.simnum;
             this.editDevData.deviceid = deviceid;
@@ -972,10 +970,9 @@ var monitor = {
 
                 this.getOfflineHideCompanyTreeData();
 
+            } else if (state === 'stock') {
+                this.getStockHideCompanyTreeData();
             };
-
-
-
         },
         filterGroups: function(groups) {
             var me = this,
@@ -1019,7 +1016,6 @@ var monitor = {
             this.offlineDevCount = all;
             return groups.filter(function(group) { return group.devices.length });
         },
-
         getAllHideCompanyTreeData: function() {
             var me = this;
             this.groups.forEach(function(group) {
@@ -1027,15 +1023,28 @@ var monitor = {
                 var online = 0;
                 group.devices.forEach(function(device, index) {
                     count++;
-
                     var isOnline = me.getIsOnline(device.deviceid);
                     device.isOnline = isOnline;
                     if (isOnline) {
                         device.isMoving = me.positionLastrecords[device.deviceid].moving != 0;
                         online++;
+                        device.devicetitle = device.deviceTypeName + '-' + device.devicename;
                     } else {
+                        me.updateDeviceLastActiveTime(device);
+                        var track = me.positionLastrecords[device.deviceid];
+
                         device.isMoving = null;
+                        if (device.lastactivetime <= 0 && track == undefined) {
+                            device.devicetitle = device.deviceTypeName + '-' + device.devicename + " [未启用] ";
+                        } else {
+
+                            var offlineTime = DateFormat.getCurrentUTC() - device.lastactivetime;
+                            device.devicetitle = device.deviceTypeName + '-' + device.devicename + " [" + me.$t("monitor.offline") + utils.timeStampNoSecond(offlineTime) + "] ";
+                        }
                     };
+                    // device.deviceTypeName = "";
+                    // device.devicetitle = device.devicename;
+
                 });
                 group.isShow = true;
                 group.title = group.groupname + "(" + online + "/" + count + ")";
@@ -1051,6 +1060,7 @@ var monitor = {
                     if (isOnline) {
                         device.isMoving = me.positionLastrecords[device.deviceid].moving != 0;
                         online++;
+                        device.devicetitle = device.deviceTypeName + '-' + device.devicename
                     };
                 });
                 if (online != 0) {
@@ -1061,17 +1071,31 @@ var monitor = {
                 group.title = group.groupname + "(" + online + ")";
             });
         },
+        updateDeviceLastActiveTime: function(device) {
+            var track = this.positionLastrecords[device.deviceid];
+            var finallyLastActiveTime = device.lastactivetime;
+            if (track) {
+                finallyLastActiveTime = track.updatetime;
+            }
+            device.lastactivetime = finallyLastActiveTime;
+        },
         getOfflineHideCompanyTreeData: function() {
             var me = this;
             this.groups.forEach(function(group) {
                 var offline = 0;
                 group.devices.forEach(function(device, index) {
+                    me.updateDeviceLastActiveTime(device);
                     var isOnline = me.getIsOnline(device.deviceid);
-                    device.isOnline = isOnline;
-                    if (!isOnline) {
+                    var isStock = device.lastactivetime <= 0;
+                    device.isOffline = !isOnline && !isStock;
+
+                    if (device.isOffline) {
                         offline++;
+                        var offlineTime = DateFormat.getCurrentUTC() - device.lastactivetime;
+                        device.devicetitle = device.deviceTypeName + '-' + device.devicename + " [" + me.$t("monitor.offline") + utils.timeStampNoSecond(offlineTime) + "] ";
                     };
                 });
+                group.devices.sort(function(a, b) { return b.lastactivetime - a.lastactivetime });
                 if (offline != 0) {
                     group.isShow = true;
                 } else {
@@ -1080,14 +1104,34 @@ var monitor = {
                 group.title = group.groupname + "(" + offline + ")";
             });
         },
+        getStockHideCompanyTreeData: function() {
+            var me = this;
+            this.groups.forEach(function(group) {
+                var stock = 0;
+                group.devices.forEach(function(device, index) {
+                    var track = me.positionLastrecords[device.deviceid];
+                    if (device.lastactivetime <= 0 && track == undefined) {
+                        stock++;
+                        device.isStock = true;
+                    } else {
+                        device.isStock = false;
+                    };
+                });
+                if (stock != 0) {
+                    group.isShow = true;
+                } else {
+                    group.isShow = false;
+                }
+                group.title = group.groupname + "(" + stock + ")";
+            });
+        },
         getIsOnline: function(deviceid) {
-            var me = this
             var isOnline = false;
             var record = this.positionLastrecords[deviceid];
             if (record) {
                 var updatetime = record.updatetime;
                 var currentTime = new Date().getTime();
-                if ((currentTime - updatetime) < me.offlineTime) {
+                if ((currentTime - updatetime) < this.offlineTime) {
                     isOnline = true;
                 };
             }
@@ -1135,17 +1179,28 @@ var monitor = {
         caclOnlineCount: function() {
             var me = this;
             var online = 0;
+            var stockDevCount = 0;
+            var offlineDevCount = 0;
             var deviceIds = Object.keys(me.deviceInfos);
-            for (var key in this.positionLastrecords) {
-                var record = this.positionLastrecords[key];
-                var isOnline = me.getIsOnline(record.deviceid);
-                if (isOnline) {
-                    online++;
-                }
-            };
+
+            this.groups.forEach(function(group) {
+                group.devices.forEach(function(device) {
+                    if (me.getIsOnline(device.deviceid)) {
+                        online++;
+                    } else {
+                        if (device.lastactivetime <= 0) {
+                            stockDevCount++;
+                        } else {
+                            offlineDevCount++;
+                        }
+                    }
+                });
+            })
+
             this.allDevCount = deviceIds.length;
             this.onlineDevCount = online;
-            this.offlineDevCount = this.allDevCount - this.onlineDevCount;
+            this.offlineDevCount = offlineDevCount;
+            this.stockDevCount = stockDevCount;
         },
         onSelectState: function() {
 
