@@ -430,9 +430,9 @@ var utils = {
             posiType += "(" + track.gpsvalidnum + ")";
         };
         if (isZh) {
-            var isOnineStr = utils.getIsOnline(track) ? "在线" : "离线" + utils.timeStamp(Date.now() - track.updatetime, isZh);
+            var isOnineStr = utils.getIsOnline(track) ? "在线" : "离线" + utils.timeStampNoSecond(Date.now() - track.updatetime);
         } else {
-            var isOnineStr = utils.getIsOnline(track) ? "online" : "offline" + utils.timeStamp(Date.now() - track.updatetime, isZh);
+            var isOnineStr = utils.getIsOnline(track) ? "online" : "offline" + utils.timeStampNoSecond(Date.now() - track.updatetime);
         };
         var speed = track.speed == 0 ? "0km/h" : (track.speed / 1000).toFixed(2) + "km/h";
         var rxlevel = track.rxlevel === 0 ? '' : ('(' + (isZh ? '信号' : 'Signal') + ':' + track.rxlevel + '%)');
