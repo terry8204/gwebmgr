@@ -1,4 +1,3 @@
-
 // baidu: 'http://api.map.baidu.com/api?v=3.0&ak=e7SC5rvmn2FsRNE4R1ygg44n',
 // textIconoverlay: getPath + 'textIconoverlay_min.js',
 // distancetool: getPath + 'distancetool_min.js',
@@ -22,7 +21,7 @@ var isLoadLastPositon = false;
 // 定位监控
 var monitor = {
     template: document.getElementById('monitor-template').innerHTML,
-    data: function () {
+    data: function() {
         var vm = this;
         return {
             cmdSettings: {},
@@ -56,6 +55,7 @@ var monitor = {
             allDevCount: 0, // 全部设备的个数
             onlineDevCount: 0, // 在线设备个数
             offlineDevCount: 0, // 离线设备个数
+            stockDevCount: 0, //库存
             isMoveTriggerEvent: true, // 地图移动是否触发事件
             intervalInstanse: null, // 定时器实例
             selectedDevObj: {}, // 选中的设备信息
@@ -63,21 +63,21 @@ var monitor = {
             filterData: [],
             timeoutIns: null,
             isShowMatchDev: false,
-            editDevModal: false,          // 编辑设备模态
+            editDevModal: false, // 编辑设备模态
             dispatchDirectiveModal: false, // 下发指令模态
-            deviceInfoModal: false,   // 设备基本信息模态
-            directiveReportModal: false,//指令记录
+            deviceInfoModal: false, // 设备基本信息模态
+            directiveReportModal: false, //指令记录
             currentDeviceName: "",
-            editDevData: {       //编辑的设备信息
+            editDevData: { //编辑的设备信息
                 devicename: '',
                 simnum: '',
                 deviceid: '',
                 remark: '',
             },
-            expirenotifytime:DateFormat.longToDateTimeStr(Date.now(),0),
-            currentDeviceType: null,  // 选中设备的类型
-            currentDevDirectiveList: [],  // 选中设备的类型对应的设备指令
-            selectedCmdInfo: {},  // 选中设备指令的信息
+            expirenotifytime: DateFormat.longToDateTimeStr(Date.now(), 0),
+            currentDeviceType: null, // 选中设备的类型
+            currentDevDirectiveList: [], // 选中设备的类型对应的设备指令
+            selectedCmdInfo: {}, // 选中设备指令的信息
             cmdParams: {},
             deviceBaseInfo: {},
             loading: false,
@@ -93,7 +93,7 @@ var monitor = {
                     key: 'action',
                     width: 100,
                     // align: 'center',
-                    render: function (h, params) {
+                    render: function(h, params) {
                         return h('div', [
                             h('Poptip', {
                                 props: {
@@ -101,13 +101,13 @@ var monitor = {
                                     title: isZh ? '确定取消吗?' : "cancelled ?"
                                 },
                                 on: {
-                                    'on-ok': function () {
+                                    'on-ok': function() {
                                         var url = myUrls.deleteCacheCmd();
-                                        utils.sendAjax(url, { cachecmdid: params.row.cachecmdid }, function (resp) {
+                                        utils.sendAjax(url, { cachecmdid: params.row.cachecmdid }, function(resp) {
                                             if (resp.status == 0) {
                                                 vm.$Message.success(isZh ? "取消成功" : "Cancel successfully");
                                                 vm.cacheTableData.splice(params.index, 1);
-                                                vm.cacheTableData.forEach(function (item, index) {
+                                                vm.cacheTableData.forEach(function(item, index) {
                                                     item.index = ++index;
                                                 });
                                             } else if (resp.status == 1) {
@@ -117,13 +117,13 @@ var monitor = {
                                     }
                                 }
                             }, [
-                                    h('Button', {
-                                        props: {
-                                            type: 'primary',
-                                            size: 'small'
-                                        }
-                                    }, isZh ? "取消" : "Cancel")
-                                ])
+                                h('Button', {
+                                    props: {
+                                        type: 'primary',
+                                        size: 'small'
+                                    }
+                                }, isZh ? "取消" : "Cancel")
+                            ])
                         ]);
                     },
                 }
@@ -138,29 +138,29 @@ var monitor = {
             ],
             cacheTableData: [],
             sendTableData: [],
-            cmdPwd: null,  //指令密码
+            cmdPwd: null, //指令密码
             lastquerypositiontime: 0
         }
     },
     methods: {
-        initMap: function () {
+        initMap: function() {
             var me = this;
             switch (this.mapType) {
                 case 'bMap':
                     try {
                         BMap ? this.map = new BMapClass() : '';
                         me.isSpin = false;
-                        (function poll1 () {
+                        (function poll1() {
                             isLoadLastPositon ? me.map.setMarkerClusterer(me.positionLastrecords) : setTimeout(poll1, 4);
                         }());
                     } catch (error) {
                         me.isSpin = true;
-                        asyncLoadJs('baidu', function () {
-                            (function poll2 () {
+                        asyncLoadJs('baidu', function() {
+                            (function poll2() {
                                 if (isLoadBMap && isLoadLastPositon) {
-                                    asyncLoadJs('distancetool', function () {
-                                        asyncLoadJs('textIconoverlay', function () {
-                                            asyncLoadJs('bmarkerclusterer', function () {
+                                    asyncLoadJs('distancetool', function() {
+                                        asyncLoadJs('textIconoverlay', function() {
+                                            asyncLoadJs('bmarkerclusterer', function() {
                                                 me.isSpin = false;
                                                 me.map = new BMapClass();
                                                 me.map.setMarkerClusterer(me.positionLastrecords);
@@ -179,15 +179,15 @@ var monitor = {
                     try {
                         google ? this.map = new GoogleMap() : '';
                         me.isSpin = false;
-                        (function poll3 () {
+                        (function poll3() {
                             isLoadLastPositon ? me.map.setMarkerClusterer(me.positionLastrecords) : setTimeout(poll3, 4);
                         }());
                     } catch (error) {
                         me.isSpin = true;
-                        asyncLoadJs('google', function () {
-                            asyncLoadJs('markerwithlabel', function () {
-                                asyncLoadJs('gmarkerclusterer', function () {
-                                    (function poll4 () {
+                        asyncLoadJs('google', function() {
+                            asyncLoadJs('markerwithlabel', function() {
+                                asyncLoadJs('gmarkerclusterer', function() {
+                                    (function poll4() {
                                         if (isLoadLastPositon && google) {
                                             me.isSpin = false;
                                             me.map = new GoogleMap();
@@ -202,11 +202,11 @@ var monitor = {
                     }
                     break;
                 case 'oMap':
-                    (function poll4 () {
+                    (function poll4() {
                         if (isLoadLastPositon) {
                             me.isSpin = false;
                             me.map = new OpenStreeMapCls();
-                            me.$nextTick(function () {
+                            me.$nextTick(function() {
                                 me.map.setMarkerClusterer(me.positionLastrecords);
                             })
                         } else {
@@ -217,7 +217,7 @@ var monitor = {
             };
 
         },
-        handleWebSocket: function (data) {
+        handleWebSocket: function(data) {
             var me = this;
             var deviceid = data.deviceid;
             data.devicename = this.deviceInfos[deviceid] ? this.deviceInfos[deviceid].devicename : "";
@@ -229,7 +229,7 @@ var monitor = {
                 me.map && me.map.updateSingleMarkerState(deviceid);
             };
         },
-        openDistance: function () {
+        openDistance: function() {
             if (this.myDis != null) {
                 this.myDis.close();
             }
@@ -238,7 +238,7 @@ var monitor = {
                 this.myDis.open();
             }
         },
-        handleClickMore: function (name) {
+        handleClickMore: function(name) {
             switch (name) {
                 case 'cmdrecord':
                     this.directiveReportModal = true;
@@ -288,26 +288,26 @@ var monitor = {
                     break;
             }
         },
-        queryDeviceBaseInfo: function () {
+        queryDeviceBaseInfo: function() {
             this.deviceBaseInfo = {};
             var me = this;
             var url = myUrls.queryDeviceBaseInfo();
             var data = {
                 deviceid: globalDeviceId
             };
-            utils.sendAjax(url, data, function (resp) {
+            utils.sendAjax(url, data, function(resp) {
                 resp.overdueDateStr = DateFormat.longToDateStr(resp.overduetime, 0);
                 me.deviceBaseInfo = resp;
             })
         },
-        handleClickDirective: function (cmdCode) {
+        handleClickDirective: function(cmdCode) {
             this.cmdParams = {};
             this.selectedCmdInfo = {};
             this.cmdPwd = null;
             var cmdInfo = null;
             var me = this;
             var cmdVal = this.cmdSettings[cmdCode];
-            this.currentDevDirectiveList.forEach(function (cmd) {
+            this.currentDevDirectiveList.forEach(function(cmd) {
                 if (cmd.cmdcode == cmdCode) {
                     cmdInfo = cmd;
                 }
@@ -326,7 +326,7 @@ var monitor = {
                 console.log('cmdVal', cmdVal);
                 this.selectedCmdInfo.params = paramsXMLObj.paramsListObj;
 
-                this.selectedCmdInfo.params.forEach(function (param, index) {
+                this.selectedCmdInfo.params.forEach(function(param, index) {
                     if (cmdVal && cmdVal.length && cmdVal[0]) {
                         if (cmdInfo.cmdtype === 'timeperiod') {
                             me.cmdParams[param.type] = cmdVal[index].split("-");
@@ -354,12 +354,12 @@ var monitor = {
                 });
 
 
-                (cmdInfo.cmdtype !== 'text' || cmdInfo.cmdtype === 'timeperiod') ? this.selectedTypeVal = (cmdVal ? cmdVal[0] : "") : '';
+                (cmdInfo.cmdtype !== 'text' || cmdInfo.cmdtype === 'timeperiod') ? this.selectedTypeVal = (cmdVal ? cmdVal[0] : ""): '';
             };
 
             this.dispatchDirectiveModal = true;
         },
-        parserToWeekTimeJson: function (value) {
+        parserToWeekTimeJson: function(value) {
             var valueArr = value.split("-"),
                 remindJson = {
                     time: valueArr[0],
@@ -384,7 +384,7 @@ var monitor = {
 
             return remindJson;
         },
-        parserToRemindJson: function (value) {
+        parserToRemindJson: function(value) {
             var valueArr = value.split("-"),
                 len = valueArr.length,
                 remindJson = {};
@@ -413,7 +413,7 @@ var monitor = {
             }
             return remindJson;
         },
-        encodeWeekTimeParams: function (paramsObj) {
+        encodeWeekTimeParams: function(paramsObj) {
 
             var resultArr = [];
             for (var key in paramsObj) {
@@ -432,7 +432,7 @@ var monitor = {
             }
             return resultArr;
         },
-        encodeRemindParams: function (paramsObj) {
+        encodeRemindParams: function(paramsObj) {
             var resultArr = [];
             for (var key in paramsObj) {
                 var item = paramsObj[key];
@@ -453,18 +453,18 @@ var monitor = {
             }
             return resultArr;
         },
-        queryAllCmdRecords: function () {
+        queryAllCmdRecords: function() {
             this.loading = true;
             var me = this;
             var url = myUrls.queryAllCmdRecords();
-            utils.sendAjax(url, { deviceid: this.currentDeviceId }, function (resp) {
+            utils.sendAjax(url, { deviceid: this.currentDeviceId }, function(resp) {
 
                 if (resp.status === 0) {
-                    resp.cacherecords.forEach(function (record, index) {
+                    resp.cacherecords.forEach(function(record, index) {
                         record.index = ++index;
                         record.sendtimeStr = DateFormat.longToDateTimeStr(record.cmdtime, 0);
                     });
-                    resp.sendrecords.forEach(function (record, index) {
+                    resp.sendrecords.forEach(function(record, index) {
                         record.index = ++index;
                         record.sendtimeStr = DateFormat.longToDateTimeStr(record.cmdtime, 0);
                     });
@@ -477,7 +477,7 @@ var monitor = {
             });
         },
 
-        disposeDirectiveFn: function () {
+        disposeDirectiveFn: function() {
             var me = this;
             var url = myUrls.sendCmd();
             var params = [];
@@ -518,7 +518,7 @@ var monitor = {
                     return;
                 }
             };
-            utils.sendAjax(url, data, function (resp) {
+            utils.sendAjax(url, data, function(resp) {
                 me.cmdSettings[data.cmdcode] = params;
                 if (resp.status === 0) {
                     communicate.$emit("disposeAlarm", data.cmdcode);
@@ -538,19 +538,19 @@ var monitor = {
             });
         },
 
-        focus: function () {
+        focus: function() {
             var me = this;
             if (this.sosoValue.trim()) {
                 me.sosoValueChange();
             }
         },
-        blur: function () {
+        blur: function() {
             var me = this
-            setTimeout(function () {
+            setTimeout(function() {
                 me.isShowMatchDev = false;
             }, 300)
         },
-        filterMethod: function (value) {
+        filterMethod: function(value) {
             this.filterData = []
             var me = this;
             value = value.toLowerCase();
@@ -563,7 +563,7 @@ var monitor = {
                 ) {
 
                     if (me.selectedState == "all") {
-                        group.devices.forEach(function (device) {
+                        group.devices.forEach(function(device) {
                             var isOnline = me.getIsOnline(device.deviceid);
                             device.isOnline = isOnline;
                         })
@@ -571,7 +571,7 @@ var monitor = {
                     } else if (me.selectedState == "online") {
                         var cloneGroup = deepClone(group);
                         cloneGroup.devices = [];
-                        group.devices.forEach(function (device) {
+                        group.devices.forEach(function(device) {
                             var isOnline = me.getIsOnline(device.deviceid);
                             device.isOnline = isOnline;
                             if (isOnline) {
@@ -584,7 +584,7 @@ var monitor = {
                     } else if (me.selectedState == "offline") {
                         var cloneGroup = deepClone(group);
                         cloneGroup.devices = [];
-                        group.devices.forEach(function (device) {
+                        group.devices.forEach(function(device) {
                             var isOnline = me.getIsOnline(device.deviceid);
                             device.isOnline = isOnline;
                             if (!isOnline) {
@@ -648,14 +648,14 @@ var monitor = {
                 };
             };
         },
-        sosoSelect: function (value) {
+        sosoSelect: function(value) {
             this.sosoValue = value.devicename;
             this.filterData = [];
             var me = this;
             var deviceid = null
 
-            this.groups.forEach(function (group) {
-                group.devices.forEach(function (dev) {
+            this.groups.forEach(function(group) {
+                group.devices.forEach(function(dev) {
                     if (dev.deviceid == value.deviceid) {
                         dev.isSelected = true;
                         group.expand = true;
@@ -670,10 +670,10 @@ var monitor = {
 
             this.scrollToCurruntDevice(deviceid);
         },
-        scrollToCurruntDevice: function (deviceid) {
+        scrollToCurruntDevice: function(deviceid) {
 
             var me = this;
-            setTimeout(function () {
+            setTimeout(function() {
                 var elWraper = me.$refs.treeWraper;
                 var wrapHeight = elWraper.getBoundingClientRect().height;
                 var sHeight = 0;
@@ -706,7 +706,7 @@ var monitor = {
 
             }, 500);
         },
-        sosoValueChange: function () {
+        sosoValueChange: function() {
             var me = this;
             var value = this.sosoValue;
 
@@ -719,16 +719,16 @@ var monitor = {
                 return;
             }
 
-            this.timeoutIns = setTimeout(function () {
+            this.timeoutIns = setTimeout(function() {
                 me.filterMethod(value);
             }, 300);
         },
-        selectedStateNav: function (state) {
+        selectedStateNav: function(state) {
             this.selectedState = state;
             this.openGroupIds = {};
             this.openCompanyIds = {};
         },
-        openCompany: function (company) {
+        openCompany: function(company) {
             var companyid = company.companyid;
             company.expand = !company.expand;
             if (company.expand) {
@@ -737,7 +737,7 @@ var monitor = {
                 delete this.openCompanyIds[companyid];
             }
         },
-        openGroupItem: function (groupInfo) {
+        openGroupItem: function(groupInfo) {
             groupInfo.expand = !groupInfo.expand;
             if (groupInfo.expand) {
                 this.openGroupIds[groupInfo.groupid] = "";
@@ -745,7 +745,7 @@ var monitor = {
                 delete this.openGroupIds[groupInfo.groupid];
             }
         },
-        selectedDev: function (deviceInfo) {
+        selectedDev: function(deviceInfo) {
             var device = this.deviceInfos[deviceInfo.deviceid];
             var devicetype = device.devicetype;
             if (devicetype != this.currentDeviceType) {
@@ -756,7 +756,7 @@ var monitor = {
             this.selectedDevObj = deviceInfo;
             this.handleClickDev(deviceInfo.deviceid);
         },
-        handleClickDev: function (deviceid) {
+        handleClickDev: function(deviceid) {
             globalDeviceId = deviceid;
             this.querySingleAllCmdDefaultValue(deviceid);
             if (!this.map) { return; }
@@ -773,30 +773,31 @@ var monitor = {
                 this.$store.commit('currentDeviceId', deviceid);
             }
         },
-        querySingleAllCmdDefaultValue: function (deviceid) {
-            var url = myUrls.queryDeviceSettings(), me = this;
-            utils.sendAjax(url, { deviceid: deviceid }, function (resp) {
+        querySingleAllCmdDefaultValue: function(deviceid) {
+            var url = myUrls.queryDeviceSettings(),
+                me = this;
+            utils.sendAjax(url, { deviceid: deviceid }, function(resp) {
                 if (resp.status === 0) {
                     me.cmdSettings = resp.settings;
                 }
             })
         },
-        updateTreeOnlineState: function () {
+        updateTreeOnlineState: function() {
             this.getCurrentStateTreeData(this.selectedState);
         },
-        cancelSelected: function () {
+        cancelSelected: function() {
 
-            this.groups.forEach(function (group) {
-                group.devices.forEach(function (dev) {
+            this.groups.forEach(function(group) {
+                group.devices.forEach(function(dev) {
                     dev.isSelected = false
                 })
             })
 
         },
-        getMonitorListByUser: function (data, callback) {
+        getMonitorListByUser: function(data, callback) {
             var me = this
             var url = myUrls.monitorListByUser()
-            utils.sendAjax(url, data, function (resp) {
+            utils.sendAjax(url, data, function(resp) {
                 if (resp.status == 0) {
                     callback(resp)
                 } else {
@@ -806,7 +807,7 @@ var monitor = {
                 }
             })
         },
-        getLastPosition: function (deviceIds, callback, errorCall) {
+        getLastPosition: function(deviceIds, callback, errorCall) {
             var me = this;
             var url = myUrls.lastPosition();
             var data = {
@@ -819,10 +820,10 @@ var monitor = {
                 method: 'post',
                 data: JSON.stringify(data),
                 dataType: 'json',
-                success: function (resp) {
+                success: function(resp) {
                     if (resp.status == 0) {
                         if (resp.records) {
-                            resp.records.forEach(function (item) {
+                            resp.records.forEach(function(item) {
                                 if (item) {
                                     var deviceid = item.deviceid;
                                     var b_lon_and_b_lat = wgs84tobd09(item.callon, item.callat)
@@ -845,20 +846,20 @@ var monitor = {
                     } else if (resp.status > 9000) {
                         me.$Message.error(me.$t("monitor.reLogin"))
                         Cookies.remove('token')
-                        setTimeout(function () {
+                        setTimeout(function() {
                             window.location.href = 'index.html'
                         }, 2000)
                     }
                     me.lastquerypositiontime = DateFormat.getCurrentUTC();
                     isLoadLastPositon = true;
                 },
-                error: function (err) {
+                error: function(err) {
                     errorCall(err);
                     isLoadLastPositon = true;
                 }
             })
         },
-        openTreeDeviceNav: function (deviceid) {
+        openTreeDeviceNav: function(deviceid) {
             var me = this;
             var devLastInfo = me.getSingleDeviceInfo(deviceid);
             var device = this.deviceInfos[deviceid];
@@ -866,13 +867,13 @@ var monitor = {
             this.currentDeviceType = devicetype;
 
             me.$store.commit('currentDeviceId', deviceid);
-            if(devLastInfo){
+            if (devLastInfo) {
                 me.$store.commit('currentDeviceRecord', devLastInfo);
             }
             globalDeviceId = deviceid;
 
-            me.groups.forEach(function (group) {
-                group.devices.forEach(function (device) {
+            me.groups.forEach(function(group) {
+                group.devices.forEach(function(device) {
                     if (device.deviceid == deviceid) {
                         device.isSelected = true;
                         group.expand = true;
@@ -884,23 +885,23 @@ var monitor = {
 
             this.scrollToCurruntDevice(deviceid);
         },
-        getSingleDeviceInfo: function (deviceid) {
+        getSingleDeviceInfo: function(deviceid) {
             return this.positionLastrecords[deviceid];
         },
-        queryCompanyTree: function (callback) {
+        queryCompanyTree: function(callback) {
             var url = myUrls.queryCompanyTree();
-            utils.sendAjax(url, {}, function (resp) {
+            utils.sendAjax(url, {}, function(resp) {
                 callback(resp);
             });
         },
-        handleEditDevFn: function () {
+        handleEditDevFn: function() {
             var me = this;
             var data = this.editDevData;
             var sendData = {
                 deviceid: data.deviceid,
                 devicename: data.devicename,
                 remark: data.remark,
-                expirenotifytime:new Date(this.expirenotifytime).getTime()
+                expirenotifytime: new Date(this.expirenotifytime).getTime()
             };
             var url = myUrls.editDeviceSimple();
             if (data.devicename.length == 0 || data.devicename == '') {
@@ -911,7 +912,7 @@ var monitor = {
                 sendData.simnum = data.simnum
             }
 
-            utils.sendAjax(url, sendData, function (resp) {
+            utils.sendAjax(url, sendData, function(resp) {
                 if (resp.status == 0) {
                     me.editDeviceInfo.title = sendData.devicename;
                     me.editDeviceInfo.simnum = sendData.simnum;
@@ -932,7 +933,7 @@ var monitor = {
                 }
             })
         },
-        editDevice: function (deviceid) {
+        editDevice: function(deviceid) {
             var deviceInfo = this.deviceInfos[deviceid];
             this.$store.commit('editDeviceInfo', deviceInfo);
             var disabled = true;
@@ -947,16 +948,16 @@ var monitor = {
             this.editDevData.deviceid = deviceid;
             this.editDevData.remark = deviceInfo.remark;
             this.editDevData.disabled = disabled;
-            this.expirenotifytime = DateFormat.longToDateTimeStr(deviceInfo.expirenotifytime,0);
+            this.expirenotifytime = DateFormat.longToDateTimeStr(deviceInfo.expirenotifytime, 0);
             this.editDevModal = true;
         },
-        playBack: function (deviceid) {
+        playBack: function(deviceid) {
             playBack(deviceid)
         },
-        trackMap: function (deviceid) {
+        trackMap: function(deviceid) {
             trackMap(deviceid)
         },
-        getCurrentStateTreeData: function (state) {
+        getCurrentStateTreeData: function(state) {
             var me = this;
             this.sosoData = [];
             if (state === 'all') {
@@ -976,9 +977,10 @@ var monitor = {
 
 
         },
-        filterGroups: function (groups) {
-            var me = this, all = 0;
-            groups.forEach(function (group, index) {
+        filterGroups: function(groups) {
+            var me = this,
+                all = 0;
+            groups.forEach(function(group, index) {
                 var devCount = 0;
                 if (group.groupname == 'Default') {
                     isZh ? group.groupname = me.$t("monitor.defaultGroup") : '';
@@ -989,7 +991,7 @@ var monitor = {
                 group.pinyin = __pinyin.getPinyin(group.groupname);
                 group.expand = false;
 
-                group.devices.forEach(function (device) {
+                group.devices.forEach(function(device) {
                     all++;
                     devCount++;
                     device.isSelected = false;
@@ -1006,7 +1008,7 @@ var monitor = {
                     device.allDeviceIdTitle = device.devicetitle + "-" + device.deviceid;
                 });
 
-                group.devices.sort(function (a, b) {
+                group.devices.sort(function(a, b) {
                     return a.devicetitle.localeCompare(b.devicetitle);
                 });
 
@@ -1015,23 +1017,23 @@ var monitor = {
             this.allDevCount = all;
             this.onlineCount = 0;
             this.offlineDevCount = all;
-            return groups.filter(function (group) { return group.devices.length });
+            return groups.filter(function(group) { return group.devices.length });
         },
 
-        getAllHideCompanyTreeData: function () {
+        getAllHideCompanyTreeData: function() {
             var me = this;
-            this.groups.forEach(function (group) {
+            this.groups.forEach(function(group) {
                 var count = 0;
                 var online = 0;
-                group.devices.forEach(function (device, index) {
+                group.devices.forEach(function(device, index) {
                     count++;
-                    
+
                     var isOnline = me.getIsOnline(device.deviceid);
                     device.isOnline = isOnline;
                     if (isOnline) {
-                        device.isMoving =  me.positionLastrecords[device.deviceid].moving != 0;
+                        device.isMoving = me.positionLastrecords[device.deviceid].moving != 0;
                         online++;
-                    }else{
+                    } else {
                         device.isMoving = null;
                     };
                 });
@@ -1039,15 +1041,15 @@ var monitor = {
                 group.title = group.groupname + "(" + online + "/" + count + ")";
             });
         },
-        getOnlineHideCompanyTreeData: function () {
+        getOnlineHideCompanyTreeData: function() {
             var me = this;
-            this.groups.forEach(function (group) {
+            this.groups.forEach(function(group) {
                 var online = 0;
-                group.devices.forEach(function (device, index) {
+                group.devices.forEach(function(device, index) {
                     var isOnline = me.getIsOnline(device.deviceid);
                     device.isOnline = isOnline;
                     if (isOnline) {
-                        device.isMoving =  me.positionLastrecords[device.deviceid].moving != 0;
+                        device.isMoving = me.positionLastrecords[device.deviceid].moving != 0;
                         online++;
                     };
                 });
@@ -1059,11 +1061,11 @@ var monitor = {
                 group.title = group.groupname + "(" + online + ")";
             });
         },
-        getOfflineHideCompanyTreeData: function () {
+        getOfflineHideCompanyTreeData: function() {
             var me = this;
-            this.groups.forEach(function (group) {
+            this.groups.forEach(function(group) {
                 var offline = 0;
-                group.devices.forEach(function (device, index) {
+                group.devices.forEach(function(device, index) {
                     var isOnline = me.getIsOnline(device.deviceid);
                     device.isOnline = isOnline;
                     if (!isOnline) {
@@ -1078,7 +1080,7 @@ var monitor = {
                 group.title = group.groupname + "(" + offline + ")";
             });
         },
-        getIsOnline: function (deviceid) {
+        getIsOnline: function(deviceid) {
             var me = this
             var isOnline = false;
             var record = this.positionLastrecords[deviceid];
@@ -1091,7 +1093,7 @@ var monitor = {
             }
             return isOnline;
         },
-        updateDevLastPosition: function (item) {
+        updateDevLastPosition: function(item) {
             var deviceid = item.deviceid;
             if (this.deviceInfos && this.deviceInfos[deviceid]) {
                 var b_lon_and_b_lat = wgs84tobd09(item.callon, item.callat)
@@ -1108,29 +1110,29 @@ var monitor = {
                 this.map && this.map.updateLastTracks(this.positionLastrecords);
             }
         },
-        setIntervalReqRecords: function () {
+        setIntervalReqRecords: function() {
             var me = this
-            this.intervalInstanse = setInterval(function () {
+            this.intervalInstanse = setInterval(function() {
                 me.intervalTime--;
                 if (me.intervalTime <= 0) {
                     me.intervalTime = me.stateIntervalTime;
                     // var devIdList = Object.keys(me.deviceInfos);
-                    me.getLastPosition([], function () {
+                    me.getLastPosition([], function() {
                         me.map && me.map.updateLastTracks && me.map.updateLastTracks(me.positionLastrecords);
                         me.map && me.map.updateMarkersState && me.map.updateMarkersState(me.currentDeviceId);
                         me.updateTreeOnlineState();
                         me.caclOnlineCount();
-                    }, function (error) { });
+                    }, function(error) {});
                 }
             }, 1000);
         },
-        handleMousemove: function (e) {
+        handleMousemove: function(e) {
             var pageY = event.pageY;
             var height = 8 * 38;
             var isOverflow = pageY + height < window.innerHeight
             this.placement = isOverflow ? 'right-start' : 'right-end';
         },
-        caclOnlineCount: function () {
+        caclOnlineCount: function() {
             var me = this;
             var online = 0;
             var deviceIds = Object.keys(me.deviceInfos);
@@ -1145,14 +1147,14 @@ var monitor = {
             this.onlineDevCount = online;
             this.offlineDevCount = this.allDevCount - this.onlineDevCount;
         },
-        onSelectState: function () {
+        onSelectState: function() {
 
             this.getCurrentStateTreeData(
                 this.selectedState
             )
 
         },
-        isShowRecordBtnByDeviceType: function () {
+        isShowRecordBtnByDeviceType: function() {
             var deviceTypes = this.deviceTypes;
             var result1 = false;
             var result2 = false;
@@ -1198,8 +1200,9 @@ var monitor = {
             this.isShowVideoBtn = result6;
             this.isShowActiveSafetyBtn = result7;
         },
-        getDeviceTypeName: function (deviceTypeId) {
-            var typeName = "", deviceTypes = this.deviceTypes;
+        getDeviceTypeName: function(deviceTypeId) {
+            var typeName = "",
+                deviceTypes = this.deviceTypes;
             for (var index = 0; index < deviceTypes.length; index++) {
                 var element = deviceTypes[index];
                 if (element.devicetypeid === deviceTypeId) {
@@ -1209,31 +1212,31 @@ var monitor = {
             }
             return typeName;
         },
-        getMonitorList: function () {
+        getMonitorList: function() {
             var me = this;
-            this.getMonitorListByUser({ username: userName }, function (resp) {
+            this.getMonitorListByUser({ username: userName }, function(resp) {
                 communicate.$emit("monitorlist", resp.groups);
                 me.groups = me.filterGroups(resp.groups)
-                me.groups.sort(function (a, b) {
+                me.groups.sort(function(a, b) {
                     return a.groupname.localeCompare(b.groupname);
                 });
                 me.$store.dispatch('setdeviceInfos', me.groups);
-                me.getLastPosition([], function (resp) {
+                me.getLastPosition([], function(resp) {
                     me.lastquerypositiontime = DateFormat.getCurrentUTC();
                     me.caclOnlineCount();
                     me.updateTreeOnlineState();
                     communicate.$on("positionlast", me.handleWebSocket);
                     communicate.$on("on-click-marker", me.openTreeDeviceNav);
-                    communicate.$on("on-click-expiration", function(deviceid){
+                    communicate.$on("on-click-expiration", function(deviceid) {
                         me.editDevice(deviceid);
                         me.openTreeDeviceNav(deviceid);
                     });
-                }, function (error) { });
+                }, function(error) {});
                 me.isLoadGroup = false;
                 me.setIntervalReqRecords();
             });
         },
-        refreshMonitorRestartOpen: function () {
+        refreshMonitorRestartOpen: function() {
             var me = this;
             if (globalDeviceId) {
 
@@ -1245,7 +1248,7 @@ var monitor = {
                             device.isSelected = true;
                             group.expand = true;
                             me.selectedDevObj = device;
-                            setTimeout(function () { me.handleClickDev(device.deviceid); }, 300);
+                            setTimeout(function() { me.handleClickDev(device.deviceid); }, 300);
                             return;
                         }
                     }
@@ -1255,36 +1258,36 @@ var monitor = {
         }
     },
     computed: {
-        username: function () {
+        username: function() {
             return Cookies.get('name');
         },
-        isShowCompanyName: function () {
+        isShowCompanyName: function() {
             return this.$store.state.isShowCompany;
         },
-        stateIntervalTime: function () {
+        stateIntervalTime: function() {
             return this.$store.state.intervalTime;
         },
-        editDeviceInfo: function () {
+        editDeviceInfo: function() {
             return this.$store.state.editDeviceInfo;
         },
-        currentDeviceRecord: function () {
+        currentDeviceRecord: function() {
             return this.$store.state.currentDeviceRecord;
         },
-        currentDeviceId: function () {
+        currentDeviceId: function() {
             return this.$store.state.currentDeviceId;
         },
-        deviceInfos: function () {
+        deviceInfos: function() {
             return this.$store.state.deviceInfos;
         },
-        deviceTypes: function () {
+        deviceTypes: function() {
             return this.$store.state.deviceTypes;
         },
-        userType: function () {
+        userType: function() {
             return this.$store.state.userType;
         }
     },
     watch: {
-        mapType: function (newType) {
+        mapType: function(newType) {
             try {
                 this.initMap();
             } catch (error) {
@@ -1293,18 +1296,18 @@ var monitor = {
 
             Cookies.set('app-map-type', this.mapType);
         },
-        filterData: function () {
+        filterData: function() {
             if (this.filterData.length) {
                 this.isShowMatchDev = true;
             } else {
                 this.isShowMatchDev = false;
             }
         },
-        currentDeviceType: function () {
+        currentDeviceType: function() {
             var allCmdList = this.$store.state.allCmdList;
             var directiveList = [];
             var type = this.currentDeviceType;
-            allCmdList.forEach(function (cmd) {
+            allCmdList.forEach(function(cmd) {
                 if (cmd.devicetype == type) {
                     directiveList.push(cmd);
                 } else if (cmd.common == 1) {
@@ -1312,21 +1315,21 @@ var monitor = {
                 };
             });
 
-            directiveList.sort(function (a, b) {
+            directiveList.sort(function(a, b) {
                 return a.cmdlevel - b.cmdlevel;
             });
             this.currentDevDirectiveList = directiveList;
             this.isShowRecordBtnByDeviceType();
 
         },
-        selectedState: function () {
+        selectedState: function() {
             this.onSelectState();
         },
-        deviceTypes: function () {
+        deviceTypes: function() {
             this.getMonitorList();
         }
     },
-    mounted: function () {
+    mounted: function() {
         this.intervalTime = Number(this.stateIntervalTime);
         this.placeholder = this.$t("monitor.placeholder");
         this.initMap();
@@ -1334,15 +1337,15 @@ var monitor = {
             this.getMonitorList();
         }
     },
-    created: function () {
+    created: function() {
         this.positionLastrecords = {}; // 全部设备最后一次位置记录
     },
-    activated: function () {
+    activated: function() {
         if (isNeedRefresh) {
             var me = this;
-            this.getMonitorListByUser({ username: userName }, function (resp) {
+            this.getMonitorListByUser({ username: userName }, function(resp) {
                 me.groups = me.filterGroups(resp.groups);
-                me.groups.sort(function (a, b) {
+                me.groups.sort(function(a, b) {
                     return a.groupname.localeCompare(b.groupname);
                 });
                 me.$store.dispatch('setdeviceInfos', me.groups);
@@ -1353,7 +1356,7 @@ var monitor = {
         };
 
     },
-    beforeDestroy: function () {
+    beforeDestroy: function() {
         this.$store.commit('currentDeviceRecord', {});
         clearInterval(this.intervalInstanse);
         communicate.$off('positionlast', this.handleWebSocket);

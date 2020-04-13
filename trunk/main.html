@@ -46,7 +46,7 @@
             </div>
             <div class="app-nav">
                 <i-menu mode="horizontal" theme="dark" :active-name="componentid" v-on:on-select="changeNav">
-                        <template v-for="item in headMenuList" :key="item.name">
+                    <template v-for="item in headMenuList" :key="item.name">
                             <menuItem :name="item.name" v-show="item.isShow">  
                                 <Icon :type="item.icon"></Icon>
                                 {{item.title}}
@@ -58,20 +58,20 @@
                 <ul>
                     <li style="padding-right:8px;">{{name}}</li>
                     <li style="padding:0" v-if="userType < 3">|</li>
-                    <li v-if="userType < 3">  
-                        <span  @click="jumpMessageHtml"><Icon type="ios-text" style="margin-right:3px"></Icon>{{$t("alarm.message")}}</span>
+                    <li v-if="userType < 3">
+                        <span @click="jumpMessageHtml"><Icon type="ios-text" style="margin-right:3px"></Icon>{{$t("alarm.message")}}</span>
                     </li>
                     <li style="padding:0">|</li>
                     <li>
-                        <span  @click="serviceModal=true"><Icon type="ios-contact" style="margin-right:3px"></Icon>{{$t("header.contact")}}</span>
+                        <span @click="serviceModal=true"><Icon type="ios-contact" style="margin-right:3px"></Icon>{{$t("header.contact")}}</span>
                     </li>
                     <li style="padding:0">|</li>
                     <li>
-                        <span  @click="changePassword"><Icon type="md-create" style="margin-right:3px"></Icon>{{$t("header.changePwd")}}</span>
+                        <span @click="changePassword"><Icon type="md-create" style="margin-right:3px"></Icon>{{$t("header.changePwd")}}</span>
                     </li>
                     <li style="padding:0">|</li>
                     <li>
-                        <span @click="showSetup"><Icon type="ios-hammer-outline" style="margin-right:3px"></Icon>{{$t("header.setting")}}</span> 
+                        <span @click="showSetup"><Icon type="ios-hammer-outline" style="margin-right:3px"></Icon>{{$t("header.setting")}}</span>
                     </li>
                     <li style="padding:0">|</li>
                     <li>
@@ -96,13 +96,13 @@
                 <div slot="footer" style="padding:12.5px 0;">
                     <div v-if="userType < 10">
                         <Row style="margin: 10px 0">
-                            <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t("header.name")}}  : &nbsp;</i-col>
+                            <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t("header.name")}} : &nbsp;</i-col>
                             <i-col span="16">
                                 <i-input v-model.trim="nickname"></i-input>
                             </i-col>
                         </Row>
                         <Row style="margin: 10px 0">
-                            <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">QQ  : &nbsp;</i-col>
+                            <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">QQ : &nbsp;</i-col>
                             <i-col span="16">
                                 <i-input v-model.trim="qq"></i-input>
                             </i-col>
@@ -138,7 +138,7 @@
                             <i-col span="16" :offset="5">
                                 <i-button type="primary" style="width:100%;" @click="handleEditMyInfo">{{$t("header.submit")}}</i-button>
                             </i-col>
-                        </Row> 
+                        </Row>
                     </div>
                 </div>
             </Modal>
@@ -150,13 +150,13 @@
                 </p>
                 <div style="text-align:center">
                     <Row style="margin: 10px 0">
-                        <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t("header.oldPwd")}}  : &nbsp;</i-col>
+                        <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t("header.oldPwd")}} : &nbsp;</i-col>
                         <i-col span="16">
                             <i-input v-model.trim="oldPass"></i-input>
                         </i-col>
                     </Row>
                     <Row style="margin: 10px 0">
-                        <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t("header.newPwd")}}  : &nbsp;</i-col>
+                        <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t("header.newPwd")}} : &nbsp;</i-col>
                         <i-col span="16">
                             <i-input v-model.trim="newPass" type="password"></i-input>
                         </i-col>
@@ -168,7 +168,7 @@
                         </i-col>
                     </Row>
                 </div>
-                <div slot="footer" >
+                <div slot="footer">
                     <i-button style="width: 100%" @click="changeUserPass" type="primary">{{$t("header.submit")}}</i-button>
                 </div>
             </Modal>
@@ -176,17 +176,17 @@
             <Modal v-model="serviceModal" width="510">
                 <p slot="header" style="color:#2D8CF0;text-align:center">
                     <Icon type="ios-contact"></Icon>
-                    <span>{{$t("header.info")}}</span>  
-                </p>  
+                    <span>{{$t("header.info")}}</span>
+                </p>
                 <div style="text-align:center">
                     <Row style="margin: 10px 0">
-                        <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t("header.name")}}  : &nbsp;</i-col>
+                        <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t("header.name")}} : &nbsp;</i-col>
                         <i-col span="16" style="height: 100%;line-height:32px;">
                             {{creatername}}
                         </i-col>
                     </Row>
                     <Row style="margin: 10px 0">
-                        <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">QQ  : &nbsp;</i-col>
+                        <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">QQ : &nbsp;</i-col>
                         <i-col span="16" style="height: 100%;line-height:32px;">
                             <a :href="'tencent://message/?uin='+createrqq+'&amp;Site=九护设备&amp;Menu=yes'" id="floatQQ"> {{createrqq}}</a>
                         </i-col>
@@ -221,29 +221,41 @@
                 <div class="device-contorller">
                     <ul class="device-state">
                         <li :class="{active:selectedState=='all'}" @click="selectedStateNav('all')">
-                            <p class="p-icon"><Icon :size="24" type="ios-apps"/></p>
-                            <p class="dev-count">{{$t("monitor.all")}}({{allDevCount}})</p>  
+                            <p class="p-icon">
+                                <Icon :size="24" type="ios-apps" />
+                            </p>
+                            <p class="dev-count">{{$t("monitor.all")}}({{allDevCount}})</p>
                         </li>
                         <li :class="{active:selectedState=='online'}" @click="selectedStateNav('online')">
-                            <p class="p-icon"><Icon :size="24" type="md-checkmark-circle" /></p> 
+                            <p class="p-icon">
+                                <Icon :size="24" type="md-checkmark-circle" />
+                            </p>
                             <p class="dev-count">{{$t("monitor.online")}}({{onlineDevCount}})</p>
                         </li>
                         <li :class="{active:selectedState=='offline'}" @click="selectedStateNav('offline')">
-                            <p class="p-icon"><Icon :size="24" type="ios-information-circle" /></p> 
+                            <p class="p-icon">
+                                <Icon :size="24" type="ios-information-circle" />
+                            </p>
                             <p class="dev-count">{{$t("monitor.offline")}}({{offlineDevCount}})</p>
                         </li>
-                    </li>
+                        <li :class="{active:selectedState=='stock'}" @click="selectedStateNav('stock')">
+                            <p class="p-icon">
+                                <Icon :size="24" type="ios-information-circle" />
+                            </p>
+                            <p class="dev-count">库存({{stockDevCount}})</p>
+                        </li>
+                    </ul>
                     <div class="device-soso">
-                         <div class="search-wrapper">
-                            <i-input v-model.trim="sosoValue"  icon="ios-search-outline" @on-change="sosoValueChange" @on-blur="blur" @on-click="focus" @on-focus="focus" :placeholder="placeholder"></i-input>
+                        <div class="search-wrapper">
+                            <i-input v-model.trim="sosoValue" icon="ios-search-outline" @on-change="sosoValueChange" @on-blur="blur" @on-click="focus" @on-focus="focus" :placeholder="placeholder"></i-input>
                             <transition name="fade">
                                 <ul class="search-item-wrapper" v-show="isShowMatchDev">
-                                    <li  class="demo-auto-complete-item" v-for="item in filterData">
+                                    <li class="demo-auto-complete-item" v-for="item in filterData">
                                         <div class="demo-auto-complete-group">
                                             <span>{{ item.groupname }}</span>
                                         </div>
                                         <i-option v-for="option in item.devices" :value="option.groupname" :key="option.groupname">
-                                            <span :style="{color:option.isOnline ? '#33DAD0':'#B1BBC2'}" @click="sosoSelect(option)" class="demo-auto-complete-title" >{{ option.allDeviceIdTitle }}</span>
+                                            <span :style="{color:option.isOnline ? '#33DAD0':'#B1BBC2'}" @click="sosoSelect(option)" class="demo-auto-complete-title">{{ option.allDeviceIdTitle }}</span>
                                         </i-option>
                                     </li>
                                 </ul>
@@ -251,7 +263,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="device-tree" ref="treeWraper">                   
+                <div class="device-tree" ref="treeWraper">
                     <!-- left tree controller 不显示公司名 -->
                     <dl class="noselect" v-if="!isShowCompanyName" class="dl-inner-wrapper">
                         <!-- all -->
@@ -284,29 +296,29 @@
                                                                     <template v-for="(item, index) in currentDevDirectiveList" :key="item.cmdcode">
                                                                         <DropdownItem :name="item.cmdcode" >{{item.cmdname}}</DropdownItem>
                                                                     </template>
-                                                                </i-dropdown-menu>
-                                                            </Dropdown>                                                                                            
-                                                        </DropdownItem>
-                                                        <DropdownItem name="luyin" v-show="isShowRecordBtn">{{$t("monitor.media")}}</DropdownItem>
-                                                        <DropdownItem name="bms" v-show="isShowBmsBtn">电池管理</DropdownItem>
-                                                        <DropdownItem name="obd" v-show="isShowObdBtn">OBD</DropdownItem>
-                                                        <DropdownItem name="weight" v-show="isShowWeightBtn">称重</DropdownItem>
-                                                        <DropdownItem name="watermeter" v-show="isShowWatermeterBtn">水表</DropdownItem>
-                                                        <DropdownItem name="video" v-show="isShowVideoBtn">视频</DropdownItem>
-                                                        <DropdownItem name="cmdrecord">{{$t("monitor.cmdRecord")}}</DropdownItem>
-                                                        <DropdownItem name="alarmList">{{$t("monitor.alarmRecords")}}</DropdownItem>
-                                                        <DropdownItem name="phoneAlarm">{{$t("reportForm.phoneAlarm")}}</DropdownItem>
-                                                        <DropdownItem name="devbaseinfo">{{$t("monitor.devBaseInfo")}}</DropdownItem>
-                                                    </i-dropdown-menu>
-                                                </Dropdown>
-                                            <li> 
-                                        </ul>
-                                    </div>
-                                </div>
-                            </dd>
-                        </template>
-                        <!-- online -->
-                        <template v-for="(group , index) in groups" :key="index" v-if="selectedState==='online'">
+                        </i-dropdown-menu>
+                        </Dropdown>
+                        </DropdownItem>
+                        <DropdownItem name="luyin" v-show="isShowRecordBtn">{{$t("monitor.media")}}</DropdownItem>
+                        <DropdownItem name="bms" v-show="isShowBmsBtn">电池管理</DropdownItem>
+                        <DropdownItem name="obd" v-show="isShowObdBtn">OBD</DropdownItem>
+                        <DropdownItem name="weight" v-show="isShowWeightBtn">称重</DropdownItem>
+                        <DropdownItem name="watermeter" v-show="isShowWatermeterBtn">水表</DropdownItem>
+                        <DropdownItem name="video" v-show="isShowVideoBtn">视频</DropdownItem>
+                        <DropdownItem name="cmdrecord">{{$t("monitor.cmdRecord")}}</DropdownItem>
+                        <DropdownItem name="alarmList">{{$t("monitor.alarmRecords")}}</DropdownItem>
+                        <DropdownItem name="phoneAlarm">{{$t("reportForm.phoneAlarm")}}</DropdownItem>
+                        <DropdownItem name="devbaseinfo">{{$t("monitor.devBaseInfo")}}</DropdownItem>
+                        </i-dropdown-menu>
+                        </Dropdown>
+                        <li>
+                            </ul>
+                </div>
+            </div>
+            </dd>
+            </template>
+            <!-- online -->
+            <template v-for="(group , index) in groups" :key="index" v-if="selectedState==='online'">
                                 <dt style="padding:5px;border-bottom:1px solid #ddd;cursor: pointer;" @click="openGroupItem(group)" v-if="group.isShow">
                                     <Icon type="ios-arrow-down" v-if="group.expand"/>
                                     <Icon type="ios-arrow-forward" v-else/>
@@ -335,29 +347,29 @@
                                                                         <template v-for="(item, index) in currentDevDirectiveList" :key="item.cmdcode">
                                                                             <DropdownItem :name="item.cmdcode" >{{item.cmdname}}</DropdownItem>
                                                                         </template>
-                                                                    </i-dropdown-menu>
-                                                                </Dropdown>                                                                                            
-                                                            </DropdownItem>
-                                                            <DropdownItem name="luyin" v-show="isShowRecordBtn">{{$t("monitor.media")}}</DropdownItem>
-                                                            <DropdownItem name="bms" v-show="isShowBmsBtn">电池管理</DropdownItem>
-                                                            <DropdownItem name="obd" v-show="isShowObdBtn">OBD</DropdownItem>
-                                                            <DropdownItem name="weight" v-show="isShowWeightBtn">称重</DropdownItem>
-                                                            <DropdownItem name="watermeter" v-show="isShowWatermeterBtn">水表</DropdownItem>
-                                                            <DropdownItem name="video" v-show="isShowVideoBtn">视频</DropdownItem>
-                                                            <DropdownItem name="cmdrecord">{{$t("monitor.cmdRecord")}}</DropdownItem>
-                                                            <DropdownItem name="alarmList">{{$t("monitor.alarmRecords")}}</DropdownItem>
-                                                            <DropdownItem name="phoneAlarm">{{$t("reportForm.phoneAlarm")}}</DropdownItem>
-                                                            <DropdownItem name="devbaseinfo">{{$t("monitor.devBaseInfo")}}</DropdownItem>
-                                                        </i-dropdown-menu>
-                                                    </Dropdown>
-                                                <li> 
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </dd>
-                        </template>   
-                        <!-- offline -->
-                        <template v-for="(group , index) in groups" :key="index" v-if="selectedState==='offline'">
+            </i-dropdown-menu>
+            </Dropdown>
+            </DropdownItem>
+            <DropdownItem name="luyin" v-show="isShowRecordBtn">{{$t("monitor.media")}}</DropdownItem>
+            <DropdownItem name="bms" v-show="isShowBmsBtn">电池管理</DropdownItem>
+            <DropdownItem name="obd" v-show="isShowObdBtn">OBD</DropdownItem>
+            <DropdownItem name="weight" v-show="isShowWeightBtn">称重</DropdownItem>
+            <DropdownItem name="watermeter" v-show="isShowWatermeterBtn">水表</DropdownItem>
+            <DropdownItem name="video" v-show="isShowVideoBtn">视频</DropdownItem>
+            <DropdownItem name="cmdrecord">{{$t("monitor.cmdRecord")}}</DropdownItem>
+            <DropdownItem name="alarmList">{{$t("monitor.alarmRecords")}}</DropdownItem>
+            <DropdownItem name="phoneAlarm">{{$t("reportForm.phoneAlarm")}}</DropdownItem>
+            <DropdownItem name="devbaseinfo">{{$t("monitor.devBaseInfo")}}</DropdownItem>
+            </i-dropdown-menu>
+            </Dropdown>
+            <li>
+                </ul>
+        </div>
+        </div>
+        </dd>
+        </template>
+        <!-- offline -->
+        <template v-for="(group , index) in groups" :key="index" v-if="selectedState==='offline'">
                                 <dt style="padding:5px;border-bottom:1px solid #ddd;cursor: pointer;" @click="openGroupItem(group)" v-if="group.isShow">
                                     <Icon type="ios-arrow-down" v-if="group.expand"/>
                                     <Icon type="ios-arrow-forward" v-else/>
@@ -386,37 +398,37 @@
                                                                         <template v-for="(item, index) in currentDevDirectiveList" :key="item.cmdcode">
                                                                             <DropdownItem :name="item.cmdcode" >{{item.cmdname}}</DropdownItem>
                                                                         </template>
-                                                                    </i-dropdown-menu>
-                                                                </Dropdown>                                                                                            
-                                                            </DropdownItem>
-                                                            <DropdownItem name="luyin" v-show="isShowRecordBtn">{{$t("monitor.media")}}</DropdownItem>
-                                                            <DropdownItem name="bms" v-show="isShowBmsBtn">电池管理</DropdownItem>
-                                                            <DropdownItem name="obd" v-show="isShowObdBtn">OBD</DropdownItem>
-                                                            <DropdownItem name="weight" v-show="isShowWeightBtn">称重</DropdownItem>
-                                                            <DropdownItem name="watermeter" v-show="isShowWatermeterBtn">水表</DropdownItem>
-                                                            <DropdownItem name="video" v-show="isShowVideoBtn">视频</DropdownItem>
-                                                            <DropdownItem name="cmdrecord">{{$t("monitor.cmdRecord")}}</DropdownItem>
-                                                            <DropdownItem name="alarmList">{{$t("monitor.alarmRecords")}}</DropdownItem>
-                                                            <DropdownItem name="phoneAlarm">{{$t("reportForm.phoneAlarm")}}</DropdownItem>
-                                                            <DropdownItem name="devbaseinfo">{{$t("monitor.devBaseInfo")}}</DropdownItem>
-                                                        </i-dropdown-menu>
-                                                    </Dropdown>
-                                                <li> 
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </dd>
-                        </template>
-                    </dl>      
-                </div>
-                <div class="group-spin-wraper" v-if="isLoadGroup">
-                    <Spin fix size="large"></Spin>
-                </div>
+        </i-dropdown-menu>
+        </Dropdown>
+        </DropdownItem>
+        <DropdownItem name="luyin" v-show="isShowRecordBtn">{{$t("monitor.media")}}</DropdownItem>
+        <DropdownItem name="bms" v-show="isShowBmsBtn">电池管理</DropdownItem>
+        <DropdownItem name="obd" v-show="isShowObdBtn">OBD</DropdownItem>
+        <DropdownItem name="weight" v-show="isShowWeightBtn">称重</DropdownItem>
+        <DropdownItem name="watermeter" v-show="isShowWatermeterBtn">水表</DropdownItem>
+        <DropdownItem name="video" v-show="isShowVideoBtn">视频</DropdownItem>
+        <DropdownItem name="cmdrecord">{{$t("monitor.cmdRecord")}}</DropdownItem>
+        <DropdownItem name="alarmList">{{$t("monitor.alarmRecords")}}</DropdownItem>
+        <DropdownItem name="phoneAlarm">{{$t("reportForm.phoneAlarm")}}</DropdownItem>
+        <DropdownItem name="devbaseinfo">{{$t("monitor.devBaseInfo")}}</DropdownItem>
+        </i-dropdown-menu>
+        </Dropdown>
+        <li>
+            </ul>
+            </div>
+            </div>
+            </dd>
+            </template>
+            </dl>
+            </div>
+            <div class="group-spin-wraper" v-if="isLoadGroup">
+                <Spin fix size="large"></Spin>
+            </div>
             </div>
             <div class="map-wraper">
                 <div class="map_manager">
                     <div style="float:left;height:35px; line-height:35px;padding-left:15px;color:red;font-size:12px;">{{intervalTime}}{{$t("monitor.refreshAfter")}}</div>
-                    <ul class="ul-manager-wraper"> 
+                    <ul class="ul-manager-wraper">
                         <li class="maps">
                             <i-select v-model="mapType" size="small" style="width:100px">
                                 <i-option v-for="item in mapList" :value="item.value" :key="item.value">{{ item.label }}</i-option>
@@ -425,7 +437,8 @@
                         <li class="gongju">
                             <Dropdown transfer>
                                 <i-button type="primary" size="small">
-                                    {{$t("monitor.tools")}}<Icon type="ios-arrow-down"></Icon>
+                                    {{$t("monitor.tools")}}
+                                    <Icon type="ios-arrow-down"></Icon>
                                 </i-button>
                                 <i-dropdown-menu slot="list">
                                     <DropdownItem name="name1">
@@ -441,13 +454,13 @@
                 </div>
                 <div id="my-map"></div>
             </div>
-			<!-- 编辑设备模态 -->
+            <!-- 编辑设备模态 -->
             <Modal v-model="editDevModal" width="500">
                 <p slot="header" style="color:#f60;text-align:center">
                     <Icon type="ios-create-outline"></Icon>
                     <span>{{$t("monitor.editDev")}}</span>
                 </p>
-                 <div style="text-align:center">
+                <div style="text-align:center">
                     <Row style="margin: 10px 0">
                         <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t("alarm.devNum")}} : &nbsp;</i-col>
                         <i-col span="16" style="height: 100%;text-align:left;line-height:32px;">
@@ -473,266 +486,266 @@
                         </i-col>
                     </Row>
                     <Row style="margin: 10px 0">
-                            <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t("monitor.remarks")}} : &nbsp;</i-col>
-                            <i-col span="16">
-                                <i-input v-model.trim="editDevData.remark" type="textarea" :rows="4" :disabled="editDevData.disabled"></i-input>
-                            </i-col>
-                        </Row>
+                        <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t("monitor.remarks")}} : &nbsp;</i-col>
+                        <i-col span="16">
+                            <i-input v-model.trim="editDevData.remark" type="textarea" :rows="4" :disabled="editDevData.disabled"></i-input>
+                        </i-col>
+                    </Row>
                 </div>
                 <div slot="footer">
-                    <i-button type="primary"  @click="handleEditDevFn" style="width: 100%" :disabled="editDevData.disabled">{{$t("monitor.confirm")}}</i-button>
+                    <i-button type="primary" @click="handleEditDevFn" style="width: 100%" :disabled="editDevData.disabled">{{$t("monitor.confirm")}}</i-button>
                 </div>
-            </Modal>   
+            </Modal>
 
             <!-- 下发指令模态 -->
             <Modal v-model="dispatchDirectiveModal" width="460">
-                    <p slot="header" style="color:#f60;text-align:center">
-                        <Icon type="ios-create-outline"></Icon>
-                        <span>{{ selectedCmdInfo.cmdName }}</span>
-                    </p>
+                <p slot="header" style="color:#f60;text-align:center">
+                    <Icon type="ios-create-outline"></Icon>
+                    <span>{{ selectedCmdInfo.cmdName }}</span>
+                </p>
 
-             
-                    <div style="text-align:center" >
-                        <Row style="margin: 10px 0">
-                            <i-col span="24" style="height: 100%;text-align:center;line-height:32px;font-size:14px;">{{selectedCmdInfo.cmddescr}}</i-col>
-                        </Row>
 
-                        <Row style="margin: 10px 0" v-if="selectedCmdInfo.type === 'list'">
-                            <i-col :offset="5" span="16">
-                                <i-select v-model="selectedTypeVal">
-                                    <i-option v-for="item in selectedCmdInfo.params" :value="item.type" :key="item.type">{{ item.value }}</i-option>
-                                </i-select>
-                            </i-col>
-                        </Row>
+                <div style="text-align:center">
+                    <Row style="margin: 10px 0">
+                        <i-col span="24" style="height: 100%;text-align:center;line-height:32px;font-size:14px;">{{selectedCmdInfo.cmddescr}}</i-col>
+                    </Row>
 
-                        <Row style="margin: 10px 0" v-for="item in selectedCmdInfo.params" :key="item.desc" v-if="selectedCmdInfo.type === 'text'">
-                            <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{item.desc}} : &nbsp;</i-col>
-                            <i-col span="16">
-                                <i-input v-model.trim="cmdParams[item.type]"></i-input>
-                            </i-col>
-                        </Row>
-    
-                        <Row style="margin: 10px 0" v-for="item in selectedCmdInfo.params" :key="item.desc" v-if="selectedCmdInfo.type === 'timeperiod'">
-                            <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{item.desc}} : &nbsp;</i-col>
-                            <i-col span="16">
-                                <Time-Picker format="HH:mm"  type="timerange" placeholder="选择时间段" v-model="cmdParams[item.type]"></Time-Picker>
-                            </i-col>
-                        </Row>
+                    <Row style="margin: 10px 0" v-if="selectedCmdInfo.type === 'list'">
+                        <i-col :offset="5" span="16">
+                            <i-select v-model="selectedTypeVal">
+                                <i-option v-for="item in selectedCmdInfo.params" :value="item.type" :key="item.type">{{ item.value }}</i-option>
+                            </i-select>
+                        </i-col>
+                    </Row>
 
-                        <Row style="margin: 10px 0" v-for="item in selectedCmdInfo.params" :key="item.desc" v-if="selectedCmdInfo.type === 'remind'">
-                            <i-col span="3" style="height: 100%;text-align:right;line-height:32px;">{{item.desc}} : &nbsp;</i-col>
-                            <i-col span="18">
-                                <Row>
-                                    <i-col span="16">
-                                        <Time-Picker format="HH:mm" placeholder="选择时间" v-model="cmdParams[item.type].time"></Time-Picker>
-                                    </i-col>    
-                                    <i-col span="8" style="height: 100%;line-height:32px;">
-                                        <i-switch v-model="cmdParams[item.type].switch" />
-                                    </i-col>    
-                                </Row>
-                                <Row style="margin: 10px 0">
-                                    <i-col span="16">
-                                        <Radio-Group v-model="cmdParams[item.type].type">
-                                            <Radio label="1"> <span>一次</span></Radio>
-                                            <Radio label="2"> <span>每天</span></Radio>
-                                            <Radio label="3"><span>每周</span></Radio>
-                                        </Radio-Group>
-                                    </i-col>       
-                                </Row>
-                                <Row style="margin: 10px 0" v-if="cmdParams[item.type].type === '3' ">
-                                    <i-col span="24">
-                                        <CheckboxGroup v-model="cmdParams[item.type].weekselected">
-                                            <Checkbox label="一"><span>一</span></Checkbox>
-                                            <Checkbox label="二"><span>二</span></Checkbox>
-                                            <Checkbox label="三"><span>三</span></Checkbox>
-                                            <Checkbox label="四"><span>四</span></Checkbox>
-                                            <Checkbox label="五"><span>五</span></Checkbox>
-                                            <Checkbox label="六"><span>六</span></Checkbox>
-                                            <Checkbox label="日"><span>日</span></Checkbox>
-                                        </CheckboxGroup>
-                                    </i-col>       
-                                </Row>
-                            </i-col>
-                        </Row>
+                    <Row style="margin: 10px 0" v-for="item in selectedCmdInfo.params" :key="item.desc" v-if="selectedCmdInfo.type === 'text'">
+                        <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{item.desc}} : &nbsp;</i-col>
+                        <i-col span="16">
+                            <i-input v-model.trim="cmdParams[item.type]"></i-input>
+                        </i-col>
+                    </Row>
 
-                        <Row style="margin: 10px 0" v-for="item in selectedCmdInfo.params" :key="item.desc" v-if="selectedCmdInfo.type === 'time'">
-                            <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{item.desc}} : &nbsp;</i-col>
-                            <i-col span="16">
-                                <Time-Picker format="HH:mm"  type="time" placeholder="选择时间" v-model="cmdParams[item.type]"></Time-Picker>
-                            </i-col>
-                        </Row>
+                    <Row style="margin: 10px 0" v-for="item in selectedCmdInfo.params" :key="item.desc" v-if="selectedCmdInfo.type === 'timeperiod'">
+                        <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{item.desc}} : &nbsp;</i-col>
+                        <i-col span="16">
+                            <Time-Picker format="HH:mm" type="timerange" placeholder="选择时间段" v-model="cmdParams[item.type]"></Time-Picker>
+                        </i-col>
+                    </Row>
 
-                        <Row style="margin: 10px 0" v-for="item in selectedCmdInfo.params" :key="item.desc" v-if="selectedCmdInfo.type === 'weektime'">
-                            <i-col span="3" style="height: 100%;text-align:right;line-height:32px;">
-                                    <Row style="margin: 10px 0">
-                                        <i-col span="24">
-                                            {{item.desc}} : &nbsp;    
-                                        </i-col>       
-                                    </Row>  
-                            </i-col>
-                            <i-col span="18">                  
-                                    <Row style="margin: 10px 0">
-                                        <i-col span="24">
-                                            <Time-Picker format="HH:mm"  type="time" placeholder="选择时间" v-model="cmdParams[item.type].time"></Time-Picker>
-                                        </i-col>       
-                                    </Row>                                                 
-                                    <Row style="margin: 10px 0">
-                                        <i-col span="24">
-                                            <CheckboxGroup v-model="cmdParams[item.type].weekselected">
-                                                <Checkbox label="一"><span>一</span></Checkbox>
-                                                <Checkbox label="二"><span>二</span></Checkbox>
-                                                <Checkbox label="三"><span>三</span></Checkbox>
-                                                <Checkbox label="四"><span>四</span></Checkbox>
-                                                <Checkbox label="五"><span>五</span></Checkbox>
-                                                <Checkbox label="六"><span>六</span></Checkbox>
-                                                <Checkbox label="日"><span>日</span></Checkbox>
-                                            </CheckboxGroup>
-                                        </i-col>       
-                                    </Row>                                                 
-                            </i-col>
-                        </Row>
-                        <Row style="margin: 10px 0" v-show="selectedCmdInfo.cmdpwd">
-                            <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">密码 : &nbsp;</i-col>
-                            <i-col span="16">
-                                <i-input v-model.trim="cmdPwd" style="width:100%;"></i-input>
-                            </i-col>
-                        </Row>    
-                    </div>
+                    <Row style="margin: 10px 0" v-for="item in selectedCmdInfo.params" :key="item.desc" v-if="selectedCmdInfo.type === 'remind'">
+                        <i-col span="3" style="height: 100%;text-align:right;line-height:32px;">{{item.desc}} : &nbsp;</i-col>
+                        <i-col span="18">
+                            <Row>
+                                <i-col span="16">
+                                    <Time-Picker format="HH:mm" placeholder="选择时间" v-model="cmdParams[item.type].time"></Time-Picker>
+                                </i-col>
+                                <i-col span="8" style="height: 100%;line-height:32px;">
+                                    <i-switch v-model="cmdParams[item.type].switch" />
+                                </i-col>
+                            </Row>
+                            <Row style="margin: 10px 0">
+                                <i-col span="16">
+                                    <Radio-Group v-model="cmdParams[item.type].type">
+                                        <Radio label="1"> <span>一次</span></Radio>
+                                        <Radio label="2"> <span>每天</span></Radio>
+                                        <Radio label="3"><span>每周</span></Radio>
+                                    </Radio-Group>
+                                </i-col>
+                            </Row>
+                            <Row style="margin: 10px 0" v-if="cmdParams[item.type].type === '3' ">
+                                <i-col span="24">
+                                    <CheckboxGroup v-model="cmdParams[item.type].weekselected">
+                                        <Checkbox label="一"><span>一</span></Checkbox>
+                                        <Checkbox label="二"><span>二</span></Checkbox>
+                                        <Checkbox label="三"><span>三</span></Checkbox>
+                                        <Checkbox label="四"><span>四</span></Checkbox>
+                                        <Checkbox label="五"><span>五</span></Checkbox>
+                                        <Checkbox label="六"><span>六</span></Checkbox>
+                                        <Checkbox label="日"><span>日</span></Checkbox>
+                                    </CheckboxGroup>
+                                </i-col>
+                            </Row>
+                        </i-col>
+                    </Row>
 
-        
+                    <Row style="margin: 10px 0" v-for="item in selectedCmdInfo.params" :key="item.desc" v-if="selectedCmdInfo.type === 'time'">
+                        <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{item.desc}} : &nbsp;</i-col>
+                        <i-col span="16">
+                            <Time-Picker format="HH:mm" type="time" placeholder="选择时间" v-model="cmdParams[item.type]"></Time-Picker>
+                        </i-col>
+                    </Row>
 
-                    <div slot="footer">
-                        <i-button type="primary"  @click="disposeDirectiveFn" style="width: 100%">{{$t("monitor.confirm")}}</i-button>
-                    </div>
-            </Modal>  
+                    <Row style="margin: 10px 0" v-for="item in selectedCmdInfo.params" :key="item.desc" v-if="selectedCmdInfo.type === 'weektime'">
+                        <i-col span="3" style="height: 100%;text-align:right;line-height:32px;">
+                            <Row style="margin: 10px 0">
+                                <i-col span="24">
+                                    {{item.desc}} : &nbsp;
+                                </i-col>
+                            </Row>
+                        </i-col>
+                        <i-col span="18">
+                            <Row style="margin: 10px 0">
+                                <i-col span="24">
+                                    <Time-Picker format="HH:mm" type="time" placeholder="选择时间" v-model="cmdParams[item.type].time"></Time-Picker>
+                                </i-col>
+                            </Row>
+                            <Row style="margin: 10px 0">
+                                <i-col span="24">
+                                    <CheckboxGroup v-model="cmdParams[item.type].weekselected">
+                                        <Checkbox label="一"><span>一</span></Checkbox>
+                                        <Checkbox label="二"><span>二</span></Checkbox>
+                                        <Checkbox label="三"><span>三</span></Checkbox>
+                                        <Checkbox label="四"><span>四</span></Checkbox>
+                                        <Checkbox label="五"><span>五</span></Checkbox>
+                                        <Checkbox label="六"><span>六</span></Checkbox>
+                                        <Checkbox label="日"><span>日</span></Checkbox>
+                                    </CheckboxGroup>
+                                </i-col>
+                            </Row>
+                        </i-col>
+                    </Row>
+                    <Row style="margin: 10px 0" v-show="selectedCmdInfo.cmdpwd">
+                        <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">密码 : &nbsp;</i-col>
+                        <i-col span="16">
+                            <i-input v-model.trim="cmdPwd" style="width:100%;"></i-input>
+                        </i-col>
+                    </Row>
+                </div>
+
+
+
+                <div slot="footer">
+                    <i-button type="primary" @click="disposeDirectiveFn" style="width: 100%">{{$t("monitor.confirm")}}</i-button>
+                </div>
+            </Modal>
 
             <!-- 设备基本信息模态 -->
             <Modal v-model="deviceInfoModal" width="500">
-                    <p slot="header" style="color:#f60;text-align:center">
-                        <Icon type="ios-create-outline"></Icon>
-                        <span>{{$t("monitor.devBaseInfo")}}</span>
-                    </p>
-                     <div style="text-align:center">
-                        <Row>
-                            <i-col span="5" style="height: 100%;text-align:right;line-height:25px;">{{$t("monitor.customer")}} : &nbsp;</i-col>
-                            <i-col span="16" style="height: 100%;line-height:25px;text-align:left;">
-                                {{deviceBaseInfo.companyname}}     
-                            </i-col>
-                        </Row>
-                        <Row>
-                            <i-col span="5" style="height: 100%;text-align:right;line-height:25px;">{{$t("monitor.groupName")}} : &nbsp;</i-col>
-                            <i-col span="16" style="height: 100%;line-height:25px;text-align:left;">
-                                {{deviceBaseInfo.groupname}}     
-                            </i-col>
-                        </Row>
-                        <Row>
-                            <i-col span="5" style="height: 100%;text-align:right;line-height:25px;">{{$t("monitor.devNumber")}} : &nbsp;</i-col>
-                            <i-col span="16" style="height: 100%;line-height:25px;text-align:left;">
-                                {{deviceBaseInfo.deviceid}}     
-                            </i-col>
-                        </Row>
-                        <Row>
-                            <i-col span="5" style="height: 100%;text-align:right;line-height:25px;">{{$t("monitor.devName")}} : &nbsp;</i-col>
-                            <i-col span="16" style="height: 100%;line-height:25px;text-align:left;">
-                                {{deviceBaseInfo.devicename}}     
-                            </i-col>
-                        </Row>
-                        <Row>
-                                <i-col span="5" style="height: 100%;text-align:right;line-height:25px;">{{$t("monitor.factoryNum")}} : &nbsp;</i-col>
-                                <i-col span="16" style="height: 100%;line-height:25px;text-align:left;">
-                                    {{deviceBaseInfo.manufactureid}}     
-                                </i-col>
-                        </Row>
-                        <Row>
-                                <i-col span="5" style="height: 100%;text-align:right;line-height:25px;">{{$t("monitor.clientType")}} : &nbsp;</i-col>
-                                <i-col span="16" style="height: 100%;line-height:25px;text-align:left;">
-                                    {{deviceBaseInfo.terminalmodelno}}     
-                                </i-col>
-                        </Row>
-                        
-                       
-                        <Row>
-                                <i-col span="5" style="height: 100%;text-align:right;line-height:25px;">{{$t("monitor.expireTime")}} : &nbsp;</i-col>
-                                <i-col span="16" style="height: 100%;line-height:25px;text-align:left;">
-                                    {{deviceBaseInfo.isfree === 1 ? '终身免费' : deviceBaseInfo.overdueDateStr}}     
-                                </i-col>
-                        </Row>
-                        <Row>
-                            <i-col span="5" style="height: 100%;text-align:right;line-height:25px;">{{$t("monitor.phoneNumber")}}  : &nbsp;</i-col>
-                            <i-col span="16" style="height: 100%;line-height:25px;text-align:left;">
-                                {{deviceBaseInfo.simnum}}     
-                            </i-col>
-                        </Row>
-                        <Row>
-                            <i-col span="5" style="height: 100%;text-align:right;line-height:25px;">IMEI : &nbsp;</i-col>
-                            <i-col span="16" style="height: 100%;line-height:25px;text-align:left;">
-                                {{deviceBaseInfo.imei}}     
-                            </i-col>
-                        </Row>
-                        <Row>
-                                <i-col span="5" style="height: 100%;text-align:right;line-height:25px;">IMSI : &nbsp;</i-col>
-                                <i-col span="16" style="height: 100%;line-height:25px;text-align:left;">
-                                    {{deviceBaseInfo.simimsi}}     
-                                </i-col>
-                        </Row>  
-                        <Row>
-                            <i-col span="5" style="height: 100%;text-align:right;line-height:25px;">ICCID : &nbsp;</i-col>
-                                    <i-col span="16" style="height: 100%;line-height:25px;text-align:left;">
-                                        {{deviceBaseInfo.simiccid}}     
-                            </i-col>
-                        </Row>                      
-                    </div>
-                    <div slot="footer">
-                        <i-button type="primary"  @click="deviceInfoModal=false" style="width: 100%">{{$t("monitor.close")}}</i-button>
-                    </div>
-            </Modal>  
+                <p slot="header" style="color:#f60;text-align:center">
+                    <Icon type="ios-create-outline"></Icon>
+                    <span>{{$t("monitor.devBaseInfo")}}</span>
+                </p>
+                <div style="text-align:center">
+                    <Row>
+                        <i-col span="5" style="height: 100%;text-align:right;line-height:25px;">{{$t("monitor.customer")}} : &nbsp;</i-col>
+                        <i-col span="16" style="height: 100%;line-height:25px;text-align:left;">
+                            {{deviceBaseInfo.companyname}}
+                        </i-col>
+                    </Row>
+                    <Row>
+                        <i-col span="5" style="height: 100%;text-align:right;line-height:25px;">{{$t("monitor.groupName")}} : &nbsp;</i-col>
+                        <i-col span="16" style="height: 100%;line-height:25px;text-align:left;">
+                            {{deviceBaseInfo.groupname}}
+                        </i-col>
+                    </Row>
+                    <Row>
+                        <i-col span="5" style="height: 100%;text-align:right;line-height:25px;">{{$t("monitor.devNumber")}} : &nbsp;</i-col>
+                        <i-col span="16" style="height: 100%;line-height:25px;text-align:left;">
+                            {{deviceBaseInfo.deviceid}}
+                        </i-col>
+                    </Row>
+                    <Row>
+                        <i-col span="5" style="height: 100%;text-align:right;line-height:25px;">{{$t("monitor.devName")}} : &nbsp;</i-col>
+                        <i-col span="16" style="height: 100%;line-height:25px;text-align:left;">
+                            {{deviceBaseInfo.devicename}}
+                        </i-col>
+                    </Row>
+                    <Row>
+                        <i-col span="5" style="height: 100%;text-align:right;line-height:25px;">{{$t("monitor.factoryNum")}} : &nbsp;</i-col>
+                        <i-col span="16" style="height: 100%;line-height:25px;text-align:left;">
+                            {{deviceBaseInfo.manufactureid}}
+                        </i-col>
+                    </Row>
+                    <Row>
+                        <i-col span="5" style="height: 100%;text-align:right;line-height:25px;">{{$t("monitor.clientType")}} : &nbsp;</i-col>
+                        <i-col span="16" style="height: 100%;line-height:25px;text-align:left;">
+                            {{deviceBaseInfo.terminalmodelno}}
+                        </i-col>
+                    </Row>
 
-                   
-            <!-- 指令记录 --> 
+
+                    <Row>
+                        <i-col span="5" style="height: 100%;text-align:right;line-height:25px;">{{$t("monitor.expireTime")}} : &nbsp;</i-col>
+                        <i-col span="16" style="height: 100%;line-height:25px;text-align:left;">
+                            {{deviceBaseInfo.isfree === 1 ? '终身免费' : deviceBaseInfo.overdueDateStr}}
+                        </i-col>
+                    </Row>
+                    <Row>
+                        <i-col span="5" style="height: 100%;text-align:right;line-height:25px;">{{$t("monitor.phoneNumber")}} : &nbsp;</i-col>
+                        <i-col span="16" style="height: 100%;line-height:25px;text-align:left;">
+                            {{deviceBaseInfo.simnum}}
+                        </i-col>
+                    </Row>
+                    <Row>
+                        <i-col span="5" style="height: 100%;text-align:right;line-height:25px;">IMEI : &nbsp;</i-col>
+                        <i-col span="16" style="height: 100%;line-height:25px;text-align:left;">
+                            {{deviceBaseInfo.imei}}
+                        </i-col>
+                    </Row>
+                    <Row>
+                        <i-col span="5" style="height: 100%;text-align:right;line-height:25px;">IMSI : &nbsp;</i-col>
+                        <i-col span="16" style="height: 100%;line-height:25px;text-align:left;">
+                            {{deviceBaseInfo.simimsi}}
+                        </i-col>
+                    </Row>
+                    <Row>
+                        <i-col span="5" style="height: 100%;text-align:right;line-height:25px;">ICCID : &nbsp;</i-col>
+                        <i-col span="16" style="height: 100%;line-height:25px;text-align:left;">
+                            {{deviceBaseInfo.simiccid}}
+                        </i-col>
+                    </Row>
+                </div>
+                <div slot="footer">
+                    <i-button type="primary" @click="deviceInfoModal=false" style="width: 100%">{{$t("monitor.close")}}</i-button>
+                </div>
+            </Modal>
+
+
+            <!-- 指令记录 -->
             <Modal v-model="directiveReportModal" width="860">
-                    <p slot="header" style="color:#f60;text-align:center">
-                        <Icon type="ios-create-outline"></Icon>
-                        <span>{{currentDeviceName}} - {{$t("monitor.cmdRecord")}}</span>
-                    </p>
-                    <div>
-                        <Tabs type="card">
-                            <tab-pane :label="$t('monitor.toSendCmd')">
-                                <i-table :columns="cacheColumns" height="280" :data="cacheTableData" :loading="loading"></i-table>
-                            </tab-pane>
-                            <tab-pane :label="$t('monitor.directivesSent')">
-                                <i-table :columns="sendColumns" height="280" :data="sendTableData" :loading="loading"></i-table>
-                            </tab-pane>
-                        </Tabs>       
-                    </div>
-                    <div slot="footer">
-                        <i-button type="primary"  @click="directiveReportModal = false" style="width: 100%">{{$t("monitor.confirm")}}</i-button>
-                    </div>
-            </Modal> 
-        </div>
+                <p slot="header" style="color:#f60;text-align:center">
+                    <Icon type="ios-create-outline"></Icon>
+                    <span>{{currentDeviceName}} - {{$t("monitor.cmdRecord")}}</span>
+                </p>
+                <div>
+                    <Tabs type="card">
+                        <tab-pane :label="$t('monitor.toSendCmd')">
+                            <i-table :columns="cacheColumns" height="280" :data="cacheTableData" :loading="loading"></i-table>
+                        </tab-pane>
+                        <tab-pane :label="$t('monitor.directivesSent')">
+                            <i-table :columns="sendColumns" height="280" :data="sendTableData" :loading="loading"></i-table>
+                        </tab-pane>
+                    </Tabs>
+                </div>
+                <div slot="footer">
+                    <i-button type="primary" @click="directiveReportModal = false" style="width: 100%">{{$t("monitor.confirm")}}</i-button>
+                </div>
+            </Modal>
+            </div>
     </script>
 
     <!-- 统计报表 -->
     <script type="text/x-template" id="report-template">
         <div class="report-wraper full">
             <div class="report-left-wrap">
-                    <div class="mar-nav">
-                            <i-menu :theme="theme" @on-select="selectditem" :active-name="activeName" :open-names="openedNames" ref="navMenu">
-                                <template v-for="(group,index) in reportNavList">
+                <div class="mar-nav">
+                    <i-menu :theme="theme" @on-select="selectditem" :active-name="activeName" :open-names="openedNames" ref="navMenu">
+                        <template v-for="(group,index) in reportNavList">
                                     <Submenu :name="group.name" :key="index">
                                             <template slot="title">
                                                 <Icon :type="group.icon"></Icon>
                                                 <span>{{ group.title}}</span>
                                             </template>
-                                            <template v-for="(item,idx) in group.children">
+                        <template v-for="(item,idx) in group.children">
                                                 <MenuItem :name="item.name" :key="idx">
                                                     <Icon :type="item.icon"></Icon>
                                                     {{item.title}}
                                                 </MenuItem>
                                             </template>
-                                    </Submenu>
-                                </template>
-                            </i-menu>
-                    </div>    
+                        </Submenu>
+                        </template>
+                    </i-menu>
+                </div>
             </div>
             <div class="report-right-wrap" id="report-right-wrap"></div>
         </div>
@@ -742,29 +755,29 @@
     <script type="text/x-template" id="manager-template">
         <div class="manager-wraper">
             <div class="mar-nav">
-                    <i-menu :theme="theme" @on-select="selectditem" accordion>
-                        <template v-for="(group,index) in navList">
+                <i-menu :theme="theme" @on-select="selectditem" accordion>
+                    <template v-for="(group,index) in navList">
                             <Submenu :name="group.name" :key="index">
                                     <template slot="title">
                                         <Icon :type="group.icon"></Icon>
                                         <span>{{ group.title}}</span>
                                     </template>
-                                    <template v-for="(item,idx) in group.children">
+                    <template v-for="(item,idx) in group.children">
                                         <MenuItem :name="item.name" :key="idx">
                                             <Icon :type="item.icon"></Icon>
                                             {{item.title}}
                                         </MenuItem>
                                     </template>
-                            </Submenu>
-                        </template>
-                    </i-menu>
+                    </Submenu>
+                    </template>
+                </i-menu>
             </div>
             <div class="mar-view" id="mar-view"></div>
         </div>
     </script>
 
     <!-- 系统参数 -->
-    <script type="text/x-template" id="systemparam-template"> 
+    <script type="text/x-template" id="systemparam-template">
         <div class="manager-wraper">
             <div class="mar-nav">
                 <i-menu :theme="theme" @on-select="selectditem" accordion>
@@ -774,18 +787,18 @@
                                 <Icon :type="group.icon"></Icon>
                                 <span>{{ group.title}}</span>
                             </template>
-                            <template v-for="(item,idx) in group.children">
+                    <template v-for="(item,idx) in group.children">
                                 <MenuItem :name="item.name" :key="idx">
                                     <Icon :type="item.icon"></Icon>
                                     {{item.title}}
                                 </MenuItem>
                             </template>
-                        </Submenu>
+                    </Submenu>
 
-                        <MenuItem :name="group.name" v-else="group.children">
-                            <Icon :type="group.icon" />
-                            <span>{{ group.title}}</span>
-                        </MenuItem>
+                    <MenuItem :name="group.name" v-else="group.children">
+                    <Icon :type="group.icon" />
+                    <span>{{ group.title}}</span>
+                    </MenuItem>
                     </template>
                 </i-menu>
             </div>
@@ -794,25 +807,17 @@
     </script>
 
     <!-- 轨迹调试 -->
-    <script type="text/x-template" id="trackdebug-template"> 
+    <script type="text/x-template" id="trackdebug-template">
         <div class="trackdebug-wraper">
             <div class="control-wrapper">
                 <ul>
                     <li>
-                        <i-input 
-                            style="width: auto;width:100%;" 
-                            v-model.trim="deviceId" 
-                            placeholder="input device id"
-                            @on-blur="onBlur">
+                        <i-input style="width: auto;width:100%;" v-model.trim="deviceId" placeholder="input device id" @on-blur="onBlur">
                             <Icon type="ios-search" slot="suffix" />
                         </i-input>
                     </li>
                     <li>
-                        <date-picker type="date" 
-                                    style="width: 180px;" 
-                                    v-model="startDate"  
-                                    :clearable="false" 
-                                    :editable="false"></date-picker>
+                        <date-picker type="date" style="width: 180px;" v-model="startDate" :clearable="false" :editable="false"></date-picker>
                     </li>
                     <li>
                         <i-button @click="prevDay">上一天</i-button>
@@ -824,10 +829,7 @@
                         <i-button @click="refresh">刷新</i-button>
                     </li>
                     <li>
-                        <i-input 
-                            style="width: auto;width:100%;" 
-                            v-model.trim="filterStr" 
-                            placeholder="过滤">
+                        <i-input style="width: auto;width:100%;" v-model.trim="filterStr" placeholder="过滤">
                             <Icon type="ios-search" slot="suffix" />
                         </i-input>
                     </li>
@@ -871,28 +873,24 @@
                     <Page :total="total" show-total @on-change="onChange" :page-size="30" :current="currentIndex" />
                 </div>
             </div>
-            <Modal
-                v-model="clearTracks"
-                @on-ok="onHandleDeleteOK">
+            <Modal v-model="clearTracks" @on-ok="onHandleDeleteOK">
                 <p slot="header" style="color:#f60;text-align:center">
                     <Icon type="ios-information-circle"></Icon>
                     <span>删除录音</span>
                 </p>
                 <p style="text-align:center;">是否删除{{this.deviceId}}的全部记录包括语音、轨迹、报警消息</p>
             </Modal>
-            <Modal
-                v-model="deleteRecordsModal">
+            <Modal v-model="deleteRecordsModal">
                 <p slot="header" style="color:#f60;text-align:center">
                     <Icon type="ios-information-circle"></Icon>
                     <span>删除记录</span>
                 </p>
-                <p style="text-align:center;">已删除语音条数 : {{deleteRecordsObject.removedmediacount}}</p>  
+                <p style="text-align:center;">已删除语音条数 : {{deleteRecordsObject.removedmediacount}}</p>
                 <p style="text-align:center;">已删除消息条数 : {{deleteRecordsObject.removedmsgcount}}</p>
                 <p style="text-align:center;">已删除报警条数 : {{deleteRecordsObject.removedalarmcount}}</p>
                 <p style="text-align:center;">已删除轨迹条数 : {{deleteRecordsObject.removedtrackcount}}</p>
             </Modal>
-            <Modal
-                v-model="lichengModal">
+            <Modal v-model="lichengModal">
                 <p slot="header" style="color:#f60;text-align:center">
                     <Icon type="md-settings"></Icon>
                     <span>设置总里程</span>
@@ -904,7 +902,7 @@
                     </i-col>
                 </Row>
                 <p slot="footer" style="">
-                   <i-button type="primary" @click="onSettingLicheng" style="width:100%;">设置</i-button>
+                    <i-button type="primary" @click="onSettingLicheng" style="width:100%;">设置</i-button>
                 </p>
             </Modal>
         </div>
@@ -916,9 +914,9 @@
             <ul class="waring-controller" v-show="isLargen == 0">
                 <li style="width:68px;border-left:1px solid #fff; "><span :class="{msgwaring:isWaring,msgnormal:!isWaring}">{{$t("alarm.message")}}</span></li>
                 <li style="width:60px;cursor: pointer;border-right:1px solid #fff;">
-                    <span @click="changeLargen(1)" :title="$t('alarm.open')"><Icon type="ios-browsers-outline" :size="14" /></span> 
+                    <span @click="changeLargen(1)" :title="$t('alarm.open')"><Icon type="ios-browsers-outline" :size="14" /></span>
                     <span @click="changeLargen(2)" :title="$t('alarm.max')" style="margin-left:10px;"><Icon type="ios-square-outline" :size="16"/></span>
-                </li>   
+                </li>
             </ul>
             <div class="msg_main" v-show="isLargen !== 0">
                 <div class="msg_header">
@@ -927,7 +925,7 @@
                         <li :class="{selected:index == 2}" @click="changeComponent(2)">{{$t("alarm.devMsg")}}</li>
                         <li :class="{selected:index == 3}" @click="changeComponent(3)">{{$t("alarm.expirationInfo")}}({{overdueinfolist.length}})</li>
                         <!-- <li @click="filterWaringType"> [{{$t("alarm.filterAlarmType")}}] </li> -->
-                    </ul> 
+                    </ul>
                     <div class="shrink-btn">
                         <span @click="changeLargen(0)" :title="$t('alarm.min')">
                             <Icon type="md-remove" />
@@ -939,15 +937,7 @@
                 </div>
                 <div class="msg_content">
                     <keep-alive>
-                        <component 
-                            :is="componentName" 
-                            :tabletype="isLargen"
-                            :waringrecords="waringRecords" 
-                            :wrapperheight="wrapperHeight"
-                            :deviceinfolist="overdueDevice" 
-                            :overdueinfolist="overdueinfolist"
-                            @deletemsg="deleteMsg"
-                            @showdisposemodal="showDisposeModalFrame">
+                        <component :is="componentName" :tabletype="isLargen" :waringrecords="waringRecords" :wrapperheight="wrapperHeight" :deviceinfolist="overdueDevice" :overdueinfolist="overdueinfolist" @deletemsg="deleteMsg" @showdisposemodal="showDisposeModalFrame">
                         </component>
                     </keep-alive>
                 </div>
@@ -962,12 +952,12 @@
                 <div>
                     <Row style="margin: 10px 0" v-for="(item,index) in alarmTypeList" :key="index">
                         <i-col span="8" v-for="(type , index) in item" :key="type.alarmcode">
-                            <Checkbox  v-model="checkboxObj[type.alarmcode]" >{{ isZh ? type.alarmname : type.alarmcode}}</Checkbox>
+                            <Checkbox v-model="checkboxObj[type.alarmcode]">{{ isZh ? type.alarmname : type.alarmcode}}</Checkbox>
                         </i-col>
-                    </Row>  
+                    </Row>
                 </div>
                 <div slot="footer">
-                    <i-button type="primary"  @click="saveReqMsgParameter" style="width: 100%">{{$t("monitor.confirm")}}</i-button>
+                    <i-button type="primary" @click="saveReqMsgParameter" style="width: 100%">{{$t("monitor.confirm")}}</i-button>
                 </div>
             </Modal>
 

@@ -121,30 +121,17 @@ var utils = {
         };
         return mapType;
     },
-    timeStamp: function(mss, isZh) {
+    timeStamp: function(mss) {
+        var strTime = '';
         var days = parseInt(mss / (1000 * 60 * 60 * 24));
         var hours = parseInt((mss % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
         var minutes = parseInt((mss % (1000 * 60 * 60)) / (1000 * 60));
-        var seconds = (mss % (1000 * 60)) / 1000;
-        if (days > 0) {
-            if (days > 999) {
-                return isZh ? "999天" : "999day";
-            } else {
-                return isZh ? `${days}天` : `${days}day`;
-            }
-        } else {
-            if (hours > 0) {
-                return isZh ? `${hours}小时` : `${hours}hours`;
-            } else {
-                if (minutes > 0) {
-                    return isZh ? `${minutes}分钟` : `${minutes}minutes`;
-                } else {
-                    return isZh ? `1分钟` : `1minutes`;
-                }
-
-            }
-
-        }
+        var seconds = parseInt((mss % (1000 * 60)) / 1000);
+        days ? (strTime += days + vRoot.$t("reportForm.d")) : '';
+        hours ? (strTime += hours + vRoot.$t("reportForm.h")) : '';
+        minutes ? (strTime += minutes + vRoot.$t("reportForm.m")) : '';
+        seconds ? (strTime += seconds + vRoot.$t("reportForm.s")) : '';
+        return strTime == '' ? 0 : strTime;
     },
     sendAjax: function(url, data, callback) {
         var encode = JSON.stringify(data);
@@ -434,7 +421,8 @@ var utils = {
             '<p> ' + (isZh ? '更新时间' : 'Update time') + ': ' + DateFormat.longToDateTimeStr(track.updatetime, 0) + '(' + isOnineStr + ')</p>' +
             '<p> ' + (isZh ? '定位时间' : 'Posi time') + ': ' + DateFormat.longToDateTimeStr(track.validpoistiontime, 0) + '</p>' +
             '<p> ' + (isZh ? '速度' : 'Speed') + ': ' + speed + rxlevel + '</p>' +
-            '<p> ' + (isZh ? '总里程' : 'Mileage') + ': ' + this.getMileage(track.totaldistance) + '</p>' +
+            '<p> ' + (isZh ? '总里程' : 'Park Duration') + ': ' + this.getMileage(track.totaldistance) + '</p>' +
+            '<p> ' + (isZh ? '停留时长' : 'Mileage') + ': ' + this.timeStamp(track.parkduration, isZh) + '</p>' +
             '<p> ' + (isZh ? '状态' : 'Status') + ': ' + strstatus + '</p>' +
             '<p class="last-address"> ' + (isZh ? '详细地址' : 'Address') + ': ' + b_address + '</p>' +
             '<p class="operation">' +

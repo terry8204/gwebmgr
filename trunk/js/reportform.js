@@ -1,4 +1,3 @@
-
 var treeMixin = {
     data: {
         dateVal: [DateFormat.longToDateStr(Date.now(), DateFormat.getOffset()), DateFormat.longToDateStr(Date.now(), DateFormat.getOffset())],
@@ -12,19 +11,19 @@ var treeMixin = {
         treeData: [],
     },
     methods: {
-        changePage: function (index) {
+        changePage: function(index) {
             var offset = index * 10;
             var start = (index - 1) * 10;
             this.currentPageIndex = index;
             this.tableData = this.cmdRecords.slice(start, offset);
         },
-        onClickOutside: function () {
+        onClickOutside: function() {
             this.isShowMatchDev = false;
         },
-        onChange: function (value) {
+        onChange: function(value) {
             this.dateVal = value;
         },
-        handleSelectdDate: function (dayNumber) {
+        handleSelectdDate: function(dayNumber) {
             var dayTime = 24 * 60 * 60 * 1000;
             if (dayNumber == 0) {
                 this.dateVal = [DateFormat.longToDateStr(Date.now(), DateFormat.getOffset()), DateFormat.longToDateStr(Date.now(), DateFormat.getOffset())];
@@ -36,21 +35,21 @@ var treeMixin = {
                 this.dateVal = [DateFormat.longToDateStr(Date.now() - dayTime * 6, DateFormat.getOffset()), DateFormat.longToDateStr(Date.now(), DateFormat.getOffset())];
             }
         },
-        focus: function () {
+        focus: function() {
             this.isShowMatchDev = true;
         },
-        sosoValueChange: function () {
+        sosoValueChange: function() {
             var me = this;
             var value = this.sosoValue;
             this.filterMethod(this.sosoValue);
         },
-        filterMethod:utils.debounce(function (value) {
+        filterMethod: utils.debounce(function(value) {
             var filterData = [];
             value = value.toLowerCase();
             for (var i = 0; i < this.groupslist.length; i++) {
                 var group = this.groupslist[i];
                 if (
-                    group.title.toLowerCase().indexOf(value) !== -1 
+                    group.title.toLowerCase().indexOf(value) !== -1
                 ) {
                     filterData.push(group)
                 } else {
@@ -58,9 +57,9 @@ var treeMixin = {
                     var obj = {
                         expand: true,
                         title: group.title,
-                        children:[],
-                        firstLetter:group.firstLetter,
-                        pinyin:group.pinyin
+                        children: [],
+                        firstLetter: group.firstLetter,
+                        pinyin: group.pinyin
                     }
                     for (var j = 0; j < devices.length; j++) {
                         var device = devices[j]
@@ -71,7 +70,7 @@ var treeMixin = {
                             device.pinyin.indexOf(value) !== -1
                         ) {
                             obj.children.push(device)
-                        } 
+                        }
                     }
                     if (obj.children.length) {
                         filterData.push(obj);
@@ -80,21 +79,21 @@ var treeMixin = {
             };
             this.treeData = filterData;
             this.checkedDevice = [];
-            if(this.isShowMatchDev ==false){
+            if (this.isShowMatchDev == false) {
                 this.isShowMatchDev = true;
             }
-        },500),
-        sosoSelect: function (item) {
+        }, 500),
+        sosoSelect: function(item) {
             reportDeviceId = item.deviceid;
             this.sosoValue = item.title;
             this.queryDeviceId = item.deviceid;
             this.isShowMatchDev = false;
         },
-        getDeviceTitle: function (deviceid) {
+        getDeviceTitle: function(deviceid) {
             var title = "";
-            this.groupslist.forEach(function (group) {
+            this.groupslist.forEach(function(group) {
                 var isReturn = false;
-                group.devices.forEach(function (device) {
+                group.devices.forEach(function(device) {
                     if (device.deviceid === deviceid) {
                         isReturn = true;
                         title = device.title;
@@ -105,27 +104,27 @@ var treeMixin = {
             });
             return title;
         },
-        onCheckedDevice:function(arr){
+        onCheckedDevice: function(arr) {
             this.checkedDevice = arr;
             var sosoValue = "";
-            arr.forEach(function(item){
-                if(item.children){
+            arr.forEach(function(item) {
+                if (item.children) {
                     sosoValue += item.title + ","
-                }else{
+                } else {
                     sosoValue += item.title + ","
                 }
             });
             this.sosoValue = sosoValue;
         }
     },
-    mounted: function () {
+    mounted: function() {
         var me = this;
         this.calcTableHeight();
-        window.onresize = function () {
+        window.onresize = function() {
             me.calcTableHeight();
         }
     },
-    created:function() {
+    created: function() {
         this.checkedDevice = [];
     },
 }
@@ -144,19 +143,19 @@ var reportMixin = {
         queryDeviceId: '',
     },
     methods: {
-        changePage: function (index) {
+        changePage: function(index) {
             var offset = index * 10;
             var start = (index - 1) * 10;
             this.currentPageIndex = index;
             this.tableData = this.cmdRecords.slice(start, offset);
         },
-        onClickOutside: function () {
+        onClickOutside: function() {
             this.isShowMatchDev = false;
         },
-        onChange: function (value) {
+        onChange: function(value) {
             this.dateVal = value;
         },
-        handleSelectdDate: function (dayNumber) {
+        handleSelectdDate: function(dayNumber) {
             var dayTime = 24 * 60 * 60 * 1000;
             if (dayNumber == 0) {
                 this.dateVal = [DateFormat.longToDateStr(Date.now(), DateFormat.getOffset()), DateFormat.longToDateStr(Date.now(), DateFormat.getOffset())];
@@ -168,13 +167,13 @@ var reportMixin = {
                 this.dateVal = [DateFormat.longToDateStr(Date.now() - dayTime * 6, DateFormat.getOffset()), DateFormat.longToDateStr(Date.now(), DateFormat.getOffset())];
             }
         },
-        focus: function () {
+        focus: function() {
             var me = this;
             if (this.sosoValue.trim()) {
                 me.sosoValueChange()
             } else {
-                this.groupslist.forEach(function (group) {
-                    group.devices.forEach(function (device) {
+                this.groupslist.forEach(function(group) {
+                    group.devices.forEach(function(device) {
                         device.isOnline = vstore.state.deviceInfos[device.deviceid] ? vstore.state.deviceInfos[device.deviceid].isOnline : false;
                     })
                 });
@@ -184,7 +183,7 @@ var reportMixin = {
                 reportDeviceId = null;
             }
         },
-        sosoValueChange: function () {
+        sosoValueChange: function() {
             var me = this;
             var value = this.sosoValue;
 
@@ -192,11 +191,11 @@ var reportMixin = {
                 clearTimeout(this.timeoutIns);
             };
 
-            this.timeoutIns = setTimeout(function () {
+            this.timeoutIns = setTimeout(function() {
                 me.filterMethod(value);
             }, 300);
         },
-        filterMethod: function (value) {
+        filterMethod: function(value) {
             var filterData = [];
             value = value.toLowerCase();
             for (var i = 0; i < this.groupslist.length; i++) {
@@ -206,7 +205,7 @@ var reportMixin = {
                     group.firstLetter.indexOf(value) !== -1 ||
                     group.pinyin.indexOf(value) !== -1
                 ) {
-                    group.devices.forEach(function (device) {
+                    group.devices.forEach(function(device) {
                         device.isOnline = vstore.state.deviceInfos[device.deviceid] ? vstore.state.deviceInfos[device.deviceid].isOnline : false;
                     })
                     filterData.push(group)
@@ -248,17 +247,17 @@ var reportMixin = {
                 reportDeviceId = null;
             }
         },
-        sosoSelect: function (item) {
+        sosoSelect: function(item) {
             reportDeviceId = item.deviceid;
             this.sosoValue = item.title;
             this.queryDeviceId = item.deviceid;
             this.isShowMatchDev = false;
         },
-        getDeviceTitle: function (deviceid) {
+        getDeviceTitle: function(deviceid) {
             var title = "";
-            this.groupslist.forEach(function (group) {
+            this.groupslist.forEach(function(group) {
                 var isReturn = false;
-                group.devices.forEach(function (device) {
+                group.devices.forEach(function(device) {
                     if (device.deviceid === deviceid) {
                         isReturn = true;
                         title = device.title;
@@ -270,16 +269,16 @@ var reportMixin = {
             return title;
         }
     },
-    mounted: function () {
+    mounted: function() {
         var me = this;
         this.calcTableHeight();
-        this.$nextTick(function () {
+        this.$nextTick(function() {
             if (reportDeviceId) {
                 me.queryDeviceId = reportDeviceId;
                 me.sosoValue = me.getDeviceTitle(reportDeviceId);
             }
         });
-        window.onresize = function () {
+        window.onresize = function() {
             me.calcTableHeight();
         }
     }
@@ -287,7 +286,7 @@ var reportMixin = {
 
 
 //  指令查询 DateFormat.longToDateStr(Date.now(),0)
-function cmdReport (groupslist) {
+function cmdReport(groupslist) {
 
     new Vue({
         el: "#cmd-report",
@@ -308,12 +307,12 @@ function cmdReport (groupslist) {
         },
         mixins: [reportMixin],
         methods: {
-            calcTableHeight: function () {
+            calcTableHeight: function() {
                 var wHeight = window.innerHeight;
                 this.lastTableHeight = wHeight - 170;
                 this.posiDetailHeight = wHeight - 144;
             },
-            onClickQuery: function () {
+            onClickQuery: function() {
                 if (this.queryDeviceId == "") { return };
                 var self = this;
                 if (this.isSelectAll === null) {
@@ -328,12 +327,12 @@ function cmdReport (groupslist) {
                     devices: [this.queryDeviceId],
                 };
                 this.loading = true;
-                utils.sendAjax(myUrls.reportCmd(), data, function (resp) {
+                utils.sendAjax(myUrls.reportCmd(), data, function(resp) {
                     self.loading = false;
                     if (resp.status == 0) {
                         if (resp.cmdrecords) {
 
-                            resp.cmdrecords.forEach(function (item, index) {
+                            resp.cmdrecords.forEach(function(item, index) {
                                 item.index = ++index;
                                 item.cmdtimeStr = DateFormat.longToDateTimeStr(item.cmdtime, 0);
                                 item.deviceName = vstore.state.deviceInfos[item.deviceid].devicename;
@@ -350,17 +349,17 @@ function cmdReport (groupslist) {
                     }
                 })
             },
-            onSortChange: function (column) {
+            onSortChange: function(column) {
 
             }
         },
-        mounted: function () {
+        mounted: function() {
             this.groupslist = groupslist;
         }
     });
 }
 // 位置报表
-function posiReport (groupslist) {
+function posiReport(groupslist) {
     vueInstanse = new Vue({
         el: "#posi-report",
         i18n: utils.getI18n(),
@@ -391,7 +390,7 @@ function posiReport (groupslist) {
                     key: 'action',
                     width: 190,
                     fixed: 'right',
-                    render: function (h, params) {
+                    render: function(h, params) {
                         return h('div', [
                             h('Button', {
                                 props: {
@@ -402,11 +401,11 @@ function posiReport (groupslist) {
                                     marginRight: '5px'
                                 },
                                 on: {
-                                    click: function () {
+                                    click: function() {
                                         vueInstanse.loading = true;
                                         vueInstanse.trackDetailModal = true;
                                         vueInstanse.deviceName = params.row.devicename;
-                                        vueInstanse.querySingleDevTracks(params.row.deviceid, function () {
+                                        vueInstanse.querySingleDevTracks(params.row.deviceid, function() {
                                             vueInstanse.loading = false;
                                         });
                                     }
@@ -422,7 +421,7 @@ function posiReport (groupslist) {
 
                                 },
                                 on: {
-                                    click: function () {
+                                    click: function() {
                                         vueInstanse.getAddress(0, params);
                                     }
                                 }
@@ -445,7 +444,7 @@ function posiReport (groupslist) {
                     title: vRoot.$t("bgMgr.action"),
                     key: 'action',
                     width: 210,
-                    render: function (h, params) {
+                    render: function(h, params) {
                         return h('div', [
                             h('Button', {
                                 props: {
@@ -456,7 +455,7 @@ function posiReport (groupslist) {
                                     marginRight: '5px'
                                 },
                                 on: {
-                                    click: function () {
+                                    click: function() {
                                         utils.showWindowMap(vueInstanse, params);
                                     }
                                 }
@@ -468,7 +467,7 @@ function posiReport (groupslist) {
                                     disabled: params.row.disabled,
                                 },
                                 on: {
-                                    click: function () {
+                                    click: function() {
                                         vueInstanse.getAddress(1, params);
                                     }
                                 }
@@ -485,31 +484,31 @@ function posiReport (groupslist) {
         },
         mixins: [reportMixin],
         methods: {
-            calcTableHeight: function () {
+            calcTableHeight: function() {
                 var wHeight = window.innerHeight;
                 this.lastTableHeight = wHeight - 170;
                 this.posiDetailHeight = wHeight - 144;
             },
-            onClickQuery: function () {
+            onClickQuery: function() {
                 if (!this.queryDeviceId) { return };
                 var me = this;
                 this.loading = true;
-                this.getLastPosition([this.queryDeviceId], function () {
+                this.getLastPosition([this.queryDeviceId], function() {
                     me.loading = false;
                 });
             },
-            getLastPosition: function (deviceIds, callback) {
+            getLastPosition: function(deviceIds, callback) {
                 var me = this;
                 var url = myUrls.lastPosition();
                 var data = {
                     username: userName,
                     deviceids: deviceIds
                 }
-                utils.sendAjax(url, data, function (resp) {
+                utils.sendAjax(url, data, function(resp) {
                     if (resp.status == 0) {
                         if (resp.records) {
                             var newCored = [];
-                            resp.records.forEach(function (item) {
+                            resp.records.forEach(function(item) {
 
                                 if (item) {
                                     var deviceid = item.deviceid;
@@ -535,7 +534,7 @@ function posiReport (groupslist) {
                 })
                 callback();
             },
-            querySingleDevTracks: function (deviceid, callback) {
+            querySingleDevTracks: function(deviceid, callback) {
                 var me = this;
                 var url = myUrls.queryTracks();
                 var data = {
@@ -546,16 +545,16 @@ function posiReport (groupslist) {
                     'timezone': DateFormat.getOffset()
                 };
 
-                utils.sendAjax(url, data, function (resp) {
+                utils.sendAjax(url, data, function(resp) {
 
                     if (resp.status === 0) {
                         if (resp.records && resp.records.length) {
                             var newArr = [];
                             var devicename = vstore.state.deviceInfos[deviceid].devicename;
-                            resp.records.sort(function (a, b) {
+                            resp.records.sort(function(a, b) {
                                 return a.updatetime - b.updatetime;
                             });
-                            resp.records.forEach(function (item) {
+                            resp.records.forEach(function(item) {
                                 var fixedLon = item.callon.toFixed(5);
                                 var fixedLat = item.callat.toFixed(5);
                                 var address = LocalCacheMgr.getAddress(fixedLon, fixedLat);
@@ -597,7 +596,7 @@ function posiReport (groupslist) {
                 });
             },
 
-            initMap: function () {
+            initMap: function() {
                 if (this.mapType == 'bMap') {
                     this.mapInstance = new BMap.Map('posi-map', { minZoom: 4, maxZoom: 18, enableMapClick: false });
                     this.mapInstance.enableScrollWheelZoom();
@@ -613,11 +612,11 @@ function posiReport (groupslist) {
                     });
                 };
             },
-            getAddress: function (type, params) {
+            getAddress: function(type, params) {
                 var me = this;
                 var row = params.row;
                 var index = params.index;
-                utils.queryAddress(row, function (address) {
+                utils.queryAddress(row, function(address) {
                     if (type === 0) {
                         me.lastPosiData[index].address = address;
                         me.lastPosiData[index].disabled = true;
@@ -628,7 +627,7 @@ function posiReport (groupslist) {
                     LocalCacheMgr.setAddress(row.fixedLon, row.fixedLat, address);
                 });
             },
-            changePage: function (index) {
+            changePage: function(index) {
                 var offset = index * 8;
                 var start = (index - 1) * 8;
                 this.currentIndex = index;
@@ -636,13 +635,13 @@ function posiReport (groupslist) {
             },
         },
         watch: {
-            trackDetailModal: function () {
+            trackDetailModal: function() {
                 if (!this.trackDetailModal) {
                     this.posiDetailData = [];
                 }
             }
         },
-        mounted: function () {
+        mounted: function() {
             this.mapType = utils.getMapType();
             this.initMap();
             this.groupslist = groupslist;
@@ -651,7 +650,7 @@ function posiReport (groupslist) {
 }
 
 // 里程详单
-function reportMileageDetail (groupslist) {
+function reportMileageDetail(groupslist) {
     new Vue({
         el: '#mileage-detail',
         i18n: utils.getI18n(),
@@ -673,10 +672,10 @@ function reportMileageDetail (groupslist) {
             tableData: []
         },
         methods: {
-            onChange: function (value) {
+            onChange: function(value) {
                 this.dateVal = value;
             },
-            handleSelectdDate: function (dayNumber) {
+            handleSelectdDate: function(dayNumber) {
                 var dayTime = 24 * 60 * 60 * 1000;
                 if (dayNumber == 0) {
                     this.dateVal = [DateFormat.longToDateStr(Date.now(), DateFormat.getOffset()), DateFormat.longToDateStr(Date.now(), DateFormat.getOffset())];
@@ -688,12 +687,12 @@ function reportMileageDetail (groupslist) {
                     this.dateVal = [DateFormat.longToDateStr(Date.now() - dayTime * 6, DateFormat.getOffset()), DateFormat.longToDateStr(Date.now(), DateFormat.getOffset())];
                 }
             },
-            calcTableHeight: function () {
+            calcTableHeight: function() {
                 var wHeight = window.innerHeight;
                 this.lastTableHeight = wHeight - 170;
                 this.posiDetailHeight = wHeight - 144;
             },
-            onClickQuery: function () {
+            onClickQuery: function() {
                 if (this.queryDeviceId) {
                     var me = this;
                     var url = myUrls.reportMileageDetail();
@@ -704,12 +703,12 @@ function reportMileageDetail (groupslist) {
                         deviceid: this.queryDeviceId
                     }
                     me.loading = true;
-                    utils.sendAjax(url, data, function (resp) {
+                    utils.sendAjax(url, data, function(resp) {
                         me.loading = false;
                         if (resp.status === 0) {
                             if (resp.records.length) {
                                 var total = 0;
-                                resp.records.forEach(function (item) {
+                                resp.records.forEach(function(item) {
                                     total += item.totaldistance;
                                     item.deviceName = vstore.state.deviceInfos[me.queryDeviceId].devicename;
                                     item.mintotaldistance = utils.getMileage(item.mintotaldistance);
@@ -732,11 +731,11 @@ function reportMileageDetail (groupslist) {
                 }
             }
         },
-        mounted: function () {
+        mounted: function() {
             var me = this;
             this.groupslist = groupslist;
             this.calcTableHeight();
-            window.onresize = function () {
+            window.onresize = function() {
                 me.calcTableHeight();
             }
         }
@@ -744,7 +743,7 @@ function reportMileageDetail (groupslist) {
 }
 
 // 停车表报
-function parkDetails (groupslist) {
+function parkDetails(groupslist) {
     vueInstanse = new Vue({
         el: '#park-details',
         i18n: utils.getI18n(),
@@ -769,7 +768,7 @@ function parkDetails (groupslist) {
                     title: vRoot.$t("reportForm.lon") + "," + vRoot.$t("reportForm.lat"),
                     width: 160,
                     key: 'callon_callat',
-                    render: function (h, params) {
+                    render: function(h, params) {
                         return h('div', [
                             h('a', {
                                 props: {
@@ -780,7 +779,7 @@ function parkDetails (groupslist) {
                                     marginRight: '5px'
                                 },
                                 on: {
-                                    click: function () {
+                                    click: function() {
                                         utils.showWindowMap(vueInstanse, params);
                                     }
                                 }
@@ -791,7 +790,7 @@ function parkDetails (groupslist) {
                 {
                     title: vRoot.$t("reportForm.address"),
                     key: 'address',
-                    render: function (h, params) {
+                    render: function(h, params) {
                         var disabled = params.row.disabled;
                         var node = null;
                         if (disabled) {
@@ -808,7 +807,7 @@ function parkDetails (groupslist) {
                                     disabled: params.row.disabled,
                                 },
                                 on: {
-                                    click: function () {
+                                    click: function() {
                                         vueInstanse.getAddress(params);
                                     }
                                 }
@@ -821,10 +820,10 @@ function parkDetails (groupslist) {
             tableData: []
         },
         methods: {
-            onChange: function (value) {
+            onChange: function(value) {
                 this.dateVal = value;
             },
-            handleSelectdDate: function (dayNumber) {
+            handleSelectdDate: function(dayNumber) {
                 var dayTime = 24 * 60 * 60 * 1000;
                 if (dayNumber == 0) {
                     this.dateVal = [DateFormat.longToDateStr(Date.now(), DateFormat.getOffset()), DateFormat.longToDateStr(Date.now(), DateFormat.getOffset())];
@@ -836,13 +835,13 @@ function parkDetails (groupslist) {
                     this.dateVal = [DateFormat.longToDateStr(Date.now() - dayTime * 6, DateFormat.getOffset()), DateFormat.longToDateStr(Date.now(), DateFormat.getOffset())];
                 }
             },
-            calcTableHeight: function () {
+            calcTableHeight: function() {
                 var wHeight = window.innerHeight;
                 this.lastTableHeight = wHeight - 170;
                 this.posiDetailHeight = wHeight - 144;
             },
 
-            onClickQuery: function () {
+            onClickQuery: function() {
                 if (this.queryDeviceId) {
                     var me = this;
                     var url = myUrls.reportParkDetail();
@@ -853,16 +852,16 @@ function parkDetails (groupslist) {
                         deviceid: this.queryDeviceId
                     }
                     me.loading = true;
-                    utils.sendAjax(url, data, function (resp) {
+                    utils.sendAjax(url, data, function(resp) {
                         me.loading = false;
                         if (resp.status == 0) {
                             if (resp.records && resp.records.length) {
                                 var newRecords = [];
                                 var deviceName = vstore.state.deviceInfos[me.queryDeviceId].devicename;
-                                resp.records.forEach(function (item) {
+                                resp.records.forEach(function(item) {
                                     var callon = item.callon.toFixed(5);
                                     var callat = item.callat.toFixed(5);
-                                    var parkTime = me.getParkTime(item.endtime - item.starttime);
+                                    var parkTime = utils.timeStamp(item.endtime - item.starttime);
                                     var address = LocalCacheMgr.getAddress(callon, callat);
                                     newRecords.push({
                                         deviceName: deviceName,
@@ -888,29 +887,17 @@ function parkDetails (groupslist) {
                     this.$Message.error(this.$t("reportForm.selectDevTip"));
                 }
             },
-            getParkTime: function (mss) {
-                var strTime = '';
-                var days = parseInt(mss / (1000 * 60 * 60 * 24));
-                var hours = parseInt((mss % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                var minutes = parseInt((mss % (1000 * 60 * 60)) / (1000 * 60));
-                var seconds = parseInt((mss % (1000 * 60)) / 1000);
-                days ? (strTime += days + this.$t("reportForm.d")) : '';
-                hours ? (strTime += hours + this.$t("reportForm.h")) : '';
-                minutes ? (strTime += minutes + this.$t("reportForm.m")) : '';
-                seconds ? (strTime += seconds + this.$t("reportForm.s")) : '';
-                return strTime == '' ? 0 : strTime;
-            },
-            getAddress: function (params) {
+            getAddress: function(params) {
                 var me = this;
                 var row = params.row;
                 var index = params.index;
-                utils.queryAddress(row, function (address) {
+                utils.queryAddress(row, function(address) {
                     me.tableData[index].address = address;
                     me.tableData[index].disabled = true;
                     LocalCacheMgr.setAddress(row.callon, row.callat, address);
                 });
             },
-            initMap: function () {
+            initMap: function() {
                 if (this.mapType == 'bMap') {
                     this.mapInstance = new BMap.Map('posi-map', { minZoom: 4, maxZoom: 18, enableMapClick: false });
                     this.mapInstance.enableScrollWheelZoom();
@@ -927,12 +914,12 @@ function parkDetails (groupslist) {
                 };
             },
         },
-        mounted: function () {
+        mounted: function() {
             var me = this;
             this.initMap();
             this.groupslist = groupslist;
             this.calcTableHeight();
-            window.onresize = function () {
+            window.onresize = function() {
                 me.calcTableHeight();
             }
         }
@@ -940,13 +927,13 @@ function parkDetails (groupslist) {
 }
 
 //acc报表
-function accDetails (groupslist) {
+function accDetails(groupslist) {
     vueInstanse = new Vue({
         el: '#acc-details',
         i18n: utils.getI18n(),
         mixins: [treeMixin],
         data: {
-            activeTab:'tabTotal',
+            activeTab: 'tabTotal',
             mapModal: false,
             mapType: utils.getMapType(),
             mapInstance: null,
@@ -957,52 +944,52 @@ function accDetails (groupslist) {
             groupslist: [],
             timeoutIns: null,
             isShowMatchDev: true,
-            allAccColumns:[
-                { title: '序号', width: 60 , key:'index'},
+            allAccColumns: [
+                { title: '序号', width: 60, key: 'index' },
                 {
-                    title:"操作",
-                    width:100,
-                    render:function(h,params){
+                    title: "操作",
+                    width: 100,
+                    render: function(h, params) {
 
-                        return h('span',{
-                            on:{
-                                click:function(){
+                        return h('span', {
+                            on: {
+                                click: function() {
                                     vueInstanse.activeTab = "tabDetail";
                                     vueInstanse.getAccDetailTableData(params.row.records);
                                 }
                             },
-                            style:{
-                                color:'#e4393c',
+                            style: {
+                                color: '#e4393c',
                                 cursor: 'pointer'
                             }
-                        },"[点火明细]")
+                        }, "[点火明细]")
                     }
                 },
                 {
-                    title:'设备名称',
-                    key:'devicename'
+                    title: '设备名称',
+                    key: 'devicename'
                 },
                 {
-                    title:'设备序号',
-                    key:'deviceid',
-                    width:160,
+                    title: '设备序号',
+                    key: 'deviceid',
+                    width: 160,
                 },
                 {
-                    title:'点火次数',
-                    key:'opennumber',
-                    width:100,
+                    title: '点火次数',
+                    key: 'opennumber',
+                    width: 100,
                 },
                 {
-                    title:'点火时长',
-                    key:'duration'
+                    title: '点火时长',
+                    key: 'duration'
                 }
             ],
-            allAccTableData:[],
+            allAccTableData: [],
             columns: [
-                { title: '序号', width: 60 , key:'index'},
+                { title: '序号', width: 60, key: 'index' },
                 { title: vRoot.$t("alarm.devName"), key: 'deviceName', width: 160 },
                 { title: vRoot.$t("alarm.devNum"), key: 'deviceid', width: 160 },
-                { title: vRoot.$t("reportForm.accstatus"), key: 'accStatus',width: 100 },
+                { title: vRoot.$t("reportForm.accstatus"), key: 'accStatus', width: 100 },
                 { title: vRoot.$t("reportForm.startDate"), key: 'startDate', width: 180 },
                 { title: vRoot.$t("reportForm.endDate"), key: 'endDate', width: 180 },
                 { title: vRoot.$t("reportForm.duration"), key: 'duration' },
@@ -1010,23 +997,23 @@ function accDetails (groupslist) {
             tableData: [],
         },
         methods: {
-            exportData:function(){
+            exportData: function() {
                 var startday = this.dateVal[0];
-                var  endday = this.dateVal[1];
-                this.$refs.totalTable.exportCsv({      
-                    filename: '点火统计数据' + startday +'-'+ endday,
+                var endday = this.dateVal[1];
+                this.$refs.totalTable.exportCsv({
+                    filename: '点火统计数据' + startday + '-' + endday,
                     original: false,
                     columns: this.allAccColumns.filter((col, index) => index != 1),
-                    data:this.allAccTableData
+                    data: this.allAccTableData
                 });
             },
-            onClickTab:function(name){
+            onClickTab: function(name) {
                 this.activeTab = name;
             },
-            onChange: function (value) {
+            onChange: function(value) {
                 this.dateVal = value;
             },
-            handleSelectdDate: function (dayNumber) {
+            handleSelectdDate: function(dayNumber) {
                 var dayTime = 24 * 60 * 60 * 1000;
                 if (dayNumber == 0) {
                     this.dateVal = [DateFormat.longToDateStr(Date.now(), DateFormat.getOffset()), DateFormat.longToDateStr(Date.now(), DateFormat.getOffset())];
@@ -1038,15 +1025,15 @@ function accDetails (groupslist) {
                     this.dateVal = [DateFormat.longToDateStr(Date.now() - dayTime * 6, DateFormat.getOffset()), DateFormat.longToDateStr(Date.now(), DateFormat.getOffset())];
                 }
             },
-            calcTableHeight: function () {
+            calcTableHeight: function() {
                 var wHeight = window.innerHeight;
                 this.lastTableHeight = wHeight - 215;
                 console.log("lastTableHeight", this.lastTableHeight);
             },
-            onClickQuery: function () {
-                var deviceids = [] ;
-                this.checkedDevice.forEach(function(group){
-                    if(!group.children){
+            onClickQuery: function() {
+                var deviceids = [];
+                this.checkedDevice.forEach(function(group) {
+                    if (!group.children) {
                         deviceids.push(group.deviceid);
                     }
                 });
@@ -1060,12 +1047,12 @@ function accDetails (groupslist) {
                         deviceids: deviceids
                     }
                     me.loading = true;
-                    utils.sendAjax(url, data, function (resp) {
+                    utils.sendAjax(url, data, function(resp) {
                         me.loading = false;
                         if (resp.status == 0) {
-                            if (resp.records && resp.records.length) {                    
-                               me.tableData = [];
-                               me.allAccTableData = me.getAllAccTableData(resp.records);
+                            if (resp.records && resp.records.length) {
+                                me.tableData = [];
+                                me.allAccTableData = me.getAllAccTableData(resp.records);
                             } else {
                                 me.tableData = [];
                                 me.allAccTableData = [];
@@ -1075,7 +1062,7 @@ function accDetails (groupslist) {
                             me.tableData = [];
                             me.allAccTableData = [];
                         }
-                        if(me.activeTab != "tabTotal"){
+                        if (me.activeTab != "tabTotal") {
                             me.onClickTab("tabTotal");
                         }
                     });
@@ -1083,40 +1070,42 @@ function accDetails (groupslist) {
                     this.$Message.error(this.$t("reportForm.selectDevTip"));
                 }
             },
-            getAllAccTableData:function(records){
-                var allAccTableData = [] , me = this;
-                records.forEach(function(item,index){
+            getAllAccTableData: function(records) {
+                var allAccTableData = [],
+                    me = this;
+                records.forEach(function(item, index) {
                     var accObj = {
-                        index:index+1,
-                        deviceid:"\t" + item.deviceid,
-                        opennumber:0,
-                        duration:"",
-                        devicename:vstore.state.deviceInfos[item.deviceid].devicename,
-                        records:item.records
-                    },
-                    duration = 0;
-                    item.records.forEach(function(deviceAcc){
-                        if(deviceAcc.accstate == 3){
+                            index: index + 1,
+                            deviceid: "\t" + item.deviceid,
+                            opennumber: 0,
+                            duration: "",
+                            devicename: vstore.state.deviceInfos[item.deviceid].devicename,
+                            records: item.records
+                        },
+                        duration = 0;
+                    item.records.forEach(function(deviceAcc) {
+                        if (deviceAcc.accstate == 3) {
                             duration += deviceAcc.endtime - deviceAcc.begintime;
                             accObj.opennumber++;
                         }
                     });
-                    accObj.duration = me.getParkTime(duration);
+                    accObj.duration = utils.timeStamp(duration);
                     allAccTableData.push(accObj);
-                });    
-                return allAccTableData ;
+                });
+                return allAccTableData;
             },
-            getAccDetailTableData:function(records){
-                var newRecords = [] , me = this;
+            getAccDetailTableData: function(records) {
+                var newRecords = [],
+                    me = this;
                 var accOnTime = 0;
                 var accOffTime = 0;
-                records.sort(function (a, b) {
+                records.sort(function(a, b) {
                     return a.begintime - b.begintime;
                 });
-                records.forEach(function (item,index) {
+                records.forEach(function(item, index) {
                     var deviceName = vstore.state.deviceInfos[item.deviceid].devicename;
                     var duration = item.endtime - item.begintime;
-                    var durationStr = me.getParkTime(duration);
+                    var durationStr = utils.timeStamp(duration);
                     var accStatus = "";
                     if (item.accstate == 0) {
                         accStatus = me.$t("reportForm.notEnabled");
@@ -1128,7 +1117,7 @@ function accDetails (groupslist) {
                         accStatus = me.$t("reportForm.stalling");
                     }
                     newRecords.push({
-                        index:index+1,
+                        index: index + 1,
                         deviceid: item.deviceid,
                         deviceName: deviceName,
                         startDate: DateFormat.longToDateTimeStr(item.begintime, 0),
@@ -1138,62 +1127,48 @@ function accDetails (groupslist) {
                     });
                 });
                 newRecords.push({
-                    duration: this.$t("reportForm.accOnTime") + ':' + this.getParkTime(accOnTime) + ',' +   this.$t("reportForm.accOffTime") + ':' +  this.getParkTime(accOffTime) 
+                    duration: this.$t("reportForm.accOnTime") + ':' + utils.timeStamp(accOnTime) + ',' + this.$t("reportForm.accOffTime") + ':' + utils.timeStamp(accOffTime)
                 })
                 me.tableData = newRecords;
             },
-            getParkTime: function (mss) {
-                var strTime = '';
-                var days = parseInt(mss / (1000 * 60 * 60 * 24));
-                var hours = parseInt((mss % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                var minutes = parseInt((mss % (1000 * 60 * 60)) / (1000 * 60));
-                var seconds = parseInt((mss % (1000 * 60)) / 1000);
-                days ? (strTime += days + this.$t("reportForm.d")) : '';
-                hours ? (strTime += hours + this.$t("reportForm.h")) : '';
-                minutes ? (strTime += minutes + this.$t("reportForm.m")) : '';
-                seconds ? (strTime += seconds + this.$t("reportForm.s")) : '';
-                return strTime == '' ? 0 : strTime;
-            },
-            getTreeGroupslist:function(groupslist){
+            getTreeGroupslist: function(groupslist) {
                 var treeLists = [];
-                groupslist.forEach(function(group){
+                groupslist.forEach(function(group) {
                     var children = []
                     var treeItem = {
                         expand: false,
                         title: group.groupname,
-                        children:children,
-                        firstLetter:group.firstLetter,
-                        pinyin:group.pinyin
+                        children: children,
+                        firstLetter: group.firstLetter,
+                        pinyin: group.pinyin
                     }
-                    if(group.devices && group.devices.length != 0){
-                        group.devices.forEach(function(device){
+                    if (group.devices && group.devices.length != 0) {
+                        group.devices.forEach(function(device) {
                             children.push({
-                                title:device.title,
-                                deviceid:device.deviceid,
-                                firstLetter:device.firstLetter,
-                                pinyin:device.pinyin
+                                title: device.title,
+                                deviceid: device.deviceid,
+                                firstLetter: device.firstLetter,
+                                pinyin: device.pinyin
                             })
                         });
                     }
-                    if(children.length){
+                    if (children.length) {
                         treeLists.push(treeItem);
                     }
                 });
-                return [
-                    {
-                        title:"所有设备",
-                        children:treeLists,
-                        expand: true,
-                    }
-                ];
+                return [{
+                    title: "所有设备",
+                    children: treeLists,
+                    expand: true,
+                }];
             }
         },
-        mounted: function () {
+        mounted: function() {
             var me = this;
             this.groupslist = this.getTreeGroupslist(groupslist);
             this.treeData = this.groupslist;
             this.calcTableHeight();
-            window.onresize = function () {
+            window.onresize = function() {
                 me.calcTableHeight();
             }
         }
@@ -1203,7 +1178,7 @@ function accDetails (groupslist) {
 
 
 
-function devRecords (groupslist) {
+function devRecords(groupslist) {
     vueInstanse = new Vue({
         el: '#dev-records',
         i18n: utils.getI18n(),
@@ -1221,10 +1196,9 @@ function devRecords (groupslist) {
                 { title: isZh ? '时间' : 'date', key: 'updatetimeStr', width: 200 },
                 {
                     title: isZh ? '下载' : 'download',
-                    render: function (h, data) {
+                    render: function(h, data) {
                         return h(
-                            "a",
-                            {
+                            "a", {
                                 attrs: {
                                     download: true,
                                     target: "_blank",
@@ -1237,10 +1211,9 @@ function devRecords (groupslist) {
                 },
                 {
                     title: isZh ? '录音' : 'record',
-                    render: function (h, data) {
+                    render: function(h, data) {
                         return h(
-                            "audio",
-                            {
+                            "audio", {
                                 style: {
                                     marginTop: "5px"
                                 },
@@ -1256,22 +1229,22 @@ function devRecords (groupslist) {
             tableData: []
         },
         methods: {
-            calcTableHeight: function () {
+            calcTableHeight: function() {
                 var wHeight = window.innerHeight;
                 this.tableHeight = wHeight - 125;
             },
-            onClickQuery: function () {
+            onClickQuery: function() {
                 if (this.queryDeviceId == "") { return };
                 var me = this;
                 var url = myUrls.reportAudio();
                 var data = {
                     deviceid: this.queryDeviceId
                 }
-                utils.sendAjax(url, data, function (resp) {
+                utils.sendAjax(url, data, function(resp) {
                     if (resp.status === 0) {
                         var records = resp.records;
                         var tableData = [];
-                        records.forEach(function (record) {
+                        records.forEach(function(record) {
                             tableData.push({
                                 devicename: me.sosoValue,
                                 deviceid: me.queryDeviceId,
@@ -1284,11 +1257,11 @@ function devRecords (groupslist) {
                 })
             },
         },
-        mounted: function () {
+        mounted: function() {
             var me = this;
             this.groupslist = groupslist;
             this.calcTableHeight();
-            window.onresize = function () {
+            window.onresize = function() {
                 me.calcTableHeight();
             }
         }
@@ -1296,7 +1269,7 @@ function devRecords (groupslist) {
 }
 
 
-function messageRecords (groupslist) {
+function messageRecords(groupslist) {
     new Vue({
         el: '#messageRecords',
         i18n: utils.getI18n(),
@@ -1339,10 +1312,10 @@ function messageRecords (groupslist) {
             filterStr: '',
         },
         methods: {
-            onRowClick: function (row) {
+            onRowClick: function(row) {
                 var me = this;
                 this.isShowCard = true;
-                this.queryTrackDetail(row, function (resp) {
+                this.queryTrackDetail(row, function(resp) {
                     if (resp.track) {
                         me.contentString = JSON.stringify(resp.track);
                     } else {
@@ -1350,27 +1323,27 @@ function messageRecords (groupslist) {
                     }
                 });
             },
-            queryTrackDetail: function (row, callback) {
+            queryTrackDetail: function(row, callback) {
                 var data = {
                     deviceid: this.queryDeviceId,
                     updatetime: row.updatetime,
                     trackid: row.trackid
                 }
                 var url = myUrls.queryTrackDetail();
-                utils.sendAjax(url, data, function (resp) {
+                utils.sendAjax(url, data, function(resp) {
                     if (resp.status == 0) {
                         callback(resp);
                     }
                 })
             },
-            closeCard: function () {
+            closeCard: function() {
                 this.isShowCard = false;
             },
-            filterTypeDesc: function () {
+            filterTypeDesc: function() {
                 if (this.filterStr) {
                     var that = this;
                     var filterArr = [];
-                    this.data.forEach(function (item) {
+                    this.data.forEach(function(item) {
                         if (item.typedescr && item.typedescr.indexOf(that.filterStr) != -1) {
                             filterArr.push(item);
                         }
@@ -1378,26 +1351,27 @@ function messageRecords (groupslist) {
                     this.tableData = filterArr;
                 };
             },
-            onChange: function (index) {
+            onChange: function(index) {
                 this.isShowCard = false;
                 this.currentIndex = index;
                 this.tableData = this.data.slice((index - 1) * 30, (index - 1) * 30 + 30);
             },
-            calcTableHeight: function () {
+            calcTableHeight: function() {
                 var wHeight = window.innerHeight;
                 this.tableHeight = wHeight - 165;
             },
-            nextDay: function () {
+            nextDay: function() {
                 this.startDate = new Date(this.startDate.getTime() + this.dayTime);
             },
-            prevDay: function () {
+            prevDay: function() {
                 this.startDate = new Date(this.startDate.getTime() - this.dayTime);
 
             },
-            requestTracks: function (callback) {
+            requestTracks: function(callback) {
                 if (!this.queryDeviceId) return;
                 this.loading = true;
-                var url = myUrls.queryTracks(), me = this;
+                var url = myUrls.queryTracks(),
+                    me = this;
                 var startTimeStr = DateFormat.format(this.startDate, 'yyyy-MM-dd') + ' 00:00:00';
                 var endTimeStr = DateFormat.format(this.startDate, 'yyyy-MM-dd') + ' 23:59:00';
                 var data = {
@@ -1408,22 +1382,22 @@ function messageRecords (groupslist) {
                     begintime: startTimeStr,
                     endtime: endTimeStr
                 };
-                utils.sendAjax(url, data, function (resp) {
+                utils.sendAjax(url, data, function(resp) {
                     me.loading = false;
                     callback(resp)
                 });
             },
-            onClickQuery: function () {
+            onClickQuery: function() {
                 var me = this;
-                this.requestTracks(function (resp) {
+                this.requestTracks(function(resp) {
                     if (resp.status == 0 && resp.records) {
-                        resp.records.forEach(function (record) {
+                        resp.records.forEach(function(record) {
                             var type = "0x" + parseInt(record.messagetype, 10).toString(16) + '(' + record.messagetype + ')';
                             record.messagetype = type;
                             record.reportmodeStr = getReportModeStr(record.reportmode);
                             record.updatetimeStr = DateFormat.longToDateTimeStr(record.updatetime, 0);
                         });
-                        resp.records.sort(function (a, b) {
+                        resp.records.sort(function(a, b) {
                             return b.updatetime - a.updatetime;
                         });
                         me.data = Object.freeze(resp.records);
@@ -1439,19 +1413,19 @@ function messageRecords (groupslist) {
             }
         },
         watch: {
-            filterStr: function () {
+            filterStr: function() {
                 if (this.filterStr == '') {
                     this.tableData = this.data.slice((this.currentIndex - 1) * 30, (this.currentIndex - 1) * 30 + 30);
                 }
             }
         },
-        mounted () {
+        mounted() {
             var me = this;
             this.groupslist = groupslist;
 
             this.calcTableHeight();
             this.dayTime = 60 * 60 * 24 * 1000;
-            window.onresize = function () {
+            window.onresize = function() {
                 me.calcTableHeight();
             };
         },
@@ -1460,7 +1434,7 @@ function messageRecords (groupslist) {
 
 
 // 查询报警
-function allAlarm (groupslist) {
+function allAlarm(groupslist) {
     new Vue({
         el: "#all-alarm",
         i18n: utils.getI18n(),
@@ -1509,11 +1483,11 @@ function allAlarm (groupslist) {
         },
         mixins: [reportMixin],
         methods: {
-            calcTableHeight: function () {
+            calcTableHeight: function() {
                 var wHeight = window.innerHeight;
                 this.tableHeight = wHeight - 125;
             },
-            onClickQuery: function () {
+            onClickQuery: function() {
                 var self = this;
                 if (!this.queryDeviceId) {
                     this.$Message.error(self.$t("reportForm.selectDevTip"));
@@ -1524,12 +1498,12 @@ function allAlarm (groupslist) {
                 };
                 this.loading = true;
                 var url = myUrls.reportAlarm();
-                utils.sendAjax(url, data, function (resp) {
+                utils.sendAjax(url, data, function(resp) {
                     if (resp.status == 0) {
                         var alarmRecords = [];
                         if (resp.alarmrecords && resp.alarmrecords.length) {
-                            resp.alarmrecords.sort(function (a, b) { return b.lastalarmtime - a.lastalarmtime; });
-                            resp.alarmrecords.forEach(function (record) {
+                            resp.alarmrecords.sort(function(a, b) { return b.lastalarmtime - a.lastalarmtime; });
+                            resp.alarmrecords.forEach(function(record) {
                                 var isdispose = record.disposestatus === 0 ? self.$t("reportForm.untreated") : self.$t("reportForm.handled");
                                 alarmRecords.push({
                                     devicename: vstore.state.deviceInfos[record.deviceid].devicename,
@@ -1554,15 +1528,15 @@ function allAlarm (groupslist) {
             },
         },
         computed: {
-            calcHeight: function () {
+            calcHeight: function() {
                 return this.lastTableHeight + 45;
             }
         },
-        mounted: function () {
+        mounted: function() {
             var me = this;
             me.groupslist = groupslist;
             this.calcTableHeight();
-            this.$nextTick(function () {
+            this.$nextTick(function() {
                 if (isToAlarmListRecords) {
                     isToAlarmListRecords = false;
                     me.sosoValue = me.getDeviceTitle(globalDeviceId);
@@ -1576,7 +1550,7 @@ function allAlarm (groupslist) {
 
 //
 
-function phoneAlarm (groupslist) {
+function phoneAlarm(groupslist) {
     new Vue({
         el: '#phone-alarm',
         i18n: utils.getI18n(),
@@ -1597,11 +1571,11 @@ function phoneAlarm (groupslist) {
             tableData: []
         },
         methods: {
-            calcTableHeight: function () {
+            calcTableHeight: function() {
                 var wHeight = window.innerHeight;
                 this.tableHeight = wHeight - 125;
             },
-            onClickQuery: function () {
+            onClickQuery: function() {
                 if (this.queryDeviceId == "") {
                     this.$Message.error("请选择设备");
                     return
@@ -1612,11 +1586,11 @@ function phoneAlarm (groupslist) {
                     deviceid: this.queryDeviceId
                 }
                 this.loading = true;
-                utils.sendAjax(url, data, function (resp) {
+                utils.sendAjax(url, data, function(resp) {
                     if (resp.status === 0) {
                         var records = resp.records;
                         var tableData = [];
-                        records.forEach(function (record) {
+                        records.forEach(function(record) {
                             tableData.push({
                                 deviceid: me.queryDeviceId,
                                 notifyresult: record.notifyresult,
@@ -1630,11 +1604,11 @@ function phoneAlarm (groupslist) {
                 })
             },
         },
-        mounted: function () {
+        mounted: function() {
             var me = this;
             this.groupslist = groupslist;
             this.calcTableHeight();
-            this.$nextTick(function () {
+            this.$nextTick(function() {
                 if (isToPhoneAlarmRecords) {
                     isToPhoneAlarmRecords = false;
                     me.sosoValue = me.getDeviceTitle(globalDeviceId);
@@ -1642,14 +1616,14 @@ function phoneAlarm (groupslist) {
                     me.onClickQuery();
                 }
             });
-            window.onresize = function () {
+            window.onresize = function() {
                 me.calcTableHeight();
             }
         }
     });
 }
 
-function wechatAlarm (groupslist) {
+function wechatAlarm(groupslist) {
     new Vue({
         el: '#phone-alarm',
         i18n: utils.getI18n(),
@@ -1670,11 +1644,11 @@ function wechatAlarm (groupslist) {
             tableData: []
         },
         methods: {
-            calcTableHeight: function () {
+            calcTableHeight: function() {
                 var wHeight = window.innerHeight;
                 this.tableHeight = wHeight - 125;
             },
-            onClickQuery: function () {
+            onClickQuery: function() {
                 if (this.queryDeviceId == "") {
                     this.$Message.error("请选择设备");
                     return
@@ -1685,11 +1659,11 @@ function wechatAlarm (groupslist) {
                     deviceid: this.queryDeviceId
                 }
                 this.loading = true;
-                utils.sendAjax(url, data, function (resp) {
+                utils.sendAjax(url, data, function(resp) {
                     if (resp.status === 0) {
                         var records = resp.records;
                         var tableData = [];
-                        records.forEach(function (record) {
+                        records.forEach(function(record) {
                             tableData.push({
                                 deviceid: me.queryDeviceId,
                                 notifyresult: record.notifyresult,
@@ -1703,11 +1677,11 @@ function wechatAlarm (groupslist) {
                 })
             },
         },
-        mounted: function () {
+        mounted: function() {
             var me = this;
             this.groupslist = groupslist;
             this.calcTableHeight();
-            this.$nextTick(function () {
+            this.$nextTick(function() {
                 if (isToPhoneAlarmRecords) {
                     isToPhoneAlarmRecords = false;
                     me.sosoValue = me.getDeviceTitle(globalDeviceId);
@@ -1715,7 +1689,7 @@ function wechatAlarm (groupslist) {
                     me.onClickQuery();
                 }
             });
-            window.onresize = function () {
+            window.onresize = function() {
                 me.calcTableHeight();
             }
         }
@@ -1723,7 +1697,7 @@ function wechatAlarm (groupslist) {
 }
 
 
-function rechargeRecords (groupslist) {
+function rechargeRecords(groupslist) {
     new Vue({
         el: '#recharge-records',
         i18n: utils.getI18n(),
@@ -1745,11 +1719,11 @@ function rechargeRecords (groupslist) {
             tableData: []
         },
         methods: {
-            calcTableHeight: function () {
+            calcTableHeight: function() {
                 var wHeight = window.innerHeight;
                 this.tableHeight = wHeight - 125;
             },
-            onClickQuery: function () {
+            onClickQuery: function() {
 
                 var me = this;
                 var url = myUrls.reportChargeCall();
@@ -1759,11 +1733,11 @@ function rechargeRecords (groupslist) {
 
                 this.queryDeviceId && (data.deviceid = this.queryDeviceId);
 
-                utils.sendAjax(url, data, function (resp) {
+                utils.sendAjax(url, data, function(resp) {
                     if (resp.status === 0) {
                         var records = resp.records;
                         var tableData = [];
-                        records.forEach(function (record) {
+                        records.forEach(function(record) {
                             tableData.push({
                                 username: record.username,
                                 deviceid: record.deviceid,
@@ -1777,11 +1751,11 @@ function rechargeRecords (groupslist) {
                 })
             },
         },
-        mounted: function () {
+        mounted: function() {
             var me = this;
             this.groupslist = groupslist;
             this.calcTableHeight();
-            window.onresize = function () {
+            window.onresize = function() {
                 me.calcTableHeight();
             }
         }
@@ -1789,16 +1763,17 @@ function rechargeRecords (groupslist) {
 }
 
 
-function insureRecords (groupslist) {
+function insureRecords(groupslist) {
     new Vue({
         el: '#insure-records',
         i18n: utils.getI18n(),
         data: {
             error: 123,
-            columns: [
-                {
-                    title: '是否付费', key: 'isPay', width: 100,
-                    render: function (h, parmas) {
+            columns: [{
+                    title: '是否付费',
+                    key: 'isPay',
+                    width: 100,
+                    render: function(h, parmas) {
                         return h('span', {}, parmas.row.insurestate == 1 ? '已付款' : '未付款');
                     }
                 },
@@ -1815,32 +1790,42 @@ function insureRecords (groupslist) {
                 { title: '保险金额', key: 'insureprice', width: 100 },
                 { title: '保费', key: 'insurefee', width: 80 },
                 {
-                    title: '合格证', key: 'carpicurl', width: 100,
-                    render: function (h, parmas) {
+                    title: '合格证',
+                    key: 'carpicurl',
+                    width: 100,
+                    render: function(h, parmas) {
                         return h('a', { attrs: { href: parmas.row.carpicurl, target: '_blank' } }, '点击预览');
                     }
                 },
                 {
-                    title: '身份证正面', key: 'positivecardidurl', width: 100,
-                    render: function (h, parmas) {
+                    title: '身份证正面',
+                    key: 'positivecardidurl',
+                    width: 100,
+                    render: function(h, parmas) {
                         return h('a', { attrs: { href: parmas.row.positivecardidurl, target: '_blank' } }, '点击预览');
                     }
                 },
                 {
-                    title: '身份证反面', key: 'negativecardidurl', width: 100,
-                    render: function (h, parmas) {
+                    title: '身份证反面',
+                    key: 'negativecardidurl',
+                    width: 100,
+                    render: function(h, parmas) {
                         return h('a', { attrs: { href: parmas.row.negativecardidurl, target: '_blank' } }, '点击预览');
                     }
                 },
                 {
-                    title: '购车发票', key: 'invoiceurl', width: 100,
-                    render: function (h, parmas) {
+                    title: '购车发票',
+                    key: 'invoiceurl',
+                    width: 100,
+                    render: function(h, parmas) {
                         return h('a', { attrs: { href: parmas.row.invoiceurl, target: '_blank' } }, '点击预览');
                     }
                 },
                 {
-                    title: '车主与车合影', key: 'groupphotourl', width: 120,
-                    render: function (h, parmas) {
+                    title: '车主与车合影',
+                    key: 'groupphotourl',
+                    width: 120,
+                    render: function(h, parmas) {
                         return h('a', { attrs: { href: parmas.row.groupphotourl, target: '_blank' } }, '点击预览');
                     }
                 },
@@ -1851,23 +1836,24 @@ function insureRecords (groupslist) {
             isFilter: true
         },
         methods: {
-            calcTableHeight: function () {
+            calcTableHeight: function() {
                 var wHeight = window.innerHeight;
                 this.tableHeight = wHeight - 125;
             },
-            changeTableColumns: function () {
+            changeTableColumns: function() {
                 this.columns = this.getTableColumns();
             },
-            queryInsures: function () {
+            queryInsures: function() {
                 this.loading = true;
-                var url = myUrls.queryInsures(), me = this;
-                utils.sendAjax(url, { username: userName }, function (resp) {
+                var url = myUrls.queryInsures(),
+                    me = this;
+                utils.sendAjax(url, { username: userName }, function(resp) {
                     console.log('resp', resp);
                     if (resp.status === 0) {
                         if (me.isFilter) {
-                            me.tableData = (function () {
+                            me.tableData = (function() {
                                 var tableData = [];
-                                resp.insures.forEach(function (item) {
+                                resp.insures.forEach(function(item) {
                                     if (item.insurestate === 1) {
                                         tableData.push(item);
                                     };
@@ -1881,11 +1867,11 @@ function insureRecords (groupslist) {
                     me.loading = false;
                 })
             },
-            exportData: function () {
+            exportData: function() {
                 // this.$refs.table.exportCsv({
                 //     filename: 'device info'
                 // });
-                var jsonData = this.tableData.map(function (item) {
+                var jsonData = this.tableData.map(function(item) {
                     return {
                         name: item.name,
                         cardid: item.cardid,
@@ -1910,7 +1896,7 @@ function insureRecords (groupslist) {
                     '姓名', '身份证号', '地址', '手机号', '品牌型号',
                     '车架号', 'GPS序列号', '购车日期', '销售价格', '保险金额',
                     '保费', '合格证', '身份证正面', '身份证反面', '购车发票', '车主与车合影'
-                ].map(function (item) { return "<td>" + item + "</td>"; });
+                ].map(function(item) { return "<td>" + item + "</td>"; });
                 var str = '<tr>' + columnsStr.join('') + '</tr>';
                 for (var i = 0; i < jsonData.length; i++) {
                     str += '<tr>';
@@ -1927,15 +1913,15 @@ function insureRecords (groupslist) {
                     '<head><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet>' +
                     '<x:Name>' + worksheet + '</x:Name>'
                 '<x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet>' +
-                    +'</x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]-->' +
-                    '</head><body><table>' + str + '</table></body></html>';
+                +'</x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]-->' +
+                '</head><body><table>' + str + '</table></body></html>';
                 //下载模板
                 window.location.href = uri + base64(template)
 
-                function base64 (s) { return window.btoa(unescape(encodeURIComponent(s))) }
+                function base64(s) { return window.btoa(unescape(encodeURIComponent(s))) }
             },
         },
-        mounted: function () {
+        mounted: function() {
             this.calcTableHeight();
             this.queryInsures();
         },
@@ -1945,15 +1931,14 @@ function insureRecords (groupslist) {
 // 统计报表
 var reportForm = {
     template: document.getElementById('report-template').innerHTML,
-    data: function () {
+    data: function() {
         var me = this;
         return {
             theme: "light",
             groupslist: [],
             activeName: "",
             openedNames: [],
-            reportNavList: [
-                {
+            reportNavList: [{
                     title: me.$t("reportForm.drivingReport"),
                     name: 'drivingReport',
                     icon: 'ios-photos',
@@ -1983,11 +1968,11 @@ var reportForm = {
         }
     },
     methods: {
-        selectditem: function (name) {
+        selectditem: function(name) {
             var pageName = name.toLowerCase() + ".html";
             this.loadPage(pageName);
         },
-        loadPage: function (page) {
+        loadPage: function(page) {
             var me = this;
             var pagePath = null;
             if (utils.isLocalhost()) {
@@ -1996,7 +1981,7 @@ var reportForm = {
                 pagePath = '../view/reportform/' + page
             }
             this.$Loading.start();
-            $('#report-right-wrap').load(pagePath, function () {
+            $('#report-right-wrap').load(pagePath, function() {
                 me.$Loading.finish();
                 var groupslist = deepClone(me.groupslist);
                 window.onresize = null;
@@ -2040,20 +2025,20 @@ var reportForm = {
                 }
             });
         },
-        getMonitorListByUser: function (callback) {
+        getMonitorListByUser: function(callback) {
             var me = this
             var url = myUrls.monitorListByUser()
-            utils.sendAjax(url, { username: userName }, function (resp) {
+            utils.sendAjax(url, { username: userName }, function(resp) {
                 if (resp.status == 0) {
                     if (resp.groups && resp.groups.length) {
                         callback(resp.groups);
-                    }else{
+                    } else {
                         callback([]);
                     }
                 } else if (resp.status == 3) {
                     me.$Message.error(me.$t("monitor.reLogin"));
                     Cookies.remove('token');
-                    setTimeout(function () {
+                    setTimeout(function() {
                         window.location.href = 'index.html'
                     }, 2000);
                 } else {
@@ -2063,17 +2048,18 @@ var reportForm = {
                 }
             })
         },
-        toAlarmRecords: function (activeName, pageHtml) {
+        toAlarmRecords: function(activeName, pageHtml) {
             var me = this;
             this.activeName = activeName;
             this.openedNames = ['warningReport'];
-            this.$nextTick(function () {
+            this.$nextTick(function() {
                 me.$refs.navMenu.updateOpened();
                 me.loadPage(pageHtml);
             })
         },
-        getDeviceTypeName: function (deviceTypeId) {
-            var typeName = "", deviceTypes = this.deviceTypes;
+        getDeviceTypeName: function(deviceTypeId) {
+            var typeName = "",
+                deviceTypes = this.deviceTypes;
             for (var index = 0; index < deviceTypes.length; index++) {
                 var element = deviceTypes[index];
                 if (element.devicetypeid === deviceTypeId) {
@@ -2084,20 +2070,20 @@ var reportForm = {
             return typeName;
         },
     },
-    computed:{
-        deviceTypes: function () {
+    computed: {
+        deviceTypes: function() {
             return this.$store.state.deviceTypes;
         },
     },
-    mounted: function () {
+    mounted: function() {
         var me = this;
-        this.getMonitorListByUser(function (groups) {
+        this.getMonitorListByUser(function(groups) {
             me.groupslist = utils.getPinyin(groups);
-            me.groupslist.sort(function (a, b) {
+            me.groupslist.sort(function(a, b) {
                 return a.groupname.localeCompare(b.groupname);
             });
-            me.groupslist.forEach(function (group) {
-                group.devices.sort(function (a,b) {
+            me.groupslist.forEach(function(group) {
+                group.devices.sort(function(a, b) {
                     return a.title.localeCompare(b.title);
                 });
             });
