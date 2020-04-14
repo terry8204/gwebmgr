@@ -1001,7 +1001,7 @@ function accDetails(groupslist) {
                 this.sosoValue = '';
                 this.checkedDevice = [];
                 this.cleanSelected(this.groupslist);
-                console.log(this.groupslist);
+                this.treeData = this.groupslist;
             },
             cleanSelected: function(treeDataFilter) {
                 var that = this;
