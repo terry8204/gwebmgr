@@ -1056,7 +1056,9 @@ var monitor = {
             var me = this;
             this.groups.forEach(function(group) {
                 var online = 0;
+                var count = 0;
                 group.devices.forEach(function(device, index) {
+                    count++;
                     var isOnline = me.getIsOnline(device.deviceid);
                     device.isOnline = isOnline;
                     if (isOnline) {
@@ -1070,7 +1072,7 @@ var monitor = {
                 } else {
                     group.isShow = false;
                 }
-                group.title = group.groupname + "(" + online + ")";
+                group.title = group.groupname + "(" + online + "/" + count + ")";
                 group.devices.sort(function(a, b) {
                     return a.devicetitle.localeCompare(b.devicetitle);
                 });
@@ -1088,7 +1090,9 @@ var monitor = {
             var me = this;
             this.groups.forEach(function(group) {
                 var offline = 0;
+                var count = 0;
                 group.devices.forEach(function(device, index) {
+                    count++;
                     me.updateDeviceLastActiveTime(device);
                     var isOnline = me.getIsOnline(device.deviceid);
                     var isStock = device.lastactivetime <= 0;
@@ -1106,14 +1110,16 @@ var monitor = {
                 } else {
                     group.isShow = false;
                 }
-                group.title = group.groupname + "(" + offline + ")";
+                group.title = group.groupname + "(" + offline + "/" + count + ")";
             });
         },
         getStockHideCompanyTreeData: function() {
             var me = this;
             this.groups.forEach(function(group) {
                 var stock = 0;
+                var count = 0;
                 group.devices.forEach(function(device, index) {
+                    count++;
                     var track = me.positionLastrecords[device.deviceid];
                     if (device.lastactivetime <= 0 && track == undefined) {
                         stock++;
@@ -1127,7 +1133,7 @@ var monitor = {
                 } else {
                     group.isShow = false;
                 }
-                group.title = group.groupname + "(" + stock + ")";
+                group.title = group.groupname + "(" + stock + "/" + count + ")";
             });
         },
         getIsOnline: function(deviceid) {
