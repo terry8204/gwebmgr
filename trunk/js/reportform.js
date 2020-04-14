@@ -9,6 +9,7 @@ var treeMixin = {
         sosoValue: '',
         isShowMatchDev: false,
         treeData: [],
+        dayNumberType: 0,
     },
     methods: {
         changePage: function(index) {
@@ -24,6 +25,8 @@ var treeMixin = {
             this.dateVal = value;
         },
         handleSelectdDate: function(dayNumber) {
+            console.log(dayNumber);
+            this.dayNumberType = dayNumber;
             var dayTime = 24 * 60 * 60 * 1000;
             if (dayNumber == 0) {
                 this.dateVal = [DateFormat.longToDateStr(Date.now(), DateFormat.getOffset()), DateFormat.longToDateStr(Date.now(), DateFormat.getOffset())];
@@ -43,46 +46,55 @@ var treeMixin = {
             var value = this.sosoValue;
             this.filterMethod(this.sosoValue);
         },
-        filterMethod: utils.debounce(function(value) {
-            var filterData = [];
+        filterMethod: function(value) {
             value = value.toLowerCase();
-            for (var i = 0; i < this.groupslist.length; i++) {
-                var group = this.groupslist[i];
-                if (
-                    group.title.toLowerCase().indexOf(value) !== -1
-                ) {
-                    filterData.push(group)
-                } else {
-                    var devices = group.children
-                    var obj = {
-                        expand: true,
-                        title: group.title,
-                        children: [],
-                        firstLetter: group.firstLetter,
-                        pinyin: group.pinyin
-                    }
-                    for (var j = 0; j < devices.length; j++) {
-                        var device = devices[j]
-                        var title = device.title
-                        if (
-                            title.toLowerCase().indexOf(value) !== -1 ||
-                            device.firstLetter.indexOf(value) !== -1 ||
-                            device.pinyin.indexOf(value) !== -1
-                        ) {
-                            obj.children.push(device)
-                        }
-                    }
-                    if (obj.children.length) {
-                        filterData.push(obj);
-                    };
-                };
-            };
-            this.treeData = filterData;
+            this.treeData = this.variableDeepSearch(this.groupslist, value, 5);
             this.checkedDevice = [];
             if (this.isShowMatchDev == false) {
                 this.isShowMatchDev = true;
             }
-        }, 500),
+        },
+        variableDeepSearch: function(treeDataFilter, searchWord, limitcount) {
+
+            var childTemp = [];
+            var that = this;
+            for (var i = 0; i < treeDataFilter.length; i++) {
+                var copyItem = null;
+                var item = treeDataFilter[i];
+                if (item != null) {
+
+                    var isFound = false;
+
+                    if (item.title.indexOf(searchWord) != -1) {
+                        copyItem = item;
+                        copyItem.expand = false;
+                        isFound = true;
+                    }
+                    if (isFound == false && item.children && item.children.length > 0) {
+                        // item.expand = true;
+                        // childTemp.push(item);
+                        var rs = that.variableDeepSearch(item.children, searchWord, limitcount);
+                        if (rs && rs.length > 0) {
+                            copyItem = deepClone(item);
+                            copyItem.children = rs;
+                            copyItem.expand = true;
+                            isFound = true;
+                        }
+                    }
+
+                    if (isFound == true) {
+                        limitcount++;
+
+                        childTemp.push(copyItem);
+                        if (limitcount > 10) {
+                            break;
+                        }
+                    }
+                }
+            }
+
+            return childTemp;
+        },
         sosoSelect: function(item) {
             reportDeviceId = item.deviceid;
             this.sosoValue = item.title;
@@ -127,7 +139,7 @@ var treeMixin = {
     created: function() {
         this.checkedDevice = [];
     },
-}
+};
 
 var reportMixin = {
     data: {
@@ -141,6 +153,7 @@ var reportMixin = {
         isShowMatchDev: true,
         filterData: [],
         queryDeviceId: '',
+        dayNumberType: 0,
     },
     methods: {
         changePage: function(index) {
@@ -156,6 +169,7 @@ var reportMixin = {
             this.dateVal = value;
         },
         handleSelectdDate: function(dayNumber) {
+            this.dayNumberType = dayNumber;
             var dayTime = 24 * 60 * 60 * 1000;
             if (dayNumber == 0) {
                 this.dateVal = [DateFormat.longToDateStr(Date.now(), DateFormat.getOffset()), DateFormat.longToDateStr(Date.now(), DateFormat.getOffset())];
@@ -675,18 +689,6 @@ function reportMileageDetail(groupslist) {
             onChange: function(value) {
                 this.dateVal = value;
             },
-            handleSelectdDate: function(dayNumber) {
-                var dayTime = 24 * 60 * 60 * 1000;
-                if (dayNumber == 0) {
-                    this.dateVal = [DateFormat.longToDateStr(Date.now(), DateFormat.getOffset()), DateFormat.longToDateStr(Date.now(), DateFormat.getOffset())];
-                } else if (dayNumber == 1) {
-                    this.dateVal = [DateFormat.longToDateStr(Date.now() - dayTime, DateFormat.getOffset()), DateFormat.longToDateStr(Date.now() - dayTime, DateFormat.getOffset())];
-                } else if (dayNumber == 3) {
-                    this.dateVal = [DateFormat.longToDateStr(Date.now() - dayTime * 2, DateFormat.getOffset()), DateFormat.longToDateStr(Date.now(), DateFormat.getOffset())];
-                } else if (dayNumber == 7) {
-                    this.dateVal = [DateFormat.longToDateStr(Date.now() - dayTime * 6, DateFormat.getOffset()), DateFormat.longToDateStr(Date.now(), DateFormat.getOffset())];
-                }
-            },
             calcTableHeight: function() {
                 var wHeight = window.innerHeight;
                 this.lastTableHeight = wHeight - 170;
@@ -822,18 +824,6 @@ function parkDetails(groupslist) {
         methods: {
             onChange: function(value) {
                 this.dateVal = value;
-            },
-            handleSelectdDate: function(dayNumber) {
-                var dayTime = 24 * 60 * 60 * 1000;
-                if (dayNumber == 0) {
-                    this.dateVal = [DateFormat.longToDateStr(Date.now(), DateFormat.getOffset()), DateFormat.longToDateStr(Date.now(), DateFormat.getOffset())];
-                } else if (dayNumber == 1) {
-                    this.dateVal = [DateFormat.longToDateStr(Date.now() - dayTime, DateFormat.getOffset()), DateFormat.longToDateStr(Date.now() - dayTime, DateFormat.getOffset())];
-                } else if (dayNumber == 3) {
-                    this.dateVal = [DateFormat.longToDateStr(Date.now() - dayTime * 2, DateFormat.getOffset()), DateFormat.longToDateStr(Date.now(), DateFormat.getOffset())];
-                } else if (dayNumber == 7) {
-                    this.dateVal = [DateFormat.longToDateStr(Date.now() - dayTime * 6, DateFormat.getOffset()), DateFormat.longToDateStr(Date.now(), DateFormat.getOffset())];
-                }
             },
             calcTableHeight: function() {
                 var wHeight = window.innerHeight;
@@ -1007,28 +997,33 @@ function accDetails(groupslist) {
                     data: this.allAccTableData
                 });
             },
+            clean: function() {
+                this.sosoValue = '';
+                this.checkedDevice = [];
+                this.cleanSelected(this.groupslist);
+                console.log(this.groupslist);
+            },
+            cleanSelected: function(treeDataFilter) {
+                var that = this;
+                for (var i = 0; i < treeDataFilter.length; i++) {
+                    var item = treeDataFilter[i];
+                    if (item != null) {
+                        item.checked = false;
+                        if (item.children && item.children.length > 0) {
+                            that.cleanSelected(item.children);
+                        }
+                    }
+                }
+            },
             onClickTab: function(name) {
                 this.activeTab = name;
             },
             onChange: function(value) {
                 this.dateVal = value;
             },
-            handleSelectdDate: function(dayNumber) {
-                var dayTime = 24 * 60 * 60 * 1000;
-                if (dayNumber == 0) {
-                    this.dateVal = [DateFormat.longToDateStr(Date.now(), DateFormat.getOffset()), DateFormat.longToDateStr(Date.now(), DateFormat.getOffset())];
-                } else if (dayNumber == 1) {
-                    this.dateVal = [DateFormat.longToDateStr(Date.now() - dayTime, DateFormat.getOffset()), DateFormat.longToDateStr(Date.now() - dayTime, DateFormat.getOffset())];
-                } else if (dayNumber == 3) {
-                    this.dateVal = [DateFormat.longToDateStr(Date.now() - dayTime * 2, DateFormat.getOffset()), DateFormat.longToDateStr(Date.now(), DateFormat.getOffset())];
-                } else if (dayNumber == 7) {
-                    this.dateVal = [DateFormat.longToDateStr(Date.now() - dayTime * 6, DateFormat.getOffset()), DateFormat.longToDateStr(Date.now(), DateFormat.getOffset())];
-                }
-            },
             calcTableHeight: function() {
                 var wHeight = window.innerHeight;
                 this.lastTableHeight = wHeight - 215;
-                console.log("lastTableHeight", this.lastTableHeight);
             },
             onClickQuery: function() {
                 var deviceids = [];

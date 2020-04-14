@@ -1,20 +1,20 @@
 <meta charset="UTF-8">
 <style>
-    #phone-alarm .search-wrapper .ivu-icon{
+    #phone-alarm .search-wrapper .ivu-icon {
         margin-top: 0px;
     }
 </style>
 <div id="phone-alarm">
     <div style="margin:10px;height: 35px;">
         <div style="float: left;">
-            <div style="height: 35px; line-height: 35px;">{{$t("reportForm.selectDev")}}:&nbsp;</div> 
+            <div style="height: 35px; line-height: 35px;">{{$t("reportForm.selectDev")}}:&nbsp;</div>
         </div>
         <div style="float: left;position: relative;width: 300px;">
             <div class="search-wrapper" v-click-outside.capture="onClickOutside">
-                <i-input v-model.trim="sosoValue"  icon="ios-search-outline" @on-change="sosoValueChange" @on-blur="blur" @on-focus="focus" @on-click="focus" :placeholder="placeholder"></i-input>
+                <i-input v-model.trim="sosoValue" icon="ios-search-outline" @on-change="sosoValueChange" @on-blur="blur" @on-focus="focus" @on-click="focus" :placeholder="placeholder"></i-input>
                 <transition name="fade">
                     <ul class="search-item-wrapper" v-show="isShowMatchDev">
-                        <li  class="demo-auto-complete-item" v-for="item in filterData">
+                        <li class="demo-auto-complete-item" v-for="item in filterData">
                             <div class="demo-auto-complete-group" v-show="item.devices.length">
                                 <span>{{ item.groupname }}</span>
                             </div>
@@ -27,7 +27,7 @@
             </div>
         </div>
         <div style="margin-left:20px;float: left;">
-            <i-button @click="onClickQuery" >{{$t("reportForm.query")}}</i-button>
+            <i-button @click="onClickQuery">{{$t("reportForm.query")}}</i-button>
         </div>
     </div>
     <div style="margin:10px;">

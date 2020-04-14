@@ -679,15 +679,15 @@ var monitor = {
                 for (var i = 0; i < me.groups.length; i++) {
                     var group = me.groups[i]
                     var isBreak = false;
-                    sHeight += 34;
+                    sHeight += 32;
                     if (group.expand) {
                         var devices = group.devices;
                         for (var j = 0; j < devices.length; j++) {
                             var device = devices[j];
-                            sHeight += 29;
+                            sHeight += 27;
                             if (device.deviceid === deviceid) {
                                 isBreak = true;
-                                sHeight += 60;
+                                sHeight += 58;
                                 break;
                             }
                         }
@@ -838,7 +838,6 @@ var monitor = {
                                     // console.log("lastPositon", item.devicename, DateFormat.longToDateTimeStr(item.updatetime, 0));
                                 }
                             })
-                            me.positionLastrecords
                             callback ? callback() : '';
                         }
                     } else if (resp.status > 9000) {
@@ -1046,6 +1045,9 @@ var monitor = {
                     // device.devicetitle = device.devicename;
 
                 });
+                group.devices.sort(function(a, b) {
+                    return a.devicetitle.localeCompare(b.devicetitle);
+                });
                 group.isShow = true;
                 group.title = group.groupname + "(" + online + "/" + count + ")";
             });
@@ -1069,6 +1071,9 @@ var monitor = {
                     group.isShow = false;
                 }
                 group.title = group.groupname + "(" + online + ")";
+                group.devices.sort(function(a, b) {
+                    return a.devicetitle.localeCompare(b.devicetitle);
+                });
             });
         },
         updateDeviceLastActiveTime: function(device) {
