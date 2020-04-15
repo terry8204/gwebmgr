@@ -539,6 +539,10 @@ var myUrls = {
     queryUsersTree: function() {
         return this.apihosts + 'webapi?action=queryuserstree&token=' + token;
     },
+    // 查询 日在线率
+    reportDeviceOnlineDaily: function() {
+        return this.apihosts + 'webapi?action=reportdeviceonlinedaily&token=' + token;
+    },
 }
 
 
