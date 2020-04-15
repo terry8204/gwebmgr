@@ -1923,6 +1923,215 @@ function insureRecords(groupslist) {
     })
 }
 
+
+//综合上线统计
+function reportOnlineSummary(groupslist) {
+
+    new Vue({
+        i18n: utils.getI18n(),
+        el: "#reportonlinesummary",
+        data: {
+            createrToUser: userName,
+            isShowMatchDev: false,
+            userlists: userlists,
+            iconState: 'ios-arrow-down',
+            columns: [
+                { title: '设备序号', key: 'deviceid', },
+                { title: '设备名称', key: 'devicename', },
+                { title: '卡号', key: 'simnum', },
+                {
+                    title: '分组',
+                    key: 'groupid',
+                    render: function(h, params) {
+                        var groupid = params.row.groupid;
+                        var deviceid = params.row.deviceid;
+                        var groupName = '';
+                        if (groupid == 0) {
+                            groupName = '默认组';
+                        } else {
+                            for (var i = 0; i < groupslist.length; i++) {
+                                var group = groupslist[i];
+                                for (var j = 0; j < group.devices.length; j++) {
+                                    var device = group.devices[j];
+                                    if (device.deviceid === deviceid) {
+                                        groupName = group.groupname.split('-')[1];
+                                        break;
+                                    }
+                                    if (groupName != '') { break };
+                                }
+                            }
+                        }
+                        return h('span', {}, groupName)
+                    }
+                },
+                {
+                    title: '设备类型',
+                    key: 'devicetype',
+                    width: 85,
+                    render: function(h, params) {
+                        var devicetype = params.row.devicetype;
+                        var deviceTypes = vstore.state.deviceTypes;
+                        for (var i = 0; i < deviceTypes.length; i++) {
+                            var item = deviceTypes[i];
+                            if (item.devicetypeid == devicetype) {
+                                return h('span', {}, item.typename);
+                            }
+                        }
+                    }
+                },
+                {
+                    title: '运营状态',
+                    width: 85,
+                    render: function(h, params) {
+                        var status = '离线';
+                        var updatetime = params.row.updatetime;
+
+                        if (updatetime > 0 && (Date.now() - updatetime) < 60 * 10 * 1000) {
+                            status = "在线";
+                        }
+                        return h('span', {}, status)
+                    }
+                },
+                {
+                    title: '更新时间',
+                    width: 150,
+                    render: function(h, params) {
+                        var updatetime = params.row.updatetime;
+                        var updatetimeStr = '未上报';
+                        if (updatetime > 0) {
+                            updatetimeStr = DateFormat.longToDateTimeStr(updatetime, 0);
+                        }
+                        return h('span', {}, updatetimeStr)
+                    }
+                },
+                {
+                    title: '最后位置',
+                    render: function(h, params) {
+                        var callat = params.row.callat;
+                        var callon = params.row.callon;
+                        if (callat == 0 && callon == 0) {
+                            return h('span', {}, '未定位')
+                        } else {
+                            return h('span', {}, '已定位')
+                        }
+
+                    }
+                },
+                { title: '最后状态', key: 'strstatus', },
+                { title: '备注', key: 'remark', },
+            ],
+            tableData: [],
+            tableHeight: 300,
+            loading: false,
+            totalVehicle: 0,
+            onlineVehicle: 0,
+            offlineVehicle: 0,
+            posiVehicle: 0, // 定位数量
+            notPosiVehicle: 0, // 不定位数量
+        },
+        methods: {
+            onClickQuery: function() {
+                if (userlists.indexOf(this.createrToUser) == -1) {
+                    this.$Message.error(me.$t("message.selectCorrectAccount"));
+                    return;
+                }
+                this.totalVehicle = 0;
+                this.onlineVehicle = 0;
+                this.offlineVehicle = 0;
+                this.posiVehicle = 0; // 定位数量
+                this.notPosiVehicle = 0; // 不定位数量
+                this.loading = true;
+                var url = myUrls.reportOnlineSummary(),
+                    me = this;
+                utils.sendAjax(url, { username: this.createrToUser }, function(respData) {
+                    me.loading = false;
+                    if (respData.status === 0) {
+                        me.tableData = respData.records;
+                        me.totalVehicle = me.tableData.length;
+                        me.tableData.forEach(function(item) {
+                            var updatetime = item.updatetime;
+                            var callat = item.callat;
+                            var callon = item.callon;
+                            if (updatetime > 0 && (Date.now() - updatetime) < 60 * 10 * 1000) {
+                                me.onlineVehicle++;
+                            } else {
+                                me.offlineVehicle++;
+                            }
+                            if (callat == 0 && callon == 0) {
+                                me.notPosiVehicle++;
+                            } else {
+                                me.posiVehicle++;
+                            }
+                        });
+                    } else {
+                        me.$Message.error('查询失败');
+                    }
+                });
+
+            },
+            calcTableHeight: function() {
+                var wHeight = window.innerHeight;
+                this.tableHeight = wHeight - 167;
+            },
+            selectedCmd: function(item) {
+                var me = this;
+                setTimeout(function() {
+                    me.isShowMatchDev = false;
+                    me.createrToUser = item;
+                }, 100)
+            },
+            sosoValueChange: function() {
+                var me = this;
+                var value = this.createrToUser.toLowerCase();
+
+                if (this.timeoutIns != null) {
+                    clearTimeout(this.timeoutIns);
+                }
+
+                if (!value.trim()) {
+                    this.userlists = userlists;
+                    return;
+                }
+
+                this.timeoutIns = setTimeout(function() {
+                    me.filterMethod(value);
+                }, 100);
+            },
+            focus: function() {
+                this.isShowMatchDev = true;
+            },
+            blur: function() {
+                var me = this
+                setTimeout(function() {
+                    me.isShowMatchDev = false;
+                }, 300)
+            },
+            filterMethod: function(value) {
+                var list = [];
+                userlists.forEach(function(itme) {
+                    if (itme.toLowerCase().indexOf(value) != -1) {
+                        list.push(itme);
+                    }
+                })
+                this.userlists = list;
+            },
+        },
+        watch: {
+            isShowMatchDev: function() {
+                if (!this.isShowMatchDev) {
+                    this.iconState = "ios-arrow-down";
+                } else {
+                    this.iconState = "ios-arrow-up";
+                }
+            },
+        },
+        mounted: function() {
+            this.calcTableHeight();
+        }
+    })
+}
+
+
 // 统计报表
 var reportForm = {
     template: document.getElementById('report-template').innerHTML,
@@ -1957,6 +2166,14 @@ var reportForm = {
                         { title: "微信报警", name: 'wechatAlarm', icon: 'md-ionitron' },
                         { title: me.$t("reportForm.rechargeRecords"), name: 'rechargeRecords', icon: 'ios-list-box-outline' },
                         { title: "保险记录", name: 'insureRecords', icon: 'ios-list-box-outline' },
+                    ]
+                },
+                {
+                    title: '上线统计',
+                    name: 'operateReport',
+                    icon: 'md-stats',
+                    children: [
+                        { title: '综合统计', name: 'reportOnlineSummary', icon: 'md-sunny' },
                     ]
                 },
             ]
@@ -2016,6 +2233,9 @@ var reportForm = {
                         break;
                     case 'wechatalarm.html':
                         wechatAlarm(groupslist);
+                        break;
+                    case 'reportonlinesummary.html':
+                        reportOnlineSummary(groupslist);
                         break;
                 }
             });

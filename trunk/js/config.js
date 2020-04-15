@@ -527,6 +527,10 @@ var myUrls = {
     batchOperate: function() {
         return this.apihosts + 'webapi?action=batchoperate&token=' + token;
     },
+    // 上线综合统计  
+    reportOnlineSummary: function() {
+        return this.apihosts + 'webapi?action=reportonlinesummary&token=' + token;
+    },
 }
 
 
