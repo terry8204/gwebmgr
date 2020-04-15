@@ -1,0 +1,32 @@
+<div id="reportonlinesummary">
+    <Row style="margin: 10px;">
+        <div style="height: 100%;text-align:right;line-height:32px;float: left;">选择账号 : &nbsp;</div>
+        <div style="float: left;position: relative;width: 200px;">
+            <div class="search-wrapper">
+                <i-input v-model.trim="createrToUser" :icon="iconState" @on-change="sosoValueChange" @on-blur="blur" @on-focus="focus" @on-click="focus"></i-input>
+                <transition name="fade">
+                    <ul class="search-item-wrapper" v-show="isShowMatchDev" style="cursor: pointer;">
+                        <li v-for="item in userlists" style="padding:5px 10px;" @click="selectedCmd(item)" :class="{'ivu-select-item-focus':item == createrToUser}">
+                            <div :value="item" :key="item">
+                                <span style="cursor: pointer;">{{ item }}</span>
+                            </div>
+                        </li>
+                    </ul>
+                </transition>
+            </div>
+        </div>
+        <div style="height: 100%;text-align:right;line-height:32px;float: left;margin-left: 10px;">
+            <i-button @click="onClickQuery">{{$t("reportForm.query")}}</i-button>
+        </div>
+    </Row>
+    <Row style="margin: 10px;border: 1px solid #DCDEE2;text-align: center;">
+        <div style="height: 100%;line-height:32px;display: inline-block;">车辆总数 :&nbsp;<span v-text="totalVehicle"></span>&nbsp;&nbsp;</div>
+        <div style="height: 100%;line-height:32px;display: inline-block;">在线数量 :&nbsp;<span v-text="onlineVehicle"></span>&nbsp;&nbsp;</div>
+        <div style="height: 100%;line-height:32px;display: inline-block;">离线数量 :&nbsp;<span v-text="offlineVehicle"></span>&nbsp;&nbsp;</div>
+        <div style="height: 100%;line-height:32px;display: inline-block;">定位数量 :&nbsp;<span v-text="posiVehicle"></span>&nbsp;&nbsp;</div>
+        <div style="height: 100%;line-height:32px;display: inline-block;">不定位数量 :&nbsp;<span v-text="notPosiVehicle"></span>&nbsp;&nbsp;</div>
+    </Row>
+    <div style="margin:10px;">
+        <i-table :columns="columns" :height="tableHeight" :data="tableData" :loading="loading"></i-table>
+    </div>
+</div>
