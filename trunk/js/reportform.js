@@ -2016,7 +2016,19 @@ function reportOnlineSummary(groupslist) {
                     }
                 },
                 { title: '最后状态', key: 'strstatus', },
-                { title: '备注', key: 'remark', },
+                {
+                    title: '备注',
+                    key: 'remark',
+                    render: function(h, params) {
+                        var remark = params.row.remark;
+                        return h('div', {
+                            style: {
+                                maxHeight: '40px',
+                                overflow: 'hidden'
+                            }
+                        }, remark)
+                    }
+                },
             ],
             tableData: [],
             tableHeight: 300,
@@ -2212,7 +2224,19 @@ function dropLineReport(groupslist) {
                         return h('span', {}, utils.timeStamp(Date.now() - updatetime))
                     }
                 },
-                { title: '备注', key: 'remark', },
+                {
+                    title: '备注',
+                    key: 'remark',
+                    render: function(h, params) {
+                        var remark = params.row.remark;
+                        return h('div', {
+                            style: {
+                                maxHeight: '40px',
+                                overflow: 'hidden'
+                            }
+                        }, remark)
+                    }
+                },
             ],
             tableData: [],
             tableHeight: 300,
@@ -2250,6 +2274,7 @@ function dropLineReport(groupslist) {
                 this.checkedDevice = [];
                 this.cleanSelected(this.groupslist);
                 this.treeData = this.groupslist;
+                this.tableData = [];
             },
             cleanSelected: function(treeDataFilter) {
                 var that = this;
