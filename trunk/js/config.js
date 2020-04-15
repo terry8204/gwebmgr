@@ -531,6 +531,10 @@ var myUrls = {
     reportOnlineSummary: function() {
         return this.apihosts + 'webapi?action=reportonlinesummary&token=' + token;
     },
+    // 掉线报表  
+    reportOffline: function() {
+        return this.apihosts + 'webapi?action=reportoffline&token=' + token;
+    },
 }
 
 

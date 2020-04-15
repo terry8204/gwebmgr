@@ -781,7 +781,7 @@
         <div class="report-wraper full">
             <div class="report-left-wrap">
                 <div class="mar-nav">
-                    <i-menu :theme="theme" @on-select="selectditem" :active-name="activeName" :open-names="openedNames" ref="navMenu">
+                    <i-menu :theme="theme" @on-select="selectditem" :active-name="activeName" :open-names="openedNames" ref="navMenu" accordion>
                         <template v-for="(group,index) in reportNavList">
                                     <Submenu :name="group.name" :key="index">
                                             <template slot="title">

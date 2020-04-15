@@ -25,7 +25,6 @@ var treeMixin = {
             this.dateVal = value;
         },
         handleSelectdDate: function(dayNumber) {
-            console.log(dayNumber);
             this.dayNumberType = dayNumber;
             var dayTime = 24 * 60 * 60 * 1000;
             if (dayNumber == 0) {
@@ -1926,7 +1925,6 @@ function insureRecords(groupslist) {
 
 //综合上线统计
 function reportOnlineSummary(groupslist) {
-
     new Vue({
         i18n: utils.getI18n(),
         el: "#reportonlinesummary",
@@ -2126,8 +2124,192 @@ function reportOnlineSummary(groupslist) {
             },
         },
         mounted: function() {
+            var me = this;
             this.calcTableHeight();
+            window.onresize = function() {
+                me.calcTableHeight();
+            }
         }
+    })
+}
+
+// 掉线报表
+function dropLineReport(groupslist) {
+    new Vue({
+        i18n: utils.getI18n(),
+        el: "#droplinereport",
+        mixins: [treeMixin],
+        data: {
+            loading: false,
+            days: '1',
+            groupslist: [],
+            columns: [
+                { title: '设备序号', key: 'deviceid', },
+                { title: '设备名称', key: 'devicename', },
+                { title: '卡号', key: 'simnum', },
+                {
+                    title: '分组',
+                    key: 'groupid',
+                    render: function(h, params) {
+                        var groupid = params.row.groupid;
+                        var deviceid = params.row.deviceid;
+                        var groupName = '';
+                        if (groupid == 0) {
+                            groupName = '默认组';
+                        } else {
+                            for (var i = 0; i < groupslist.length; i++) {
+                                var group = groupslist[i];
+                                for (var j = 0; j < group.devices.length; j++) {
+                                    var device = group.devices[j];
+
+                                    if (device.deviceid === deviceid) {
+                                        if (group.groupname.indexOf('-') == -1) {
+                                            groupName = group.groupname;
+                                        } else {
+                                            groupName = group.groupname.split('-')[1];
+                                        }
+                                        break;
+                                    }
+                                    if (groupName != '') { break };
+                                }
+                            }
+                        }
+                        return h('span', {}, groupName)
+                    }
+                },
+                {
+                    title: '设备类型',
+                    key: 'devicetype',
+                    width: 85,
+                    render: function(h, params) {
+                        var devicetype = params.row.devicetype;
+                        var deviceTypes = vstore.state.deviceTypes;
+                        for (var i = 0; i < deviceTypes.length; i++) {
+                            var item = deviceTypes[i];
+                            if (item.devicetypeid == devicetype) {
+                                return h('span', {}, item.typename);
+                            }
+                        }
+                    }
+                },
+                {
+                    title: '掉线时间',
+                    width: 150,
+                    render: function(h, params) {
+                        var updatetime = params.row.updatetime;
+                        var updatetimeStr = '未上报';
+                        if (updatetime > 0) {
+                            updatetimeStr = DateFormat.longToDateTimeStr(updatetime, 0);
+                        }
+                        return h('span', {}, updatetimeStr)
+                    }
+                },
+                {
+                    title: '掉线时长',
+                    width: 150,
+                    render: function(h, params) {
+                        var updatetime = params.row.updatetime;
+                        return h('span', {}, utils.timeStamp(Date.now() - updatetime))
+                    }
+                },
+                { title: '备注', key: 'remark', },
+            ],
+            tableData: [],
+            tableHeight: 300,
+        },
+        methods: {
+            onClickQuery: function() {
+                if (this.checkedDevice.length == 0) {
+                    this.$Message.error("请选择设备");
+                    return;
+                }
+                this.loading = true;
+                var url = myUrls.reportOffline(),
+                    me = this;
+                var data = {
+                    deviceids: [],
+                    offlinehours: Number(this.days)
+                }
+                this.checkedDevice.forEach(function(group) {
+                    if (!group.children) {
+                        data.deviceids.push(group.deviceid);
+                    }
+                });
+
+                utils.sendAjax(url, data, function(respData) {
+                    me.loading = false;
+                    if (respData.status == 0) {
+                        me.tableData = respData.records;
+                    } else {
+                        me.$Message.error("查询失败");
+                    }
+                });
+            },
+            clean: function() {
+                this.sosoValue = '';
+                this.checkedDevice = [];
+                this.cleanSelected(this.groupslist);
+                this.treeData = this.groupslist;
+            },
+            cleanSelected: function(treeDataFilter) {
+                var that = this;
+                for (var i = 0; i < treeDataFilter.length; i++) {
+                    var item = treeDataFilter[i];
+                    if (item != null) {
+                        item.checked = false;
+                        if (item.children && item.children.length > 0) {
+                            that.cleanSelected(item.children);
+                        }
+                    }
+                }
+            },
+            calcTableHeight: function() {
+                var wHeight = window.innerHeight;
+                this.tableHeight = wHeight - 125;
+            },
+            getTreeGroupslist: function(groupslist) {
+                var treeLists = [];
+                groupslist.forEach(function(group) {
+                    var children = []
+                    var treeItem = {
+                        expand: false,
+                        title: group.groupname,
+                        children: children,
+                        firstLetter: group.firstLetter,
+                        pinyin: group.pinyin
+                    }
+                    if (group.devices && group.devices.length != 0) {
+                        group.devices.forEach(function(device) {
+                            children.push({
+                                title: device.title,
+                                deviceid: device.deviceid,
+                                firstLetter: device.firstLetter,
+                                pinyin: device.pinyin
+                            })
+                        });
+                    }
+                    if (children.length) {
+                        treeLists.push(treeItem);
+                    }
+                });
+                return [{
+                    title: "所有设备",
+                    children: treeLists,
+                    expand: true,
+                }];
+            }
+        },
+        mounted: function() {
+            var me = this;
+            this.groupslist = this.getTreeGroupslist(groupslist);
+            this.treeData = this.groupslist;
+            window.onresize = function() {
+                me.calcTableHeight();
+            };
+        },
+        created: function() {
+            this.checkedDevice = [];
+        },
     })
 }
 
@@ -2174,6 +2356,7 @@ var reportForm = {
                     icon: 'md-stats',
                     children: [
                         { title: '综合统计', name: 'reportOnlineSummary', icon: 'md-sunny' },
+                        { title: '掉线报表', name: 'dropLineReport', icon: 'ios-git-pull-request' },
                     ]
                 },
             ]
@@ -2236,6 +2419,9 @@ var reportForm = {
                         break;
                     case 'reportonlinesummary.html':
                         reportOnlineSummary(groupslist);
+                        break;
+                    case 'droplinereport.html':
+                        dropLineReport(groupslist);
                         break;
                 }
             });
