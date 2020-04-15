@@ -1928,15 +1928,18 @@ function reportOnlineSummary(groupslist) {
     new Vue({
         i18n: utils.getI18n(),
         el: "#reportonlinesummary",
+        mixins: [treeMixin],
         data: {
+            multiple: false,
             createrToUser: userName,
-            isShowMatchDev: false,
             userlists: userlists,
+            groupslist: [],
             iconState: 'ios-arrow-down',
             columns: [
+                { type: 'index', width: 60 },
                 { title: '设备序号', key: 'deviceid', },
-                { title: '设备名称', key: 'devicename', },
-                { title: '卡号', key: 'simnum', },
+                { title: '设备名称', key: 'devicename', sortable: true, },
+                { title: '卡号', key: 'simnum', sortable: true },
                 {
                     title: '分组',
                     key: 'groupid',
@@ -1965,6 +1968,7 @@ function reportOnlineSummary(groupslist) {
                 {
                     title: '设备类型',
                     key: 'devicetype',
+                    sortable: true,
                     width: 85,
                     render: function(h, params) {
                         var devicetype = params.row.devicetype;
@@ -2042,7 +2046,7 @@ function reportOnlineSummary(groupslist) {
         methods: {
             onClickQuery: function() {
                 if (userlists.indexOf(this.createrToUser) == -1) {
-                    this.$Message.error(me.$t("message.selectCorrectAccount"));
+                    this.$Message.error(this.$t("message.selectCorrectAccount"));
                     return;
                 }
                 this.totalVehicle = 0;
@@ -2056,6 +2060,7 @@ function reportOnlineSummary(groupslist) {
                 utils.sendAjax(url, { username: this.createrToUser }, function(respData) {
                     me.loading = false;
                     if (respData.status === 0) {
+                        if (respData.records == null) return;
                         me.tableData = respData.records;
                         me.totalVehicle = me.tableData.length;
                         me.tableData.forEach(function(item) {
@@ -2083,61 +2088,124 @@ function reportOnlineSummary(groupslist) {
                 var wHeight = window.innerHeight;
                 this.tableHeight = wHeight - 167;
             },
-            selectedCmd: function(item) {
-                var me = this;
-                setTimeout(function() {
-                    me.isShowMatchDev = false;
-                    me.createrToUser = item;
-                }, 100)
-            },
-            sosoValueChange: function() {
-                var me = this;
-                var value = this.createrToUser.toLowerCase();
-
-                if (this.timeoutIns != null) {
-                    clearTimeout(this.timeoutIns);
-                }
-
-                if (!value.trim()) {
-                    this.userlists = userlists;
-                    return;
-                }
-
-                this.timeoutIns = setTimeout(function() {
-                    me.filterMethod(value);
-                }, 100);
-            },
-            focus: function() {
-                this.isShowMatchDev = true;
-            },
-            blur: function() {
-                var me = this
-                setTimeout(function() {
-                    me.isShowMatchDev = false;
-                }, 300)
-            },
-            filterMethod: function(value) {
-                var list = [];
-                userlists.forEach(function(itme) {
-                    if (itme.toLowerCase().indexOf(value) != -1) {
-                        list.push(itme);
+            queryUsersTree: function(callback) {
+                var url = myUrls.queryUsersTree(),
+                    me = this;
+                utils.sendAjax(url, { username: userName }, function(respData) {
+                    if (respData.status == 0) {
+                        callback([me.castUsersTreeToDevicesTree(respData.rootuser)]);
+                    } else {
+                        me.$Message.error('查询失败')
                     }
-                })
-                this.userlists = list;
+                });
+            },
+            castUsersTreeToDevicesTree: function(devicesTreeRecord) {
+                var me = this;
+                var iViewTree = {
+                    render: function(h, params) {
+                        var username = params.data.title;
+                        return h('span', {
+                            on: {
+                                'click': function() {
+                                    me.createrToUser = username;
+                                    me.sosoValue = username;
+                                }
+                            },
+                            style: {
+                                cursor: 'pointer',
+                                color: (me.createrToUser == username) ? '#2D8CF0' : '#000'
+                            }
+                        }, [
+                            h('span', [
+                                h('Radio', {
+                                    props: {
+                                        value: username == me.createrToUser
+                                    },
+                                    style: {
+                                        marginRight: '4px',
+                                        marginLeft: '4px'
+                                    }
+                                }),
+                                h('span', params.data.title)
+                            ]),
+                        ])
+                    },
+                    expand: true,
+                };
+                if (devicesTreeRecord != null) {
+                    var username = devicesTreeRecord.user.username;
+                    var subusers = devicesTreeRecord.subusers;
+                    iViewTree.title = username;
+                    if (username != null && subusers != null && subusers.length > 0) {
+                        var subDevicesTreeRecord = this.doCastUsersTreeToDevicesTree(subusers);
+                        iViewTree.children = subDevicesTreeRecord;
+
+                    }
+                }
+                return iViewTree;
+            },
+            doCastUsersTreeToDevicesTree: function(usersTrees) {
+                var devicesTreeRecord = [],
+                    me = this;
+                if (usersTrees != null && usersTrees.length > 0) {
+                    for (var i = 0; i < usersTrees.length; ++i) {
+                        var usersTree = usersTrees[i];
+                        var username = usersTree.user.username;
+                        var subusers = usersTree.subusers;
+                        var currentsubDevicesTreeRecord = {
+                            render: function(h, params) {
+                                var username = params.data.title;
+                                return h('span', {
+                                    on: {
+                                        'click': function() {
+                                            me.createrToUser = username;
+                                            me.sosoValue = username;
+                                        }
+                                    },
+                                    style: {
+                                        cursor: 'pointer',
+                                        color: (me.createrToUser == username) ? '#2D8CF0' : '#000'
+                                    }
+                                }, [
+                                    h('span', [
+                                        h('Radio', {
+                                            props: {
+                                                value: username == me.createrToUser
+                                            },
+                                            style: {
+                                                marginRight: '4px',
+                                                marginLeft: '4px'
+                                            }
+                                        }),
+                                        h('span', params.data.title)
+                                    ]),
+                                ])
+                            },
+                        };
+                        currentsubDevicesTreeRecord.title = username;
+                        if (username != null && subusers != null && subusers.length > 0) {
+                            var subDevicesTreeRecord = this.doCastUsersTreeToDevicesTree(subusers);
+                            currentsubDevicesTreeRecord.children = subDevicesTreeRecord;
+                        }
+                        devicesTreeRecord.push(currentsubDevicesTreeRecord);
+                    }
+                }
+                return devicesTreeRecord;
             },
         },
         watch: {
-            isShowMatchDev: function() {
-                if (!this.isShowMatchDev) {
-                    this.iconState = "ios-arrow-down";
-                } else {
-                    this.iconState = "ios-arrow-up";
-                }
-            },
+            sosoValue: function(newVal) {
+                this.createrToUser = newVal;
+            }
         },
         mounted: function() {
             var me = this;
             this.calcTableHeight();
+            this.sosoValue = userName;
+            this.queryUsersTree(function(usersTree) {
+                me.groupslist = usersTree;
+                me.treeData = usersTree;
+            });
             window.onresize = function() {
                 me.calcTableHeight();
             }
@@ -2156,6 +2224,7 @@ function dropLineReport(groupslist) {
             days: '1',
             groupslist: [],
             columns: [
+                { type: 'index', width: 60 },
                 { title: '设备序号', key: 'deviceid', },
                 { title: '设备名称', key: 'devicename', },
                 { title: '卡号', key: 'simnum', },

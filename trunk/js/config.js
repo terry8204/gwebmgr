@@ -535,6 +535,10 @@ var myUrls = {
     reportOffline: function() {
         return this.apihosts + 'webapi?action=reportoffline&token=' + token;
     },
+    // 查询 queryuserstree
+    queryUsersTree: function() {
+        return this.apihosts + 'webapi?action=queryuserstree&token=' + token;
+    },
 }
 
 

@@ -1,17 +1,13 @@
 <div id="reportonlinesummary">
     <Row style="margin: 10px;">
         <div style="height: 100%;text-align:right;line-height:32px;float: left;">选择账号 : &nbsp;</div>
-        <div style="float: left;position: relative;width: 200px;">
-            <div class="search-wrapper">
-                <i-input v-model.trim="createrToUser" :icon="iconState" @on-change="sosoValueChange" @on-blur="blur" @on-focus="focus" @on-click="focus"></i-input>
+        <div style="float: left;position: relative;width: 300px;line-height:32px;">
+            <div class="search-wrapper" v-click-outside.capture="onClickOutside">
+                <i-input v-model.trim="sosoValue" icon="ios-search-outline" @on-change="sosoValueChange" @on-blur="blur" @on-focus="focus" @on-click="focus" :placeholder="placeholder"></i-input>
                 <transition name="fade">
-                    <ul class="search-item-wrapper" v-show="isShowMatchDev" style="cursor: pointer;">
-                        <li v-for="item in userlists" style="padding:5px 10px;" @click="selectedCmd(item)" :class="{'ivu-select-item-focus':item == createrToUser}">
-                            <div :value="item" :key="item">
-                                <span style="cursor: pointer;">{{ item }}</span>
-                            </div>
-                        </li>
-                    </ul>
+                    <div class="search-item-wrapper" v-show="isShowMatchDev">
+                        <Tree :data="treeData" @on-check-change="onCheckedDevice"></Tree>
+                    </div>
                 </transition>
             </div>
         </div>
