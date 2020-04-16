@@ -2504,6 +2504,7 @@ function deviceOnlineDaily(groupslist) {
                     key: 'onlineRate',
                     title: '在线率',
                     fixed: 'right',
+                    sortable: true,
                     width: 120,
                 });
                 this.columns = columns;
@@ -2561,6 +2562,7 @@ function groupsOnlineDaily(groupslist) {
                 },
                 {
                     title: '日在线率',
+                    sortable: true,
                     render: function(h, params) {
                         var onlinecount = params.row.onlinecount;
                         var totalcount = params.row.totalcount;
@@ -2704,7 +2706,7 @@ function deviceMonthOnlineDaily(groupslist) {
                         return h('span', {}, onlinecount + "/" + params.row.daysstatus.length);
                     }
                 },
-                { title: '在线率', key: 'onlineRate' },
+                { title: '在线率', key: 'onlineRate', sortable: true },
                 {
                     title: "在线日期",
                     render: function(h, params) {
@@ -2910,7 +2912,7 @@ var reportForm = {
                     children: [
                         { title: '综合统计', name: 'reportOnlineSummary', icon: 'md-sunny' },
                         { title: '掉线报表', name: 'dropLineReport', icon: 'ios-git-pull-request' },
-                        { title: '车辆每日在线率', name: 'deviceOnlineDaily', icon: 'md-bulb' },
+                        { title: '车辆日在线率', name: 'deviceOnlineDaily', icon: 'md-bulb' },
                         { title: '车队日在线率', name: 'groupsOnlineDaily', icon: 'md-contacts' },
                         { title: '车辆月在线率', name: 'deviceMonthOnlineDaily', icon: 'md-contrast' },
                     ]
