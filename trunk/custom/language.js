@@ -508,7 +508,7 @@
                 phoneAlarm: "电话报警",
                 rechargeRecords: "充值记录",
                 selectTime: "选择时间",
-                selectDev: "选择车俩",
+                selectDev: "选择车辆",
                 toDay: "今天",
                 yesterDay: "昨天",
                 threeDays: "最近三天",

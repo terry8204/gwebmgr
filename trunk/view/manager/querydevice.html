@@ -18,22 +18,17 @@
             <li style="float:right;width:auto;">
                 <i-button @click="expireNotifyTime(30)">一个月内过期</i-button>
             </li>
-     
+
             <li style="float:right;width:auto;">
                 <i-button @click="expireNotifyTime(7)">7天内过期</i-button>
             </li>
         </ul>
 
         <div class="table-wraper">
-            <i-table border 
-                ref="table" 
-                :columns="columns" 
-                :data="tableData" 
-                height="520" 
-                :loading="loading"></i-table>
+            <i-table border ref="table" :columns="columns" :data="tableData" height="520" :loading="loading"></i-table>
         </div>
         <div class="my-page" style="margin: 5px 0;">
-            <Page :total="total" :page-size="10" :current="currentIndex"  @on-change="changePage"></Page>
+            <Page :total="total" :page-size="10" :current="currentIndex" @on-change="changePage"></Page>
         </div>
 
         <Modal v-model="modal" width="900" title="编辑设备">
@@ -42,7 +37,7 @@
                     <i-col span="4" style="height: 100%;text-align:right;line-height:32px;"><i style="color: red;display: inline-block;">*</i>&nbsp;选择账号 : &nbsp;</i-col>
                     <i-col span="8">
                         <div class="search-wrapper">
-                            <i-input v-model.trim="createrToUser"  :icon="iconState" @on-change="sosoValueChange" @on-blur="blur" @on-focus="focus" @on-click="focus"></i-input>
+                            <i-input v-model.trim="createrToUser" :icon="iconState" @on-change="sosoValueChange" @on-blur="blur" @on-focus="focus" @on-click="focus"></i-input>
                             <transition name="fade">
                                 <ul class="search-item-wrapper" v-show="isShowMatchDev" style="cursor: pointer;">
                                     <li v-for="item in userlists" style="padding:5px 10px;" @click="selectedCmd(item)" :class="{'ivu-select-item-focus':item == createrToUser}">
@@ -65,24 +60,24 @@
                     <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">SIM : &nbsp;</i-col>
                     <i-col span="8">
                         <i-input v-model.trim.number="simnum"></i-input>
-                    </i-col>  
+                    </i-col>
                 </Row>
                 <Row style="margin: 10px 0">
                     <i-col span="4" style="height: 100%;text-align:right;line-height:32px;"><i style="color: red;display: inline-block;">*</i>&nbsp;{{$t("alarm.overdueTime")}} : &nbsp;</i-col>
                     <i-col span="8">
                         <date-picker type="date" v-model="overduetime" :disabled="disabled"></date-picker>
                     </i-col>
-    
+
                     <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;{{$t("alarm.devName")}} : &nbsp;</i-col>
                     <i-col span="8">
                         <i-input v-model.trim="devicename"></i-input>
                     </i-col>
-                    
+
                 </Row>
-    
+
                 <Row style="margin: 10px 0">
                     <i-col span="4" style="height: 100%;text-align:right;line-height:32px;"><i style="color: red;display: inline-block;">*</i>&nbsp;{{$t("user.devType")}} : &nbsp;</i-col>
-                    <i-col span="8">  
+                    <i-col span="8">
                         <!-- devicetype -->
                         <i-select v-model="devicetype" :disabled="disabled">
                             <i-option v-for="item in deviceTypeList" :value="item.value" :key="item.value">{{ item.label }}</i-option>
@@ -90,12 +85,12 @@
                     </i-col>
                     <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">{{$t("alarm.devNum")}} : &nbsp;</i-col>
                     <i-col span="8">
-                            <i-input v-model.trim="deviceid" disabled></i-input>
+                        <i-input v-model.trim="deviceid" disabled></i-input>
                     </i-col>
-                    
+
                 </Row>
-    
-                <Row style="margin: 10px 0"> 
+
+                <Row style="margin: 10px 0">
                     <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;网络类型 : &nbsp;</i-col>
                     <i-col span="8">
                         <i-select v-model="teltype">
@@ -103,16 +98,15 @@
                             <i-option value="2">3G</i-option>
                             <i-option value="3">4G</i-option>
                         </i-select>
-                    </i-col> 
+                    </i-col>
                     <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;转发地址 : &nbsp;</i-col>
                     <i-col span="8">
                         <i-input v-model.trim="forwardurl"></i-input>
                     </i-col>
                 </Row>
-    
+
                 <Row style="margin: 10px 0">
-                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">{{$t("device.reportCount")}}
-                        : &nbsp;</i-col>
+                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">{{$t("device.reportCount")}} : &nbsp;</i-col>
                     <i-col span="8">
                         <i-input v-model.trim="reportedpoint"></i-input>
                     </i-col>
@@ -121,7 +115,7 @@
                         <i-input v-model.trim="totalpoint"></i-input>
                     </i-col>
                 </Row>
-    
+
                 <Row style="margin: 10px 0">
                     <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">{{$t("device.isUse")}} : &nbsp;</i-col>
                     <i-col span="8">
@@ -135,25 +129,25 @@
                         <i-input v-model.trim="monitor"></i-input>
                     </i-col>
                 </Row>
-               
-    
+
+
                 <Row style="margin: 10px 0">
                     <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;下级编辑 : &nbsp;</i-col>
                     <i-col span="8">
-                        <i-select v-model="allowedit" :disabled="isAlloweditDisabled">  
+                        <i-select v-model="allowedit" :disabled="isAlloweditDisabled">
                             <i-option value="0">{{$t("user.ban")}}</i-option>
-                            <i-option value="1">{{$t("user.allow")}}</i-option> 
+                            <i-option value="1">{{$t("user.allow")}}</i-option>
                         </i-select>
                     </i-col>
                     <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">{{$t("device.allowLogin")}} : &nbsp;</i-col>
                     <i-col span="8">
                         <i-select v-model="loginenable">
                             <i-option value="0">{{$t("user.ban")}}</i-option>
-                            <i-option value="1">{{$t("user.allow")}}</i-option>     
+                            <i-option value="1">{{$t("user.allow")}}</i-option>
                         </i-select>
-                    </i-col>     
-                </Row>    
-            
+                    </i-col>
+                </Row>
+
                 <Row style="margin: 10px 0">
                     <i-col span="6" :offset="7">
                         <i-button style="width: 100%" @click="handleSubmit">{{$t("bgMgr.submit")}}</i-button>
@@ -167,72 +161,62 @@
         </Modal>
     </div>
     <script>
-
-vueInstanse = new Vue({
-            el:"#querydev",
+        vueInstanse = new Vue({
+            el: "#querydev",
             i18n: utils.getI18n(),
-            data:{
-                isQuery:false,
-                userType:Cookies.get('userType'),
-                modal:false,
-                queryParameter:"",
-                loading:true,
-                total:0,
-                currentIndex:1,
-                teltype:'1',
-                columns: [
-                    {
+            data: {
+                isQuery: false,
+                userType: Cookies.get('userType'),
+                modal: false,
+                queryParameter: "",
+                loading: true,
+                total: 0,
+                currentIndex: 1,
+                teltype: '1',
+                columns: [{
                         title: vRoot.$t("alarm.devName"),
                         key: 'devicename',
-                    },
-                    {
+                    }, {
                         title: vRoot.$t("alarm.devNum"),
                         key: 'deviceid'
-                    },
-                    {
+                    }, {
                         title: vRoot.$t("user.devType"),
-                        render:function(h,params){
+                        render: function(h, params) {
                             var row = params.row;
                             var devType = "";
-                            vstore.state.deviceTypes.forEach(function (item) { 
+                            vstore.state.deviceTypes.forEach(function(item) {
                                 var label = item.typename;
-                                if(item.remark){
-                                    label += "("+item.remark+")";
+                                if (item.remark) {
+                                    label += "(" + item.remark + ")";
                                 }
-                                if(item.devicetypeid == row.devicetype){
+                                if (item.devicetypeid == row.devicetype) {
                                     devType = label;
                                 }
                             })
-                            return h('span',{},devType)
+                            return h('span', {}, devType)
                         }
-                    },
-                    {
+                    }, {
                         title: vRoot.$t("monitor.phoneNumber"),
                         key: 'simnum'
-                    },
-                    {
-                        width:100,
-                        title:  vRoot.$t("bgMgr.bindpwd"),
+                    }, {
+                        width: 100,
+                        title: vRoot.$t("bgMgr.bindpwd"),
                         key: 'bindpwd',
                     },
 
                     {
                         title: vRoot.$t("bgMgr.addTime"),
                         key: 'createtimestr'
-                    },
-                    {
+                    }, {
                         title: vRoot.$t("monitor.expireTime"),
                         key: 'overduetimestr'
-                    },
-                    {
-                        title: vRoot.$t("bgMgr.creater"),  
+                    }, {
+                        title: vRoot.$t("bgMgr.creater"),
                         key: 'creater',
-                    },
-                    {
+                    }, {
                         title: vRoot.$t("user.grouping"),
                         key: 'groupname'
-                    },
-                    {
+                    }, {
                         title: vRoot.$t("bgMgr.action"),
                         key: 'action',
                         width: 240,
@@ -258,29 +242,29 @@ vueInstanse = new Vue({
                                         }
                                     }
                                 }, vRoot.$t("bgMgr.edit")),
-                                 h('Poptip', {
+                                h('Poptip', {
                                     props: {
                                         confirm: true,
-                                        title: vRoot.$t("message.confirmDel")  
+                                        title: vRoot.$t("message.confirmDel")
                                     },
                                     style: {
                                         marginRight: '5px'
                                     },
                                     on: {
-                                        'on-ok': function () {
+                                        'on-ok': function() {
                                             vueInstanse.handleDelete(params.row.deviceid);
                                         }
                                     }
-                                },[
+                                }, [
                                     h('Button', {
                                         props: {
                                             type: 'error',
                                             size: 'small',
                                             disabled: Cookies.get('userType') !== '0'
 
-                                        }},vRoot.$t("bgMgr.delete")) 
-                                 ]
-                                ) ,
+                                        }
+                                    }, vRoot.$t("bgMgr.delete"))
+                                ]),
                                 h('Button', {
                                     props: {
                                         type: 'primary',
@@ -295,85 +279,85 @@ vueInstanse = new Vue({
                                         }
                                     }
                                 }, vRoot.$t("user.resetPwd")),
-                                
+
                             ]);
                         }
                     }
                 ],
-                editDeviceIndex:null,
-                queryTableData:[],
+                editDeviceIndex: null,
+                queryTableData: [],
                 tableData: [],
-                recordsList:[],
-                groupsList:[],
-                
-                iconState:"ios-arrow-down",
-                deviceid:"",
-                devicename:"",
-                devicetype:"",
-                simnum:"",
-                overduetime:"",
-                loginenable:"1",
-                deviceenable:"0",
-                deviceTypeList:[],
-                reportedpoint:0,
-                totalpoint:1500,
-                groupid:'',
-                companyid:'',
-                forwardurl:"",
-                allowedit:'0',
-                createrToUser:"",
-                userlists:[],
-                isShowMatchDev:false,
-                monitor:"",
+                recordsList: [],
+                groupsList: [],
+
+                iconState: "ios-arrow-down",
+                deviceid: "",
+                devicename: "",
+                devicetype: "",
+                simnum: "",
+                overduetime: "",
+                loginenable: "1",
+                deviceenable: "0",
+                deviceTypeList: [],
+                reportedpoint: 0,
+                totalpoint: 1500,
+                groupid: '',
+                companyid: '',
+                forwardurl: "",
+                allowedit: '0',
+                createrToUser: "",
+                userlists: [],
+                isShowMatchDev: false,
+                monitor: "",
             },
             methods: {
-                handlerClickQuery () {
+                handlerClickQuery() {
                     var self = this;
                     var queryTableData = [];
                     var queryParameterLowerCase = this.queryParameter.toLowerCase();
-                    if (!self.queryParameter){
+                    if (!self.queryParameter) {
                         return;
                     };
                     this.isQuery = false;
-                    this.recordsList.forEach(function (record) {
+                    this.recordsList.forEach(function(record) {
                         var deviceid = record.deviceid;
                         var devicename = record.devicename;
                         var monitor = record.monitor;
                         var creater = record.creater;
                         if (
-                            creater.indexOf(self.queryParameter) != -1 || 
-                            devicename.indexOf(self.queryParameter) != -1 || 
+                            creater.indexOf(self.queryParameter) != -1 ||
+                            devicename.indexOf(self.queryParameter) != -1 ||
                             deviceid.indexOf(self.queryParameter) != -1 ||
                             record.pinYin.indexOf(queryParameterLowerCase) != -1 ||
                             record.firstLetter.indexOf(queryParameterLowerCase) != -1 ||
-                            (record.forwardurl && record.forwardurl.indexOf(queryParameterLowerCase) != -1 )||
-                            (monitor && (monitor.indexOf(self.queryParameter) != -1 ))
-                        ){      
+                            (record.forwardurl && record.forwardurl.indexOf(queryParameterLowerCase) != -1) ||
+                            (monitor && (monitor.indexOf(self.queryParameter) != -1))
+                        ) {
                             queryTableData.push(record);
                         }
                     });
 
                     this.currentIndex = 1;
                     this.queryTableData = queryTableData;
-                    this.tableData = this.queryTableData.slice(0,10);
+                    this.tableData = this.queryTableData.slice(0, 10);
                     this.total = this.queryTableData.length;
 
                 },
-                expireNotifyTime:function(dayNumber){
+                expireNotifyTime: function(dayNumber) {
                     this.isQuery = true;
                     var queryTableData = [];
-                    
-                    this.recordsList.forEach(function (record) {
-                        if(record.expirenotifytime > 0){
+
+                    this.recordsList.forEach(function(record) {
+                        if (record.expirenotifytime > 0) {
                             var time = record.expirenotifytime - Date.now();
                             var days = parseInt(time / (1000 * 60 * 60 * 24));
-                            if(dayNumber == 180){
-                                if(days < 0){
+                            if (dayNumber == 180) {
+                                if (days < 0) {
                                     queryTableData.push(record);
                                 }
-                            }else{
-                                if(days >= 0){
-                                    if(days <= dayNumber){
+                            } else {
+                                if (days >= 0) {
+                                    if (days <= dayNumber) {
                                         queryTableData.push(record);
                                     }
                                 }
@@ -383,15 +367,15 @@ vueInstanse = new Vue({
 
                     this.currentIndex = 1;
                     this.queryTableData = queryTableData;
-                    this.tableData = this.queryTableData.slice(0,10);
+                    this.tableData = this.queryTableData.slice(0, 10);
                     this.total = this.queryTableData.length;
                 },
-                filterDataInfo:function(devList){
+                filterDataInfo: function(devList) {
                     var me = this;
                     var data = [];
-                    devList.forEach(function (dev) { 
-                        dev.createtimestr = DateFormat.longToDateTimeStr(dev.createtime,0);
-                        dev.overduetimestr = DateFormat.longToDateTimeStr(dev.expirenotifytime,0);
+                    devList.forEach(function(dev) {
+                        dev.createtimestr = DateFormat.longToDateTimeStr(dev.createtime, 0);
+                        dev.overduetimestr = DateFormat.longToDateTimeStr(dev.expirenotifytime, 0);
                         dev.groupname = me.getGroupName(dev.groupid);
                         dev.pinYin = __pinyin.getPinyin(dev.devicename);
                         dev.firstLetter = __pinyin.getFirstLetter(dev.devicename);
@@ -399,160 +383,168 @@ vueInstanse = new Vue({
                     });
                     return data;
                 },
-                resetDevicePwd:function(index){
+                resetDevicePwd: function(index) {
                     var me = this;
                     var deviceid = this.tableData[index].deviceid;
                     var url = myUrls.resetDeviceLoginPwd();
-                    utils.sendAjax(url,{deviceid:deviceid},function (resp) { 
-                        if(resp.status === 0){
-                            me.$Message.success(( isZh ? "密码重置为:" : "Password reset to :") + resp.newpass);
-                        }else{
-                            me.$Message.error( isZh ? "密码重置失败" : "Password Reset Failed");
+                    utils.sendAjax(url, {
+                        deviceid: deviceid
+                    }, function(resp) {
+                        if (resp.status === 0) {
+                            me.$Message.success((isZh ? "密码重置为:" : "Password reset to :") + resp.newpass);
+                        } else {
+                            me.$Message.error(isZh ? "密码重置失败" : "Password Reset Failed");
                         }
                     });
                 },
-                getGroupName:function (groupId) { 
+                getGroupName: function(groupId) {
                     var groupName = "";
-                    if(this.allGroups[groupId]!==undefined){
+                    if (this.allGroups[groupId] !== undefined) {
                         groupName = this.allGroups[groupId].groupname;
                     }
                     return groupName;
                 },
-                getDeviceList:function(){
+                getDeviceList: function() {
                     var me = this;
                     var url = myUrls.queryDeviceListWithGroupInfo();
-                    utils.sendAjax(url,{},function(resp){
+                    utils.sendAjax(url, {}, function(resp) {
                         me.loading = false;
-                        if(resp.status == 0 && resp.devices != null){   
-                            resp.groups.forEach(function(item){
+                        if (resp.status == 0 && resp.devices != null) {
+                            resp.groups.forEach(function(item) {
                                 me.allGroups[item.groupid] = item;
-                            });    
+                            });
                             me.recordsList = me.filterDataInfo(resp.devices);
-                            me.tableData = me.recordsList.slice(0,10);
+                            me.tableData = me.recordsList.slice(0, 10);
                             me.total = me.recordsList.length;
 
-                        }else{
+                        } else {
                             me.$Message.error(resp.cause);
                         }
                     });
                 },
-                handleDelete:function(deviceid){
+                handleDelete: function(deviceid) {
                     var me = this;
                     var url = myUrls.deleteDevice();
-                    var data = {deviceid:deviceid};
-                    utils.sendAjax(url,data,function (resp) { 
-                        if(resp.status == 0){
+                    var data = {
+                        deviceid: deviceid
+                    };
+                    utils.sendAjax(url, data, function(resp) {
+                        if (resp.status == 0) {
+                            rootuser = null;
                             isNeedRefresh = true;
-                            if(deviceid == globalDeviceId){
+                            if (deviceid == globalDeviceId) {
                                 globalDeviceId = "";
                                 vRoot.$store.commit('currentDeviceId', "");
                             }
                             me.$Message.success(me.$t("message.deleteSucc"));
-                            me.tableData.forEach(function (itme,index) { 
-                                if(itme.deviceid == deviceid){
-                                    me.$delete(me.tableData,index);
+                            me.tableData.forEach(function(itme, index) {
+                                if (itme.deviceid == deviceid) {
+                                    me.$delete(me.tableData, index);
                                 }
                             });
 
-                            me.recordsList.forEach(function (itme,index) { 
-                                if(itme.deviceid == deviceid){
-                                    me.$delete(me.recordsList,index);
+                            me.recordsList.forEach(function(itme, index) {
+                                if (itme.deviceid == deviceid) {
+                                    me.$delete(me.recordsList, index);
                                 }
                             });
 
                             me.total = me.recordsList.length;
-                            me.tableData = me.recordsList.slice( me.currentIndex - 1 , 10);
-                        }else{
+                            me.tableData = me.recordsList.slice(me.currentIndex - 1, 10);
+                        } else {
                             me.$Message.error(me.$t("message.deleteFail"));
                         }
                         me.modal = false;
-                       
+
                     });
-                }
-                ,
-                exportDevice:function(){
-                    if(this.tableData.length){
+                },
+                exportDevice: function() {
+                    if (this.tableData.length) {
                         this.$refs.table.exportCsv({
                             filename: 'deviceids',
                             columns: this.columns.filter((col, index) => index < 3),
                             data: this.tableData,
-                            quoted:true,
+                            quoted: true,
                         });
                     }
                 },
 
-                handleSubmit:function(){
+                handleSubmit: function() {
                     var me = this;
                     var url = myUrls.editDevice();
-                    if(this.overduetime == ""){
+                    if (this.overduetime == "") {
                         me.$Message.error(me.$t("message.plSelectTime"));
                         return;
                     }
 
                     var data = {
-                        deviceid:this.deviceid,
-                        devicetype:this.devicetype,
-                        expirenotifytime:new Date(this.overduetime).getTime(),
-                        loginenable:Number(this.loginenable),
-                        deviceenable:Number(this.deviceenable),
-                        allowedit:Number(this.allowedit)
-                    };      
-                    
-                    if(this.devicename){ data.devicename = this.devicename;};
-                    if(this.teltype){ data.teltype = Number(this.teltype);};
-                    
+                        deviceid: this.deviceid,
+                        devicetype: this.devicetype,
+                        expirenotifytime: new Date(this.overduetime).getTime(),
+                        loginenable: Number(this.loginenable),
+                        deviceenable: Number(this.deviceenable),
+                        allowedit: Number(this.allowedit)
+                    };
 
-                    if(this.simnum !== ""){
+                    if (this.devicename) {
+                        data.devicename = this.devicename;
+                    };
+                    if (this.teltype) {
+                        data.teltype = Number(this.teltype);
+                    };
+
+
+                    if (this.simnum !== "") {
                         data.simnum = this.simnum;
                     };
-                    if(this.groupid !== "" && this.groupsList.length){
+                    if (this.groupid !== "" && this.groupsList.length) {
                         data.groupid = this.groupid;
-                    }else{
+                    } else {
                         data.groupid = 0;
                     };
 
-                    if( this.reportedpoint == 0 || this.reportedpoint && !isNaN(this.reportedpoint)){
+                    if (this.reportedpoint == 0 || this.reportedpoint && !isNaN(this.reportedpoint)) {
                         data.reportedpoint = Number(this.reportedpoint);
                     }
 
-                    if(this.totalpoint && !isNaN(this.totalpoint)){
+                    if (this.totalpoint && !isNaN(this.totalpoint)) {
                         data.totalpoint = Number(this.totalpoint);
                     }
 
                     data.monitor = this.monitor;
-                    
+
                     this.forwardurl && (data.forwardurl = this.forwardurl);
 
-                    if(userlists.indexOf(this.createrToUser) == -1){
-                        me.$Message.error(me.$t("message.selectCorrectAccount"));  
+                    if (userlists.indexOf(this.createrToUser) == -1) {
+                        me.$Message.error(me.$t("message.selectCorrectAccount"));
                         return;
                     }
-                    
-                    if(this.userType < 3 ){
-                        data.creater = this.createrToUser;
-                    }else{
-                        data.creater = userName;
-                    }     
 
-                    utils.sendAjax(url,data,function (resp) { 
-                        if(resp.status == 0){
+                    if (this.userType < 3) {
+                        data.creater = this.createrToUser;
+                    } else {
+                        data.creater = userName;
+                    }
+
+                    utils.sendAjax(url, data, function(resp) {
+                        if (resp.status == 0) {
                             editObject.teltype = String(data.teltype);
-                            var newData = Object.assign(editObject,data);
-                                newData.overduetimestr = DateFormat.longToDateTimeStr(data.expirenotifytime,0);
-                            me.tableData[me.editDeviceIndex] = newData; 
-                            utils.changeSingleItemData(me.recordsList,newData,'deviceid');
-                            isNeedRefresh = true;                     
+                            var newData = Object.assign(editObject, data);
+                            newData.overduetimestr = DateFormat.longToDateTimeStr(data.expirenotifytime, 0);
+                            me.tableData[me.editDeviceIndex] = newData;
+                            utils.changeSingleItemData(me.recordsList, newData, 'deviceid');
+                            isNeedRefresh = true;
                             me.$Message.success(me.$t("message.changeSucc"));
-                        }else if(resp.status = -1){
-                            if( resp.cause!== null && resp.cause.indexOf("token")!=-1){
+                        } else if (resp.status = -1) {
+                            if (resp.cause !== null && resp.cause.indexOf("token") != -1) {
                                 window.location.href = "index.html";
-                            }else{
+                            } else {
                                 me.$Message.error(me.$t("message.changeFail"));
                             }
                         }
                     });
                 },
-                resetInfo:function(){
+                resetInfo: function() {
                     this.devicename = "";
                     this.devicetype = "";
                     this.simnum = "";
@@ -564,43 +556,46 @@ vueInstanse = new Vue({
                     this.reportedpoint = 0;
                     this.totalpoint = 1500;
                     this.forwardurl = "";
-                    this.monitor= "";
+                    this.monitor = "";
                 },
-                setDeviceData:function(){ 
+                setDeviceData: function() {
                     var me = this;
                     me.deviceid = editObject.deviceid;
                     me.simnum = editObject.simnum;
                     me.overduetime = editObject.overduetimestr;
-                    me.devicename  = editObject.devicename;
+                    me.devicename = editObject.devicename;
                     me.devicetype = editObject.devicetype;
                     me.loginenable = editObject.loginenable + "";
-                    me.deviceenable = "" +  editObject.deviceenable;
-                    me.reportedpoint = editObject.reportedpoint ;
-                    me.totalpoint = editObject.totalpoint ;
+                    me.deviceenable = "" + editObject.deviceenable;
+                    me.reportedpoint = editObject.reportedpoint;
+                    me.totalpoint = editObject.totalpoint;
                     me.forwardurl = editObject.forwardurl;
                     // me.createrToUser = editObject.creater;
                     me.monitor = editObject.monitor;
                     me.teltype = String(editObject.teltype);
                     me.allowedit = String(editObject.allowedit);
                 },
-                getDeviceType:function () { 
+                getDeviceType: function() {
                     var me = this;
-                    vstore.state.deviceTypes.forEach(function (item) { 
+                    vstore.state.deviceTypes.forEach(function(item) {
                         var label = item.typename;
-                        if(item.remark){
-                            label += "("+item.remark+")";
+                        if (item.remark) {
+                            label += "(" + item.remark + ")";
                         }
-                        me.deviceTypeList.push({value:item.devicetypeid,label:label});
+                        me.deviceTypeList.push({
+                            value: item.devicetypeid,
+                            label: label
+                        });
                     })
                 },
-                selectedCmd:function(item){
+                selectedCmd: function(item) {
                     var me = this;
-                    setTimeout(function () {
+                    setTimeout(function() {
                         me.isShowMatchDev = false;
                         me.createrToUser = item;
                     }, 100)
                 },
-                sosoValueChange:function(){
+                sosoValueChange: function() {
                     var me = this;
                     var value = this.createrToUser.toLowerCase();
 
@@ -613,31 +608,31 @@ vueInstanse = new Vue({
                         return;
                     }
 
-                    this.timeoutIns = setTimeout(function () {
+                    this.timeoutIns = setTimeout(function() {
                         me.filterMethod(value);
                     }, 100);
                 },
-                focus: function () {
+                focus: function() {
                     this.isShowMatchDev = true;
                 },
-                blur: function () {
+                blur: function() {
                     var me = this
-                    setTimeout(function () {
+                    setTimeout(function() {
                         me.isShowMatchDev = false;
                     }, 300)
                 },
-                filterMethod:function(value){
+                filterMethod: function(value) {
                     var list = [];
-                    userlists.forEach(function (itme) { 
-                        if(itme.toLowerCase().indexOf(value) != -1){
+                    userlists.forEach(function(itme) {
+                        if (itme.toLowerCase().indexOf(value) != -1) {
                             list.push(itme);
                         }
                     })
                     this.userlists = list;
                 },
-                queryGroupsByUserName:function(userName){
+                queryGroupsByUserName: function(userName) {
                     me = this;
-                     groupsList = [];
+                    groupsList = [];
 
                     // utils.sendAjax(url,data,function(resp){
                     //     var groupsList = [];
@@ -648,67 +643,64 @@ vueInstanse = new Vue({
                     //     }
                     //     me.groupsList = groupsList;
                     // });
-                      var groupid = editObject.groupid;
-                      var foundGroupId = false;
-                      for(var key in me.allGroups){
-                          var item = me.allGroups[key];
-                          if(item.creater == userName){
-                            groupsList.push({label:item.groupname,value:item.groupid});
-                            if(item.groupid == groupid)
-                            {
+                    var groupid = editObject.groupid;
+                    var foundGroupId = false;
+                    for (var key in me.allGroups) {
+                        var item = me.allGroups[key];
+                        if (item.creater == userName) {
+                            groupsList.push({
+                                label: item.groupname,
+                                value: item.groupid
+                            });
+                            if (item.groupid == groupid) {
                                 foundGroupId = true;
                             }
-                          }
-                      }   
-                      
-                      me.groupsList = groupsList;
-                      me.groupid = editObject.groupid;
-                      if(foundGroupId)
-                      {
+                        }
+                    }
+
+                    me.groupsList = groupsList;
+                    me.groupid = editObject.groupid;
+                    if (foundGroupId) {
                         vueInstanse.groupid = editObject.groupid;
-                      }
-                      else
-                      {
+                    } else {
                         vueInstanse.groupid = 0;
-                      }
-                      
-                                   
+                    }
+
+
                 },
             },
             watch: {
-                isShowMatchDev:function(){
-                    if(!this.isShowMatchDev){
+                isShowMatchDev: function() {
+                    if (!this.isShowMatchDev) {
                         this.iconState = "ios-arrow-down";
-                    }else{
+                    } else {
                         this.iconState = "ios-arrow-up";
                     }
                 },
-                createrToUser:function(newVal){
-                    if(userlists.indexOf(newVal)!=-1){
+                createrToUser: function(newVal) {
+                    if (userlists.indexOf(newVal) != -1) {
                         this.queryGroupsByUserName(newVal);
-                    }
-                    else
-                    {
+                    } else {
                         this.groupsList = [];
                         this.groupid = 0;
                     }
                 }
             },
-            computed:{
-                disabled:function(){
+            computed: {
+                disabled: function() {
                     return this.userType >= Number('3');
                 },
-                isAlloweditDisabled:function(){
-                    return !(Number( this.userType ) <= 1); 
+                isAlloweditDisabled: function() {
+                    return !(Number(this.userType) <= 1);
                 }
             },
-            mixins:[mixIn],
-            mounted:function () {
+            mixins: [mixIn],
+            mounted: function() {
                 this.userlists = userlists;
                 this.userType = vstore.state.userType;
                 this.allGroups = {};
                 this.getDeviceList();
-                this.getDeviceType();  
+                this.getDeviceType();
             }
         })
     </script>

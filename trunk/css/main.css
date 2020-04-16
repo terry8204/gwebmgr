@@ -915,6 +915,28 @@ div.msg_content {
     height: 100%;
 }
 
+.succ {
+    color: #2D8CF0;
+}
+
+.error {
+    color: #e4393c;
+}
+
+
+/*  spin */
+
+.demo-spin-container {
+    display: inline-block;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background-color: rgba(255, 255, 255, .6);
+    z-index: 999;
+}
+
 
 /* 日历 在线日期 */
 

@@ -1,4 +1,7 @@
 <div id="devicemonthonlinedaily">
+    <div class="demo-spin-container" v-if="isSpin">
+        <Spin size="large" fix></Spin>
+    </div>
     <Row style="margin:10px;height: 32px;">
         <div style="float: left;">
             <div style="height: 32px; line-height: 32px;">{{$t("reportForm.selectDev")}}:&nbsp;</div>

@@ -922,6 +922,7 @@ function accDetails(groupslist) {
         i18n: utils.getI18n(),
         mixins: [treeMixin],
         data: {
+            isSpin: false,
             activeTab: 'tabTotal',
             mapModal: false,
             mapType: utils.getMapType(),
@@ -932,7 +933,6 @@ function accDetails(groupslist) {
             lastTableHeight: 100,
             groupslist: [],
             timeoutIns: null,
-            isShowMatchDev: true,
             allAccColumns: [
                 { title: '序号', width: 60, key: 'index' },
                 {
@@ -1125,48 +1125,24 @@ function accDetails(groupslist) {
                 })
                 me.tableData = newRecords;
             },
-            getTreeGroupslist: function(groupslist) {
-                var treeLists = [];
-                groupslist.forEach(function(group) {
-                    var children = []
-                    var treeItem = {
-                        expand: false,
-                        title: group.groupname,
-                        children: children,
-                        firstLetter: group.firstLetter,
-                        pinyin: group.pinyin
-                    }
-                    if (group.devices && group.devices.length != 0) {
-                        group.devices.forEach(function(device) {
-                            children.push({
-                                title: device.title,
-                                deviceid: device.deviceid,
-                                firstLetter: device.firstLetter,
-                                pinyin: device.pinyin
-                            })
-                        });
-                    }
-                    if (children.length) {
-                        treeLists.push(treeItem);
-                    }
-                });
-                return [{
-                    title: "所有设备",
-                    children: treeLists,
-                    expand: true,
-                }];
-            }
         },
         mounted: function() {
             var me = this;
-            // this.groupslist = this.getTreeGroupslist(groupslist);
-            // this.treeData = this.groupslist;
-            utils.queryDevicesTree(function(rootuser) {
-                if (rootuser) {
-                    me.groupslist = [utils.castUsersTreeToDevicesTree(rootuser, true)];
-                    me.treeData = me.groupslist;
-                }
-            });
+            if (rootuser == null) {
+                me.isSpin = true;
+                utils.queryDevicesTree(function(rootuserinfo) {
+                    me.isSpin = false;
+                    if (rootuserinfo) {
+                        rootuser = rootuserinfo;
+                        me.groupslist = [utils.castUsersTreeToDevicesTree(rootuserinfo, true)];
+                        me.treeData = me.groupslist;
+                    }
+                });
+            } else {
+                me.groupslist = [utils.castUsersTreeToDevicesTree(rootuser, true)];
+                me.treeData = me.groupslist;
+            }
+
             this.calcTableHeight();
             window.onresize = function() {
                 me.calcTableHeight();
@@ -2226,6 +2202,7 @@ function dropLineReport(groupslist) {
         el: "#droplinereport",
         mixins: [treeMixin],
         data: {
+            isSpin: false,
             loading: false,
             days: '1',
             groupslist: [],
@@ -2370,12 +2347,20 @@ function dropLineReport(groupslist) {
         },
         mounted: function() {
             var me = this;
-            utils.queryDevicesTree(function(rootuser) {
-                if (rootuser) {
-                    me.groupslist = [utils.castUsersTreeToDevicesTree(rootuser, true)];
-                    me.treeData = me.groupslist;
-                }
-            });
+            if (rootuser == null) {
+                me.isSpin = true;
+                utils.queryDevicesTree(function(rootuserinfo) {
+                    me.isSpin = false;
+                    if (rootuserinfo) {
+                        rootuser = rootuserinfo;
+                        me.groupslist = [utils.castUsersTreeToDevicesTree(rootuserinfo, true)];
+                        me.treeData = me.groupslist;
+                    }
+                });
+            } else {
+                me.groupslist = [utils.castUsersTreeToDevicesTree(rootuser, true)];
+                me.treeData = me.groupslist;
+            }
             window.onresize = function() {
                 me.calcTableHeight();
             };
@@ -2394,6 +2379,7 @@ function deviceOnlineDaily(groupslist) {
         i18n: utils.getI18n(),
         mixins: [treeMixin],
         data: {
+            isSpin: false,
             groupslist: [],
             tableHeight: 300,
             loading: false,
@@ -2525,12 +2511,20 @@ function deviceOnlineDaily(groupslist) {
         },
         mounted: function() {
             var me = this;
-            utils.queryDevicesTree(function(rootuser) {
-                if (rootuser) {
-                    me.groupslist = [utils.castUsersTreeToDevicesTree(rootuser, true)];
-                    me.treeData = me.groupslist;
-                }
-            });
+            if (rootuser == null) {
+                me.isSpin = true;
+                utils.queryDevicesTree(function(rootuserinfo) {
+                    me.isSpin = false;
+                    if (rootuserinfo) {
+                        rootuser = rootuserinfo;
+                        me.groupslist = [utils.castUsersTreeToDevicesTree(rootuserinfo, true)];
+                        me.treeData = me.groupslist;
+                    }
+                });
+            } else {
+                me.groupslist = [utils.castUsersTreeToDevicesTree(rootuser, true)];
+                me.treeData = me.groupslist;
+            }
             window.onresize = function() {
                 me.calcTableHeight();
             };
@@ -2548,6 +2542,7 @@ function groupsOnlineDaily(groupslist) {
         i18n: utils.getI18n(),
         mixins: [treeMixin],
         data: {
+            isSpin: false,
             groupslist: [],
             tableHeight: 300,
             loading: false,
@@ -2640,12 +2635,20 @@ function groupsOnlineDaily(groupslist) {
         },
         mounted: function() {
             var me = this;
-            utils.queryDevicesTree(function(rootuser) {
-                if (rootuser) {
-                    me.groupslist = [utils.castUsersTreeToDevicesTree(rootuser, false)];
-                    me.treeData = me.groupslist;
-                }
-            });
+            if (rootuser == null) {
+                me.isSpin = true;
+                utils.queryDevicesTree(function(rootuserinfo) {
+                    me.isSpin = false;
+                    if (rootuserinfo) {
+                        rootuser = rootuserinfo;
+                        me.groupslist = [utils.castUsersTreeToDevicesTree(rootuserinfo, true)];
+                        me.treeData = me.groupslist;
+                    }
+                });
+            } else {
+                me.groupslist = [utils.castUsersTreeToDevicesTree(rootuser, true)];
+                me.treeData = me.groupslist;
+            }
             window.onresize = function() {
                 me.calcTableHeight();
             };
@@ -2663,6 +2666,7 @@ function deviceMonthOnlineDaily(groupslist) {
         i18n: utils.getI18n(),
         mixins: [treeMixin],
         data: {
+            isSpin: false,
             modal: false,
             textTop: ["日", "一", "二", "三", "四", "五", "六"],
             datesArr: [],
@@ -2839,12 +2843,20 @@ function deviceMonthOnlineDaily(groupslist) {
         },
         mounted: function() {
             var me = this;
-            utils.queryDevicesTree(function(rootuser) {
-                if (rootuser) {
-                    me.groupslist = [utils.castUsersTreeToDevicesTree(rootuser, true)];
-                    me.treeData = me.groupslist;
-                }
-            });
+            if (rootuser == null) {
+                me.isSpin = true;
+                utils.queryDevicesTree(function(rootuserinfo) {
+                    me.isSpin = false;
+                    if (rootuserinfo) {
+                        rootuser = rootuserinfo;
+                        me.groupslist = [utils.castUsersTreeToDevicesTree(rootuserinfo, true)];
+                        me.treeData = me.groupslist;
+                    }
+                });
+            } else {
+                me.groupslist = [utils.castUsersTreeToDevicesTree(rootuser, true)];
+                me.treeData = me.groupslist;
+            }
             window.onresize = function() {
                 me.calcTableHeight();
             };
@@ -2898,9 +2910,9 @@ var reportForm = {
                     children: [
                         { title: '综合统计', name: 'reportOnlineSummary', icon: 'md-sunny' },
                         { title: '掉线报表', name: 'dropLineReport', icon: 'ios-git-pull-request' },
-                        { title: '每日在线率', name: 'deviceOnlineDaily', icon: 'md-bulb' },
-                        { title: '车队日在线率', name: 'groupsOnlineDaily', icon: 'md-bulb' },
-                        { title: '车辆月在线率', name: 'deviceMonthOnlineDaily', icon: 'md-bulb' },
+                        { title: '车辆每日在线率', name: 'deviceOnlineDaily', icon: 'md-bulb' },
+                        { title: '车队日在线率', name: 'groupsOnlineDaily', icon: 'md-contacts' },
+                        { title: '车辆月在线率', name: 'deviceMonthOnlineDaily', icon: 'md-contrast' },
                     ]
                 },
             ]

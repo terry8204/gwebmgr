@@ -8,6 +8,7 @@ var isLoadBMap = false;
 var globalDeviceId = "";
 var reportDeviceId = null;
 var userlists = [];
+var rootuser = null; // tree users
 var isNeedRefresh = false;
 var isToAlarmListRecords = false;
 var isToPhoneAlarmRecords = false;

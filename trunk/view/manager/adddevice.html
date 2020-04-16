@@ -1,6 +1,6 @@
 <meta charset="UTF-8">
 <style>
-    #adddevice .ivu-select-dropdown-list{
+    #adddevice .ivu-select-dropdown-list {
         max-height: 300px;
     }
 </style>
@@ -12,7 +12,7 @@
                 <i-col span="4" style="height: 100%;text-align:right;line-height:32px;"><i style="color: red;display: inline-block;">*</i>&nbsp;选择账号 : &nbsp;</i-col>
                 <i-col span="8">
                     <div class="search-wrapper">
-                        <i-input v-model.trim="createrToUser"  :icon="iconState" @on-change="sosoValueChange" @on-blur="blur" @on-focus="focus" @on-click="focus"></i-input>
+                        <i-input v-model.trim="createrToUser" :icon="iconState" @on-change="sosoValueChange" @on-blur="blur" @on-focus="focus" @on-click="focus"></i-input>
                         <transition name="fade">
                             <ul class="search-item-wrapper" v-show="isShowMatchDev" style="cursor: pointer;">
                                 <li v-for="item in userlists" style="padding:5px 10px;" @click="selectedCmd(item)" :class="{'ivu-select-item-focus':item == createrToUser}">
@@ -28,7 +28,7 @@
             <Row style="margin: 10px 0">
                 <i-col span="4" style="height: 100%;text-align:right;line-height:32px;"><i style="color: red;display: inline-block;">*</i>&nbsp;{{$t("alarm.devNum")}} : &nbsp;</i-col>
                 <i-col span="8">
-                        <i-input v-model.trim="deviceid"></i-input>
+                    <i-input v-model.trim="deviceid"></i-input>
                 </i-col>
                 <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;{{$t("alarm.devName")}} : &nbsp;</i-col>
                 <i-col span="8">
@@ -38,7 +38,7 @@
 
             <Row style="margin: 10px 0">
                 <i-col span="4" style="height: 100%;text-align:right;line-height:32px;"><i style="color: red;display: inline-block;">*</i>&nbsp;{{$t("user.devType")}} : &nbsp;</i-col>
-                <i-col span="8">  
+                <i-col span="8">
                     <!-- devicetype -->
                     <i-select v-model="devicetype" style="width: 100%">
                         <i-option v-for="item in deviceTypeList" :value="item.value" :key="item.value">{{ item.label }}</i-option>
@@ -79,8 +79,7 @@
             </Row>
 
             <Row style="margin: 10px 0">
-                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">{{$t("device.reportCount")}}
-                    : &nbsp;</i-col>
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">{{$t("device.reportCount")}} : &nbsp;</i-col>
                 <i-col span="8">
                     <i-input v-model.trim="reportedpoint"></i-input>
                 </i-col>
@@ -97,14 +96,14 @@
                         <i-option value="0">{{$t("user.ban")}}</i-option>
                         <i-option value="1">{{$t("user.allow")}}</i-option>
                     </i-select>
-                </i-col> 
+                </i-col>
                 <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">{{$t("device.isUse")}} : &nbsp;</i-col>
                 <i-col span="8">
                     <i-select v-model="deviceenable">
                         <i-option value="0">{{$t("user.ban")}}</i-option>
-                        <i-option value="1">{{$t("user.allow")}}</i-option>                     
+                        <i-option value="1">{{$t("user.allow")}}</i-option>
                     </i-select>
-                </i-col>                  
+                </i-col>
             </Row>
 
             <Row style="margin: 10px 0">
@@ -133,48 +132,48 @@
     </div>
     <script>
         new Vue({
-            el:"#adddevice",
+            el: "#adddevice",
             i18n: utils.getI18n(),
-            data:{
-                dateOptions:{
-                    disabledDate:function(date) {
+            data: {
+                dateOptions: {
+                    disabledDate: function(date) {
                         return date && date.valueOf() < Date.now() - 86400000;
                     }
                 },
-                teltype:'',
-                iconState:"ios-arrow-down",
-                deviceid:"",
-                devicename:"",
-                devicetype:"",
-                simnum:"",
-                overduetime:"",
-                loginpwd:"",
-                loginenable:"1",
-                deviceenable:"1",
-                groupsList:[],
-                deviceTypeList:[],
-                groupid:'',
-                companyid:'',
-                reportedpoint:0,
-                totalpoint:1500,
-                checkboxObj:{},
-                forwardurl:"",
-                createrToUser:"",
-                userlists:[],
-                userType:null,
-                timeoutIns:null,
-                isShowMatchDev:false,
-                monitor:"",
+                teltype: '',
+                iconState: "ios-arrow-down",
+                deviceid: "",
+                devicename: "",
+                devicetype: "",
+                simnum: "",
+                overduetime: "",
+                loginpwd: "",
+                loginenable: "1",
+                deviceenable: "1",
+                groupsList: [],
+                deviceTypeList: [],
+                groupid: '',
+                companyid: '',
+                reportedpoint: 0,
+                totalpoint: 1500,
+                checkboxObj: {},
+                forwardurl: "",
+                createrToUser: "",
+                userlists: [],
+                userType: null,
+                timeoutIns: null,
+                isShowMatchDev: false,
+                monitor: "",
             },
             methods: {
-                selectedCmd:function(item){
+                selectedCmd: function(item) {
                     var me = this;
-                    setTimeout(function () {
+                    setTimeout(function() {
                         me.isShowMatchDev = false;
                         me.createrToUser = item;
                     }, 100)
                 },
-                sosoValueChange:function(){
+                sosoValueChange: function() {
                     var me = this;
                     var value = this.createrToUser.toLowerCase();
 
@@ -187,111 +186,114 @@
                         return;
                     }
 
-                    this.timeoutIns = setTimeout(function () {
+                    this.timeoutIns = setTimeout(function() {
                         me.filterMethod(value);
                     }, 100);
                 },
-                focus: function () {
+                focus: function() {
                     this.isShowMatchDev = true;
                 },
-                blur: function () {
+                blur: function() {
                     var me = this
-                    setTimeout(function () {
+                    setTimeout(function() {
                         me.isShowMatchDev = false;
                     }, 300)
                 },
-                filterMethod:function(value){
+                filterMethod: function(value) {
                     var list = [];
-                    userlists.forEach(function (itme) { 
-                        if(itme.toLowerCase().indexOf(value) != -1){
+                    userlists.forEach(function(itme) {
+                        if (itme.toLowerCase().indexOf(value) != -1) {
                             list.push(itme);
                         }
                     })
                     this.userlists = list;
                 },
-                handleSubmit:function(){
+                handleSubmit: function() {
                     var me = this;
                     var url = myUrls.addDevice();
 
-                    if(this.deviceid.length < 8  || this.deviceid.length > 15 ){ 
+                    if (this.deviceid.length < 8 || this.deviceid.length > 15) {
                         me.$Message.error(me.$t("device.devIdTips"));
                         return;
                     };
 
-                    if(this.overduetime == ""){
+                    if (this.overduetime == "") {
                         me.$Message.error(me.$t("message.fullComplete"));
                         return;
                     };
 
                     var data = {
-                        deviceid:this.deviceid,                      
-                        devicetype:this.devicetype,
-                        expirenotifytime:new Date(this.overduetime).getTime(),
-                        loginenable:Number(this.loginenable),
-                        deviceenable:Number(this.deviceenable),
-                    };      
-                    
-                    if(this.devicename) data.devicename = this.devicename;
-                    if(this.teltype) data.teltype = Number(this.teltype);
-
-                    if(this.monitor){ data.monitor = this.monitor;}
-
-                    if(this.loginpwd){
-                        data.loginpwd = $.md5(this.loginpwd);
-                    }else{
-                     	var legnth = this.deviceid.length;
-                        data.loginpwd = $.md5(this.deviceid.substring(legnth-4,legnth));
+                        deviceid: this.deviceid,
+                        devicetype: this.devicetype,
+                        expirenotifytime: new Date(this.overduetime).getTime(),
+                        loginenable: Number(this.loginenable),
+                        deviceenable: Number(this.deviceenable),
                     };
 
-                    if(this.simnum){
+                    if (this.devicename) data.devicename = this.devicename;
+                    if (this.teltype) data.teltype = Number(this.teltype);
+
+                    if (this.monitor) {
+                        data.monitor = this.monitor;
+                    }
+
+                    if (this.loginpwd) {
+                        data.loginpwd = $.md5(this.loginpwd);
+                    } else {
+                        var legnth = this.deviceid.length;
+                        data.loginpwd = $.md5(this.deviceid.substring(legnth - 4, legnth));
+                    };
+
+                    if (this.simnum) {
                         data.simnum = this.simnum;
                     };
 
-                    if(this.groupid){
+                    if (this.groupid) {
                         data.groupid = this.groupid;
                     };
 
-                    if( this.reportedpoint == 0 || this.reportedpoint && !isNaN(this.reportedpoint)){
+                    if (this.reportedpoint == 0 || this.reportedpoint && !isNaN(this.reportedpoint)) {
                         data.reportedpoint = Number(this.reportedpoint);
                     }
 
-                    if(this.totalpoint && !isNaN(this.totalpoint)){
+                    if (this.totalpoint && !isNaN(this.totalpoint)) {
                         data.totalpoint = Number(this.totalpoint);
                     }
-                    
+
                     this.forwardurl && (data.forwardurl = this.forwardurl);
 
-                    if(userlists.indexOf(this.createrToUser) == -1){
-                        me.$Message.error(me.$t("message.selectCorrectAccount"));  
+                    if (userlists.indexOf(this.createrToUser) == -1) {
+                        me.$Message.error(me.$t("message.selectCorrectAccount"));
                         return;
                     }
 
-                    if(this.userType < 3){
+                    if (this.userType < 3) {
                         data.creater = this.createrToUser;
-                    }else{
+                    } else {
                         data.creater = userName;
                     };
 
-                    utils.sendAjax(url,data,function (resp) { 
-                        if(resp.status == 0){
+                    utils.sendAjax(url, data, function(resp) {
+                        if (resp.status == 0) {
+                            rootuser = null;
                             isNeedRefresh = true;
                             me.$Message.success(me.$t("message.addSucc"));
-                        }else if(resp.status == -1){
-                            if( resp.cause!== null && resp.cause.indexOf("token")!=-1){
+                        } else if (resp.status == -1) {
+                            if (resp.cause !== null && resp.cause.indexOf("token") != -1) {
                                 window.location.href = "index.html";
-                            }else{
+                            } else {
                                 me.$Message.error(me.$t("message.addFail"));
                             }
-                        }else if(resp.status == 1 ){
+                        } else if (resp.status == 1) {
                             me.$Message.error(me.$t("message.IDRepeat"));
-                        }else if(resp.status == 2 ){
+                        } else if (resp.status == 2) {
                             me.$Message.error(me.$t('message.IDError'));
-                        }else if(resp.status == 3 ){
+                        } else if (resp.status == 3) {
                             me.$Message.error(me.$t('message.reqFail'));
                         };
                     });
                 },
-                resetInfo:function(){
+                resetInfo: function() {
                     this.deviceid = "";
                     this.devicename = "";
                     this.devicetype = "";
@@ -303,67 +305,79 @@
                     this.groupid = "";
                     this.companyid = "";
                 },
-                getGroupsList:function(){
-                    var me = this; 
-                    var url = myUrls.queryGroupByUser();                  
-                    utils.sendAjax(url,{},function (resp) { 
+                getGroupsList: function() {
+                    var me = this;
+                    var url = myUrls.queryGroupByUser();
+                    utils.sendAjax(url, {}, function(resp) {
                         var groupList = [];
-                        if(resp.status === 0 && resp.grouplist){
-                            resp.grouplist.forEach(function (group) { 
-                                groupList.push({label:group.groupname,value:group.groupid});
+                        if (resp.status === 0 && resp.grouplist) {
+                            resp.grouplist.forEach(function(group) {
+                                groupList.push({
+                                    label: group.groupname,
+                                    value: group.groupid
+                                });
                             })
                         }
                         me.groupsList = groupList;
                     });
                 },
-                getDeviceType:function () {
+                getDeviceType: function() {
                     var me = this;
-                    vstore.state.deviceTypes .forEach(function (item) { 
+                    vstore.state.deviceTypes.forEach(function(item) {
                         var label = item.typename;
-                        if(item.remark){
-                            label += "("+item.remark+")";
+                        if (item.remark) {
+                            label += "(" + item.remark + ")";
                         }
-                        me.deviceTypeList.push({value:item.devicetypeid,label:label});
+                        me.deviceTypeList.push({
+                            value: item.devicetypeid,
+                            label: label
+                        });
                     })
                     me.devicetype = 1;
                 },
-                queryGroupsByUserName:utils.debounce(function(userName){
-                    var data = { username:userName },
-                        url = myUrls.queryGroupsByUserName() , me = this;
-                    utils.sendAjax(url,data,function(resp){
+                queryGroupsByUserName: utils.debounce(function(userName) {
+                    var data = {
+                            username: userName
+                        },
+                        url = myUrls.queryGroupsByUserName(),
+                        me = this;
+                    utils.sendAjax(url, data, function(resp) {
                         var groupList = [];
-                        if(resp.status === 0 && resp.grouplist){
-                            resp.grouplist.forEach(function (group) { 
-                                groupList.push({label:group.groupname,value:group.groupid});
+                        if (resp.status === 0 && resp.grouplist) {
+                            resp.grouplist.forEach(function(group) {
+                                groupList.push({
+                                    label: group.groupname,
+                                    value: group.groupid
+                                });
                             })
                         }
                         me.groupsList = groupList;
                     });
-                },1000)
+                }, 1000)
             },
-            watch:{
-                isShowMatchDev:function(){
-                    if(!this.isShowMatchDev){
+            watch: {
+                isShowMatchDev: function() {
+                    if (!this.isShowMatchDev) {
                         this.iconState = "ios-arrow-down";
-                    }else{
+                    } else {
                         this.iconState = "ios-arrow-up";
                     }
                 },
-                createrToUser:function(newVal){
-                    if(userlists.indexOf(newVal)!=-1){
+                createrToUser: function(newVal) {
+                    if (userlists.indexOf(newVal) != -1) {
                         this.groupid = "";
                         this.queryGroupsByUserName(newVal);
                     }
                 }
             },
-            mounted:function () {
+            mounted: function() {
                 this.getDeviceType();
                 // this.getGroupsList();  
                 this.createrToUser = userName;
                 this.userlists = userlists;
-                this.overduetime = new Date(Date.now() + 365*24*3600*1000) ;
+                this.overduetime = new Date(Date.now() + 365 * 24 * 3600 * 1000);
                 this.userType = vstore.state.userType;
-            } 
+            }
         })
     </script>
 </div>

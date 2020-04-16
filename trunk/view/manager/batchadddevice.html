@@ -16,14 +16,6 @@
     #batchadddevice div.succ textarea {
         color: rgb(26, 160, 52);
     }
-    
-    div.spin-container {
-        position: absolute;
-        left: 0;
-        right: 0;
-        top: 0;
-        bottom: 0;
-    }
 </style>
 <div id="batchadddevice">
     <div class="full" style="padding:10px 10px 0 10px;">
@@ -142,7 +134,7 @@
                 </i-col>
             </Row>
         </div>
-        <div class="spin-container" v-show="loading">
+        <div class="demo-spin-container" v-show="loading">
             <Spin fix></Spin>
         </div>
     </div>
@@ -338,6 +330,7 @@
                     utils.sendAjax(url, data, function(resp) {
                         me.loading = false;
                         if (resp.status == 0) {
+                            rootuser = null;
                             isNeedRefresh = true;
                             if (resp.total === resp.success) {
                                 me.$Message.success(me.$t("message.addSucc"));

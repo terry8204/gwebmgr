@@ -1,24 +1,5 @@
 <meta charset="UTF-8">
-<style>
-    .succ {
-        color: #2D8CF0;
-    }
-    
-    .error {
-        color: #e4393c;
-    }
-    
-    .demo-spin-container {
-        display: inline-block;
-        position: absolute;
-        left: 0;
-        right: 0;
-        top: 0;
-        bottom: 0;
-        background-color: rgba(255, 255, 255, .6);
-        z-index: 999;
-    }
-</style>
+
 <div id="batchmgr" class="full" style="padding: 10px;">
     <div class="demo-spin-container" v-if="loading">
         <Spin size="large" fix></Spin>
@@ -142,7 +123,7 @@
         el: "#batchmgr",
         i18n: utils.getI18n(),
         data: {
-            loading: true,
+            loading: false,
             showBatchModalType: 1, // 1批量地址  2
             importModal: false,
             batchModal: false,
@@ -397,6 +378,7 @@
                 utils.sendAjax(url, data, function(respData) {
                     me.loading = false;
                     if (respData.status === 0) {
+                        rootuser = respData.rootuser;
                         me.setTreeDataList(respData.rootuser);
                     }
                 });
@@ -797,7 +779,12 @@
             window.onresize = function() {
                 me.calcTableHeight();
             }
-            this.queryDevicesTree();
+            if (rootuser == null) {
+                this.queryDevicesTree();
+            } else {
+                me.setTreeDataList(rootuser);
+            }
+
             this.getDeviceType();
             this.userName = userName;
         },
