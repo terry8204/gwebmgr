@@ -1,4 +1,5 @@
-html,body{
+html,
+body {
     height: 100%;
     width: 100%;
     font-size: 14px;
@@ -10,43 +11,49 @@ html,body{
 [v-cloak] {
     display: none;
 }
-.full{
+
+.full {
     width: 100%;
     height: 100%;
 }
 
-img{
+img {
     display: inline-block;
     border: none;
 }
 
+
 /* 禁止选中 */
+
 .noselect {
-    -webkit-touch-callout: none;   
-    -webkit-user-select: none;  
-    -khtml-user-select: none;    
-    -moz-user-select: none;    
-    -ms-user-select: none;     
-    user-select: none;    
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
-th span .ivu-icon{
+th span .ivu-icon {
     margin-top: 0px;
 }
 
-ul,ol,li{
+ul,
+ol,
+li {
     list-style: none;
 }
 
 
 /* h3 */
-.h3-title{
-    color:#2D8CF0;
+
+.h3-title {
+    color: #2D8CF0;
     position: relative;
     padding-left: 10px;
 }
 
-.h3-title::before{
+.h3-title::before {
     display: block;
     content: "";
     position: absolute;
@@ -56,54 +63,69 @@ ul,ol,li{
     height: 20px;
     background: #2D8CF0;
 }
-.ivu-poptip-inner .ivu-poptip-body .ivu-icon{
+
+.ivu-poptip-inner .ivu-poptip-body .ivu-icon {
     margin-top: 0px;
 }
+
+
 /* iview  模态框垂直水平居中 */
-.vertical-center-modal{
+
+.vertical-center-modal {
     /* position: fixed;     
     left: 50%;
     top: 40%;
     transform: translate(-50%,-50%); */
 }
 
+
 /* .ivu-modal-fullscreen {
     width: 78%!important;
     bottom: 51px;
 } */
 
+
 /* 解决系统参数下所有icon margin 上移3px的问题 */
-.system .ivu-icon{
+
+.system .ivu-icon {
     margin: 0;
 }
 
+
 /* padding */
-.pd-10{
+
+.pd-10 {
     padding: 10px;
 }
 
 
 /* autocomplete */
-.demo-auto-complete-item{
+
+.demo-auto-complete-item {
     padding: 4px 0;
     border-bottom: 1px solid #F6F6F6;
 }
-.demo-auto-complete-group{
+
+.demo-auto-complete-group {
     font-size: 12px;
     padding: 4px 6px;
 }
-.demo-auto-complete-group span{
+
+.demo-auto-complete-group span {
     color: #666;
     font-weight: bold;
 }
-.demo-auto-complete-group a{
+
+.demo-auto-complete-group a {
     float: right;
 }
-.demo-auto-complete-count{
+
+.demo-auto-complete-count {
     float: right;
     color: #999;
 }
-.demo-auto-complete-more{
+
+.demo-auto-complete-more {
     display: block;
     margin: 0 auto;
     padding: 4px;
@@ -111,84 +133,92 @@ ul,ol,li{
     font-size: 12px;
 }
 
-.search-wrapper{
+.search-wrapper {
     width: 100%;
     height: 100%;
     position: relative;
-    
 }
 
-.search-wrapper ul.search-item-wrapper{
+.search-wrapper ul.search-item-wrapper {
     position: absolute;
     left: 0;
-    right:0;
+    right: 0;
     top: 38px;
     background-color: #fff;
     box-sizing: border-box;
     border-radius: 4px;
-    box-shadow: 0 1px 6px rgba(0,0,0,.2);
+    box-shadow: 0 1px 6px rgba(0, 0, 0, .2);
     max-height: 300px;
     z-index: 10000;
-    overflow-y:auto; 
-    overflow-x:hidden; 
+    overflow-y: auto;
+    overflow-x: hidden;
 }
-.search-wrapper div.search-item-wrapper{
+
+.search-wrapper div.search-item-wrapper {
     position: absolute;
     left: 0;
-    right:0;
+    right: 0;
     top: 38px;
     background-color: #fff;
     box-sizing: border-box;
     border-radius: 4px;
-    box-shadow: 0 1px 6px rgba(0,0,0,.2);
+    box-shadow: 0 1px 6px rgba(0, 0, 0, .2);
     max-height: 300px;
     z-index: 10000;
-    overflow-y:auto; 
-    overflow-x:hidden; 
+    overflow-y: auto;
+    overflow-x: hidden;
     padding: 5px;
 }
 
 .search-wrapper ul.search-item-wrapper .ivu-select-item,
-.search-wrapper ul.search-item-wrapper .ivu-select-item span{
+.search-wrapper ul.search-item-wrapper .ivu-select-item span {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
+
+
 /* 查询所有设备指令 */
-#directive-wraper{
+
+#directive-wraper {
     position: relative;
     height: 100%;
     width: 100%;
 }
-#directive-wraper div.directive-type-wraper{
+
+#directive-wraper div.directive-type-wraper {
     position: absolute;
     left: 10px;
     right: 10px;
     bottom: 10px;
     top: 34px;
 }
-#directive-wraper div.directive-type-wraper>div{
+
+#directive-wraper div.directive-type-wraper>div {
     position: absolute;
     top: 0px;
     bottom: 0;
 }
-#directive-wraper div.directive-type-wraper>div.device-type{
+
+#directive-wraper div.directive-type-wraper>div.device-type {
     left: 0;
     width: 240px;
     bottom: 0;
     overflow-y: auto;
 }
-#directive-wraper div.directive-type-wraper>div.directive-type{
+
+#directive-wraper div.directive-type-wraper>div.directive-type {
     right: 0;
     left: 250px;
     bottom: 0;
     overflow-y: auto;
 }
-.ivu-select-selection .ivu-icon{
-    margin-top:-7px;
+
+.ivu-select-selection .ivu-icon {
+    margin-top: -7px;
 }
 
-p.last-address{
+p.last-address {
     min-height: 21px;
     max-height: 42px;
     display: -webkit-box;
@@ -200,28 +230,39 @@ p.last-address{
 #cmd-report .ivu-table-sort .ivu-icon,
 #posi-report .ivu-table-sort .ivu-icon,
 #mileage-detail .ivu-table-sort .ivu-icon,
-#park-details .ivu-table-sort .ivu-icon{
-    margin-top: 0px; 
+#park-details .ivu-table-sort .ivu-icon,
+#reportonlinesummary .ivu-table-sort .ivu-icon,
+#droplinereport .ivu-table-sort .ivu-icon,
+#deviceonlinedaily .ivu-table-sort .ivu-icon,
+#groupsonlinedaily .ivu-table-sort .ivu-icon,
+#devicemonthonlinedaily .ivu-table-sort .ivu-icon {
+    margin-top: 0px;
 }
 
 
 /* tree demo */
-.cursor-pointer{
+
+.cursor-pointer {
     cursor: pointer;
 }
-#report-right-wrap div.spans-wrap span:hover{
+
+#report-right-wrap div.spans-wrap span:hover {
     color: #2D8CF0;
 }
-.tree-demo-wraper{
+
+.tree-demo-wraper {
     position: relative;
 }
-.toggle-header-wraper{
+
+.toggle-header-wraper {
     height: 35px;
 }
-.toggle-header-wraper>div{
+
+.toggle-header-wraper>div {
     float: left;
 }
-.tree-wrapper{
+
+.tree-wrapper {
     position: absolute;
     top: 38px;
     left: 0px;
@@ -235,8 +276,10 @@ p.last-address{
     z-index: 999;
 }
 
+
 /* 地图小窗口 */
-.posi-map-wraper{
+
+.posi-map-wraper {
     position: fixed;
     left: 0;
     right: 0;
@@ -244,14 +287,15 @@ p.last-address{
     bottom: 0;
     z-index: 299999;
 }
-.map-modal{
+
+.map-modal {
     width: 100%;
     height: 100%;
     background: #000000;
     opacity: .5;
-    
 }
-.inner-map-wraper{
+
+.inner-map-wraper {
     width: 606px;
     height: 506px;
     position: absolute;
@@ -260,9 +304,10 @@ p.last-address{
     margin-top: -250px;
     margin-left: -300px;
     border: 3px solid #fff;
-    border-radius:3px; 
+    border-radius: 3px;
 }
-.posi-map-title{
+
+.posi-map-title {
     width: 100%;
     height: 50px;
     background: #3399ff;
@@ -271,13 +316,21 @@ p.last-address{
     line-height: 50px;
     position: relative;
 }
-#posi-map{
+
+#posi-map {
     width: 100%;
     height: 450px;
 }
-.fade-enter-active, .fade-leave-active {
+
+.fade-enter-active,
+.fade-leave-active {
     transition: opacity .3s;
 }
-.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+
+.fade-enter,
+.fade-leave-to
+/* .fade-leave-active below version 2.1.8 */
+
+{
     opacity: 0;
 }

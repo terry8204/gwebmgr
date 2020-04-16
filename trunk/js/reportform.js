@@ -1159,8 +1159,14 @@ function accDetails(groupslist) {
         },
         mounted: function() {
             var me = this;
-            this.groupslist = this.getTreeGroupslist(groupslist);
-            this.treeData = this.groupslist;
+            // this.groupslist = this.getTreeGroupslist(groupslist);
+            // this.treeData = this.groupslist;
+            utils.queryDevicesTree(function(rootuser) {
+                if (rootuser) {
+                    me.groupslist = [utils.castUsersTreeToDevicesTree(rootuser, true)];
+                    me.treeData = me.groupslist;
+                }
+            });
             this.calcTableHeight();
             window.onresize = function() {
                 me.calcTableHeight();
@@ -1969,7 +1975,7 @@ function reportOnlineSummary(groupslist) {
                     title: '设备类型',
                     key: 'devicetype',
                     sortable: true,
-                    width: 85,
+                    width: 120,
                     render: function(h, params) {
                         var devicetype = params.row.devicetype;
                         var deviceTypes = vstore.state.deviceTypes;
@@ -2361,42 +2367,15 @@ function dropLineReport(groupslist) {
                 var wHeight = window.innerHeight;
                 this.tableHeight = wHeight - 125;
             },
-            getTreeGroupslist: function(groupslist) {
-                var treeLists = [];
-                groupslist.forEach(function(group) {
-                    var children = []
-                    var treeItem = {
-                        expand: false,
-                        title: group.groupname,
-                        children: children,
-                        firstLetter: group.firstLetter,
-                        pinyin: group.pinyin
-                    }
-                    if (group.devices && group.devices.length != 0) {
-                        group.devices.forEach(function(device) {
-                            children.push({
-                                title: device.title,
-                                deviceid: device.deviceid,
-                                firstLetter: device.firstLetter,
-                                pinyin: device.pinyin
-                            })
-                        });
-                    }
-                    if (children.length) {
-                        treeLists.push(treeItem);
-                    }
-                });
-                return [{
-                    title: "所有设备",
-                    children: treeLists,
-                    expand: true,
-                }];
-            }
         },
         mounted: function() {
             var me = this;
-            this.groupslist = this.getTreeGroupslist(groupslist);
-            this.treeData = this.groupslist;
+            utils.queryDevicesTree(function(rootuser) {
+                if (rootuser) {
+                    me.groupslist = [utils.castUsersTreeToDevicesTree(rootuser, true)];
+                    me.treeData = me.groupslist;
+                }
+            });
             window.onresize = function() {
                 me.calcTableHeight();
             };
@@ -2409,6 +2388,7 @@ function dropLineReport(groupslist) {
 
 // 每日在线率
 function deviceOnlineDaily(groupslist) {
+
     new Vue({
         el: "#deviceonlinedaily",
         i18n: utils.getI18n(),
@@ -2418,89 +2398,11 @@ function deviceOnlineDaily(groupslist) {
             tableHeight: 300,
             loading: false,
             yearMonth: new Date(),
+            daycount: 0,
             columns: [
-                { type: 'index', width: 60 },
-                { title: '设备序号', key: 'deviceid', },
-                { title: '设备名称', key: 'devicename', },
-                { title: '卡号', key: 'simnum', },
-                {
-                    title: '分组',
-                    key: 'groupid',
-                    render: function(h, params) {
-                        var groupid = params.row.groupid;
-                        var deviceid = params.row.deviceid;
-                        var groupName = '';
-                        if (groupid == 0) {
-                            groupName = '默认组';
-                        } else {
-                            for (var i = 0; i < groupslist.length; i++) {
-                                var group = groupslist[i];
-                                for (var j = 0; j < group.devices.length; j++) {
-                                    var device = group.devices[j];
-
-                                    if (device.deviceid === deviceid) {
-                                        if (group.groupname.indexOf('-') == -1) {
-                                            groupName = group.groupname;
-                                        } else {
-                                            groupName = group.groupname.split('-')[1];
-                                        }
-                                        break;
-                                    }
-                                    if (groupName != '') { break };
-                                }
-                            }
-                        }
-                        return h('span', {}, groupName)
-                    }
-                },
-                {
-                    title: '设备类型',
-                    key: 'devicetype',
-                    width: 85,
-                    render: function(h, params) {
-                        var devicetype = params.row.devicetype;
-                        var deviceTypes = vstore.state.deviceTypes;
-                        for (var i = 0; i < deviceTypes.length; i++) {
-                            var item = deviceTypes[i];
-                            if (item.devicetypeid == devicetype) {
-                                return h('span', {}, item.typename);
-                            }
-                        }
-                    }
-                },
-                {
-                    title: '掉线时间',
-                    width: 150,
-                    render: function(h, params) {
-                        var updatetime = params.row.updatetime;
-                        var updatetimeStr = '未上报';
-                        if (updatetime > 0) {
-                            updatetimeStr = DateFormat.longToDateTimeStr(updatetime, 0);
-                        }
-                        return h('span', {}, updatetimeStr)
-                    }
-                },
-                {
-                    title: '掉线时长',
-                    width: 150,
-                    render: function(h, params) {
-                        var updatetime = params.row.updatetime;
-                        return h('span', {}, utils.timeStamp(Date.now() - updatetime))
-                    }
-                },
-                {
-                    title: '备注',
-                    key: 'remark',
-                    render: function(h, params) {
-                        var remark = params.row.remark;
-                        return h('div', {
-                            style: {
-                                maxHeight: '40px',
-                                overflow: 'hidden'
-                            }
-                        }, remark)
-                    }
-                },
+                { type: 'index' },
+                { title: '设备序号', key: 'deviceid' },
+                { title: '设备名称', key: 'devicename' },
             ],
             tableData: [],
         },
@@ -2524,10 +2426,35 @@ function deviceOnlineDaily(groupslist) {
                         data.deviceids.push(group.deviceid);
                     }
                 });
-                console.log(data);
                 utils.sendAjax(url, data, function(respData) {
-                    console.log(respData);
+                    me.loading = false;
+                    if (respData.status === 0) {
+                        me.daycount = respData.daycount;
+                        me.tableData = me.getTableData(respData.records);
+                    }
                 })
+            },
+            getTableData: function(records) {
+                var tableData = [];
+                records.forEach(function(item) {
+                    var tableItem = {};
+                    var onlineCount = 0;
+                    tableItem.deviceid = item.deviceid;
+
+                    item.daysstatus.forEach(function(item, idx) {
+                        var isOnline = item == 0 ? false : true;
+                        if (isOnline) {
+                            onlineCount++;
+                            tableItem[String(++idx)] = '1';
+                        } else {
+                            tableItem[String(++idx)] = '0';
+                        }
+                    })
+                    var onlineRate = (onlineCount / item.daysstatus.length) * 100;
+                    tableItem['onlineRate'] = onlineRate.toFixed(2) + '%';
+                    tableData.push(tableItem);
+                });
+                return tableData;
             },
             clean: function() {
                 this.sosoValue = '';
@@ -2552,42 +2479,372 @@ function deviceOnlineDaily(groupslist) {
                 var wHeight = window.innerHeight;
                 this.tableHeight = wHeight - 125;
             },
-            getTreeGroupslist: function(groupslist) {
-                var treeLists = [];
-                groupslist.forEach(function(group) {
-                    var children = []
-                    var treeItem = {
-                        expand: false,
-                        title: group.groupname,
-                        children: children,
-                        firstLetter: group.firstLetter,
-                        pinyin: group.pinyin
-                    }
-                    if (group.devices && group.devices.length != 0) {
-                        group.devices.forEach(function(device) {
-                            children.push({
-                                title: device.title,
-                                deviceid: device.deviceid,
-                                firstLetter: device.firstLetter,
-                                pinyin: device.pinyin
-                            })
-                        });
-                    }
-                    if (children.length) {
-                        treeLists.push(treeItem);
-                    }
+
+        },
+        watch: {
+            daycount: function(newVla) {
+                var columns = [
+                    { type: 'index', width: 60, fixed: 'left' },
+                    {
+                        title: '设备名称',
+                        key: 'devicename',
+                        fixed: 'left',
+                        width: 140,
+                        render: function(h, params) {
+                            var deviceid = params.row.deviceid;
+                            for (var i = 0; i < groupslist.length; i++) {
+                                var group = groupslist[i];
+                                for (var j = 0; j < group.devices.length; j++) {
+                                    var device = group.devices[j];
+                                    if (device.deviceid == deviceid) {
+                                        return h('span', {}, device.devicename);
+                                    }
+                                }
+                            };
+                            return h('span', {}, '');
+                        }
+                    },
+                    { title: '设备序号', key: 'deviceid', fixed: 'left', width: 140 },
+                ]
+                for (var i = 1; i <= newVla; i++) {
+                    var key = String(i);
+                    columns.push({
+                        title: key,
+                        key: key,
+                        width: 60,
+                    })
+                }
+                columns.push({
+                    key: 'onlineRate',
+                    title: '在线率',
+                    fixed: 'right',
+                    width: 120,
                 });
-                return [{
-                    title: "所有设备",
-                    children: treeLists,
-                    expand: true,
-                }];
+                this.columns = columns;
             }
         },
         mounted: function() {
             var me = this;
-            this.groupslist = this.getTreeGroupslist(groupslist);
-            this.treeData = this.groupslist;
+            utils.queryDevicesTree(function(rootuser) {
+                if (rootuser) {
+                    me.groupslist = [utils.castUsersTreeToDevicesTree(rootuser, true)];
+                    me.treeData = me.groupslist;
+                }
+            });
+            window.onresize = function() {
+                me.calcTableHeight();
+            };
+        },
+        created: function() {
+            this.checkedDevice = [];
+        },
+    })
+}
+
+// 车队日在线率
+function groupsOnlineDaily(groupslist) {
+    new Vue({
+        el: '#groupsonlinedaily',
+        i18n: utils.getI18n(),
+        mixins: [treeMixin],
+        data: {
+            groupslist: [],
+            tableHeight: 300,
+            loading: false,
+            yearMonth: new Date(),
+            columns: [
+                { type: 'index', width: 60 },
+                { title: '分组名称', key: 'groupname' },
+                {
+                    title: '总数量/在线数量',
+                    key: 'onlinecount',
+                    render: function(h, params) {
+                        var onlinecount = params.row.onlinecount;
+                        var totalcount = params.row.totalcount;
+                        return h('span', {}, onlinecount + "/" + totalcount);
+                    }
+                },
+                {
+                    title: '日在线率',
+                    render: function(h, params) {
+                        var onlinecount = params.row.onlinecount;
+                        var totalcount = params.row.totalcount;
+                        var onlineRate = (onlinecount / totalcount) * 100;
+                        if (totalcount == 0) {
+                            return h('span', {}, "0.00%");
+                        }
+                        return h('span', {}, onlineRate.toFixed(2) + "%");
+                    }
+                },
+            ],
+            tableData: [],
+        },
+        methods: {
+            onClickQuery: function() {
+                if (this.checkedDevice.length == 0) {
+                    this.$Message.error("请选择分组");
+                    return;
+                }
+                this.loading = true;
+                var url = myUrls.reportGroupOnlineDaily(),
+                    me = this;
+                var data = {
+                    groups: [],
+                    offset: DateFormat.getOffset(),
+                    daystr: DateFormat.format(this.yearMonth, 'yyyy-MM-dd'),
+                }
+
+                this.checkedDevice.forEach(function(group) {
+                    if (!group.children) {
+                        data.groups.push({
+                            username: group.username,
+                            groupid: group.groupid,
+                            groupname: group.title,
+                        })
+                    }
+                });
+
+                utils.sendAjax(url, data, function(respData) {
+                    me.loading = false;
+                    if (respData.status == 0) {
+                        if (respData.records != null) {
+                            me.tableData = respData.records;
+                        }
+                    }
+                    console.log(respData);
+                });
+            },
+            clean: function() {
+                this.sosoValue = '';
+                this.checkedDevice = [];
+                this.cleanSelected(this.groupslist);
+                this.treeData = this.groupslist;
+                this.tableData = [];
+            },
+            cleanSelected: function(treeDataFilter) {
+                var that = this;
+                for (var i = 0; i < treeDataFilter.length; i++) {
+                    var item = treeDataFilter[i];
+                    if (item != null) {
+                        item.checked = false;
+                        if (item.children && item.children.length > 0) {
+                            that.cleanSelected(item.children);
+                        }
+                    }
+                }
+            },
+            calcTableHeight: function() {
+                var wHeight = window.innerHeight;
+                this.tableHeight = wHeight - 125;
+            },
+        },
+        mounted: function() {
+            var me = this;
+            utils.queryDevicesTree(function(rootuser) {
+                if (rootuser) {
+                    me.groupslist = [utils.castUsersTreeToDevicesTree(rootuser, false)];
+                    me.treeData = me.groupslist;
+                }
+            });
+            window.onresize = function() {
+                me.calcTableHeight();
+            };
+        },
+        created: function() {
+            this.checkedDevice = [];
+        },
+    })
+}
+
+// 车辆月在线
+function deviceMonthOnlineDaily(groupslist) {
+    vueInstanse = new Vue({
+        el: "#devicemonthonlinedaily",
+        i18n: utils.getI18n(),
+        mixins: [treeMixin],
+        data: {
+            modal: false,
+            textTop: ["日", "一", "二", "三", "四", "五", "六"],
+            datesArr: [],
+            year: 1970,
+            month: 1,
+            groupslist: [],
+            tableHeight: 300,
+            loading: false,
+            yearMonth: new Date(),
+            daycount: 0,
+            columns: [
+                { type: 'index', width: 60 },
+                { title: '设备序号', key: 'deviceid' },
+                {
+                    title: '设备名称',
+                    key: 'devicename',
+                    render: function(h, params) {
+                        var deviceid = params.row.deviceid;
+                        for (var i = 0; i < groupslist.length; i++) {
+                            var group = groupslist[i];
+                            for (var j = 0; j < group.devices.length; j++) {
+                                var device = group.devices[j];
+                                if (device.deviceid == deviceid) {
+                                    return h('span', {}, device.devicename);
+                                }
+                            }
+                        };
+                        return h('span', {}, '');
+                    }
+                },
+                {
+                    title: '在线天数/总天数',
+                    render: function(h, params) {
+                        var onlinecount = params.row.onlinecount;
+                        return h('span', {}, onlinecount + "/" + params.row.daysstatus.length);
+                    }
+                },
+                { title: '在线率', key: 'onlineRate' },
+                {
+                    title: "在线日期",
+                    render: function(h, params) {
+                        var row = params.row;
+                        return h(
+                            'Button', {
+                                on: {
+                                    click: function() {
+                                        vueInstanse.year = row.year;
+                                        vueInstanse.month = row.month;
+                                        vueInstanse.getDatesArr(row.daysstatus);
+                                        vueInstanse.modal = true;
+                                    }
+                                }
+                            },
+                            '在线日期'
+                        )
+                    }
+                }
+            ],
+            tableData: [],
+        },
+        methods: {
+            onClickQuery: function() {
+                if (this.checkedDevice.length == 0) {
+                    this.$Message.error("请选择设备");
+                    return;
+                }
+                this.loading = true;
+                var url = myUrls.reportDeviceOnlineMonth(),
+                    me = this;
+                var data = {
+                    deviceids: [],
+                    offset: DateFormat.getOffset(),
+                    year: this.yearMonth.getFullYear(),
+                    month: this.yearMonth.getMonth() + 1,
+                }
+                this.checkedDevice.forEach(function(group) {
+                    if (!group.children) {
+                        data.deviceids.push(group.deviceid);
+                    }
+                });
+                utils.sendAjax(url, data, function(respData) {
+                    me.loading = false;
+                    console.log("respData", respData);
+                    if (respData.status === 0) {
+                        me.daycount = respData.daycount;
+                        me.tableData = me.getTableData(respData.records, data.year, data.month);
+                    }
+                })
+            },
+            //得到这个月的第一天是是星期几
+            getTheMonthFirstDayWeek() {
+                return new Date(this.year, this.month - 1, 1).getDay();
+            },
+            // 得到这个月有多少天
+            getTheMonthDays() {
+                var year = this.month == 12 ? this.year + 1 : this.year;
+                var month = this.month == 12 ? 1 : this.month;
+                return new Date(new Date(year, month, 1) - 1).getDate();
+            },
+            // 得到上个月的最后一天
+            getPrevMonthLastDate() {
+                return new Date(new Date(this.year, this.month - 1, 1) - 1).getDate();
+            },
+            getDatesArr(daysstatus) {
+                var datesArr = [];
+                var weekNum = this.getTheMonthFirstDayWeek();
+                var prevMonthDate = this.getPrevMonthLastDate();
+                var theDates = this.getTheMonthDays();
+
+                while (weekNum--) {
+                    datesArr.unshift({ day: prevMonthDate--, isTheMonth: false });
+                }
+                var d = 1
+                while (theDates--) {
+                    var isActive = daysstatus[d - 1] === 1;
+                    datesArr.push({ day: d, isTheMonth: true, isActive: isActive });
+                    d++;
+                }
+                var count = 1;
+                while (datesArr.length < 42) {
+                    datesArr.push({ day: count++, isTheMonth: false });
+                }
+                this.datesArr = datesArr;
+            },
+            getTableData: function(records, year, month) {
+                var tableData = [];
+                records.forEach(function(item) {
+                    var tableItem = {};
+                    var onlineCount = 0;
+                    tableItem.deviceid = item.deviceid;
+                    item.daysstatus.forEach(function(item, idx) {
+                        var isOnline = item == 0 ? false : true;
+                        if (isOnline) {
+                            onlineCount++;
+                            tableItem[String(++idx)] = '1';
+                        } else {
+                            tableItem[String(++idx)] = '0';
+                        }
+                    })
+                    var onlineRate = (onlineCount / item.daysstatus.length) * 100;
+                    tableItem['onlinecount'] = onlineCount;
+                    tableItem['onlineRate'] = onlineRate.toFixed(2) + '%';
+                    tableItem.daysstatus = item.daysstatus;
+                    tableItem.year = year;
+                    tableItem.month = month;
+                    tableData.push(tableItem);
+
+                });
+                return tableData;
+            },
+            clean: function() {
+                this.sosoValue = '';
+                this.checkedDevice = [];
+                this.cleanSelected(this.groupslist);
+                this.treeData = this.groupslist;
+                this.tableData = [];
+            },
+            cleanSelected: function(treeDataFilter) {
+                var that = this;
+                for (var i = 0; i < treeDataFilter.length; i++) {
+                    var item = treeDataFilter[i];
+                    if (item != null) {
+                        item.checked = false;
+                        if (item.children && item.children.length > 0) {
+                            that.cleanSelected(item.children);
+                        }
+                    }
+                }
+            },
+            calcTableHeight: function() {
+                var wHeight = window.innerHeight;
+                this.tableHeight = wHeight - 125;
+            },
+        },
+        mounted: function() {
+            var me = this;
+            utils.queryDevicesTree(function(rootuser) {
+                if (rootuser) {
+                    me.groupslist = [utils.castUsersTreeToDevicesTree(rootuser, true)];
+                    me.treeData = me.groupslist;
+                }
+            });
             window.onresize = function() {
                 me.calcTableHeight();
             };
@@ -2642,6 +2899,8 @@ var reportForm = {
                         { title: '综合统计', name: 'reportOnlineSummary', icon: 'md-sunny' },
                         { title: '掉线报表', name: 'dropLineReport', icon: 'ios-git-pull-request' },
                         { title: '每日在线率', name: 'deviceOnlineDaily', icon: 'md-bulb' },
+                        { title: '车队日在线率', name: 'groupsOnlineDaily', icon: 'md-bulb' },
+                        { title: '车辆月在线率', name: 'deviceMonthOnlineDaily', icon: 'md-bulb' },
                     ]
                 },
             ]
@@ -2710,6 +2969,12 @@ var reportForm = {
                         break;
                     case 'deviceonlinedaily.html':
                         deviceOnlineDaily(groupslist);
+                        break;
+                    case 'groupsonlinedaily.html':
+                        groupsOnlineDaily(groupslist);
+                        break;
+                    case 'devicemonthonlinedaily.html':
+                        deviceMonthOnlineDaily(groupslist);
                         break;
                 }
             });

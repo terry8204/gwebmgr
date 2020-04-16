@@ -1,4 +1,4 @@
-<div id="deviceonlinedaily">
+<div id="groupsonlinedaily">
     <Row style="margin:10px;height: 32px;">
         <div style="float: left;">
             <div style="height: 32px; line-height: 32px;">{{$t("reportForm.selectDev")}}:&nbsp;</div>
@@ -14,10 +14,10 @@
             </div>
         </div>
         <div style="float: left;">
-            <div style="height: 32px; line-height: 32px;padding: 0 10px;">选择月份:&nbsp;</div>
+            <div style="height: 32px; line-height: 32px;padding: 0 10px;">选择日期:&nbsp;</div>
         </div>
         <div style="float: left;position: relative;">
-            <Date-Picker v-model="yearMonth" type="month" style="width: 150px"></Date-Picker>
+            <Date-Picker v-model="yearMonth" style="width: 150px"></Date-Picker>
         </div>
         <div style="margin-left:20px;float: left;">
             <i-button @click="clean" icon="ios-nuclear-outline">清除</i-button>

@@ -914,3 +914,59 @@ div.msg_content {
     width: 100%;
     height: 100%;
 }
+
+
+/* 日历 在线日期 */
+
+.calendar-wrap {
+    box-sizing: border-box;
+}
+
+.calendar-top {
+    width: 100%;
+    height: 35px;
+    background: #364860;
+    color: #ffffff;
+    position: relative;
+    font-size: 15px;
+}
+
+.calendar-top>div.date-wrap {
+    width: 100%;
+    text-align: center;
+    line-height: 35px;
+}
+
+.inner-wrap {
+    border-right: 1px solid #DDDDDD;
+}
+
+.week-wrap {
+    height: 40px;
+}
+
+.dates-wrap {
+    overflow: hidden;
+}
+
+.week-wrap>div,
+.dates-wrap>div {
+    float: left;
+    width: 42.66px;
+    height: 40px;
+    box-sizing: border-box;
+    border-left: 1px solid #DDDDDD;
+    border-bottom: 1px solid #DDDDDD;
+    font-size: 14px;
+    text-align: center;
+    line-height: 39px;
+}
+
+.active-day {
+    background: #364860;
+    color: #ffffff;
+}
+
+.noTheMonth {
+    opacity: 0.5;
+}

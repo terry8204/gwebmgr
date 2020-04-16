@@ -1,4 +1,4 @@
-<div id="deviceonlinedaily">
+<div id="devicemonthonlinedaily">
     <Row style="margin:10px;height: 32px;">
         <div style="float: left;">
             <div style="height: 32px; line-height: 32px;">{{$t("reportForm.selectDev")}}:&nbsp;</div>
@@ -29,4 +29,28 @@
     <div style="margin:10px;">
         <i-table ref="totalTable" :columns="columns" :data="tableData" border :height="tableHeight" :loading="loading"></i-table>
     </div>
+    <Modal v-model="modal" title="在线日期" width="332">
+        <div class="calendar-wrap">
+            <div class="calendar-top">
+                <div class="date-wrap">
+                    {{year}}年{{month}}月
+                </div>
+            </div>
+            <div class="inner-wrap">
+                <div class="week-wrap">
+                    <div v-for="item in textTop" :key="item">{{item}}</div>
+                </div>
+                <div class="dates-wrap">
+                    <div v-for="(item , index) in datesArr" :key="index" :style="{background:item.isTheMonth?'#EAEEF0':''}">
+                        <div class="full" :class="{noTheMonth:!item.isTheMonth ,'active-day':item.isActive}" :style="{cursor:item.isTheMonth?'pointer':''}">
+                            {{item.day}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div slot="footer">
+            <div style="padding: 6px 0;"></div>
+        </div>
+    </Modal>
 </div>

@@ -543,6 +543,14 @@ var myUrls = {
     reportDeviceOnlineDaily: function() {
         return this.apihosts + 'webapi?action=reportdeviceonlinedaily&token=' + token;
     },
+    // 查询 日在线率
+    reportGroupOnlineDaily: function() {
+        return this.apihosts + 'webapi?action=reportgrouponlinedaily&token=' + token;
+    },
+    // 查询 日在线率
+    reportDeviceOnlineMonth: function() {
+        return this.apihosts + 'webapi?action=reportdeviceonlinemonth&token=' + token;
+    },
 }
 
 

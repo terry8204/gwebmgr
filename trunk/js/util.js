@@ -1,5 +1,5 @@
 var utils = {
-    deviceInfos: null,
+    deviceInfos: {},
     renderPerson: function(h, params) {
         var data = params.data;
         return h('span', {}, [
@@ -688,7 +688,171 @@ var utils = {
     },
     isLocalhost: function() {
         return location.hostname.indexOf('localhost') != -1 || location.hostname.indexOf('127.0.0.1') != -1;
-    }
+    },
+    getDeviceListGroups: function(groups, isNeedDevice, username) {
+        var groupsList = [],
+            me = this;
+        if (groups != null) {
+            for (var i = 0; i < groups.length; ++i) {
+                var group = groups[i];
+                var groupObj = {
+                    title: group.groupname,
+                    groupid: group.groupid,
+                    username: username,
+                }
+                if (isNeedDevice) {
+                    groupObj.render = utils.renderGroup;
+                } else {
+                    groupObj.render = (function(group, username) {
+                        return function(h, params) {
+                            var data = params.data;
+                            return h('span', {
+                                on: {
+                                    'click': function() {
+                                        me.selectedUserName = username;
+                                        me.selectedGroupId = group.groupid;
+                                        me.selectedGroupName = group.groupname;
+                                    }
+                                },
+                                style: {
+                                    cursor: 'pointer',
+                                    color: (me.selectedUserName == username && me.selectedGroupId == group.groupid) ? '#2D8CF0' : '#000'
+                                }
+                            }, [
+                                h('span', [
+                                    h('Icon', {
+                                        props: {
+                                            type: 'ios-folder-open'
+                                        },
+                                        style: {
+                                            marginRight: '8px'
+                                        }
+                                    }),
+                                    h('span', data.title)
+                                ]),
+                            ])
+                        }
+                    })(group, username);
+                }
+                if (isNeedDevice && group.devices) {
+                    groupObj.children = [];
+                    group.devices.forEach(function(device) {
+                        groupObj.children.push({
+                            username: username,
+                            deviceid: device.deviceid,
+                            title: device.devicename,
+                            render: utils.renderDev
+                        });
+                        utils.deviceInfos[device.deviceid] = {
+                            deviceid: device.deviceid,
+                            devicename: device.devicename,
+                            username: username,
+                            groupid: group.groupid,
+                            groupname: group.groupname,
+                        }
+                    });
+                }
+                groupsList.push(groupObj);
+            }
+        }
+
+        if (groupsList.length == 0) {
+            groupsList.push({
+                title: 'Default',
+                groupid: 0,
+                username: username,
+                render: function(h, params) {
+                    var data = params.data;
+                    return h('span', {
+                        on: {
+                            'click': function() {
+                                me.selectedUserName = username;
+                                me.selectedGroupId = 0;
+                                me.selectedGroupName = 'Default';
+                            }
+                        },
+                        style: {
+                            cursor: 'pointer',
+                            color: (me.selectedUserName == username && me.selectedGroupId == 0) ? '#2D8CF0' : '#000'
+                        }
+                    }, [
+                        h('span', [
+                            h('Icon', {
+                                props: {
+                                    type: 'ios-folder-open'
+                                },
+                                style: {
+                                    marginRight: '8px'
+                                }
+                            }),
+                            h('span', data.title)
+                        ]),
+                    ])
+                }
+            });
+        }
+        return groupsList;
+
+    },
+    doCastUsersTreeToDevicesTree: function(usersTrees, isNeedDevice) {
+
+        var devicesTreeRecord = [];
+        if (usersTrees != null && usersTrees.length > 0) {
+            for (var i = 0; i < usersTrees.length; ++i) {
+                var usersTree = usersTrees[i];
+                var username = usersTree.username;
+                var subusers = usersTree.subusers;
+                var currentsubDevicesTreeRecord = {
+                    username: username,
+                    render: utils.renderPerson
+                };
+                currentsubDevicesTreeRecord.title = username;
+                var deviceListGroups = this.getDeviceListGroups(usersTree.groups, isNeedDevice, username);
+                if (username != null && subusers != null && subusers.length > 0) {
+                    var subDevicesTreeRecord = this.doCastUsersTreeToDevicesTree(subusers, isNeedDevice);
+                    subDevicesTreeRecord = deviceListGroups.concat(subDevicesTreeRecord);
+                    currentsubDevicesTreeRecord.children = subDevicesTreeRecord;
+
+                } else {
+                    currentsubDevicesTreeRecord.children = deviceListGroups;
+
+                }
+                devicesTreeRecord.push(currentsubDevicesTreeRecord);
+            }
+        }
+        return devicesTreeRecord;
+    },
+    castUsersTreeToDevicesTree: function(devicesTreeRecord, isNeedDevice) {
+        var iViewTree = {
+            render: utils.renderPerson,
+            expand: true,
+        };
+        if (devicesTreeRecord != null) {
+            var username = devicesTreeRecord.username;
+            var subusers = devicesTreeRecord.subusers;
+            iViewTree.title = username;
+            var deviceListGroups = this.getDeviceListGroups(devicesTreeRecord.groups, isNeedDevice, username);
+            if (username != null && subusers != null && subusers.length > 0) {
+
+                var subDevicesTreeRecord = this.doCastUsersTreeToDevicesTree(subusers, isNeedDevice);
+
+                iViewTree.children = deviceListGroups.concat(subDevicesTreeRecord);
+
+            } else {
+                iViewTree.children = deviceListGroups;
+            }
+        }
+        return iViewTree;
+    },
+    queryDevicesTree: function(callback) {
+        var url = myUrls.queryDevicesTree();
+        var data = {
+            username: userName
+        };
+        utils.sendAjax(url, data, function(respData) {
+            callback && callback(respData.rootuser);
+        });
+    },
 }
 
 try {
