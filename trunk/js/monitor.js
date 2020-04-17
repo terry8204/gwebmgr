@@ -222,12 +222,13 @@ var monitor = {
             var deviceid = data.deviceid;
             data.devicename = this.deviceInfos[deviceid] ? this.deviceInfos[deviceid].devicename : "";
             me.positionLastrecords[deviceid] = data;
-            me.updateTreeOnlineState();
-            me.updateDevLastPosition(data);
-            // console.log('轨迹push', deviceid, DateFormat.longToDateTimeStr(data.updatetime, 0));
-            if (me.currentDeviceId == deviceid) {
-                me.map && me.map.updateSingleMarkerState(deviceid);
-            };
+            isNeedRefreshMapUI = true;
+            // me.updateTreeOnlineState();
+            // me.updateDevLastPosition(data);
+            // // console.log('轨迹push', deviceid, DateFormat.longToDateTimeStr(data.updatetime, 0));
+            // if (me.currentDeviceId == deviceid) {
+            //     me.map && me.map.updateSingleMarkerState(deviceid);
+            // };
         },
         openDistance: function() {
             if (this.myDis != null) {
@@ -820,7 +821,7 @@ var monitor = {
                 dataType: 'json',
                 success: function(resp) {
                     if (resp.status == 0) {
-                        if (resp.records) {
+                        if (resp.records && resp.records.length > 0) {
                             resp.records.forEach(function(item) {
                                 if (item) {
                                     var deviceid = item.deviceid;
@@ -838,6 +839,7 @@ var monitor = {
                                     // console.log("lastPositon", item.devicename, DateFormat.longToDateTimeStr(item.updatetime, 0));
                                 }
                             })
+                            isNeedRefreshMapUI = true;
                             callback ? callback() : '';
                         }
                     } else if (resp.status > 9000) {
@@ -1165,20 +1167,34 @@ var monitor = {
                 this.map && this.map.updateLastTracks(this.positionLastrecords);
             }
         },
+
+        dorefreshMapUI: function() {
+            console.log("dorefreshMapUI enter");
+            if (isNeedRefreshMapUI == true) {
+                console.log("dorefreshMapUI refresh true");
+                isNeedRefreshMapUI = false;
+                this.map && this.map.updateLastTracks && this.map.updateLastTracks(this.positionLastrecords);
+                this.map && this.map.updateMarkersState && this.map.updateMarkersState(this.currentDeviceId);
+                this.updateTreeOnlineState();
+                this.caclOnlineCount();
+            }
+
+        },
         setIntervalReqRecords: function() {
             var me = this
             this.intervalInstanse = setInterval(function() {
+                //dorefreshUI
+                me.dorefreshMapUI();
                 me.intervalTime--;
                 if (me.intervalTime <= 0) {
                     me.intervalTime = me.stateIntervalTime;
                     // var devIdList = Object.keys(me.deviceInfos);
                     me.getLastPosition([], function() {
-                        me.map && me.map.updateLastTracks && me.map.updateLastTracks(me.positionLastrecords);
-                        me.map && me.map.updateMarkersState && me.map.updateMarkersState(me.currentDeviceId);
-                        me.updateTreeOnlineState();
-                        me.caclOnlineCount();
+                        // isNeedRefreshMapUI = true;
                     }, function(error) {});
                 }
+
+
             }, 1000);
         },
         handleMousemove: function(e) {
@@ -1288,9 +1304,10 @@ var monitor = {
                 });
                 me.$store.dispatch('setdeviceInfos', me.groups);
                 me.getLastPosition([], function(resp) {
+                    isNeedRefreshMapUI = true;
                     me.lastquerypositiontime = DateFormat.getCurrentUTC();
-                    me.caclOnlineCount();
-                    me.updateTreeOnlineState();
+                    // me.caclOnlineCount();
+                    // me.updateTreeOnlineState();
                     communicate.$on("positionlast", me.handleWebSocket);
                     communicate.$on("on-click-marker", me.openTreeDeviceNav);
                     communicate.$on("on-click-expiration", function(deviceid) {

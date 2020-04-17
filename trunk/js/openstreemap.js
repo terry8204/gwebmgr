@@ -1,5 +1,6 @@
 var markerHashMap = null;
-function OpenStreeMapCls () {
+
+function OpenStreeMapCls() {
     this.mapInstance = null;
     this.markerClusterer = null;
     this.lastTracks = null;
@@ -14,7 +15,7 @@ function OpenStreeMapCls () {
 OpenStreeMapCls.pt = OpenStreeMapCls.prototype;
 
 
-OpenStreeMapCls.pt.getIcon = function (track, zIndex) {
+OpenStreeMapCls.pt.getIcon = function(track, zIndex) {
 
     var isOnline = utils.getIsOnline(track);
 
@@ -34,11 +35,11 @@ OpenStreeMapCls.pt.getIcon = function (track, zIndex) {
         }
     };
     return new ol.style.Style({
-        image: new ol.style.Icon(/** @type {module:ol/style/Icon~Options} */({
+        image: new ol.style.Icon( /** @type {module:ol/style/Icon~Options} */ ({
             // anchor: [05, 0.5],
             crossOrigin: 'anonymous',
             src: imgPath,
-            rotation: track.course * Math.PI / 180,//角度转化为弧度
+            rotation: track.course * Math.PI / 180, //角度转化为弧度
             imgSize: [32, 32]
         })),
         text: new ol.style.Text({
@@ -58,11 +59,12 @@ OpenStreeMapCls.pt.getIcon = function (track, zIndex) {
 };
 
 
-OpenStreeMapCls.pt.setMarkerClusterer = function (lastTracks) {
+OpenStreeMapCls.pt.setMarkerClusterer = function(lastTracks) {
 
     this.lastTracks = lastTracks;
     if (this.markerClusterer == null) {
-        var features = [], iconFeature;
+        var features = [],
+            iconFeature;
 
         for (var key in lastTracks) {
             var track = lastTracks[key];
@@ -88,27 +90,31 @@ OpenStreeMapCls.pt.setMarkerClusterer = function (lastTracks) {
             source: new ol.source.Vector({
                 features: features
             }),
-            style: function (feature) {
+            style: function(feature) {
                 return feature.get('style');
             },
             updateWhileInteracting: true
         });
+        console.log('layerVector', this.layerVector);
         this.mapInstance.addLayer(this.layerVector);
         this.addMarkerClickEvent();
     }
 };
 
-OpenStreeMapCls.pt.addMarkerClickEvent = function () {
-    var map = this.mapInstance, me = this;
-    this.mapInstance.on('click', function (evt) {
-        var feature = map.forEachFeatureAtPixel(evt.pixel, function (feature, layer) {
+OpenStreeMapCls.pt.addMarkerClickEvent = function() {
+    var map = this.mapInstance,
+        me = this;
+    this.mapInstance.on('click', function(evt) {
+        var feature = map.forEachFeatureAtPixel(evt.pixel, function(feature, layer) {
             return feature;
         });
 
         if (feature && feature.deviceid) {
             document.getElementById('popup').style.display = 'block';
-            var deviceid = feature.deviceid, track = me.lastTracks[deviceid];
-            var wContainer = document.getElementById('popup-content'), posi = me.fromLonLat(track.callon, track.callat);
+            var deviceid = feature.deviceid,
+                track = me.lastTracks[deviceid];
+            var wContainer = document.getElementById('popup-content'),
+                posi = me.fromLonLat(track.callon, track.callat);
             wContainer.innerHTML = me.getInfoWindowContent(track);
             me.popup.setPosition(posi);
             me.mapInstance.getView().setCenter(posi);
@@ -118,8 +124,9 @@ OpenStreeMapCls.pt.addMarkerClickEvent = function () {
     })
 }
 
-OpenStreeMapCls.pt.createMarkr = function (track) {
-    var tempPoint = ol.proj.fromLonLat([track.callon, track.callat]), iconFeature;
+OpenStreeMapCls.pt.createMarkr = function(track) {
+    var tempPoint = ol.proj.fromLonLat([track.callon, track.callat]),
+        iconFeature;
     iconFeature = new ol.Feature({
         geometry: new ol.geom.Point(tempPoint),
     });
@@ -127,18 +134,20 @@ OpenStreeMapCls.pt.createMarkr = function (track) {
     return iconFeature;
 }
 
-OpenStreeMapCls.pt.getInfoWindowContent = function (track) {
+OpenStreeMapCls.pt.getInfoWindowContent = function(track) {
     var address = this.getDevAddress(track);
     return utils.getWindowContent(track, address);
 }
 
-OpenStreeMapCls.pt.getDevAddress = function (track) {
-    var callon = track.callon.toFixed(5), callat = track.callat.toFixed(5), me = this;
+OpenStreeMapCls.pt.getDevAddress = function(track) {
+    var callon = track.callon.toFixed(5),
+        callat = track.callat.toFixed(5),
+        me = this;
     var address = LocalCacheMgr.getAddress(callon, callat);
     if (address) {
         return address;
     } else {
-        utils.getJiuHuAddressSyn(callon, callat, function (respAddress) {
+        utils.getJiuHuAddressSyn(callon, callat, function(respAddress) {
             if (respAddress.address) {
                 var wContent = utils.getWindowContent(track, respAddress.address);
                 document.getElementById('popup-content').innerHTML = wContent;
@@ -150,9 +159,10 @@ OpenStreeMapCls.pt.getDevAddress = function (track) {
 }
 
 
-OpenStreeMapCls.pt.onClickDevice = function (deviceid) {
+OpenStreeMapCls.pt.onClickDevice = function(deviceid) {
     document.getElementById('popup').style.display = 'block';
-    var track = this.lastTracks[deviceid], posi = this.fromLonLat(track.callon, track.callat);
+    var track = this.lastTracks[deviceid],
+        posi = this.fromLonLat(track.callon, track.callat);
     var wContainer = document.getElementById('popup-content');
     wContainer.innerHTML = this.getInfoWindowContent(track);
     this.popup.setPosition(posi);
@@ -172,7 +182,7 @@ OpenStreeMapCls.pt.onClickDevice = function (deviceid) {
 
 
 
-OpenStreeMapCls.pt.initWindow = function () {
+OpenStreeMapCls.pt.initWindow = function() {
     var me = this;
     var wContainer = document.getElementById('popup');
     var closeBtn = document.getElementById('popup-close');
@@ -189,7 +199,7 @@ OpenStreeMapCls.pt.initWindow = function () {
     //将覆盖层添加到map中
     this.mapInstance.addOverlay(this.popup);
 
-    closeBtn.onclick = function (e) {
+    closeBtn.onclick = function(e) {
         document.getElementById('popup').style.display = 'none';
     }
 }
@@ -198,7 +208,7 @@ OpenStreeMapCls.pt.initWindow = function () {
 
 
 
-OpenStreeMapCls.pt.initMap = function () {
+OpenStreeMapCls.pt.initMap = function() {
     document.getElementById('my-map').innerHTML = "<div id='popup' class='ol-popup'><div id='popup-close'>X</div><div id='popup-content'></div></div>";
     var projection = ol.proj.get('EPSG:4326');
     this.mapInstance = new ol.Map({
@@ -216,13 +226,13 @@ OpenStreeMapCls.pt.initMap = function () {
     });
 }
 
-OpenStreeMapCls.pt.fromLonLat = function (lon, lat) {
+OpenStreeMapCls.pt.fromLonLat = function(lon, lat) {
     return ol.proj.fromLonLat([lon, lat]);
 }
 
-OpenStreeMapCls.pt.updateLastTracks = function (lastTracks) {
+OpenStreeMapCls.pt.updateLastTracks = function(lastTracks) {
     this.lastTracks = lastTracks;
-    var newMarkers = [];
+    var isNeedRefreshMarkers = false;
     for (var key in this.lastTracks) {
         if (this.lastTracks.hasOwnProperty(key)) {
             var isHas = false;
@@ -234,17 +244,19 @@ OpenStreeMapCls.pt.updateLastTracks = function (lastTracks) {
             if (!isHas) {
                 var marker = this.createMarkr(track);
                 this.markerHashMap[track.deviceid] = marker;
-                newMarkers.push(marker);
+                isNeedRefreshMarkers = true;
             }
         }
     }
-    if (newMarkers.length) {
+    if (isNeedRefreshMarkers == true) {
         var layerVectorSource = Object.values(this.markerHashMap);
-        this.layerVector.setSource(layerVectorSource);
+        this.layerVector.setSource(new ol.source.Vector({
+            features: layerVectorSource
+        }), );
     }
 }
 
-OpenStreeMapCls.pt.updateSingleMarkerState = function (deviceid) {
+OpenStreeMapCls.pt.updateSingleMarkerState = function(deviceid) {
     var track = this.lastTracks[deviceid];
     var marker = this.markerHashMap[deviceid];
     marker.setStyle(this.getIcon(track, 1));
@@ -252,7 +264,7 @@ OpenStreeMapCls.pt.updateSingleMarkerState = function (deviceid) {
 }
 
 
-OpenStreeMapCls.pt.updateMarkersState = function (currentDeviceId) {
+OpenStreeMapCls.pt.updateMarkersState = function(currentDeviceId) {
     for (var key in this.markerHashMap) {
         var track = this.lastTracks[key];
         var marker = this.markerHashMap[key];
@@ -261,7 +273,8 @@ OpenStreeMapCls.pt.updateMarkersState = function (currentDeviceId) {
         if (currentDeviceId && key === currentDeviceId && document.getElementById('popup').style.display === 'block') {
             var track = this.lastTracks[currentDeviceId];
             if (track) {
-                var wContainer = document.getElementById('popup-content'), posi = this.fromLonLat(track.callon, track.callat);
+                var wContainer = document.getElementById('popup-content'),
+                    posi = this.fromLonLat(track.callon, track.callat);
                 wContainer.innerHTML = this.getInfoWindowContent(track);
                 this.popup.setPosition(posi);
                 // this.mapInstance.getView().setCenter(posi);

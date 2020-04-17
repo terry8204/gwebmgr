@@ -2643,12 +2643,12 @@ function groupsOnlineDaily(groupslist) {
                     me.isSpin = false;
                     if (rootuserinfo) {
                         rootuser = rootuserinfo;
-                        me.groupslist = [utils.castUsersTreeToDevicesTree(rootuserinfo, true)];
+                        me.groupslist = [utils.castUsersTreeToDevicesTree(rootuserinfo, false)];
                         me.treeData = me.groupslist;
                     }
                 });
             } else {
-                me.groupslist = [utils.castUsersTreeToDevicesTree(rootuser, true)];
+                me.groupslist = [utils.castUsersTreeToDevicesTree(rootuser, false)];
                 me.treeData = me.groupslist;
             }
             window.onresize = function() {

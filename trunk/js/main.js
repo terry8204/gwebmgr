@@ -12,6 +12,7 @@ var rootuser = null; // tree users
 var isNeedRefresh = false;
 var isToAlarmListRecords = false;
 var isToPhoneAlarmRecords = false;
+var isNeedRefreshMapUI = false;
 document.title = isZh ? "位置信息服务平台" : "Location information service platform";
 
 

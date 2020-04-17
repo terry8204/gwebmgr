@@ -1,4 +1,4 @@
-function BMapClass () {
+function BMapClass() {
     this.mapInstance = null;
     this.markerClusterer = null;
     this.lastTracks = null;
@@ -10,7 +10,7 @@ function BMapClass () {
 
 BMapClass.pt = BMapClass.prototype;
 
-BMapClass.pt.initMap = function () {
+BMapClass.pt.initMap = function() {
     this.mapInstance = new BMap.Map('my-map', { minZoom: 4, maxZoom: 20, enableMapClick: false })
     this.mapInstance.enableScrollWheelZoom()
     this.mapInstance.enableAutoResize()
@@ -19,8 +19,8 @@ BMapClass.pt.initMap = function () {
 
     // var top_left_control = new BMap.ScaleControl({anchor: BMAP_ANCHOR_BOTTOM_LEFT});
     var top_left_control = new BMap.ScaleControl({
-        anchor: BMAP_ANCHOR_BOTTOM_LEFT
-    }) // 左上角，添加比例尺
+            anchor: BMAP_ANCHOR_BOTTOM_LEFT
+        }) // 左上角，添加比例尺
     var top_left_navigation = new BMap.NavigationControl() //左上角，添加默认缩放平移控件
     this.mapInstance.addControl(top_left_control)
     this.mapInstance.addControl(top_left_navigation)
@@ -32,7 +32,7 @@ BMapClass.pt.initMap = function () {
 }
 
 
-BMapClass.pt.setMarkerClusterer = function (lastTracks) {
+BMapClass.pt.setMarkerClusterer = function(lastTracks) {
     // this.lastTracks = deepClone(lastTracks);
     this.lastTracks = lastTracks;
     if (this.markerClusterer == null) {
@@ -44,7 +44,7 @@ BMapClass.pt.setMarkerClusterer = function (lastTracks) {
 
 
 
-BMapClass.pt.getMarkers = function () {
+BMapClass.pt.getMarkers = function() {
     var markers = [];
     for (var key in this.lastTracks) {
         var track = this.lastTracks[key];
@@ -61,7 +61,7 @@ BMapClass.pt.getMarkers = function () {
     return markers;
 }
 
-BMapClass.pt.updateMarkerLabel = function (deviceid) {
+BMapClass.pt.updateMarkerLabel = function(deviceid) {
     var marker = this.markerHashMap[deviceid];
     if (marker) {
         var track = this.lastTracks[deviceid];
@@ -73,9 +73,9 @@ BMapClass.pt.updateMarkerLabel = function (deviceid) {
 }
 
 
-BMapClass.pt.addMarkerEvent = function (marker) {
+BMapClass.pt.addMarkerEvent = function(marker) {
     var self = this;
-    marker.addEventListener("click", function () {
+    marker.addEventListener("click", function() {
         var deviceid = marker.deviceid;
         communicate.$emit("on-click-marker", deviceid);
         self.openInfoWindow(marker, deviceid);
@@ -84,7 +84,7 @@ BMapClass.pt.addMarkerEvent = function (marker) {
 
 
 
-BMapClass.pt.openInfoWindow = function (marker, deviceid, zoom) {
+BMapClass.pt.openInfoWindow = function(marker, deviceid, zoom) {
     var track = this.lastTracks[deviceid];
     var address = this.getDevAddress(track);
     var mapInfoWindow = this.getInfoWindow(track, address);
@@ -102,7 +102,7 @@ BMapClass.pt.openInfoWindow = function (marker, deviceid, zoom) {
 }
 
 
-BMapClass.pt.getCarLabel = function (track) {
+BMapClass.pt.getCarLabel = function(track) {
     var label = new BMap.Label(track.devicename, {
         offset: new BMap.Size(35, 0)
     });
@@ -115,7 +115,7 @@ BMapClass.pt.getCarLabel = function (track) {
     return label;
 }
 
-BMapClass.pt.getIcon = function (track) {
+BMapClass.pt.getIcon = function(track) {
     var imgPath = ''
     if (utils.isLocalhost()) {
         imgPath = myUrls.viewhost + 'images/carstate'
@@ -136,7 +136,7 @@ BMapClass.pt.getIcon = function (track) {
 }
 
 
-BMapClass.pt.getDevAddress = function (track) {
+BMapClass.pt.getDevAddress = function(track) {
     var self = this;
     var callon = track.callon.toFixed(5);
     var callat = track.callat.toFixed(5);
@@ -146,7 +146,7 @@ BMapClass.pt.getDevAddress = function (track) {
     if (address != null) {
         return address;
     }
-    utils.getBaiduAddressFromBaidu(b_lon, b_lat, function (b_address) {
+    utils.getBaiduAddressFromBaidu(b_lon, b_lat, function(b_address) {
         if (b_address.length) {
             if (self.mapInfoWindow.isOpen()) {
                 var content = utils.getWindowContent(track, b_address);
@@ -154,7 +154,7 @@ BMapClass.pt.getDevAddress = function (track) {
             };
             LocalCacheMgr.setAddress(callon, callat, b_address);
         } else {
-            utils.getJiuHuAddressSyn(callon, callat, function (resp) {
+            utils.getJiuHuAddressSyn(callon, callat, function(resp) {
                 var j_address = resp.address
                 if (self.mapInfoWindow.isOpen()) {
                     var content = utils.getWindowContent(track, j_address);
@@ -167,7 +167,7 @@ BMapClass.pt.getDevAddress = function (track) {
     return '正在解析地址...';
 }
 
-BMapClass.pt.getInfoWindow = function (track, address) {
+BMapClass.pt.getInfoWindow = function(track, address) {
     var option = {
         width: 350,
     };
@@ -178,7 +178,7 @@ BMapClass.pt.getInfoWindow = function (track, address) {
     return infoWindow;
 }
 
-BMapClass.pt.onClickDevice = function (deviceid) {
+BMapClass.pt.onClickDevice = function(deviceid) {
     var marker = this.markerHashMap[deviceid];
     for (var key in this.markerHashMap) {
         var itemMarker = this.markerHashMap[key];
@@ -194,7 +194,7 @@ BMapClass.pt.onClickDevice = function (deviceid) {
     }
 }
 
-BMapClass.pt.addMapFence = function (deviceid, distance) {
+BMapClass.pt.addMapFence = function(deviceid, distance) {
     var mks = this.markerClusterer.getMarkers();
     var point = null;
     for (var i = 0; i < mks.length; i++) {
@@ -206,13 +206,13 @@ BMapClass.pt.addMapFence = function (deviceid, distance) {
     };
     if (point) {
         var circle = new BMap.Circle(point, distance, { strokeColor: "red", fillColor: "#eee", strokeWeight: 0.8, fillOpacity: 0.5 });
-        circle.circleid = deviceid;   // 给围栏做标记
+        circle.circleid = deviceid; // 给围栏做标记
         this.circleList.push(circle);
         this.mapInstance.addOverlay(circle);
     }
 }
 
-BMapClass.pt.cancelFence = function (deviceid) {
+BMapClass.pt.cancelFence = function(deviceid) {
     var mks = this.mapInstance.getOverlays();
     for (var i = 0; i < mks.length; i++) {
         var mk = mks[i];
@@ -224,7 +224,7 @@ BMapClass.pt.cancelFence = function (deviceid) {
 }
 
 
-BMapClass.pt.updateLastTracks = function (lastTracks) {
+BMapClass.pt.updateLastTracks = function(lastTracks) {
     this.lastTracks = lastTracks;
     for (var key in this.lastTracks) {
         if (this.lastTracks.hasOwnProperty(key)) {
@@ -249,7 +249,7 @@ BMapClass.pt.updateLastTracks = function (lastTracks) {
     }
 }
 
-BMapClass.pt.updateMarkersState = function (deviceid) {
+BMapClass.pt.updateMarkersState = function(deviceid) {
     var markers = this.markerClusterer.getMarkers();
     for (var i = 0; i < markers.length; i++) {
         var marker = markers[i];
@@ -276,7 +276,7 @@ BMapClass.pt.updateMarkersState = function (deviceid) {
     }
 }
 
-BMapClass.pt.updateSingleMarkerState = function (deviceid) {
+BMapClass.pt.updateSingleMarkerState = function(deviceid) {
     var markers = this.markerClusterer.getMarkers();
     for (var i = 0; i < markers.length; i++) {
         var marker = markers[i];
