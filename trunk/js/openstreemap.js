@@ -252,7 +252,7 @@ OpenStreeMapCls.pt.updateLastTracks = function(lastTracks) {
         var layerVectorSource = Object.values(this.markerHashMap);
         this.layerVector.setSource(new ol.source.Vector({
             features: layerVectorSource
-        }), );
+        }));
     }
 }
 
