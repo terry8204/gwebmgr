@@ -436,7 +436,16 @@
                                             color: (me.selectedUserName == username && me.selectedGroupId == group.groupid) ? '#2D8CF0' : '#000'
                                         }
                                     }, [
+
                                         h('span', [
+                                            h('Radio', {
+                                                props: {
+                                                    value: (me.selectedUserName == username && me.selectedGroupId == group.groupid)
+                                                },
+                                                style: {
+                                                    marginRight: '4px'
+                                                }
+                                            }),
                                             h('Icon', {
                                                 props: {
                                                     type: 'ios-folder-open'

@@ -2624,7 +2624,7 @@ function groupsOnlineDaily(groupslist) {
                         data.groups.push({
                             username: group.username,
                             groupid: group.groupid,
-                            groupname: group.title,
+                            groupname: group.groupname,
                         })
                     }
                 });
@@ -2636,7 +2636,6 @@ function groupsOnlineDaily(groupslist) {
                             me.tableData = respData.records;
                         }
                     }
-                    console.log(respData);
                 });
             },
             clean: function() {

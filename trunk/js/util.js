@@ -699,6 +699,7 @@ var utils = {
                     title: (group.devices && group.devices.length != 0) ? group.groupname + '(' + group.devices.length + ')' : group.groupname + '(0)',
                     groupid: group.groupid,
                     username: username,
+                    groupname: group.groupname
                 }
                 if (isNeedDevice) {
                     groupObj.render = utils.renderGroup;
