@@ -2374,7 +2374,7 @@ function dropLineReport(groupslist) {
 // 每日在线率
 function deviceOnlineDaily(groupslist) {
 
-    new Vue({
+    vueInstanse = new Vue({
         el: "#deviceonlinedaily",
         i18n: utils.getI18n(),
         mixins: [treeMixin],
@@ -2387,6 +2387,7 @@ function deviceOnlineDaily(groupslist) {
             daycount: 0,
             columns: [
                 { type: 'index' },
+                { title: '所属账号', key: 'username' },
                 { title: '设备序号', key: 'deviceid' },
                 { title: '设备名称', key: 'devicename' },
             ],
@@ -2409,9 +2410,18 @@ function deviceOnlineDaily(groupslist) {
                 }
                 this.checkedDevice.forEach(function(group) {
                     if (!group.children) {
-                        data.deviceids.push(group.deviceid);
+                        if (group.deviceid != null) {
+                            data.deviceids.push(group.deviceid);
+                        } else {
+                            isNull = true;
+                        }
                     }
                 });
+                console.log(this.checkedDevice);
+                if (data.deviceids.length === 0) {
+                    this.$Message.error("选择组没有设备!");
+                    return;
+                }
                 utils.sendAjax(url, data, function(respData) {
                     me.loading = false;
                     if (respData.status === 0) {
@@ -2426,7 +2436,6 @@ function deviceOnlineDaily(groupslist) {
                     var tableItem = {};
                     var onlineCount = 0;
                     tableItem.deviceid = item.deviceid;
-
                     item.daysstatus.forEach(function(item, idx) {
                         var isOnline = item == 0 ? false : true;
                         if (isOnline) {
@@ -2471,6 +2480,24 @@ function deviceOnlineDaily(groupslist) {
             daycount: function(newVla) {
                 var columns = [
                     { type: 'index', width: 60, fixed: 'left' },
+                    {
+                        title: '所属账号',
+                        key: 'username',
+                        fixed: 'left',
+                        width: 120,
+                        render: function(h, parmas) {
+                            var deviceid = parmas.row.deviceid;
+                            var userName = "";
+                            vueInstanse.checkedDevice.forEach(function(group) {
+                                if (!group.children) {
+                                    if (group.deviceid === deviceid) {
+                                        userName = group.username;
+                                    }
+                                }
+                            });
+                            return h('span', {}, userName);
+                        }
+                    },
                     {
                         title: '设备名称',
                         key: 'devicename',
@@ -2550,6 +2577,7 @@ function groupsOnlineDaily(groupslist) {
             yearMonth: new Date(),
             columns: [
                 { type: 'index', width: 60 },
+                { title: '所属账号', key: 'username' },
                 { title: '分组名称', key: 'groupname' },
                 {
                     title: '总数量/在线数量',
@@ -2746,9 +2774,17 @@ function deviceMonthOnlineDaily(groupslist) {
                 }
                 this.checkedDevice.forEach(function(group) {
                     if (!group.children) {
-                        data.deviceids.push(group.deviceid);
+                        if (group.deviceid != null) {
+                            data.deviceids.push(group.deviceid);
+                        } else {
+                            isNull = true;
+                        }
                     }
                 });
+                if (data.deviceids.length === 0) {
+                    this.$Message.error("选择组没有设备!");
+                    return;
+                }
                 utils.sendAjax(url, data, function(respData) {
                     me.loading = false;
                     console.log("respData", respData);
