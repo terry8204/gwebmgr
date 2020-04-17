@@ -696,7 +696,7 @@ var utils = {
             for (var i = 0; i < groups.length; ++i) {
                 var group = groups[i];
                 var groupObj = {
-                    title: group.groupname,
+                    title: (group.devices && group.devices.length != 0) ? group.groupname + '(' + group.devices.length + ')' : group.groupname + '(0)',
                     groupid: group.groupid,
                     username: username,
                 }
@@ -737,6 +737,7 @@ var utils = {
                 if (isNeedDevice && group.devices) {
                     groupObj.children = [];
                     group.devices.forEach(function(device) {
+
                         groupObj.children.push({
                             username: username,
                             deviceid: device.deviceid,
@@ -758,7 +759,7 @@ var utils = {
 
         if (groupsList.length == 0) {
             groupsList.push({
-                title: 'Default',
+                title: 'Default(0)',
                 groupid: 0,
                 username: username,
                 render: function(h, params) {
