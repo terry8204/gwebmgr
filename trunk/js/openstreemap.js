@@ -270,14 +270,17 @@ OpenStreeMapCls.pt.updateMarkersState = function(currentDeviceId) {
         var marker = this.markerHashMap[key];
         marker.setStyle(this.getIcon(track, 1));
         marker.setGeometry(new ol.geom.Point(this.fromLonLat(track.callon, track.callat)));
-        if (currentDeviceId && key === currentDeviceId && document.getElementById('popup').style.display === 'block') {
-            var track = this.lastTracks[currentDeviceId];
-            if (track) {
-                var wContainer = document.getElementById('popup-content'),
-                    posi = this.fromLonLat(track.callon, track.callat);
-                wContainer.innerHTML = this.getInfoWindowContent(track);
-                this.popup.setPosition(posi);
-                // this.mapInstance.getView().setCenter(posi);
+        if (currentDeviceId && key === currentDeviceId) {
+            var popup = document.getElementById('popup');
+            if (popup.style.display === 'block') {
+                var track = this.lastTracks[currentDeviceId];
+                if (track) {
+                    var wContainer = document.getElementById('popup-content'),
+                        posi = this.fromLonLat(track.callon, track.callat);
+                    wContainer.innerHTML = this.getInfoWindowContent(track);
+                    this.popup.setPosition(posi);
+                    // this.mapInstance.getView().setCenter(posi);
+                }
             }
         }
     }

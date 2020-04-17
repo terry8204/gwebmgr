@@ -2709,6 +2709,23 @@ function deviceMonthOnlineDaily(groupslist) {
             daycount: 0,
             columns: [
                 { type: 'index', width: 60 },
+                {
+                    title: '所属账号',
+                    key: 'username',
+                    width: 120,
+                    render: function(h, parmas) {
+                        var deviceid = parmas.row.deviceid;
+                        var userName = "";
+                        vueInstanse.checkedDevice.forEach(function(group) {
+                            if (!group.children) {
+                                if (group.deviceid === deviceid) {
+                                    userName = group.username;
+                                }
+                            }
+                        });
+                        return h('span', {}, userName);
+                    }
+                },
                 { title: '设备序号', key: 'deviceid' },
                 {
                     title: '设备名称',
