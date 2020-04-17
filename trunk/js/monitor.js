@@ -221,7 +221,6 @@ var monitor = {
             var me = this;
             var deviceid = data.deviceid;
             data.devicename = this.deviceInfos[deviceid] ? this.deviceInfos[deviceid].devicename : "";
-            me.positionLastrecords[deviceid] = data;
             isNeedRefreshMapUI = true;
             // me.updateTreeOnlineState();
             me.updateDevLastPosition(data);
@@ -1136,7 +1135,7 @@ var monitor = {
                 item.devicename = this.deviceInfos[deviceid].devicename;
                 item.updatetimeStr = DateFormat.longToDateTimeStr(item.updatetime, 0);
                 this.positionLastrecords[deviceid] = item;
-                this.map && this.map.updateLastTracks(this.positionLastrecords);
+                // this.map && this.map.updateLastTracks(this.positionLastrecords);
             }
         },
 
