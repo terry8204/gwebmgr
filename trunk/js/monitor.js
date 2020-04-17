@@ -224,11 +224,11 @@ var monitor = {
             me.positionLastrecords[deviceid] = data;
             isNeedRefreshMapUI = true;
             // me.updateTreeOnlineState();
-            // me.updateDevLastPosition(data);
+            me.updateDevLastPosition(data);
             // // console.log('轨迹push', deviceid, DateFormat.longToDateTimeStr(data.updatetime, 0));
-            // if (me.currentDeviceId == deviceid) {
-            //     me.map && me.map.updateSingleMarkerState(deviceid);
-            // };
+            if (me.currentDeviceId == deviceid) {
+                me.map && me.map.updateSingleMarkerState(deviceid);
+            };
         },
         openDistance: function() {
             if (this.myDis != null) {

@@ -678,6 +678,7 @@ var vRoot = new Vue({
         },
         wsCallback: function(resp) {
             var action = resp.action;
+            console.log('wsCallback', action)
             if (action === "remindmsg") {
                 var data = resp.remindMsg;
                 communicate.$emit("remindmsg", data);
