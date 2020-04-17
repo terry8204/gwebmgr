@@ -37,8 +37,10 @@ BMapClass.pt.setMarkerClusterer = function(lastTracks) {
     this.lastTracks = lastTracks;
     if (this.markerClusterer == null) {
         var markers = this.getMarkers();
-        this.markerClusterer = new BMapLib.MarkerClusterer(this.mapInstance, { markers: markers });
-        this.markerClusterer.setMaxZoom(17);
+        // this.markerClusterer = new MarkerClusterer(this.mapInstance, { markers: markers });
+        this.markerClusterer = new BMapLib.MarkerClusterer(this.mapInstance, { markers: markers, minClusterSize: 2 });
+        this.markerClusterer.setMaxZoom(18);
+
     }
 };
 

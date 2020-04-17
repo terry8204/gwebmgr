@@ -670,39 +670,11 @@ var monitor = {
             this.scrollToCurruntDevice(deviceid);
         },
         scrollToCurruntDevice: function(deviceid) {
-
             var me = this;
             setTimeout(function() {
-                var elWraper = me.$refs.treeWraper;
-                var wrapHeight = elWraper.getBoundingClientRect().height;
-                var sHeight = 0;
-
-                for (var i = 0; i < me.groups.length; i++) {
-                    var group = me.groups[i]
-                    var isBreak = false;
-                    sHeight += 32;
-                    if (group.expand) {
-                        var devices = group.devices;
-                        for (var j = 0; j < devices.length; j++) {
-                            var device = devices[j];
-                            sHeight += 27;
-                            if (device.deviceid === deviceid) {
-                                isBreak = true;
-                                sHeight += 58;
-                                break;
-                            }
-                        }
-                        sHeight += 10;
-                    }
-                    if (isBreak) break;
-                };
-
-                if (sHeight < wrapHeight) {
-                    $(elWraper).animate({ scrollTop: 0 }, 500);
-                } else {
-                    $(elWraper).animate({ scrollTop: sHeight - (wrapHeight / 3) }, 500);
-                }
-
+                var a = document.createElement('a');
+                a.href = '#' + deviceid;
+                a.click();
             }, 500);
         },
         sosoValueChange: function() {
@@ -1169,9 +1141,9 @@ var monitor = {
         },
 
         dorefreshMapUI: function() {
-            console.log("dorefreshMapUI enter");
+            // console.log("dorefreshMapUI enter");
             if (isNeedRefreshMapUI == true) {
-                console.log("dorefreshMapUI refresh true");
+                // console.log("dorefreshMapUI refresh true");
                 isNeedRefreshMapUI = false;
                 this.map && this.map.updateLastTracks && this.map.updateLastTracks(this.positionLastrecords);
                 this.map && this.map.updateMarkersState && this.map.updateMarkersState(this.currentDeviceId);

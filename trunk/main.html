@@ -274,7 +274,7 @@
                                 <b v-text="group.title"></b>
                             </dt>
                             <dd style="padding:5px;border-bottom:1px solid #ddd" v-if="group.expand">
-                                <div v-for="(device , index) in group.devices" :key="device.deviceid" :data-id="device.deviceid" style="padding-left:15px">
+                                <div v-for="(device , index) in group.devices" :key="device.deviceid" :id="device.deviceid" :data-id="device.deviceid" style="padding-left:15px">
                                     <div :class="{'active-dev-offline':device.isSelected}" style="margin:3px 0;" :ref="device.deviceid">
                                         <div style="padding:3px 5px;cursor: pointer;" :style="{color: device.isOnline ? (device.isMoving ? '#33DAD0' :'#F69679') : '#B1BBC2'}" @click="selectedDev(device)">
                                             <Icon type="md-person"/> 
@@ -325,7 +325,7 @@
                                     <b v-text="group.title"></b>
                                 </dt>
                                 <dd style="padding:5px;border-bottom:1px solid #ddd" v-if="group.expand && group.isShow">
-                                    <div v-for="(device , index) in group.devices" :key="device.deviceid" style="padding-left:15px" v-if="device.isOnline">
+                                    <div v-for="(device , index) in group.devices" :key="device.deviceid" :id="device.deviceid" style="padding-left:15px" v-if="device.isOnline">
                                         <div :class="{'active-dev-offline':device.isSelected}" style="margin:3px 0;" :ref="device.deviceid">
                                             <div style="padding:3px 5px;cursor: pointer;" :style="{color: device.isOnline ? (device.isMoving ? '#33DAD0' :'#F69679') : '#B1BBC2'}" @click="selectedDev(device)">
                                                 <Icon type="md-person"/> 
@@ -376,7 +376,7 @@
                                     <b v-text="group.title"></b>
                                 </dt>
                                 <dd style="padding:5px;border-bottom:1px solid #ddd" v-if="group.expand && group.isShow">
-                                    <div v-for="(device , index) in group.devices" :key="device.deviceid" style="padding-left:15px" v-if="device.isStock">
+                                    <div v-for="(device , index) in group.devices" :key="device.deviceid" :id="device.deviceid" style="padding-left:15px" v-if="device.isStock">
                                         <div :class="{'active-dev-offline':device.isSelected}" style="margin:3px 0;" :ref="device.deviceid">
                                             <div style="padding:3px 5px;cursor: pointer;" :style="{color:'#B1BBC2'}" @click="selectedDev(device)">
                                                 <Icon type="md-person"/> 
@@ -427,7 +427,7 @@
                 <b v-text="group.title"></b>
             </dt>
             <dd style="padding:5px;border-bottom:1px solid #ddd" v-if="group.expand && group.isShow">
-                <div v-for="(device , index) in group.devices" :key="device.deviceid" style="padding-left:15px" v-if="device.isOffline">
+                <div v-for="(device , index) in group.devices" :key="device.deviceid" :id="device.deviceid" style="padding-left:15px" v-if="device.isOffline">
                     <div :class="{'active-dev-offline':device.isSelected}" style="margin:3px 0;" :ref="device.deviceid">
                         <div style="padding:3px 5px;cursor: pointer;" :style="{color:'#B1BBC2'}" @click="selectedDev(device)">
                             <Icon type="md-person"/> 

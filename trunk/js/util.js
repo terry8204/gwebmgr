@@ -1157,6 +1157,7 @@ var asyncLoadJs = function(jsName, callback) {
             baidu: 'https://api.map.baidu.com/api?v=3.0&ak=' + baiduMapKey + '&callback=loadBMapSucc',
             textIconoverlay: getPath + 'texticonoverlay_min.js',
             distancetool: getPath + 'distancetool_min.js',
+            // bmarkerclusterer: getPath + "baidumarkercluternew.js",
             bmarkerclusterer: getPath + "markerclusterer.js",
 
             google: "https://maps.google.com/maps/api/js?v=3.1&sensor=false&language=" + (isZh ? 'cn' : 'en') + "&key=" + googleMapKey + "&cb=loadBMapSucc",
