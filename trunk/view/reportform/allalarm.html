@@ -3,14 +3,14 @@
     <div class="report-item-header">
         <Row style="margin:10px;height: 35px;">
             <div style="float: left;">
-                <div style="height: 35px; line-height: 35px;">{{$t("reportForm.selectDev")}}:&nbsp;</div> 
+                <div style="height: 35px; line-height: 35px;">{{$t("reportForm.selectDev")}}:&nbsp;</div>
             </div>
             <div style="float: left;position: relative;width: 300px;">
                 <div class="search-wrapper" v-click-outside.capture="onClickOutside">
-                    <i-input v-model.trim="sosoValue"  icon="ios-search-outline" @on-change="sosoValueChange" @on-blur="blur" @on-focus="focus" :placeholder="placeholder" @on-click="focus"></i-input>
+                    <i-input v-model.trim="sosoValue" icon="ios-search-outline" @on-change="sosoValueChange" @on-blur="blur" :readonly="readonly" @on-focus="focus" :placeholder="placeholder" @on-click="focus"></i-input>
                     <transition name="fade">
                         <ul class="search-item-wrapper" v-show="isShowMatchDev">
-                            <li  class="demo-auto-complete-item" v-for="item in filterData">
+                            <li class="demo-auto-complete-item" v-for="item in filterData">
                                 <div class="demo-auto-complete-group" v-show="item.devices.length">
                                     <span>{{ item.groupname }}</span>
                                 </div>
@@ -19,7 +19,7 @@
                                 </div>
                             </li>
                         </ul>
-                    </transition> 
+                    </transition>
                 </div>
             </div>
             <div style="margin-left:20px;float: left;">

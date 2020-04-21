@@ -2,216 +2,220 @@
 <div class="pd-10 system" id="add-directive-wraper">
     <h3 class="h3-title">添加指令</h3>
     <div style="width: 700px;margin: 0 auto;">
-        
-            <Row style="margin: 10px 0">
-                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">
-                    <i style="color: red;display: inline-block;">*</i>&nbsp;设备类型 : &nbsp;</i-col>
-                <i-col span="20">
-                    <i-select v-model="deviceType">
-                        <i-option v-for="item in deviceTypeList" :value="item.value" :key="item.value">{{ item.label }}</i-option>
-                    </i-select>
-                </i-col>  
-            </Row>
 
-            <Row style="margin: 10px 0">
-                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">
-                    <i style="color: red;display: inline-block;">*</i>&nbsp;指令类型 : &nbsp;</i-col>
-                <i-col span="20">
-                    <!-- <i-select v-model="cmdCode" filterable>
+        <Row style="margin: 10px 0">
+            <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">
+                <i style="color: red;display: inline-block;">*</i>&nbsp;设备类型 : &nbsp;</i-col>
+            <i-col span="20">
+                <i-select v-model="deviceType">
+                    <i-option v-for="item in deviceTypeList" :value="item.value" :key="item.value">{{ item.label }}</i-option>
+                </i-select>
+            </i-col>
+        </Row>
+
+        <Row style="margin: 10px 0">
+            <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">
+                <i style="color: red;display: inline-block;">*</i>&nbsp;指令类型 : &nbsp;</i-col>
+            <i-col span="20">
+                <!-- <i-select v-model="cmdCode" filterable>
                         <i-option v-for="item in listCmdAction" :value="item.value" :key="item.value">{{ item.label }}</i-option>
                     </i-select> -->
-                    <div class="search-wrapper">
-                        <i-input v-model.trim="cmdCodeName"  :icon="iconState" @on-change="sosoValueChange" @on-blur="blur" @on-focus="focus" @on-click="focus"></i-input>
-                        <transition name="fade">
-                            <ul class="search-item-wrapper" v-show="isShowMatchDev" style="cursor: pointer;">
-                                <li v-for="item in cmdList" style="padding:5px 10px;" @click="selectedCmd(item)">
-                                    <div :value="item.value" :key="item.label">
-                                        <span style="cursor: pointer;">{{ item.label }}</span>
-                                    </div>
-                                </li>
-                            </ul>
-                        </transition>
-                    </div>
-                </i-col>
-            </Row>
+                <div class="search-wrapper">
+                    <i-input v-model.trim="cmdCodeName" :icon="iconState" :readonly="readonly" @on-change="sosoValueChange" @on-blur="blur" @on-focus="focus" @on-click="focus"></i-input>
+                    <transition name="fade">
+                        <ul class="search-item-wrapper" v-show="isShowMatchDev" style="cursor: pointer;">
+                            <li v-for="item in cmdList" style="padding:5px 10px;" @click="selectedCmd(item)">
+                                <div :value="item.value" :key="item.label">
+                                    <span style="cursor: pointer;">{{ item.label }}</span>
+                                </div>
+                            </li>
+                        </ul>
+                    </transition>
+                </div>
+            </i-col>
+        </Row>
 
 
-            <Row style="margin: 10px 0">
-                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">指令名称 : &nbsp;</i-col>
-                <i-col span="20">
-                    <i-input v-model.trim="cmdname"></i-input>
-                </i-col>
-            </Row>
-                        
-            <Row style="margin:10px 0">
-                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;"><i style="color: red;display: inline-block;">*</i>&nbsp;是否同步 : &nbsp;</i-col>
-                <i-col span="20" style="height: 100%;line-height:32px;">
-                    <Checkbox v-model="isSync">(选中为同步)</Checkbox>
-                </i-col>
-            </Row>
+        <Row style="margin: 10px 0">
+            <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">指令名称 : &nbsp;</i-col>
+            <i-col span="20">
+                <i-input v-model.trim="cmdname"></i-input>
+            </i-col>
+        </Row>
+
+        <Row style="margin:10px 0">
+            <i-col span="4" style="height: 100%;text-align:right;line-height:32px;"><i style="color: red;display: inline-block;">*</i>&nbsp;是否同步 : &nbsp;</i-col>
+            <i-col span="20" style="height: 100%;line-height:32px;">
+                <Checkbox v-model="isSync">(选中为同步)</Checkbox>
+            </i-col>
+        </Row>
 
 
-            <Row style="margin:10px 0">
-                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">指令描述 : &nbsp;</i-col>
-                <i-col span="20">
-                    <i-input v-model.trim="cmddescr"></i-input>
-                </i-col>
-            </Row>
+        <Row style="margin:10px 0">
+            <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">指令描述 : &nbsp;</i-col>
+            <i-col span="20">
+                <i-input v-model.trim="cmddescr"></i-input>
+            </i-col>
+        </Row>
 
-            <Row style="margin:10px 0">
-                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">指令密码 : &nbsp;</i-col>
-                <i-col span="20">
-                    <i-input v-model.trim="cmdpwd"></i-input>
-                </i-col>
-            </Row>
+        <Row style="margin:10px 0">
+            <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">指令密码 : &nbsp;</i-col>
+            <i-col span="20">
+                <i-input v-model.trim="cmdpwd"></i-input>
+            </i-col>
+        </Row>
 
-            <Row style="margin: 10px 0">
-                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">参数类型 : &nbsp;</i-col>
-                <i-col span="20">
-                    <i-select v-model="selectParamType">
-                        <i-option value="text">文本输入</i-option>
-                        <i-option value="list">下拉选择</i-option>
-                        <i-option value="timeperiod">时间段</i-option>
-                        <i-option value="remind">闹钟</i-option>
-                        <i-option value="time">时间</i-option>
-                        <i-option value="weektime">星期时间</i-option>
-                    </i-select> 
-                </i-col>
-            </Row>
+        <Row style="margin: 10px 0">
+            <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">参数类型 : &nbsp;</i-col>
+            <i-col span="20">
+                <i-select v-model="selectParamType">
+                    <i-option value="text">文本输入</i-option>
+                    <i-option value="list">下拉选择</i-option>
+                    <i-option value="timeperiod">时间段</i-option>
+                    <i-option value="remind">闹钟</i-option>
+                    <i-option value="time">时间</i-option>
+                    <i-option value="weektime">星期时间</i-option>
+                </i-select>
+            </i-col>
+        </Row>
 
-            <Row style="margin: 10px 0">
-                <i-col span="4" style="height: 100%;text-align:right;line-height:100%;">
-                    参数 : &nbsp;</i-col>
-                <i-col span="20">
-                    <i-input v-model="params" type="textarea" :rows="8" />
-                </i-col>
-            </Row>
+        <Row style="margin: 10px 0">
+            <i-col span="4" style="height: 100%;text-align:right;line-height:100%;">
+                参数 : &nbsp;</i-col>
+            <i-col span="20">
+                <i-input v-model="params" type="textarea" :rows="8" />
+            </i-col>
+        </Row>
 
-            <Row style="margin: 10px 0">
-                <i-col span="4" style="height: 100%;text-align:right;line-height:100%;">预览 : &nbsp;</i-col>
-                <i-col span="20" v-if="selectParamType==='text'">
-                    <Row style="margin: 5px 0" v-for="item in previewObjList" :key="item.text">
-                        <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">
+        <Row style="margin: 10px 0">
+            <i-col span="4" style="height: 100%;text-align:right;line-height:100%;">预览 : &nbsp;</i-col>
+            <i-col span="20" v-if="selectParamType==='text'">
+                <Row style="margin: 5px 0" v-for="item in previewObjList" :key="item.text">
+                    <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">
+                        {{item.title}} : &nbsp;
+                    </i-col>
+                    <i-col span="15">
+                        <i-input v-model.trim="item.value"></i-input>
+                    </i-col>
+                </Row>
+            </i-col>
+            <i-col span="20" v-if="selectParamType==='list'">
+                <Row style="margin: 5px 0">
+                    <i-col span="15" offset="5">
+                        <i-select v-model="preview">
+                            <i-option v-for="item in previewObjList" :value="item.type" :key="item.type">{{ item.value }}</i-option>
+                        </i-select>
+                    </i-col>
+                </Row>
+            </i-col>
+            <i-col span="20" v-if="selectParamType==='timeperiod'">
+                <Row style="margin: 5px 0">
+                    <i-col span="15" offset="5">
+                        <p v-for="item in previewObjList" :key="item.type" style="margin: 5px 0">
                             {{item.title}} : &nbsp;
-                        </i-col>
-                        <i-col span="15">
-                            <i-input v-model.trim="item.value"></i-input>    
-                        </i-col>
-                    </Row>
-                </i-col>
-                <i-col span="20" v-if="selectParamType==='list'">
-                    <Row style="margin: 5px 0">
-                        <i-col span="15" offset="5">
-                            <i-select v-model="preview">
-                                <i-option v-for="item in previewObjList" :value="item.type" :key="item.type">{{ item.value }}</i-option>
-                            </i-select>
-                        </i-col>
-                    </Row>
-                </i-col>
-                <i-col span="20" v-if="selectParamType==='timeperiod'">
-                    <Row style="margin: 5px 0">
-                        <i-col span="15" offset="5">
-                            <p v-for="item in previewObjList" :key="item.type" style="margin: 5px 0">
-                                {{item.title}} : &nbsp;  <Time-Picker format="HH:mm" :value="item.formatVlaue"  type="timerange" placeholder="选择时间段"></Time-Picker>
-                            </p>
-                        </i-col>
-                    </Row>
-                </i-col>
-                <i-col span="20" v-if="selectParamType==='remind'">
-                    <Row style="margin: 5px 0">
-                        <i-col span="15" offset="5">
-                            <p v-for="item in previewObjList" :key="item.type" style="margin: 5px 0">
-                                    <Row>
-                                            <i-col span="16">
-                                                <Time-Picker format="HH:mm" placeholder="选择时间"></Time-Picker>
-                                            </i-col>    
-                                            <i-col span="8" style="height: 100%;line-height:32px;">
-                                                <i-switch />
-                                            </i-col>    
-                                        </Row>
-                                        <Row style="margin: 10px 0">
-                                            <i-col span="16">
-                                                <Radio-Group>
-                                                    <Radio label="1"> <span>一次</span></Radio>
-                                                    <Radio label="2"> <span>每天</span></Radio>
-                                                    <Radio label="3"><span>每周</span></Radio>
-                                                </Radio-Group>
-                                            </i-col>       
-                                        </Row>
-                                        <Row style="margin: 10px 0">
-                                            <i-col span="24">
-                                                <CheckboxGroup>
-                                                    <Checkbox label="一"><span>一</span></Checkbox>
-                                                    <Checkbox label="二"><span>二</span></Checkbox>
-                                                    <Checkbox label="三"><span>三</span></Checkbox>
-                                                    <Checkbox label="四"><span>四</span></Checkbox>
-                                                    <Checkbox label="五"><span>五</span></Checkbox>
-                                                    <Checkbox label="六"><span>六</span></Checkbox>
-                                                    <Checkbox label="日"><span>日</span></Checkbox>
-                                                </CheckboxGroup>
-                                            </i-col>       
-                                        </Row>
-                            </p>
-                        </i-col>
-                    </Row>
-                </i-col>
+                            <Time-Picker format="HH:mm" :value="item.formatVlaue" type="timerange" placeholder="选择时间段"></Time-Picker>
+                        </p>
+                    </i-col>
+                </Row>
+            </i-col>
+            <i-col span="20" v-if="selectParamType==='remind'">
+                <Row style="margin: 5px 0">
+                    <i-col span="15" offset="5">
+                        <p v-for="item in previewObjList" :key="item.type" style="margin: 5px 0">
+                            <Row>
+                                <i-col span="16">
+                                    <Time-Picker format="HH:mm" placeholder="选择时间"></Time-Picker>
+                                </i-col>
+                                <i-col span="8" style="height: 100%;line-height:32px;">
+                                    <i-switch />
+                                </i-col>
+                            </Row>
+                            <Row style="margin: 10px 0">
+                                <i-col span="16">
+                                    <Radio-Group>
+                                        <Radio label="1"> <span>一次</span></Radio>
+                                        <Radio label="2"> <span>每天</span></Radio>
+                                        <Radio label="3"><span>每周</span></Radio>
+                                    </Radio-Group>
+                                </i-col>
+                            </Row>
+                            <Row style="margin: 10px 0">
+                                <i-col span="24">
+                                    <CheckboxGroup>
+                                        <Checkbox label="一"><span>一</span></Checkbox>
+                                        <Checkbox label="二"><span>二</span></Checkbox>
+                                        <Checkbox label="三"><span>三</span></Checkbox>
+                                        <Checkbox label="四"><span>四</span></Checkbox>
+                                        <Checkbox label="五"><span>五</span></Checkbox>
+                                        <Checkbox label="六"><span>六</span></Checkbox>
+                                        <Checkbox label="日"><span>日</span></Checkbox>
+                                    </CheckboxGroup>
+                                </i-col>
+                            </Row>
+                        </p>
+                    </i-col>
+                </Row>
+            </i-col>
 
-                <i-col span="20" v-if="selectParamType==='time'">
-                        <Row style="margin: 5px 0">
-                            <i-col span="15" offset="5">
-                                <p v-for="item in previewObjList" :key="item.type" style="margin: 5px 0">
-                                    {{item.title}} : &nbsp;  <Time-Picker format="HH:mm"  type="time" :value="item.value" placeholder="选择时间"></Time-Picker>
-                                </p>
-                            </i-col>
-                        </Row>
-                </i-col>
+            <i-col span="20" v-if="selectParamType==='time'">
+                <Row style="margin: 5px 0">
+                    <i-col span="15" offset="5">
+                        <p v-for="item in previewObjList" :key="item.type" style="margin: 5px 0">
+                            {{item.title}} : &nbsp;
+                            <Time-Picker format="HH:mm" type="time" :value="item.value" placeholder="选择时间"></Time-Picker>
+                        </p>
+                    </i-col>
+                </Row>
+            </i-col>
 
-                <i-col span="20" v-if="selectParamType==='weektime'">
-                        <Row style="margin: 5px 0">
-                            <i-col span="15" offset="5">
-                                <p v-for="item in previewObjList" :key="item.type" style="margin: 5px 0">
-                                        <Row style="margin: 10px 0">
-                                            <i-col span="24">
-                                                {{item.title}} &nbsp; <Time-Picker format="HH:mm"  type="time" placeholder="选择时间" v-model="item.time"></Time-Picker>
-                                            </i-col>       
-                                        </Row>                                                 
-                                        <Row style="margin: 10px 0">
-                                                <i-col span="24">
-                                                    <CheckboxGroup v-model="item.weekselected">
-                                                        <Checkbox label="一"><span>一</span></Checkbox>
-                                                        <Checkbox label="二"><span>二</span></Checkbox>
-                                                        <Checkbox label="三"><span>三</span></Checkbox>
-                                                        <Checkbox label="四"><span>四</span></Checkbox>
-                                                        <Checkbox label="五"><span>五</span></Checkbox>
-                                                        <Checkbox label="六"><span>六</span></Checkbox>
-                                                        <Checkbox label="日"><span>日</span></Checkbox>
-                                                    </CheckboxGroup>
-                                                </i-col>       
-                                        </Row>   
-                                </p>
-                            </i-col>
-                        </Row>
-                </i-col>
-            </Row>
-            <Row style="margin: 10px 0">
-                <i-col span="10" :offset="8">
-                        <i-button icon="md-add" @click="handleAddDirective" style="width: 100%">添加</i-button>
-                </i-col>
-            </Row>
-            <div style="display:none;">aaa-{{aaa}}</div>
+            <i-col span="20" v-if="selectParamType==='weektime'">
+                <Row style="margin: 5px 0">
+                    <i-col span="15" offset="5">
+                        <p v-for="item in previewObjList" :key="item.type" style="margin: 5px 0">
+                            <Row style="margin: 10px 0">
+                                <i-col span="24">
+                                    {{item.title}} &nbsp;
+                                    <Time-Picker format="HH:mm" type="time" placeholder="选择时间" v-model="item.time"></Time-Picker>
+                                </i-col>
+                            </Row>
+                            <Row style="margin: 10px 0">
+                                <i-col span="24">
+                                    <CheckboxGroup v-model="item.weekselected">
+                                        <Checkbox label="一"><span>一</span></Checkbox>
+                                        <Checkbox label="二"><span>二</span></Checkbox>
+                                        <Checkbox label="三"><span>三</span></Checkbox>
+                                        <Checkbox label="四"><span>四</span></Checkbox>
+                                        <Checkbox label="五"><span>五</span></Checkbox>
+                                        <Checkbox label="六"><span>六</span></Checkbox>
+                                        <Checkbox label="日"><span>日</span></Checkbox>
+                                    </CheckboxGroup>
+                                </i-col>
+                            </Row>
+                        </p>
+                    </i-col>
+                </Row>
+            </i-col>
+        </Row>
+        <Row style="margin: 10px 0">
+            <i-col span="10" :offset="8">
+                <i-button icon="md-add" @click="handleAddDirective" style="width: 100%">添加</i-button>
+            </i-col>
+        </Row>
+        <div style="display:none;">aaa-{{aaa}}</div>
     </div>
     <script>
         new Vue({
-            el:"#add-directive-wraper",
+            el: "#add-directive-wraper",
 
-            data:function(){
-                return {     
-                    iconState:"ios-arrow-down",
-                    timeoutIns:null,    
+            data: function() {
+                return {
+                    readonly: true,
+                    iconState: "ios-arrow-down",
+                    timeoutIns: null,
                     cmdname: "",
                     cmdnameen: "",
                     cmdnametw: "",
-                    cmdpwd:"",
+                    cmdpwd: "",
                     cmddescr: null,
                     cmddescren: "",
                     cmddescrtw: "",
@@ -219,21 +223,21 @@
                     params: "",
                     paramsen: "",
                     paramstw: "",
-                    previewObjList:[],
-                    isSync:false,
-                    kong:"",
-                    deviceType:"",
-                    cmdCode:"",
-                    cmdCodeName:"",
-                    deviceTypeList:[],
-                    listCmdAction:[],
-                    cmdList:[],
-                    isShowMatchDev:false,
-                    selectParamType:null,
-                    preview:null,
+                    previewObjList: [],
+                    isSync: false,
+                    kong: "",
+                    deviceType: "",
+                    cmdCode: "",
+                    cmdCodeName: "",
+                    deviceTypeList: [],
+                    listCmdAction: [],
+                    cmdList: [],
+                    isShowMatchDev: false,
+                    selectParamType: null,
+                    preview: null,
                 }
             },
-            watch:{
+            watch: {
                 // params:function () {
                 //     this.previewObjList = [];
                 //     console.log('params2', this.params)
@@ -246,75 +250,75 @@
                 // }
             },
             computed: {
-                aaa:function(){
+                aaa: function() {
                     this.previewObjList = [];
-                    if(this.checkFormatCorrect(this.params)){
-                        var params = "<params>"+ this.params +"</params>";
-                        var parser=new DOMParser(); 
-                        var xmlDoc=parser.parseFromString(params,"text/xml"); 
+                    if (this.checkFormatCorrect(this.params)) {
+                        var params = "<params>" + this.params + "</params>";
+                        var parser = new DOMParser();
+                        var xmlDoc = parser.parseFromString(params, "text/xml");
                         this.parseXML(xmlDoc);
                     };
-                    return this.params+1;
+                    return this.params + 1;
                 }
             },
             methods: {
-                handleAddDirective:function(){
-                    if(!this.deviceType){
+                handleAddDirective: function() {
+                    if (!this.deviceType) {
                         this.$Message.error("请选择设备类型");
-                        return ;
+                        return;
                     }
-                    
-                    if(!this.cmdCode){
+
+                    if (!this.cmdCode) {
                         this.$Message.error("请选择指令");
-                        return ;
+                        return;
                     }
                     var me = this;
                     var url = myUrls.addCmd();
                     var data = {
-                        devicetype:this.deviceType,
-                        cmdcode:this.cmdCode,    
+                        devicetype: this.deviceType,
+                        cmdcode: this.cmdCode,
                         paramsen: "",
                         paramstw: "",
                         cmddescren: "",
                         cmddescrtw: "",
                         cmdname: this.cmdname,
-                        sync:this.isSync?1:0
+                        sync: this.isSync ? 1 : 0
                     };
 
-                    if(this.cmddescr){
+                    if (this.cmddescr) {
                         data.cmddescr = this.cmddescr;
                     };
-                    
-                    if(this.params){
-                        if(this.checkFormatCorrect(this.params.trim())){
+
+                    if (this.params) {
+                        if (this.checkFormatCorrect(this.params.trim())) {
                             data.params = this.params;
-                        }else{
+                        } else {
                             this.$Message.error("参数格式错误");
                             return;
                         }
                     }
-                    if(this.selectParamType){
+                    if (this.selectParamType) {
                         data.cmdtype = this.selectParamType;
                     }
-                    
+
                     data.cmdpwd = this.cmdpwd;
 
-                    utils.sendAjax(url, data, function (resp) {
+                    utils.sendAjax(url, data, function(resp) {
                         if (resp.status == 0) {
                             me.$Message.success("添加成功");
-                        }else{
+                        } else {
                             me.$Message.error(resp.cause);
                         };
                     });
                 },
-                checkFormatCorrect:function (str){
-                    if(str)
-                    str = str.replace(/^<[\s\S]*>[\s\S]*<\/[\s\S]*>$/g,"");
+                checkFormatCorrect: function(str) {
+                    if (str)
+                        str = str.replace(/^<[\s\S]*>[\s\S]*<\/[\s\S]*>$/g, "");
                     return str == "" ? true : false;
                 },
-                parseXML:function(xmlDoc){
+                parseXML: function(xmlDoc) {
                     // <ha><param size="small" type="password">确认密码</param></ha>
-                    var parent =  xmlDoc.children[0];
+                    var parent = xmlDoc.children[0];
                     var children = parent.children;
                     for (var i = 0; i < children.length; i++) {
                         var item = children[i]
@@ -323,13 +327,19 @@
                         var type = item.getAttribute("type");
                         var previewObj = null;
                         if (type) {
-                            if(this.selectParamType === 'timeperiod'){
+                            if (this.selectParamType === 'timeperiod') {
                                 value = value || "00:00-00:00";
                                 var formatVlaue = value.split("-");
-                                previewObj = { type: type, value: value , title:title ,formatVlaue:formatVlaue};
-                            }else if(this.selectParamType === 'weektime'){
+                                previewObj = {
+                                    type: type,
+                                    value: value,
+                                    title: title,
+                                    formatVlaue: formatVlaue
+                                };
+                            } else if (this.selectParamType === 'weektime') {
                                 var formatVlaue = value.split("-");
-                                var weekStr = formatVlaue[1] , weekselected = [];
+                                var weekStr = formatVlaue[1],
+                                    weekselected = [];
                                 var week1 = weekStr.charAt(0) == 1 ? '一' : false;
                                 var week2 = weekStr.charAt(1) == 1 ? '二' : false;
                                 var week3 = weekStr.charAt(2) == 1 ? '三' : false;
@@ -345,46 +355,58 @@
                                 week5 && weekselected.push(week5);
                                 week6 && weekselected.push(week6);
                                 week7 && weekselected.push(week7);
-                                previewObj = { type: type , time: formatVlaue[0],weekselected:weekselected, title:title };
-                            }else{
-                                previewObj = { type: type, value: value , title:title };
+                                previewObj = {
+                                    type: type,
+                                    time: formatVlaue[0],
+                                    weekselected: weekselected,
+                                    title: title
+                                };
+                            } else {
+                                previewObj = {
+                                    type: type,
+                                    value: value,
+                                    title: title
+                                };
                             }
                             this.previewObjList.push(previewObj);
                         }
-                    } 
+                    }
                 },
-                getDeviceType:function () {
+                getDeviceType: function() {
                     var me = this;
                     var url = myUrls.queryDeviceTypeByUser();
-                    utils.sendAjax(url,{},function (resp) { 
-                        if(resp.status == 0 && resp.devicetypes!=null){
-                            resp.devicetypes.forEach(function (item) { 
-                                me.deviceTypeList.push({value:item.devicetypeid,label:item.typename});
+                    utils.sendAjax(url, {}, function(resp) {
+                        if (resp.status == 0 && resp.devicetypes != null) {
+                            resp.devicetypes.forEach(function(item) {
+                                me.deviceTypeList.push({
+                                    value: item.devicetypeid,
+                                    label: item.typename
+                                });
                             })
                         }
-                    }); 
+                    });
                 },
-                getListCmdAction:function(){
+                getListCmdAction: function() {
                     var me = this;
                     var url = myUrls.listCmdAction();
-                    utils.sendAjax(url,{},function (resp) { 
-                        if(resp.status == 0){
-                            resp.cmds.forEach(function (item) { 
+                    utils.sendAjax(url, {}, function(resp) {
+                        if (resp.status == 0) {
+                            resp.cmds.forEach(function(item) {
                                 var cmdName = item.cmdName;
                                 var firstLetter = __pinyin.getFirstLetter(cmdName);
                                 var pinyin = __pinyin.getPinyin(cmdName);
                                 me.listCmdAction.push({
-                                    value:item.cmdCode,
-                                    label:cmdName,
-                                    firstLetter:firstLetter,
-                                    pinyin:pinyin
+                                    value: item.cmdCode,
+                                    label: cmdName,
+                                    firstLetter: firstLetter,
+                                    pinyin: pinyin
                                 });
                             });
                             me.cmdList = me.listCmdAction;
                         }
-                    });  
+                    });
                 },
-                sosoValueChange:function(){
+                sosoValueChange: function() {
                     var me = this;
                     var value = this.cmdCodeName;
 
@@ -397,52 +419,54 @@
                         return;
                     }
 
-                    this.timeoutIns = setTimeout(function () {
+                    this.timeoutIns = setTimeout(function() {
                         me.filterMethod(value);
                     }, 300);
                 },
-                focus: function () {
+                focus: function() {
+                    this.readonly = false;
                     this.isShowMatchDev = true;
                 },
-                blur: function () {
+                blur: function() {
+                    this.readonly = true;
                     var me = this
-                    setTimeout(function () {
+                    setTimeout(function() {
                         me.isShowMatchDev = false;
                     }, 300)
                 },
-                selectedCmd:function(item){
+                selectedCmd: function(item) {
                     var me = this;
-                    setTimeout(function () {
+                    setTimeout(function() {
                         me.isShowMatchDev = false;
                         me.cmdCodeName = item.label;
                         me.cmdCode = item.value;
                     }, 300)
                 },
-                filterMethod:function(value){
+                filterMethod: function(value) {
                     var list = [];
                     value = value.toLowerCase();
-                    this.listCmdAction.forEach(function (itme) { 
-                        if(
-                            itme.label.indexOf(value)!=-1 ||
-                            itme.firstLetter.indexOf(value)!=-1 ||
-                            itme.pinyin.indexOf(value)!=-1 
-                        ){
+                    this.listCmdAction.forEach(function(itme) {
+                        if (
+                            itme.label.indexOf(value) != -1 ||
+                            itme.firstLetter.indexOf(value) != -1 ||
+                            itme.pinyin.indexOf(value) != -1
+                        ) {
                             list.push(itme);
                         }
                     })
                     this.cmdList = list;
                 }
             },
-            watch:{
-                isShowMatchDev:function(){
-                    if(!this.isShowMatchDev){
+            watch: {
+                isShowMatchDev: function() {
+                    if (!this.isShowMatchDev) {
                         this.iconState = "ios-arrow-down";
-                    }else{
+                    } else {
                         this.iconState = "ios-arrow-up";
                     }
                 }
             },
-            mounted:function () {
+            mounted: function() {
                 this.getDeviceType();
                 this.getListCmdAction();
             }

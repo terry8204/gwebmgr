@@ -10,7 +10,7 @@
                 <i-select v-model="deviceType">
                     <i-option v-for="item in deviceTypeList" :value="item.value" :key="item.value">{{ item.label }}</i-option>
                 </i-select>
-            </i-col>  
+            </i-col>
         </Row>
 
         <Row style="margin: 10px 0">
@@ -21,7 +21,7 @@
                     <i-option v-for="item in listCmdAction" :value="item.value" :key="item.value">{{ item.label }}</i-option>
                 </i-select> -->
                 <div class="search-wrapper">
-                    <i-input v-model.trim="cmdCodeName" :icon="iconState" @on-change="sosoValueChange" @on-blur="blur" @on-focus="focus" @on-click="focus"></i-input>
+                    <i-input v-model.trim="cmdCodeName" :icon="iconState" @on-change="sosoValueChange" :readonly="readonly" @on-blur="blur" @on-focus="focus" @on-click="focus"></i-input>
                     <transition name="fade">
                         <ul class="search-item-wrapper" v-show="isShowMatchDev" style="cursor: pointer;">
                             <li v-for="item in cmdList" style="padding:5px 10px;" @click="selectedCmd(item)">
@@ -41,7 +41,7 @@
                 <i-input v-model.trim="cmdname"></i-input>
             </i-col>
         </Row>
-       
+
         <Row style="margin: 10px 0">
             <i-col span="4" style="height: 100%;text-align:right;line-height:32px;"><i style="color: red;display: inline-block;">*</i>&nbsp;是否同步 : &nbsp;</i-col>
             <i-col span="20" style="height: 100%;line-height:32px;">
@@ -69,7 +69,7 @@
                 <i-select v-model="selectParamType">
                     <i-option value="text">文本输入</i-option>
                     <i-option value="list">下拉选择</i-option>
-                </i-select> 
+                </i-select>
             </i-col>
         </Row>
 
@@ -89,7 +89,7 @@
                         {{item.title}} : &nbsp;
                     </i-col>
                     <i-col span="15">
-                        <i-input v-model.trim="item.value"></i-input>    
+                        <i-input v-model.trim="item.value"></i-input>
                     </i-col>
                 </Row>
             </i-col>
@@ -103,87 +103,90 @@
                 </Row>
             </i-col>
         </Row>
-       
+
         <Row style="margin: 10px 0">
             <i-col span="10" :offset="8">
-                    <i-button icon="md-add" @click="handleEditDirective" style="width: 100%">提交</i-button>
+                <i-button icon="md-add" @click="handleEditDirective" style="width: 100%">提交</i-button>
             </i-col>
         </Row>
     </div>
     <script>
         new Vue({
-            el:"#add-directive-wraper",
-            data:function(){
+            el: "#add-directive-wraper",
+            data: function() {
                 return {
-                    iconState:"ios-arrow-down",
+                    readonly: true,
+                    iconState: "ios-arrow-down",
                     cmdCode: null,
-                    deviceType:null,
+                    deviceType: null,
                     cmdname: "",
-                    cmdpwd:"",
+                    cmdpwd: "",
                     cmddescr: null,
                     cmddescren: "",
                     cmddescrtw: "",
-                    common:0,
+                    common: 0,
                     params: null,
                     paramsen: "",
                     paramstw: "",
-                    previewObjList:[],
-                    isShowMatchDev:false,
-                    isPublic:false,
-                    isSync:false,
-                    kong:"",
-                    deviceTypeList:[],
-                    listCmdAction:[],
-                    selectParamType:'',
-                    preview:null,
-                    timeoutIns:null,
-                    cmdCodeName:"",
-                    cmdList:[]
+                    previewObjList: [],
+                    isShowMatchDev: false,
+                    isPublic: false,
+                    isSync: false,
+                    kong: "",
+                    deviceTypeList: [],
+                    listCmdAction: [],
+                    selectParamType: '',
+                    preview: null,
+                    timeoutIns: null,
+                    cmdCodeName: "",
+                    cmdList: []
                 }
             },
-            watch:{
-                params:function () { 
+            watch: {
+                params: function() {
                     this.previewObjList = [];
-                    if(this.params == ""){  return ;}
-                    if(this.checkFormatCorrect(this.params.trim())){
-                        var params = "<params>"+ this.params +"</params>";
-                        var parser=new DOMParser(); 
-                        var xmlDoc=parser.parseFromString(params,"text/xml"); 
+                    if (this.params == "") {
+                        return;
+                    }
+                    if (this.checkFormatCorrect(this.params.trim())) {
+                        var params = "<params>" + this.params + "</params>";
+                        var parser = new DOMParser();
+                        var xmlDoc = parser.parseFromString(params, "text/xml");
                         this.parseXML(xmlDoc);
                     }
                 },
-                isShowMatchDev:function(){
-                    if(!this.isShowMatchDev){
+                isShowMatchDev: function() {
+                    if (!this.isShowMatchDev) {
                         this.iconState = "ios-arrow-down";
-                    }else{
+                    } else {
                         this.iconState = "ios-arrow-up";
                     }
                 }
             },
             methods: {
-                selectedCmd:function(item){
+                selectedCmd: function(item) {
                     var me = this;
-                    setTimeout(function () {
+                    setTimeout(function() {
                         me.isShowMatchDev = false;
                         me.cmdCodeName = item.label;
                         me.cmdCode = item.value;
                     }, 300)
                 },
-                filterMethod:function(value){
+                filterMethod: function(value) {
                     var list = [];
                     value = value.toLowerCase();
-                    this.listCmdAction.forEach(function (itme) { 
-                        if(
-                            itme.label.indexOf(value)!=-1 ||
-                            itme.firstLetter.indexOf(value)!=-1 ||
-                            itme.pinyin.indexOf(value)!=-1 
-                        ){
+                    this.listCmdAction.forEach(function(itme) {
+                        if (
+                            itme.label.indexOf(value) != -1 ||
+                            itme.firstLetter.indexOf(value) != -1 ||
+                            itme.pinyin.indexOf(value) != -1
+                        ) {
                             list.push(itme);
                         }
                     })
                     this.cmdList = list;
                 },
-                sosoValueChange:function(){
+                sosoValueChange: function() {
                     var me = this;
                     var value = this.cmdCodeName;
 
@@ -196,34 +199,36 @@
                         return;
                     }
 
-                    this.timeoutIns = setTimeout(function () {
+                    this.timeoutIns = setTimeout(function() {
                         me.filterMethod(value);
                     }, 300);
                 },
-                focus: function () {
+                focus: function() {
+                    this.readonly = false;
                     this.isShowMatchDev = true;
                 },
-                blur: function () {
+                blur: function() {
+                    this.readonly = true;
                     var me = this
-                    setTimeout(function () {
+                    setTimeout(function() {
                         me.isShowMatchDev = false;
                     }, 300)
                 },
-                back:function(){
+                back: function() {
                     var me = this;
                     var pagePath = null
-                        if (utils.isLocalhost()) {
-                            pagePath = myUrls.viewhost + 'view/systemparam/devicedirective.html'
-                        } else {
-                            pagePath = '../view/systemparam/devicedirective.html'
-                        }   
+                    if (utils.isLocalhost()) {
+                        pagePath = myUrls.viewhost + 'view/systemparam/devicedirective.html'
+                    } else {
+                        pagePath = '../view/systemparam/devicedirective.html'
+                    }
                     me.$Loading.start();
-                    $("#system-view").load(pagePath, function () {
+                    $("#system-view").load(pagePath, function() {
                         me.$Loading.finish();
                     });
                 },
-                handleEditDirective:function(){
-          
+                handleEditDirective: function() {
+
                     var me = this;
                     var url = myUrls.editCmd();
                     var data = {
@@ -233,47 +238,47 @@
                         paramstw: "",
                         cmddescren: "",
                         cmddescrtw: "",
-                        cmdlevel:editObject.cmdlevel,
-                        devicetype:this.deviceType,
-                        sync:this.isSync?1:0,
-                        predictcmdid:editObject.predictcmdid
+                        cmdlevel: editObject.cmdlevel,
+                        devicetype: this.deviceType,
+                        sync: this.isSync ? 1 : 0,
+                        predictcmdid: editObject.predictcmdid
                     };
-                
-                    if(this.cmddescr){
+
+                    if (this.cmddescr) {
                         data.cmddescr = this.cmddescr;
                     };
-                    
-                    if(this.params){
-                        if(this.checkFormatCorrect(this.params.trim())){
+
+                    if (this.params) {
+                        if (this.checkFormatCorrect(this.params.trim())) {
                             data.params = this.params;
-                        }else{
+                        } else {
                             this.$Message.error("参数格式错误");
                             return;
                         }
                     };
-                    if(this.selectParamType){
+                    if (this.selectParamType) {
                         data.cmdtype = this.selectParamType;
                     };
-                    
-                    data.cmdpwd = this.cmdpwd;
-                    
 
-                    utils.sendAjax(url, data, function (resp) {
+                    data.cmdpwd = this.cmdpwd;
+
+
+                    utils.sendAjax(url, data, function(resp) {
                         if (resp.status == 0) {
                             me.$Message.success("编辑成功");
-                        }else{
+                        } else {
                             me.$Message.error(resp.cause);
                         };
                     });
                 },
-                checkFormatCorrect:function (str){
-                      if(str)
-                    str = str.replace(/^<[\s\S]*>[\s\S]*<\/[\s\S]*>$/g,"");
+                checkFormatCorrect: function(str) {
+                    if (str)
+                        str = str.replace(/^<[\s\S]*>[\s\S]*<\/[\s\S]*>$/g, "");
                     return str == "" ? true : false;
                 },
-                parseXML:function(xmlDoc){
+                parseXML: function(xmlDoc) {
                     // <ha><param size="small" type="password">确认密码</param></ha>
-                    var parent =  xmlDoc.children[0];
+                    var parent = xmlDoc.children[0];
                     var children = parent.children;
                     for (var i = 0; i < children.length; i++) {
                         var item = children[i]
@@ -281,88 +286,95 @@
                         var value = item.getAttribute("value");
                         var type = item.getAttribute("type");
                         if (type && value) {
-                            this.previewObjList.push({ type: type, value: value ,title:title});
+                            this.previewObjList.push({
+                                type: type,
+                                value: value,
+                                title: title
+                            });
                         }
-                    }   
+                    }
                 },
-                getCmdCodeName:function(cmdcode){
+                getCmdCodeName: function(cmdcode) {
                     var cmdCodeName = "";
-                    this.cmdList.forEach(function (item) { 
-                        if(item.value === cmdcode){
+                    this.cmdList.forEach(function(item) {
+                        if (item.value === cmdcode) {
                             cmdCodeName = item.label;
                             return false;
                         }
                     })
                     return cmdCodeName;
                 },
-                setValue:function(data){
+                setValue: function(data) {
                     this.cmdCodeName = this.getCmdCodeName(data.cmdcode);
-                    this.cmdCode=data.cmdcode; 
+                    this.cmdCode = data.cmdcode;
                     this.deviceType = data.devicetype;
-                    this.cmdname=data.cmdname ;
-                    this.cmdnameen=data.cmdnameen;
-                    this.cmdnametw=data.cmdnametw;
+                    this.cmdname = data.cmdname;
+                    this.cmdnameen = data.cmdnameen;
+                    this.cmdnametw = data.cmdnametw;
 
-                    this.cmddescr=data.cmddescr;
-                    this.cmddescren=data.cmddescren;
-                    this.cmddescrtw=data.cmddescrtw;
+                    this.cmddescr = data.cmddescr;
+                    this.cmddescren = data.cmddescren;
+                    this.cmddescrtw = data.cmddescrtw;
 
-                    
-                    this.paramsen=data.paramsen;
-                    this.paramstw=data.paramstw;
+
+                    this.paramsen = data.paramsen;
+                    this.paramstw = data.paramstw;
                     this.common = data.common;
-                    this.isSync = data.sync == 1 ? true :false
-                    
+                    this.isSync = data.sync == 1 ? true : false
+
                     this.cmdpwd = data.cmdpwd;
-                    
-                    if(data.params){
+
+                    if (data.params) {
                         var paramsArr = data.params.split('\n');
-                        if(data.cmdtype !== 'text' && data.cmdtype !== 'list'){
+                        if (data.cmdtype !== 'text' && data.cmdtype !== 'list') {
                             this.params = data.params;
-                        }else{
-                            this.params=paramsArr.join("\n");
+                        } else {
+                            this.params = paramsArr.join("\n");
                             this.selectParamType = data.cmdtype;
                         }
-                    };   
+                    };
                 },
-                getDeviceType:function () {
+                getDeviceType: function() {
                     var me = this;
                     var url = myUrls.queryDeviceTypeByUser();
-                    utils.sendAjax(url,{},function (resp) { 
-                        if(resp.status == 0 && resp.devicetypes!=null){
-                            resp.devicetypes.forEach(function (item) { 
-                                me.deviceTypeList.push({value:item.devicetypeid,label:item.typename});
+                    utils.sendAjax(url, {}, function(resp) {
+                        if (resp.status == 0 && resp.devicetypes != null) {
+                            resp.devicetypes.forEach(function(item) {
+                                me.deviceTypeList.push({
+                                    value: item.devicetypeid,
+                                    label: item.typename
+                                });
                             })
                             me.getListCmdAction();
                         }
-                    }); 
+                    });
                 },
-                getListCmdAction:function(){
+                getListCmdAction: function() {
                     var me = this;
                     var url = myUrls.listCmdAction();
-                    utils.sendAjax(url,{},function (resp) { 
-                        if(resp.status == 0){
-                            resp.cmds.forEach(function (item) { 
+                    utils.sendAjax(url, {}, function(resp) {
+                        if (resp.status == 0) {
+                            resp.cmds.forEach(function(item) {
                                 var cmdName = item.cmdName;
                                 var firstLetter = __pinyin.getFirstLetter(cmdName);
                                 var pinyin = __pinyin.getPinyin(cmdName);
                                 me.listCmdAction.push({
-                                    value:item.cmdCode,
-                                    label:cmdName,
-                                    firstLetter:firstLetter,
-                                    pinyin:pinyin
+                                    value: item.cmdCode,
+                                    label: cmdName,
+                                    firstLetter: firstLetter,
+                                    pinyin: pinyin
                                 });
                             })
                             me.cmdList = me.listCmdAction;
                             me.setValue(editObject)
                         }
-                    });  
+                    });
                 }
             },
 
-            mounted : function (param) {  
+            mounted: function(param) {
                 this.getDeviceType();
-               
+
             }
         })
     </script>
