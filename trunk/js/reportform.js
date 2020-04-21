@@ -1,5 +1,6 @@
 var treeMixin = {
     data: {
+        readonly: true,
         dateVal: [DateFormat.longToDateStr(Date.now(), DateFormat.getOffset()), DateFormat.longToDateStr(Date.now(), DateFormat.getOffset())],
         total: 0,
         currentPageIndex: 1,
@@ -19,6 +20,7 @@ var treeMixin = {
             this.tableData = this.cmdRecords.slice(start, offset);
         },
         onClickOutside: function() {
+            this.readonly = true;
             this.isShowMatchDev = false;
         },
         onChange: function(value) {
@@ -38,6 +40,7 @@ var treeMixin = {
             }
         },
         focus: function() {
+            this.readonly = false;
             this.isShowMatchDev = true;
         },
         sosoValueChange: function() {
@@ -142,6 +145,7 @@ var treeMixin = {
 
 var reportMixin = {
     data: {
+        readonly: true,
         dateVal: [DateFormat.longToDateStr(Date.now(), DateFormat.getOffset()), DateFormat.longToDateStr(Date.now(), DateFormat.getOffset())],
         total: 0,
         currentPageIndex: 1,
@@ -162,6 +166,7 @@ var reportMixin = {
             this.tableData = this.cmdRecords.slice(start, offset);
         },
         onClickOutside: function() {
+            this.readonly = true;
             this.isShowMatchDev = false;
         },
         onChange: function(value) {
@@ -181,6 +186,7 @@ var reportMixin = {
             }
         },
         focus: function() {
+            this.readonly = false;
             var me = this;
             if (this.sosoValue.trim()) {
                 me.sosoValueChange()

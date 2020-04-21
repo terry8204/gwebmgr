@@ -24,6 +24,7 @@ var monitor = {
     data: function() {
         var vm = this;
         return {
+            readonly: true,
             cmdSettings: {},
             placeholder: "",
             isLoadGroup: true,
@@ -537,12 +538,14 @@ var monitor = {
         },
 
         focus: function() {
+            this.readonly = false;
             var me = this;
             if (this.sosoValue.trim()) {
                 me.sosoValueChange();
             }
         },
         blur: function() {
+            this.readonly = true;
             var me = this
             setTimeout(function() {
                 me.isShowMatchDev = false;
