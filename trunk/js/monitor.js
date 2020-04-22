@@ -253,7 +253,7 @@ var monitor = {
                     this.deviceInfoModal = true;
                     break;
                 case 'luyin':
-                    window.open("record.html?deviceid=" + this.currentDeviceId);
+                    window.open("record.html?deviceid=" + this.currentDeviceId + "&token=" + token);
                     break;
                 case 'alarmList':
                     isToAlarmListRecords = true;
@@ -264,10 +264,10 @@ var monitor = {
                     this.$emit("jump-report", "reportForm");
                     break;
                 case 'bms':
-                    open('bmssys.html?deviceid=' + this.currentDeviceId);
+                    open('bmssys.html?deviceid=' + this.currentDeviceId + "&token=" + token);
                     break;
                 case 'obd':
-                    window.open("obd.html?deviceid=" + this.currentDeviceId);
+                    window.open("obd.html?deviceid=" + this.currentDeviceId + "&token=" + token);
                     break;
                 case 'weight':
                     window.open("weighing.html?deviceid=" + this.currentDeviceId + "&token=" + token);
