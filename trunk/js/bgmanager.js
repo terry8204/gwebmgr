@@ -50,7 +50,8 @@ var bgManager = {
                     name: 'operateMar',
                     icon: 'ios-analytics',
                     children: [
-                        { title: "导入车主信息", name: 'ImportOwner', icon: 'md-add' }
+                        { title: "导入车主信息", name: 'ImportOwner', icon: 'md-add' },
+                        { title: "导入保险信息", name: 'ImportInsure', icon: 'md-add' },
                     ]
                 }
             ]
@@ -100,6 +101,9 @@ var bgManager = {
                     break
                 case 'ImportOwner':
                     page = 'importowner.html'
+                    break
+                case 'ImportInsure':
+                    page = 'importinsure.html'
                     break
             }
             this.currentPage = name

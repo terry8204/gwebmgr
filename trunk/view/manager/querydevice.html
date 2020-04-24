@@ -85,12 +85,72 @@
                 <Row style="margin:10px 0;">
                     <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">备注 : &nbsp;</i-col>
                     <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
-                        <i-input v-model.trim="ownerInfoData.remark" style="width: 100%;"></i-input>
+                        <i-input v-model.trim="ownerInfoData.ownerremark" style="width: 100%;"></i-input>
                     </i-col>
                 </Row>
             </div>
             <div slot="footer">
                 <i-button type="primary" style="width: 100%" @click="handleEditDeviceex">提交</i-button>
+            </div>
+        </Modal>
+
+        <Modal v-model="insureInfoModal" width="500">
+            <p slot="header" style="color:#f60;text-align:center">
+                <Icon type="ios-create-outline"></Icon>
+                <span>保险信息</span>
+            </p>
+            <div style="text-align:center">
+                <Row style="margin:10px 0;">
+                    <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">设备序号 : &nbsp;</i-col>
+                    <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
+                        {{insureInfoData.deviceid}}
+                    </i-col>
+                </Row>
+                <Row style="margin:10px 0;">
+                    <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">防盗号 : &nbsp;</i-col>
+                    <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
+                        <i-input v-model.trim="insureInfoData.securitynum" style="width: 100%;"></i-input>
+                    </i-col>
+                </Row>
+                <Row style="margin:10px 0;">
+                    <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">车架号 : &nbsp;</i-col>
+                    <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
+                        <i-input v-model.trim="insureInfoData.vin" style="width: 100%;"></i-input>
+                    </i-col>
+                </Row>
+                <Row style="margin:10px 0;">
+                    <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">保险公司 : &nbsp;</i-col>
+                    <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
+                        <i-input v-model.trim="insureInfoData.insurecompany" style="width: 100%;"></i-input>
+                    </i-col>
+                </Row>
+                <Row style="margin:10px 0;">
+                    <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">保单号 : &nbsp;</i-col>
+                    <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
+                        <i-input v-model.trim="insureInfoData.insurenum" style="width: 100%;"></i-input>
+                    </i-col>
+                </Row>
+                <Row style="margin:10px 0;">
+                    <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">投保日期 : &nbsp;</i-col>
+                    <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
+                        <i-input v-model.trim="insureInfoData.subinsuretime" style="width: 100%;"></i-input>
+                    </i-col>
+                </Row>
+                <Row style="margin:10px 0;">
+                    <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">生效日期 : &nbsp;</i-col>
+                    <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
+                        <i-input v-model.trim="insureInfoData.effecttime" style="width: 100%;"></i-input>
+                    </i-col>
+                </Row>
+                <Row style="margin:10px 0;">
+                    <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">保险备注 : &nbsp;</i-col>
+                    <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
+                        <i-input v-model.trim="insureInfoData.insuremark" style="width: 100%;"></i-input>
+                    </i-col>
+                </Row>
+            </div>
+            <div slot="footer">
+                <i-button type="primary" style="width: 100%" @click="handleEditInsure">提交</i-button>
             </div>
         </Modal>
 
@@ -282,7 +342,7 @@
                     }, {
                         title: vRoot.$t("bgMgr.action"),
                         key: 'action',
-                        width: 270,
+                        width: 340,
                         render: function(h, params) {
                             return h('div', [
                                 h('Button', {
@@ -360,7 +420,7 @@
                                                     vueInstanse.ownerInfoData.phonenum2 = resp.phonenum2;
                                                     vueInstanse.ownerInfoData.idnum = resp.idnum;
                                                     vueInstanse.ownerInfoData.gender = String(resp.gender);
-                                                    vueInstanse.ownerInfoData.remark = resp.remark;
+                                                    vueInstanse.ownerInfoData.ownerremark = resp.remark;
                                                     vueInstanse.ownerInfoData.address = resp.address;
                                                 } else {
                                                     vueInstanse.ownerInfoData.ownername = '';
@@ -368,7 +428,7 @@
                                                     vueInstanse.ownerInfoData.phonenum2 = '';
                                                     vueInstanse.ownerInfoData.idnum = '';
                                                     vueInstanse.ownerInfoData.gender = '';
-                                                    vueInstanse.ownerInfoData.remark = '';
+                                                    vueInstanse.ownerInfoData.ownerremark = '';
                                                     vueInstanse.ownerInfoData.address = '';
                                                 }
                                                 vueInstanse.ownerInfoModal = true;
@@ -376,7 +436,41 @@
                                         }
                                     }
                                 }, '车主信息'),
-
+                                h('Button', {
+                                    props: {
+                                        type: 'primary',
+                                        size: 'small'
+                                    },
+                                    style: {
+                                        marginRight: '5px'
+                                    },
+                                    on: {
+                                        click: function() {
+                                            utils.queryDeviceex(params.row.deviceid, function(resp) {
+                                                console.log('resp', resp)
+                                                vueInstanse.insureInfoData.deviceid = params.row.deviceid;
+                                                if (resp) {
+                                                    vueInstanse.insureInfoData.securitynum = resp.securitynum;
+                                                    vueInstanse.insureInfoData.vin = resp.vin;
+                                                    vueInstanse.insureInfoData.insurecompany = resp.insurecompany;
+                                                    vueInstanse.insureInfoData.insurenum = resp.insurenum;
+                                                    vueInstanse.insureInfoData.subinsuretime = resp.subinsuretime;
+                                                    vueInstanse.insureInfoData.effecttime = resp.effecttime;
+                                                    vueInstanse.insureInfoData.insuremark = resp.insuremark;
+                                                } else {
+                                                    vueInstanse.insureInfoData.securitynum = '';
+                                                    vueInstanse.insureInfoData.vin = '';
+                                                    vueInstanse.insureInfoData.insurecompany = '';
+                                                    vueInstanse.insureInfoData.insurenum = '';
+                                                    vueInstanse.insureInfoData.subinsuretime = '';
+                                                    vueInstanse.insureInfoData.effecttime = '';
+                                                    vueInstanse.insureInfoData.insuremark = '';
+                                                }
+                                                vueInstanse.insureInfoModal = true;
+                                            });
+                                        }
+                                    }
+                                }, '保险信息'),
                             ]);
                         }
                     }
@@ -414,11 +508,25 @@
                     phonenum2: '',
                     idnum: '',
                     gender: '0',
-                    remark: '',
+                    ownerremark: '',
                     address: ''
+                },
+                insureInfoModal: false,
+                insureInfoData: { //编辑的设备信息
+                    deviceid: '',
+                    securitynum: '', //防盗号
+                    vin: '', //车架号
+                    insurecompany: '', //保险公司
+                    insurenum: '', //保单号
+                    subinsuretime: '', //投保日期
+                    effecttime: '', //生效日期
+                    insuremark: '', //保险备注
                 },
             },
             methods: {
+                handleEditInsure: function() {
+
+                },
                 handleEditDeviceex: function() {
                     var me = this;
                     utils.editDeviceex(me.ownerInfoData, function(resp) {

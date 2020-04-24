@@ -563,6 +563,11 @@ var myUrls = {
     editDeviceex: function() {
         return this.apihosts + 'webapi?action=editdeviceex&token=' + token;
     },
+    // 导入保险信息
+    importInsureInfo: function() {
+        return this.apihosts + 'webapi?action=importinsureinfo&token=' + token;
+    },
+
 }
 
 

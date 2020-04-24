@@ -1,8 +1,8 @@
 <meta charset="UTF-8">
-<div id="importowner">
+<div id="importinsure">
     <input type="file" id="file" style="display: none;" />
     <div class="full" style="padding: 10px;">
-        <h3 class="h3-title">导入车主信息</h3>
+        <h3 class="h3-title">导入保险信息</h3>
         <div style="padding: 10px 0;">
             <i-table border ref="table" :columns="columns" :data="tableData" height="500"></i-table>
         </div>
@@ -14,7 +14,7 @@
     </div>
     <script>
         vueInstanse = new Vue({
-            el: "#importowner",
+            el: "#importinsure",
             i18n: utils.getI18n(),
             data: {
                 columns: [{
@@ -25,30 +25,30 @@
                     key: "deviceid",
                     width: 140,
                 }, {
-                    title: '车主姓名',
-                    key: "ownername"
+                    title: '防盗号',
+                    key: "securitynum"
                 }, {
-                    title: '地址',
-                    key: "address"
+                    title: '车架号',
+                    key: "vin"
                 }, {
-                    title: '联系号码1',
-                    key: "phonenum1",
+                    title: '保险公司',
+                    key: "insurecompany",
+                    width: 100,
+                }, {
+                    title: '保单号',
+                    key: "insurenum",
                     width: 120,
                 }, {
-                    title: '联系号码2',
-                    key: "phonenum2",
+                    title: '投保日期',
+                    key: "subinsuretime",
                     width: 120,
                 }, {
-                    title: '身份证号码',
-                    key: "idnum",
-                    width: 160,
-                }, {
-                    title: '性别',
-                    key: "gender",
-                    width: 80,
+                    title: '生效日期',
+                    key: "effecttime",
+                    width: 120,
                 }, {
                     title: '备注',
-                    key: "remark",
+                    key: "insuremark",
                 }, {
                     'title': "添加状态",
                     width: 120,
@@ -98,16 +98,15 @@
                     }
                 }],
 
-                tableData: [
+                tableData: [],
 
-                ],
                 excelX: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I']
             },
             methods: {
                 downloadTemplate: function() {
                     var a = document.createElement('a');
-                    a.href = myUrls.apihost + 'ownertemplate.xlsx';
-                    a.download = 'ownertemplate.xlsx';
+                    a.href = myUrls.apihost + 'insuretemplate.xlsx';
+                    a.download = 'insuretemplate.xlsx';
                     a.click();
                 },
                 handleSubmit: function() {
@@ -117,18 +116,9 @@
                     }
                     var tableData = deepClone(this.tableData),
                         me = this;
-                    tableData.forEach(function(item) {
-                        if (item.gender.indexOf('男') != -1) {
-                            item.gender = 1
-                        } else if (item.gender.indexOf('女') != -1) {
-                            item.gender = 0
-                        } else {
-                            item.gender = -1
-                        }
-                    });
-                    var url = myUrls.importOwnerInfo();
+                    var url = myUrls.importInsureInfo();
                     var data = {
-                        owners: tableData,
+                        insures: tableData,
                         isforcecover: true,
                     }
                     utils.sendAjax(url, data, function(respData) {
@@ -178,26 +168,27 @@
                     var tableData = [];
                     while (true) {
                         var deviceIdKey = this.excelX[1] + indexY; //设备ID
-                        var ownerNameKey = this.excelX[2] + indexY; //车主姓名
-                        var genderKey = this.excelX[3] + indexY; // 性别
-                        var idnumKey = this.excelX[4] + indexY; //身份证号
-                        var phonenum1Key = this.excelX[5] + indexY; //联系号码1
-                        var phonenum2Key = this.excelX[6] + indexY; //联系号码2
-                        var addressKey = this.excelX[7] + indexY; //地址
-                        var remarkKey = this.excelX[8] + indexY; //备注
+                        var securitynumKey = this.excelX[2] + indexY; //防盗号
+                        var vinKey = this.excelX[3] + indexY; // 车架号
+                        var insurecompanyKey = this.excelX[4] + indexY; //保险公司
+                        var insurenumKey = this.excelX[5] + indexY; //保单号
+                        var subinsuretimeKey = this.excelX[6] + indexY; //投保日期
+                        var effecttimeKey = this.excelX[7] + indexY; //生效日期
+                        var insuremarkKey = this.excelX[8] + indexY; //保险备注
+
                         if (excelData[deviceIdKey] == undefined) {
                             break;
                         }
 
                         tableData.push({
                             deviceid: excelData[deviceIdKey].v,
-                            ownername: excelData[ownerNameKey].v,
-                            gender: excelData[genderKey].v,
-                            idnum: excelData[idnumKey].v,
-                            phonenum1: excelData[phonenum1Key].v,
-                            phonenum2: excelData[phonenum2Key].v,
-                            address: excelData[addressKey].v,
-                            remark: excelData[remarkKey].v,
+                            securitynum: excelData[securitynumKey].v,
+                            vin: excelData[vinKey].v,
+                            insurecompany: excelData[insurecompanyKey].v,
+                            insurenum: excelData[insurenumKey].v,
+                            subinsuretime: excelData[subinsuretimeKey].v,
+                            effecttime: excelData[effecttimeKey].v,
+                            insuremark: excelData[insuremarkKey].v,
                             status: -1
                         })
 

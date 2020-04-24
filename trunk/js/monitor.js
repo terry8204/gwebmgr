@@ -82,8 +82,8 @@ var monitor = {
                 phonenum1: '',
                 phonenum2: '',
                 idnum: '',
-                gender: '0',
-                remark: '',
+                gender: '',
+                ownerremark: '',
                 address: ''
             },
             expirenotifytime: DateFormat.longToDateTimeStr(Date.now(), 0),
@@ -299,7 +299,7 @@ var monitor = {
                             me.ownerInfoData.phonenum2 = resp.phonenum2;
                             me.ownerInfoData.idnum = resp.idnum;
                             me.ownerInfoData.gender = String(resp.gender);
-                            me.ownerInfoData.remark = resp.remark;
+                            me.ownerInfoData.ownerremark = resp.remark;
                             me.ownerInfoData.address = resp.address;
                         } else {
                             me.ownerInfoData.ownername = '';
@@ -307,7 +307,7 @@ var monitor = {
                             me.ownerInfoData.phonenum2 = '';
                             me.ownerInfoData.idnum = '';
                             me.ownerInfoData.gender = '';
-                            me.ownerInfoData.remark = '';
+                            me.ownerInfoData.ownerremark = '';
                             me.ownerInfoData.address = '';
                         }
                         console.log('ownerInfo - ', resp);
