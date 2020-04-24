@@ -310,7 +310,6 @@ var monitor = {
                             me.ownerInfoData.ownerremark = '';
                             me.ownerInfoData.address = '';
                         }
-                        console.log('ownerInfo - ', resp);
                         me.ownerInfoModal = true;
                     });
                     break;
@@ -327,7 +326,7 @@ var monitor = {
         },
         handleEditDeviceex: function() {
             var me = this;
-            utils.editDeviceex(me.ownerInfoData, function(resp) {
+            utils.editDeviceex('owner', me.ownerInfoData, function(resp) {
                 console.log(resp);
                 if (resp.status === 0) {
                     me.$Message.success("编辑成功");

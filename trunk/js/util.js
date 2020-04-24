@@ -864,12 +864,12 @@ var utils = {
             callback && callback(respData.deviceex);
         });
     },
-    editDeviceex: function(data, callback) {
+    editDeviceex: function(action, data, callback) {
         var url = myUrls.editDeviceex();
         data = deepClone(data);
         data.gender = Number(data.gender);
         utils.sendAjax(url, {
-            action: 'owner',
+            action: action,
             deviceex: data
         }, function(respData) {
             callback && callback(respData);
