@@ -855,6 +855,23 @@ var utils = {
             callback && callback(respData.rootuser);
         });
     },
+    queryDeviceex: function(deviceid, callback) {
+        var url = myUrls.queryDeviceex();
+        var data = {
+            deviceid: deviceid
+        };
+        utils.sendAjax(url, data, function(respData) {
+            callback && callback(respData.deviceex);
+        });
+    },
+    editDeviceex: function(data, callback) {
+        var url = myUrls.editDeviceex();
+        data = deepClone(data);
+        data.gender = Number(data.gender);
+        utils.sendAjax(url, data, function(respData) {
+            callback && callback(respData);
+        });
+    }
 }
 
 try {

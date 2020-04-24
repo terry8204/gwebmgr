@@ -309,6 +309,7 @@
                         <DropdownItem name="alarmList">{{$t("monitor.alarmRecords")}}</DropdownItem>
                         <DropdownItem name="phoneAlarm">{{$t("reportForm.phoneAlarm")}}</DropdownItem>
                         <DropdownItem name="devbaseinfo">{{$t("monitor.devBaseInfo")}}</DropdownItem>
+                        <DropdownItem name="ownerInfo">车主信息</DropdownItem>
                         </i-dropdown-menu>
                         </Dropdown>
                         <li>
@@ -360,6 +361,7 @@
             <DropdownItem name="alarmList">{{$t("monitor.alarmRecords")}}</DropdownItem>
             <DropdownItem name="phoneAlarm">{{$t("reportForm.phoneAlarm")}}</DropdownItem>
             <DropdownItem name="devbaseinfo">{{$t("monitor.devBaseInfo")}}</DropdownItem>
+            <DropdownItem name="ownerInfo">车主信息</DropdownItem>
             </i-dropdown-menu>
             </Dropdown>
             <li>
@@ -411,6 +413,7 @@
         <DropdownItem name="alarmList">{{$t("monitor.alarmRecords")}}</DropdownItem>
         <DropdownItem name="phoneAlarm">{{$t("reportForm.phoneAlarm")}}</DropdownItem>
         <DropdownItem name="devbaseinfo">{{$t("monitor.devBaseInfo")}}</DropdownItem>
+        <DropdownItem name="ownerInfo">车主信息</DropdownItem>
         </i-dropdown-menu>
         </Dropdown>
         <li>
@@ -462,6 +465,7 @@
             <DropdownItem name="alarmList">{{$t("monitor.alarmRecords")}}</DropdownItem>
             <DropdownItem name="phoneAlarm">{{$t("reportForm.phoneAlarm")}}</DropdownItem>
             <DropdownItem name="devbaseinfo">{{$t("monitor.devBaseInfo")}}</DropdownItem>
+            <DropdownItem name="ownerInfo">车主信息</DropdownItem>
             </i-dropdown-menu>
             </Dropdown>
             <li>
@@ -752,6 +756,69 @@
                     </div>
                 </Modal>
 
+
+                <Modal v-model="ownerInfoModal" width="500">
+                    <p slot="header" style="color:#f60;text-align:center">
+                        <Icon type="ios-create-outline"></Icon>
+                        <span>车主信息</span>
+                    </p>
+                    <div style="text-align:center">
+                        <Row style="margin:10px 0;">
+                            <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">设备序号 : &nbsp;</i-col>
+                            <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
+                                {{ownerInfoData.deviceid}}
+                            </i-col>
+                        </Row>
+                        <Row style="margin:10px 0;">
+                            <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">车主名称 : &nbsp;</i-col>
+                            <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
+                                <i-input v-model.trim="ownerInfoData.ownername" style="width: 100%;"></i-input>
+                            </i-col>
+                        </Row>
+                        <Row style="margin:10px 0;">
+                            <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">联系方式1 : &nbsp;</i-col>
+                            <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
+                                <i-input v-model.trim="ownerInfoData.phonenum1" style="width: 100%;"></i-input>
+                            </i-col>
+                        </Row>
+                        <Row style="margin:10px 0;">
+                            <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">联系方式2 : &nbsp;</i-col>
+                            <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
+                                <i-input v-model.trim="ownerInfoData.phonenum2" style="width: 100%;"></i-input>
+                            </i-col>
+                        </Row>
+                        <Row style="margin:10px 0;">
+                            <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">身份证号 : &nbsp;</i-col>
+                            <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
+                                <i-input v-model.trim="ownerInfoData.idnum" style="width: 100%;"></i-input>
+                            </i-col>
+                        </Row>
+                        <Row style="margin:10px 0;">
+                            <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">性别 : &nbsp;</i-col>
+                            <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
+                                <i-select v-model="ownerInfoData.gender">
+                                    <i-option value="1">男</i-option>
+                                    <i-option value="0">女</i-option>
+                                </i-select>
+                            </i-col>
+                        </Row>
+                        <Row style="margin:10px 0;">
+                            <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">地址 : &nbsp;</i-col>
+                            <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
+                                <i-input v-model.trim="ownerInfoData.address" style="width: 100%;"></i-input>
+                            </i-col>
+                        </Row>
+                        <Row style="margin:10px 0;">
+                            <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">备注 : &nbsp;</i-col>
+                            <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
+                                <i-input v-model.trim="ownerInfoData.remark" style="width: 100%;"></i-input>
+                            </i-col>
+                        </Row>
+                    </div>
+                    <div slot="footer">
+                        <i-button type="primary" style="width: 100%" @click="handleEditDeviceex">提交</i-button>
+                    </div>
+                </Modal>
 
                 <!-- 指令记录 -->
                 <Modal v-model="directiveReportModal" width="860">
@@ -1063,6 +1130,7 @@
     <script src="js/reportform.js"></script>
     <script src="js/bgmanager.js"></script>
     <script src="js/alarmcomponent.js"></script>
+    <script src="js/xlsx.full.min.js"></script>
     <script src="js/main.js"></script>
 </body>
 

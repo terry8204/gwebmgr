@@ -44,6 +44,14 @@ var bgManager = {
                         { title: "批量管理", name: 'batchMgrDevice', icon: 'ios-folder-outline' },
                         { title: "续费管理", name: 'chargeMgr', icon: 'ios-apps-outline' }
                     ]
+                },
+                {
+                    title: '运营管理',
+                    name: 'operateMar',
+                    icon: 'ios-analytics',
+                    children: [
+                        { title: "导入车主信息", name: 'ImportOwner', icon: 'md-add' }
+                    ]
                 }
             ]
         }
@@ -89,6 +97,9 @@ var bgManager = {
                     break
                 case 'batchMgrDevice':
                     page = 'batchmgr.html'
+                    break
+                case 'ImportOwner':
+                    page = 'importowner.html'
                     break
             }
             this.currentPage = name

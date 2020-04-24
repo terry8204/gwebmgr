@@ -551,6 +551,18 @@ var myUrls = {
     reportDeviceOnlineMonth: function() {
         return this.apihosts + 'webapi?action=reportdeviceonlinemonth&token=' + token;
     },
+    // 导入车主信息
+    importOwnerInfo: function() {
+        return this.apihosts + 'webapi?action=importownerinfo&token=' + token;
+    },
+    // 查询车主信息
+    queryDeviceex: function() {
+        return this.apihosts + 'webapi?action=querydeviceex&token=' + token;
+    },
+    // 编辑车主信息
+    editDeviceex: function() {
+        return this.apihosts + 'webapi?action=editdeviceex&token=' + token;
+    },
 }
 
 

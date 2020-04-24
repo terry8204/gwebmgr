@@ -75,6 +75,17 @@ var monitor = {
                 deviceid: '',
                 remark: '',
             },
+            ownerInfoModal: false,
+            ownerInfoData: { //编辑的设备信息
+                deviceid: '',
+                ownername: '',
+                phonenum1: '',
+                phonenum2: '',
+                idnum: '',
+                gender: '0',
+                remark: '',
+                address: ''
+            },
             expirenotifytime: DateFormat.longToDateTimeStr(Date.now(), 0),
             currentDeviceType: null, // 选中设备的类型
             currentDevDirectiveList: [], // 选中设备的类型对应的设备指令
@@ -240,6 +251,7 @@ var monitor = {
             }
         },
         handleClickMore: function(name) {
+            var me = this;
             switch (name) {
                 case 'cmdrecord':
                     this.directiveReportModal = true;
@@ -278,6 +290,30 @@ var monitor = {
                 case 'camera':
 
                     break;
+                case 'ownerInfo':
+                    utils.queryDeviceex(this.currentDeviceId, function(resp) {
+                        me.ownerInfoData.deviceid = me.currentDeviceId;
+                        if (resp) {
+                            me.ownerInfoData.ownername = resp.ownername;
+                            me.ownerInfoData.phonenum1 = resp.phonenum1;
+                            me.ownerInfoData.phonenum2 = resp.phonenum2;
+                            me.ownerInfoData.idnum = resp.idnum;
+                            me.ownerInfoData.gender = String(resp.gender);
+                            me.ownerInfoData.remark = resp.remark;
+                            me.ownerInfoData.address = resp.address;
+                        } else {
+                            me.ownerInfoData.ownername = '';
+                            me.ownerInfoData.phonenum1 = '';
+                            me.ownerInfoData.phonenum2 = '';
+                            me.ownerInfoData.idnum = '';
+                            me.ownerInfoData.gender = '';
+                            me.ownerInfoData.remark = '';
+                            me.ownerInfoData.address = '';
+                        }
+                        console.log('ownerInfo - ', resp);
+                        me.ownerInfoModal = true;
+                    });
+                    break;
                 case 'video':
                     window.open(
                         myUrls.viewhosts + "video.html?deviceid=" +
@@ -288,6 +324,12 @@ var monitor = {
                     );
                     break;
             }
+        },
+        handleEditDeviceex: function() {
+            var me = this;
+            utils.editDeviceex(me.ownerInfoData, function(resp) {
+                console.log(resp);
+            });
         },
         queryDeviceBaseInfo: function() {
             this.deviceBaseInfo = {};
