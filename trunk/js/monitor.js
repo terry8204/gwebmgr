@@ -329,6 +329,12 @@ var monitor = {
             var me = this;
             utils.editDeviceex(me.ownerInfoData, function(resp) {
                 console.log(resp);
+                if (resp.status === 0) {
+                    me.$Message.success("编辑成功");
+                    me.ownerInfoModal = false;
+                } else {
+                    me.$Message.error("编辑失败");
+                }
             });
         },
         queryDeviceBaseInfo: function() {

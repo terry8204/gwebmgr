@@ -31,6 +31,69 @@
             <Page :total="total" :page-size="10" :current="currentIndex" @on-change="changePage"></Page>
         </div>
 
+        <Modal v-model="ownerInfoModal" width="500">
+            <p slot="header" style="color:#f60;text-align:center">
+                <Icon type="ios-create-outline"></Icon>
+                <span>车主信息</span>
+            </p>
+            <div style="text-align:center">
+                <Row style="margin:10px 0;">
+                    <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">设备序号 : &nbsp;</i-col>
+                    <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
+                        {{ownerInfoData.deviceid}}
+                    </i-col>
+                </Row>
+                <Row style="margin:10px 0;">
+                    <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">车主名称 : &nbsp;</i-col>
+                    <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
+                        <i-input v-model.trim="ownerInfoData.ownername" style="width: 100%;"></i-input>
+                    </i-col>
+                </Row>
+                <Row style="margin:10px 0;">
+                    <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">联系方式1 : &nbsp;</i-col>
+                    <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
+                        <i-input v-model.trim="ownerInfoData.phonenum1" style="width: 100%;"></i-input>
+                    </i-col>
+                </Row>
+                <Row style="margin:10px 0;">
+                    <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">联系方式2 : &nbsp;</i-col>
+                    <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
+                        <i-input v-model.trim="ownerInfoData.phonenum2" style="width: 100%;"></i-input>
+                    </i-col>
+                </Row>
+                <Row style="margin:10px 0;">
+                    <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">身份证号 : &nbsp;</i-col>
+                    <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
+                        <i-input v-model.trim="ownerInfoData.idnum" style="width: 100%;"></i-input>
+                    </i-col>
+                </Row>
+                <Row style="margin:10px 0;">
+                    <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">性别 : &nbsp;</i-col>
+                    <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
+                        <i-select v-model="ownerInfoData.gender">
+                            <i-option value="1">男</i-option>
+                            <i-option value="0">女</i-option>
+                        </i-select>
+                    </i-col>
+                </Row>
+                <Row style="margin:10px 0;">
+                    <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">地址 : &nbsp;</i-col>
+                    <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
+                        <i-input v-model.trim="ownerInfoData.address" style="width: 100%;"></i-input>
+                    </i-col>
+                </Row>
+                <Row style="margin:10px 0;">
+                    <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">备注 : &nbsp;</i-col>
+                    <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
+                        <i-input v-model.trim="ownerInfoData.remark" style="width: 100%;"></i-input>
+                    </i-col>
+                </Row>
+            </div>
+            <div slot="footer">
+                <i-button type="primary" style="width: 100%" @click="handleEditDeviceex">提交</i-button>
+            </div>
+        </Modal>
+
         <Modal v-model="modal" width="900" title="编辑设备">
             <div style="width:700px;margin:10px auto">
                 <Row style="margin: 10px 0" v-if="userType < 3">
@@ -219,7 +282,7 @@
                     }, {
                         title: vRoot.$t("bgMgr.action"),
                         key: 'action',
-                        width: 240,
+                        width: 270,
                         render: function(h, params) {
                             return h('div', [
                                 h('Button', {
@@ -279,6 +342,40 @@
                                         }
                                     }
                                 }, vRoot.$t("user.resetPwd")),
+                                h('Button', {
+                                    props: {
+                                        type: 'primary',
+                                        size: 'small'
+                                    },
+                                    style: {
+                                        marginRight: '5px'
+                                    },
+                                    on: {
+                                        click: function() {
+                                            utils.queryDeviceex(params.row.deviceid, function(resp) {
+                                                vueInstanse.ownerInfoData.deviceid = params.row.deviceid;
+                                                if (resp) {
+                                                    vueInstanse.ownerInfoData.ownername = resp.ownername;
+                                                    vueInstanse.ownerInfoData.phonenum1 = resp.phonenum1;
+                                                    vueInstanse.ownerInfoData.phonenum2 = resp.phonenum2;
+                                                    vueInstanse.ownerInfoData.idnum = resp.idnum;
+                                                    vueInstanse.ownerInfoData.gender = String(resp.gender);
+                                                    vueInstanse.ownerInfoData.remark = resp.remark;
+                                                    vueInstanse.ownerInfoData.address = resp.address;
+                                                } else {
+                                                    vueInstanse.ownerInfoData.ownername = '';
+                                                    vueInstanse.ownerInfoData.phonenum1 = '';
+                                                    vueInstanse.ownerInfoData.phonenum2 = '';
+                                                    vueInstanse.ownerInfoData.idnum = '';
+                                                    vueInstanse.ownerInfoData.gender = '';
+                                                    vueInstanse.ownerInfoData.remark = '';
+                                                    vueInstanse.ownerInfoData.address = '';
+                                                }
+                                                vueInstanse.ownerInfoModal = true;
+                                            });
+                                        }
+                                    }
+                                }, '车主信息'),
 
                             ]);
                         }
@@ -309,8 +406,31 @@
                 userlists: [],
                 isShowMatchDev: false,
                 monitor: "",
+                ownerInfoModal: false,
+                ownerInfoData: { //编辑的设备信息
+                    deviceid: '',
+                    ownername: '',
+                    phonenum1: '',
+                    phonenum2: '',
+                    idnum: '',
+                    gender: '0',
+                    remark: '',
+                    address: ''
+                },
             },
             methods: {
+                handleEditDeviceex: function() {
+                    var me = this;
+                    utils.editDeviceex(me.ownerInfoData, function(resp) {
+                        console.log(resp);
+                        if (resp.status === 0) {
+                            me.$Message.success("编辑成功");
+                            me.ownerInfoModal = false;
+                        } else {
+                            me.$Message.error("编辑失败");
+                        }
+                    });
+                },
                 handlerClickQuery() {
                     var self = this;
                     var queryTableData = [];

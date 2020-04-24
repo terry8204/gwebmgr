@@ -867,6 +867,7 @@ var utils = {
     editDeviceex: function(data, callback) {
         var url = myUrls.editDeviceex();
         data = deepClone(data);
+        data.action = 'owner';
         data.gender = Number(data.gender);
         utils.sendAjax(url, data, function(respData) {
             callback && callback(respData);
