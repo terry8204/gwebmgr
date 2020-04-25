@@ -618,6 +618,7 @@
                         dev.deviceidkey = "\t" + dev.deviceid;
                         dev.devicenamekey = "\t" + dev.devicename;
                         dev.simnum ? (dev.simnumkey = "\t" + dev.simnum) : (dev.simnumkey = "");
+                        dev.bindpwd = dev.bindpwd != null ? dev.bindpwd : '';
                         dev.createtimestr = DateFormat.longToDateTimeStr(dev.createtime, 0);
                         dev.overduetimestr = DateFormat.longToDateTimeStr(dev.expirenotifytime, 0);
                         dev.groupname = me.getGroupName(dev.groupid);
@@ -707,7 +708,7 @@
                         if (this.tableData.length) {
                             this.$refs.table.exportCsv({
                                 filename: 'deviceids',
-                                columns: this.columns.filter((col, index) => index < 4),
+                                columns: this.columns.filter((col, index) => index < 8),
                                 data: this.recordsList,
                                 quoted: true,
                             });
@@ -716,7 +717,7 @@
                         if (this.queryTableData.length) {
                             this.$refs.table.exportCsv({
                                 filename: 'deviceids',
-                                columns: this.columns.filter((col, index) => index < 4),
+                                columns: this.columns.filter((col, index) => index < 8),
                                 data: this.queryTableData,
                                 quoted: true,
                             });
