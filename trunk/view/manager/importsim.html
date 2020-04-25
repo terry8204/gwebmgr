@@ -1,8 +1,8 @@
 <meta charset="UTF-8">
-<div id="importinsure">
+<div id="importsim">
     <input type="file" id="file" style="display: none;" />
     <div class="full" style="padding: 10px;">
-        <h3 class="h3-title">导入保险信息</h3>
+        <h3 class="h3-title">导入SIM卡信息</h3>
         <div style="padding: 10px 0;">
             <i-table border ref="table" :columns="columns" :data="tableData" height="500"></i-table>
         </div>
@@ -14,41 +14,38 @@
     </div>
     <script>
         vueInstanse = new Vue({
-            el: "#importinsure",
+            el: "#importsim",
             i18n: utils.getI18n(),
             data: {
                 columns: [{
                     type: 'index',
                     width: 60
                 }, {
-                    title: '设备序号',
-                    key: "deviceid",
+                    title: '手机号码',
+                    key: "phonenum",
                     width: 140,
                 }, {
-                    title: '防盗号',
-                    key: "securitynum"
+                    title: 'iccid',
+                    key: "iccid"
                 }, {
-                    title: '车架号',
-                    key: "vin"
+                    title: 'imsi',
+                    key: "imsi"
                 }, {
-                    title: '保险公司',
-                    key: "insurecompany",
+                    title: '卡商',
+                    key: "provider",
                     width: 100,
                 }, {
-                    title: '保单号',
-                    key: "insurenum",
+                    title: '流量套餐',
+                    key: "flowpackage",
                     width: 120,
                 }, {
-                    title: '投保日期',
-                    key: "subinsuretime",
+                    title: '开始时间/激活时间',
+                    key: "starttime",
                     width: 120,
                 }, {
-                    title: '生效日期',
-                    key: "effecttime",
+                    title: '到期日期',
+                    key: "endtime",
                     width: 120,
-                }, {
-                    title: '备注',
-                    key: "insuremark",
                 }, {
                     'title': "添加状态",
                     width: 120,
@@ -105,8 +102,8 @@
             methods: {
                 downloadTemplate: function() {
                     var a = document.createElement('a');
-                    a.href = myUrls.apihost + 'insuretemplate.xlsx';
-                    a.download = 'insuretemplate.xlsx';
+                    a.href = myUrls.apihost + 'simtemplate.xlsx';
+                    a.download = 'simtemplate.xlsx';
                     a.click();
                 },
                 handleSubmit: function() {
@@ -116,9 +113,9 @@
                     }
                     var tableData = deepClone(this.tableData),
                         me = this;
-                    var url = myUrls.importInsureInfo();
+                    var url = myUrls.importSimInfo();
                     var data = {
-                        insures: tableData,
+                        siminfos: tableData,
                         isforcecover: true,
                     }
                     utils.sendAjax(url, data, function(respData) {
@@ -167,28 +164,27 @@
                     var indexY = 2;
                     var tableData = [];
                     while (true) {
-                        var deviceIdKey = this.excelX[1] + indexY; //设备ID
-                        var securitynumKey = this.excelX[2] + indexY; //防盗号
-                        var vinKey = this.excelX[3] + indexY; // 车架号
-                        var insurecompanyKey = this.excelX[4] + indexY; //保险公司
-                        var insurenumKey = this.excelX[5] + indexY; //保单号
-                        var subinsuretimeKey = this.excelX[6] + indexY; //投保日期
-                        var effecttimeKey = this.excelX[7] + indexY; //生效日期
-                        var insuremarkKey = this.excelX[8] + indexY; //保险备注
+                        var phonenumKey = this.excelX[1] + indexY; //设备ID
+                        var iccidKey = this.excelX[2] + indexY; //防盗号
+                        var imsiKey = this.excelX[3] + indexY; // 车架号
+                        var providerKey = this.excelX[4] + indexY; //保险公司
+                        var flowpackageKey = this.excelX[5] + indexY; //保单号
+                        var starttimeKey = this.excelX[6] + indexY; //投保日期
+                        var endtimeKey = this.excelX[7] + indexY; //生效日期
 
-                        if (excelData[deviceIdKey] == undefined) {
+
+                        if (excelData[phonenumKey] == undefined) {
                             break;
                         }
 
                         tableData.push({
-                            deviceid: excelData[deviceIdKey].v,
-                            securitynum: excelData[securitynumKey].v,
-                            vin: excelData[vinKey].v,
-                            insurecompany: excelData[insurecompanyKey].v,
-                            insurenum: excelData[insurenumKey].v,
-                            subinsuretime: excelData[subinsuretimeKey].v,
-                            effecttime: excelData[effecttimeKey].v,
-                            insuremark: excelData[insuremarkKey].v,
+                            phonenum: excelData[phonenumKey].v,
+                            iccid: excelData[iccidKey].v,
+                            imsi: excelData[imsiKey].v,
+                            provider: excelData[providerKey].v,
+                            flowpackage: excelData[flowpackageKey].v,
+                            starttime: excelData[starttimeKey].v,
+                            endtime: excelData[endtimeKey].v,
                             status: -1
                         })
 
@@ -209,7 +205,7 @@
                     }
                     var file = e.target.files[0]
                     me.readWorkbookFromLocalFile(file, function(workbook) {
-                        me.parserExcelData(workbook.Sheets['保险信息'])
+                        me.parserExcelData(workbook.Sheets['手机卡信息'])
                     });
                 };
 
