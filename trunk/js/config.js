@@ -571,6 +571,10 @@ var myUrls = {
     importSimInfo: function() {
         return this.apihosts + 'webapi?action=importsiminfo&token=' + token;
     },
+    // 导入设备名称
+    importRename: function() {
+        return this.apihosts + 'webapi?action=importrename&token=' + token;
+    },
 
 }
 

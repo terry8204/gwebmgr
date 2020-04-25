@@ -1,8 +1,8 @@
 <meta charset="UTF-8">
-<div id="importsim">
+<div id="importdevicename">
     <input type="file" id="file" style="display: none;" />
     <div class="full" style="padding: 10px;">
-        <h3 class="h3-title">导入SIM卡信息</h3>
+        <h3 class="h3-title">导入设备名称</h3>
         <div style="padding: 10px 0;">
             <i-table border ref="table" :columns="columns" :data="tableData" height="500"></i-table>
         </div>
@@ -14,38 +14,18 @@
     </div>
     <script>
         vueInstanse = new Vue({
-            el: "#importsim",
+            el: "#importdevicename",
             i18n: utils.getI18n(),
             data: {
                 columns: [{
                     type: 'index',
                     width: 60
                 }, {
-                    title: '手机号码',
-                    key: "phonenum",
-                    width: 140,
+                    title: '设备序号',
+                    key: "deviceid",
                 }, {
-                    title: 'iccid',
-                    key: "iccid"
-                }, {
-                    title: 'imsi',
-                    key: "imsi"
-                }, {
-                    title: '卡商',
-                    key: "provider",
-                    width: 100,
-                }, {
-                    title: '流量套餐',
-                    key: "flowpackage",
-                    width: 120,
-                }, {
-                    title: '激活时间',
-                    key: "starttime",
-                    width: 120,
-                }, {
-                    title: '到期日期',
-                    key: "endtime",
-                    width: 120,
+                    title: '设备名称',
+                    key: "name"
                 }, {
                     'title': "添加状态",
                     width: 120,
@@ -96,14 +76,14 @@
                 }],
 
                 tableData: [],
+                excelX: ['A', 'B', 'C']
 
-                excelX: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I']
             },
             methods: {
                 downloadTemplate: function() {
                     var a = document.createElement('a');
-                    a.href = myUrls.apihost + 'simtemplate.xlsx';
-                    a.download = 'simtemplate.xlsx';
+                    a.href = myUrls.apihost + 'renametemplate.xlsx';
+                    a.download = 'renametemplate.xlsx';
                     a.click();
                 },
                 handleSubmit: function() {
@@ -113,13 +93,12 @@
                     }
                     var tableData = deepClone(this.tableData),
                         me = this;
-                    var url = myUrls.importSimInfo();
+                    var url = myUrls.importRename();
                     var data = {
-                        siminfos: tableData,
-                        isforcecover: true,
+                        renamerecords: tableData,
                     }
                     utils.sendAjax(url, data, function(respData) {
-                        console.log(respData);
+
                         if (respData.status == 0) {
                             if (respData.total === respData.success) {
                                 me.$Message.success("导入成功");
@@ -166,27 +145,14 @@
                         var indexY = 2;
                         var tableData = [];
                         while (true) {
-                            var phonenumKey = this.excelX[1] + indexY; //设备ID
-                            var iccidKey = this.excelX[2] + indexY; //防盗号
-                            var imsiKey = this.excelX[3] + indexY; // 车架号
-                            var providerKey = this.excelX[4] + indexY; //保险公司
-                            var flowpackageKey = this.excelX[5] + indexY; //保单号
-                            var starttimeKey = this.excelX[6] + indexY; //投保日期
-                            var endtimeKey = this.excelX[7] + indexY; //生效日期
-
-
-                            if (excelData[phonenumKey] == undefined) {
+                            var deviceidKey = this.excelX[1] + indexY; //设备ID
+                            var devicenameKey = this.excelX[2] + indexY; //防盗号
+                            if (excelData[deviceidKey] == undefined) {
                                 break;
                             }
-
                             tableData.push({
-                                phonenum: excelData[phonenumKey].v,
-                                iccid: excelData[iccidKey].v,
-                                imsi: excelData[imsiKey].v,
-                                provider: excelData[providerKey].v,
-                                flowpackage: excelData[flowpackageKey].v,
-                                starttime: excelData[starttimeKey].v,
-                                endtime: excelData[endtimeKey].v,
+                                deviceid: excelData[deviceidKey].v,
+                                name: excelData[devicenameKey].v,
                                 status: -1
                             })
 
@@ -211,7 +177,7 @@
                     }
                     var file = e.target.files[0]
                     me.readWorkbookFromLocalFile(file, function(workbook) {
-                        me.parserExcelData(workbook.Sheets['手机卡信息'])
+                        me.parserExcelData(workbook.Sheets['批量改名'])
                     });
                 };
 

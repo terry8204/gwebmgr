@@ -53,6 +53,7 @@ var bgManager = {
                         { title: "导入车主信息", name: 'ImportOwner', icon: 'md-add' },
                         { title: "导入保险信息", name: 'ImportInsure', icon: 'md-add' },
                         { title: "导入SIM卡信息", name: 'ImportSim', icon: 'md-add' },
+                        { title: "导入设备名称", name: 'ImportDeviceName', icon: 'md-add' },
                     ]
                 }
             ]
@@ -108,6 +109,9 @@ var bgManager = {
                     break
                 case 'ImportSim':
                     page = 'importsim.html'
+                    break
+                case 'ImportDeviceName':
+                    page = 'importdevicename.html'
                     break
             }
             this.currentPage = name
