@@ -25,7 +25,7 @@
         </ul>
 
         <div class="table-wraper">
-            <i-table border ref="table" :columns="columns" :data="tableData" height="520" :loading="loading"></i-table>
+            <i-table border ref="table" :columns="columns" :data="tableData" :height="taleHeight" :loading="loading"></i-table>
         </div>
         <div class="my-page" style="margin: 5px 0;">
             <Page :total="total" :page-size="10" :current="currentIndex" @on-change="changePage"></Page>
@@ -288,6 +288,7 @@
             el: "#querydev",
             i18n: utils.getI18n(),
             data: {
+                taleHeight: 300,
                 isQuery: false,
                 userType: Cookies.get('userType'),
                 modal: false,
@@ -706,7 +707,7 @@
                         this.$refs.table.exportCsv({
                             filename: 'deviceids',
                             columns: this.columns.filter((col, index) => index < 4),
-                            data: this.tableData,
+                            data: this.recordsList,
                             quoted: true,
                         });
                     }
@@ -911,6 +912,10 @@
 
 
                 },
+                calcTableHeight: function() {
+                    var wHeight = window.innerHeight;
+                    this.taleHeight = wHeight - 184;
+                },
             },
             watch: {
                 isShowMatchDev: function() {
@@ -939,11 +944,16 @@
             },
             mixins: [mixIn],
             mounted: function() {
+                var me = this;
                 this.userlists = userlists;
                 this.userType = vstore.state.userType;
                 this.allGroups = {};
                 this.getDeviceList();
                 this.getDeviceType();
+                this.calcTableHeight();
+                window.onresize = function() {
+                    me.calcTableHeight();
+                }
             }
         })
     </script>
