@@ -703,13 +703,24 @@
                     });
                 },
                 exportDevice: function() {
-                    if (this.tableData.length) {
-                        this.$refs.table.exportCsv({
-                            filename: 'deviceids',
-                            columns: this.columns.filter((col, index) => index < 4),
-                            data: this.recordsList,
-                            quoted: true,
-                        });
+                    if (this.queryParameter == "") {
+                        if (this.tableData.length) {
+                            this.$refs.table.exportCsv({
+                                filename: 'deviceids',
+                                columns: this.columns.filter((col, index) => index < 4),
+                                data: this.recordsList,
+                                quoted: true,
+                            });
+                        }
+                    } else {
+                        if (this.queryTableData.length) {
+                            this.$refs.table.exportCsv({
+                                filename: 'deviceids',
+                                columns: this.columns.filter((col, index) => index < 4),
+                                data: this.queryTableData,
+                                quoted: true,
+                            });
+                        }
                     }
                 },
 
