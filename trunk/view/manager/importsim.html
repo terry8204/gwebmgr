@@ -7,7 +7,7 @@
             <i-table border ref="table" :columns="columns" :data="tableData" height="500"></i-table>
         </div>
         <div>
-            <i-button @click="importTownerInfo">文件导入</i-button>
+            <i-button @click="importTownerInfo">导入文件</i-button>
             <i-button @click="handleSubmit">提交</i-button>
             <i-button @click="downloadTemplate">模版下载</i-button>
         </div>
@@ -146,6 +146,7 @@
                 },
                 importTownerInfo: function() {
                     this.fileEl.files.length = 0;
+                    this.fileEl.value = "";
                     this.fileEl.click();
                 },
                 readWorkbookFromLocalFile: function(file, callback) {
@@ -161,36 +162,41 @@
                 },
                 parserExcelData: function(excelData) {
 
-                    var indexY = 2;
-                    var tableData = [];
-                    while (true) {
-                        var phonenumKey = this.excelX[1] + indexY; //设备ID
-                        var iccidKey = this.excelX[2] + indexY; //防盗号
-                        var imsiKey = this.excelX[3] + indexY; // 车架号
-                        var providerKey = this.excelX[4] + indexY; //保险公司
-                        var flowpackageKey = this.excelX[5] + indexY; //保单号
-                        var starttimeKey = this.excelX[6] + indexY; //投保日期
-                        var endtimeKey = this.excelX[7] + indexY; //生效日期
+                    try {
+                        var indexY = 2;
+                        var tableData = [];
+                        while (true) {
+                            var phonenumKey = this.excelX[1] + indexY; //设备ID
+                            var iccidKey = this.excelX[2] + indexY; //防盗号
+                            var imsiKey = this.excelX[3] + indexY; // 车架号
+                            var providerKey = this.excelX[4] + indexY; //保险公司
+                            var flowpackageKey = this.excelX[5] + indexY; //保单号
+                            var starttimeKey = this.excelX[6] + indexY; //投保日期
+                            var endtimeKey = this.excelX[7] + indexY; //生效日期
 
 
-                        if (excelData[phonenumKey] == undefined) {
-                            break;
+                            if (excelData[phonenumKey] == undefined) {
+                                break;
+                            }
+
+                            tableData.push({
+                                phonenum: excelData[phonenumKey].v,
+                                iccid: excelData[iccidKey].v,
+                                imsi: excelData[imsiKey].v,
+                                provider: excelData[providerKey].v,
+                                flowpackage: excelData[flowpackageKey].v,
+                                starttime: excelData[starttimeKey].v,
+                                endtime: excelData[endtimeKey].v,
+                                status: -1
+                            })
+
+                            indexY++;
                         }
-
-                        tableData.push({
-                            phonenum: excelData[phonenumKey].v,
-                            iccid: excelData[iccidKey].v,
-                            imsi: excelData[imsiKey].v,
-                            provider: excelData[providerKey].v,
-                            flowpackage: excelData[flowpackageKey].v,
-                            starttime: excelData[starttimeKey].v,
-                            endtime: excelData[endtimeKey].v,
-                            status: -1
-                        })
-
-                        indexY++;
+                        this.tableData = tableData;
+                    } catch (error) {
+                        this.$Message.error('请使用我们提供的模版填写');
                     }
-                    this.tableData = tableData;
+
                 }
             },
             mounted: function() {
