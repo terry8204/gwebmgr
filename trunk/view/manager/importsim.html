@@ -4,7 +4,7 @@
     <div class="full" style="padding: 10px;">
         <h3 class="h3-title">导入SIM卡信息</h3>
         <div style="padding: 10px 0;">
-            <i-table border ref="table" :columns="columns" :loading="loading" :data="tableData" height="500"></i-table>
+            <i-table border ref="table" :columns="columns" :loading="loading" :data="tableData" :height="taleHeight"></i-table>
         </div>
         <div style="padding: 5px; text-align: center;border: 1px solid #DCDEE2;">
             <i-button @click="importTownerInfo">导入文件</i-button>
@@ -17,6 +17,7 @@
             el: "#importsim",
             i18n: utils.getI18n(),
             data: {
+                taleHeight: 300,
                 loading: false,
                 columns: [{
                     type: 'index',
@@ -101,6 +102,10 @@
                 excelX: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I']
             },
             methods: {
+                calcTableHeight: function() {
+                    var wHeight = window.innerHeight;
+                    this.taleHeight = wHeight - 170;
+                },
                 downloadTemplate: function() {
                     var a = document.createElement('a');
                     a.href = myUrls.apihost + 'simtemplate.xlsx';
@@ -146,6 +151,9 @@
                         } else {
                             me.$Message.error("导入失败");
                         }
+                    }, function() {
+                        me.loading = false;
+                        me.$Message.error("导入超时");
                     });
                 },
                 importTownerInfo: function() {
@@ -217,7 +225,10 @@
                         me.parserExcelData(workbook.Sheets['手机卡信息'])
                     });
                 };
-
+                this.calcTableHeight();
+                window.onresize = function() {
+                    me.calcTableHeight();
+                }
             },
         })
     </script>

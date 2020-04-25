@@ -157,7 +157,7 @@ var utils = {
             }
         }
     },
-    sendAjax: function(url, data, callback) {
+    sendAjax: function(url, data, callback, failCallback) {
         var encode = JSON.stringify(data);
         $.ajax({
             url: url,
@@ -193,6 +193,7 @@ var utils = {
 
                 }
                 new Vue().$Loading.error();
+                failCallback ? failCallback() : null;
             },
             complete: function() {}
         })
