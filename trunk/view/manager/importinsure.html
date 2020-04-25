@@ -6,9 +6,9 @@
         <div style="padding: 10px 0;">
             <i-table border ref="table" :columns="columns" :data="tableData" :loading="loading" height="500"></i-table>
         </div>
-        <div>
+        <div style="padding: 5px; text-align: center;border: 1px solid #DCDEE2;">
             <i-button @click="importTownerInfo">导入文件</i-button>
-            <i-button @click="handleSubmit" :loading="loading">提交</i-button>
+            <i-button @click="handleSubmit" :loading="loading" style="margin: 0 10px;">提交</i-button>
             <i-button @click="downloadTemplate">模版下载</i-button>
         </div>
     </div>
@@ -187,13 +187,13 @@
 
                             tableData.push({
                                 deviceid: excelData[deviceIdKey].v,
-                                securitynum: excelData[securitynumKey].v,
-                                vin: excelData[vinKey].v,
-                                insurecompany: excelData[insurecompanyKey].v,
-                                insurenum: excelData[insurenumKey].v,
-                                subinsuretime: excelData[subinsuretimeKey].v,
-                                effecttime: excelData[effecttimeKey].v,
-                                insuremark: excelData[insuremarkKey].v,
+                                securitynum: excelData[securitynumKey] ? excelData[securitynumKey].v : '',
+                                vin: excelData[vinKey] ? excelData[vinKey].v : '',
+                                insurecompany: excelData[insurecompanyKey] ? excelData[insurecompanyKey].v : '',
+                                insurenum: excelData[insurenumKey] ? excelData[insurenumKey].v : '',
+                                subinsuretime: excelData[subinsuretimeKey] ? excelData[subinsuretimeKey].v : '',
+                                effecttime: excelData[effecttimeKey] ? excelData[effecttimeKey].v : '',
+                                insuremark: excelData[insuremarkKey] ? excelData[insuremarkKey].v : '',
                                 status: -1
                             })
 

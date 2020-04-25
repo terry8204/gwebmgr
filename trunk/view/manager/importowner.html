@@ -6,9 +6,9 @@
         <div style="padding: 10px 0;">
             <i-table border ref="table" :columns="columns" :data="tableData" :loading="loading" height="500"></i-table>
         </div>
-        <div>
+        <div style="padding: 5px; text-align: center;border: 1px solid #DCDEE2;">
             <i-button @click="importTownerInfo">导入文件</i-button>
-            <i-button @click="handleSubmit" :loading="loading">提交</i-button>
+            <i-button @click="handleSubmit" :loading="loading" style="margin: 0 10px;">提交</i-button>
             <i-button @click="downloadTemplate">模版下载</i-button>
         </div>
     </div>
@@ -191,19 +191,20 @@
                             var phonenum2Key = this.excelX[6] + indexY; //联系号码2
                             var addressKey = this.excelX[7] + indexY; //地址
                             var remarkKey = this.excelX[8] + indexY; //备注
+
                             if (excelData[deviceIdKey] == undefined) {
                                 break;
                             }
 
                             tableData.push({
-                                deviceid: excelData[deviceIdKey].v,
-                                ownername: excelData[ownerNameKey].v,
-                                gender: excelData[genderKey].v,
-                                idnum: excelData[idnumKey].v,
-                                phonenum1: excelData[phonenum1Key].v,
-                                phonenum2: excelData[phonenum2Key].v,
-                                address: excelData[addressKey].v,
-                                remark: excelData[remarkKey].v,
+                                deviceid: excelData[deviceIdKey] ? excelData[deviceIdKey].v : '',
+                                ownername: excelData[ownerNameKey] ? excelData[ownerNameKey].v : '',
+                                gender: excelData[genderKey] ? excelData[genderKey].v : '',
+                                idnum: excelData[idnumKey] ? excelData[idnumKey].v : '',
+                                phonenum1: excelData[phonenum1Key] ? excelData[phonenum1Key].v : '',
+                                phonenum2: excelData[phonenum2Key] ? excelData[phonenum2Key].v : '',
+                                address: excelData[addressKey] ? excelData[addressKey].v : '',
+                                remark: excelData[remarkKey] ? excelData[remarkKey].v : '',
                                 status: -1
                             })
 
