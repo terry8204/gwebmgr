@@ -298,29 +298,16 @@
                 teltype: '1',
                 columns: [{
                         title: vRoot.$t("alarm.devName"),
-                        key: 'devicename',
+                        key: 'devicenamekey',
                     }, {
                         title: vRoot.$t("alarm.devNum"),
-                        key: 'deviceid'
+                        key: 'deviceidkey'
                     }, {
                         title: vRoot.$t("user.devType"),
-                        render: function(h, params) {
-                            var row = params.row;
-                            var devType = "";
-                            vstore.state.deviceTypes.forEach(function(item) {
-                                var label = item.typename;
-                                if (item.remark) {
-                                    label += "(" + item.remark + ")";
-                                }
-                                if (item.devicetypeid == row.devicetype) {
-                                    devType = label;
-                                }
-                            })
-                            return h('span', {}, devType)
-                        }
+                        key: 'devtype'
                     }, {
                         title: vRoot.$t("monitor.phoneNumber"),
-                        key: 'simnum'
+                        key: 'simnumkey'
                     }, {
                         width: 100,
                         title: vRoot.$t("bgMgr.bindpwd"),
@@ -607,10 +594,29 @@
                     this.tableData = this.queryTableData.slice(0, 10);
                     this.total = this.queryTableData.length;
                 },
+                getDevType: function(row) {
+
+                    var devType = "";
+                    vstore.state.deviceTypes.forEach(function(item) {
+                        var label = item.typename;
+                        if (item.remark) {
+                            label += "(" + item.remark + ")";
+                        }
+                        if (item.devicetypeid == row.devicetype) {
+                            devType = label;
+                        }
+                    })
+                    return devType;
+
+                },
                 filterDataInfo: function(devList) {
                     var me = this;
                     var data = [];
                     devList.forEach(function(dev) {
+                        dev.devtype = me.getDevType(dev);
+                        dev.deviceidkey = "\t" + dev.deviceid;
+                        dev.devicenamekey = "\t" + dev.devicename;
+                        dev.simnum ? (dev.simnumkey = "\t" + dev.simnum) : (dev.simnumkey = "");
                         dev.createtimestr = DateFormat.longToDateTimeStr(dev.createtime, 0);
                         dev.overduetimestr = DateFormat.longToDateTimeStr(dev.expirenotifytime, 0);
                         dev.groupname = me.getGroupName(dev.groupid);
@@ -699,7 +705,7 @@
                     if (this.tableData.length) {
                         this.$refs.table.exportCsv({
                             filename: 'deviceids',
-                            columns: this.columns.filter((col, index) => index < 3),
+                            columns: this.columns.filter((col, index) => index < 4),
                             data: this.tableData,
                             quoted: true,
                         });
