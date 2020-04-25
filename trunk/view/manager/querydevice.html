@@ -708,7 +708,9 @@
                         if (this.tableData.length) {
                             this.$refs.table.exportCsv({
                                 filename: 'deviceids',
-                                columns: this.columns.filter((col, index) => index < 8),
+                                columns: this.columns.filter(function(col, index) {
+                                    return index < 8
+                                }),
                                 data: this.recordsList,
                                 quoted: true,
                             });
@@ -717,7 +719,9 @@
                         if (this.queryTableData.length) {
                             this.$refs.table.exportCsv({
                                 filename: 'deviceids',
-                                columns: this.columns.filter((col, index) => index < 8),
+                                columns: this.columns.filter(function(col, index) {
+                                    return index < 8
+                                }),
                                 data: this.queryTableData,
                                 quoted: true,
                             });

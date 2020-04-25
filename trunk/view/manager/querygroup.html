@@ -12,7 +12,7 @@
             </li>
         </ul>
         <div>
-            <i-table :columns="columnsList" :data="tableData" height="520" :loading="loading"></i-table>
+            <i-table :columns="columnsList" :data="tableData" :height="taleHeight" :loading="loading"></i-table>
         </div>
         <div class="my-page" style="margin: 5px 0;">
             <Page :total="total" :page-size="10" :current="currentIndex" @on-change="changePage"></Page>
@@ -173,6 +173,7 @@
                 usercount: "",
                 devicecount: "",
                 groupname: "",
+                taleHeight: 300,
             },
             methods: {
                 handlerClickQuery() {
@@ -258,7 +259,10 @@
                         });
                     }
                 },
-
+                calcTableHeight: function() {
+                    var wHeight = window.innerHeight;
+                    this.taleHeight = wHeight - 184;
+                },
                 handleSubmit: function() {
                     if (this.companyid == "") {
                         this.$Message.error(this.$t("message.selectCustomersTip"));
@@ -318,8 +322,13 @@
             },
             mixins: [mixIn],
             mounted: function() {
+                var me = this;
                 this.queryAllgroupsInfo();
                 this.getUserInfoList();
+                this.calcTableHeight();
+                window.onresize = function() {
+                    me.calcTableHeight();
+                }
             }
         })
     </script>

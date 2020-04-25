@@ -1,4 +1,3 @@
-
 <meta charset="UTF-8">
 
 <div id="queryuser">
@@ -9,7 +8,7 @@
                 <i-input v-model.trim="queryParameter"></i-input>
             </li>
             <li>
-                <i-button type="primary"  @click="handlerClickQuery">{{$t("reportForm.query")}}</i-button>
+                <i-button type="primary" @click="handlerClickQuery">{{$t("reportForm.query")}}</i-button>
             </li>
         </ul>
         <div class="my-total">
@@ -18,7 +17,7 @@
             <span>{{$t("bgMgr.deviceTotal")}} : {{deviceTotal}}</span>
         </div>
         <div class="table-wraper">
-            <i-table border :columns="columns" height="520" :data="tableData" :loading="loading"></i-table>
+            <i-table border :columns="columns" :height="taleHeight" :data="tableData" :loading="loading"></i-table>
         </div>
         <div class="my-page" style="margin: 5px 0;">
             <Page :total="total" :page-size="10" :current="currentIndex" @on-change="changePage"></Page>
@@ -34,7 +33,7 @@
                         <i-input v-model.trim="username" disabled></i-input>
                     </i-col>
                 </Row>
-            
+
                 <Row style="margin: 10px 0">
                     <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">
                         <i style="color: red;display: inline-block;">*</i>&nbsp;{{$t("user.userType")}} : &nbsp;</i-col>
@@ -44,7 +43,7 @@
                         </i-select>
                     </i-col>
                 </Row>
-            
+
                 <Row style="margin: 10px 0">
                     <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">
                         <i style="color: red;display: inline-block;">*</i>&nbsp;{{$t("user.client")}} : &nbsp;</i-col>
@@ -54,7 +53,7 @@
                         </i-select>
                     </i-col>
                 </Row>
-            
+
                 <Row style="margin: 10px 0" v-show="isShowGroup">
                     <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t("user.grouping")}} : &nbsp;</i-col>
                     <i-col span="12">
@@ -68,8 +67,8 @@
                     <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">多点登陆 : &nbsp;</i-col>
                     <i-col span="12">
                         <i-select v-model="multilogin">
-                            <i-option value="1" >是</i-option>
-                            <i-option value="0" >否</i-option>
+                            <i-option value="1">是</i-option>
+                            <i-option value="0">否</i-option>
                         </i-select>
                     </i-col>
                 </Row>
@@ -102,228 +101,222 @@
                         <i-input v-model.trim="email"></i-input>
                     </i-col>
                 </Row>
-             
+
                 <Row style="margin: 10px 0" v-show="!isShowGroup">
                     <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">
                         <i style="color: red;display: inline-block;">*</i>&nbsp;{{$t("user.groupCount")}} : &nbsp;</i-col>
                     <i-col span="3">
                         <input-number :max="20" :min="1" v-model="groupcount"></input-number>
                     </i-col>
-            
+
                     <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">
                         <i style="color: red;display: inline-block;">*</i>&nbsp;{{$t("group.userCount")}} : &nbsp;</i-col>
                     <i-col span="3">
                         <input-number :max="100" :min="10" v-model="usercount"></input-number>
                     </i-col>
-            
+
                     <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">
                         <i style="color: red;display: inline-block;">*</i>&nbsp;{{$t("group.devCount")}} : &nbsp;</i-col>
                     <i-col span="3">
                         <input-number :max="500" :min="10" v-model="devicecount"></input-number>
                     </i-col>
                 </Row>
-            
-            
+
+
                 <Row style="margin: 10px 0">
                     <i-col span="12" :offset="4">
                         <i-button style="width:100%" @click="handleSubmit">{{$t("bgMgr.submit")}}</i-button>
                     </i-col>
-                </Row>                
-    
+                </Row>
+
             </div>
             <div slot="footer" style="height:20px;"></div>
         </Modal>
-    </div>     
+    </div>
     <script>
- vueInstanse = new Vue({
-            el:"#queryuser",
+        vueInstanse = new Vue({
+            el: "#queryuser",
             i18n: utils.getI18n(),
-            data:{
-                modal:false,
-                editDeviceIndex:null,
-                queryTableData:[],
-                deviceTotal:'',
-                userTotal:'',
-                groupTotal:'',
-                queryParameter:"",
-                loading:true,
-                total:0,
-                currentIndex:1,
-                columns: [
-                        {
-                            title:vRoot.$t("user.client"),
-                            key:'companyname'
-                        },
-                        {
-                            title: vRoot.$t("user.username"),
-                            key: 'username',
-                        },
-                        {
-                            title: vRoot.$t("user.userType"),
-                            key: 'userTypeStr'    
-                        },
-                        {
-                            title:vRoot.$t("user.groupCount"),
-                            key:'usedGroupCount'
-                        },
-                        {
-                            title:vRoot.$t("group.userCount"),  
-                            key:'usedUserCount'
-                        },
-                        {
-                            title: vRoot.$t("group.devCount"),  
-                            key: 'usedDeviceCount' 
-                        },
-                        {
-                            title:vRoot.$t("user.createTime"),
-                            key: 'createtime'
-                        },
-                        {
-                            title: vRoot.$t("bgMgr.action"),
-                            key: 'action',
-                            width: 250,
-                            render: function(h, params) {
-                                return h('div', [
-                                    h('Button', {
-                                        props: {
-                                            type: 'primary',
-                                            size: 'small'
-                                        },
-                                        style: {
-                                            marginRight: '5px'
-                                        },
-                                        on: {
-                                            click: function() {
-                                                vueInstanse.editDeviceIndex = params.index;
-                                                editObject = params.row;
-                                                vueInstanse.queryAllCompanyInfo(vueInstanse.doQueryAllCompanyInfo);
-                                            }
-                                        }
-                                    }, vRoot.$t("bgMgr.edit")),
-                                    
-                                    h('Poptip', {
-                                        props: {
-                                            confirm: true,
-                                            title: vRoot.$t("message.confirmDel")
-                                        },
-                                        style: {
-                                            marginRight: '5px'
-                                        },
-                                        on: {
-                                            'on-ok': function () {
-                                                vueInstanse.handleDelete(params.row.username);
-                                            }
-                                        }
-                                    },[
-                                    h('Button', {
-                                            props: {
-                                            type: 'error',
-                                            size: 'small'
-                                            }
-                                        },vRoot.$t("bgMgr.delete")) 
-                                    ])  ,
+            data: {
+                modal: false,
+                editDeviceIndex: null,
+                queryTableData: [],
+                deviceTotal: '',
+                userTotal: '',
+                groupTotal: '',
+                queryParameter: "",
+                loading: true,
+                total: 0,
+                currentIndex: 1,
+                columns: [{
+                    title: vRoot.$t("user.client"),
+                    key: 'companyname'
+                }, {
+                    title: vRoot.$t("user.username"),
+                    key: 'username',
+                }, {
+                    title: vRoot.$t("user.userType"),
+                    key: 'userTypeStr'
+                }, {
+                    title: vRoot.$t("user.groupCount"),
+                    key: 'usedGroupCount'
+                }, {
+                    title: vRoot.$t("group.userCount"),
+                    key: 'usedUserCount'
+                }, {
+                    title: vRoot.$t("group.devCount"),
+                    key: 'usedDeviceCount'
+                }, {
+                    title: vRoot.$t("user.createTime"),
+                    key: 'createtime'
+                }, {
+                    title: vRoot.$t("bgMgr.action"),
+                    key: 'action',
+                    width: 250,
+                    render: function(h, params) {
+                        return h('div', [
+                            h('Button', {
+                                props: {
+                                    type: 'primary',
+                                    size: 'small'
+                                },
+                                style: {
+                                    marginRight: '5px'
+                                },
+                                on: {
+                                    click: function() {
+                                        vueInstanse.editDeviceIndex = params.index;
+                                        editObject = params.row;
+                                        vueInstanse.queryAllCompanyInfo(vueInstanse.doQueryAllCompanyInfo);
+                                    }
+                                }
+                            }, vRoot.$t("bgMgr.edit")),
 
-                                    h('Button', {
-                                        props: {
-                                            type: 'primary',
-                                            size: 'small'
-                                        },
-                                        style: {
-                                            marginRight: '5px'
-                                        },
-                                        on: {
-                                            click: function() {
-                                                 vueInstanse.resetDevicePwd(params.index);
-                                            }
-                                        }
-                                    }, vRoot.$t("user.resetPwd"))
-                                ]);
-                            }
-                        }
-                    ],
-                    tableData: [],
-                    recordsList:[],
+                            h('Poptip', {
+                                props: {
+                                    confirm: true,
+                                    title: vRoot.$t("message.confirmDel")
+                                },
+                                style: {
+                                    marginRight: '5px'
+                                },
+                                on: {
+                                    'on-ok': function() {
+                                        vueInstanse.handleDelete(params.row.username);
+                                    }
+                                }
+                            }, [
+                                h('Button', {
+                                    props: {
+                                        type: 'error',
+                                        size: 'small'
+                                    }
+                                }, vRoot.$t("bgMgr.delete"))
+                            ]),
 
-                    username:"",
-                    usertype:"",
-                    singleLogin:"0",
-                    phoneLogin:"0",
-                    weixinLogin:"0",
-                    companyid:"",
-                    multilogin:"1",
-                    groupcount:10,
-                    devicecount:500,
-                    usercount:10,
-                    companyList:[],
-                    groupids:[],
-                    groupList:[],
-                    userTypeList:[],
-                    isShowGroup:false,
-                    qq:"",
-                    email:"",
-                    phone:"",
-                    wechat:""
+                            h('Button', {
+                                props: {
+                                    type: 'primary',
+                                    size: 'small'
+                                },
+                                style: {
+                                    marginRight: '5px'
+                                },
+                                on: {
+                                    click: function() {
+                                        vueInstanse.resetDevicePwd(params.index);
+                                    }
+                                }
+                            }, vRoot.$t("user.resetPwd"))
+                        ]);
+                    }
+                }],
+                tableData: [],
+                recordsList: [],
+
+                username: "",
+                usertype: "",
+                singleLogin: "0",
+                phoneLogin: "0",
+                weixinLogin: "0",
+                companyid: "",
+                multilogin: "1",
+                groupcount: 10,
+                devicecount: 500,
+                usercount: 10,
+                companyList: [],
+                groupids: [],
+                groupList: [],
+                userTypeList: [],
+                isShowGroup: false,
+                qq: "",
+                email: "",
+                phone: "",
+                wechat: "",
+                taleHeight: 300,
             },
-            methods:{
-                handlerClickQuery () {
+            methods: {
+                handlerClickQuery() {
                     var self = this;
                     var queryTableData = [];
                     var queryParameterLowerCase = this.queryParameter.toLowerCase();
                     if (!self.queryParameter) return;
-                    this.recordsList.forEach(function (record) {
-                       
+                    this.recordsList.forEach(function(record) {
+
                         var username = record.username,
-                            companynamePinyin =record.companynamePinyin,
-                            companynameFirstLetter = record.companynameFirstLetter ,
-                            userTypeStrPinyin = record.userTypeStrPinyin ,
+                            companynamePinyin = record.companynamePinyin,
+                            companynameFirstLetter = record.companynameFirstLetter,
+                            userTypeStrPinyin = record.userTypeStrPinyin,
                             userTypeStrFirstLetter = record.userTypeStrFirstLetter;
-    
+
                         if (
                             record.userTypeStr.indexOf(self.queryParameter) != -1 ||
-                            (record.companyname.indexOf(self.queryParameter))  != -1 ||
-                            username.toLowerCase().indexOf(queryParameterLowerCase) != -1 || 
+                            (record.companyname.indexOf(self.queryParameter)) != -1 ||
+                            username.toLowerCase().indexOf(queryParameterLowerCase) != -1 ||
                             companynamePinyin.indexOf(queryParameterLowerCase) != -1 ||
                             companynameFirstLetter.indexOf(queryParameterLowerCase) != -1 ||
                             userTypeStrPinyin.indexOf(queryParameterLowerCase) != -1 ||
-                            userTypeStrFirstLetter.indexOf(queryParameterLowerCase) != -1 
-                        ){        
+                            userTypeStrFirstLetter.indexOf(queryParameterLowerCase) != -1
+                        ) {
                             queryTableData.push(record);
                         }
                     })
 
                     this.currentIndex = 1;
                     this.queryTableData = queryTableData;
-                    this.tableData = this.queryTableData.slice(0,10);
+                    this.tableData = this.queryTableData.slice(0, 10);
                     this.total = this.queryTableData.length;
                 },
-                getUserInfoList:function(){
+                getUserInfoList: function() {
                     var url = myUrls.queryUser();
-                    utils.sendAjax(url,{username:userName},this.doUserInfoList);
+                    utils.sendAjax(url, {
+                        username: userName
+                    }, this.doUserInfoList);
                 },
-                doUserInfoList:function(resp){
-                    if(resp.status == 0 && resp.userlists != null){
+                doUserInfoList: function(resp) {
+                    if (resp.status == 0 && resp.userlists != null) {
                         var me = this;
                         var currdevicecount = 0;
                         var currgroupcount = 0;
-                        resp.userlists.forEach(function (item) { 
-                            item.usedUserCount = item.company?item.currusercount + "/" + item.usercount :"";
-                            item.usedDeviceCount = item.company?item.currdevicecount + "/" + item.devicecount :"";
-                            item.usedGroupCount = item.company?item.currgroupcount + "/" + item.groupcount :"";
-                            item.companyname = item.company?item.company.companyname:"";
-                            currdevicecount += item.company?item.currdevicecount:0;
-                            currgroupcount += item.company?item.currgroupcount:0;
+                        resp.userlists.forEach(function(item) {
+                            item.usedUserCount = item.company ? item.currusercount + "/" + item.usercount : "";
+                            item.usedDeviceCount = item.company ? item.currdevicecount + "/" + item.devicecount : "";
+                            item.usedGroupCount = item.company ? item.currgroupcount + "/" + item.groupcount : "";
+                            item.companyname = item.company ? item.company.companyname : "";
+                            currdevicecount += item.company ? item.currdevicecount : 0;
+                            currgroupcount += item.company ? item.currgroupcount : 0;
 
                             item.userTypeStr = me.getUserTypeStr(item.usertype);
                             item.createtime = me.timeToDateStr(item.createtime);
 
-                            item.companynamePinyin = __pinyin.getPinyin(item.company&&item.company.companyname);
-                            item.companynameFirstLetter = __pinyin.getFirstLetter(item.company&&item.company.companyname);
+                            item.companynamePinyin = __pinyin.getPinyin(item.company && item.company.companyname);
+                            item.companynameFirstLetter = __pinyin.getFirstLetter(item.company && item.company.companyname);
                             item.userTypeStrPinyin = __pinyin.getPinyin(item.userTypeStr);
                             item.userTypeStrFirstLetter = __pinyin.getFirstLetter(item.userTypeStr);
                         });
                         this.recordsList = resp.userlists;
 
-                        this.tableData = this.recordsList.slice(0,10);
+                        this.tableData = this.recordsList.slice(0, 10);
                         this.total = this.recordsList.length;
                         this.deviceTotal = currdevicecount;
                         this.userTotal = resp.userlists.length;
@@ -331,85 +324,89 @@
                     }
                     this.loading = false;
                 },
-                timeToDateStr:function(time){
-                    return DateFormat.longToDateTimeStr(time,0);
+                timeToDateStr: function(time) {
+                    return DateFormat.longToDateTimeStr(time, 0);
                 },
-                getUserTypeStr:function(type){
+                getUserTypeStr: function(type) {
                     var name = "";
-                    for(var i = 0 ; i < this.userTypeDescrList.length ; i++){
+                    for (var i = 0; i < this.userTypeDescrList.length; i++) {
                         var item = this.userTypeDescrList[i];
-                        if(item.type == type){
+                        if (item.type == type) {
                             name = item.name;
                             break;
                         }
                     };
                     return name;
                 },
-                handleDelete:function(username){
+                handleDelete: function(username) {
                     var me = this;
                     var url = myUrls.delUser();
 
-                    utils.sendAjax(url,{usernames:[username]},function(resp){
-                        if(resp.status == 0){
+                    utils.sendAjax(url, {
+                        usernames: [username]
+                    }, function(resp) {
+                        if (resp.status == 0) {
                             me.$Message.success(me.$t("message.deleteSucc"));
-                            me.recordsList.forEach(function(item,index){
-                                if(item.username == username){
+                            me.recordsList.forEach(function(item, index) {
+                                if (item.username == username) {
                                     var delUserItem = me.recordsList[index];
                                     me.deviceTotal -= delUserItem.currdevicecount;
                                     me.userTotal -= 1;
                                     me.groupTotal -= delUserItem.currgroupcount;
-                                    me.$delete(me.recordsList,index);
+                                    me.$delete(me.recordsList, index);
                                 }
                             });
-                            me.tableData.forEach(function(item,index){
-                                if(item.username == username){
-                                    me.$delete(me.tableData,index);
+                            me.tableData.forEach(function(item, index) {
+                                if (item.username == username) {
+                                    me.$delete(me.tableData, index);
                                 }
-                            });   
+                            });
                             me.total = me.recordsList.length;
-                            me.tableData = me.recordsList.slice( me.currentIndex - 1 , 10);
-                            if(userlists.indexOf(username)!=-1){
-                                userlists.splice(userlists.indexOf(username),1)
+                            me.tableData = me.recordsList.slice(me.currentIndex - 1, 10);
+                            if (userlists.indexOf(username) != -1) {
+                                userlists.splice(userlists.indexOf(username), 1)
                             }
-                        }else{
+                        } else {
                             me.$Message.error(resp.cause);
                         }
                         me.modal = false;
-                    });     
+                    });
                 },
-                resetDevicePwd:function(index){
+                resetDevicePwd: function(index) {
                     var me = this;
                     var username = this.tableData[index].username;
-                    var url = myUrls.resetUserLoginPwd();  
-                    utils.sendAjax(url,{username:username},function (resp) { 
-                        if(resp.status === 0){
+                    var url = myUrls.resetUserLoginPwd();
+                    utils.sendAjax(url, {
+                        username: username
+                    }, function(resp) {
+                        if (resp.status === 0) {
                             me.$Message.success(me.$t("message.resetPwdTips"));
-                        }else{
+                        } else {
                             me.$Message.error("error");
                         }
                     });
                 },
-                queryAllCompanyInfo:function(claaback){
+                queryAllCompanyInfo: function(claaback) {
                     var me = this;
-                    if(this.companyList.length){
+                    if (this.companyList.length) {
                         me.setUserInfo();
                         me.modal = true;
-                    }else{
+                    } else {
                         var url = myUrls.queryCompanyByCreater();
-                        utils.sendAjax(url,{},claaback)
+                        utils.sendAjax(url, {}, claaback)
                     }
 
                 },
-                doQueryAllCompanyInfo:function(resp){
+                doQueryAllCompanyInfo: function(resp) {
                     var me = this;
-                    if(resp.status == 0){
-                        resp.records.forEach(function(item){
+                    if (resp.status == 0) {
+                        resp.records.forEach(function(item) {
                             me.companyList.push({
-                                label:item.companyname,
-                                value:item.companyid
+                                label: item.companyname,
+                                value: item.companyid
                             })
                         });
-                        me.$nextTick(function () { 
+                        me.$nextTick(function() {
                             me.setUserTypeByUser();
                             me.companyid = editObject.company ? editObject.company.companyid : "";
                             // me.queryAllgroupsInfo();
@@ -418,131 +415,150 @@
                         me.modal = true;
                     }
                 },
-                queryAllgroupsInfo:function(){
+                queryAllgroupsInfo: function() {
                     var url = myUrls.queryGroupByUser();
-                    utils.sendAjax(url,{},this.doQueryAllgroupsInfo);
+                    utils.sendAjax(url, {}, this.doQueryAllgroupsInfo);
                 },
-                doQueryAllgroupsInfo:function(resp){
+                doQueryAllgroupsInfo: function(resp) {
                     var me = this;
-                    if(resp.grouplist && resp.status === 0 ){
-                        resp.grouplist.forEach(function (group) { 
+                    if (resp.grouplist && resp.status === 0) {
+                        resp.grouplist.forEach(function(group) {
                             me.groupList.push({
-                                label:group.groupname,
-                                value:group.groupid
+                                label: group.groupname,
+                                value: group.groupid
                             })
                         });
-                        if(editObject.groups){
-                            editObject.groups.forEach(function(item){
+                        if (editObject.groups) {
+                            editObject.groups.forEach(function(item) {
                                 me.groupids.push(item.groupid);
                             });
-                        }  
+                        }
                     }
                     me.setUserInfo();
                     me.modal = true;
                 },
-                handleSubmit:function(){
+                calcTableHeight: function() {
+                    var wHeight = window.innerHeight;
+                    this.taleHeight = wHeight - 225;
+                },
+                handleSubmit: function() {
                     var me = this;
                     var url = myUrls.editUser();
                     var userType = this.usertype;
-                    var data ={
-                        username:this.username,
-                        usertype:userType,
-                        companyid:this.companyid,
+                    var data = {
+                        username: this.username,
+                        usertype: userType,
+                        companyid: this.companyid,
                     }
 
-                    for(var key in data){
-                        if(data.hasOwnProperty(key)){
-                            if(data[key] == "" || data[key] == NaN ){
-                                this.$Message.error(this.$t("message.fullComplete"));   
+                    for (var key in data) {
+                        if (data.hasOwnProperty(key)) {
+                            if (data[key] == "" || data[key] == NaN) {
+                                this.$Message.error(this.$t("message.fullComplete"));
                                 return;
                             }
                         };
-                    };    
+                    };
                     data.multilogin = Number(this.multilogin);
-                    this.qq?data.qq=this.qq:"";
-                    this.email?data.email=this.email:"";
-                    this.phone?data.phone=this.phone:"";
-                    this.phone?data.wechat=this.phone:"";
+                    this.qq ? data.qq = this.qq : "";
+                    this.email ? data.email = this.email : "";
+                    this.phone ? data.phone = this.phone : "";
+                    this.phone ? data.wechat = this.phone : "";
 
-     
 
-                    if(this.isShowGroup){
+
+                    if (this.isShowGroup) {
                         data.groupids = this.groupids;
-                    }else{
+                    } else {
                         data.groupcount = this.groupcount;
                         data.devicecount = this.devicecount;
                         data.usercount = this.usercount;
-                    } 
+                    }
 
-                    utils.sendAjax(url,data,function (resp) {
-                        if(resp.status == 0){
-                            var newData = Object.assign(editObject,data);
-                            newData.usedUserCount = newData.company?newData.currusercount + "/" + data.usercount :"";
-                            newData.usedDeviceCount = newData.company?newData.currdevicecount + "/" + data.devicecount :"";
-                            newData.usedGroupCount = newData.company?newData.currgroupcount + "/" + data.groupcount :"";
-                            me.tableData[me.editDeviceIndex] = newData; 
-                            utils.changeSingleItemData(me.recordsList,newData,'username');
+                    utils.sendAjax(url, data, function(resp) {
+                        if (resp.status == 0) {
+                            var newData = Object.assign(editObject, data);
+                            newData.usedUserCount = newData.company ? newData.currusercount + "/" + data.usercount : "";
+                            newData.usedDeviceCount = newData.company ? newData.currdevicecount + "/" + data.devicecount : "";
+                            newData.usedGroupCount = newData.company ? newData.currgroupcount + "/" + data.groupcount : "";
+                            me.tableData[me.editDeviceIndex] = newData;
+                            utils.changeSingleItemData(me.recordsList, newData, 'username');
                             me.$Message.success(me.$t("message.changeSucc"));
-                        }else{
+                        } else {
                             me.$Message.error(me.$t("message.changeFail"));
                         }
                     });
                 },
-                getGroupsList:function(){
-                    var me = this; 
-                    var url = myUrls.queryCompanyGroup();                        
-                    utils.sendAjax(url,{companyid:this.companyid},function (resp) { 
+                getGroupsList: function() {
+                    var me = this;
+                    var url = myUrls.queryCompanyGroup();
+                    utils.sendAjax(url, {
+                        companyid: this.companyid
+                    }, function(resp) {
                         me.groupList = [];
                         me.groupids = [];
-                        if(resp.status == 0){
+                        if (resp.status == 0) {
                             var companys = resp.companys
-                            for(var i = 0 ; i < companys.length ; i++){
+                            for (var i = 0; i < companys.length; i++) {
                                 var item = companys[i];
-                                if(item.companyid == me.companyid && item.groups != null){
+                                if (item.companyid == me.companyid && item.groups != null) {
                                     var groups = item.groups;
-                                    groups.forEach(function(group){
-                                        me.groupList.push({label:group.groupname,value:group.groupid});
-                                    });                                   
+                                    groups.forEach(function(group) {
+                                        me.groupList.push({
+                                            label: group.groupname,
+                                            value: group.groupid
+                                        });
+                                    });
                                 };
-                            };                          
+                            };
                         }
                     });
                 },
-                setUserTypeByUser:function(){
+                setUserTypeByUser: function() {
                     var userType = vstore.state.userType;
-                    var newArray = [
-                        { "name": isZh ? "一级管理员" : 'Supervisor', "type": 1 },
-                        { "name": isZh ? "二级管理员" : 'Manager', "type": 2 },
-                        { "name": isZh ? "三级管理员" : 'Manager', "type": 3 },
-                    ];
-                    if(userType == 1){
+                    var newArray = [{
+                        "name": isZh ? "一级管理员" : 'Supervisor',
+                        "type": 1
+                    }, {
+                        "name": isZh ? "二级管理员" : 'Manager',
+                        "type": 2
+                    }, {
+                        "name": isZh ? "三级管理员" : 'Manager',
+                        "type": 3
+                    }, ];
+                    if (userType == 1) {
                         newArray.shift();
-                    }else if(userType == 2){
+                    } else if (userType == 2) {
                         newArray.shift();
                         newArray.shift();
-                    }else if(userType >=3){
+                    } else if (userType >= 3) {
                         newArray = [];
                     }
                     this.userTypeList = newArray;
-                    this.usertype = editObject.usertype;    
+                    this.usertype = editObject.usertype;
                 },
-                setUserInfo:function(){
+                setUserInfo: function() {
                     this.username = editObject.username;
                     this.qq = editObject.qq;
                     this.email = editObject.email;
                     this.phone = editObject.phone;
                     this.wechat = editObject.wechat;
-                    this.multilogin = String(editObject.multilogin) ;
+                    this.multilogin = String(editObject.multilogin);
                     this.groupcount = editObject.groupcount;
                     this.devicecount = editObject.devicecount;
                     this.usercount = editObject.usercount;
                 }
             },
-            mixins:[mixIn],
-            mounted:function(){
+            mixins: [mixIn],
+            mounted: function() {
+                var me = this;
                 this.userTypeDescrList = vstore.state.userTypeDescrList;
                 this.getUserInfoList();
+                this.calcTableHeight();
+                window.onresize = function() {
+                    me.calcTableHeight();
+                }
             }
         })
     </script>
-</div>        
+</div>
