@@ -203,23 +203,19 @@ var BMapLib = window.BMapLib = BMapLib || {};
         var totalMarkerCount = this._markers.length;
 
         var clusterlen = this._clusters.length;
-        var needRenderMarkerCount = 0;
+        var totalNeedRenderMarkerCount = 0;
         for (var i = 0; i < clusterlen; i++) {
             if (this._clusters[i]) {
-                needRenderMarkerCount = needRenderMarkerCount + this._clusters[i]._markers.length;
+            	totalNeedRenderMarkerCount = totalNeedRenderMarkerCount + this._clusters[i]._markers.length;
             }
         }
 
-        var isForceCluster = false;
 
-        if (needRenderMarkerCount > 100) {
-            isForceCluster = true;
-        }
 
         // console.log("totalMarkerCount", totalMarkerCount, needRenderMarkerCount, clusterlen, isForceCluster);
         for (var i = 0; i < clusterlen; i++) {
             if (this._clusters[i]) {
-                this._clusters[i].render(isForceCluster);
+                this._clusters[i].render(totalNeedRenderMarkerCount);
             }
         }
         isRenderingUI = false;
@@ -522,22 +518,32 @@ var BMapLib = window.BMapLib = BMapLib || {};
      * 进行dom操作
      * @return 无返回值
      */
-    Cluster.prototype.render = function(isForceCluster) {
-        var len = this._markers.length;
-        // var realMinClusterSize = this._minClusterSize;
-        // this._map.getZoom() > this._markerClusterer.getMaxZoom()
-        // if (len < 100) {
-        //     realMinClusterSize = 2;
-        // }
-        if (len < this._minClusterSize) {
-            for (var i = 0; i < len; i++) {
+    Cluster.prototype.render = function(totalNeedRenderMarkerCount) {
+    	if(totalNeedRenderMarkerCount > 100)
+    	{
+	        var len = this._markers.length;
+	        // var realMinClusterSize = this._minClusterSize;
+	        // this._map.getZoom() > this._markerClusterer.getMaxZoom()
+	        // if (len < 100) {
+	        //     realMinClusterSize = 2;
+	        // }
+	        if (len < this._minClusterSize) {
+	            for (var i = 0; i < len; i++) {
+	                this._map.addOverlay(this._markers[i]);
+	            }
+	        } else {
+	            this._map.addOverlay(this._clusterMarker);
+	            this._isReal = true;
+	            this.updateClusterMarker(totalNeedRenderMarkerCount);
+	        }
+    	}
+    	else
+		{
+		  var len = this._markers.length;
+	      for (var i = 0; i < len; i++) {
                 this._map.addOverlay(this._markers[i]);
             }
-        } else {
-            this._map.addOverlay(this._clusterMarker);
-            this._isReal = true;
-            this.updateClusterMarker(isForceCluster);
-        }
+		}
     }
 
     /**
@@ -584,11 +590,11 @@ var BMapLib = window.BMapLib = BMapLib || {};
      * 更新该聚合的显示样式，也即TextIconOverlay。
      * @return 无返回值。
      */
-    Cluster.prototype.updateClusterMarker = function(isForceCluster) {
+    Cluster.prototype.updateClusterMarker = function(totalNeedRenderMarkerCount) {
         // console.log("currentzoom=" + this._map.getZoom(), "maxzoom = " + this._markerClusterer.getMaxZoom());
         var markerlen = this._markers.length;
 
-        if (isForceCluster == false && (this._map.getZoom() > this._markerClusterer.getMaxZoom())) {
+        if (totalNeedRenderMarkerCount < 100 && (this._map.getZoom() > this._markerClusterer.getMaxZoom())) {
             this._clusterMarker && this._map.removeOverlay(this._clusterMarker);
             for (var i = 0; i < markerlen; i++) {
                 var marker = this._markers[i];
