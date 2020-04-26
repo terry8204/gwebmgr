@@ -188,7 +188,7 @@
                 <Row style="margin: 10px 0">
                     <i-col span="4" style="height: 100%;text-align:right;line-height:32px;"><i style="color: red;display: inline-block;">*</i>&nbsp;{{$t("alarm.overdueTime")}} : &nbsp;</i-col>
                     <i-col span="8">
-                        <date-picker type="date" v-model="overduetime" :disabled="disabled"></date-picker>
+                        <date-picker type="date" v-model="overduetime" :disabled="disabledOverdueTime"></date-picker>
                     </i-col>
 
                     <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;{{$t("alarm.devName")}} : &nbsp;</i-col>
@@ -952,7 +952,10 @@
             },
             computed: {
                 disabled: function() {
-                    return this.userType >= Number('3');
+                    return this.userType > 0;
+                },
+                disabledOverdueTime: function() {
+                    return this.userType > 3;
                 },
                 isAlloweditDisabled: function() {
                     return !(Number(this.userType) <= 1);
