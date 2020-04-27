@@ -188,7 +188,7 @@
                 <Row style="margin: 10px 0">
                     <i-col span="4" style="height: 100%;text-align:right;line-height:32px;"><i style="color: red;display: inline-block;">*</i>&nbsp;{{$t("alarm.overdueTime")}} : &nbsp;</i-col>
                     <i-col span="8">
-                        <date-picker type="date" v-model="overduetime" :disabled="disabledOverdueTime"></date-picker>
+                        <date-picker type="date" v-model="expirenotifytime" :disabled="disabledOverdueTime"></date-picker>
                     </i-col>
 
                     <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;{{$t("alarm.devName")}} : &nbsp;</i-col>
@@ -202,7 +202,7 @@
                     <i-col span="4" style="height: 100%;text-align:right;line-height:32px;"><i style="color: red;display: inline-block;">*</i>&nbsp;{{$t("user.devType")}} : &nbsp;</i-col>
                     <i-col span="8">
                         <!-- devicetype -->
-                        <i-select v-model="devicetype" :disabled="disabled">
+                        <i-select v-model="devicetype" :disabled="isEditDeviceType">
                             <i-option v-for="item in deviceTypeList" :value="item.value" :key="item.value">{{ item.label }}</i-option>
                         </i-select>
                     </i-col>
@@ -320,7 +320,7 @@
                         key: 'createtimestr'
                     }, {
                         title: vRoot.$t("monitor.expireTime"),
-                        key: 'overduetimestr'
+                        key: 'expirenotifytimestr'
                     }, {
                         title: vRoot.$t("bgMgr.creater"),
                         key: 'creater',
@@ -474,7 +474,7 @@
                 devicename: "",
                 devicetype: "",
                 simnum: "",
-                overduetime: "",
+                expirenotifytime: "",
                 loginenable: "1",
                 deviceenable: "0",
                 deviceTypeList: [],
@@ -620,7 +620,7 @@
                         dev.simnum ? (dev.simnumkey = "\t" + dev.simnum) : (dev.simnumkey = "");
                         dev.bindpwd = dev.bindpwd != null ? dev.bindpwd : '';
                         dev.createtimestr = DateFormat.longToDateTimeStr(dev.createtime, 0);
-                        dev.overduetimestr = DateFormat.longToDateTimeStr(dev.expirenotifytime, 0);
+                        dev.expirenotifytimestr = DateFormat.longToDateTimeStr(dev.expirenotifytime, 0);
                         dev.groupname = me.getGroupName(dev.groupid);
                         dev.pinYin = __pinyin.getPinyin(dev.devicename);
                         dev.firstLetter = __pinyin.getFirstLetter(dev.devicename);
@@ -732,7 +732,7 @@
                 handleSubmit: function() {
                     var me = this;
                     var url = myUrls.editDevice();
-                    if (this.overduetime == "") {
+                    if (this.expirenotifytime == "") {
                         me.$Message.error(me.$t("message.plSelectTime"));
                         return;
                     }
@@ -740,7 +740,7 @@
                     var data = {
                         deviceid: this.deviceid,
                         devicetype: this.devicetype,
-                        expirenotifytime: new Date(this.overduetime).getTime(),
+                        expirenotifytime: new Date(this.expirenotifytime).getTime(),
                         loginenable: Number(this.loginenable),
                         deviceenable: Number(this.deviceenable),
                         allowedit: Number(this.allowedit)
@@ -790,7 +790,7 @@
                         if (resp.status == 0) {
                             editObject.teltype = String(data.teltype);
                             var newData = Object.assign(editObject, data);
-                            newData.overduetimestr = DateFormat.longToDateTimeStr(data.expirenotifytime, 0);
+                            newData.expirenotifytimestr = DateFormat.longToDateTimeStr(data.expirenotifytime, 0);
                             me.tableData[me.editDeviceIndex] = newData;
                             utils.changeSingleItemData(me.recordsList, newData, 'deviceid');
                             isNeedRefresh = true;
@@ -808,7 +808,7 @@
                     this.devicename = "";
                     this.devicetype = "";
                     this.simnum = "";
-                    this.overduetime = "";
+                    this.expirenotifytime = "";
                     this.loginenable = "0";
                     this.deviceenable = "0";
                     this.groupsList = [];
@@ -822,7 +822,7 @@
                     var me = this;
                     me.deviceid = editObject.deviceid;
                     me.simnum = editObject.simnum;
-                    me.overduetime = editObject.overduetimestr;
+                    me.expirenotifytime = editObject.expirenotifytimestr;
                     me.devicename = editObject.devicename;
                     me.devicetype = editObject.devicetype;
                     me.loginenable = editObject.loginenable + "";
@@ -951,7 +951,7 @@
                 }
             },
             computed: {
-                disabled: function() {
+                isEditDeviceType: function() {
                     return this.userType > 0;
                 },
                 disabledOverdueTime: function() {
