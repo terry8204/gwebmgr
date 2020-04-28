@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,34 +9,44 @@
     <title>录像回放</title>
     <link rel="stylesheet" href="dist/styles/iview.css">
     <style>
-        html,body,#container,.full{
+        html,
+        body,
+        #container,
+        .full {
             width: 100%;
-            height: 100%;  
+            height: 100%;
             position: relative;
+            overflow: hidden;
         }
-        .col-cls{
+        
+        .col-cls {
             text-align: center;
             line-height: 32px;
         }
-        .row-cls{
+        
+        .row-cls {
             margin-bottom: 10px;
         }
-        video{
+        
+        video {
             object-fit: fill;
             width: 100%;
             height: 100%;
         }
-        #videoContent > div{
+        
+        #videoContent>div {
             float: left;
         }
-        .mask{
+        
+        .mask {
             position: absolute;
             left: 18px;
             right: 13px;
             top: 10px;
             bottom: 44px;
         }
-        .time-reminder{
+        
+        .time-reminder {
             position: absolute;
             padding: 3px;
             color: #ffffff;
@@ -43,7 +54,8 @@
             top: 0px;
             left: 0px;
         }
-        .time-line{
+        
+        .time-line {
             position: absolute;
             left: 0;
             top: 0;
@@ -51,8 +63,8 @@
             width: 1px;
             background-color: #0071C6;
         }
-
-        .mask-wrapper{
+        
+        .mask-wrapper {
             position: absolute;
             right: 0px;
             bottom: 0px;
@@ -64,6 +76,7 @@
             justify-content: center;
             align-items: center;
         }
+        
         .loader-05 {
             width: 50px;
             height: 50px;
@@ -74,6 +87,7 @@
             animation: 1s loader-05 linear infinite;
             position: relative;
         }
+        
         .loader-05:before {
             content: '';
             display: block;
@@ -86,7 +100,7 @@
             border-radius: 50%;
             opacity: .5;
         }
-
+        
         @-webkit-keyframes loader-05 {
             0% {
                 -webkit-transform: rotate(0deg);
@@ -97,6 +111,7 @@
                 transform: rotate(360deg);
             }
         }
+        
         @keyframes loader-05 {
             0% {
                 -webkit-transform: rotate(0deg);
@@ -107,7 +122,8 @@
                 transform: rotate(360deg);
             }
         }
-        .text-tip{
+        
+        .text-tip {
             position: absolute;
             bottom: -25px;
             left: -20px;
@@ -115,31 +131,24 @@
             text-align: center;
         }
     </style>
-    <link href="./videojs/video-js.css" rel="stylesheet">
-    <script src="./videojs/video.js"></script>
-    <script src="./videojs/videojs-flash.min.js"></script>
+    <!-- <link href="./videojs/video-js.css" rel="stylesheet"> -->
+    <!-- <script src="./videojs/video.js"></script>
+    <script src="./videojs/videojs-flash.min.js"></script> -->
 </head>
+
 <body>
     <div class="mask-wrapper" id="mask-wrapper">
-                <div class="box" style="position:relative;">
-                    <div class="loader-05"></div>
-                    <div class="text-tip">正在载入播放器</div>
-                </div>
+        <div class="box" style="position:relative;">
+            <div class="loader-05"></div>
+            <div class="text-tip">正在载入播放器</div>
         </div>
+    </div>
     <div id="container">
-        <Modal v-model="tipModal"  title="提示" width="300" :mask-closable="false">
-            <div style="text-align:center">
-                请安装flash或者允许网页flash播放
-            </div>
-            <div slot="footer" >
-                <i-button style="width: 100%" @click="tipModal=false" type="primary">确定</i-button>
-            </div>
-        </Modal>
         <Layout style="height:100%;">
             <Layout>
                 <Sider hide-trigger width="260" style="background-color:#ffffff;padding:10px;">
                     <div class="full">
-                        <Row class="row-cls">   
+                        <Row class="row-cls">
                             <i-Col span="6" class="col-cls">
                                 通道编号:
                             </i-Col>
@@ -149,10 +158,10 @@
                                     <i-option value="2">CH2</i-option>
                                     <i-option value="3">CH3</i-option>
                                     <i-option value="4">CH4</i-option>
-                                </i-select>     
+                                </i-select>
                             </i-Col>
                         </Row>
-                        <Row class="row-cls">   
+                        <Row class="row-cls">
                             <i-Col span="6" class="col-cls">
                                 选择日期:
                             </i-Col>
@@ -160,28 +169,22 @@
                                 <Date-Picker type="date" placeholder="选择日期" style="width:100%" v-model="date"></Date-Picker>
                             </i-Col>
                         </Row>
-                        <Row class="row-cls">   
+                        <Row class="row-cls">
                             <i-Col span="6" class="col-cls">
                                 时间范围:
                             </i-Col>
                             <i-Col span="18">
-                                <Time-Picker 
-                                    confirm 
-                                    type="timerange" 
-                                    placement="bottom-end" 
-                                    placeholder="选择时间范围"
-                                    style="width:100%;"
-                                    v-model="timeRange"></Time-Picker> 
+                                <Time-Picker confirm type="timerange" placement="bottom-end" placeholder="选择时间范围" style="width:100%;" v-model="timeRange"></Time-Picker>
                             </i-Col>
                         </Row>
                         <div>
-                            <Row>   
+                            <Row>
                                 <i-Col span="6" class="col-cls">存储类型</i-Col>
                             </Row>
                             <div style="padding-left:30px;">
                                 <Radio-Group v-model="storageType" vertical>
                                     <Radio label="mainAndBackupStore">
-                                        <span>主存储器或灾备存储器</span>   
+                                        <span>主存储器或灾备存储器</span>
                                     </Radio>
                                     <Radio label="mainstore">
                                         <span>主存储器</span>
@@ -192,12 +195,12 @@
                                 </Radio-Group>
                             </div>
                         </div>
-   
+
                         <div>
-                            <Row>   
+                            <Row>
                                 <i-Col span="6" class="col-cls">录像类型</i-Col>
                             </Row>
-                            <Row>   
+                            <Row>
                                 <i-Col span="24" style="padding-left:30px;">
                                     <Radio-Group v-model="mediatype">
                                         <Radio label="all">
@@ -220,18 +223,18 @@
                                 </i-col>
                             </Row>
                         </div>
-                        
-                        <Modal v-model="modal" title="分段下载" width="460">                   
+
+                        <Modal v-model="modal" title="分段下载" width="460">
                             <Row style="margin:10px 0;">
                                 <i-col span="4" style="height:35px;line-height:35px;">
-                                    开始日期 : 
+                                    开始日期 :
                                 </i-col>
                                 <i-col span="8">
                                     <i-input :value='dateStr' disabled style="width: 100%;" />
                                 </i-col>
                             </Row>
                             <Row style="margin:10px 0;">
-                                <i-col span="4"style="height:35px;line-height:35px;">
+                                <i-col span="4" style="height:35px;line-height:35px;">
                                     开始时间 :
                                 </i-col>
                                 <i-col span="8">
@@ -242,18 +245,18 @@
                                 </i-col>
                             </Row>
                             <Row style="margin:10px 0;">
-                                <i-col span="4"style="height:35px;line-height:35px;">
+                                <i-col span="4" style="height:35px;line-height:35px;">
                                     结束时间 :
                                 </i-col>
                                 <i-col span="8">
                                     <Time-Picker type="time" v-model="endValue" style="width: 100%;"></Time-Picker>
                                 </i-col>
                                 <i-col span="11" offset="1" style="height:35px;line-height:35px;color:red;">
-                                        <span>( <= {{endVideoTime}} )</span>
+                                    <span>( <= {{endVideoTime}} )</span>
                                 </i-col>
                             </Row>
                             <Row style="margin:10px 0;">
-                                <i-col span="4"style="height:35px;line-height:35px;">
+                                <i-col span="4" style="height:35px;line-height:35px;">
                                     标签 :
                                 </i-col>
                                 <i-col span="8">
@@ -261,22 +264,22 @@
                                 </i-col>
                             </Row>
 
-                            <div slot="footer" >
+                            <div slot="footer">
                                 <i-button style="width: 100%" type="primary" @click='splitUploadFile'>下载</i-button>
                             </div>
                         </Modal>
                     </div>
                 </Sider>
-                <div style="padding:10px;position: absolute;left: 260px;top:0px;right: 0;bottom: 0;">
-                    <div class="full" style="position:relative;">       
+                <div style="padding:10px;position: absolute;left: 260px;top:0px;right: 0;bottom: 0;overflow: hidden">
+                    <div class="full" style="position:relative;">
                         <div style="position: absolute;left: 0px;top:0px;right: 0;bottom: 300px;">
                             <div class="full" id="videoContent" ref="videoContent">
-                                <!-- <video id="video" class="video-js" controls poster="" >   -->
-                            </div>                             
+                                <video id="videoElement" style="width:100%;height: 100%;" controls>Your browser is too old which doesn't support HTML5 video.</video>
+                            </div>
                         </div>
                         <div style="position: absolute;left: 0px;right: 0;bottom: 0px;height: 300px;">
                             <div style="height:50px;line-height: 50px;">
-                               <div style="float:left;">
+                                <div style="float:left;">
                                     <Button-Group shape="circle">
                                         <i-button :type="isTable=='time'?'primary':'default'" @click="isTable='time'">
                                             时间
@@ -288,40 +291,30 @@
                                             下载任务
                                         </i-button>
                                     </Button-Group>
-                               </div>
+                                </div>
                             </div>
                             <div style="height:250px;">
-                                <i-table border 
-                                    ref="table" 
-                                    @on-row-dblclick="handleDblclick"
-                                    :columns="columns" 
-                                    :data="tableData" 
-                                    height="250" 
-                                    v-show="isTable=='file'"
-                                    :loading="loading"></i-table>
-                                <div  v-show="isTable=='time'" style="width:100%;height:250px;position: relative;">
-                                    <div id="videoTime" style="width:100%;height:250px;" ></div>
+                                <i-table border ref="table" @on-row-dblclick="handleDblclick" :columns="columns" :data="tableData" height="250" v-show="isTable=='file'" :loading="loading"></i-table>
+                                <div v-show="isTable=='time'" style="width:100%;height:250px;position: relative;">
+                                    <div id="videoTime" style="width:100%;height:250px;"></div>
                                     <div class="mask" @click="handleClickMask" ref="videoTimeMask">
                                         <div class="time-line" :style='timeLineElStyle'></div>
                                         <span class="time-reminder" :style='timeReminderElStyle' v-text="timeReminder"></span>
                                     </div>
-                                </div> 
+                                </div>
                                 <div v-show="isTable=='downloadfile'" style="width:100%;height:250px;position: relative;">
-                                    <i-table border 
-                                        :columns="downloadColumns" 
-                                        :data="downloadTableData" 
-                                        height="250" 
-                                        :loading="loading"></i-table>
+                                    <i-table border :columns="downloadColumns" :data="downloadTableData" height="250" :loading="loading"></i-table>
                                 </div>
                             </div>
-                            
+
                         </div>
-                    </div>                          
+                    </div>
                 </div>
-            </Layout>   
-        </Layout>   
+            </Layout>
+        </Layout>
     </div>
     <script src="js/polyfill.min.js"></script>
+    <script src="js/flv.min.js"></script>
     <script src="dist/vue.min.js"></script>
     <script src="dist/iview.min.js"></script>
     <script src="js/gps51-jquery.js"></script>
@@ -336,864 +329,814 @@
         var deviceid = utils.getParameterByName("deviceid");
         var token = utils.getParameterByName("token");
         var startPlayerTimer = null;
-        var isRequsetPlaying = false;    // 防止连续点击
+        var isRequsetPlaying = false; // 防止连续点击
         var isResize = false;
-        function getzf(num) {
-            if (parseInt(num) < 10) {  num = '0' + num; }  
-            return num; 
-        } 
 
-         function flashChecker() {
-            var hasFlash = 0; //是否安装了flash
-            var flashVersion = 0; //flash版本
-            if (document.all) {
-            var swf = new ActiveXObject('ShockwaveFlash.ShockwaveFlash');
-            if (swf) {
-                hasFlash = 1;
-                VSwf = swf.GetVariable("$version");
-                flashVersion = parseInt(VSwf.split(" ")[1].split(",")[0]);
+        function getzf(num) {
+            if (parseInt(num) < 10) {
+                num = '0' + num;
             }
-            } else {
-            if (navigator.plugins && navigator.plugins.length > 0) {
-                var swf = navigator.plugins["Shockwave Flash"];
-                if (swf) {
-                hasFlash = 1;
-                var words = swf.description.split(" ");
-                for (var i = 0; i < words.length; ++i) {
-                    if (isNaN(parseInt(words[i]))) continue;
-                    flashVersion = parseInt(words[i]);
-                }
-                }
-            }
-            }
-            return { f: hasFlash, v: flashVersion };
+            return num;
         }
-        var fls = flashChecker();
+
+        // function flashChecker() {
+        //     var hasFlash = 0; //是否安装了flash
+        //     var flashVersion = 0; //flash版本
+        //     if (document.all) {
+        //         var swf = new ActiveXObject('ShockwaveFlash.ShockwaveFlash');
+        //         if (swf) {
+        //             hasFlash = 1;
+        //             VSwf = swf.GetVariable("$version");
+        //             flashVersion = parseInt(VSwf.split(" ")[1].split(",")[0]);
+        //         }
+        //     } else {
+        //         if (navigator.plugins && navigator.plugins.length > 0) {
+        //             var swf = navigator.plugins["Shockwave Flash"];
+        //             if (swf) {
+        //                 hasFlash = 1;
+        //                 var words = swf.description.split(" ");
+        //                 for (var i = 0; i < words.length; ++i) {
+        //                     if (isNaN(parseInt(words[i]))) continue;
+        //                     flashVersion = parseInt(words[i]);
+        //                 }
+        //             }
+        //         }
+        //     }
+        //     return {
+        //         f: hasFlash,
+        //         v: flashVersion
+        //     };
+        // }
+        // var fls = flashChecker();
 
         var vRoot = new Vue({
-            el:"#container",
-            data:{
-                modal:false,
-                isTable:'time',
-                loading:false,
-                tipModal:false,
-                maskEl:null,
-                selectType:'1',
-                date:new Date(),
-                dateStr:"",
-                startValue:'',
-                endValue:'',
-                startVideoTime:'',
-                endVideoTime:'',
-                timeRange:["00-00-00","23-59-59"],
-                storageType:'mainAndBackupStore',
-                mediatype:'all',
-                videotppe:true,
-                tableData:[],
-                downloadTableData:[],
-                columns:[
-                    {
-                        title: '序号',
-                        width:60,
-                        key:'index'
-                    },
-                    {
-                        title: '播放',
-                        key: 'action',
-                        width:70,
-                        render:function(h,params){
-                            
-                            return h('div',{},
-                                [
-                                    h('Button',{
-                                        props:{
-                                            shape:"circle",  
-                                            icon:"ios-play"   
-                                        },
-                                        on:{
-                                            click : function(){
-                                                vRoot.handleDblclick(params.row);
-                                            }
-                                        }
-                                    },null)
-                                ]
-                            )
-                        } 
-                    },
-                    {
-                        title: '通道号',
-                        key: 'channel',
-                        width:80,
-                    },
-                    {
-                        title: '开始时间',
-                        key: 'starttime',
-                    },
-                    {
-                        title: '结束时间',
-                        key: 'endtime',
-                    },
-                    {
-                        title: '文件大小',
-                        key: 'filesize',
-                        width:100,
-                        render:function(h,params){
-                            var mSize = (params.row.filesize/1024/1024).toFixed(2);
-                            var filesize = "";
-                            if(mSize>1024){
-                                filesize = mSize/1024 + "G";
-                            }else{
-                                filesize = mSize + 'M'
-                            }
-                            return h('span',{},filesize)
-                        }
-                    },
-                    {
-                        title: '操作',
-                        key: 'action',
-                        width:180,
-                        render:function(h,params){ 
-                            var row = params.row;
-                            return h('div',{},
-                                [
-                                    h('Button',{
-                                        props:{
-                                            shape:"circle",  
-                                            icon:"md-arrow-down"   
-                                        },
-                                        attrs:{
-                                            title:'全部下载'
-                                        },
-                                        on:{ 
-                                            click : function(){
-                                                vRoot.reqUploadFile(row);
-                                            }
-                                        }
-                                    },null),
-                                    h('Button',{ 
-                                        style:{
-                                            'marginLeft':'10px'
-                                        },
-                                        props:{
-                                            shape:"circle",  
-                                            icon:"md-download"   
-                                        },
-                                        attrs:{
-                                            title:'分段下载'
-                                        },
-                                        on:{ 
-                                            click : function(){
-                                                vRoot.dateStr = row.starttime.split(' ')[0];
-                                                vRoot.startValue = row.starttime.split(' ')[1];
-                                                vRoot.endValue = row.endtime.split(' ')[1];
-                                                vRoot.startVideoTime = row.starttime;
-                                                vRoot.endVideoTime = row.endtime;
-                                                vRoot.row = row;
-                                                vRoot.modal = true;
-                                            }
-                                        }
-                                    },null),
-                                ]
-                            )
-                        } 
-                    }
-                ],
-                downloadColumns:[
-                    {
-                        title:'操作',
-                        width:325,
-                        render:function(h,params){
-                            var row = params.row , index = params.index;
-                            return h('div',{},
-                                [
-                                    h('Button',{
-                                        props:{
-                                            size:"small",  
-                                            icon:"ios-square",
-                                            disabled:row.downloadstatus == 3
-                                        },
-                                        on:{
-                                            click : function(){
-                                                var data = {
-                                                    deviceid:row.deviceid,
-                                                    action:0,
-                                                    downloadtaskid:row.downloadtaskid
-                                                }
-                                                vRoot.controlUploadFileFn(data,function (resp) { 
-                                                    vRoot.$Message.success('暂停成功');
-                                                    vRoot.downloadTableData.splice(index,1,resp.task);              
-                                                }); 
-                                            }
-                                        }
-                                    },'暂停'),
-                                    h('Button',{
-                                        props:{
-                                            size:"small",  
-                                            icon:"ios-play",
-                                            disabled:row.downloadstatus == 3
-                                        },
-                                        style:{
-                                            'marginLeft':'5px'
-                                        },
-                                        on:{
-                                            click : function(){
-                                                var data = {
-                                                    deviceid:row.deviceid,
-                                                    action:1,
-                                                    downloadtaskid:row.downloadtaskid
-                                                }
-                                                vRoot.controlUploadFileFn(data,function (resp) { 
-                                                    vRoot.$Message.success('继续成功');
-                                                    vRoot.downloadTableData.splice(index,1,resp.task);
-                                                });
-                                            }
-                                        }
-                                    },'继续'),
-                                    h('Button',{
-                                        props:{
-                                            size:"small",  
-                                            icon:"md-close-circle"   
-                                        },
-                                        style:{
-                                            'marginLeft':'5px'
-                                        },
-                                        on:{
-                                            click : function(){
-                                                var data = {
-                                                    deviceid:row.deviceid,
-                                                    action:2,
-                                                    downloadtaskid:row.downloadtaskid
-                                                };
-                                                vRoot.controlUploadFileFn(data,function (resp) { 
-                                                    vRoot.$Message.success('取消成功');
-                                                    vRoot.downloadTableData.splice(index,1);
-                                                });
-                                            }
-                                        }
-                                    },'取消'), 
-                                    h('Button',{
-                                        props:{
-                                            size:"small",  
-                                            icon:"md-arrow-down"   
-                                        },
-                                        style:{
-                                            'marginLeft':'5px'
-                                        },
-                                        on:{
-                                            click : function(){
-                                                if(row.downloadstatus!= 3){
-                                                    vRoot.$Message.error("文件还上传完成不能下载");
-                                                    return;
-                                                } ;
-                                                vRoot.$Message.success("请求下载成功,开始下载");
-                                                var ele = document.createElement('a');
-                                                ele.setAttribute('href',row.downloadurl); //设置下载文件的url地址
-                                                ele.setAttribute('download' , 'download');//用于设置下载文件的文件名
-                                                ele.click();
-                                            }
-                                        }
-                                    },'下载到本地'), 
-                                ]
-                            )
-                        } 
-                    },
-                    {
-                        title:'下载状态',
-                        width:90,
-                        key:'downloadstatus',
-                        render:function(h,params){
-                            var state = '' , downloadstatus = params.row.downloadstatus;
-                            switch(downloadstatus){
-                                case 0 :
-                                    state = '未开始上传';
-                                    break;
-                                case 1 :
-                                    state = '开始上传';
-                                    break;
-                                case 2 :
-                                    state = '上传失败';
-                                    break;
-                                case 3 :
-                                    state = '上传成功';
-                                    break;
-                                case 4 :
-                                    state = '暂停';
-                                    break;
-                            }
-                            return h('span',{},state);
-                        } 
-                    }                    ,
-                    {
-                        title:'标签',
-                        key:'tag',
-                        width:75
-                    },
-                    {
-                        title:'通道',
-                        key:'channel',
-                        width:65,
-                    },
-                    {
-                        title:'文件开始时间',
-                        key:'needstarttime'
-                    },
-                    {
-                        title:'文件结束日期',
-                        key:'needendtime',
-                    },
-                    {
-                        title:'开始下载时间',
-                        key:'downloadstarttime',
-                        render:function(h,params){
-                            var row = params.row;
-                            return h('span',{},DateFormat.longToDateTimeStr(row.downloadstarttime, 8))
-                        }
+            el: "#container",
+            data: {
+                modal: false,
+                isTable: 'time',
+                loading: false,
+                tipModal: false,
+                maskEl: null,
+                selectType: '1',
+                date: new Date(),
+                dateStr: "",
+                startValue: '',
+                endValue: '',
+                startVideoTime: '',
+                endVideoTime: '',
+                timeRange: ["00-00-00", "23-59-59"],
+                storageType: 'mainAndBackupStore',
+                mediatype: 'all',
+                videotppe: true,
+                tableData: [],
+                downloadTableData: [],
+                columns: [{
+                    title: '序号',
+                    width: 60,
+                    key: 'index'
+                }, {
+                    title: '播放',
+                    key: 'action',
+                    width: 70,
+                    render: function(h, params) {
 
-                    },
-                    {
-                        title:'下载结束时间',
-                        key:'downloadendtime',
-                        render:function(h,params){
-                            var row = params.row;
-                            return row.downloadendtime ? h('span',{},DateFormat.longToDateTimeStr(row.downloadendtime, 8)) : '';
-                        }
+                        return h('div', {}, [
+                            h('Button', {
+                                props: {
+                                    shape: "circle",
+                                    icon: "ios-play"
+                                },
+                                on: {
+                                    click: function() {
+                                        vRoot.handleDblclick(params.row);
+                                    }
+                                }
+                            }, null)
+                        ])
                     }
-                ],
-                timeReminder:'',
-                timeReminderElStyle:{},
-                timeLineElStyle:{},
-                tag:'',
-                row:{},
+                }, {
+                    title: '通道号',
+                    key: 'channel',
+                    width: 80,
+                }, {
+                    title: '开始时间',
+                    key: 'starttime',
+                }, {
+                    title: '结束时间',
+                    key: 'endtime',
+                }, {
+                    title: '文件大小',
+                    key: 'filesize',
+                    width: 100,
+                    render: function(h, params) {
+                        var mSize = (params.row.filesize / 1024 / 1024).toFixed(2);
+                        var filesize = "";
+                        if (mSize > 1024) {
+                            filesize = mSize / 1024 + "G";
+                        } else {
+                            filesize = mSize + 'M'
+                        }
+                        return h('span', {}, filesize)
+                    }
+                }, {
+                    title: '操作',
+                    key: 'action',
+                    width: 180,
+                    render: function(h, params) {
+                        var row = params.row;
+                        return h('div', {}, [
+                            h('Button', {
+                                props: {
+                                    shape: "circle",
+                                    icon: "md-arrow-down"
+                                },
+                                attrs: {
+                                    title: '全部下载'
+                                },
+                                on: {
+                                    click: function() {
+                                        vRoot.reqUploadFile(row);
+                                    }
+                                }
+                            }, null),
+                            h('Button', {
+                                style: {
+                                    'marginLeft': '10px'
+                                },
+                                props: {
+                                    shape: "circle",
+                                    icon: "md-download"
+                                },
+                                attrs: {
+                                    title: '分段下载'
+                                },
+                                on: {
+                                    click: function() {
+                                        vRoot.dateStr = row.starttime.split(' ')[0];
+                                        vRoot.startValue = row.starttime.split(' ')[1];
+                                        vRoot.endValue = row.endtime.split(' ')[1];
+                                        vRoot.startVideoTime = row.starttime;
+                                        vRoot.endVideoTime = row.endtime;
+                                        vRoot.row = row;
+                                        vRoot.modal = true;
+                                    }
+                                }
+                            }, null),
+                        ])
+                    }
+                }],
+                downloadColumns: [{
+                    title: '操作',
+                    width: 325,
+                    render: function(h, params) {
+                        var row = params.row,
+                            index = params.index;
+                        return h('div', {}, [
+                            h('Button', {
+                                props: {
+                                    size: "small",
+                                    icon: "ios-square",
+                                    disabled: row.downloadstatus == 3
+                                },
+                                on: {
+                                    click: function() {
+                                        var data = {
+                                            deviceid: row.deviceid,
+                                            action: 0,
+                                            downloadtaskid: row.downloadtaskid
+                                        }
+                                        vRoot.controlUploadFileFn(data, function(resp) {
+                                            vRoot.$Message.success('暂停成功');
+                                            vRoot.downloadTableData.splice(index, 1, resp.task);
+                                        });
+                                    }
+                                }
+                            }, '暂停'),
+                            h('Button', {
+                                props: {
+                                    size: "small",
+                                    icon: "ios-play",
+                                    disabled: row.downloadstatus == 3
+                                },
+                                style: {
+                                    'marginLeft': '5px'
+                                },
+                                on: {
+                                    click: function() {
+                                        var data = {
+                                            deviceid: row.deviceid,
+                                            action: 1,
+                                            downloadtaskid: row.downloadtaskid
+                                        }
+                                        vRoot.controlUploadFileFn(data, function(resp) {
+                                            vRoot.$Message.success('继续成功');
+                                            vRoot.downloadTableData.splice(index, 1, resp.task);
+                                        });
+                                    }
+                                }
+                            }, '继续'),
+                            h('Button', {
+                                props: {
+                                    size: "small",
+                                    icon: "md-close-circle"
+                                },
+                                style: {
+                                    'marginLeft': '5px'
+                                },
+                                on: {
+                                    click: function() {
+                                        var data = {
+                                            deviceid: row.deviceid,
+                                            action: 2,
+                                            downloadtaskid: row.downloadtaskid
+                                        };
+                                        vRoot.controlUploadFileFn(data, function(resp) {
+                                            vRoot.$Message.success('取消成功');
+                                            vRoot.downloadTableData.splice(index, 1);
+                                        });
+                                    }
+                                }
+                            }, '取消'),
+                            h('Button', {
+                                props: {
+                                    size: "small",
+                                    icon: "md-arrow-down"
+                                },
+                                style: {
+                                    'marginLeft': '5px'
+                                },
+                                on: {
+                                    click: function() {
+                                        if (row.downloadstatus != 3) {
+                                            vRoot.$Message.error("文件还上传完成不能下载");
+                                            return;
+                                        };
+                                        vRoot.$Message.success("请求下载成功,开始下载");
+                                        var ele = document.createElement('a');
+                                        ele.setAttribute('href', row.downloadurl); //设置下载文件的url地址
+                                        ele.setAttribute('download', 'download'); //用于设置下载文件的文件名
+                                        ele.click();
+                                    }
+                                }
+                            }, '下载到本地'),
+                        ])
+                    }
+                }, {
+                    title: '下载状态',
+                    width: 90,
+                    key: 'downloadstatus',
+                    render: function(h, params) {
+                        var state = '',
+                            downloadstatus = params.row.downloadstatus;
+                        switch (downloadstatus) {
+                            case 0:
+                                state = '未开始上传';
+                                break;
+                            case 1:
+                                state = '开始上传';
+                                break;
+                            case 2:
+                                state = '上传失败';
+                                break;
+                            case 3:
+                                state = '上传成功';
+                                break;
+                            case 4:
+                                state = '暂停';
+                                break;
+                        }
+                        return h('span', {}, state);
+                    }
+                }, {
+                    title: '标签',
+                    key: 'tag',
+                    width: 75
+                }, {
+                    title: '通道',
+                    key: 'channel',
+                    width: 65,
+                }, {
+                    title: '文件开始时间',
+                    key: 'needstarttime'
+                }, {
+                    title: '文件结束日期',
+                    key: 'needendtime',
+                }, {
+                    title: '开始下载时间',
+                    key: 'downloadstarttime',
+                    render: function(h, params) {
+                        var row = params.row;
+                        return h('span', {}, DateFormat.longToDateTimeStr(row.downloadstarttime, 8))
+                    }
+
+                }, {
+                    title: '下载结束时间',
+                    key: 'downloadendtime',
+                    render: function(h, params) {
+                        var row = params.row;
+                        return row.downloadendtime ? h('span', {}, DateFormat.longToDateTimeStr(row.downloadendtime, 8)) : '';
+                    }
+                }],
+                timeReminder: '',
+                timeReminderElStyle: {},
+                timeLineElStyle: {},
+                tag: '',
+                row: {},
             },
             methods: {
-                controlUploadFileFn:function(data,callback){
-                    var url = myUrls.controlUploadFile() , me = this;
-                    utils.sendAjax(url,data,function (resp) { 
-                        var status = resp.status;    
-                        if(status == CMD_SEND_RESULT_UNCONFIRM){
-                            me.$Message.error('发送成功，未收到确认'); 
-                        }else if(status === CMD_SEND_RESULT_PASSWORD_ERROR){
+                controlUploadFileFn: function(data, callback) {
+                    var url = myUrls.controlUploadFile(),
+                        me = this;
+                    utils.sendAjax(url, data, function(resp) {
+                        var status = resp.status;
+                        if (status == CMD_SEND_RESULT_UNCONFIRM) {
+                            me.$Message.error('发送成功，未收到确认');
+                        } else if (status === CMD_SEND_RESULT_PASSWORD_ERROR) {
                             me.$Message.error('密码错误');
-                        }else if(status === CMD_SEND_RESULT_OFFLINE_NOT_CACHE){           
-                            me.$Message.error("设备离线，未缓存");   
-                        }else if(status === CMD_SEND_RESULT_OFFLINE_CACHED){
+                        } else if (status === CMD_SEND_RESULT_OFFLINE_NOT_CACHE) {
+                            me.$Message.error("设备离线，未缓存");
+                        } else if (status === CMD_SEND_RESULT_OFFLINE_CACHED) {
                             me.$Message.error("设备离线，已缓存");
-                        }else if(status === CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD){
+                        } else if (status === CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD) {
                             me.$Message.error("需要修改默认密码");
-                        }else if(status === CMD_SEND_RESULT_DETAIL_ERROR){
+                        } else if (status === CMD_SEND_RESULT_DETAIL_ERROR) {
                             me.$Message.error("错误:" + resp.cause);
-                        }else if(status === CMD_SEND_CONFIRMED){
+                        } else if (status === CMD_SEND_CONFIRMED) {
                             callback(resp);
-                        }else if(status === CMD_SEND_OVER_RETRY_TIMES){
+                        } else if (status === CMD_SEND_OVER_RETRY_TIMES) {
                             me.$Message.error("尝试发送3次失败");
-                        }else if(status === CMD_SEND_SYNC_TIMEOUT){
+                        } else if (status === CMD_SEND_SYNC_TIMEOUT) {
                             me.$Message.error("发送超时");
                         }
                     });
                 },
-                splitUploadFile:function(){
-                    var url = myUrls.reqUploadFile() , me = this;
+                splitUploadFile: function() {
+                    var url = myUrls.reqUploadFile(),
+                        me = this;
                     var mediatype = '';
-                    if(this.mediatype=='all'){
+                    if (this.mediatype == 'all') {
                         mediatype = 0;
-                    }else if(this.mediatype=='audio'){
+                    } else if (this.mediatype == 'audio') {
                         mediatype = 1;
-                    }else if(this.mediatype=='video'){
+                    } else if (this.mediatype == 'video') {
                         mediatype = 2;
                     }
                     var storetype = '';
-                    if(this.storageType=='mainAndBackupStore'){
+                    if (this.storageType == 'mainAndBackupStore') {
                         storetype = 0;
-                    }else if(this.storageType=='mainstore'){
+                    } else if (this.storageType == 'mainstore') {
                         storetype = 1;
-                    }else if(this.storageType=='backupstore'){
+                    } else if (this.storageType == 'backupstore') {
                         storetype = 2;
                     }
 
                     var needstarttime = this.dateStr + ' ' + this.startValue;
                     var needendtime = this.dateStr + ' ' + this.endValue;
-                        if(new Date(needstarttime).getTime() > new Date(needendtime).getTime() ){
-                            me.$Message.error('开始时间不能大于结束时间');
-                            return ;
-                        }
-                        if(new Date(this.row.starttime).getTime() > new Date(needstarttime).getTime() ){
-                            me.$Message.error('开始时间不能小于文件开始时间');
-                            return ;
-                        }
-                        if(new Date(needendtime).getTime() > new Date(this.row.endtime).getTime() ){
-                            me.$Message.error('结束时间不能大于文件结束时间');
-                            return ;
-                        }
+                    if (new Date(needstarttime).getTime() > new Date(needendtime).getTime()) {
+                        me.$Message.error('开始时间不能大于结束时间');
+                        return;
+                    }
+                    if (new Date(this.row.starttime).getTime() > new Date(needstarttime).getTime()) {
+                        me.$Message.error('开始时间不能小于文件开始时间');
+                        return;
+                    }
+                    if (new Date(needendtime).getTime() > new Date(this.row.endtime).getTime()) {
+                        me.$Message.error('结束时间不能大于文件结束时间');
+                        return;
+                    }
 
                     var data = {
-                        deviceid:deviceid,
-                        channel:this.selectType,
-                        totalstarttime:this.row.starttime,
-                        totalendtime:this.row.endtime,
-                        totalfilesize:this.row.filesize,
-                        needstarttime:needstarttime,
-                        needendtime:needendtime,
-                        alarmtype:0,
-                        mediatype:mediatype,
-                        streamtype:0,
-                        storetype:storetype,
+                        deviceid: deviceid,
+                        channel: this.selectType,
+                        totalstarttime: this.row.starttime,
+                        totalendtime: this.row.endtime,
+                        totalfilesize: this.row.filesize,
+                        needstarttime: needstarttime,
+                        needendtime: needendtime,
+                        alarmtype: 0,
+                        mediatype: mediatype,
+                        streamtype: 0,
+                        storetype: storetype,
                     };
-                    this.tag && ( data.tag = this.tag );
-    
-                    utils.sendAjax(url,data,function (resp) { 
-                        var status = resp.status ;
-                            if(status == CMD_SEND_RESULT_UNCONFIRM){
-                                me.$Message.error('发送成功，未收到确认'); 
-                            }else if(status === CMD_SEND_RESULT_PASSWORD_ERROR){
-                                me.$Message.error('密码错误');
-                            }else if(status === CMD_SEND_RESULT_OFFLINE_NOT_CACHE){           
-                                me.$Message.error("设备离线，未缓存");   
-                            }else if(status === CMD_SEND_RESULT_OFFLINE_CACHED){
-                                me.$Message.error("设备离线，已缓存");
-                            }else if(status === CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD){
-                                me.$Message.error("需要修改默认密码");
-                            }else if(status === CMD_SEND_RESULT_DETAIL_ERROR){
-                                me.$Message.error("错误:" + resp.cause);
-                            }else if(status === CMD_SEND_CONFIRMED){
-                                me.$Message.success("请求下载成功,开始下载");
-                                var ele = document.createElement('a');
-                                ele.setAttribute('href',resp.downloadurl); //设置下载文件的url地址
-                                ele.setAttribute('download' , resp.tag);//用于设置下载文件的文件名
-                                ele.click();
-                                me.modal = false;
-                                me.tag = '';
-                            }else if(status === CMD_SEND_OVER_RETRY_TIMES){
-                                me.$Message.error("尝试发送3次失败");
-                            }else if(status === CMD_SEND_SYNC_TIMEOUT){
-                                me.$Message.error("发送超时");
-                            }
+                    this.tag && (data.tag = this.tag);
+
+                    utils.sendAjax(url, data, function(resp) {
+                        var status = resp.status;
+                        if (status == CMD_SEND_RESULT_UNCONFIRM) {
+                            me.$Message.error('发送成功，未收到确认');
+                        } else if (status === CMD_SEND_RESULT_PASSWORD_ERROR) {
+                            me.$Message.error('密码错误');
+                        } else if (status === CMD_SEND_RESULT_OFFLINE_NOT_CACHE) {
+                            me.$Message.error("设备离线，未缓存");
+                        } else if (status === CMD_SEND_RESULT_OFFLINE_CACHED) {
+                            me.$Message.error("设备离线，已缓存");
+                        } else if (status === CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD) {
+                            me.$Message.error("需要修改默认密码");
+                        } else if (status === CMD_SEND_RESULT_DETAIL_ERROR) {
+                            me.$Message.error("错误:" + resp.cause);
+                        } else if (status === CMD_SEND_CONFIRMED) {
+                            me.$Message.success("请求下载成功,开始下载");
+                            var ele = document.createElement('a');
+                            ele.setAttribute('href', resp.downloadurl); //设置下载文件的url地址
+                            ele.setAttribute('download', resp.tag); //用于设置下载文件的文件名
+                            ele.click();
+                            me.modal = false;
+                            me.tag = '';
+                        } else if (status === CMD_SEND_OVER_RETRY_TIMES) {
+                            me.$Message.error("尝试发送3次失败");
+                        } else if (status === CMD_SEND_SYNC_TIMEOUT) {
+                            me.$Message.error("发送超时");
+                        }
                     });
                 },
-                reqUploadFile:function(row){
-                    var url = myUrls.reqUploadFile() , me = this;
+                reqUploadFile: function(row) {
+                    var url = myUrls.reqUploadFile(),
+                        me = this;
                     var mediatype = '';
-                    if(this.mediatype=='all'){
+                    if (this.mediatype == 'all') {
                         mediatype = 0;
-                    }else if(this.mediatype=='audio'){
+                    } else if (this.mediatype == 'audio') {
                         mediatype = 1;
-                    }else if(this.mediatype=='video'){
+                    } else if (this.mediatype == 'video') {
                         mediatype = 2;
                     }
                     var storetype = '';
-                    if(this.storageType=='mainAndBackupStore'){
+                    if (this.storageType == 'mainAndBackupStore') {
                         storetype = 0;
-                    }else if(this.storageType=='mainstore'){
+                    } else if (this.storageType == 'mainstore') {
                         storetype = 1;
-                    }else if(this.storageType=='backupstore'){
+                    } else if (this.storageType == 'backupstore') {
                         storetype = 2;
                     }
                     var data = {
-                        deviceid:deviceid,
-                        channel:this.selectType,
-                        totalstarttime:row.starttime,
-                        totalendtime:row.endtime,
-                        totalfilesize:row.filesize,
-                        needstarttime:row.starttime,
-                        needendtime:row.endtime,
-                        alarmtype:0,
-                        mediatype:mediatype,
-                        streamtype:0,
-                        storetype:storetype,
-                    
+                        deviceid: deviceid,
+                        channel: this.selectType,
+                        totalstarttime: row.starttime,
+                        totalendtime: row.endtime,
+                        totalfilesize: row.filesize,
+                        needstarttime: row.starttime,
+                        needendtime: row.endtime,
+                        alarmtype: 0,
+                        mediatype: mediatype,
+                        streamtype: 0,
+                        storetype: storetype,
+
                     };
-                    utils.sendAjax(url,data,function (resp) { 
-                        console.log('resp',resp)
-                        var status = resp.status ;
-                            if(status == CMD_SEND_RESULT_UNCONFIRM){
-                                me.$Message.error('发送成功，未收到确认'); 
-                            }else if(status === CMD_SEND_RESULT_PASSWORD_ERROR){
-                                me.$Message.error('密码错误');
-                            }else if(status === CMD_SEND_RESULT_OFFLINE_NOT_CACHE){           
-                                me.$Message.error("设备离线，未缓存");   
-                            }else if(status === CMD_SEND_RESULT_OFFLINE_CACHED){
-                                me.$Message.error("设备离线，已缓存");
-                            }else if(status === CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD){
-                                me.$Message.error("需要修改默认密码");
-                            }else if(status === CMD_SEND_RESULT_DETAIL_ERROR){
-                                me.$Message.error("错误:" + resp.cause);
-                            }else if(status === CMD_SEND_CONFIRMED){
-                                me.$Message.success("请求下载成功,开始下载");
-                                var ele = document.createElement('a');
-                                ele.setAttribute('href',resp.downloadurl); //设置下载文件的url地址
-                                ele.setAttribute('download' , 'download');//用于设置下载文件的文件名
-                                ele.click();
-                            }else if(status === CMD_SEND_OVER_RETRY_TIMES){
-                                me.$Message.error("尝试发送3次失败");
-                            }else if(status === CMD_SEND_SYNC_TIMEOUT){
-                                me.$Message.error("发送超时");
-                            }
+                    utils.sendAjax(url, data, function(resp) {
+                        console.log('resp', resp)
+                        var status = resp.status;
+                        if (status == CMD_SEND_RESULT_UNCONFIRM) {
+                            me.$Message.error('发送成功，未收到确认');
+                        } else if (status === CMD_SEND_RESULT_PASSWORD_ERROR) {
+                            me.$Message.error('密码错误');
+                        } else if (status === CMD_SEND_RESULT_OFFLINE_NOT_CACHE) {
+                            me.$Message.error("设备离线，未缓存");
+                        } else if (status === CMD_SEND_RESULT_OFFLINE_CACHED) {
+                            me.$Message.error("设备离线，已缓存");
+                        } else if (status === CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD) {
+                            me.$Message.error("需要修改默认密码");
+                        } else if (status === CMD_SEND_RESULT_DETAIL_ERROR) {
+                            me.$Message.error("错误:" + resp.cause);
+                        } else if (status === CMD_SEND_CONFIRMED) {
+                            me.$Message.success("请求下载成功,开始下载");
+                            var ele = document.createElement('a');
+                            ele.setAttribute('href', resp.downloadurl); //设置下载文件的url地址
+                            ele.setAttribute('download', 'download'); //用于设置下载文件的文件名
+                            ele.click();
+                        } else if (status === CMD_SEND_OVER_RETRY_TIMES) {
+                            me.$Message.error("尝试发送3次失败");
+                        } else if (status === CMD_SEND_SYNC_TIMEOUT) {
+                            me.$Message.error("发送超时");
+                        }
                     });
                 },
-                onMouseMove:function(e){
+                onMouseMove: function(e) {
                     var rect = this.maskEl.getBoundingClientRect();
                     var elWidth = rect.width;
                     var offsetX = e.clientX - rect.left;
-                    if(offsetX == elWidth - 1)
-                    {
+                    if (offsetX == elWidth - 1) {
                         offsetX = elWidth;
                     }
-                    var currentSecond = offsetX * 24*60*60 / elWidth;
-                    var hours = parseInt(currentSecond / 3600) ;
-                    var remainSeconds = currentSecond - 3600* hours;
+                    var currentSecond = offsetX * 24 * 60 * 60 / elWidth;
+                    var hours = parseInt(currentSecond / 3600);
+                    var remainSeconds = currentSecond - 3600 * hours;
                     var mins = parseInt(remainSeconds / 60);
                     remainSeconds = remainSeconds - mins * 60;
                     // var seconds = parseInt(remainSeconds);
-                    var seconds = parseInt((currentSecond%3600)%60);
-                    this.timeReminder =  getzf(hours) + ':' + getzf(mins) + ':' + getzf(seconds);
-           
+                    var seconds = parseInt((currentSecond % 3600) % 60);
+                    this.timeReminder = getzf(hours) + ':' + getzf(mins) + ':' + getzf(seconds);
+
                     var top = (e.clientY - rect.top - 30);
                     var left = (e.clientX - rect.left);
-            
-                    if(top < 0){
+
+                    if (top < 0) {
                         top = 0;
                     }
 
-                    if(left > (elWidth - 54)){
+                    if (left > (elWidth - 54)) {
                         left = elWidth - 54;
                     }
 
                     this.timeReminderElStyle = {
-                        left: left   + 'px',
+                        left: left + 'px',
                         top: top + 'px',
                     };
 
                     this.timeLineElStyle = {
-                        left: (e.clientX - rect.left -1 ) + 'px',
+                        left: (e.clientX - rect.left - 1) + 'px',
                     }
 
-                },  
-                queryDownloadTasks:function(){
-                    var url = myUrls.queryDownloadTasks() , me = this;
-                    utils.sendAjax(url,{deviceid:deviceid},function (resp) { 
-                        console.log('queryDownloadTasks',resp);
-                        if(resp.status == 0){
+                },
+                queryDownloadTasks: function() {
+                    var url = myUrls.queryDownloadTasks(),
+                        me = this;
+                    utils.sendAjax(url, {
+                        deviceid: deviceid
+                    }, function(resp) {
+                        console.log('queryDownloadTasks', resp);
+                        if (resp.status == 0) {
                             me.downloadTableData = resp.tasks ? resp.tasks : [];
                         }
                     });
                 },
-                handleClickMask:function(){
-                    if(isRequsetPlaying) return;
-                    var startTimeStr = DateFormat.format(this.date,'yyyy-MM-dd') + " " + this.timeReminder ;
+                handleClickMask: function() {
+                    if (isRequsetPlaying) return;
+                    var startTimeStr = DateFormat.format(this.date, 'yyyy-MM-dd') + " " + this.timeReminder;
                     var endTimeStr = null;
                     var channel = null;
                     var startTime = new Date(startTimeStr).getTime();
                     var me = this;
 
-                    this.tableData.forEach(function (item) { 
+                    this.tableData.forEach(function(item) {
                         var itemStartTime = new Date(item.starttime).getTime();
                         var itemEndTime = new Date(item.endtime).getTime();
-                        if(itemStartTime <=  startTime && startTime <= itemEndTime){
+                        if (itemStartTime <= startTime && startTime <= itemEndTime) {
                             endTimeStr = item.endtime;
                             channel = item.channel;
                         }
                     })
-                    if(endTimeStr){
+                    if (endTimeStr) {
                         isRequsetPlaying = true;
                         var url = myUrls.playRecordControl();
-                        utils.sendAjax(url,{
-                            deviceid:deviceid,
-                            channel:channel,
-                            playrate:0,
-                            playcontrol:0,
-                            starttime:startTimeStr,
-                            endtime:endTimeStr
-                        },function (resp) { 
+                        utils.sendAjax(url, {
+                            deviceid: deviceid,
+                            channel: channel,
+                            playrate: 0,
+                            playcontrol: 0,
+                            starttime: startTimeStr,
+                            endtime: endTimeStr,
+                            playtype: "flv"
+                        }, function(resp) {
                             isRequsetPlaying = false;
-                            var record = resp.record , status = resp.status ;
-                            if(status == CMD_SEND_RESULT_UNCONFIRM){
-                                me.$Message.error('发送成功，未收到确认'); 
-                            }else if(status === CMD_SEND_RESULT_PASSWORD_ERROR){
+                            var record = resp.record,
+                                status = resp.status;
+                            if (status == CMD_SEND_RESULT_UNCONFIRM) {
+                                me.$Message.error('发送成功，未收到确认');
+                            } else if (status === CMD_SEND_RESULT_PASSWORD_ERROR) {
                                 me.$Message.error('密码错误');
-                            }else if(status === CMD_SEND_RESULT_OFFLINE_NOT_CACHE){           
-                                me.$Message.error("设备离线，未缓存");   
-                            }else if(status === CMD_SEND_RESULT_OFFLINE_CACHED){
+                            } else if (status === CMD_SEND_RESULT_OFFLINE_NOT_CACHE) {
+                                me.$Message.error("设备离线，未缓存");
+                            } else if (status === CMD_SEND_RESULT_OFFLINE_CACHED) {
                                 me.$Message.error("设备离线，已缓存");
-                            }else if(status === CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD){
+                            } else if (status === CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD) {
                                 me.$Message.error("需要修改默认密码");
-                            }else if(status === CMD_SEND_RESULT_DETAIL_ERROR){
+                            } else if (status === CMD_SEND_RESULT_DETAIL_ERROR) {
                                 me.$Message.error("错误:" + resp.cause);
-                            }else if(status === CMD_SEND_CONFIRMED){
-                                // if(player.src() !== record.playurl){
-                                    me.$Message.success('请求播放成功，请稍后...'); 
-                                    if(startPlayerTimer){
-                                        clearTimeout(startPlayerTimer);
-                                    }
-                                    player.dispose();
-                                    me.initVideo(record.playurl);
-                                    player.play();
-                                // }else{
-                                //     if(player.paused()){
-                                //         player.play();
-                                //     }
-                                // }
-                            }else if(status === CMD_SEND_OVER_RETRY_TIMES){
-                                me.$Message.error("尝试发送3次失败");
-                            }else if(status === CMD_SEND_SYNC_TIMEOUT){
-                                me.$Message.error("请求播放发送超时");
-                                if(startPlayerTimer){
+                            } else if (status === CMD_SEND_CONFIRMED) {
+
+                                me.$Message.success('请求播放成功，请稍后...');
+                                if (startPlayerTimer) {
                                     clearTimeout(startPlayerTimer);
                                 }
-                                if(record){
-                                    player.dispose();
-                                    me.initVideo(record.playurl);
-                                    player.play();
+
+                            } else if (status === CMD_SEND_OVER_RETRY_TIMES) {
+                                me.$Message.error("尝试发送3次失败");
+                            } else if (status === CMD_SEND_SYNC_TIMEOUT) {
+                                me.$Message.error("请求播放发送超时");
+                                if (startPlayerTimer) {
+                                    clearTimeout(startPlayerTimer);
+                                }
+                                if (record) {
+                                    // player.dispose();
+                                    // me.initVideo(record.playurl);
+                                    // player.play();
                                 }
                             }
                         });
                     }
                 },
-
+                switchflvPlayer: function(url, hasaudio) {
+                    if (this.flvPlayer != null) {
+                        this.flvPlayer.pause();
+                        this.flvPlayer.unload();
+                        this.flvPlayer.detachMediaElement();
+                        this.flvPlayer.destroy();
+                        this.flvPlayer = null;
+                    }
+                    this.initVideo(url, hasaudio);
+                },
                 // String deviceid;
                 // short channel;
                 // short playcontrol; //回放控制 0：开始回放 1:暂停回放 2:结束回放3:快进回放4:关键帧快退回放5:拖动回放6：关键帧回放
                 // short playrate;                //快进或快退倍数 0：无效 1：1倍 2:2倍 3:4倍 4:8倍 5:16倍
                 // String starttime;              //拖动回放位置，回放控制为5时有效
-                handleDblclick:function(row){
-                    if(isRequsetPlaying) return;
+                handleDblclick: function(row) {
+                    if (isRequsetPlaying) return;
                     isRequsetPlaying = true;
-                    if(startPlayerTimer){
-                        clearTimeout(startPlayerTimer); 
+                    if (startPlayerTimer) {
+                        clearTimeout(startPlayerTimer);
                     }
-                    var url = myUrls.playRecord(), 
+                    var url = myUrls.playRecord(),
                         me = this,
                         data = {
                             deviceid: deviceid,
-                            channel:row.channel,
-                            starttime: row.starttime ,
-                            endtime: row.endtime  
+                            channel: row.channel,
+                            starttime: row.starttime,
+                            endtime: row.endtime,
+                            playtype: 'flv'
                         };
-                        player.dispose();
-                        me.initVideo();
-                    utils.sendAjax(url,data,function (resp) {
+
+                    utils.sendAjax(url, data, function(resp) {
                         isRequsetPlaying = false;
-                        var record = resp.record , status = resp.status ;
-                        if(status == CMD_SEND_RESULT_UNCONFIRM){
-                            me.$Message.error('发送成功，未收到确认'); 
-                        }else if(status === CMD_SEND_RESULT_PASSWORD_ERROR){
+                        var record = resp.record,
+                            status = resp.status;
+                        if (status == CMD_SEND_RESULT_UNCONFIRM) {
+                            me.$Message.error('发送成功，未收到确认');
+                        } else if (status === CMD_SEND_RESULT_PASSWORD_ERROR) {
                             me.$Message.error('密码错误');
-                        }else if(status === CMD_SEND_RESULT_OFFLINE_NOT_CACHE){           
-                            me.$Message.error("设备离线，未缓存");   
-                        }else if(status === CMD_SEND_RESULT_OFFLINE_CACHED){
+                        } else if (status === CMD_SEND_RESULT_OFFLINE_NOT_CACHE) {
+                            me.$Message.error("设备离线，未缓存");
+                        } else if (status === CMD_SEND_RESULT_OFFLINE_CACHED) {
                             me.$Message.error("设备离线，已缓存");
-                        }else if(status === CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD){
+                        } else if (status === CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD) {
                             me.$Message.error("需要修改默认密码");
-                        }else if(status === CMD_SEND_RESULT_DETAIL_ERROR){
+                        } else if (status === CMD_SEND_RESULT_DETAIL_ERROR) {
                             me.$Message.error("错误:" + resp.cause);
-                        }else if(status === CMD_SEND_CONFIRMED){
-                            me.$Message.success('请求播放成功，请稍后...'); 
-                            if(startPlayerTimer){
+                        } else if (status === CMD_SEND_CONFIRMED) {
+                            me.$Message.success('请求播放成功，请稍后...');
+                            if (startPlayerTimer) {
                                 clearTimeout(startPlayerTimer);
                             }
-                            player.src(record.playurl);
-                            player.play();
-                        }else if(status === CMD_SEND_OVER_RETRY_TIMES){
+                            me.switchflvPlayer(resp.record.playurl, resp.record.hasaudio);
+                        } else if (status === CMD_SEND_OVER_RETRY_TIMES) {
                             me.$Message.error("尝试发送3次失败");
-                        }else if(status === CMD_SEND_SYNC_TIMEOUT){
+                        } else if (status === CMD_SEND_SYNC_TIMEOUT) {
                             me.$Message.error("发送超时");
-                            if(startPlayerTimer){
+                            if (startPlayerTimer) {
                                 clearTimeout(startPlayerTimer);
                             }
-                            player.src(record.playurl);
-                            player.play();
+
                         }
                     });
                 },
-                queryMedia:function(){
-                    if(!(this.date&&this.timeRange[0]&&this.timeRange[1])){
+                queryMedia: function() {
+                    if (!(this.date && this.timeRange[0] && this.timeRange[1])) {
                         this.$Message.error("请选择时间");
                         return;
                     };
                     var storetype = '';
-                    if(this.storageType=='mainAndBackupStore'){
+                    if (this.storageType == 'mainAndBackupStore') {
                         storetype = 0;
-                    }else if(this.storageType=='mainstore'){
+                    } else if (this.storageType == 'mainstore') {
                         storetype = 1;
-                    }else if(this.storageType=='backupstore'){
+                    } else if (this.storageType == 'backupstore') {
                         storetype = 2;
                     }
 
                     var mediatype = '';
-                    if(this.mediatype=='all'){
+                    if (this.mediatype == 'all') {
                         mediatype = 0;
-                    }else if(this.mediatype=='audio'){
+                    } else if (this.mediatype == 'audio') {
                         mediatype = 1;
-                    }else if(this.mediatype=='video'){
+                    } else if (this.mediatype == 'video') {
                         mediatype = 2;
                     }
 
 
                     var url = myUrls.queryMediaList(),
                         that = this,
-                        dateStr = DateFormat.format(this.date,'yyyy-MM-dd'),
+                        dateStr = DateFormat.format(this.date, 'yyyy-MM-dd'),
                         data = {
-                            deviceid:deviceid,
-                            channel:Number(this.selectType),                //需要查询的通道号
-                            starttime:(dateStr + ' ' + this.timeRange[0]),              //开始时间YY-MM-DD-HH-MM-SS
-                            endtime:(dateStr + ' ' + this.timeRange[1]),              //结束时间YY-MM-DD-HH-MM-SS
-                            mediatype:mediatype,               //资源类型     0：音视频 1音频 2视频 3视频或者音视频
-                            storetype:storetype,
+                            deviceid: deviceid,
+                            channel: Number(this.selectType), //需要查询的通道号
+                            starttime: (dateStr + ' ' + this.timeRange[0]), //开始时间YY-MM-DD-HH-MM-SS
+                            endtime: (dateStr + ' ' + this.timeRange[1]), //结束时间YY-MM-DD-HH-MM-SS
+                            mediatype: mediatype, //资源类型     0：音视频 1音频 2视频 3视频或者音视频
+                            storetype: storetype,
                         };
-                        that.loading = true;
-                    utils.sendAjax(url,data,function (data) {
-                        var status = data.status ;
+                    that.loading = true;
+                    utils.sendAjax(url, data, function(data) {
+                        var status = data.status;
                         var records = data.records;
                         var isSucc = false;
                         that.loading = false;
 
-                        if(status == CMD_SEND_RESULT_UNCONFIRM){
-                            that.$Message.error('发送成功，未收到确认'); 
-                        }else if(status === CMD_SEND_RESULT_PASSWORD_ERROR){
+                        if (status == CMD_SEND_RESULT_UNCONFIRM) {
+                            that.$Message.error('发送成功，未收到确认');
+                        } else if (status === CMD_SEND_RESULT_PASSWORD_ERROR) {
                             that.$Message.error('密码错误');
-                        }else if(status === CMD_SEND_RESULT_OFFLINE_NOT_CACHE){
-                            that.$Message.error("设备离线，未缓存");   
-                        }else if(status === CMD_SEND_RESULT_OFFLINE_CACHED){
+                        } else if (status === CMD_SEND_RESULT_OFFLINE_NOT_CACHE) {
+                            that.$Message.error("设备离线，未缓存");
+                        } else if (status === CMD_SEND_RESULT_OFFLINE_CACHED) {
                             that.$Message.error("设备离线，已缓存");
-                        }else if(status === CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD){
+                        } else if (status === CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD) {
                             that.$Message.error("需要修改默认密码");
-                        }else if(status === CMD_SEND_RESULT_DETAIL_ERROR){
+                        } else if (status === CMD_SEND_RESULT_DETAIL_ERROR) {
                             that.$Message.error("错误:" + resp.cause);
-                        }else if(status === CMD_SEND_CONFIRMED){
-                            if(records && records.length){
+                        } else if (status === CMD_SEND_CONFIRMED) {
+                            if (records && records.length) {
                                 isSucc = true;
-                            }else{
+                            } else {
                                 that.$Message.error("没有存储记录");
                             }
-                        }else if(status === CMD_SEND_OVER_RETRY_TIMES){
+                        } else if (status === CMD_SEND_OVER_RETRY_TIMES) {
                             that.$Message.error("尝试发送3次失败");
-                        }else if(status === CMD_SEND_SYNC_TIMEOUT){
+                        } else if (status === CMD_SEND_SYNC_TIMEOUT) {
                             that.$Message.error("发送超时");
                         }
 
-                        if(isSucc){
+                        if (isSucc) {
                             that.$Message.success("查询成功");
-                         
-                            records.sort(function (a,b) {
-                                return DateFormat.dateStrToLong(b.starttime,0) - DateFormat.dateStrToLong(a.starttime,0)  ;
+
+                            records.sort(function(a, b) {
+                                return DateFormat.dateStrToLong(b.starttime, 0) - DateFormat.dateStrToLong(a.starttime, 0);
                             });
-                            records.forEach(function (item,index) { 
+                            records.forEach(function(item, index) {
                                 item.index = ++index;
                             });
                             that.tableData = records;
-                            if(records.length){
-                                that.handleDblclick(records[0]);
-                            }
-                        }else{
-                            that.tableData =[];
+                        } else {
+                            that.tableData = [];
                         }
                     })
                 },
-                handleStartVideo:function(){
-                    var url = myUrls.startVideos() , me = this;
-                    utils.sendAjax(url,{deviceid:deviceid, channels:[1]},function (resp) {
+                handleStartVideo: function() {
+                    var url = myUrls.startVideos(),
+                        me = this;
+                    utils.sendAjax(url, {
+                        deviceid: deviceid,
+                        channels: [1]
+                    }, function(resp) {
                         me.$Message.success("开始成功")
                     })
                 },
-                handleStopVideo:function(){
-                    var url = myUrls.stopVideos() , me = this;
-                    utils.sendAjax(url,{deviceid:deviceid, channels:[1],videoclosetype:0},function (resp) {
-                        if(resp.status === 0){
+                handleStopVideo: function() {
+                    var url = myUrls.stopVideos(),
+                        me = this;
+                    utils.sendAjax(url, {
+                        deviceid: deviceid,
+                        channels: [1],
+                        videoclosetype: 0
+                    }, function(resp) {
+                        if (resp.status === 0) {
                             me.$Message.success("停止成功")
                         }
                     })
                 },
-                createVideoElement:function(){
-          
-                    var videoEl = document.createElement('video');
-                        videoEl.setAttribute( 'id' , 'video');
-                        videoEl.setAttribute( 'controls' , 'true' );
-                        videoEl.setAttribute( 'poster' , '');
-                        videoEl.className ="video-js";
-                        this.$refs.videoContent.appendChild(videoEl);
-                
-                },
-                initVideo:function(url){
-                    this.createVideoElement();
-                    var videoContent = this.$refs.videoContent,
-                        sources = [];  //[{src: 'rtmp://58.200.131.2:1935/livetv/hunantv',type: 'rtmp/flv'}];
-                        if(url) sources = [{src: url,type: 'rtmp/flv'}]; 
-                    player = videojs('video', {
-                        poster:"./images/tv_default.jpg",
-                        autoplay: false ,
-                        preload:"none",
-                        // aspectRatio:'4:3',
-                        height:$(videoContent).height(),
-                        width:$(videoContent).width(),
-                        controlBar: {
-                            remainingTimeDisplay:false,
-                            progressControl: false,
-                            liveDisplay: true,
-                        },
-                        techOrder: ['html5','flash'],
-                        sources: sources,
-                    },function(){
-                        
-                        document.getElementsByClassName('vjs-picture-in-picture-control')[0].style.display = 'none';
 
-                        var vjsControlBar = document.getElementsByClassName('vjs-control-bar')[0];
-                        var tipEl = document.createElement('div');
-                        tipEl.setAttribute('id','video-tip');
-                        tipEl.style.lineHeight = '30px';
-                        tipEl.style.paddingLeft = '15px';
-                        vjsControlBar.appendChild(tipEl);
-
-                        this.on('play',function () { 
-                            tipEl.innerText = '正在请求播放';
-                            document.getElementsByClassName('vjs-big-play-button')[0].style.display = 'none';
-                            if(!startPlayerTimer){
-                                clearTimeout(startPlayerTimer);
-                            }
-                            startPlayerTimer = setTimeout(function () { 
-                                player.pause();
-                                tipEl.innerText = '单次播放时间限制已到，暂停播放';
-                            },60*3*1000);    
-                        });
-                        this.on('pause',function () { 
-                            document.getElementsByClassName('vjs-big-play-button')[0].style.display = 'block';
-                            if(startPlayerTimer){
-                                clearTimeout(startPlayerTimer);
-                            }
-                            startPlayerTimer = null;
-                        });
-
-                        this.on('loadstart',function () {
-                            tipEl.innerText = '开始加载';
-                        });
-                        this.on('loadedmetadata',function () {
-                            tipEl.innerText = '视频源数据加载完成';
-                        });
-                        this.on('loadeddata',function () {
-                            tipEl.innerText = '渲染播放画面';
-                        });
-                        // this.on('progress',function () {
-                        //     tipEl.innerText = '加载中...';
-                        // });
+                initVideo: function(url, hasaudio) {
+                    console.log(url, hasaudio)
+                    this.flvPlayer = flvjs.createPlayer({
+                        type: 'flv',
+                        url: url,
+                        isLive: true,
+                        hasAudio: hasaudio === 1,
+                        enableWorker: true,
+                        enableStashBuffer: false,
+                        stashInitialSize: 1,
+                        lazyLoad: false,
+                        lazyLoadMaxDuration: 1,
+                        lazyLoadRecoverDuration: 1,
+                        deferLoadAfterSourceOpen: false,
+                        autoCleanupMaxBackwardDuration: 1,
+                        autoCleanupMinBackwardDuration: 1,
+                        statisticsInfoReportInterval: 1,
+                        fixAudioTimestampGap: false,
+                        // url: 'http://video.gps51.com:81/live/teststream.flv'
                     });
-                 
+                    this.flvPlayer.attachMediaElement(player);
+                    this.flvPlayer.load(); //加载
+                    this.flvPlayer.play();
                 },
-                initChart:function(){
-                   chart = echarts.init(document.getElementById('videoTime'));
-                   chart.setOption(this.getEchartOption(DateFormat.format(this.date,'yyyy-MM-dd'),[]));
+                initChart: function() {
+                    chart = echarts.init(document.getElementById('videoTime'));
+                    chart.setOption(this.getEchartOption(DateFormat.format(this.date, 'yyyy-MM-dd'), []));
                 },
-                getEchartOption:function(dateStr,data){
+                getEchartOption: function(dateStr, data) {
 
                     var colors = ['#e4393c']; //三种状态的颜色
                     var state = ['视频']; //三种状态
-                    dateStr = dateStr.replace('-','/').replace('-','/');
-          
+                    dateStr = dateStr.replace('-', '/').replace('-', '/');
+
                     // echart配置
                     return {
                         color: colors,
-                        tooltip: {//提示框
-                            formatter: function (params) {
-                                return params.name + ':' + params.value[1] + '~' + params.value[2];
-                            }//数据的值
+                        tooltip: { //提示框
+                            formatter: function(params) {
+                                    return params.name + ':' + params.value[1] + '~' + params.value[2];
+                                } //数据的值
                         },
-                        legend: {//图例
+                        legend: { //图例
                             data: state,
                             bottom: '1%',
                             selectedMode: false, // 图例设为不可点击
@@ -1201,151 +1144,156 @@
                                 color: '#000'
                             }
                         },
-                        grid: {//绘图网格
+                        grid: { //绘图网格
                             left: '10',
                             right: '15',
                             top: '10',
                             bottom: '10%',
                             containLabel: true
                         },
-                        xAxis: {                   
-                            type: 'time',               
-                            interval: 3600*1000,   //以一个小时递增 
-                            min:dateStr + ' 00:00', //将data里最小时间的整点时间设为min,否则min会以data里面的min为开始进行整点递增
-                            max:dateStr +' 24:00',
+                        xAxis: {
+                            type: 'time',
+                            interval: 3600 * 1000, //以一个小时递增 
+                            min: dateStr + ' 00:00', //将data里最小时间的整点时间设为min,否则min会以data里面的min为开始进行整点递增
+                            max: dateStr + ' 24:00',
                             axisLabel: {
-                                formatter: function (value,index) { 
-                                    var date = new Date(value); 
-                                    if(index === 24){
-                                        return '24:00'; 
+                                formatter: function(value, index) {
+                                    var date = new Date(value);
+                                    if (index === 24) {
+                                        return '24:00';
                                     }
-                                    return getzf(date.getHours()) + ':00' ;  
+                                    return getzf(date.getHours()) + ':00';
 
                                     function getzf(num) {
-                                        if (parseInt(num) < 10) {  num = '0' + num; }  
-                                        return num; 
-                                    }             
-                                },                   
+                                        if (parseInt(num) < 10) {
+                                            num = '0' + num;
+                                        }
+                                        return num;
+                                    }
+                                },
                             }
                         },
                         yAxis: {
                             data: ['']
                         },
-                        series: [
-                            {
-                                type: 'custom',              
-                                renderItem: function (params, api) {//开发者自定义的图形元素渲染逻辑，是通过书写 renderItem 函数实现的
-                                    var categoryIndex = api.value(0);//这里使用 api.value(0) 取出当前 dataItem 中第一个维度的数值。
-                                    var start = api.coord([api.value(1), categoryIndex]); // 这里使用 api.coord(...) 将数值在当前坐标系中转换成为屏幕上的点的像素值。
-                                    var end = api.coord([api.value(2), categoryIndex]);
-                                    var height = api.size([0, 1])[1];
-                
-                                    return {
-                                        type: 'rect',// 表示这个图形元素是矩形。还可以是 'circle', 'sector', 'polygon' 等等。
-                                        shape: echarts.graphic.clipRectByRect({ // 矩形的位置和大小。
-                                            x: start[0],
-                                            y: start[1] - height / 2,
-                                            width: end[0] - start[0],
-                                            height: height
-                                        }, { // 当前坐标系的包围盒。
-                                            x: params.coordSys.x,
-                                            y: params.coordSys.y,
-                                            width: params.coordSys.width,
-                                            height: params.coordSys.height
-                                        }),
-                                        style: api.style()
-                                    };
-                                },
-                                encode: {
-                                    x: [1, 2], // data 中『维度1』和『维度2』对应到 X 轴
-                                    y: 0// data 中『维度0』对应到 Y 轴
-                                },
-                                data: data
+                        series: [{
+                            type: 'custom',
+                            renderItem: function(params, api) { //开发者自定义的图形元素渲染逻辑，是通过书写 renderItem 函数实现的
+                                var categoryIndex = api.value(0); //这里使用 api.value(0) 取出当前 dataItem 中第一个维度的数值。
+                                var start = api.coord([api.value(1), categoryIndex]); // 这里使用 api.coord(...) 将数值在当前坐标系中转换成为屏幕上的点的像素值。
+                                var end = api.coord([api.value(2), categoryIndex]);
+                                var height = api.size([0, 1])[1];
+
+                                return {
+                                    type: 'rect', // 表示这个图形元素是矩形。还可以是 'circle', 'sector', 'polygon' 等等。
+                                    shape: echarts.graphic.clipRectByRect({ // 矩形的位置和大小。
+                                        x: start[0],
+                                        y: start[1] - height / 2,
+                                        width: end[0] - start[0],
+                                        height: height
+                                    }, { // 当前坐标系的包围盒。
+                                        x: params.coordSys.x,
+                                        y: params.coordSys.y,
+                                        width: params.coordSys.width,
+                                        height: params.coordSys.height
+                                    }),
+                                    style: api.style()
+                                };
+                            },
+                            encode: {
+                                x: [1, 2], // data 中『维度1』和『维度2』对应到 X 轴
+                                y: 0 // data 中『维度0』对应到 Y 轴
+                            },
+                            data: data
                                 //     [
-     
-                                //     {
-                                //         itemStyle: { normal: { color: colors[0] } },//条形颜色
-                                //         name: '视频',
-                                //         value: [0, '2019/10/01 01:28:00', '2019/10/01 05:59:12']//0,1,2代表y轴的索引，后两位代表x轴数据开始和结束
-                                //     },
-                                  
-                                //     {
-                                //         itemStyle: { normal: { color: colors[0] } },
-                                //         name: '视频',
-                                //         value: [0, '2019/10/01 06:13:12', '2019/10/01 08:22:14']
-                                //     },
-                
-                                 
-                                // ]
-                            }
-                        ]
+
+                            //     {
+                            //         itemStyle: { normal: { color: colors[0] } },//条形颜色
+                            //         name: '视频',
+                            //         value: [0, '2019/10/01 01:28:00', '2019/10/01 05:59:12']//0,1,2代表y轴的索引，后两位代表x轴数据开始和结束
+                            //     },
+
+                            //     {
+                            //         itemStyle: { normal: { color: colors[0] } },
+                            //         name: '视频',
+                            //         value: [0, '2019/10/01 06:13:12', '2019/10/01 08:22:14']
+                            //     },
+
+
+                            // ]
+                        }]
                     };
- 
-                       
- 
+
+
+
                 },
-                onWindowResize:function(){
-                    var videoContent = this.$refs.videoContent , that = this;
-                    window.onresize = function () { 
-                        player.width($(videoContent).width());
-                        player.height($(videoContent).height());
-                        if(that.isTable === 'time'){
+                onWindowResize: function() {
+                    var videoContent = this.$refs.videoContent,
+                        that = this;
+                    window.onresize = function() {
+                        if (that.isTable === 'time') {
                             chart.resize();
-                        }else{
+                        } else {
                             isResize = true;
                         }
                     }
                 }
             },
             watch: {
-                isTable:function(newVal){ 
-                    if(isResize && newVal === 'time'){
-                        setTimeout(function () { chart.resize();  },200)
-                    }else if(newVal === 'downloadfile'){
+                isTable: function(newVal) {
+                    if (isResize && newVal === 'time') {
+                        setTimeout(function() {
+                            chart.resize();
+                        }, 200)
+                    } else if (newVal === 'downloadfile') {
                         this.queryDownloadTasks();
                     }
                 },
-                tableData:function(newVal){
-                    if(newVal.length){
+                tableData: function(newVal) {
+                    if (newVal.length) {
                         var data = [];
-                    
-                        newVal.forEach(function (item) { 
-                            var starttimeStr = item.starttime.replace('-','/').replace('-','/');
-                            var endtimeStr = item.endtime.replace('-','/').replace('-','/');
-            
+
+                        newVal.forEach(function(item) {
+                            var starttimeStr = item.starttime.replace('-', '/').replace('-', '/');
+                            var endtimeStr = item.endtime.replace('-', '/').replace('-', '/');
+
                             data.push({
-                                itemStyle: { normal: { color: '#e4393c' } },
+                                itemStyle: {
+                                    normal: {
+                                        color: '#e4393c'
+                                    }
+                                },
                                 name: '',
                                 value: [0, starttimeStr, endtimeStr]
                             })
                         })
-       
-                        chart.setOption(this.getEchartOption(DateFormat.format(this.date,'yyyy-MM-dd'),data));    
-                    }else{
-                        chart.setOption(this.getEchartOption(DateFormat.format(this.date,'yyyy-MM-dd'),[])); 
+
+                        chart.setOption(this.getEchartOption(DateFormat.format(this.date, 'yyyy-MM-dd'), data));
+                    } else {
+                        chart.setOption(this.getEchartOption(DateFormat.format(this.date, 'yyyy-MM-dd'), []));
                     }
                 }
             },
-            mounted :function() {
+            mounted: function() {
                 var that = this;
-                if (!fls.f) {
-                    this.tipModal = true;
-                } 
-                that.$nextTick(function(){ 
-                    that.initVideo(); 
+                // if (!fls.f) {
+                //     this.tipModal = true;
+                // }
+                this.flvPlayer = null;
+                that.$nextTick(function() {
+                    player = document.getElementById('videoElement');
+                    // that.initVideo();
                     that.initChart();
                     that.onWindowResize();
                     that.maskEl = that.$refs.videoTimeMask;
-                    that.maskEl.onmousemove = function (e) { 
+                    that.maskEl.onmousemove = function(e) {
                         that.onMouseMove(e);
                     }
                     document.getElementById('mask-wrapper').style.display = 'none';
                 });
             },
         })
-
-       
     </script>
 </body>
-</html>
 
+</html>.

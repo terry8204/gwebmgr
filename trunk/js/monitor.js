@@ -230,10 +230,10 @@ var monitor = {
 
         },
         handleWebSocket: function(data) {
-        	var me = this;
-            
+            var me = this;
+
             var deviceid = data.deviceid;
-            console.log("handleWebSocket deviceid=",deviceid);
+            console.log("handleWebSocket deviceid=", deviceid);
             data.devicename = this.deviceInfos[deviceid] ? this.deviceInfos[deviceid].devicename : "";
             isNeedRefreshMapUI = true;
             // me.updateTreeOnlineState();
@@ -1192,8 +1192,7 @@ var monitor = {
         },
 
         dorefreshMapUI: function() {
-        	
-            console.log("dorefreshMapUI enter isNeedRefreshMapUI=",isNeedRefreshMapUI);
+            // console.log("dorefreshMapUI enter isNeedRefreshMapUI=",isNeedRefreshMapUI);
             if (isNeedRefreshMapUI == true) {
                 // console.log("dorefreshMapUI refresh true");
                 isNeedRefreshMapUI = false;
