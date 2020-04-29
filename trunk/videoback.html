@@ -130,6 +130,17 @@
             right: -20px;
             text-align: center;
         }
+        
+        div.spin-wraper {
+            position: absolute;
+            left: 0px;
+            top: 0px;
+            right: 00px;
+            bottom: 0px;
+            z-index: 999;
+            display: inline-block;
+            background: rgba(0, 0, 0, 0.5);
+        }
     </style>
 </head>
 
@@ -141,6 +152,9 @@
         </div>
     </div>
     <div id="container">
+        <div class="spin-wraper" v-if="isSpin" style="z-index:10">
+            <Spin fix size="large"></Spin>
+        </div>
         <Layout style="height:100%;">
             <Layout>
                 <Sider hide-trigger width="260" style="background-color:#ffffff;padding:10px;">
@@ -339,6 +353,7 @@
         var vRoot = new Vue({
             el: "#container",
             data: {
+                isSpin: false,
                 modal: false,
                 isTable: 'time',
                 loading: false,
@@ -843,6 +858,7 @@
                     })
                     if (endTimeStr) {
                         isRequsetPlaying = true;
+                        this.isSpin = true;
                         var url = myUrls.playRecordControl();
                         utils.sendAjax(url, {
                             deviceid: deviceid,
@@ -853,6 +869,7 @@
                             endtime: endTimeStr,
                             playtype: "flv"
                         }, function(resp) {
+                            me.isSpin = false;
                             isRequsetPlaying = false;
                             var record = resp.record,
                                 status = resp.status;
@@ -886,6 +903,9 @@
                                     me.switchflvPlayer(resp.record.playurl, resp.record.hasaudio);
                                 }
                             }
+                        }, function() {
+                            me.isSpin = false;
+                            me.$Message.error("网络错误");
                         });
                     }
                 },
@@ -906,6 +926,7 @@
                 // String starttime;              //拖动回放位置，回放控制为5时有效
                 handleDblclick: function(row) {
                     if (isRequsetPlaying) return;
+                    this.isSpin = true;
                     isRequsetPlaying = true;
                     if (startPlayerTimer) {
                         clearTimeout(startPlayerTimer);
@@ -921,6 +942,7 @@
                         };
 
                     utils.sendAjax(url, data, function(resp) {
+                        me.isSpin = false;
                         isRequsetPlaying = false;
                         var record = resp.record,
                             status = resp.status;
@@ -951,6 +973,9 @@
                             }
                             me.switchflvPlayer(resp.record.playurl, resp.record.hasaudio);
                         }
+                    }, function() {
+                        me.$Message.error("网络错误");
+                        me.isSpin = false;
                     });
                 },
                 queryMedia: function() {
@@ -1064,18 +1089,13 @@
                         url: url,
                         isLive: true,
                         hasAudio: hasaudio === 1,
-                        enableWorker: true,
-                        enableStashBuffer: false,
-                        stashInitialSize: 1,
-                        lazyLoad: false,
-                        lazyLoadMaxDuration: 1,
-                        lazyLoadRecoverDuration: 1,
-                        deferLoadAfterSourceOpen: false,
-                        autoCleanupMaxBackwardDuration: 1,
-                        autoCleanupMinBackwardDuration: 1,
-                        statisticsInfoReportInterval: 1,
-                        fixAudioTimestampGap: false,
+                        hasVideo: true,
+                        withCredentials: false,
                         // url: 'http://video.gps51.com:81/live/teststream.flv'
+                    }, {
+                        enableWorker: false,
+                        lazyLoadMaxDuration: 3 * 60,
+                        seekType: 'range',
                     });
                     this.flvPlayer.on(flvjs.Events.LOADING_COMPLETE, function() {
                         alert("加载完成");
