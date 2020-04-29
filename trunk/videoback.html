@@ -131,9 +131,6 @@
             text-align: center;
         }
     </style>
-    <!-- <link href="./videojs/video-js.css" rel="stylesheet"> -->
-    <!-- <script src="./videojs/video.js"></script>
-    <script src="./videojs/videojs-flash.min.js"></script> -->
 </head>
 
 <body>
@@ -338,36 +335,6 @@
             }
             return num;
         }
-
-        // function flashChecker() {
-        //     var hasFlash = 0; //是否安装了flash
-        //     var flashVersion = 0; //flash版本
-        //     if (document.all) {
-        //         var swf = new ActiveXObject('ShockwaveFlash.ShockwaveFlash');
-        //         if (swf) {
-        //             hasFlash = 1;
-        //             VSwf = swf.GetVariable("$version");
-        //             flashVersion = parseInt(VSwf.split(" ")[1].split(",")[0]);
-        //         }
-        //     } else {
-        //         if (navigator.plugins && navigator.plugins.length > 0) {
-        //             var swf = navigator.plugins["Shockwave Flash"];
-        //             if (swf) {
-        //                 hasFlash = 1;
-        //                 var words = swf.description.split(" ");
-        //                 for (var i = 0; i < words.length; ++i) {
-        //                     if (isNaN(parseInt(words[i]))) continue;
-        //                     flashVersion = parseInt(words[i]);
-        //                 }
-        //             }
-        //         }
-        //     }
-        //     return {
-        //         f: hasFlash,
-        //         v: flashVersion
-        //     };
-        // }
-        // var fls = flashChecker();
 
         var vRoot = new Vue({
             el: "#container",
@@ -1095,7 +1062,6 @@
                 },
 
                 initVideo: function(url, hasaudio) {
-                    console.log(url, hasaudio)
                     this.flvPlayer = flvjs.createPlayer({
                         type: 'flv',
                         url: url,
@@ -1113,6 +1079,9 @@
                         statisticsInfoReportInterval: 1,
                         fixAudioTimestampGap: false,
                         // url: 'http://video.gps51.com:81/live/teststream.flv'
+                    });
+                    this.flvPlayer.on(flvjs.Events.LOADING_COMPLETE, function() {
+                        alert("加载完成");
                     });
                     this.flvPlayer.attachMediaElement(player);
                     this.flvPlayer.load(); //加载
