@@ -53,16 +53,24 @@
             background-size: cover;
         }
         
+        #videoContent>div>div.videoElementWrap {
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 40px;
+            top: 0;
+        }
+        
         #videoContent>div>video {
             width: 100%;
             height: 100%;
         }
         
-        #videoContent>div:hover>div.play-btn-wrap {
+        #videoContent>div>div:hover>div.play-btn-wrap {
             display: block;
         }
         
-        #videoContent>div>div.play-btn-wrap {
+        #videoContent>div>div>div.play-btn-wrap {
             position: absolute;
             left: 50%;
             top: 50%;
@@ -76,6 +84,18 @@
             line-height: 60px;
             cursor: pointer;
             display: none;
+        }
+        
+        div.state-event-tip {
+            position: absolute;
+            left: 0;
+            right: 0;
+            height: 40px;
+            line-height: 40px;
+            padding-left: 20px;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, .9);
+            color: white;
         }
         
         .left-sider {
@@ -1228,100 +1248,148 @@
             <div style="position: absolute;left: 0;right: 0;top: 50px;bottom: 0;padding: 10px">
                 <div :class="videoContentCls" id="videoContent" ref="videoContent">
                     <div>
-                        <video id="videoElement1"></video>
-                        <div class="play-btn-wrap" @click="onChangePlayerState(1)">
-                            <Icon :type="playerState.yi?'md-square':'ios-play'" size="40" />
+                        <div class="videoElementWrap">
+                            <video id="videoElement1"></video>
+                            <div class="play-btn-wrap" @click="onChangePlayerState(1)">
+                                <Icon :type="playerState.yi?'md-square':'ios-play'" size="40" />
+                            </div>
                         </div>
+                        <div class="state-event-tip" v-text="playerStateTips.yi"></div>
                     </div>
                     <div>
-                        <video id="videoElement2">Your browser is too old which doesn't support HTML5 video.</video>
-                        <div class="play-btn-wrap" @click="onChangePlayerState(2)">
-                            <Icon :type="playerState.er?'md-square':'ios-play'" size="40" />
+                        <div class="videoElementWrap">
+                            <video id="videoElement2"></video>
+                            <div class="play-btn-wrap" @click="onChangePlayerState(2)">
+                                <Icon :type="playerState.er?'md-square':'ios-play'" size="40" />
+                            </div>
                         </div>
+                        <div class="state-event-tip" v-text="playerStateTips.er"></div>
                     </div>
                     <div>
-                        <video id="videoElement3">Your browser is too old which doesn't support HTML5 video.</video>
-                        <div class="play-btn-wrap" @click="onChangePlayerState(3)">
-                            <Icon :type="playerState.san?'md-square':'ios-play'" size="40" />
+                        <div class="videoElementWrap">
+                            <video id="videoElement3"></video>
+                            <div class="play-btn-wrap" @click="onChangePlayerState(3)">
+                                <Icon :type="playerState.san?'md-square':'ios-play'" size="40" />
+                            </div>
                         </div>
+                        <div class="state-event-tip" v-text="playerStateTips.san"></div>
                     </div>
                     <div>
-                        <video id="videoElement4">Your browser is too old which doesn't support HTML5 video.</video>
-                        <div class="play-btn-wrap" @click="onChangePlayerState(4)">
-                            <Icon :type="playerState.si?'md-square':'ios-play'" size="40" />
+                        <div class="videoElementWrap">
+                            <video id="videoElement4"></video>
+                            <div class="play-btn-wrap" @click="onChangePlayerState(4)">
+                                <Icon :type="playerState.si?'md-square':'ios-play'" size="40" />
+                            </div>
                         </div>
+                        <div class="state-event-tip" v-text="playerStateTips.si"></div>
                     </div>
                     <div>
-                        <video id="videoElement5">Your browser is too old which doesn't support HTML5 video.</video>
-                        <div class="play-btn-wrap" @click="onChangePlayerState(5)">
-                            <Icon :type="playerState.wu?'md-square':'ios-play'" size="40" />
+                        <div class="videoElementWrap">
+                            <video id="videoElement5"></video>
+                            <div class="play-btn-wrap" @click="onChangePlayerState(5)">
+                                <Icon :type="playerState.wu?'md-square':'ios-play'" size="40" />
+                            </div>
                         </div>
+                        <div class="state-event-tip" v-text="playerStateTips.wu"></div>
                     </div>
                     <div>
-                        <video id="videoElement6">Your browser is too old which doesn't support HTML5 video.</video>
-                        <div class="play-btn-wrap" @click="onChangePlayerState(6)">
-                            <Icon :type="playerState.liu?'md-square':'ios-play'" size="40" />
+                        <div class="videoElementWrap">
+                            <video id="videoElement6"></video>
+                            <div class="play-btn-wrap" @click="onChangePlayerState(6)">
+                                <Icon :type="playerState.liu?'md-square':'ios-play'" size="40" />
+                            </div>
                         </div>
+                        <div class="state-event-tip" v-text="playerStateTips.liu"></div>
                     </div>
                     <div>
-                        <video id="videoElement7">Your browser is too old which doesn't support HTML5 video.</video>
-                        <div class="play-btn-wrap" @click="onChangePlayerState(7)">
-                            <Icon :type="playerState.qi?'md-square':'ios-play'" size="40" />
+                        <div class="videoElementWrap">
+                            <video id="videoElement7"></video>
+                            <div class="play-btn-wrap" @click="onChangePlayerState(7)">
+                                <Icon :type="playerState.qi?'md-square':'ios-play'" size="40" />
+                            </div>
                         </div>
+                        <div class="state-event-tip" v-text="playerStateTips.qi"></div>
                     </div>
                     <div>
-                        <video id="videoElement8">Your browser is too old which doesn't support HTML5 video.</video>
-                        <div class="play-btn-wrap" @click="onChangePlayerState(8)">
-                            <Icon :type="playerState.ba?'md-square':'ios-play'" size="40" />
+                        <div class="videoElementWrap">
+                            <video id="videoElement8"></video>
+                            <div class="play-btn-wrap" @click="onChangePlayerState(8)">
+                                <Icon :type="playerState.ba?'md-square':'ios-play'" size="40" />
+                            </div>
                         </div>
+                        <div class="state-event-tip" v-text="playerStateTips.ba"></div>
                     </div>
                     <div>
-                        <video id="videoElement9">Your browser is too old which doesn't support HTML5 video.</video>
-                        <div class="play-btn-wrap" @click="onChangePlayerState(9)">
-                            <Icon :type="playerState.jiu?'md-square':'ios-play'" size="40" />
+                        <div class="videoElementWrap">
+                            <video id="videoElement9"></video>
+                            <div class="play-btn-wrap" @click="onChangePlayerState(9)">
+                                <Icon :type="playerState.jiu?'md-square':'ios-play'" size="40" />
+                            </div>
                         </div>
+                        <div class="state-event-tip" v-text="playerStateTips.jiu"></div>
                     </div>
                     <div>
-                        <video id="videoElement10">Your browser is too old which doesn't support HTML5 video.</video>
-                        <div class="play-btn-wrap" @click="onChangePlayerState(10)">
-                            <Icon :type="playerState.shi?'md-square':'ios-play'" size="40" />
+                        <div class="videoElementWrap">
+                            <video id="videoElement10"></video>
+                            <div class="play-btn-wrap" @click="onChangePlayerState(10)">
+                                <Icon :type="playerState.shi?'md-square':'ios-play'" size="40" />
+                            </div>
                         </div>
+                        <div class="state-event-tip" v-text="playerStateTips.shi"></div>
                     </div>
                     <div>
-                        <video id="videoElement11">Your browser is too old which doesn't support HTML5 video.</video>
-                        <div class="play-btn-wrap" @click="onChangePlayerState(11)">
-                            <Icon :type="playerState.shiyi?'md-square':'ios-play'" size="40" />
+                        <div class="videoElementWrap">
+                            <video id="videoElement11"></video>
+                            <div class="play-btn-wrap" @click="onChangePlayerState(11)">
+                                <Icon :type="playerState.shiyi?'md-square':'ios-play'" size="40" />
+                            </div>
                         </div>
+                        <div class="state-event-tip" v-text="playerStateTips.shiyi"></div>
                     </div>
                     <div>
-                        <video id="videoElement12">Your browser is too old which doesn't support HTML5 video.</video>
-                        <div class="play-btn-wrap" @click="onChangePlayerState(12)">
-                            <Icon :type="playerState.shier?'md-square':'ios-play'" size="40" />
+                        <div class="videoElementWrap">
+                            <video id="videoElement12"></video>
+                            <div class="play-btn-wrap" @click="onChangePlayerState(12)">
+                                <Icon :type="playerState.shier?'md-square':'ios-play'" size="40" />
+                            </div>
                         </div>
+                        <div class="state-event-tip" v-text="playerStateTips.shier"></div>
                     </div>
                     <div>
-                        <video id="videoElement13">Your browser is too old which doesn't support HTML5 video.</video>
-                        <div class="play-btn-wrap" @click="onChangePlayerState(13)">
-                            <Icon :type="playerState.shisan?'md-square':'ios-play'" size="40" />
+                        <div class="videoElementWrap">
+                            <video id="videoElement13"></video>
+                            <div class="play-btn-wrap" @click="onChangePlayerState(13)">
+                                <Icon :type="playerState.shisan?'md-square':'ios-play'" size="40" />
+                            </div>
                         </div>
+                        <div class="state-event-tip" v-text="playerStateTips.shisan"></div>
                     </div>
                     <div>
-                        <video id="videoElement14">Your browser is too old which doesn't support HTML5 video.</video>
-                        <div class="play-btn-wrap" @click="onChangePlayerState(14)">
-                            <Icon :type="playerState.shisi?'md-square':'ios-play'" size="40" />
+                        <div class="videoElementWrap">
+                            <video id="videoElement14"></video>
+                            <div class="play-btn-wrap" @click="onChangePlayerState(14)">
+                                <Icon :type="playerState.shisi?'md-square':'ios-play'" size="40" />
+                            </div>
                         </div>
+                        <div class="state-event-tip" v-text="playerStateTips.shisi"></div>
                     </div>
                     <div>
-                        <video id="videoElement15">Your browser is too old which doesn't support HTML5 video.</video>
-                        <div class="play-btn-wrap" @click="onChangePlayerState(15)">
-                            <Icon :type="playerState.shiwu?'md-square':'ios-play'" size="40" />
+                        <div class="videoElementWrap">
+                            <video id="videoElement15"></video>
+                            <div class="play-btn-wrap" @click="onChangePlayerState(15)">
+                                <Icon :type="playerState.shiwu?'md-square':'ios-play'" size="40" />
+                            </div>
                         </div>
+                        <div class="state-event-tip" v-text="playerStateTips.shiwu"></div>
                     </div>
                     <div>
-                        <video id="videoElement16">Your browser is too old which doesn't support HTML5 video.</video>
-                        <div class="play-btn-wrap" @click="onChangePlayerState(16)">
-                            <Icon :type="playerState.shiliu?'md-square':'ios-play'" size="40" />
+                        <div class="videoElementWrap">
+                            <video id="videoElement16"></video>
+                            <div class="play-btn-wrap" @click="onChangePlayerState(16)">
+                                <Icon :type="playerState.shiliu?'md-square':'ios-play'" size="40" />
+                            </div>
                         </div>
+                        <div class="state-event-tip" v-text="playerStateTips.shiliu"></div>
                     </div>
                 </div>
             </div>
@@ -1569,6 +1637,24 @@
                     'shiwu': false,
                     'shiliu': false,
                 },
+                playerStateTips: {
+                    'yi': '',
+                    'er': '',
+                    'san': '',
+                    'si': '',
+                    'wu': '',
+                    'liu': '',
+                    'qi': '',
+                    'ba': '',
+                    'jiu': '',
+                    'shi': '',
+                    'shiyi': '',
+                    'shier': '',
+                    'shisan': '',
+                    'shisi': '',
+                    'shiwu': '',
+                    'shiliu': '',
+                },
                 activeSafety: activeSafety == '1' ? true : false,
                 activeSafetyStr: '主动安全',
                 brightness: 128, //1     亮度
@@ -1682,7 +1768,6 @@
                     };
                     me.Spin = true;
                     utils.sendAjax(url, data, function(resp) {
-                        console.log('resp', resp);
                         me.Spin = false;
                         var status = resp.status;
                         if (status == CMD_SEND_RESULT_UNCONFIRM) {
@@ -1881,49 +1966,54 @@
                     utils.sendAjax(url, {
                         deviceid: deviceid
                     }, function(data) {
+                        me.Spin = false;
                         var status = data.status;
                         var audiovideoparameters = data.audiovideoparameters;
-                        me.Spin = false;
-                        if (status == CMD_SEND_RESULT_UNCONFIRM) {
-                            me.$Message.error('发送成功，未收到确认');
-                        } else if (status === CMD_SEND_RESULT_PASSWORD_ERROR) {
-                            me.$Message.error('密码错误');
-                        } else if (status === CMD_SEND_RESULT_OFFLINE_NOT_CACHE) {
-                            me.$Message.error("设备离线，未缓存");
-                        } else if (status === CMD_SEND_RESULT_OFFLINE_CACHED) {
-                            me.$Message.error("设备离线，已缓存");
-                        } else if (status === CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD) {
-                            me.$Message.error("需要修改默认密码");
-                        } else if (status === CMD_SEND_RESULT_DETAIL_ERROR) {
-                            me.$Message.error("错误:" + resp.cause);
-                        } else if (status === CMD_SEND_CONFIRMED) {
-                            me.$Message.success("查询成功!");
-                            var videoCheckboxGroup = [];
-                            me.realtimebitratemode = audiovideoparameters.realtimebitratemode + '';
-                            me.storebitratemode = audiovideoparameters.storebitratemode + '';
-                            me.realtimeresolution = audiovideoparameters.realtimeresolution + '';
-                            me.storeresolution = audiovideoparameters.storeresolution + '';
-                            me.realtimekeyframeinterval = audiovideoparameters.realtimekeyframeinterval;
-                            me.storekeyframeinterval = audiovideoparameters.storekeyframeinterval;
-                            me.realtimeframerate = audiovideoparameters.realtimeframerate;
-                            me.storeframerate = audiovideoparameters.storeframerate;
-                            me.realtimeframebitrate = audiovideoparameters.realtimeframebitrate;
-                            me.storeframebitrate = audiovideoparameters.storeframebitrate;
-                            me.usingaudio = audiovideoparameters.usingaudio + '';
-                            audiovideoparameters.carnum ? videoCheckboxGroup.push('carnum') : null;
-                            audiovideoparameters.channel ? videoCheckboxGroup.push('channel') : null;
-                            audiovideoparameters.dateandtime ? videoCheckboxGroup.push('dateandtime') : null;
-                            audiovideoparameters.drivingtime ? videoCheckboxGroup.push('drivingtime') : null;
-                            audiovideoparameters.gpsspeed ? videoCheckboxGroup.push('gpsspeed') : null;
-                            audiovideoparameters.latlon ? videoCheckboxGroup.push('latlon') : null;
-                            audiovideoparameters.recorderspeed ? videoCheckboxGroup.push('recorderspeed') : null;
-                            me.videoCheckboxGroup = videoCheckboxGroup;
+                        if (audiovideoparameters != null) {
+                            if (status == CMD_SEND_RESULT_UNCONFIRM) {
+                                me.$Message.error('发送成功，未收到确认');
+                            } else if (status === CMD_SEND_RESULT_PASSWORD_ERROR) {
+                                me.$Message.error('密码错误');
+                            } else if (status === CMD_SEND_RESULT_OFFLINE_NOT_CACHE) {
+                                me.$Message.error("设备离线，未缓存");
+                            } else if (status === CMD_SEND_RESULT_OFFLINE_CACHED) {
+                                me.$Message.error("设备离线，已缓存");
+                            } else if (status === CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD) {
+                                me.$Message.error("需要修改默认密码");
+                            } else if (status === CMD_SEND_RESULT_DETAIL_ERROR) {
+                                me.$Message.error("错误:" + resp.cause);
+                            } else if (status === CMD_SEND_CONFIRMED) {
+                                me.$Message.success("查询成功!");
+                                var videoCheckboxGroup = [];
+                                me.realtimebitratemode = audiovideoparameters.realtimebitratemode + '';
+                                me.storebitratemode = audiovideoparameters.storebitratemode + '';
+                                me.realtimeresolution = audiovideoparameters.realtimeresolution + '';
+                                me.storeresolution = audiovideoparameters.storeresolution + '';
+                                me.realtimekeyframeinterval = audiovideoparameters.realtimekeyframeinterval;
+                                me.storekeyframeinterval = audiovideoparameters.storekeyframeinterval;
+                                me.realtimeframerate = audiovideoparameters.realtimeframerate;
+                                me.storeframerate = audiovideoparameters.storeframerate;
+                                me.realtimeframebitrate = audiovideoparameters.realtimeframebitrate;
+                                me.storeframebitrate = audiovideoparameters.storeframebitrate;
+                                me.usingaudio = audiovideoparameters.usingaudio + '';
+                                audiovideoparameters.carnum ? videoCheckboxGroup.push('carnum') : null;
+                                audiovideoparameters.channel ? videoCheckboxGroup.push('channel') : null;
+                                audiovideoparameters.dateandtime ? videoCheckboxGroup.push('dateandtime') : null;
+                                audiovideoparameters.drivingtime ? videoCheckboxGroup.push('drivingtime') : null;
+                                audiovideoparameters.gpsspeed ? videoCheckboxGroup.push('gpsspeed') : null;
+                                audiovideoparameters.latlon ? videoCheckboxGroup.push('latlon') : null;
+                                audiovideoparameters.recorderspeed ? videoCheckboxGroup.push('recorderspeed') : null;
+                                me.videoCheckboxGroup = videoCheckboxGroup;
 
-                        } else if (status === CMD_SEND_OVER_RETRY_TIMES) {
-                            me.$Message.error("尝试发送3次失败");
-                        } else if (status === CMD_SEND_SYNC_TIMEOUT) {
-                            me.$Message.error("发送超时");
+                            } else if (status === CMD_SEND_OVER_RETRY_TIMES) {
+                                me.$Message.error("尝试发送3次失败");
+                            } else if (status === CMD_SEND_SYNC_TIMEOUT) {
+                                me.$Message.error("发送超时");
+                            }
+                        } else {
+                            me.$Message.error("设备没有返回数据");
                         }
+
                     });
                 },
                 setClientParameters: function() {
@@ -2056,6 +2146,10 @@
                     for (var key in this.videoIns) {
                         var player = this.videoIns[key];
                         player.pause();
+                        player.unload();
+                        player.detachMediaElement();
+                        player.destroy();
+                        this.videoIns[key] = null;
                     };
 
                 },
@@ -2064,7 +2158,8 @@
                         me = this;
                     utils.sendAjax(url, {
                         deviceid: deviceid,
-                        channels: [Number(index)]
+                        channels: [Number(index)],
+                        playtype: 'flv'
                     }, function(resp) {
                         var records = resp.records,
                             status = resp.status;
@@ -2094,23 +2189,14 @@
                                 // var newSrc = records[0].playurl;
                                 // var newSrc = 'rtmp://58.200.131.2:1935/livetv/hunantv';
                                 // if (!playerStates[index]) {
-                                //     var accState = '';
-                                //     if (acc === 3) {
-                                //         accState = 'ACC开,'
-                                //     } else if (acc === 2) {
-                                //         accState = 'ACC关,'
-                                //     }
-                                //     me.$Message.success(accState + "请求播放成功,请稍后...");
-                                // };
-
-                            // if (oldSrc !== newSrc) {
-                            //     // player.src(newSrc);
-                            // }
-                            player.load();
-                            player.play();
-                            var key = 'videoPlayer' + index;
-                            var nowTime = Date.now();
-                            me.videoTimes[key] = nowTime;
+                            var accState = '';
+                            if (acc === 3) {
+                                accState = 'ACC开,'
+                            } else if (acc === 2) {
+                                accState = 'ACC关,'
+                            }
+                            me.$Message.success(accState + "请求播放成功,请稍后...");
+                            me.switchflvPlayer(index, records[0].playurl, records[0].hasaudio);
 
                         } else if (status === CMD_SEND_OVER_RETRY_TIMES) {
 
@@ -2122,27 +2208,25 @@
                             // var newSrc = records[0].playurl;
                             // // var newSrc = 'rtmp://58.200.131.2:1935/livetv/hunantv';
                             // if (!playerStates[index]) {
-                            //     var accState = '';
-                            //     if (acc === 3) {
-                            //         accState = 'ACC开,'
-                            //     } else if (acc === 2) {
-                            //         accState = 'ACC关,'
-                            //     }
-                            //     me.$Message.error(accState + "请求播放超时");
+                            var accState = '';
+                            if (acc === 3) {
+                                accState = 'ACC开,'
+                            } else if (acc === 2) {
+                                accState = 'ACC关,'
+                            }
+                            me.$Message.error(accState + "请求播放超时");
                             // };
 
                             // if (oldSrc !== newSrc) {
                             //     player.src(newSrc);
                             // }
-                            player.load();
-                            player.play();
-                            var key = 'videoPlayer' + index;
-                            var nowTime = Date.now();
-                            me.videoTimes[key] = nowTime;
+                            me.switchflvPlayer(index, records[0].playurl, records[0].hasaudio);
+
                         }
 
                     })
                 },
+
                 handleStopVideos: function(index) {
                     var url = myUrls.stopVideos(),
                         me = this;
@@ -2167,9 +2251,12 @@
                         } else if (status === 5) {
                             me.$Message.error("错误:" + resp.cause);
                         }
-                    })
-                    this.videoIns[index].pause();
-                    this.videoIns[index].unload();
+                    });
+                    var player = this.videoIns[index];
+                    player.pause();
+                    player.unload();
+                    player.detachMediaElement();
+                    player.destroy();
                     var key = 'videoPlayer' + index;
                     delete this.videoTimes[key];
                 },
@@ -2217,7 +2304,19 @@
                 openAndCloseVideoWindows: function(toOpensIndex) {
                     this.videoNumber = toOpensIndex;
                 },
+                switchflvPlayer: function(index, url, hasaudio) {
+                    var flvPlayer = this.videoIns[index];
+                    if (flvPlayer != null) {
+                        flvPlayer.pause();
+                        flvPlayer.unload();
+                        flvPlayer.detachMediaElement();
+                        flvPlayer.destroy();
+                        this.videoIns[index] = null;
+                    }
+                    this.initVideo(index, url, hasaudio);
+                },
                 initVideo: function(index, url, hasaudio) {
+                    console.log(index, url, hasaudio);
                     var flvPlayer = flvjs.createPlayer({
                         type: 'flv',
                         url: url,
@@ -2231,11 +2330,35 @@
                         lazyLoadMaxDuration: 3 * 60,
                         seekType: 'range',
                     });
-
-                    flvPlayer.attachMediaElement(document.getElementById('videoElement' + index));
-                    // flvPlayer.load(); //加载
-
+                    var player = document.getElementById('videoElement' + index);
+                    flvPlayer.attachMediaElement(player);
+                    flvPlayer.load(); //加载
+                    flvPlayer.play();
                     this.videoIns[index] = flvPlayer;
+                    var key = 'videoPlayer' + index;
+                    this.videoTimes[key] = Date.now();
+                },
+                addEventListenerToPlayer: function(player, index) {
+                    var me = this,
+                        key = playerStateKeyList[index];
+                    // player.addEventListener('progress', function() {
+                    //     me.playerStateTips[key] = "正在请求数据";
+                    // });
+                    player.addEventListener('error', function() {
+                        me.playerStateTips[key] = "请求数据时遇到错误";
+                    });
+                    player.addEventListener('play', function() {
+                        me.playerStateTips[key] = "开始播放";
+                    });
+                    player.addEventListener('playing', function() {
+                        me.playerStateTips[key] = "正在播放";
+                    });
+                    player.addEventListener('pause', function() {
+                        me.playerStateTips[key] = "暂停";
+                    });
+                    player.addEventListener('waiting', function() {
+                        me.playerStateTips[key] = "等待数据";
+                    });
                 },
                 queryVideosPlayUrl: function(callback) {
                     var url = myUrls.queryVideosPlayUrl(),
@@ -2246,9 +2369,9 @@
                     }, function(data) {
                         if (data.status === 0) {
                             me.allPlayUrls = data.records;
-                            me.allPlayUrls.forEach(function(item, index) {
-                                me.initVideo(index + 1, item.playurl, item.hasaudio);
-                            })
+                            // me.allPlayUrls.forEach(function(item, index) {
+                            //     me.initVideo(index + 1, item.playurl, item.hasaudio);
+                            // })
                             callback ? callback(data) : null;
                         } else if (data.status === 3) {
 
@@ -2266,6 +2389,9 @@
                                 var player = videoIns[i];
                                 player.pause();
                                 player.unload();
+                                player.detachMediaElement();
+                                player.destroy();
+                                this.playerStateTips[key] = '3分钟播放时间到,已关闭';
                                 delete this.videoTimes[key];
                                 this.playerState[playerStateKeyList[i]] = false;
                             }
@@ -2406,36 +2532,38 @@
                         me.Spin = false;
                         if (data.status === 6) {
 
-
                             var audiovideoparameters = data.audiovideoparameters;
-                            var channelsData = [];
-                            audiovideoparameters.forEach(function(item, index) {
-                                var dataInfo = {
-                                    channelnum: '通道' + (++index),
-                                };
-                                var videoCheckboxGroup = [];
-                                dataInfo.realtimebitratemode = item.realtimebitratemode + '';
-                                dataInfo.storebitratemode = item.storebitratemode + '';
-                                dataInfo.realtimeresolution = item.realtimeresolution + '';
-                                dataInfo.storeresolution = item.storeresolution + '';
-                                dataInfo.realtimekeyframeinterval = item.realtimekeyframeinterval;
-                                dataInfo.storekeyframeinterval = item.storekeyframeinterval;
-                                dataInfo.realtimeframerate = item.realtimeframerate;
-                                dataInfo.storeframerate = item.storeframerate;
-                                dataInfo.realtimeframebitrate = item.realtimeframebitrate;
-                                dataInfo.storeframebitrate = item.storeframebitrate;
+                            if (audiovideoparameters != null) {
+                                var channelsData = [];
+                                audiovideoparameters.forEach(function(item, index) {
+                                    var dataInfo = {
+                                        channelnum: '通道' + (++index),
+                                    };
+                                    var videoCheckboxGroup = [];
+                                    dataInfo.realtimebitratemode = item.realtimebitratemode + '';
+                                    dataInfo.storebitratemode = item.storebitratemode + '';
+                                    dataInfo.realtimeresolution = item.realtimeresolution + '';
+                                    dataInfo.storeresolution = item.storeresolution + '';
+                                    dataInfo.realtimekeyframeinterval = item.realtimekeyframeinterval;
+                                    dataInfo.storekeyframeinterval = item.storekeyframeinterval;
+                                    dataInfo.realtimeframerate = item.realtimeframerate;
+                                    dataInfo.storeframerate = item.storeframerate;
+                                    dataInfo.realtimeframebitrate = item.realtimeframebitrate;
+                                    dataInfo.storeframebitrate = item.storeframebitrate;
 
-                                item.carnum ? videoCheckboxGroup.push('carnum') : null;
-                                item.channel ? videoCheckboxGroup.push('channel') : null;
-                                item.dateandtime ? videoCheckboxGroup.push('dateandtime') : null;
-                                item.drivingtime ? videoCheckboxGroup.push('drivingtime') : null;
-                                item.gpsspeed ? videoCheckboxGroup.push('gpsspeed') : null;
-                                item.latlon ? videoCheckboxGroup.push('latlon') : null;
-                                item.recorderspeed ? videoCheckboxGroup.push('recorderspeed') : null;
-                                dataInfo.videoCheckboxGroup = videoCheckboxGroup;
-                                channelsData.push(dataInfo);
-                            });
-                            me.channelsData = channelsData;
+                                    item.carnum ? videoCheckboxGroup.push('carnum') : null;
+                                    item.channel ? videoCheckboxGroup.push('channel') : null;
+                                    item.dateandtime ? videoCheckboxGroup.push('dateandtime') : null;
+                                    item.drivingtime ? videoCheckboxGroup.push('drivingtime') : null;
+                                    item.gpsspeed ? videoCheckboxGroup.push('gpsspeed') : null;
+                                    item.latlon ? videoCheckboxGroup.push('latlon') : null;
+                                    item.recorderspeed ? videoCheckboxGroup.push('recorderspeed') : null;
+                                    dataInfo.videoCheckboxGroup = videoCheckboxGroup;
+                                    channelsData.push(dataInfo);
+                                });
+                                me.channelsData = channelsData;
+                            }
+
 
                         } else {
                             me.$Message.error("查询失败");
@@ -2549,7 +2677,12 @@
 
                     that.checkVideoPlayerTime();
 
-                    that.queryVideosPlayUrl(function(data) {});
+                    that.queryVideosPlayUrl(function(data) {
+                        for (var i = 1; i < 17; i++) {
+                            var player = document.getElementById('videoElement' + i);
+                            that.addEventListenerToPlayer(player, i)
+                        }
+                    });
 
                     that.queryDeviceById();
 
