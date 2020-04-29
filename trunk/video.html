@@ -2257,8 +2257,10 @@
                     player.unload();
                     player.detachMediaElement();
                     player.destroy();
+                    this.videoIns[index] = null;
                     var key = 'videoPlayer' + index;
                     delete this.videoTimes[key];
+                    this.playerStateTips[playerStateKeyList[index]] = "";
                 },
                 handleFullScreen: function() {
                     var main = this.$refs.videoContent;
@@ -2306,6 +2308,7 @@
                 },
                 switchflvPlayer: function(index, url, hasaudio) {
                     var flvPlayer = this.videoIns[index];
+                    console.log('flvPlayer', flvPlayer);
                     if (flvPlayer != null) {
                         flvPlayer.pause();
                         flvPlayer.unload();
