@@ -1108,7 +1108,7 @@
                     });
                     this.flvPlayer.attachMediaElement(player);
                     this.flvPlayer.load(); //加载
-                    this.flvPlayer.play();
+                    this.flvPlayer.play(); // canplay;
                 },
                 initChart: function() {
                     chart = echarts.init(document.getElementById('videoTime'));
@@ -1274,6 +1274,12 @@
                 this.flvPlayer = null;
                 that.$nextTick(function() {
                     player = document.getElementById('videoElement');
+                    player.addEventListener('play', function(e) {
+                        console.log("开始播放");
+                    });
+                    player.addEventListener('pause', function(e) {
+                        that.handleStopVideo();
+                    });
                     // that.initVideo();
                     that.initChart();
                     that.onWindowResize();
