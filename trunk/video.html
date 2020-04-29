@@ -2108,6 +2108,9 @@
                             // }
                             player.load();
                             player.play();
+                            var key = 'videoPlayer' + index;
+                            var nowTime = Date.now();
+                            me.videoTimes[key] = nowTime;
 
                         } else if (status === CMD_SEND_OVER_RETRY_TIMES) {
 
@@ -2133,6 +2136,9 @@
                             // }
                             player.load();
                             player.play();
+                            var key = 'videoPlayer' + index;
+                            var nowTime = Date.now();
+                            me.videoTimes[key] = nowTime;
                         }
 
                     })
@@ -2164,6 +2170,8 @@
                     })
                     this.videoIns[index].pause();
                     this.videoIns[index].unload();
+                    var key = 'videoPlayer' + index;
+                    delete this.videoTimes[key];
                 },
                 handleFullScreen: function() {
                     var main = this.$refs.videoContent;
@@ -2215,25 +2223,13 @@
                         url: url,
                         isLive: true,
                         hasAudio: hasaudio === 1,
-                        enableWorker: true,
-                        enableStashBuffer: false,
-                        stashInitialSize: 1,
-                        lazyLoad: false,
-                        lazyLoadMaxDuration: 1,
-                        lazyLoadRecoverDuration: 1,
-                        deferLoadAfterSourceOpen: false,
-                        autoCleanupMaxBackwardDuration: 1,
-                        autoCleanupMinBackwardDuration: 1,
-                        statisticsInfoReportInterval: 1,
-                        fixAudioTimestampGap: false,
-                        onvLoadedMetadata: function() {
-                                alert("加载完成！");
-                            }
-                            // url: 'http://video.gps51.com:81/live/teststream.flv'
+                        hasVideo: true,
+                        withCredentials: false,
+                        // url: 'http://video.gps51.com:81/live/teststream.flv'
                     }, {
-                        onvLoadedMetadata: function() {
-                            alert("加载完成！");
-                        }
+                        enableWorker: false,
+                        lazyLoadMaxDuration: 3 * 60,
+                        seekType: 'range',
                     });
 
                     flvPlayer.attachMediaElement(document.getElementById('videoElement' + index));
