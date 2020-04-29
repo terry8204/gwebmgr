@@ -1574,6 +1574,24 @@
         })(window);
 
 
+        var isSendAjaxState = {
+            'yi': false,
+            'er': false,
+            'san': false,
+            'si': false,
+            'wu': false,
+            'liu': false,
+            'qi': false,
+            'ba': false,
+            'jiu': false,
+            'shi': false,
+            'shiyi': false,
+            'shier': false,
+            'shisan': false,
+            'shisi': false,
+            'shiwu': false,
+            'shiliu': false,
+        };
 
         var myRecorder = null;
         var sn = 0;
@@ -1749,10 +1767,15 @@
             },
             methods: {
                 onChangePlayerState: function(index) {
+                    if (isSendAjaxState[playerStateKeyList[index]]) {
+                        this.$Message.error("正在加载当前视频,请稍后...");
+                        return;
+                    };
+
                     var playerKey = playerStateKeyList[index];
                     var state = this.playerState[playerKey] = !this.playerState[playerKey];
-                    console.log(state);
                     if (state) {
+                        this.playerStateTips[playerStateKeyList[index]] = '正在请求播放视频';
                         this.handleStartVideos(index);
                     } else {
                         this.handleStopVideos(index);
@@ -1929,14 +1952,10 @@
                     window.open('activesafety.html?deviceid=' + deviceid + '&token=' + token + "&maptype=" + mapType);
                 },
                 handlePlayAllVideos: function() {
-
                     for (var i = 0; i < this.videoNumber; i++) {
-                        var player = this.videoIns[i];
-                        if (!player.pause()) {
-                            player.play();
-                        }
+                        var urlItme = this.allPlayUrls[i];
+                        this.switchflvPlayer(i + 1, urlItme.playurl, urlItme.hasaudio);
                     }
-
                 },
 
                 handleScreenSize: function(type) {
@@ -2154,6 +2173,7 @@
 
                 },
                 handleStartVideos: function(index) {
+                    isSendAjaxState[playerStateKeyList[index]] = true;
                     var url = myUrls.startVideos(),
                         me = this;
                     utils.sendAjax(url, {
@@ -2161,27 +2181,28 @@
                         channels: [Number(index)],
                         playtype: 'flv'
                     }, function(resp) {
+
                         var records = resp.records,
                             status = resp.status;
                         var player = me.videoIns[index];
 
                         if (status == CMD_SEND_RESULT_UNCONFIRM) {
-
+                            isSendAjaxState[playerStateKeyList[index]] = true;
                             me.$Message.error('发送成功，未收到确认');
                         } else if (status === CMD_SEND_RESULT_PASSWORD_ERROR) {
-
+                            isSendAjaxState[playerStateKeyList[index]] = true;
                             me.$Message.error('密码错误');
                         } else if (status === CMD_SEND_RESULT_OFFLINE_NOT_CACHE) {
-
+                            isSendAjaxState[playerStateKeyList[index]] = true;
                             me.$Message.error("设备离线，未缓存");
                         } else if (status === CMD_SEND_RESULT_OFFLINE_CACHED) {
-
+                            isSendAjaxState[playerStateKeyList[index]] = true;
                             me.$Message.error("设备离线，已缓存");
                         } else if (status === CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD) {
-
+                            isSendAjaxState[playerStateKeyList[index]] = true;
                             me.$Message.error("需要修改默认密码");
                         } else if (status === CMD_SEND_RESULT_DETAIL_ERROR) {
-
+                            isSendAjaxState[playerStateKeyList[index]] = true;
                             me.$Message.error("错误:" + resp.cause);
                         } else if (status === CMD_SEND_CONFIRMED) {
                             var acc = resp.acc
@@ -2199,7 +2220,7 @@
                             me.switchflvPlayer(index, records[0].playurl, records[0].hasaudio);
 
                         } else if (status === CMD_SEND_OVER_RETRY_TIMES) {
-
+                            isSendAjaxState[playerStateKeyList[index]] = true;
                             me.$Message.error("尝试发送3次失败");
                         } else if (status === CMD_SEND_SYNC_TIMEOUT) {
                             // var acc = resp.acc
@@ -2224,6 +2245,9 @@
 
                         }
 
+                    }, function() {
+                        me.$Message.error("请求超时");
+                        isSendAjaxState[playerStateKeyList[index]] = false;
                     })
                 },
 
@@ -2252,15 +2276,22 @@
                             me.$Message.error("错误:" + resp.cause);
                         }
                     });
-                    var player = this.videoIns[index];
-                    player.pause();
-                    player.unload();
-                    player.detachMediaElement();
-                    player.destroy();
+
+                    try {
+                        var player = this.videoIns[index];
+                        if (player != null) {
+                            player.pause();
+                            player.unload();
+                            player.detachMediaElement();
+                            player.destroy();
+                        }
+                    } catch (error) {
+                        console.log(this.videoIns[index], index);
+                    }
                     this.videoIns[index] = null;
                     var key = 'videoPlayer' + index;
                     delete this.videoTimes[key];
-                    this.playerStateTips[playerStateKeyList[index]] = "";
+                    this.playerStateTips[playerStateKeyList[index]] = "停止播放,请点击播放按钮";
                 },
                 handleFullScreen: function() {
                     var main = this.$refs.videoContent;
@@ -2308,7 +2339,6 @@
                 },
                 switchflvPlayer: function(index, url, hasaudio) {
                     var flvPlayer = this.videoIns[index];
-                    console.log('flvPlayer', flvPlayer);
                     if (flvPlayer != null) {
                         flvPlayer.pause();
                         flvPlayer.unload();
@@ -2348,6 +2378,7 @@
                     //     me.playerStateTips[key] = "正在请求数据";
                     // });
                     player.addEventListener('error', function() {
+                        isSendAjaxState[playerStateKeyList[index]] = false;
                         me.playerStateTips[key] = "请求数据时遇到错误";
                     });
                     player.addEventListener('play', function() {
@@ -2355,6 +2386,7 @@
                     });
                     player.addEventListener('playing', function() {
                         me.playerStateTips[key] = "正在播放";
+                        isSendAjaxState[playerStateKeyList[index]] = false;
                     });
                     player.addEventListener('pause', function() {
                         me.playerStateTips[key] = "暂停";
@@ -2390,11 +2422,15 @@
                         if (oldTime) {
                             if ((nowTime - oldTime) > 1000 * 60 * 3) {
                                 var player = videoIns[i];
-                                player.pause();
-                                player.unload();
-                                player.detachMediaElement();
-                                player.destroy();
-                                this.playerStateTips[key] = '3分钟播放时间到,已关闭';
+                                if (player) {
+                                    player.pause();
+                                    player.unload();
+                                    player.detachMediaElement();
+                                    player.destroy();
+                                    videoIns[i] = null;
+                                }
+
+                                this.playerStateTips[playerStateKeyList[i]] = '3分钟播放时间到,已关闭';
                                 delete this.videoTimes[key];
                                 this.playerState[playerStateKeyList[i]] = false;
                             }
