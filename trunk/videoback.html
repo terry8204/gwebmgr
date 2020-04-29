@@ -820,7 +820,6 @@
                     utils.sendAjax(url, {
                         deviceid: deviceid
                     }, function(resp) {
-                        console.log('queryDownloadTasks', resp);
                         if (resp.status == 0) {
                             me.downloadTableData = resp.tasks ? resp.tasks : [];
                         }
@@ -875,7 +874,7 @@
                                 if (startPlayerTimer) {
                                     clearTimeout(startPlayerTimer);
                                 }
-
+                                me.switchflvPlayer(resp.record.playurl, resp.record.hasaudio);
                             } else if (status === CMD_SEND_OVER_RETRY_TIMES) {
                                 me.$Message.error("尝试发送3次失败");
                             } else if (status === CMD_SEND_SYNC_TIMEOUT) {
@@ -884,9 +883,7 @@
                                     clearTimeout(startPlayerTimer);
                                 }
                                 if (record) {
-                                    // player.dispose();
-                                    // me.initVideo(record.playurl);
-                                    // player.play();
+                                    me.switchflvPlayer(resp.record.playurl, resp.record.hasaudio);
                                 }
                             }
                         });
@@ -952,7 +949,7 @@
                             if (startPlayerTimer) {
                                 clearTimeout(startPlayerTimer);
                             }
-
+                            me.switchflvPlayer(resp.record.playurl, resp.record.hasaudio);
                         }
                     });
                 },
