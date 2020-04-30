@@ -1773,12 +1773,18 @@
                     };
 
                     var playerKey = playerStateKeyList[index];
-                    var state = this.playerState[playerKey] = !this.playerState[playerKey];
-                    if (state) {
-                        this.playerStateTips[playerStateKeyList[index]] = '正在请求播放视频';
-                        this.handleStartVideos(index);
-                    } else {
+                    // var state = this.playerState[playerKey] = !this.playerState[playerKey];
+                    // if (state) {
+                    //     this.playerStateTips[playerStateKeyList[index]] = '正在请求播放视频';
+                    //     this.handleStartVideos(index);
+                    // } else {
+                    //     this.handleStopVideos(index);
+                    // }
+                    if (this.playerState[playerKey]) {
                         this.handleStopVideos(index);
+                        this.playerState[playerKey] = !this.playerState[playerKey];
+                    } else {
+                        this.handleStartVideos(index);
                     }
                 },
                 queryActiveSafetyDeviceInfo: function(exdevicename) {
@@ -1953,11 +1959,12 @@
                 },
                 handlePlayAllVideos: function() {
                     for (var i = 0; i < this.videoNumber; i++) {
-                        var urlItme = this.allPlayUrls[i];
-                        this.switchflvPlayer(i + 1, urlItme.playurl, urlItme.hasaudio);
+                        if (!this.playerState[playerStateKeyList[i + 1]]) {
+                            this.playerState[playerStateKeyList[i + 1]] = true;
+                            this.handleStartVideos(i + 1);
+                        }
                     }
                 },
-
                 handleScreenSize: function(type) {
                     if (this.viewSize == type) return;
                     this.viewSize = type;
@@ -2163,12 +2170,20 @@
                     })
                     this.videoTimes = {};
                     for (var key in this.videoIns) {
-                        var player = this.videoIns[key];
-                        player.pause();
-                        player.unload();
-                        player.detachMediaElement();
-                        player.destroy();
-                        this.videoIns[key] = null;
+                        if (this.playerState[playerStateKeyList[key]]) {
+                            this.playerState[playerStateKeyList[key]] = false;
+                            this.playerStateTips[playerStateKeyList[key]] = "停止播放,观看请点击播放";
+                            try {
+                                var player = this.videoIns[key];
+                                player.pause();
+                                player.unload();
+                                player.detachMediaElement();
+                                player.destroy();
+                                this.videoIns[key] = null;
+                            } catch (error) {
+
+                            }
+                        }
                     };
 
                 },
@@ -2218,7 +2233,7 @@
                             }
                             me.$Message.success(accState + "请求播放成功,请稍后...");
                             me.switchflvPlayer(index, records[0].playurl, records[0].hasaudio);
-
+                            me.playerState[playerStateKeyList[index]] = true;
                         } else if (status === CMD_SEND_OVER_RETRY_TIMES) {
                             isSendAjaxState[playerStateKeyList[index]] = true;
                             me.$Message.error("尝试发送3次失败");
@@ -2242,7 +2257,7 @@
                             //     player.src(newSrc);
                             // }
                             me.switchflvPlayer(index, records[0].playurl, records[0].hasaudio);
-
+                            me.playerState[playerStateKeyList[index]] = true;
                         }
 
                     }, function() {
@@ -2338,13 +2353,17 @@
                     this.videoNumber = toOpensIndex;
                 },
                 switchflvPlayer: function(index, url, hasaudio) {
-                    var flvPlayer = this.videoIns[index];
-                    if (flvPlayer != null) {
-                        flvPlayer.pause();
-                        flvPlayer.unload();
-                        flvPlayer.detachMediaElement();
-                        flvPlayer.destroy();
-                        this.videoIns[index] = null;
+                    try {
+                        var flvPlayer = this.videoIns[index];
+                        if (flvPlayer != null) {
+                            flvPlayer.pause();
+                            flvPlayer.unload();
+                            flvPlayer.detachMediaElement();
+                            flvPlayer.destroy();
+                            this.videoIns[index] = null;
+                        }
+                    } catch (error) {
+
                     }
                     this.initVideo(index, url, hasaudio);
                 },
@@ -2367,6 +2386,7 @@
                     flvPlayer.attachMediaElement(player);
                     flvPlayer.load(); //加载
                     flvPlayer.play();
+
                     this.videoIns[index] = flvPlayer;
                     var key = 'videoPlayer' + index;
                     this.videoTimes[key] = Date.now();
@@ -2420,19 +2440,24 @@
                         var nowTime = Date.now();
                         var oldTime = this.videoTimes[key];
                         if (oldTime) {
-                            if ((nowTime - oldTime) > 1000 * 60 * 3) {
-                                var player = videoIns[i];
-                                if (player) {
-                                    player.pause();
-                                    player.unload();
-                                    player.detachMediaElement();
-                                    player.destroy();
-                                    videoIns[i] = null;
+                            if ((nowTime - oldTime) > 100 * 55 * 3) {
+                                try {
+                                    var player = videoIns[i];
+                                    if (player) {
+                                        player.pause();
+                                        player.unload();
+                                        player.detachMediaElement();
+                                        player.destroy();
+                                        videoIns[i] = null;
+                                    }
+                                } catch (error) {
+
                                 }
 
                                 this.playerStateTips[playerStateKeyList[i]] = '3分钟播放时间到,已关闭';
                                 delete this.videoTimes[key];
                                 this.playerState[playerStateKeyList[i]] = false;
+                                isSendAjaxState[playerStateKeyList[i]] = false;
                             }
                         }
                     }
