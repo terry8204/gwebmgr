@@ -2440,7 +2440,8 @@
                         var nowTime = Date.now();
                         var oldTime = this.videoTimes[key];
                         if (oldTime) {
-                            if ((nowTime - oldTime) > 100 * 55 * 3) {
+
+                            if ((nowTime - oldTime) > 1000 * 60 * 3) {
                                 try {
                                     var player = videoIns[i];
                                     if (player) {
