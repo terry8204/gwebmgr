@@ -57,7 +57,7 @@
             position: absolute;
             left: 0;
             right: 0;
-            bottom: 40px;
+            bottom: 0px;
             top: 0;
         }
         
@@ -89,12 +89,11 @@
         div.state-event-tip {
             position: absolute;
             left: 0;
-            right: 0;
             height: 40px;
             line-height: 40px;
-            padding-left: 20px;
-            bottom: 0;
-            background-color: rgba(0, 0, 0, .9);
+            padding: 0 10px;
+            bottom: 75px;
+            background-color: rgba(255, 0, 0, .9);
             color: white;
         }
         
@@ -1249,147 +1248,179 @@
                 <div :class="videoContentCls" id="videoContent" ref="videoContent">
                     <div>
                         <div class="videoElementWrap">
-                            <video id="videoElement1"></video>
+                            <video id="videoElement1" controls></video>
                             <div class="play-btn-wrap" @click="onChangePlayerState(1)">
                                 <Icon :type="playerState.yi?'md-square':'ios-play'" size="40" />
                             </div>
                         </div>
-                        <div class="state-event-tip" v-text="playerStateTips.yi"></div>
+                        <div class="state-event-tip" v-show="playerStateTips.yi!=''">
+                            <div v-text="playerStateTips.yi"></div>
+                        </div>
                     </div>
                     <div>
                         <div class="videoElementWrap">
-                            <video id="videoElement2"></video>
+                            <video id="videoElement2" controls></video>
                             <div class="play-btn-wrap" @click="onChangePlayerState(2)">
                                 <Icon :type="playerState.er?'md-square':'ios-play'" size="40" />
                             </div>
                         </div>
-                        <div class="state-event-tip" v-text="playerStateTips.er"></div>
+                        <div class="state-event-tip" v-show="playerStateTips.er!=''">
+                            <div v-text="playerStateTips.er"></div>
+                        </div>
                     </div>
                     <div>
                         <div class="videoElementWrap">
-                            <video id="videoElement3"></video>
+                            <video id="videoElement3" controls></video>
                             <div class="play-btn-wrap" @click="onChangePlayerState(3)">
                                 <Icon :type="playerState.san?'md-square':'ios-play'" size="40" />
                             </div>
                         </div>
-                        <div class="state-event-tip" v-text="playerStateTips.san"></div>
+                        <div class="state-event-tip" v-show="playerStateTips.san!=''">
+                            <div v-text="playerStateTips.san"></div>
+                        </div>
                     </div>
                     <div>
                         <div class="videoElementWrap">
-                            <video id="videoElement4"></video>
+                            <video id="videoElement4" controls></video>
                             <div class="play-btn-wrap" @click="onChangePlayerState(4)">
                                 <Icon :type="playerState.si?'md-square':'ios-play'" size="40" />
                             </div>
                         </div>
-                        <div class="state-event-tip" v-text="playerStateTips.si"></div>
+                        <div class="state-event-tip" v-show="playerStateTips.si!=''">
+                            <div v-text="playerStateTips.si"></div>
+                        </div>
                     </div>
                     <div>
                         <div class="videoElementWrap">
-                            <video id="videoElement5"></video>
+                            <video id="videoElement5" controls></video>
                             <div class="play-btn-wrap" @click="onChangePlayerState(5)">
                                 <Icon :type="playerState.wu?'md-square':'ios-play'" size="40" />
                             </div>
                         </div>
-                        <div class="state-event-tip" v-text="playerStateTips.wu"></div>
+                        <div class="state-event-tip" v-show="playerStateTips.wu!=''">
+                            <div v-text="playerStateTips.wu"></div>
+                        </div>
                     </div>
                     <div>
                         <div class="videoElementWrap">
-                            <video id="videoElement6"></video>
+                            <video id="videoElement6" controls></video>
                             <div class="play-btn-wrap" @click="onChangePlayerState(6)">
                                 <Icon :type="playerState.liu?'md-square':'ios-play'" size="40" />
                             </div>
                         </div>
-                        <div class="state-event-tip" v-text="playerStateTips.liu"></div>
+                        <div class="state-event-tip" v-show="playerStateTips.liu!=''">
+                            <div v-text="playerStateTips.liu"></div>
+                        </div>
                     </div>
                     <div>
                         <div class="videoElementWrap">
-                            <video id="videoElement7"></video>
+                            <video id="videoElement7" controls></video>
                             <div class="play-btn-wrap" @click="onChangePlayerState(7)">
                                 <Icon :type="playerState.qi?'md-square':'ios-play'" size="40" />
                             </div>
                         </div>
-                        <div class="state-event-tip" v-text="playerStateTips.qi"></div>
+                        <div class="state-event-tip" v-show="playerStateTips.qi!=''">
+                            <div v-text="playerStateTips.qi"></div>
+                        </div>
                     </div>
                     <div>
                         <div class="videoElementWrap">
-                            <video id="videoElement8"></video>
+                            <video id="videoElement8" controls></video>
                             <div class="play-btn-wrap" @click="onChangePlayerState(8)">
                                 <Icon :type="playerState.ba?'md-square':'ios-play'" size="40" />
                             </div>
                         </div>
-                        <div class="state-event-tip" v-text="playerStateTips.ba"></div>
+                        <div class="state-event-tip" v-show="playerStateTips.ba!=''">
+                            <div v-text="playerStateTips.ba"></div>
+                        </div>
                     </div>
                     <div>
                         <div class="videoElementWrap">
-                            <video id="videoElement9"></video>
+                            <video id="videoElement9" controls></video>
                             <div class="play-btn-wrap" @click="onChangePlayerState(9)">
                                 <Icon :type="playerState.jiu?'md-square':'ios-play'" size="40" />
                             </div>
                         </div>
-                        <div class="state-event-tip" v-text="playerStateTips.jiu"></div>
+                        <div class="state-event-tip" v-show="playerStateTips.jiu!=''">
+                            <div v-text="playerStateTips.jiu"></div>
+                        </div>
                     </div>
                     <div>
                         <div class="videoElementWrap">
-                            <video id="videoElement10"></video>
+                            <video id="videoElement10" controls></video>
                             <div class="play-btn-wrap" @click="onChangePlayerState(10)">
                                 <Icon :type="playerState.shi?'md-square':'ios-play'" size="40" />
                             </div>
                         </div>
-                        <div class="state-event-tip" v-text="playerStateTips.shi"></div>
+                        <div class="state-event-tip" v-show="playerStateTips.shi!=''">
+                            <div v-text="playerStateTips.shi"></div>
+                        </div>
                     </div>
                     <div>
                         <div class="videoElementWrap">
-                            <video id="videoElement11"></video>
+                            <video id="videoElement11" controls></video>
                             <div class="play-btn-wrap" @click="onChangePlayerState(11)">
                                 <Icon :type="playerState.shiyi?'md-square':'ios-play'" size="40" />
                             </div>
                         </div>
-                        <div class="state-event-tip" v-text="playerStateTips.shiyi"></div>
+                        <div class="state-event-tip" v-show="playerStateTips.shiyi!=''">
+                            <div v-text="playerStateTips.shiyi"></div>
+                        </div>
                     </div>
                     <div>
                         <div class="videoElementWrap">
-                            <video id="videoElement12"></video>
+                            <video id="videoElement12" controls></video>
                             <div class="play-btn-wrap" @click="onChangePlayerState(12)">
                                 <Icon :type="playerState.shier?'md-square':'ios-play'" size="40" />
                             </div>
                         </div>
-                        <div class="state-event-tip" v-text="playerStateTips.shier"></div>
+                        <div class="state-event-tip" v-show="playerStateTips.shier!=''">
+                            <div v-text="playerStateTips.shier"></div>
+                        </div>
                     </div>
                     <div>
                         <div class="videoElementWrap">
-                            <video id="videoElement13"></video>
+                            <video id="videoElement13" controls></video>
                             <div class="play-btn-wrap" @click="onChangePlayerState(13)">
                                 <Icon :type="playerState.shisan?'md-square':'ios-play'" size="40" />
                             </div>
                         </div>
-                        <div class="state-event-tip" v-text="playerStateTips.shisan"></div>
+                        <div class="state-event-tip" v-show="playerStateTips.shisan!=''">
+                            <div v-text="playerStateTips.shisan"></div>
+                        </div>
                     </div>
                     <div>
                         <div class="videoElementWrap">
-                            <video id="videoElement14"></video>
+                            <video id="videoElement14" controls></video>
                             <div class="play-btn-wrap" @click="onChangePlayerState(14)">
                                 <Icon :type="playerState.shisi?'md-square':'ios-play'" size="40" />
                             </div>
                         </div>
-                        <div class="state-event-tip" v-text="playerStateTips.shisi"></div>
+                        <div class="state-event-tip" v-show="playerStateTips.shisi!=''">
+                            <div v-text="playerStateTips.shisi"></div>
+                        </div>
                     </div>
                     <div>
                         <div class="videoElementWrap">
-                            <video id="videoElement15"></video>
+                            <video id="videoElement15" controls></video>
                             <div class="play-btn-wrap" @click="onChangePlayerState(15)">
                                 <Icon :type="playerState.shiwu?'md-square':'ios-play'" size="40" />
                             </div>
                         </div>
-                        <div class="state-event-tip" v-text="playerStateTips.shiwu"></div>
+                        <div class="state-event-tip" v-show="playerStateTips.shiwu!=''">
+                            <div v-text="playerStateTips.shiwu"></div>
+                        </div>
                     </div>
                     <div>
                         <div class="videoElementWrap">
-                            <video id="videoElement16"></video>
+                            <video id="videoElement16" controls></video>
                             <div class="play-btn-wrap" @click="onChangePlayerState(16)">
                                 <Icon :type="playerState.shiliu?'md-square':'ios-play'" size="40" />
                             </div>
                         </div>
-                        <div class="state-event-tip" v-text="playerStateTips.shiliu"></div>
+                        <div class="state-event-tip" v-show="playerStateTips.shiliu!=''">
+                            <div v-text="playerStateTips.shiliu"></div>
+                        </div>
                     </div>
                 </div>
             </div>
