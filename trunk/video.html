@@ -89,9 +89,7 @@
         div.state-event-tip {
             position: absolute;
             left: 0;
-            height: 40px;
-            line-height: 40px;
-            padding: 0 10px;
+            padding: 5px;
             bottom: 75px;
             background-color: rgba(255, 0, 0, .9);
             color: white;
@@ -2784,7 +2782,8 @@
 
                     that.initAudioPlayer();
 
-                    that.querySingleAudioVideoParameters();
+                    // that.querySingleAudioVideoParameters();
+
                     setTimeout(function() {
                         document.getElementById('mask-wrapper').style.display = 'none';
                     }, 1000);
