@@ -21,6 +21,10 @@
             visibility: visible;
         }
         
+        div.ivu-modal-content div.ivu-modal-body div.ivu-tabs {
+            overflow: visible;
+        }
+        
         .col-cls {
             text-align: center;
             line-height: 32px;
@@ -632,6 +636,107 @@
                         <span v-text="modalHader"></span>
                     </p>
                     <Tabs value="" :animated="false">
+                        <Tab-Pane label="视频播放参数" name="videoPlay">
+                            <i-button type="info" @click="queryVideoPlayParameters" style="width:180px;margin-bottom:10px;">查询</i-button>
+                            <Row style="height:32px;margin: 10px 0;">
+                                <i-Col span="5" style="height: 100%;line-height:32px;text-align: center;">
+                                    传输模式 :
+                                </i-Col>
+                                <i-Col span="12" style="height: 100%;line-height:32px;">
+                                    <i-select v-model="videotranstype" style="width:300px">
+                                        <i-option value="0">TCP</i-option>
+                                        <i-option value="1">UDP</i-option>
+                                    </i-select>
+                                </i-Col>
+                            </Row>
+                            <Row style="height:32px;margin: 10px 0;">
+                                <i-Col span="5" style="height: 100%;line-height:32px;text-align: center;">
+                                    实时性 :
+                                </i-Col>
+                                <i-Col span="12" style="height: 100%;line-height:32px;">
+                                    <i-select placement="top" v-model="videostreamtype" style="width:300px">
+                                        <i-option value="0">一般</i-option>
+                                        <i-option value="1">好</i-option>
+                                    </i-select>
+                                </i-Col>
+                            </Row>
+                            <Row style="height:32px;margin: 10px 0;">
+                                <i-Col span="5" style="height: 100%;line-height:32px;text-align: center;">
+                                    对讲通道 :
+                                </i-Col>
+                                <i-Col span="12" style="height: 100%;line-height:32px;">
+                                    <i-input v-model="audiochannel" style="width:300px"></i-input>
+                                </i-Col>
+                            </Row>
+                            <Row style="height:32px;margin: 10px 0;">
+                                <i-Col span="5" style="height: 100%;line-height:32px;text-align: center;">
+                                    回放音频格式 :
+                                </i-Col>
+                                <i-Col span="12" style="height: 100%;line-height:32px;">
+                                    <i-select placement="top" v-model="historyaudiocodec" style="width:300px">
+                                        <i-option value="0">reserve</i-option>
+                                        <i-option value="1">Audio_G721</i-option>
+                                        <i-option value="2">Audio_G722</i-option>
+                                        <i-option value="3">Audio_G723</i-option>
+                                        <i-option value="4">Audio_G728</i-option>
+                                        <i-option value="5">Audio_G729</i-option>
+                                        <i-option value="6">Audio_G711A</i-option>
+                                        <i-option value="7">Audio_G711U</i-option>
+                                        <i-option value="8">Audio_G726</i-option>
+                                        <i-option value="9">Audio_G729A</i-option>
+                                        <i-option value="10">Audio_DVI4_3</i-option>
+                                        <i-option value="11">Audio_DVI4_4</i-option>
+                                        <i-option value="12">Audio_DVI4_8K</i-option>
+                                        <i-option value="13">Audio_DVI4_16K</i-option>
+                                        <i-option value="14">Audio_LPC</i-option>
+                                        <i-option value="15">Audio_S16BE_STEREO</i-option>
+                                        <i-option value="16">Audio_S16BE_MONO</i-option>
+                                        <i-option value="17">Audio_MPEGAUDIO</i-option>
+                                        <i-option value="18">Audio_LPCM</i-option>
+                                        <i-option value="19">Audio_AAC</i-option>
+                                        <i-option value="20">Audio_WMA9STD</i-option>
+                                        <i-option value="21">Audio_HEAAC</i-option>
+                                        <i-option value="22">Audio_PCM_VOICE</i-option>
+                                        <i-option value="23">Audio_PCM_AUDIO</i-option>
+                                        <i-option value="24">Audio_AACLC</i-option>
+                                        <i-option value="25">Audio_MP3</i-option>
+                                        <i-option value="26">Audio_ADPCMA</i-option>
+                                        <i-option value="27">Audio_MP4AUDIO</i-option>
+                                        <i-option value="28">Audio_AMR</i-option>
+                                        <i-option value="91">transport</i-option>
+                                        <i-option value="98">Video_H264</i-option>
+                                        <i-option value="99">Video_H265</i-option>
+                                        <i-option value="100">Video_AVS</i-option>
+                                        <i-option value="101">Video_SVAC</i-option>
+                                        <i-option value="111">Audio_G726_40K</i-option>
+                                    </i-select>
+                                </i-Col>
+                            </Row>
+                            <Row style="height:32px;margin: 10px 0;">
+                                <i-Col span="5" style="height: 100%;line-height:32px;text-align: center;">
+                                    指定上传文件名 :
+                                </i-Col>
+                                <i-Col span="12" style="height: 100%;line-height:32px;">
+                                    <Checkbox v-model="needuploadfilename"></Checkbox>
+                                </i-Col>
+                            </Row>
+                            <Row style="height:32px;margin: 10px 0;">
+                                <i-Col span="5" style="height: 100%;line-height:32px;text-align: center;">
+                                    视频时间戳 :
+                                </i-Col>
+                                <i-Col span="12" style="height: 100%;line-height:32px;">
+                                    <i-select placement="top" v-model="videotimestamptype" style="width:300px">
+                                        <i-option value="0">设备计算</i-option>
+                                        <i-option value="1">服务器计算</i-option>
+                                    </i-select>
+                                </i-Col>
+                            </Row>
+                            <Row style="height:32px;margin: 10px 0;">
+                                <i-Col span="17" style="height: 100%;line-height:32px;text-align: center;">
+                                    <i-button type='primary' @click='handleSetPlayParamter'>设置播放视频参数</i-button>
+                                </i-Col>
+                            </Row>
+                        </Tab-Pane>
                         <Tab-Pane label="音视频参数" name="videoSetup">
                             <Row style="height:32px;margin: 10px 0;">
                                 <i-Col span="24" style="height: 100%;line-height:32px;text-align: right;">
@@ -779,43 +884,6 @@
                                         <i-option value="1">启用</i-option>
                                         <i-option value="0">不启用</i-option>
                                     </i-select>
-                                </i-Col>
-                            </Row>
-                        </Tab-Pane>
-                        <Tab-Pane label="视频播放参数" name="videoPlay">
-                            <Row style="height:32px;margin: 10px 0;">
-                                <i-Col span="5" style="height: 100%;line-height:32px;text-align: center;">
-                                    传输模式 :
-                                </i-Col>
-                                <i-Col span="12" style="height: 100%;line-height:32px;">
-                                    <i-select v-model="videotranstype" style="width:300px">
-                                        <i-option value="0">TCP</i-option>
-                                        <i-option value="1">UDP</i-option>
-                                    </i-select>
-                                </i-Col>
-                            </Row>
-                            <Row style="height:32px;margin: 10px 0;">
-                                <i-Col span="5" style="height: 100%;line-height:32px;text-align: center;">
-                                    实时性 :
-                                </i-Col>
-                                <i-Col span="12" style="height: 100%;line-height:32px;">
-                                    <i-select placement="top" v-model="videostreamtype" style="width:300px">
-                                        <i-option value="0">一般</i-option>
-                                        <i-option value="1">好</i-option>
-                                    </i-select>
-                                </i-Col>
-                            </Row>
-                            <Row style="height:32px;margin: 10px 0;">
-                                <i-Col span="5" style="height: 100%;line-height:32px;text-align: center;">
-                                    对讲通道 :
-                                </i-Col>
-                                <i-Col span="12" style="height: 100%;line-height:32px;">
-                                    <i-input v-model="audiochannel" style="width:300px"></i-input>
-                                </i-Col>
-                            </Row>
-                            <Row style="height:32px;margin: 10px 0;">
-                                <i-Col span="17" style="height: 100%;line-height:32px;text-align: center;">
-                                    <i-button type='primary' @click='handleSetPlayParamter'>设置播放视频参数</i-button>
                                 </i-Col>
                             </Row>
                         </Tab-Pane>
@@ -1749,6 +1817,9 @@
                 videotranstype: '',
                 videostreamtype: '',
                 audiochannel: '',
+                historyaudiocodec: '0',
+                needuploadfilename: false,
+                videotimestamptype: '0',
 
                 // channelnum
                 channelsData: [],
@@ -2136,6 +2207,24 @@
                         this.$Message.error("请填写全部参数")
                     }
 
+                },
+                queryVideoPlayParameters: function() {
+                    var url = myUrls.queryVideoPlayParameters(),
+                        me = this;
+                    utils.sendAjax(url, {
+                        deviceid: deviceid
+                    }, function(respData) {
+                        if (respData.status == 0) {
+                            me.historyaudiocodec = String(respData.historyaudiocodec);
+                            me.needuploadfilename = respData.needuploadfilename == 1 ? true : false;
+                            me.videotimestamptype = String(respData.videotimestamptype);
+                            me.$Message.success("查询成功");
+                        } else {
+                            me.$Message.error("查询失败");
+                        }
+
+                        console.log(respData);
+                    });
                 },
                 queryVideoProperty: function() {
                     this.Spin = true;
@@ -2547,6 +2636,9 @@
                         audiochannel: Number(this.audiochannel),
                         videotranstype: Number(this.videotranstype),
                         videostreamtype: Number(this.videostreamtype),
+                        historyaudiocodec: Number(this.historyaudiocodec),
+                        needuploadfilename: this.needuploadfilename ? 1 : 0,
+                        videotimestamptype: Number(this.videotimestamptype),
                     }
 
                     utils.sendAjax(url, data, function(data) {

@@ -575,6 +575,9 @@ var myUrls = {
     importRename: function() {
         return this.apihosts + 'webapi?action=importrename&token=' + token;
     },
+    queryVideoPlayParameters: function() {
+        return this.apihosts + 'webapi?action=queryvideoplayparameters&token=' + token;
+    },
 
 }
 
