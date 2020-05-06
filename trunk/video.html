@@ -2199,20 +2199,20 @@
                     })
                     this.videoTimes = {};
                     for (var key in this.videoIns) {
-                        if (this.playerState[playerStateKeyList[key]]) {
-                            this.playerState[playerStateKeyList[key]] = false;
-                            this.playerStateTips[playerStateKeyList[key]] = "停止播放,观看请点击播放";
-                            try {
-                                var player = this.videoIns[key];
-                                player.pause();
-                                player.unload();
-                                player.detachMediaElement();
-                                player.destroy();
-                                this.videoIns[key] = null;
-                            } catch (error) {
 
-                            }
+                        try {
+                            var player = this.videoIns[key];
+                            // player.pause();
+                            player.unload();
+                            player.detachMediaElement();
+                            player.destroy();
+                            this.videoIns[key] = null;
+                        } catch (error) {
+
                         }
+                        this.playerState[playerStateKeyList[key]] = false;
+                        this.playerStateTips[playerStateKeyList[key]] = '';
+
                     };
 
                 },
