@@ -395,9 +395,6 @@
             color: #000;
         }
     </style>
-    <link href="./videojs/video-js.css" rel="stylesheet">
-    <script src="./videojs/video.js"></script>
-    <script src="./videojs/videojs-flash.min.js"></script>
     <script src="./js/flv.js"></script>
 
 </head>
@@ -577,7 +574,9 @@
                         </Tab-Pane>
                     </Tabs>
                     <div style="visibility: hidden;">
-                        <div id="audio-wrap"></div>
+                        <div id="audio-wrap">
+                            <video id="audio-player" style="display: none;"></video>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1932,7 +1931,8 @@
                         var data = {
                             deviceid: deviceid,
                             channel: Number(this.audiochannel),
-                            datatype: 2
+                            datatype: 2,
+                            playtype: 'flv',
                         }
                         utils.sendAjax(url, data, function(resp) {
                             me.loading = false;
@@ -1940,8 +1940,7 @@
                                 me.isOpenJianting = true;
                                 me.$Message.success("开启成功");
                                 audioPlayerTime = Date.now();
-                                audioPlayer.src(resp.record.playurl);
-                                audioPlayer.play();
+                                me.initAudioPlayer(resp.record.playurl);
                                 me.audioPlayerTip = '监听已打开，请按住说话'
                             } else {
                                 me.$Message.success("开启失败,超时或者设备不在线");
@@ -2562,60 +2561,30 @@
 
 
                 },
-                initAudioPlayer: function() {
-                    var videoEl = document.createElement('video');
-                    videoEl.setAttribute('id', 'audio1');
-                    videoEl.setAttribute('controls', 'true');
-                    videoEl.setAttribute('poster', '');
-                    videoEl.className = "video-js";
-                    document.getElementById('audio-wrap').appendChild(videoEl);
-
-                    audioPlayer = videojs('audio1', {
-                        poster: "./images/tv_default.jpg",
-                        autoplay: false,
-                        preload: "none",
-                        controls: false,
-                        controlBar: {
-                            remainingTimeDisplay: false,
-                            progressControl: false,
-                            liveDisplay: true,
-                        },
-                        techOrder: ['html5', 'flash'],
-                        sources: [
-                            // { 
-                            // src: 'rtmp://58.200.131.2:1935/livetv/hunantv',
-                            // src:this.allPlayUrls[index].playurl,
-                            // type: 'rtmp/flv'
-                            // }
-                        ],
-                    }, function() {
-                        document.getElementsByClassName('vjs-loading-spinner')[0].style.display = 'none';
-                        this.on('play', function() {
-
-                        });
-                        this.on('pause', function() {
-
-
-                        });
-                        // this.src(self.allPlayUrls[index].playurl);
-                        // console.log('type', this.type)
-                        //------events    绑定事件用on    移除事件用off
-                        this.on('loadstart', function() {
-                            // playerStates[index] = "loadstart";
-
-                        });
-                        this.on('loadedmetadata', function() {
-                            // playerStates[index] = "loadedmetadata";
-
-                        });
-                        this.on('loadeddata', function() {
-
-                        });
-                        this.on('progress', function() {
-
-                        });
+                initAudioPlayer: function(url) {
+                    if (audioPlayer != null) {
+                        audioPlayer.pause();
+                        audioPlayer.unload();
+                        audioPlayer.detachMediaElement();
+                        audioPlayer.destroy();
+                        audioPlayer = null;
+                    };
+                    audioPlayer = flvjs.createPlayer({
+                        type: 'flv',
+                        url: url,
+                        isLive: true,
+                        hasAudio: true,
+                        hasVideo: false,
+                        withCredentials: false,
+                    }, {
+                        enableWorker: false,
+                        lazyLoadMaxDuration: 3 * 60,
+                        seekType: 'range',
                     });
-
+                    var player = document.getElementById('audio-player');
+                    audioPlayer.attachMediaElement(player);
+                    audioPlayer.load(); //加载
+                    audioPlayer.play();
                 },
                 querySingleAudioVideoParameters: function() {
                     this.Spin = true;
@@ -2781,7 +2750,7 @@
 
                     that.queryDeviceById();
 
-                    that.initAudioPlayer();
+                    // that.initAudioPlayer();
 
                     // that.querySingleAudioVideoParameters();
 
