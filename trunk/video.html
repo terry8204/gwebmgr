@@ -2222,8 +2222,6 @@
                         } else {
                             me.$Message.error("查询失败");
                         }
-
-                        console.log(respData);
                     });
                 },
                 queryVideoProperty: function() {
@@ -2845,9 +2843,15 @@
 
                     that.queryDeviceById();
 
-                    // that.initAudioPlayer();
-
-                    // that.querySingleAudioVideoParameters();
+                    utils.sendAjax(myUrls.queryVideoPlayParameters(), {
+                        deviceid: deviceid
+                    }, function(respData) {
+                        if (respData.status == 0) {
+                            that.historyaudiocodec = String(respData.historyaudiocodec);
+                            that.needuploadfilename = respData.needuploadfilename == 1 ? true : false;
+                            that.videotimestamptype = String(respData.videotimestamptype);
+                        }
+                    });
 
                     setTimeout(function() {
                         document.getElementById('mask-wrapper').style.display = 'none';
