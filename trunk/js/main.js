@@ -653,6 +653,85 @@ var trackDebug = {
     }
 }
 
+
+var videoPlayer = {
+    template: document.getElementById('video-player-template').innerHTML,
+    data: function() {
+        return {
+            isLargen: 0,
+            wraperStyle: { width: '130px', height: '22px' },
+            wrapperWidth: null,
+            wrapperHeight: null,
+        }
+    },
+    methods: {
+        changeLargen: function(type) {
+            this.isLargen = type;
+            this.isWaring = false;
+        },
+        changeLargen2: function() {
+            if (this.isLargen == 1) {
+                this.isLargen = 2;
+            } else if (this.isLargen == 2) {
+                this.isLargen = 1;
+            }
+        },
+        changeWrapperCls: function() {
+            var type = this.isLargen;
+            if (type === 0) {
+
+                this.wrapperWidth = 130;
+                this.wrapperHeight = 22;
+
+            } else if (type === 1) {
+
+                this.wrapperWidth = 900;
+                this.wrapperHeight = 500;
+
+            } else if (type === 2) {
+
+                var clientWidth = document.documentElement.clientWidth || document.body.clientWidth;
+                var clientHeight = document.documentElement.clientHeight || document.body.clientHeight;
+                if (clientWidth < 1300) {
+                    clientWidth = 1300;
+                }
+                if (clientHeight < 580) {
+                    clientHeight = 580;
+                }
+                this.wrapperWidth = clientWidth - 295;
+                this.wrapperHeight = clientHeight - 90;
+
+            }
+
+            this.setWaringWraperStyle();
+
+        },
+        setWaringWraperStyle: function() {
+            this.wraperStyle = { width: this.wrapperWidth + 'px', height: this.wrapperHeight + 'px' };
+        },
+    },
+    computed: {
+        deviceInfos: function() {
+            return this.$store.state.deviceInfos;
+        },
+        currentDeviceId: function() {
+            return this.$store.state.currentDeviceId;
+        },
+        userType: function() {
+            return this.$store.state.userType;
+        },
+        activeComponent: function() {
+            return this.$store.state.headerActiveName;
+        }
+    },
+    watch: {
+        isLargen: function() {
+            this.changeWrapperCls();
+        }
+    },
+}
+
+
 Vue.devtools = false;
 // 根组件
 var vRoot = new Vue({
@@ -707,6 +786,7 @@ var vRoot = new Vue({
         monitor: monitor,
         reportForm: reportForm,
         waringComponent: waringComponent,
+        videoPlayer: videoPlayer,
         systemParam: systemParam,
         trackDebug: trackDebug
     },

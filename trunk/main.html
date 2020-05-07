@@ -33,6 +33,7 @@
             </keep-alive>
         </div>
         <waring-component></waring-component>
+        <video-player></video-player>
     </div>
 
 
@@ -1101,6 +1102,32 @@
             </Modal>
         </div>
     </script>
+
+    <script type="text/x-template" id="video-player-template">
+        <div class="video-wraper" :style="wraperStyle" v-if="activeComponent !== 'trackDebug'">
+            <ul class="waring-controller" v-show="isLargen == 0">
+                <li style="width:68px;border-left:1px solid #fff; "><span>视频播放</span></li>
+                <li style="width:60px;cursor: pointer;border-right:1px solid #fff;">
+                    <span @click="changeLargen(1)" :title="$t('alarm.open')"><Icon type="ios-browsers-outline" :size="14" /></span>
+                    <span @click="changeLargen(2)" :title="$t('alarm.max')" style="margin-left:10px;"><Icon type="ios-square-outline" :size="16"/></span>
+                </li>
+            </ul>
+            <div class="msg_main" v-show="isLargen !== 0">
+                <div class="msg_header">
+                    <div class="shrink-btn">
+                        <span @click="changeLargen(0)" :title="$t('alarm.min')">
+                            <Icon type="md-remove" />
+                        </span>
+                        <span @click="changeLargen2()">     
+                            <Icon type="ios-browsers-outline" :title="$t('alarm.changeWin')" />
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </script>
+
+
 
     <script src="dist/vue.min.js"></script>
     <script src="dist/vuex.min.js"></script>

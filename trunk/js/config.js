@@ -8,6 +8,7 @@ var viewhosts = null;
 var apihost = null;
 var apihosts = null;
 
+var ishttps = 'https:' == document.location.protocol ? true : false;
 var lastIndex = location.pathname.lastIndexOf("/");
 var path = location.pathname.substr(0, lastIndex);
 

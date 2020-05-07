@@ -886,7 +886,7 @@
                             playcontrol: 0,
                             starttime: startTimeStr,
                             endtime: endTimeStr,
-                            playtype: "flv"
+                            playtype: ishttps ? 'flvs' : 'flv',
                         }, function(resp) {
                             me.isSpin = false;
                             isRequsetPlaying = false;
@@ -957,7 +957,7 @@
                             channel: row.channel,
                             starttime: row.starttime,
                             endtime: row.endtime,
-                            playtype: 'flv'
+                            playtype: ishttps ? 'flvs' : 'flv',
                         };
 
                     utils.sendAjax(url, data, function(resp) {
@@ -1265,6 +1265,9 @@
                     player = document.getElementById('videoElement');
                     player.addEventListener('error', function() {
                         that.playerStateTip = "请求数据时遇到错误";
+                    });
+                    player.addEventListener('loadedmetadata', function(e) {
+                        console.log(e.target.videoWidth, e.target.videoHeight);
                     });
                     player.addEventListener('play', function() {
                         that.playerStateTip = "开始播放";

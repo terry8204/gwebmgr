@@ -813,6 +813,16 @@ div.waring-wraper {
     z-index: 999;
 }
 
+div.video-wraper {
+    position: absolute;
+    right: 2px;
+    bottom: 25px;
+    background: #495060;
+    border: 1px solid #395060;
+    transition: width .3s, height .3s, transform 2s;
+    z-index: 999;
+}
+
 ul.waring-controller {
     color: #fff;
     overflow: hidden;
