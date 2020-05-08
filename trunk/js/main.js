@@ -714,8 +714,8 @@ var videoPlayer = {
                 if (clientHeight < 580) {
                     clientHeight = 580;
                 }
-                this.wrapperWidth = clientWidth - 295;
-                this.wrapperHeight = clientHeight - 90;
+                this.wrapperWidth = clientWidth - 320;
+                this.wrapperHeight = clientHeight - 85;
 
             }
 
