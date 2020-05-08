@@ -1122,6 +1122,8 @@
                 <div class="msg_header">
                     <ul>
                         <li v-if="allDeviceIdTitle!=''">{{allDeviceIdTitle}}</li>
+                        <li v-if="allDeviceIdTitle==''">未选择设备</li>
+                        <li>通道{{playerIndex}}</li>
                     </ul>
                     <div class="shrink-btn">
                         <span @click="changeLargen(0)" :title="$t('alarm.min')">
@@ -1133,25 +1135,25 @@
                     </div>
                 </div>
                 <div class="video_body" @click="onClickVideoBody">
-                    <div class="video-wrap" :style="{border:playerIndex == 1? '1px solid red':'1px solid #000'}">
+                    <div class="video-wrap" :style="{border:playerIndex == 1? '1px solid #0071DB':'1px solid #000'}">
                         <video id="videoElement1" controls></video>
                         <div class="state-event-tip" v-show="playerStateTips.yi!=''">
                             <div v-text="playerStateTips.yi"></div>
                         </div>
                     </div>
-                    <div class="video-wrap" :style="{border:playerIndex == 2? '1px solid red':'1px solid #000'}">
+                    <div class="video-wrap" :style="{border:playerIndex == 2? '1px solid #0071DB':'1px solid #000'}">
                         <video id="videoElement2" controls></video>
                         <div class="state-event-tip" v-show="playerStateTips.er!=''">
                             <div v-text="playerStateTips.er"></div>
                         </div>
                     </div>
-                    <div class="video-wrap" :style="{border:playerIndex == 3? '1px solid red':'1px solid #000'}">
+                    <div class="video-wrap" :style="{border:playerIndex == 3? '1px solid #0071DB':'1px solid #000'}">
                         <video id="videoElement3" controls></video>
                         <div class="state-event-tip" v-show="playerStateTips.san!=''">
                             <div v-text="playerStateTips.san"></div>
                         </div>
                     </div>
-                    <div class="video-wrap" :style="{border:playerIndex == 4? '1px solid red':'1px solid #000'}">
+                    <div class="video-wrap" :style="{border:playerIndex == 4? '1px solid #0071DB':'1px solid #000'}">
                         <video id="videoElement4" controls></video>
                         <div class="state-event-tip" v-show="playerStateTips.si!=''">
                             <div v-text="playerStateTips.si"></div>

@@ -876,11 +876,6 @@ div.msg_header ul li {
     padding: 0 5px;
 }
 
-div.msg_header ul li:last-child {
-    margin-left: 15px;
-    padding: 0;
-}
-
 div.msg_header ul li.selected {
     color: #495060;
     background: #F8F8F9;
