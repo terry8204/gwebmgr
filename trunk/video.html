@@ -740,6 +740,7 @@
                         <Tab-Pane label="音视频参数" name="videoSetup">
                             <Row style="height:32px;margin: 10px 0;">
                                 <i-Col span="24" style="height: 100%;line-height:32px;text-align: right;">
+                                    <i-button type="success" @click="defaultClientParameters">默认参数</i-button>
                                     <i-button type="info" @click="queryClientParameters">查询</i-button>
                                     <i-button type="primary" @click="setClientParameters" :disabled="userType > 2">发送</i-button>
                                 </i-Col>
@@ -2083,6 +2084,50 @@
                         var player = this.videoIns[key];
                         player.aspectRatio(aspectRatio);
                     }
+                },
+                defaultClientParameters: function() {
+                    var audiovideoparameters = {
+                        carnum: true,
+                        channel: true,
+                        dateandtime: true,
+                        drivingtime: false,
+                        gpsspeed: false,
+                        latlon: true,
+                        osdsetting: 31,
+                        realtimebitratemode: 0,
+                        realtimeframebitrate: 1000,
+                        realtimeframerate: 12,
+                        realtimekeyframeinterval: 25,
+                        realtimeresolution: 2,
+                        recorderspeed: false,
+                        storebitratemode: 1,
+                        storeframebitrate: 1000,
+                        storeframerate: 12,
+                        storekeyframeinterval: 25,
+                        storeresolution: 3,
+                        usingaudio: 1,
+                    };
+                    var videoCheckboxGroup = [],
+                        me = this;
+                    me.realtimebitratemode = audiovideoparameters.realtimebitratemode + '';
+                    me.storebitratemode = audiovideoparameters.storebitratemode + '';
+                    me.realtimeresolution = audiovideoparameters.realtimeresolution + '';
+                    me.storeresolution = audiovideoparameters.storeresolution + '';
+                    me.realtimekeyframeinterval = audiovideoparameters.realtimekeyframeinterval;
+                    me.storekeyframeinterval = audiovideoparameters.storekeyframeinterval;
+                    me.realtimeframerate = audiovideoparameters.realtimeframerate;
+                    me.storeframerate = audiovideoparameters.storeframerate;
+                    me.realtimeframebitrate = audiovideoparameters.realtimeframebitrate;
+                    me.storeframebitrate = audiovideoparameters.storeframebitrate;
+                    me.usingaudio = audiovideoparameters.usingaudio + '';
+                    audiovideoparameters.carnum ? videoCheckboxGroup.push('carnum') : null;
+                    audiovideoparameters.channel ? videoCheckboxGroup.push('channel') : null;
+                    audiovideoparameters.dateandtime ? videoCheckboxGroup.push('dateandtime') : null;
+                    audiovideoparameters.drivingtime ? videoCheckboxGroup.push('drivingtime') : null;
+                    audiovideoparameters.gpsspeed ? videoCheckboxGroup.push('gpsspeed') : null;
+                    audiovideoparameters.latlon ? videoCheckboxGroup.push('latlon') : null;
+                    audiovideoparameters.recorderspeed ? videoCheckboxGroup.push('recorderspeed') : null;
+                    me.videoCheckboxGroup = videoCheckboxGroup;
                 },
                 queryClientParameters: function() {
                     this.Spin = true;
