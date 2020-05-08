@@ -1170,7 +1170,7 @@
                 </div>
                 <div class="video_footer">
                     <div @click="handlePlayerState">
-                        <i class="icon iconfont" :class="{'icon-play':!singlePlayerState,'icon-pause':singlePlayerState}"></i>
+                        <i class="icon iconfont" :class="{'icon-play':!singlePlayerState,'icon-icon--':singlePlayerState}"></i>
                     </div>
                     <div @click="flv_photograph">
                         <i class="icon iconfont icon-camera"></i>
@@ -1178,8 +1178,11 @@
                     <div @click="openVideos">
                         <i class="icon iconfont icon-bofang1"></i>
                     </div>
+                    <div @click="openPlayback">
+                        <i class="icon iconfont icon-playback"></i>
+                    </div>
                     <div @click="openActivesafety" v-if="activesafety == 1">
-                        <i class="icon iconfont icon-report"></i>
+                        <i class="icon iconfont icon-safety-icon"></i>
                     </div>
                 </div>
             </div>

@@ -955,7 +955,6 @@ var videoPlayer = {
                 var nowTime = Date.now();
                 var oldTime = this.videoTimes[key];
                 if (oldTime) {
-
                     if ((nowTime - oldTime) > 1000 * 60 * 3) {
                         try {
                             var player = videoIns[i];
@@ -969,10 +968,8 @@ var videoPlayer = {
                         } catch (error) {
 
                         }
-
                         this.playerStateTips[this.playerStateKeyList[i]] = '3分钟播放时间到,已关闭';
                         delete this.videoTimes[key];
-                        this.playerState[this.playerStateKeyList[i]] = false;
                     }
                 }
             }
@@ -991,6 +988,13 @@ var videoPlayer = {
                 token + '&name=' + encodeURIComponent(this.deviceName) +
                 '&activesafety=' + this.activesafety
             );
+        },
+        openPlayback: function() {
+            if (this.deviceId == null) {
+                this.$Message.error('请先选择设备');
+                return;
+            }
+            window.open('videoback.html?deviceid=' + this.deviceId + '&token=' + token);
         },
         openActivesafety: function() {
             var mapType = utils.getMapType();
@@ -1029,7 +1033,6 @@ var videoPlayer = {
         this.checkVideoPlayerTime();
         var me = this;
         communicate.$on('playerVideos', function(device) {
-            console.log(device)
             me.deviceId = device.deviceid;
             me.deviceName = device.devicename;
             me.activesafety = device.activesafety;
