@@ -855,6 +855,9 @@
                         deviceid: deviceid
                     }, function(resp) {
                         if (resp.status == 0) {
+                            resp.tasks.sort(function(a, b) {
+                                return b.downloadstarttime - a.downloadstarttime;
+                            });
                             me.downloadTableData = resp.tasks ? resp.tasks : [];
                         }
                     });
@@ -1000,10 +1003,12 @@
                     });
                 },
                 queryMedia: function() {
+
                     if (!(this.date && this.timeRange[0] && this.timeRange[1])) {
                         this.$Message.error("请选择时间");
                         return;
                     };
+
                     var storetype = '';
                     if (this.storageType == 'mainAndBackupStore') {
                         storetype = 0;
@@ -1021,7 +1026,6 @@
                     } else if (this.mediatype == 'video') {
                         mediatype = 2;
                     }
-
 
                     var url = myUrls.queryMediaList(),
                         that = this,
@@ -1088,7 +1092,6 @@
                         hasAudio: hasaudio === 1,
                         hasVideo: true,
                         withCredentials: false,
-                        // url: 'http://video.gps51.com:81/live/teststream.flv'
                     }, {
                         enableWorker: false,
                         lazyLoadMaxDuration: 3 * 60,
@@ -1229,7 +1232,7 @@
                             chart.resize();
                         }, 200)
                     } else if (newVal === 'downloadfile') {
-                        this.queryDownloadTasks();
+
                     }
                 },
                 tableData: function(newVal) {
@@ -1291,6 +1294,14 @@
                         that.onMouseMove(e);
                     }
                     document.getElementById('mask-wrapper').style.display = 'none';
+
+                    that.queryDownloadTasks();
+
+                    setInterval(function() {
+                        if (that.isTable == 'downloadfile') {
+                            that.queryDownloadTasks();
+                        }
+                    }, 10000)
                 });
             },
         })
