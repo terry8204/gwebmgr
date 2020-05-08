@@ -95,7 +95,7 @@ var waringComponent = {
                     clientHeight = 580;
                 }
                 this.wrapperWidth = clientWidth - 320;
-                this.wrapperHeight = clientHeight - 65;
+                this.wrapperHeight = clientHeight - 61;
 
             }
 
