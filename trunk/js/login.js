@@ -15,22 +15,22 @@ new Vue({
         language: Cookies.get("PATH_LANG") || 'zh',
     },
     methods: {
-        getBrowserInfo: function () {
+        getBrowserInfo: function() {
             var userAgent = navigator.userAgent; //取得浏览器的userAgent字符串
             var isOpera = userAgent.indexOf("Opera") > -1; //判断是否Opera浏览器
-            var isIE = userAgent.indexOf("compatible") > -1
-                && userAgent.indexOf("MSIE") > -1 && !isOpera; //判断是否IE浏览器
+            var isIE = userAgent.indexOf("compatible") > -1 &&
+                userAgent.indexOf("MSIE") > -1 && !isOpera; //判断是否IE浏览器
             var isEdge = userAgent.indexOf("Edge") > -1; //判断是否IE的Edge浏览器
             var isFF = userAgent.indexOf("Firefox") > -1; //判断是否Firefox浏览器
-            var isSafari = userAgent.indexOf("Safari") > -1
-                && userAgent.indexOf("Chrome") == -1; //判断是否Safari浏览器
-            var isChrome = userAgent.indexOf("Chrome") > -1
-                && userAgent.indexOf("Safari") > -1; //判断Chrome浏览器
+            var isSafari = userAgent.indexOf("Safari") > -1 &&
+                userAgent.indexOf("Chrome") == -1; //判断是否Safari浏览器
+            var isChrome = userAgent.indexOf("Chrome") > -1 &&
+                userAgent.indexOf("Safari") > -1; //判断Chrome浏览器
 
             if (isIE) {
                 var reIE = new RegExp("MSIE (\\d+\\.\\d+);");
                 reIE.test(userAgent);
-                var fIEVersion = parseFloat(RegExp["$1"]); 
+                var fIEVersion = parseFloat(RegExp["$1"]);
                 if (fIEVersion == 7) {
                     return "IE7";
                 } else if (fIEVersion == 8) {
@@ -43,11 +43,11 @@ new Vue({
                     return "IE11";
                 } else {
                     return "0";
-                }//IE版本过低
+                } //IE版本过低
                 return "IE";
             }
 
-            function getVersion (browserName) {
+            function getVersion(browserName) {
                 var idx = userAgent.indexOf(browserName);
                 var versionArr = userAgent.slice(idx).split(" ");
                 for (var i = 0; i < versionArr.length; i++) {
@@ -75,7 +75,8 @@ new Vue({
                 return getVersion("Chrome");
             }
         },
-        experienced: function () {
+        experienced: function() {
+            this.loading = true;
             var me = this;
             var url = myUrls.login();
             var type = "USER";
@@ -87,7 +88,8 @@ new Vue({
                 data: encode,
                 dataType: "json",
                 timeout: 30000,
-                success: function (resp) {
+                success: function(resp) {
+                    me.loading = false;
                     if (resp.status == 0) {
                         sessionStorage.setItem("creatername", resp.creatername ? resp.creatername : "");
                         sessionStorage.setItem("createremail", resp.createremail ? resp.createremail : "");
@@ -111,15 +113,16 @@ new Vue({
                         me.$Message.error("登录失败");
                     }
                 },
-                error: function (e) {
+                error: function(e) {
+                    me.loading = false;
                     me.$Message.error('login error:' + JSON.stringify(e));
                 },
-                complete: function () {
+                complete: function() {
                     me.loading = false;
                 }
             })
         },
-        handleSubmit: function () {
+        handleSubmit: function() {
             var me = this;
             var user = this.username;
             var pass = this.password;
@@ -134,7 +137,7 @@ new Vue({
                 return;
             };
 
-            this.sendAjax(function (resp) {
+            this.sendAjax(function(resp) {
                 if (resp.status == 0) {
                     // console.log('resp', resp, resp.nickname);
                     // return;
@@ -181,7 +184,7 @@ new Vue({
                 }
             });
         },
-        sendAjax: function (callback) {
+        sendAjax: function(callback) {
             var me = this;
             var url = myUrls.login();
             var type = this.account == 0 ? "USER" : "DEVICE";
@@ -194,24 +197,26 @@ new Vue({
                 data: encode,
                 dataType: "json",
                 timeout: 30000,
-                success: function (resp) {
+                success: function(resp) {
+                    me.loading = false;
                     callback(resp)
                 },
-                error: function (e) {
+                error: function(e) {
+                    me.loading = false;
                     me.$Message.error('login error:' + JSON.stringify(e));
                 },
-                complete: function () {
+                complete: function() {
                     me.loading = false;
                 }
             })
         },
-        selectdAccount: function (account) {
+        selectdAccount: function(account) {
             this.account = account;
             var type = this.account == 0 ? "USER" : "DEVICE";
             Cookies.set("logintype", type, { expires: 7 });
 
         },
-        changeLang: function (lang) {
+        changeLang: function(lang) {
             this.language = lang;
             this.$i18n.locale = lang;
             Cookies.set("PATH_LANG", lang, { expires: 31 });
@@ -225,9 +230,9 @@ new Vue({
             document.title = this.$t("login.title");
         }
     },
-    mounted: function () {
+    mounted: function() {
         var me = this;
-        this.$nextTick(function () {
+        this.$nextTick(function() {
             var keepPass = Cookies.get("keepPass");
             var type = Cookies.get("logintype");
             if (type) {
@@ -261,7 +266,7 @@ new Vue({
             me.pwdPlaceholder = this.$t("login.inputPassword");
             document.title = this.$t("login.title");
         });
-        document.onkeyup = function (e) {
+        document.onkeyup = function(e) {
             var keyCode = e.keyCode;
             if (keyCode == 13) {
                 me.handleSubmit();
@@ -269,7 +274,7 @@ new Vue({
         }
     },
     watch: {
-        account: function () {
+        account: function() {
             if (this.account == 0) {
                 this.placeholder = this.$t("login.inputUsername");
                 var user = Cookies.get("accountuser");
@@ -294,4 +299,3 @@ new Vue({
         }
     }
 });
-
