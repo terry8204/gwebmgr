@@ -77,7 +77,7 @@
         #videoContent>div>div>div.play-btn-wrap {
             position: absolute;
             left: 50%;
-            top: 50%;
+            top: 47%;
             width: 60px;
             height: 60px;
             margin-top: -30px;
@@ -92,7 +92,7 @@
         
         div.state-event-tip {
             position: absolute;
-            left: 0;
+            left: 2px;
             padding: 5px;
             bottom: 75px;
             background-color: rgba(255, 0, 0, .9);
@@ -2285,7 +2285,6 @@
                     })
                     this.videoTimes = {};
                     for (var key in this.videoIns) {
-
                         try {
                             var player = this.videoIns[key];
                             // player.pause();
@@ -2293,54 +2292,43 @@
                             player.detachMediaElement();
                             player.destroy();
                             this.videoIns[key] = null;
-                        } catch (error) {
-
-                        }
+                        } catch (error) {};
                         this.playerState[playerStateKeyList[key]] = false;
                         this.playerStateTips[playerStateKeyList[key]] = '';
                         isSendAjaxState[playerStateKeyList[key]] = false;
-
                     };
 
                 },
                 handleStartVideos: function(index) {
-                    isSendAjaxState[playerStateKeyList[index]] = true;
+                    var key = playerStateKeyList[index];
+                    isSendAjaxState[key] = true;
                     var url = myUrls.startVideos(),
                         me = this;
+                    this.playerStateTips[key] = "正在请求播放";
                     utils.sendAjax(url, {
                         deviceid: deviceid,
                         channels: [Number(index)],
                         playtype: ishttps ? 'flvs' : 'flv',
                     }, function(resp) {
-
+                        isSendAjaxState[key] = false;
                         var records = resp.records,
                             status = resp.status;
                         var player = me.videoIns[index];
 
                         if (status == CMD_SEND_RESULT_UNCONFIRM) {
-                            isSendAjaxState[playerStateKeyList[index]] = true;
                             me.$Message.error('发送成功，未收到确认');
                         } else if (status === CMD_SEND_RESULT_PASSWORD_ERROR) {
-                            isSendAjaxState[playerStateKeyList[index]] = true;
                             me.$Message.error('密码错误');
                         } else if (status === CMD_SEND_RESULT_OFFLINE_NOT_CACHE) {
-                            isSendAjaxState[playerStateKeyList[index]] = true;
                             me.$Message.error("设备离线，未缓存");
                         } else if (status === CMD_SEND_RESULT_OFFLINE_CACHED) {
-                            isSendAjaxState[playerStateKeyList[index]] = true;
                             me.$Message.error("设备离线，已缓存");
                         } else if (status === CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD) {
-                            isSendAjaxState[playerStateKeyList[index]] = true;
                             me.$Message.error("需要修改默认密码");
                         } else if (status === CMD_SEND_RESULT_DETAIL_ERROR) {
-                            isSendAjaxState[playerStateKeyList[index]] = true;
                             me.$Message.error("错误:" + resp.cause);
                         } else if (status === CMD_SEND_CONFIRMED) {
                             var acc = resp.acc
-                                // var oldSrc = player.src();
-                                // var newSrc = records[0].playurl;
-                                // var newSrc = 'rtmp://58.200.131.2:1935/livetv/hunantv';
-                                // if (!playerStates[index]) {
                             var accState = '';
                             if (acc === 3) {
                                 accState = 'ACC开,'
@@ -2349,9 +2337,8 @@
                             }
                             me.$Message.success(accState + "请求播放成功,请稍后...");
                             me.switchflvPlayer(index, records[0].playurl, records[0].hasaudio);
-                            me.playerState[playerStateKeyList[index]] = true;
+                            me.playerState[key] = true;
                         } else if (status === CMD_SEND_OVER_RETRY_TIMES) {
-                            isSendAjaxState[playerStateKeyList[index]] = true;
                             me.$Message.error("尝试发送3次失败");
                         } else if (status === CMD_SEND_SYNC_TIMEOUT) {
                             // var acc = resp.acc
@@ -2373,12 +2360,12 @@
                             //     player.src(newSrc);
                             // }
                             me.switchflvPlayer(index, records[0].playurl, records[0].hasaudio);
-                            me.playerState[playerStateKeyList[index]] = true;
+                            me.playerState[key] = true;
                         }
 
                     }, function() {
                         me.$Message.error("请求超时");
-                        isSendAjaxState[playerStateKeyList[index]] = false;
+                        isSendAjaxState[key] = false;
                     })
                 },
 
@@ -2484,7 +2471,6 @@
                     this.initVideo(index, url, hasaudio);
                 },
                 initVideo: function(index, url, hasaudio) {
-                    console.log(index, url, hasaudio);
                     var flvPlayer = flvjs.createPlayer({
                         type: 'flv',
                         url: url,

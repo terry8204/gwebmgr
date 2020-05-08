@@ -877,6 +877,7 @@
                     })
                     if (endTimeStr) {
                         isRequsetPlaying = true;
+                        this.playerStateTip = "正在请求播放";
                         this.isSpin = true;
                         var url = myUrls.playRecordControl();
                         utils.sendAjax(url, {
@@ -950,6 +951,7 @@
                     if (startPlayerTimer) {
                         clearTimeout(startPlayerTimer);
                     }
+                    this.playerStateTip = "正在请求播放";
                     var url = myUrls.playRecord(),
                         me = this,
                         data = {

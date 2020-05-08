@@ -37,6 +37,7 @@ vstore = new Vuex.Store({
         editDeviceInfo: {}, // 备份监控页面要编辑的设备对象
         currentDeviceRecord: null, // 点击设备的记录
         currentDeviceId: null, // 点击设备的id
+        isVideoSupport: false, // 是否支持视频播放
         userName: userName
     },
     actions: {
@@ -86,6 +87,9 @@ vstore = new Vuex.Store({
     mutations: {
         isShowCompany: function(state, isShowCompany) {
             state.isShowCompany = isShowCompany;
+        },
+        isVideoSupport: function(state, isVideoSupport) {
+            state.isVideoSupport = isVideoSupport;
         },
         setdeviceInfos: function(state, groups) {
             groups.forEach(function(group) {
@@ -658,10 +662,22 @@ var videoPlayer = {
     template: document.getElementById('video-player-template').innerHTML,
     data: function() {
         return {
+            activesafety: null,
+            allDeviceIdTitle: '',
+            deviceId: null,
+            deviceName: '',
+            playerIndex: 1,
             isLargen: 0,
             wraperStyle: { width: '130px', height: '22px' },
             wrapperWidth: null,
             wrapperHeight: null,
+            singlePlayerState: false,
+            playerStateTips: {
+                'yi': '',
+                'er': '',
+                'san': '',
+                'si': '',
+            }
         }
     },
     methods: {
@@ -709,26 +725,325 @@ var videoPlayer = {
         setWaringWraperStyle: function() {
             this.wraperStyle = { width: this.wrapperWidth + 'px', height: this.wrapperHeight + 'px' };
         },
+        onClickVideoBody: function(e) {
+
+            var offsetX = 0;
+            var offsetY = 0;
+            var clientWidth = document.documentElement.clientWidth || document.body.clientWidth;
+            var clientHeight = document.documentElement.clientHeight || document.body.clientHeight;
+            if (this.isLargen == 1) {
+                offsetX = clientWidth - 900;
+                offsetY = clientHeight - 535;
+            } else if (this.isLargen == 2) {
+                offsetX = clientWidth - this.wrapperWidth;
+                offsetY = clientHeight - this.wrapperHeight - 22 - 35;
+            }
+            var layerX = e.x - offsetX;
+            var layerY = e.y - offsetY;
+            var playerIndex = 0;
+
+            if (layerX < this.wrapperWidth / 2 && layerY < (this.wrapperHeight - 22 - 35) / 2) {
+                playerIndex = 1;
+            } else if (layerX > (this.wrapperWidth / 2) && layerX < this.wrapperWidth && layerY < (this.wrapperHeight - 22 - 35) / 2) {
+                playerIndex = 2;
+            } else if (layerX < this.wrapperWidth / 2 && layerY > (this.wrapperHeight - 22 - 35) / 2 && layerY < (this.wrapperHeight - 22 - 35)) {
+                playerIndex = 3;
+            } else {
+                playerIndex = 4;
+            }
+
+            if (playerIndex != 0) {
+                this.playerIndex = playerIndex;
+            }
+
+        },
+        addEventListenerToPlayer: function(player, index) {
+
+            var me = this,
+                key = me.playerStateKeyList[index];
+            player.addEventListener('loadedmetadata', function(e) {
+                me.videoWidth = e.target.videoWidth;
+                me.videoHeight = e.target.videoHeight;
+            })
+            player.addEventListener('error', function() {
+                me.playerStateTips[key] = "请求数据时遇到错误";
+            });
+            player.addEventListener('play', function() {
+                me.playerStateTips[key] = "开始播放";
+            });
+            player.addEventListener('playing', function() {
+                me.playerStateTips[key] = "正在播放";
+            });
+            player.addEventListener('pause', function() {
+                me.playerStateTips[key] = "暂停";
+            });
+            player.addEventListener('waiting', function() {
+                me.playerStateTips[key] = "等待数据";
+            });
+        },
+        initVideo: function(index, url, hasaudio) {
+            var flvPlayer = flvjs.createPlayer({
+                type: 'flv',
+                url: url,
+                isLive: true,
+                hasAudio: hasaudio === 1,
+                hasVideo: true,
+                withCredentials: false,
+                // url: 'http://video.gps51.com:81/live/teststream.flv'
+            }, {
+                enableWorker: false,
+                lazyLoadMaxDuration: 3 * 60,
+                seekType: 'range',
+            });
+            var player = document.getElementById('videoElement' + index);
+            flvPlayer.attachMediaElement(player);
+            flvPlayer.load(); //加载
+            flvPlayer.play();
+
+            this.videoIns[index] = flvPlayer;
+            var key = 'videoPlayer' + index;
+            this.videoTimes[key] = Date.now();
+        },
+        switchflvPlayer: function(index, url, hasaudio) {
+            try {
+                var flvPlayer = this.videoIns[index];
+                if (flvPlayer != null) {
+                    flvPlayer.pause();
+                    flvPlayer.unload();
+                    flvPlayer.detachMediaElement();
+                    flvPlayer.destroy();
+                    this.videoIns[index] = null;
+                }
+            } catch (error) {
+
+            }
+            this.initVideo(index, url, hasaudio);
+        },
+        handlePlayerState: function() {
+            if (this.deviceId == null) {
+                this.$Message.error("请选择设备!");
+                return;
+            }
+            if (this.isVideoSupport == false) {
+                this.$Message.error("该设备不支持视频播放");
+                return;
+            }
+            if (this.singlePlayerState) {
+                this.handleStopAllVideo();
+            } else {
+                var me = this;
+                this.handleStartAllVideo(function(records) {
+                    records.forEach(function(item) {
+                        me.switchflvPlayer(item.channel, item.playurl, item.hasaudio);
+                    })
+                });
+            }
+        },
+        handleStopAllVideo: function() {
+            this.singlePlayerState = false;
+            utils.sendAjax(myUrls.stopVideos(), {
+                deviceid: this.deviceId,
+                channels: [1, 2, 3, 4],
+                videoclosetype: 0
+            }, function(resp) {});
+            for (var i = 1; i < 5; i++) {
+                var player = this.videoIns[i];
+                var key = this.playerStateKeyList[i];
+                if (player != null) {
+                    player.pause();
+                    player.unload();
+                    player.detachMediaElement();
+                    player.destroy();
+                }
+                this.playerStateTips[key] = "停止播放";
+                this.isSendAjaxState = false;
+            }
+
+        },
+        handleStartAllVideo: function(callback) {
+            this.singlePlayerState = true;
+            var me = this;
+            me.playerStateTips[this.playerStateKeyList[1]] = "正在请求请求播放";
+            me.playerStateTips[this.playerStateKeyList[2]] = "正在请求请求播放";
+            me.playerStateTips[this.playerStateKeyList[3]] = "正在请求请求播放";
+            me.playerStateTips[this.playerStateKeyList[4]] = "正在请求请求播放";
+
+            utils.sendAjax(myUrls.startVideos(), {
+                deviceid: this.deviceId,
+                channels: [1, 2, 3, 4],
+                playtype: ishttps ? 'flvs' : 'flv',
+            }, function(resp) {
+                me.isSendAjaxState = false;
+                var records = resp.records,
+                    status = resp.status;
+
+                if (status == CMD_SEND_RESULT_UNCONFIRM) {
+                    me.$Message.error('发送成功，未收到确认');
+                } else if (status === CMD_SEND_RESULT_PASSWORD_ERROR) {
+                    me.$Message.error('密码错误');
+                } else if (status === CMD_SEND_RESULT_OFFLINE_NOT_CACHE) {
+                    me.$Message.error("设备离线，未缓存");
+                } else if (status === CMD_SEND_RESULT_OFFLINE_CACHED) {
+                    me.$Message.error("设备离线，已缓存");
+                } else if (status === CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD) {
+                    me.$Message.error("需要修改默认密码");
+                } else if (status === CMD_SEND_RESULT_DETAIL_ERROR) {
+                    me.$Message.error("错误:" + resp.cause);
+                } else if (status === CMD_SEND_CONFIRMED) {
+                    var acc = resp.acc
+                    var accState = '';
+                    if (acc === 3) {
+                        accState = 'ACC开,'
+                    } else if (acc === 2) {
+                        accState = 'ACC关,'
+                    }
+                    me.$Message.success(accState + "请求播放成功,请稍后...");
+                    callback(records);
+                } else if (status === CMD_SEND_OVER_RETRY_TIMES) {
+                    me.$Message.error("尝试发送3次失败");
+                } else if (status === CMD_SEND_SYNC_TIMEOUT) {
+                    var accState = '';
+                    if (acc === 3) {
+                        accState = 'ACC开,'
+                    } else if (acc === 2) {
+                        accState = 'ACC关,'
+                    }
+                    me.$Message.error(accState + "请求播放超时");
+                    callback(records);
+                }
+
+            }, function() {
+                me.$Message.error("请求超时");
+                me.isSendAjaxState = false;
+            })
+        },
+        htmlToImage: function(index) {
+            var canvas = document.getElementById('V2I_canvas');
+            if (!canvas.getContext) {
+                alert("您的浏览器暂不支持canvas");
+                return false;
+            } else {
+                var context = canvas.getContext("2d");
+                var video = document.getElementById("videoElement" + index);
+                context.drawImage(video, 0, 0, this.videoWidth, this.videoHeight);
+                return canvas.toDataURL("image/png");
+            }
+        },
+
+
+        flv_photograph: function() {
+
+            if (!this.playerState[this.playerStateKeyList[this.playerIndex]]) {
+                this.$Message.error("请先播放视频");
+                return;
+            };
+            var ele = document.createElement('a');
+            ele.setAttribute('href', this.htmlToImage(this.playerIndex)); //设置下载文件的url地址
+            ele.setAttribute('download', 'download'); //用于设置下载文件的文件名
+            ele.click();
+        },
+        checkVideoPlayerTime: function() {
+            var me = this;
+            this.myInterval = setInterval(function() {
+                me.stopVideoPlayer();
+            }, 5000);
+        },
+        stopVideoPlayer: function() {
+            var videoIns = this.videoIns;
+            for (var i in videoIns) {
+                var key = 'videoPlayer' + i;
+                var nowTime = Date.now();
+                var oldTime = this.videoTimes[key];
+                if (oldTime) {
+
+                    if ((nowTime - oldTime) > 1000 * 60 * 3) {
+                        try {
+                            var player = videoIns[i];
+                            if (player) {
+                                player.pause();
+                                player.unload();
+                                player.detachMediaElement();
+                                player.destroy();
+                                videoIns[i] = null;
+                            }
+                        } catch (error) {
+
+                        }
+
+                        this.playerStateTips[this.playerStateKeyList[i]] = '3分钟播放时间到,已关闭';
+                        delete this.videoTimes[key];
+                        this.playerState[this.playerStateKeyList[i]] = false;
+                    }
+                }
+            }
+        },
+        openVideos: function() {
+            if (this.activesafety == null) {
+                this.$Message.error('请先选择设备');
+                return;
+            };
+            var mapType = utils.getMapType();
+            mapType = mapType ? mapType : 'bMap';
+            window.open(
+                myUrls.viewhosts + "video.html?deviceid=" +
+                this.deviceId + "&maptype=" +
+                mapType + "&token=" +
+                token + '&name=' + encodeURIComponent(this.deviceName) +
+                '&activesafety=' + this.activesafety
+            );
+        },
+        openActivesafety: function() {
+            var mapType = utils.getMapType();
+            mapType = mapType ? mapType : 'bMap';
+            var url = myUrls.viewhosts + 'activesafety.html?deviceid=' + this.deviceId + "&maptype=" + mapType + '&token=' + token + '&name=' + encodeURIComponent(this.deviceName);
+            window.open(url);
+        }
     },
     computed: {
-        deviceInfos: function() {
-            return this.$store.state.deviceInfos;
-        },
-        currentDeviceId: function() {
-            return this.$store.state.currentDeviceId;
-        },
         userType: function() {
             return this.$store.state.userType;
         },
         activeComponent: function() {
             return this.$store.state.headerActiveName;
-        }
+        },
+        isVideoSupport: function() {
+            return this.$store.state.isVideoSupport;
+        },
     },
     watch: {
         isLargen: function() {
             this.changeWrapperCls();
         }
     },
+    mounted: function() {
+        this.videoWidth = 750;
+        this.videoHeight = 480;
+        this.videoTimes = {};
+        this.videoIns = {};
+        this.playerStateKeyList = ['', 'yi', 'er', 'san', 'si'];
+        this.isSendAjaxState = false;
+        for (var i = 1; i < 5; i++) {
+            var player = document.getElementById('videoElement' + i);
+            this.addEventListenerToPlayer(player, i)
+        }
+        this.checkVideoPlayerTime();
+        var me = this;
+        communicate.$on('playerVideos', function(device) {
+            console.log(device)
+            me.deviceId = device.deviceid;
+            me.deviceName = device.devicename;
+            me.activesafety = device.activesafety;
+            me.allDeviceIdTitle = device.allDeviceIdTitle;
+            if (me.isLargen == 0) {
+                me.changeLargen(1);
+            };
+            me.handleStartAllVideo(function(records) {
+                records.forEach(function(item) {
+                    me.switchflvPlayer(item.channel, item.playurl, item.hasaudio);
+                })
+            });
+        })
+    }
 }
 
 

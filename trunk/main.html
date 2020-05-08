@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="css/common.css">
     <link rel="stylesheet" href="css/main.css">
     <link rel="stylesheet" href="css/ol.css">
+    <link rel="stylesheet" href="css/icon/iconfont.css">
     <script src="js/js.cookie.min.js"></script>
     <script src="js/polyfill.min.js"></script>
     <script>
@@ -284,7 +285,8 @@
                                         <ul class="device-controller" v-if="device.isSelected">
                                             <li @click="editDevice(device.deviceid)"><Icon type="ios-create"/><p>{{$t("monitor.edit")}}</p><li>
                                             <li @click="playBack(device.deviceid)"><Icon type="md-planet"/><p>{{$t("monitor.track")}}</p><li>
-                                            <li @click="trackMap(device.deviceid)"><Icon type="md-person"/><p>{{$t("monitor.following")}}</p><li> 
+                                            <li v-if="isShowVideoBtn" @click="playerVideos"><Icon type="ios-play"/><p>播放</p><li> 
+                                            <li v-if="!isShowVideoBtn" @click="trackMap(device.deviceid)"><Icon type="md-person"/><p>{{$t("monitor.following")}}</p><li> 
                                             <li  @mouseover="handleMousemove($event)">
                                                 <Dropdown trigger="click" transfer :placement="placement" @on-click="handleClickMore" style="width:100%;">
                                                     <Icon type="ios-list"/><p>{{$t("monitor.more")}}</p>
@@ -336,7 +338,8 @@
                                             <ul class="device-controller" v-if="device.isSelected">
                                                 <li @click="editDevice(device.deviceid)"><Icon type="ios-create"/><p>{{$t("monitor.edit")}}</p><li>
                                                 <li @click="playBack(device.deviceid)"><Icon type="md-planet"/><p>{{$t("monitor.track")}}</p><li>
-                                                <li @click="trackMap(device.deviceid)"><Icon type="md-person"/><p>{{$t("monitor.following")}}</p><li> 
+                                                <li v-if="isShowVideoBtn" @click="playerVideos"><Icon type="ios-play"/><p>播放</p><li> 
+                                                <li v-if="!isShowVideoBtn" @click="trackMap(device.deviceid)"><Icon type="md-person"/><p>{{$t("monitor.following")}}</p><li> 
                                                 <li  @mouseover="handleMousemove($event)">
                                                     <Dropdown trigger="click" transfer :placement="placement" @on-click="handleClickMore" style="width:100%;">
                                                         <Icon type="ios-list"/><p>{{$t("monitor.more")}}</p>
@@ -388,7 +391,8 @@
                                             <ul class="device-controller" v-if="device.isSelected">
                                                 <li @click="editDevice(device.deviceid)"><Icon type="ios-create"/><p>{{$t("monitor.edit")}}</p><li>
                                                 <li @click="playBack(device.deviceid)"><Icon type="md-planet"/><p>{{$t("monitor.track")}}</p><li>
-                                                <li @click="trackMap(device.deviceid)"><Icon type="md-person"/><p>{{$t("monitor.following")}}</p><li> 
+                                                <li v-if="isShowVideoBtn" @click="playerVideos"><Icon type="ios-play"/><p>播放</p><li> 
+                                                <li v-if="!isShowVideoBtn" @click="trackMap(device.deviceid)"><Icon type="md-person"/><p>{{$t("monitor.following")}}</p><li> 
                                                 <li  @mouseover="handleMousemove($event)">
                                                     <Dropdown trigger="click" transfer :placement="placement" @on-click="handleClickMore" style="width:100%;">
                                                         <Icon type="ios-list"/><p>{{$t("monitor.more")}}</p>
@@ -440,7 +444,8 @@
                         <ul class="device-controller" v-if="device.isSelected">
                             <li @click="editDevice(device.deviceid)"><Icon type="ios-create"/><p>{{$t("monitor.edit")}}</p><li>
                             <li @click="playBack(device.deviceid)"><Icon type="md-planet"/><p>{{$t("monitor.track")}}</p><li>
-                            <li @click="trackMap(device.deviceid)"><Icon type="md-person"/><p>{{$t("monitor.following")}}</p><li> 
+                            <li v-if="isShowVideoBtn" @click="playerVideos"><Icon type="ios-play"/><p>播放</p><li> 
+                            <li v-if="!isShowVideoBtn" @click="trackMap(device.deviceid)"><Icon type="md-person"/><p>{{$t("monitor.following")}}</p><li> 
                             <li  @mouseover="handleMousemove($event)">
                                 <Dropdown trigger="click" transfer :placement="placement" @on-click="handleClickMore" style="width:100%;">
                                     <Icon type="ios-list"/><p>{{$t("monitor.more")}}</p>
@@ -1105,6 +1110,7 @@
 
     <script type="text/x-template" id="video-player-template">
         <div class="video-wraper" :style="wraperStyle" v-if="activeComponent !== 'trackDebug'">
+            <canvas width="720" height="450" id="V2I_canvas" style="display: none;"></canvas>
             <ul class="waring-controller" v-show="isLargen == 0">
                 <li style="width:68px;border-left:1px solid #fff; "><span>视频播放</span></li>
                 <li style="width:60px;cursor: pointer;border-right:1px solid #fff;">
@@ -1114,6 +1120,9 @@
             </ul>
             <div class="msg_main" v-show="isLargen !== 0">
                 <div class="msg_header">
+                    <ul>
+                        <li v-if="allDeviceIdTitle!=''">{{allDeviceIdTitle}}</li>
+                    </ul>
                     <div class="shrink-btn">
                         <span @click="changeLargen(0)" :title="$t('alarm.min')">
                             <Icon type="md-remove" />
@@ -1121,6 +1130,46 @@
                         <span @click="changeLargen2()">     
                             <Icon type="ios-browsers-outline" :title="$t('alarm.changeWin')" />
                         </span>
+                    </div>
+                </div>
+                <div class="video_body" @click="onClickVideoBody">
+                    <div class="video-wrap" :style="{border:playerIndex == 1? '1px solid red':'1px solid #000'}">
+                        <video id="videoElement1" controls></video>
+                        <div class="state-event-tip" v-show="playerStateTips.yi!=''">
+                            <div v-text="playerStateTips.yi"></div>
+                        </div>
+                    </div>
+                    <div class="video-wrap" :style="{border:playerIndex == 2? '1px solid red':'1px solid #000'}">
+                        <video id="videoElement2" controls></video>
+                        <div class="state-event-tip" v-show="playerStateTips.er!=''">
+                            <div v-text="playerStateTips.er"></div>
+                        </div>
+                    </div>
+                    <div class="video-wrap" :style="{border:playerIndex == 3? '1px solid red':'1px solid #000'}">
+                        <video id="videoElement3" controls></video>
+                        <div class="state-event-tip" v-show="playerStateTips.san!=''">
+                            <div v-text="playerStateTips.san"></div>
+                        </div>
+                    </div>
+                    <div class="video-wrap" :style="{border:playerIndex == 4? '1px solid red':'1px solid #000'}">
+                        <video id="videoElement4" controls></video>
+                        <div class="state-event-tip" v-show="playerStateTips.si!=''">
+                            <div v-text="playerStateTips.si"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="video_footer">
+                    <div @click="handlePlayerState">
+                        <i class="icon iconfont" :class="{'icon-play':!singlePlayerState,'icon-pause':singlePlayerState}"></i>
+                    </div>
+                    <div @click="flv_photograph">
+                        <i class="icon iconfont icon-camera"></i>
+                    </div>
+                    <div @click="openVideos">
+                        <i class="icon iconfont icon-bofang1"></i>
+                    </div>
+                    <div @click="openActivesafety" v-if="activesafety == 1">
+                        <i class="icon iconfont icon-report"></i>
                     </div>
                 </div>
             </div>
@@ -1158,6 +1207,7 @@
     <script src="js/bgmanager.js"></script>
     <script src="js/alarmcomponent.js"></script>
     <script src="js/xlsx.full.min.js"></script>
+    <script src="./js/flv.min.js"></script>
     <script src="js/main.js"></script>
 </body>
 

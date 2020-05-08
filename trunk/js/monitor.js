@@ -767,6 +767,12 @@ var monitor = {
                 delete this.openGroupIds[groupInfo.groupid];
             }
         },
+        playerVideos: function() {
+            var activesafety = this.isShowActiveSafetyBtn ? 1 : 0;
+            var deviceInfo = this.deviceInfos[this.currentDeviceId];
+            deviceInfo.activesafety = activesafety;
+            communicate.$emit("playerVideos", deviceInfo);
+        },
         selectedDev: function(deviceInfo) {
             var device = this.deviceInfos[deviceInfo.deviceid];
             var devicetype = device.devicetype;
@@ -1304,6 +1310,7 @@ var monitor = {
             this.isShowWatermeterBtn = result5;
             this.isShowVideoBtn = result6;
             this.isShowActiveSafetyBtn = result7;
+            this.$store.commit('isVideoSupport', result6);
         },
         getDeviceTypeName: function(deviceTypeId) {
             var typeName = "",

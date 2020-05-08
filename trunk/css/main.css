@@ -915,6 +915,87 @@ div.msg_content {
 
 /* 报警css结束 */
 
+
+/* 视频css开始 */
+
+div.video_header {
+    position: absolute;
+    left: 0px;
+    height: 22px;
+    right: 0px;
+    top: 0;
+    background: #495060;
+    color: #fff;
+}
+
+div.video_header ul {
+    overflow: hidden;
+}
+
+div.video_header ul li {
+    float: left;
+    min-width: 70px;
+    text-align: center;
+    line-height: 22px;
+    cursor: pointer;
+    padding: 0 5px;
+}
+
+div.video_body {
+    position: absolute;
+    top: 22px;
+    left: 0;
+    right: 0;
+    bottom: 35px;
+    background-color: red;
+}
+
+div.video_body>div.video-wrap {
+    float: left;
+    width: 50%;
+    height: 50%;
+    background-image: url('../images/tv_default.jpg');
+    background-size: cover;
+    position: relative;
+    box-sizing: border-box;
+}
+
+div.video_body>div.video-wrap>video {
+    width: 100%;
+    height: 100%;
+}
+
+div.state-event-tip {
+    position: absolute;
+    left: 2px;
+    padding: 5px;
+    bottom: 75px;
+    background-color: rgba(255, 0, 0, .9);
+    color: white;
+}
+
+div.video_footer {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 35px;
+    bottom: 0;
+    background-color: #000;
+    text-align: center;
+}
+
+div.video_footer>div {
+    width: 35px;
+    height: 35px;
+    text-align: center;
+    line-height: 35px;
+    display: inline-block;
+    cursor: pointer;
+}
+
+
+/* 视频css结束 */
+
 #system-view {
     overflow-y: auto;
 }
