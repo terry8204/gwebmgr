@@ -998,7 +998,7 @@ function accDetails(groupslist) {
                 this.$refs.totalTable.exportCsv({
                     filename: '点火统计数据' + startday + '-' + endday,
                     original: false,
-                    columns: this.allAccColumns.filter((col, index) => index != 1),
+                    columns: this.allAccColumns.filter(function(col, index) { return index != 1; }),
                     data: this.allAccTableData
                 });
             },
