@@ -867,14 +867,6 @@ div.msg_header ul {
     overflow: hidden;
 }
 
-div.msg_header ul li:first-child {
-    padding: 0 0px;
-    cursor: nw-resize;
-    width: 22px;
-    height: 22px;
-    font-size: 16px;
-}
-
 div.msg_header ul li {
     float: left;
     text-align: center;
@@ -936,11 +928,18 @@ div.video_header ul {
 
 div.video_header ul li {
     float: left;
-    min-width: 70px;
     text-align: center;
     line-height: 22px;
     cursor: pointer;
     padding: 0 5px;
+}
+
+div.video_header ul li:first-child {
+    padding: 0px;
+    cursor: nw-resize;
+    width: 22px;
+    height: 22px;
+    font-size: 16px;
 }
 
 div.video_body {
