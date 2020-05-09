@@ -2830,7 +2830,7 @@ function deviceMonthOnlineDaily(groupslist) {
             getPrevMonthLastDate: function() {
                 return new Date(new Date(this.year, this.month - 1, 1) - 1).getDate();
             },
-            getDatesArr(daysstatus) {
+            getDatesArr: function(daysstatus) {
                 var datesArr = [];
                 var weekNum = this.getTheMonthFirstDayWeek();
                 var prevMonthDate = this.getPrevMonthLastDate();
