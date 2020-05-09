@@ -916,6 +916,7 @@ var videoPlayer = {
                 this.playerStateTips[key] = "停止播放";
                 this.isSendAjaxState = false;
             }
+            this.videoTimes = null;
 
         },
         handleStartAllVideo: function(callback) {
