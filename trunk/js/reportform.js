@@ -1401,7 +1401,7 @@ function messageRecords(groupslist) {
                 }
             }
         },
-        mounted() {
+        mounted: function() {
             var me = this;
             this.groupslist = groupslist;
 
