@@ -2817,17 +2817,17 @@ function deviceMonthOnlineDaily(groupslist) {
                 })
             },
             //得到这个月的第一天是是星期几
-            getTheMonthFirstDayWeek() {
+            getTheMonthFirstDayWeek: function() {
                 return new Date(this.year, this.month - 1, 1).getDay();
             },
             // 得到这个月有多少天
-            getTheMonthDays() {
+            getTheMonthDays: function() {
                 var year = this.month == 12 ? this.year + 1 : this.year;
                 var month = this.month == 12 ? 1 : this.month;
                 return new Date(new Date(year, month, 1) - 1).getDate();
             },
             // 得到上个月的最后一天
-            getPrevMonthLastDate() {
+            getPrevMonthLastDate: function() {
                 return new Date(new Date(this.year, this.month - 1, 1) - 1).getDate();
             },
             getDatesArr(daysstatus) {
