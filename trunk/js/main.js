@@ -662,6 +662,7 @@ var videoPlayer = {
     template: document.getElementById('video-player-template').innerHTML,
     data: function() {
         return {
+            isMute: false,
             activesafety: null,
             allDeviceIdTitle: '',
             deviceId: null,
@@ -681,6 +682,11 @@ var videoPlayer = {
         }
     },
     methods: {
+        handlePlayerMute: function() {
+            // console.log(this.videoIns[1]);
+            // this.videoIns[1];
+            this.isMute = !this.isMute;
+        },
         changeLargen: function(type) {
             this.isLargen = type;
             this.isWaring = false;

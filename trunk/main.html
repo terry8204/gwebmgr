@@ -1137,7 +1137,7 @@
                 <div class="video_body" @click="onClickVideoBody">
                     <div class="video-wrap" :style="{border:playerIndex == 1? '1px solid #0071DB':'1px solid #000'}">
                         <div class="videoElementWrap">
-                            <video id="videoElement1" controls></video>
+                            <video id="videoElement1" controls :muted="isMute"></video>
                         </div>
                         <div class="state-event-tip" v-show="playerStateTips.yi!=''">
                             <div v-text="playerStateTips.yi"></div>
@@ -1145,7 +1145,7 @@
                     </div>
                     <div class="video-wrap" :style="{border:playerIndex == 2? '1px solid #0071DB':'1px solid #000'}">
                         <div class="videoElementWrap">
-                            <video id="videoElement2" controls></video>
+                            <video id="videoElement2" controls :muted="isMute"></video>
                         </div>
                         <div class="state-event-tip" v-show="playerStateTips.er!=''">
                             <div v-text="playerStateTips.er"></div>
@@ -1153,7 +1153,7 @@
                     </div>
                     <div class="video-wrap" :style="{border:playerIndex == 3? '1px solid #0071DB':'1px solid #000'}">
                         <div class="videoElementWrap">
-                            <video id="videoElement3" controls></video>
+                            <video id="videoElement3" controls :muted="isMute"></video>
                         </div>
                         <div class="state-event-tip" v-show="playerStateTips.san!=''">
                             <div v-text="playerStateTips.san"></div>
@@ -1161,7 +1161,7 @@
                     </div>
                     <div class="video-wrap" :style="{border:playerIndex == 4? '1px solid #0071DB':'1px solid #000'}">
                         <div class="videoElementWrap">
-                            <video id="videoElement4" controls></video>
+                            <video id="videoElement4" controls :muted="isMute"></video>
                         </div>
                         <div class="state-event-tip" v-show="playerStateTips.si!=''">
                             <div v-text="playerStateTips.si"></div>
@@ -1171,6 +1171,9 @@
                 <div class="video_footer">
                     <div @click="handlePlayerState">
                         <i class="icon iconfont" :class="{'icon-play':!singlePlayerState,'icon-icon--':singlePlayerState}"></i>
+                    </div>
+                    <div @click="handlePlayerMute">
+                        <i class="icon iconfont" :class="{'icon-yinliang':!isMute,'icon-guanbiyinliang':isMute}"></i>
                     </div>
                     <div @click="flv_photograph">
                         <i class="icon iconfont icon-camera"></i>
