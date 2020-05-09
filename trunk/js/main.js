@@ -682,9 +682,61 @@ var videoPlayer = {
         }
     },
     methods: {
+        handleMousedown: function(e) {
+            var targetDiv = document.getElementById('videoWraper'); //e.target.parentNode.parentNode;.children[0]
+            var evt = e || window.event;
+            if (document.setCapture) this.setCapture();
+            if (window.captureEvents) window.captureEvents(Event.MOUSEMOVE | Event.MOUSEUP);
+            //得到点击时该地图容器的宽高：
+            var targetDivWidth = targetDiv.offsetWidth;
+            var targetDivHeight = targetDiv.offsetHeight;
+            var clientWidth = document.documentElement.clientWidth || document.body.clientWidth;
+            var clientHeight = document.documentElement.clientHeight || document.body.clientHeight;
+
+            var startX = evt.clientX;
+            var startY = evt.clientY;
+
+            document.onmousemove = function(e) {
+
+                var evt = e || window.event;
+                evt.preventDefault();
+                //得到鼠标拖动的宽高距离：取绝对值
+                var distX = evt.clientX - startX;
+                var distY = evt.clientY - startY;
+
+                var elementWidth = targetDivWidth - distX;
+                var elementHeight = targetDivHeight - distY;
+
+
+
+
+                //设置最大最小范围：不能无限制缩放，影响体验
+                if (elementWidth < 300) {
+                    elementWidth = 300;
+                }
+
+                if (elementWidth > clientWidth - 30) {
+                    elementWidth = clientWidth - 30;
+                }
+
+                if (elementHeight < 250) {
+                    elementHeight = 250;
+                }
+
+                if (elementHeight > clientHeight - 50) {
+                    elementHeight = clientHeight - 50;
+                }
+
+                targetDiv.style.width = elementWidth + 'px';
+                targetDiv.style.height = elementHeight + 'px';
+            }
+
+            document.onmouseup = function() {
+                document.onmousemove = null;
+            }
+
+        },
         handlePlayerMute: function() {
-            // console.log(this.videoIns[1]);
-            // this.videoIns[1];
             this.isMute = !this.isMute;
         },
         changeLargen: function(type) {

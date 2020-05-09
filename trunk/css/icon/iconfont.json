@@ -6,6 +6,13 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "586866",
+      "name": "drag",
+      "font_class": "drag",
+      "unicode": "e714",
+      "unicode_decimal": 59156
+    },
+    {
       "icon_id": "3216212",
       "name": "停止",
       "font_class": "icon--",

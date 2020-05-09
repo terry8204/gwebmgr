@@ -1109,10 +1109,10 @@
     </script>
 
     <script type="text/x-template" id="video-player-template">
-        <div class="video-wraper" :style="wraperStyle" v-if="activeComponent !== 'trackDebug'">
+        <div id="videoWraper" class="video-wraper" :style="wraperStyle" v-if="activeComponent !== 'trackDebug'">
             <canvas width="720" height="450" id="V2I_canvas" style="display: none;"></canvas>
             <ul class="waring-controller" v-show="isLargen == 0">
-                <li style="width:68px;border-left:1px solid #fff; "><span>视频播放</span></li>
+                <li style="width:68px;border-left:1px solid #fff;"><span>视频播放</span></li>
                 <li style="width:60px;cursor: pointer;border-right:1px solid #fff;">
                     <span @click="changeLargen(1)" :title="$t('alarm.open')"><Icon type="ios-browsers-outline" :size="14" /></span>
                     <span @click="changeLargen(2)" :title="$t('alarm.max')" style="margin-left:10px;"><Icon type="ios-square-outline" :size="16"/></span>
@@ -1121,6 +1121,9 @@
             <div class="msg_main" v-show="isLargen !== 0">
                 <div class="msg_header">
                     <ul>
+                        <li @mousedown="handleMousedown">
+                            <i class="icon iconfont icon-drag"></i>
+                        </li>
                         <li v-if="allDeviceIdTitle!=''">{{allDeviceIdTitle}}</li>
                         <li v-if="allDeviceIdTitle==''">未选择设备</li>
                         <li>通道{{playerIndex}}</li>
