@@ -858,9 +858,9 @@ var videoPlayer = {
             flvPlayer.load(); //加载
             flvPlayer.play();
 
+            console.log('index', index);
             this.videoIns[index] = flvPlayer;
-            var key = 'videoPlayer' + index;
-            this.videoTimes[key] = Date.now();
+            this.videoTimes = Date.now();
         },
         switchflvPlayer: function(index, url, hasaudio) {
             try {
@@ -1008,13 +1008,14 @@ var videoPlayer = {
         },
         stopVideoPlayer: function() {
             var videoIns = this.videoIns;
-            for (var i in videoIns) {
-                var key = 'videoPlayer' + i;
-                var nowTime = Date.now();
-                var oldTime = this.videoTimes[key];
-                if (oldTime) {
-                    if ((nowTime - oldTime) > 1000 * 60 * 3) {
+
+            var nowTime = Date.now();
+            var oldTime = this.videoTimes;
+            if (oldTime) {
+                if ((nowTime - oldTime) > 1000 * 60 * 3) {
+                    for (var i in videoIns) {
                         try {
+
                             var player = videoIns[i];
                             if (player) {
                                 player.pause();
@@ -1023,13 +1024,16 @@ var videoPlayer = {
                                 player.destroy();
                                 videoIns[i] = null;
                             }
+
                         } catch (error) {
 
                         }
                         this.playerStateTips[this.playerStateKeyList[i]] = '3分钟播放时间到,已关闭';
-                        delete this.videoTimes[key];
                     }
+                    this.videoTimes = null;
+                    this.singlePlayerState = false;
                 }
+
             }
         },
         openVideos: function() {
@@ -1080,7 +1084,7 @@ var videoPlayer = {
     mounted: function() {
         this.videoWidth = 750;
         this.videoHeight = 480;
-        this.videoTimes = {};
+        this.videoTimes = null;
         this.videoIns = {};
         this.playerStateKeyList = ['', 'yi', 'er', 'san', 'si'];
         this.isSendAjaxState = false;
