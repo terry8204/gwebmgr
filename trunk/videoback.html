@@ -610,6 +610,14 @@
                         return h('span', {}, state);
                     }
                 }, {
+                    title: '进度',
+                    width: 200,
+                    render: function(h, params) {
+                        var state = '';
+
+                        return h('span', {}, state);
+                    }
+                }, {
                     title: '标签',
                     key: 'tag',
                     width: 75
@@ -1229,12 +1237,28 @@
             },
             watch: {
                 isTable: function(newVal) {
-                    if (isResize && newVal === 'time') {
+                    var me = this;
+                    if (newVal === 'time') {
                         setTimeout(function() {
-                            chart.resize();
-                        }, 200)
-                    } else if (newVal === 'downloadfile') {
+                            chart = echarts.init(document.getElementById('videoTime'));
+                            var data = [];
+                            me.tableData.forEach(function(item) {
+                                var starttimeStr = item.starttime.replace('-', '/').replace('-', '/');
+                                var endtimeStr = item.endtime.replace('-', '/').replace('-', '/');
 
+                                data.push({
+                                    itemStyle: {
+                                        normal: {
+                                            color: '#e4393c'
+                                        }
+                                    },
+                                    name: '',
+                                    value: [0, starttimeStr, endtimeStr]
+                                })
+                            })
+                            chart.setOption(me.getEchartOption(DateFormat.format(me.date, 'yyyy-MM-dd'), data));
+
+                        }, 500);
                     }
                 },
                 tableData: function(newVal) {
