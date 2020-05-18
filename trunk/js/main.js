@@ -37,7 +37,7 @@ vstore = new Vuex.Store({
         editDeviceInfo: {}, // 备份监控页面要编辑的设备对象
         currentDeviceRecord: null, // 点击设备的记录
         currentDeviceId: null, // 点击设备的id
-        isVideoSupport: false, // 是否支持视频播放
+
         userName: userName
     },
     actions: {
@@ -87,9 +87,6 @@ vstore = new Vuex.Store({
     mutations: {
         isShowCompany: function(state, isShowCompany) {
             state.isShowCompany = isShowCompany;
-        },
-        isVideoSupport: function(state, isVideoSupport) {
-            state.isVideoSupport = isVideoSupport;
         },
         setdeviceInfos: function(state, groups) {
             groups.forEach(function(group) {
@@ -882,10 +879,6 @@ var videoPlayer = {
                 this.$Message.error("请选择设备!");
                 return;
             }
-            if (this.isVideoSupport == false) {
-                this.$Message.error("该设备不支持视频播放");
-                return;
-            }
             if (this.singlePlayerState) {
                 this.handleStopAllVideo();
             } else {
@@ -1074,9 +1067,6 @@ var videoPlayer = {
         },
         activeComponent: function() {
             return this.$store.state.headerActiveName;
-        },
-        isVideoSupport: function() {
-            return this.$store.state.isVideoSupport;
         },
     },
     watch: {

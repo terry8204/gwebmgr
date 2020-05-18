@@ -1310,7 +1310,6 @@ var monitor = {
             this.isShowWatermeterBtn = result5;
             this.isShowVideoBtn = result6;
             this.isShowActiveSafetyBtn = result7;
-            this.$store.commit('isVideoSupport', result6);
         },
         getDeviceTypeName: function(deviceTypeId) {
             var typeName = "",
