@@ -917,6 +917,7 @@ var videoPlayer = {
                 this.isSendAjaxState = false;
             }
             this.videoTimes = null;
+            this.videoIns = {};
 
         },
         handleStartAllVideo: function(callback) {
@@ -991,8 +992,7 @@ var videoPlayer = {
 
 
         flv_photograph: function() {
-
-            if (!this.playerState[this.playerStateKeyList[this.playerIndex]]) {
+            if (!this.videoIns[this.playerIndex]) {
                 this.$Message.error("请先播放视频");
                 return;
             };
