@@ -543,7 +543,7 @@
                     if (!self.queryParameter) {
                         return;
                     };
-                    this.isQuery = false;
+                    this.isQuery = true;
                     this.recordsList.forEach(function(record) {
                         var deviceid = record.deviceid;
                         var devicename = record.devicename;
@@ -681,12 +681,16 @@
                                 globalDeviceId = "";
                                 vRoot.$store.commit('currentDeviceId', "");
                             }
+
                             me.$Message.success(me.$t("message.deleteSucc"));
+
+
                             me.tableData.forEach(function(itme, index) {
                                 if (itme.deviceid == deviceid) {
                                     me.$delete(me.tableData, index);
                                 }
                             });
+
 
                             me.recordsList.forEach(function(itme, index) {
                                 if (itme.deviceid == deviceid) {
@@ -694,8 +698,8 @@
                                 }
                             });
 
-                            me.total = me.recordsList.length;
-                            me.tableData = me.recordsList.slice(me.currentIndex - 1, 10);
+                            // me.total = me.recordsList.length;
+                            // me.tableData = me.recordsList.slice(me.currentIndex - 1, 10);
                         } else {
                             me.$Message.error(me.$t("message.deleteFail"));
                         }
