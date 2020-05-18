@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,23 +10,28 @@
     <link rel="stylesheet" href="dist/styles/iview.css">
     <link rel="stylesheet" href="css/ol.css">
     <style>
-        html,body,#container,#bmap{
+        html,
+        body,
+        #container,
+        #bmap {
             width: 100%;
-            height: 100%;  
+            height: 100%;
             position: relative;
             overflow: hidden;
         }
-        div.controller{
+        
+        div.controller {
             position: absolute;
             right: 10px;
             bottom: 10px;
             width: 500px;
             height: 240px;
             line-height: 60px;
-            background: #E8F0F7; 
-            border:1px solid #C3CEDE; 
+            background: #E8F0F7;
+            border: 1px solid #C3CEDE;
         }
-        label.BMapLabel::after{
+        
+        label.BMapLabel::after {
             font-size: 0px;
             line-height: 0px;
             width: 0px;
@@ -37,6 +43,7 @@
             margin-left: -19px;
             margin-top: -42px;
         }
+        
         .guiji_sanjiao {
             font-size: 0px;
             line-height: 0px;
@@ -49,6 +56,7 @@
             margin-left: -30px;
             margin-top: -76px;
         }
+        
         .guiji_sanjiao_2 {
             font-size: 0px;
             line-height: 0px;
@@ -61,109 +69,128 @@
             margin-left: -30px;
             margin-top: -76px;
         }
-        .interval{
+        
+        .interval {
             position: absolute;
             top: 11px;
             width: 30px;
             height: 30px;
             background: red;
-            border-radius:50%;
+            border-radius: 50%;
             color: #fff;
-            line-height:  30px;
+            line-height: 30px;
             text-align: center;
             font-size: 15px;
         }
-        .last-address{
-            white-space:normal;
-            width:260px;
+        
+        .last-address {
+            white-space: normal;
+            width: 260px;
         }
-        .down-wrapper{
+        
+        .down-wrapper {
             position: absolute;
             bottom: 10px;
             width: 280px;
             background: red;
             border: 1px solid #e6e6e6;
         }
-        .track-info{
+        
+        .track-info {
             padding: 10px;
             background-color: #fff;
             border: 1px solid #dbd5d5
         }
+        
         [v-cloak] {
             display: none;
         }
-        .el-zoom-in-bottom-enter-active,.el-zoom-in-bottom-leave-active{
-            opacity:1;
-            -webkit-transform:scaleY(1);
-            transform:scaleY(1);
-            -webkit-transition:opacity .3s cubic-bezier(.23,1,.32,1),-webkit-transform .3s cubic-bezier(.23,1,.32,1);
-            transition:opacity .3s cubic-bezier(.23,1,.32,1),-webkit-transform .3s cubic-bezier(.23,1,.32,1);
-            transition:transform .3s cubic-bezier(.23,1,.32,1),opacity .3s cubic-bezier(.23,1,.32,1);
-            transition:transform .3s cubic-bezier(.23,1,.32,1),opacity .3s cubic-bezier(.23,1,.32,1),-webkit-transform .3s cubic-bezier(.23,1,.32,1);
-            -webkit-transform-origin:center bottom;
-            transform-origin:center bottom;
+        
+        .el-zoom-in-bottom-enter-active,
+        .el-zoom-in-bottom-leave-active {
+            opacity: 1;
+            -webkit-transform: scaleY(1);
+            transform: scaleY(1);
+            -webkit-transition: opacity .3s cubic-bezier(.23, 1, .32, 1), -webkit-transform .3s cubic-bezier(.23, 1, .32, 1);
+            transition: opacity .3s cubic-bezier(.23, 1, .32, 1), -webkit-transform .3s cubic-bezier(.23, 1, .32, 1);
+            transition: transform .3s cubic-bezier(.23, 1, .32, 1), opacity .3s cubic-bezier(.23, 1, .32, 1);
+            transition: transform .3s cubic-bezier(.23, 1, .32, 1), opacity .3s cubic-bezier(.23, 1, .32, 1), -webkit-transform .3s cubic-bezier(.23, 1, .32, 1);
+            -webkit-transform-origin: center bottom;
+            transform-origin: center bottom;
         }
-        .el-zoom-in-bottom-enter,.el-zoom-in-bottom-leave-active{
-            opacity:0;-webkit-transform:scaleY(0);transform:scaleY(0)
+        
+        .el-zoom-in-bottom-enter,
+        .el-zoom-in-bottom-leave-active {
+            opacity: 0;
+            -webkit-transform: scaleY(0);
+            transform: scaleY(0)
         }
-
-        .pull-up{
+        
+        .pull-up {
             position: absolute;
             bottom: 10px;
         }
-        .right-10{
+        
+        .right-10 {
             right: 10px;
         }
-        .right-60{
+        
+        .right-60 {
             right: 60px;
         }
-        .down-button{
+        
+        .down-button {
             position: absolute;
             top: -35px;
             right: 0px;
         }
-
-        .exact-btn{
+        
+        .exact-btn {
             width: 100%;
             height: 40px;
             margin-top: 10px;
             cursor: pointer;
         }
-
-        .right-100{
+        
+        .right-100 {
             top: 50px;
         }
-        .left-65{
-            left:65px;
+        
+        .left-65 {
+            left: 65px;
         }
-        div.map-type{
+        
+        div.map-type {
             position: absolute;
             width: 82px;
             right: 10px;
         }
-        .right-65{
-            top:65px;
+        
+        .right-65 {
+            top: 65px;
         }
-        .left-205{
-            left:205px;
+        
+        .left-205 {
+            left: 205px;
         }
     </style>
     <script src="js/js.cookie.min.js"></script>
 </head>
+
 <body>
-    <div id="container"  v-cloak>
+    <div id="container" v-cloak>
         <div id="bmap"></div>
         <div class="interval" :class="intervalCls">{{interval}}</div>
-      
+
         <transition name="el-zoom-in-bottom">
             <div class="down-wrapper" :class="trackInfoCls" v-show="isDown">
                 <div class="down-button">
-                    <i-button shape="circle" icon="ios-arrow-down"  @click="isDown=false"></i-button>
+                    <i-button shape="circle" icon="ios-arrow-down" @click="isDown=false"></i-button>
                 </div>
                 <div class="track-info" v-html="trackHtml"></div>
             </div>
         </transition>
-       
+
         <div class="pull-up" :class="trackInfoCls" v-show="!isDown">
             <i-button shape="circle" icon="ios-arrow-up" @click="isDown=true"></i-button>
         </div>
@@ -192,13 +219,12 @@
     <!-- <script src="http://api.map.baidu.com/api?v=3.0&ak=e7SC5rvmn2FsRNE4R1ygg44n"></script> -->
     <!-- <script type="text/javascript" src="http://api.map.baidu.com/library/DistanceTool/1.2/src/DistanceTool_min.js"></script> -->
     <script>
-
-        var isShare = utils.getParameterByName("isshare") == 1 ? true :false;
+        var isShare = utils.getParameterByName("isshare") == 1 ? true : false;
         var authcode = utils.getParameterByName("authcode");
         var isValid = utils.getParameterByName("isvalid");
         var expire = utils.getParameterByName("expire");
 
-        var isOverdue = false; 
+        var isOverdue = false;
         var token = utils.getParameterByName("token");
         // 百度地图是否加载完成 改变全局变量
         var isLoadBMap = false;
@@ -207,165 +233,180 @@
         var isZh = utils.locale === 'zh';
         var mapType = utils.getMapType();
         var vRoot = null;
-        var isMobile =null;
-        var layerVector  = null;
+        var isMobile = null;
+        var layerVector = null;
         var browser = {
-				versions: function() {
-					var u = navigator.userAgent,
-						app = navigator.appVersion;
-					return { //移动终端浏览器版本信息 
-						trident: u.indexOf('Trident') > -1, //IE内核 
-						presto: u.indexOf('Presto') > -1, //opera内核 
-						webKit: u.indexOf('AppleWebKit') > -1, //苹果、谷歌内核 
-						gecko: u.indexOf('Gecko') > -1 && u.indexOf('KHTML') == -1, //火狐内核 
-						mobile: !!u.match(/AppleWebKit.*Mobile.*/) || !!u.match(/AppleWebKit/), //是否为移动终端 
-						ios: !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/), //ios终端 
-						android: u.indexOf('Android') > -1 || u.indexOf('Linux') > -1, //android终端或者uc浏览器 
-						iPhone: u.indexOf('iPhone') > -1 || u.indexOf('Mac') > -1, //是否为iPhone或者QQ HD浏览器 
-						iPad: u.indexOf('iPad') > -1, //是否iPad 
-						webApp: u.indexOf('Safari') == -1 //是否web应该程序，没有头部与底部 
-					};
-				}(),
-				language: (navigator.browserLanguage || navigator.language).toLowerCase()
-			}
-            if(browser.versions.ios==false && browser.versions.android==false){
-                isMobile = false;         
-            }else{
-                isMobile = true;            
-            }      
-        (function () { 
+            versions: function() {
+                var u = navigator.userAgent,
+                    app = navigator.appVersion;
+                return { //移动终端浏览器版本信息 
+                    trident: u.indexOf('Trident') > -1, //IE内核 
+                    presto: u.indexOf('Presto') > -1, //opera内核 
+                    webKit: u.indexOf('AppleWebKit') > -1, //苹果、谷歌内核 
+                    gecko: u.indexOf('Gecko') > -1 && u.indexOf('KHTML') == -1, //火狐内核 
+                    mobile: !!u.match(/AppleWebKit.*Mobile.*/) || !!u.match(/AppleWebKit/), //是否为移动终端 
+                    ios: !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/), //ios终端 
+                    android: u.indexOf('Android') > -1 || u.indexOf('Linux') > -1, //android终端或者uc浏览器 
+                    iPhone: u.indexOf('iPhone') > -1 || u.indexOf('Mac') > -1, //是否为iPhone或者QQ HD浏览器 
+                    iPad: u.indexOf('iPad') > -1, //是否iPad 
+                    webApp: u.indexOf('Safari') == -1 //是否web应该程序，没有头部与底部 
+                };
+            }(),
+            language: (navigator.browserLanguage || navigator.language).toLowerCase()
+        }
+        if (browser.versions.ios == false && browser.versions.android == false) {
+            isMobile = false;
+        } else {
+            isMobile = true;
+        }
+        (function() {
             document.title = isZh ? "跟踪" : "Track";
             var userName = Cookies.get('name');
             var startIcon = null;
             var vm = vRoot = new Vue({
-                    el:"#container",
-                    i18n: utils.getI18n(),
-                    data:{
-                        isExact:true, //是否精确
-                        map:null,
-                        deviceid:"",
-                        tracks:[],
-                        exactTracks:[],
-                        interval:10,
-                        carMarker:null,
-                        address:"",
-                        isDown:true,
-                        trackHtml:"",
-                        mapList: [
-                            { label: isZh ? "百度地图" : "BaiduMap", value: "bMap" },
-                            { label: isZh ? "谷歌地图" : "GoogleMap", value: "gMap" },
-                            { label: "OpenStreeMap", value: "oMap" },
-                        ],
-                        mapType:mapType 
+                el: "#container",
+                i18n: utils.getI18n(),
+                data: {
+                    isExact: true, //是否精确
+                    map: null,
+                    deviceid: "",
+                    tracks: [],
+                    exactTracks: [],
+                    interval: 10,
+                    carMarker: null,
+                    address: "",
+                    isDown: true,
+                    trackHtml: "",
+                    mapList: [{
+                        label: isZh ? "百度地图" : "BaiduMap",
+                        value: "bMap"
+                    }, {
+                        label: isZh ? "谷歌地图" : "GoogleMap",
+                        value: "gMap"
+                    }, {
+                        label: "OpenStreeMap",
+                        value: "oMap"
+                    }, ],
+                    mapType: mapType
+                },
+                methods: {
+                    initMap: function() {
+                        var me = this;
+                        if (this.mapType === 'bMap') {
+                            try {
+                                if (BMap) {
+                                    me.initBMap();
+                                }
+                            } catch (error) {
+                                asyncLoadJs('baidu', function() {
+                                    startIcon = me.getFirstMarkerIcon();
+                                    me.initBMap();
+                                });
+                            };
+                        } else if (this.mapType === 'gMap') {
+                            try {
+                                if (google) {
+                                    me.initGMap();
+                                }
+                            } catch (error) {
+                                asyncLoadJs('google', function() {
+                                    me.initGMap();
+                                });
+                            };
+                        } else if (this.mapType === 'oMap') {
+                            me.initOMap();
+                        }
                     },
-                    methods: {
-                        initMap : function(){
-                            var me = this; 
-                            if(this.mapType === 'bMap'){
-                                try {
-                                    if(BMap){
-                                        me.initBMap();
-                                    }    
-                                } catch (error) {
-                                    asyncLoadJs('baidu', function () {
-                                        startIcon = me.getFirstMarkerIcon();
-                                        me.initBMap();
-                                    }); 
-                                };
-                            }else if(this.mapType === 'gMap'){
-                                try {
-                                    if(google){
-                                        me.initGMap();
-                                    }    
-                                } catch (error) {
-                                    asyncLoadJs('google', function () {
-                                        me.initGMap();
-                                    }); 
-                                };
-                            }else if(this.mapType === 'oMap'){
-                                me.initOMap();
-                            }
-                        },
-                        initBMap:function(){
-                            this.map = new BMap.Map("bmap",{minZoom:4,maxZoom:20, enableMapClick: false});
-                            this.map.enableScrollWheelZoom();
-                            this.map.enableAutoResize();
-                            this.map.enableDoubleClickZoom();
-                            // var top_left_control = new BMap.ScaleControl({anchor: BMAP_ANCHOR_BOTTOM_LEFT});
-                            var top_left_navigation = new BMap.NavigationControl();
-                            var mapType = new BMap.MapTypeControl({mapTypes: [BMAP_NORMAL_MAP, BMAP_HYBRID_MAP]});
-                            // this.map.addControl(top_left_control);
-                            this.map.addControl(top_left_navigation);
-                            this.map.addControl(mapType);
-                            this.map.centerAndZoom(new BMap.Point(108.0017245,35.926895),5);
-                            loadBMapSucc();
-                        },
-                        initGMap:function(){
-                            var center = new google.maps.LatLng(35.129163, 102.264435);
-                            this.map = new google.maps.Map(document.getElementById('bmap'), {
-                                zoom: 4,
-                                center: center,
-                                mapTypeId: google.maps.MapTypeId.ROADMAP
-                            });
-                            loadBMapSucc();
-                        },
-                        initOMap:function(){
-                            layerVector = new ol.layer.Vector({
-                                    source:new ol.source.Vector({
-                                        features: []
-                                    }) ,
-                                    style: new ol.style.Style({
-                                        stroke: new ol.style.Stroke({
-                                            width: 3,
-                                            color: [255, 0, 0, 1]
-                                        }),
-                                        fill: new ol.style.Fill({
-                                            color: [0, 0, 255, 0.6]
-                                        })
-                                    })
-                            })
-                            var projection = ol.proj.get('EPSG:4326'),me = this;
-                            this.map = new ol.Map({
-                                target: 'bmap',
-                                projection: projection,
-                                layers: [
-                                    new ol.layer.Tile({
-                                        source: new ol.source.OSM()
-                                    }),      
-                                    layerVector                             
-                                ],
-                                view: new ol.View({
-                                    center: ol.proj.fromLonLat([108.0017245, 35.926895]),
-                                    zoom: 4,
-                                    minZoom: 3,
-                                    maxZoom: 20
+                    initBMap: function() {
+                        this.map = new BMap.Map("bmap", {
+                            minZoom: 4,
+                            maxZoom: 20,
+                            enableMapClick: false
+                        });
+                        this.map.enableScrollWheelZoom();
+                        this.map.enableAutoResize();
+                        this.map.enableDoubleClickZoom();
+                        // var top_left_control = new BMap.ScaleControl({anchor: BMAP_ANCHOR_BOTTOM_LEFT});
+                        var top_left_navigation = new BMap.NavigationControl();
+                        var mapType = new BMap.MapTypeControl({
+                            mapTypes: [BMAP_NORMAL_MAP, BMAP_HYBRID_MAP]
+                        });
+                        // this.map.addControl(top_left_control);
+                        this.map.addControl(top_left_navigation);
+                        this.map.addControl(mapType);
+                        this.map.centerAndZoom(new BMap.Point(108.0017245, 35.926895), 5);
+                        loadBMapSucc();
+                    },
+                    initGMap: function() {
+                        var center = new google.maps.LatLng(35.129163, 102.264435);
+                        this.map = new google.maps.Map(document.getElementById('bmap'), {
+                            zoom: 4,
+                            center: center,
+                            mapTypeId: google.maps.MapTypeId.ROADMAP
+                        });
+                        loadBMapSucc();
+                    },
+                    initOMap: function() {
+                        layerVector = new ol.layer.Vector({
+                            source: new ol.source.Vector({
+                                features: []
+                            }),
+                            style: new ol.style.Style({
+                                stroke: new ol.style.Stroke({
+                                    width: 3,
+                                    color: [255, 0, 0, 1]
                                 }),
-                            });
+                                fill: new ol.style.Fill({
+                                    color: [0, 0, 255, 0.6]
+                                })
+                            })
+                        })
+                        var projection = ol.proj.get('EPSG:4326'),
+                            me = this;
+                        this.map = new ol.Map({
+                            target: 'bmap',
+                            projection: projection,
+                            layers: [
+                                new ol.layer.Tile({
+                                    source: new ol.source.OSM()
+                                }),
+                                layerVector
+                            ],
+                            view: new ol.View({
+                                center: ol.proj.fromLonLat([108.0017245, 35.926895]),
+                                zoom: 4,
+                                minZoom: 3,
+                                maxZoom: 20
+                            }),
+                        });
 
-                            loadBMapSucc();
-                        },
-                        getPoint:function (record) { 
-                            var point = null;
-                            if(this.mapType === 'bMap'){
-                                var baidu_lng_lat = wgs84tobd09(record.callon,record.callat);
-                                point = new BMap.Point(baidu_lng_lat[0],baidu_lng_lat[1]);
-                            }else if(this.mapType === 'gMap'){
-                                var google_lng_lat = wgs84togcj02(record.callon,record.callat);
-                                point = {lat: google_lng_lat[1], lng: google_lng_lat[0]}
-                            }else if(this.mapType === 'oMap'){
-                                point = ol.proj.fromLonLat([record.callon,record.callat]);
+                        loadBMapSucc();
+                    },
+                    getPoint: function(record) {
+                        var point = null;
+                        if (this.mapType === 'bMap') {
+                            var baidu_lng_lat = wgs84tobd09(record.callon, record.callat);
+                            point = new BMap.Point(baidu_lng_lat[0], baidu_lng_lat[1]);
+                        } else if (this.mapType === 'gMap') {
+                            var google_lng_lat = wgs84togcj02(record.callon, record.callat);
+                            point = {
+                                lat: google_lng_lat[1],
+                                lng: google_lng_lat[0]
                             }
-                            return point;
-                        },
-                        getWindowContent: function (track, b_address) {
-                            var strstatus = '';
-                            var posiType = utils.getPosiType(track);
-                            if (isZh) {
+                        } else if (this.mapType === 'oMap') {
+                            point = ol.proj.fromLonLat([record.callon, record.callat]);
+                        }
+                        return point;
+                    },
+                    getWindowContent: function(track, b_address) {
+                        var strstatus = '';
+                        var posiType = utils.getPosiType(track);
+                        if (isZh) {
                             strstatus = track.strstatus ? track.strstatus : '';
-                            } else {
+                        } else {
                             strstatus = track.strstatusen ? track.strstatusen : '';
-                            }
-                            if (track.radius > 0) {
+                        }
+                        if (track.radius > 0) {
                             var radiuDesc = null;
                             if (isZh) {
                                 radiuDesc = ' (误差范围:' + track.radius + '米)';
@@ -373,18 +414,18 @@
                                 radiuDesc = ' (Error range:' + track.radius + 'm)';
                             }
                             posiType += radiuDesc;
-                            };
-                            if (track.gotsrc === 'gps' && track.gpsvalidnum) {
+                        };
+                        if (track.gotsrc === 'gps' && track.gpsvalidnum) {
                             posiType += "(" + track.gpsvalidnum + ")";
-                            };
-                            if (isZh) {
+                        };
+                        if (isZh) {
                             var isOnineStr = utils.getIsOnline(track) ? "在线" : "离线";
-                            } else {
+                        } else {
                             var isOnineStr = utils.getIsOnline(track) ? "online" : "offline";
-                            };
-                            var speed = track.speed == 0 ? "0km/h" : (track.speed / 1000).toFixed(2) + "km/h";
-                            var rxlevel = track.rxlevel === 0 ? '' : ('(' + (isZh ? '信号' : 'Signal') + ':' + track.rxlevel + '%)');
-                            var content =
+                        };
+                        var speed = track.speed == 0 ? "0km/h" : (track.speed / 1000).toFixed(2) + "km/h";
+                        var rxlevel = track.rxlevel === 0 ? '' : ('(' + (isZh ? '信号' : 'Signal') + ':' + track.rxlevel + '%)');
+                        var content =
                             '<p> ' + (isZh ? '设备序号' : 'Device Number') + ': ' + track.deviceid + '</p>' +
                             '<p> ' + (isZh ? '定位类型' : 'Position Type') + ': ' + posiType + '</p>' +
                             '<p> ' + (isZh ? '经纬度' : 'Longitude and latitude') + ': ' + track.callon.toFixed(6) + ',' + track.callat.toFixed(6) + '</p>' +
@@ -394,517 +435,544 @@
                             '<p> ' + (isZh ? '总里程' : 'Mileage') + ': ' + utils.getMileage(track.totaldistance) + '</p>' +
                             '<p> ' + (isZh ? '状态' : 'Status') + ': ' + strstatus + '</p>' +
                             '<p class="last-address"> ' + (isZh ? '详细地址' : 'Address') + ': ' + b_address + '</p>';
-                            return content;
-                        },
-                        getAddress:function (info,callback) {
-                            var me = this;
-                            var callon = info.callon;
-                            var callat = info.callat;
-                            var bd09 = wgs84tobd09(callon,callat)
-                            var lng = bd09[0].toFixed(5);
-                            var lat = bd09[1].toFixed(5);
-                        
-                            var address = LocalCacheMgr.getAddress(lng,lat);
-                            if(address !== null){
-                                callback(address);
-                                return;
-                            }
-                            if(this.mapType === 'bMap'){
-                                utils.getBaiduAddressFromBaidu(lng,lat,function (resp) {
-                                    if(resp.length){
-                                        address = resp;
-                                        LocalCacheMgr.setAddress(lng,lat,address);
-                                        callback(address);
-                                    }else{
-                                        utils.getJiuHuAddressSyn(callon,callat,function (resp) {
-                                                address = resp.address
-                                                LocalCacheMgr.setAddress(lng,lat,address);
-                                                callback(address);
-                                        });
-                                    }
-                                });
-                            }else if(this.mapType === 'gMap'){
-                                var google_lng_lat = wgs84togcj02(callon,callat);
-                                utils.getGoogleAddressSyn(google_lng_lat[1],google_lng_lat[0],function (address) { 
+                        return content;
+                    },
+                    getAddress: function(info, callback) {
+                        var me = this;
+                        var callon = info.callon;
+                        var callat = info.callat;
+                        var bd09 = wgs84tobd09(callon, callat)
+                        var lng = bd09[0].toFixed(5);
+                        var lat = bd09[1].toFixed(5);
+
+                        var address = LocalCacheMgr.getAddress(lng, lat);
+                        if (address !== null) {
+                            callback(address);
+                            return;
+                        }
+                        if (this.mapType === 'bMap') {
+                            utils.getBaiduAddressFromBaidu(lng, lat, function(resp) {
+                                if (resp.length) {
+                                    address = resp;
+                                    LocalCacheMgr.setAddress(lng, lat, address);
                                     callback(address);
-                                })
-                            }else if(this.mapType === 'oMap'){
-                                utils.getJiuHuAddressSyn(callon, callat, function (respAddress) {
-                                    if (respAddress.address) {
-                                        LocalCacheMgr.setAddress(lng,lat,respAddress.address);
-                                        callback(respAddress.address);
-                                    }else{
-                                        callback('地址正在解析中...');
-                                    }
-                                })
-                            }
-
-                            return isZh  ? "地址正在解析..." : "Address is being resolved...";
-                        },
-                        
-                        getDirectionIcon:function(angle){
-                            var pathname = location.pathname
-                                var imgPath = ''
-                                if (utils.isLocalhost()) {
-                                    imgPath = myUrls.viewhost + 'images/carstate';
                                 } else {
-                                    imgPath = '../images/carstate';
-                                }
-                            if(this.mapType === 'bMap'){
-                                return new BMap.Icon("images/carstate/a_green_0.png", new BMap.Size(32, 32), { imageOffset: new BMap.Size(0, 0)}); 
-                            }else if(this.mapType === 'gMap'){
-                              
-                               return {                                
-                                        url:imgPath += '/a_green_' + angle + '.png',
-                                        size:{width:32,height:32},
-                                        anchor:new google.maps.Point(16,16)
-                                    } 
-                            }else if(this.mapType === 'oMap'){
-                                return new ol.style.Style({
-                                            image: new ol.style.Icon(({
-                                                crossOrigin: 'anonymous',
-                                                src: imgPath+'/a_green_0.png',
-                                                rotation: angle * Math.PI / 180,//角度转化为弧度
-                                                imgSize: [32, 32]
-                                            }))
-                                        });
-                            }
-                        },
-                        getAge:function(course){
-                            var angle = null ;
-                            if(course == 0){
-                                angle = 0;
-                            }else if(course > 0 && course <= 45){
-                                angle = 45;
-                            }else if(course > 45 && course <= 90){
-                                angle = 90;
-                            }else if(course > 90 && course <= 135){
-                                angle = 135;
-                            }else if(course > 135 && course <= 180){
-                                angle = 180;
-                            }else if(course > 180 && course <= 225){
-                                angle = 225;
-                            }else if(course > 225 && course <= 270){
-                                angle = 270;
-                            }else if(course > 270 && course <= 315){
-                                angle = 315;
-                            }else if(course > 315 && course <= 360){
-                                angle = 0;
-                            }
-                            return angle;
-                        },
-                        getLastPosition:function (callback) {
-                            var me = this;
-                            var url = myUrls.lastPosition();
-                            var data = {
-                                username: this.username,
-                                deviceids: [this.deviceid]
-                            };
-                            utils.sendAjax(url,data,function (resp) {
-                                if(resp.status == 0){
-                                    callback(resp.records[0]);
-                                }else{
-                                    me.$Message.error("轨迹查询失败!")
-                                };   
-                            });
-                        },
-                        doLastPosition:function (record) {
-                            if(record){
-                                var prveTrack = this.tracks[this.tracks.length-1];
-                                if(prveTrack){
-                                    if(prveTrack.updatetime === record.updatetime){
-                                        return;
-                                    }
-                                }
-
-                                var carIcon = this.getDirectionIcon(this.getAge(record.course)); 
-                                var point = this.getPoint(record);     
-    
-                                if(this.tracks.length > 0){
-               
-                                    this.tracks.push(record);
-                                    if(record.gotsrc === 'gps'){
-                                        this.exactTracks.push(record);
-                                    }else{
-                                        if(this.isExact){
-                                            return;
-                                        }
-                                    }
-
-                                    if(this.mapType === 'bMap'){
-                                        var rice = this.map.getDistance(this.getPoint(prveTrack),point); 
-                                        if(rice > 10){
-                                            this.carMarker.setPosition(point);
-                                            this.map.setCenter(point);
-                                        };
-                                        var carIcon = this.getDirectionIcon(0); 
-                                        this.carMarker.setIcon(carIcon);
-                                        this.carMarker.setRotation(record.course);
-                                    }else if(this.mapType === 'gMap'){
-                                        this.carMarker.setMap(this.map);
-                                        this.carMarker.setPosition(point);
-                                        this.carMarker.setIcon(carIcon);
-                                    }else if(this.mapType === 'oMap'){
-                                        var records = this.isExact ? this.exactTracks : this.tracks;
-
-                                        var markerFeature = new ol.Feature({
-                                            geometry: new ol.geom.Point(point),
-                                        });
-                                        markerFeature.setStyle(carIcon);
-
-                                        var firstMarkerFeature = new ol.Feature({
-                                            geometry: new ol.geom.Point(this.getPoint(records[0])),
-                                        });
-
-                                        var arrayList = [];
-                                        records.forEach(function (track) { 
-                                            arrayList.push(ol.proj.fromLonLat([track.callon, track.callat]));
-                                        });
-
-                                        var lineFeature = new ol.Feature(new ol.geom.LineString(arrayList));
-
-                                        firstMarkerFeature.setStyle(this.getFirstMarkerIcon());    
-
-                                        layerVector.setSource(new ol.source.Vector({
-                                            features: [markerFeature,firstMarkerFeature,lineFeature]
-                                        }));
-
-                                        
-                                    }   
-                                   
-                                }else if(this.tracks.length === 0){
-                                    this.tracks.push(record);
-
-                                    if(record.gotsrc === 'gps'){
-                                        this.exactTracks.push(record);
-                                    }else{
-                                        if(this.isExact){
-                                            this.isDown = false;
-                                            return;
-                                        }
-                                    }
-                                    
-             
-
-                                    if(this.mapType === 'bMap'){
-                                        this.carMarker = new BMap.Marker(point,{icon:carIcon , rotation: record.course });    
-                                        firstMarker = new BMap.Marker(point,{icon:startIcon,offset:new BMap.Size(0, -10)});     
-                                        this.map.addOverlay(this.carMarker);
-                                        this.map.addOverlay(firstMarker);
-                                        this.map.centerAndZoom(point,19);   
-                                    }else if(this.mapType === 'gMap'){
-                                        
-                                        new google.maps.Marker({
-                                            position: point,
-                                            map: this.map,
-                                            icon: this.getFirstMarkerIcon(), 
-                                        })
-
-                                        this.carMarker = new google.maps.Marker({});
-                                        this.map.setCenter(point);
-                                        this.map.setZoom(20);
-                                    }else if(this.mapType === 'oMap'){
-                             
-                                     var firstMarkerFeature = new ol.Feature({
-                                            geometry: new ol.geom.Point(point),
-                                        });
-
-                                        firstMarkerFeature.setStyle(this.getFirstMarkerIcon());
-
-                                       
-
-                                        layerVector.setSource(new ol.source.Vector({
-                                                    features: [firstMarkerFeature]
-                                                }));
-
-                                        this.map.getView().setCenter(point);
-                                        this.map.getView().setZoom(17);
-
-                                    }
-                                };
-                                var me = this;
-                                this.getAddress(record,function (address) { 
-                                    me.trackHtml = me.getWindowContent(record,address);
-                                }) 
-                            }
-                        },
-                        getFirstMarkerIcon:function(){
-                            var pathname = location.pathname
-                            var imgPath = ''
-                            if (utils.isLocalhost()) {
-                                imgPath = myUrls.viewhost + 'images/map/marker_qidian.png';
-                            } else {
-                                imgPath = '../images/map/marker_qidian.png';
-                            };
-                            if(this.mapType == 'bMap'){
-                                return new BMap.Icon("./images/map/marker_qidian.png", new BMap.Size(32, 32), { imageOffset: new BMap.Size(0, 0)});
-                            }else if(this.mapType == 'gMap'){
-                                return imgPath;
-                            }else if(this.mapType == 'oMap'){
-                                return new ol.style.Style({
-                                            image: new ol.style.Icon(({
-                                                crossOrigin: 'anonymous',
-                                                src: imgPath,
-                                                rotation: 0,//角度转化为弧度
-                                                imgSize: [32, 32]
-                                            }))
-                                        });
-                            }
-                        },
-                        handleDown:function(){
-                            this.isDown = !this.isDown;
-                        },
-                        getShareLastPosition:function(callback){
-                            var me = this;
-                            var url = myUrls.shareTrackLastPosition();
-                            var data = {
-                                authcode:authcode,
-                                deviceid: this.deviceid
-                            };
-                            utils.sendAjax(url,data,function (resp) {
-                                if(resp.status == 0){
-                                    isOverdue =  resp.isvalid == 1 ? false : true;
-                                    if(isOverdue){
-                                        me.$Message.error("账号已过期");
-                                        return;
-                                    }
-                                    callback(resp.records[0]);
-                                }else{
-                                    me.$Message.error("轨迹查询失败!")
-                                };   
-                            });
-                        },
-                        initApp:function(deviceid){
-                            var me = this;
-                           if(isShare){
-                               this.getShareLastPosition(this.doLastPosition);
-                               setInterval(function () { 
-                                    me.interval--;
-                                    if( me.interval == 0 || me.interval < 0){
-                                        if(isOverdue){ 
-                                            me.$Message.error("账号已过期");
-                                            return ;
-                                        }
-                                        me.getShareLastPosition(me.doLastPosition); 
-                                        me.interval = 10; 
-                                    };
-                                },1000);
-                           }else{
-                                this.getLastPosition(this.doLastPosition);
-                                setInterval(function () { 
-                                    me.interval--;
-                                    if( me.interval == 0 || me.interval < 0){
-                                        me.getLastPosition(me.doLastPosition); 
-                                        me.interval = 10; 
-                                    };
-                                },1000);
-                                
-                                initWebSocket(wsHost,userName + "-trackmap",function (data) { 
-                                    var action = data.action;
-                                    if(action === "positionlast" && data.positionLast && data.positionLast.deviceid == deviceid){
-                                        console.log("data.positionLast",data.positionLast);
-                                        data.positionLast && me.doLastPosition(data.positionLast);
-                                    };
-                                })
-                           }
-                        },
-                        reDrawMap:function(newVal){
-                            var tracks = this.isExact ? this.exactTracks : this.tracks;
-                            if(tracks[0]){
-                                var firstPoint = this.getPoint(tracks[0]);
-                                var lastPoint =  this.getPoint(tracks[tracks.length - 1]);
-                                var carIcon = this.getDirectionIcon(this.getAge(tracks[tracks.length - 1].course));  
-
-                                if(newVal === 'bMap'){
-                                    this.carMarker = new BMap.Marker(lastPoint,{icon:carIcon,rotation: tracks[tracks.length - 1].course});     
-                                    firstMarker = new BMap.Marker(firstPoint,{icon:this.getFirstMarkerIcon(),offset:new BMap.Size(0, -10)});     
-                                    this.map.addOverlay(this.carMarker);
-                                    this.map.addOverlay(firstMarker);
-                                    this.map.centerAndZoom(lastPoint,19);  
-                                    this.addMapOverlayLine(); 
-                                }else if(newVal === 'gMap'){
-
-                                    new google.maps.Marker({
-                                        position: firstPoint,
-                                        map: this.map,
-                                        icon: this.getFirstMarkerIcon()
-                                    })
-                                    this.carMarker = new google.maps.Marker({
-                                        icon:carIcon,
-                                        position:lastPoint,
-                                        map: this.map,
+                                    utils.getJiuHuAddressSyn(callon, callat, function(resp) {
+                                        address = resp.address
+                                        LocalCacheMgr.setAddress(lng, lat, address);
+                                        callback(address);
                                     });
-                                    this.map.setCenter(lastPoint);
-                                    this.map.setZoom(20);
-                                    this.addMapOverlayLine();
-                                }else if(newVal === 'oMap'){
+                                }
+                            });
+                        } else if (this.mapType === 'gMap') {
+                            var google_lng_lat = wgs84togcj02(callon, callat);
+                            utils.getGoogleAddressSyn(google_lng_lat[1], google_lng_lat[0], function(address) {
+                                callback(address);
+                            })
+                        } else if (this.mapType === 'oMap') {
+                            utils.getJiuHuAddressSyn(callon, callat, function(respAddress) {
+                                if (respAddress.address) {
+                                    LocalCacheMgr.setAddress(lng, lat, respAddress.address);
+                                    callback(respAddress.address);
+                                } else {
+                                    callback('地址正在解析中...');
+                                }
+                            })
+                        }
+
+                        return isZh ? "地址正在解析..." : "Address is being resolved...";
+                    },
+
+                    getDirectionIcon: function(angle) {
+                        var pathname = location.pathname
+                        var imgPath = ''
+                        if (utils.isLocalhost()) {
+                            imgPath = myUrls.viewhost + 'images/carstate';
+                        } else {
+                            imgPath = '../images/carstate';
+                        }
+                        if (this.mapType === 'bMap') {
+                            return new BMap.Icon("images/carstate/a_green_0.png", new BMap.Size(32, 32), {
+                                imageOffset: new BMap.Size(0, 0)
+                            });
+                        } else if (this.mapType === 'gMap') {
+
+                            return {
+                                url: imgPath += '/a_green_' + angle + '.png',
+                                size: {
+                                    width: 32,
+                                    height: 32
+                                },
+                                anchor: new google.maps.Point(16, 16)
+                            }
+                        } else if (this.mapType === 'oMap') {
+                            return new ol.style.Style({
+                                image: new ol.style.Icon(({
+                                    crossOrigin: 'anonymous',
+                                    src: imgPath + '/a_green_0.png',
+                                    rotation: angle * Math.PI / 180, //角度转化为弧度
+                                    imgSize: [32, 32]
+                                }))
+                            });
+                        }
+                    },
+                    getAge: function(course) {
+                        var angle = null;
+                        if (course == 0) {
+                            angle = 0;
+                        } else if (course > 0 && course <= 45) {
+                            angle = 45;
+                        } else if (course > 45 && course <= 90) {
+                            angle = 90;
+                        } else if (course > 90 && course <= 135) {
+                            angle = 135;
+                        } else if (course > 135 && course <= 180) {
+                            angle = 180;
+                        } else if (course > 180 && course <= 225) {
+                            angle = 225;
+                        } else if (course > 225 && course <= 270) {
+                            angle = 270;
+                        } else if (course > 270 && course <= 315) {
+                            angle = 315;
+                        } else if (course > 315 && course <= 360) {
+                            angle = 0;
+                        }
+                        return angle;
+                    },
+                    getLastPosition: function(callback) {
+                        var me = this;
+                        var url = myUrls.lastPosition();
+                        var data = {
+                            username: this.username,
+                            deviceids: [this.deviceid]
+                        };
+                        utils.sendAjax(url, data, function(resp) {
+                            if (resp.status == 0) {
+                                callback(resp.records[0]);
+                            } else {
+                                me.$Message.error("轨迹查询失败!")
+                            };
+                        });
+                    },
+                    doLastPosition: function(record) {
+                        if (record) {
+                            var prveTrack = this.tracks[this.tracks.length - 1];
+                            if (prveTrack) {
+                                if (prveTrack.updatetime === record.updatetime) {
+                                    return;
+                                }
+                            }
+
+                            var carIcon = this.getDirectionIcon(this.getAge(record.course));
+                            var point = this.getPoint(record);
+
+                            if (this.tracks.length > 0) {
+
+                                this.tracks.push(record);
+                                if (record.gotsrc === 'gps') {
+                                    this.exactTracks.push(record);
+                                } else {
+                                    if (this.isExact) {
+                                        return;
+                                    }
+                                }
+
+                                if (this.mapType === 'bMap') {
+                                    var rice = this.map.getDistance(this.getPoint(prveTrack), point);
+                                    if (rice > 10) {
+                                        this.carMarker.setPosition(point);
+                                        this.map.setCenter(point);
+                                    };
+                                    var carIcon = this.getDirectionIcon(0);
+                                    this.carMarker.setIcon(carIcon);
+                                    this.carMarker.setRotation(record.course);
+                                } else if (this.mapType === 'gMap') {
+                                    this.carMarker.setMap(this.map);
+                                    this.carMarker.setPosition(point);
+                                    this.carMarker.setIcon(carIcon);
+                                } else if (this.mapType === 'oMap') {
                                     var records = this.isExact ? this.exactTracks : this.tracks;
 
                                     var markerFeature = new ol.Feature({
-                                        geometry: new ol.geom.Point(lastPoint),
+                                        geometry: new ol.geom.Point(point),
                                     });
                                     markerFeature.setStyle(carIcon);
 
                                     var firstMarkerFeature = new ol.Feature({
-                                        geometry: new ol.geom.Point(firstPoint),
+                                        geometry: new ol.geom.Point(this.getPoint(records[0])),
                                     });
-                                    firstMarkerFeature.setStyle(this.getFirstMarkerIcon());    
 
                                     var arrayList = [];
-                                    records.forEach(function (track) { 
+                                    records.forEach(function(track) {
                                         arrayList.push(ol.proj.fromLonLat([track.callon, track.callat]));
                                     });
 
                                     var lineFeature = new ol.Feature(new ol.geom.LineString(arrayList));
 
+                                    firstMarkerFeature.setStyle(this.getFirstMarkerIcon());
+
                                     layerVector.setSource(new ol.source.Vector({
-                                        features: [markerFeature,firstMarkerFeature,lineFeature]
+                                        features: [markerFeature, firstMarkerFeature, lineFeature]
                                     }));
 
-                                    this.map.getView().setCenter(lastPoint);
-                                    this.map.getView().setZoom(16);
+
                                 }
 
-                    
-                                var me = this;
-                                this.getAddress(tracks[tracks.length - 1],function (address) { 
-                                    me.trackHtml = me.getWindowContent(tracks[tracks.length - 1],address);
-                                });
-                            }else{
-                                this.trackHtml = '';
-                                this.isDown = false;
-                            }
-                        },
-                        addMapOverlayLine:function(){
-                            var me = this;
-                            var tracks = this.isExact ? this.exactTracks : this.tracks;
-                            var points = (function () { 
-                                var points = [];
-                                    tracks.forEach(function (item) { 
-                                        points.push(me.getPoint(item))
-                                    })
-                                return points;
-                             })()
-                            if(this.mapType === 'bMap'){
-                                    var polyline = new BMap.Polyline(points ,{strokeColor:'#FF0000',strokeWeight:8,strokeOpacity:1})
-                                    this.map.addOverlay(polyline);
-                            }else if(this.mapType === 'gMap'){
-                                    var flightPath = new google.maps.Polyline({
-                                        path: points,
-                                        geodesic: true,
-                                        strokeColor: '#FF0000',
-                                        strokeOpacity: 1.5,
-                                        strokeWeight: 8
-                                    });
-                                    flightPath.setMap(this.map);
-                            }else if(this.mapType === 'oMap'){
+                            } else if (this.tracks.length === 0) {
+                                this.tracks.push(record);
 
-                            }
-                        }
-                    },
-                    computed:{
-                        token:function(){
-                            return Cookies.get("token");
-                        },
-                  
-                        username:function () {
-                            return Cookies.get("name");
-                        },
-                        intervalCls:function(){
-                            return [(this.mapType === 'bMap'||this.mapType === 'oMap') ? 'left-65' :'left-205'];
-                        },
-                        mapTypeCls:function(){
-                            return [(this.mapType === 'bMap'||this.mapType === 'oMap')  ? 'right-100' :'right-65'];
-                        },
-                        trackInfoCls:function(){
-                            return [((this.mapType === 'bMap'||this.mapType === 'oMap') && !isMobile) ? 'right-10' :'right-60'];
-                        },
-                        imgSrcBg:function(){
-                            return {
-                                backgroundImage:this.isExact ? "url('./images/ic_fine_network_off.png')" : "url('./images/ic_fine_network_on.png')",
-                                backgroundSize:'cover'
-                            }
-                        }
-                    },
-                    watch: {
-                        tracks:function(){
-                            var tracks = this.isExact ? this.exactTracks : this.tracks;
-                            if(tracks.length >=2){
-                                var firstPoint = this.getPoint(tracks[tracks.length-2]);
-                                var lastPoint = this.getPoint(tracks[tracks.length-1]);    
-                                if(this.mapType === 'bMap'){
-                                    var polyline = new BMap.Polyline([firstPoint,lastPoint] ,{strokeColor:'#FF0000',strokeWeight:8,strokeOpacity:1})
-                                    this.map.addOverlay(polyline);
-                                }else if(this.mapType === 'gMap'){
-                                     var flightPlanCoordinates = [firstPoint,lastPoint]
-                                     var flightPath = new google.maps.Polyline({
-                                            path: flightPlanCoordinates,
-                                            geodesic: true,
-                                            strokeColor: '#FF0000',
-                                            strokeOpacity: 1.5,
-                                            strokeWeight: 8
-                                      });
-                                     flightPath.setMap(this.map);
-                                     flightPathArrList.push(flightPath);   
-                                }else if(this.mapType === 'oMap'){
-
-                                }   
-                            };
-                        },
-                        isExact:function(){
-                            if(this.mapType === 'bMap'){
-                                this.map.clearOverlays();
-                            }else if(this.mapType === 'gMap'){
-                                firstMarker && firstMarker.setMap && firstMarker.setMap(null);
-                                this.carMarker && this.carMarker.setMap && this.carMarker.setMap(null);
-                                flightPathArrList.forEach(function (item) { 
-                                    item && item.setMap && item.setMap(null); 
-                                });
-                                flightPathArrList = [];
-                            }else if(this.mapType === 'oMap'){
-
-                            }
-                            this.reDrawMap(this.mapType);
-
-                        },
-                        mapType:function(newVal){
-                            var me = this;
-                            isLoadBMap = false;
-                            this.initMap();
-                            // Cookies.set('app-map-type', newVal === 'baidu' ? 'bMap' :'GMap');
-                            flightPathArrList = [];
-                            firstMarker = null;
-                           setTimeout(function () { 
-                                (function poll () {
-                                    if (isLoadBMap ) {
-                                        me.reDrawMap(newVal);
-                                    } else {
-                                        setTimeout(poll, 4);
+                                if (record.gotsrc === 'gps') {
+                                    this.exactTracks.push(record);
+                                } else {
+                                    if (this.isExact) {
+                                        this.isDown = false;
+                                        return;
                                     }
-                                }());
-                            },1000)
-                        
+                                }
+
+
+
+                                if (this.mapType === 'bMap') {
+                                    this.carMarker = new BMap.Marker(point, {
+                                        icon: carIcon,
+                                        rotation: record.course
+                                    });
+                                    firstMarker = new BMap.Marker(point, {
+                                        icon: startIcon,
+                                        offset: new BMap.Size(0, -10)
+                                    });
+                                    this.map.addOverlay(this.carMarker);
+                                    this.map.addOverlay(firstMarker);
+                                    this.map.centerAndZoom(point, 19);
+                                } else if (this.mapType === 'gMap') {
+
+                                    new google.maps.Marker({
+                                        position: point,
+                                        map: this.map,
+                                        icon: this.getFirstMarkerIcon(),
+                                    })
+
+                                    this.carMarker = new google.maps.Marker({});
+                                    this.map.setCenter(point);
+                                    this.map.setZoom(20);
+                                } else if (this.mapType === 'oMap') {
+
+                                    var firstMarkerFeature = new ol.Feature({
+                                        geometry: new ol.geom.Point(point),
+                                    });
+
+                                    firstMarkerFeature.setStyle(this.getFirstMarkerIcon());
+
+
+
+                                    layerVector.setSource(new ol.source.Vector({
+                                        features: [firstMarkerFeature]
+                                    }));
+
+                                    this.map.getView().setCenter(point);
+                                    this.map.getView().setZoom(17);
+
+                                }
+                            };
+                            var me = this;
+                            this.getAddress(record, function(address) {
+                                me.trackHtml = me.getWindowContent(record, address);
+                            })
                         }
                     },
-                    mounted : function() { 
+                    getFirstMarkerIcon: function() {
+                        var pathname = location.pathname
+                        var imgPath = ''
+                        if (utils.isLocalhost()) {
+                            imgPath = myUrls.viewhost + 'images/map/marker_qidian.png';
+                        } else {
+                            imgPath = '../images/map/marker_qidian.png';
+                        };
+                        if (this.mapType == 'bMap') {
+                            return new BMap.Icon("./images/map/marker_qidian.png", new BMap.Size(32, 32), {
+                                imageOffset: new BMap.Size(0, 0)
+                            });
+                        } else if (this.mapType == 'gMap') {
+                            return imgPath;
+                        } else if (this.mapType == 'oMap') {
+                            return new ol.style.Style({
+                                image: new ol.style.Icon(({
+                                    crossOrigin: 'anonymous',
+                                    src: imgPath,
+                                    rotation: 0, //角度转化为弧度
+                                    imgSize: [32, 32]
+                                }))
+                            });
+                        }
+                    },
+                    handleDown: function() {
+                        this.isDown = !this.isDown;
+                    },
+                    getShareLastPosition: function(callback) {
                         var me = this;
-                        var deviceid = utils.getParameterByName("deviceid");
-                        if(deviceid){
-                            this.deviceid = deviceid;
-                            (function poll () {
-                                if (isLoadBMap ) {
-                                    me.initApp(deviceid); 
+                        var url = myUrls.shareTrackLastPosition();
+                        var data = {
+                            authcode: authcode,
+                            deviceid: this.deviceid
+                        };
+                        utils.sendAjax(url, data, function(resp) {
+                            if (resp.status == 0) {
+                                isOverdue = resp.isvalid == 1 ? false : true;
+                                if (isOverdue) {
+                                    me.$Message.error("账号已过期");
+                                    return;
+                                }
+                                callback(resp.records[0]);
+                            } else {
+                                me.$Message.error("轨迹查询失败!")
+                            };
+                        });
+                    },
+                    initApp: function(deviceid) {
+                        var me = this;
+                        if (isShare) {
+                            this.getShareLastPosition(this.doLastPosition);
+                            setInterval(function() {
+                                me.interval--;
+                                if (me.interval == 0 || me.interval < 0) {
+                                    if (isOverdue) {
+                                        me.$Message.error("账号已过期");
+                                        return;
+                                    }
+                                    me.getShareLastPosition(me.doLastPosition);
+                                    me.interval = 10;
+                                };
+                            }, 1000);
+                        } else {
+                            this.getLastPosition(this.doLastPosition);
+                            setInterval(function() {
+                                me.interval--;
+                                if (me.interval == 0 || me.interval < 0) {
+                                    me.getLastPosition(me.doLastPosition);
+                                    me.interval = 10;
+                                };
+                            }, 1000);
+
+                            initWebSocket(wsHost, userName + "-trackmap", function(data) {
+                                var action = data.action;
+                                if (action === "positionlast" && data.positionLast && data.positionLast.deviceid == deviceid) {
+                                    data.positionLast && me.doLastPosition(data.positionLast);
+                                };
+                            })
+                        }
+                    },
+                    reDrawMap: function(newVal) {
+                        var tracks = this.isExact ? this.exactTracks : this.tracks;
+                        if (tracks[0]) {
+                            var firstPoint = this.getPoint(tracks[0]);
+                            var lastPoint = this.getPoint(tracks[tracks.length - 1]);
+                            var carIcon = this.getDirectionIcon(this.getAge(tracks[tracks.length - 1].course));
+
+                            if (newVal === 'bMap') {
+                                this.carMarker = new BMap.Marker(lastPoint, {
+                                    icon: carIcon,
+                                    rotation: tracks[tracks.length - 1].course
+                                });
+                                firstMarker = new BMap.Marker(firstPoint, {
+                                    icon: this.getFirstMarkerIcon(),
+                                    offset: new BMap.Size(0, -10)
+                                });
+                                this.map.addOverlay(this.carMarker);
+                                this.map.addOverlay(firstMarker);
+                                this.map.centerAndZoom(lastPoint, 19);
+                                this.addMapOverlayLine();
+                            } else if (newVal === 'gMap') {
+
+                                new google.maps.Marker({
+                                    position: firstPoint,
+                                    map: this.map,
+                                    icon: this.getFirstMarkerIcon()
+                                })
+                                this.carMarker = new google.maps.Marker({
+                                    icon: carIcon,
+                                    position: lastPoint,
+                                    map: this.map,
+                                });
+                                this.map.setCenter(lastPoint);
+                                this.map.setZoom(20);
+                                this.addMapOverlayLine();
+                            } else if (newVal === 'oMap') {
+                                var records = this.isExact ? this.exactTracks : this.tracks;
+
+                                var markerFeature = new ol.Feature({
+                                    geometry: new ol.geom.Point(lastPoint),
+                                });
+                                markerFeature.setStyle(carIcon);
+
+                                var firstMarkerFeature = new ol.Feature({
+                                    geometry: new ol.geom.Point(firstPoint),
+                                });
+                                firstMarkerFeature.setStyle(this.getFirstMarkerIcon());
+
+                                var arrayList = [];
+                                records.forEach(function(track) {
+                                    arrayList.push(ol.proj.fromLonLat([track.callon, track.callat]));
+                                });
+
+                                var lineFeature = new ol.Feature(new ol.geom.LineString(arrayList));
+
+                                layerVector.setSource(new ol.source.Vector({
+                                    features: [markerFeature, firstMarkerFeature, lineFeature]
+                                }));
+
+                                this.map.getView().setCenter(lastPoint);
+                                this.map.getView().setZoom(16);
+                            }
+
+
+                            var me = this;
+                            this.getAddress(tracks[tracks.length - 1], function(address) {
+                                me.trackHtml = me.getWindowContent(tracks[tracks.length - 1], address);
+                            });
+                        } else {
+                            this.trackHtml = '';
+                            this.isDown = false;
+                        }
+                    },
+                    addMapOverlayLine: function() {
+                        var me = this;
+                        var tracks = this.isExact ? this.exactTracks : this.tracks;
+                        var points = (function() {
+                            var points = [];
+                            tracks.forEach(function(item) {
+                                points.push(me.getPoint(item))
+                            })
+                            return points;
+                        })()
+                        if (this.mapType === 'bMap') {
+                            var polyline = new BMap.Polyline(points, {
+                                strokeColor: '#FF0000',
+                                strokeWeight: 8,
+                                strokeOpacity: 1
+                            })
+                            this.map.addOverlay(polyline);
+                        } else if (this.mapType === 'gMap') {
+                            var flightPath = new google.maps.Polyline({
+                                path: points,
+                                geodesic: true,
+                                strokeColor: '#FF0000',
+                                strokeOpacity: 1.5,
+                                strokeWeight: 8
+                            });
+                            flightPath.setMap(this.map);
+                        } else if (this.mapType === 'oMap') {
+
+                        }
+                    }
+                },
+                computed: {
+                    token: function() {
+                        return Cookies.get("token");
+                    },
+
+                    username: function() {
+                        return Cookies.get("name");
+                    },
+                    intervalCls: function() {
+                        return [(this.mapType === 'bMap' || this.mapType === 'oMap') ? 'left-65' : 'left-205'];
+                    },
+                    mapTypeCls: function() {
+                        return [(this.mapType === 'bMap' || this.mapType === 'oMap') ? 'right-100' : 'right-65'];
+                    },
+                    trackInfoCls: function() {
+                        return [((this.mapType === 'bMap' || this.mapType === 'oMap') && !isMobile) ? 'right-10' : 'right-60'];
+                    },
+                    imgSrcBg: function() {
+                        return {
+                            backgroundImage: this.isExact ? "url('./images/ic_fine_network_off.png')" : "url('./images/ic_fine_network_on.png')",
+                            backgroundSize: 'cover'
+                        }
+                    }
+                },
+                watch: {
+                    tracks: function() {
+                        var tracks = this.isExact ? this.exactTracks : this.tracks;
+                        if (tracks.length >= 2) {
+                            var firstPoint = this.getPoint(tracks[tracks.length - 2]);
+                            var lastPoint = this.getPoint(tracks[tracks.length - 1]);
+                            if (this.mapType === 'bMap') {
+                                var polyline = new BMap.Polyline([firstPoint, lastPoint], {
+                                    strokeColor: '#FF0000',
+                                    strokeWeight: 8,
+                                    strokeOpacity: 1
+                                })
+                                this.map.addOverlay(polyline);
+                            } else if (this.mapType === 'gMap') {
+                                var flightPlanCoordinates = [firstPoint, lastPoint]
+                                var flightPath = new google.maps.Polyline({
+                                    path: flightPlanCoordinates,
+                                    geodesic: true,
+                                    strokeColor: '#FF0000',
+                                    strokeOpacity: 1.5,
+                                    strokeWeight: 8
+                                });
+                                flightPath.setMap(this.map);
+                                flightPathArrList.push(flightPath);
+                            } else if (this.mapType === 'oMap') {
+
+                            }
+                        };
+                    },
+                    isExact: function() {
+                        if (this.mapType === 'bMap') {
+                            this.map.clearOverlays();
+                        } else if (this.mapType === 'gMap') {
+                            firstMarker && firstMarker.setMap && firstMarker.setMap(null);
+                            this.carMarker && this.carMarker.setMap && this.carMarker.setMap(null);
+                            flightPathArrList.forEach(function(item) {
+                                item && item.setMap && item.setMap(null);
+                            });
+                            flightPathArrList = [];
+                        } else if (this.mapType === 'oMap') {
+
+                        }
+                        this.reDrawMap(this.mapType);
+
+                    },
+                    mapType: function(newVal) {
+                        var me = this;
+                        isLoadBMap = false;
+                        this.initMap();
+                        // Cookies.set('app-map-type', newVal === 'baidu' ? 'bMap' :'GMap');
+                        flightPathArrList = [];
+                        firstMarker = null;
+                        setTimeout(function() {
+                            (function poll() {
+                                if (isLoadBMap) {
+                                    me.reDrawMap(newVal);
                                 } else {
                                     setTimeout(poll, 4);
                                 }
                             }());
-                        }else{
-                            this.$Message.error("设备序号不能为空!");
-                        };  
-                        me.initMap();                       
+                        }, 1000)
+
                     }
-                });
+                },
+                mounted: function() {
+                    var me = this;
+                    var deviceid = utils.getParameterByName("deviceid");
+                    if (deviceid) {
+                        this.deviceid = deviceid;
+                        (function poll() {
+                            if (isLoadBMap) {
+                                me.initApp(deviceid);
+                            } else {
+                                setTimeout(poll, 4);
+                            }
+                        }());
+                    } else {
+                        this.$Message.error("设备序号不能为空!");
+                    };
+                    me.initMap();
+                }
+            });
         })();
     </script>
 </body>
+
 </html>
