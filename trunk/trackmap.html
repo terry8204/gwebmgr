@@ -423,6 +423,7 @@
                         } else {
                             var isOnineStr = utils.getIsOnline(track) ? "online" : "offline";
                         };
+
                         var speed = track.speed == 0 ? "0km/h" : (track.speed / 1000).toFixed(2) + "km/h";
                         var rxlevel = track.rxlevel === 0 ? '' : ('(' + (isZh ? '信号' : 'Signal') + ':' + track.rxlevel + '%)');
                         var content =
@@ -558,7 +559,7 @@
                         if (record) {
                             var prveTrack = this.tracks[this.tracks.length - 1];
                             if (prveTrack) {
-                                if (prveTrack.updatetime === record.updatetime) {
+                                if (prveTrack.updatetime >= record.updatetime) {
                                     return;
                                 }
                             }
@@ -585,6 +586,7 @@
                                     };
                                     var carIcon = this.getDirectionIcon(0);
                                     this.carMarker.setIcon(carIcon);
+                                    console.log(record.course);
                                     this.carMarker.setRotation(record.course);
                                 } else if (this.mapType === 'gMap') {
                                     this.carMarker.setMap(this.map);
