@@ -545,10 +545,12 @@
                         var url = myUrls.lastPosition();
                         var data = {
                             username: this.username,
-                            deviceids: [this.deviceid]
+                            deviceids: [this.deviceid],
+                            lastquerypositiontime: me.lastquerypositiontime
                         };
                         utils.sendAjax(url, data, function(resp) {
                             if (resp.status == 0) {
+                                me.lastquerypositiontime = Date.now();
                                 callback(resp.records[0]);
                             } else {
                                 me.$Message.error("轨迹查询失败!")
@@ -970,6 +972,7 @@
                     } else {
                         this.$Message.error("设备序号不能为空!");
                     };
+                    me.lastquerypositiontime = 0;
                     me.initMap();
                 }
             });
