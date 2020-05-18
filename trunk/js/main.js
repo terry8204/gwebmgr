@@ -997,8 +997,10 @@ var videoPlayer = {
                 return;
             };
             var ele = document.createElement('a');
+            var now = DateFormat.longToDateTimeStrNoSplit(Date.now(), 8);
+            var fileName = this.deviceId + '-' + this.playerIndex + '-' + now;
             ele.setAttribute('href', this.htmlToImage(this.playerIndex)); //设置下载文件的url地址
-            ele.setAttribute('download', 'download'); //用于设置下载文件的文件名
+            ele.setAttribute('download', fileName); //用于设置下载文件的文件名
             ele.click();
         },
         checkVideoPlayerTime: function() {

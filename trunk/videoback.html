@@ -327,7 +327,7 @@
                                 <i-table v-if="isTable=='file'" border ref="table" @on-row-dblclick="handleDblclick" :columns="columns" :data="tableData" height="250" :loading="loading"></i-table>
                                 <div v-show="isTable=='time'" style="width:100%;height:250px;position: relative;">
                                     <div id="videoTime" style="width:100%;height:250px;"></div>
-                                    <div class="mask" @click="handleClickMask" ref="videoTimeMask">
+                                    <div class="mask" @click="handleClickMask" ref="videoTimeMask" @mousemove="onMouseMove">
                                         <div class="time-line" :style='timeLineElStyle'></div>
                                         <span class="time-reminder" :style='timeReminderElStyle' v-text="timeReminder"></span>
                                     </div>
@@ -362,6 +362,17 @@
         var startPlayerTimer = null;
         var isRequsetPlaying = false; // 防止连续点击
         var isResize = false;
+
+        function calcFileSizeM(filesize) {
+            var mSize = (filesize / 1024 / 1024).toFixed(2);
+            var filesize = null
+            if (mSize > 1024) {
+                filesize = mSize / 1024 + "G";
+            } else {
+                filesize = mSize + 'M'
+            }
+            return filesize;
+        };
 
         function getzf(num) {
             if (parseInt(num) < 10) {
@@ -431,14 +442,7 @@
                     key: 'filesize',
                     width: 100,
                     render: function(h, params) {
-                        var mSize = (params.row.filesize / 1024 / 1024).toFixed(2);
-                        var filesize = "";
-                        if (mSize > 1024) {
-                            filesize = mSize / 1024 + "G";
-                        } else {
-                            filesize = mSize + 'M'
-                        }
-                        return h('span', {}, filesize)
+                        return h('span', {}, calcFileSizeM(params.row.filesize))
                     }
                 }, {
                     title: '操作',
@@ -611,11 +615,17 @@
                     }
                 }, {
                     title: '进度',
-                    width: 200,
+                    width: 240,
                     render: function(h, params) {
-                        var state = '';
+                        if (params.row.lastupdatetime > 0) {
+                            var lastupdatetimeStr = DateFormat.longToDateTimeStr(params.row.lastupdatetime, 8);
+                            var currentLength = calcFileSizeM(params.row.currentlength);
+                            var needfiLesize = calcFileSizeM(params.row.needfilesize);
+                            return h('span', {}, lastupdatetimeStr + " " + currentLength + '/' + needfiLesize);
+                        } else {
+                            return h('span', {}, '');
+                        }
 
-                        return h('span', {}, state);
                     }
                 }, {
                     title: '标签',
@@ -753,6 +763,7 @@
                             // ele.click();
                             me.modal = false;
                             me.tag = '';
+                            me.queryDownloadTasks();
                         } else if (status === CMD_SEND_OVER_RETRY_TIMES) {
                             me.$Message.error("尝试发送3次失败");
                         } else if (status === CMD_SEND_SYNC_TIMEOUT) {
@@ -794,7 +805,6 @@
 
                     };
                     utils.sendAjax(url, data, function(resp) {
-                        console.log('resp', resp)
                         var status = resp.status;
                         if (status == CMD_SEND_RESULT_UNCONFIRM) {
                             me.$Message.error('发送成功，未收到确认');
@@ -814,6 +824,7 @@
                             // ele.setAttribute('href', resp.downloadurl); //设置下载文件的url地址
                             // ele.setAttribute('download', 'download'); //用于设置下载文件的文件名
                             // ele.click();
+                            me.queryDownloadTasks();
                         } else if (status === CMD_SEND_OVER_RETRY_TIMES) {
                             me.$Message.error("尝试发送3次失败");
                         } else if (status === CMD_SEND_SYNC_TIMEOUT) {
@@ -868,6 +879,7 @@
                             resp.tasks.sort(function(a, b) {
                                 return b.downloadstarttime - a.downloadstarttime;
                             });
+
                             me.downloadTableData = resp.tasks ? resp.tasks : [];
                         }
                     });
@@ -1219,9 +1231,6 @@
                             // ]
                         }]
                     };
-
-
-
                 },
                 onWindowResize: function() {
                     var videoContent = this.$refs.videoContent,
@@ -1233,6 +1242,35 @@
                             isResize = true;
                         }
                     }
+                },
+                initWebSocket: function() {
+                    var me = this;
+                    initWebSocket(wsHost, Cookies.get('name') + "-download", function(data) {
+                        var action = data.action;
+                        if (action === "downloadprogress") {
+                            console.log('push downloadprogress');
+                            var downloadtask = data.downloadtask;
+                            var tasksn = downloadtask.tasksn;
+
+                            if (deviceid == downloadtask.deviceid) {
+                                var isFound = false;
+                                for (var i = 0; i < me.downloadTableData.length; i++) {
+                                    var itemTasksn = me.downloadTableData[i].tasksn;
+                                    if (tasksn == itemTasksn) {
+                                        isFound = true;
+                                        me.downloadTableData[i].lastupdatetime = downloadtask.lastupdatetime;
+                                        me.downloadTableData[i].currentlength = downloadtask.currentlength;
+                                        break;
+                                    }
+                                }
+                                if (isFound == false) {
+                                    me.downloadTableData.push(downloadtask);
+                                }
+
+                            }
+
+                        };
+                    })
                 }
             },
             watch: {
@@ -1258,7 +1296,7 @@
                             })
                             chart.setOption(me.getEchartOption(DateFormat.format(me.date, 'yyyy-MM-dd'), data));
 
-                        }, 500);
+                        }, 300);
                     }
                 },
                 tableData: function(newVal) {
@@ -1316,9 +1354,7 @@
                     that.initChart();
                     that.onWindowResize();
                     that.maskEl = that.$refs.videoTimeMask;
-                    that.maskEl.onmousemove = function(e) {
-                        that.onMouseMove(e);
-                    }
+
                     document.getElementById('mask-wrapper').style.display = 'none';
 
                     that.queryDownloadTasks();
@@ -1329,12 +1365,7 @@
                         }
                     }, 10000)
 
-                    initWebSocket(wsHost, Cookies.get('name') + "-download-web", function(data) {
-                        var action = data.action;
-                        if (action === "downloadprogress") {
-                            console.log(data);
-                        };
-                    })
+                    that.initWebSocket();
                 });
             },
         })
