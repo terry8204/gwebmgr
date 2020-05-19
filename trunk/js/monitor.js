@@ -25,7 +25,11 @@ var monitor = {
         var vm = this;
         return {
             isFullMap: false,
+            isShowAreaCount: false,
             areaAddress: [],
+            areaOnlineCount: 0,
+            areaOfflineCount: 0,
+            areaStaticCount: 0,
             provinceList: provinceList,
             readonly: true,
             cmdSettings: {},
@@ -237,19 +241,51 @@ var monitor = {
                 this.$Message.error('请选择区域');
                 return;
             }
-
-            var areaName = utils.getAreaName(this.areaAddress[0], this.areaAddress[1], this.areaAddress[2]);
             switch (this.mapType) {
                 case 'bMap':
-                    this.map.qeuryBMapAreaPoint(areaName);
-
+                    var areaName = utils.getAreaName(this.areaAddress[0], this.areaAddress[1], this.areaAddress[2]);
+                    this.map.qeuryBMapAreaPoint(areaName, this.calcAreaBaiduMarkerStatus);
                     break;
                 case 'gMap':
-
+                    this.$Message.error('该地图暂时不支持该功能');
                 case 'oMap':
-
+                    this.$Message.error('该地图暂时不支持该功能');
                     break;
             };
+        },
+        handleRemoveAreaOverlay: function() {
+            this.isShowAreaCount = false;
+            this.map.removePolygonOverlay();
+        },
+        calcAreaBaiduMarkerStatus: function(bdpoints) {
+
+            var polylatList = [],
+                polylonList = [];
+            bdpoints.forEach(function(item) {
+                polylatList.push(item.lat);
+                polylonList.push(item.lng);
+            });
+            var areaOnlineCount = 0,
+                areaOfflineCount = 0,
+                areaStaticCount = 0;
+            for (var key in this.positionLastrecords) {
+                var track = this.positionLastrecords[key];
+                if (utils.pointInPolygon(track.b_lat, track.b_lon, polylatList, polylonList)) {
+                    console.log(track);
+                    if (track.online) {
+                        if (track.moving == 0) {
+                            areaStaticCount++;
+                        }
+                        areaOnlineCount++;
+                    } else {
+                        areaOfflineCount++;
+                    }
+                }
+            }
+            this.areaOnlineCount = areaOnlineCount;
+            this.areaOfflineCount = areaOfflineCount;
+            this.areaStaticCount = areaStaticCount;
+            this.isShowAreaCount = true;
         },
         handleWebSocket: function(data) {
             var me = this;

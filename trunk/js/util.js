@@ -926,7 +926,25 @@ var utils = {
         }, function(respData) {
             callback && callback(respData);
         });
-    }
+    },
+    pointInPolygon: function(lat, lon, polylatList, polylonList) {
+
+        var polySides = polylatList.length;
+        var i, j = polySides - 1;
+        var oddNodes = false;
+        for (i = 0; i < polySides; i++) {
+            if ((polylatList[i] < lat && polylatList[j] >= lat ||
+                    polylatList[j] < lat && polylatList[i] >= lat) &&
+                (polylonList[i] <= lon || polylonList[j] <= lon)) {
+                if (polylonList[i] + (lat - polylatList[i]) / (polylatList[j] - polylatList[i]) * (polylonList[j] - polylonList[i]) < lon) {
+                    oddNodes = !oddNodes;
+                }
+            }
+            j = i;
+        }
+        return oddNodes;
+    },
+
 }
 
 try {

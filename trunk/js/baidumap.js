@@ -307,7 +307,7 @@ BMapClass.pt.updateSingleMarkerState = function(deviceid) {
     }
 }
 
-BMapClass.pt.qeuryBMapAreaPoint = function(areaName) {
+BMapClass.pt.qeuryBMapAreaPoint = function(areaName, callback) {
     var myBoundary = new BMap.Boundary(),
         me = this;
     myBoundary.get(areaName.join(','), function(resp) {
@@ -318,14 +318,15 @@ BMapClass.pt.qeuryBMapAreaPoint = function(areaName) {
         });
 
         me.redrawAreaAndViewPortCenter(bdpoints);
+
+        callback && callback(bdpoints);
     });
 };
 
-BMapClass.pt.redrawAreaAndViewPortCenter = function(bdpoints) {
-    if (this.polygon != null) {
-        this.mapInstance.removeOverlay(this.polygon);
-    };
 
+
+BMapClass.pt.redrawAreaAndViewPortCenter = function(bdpoints) {
+    this.removePolygonOverlay();
     var styleOptions = {
         strokeColor: "red", //边线颜色。  
         fillColor: "red", //填充颜色。当参数为空时，圆形将没有填充效果。  
@@ -337,6 +338,12 @@ BMapClass.pt.redrawAreaAndViewPortCenter = function(bdpoints) {
     this.polygon = new BMap.Polygon(bdpoints, styleOptions);
     this.mapInstance.addOverlay(this.polygon);
     this.setViewPortCenter(bdpoints);
+
+}
+BMapClass.pt.removePolygonOverlay = function() {
+    if (this.polygon != null) {
+        this.mapInstance.removeOverlay(this.polygon);
+    };
 
 }
 
