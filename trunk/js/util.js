@@ -99,6 +99,57 @@ var utils = {
         return hexA;
 
     },
+    transformPoint: function(pointList, isTransformationToWgs84) {
+        var points = [];
+        var iteratior = function(item) {
+            var pointStr = item.split(',')
+            if (isTransformationToWgs84) {
+                var pointArr = bd09towgs84(Number(pointStr[0].trim()), Number(pointStr[1].trim()));
+            } else {
+                var pointArr = [Number(pointStr[0].trim()), Number(pointStr[1].trim())];
+            }
+            points.push({
+                lon: pointArr[0].toFixed(6),
+                lat: pointArr[1].toFixed(6),
+            })
+        }
+        pointList.forEach(iteratior);
+        return points;
+    },
+    getWgs84Boundaries: function(boundaries, isTransformationToWgs84) {
+        var pointList = [],
+            me = this;
+        boundaries.forEach(function(item) {
+            var points = me.transformPoint(item.split(";"), isTransformationToWgs84);
+            pointList = pointList.concat(points);
+        })
+        return pointList;
+    },
+    getAreaName: function(province, city, county) {
+        var result = [];
+        for (var index = 0; index < provinceList.length; index++) {
+            var provinceInfo = provinceList[index];
+            if (provinceInfo.value == province) {
+                var cityList = provinceInfo.children;
+                result.push(provinceInfo.label);
+                cityList.forEach(function(cityInfo) {
+                    if (cityInfo.value == city) {
+                        result.push(cityInfo.label);
+                        var countyList = cityInfo.children;
+                        countyList.forEach(function(countyInfo) {
+                            if (countyInfo.value == county) {
+                                result.push(countyInfo.label);
+                                return false;
+                            }
+                        })
+                        return false;
+                    }
+                });
+                break;
+            }
+        }
+        return result;
+    },
     changeSingleItemData: function(records, item, propertyType) {
 
         for (var i = 0; i < records.length; i++) {
@@ -938,6 +989,7 @@ var mixIn = {
         }
     },
 }
+
 
 
 //  得到表格row组建

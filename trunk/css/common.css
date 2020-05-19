@@ -98,6 +98,10 @@ li {
     padding: 10px;
 }
 
+#app div.map_manager .ivu-poptip-content .ivu-icon {
+    margin-top: -7px;
+}
+
 
 /* autocomplete */
 

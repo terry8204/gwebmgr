@@ -491,6 +491,21 @@
                     <div class="map_manager">
                         <div style="float:left;height:35px; line-height:35px;padding-left:15px;color:red;font-size:12px;">{{intervalTime}}{{$t("monitor.refreshAfter")}}</div>
                         <ul class="ul-manager-wraper">
+                            <li style="padding-top:6px;margin:0 10px;">
+                                <Poptip trigger="click" title="区域选择">
+                                    <i-button size="small"> 区域选择 </i-button>
+                                    <div slot="content" style="width:300px;">
+                                        <div>
+                                            <div>
+                                                <Cascader :data="provinceList" v-model="areaAddress"></Cascader>
+                                            </div>
+                                            <div style="padding-top:10px;">
+                                                <i-button type="primary" style="width:100%;" @click="handleQueryArea"> 查询 </i-button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </Poptip>
+                            </li>
                             <li class="maps">
                                 <i-select v-model="mapType" size="small" style="width:100px">
                                     <i-option v-for="item in mapList" :value="item.value" :key="item.value">{{ item.label }}</i-option>
@@ -1224,6 +1239,7 @@
     <script src="js/websocketmgr.js"></script>
     <script src="js/baidumap.js"></script>
     <script src="js/googlemap.js"></script>
+    <script src="js/area.js"></script>
     <script src="js/monitor.js"></script>
     <script src="js/reportform.js"></script>
     <script src="js/bgmanager.js"></script>

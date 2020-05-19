@@ -1397,38 +1397,15 @@
                         }
                         return result;
                     },
-                    transformPoint: function(pointList) {
-                        var points = [];
-                        var iteratior = function(item) {
-                            var pointStr = item.split(',')
-                            var pointArr = bd09towgs84(Number(pointStr[0].trim()), Number(pointStr[1].trim()));
-                            points.push({
-                                lon: pointArr[0].toFixed(6),
-                                lat: pointArr[1].toFixed(6),
-                            })
-                        }
-                        pointList.forEach(iteratior);
-                        return points;
-                    },
-                    getWgs84Boundaries: function(boundaries) {
-                        var pointList = [],
-                            me = this;
-                        boundaries.forEach(function(item) {
-                            var points = me.transformPoint(item.split(";"));
-                            pointList = pointList.concat(points);
-                        })
-                        return pointList;
-                    },
                     handleSubmitArea: function() {
                         if (this.areaAddress.length) {
-                            var areaName = this.getAreaName(this.areaAddress[0], this.areaAddress[1], this.areaAddress[2]),
+                            var areaName = utils.getAreaName(this.areaAddress[0], this.areaAddress[1], this.areaAddress[2]),
                                 me = this;
                             var myBoundary = new BMap.Boundary();
                             myBoundary.get(areaName.join(','), function(resp) {
                                 if (resp.boundaries.length) {
-                                    var points3 = me.getWgs84Boundaries(resp.boundaries);
+                                    var points3 = utils.getWgs84Boundaries(resp.boundaries, true);
                                     var points3Str = JSON.stringify(points3);
-                                    console.log('points3', points3);
                                     if (me.isEidt) {
                                         var url = myUrls.editGeoRecord();
                                         var data = deepClone(rowData);
@@ -1712,6 +1689,7 @@
                     },
                     redrawAreaAndViewPortCenter: function(pointsStr) {
                         var bdpoints = this.wgs84tobd09Points(pointsStr);
+                        console.log(bdpoints);
                         var polygon = new BMap.Polygon(bdpoints, styleOptions);
                         this.map.addOverlay(polygon);
                         this.setViewPortCenter(bdpoints);

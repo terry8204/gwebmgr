@@ -25,6 +25,8 @@ var monitor = {
         var vm = this;
         return {
             isFullMap: false,
+            areaAddress: [],
+            provinceList: provinceList,
             readonly: true,
             cmdSettings: {},
             placeholder: "",
@@ -229,6 +231,25 @@ var monitor = {
                     break;
             };
 
+        },
+        handleQueryArea: function() {
+            if (this.areaAddress.length == 0) {
+                this.$Message.error('请选择区域');
+                return;
+            }
+
+            var areaName = utils.getAreaName(this.areaAddress[0], this.areaAddress[1], this.areaAddress[2]);
+            switch (this.mapType) {
+                case 'bMap':
+                    this.map.qeuryBMapAreaPoint(areaName);
+
+                    break;
+                case 'gMap':
+
+                case 'oMap':
+
+                    break;
+            };
         },
         handleWebSocket: function(data) {
             var me = this;
