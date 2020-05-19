@@ -558,6 +558,9 @@
                             <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t("alarm.devNum")}} : &nbsp;</i-col>
                             <i-col span="16" style="height: 100%;text-align:left;line-height:32px;">
                                 {{currentDeviceId}}
+                                <span onclick="copyToClipboard()">
+                                    <Icon type="ios-copy-outline" size="24" style="cursor: pointer;"></Icon>
+                                </span>
                             </i-col>
                         </Row>
                         <Row style="margin: 10px 0">

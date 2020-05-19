@@ -491,7 +491,7 @@ var utils = {
         var deviceid = "'" + track.deviceid + "'";
         var content =
             '<p> ' + (isZh ? '设备名称' : 'Device Name') + ': ' + track.devicename + '</p>' +
-            '<p> ' + (isZh ? '设备序号' : 'Device Number') + ': ' + track.deviceid + '</p>' +
+            '<p> ' + (isZh ? '设备序号' : 'Device Number') + ': ' + track.deviceid + '<i onclick="copyToClipboard()" class="ivu-icon ivu-icon-ios-copy-outline" style="font-size: 24px;cursor: pointer;"></i></p>' +
             '<p> ' + (isZh ? '定位类型' : 'Position Type') + ': ' + posiType + '</p>' +
             '<p> ' + (isZh ? '经纬度' : 'Longitude and latitude') + ': ' + track.callon.toFixed(6) + ',' + track.callat.toFixed(6) + '</p>' +
             '<p> ' + (isZh ? '更新时间' : 'Update time') + ': ' + DateFormat.longToDateTimeStr(track.updatetime, 0) + '(' + isOnineStr + ')</p>' +
@@ -954,7 +954,35 @@ try {
 
 }
 
+function copyToClipboard() {
+    var text = globalDeviceId;
+    if (text.indexOf('-') !== -1) {
+        let arr = text.split('-');
+        text = arr[0] + arr[1];
+    }
+    var textArea = document.createElement("textarea");
+    textArea.style.position = 'fixed';
+    textArea.style.top = '0';
+    textArea.style.left = '0';
+    textArea.style.width = '2em';
+    textArea.style.height = '2em';
+    textArea.style.padding = '0';
+    textArea.style.border = 'none';
+    textArea.style.outline = 'none';
+    textArea.style.boxShadow = 'none';
+    textArea.style.background = 'transparent';
+    textArea.value = text;
+    document.body.appendChild(textArea);
+    textArea.select();
 
+    try {
+        var successful = document.execCommand('copy');
+        var msg = successful ? '成功复制到剪贴板' : '该浏览器不支持点击复制到剪贴板';
+        new Vue().$Message.success(msg);
+    } catch (err) {
+        new Vue().$Message.error('该浏览器不支持点击复制到剪贴板');
+    }
+}
 
 //  vue组件   配合查询分组表格使用
 // Vue.component('expand-row', {
