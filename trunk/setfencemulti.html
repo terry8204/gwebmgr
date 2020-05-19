@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,19 +9,23 @@
     <title>电子围栏</title>
     <link rel="stylesheet" href="dist/styles/iview.css">
     <style>
-        html,body,#container{
+        html,
+        body,
+        #container {
             width: 100%;
-            height: 100%;  
+            height: 100%;
             position: relative;
         }
-        #bmap{
+        
+        #bmap {
             position: absolute;
             top: 0;
             left: 460px;
-            bottom: 0; 
+            bottom: 0;
             right: 0;
         }
-        #controller{
+        
+        #controller {
             position: absolute;
             top: 0;
             left: 0;
@@ -30,27 +35,35 @@
             padding: 10px;
             box-sizing: border-box;
             overflow-y: auto;
-        }  
-        #controller .controller-inner{
+        }
+        
+        #controller .controller-inner {
             width: 100%;
             height: 100%;
             background: #ffffff;
         }
-        .el-zoom-in-bottom-enter-active,.el-zoom-in-bottom-leave-active{
-            opacity:1;
-            -webkit-transform:scaleY(1);
-            transform:scaleY(1);
-            -webkit-transition:opacity .3s cubic-bezier(.23,1,.32,1),-webkit-transform .3s cubic-bezier(.23,1,.32,1);
-            transition:opacity .3s cubic-bezier(.23,1,.32,1),-webkit-transform .3s cubic-bezier(.23,1,.32,1);
-            transition:transform .3s cubic-bezier(.23,1,.32,1),opacity .3s cubic-bezier(.23,1,.32,1);
-            transition:transform .3s cubic-bezier(.23,1,.32,1),opacity .3s cubic-bezier(.23,1,.32,1),-webkit-transform .3s cubic-bezier(.23,1,.32,1);
-            -webkit-transform-origin:center bottom;
-            transform-origin:center bottom;
+        
+        .el-zoom-in-bottom-enter-active,
+        .el-zoom-in-bottom-leave-active {
+            opacity: 1;
+            -webkit-transform: scaleY(1);
+            transform: scaleY(1);
+            -webkit-transition: opacity .3s cubic-bezier(.23, 1, .32, 1), -webkit-transform .3s cubic-bezier(.23, 1, .32, 1);
+            transition: opacity .3s cubic-bezier(.23, 1, .32, 1), -webkit-transform .3s cubic-bezier(.23, 1, .32, 1);
+            transition: transform .3s cubic-bezier(.23, 1, .32, 1), opacity .3s cubic-bezier(.23, 1, .32, 1);
+            transition: transform .3s cubic-bezier(.23, 1, .32, 1), opacity .3s cubic-bezier(.23, 1, .32, 1), -webkit-transform .3s cubic-bezier(.23, 1, .32, 1);
+            -webkit-transform-origin: center bottom;
+            transform-origin: center bottom;
         }
-        .el-zoom-in-bottom-enter,.el-zoom-in-bottom-leave-active{
-            opacity:0;-webkit-transform:scaleY(0);transform:scaleY(0)
+        
+        .el-zoom-in-bottom-enter,
+        .el-zoom-in-bottom-leave-active {
+            opacity: 0;
+            -webkit-transform: scaleY(0);
+            transform: scaleY(0)
         }
-        #container .circular-ctrl{
+        
+        #container .circular-ctrl {
             position: absolute;
             width: 400px;
             bottom: 10px;
@@ -58,15 +71,15 @@
             border: 1px solid #A4D4F5;
             background-color: #ffffff;
         }
-        #container .area-ctrl{
+        
+        #container .area-ctrl {
             position: absolute;
             width: 400px;
             bottom: 10px;
-            left:470px;
+            left: 470px;
             border: 1px solid #A4D4F5;
             background-color: #ffffff;
         }
-
         
         .ivu-drawer {
             width: auto;
@@ -74,23 +87,23 @@
             position: fixed;
             top: 0
         }
-
+        
         .ivu-drawer-inner {
             position: absolute
         }
-
+        
         .ivu-drawer-left {
             left: 0
         }
-
+        
         .ivu-drawer-right {
             right: 0
         }
-
+        
         .ivu-drawer-hidden {
             display: none!important
         }
-
+        
         .ivu-drawer-wrap {
             position: fixed;
             overflow: auto;
@@ -102,18 +115,18 @@
             -webkit-overflow-scrolling: touch;
             outline: 0
         }
-
+        
         .ivu-drawer-wrap-inner {
             position: absolute;
             overflow: hidden
         }
-
+        
         .ivu-drawer-wrap * {
             -webkit-box-sizing: border-box;
             box-sizing: border-box;
             -webkit-tap-highlight-color: transparent
         }
-
+        
         .ivu-drawer-mask {
             position: fixed;
             top: 0;
@@ -124,15 +137,15 @@
             height: 100%;
             z-index: 1000
         }
-
+        
         .ivu-drawer-mask-hidden {
             display: none
         }
-
+        
         .ivu-drawer-mask-inner {
             position: absolute
         }
-
+        
         .ivu-drawer-content {
             width: 100%;
             height: 100%;
@@ -145,18 +158,19 @@
             -webkit-box-shadow: 0 4px 12px rgba(0, 0, 0, .15);
             box-shadow: 0 4px 12px rgba(0, 0, 0, .15)
         }
-
+        
         .ivu-drawer-content-no-mask {
             pointer-events: auto
         }
-
+        
         .ivu-drawer-header {
             border-bottom: 1px solid #e8eaec;
             padding: 14px 16px;
             line-height: 1
         }
-
-        .ivu-drawer-header p, .ivu-drawer-header-inner {
+        
+        .ivu-drawer-header p,
+        .ivu-drawer-header-inner {
             display: inline-block;
             width: 100%;
             height: 20px;
@@ -168,11 +182,12 @@
             text-overflow: ellipsis;
             white-space: nowrap
         }
-
-        .ivu-drawer-header p i, .ivu-drawer-header p span {
+        
+        .ivu-drawer-header p i,
+        .ivu-drawer-header p span {
             vertical-align: middle
         }
-
+        
         .ivu-drawer-close {
             z-index: 1;
             font-size: 12px;
@@ -182,7 +197,7 @@
             overflow: hidden;
             cursor: pointer
         }
-
+        
         .ivu-drawer-close .ivu-icon-ios-close {
             font-size: 31px;
             color: #999;
@@ -191,11 +206,11 @@
             position: relative;
             top: 1px
         }
-
+        
         .ivu-drawer-close .ivu-icon-ios-close:hover {
             color: #444
         }
-
+        
         .ivu-drawer-body {
             width: 100%;
             height: calc(100% - 51px);
@@ -206,16 +221,17 @@
             position: absolute;
             overflow: auto
         }
-
+        
         .ivu-drawer-no-header .ivu-drawer-body {
             height: 100%
         }
-
+        
         .ivu-drawer-no-mask {
             pointer-events: none
         }
-
-        .move-left-appear, .move-left-enter-active {
+        
+        .move-left-appear,
+        .move-left-enter-active {
             -webkit-animation-duration: .3s;
             animation-duration: .3s;
             -webkit-animation-fill-mode: both;
@@ -223,7 +239,7 @@
             -webkit-animation-play-state: paused;
             animation-play-state: paused
         }
-
+        
         .move-left-leave-active {
             -webkit-animation-duration: .3s;
             animation-duration: .3s;
@@ -232,33 +248,36 @@
             -webkit-animation-play-state: paused;
             animation-play-state: paused
         }
-
-        .move-left-appear, .move-left-enter-active {
+        
+        .move-left-appear,
+        .move-left-enter-active {
             -webkit-animation-name: ivuMoveLeftIn;
             animation-name: ivuMoveLeftIn;
             -webkit-animation-play-state: running;
             animation-play-state: running
         }
-
+        
         .move-left-leave-active {
             -webkit-animation-name: ivuMoveLeftOut;
             animation-name: ivuMoveLeftOut;
             -webkit-animation-play-state: running;
             animation-play-state: running
         }
-
-        .move-left-appear, .move-left-enter-active {
+        
+        .move-left-appear,
+        .move-left-enter-active {
             opacity: 0;
             -webkit-animation-timing-function: ease-in-out;
             animation-timing-function: ease-in-out
         }
-
+        
         .move-left-leave-active {
             -webkit-animation-timing-function: ease-in-out;
             animation-timing-function: ease-in-out
         }
-
-        .move-right-appear, .move-right-enter-active {
+        
+        .move-right-appear,
+        .move-right-enter-active {
             -webkit-animation-duration: .3s;
             animation-duration: .3s;
             -webkit-animation-fill-mode: both;
@@ -266,7 +285,7 @@
             -webkit-animation-play-state: paused;
             animation-play-state: paused
         }
-
+        
         .move-right-leave-active {
             -webkit-animation-duration: .3s;
             animation-duration: .3s;
@@ -275,31 +294,34 @@
             -webkit-animation-play-state: paused;
             animation-play-state: paused
         }
-
-        .move-right-appear, .move-right-enter-active {
+        
+        .move-right-appear,
+        .move-right-enter-active {
             -webkit-animation-name: ivuMoveRightIn;
             animation-name: ivuMoveRightIn;
             -webkit-animation-play-state: running;
             animation-play-state: running
         }
-
+        
         .move-right-leave-active {
             -webkit-animation-name: ivuMoveRightOut;
             animation-name: ivuMoveRightOut;
             -webkit-animation-play-state: running;
             animation-play-state: running
         }
-
-        .move-right-appear, .move-right-enter-active {
+        
+        .move-right-appear,
+        .move-right-enter-active {
             opacity: 0;
             -webkit-animation-timing-function: ease-in-out;
             animation-timing-function: ease-in-out
         }
-
+        
         .move-right-leave-active {
             -webkit-animation-timing-function: ease-in-out;
             animation-timing-function: ease-in-out
         }
+        
         @-webkit-keyframes ivuMoveLeftIn {
             0% {
                 -webkit-transform-origin: 0 0;
@@ -316,7 +338,7 @@
                 opacity: 1
             }
         }
-
+        
         @keyframes ivuMoveLeftIn {
             0% {
                 -webkit-transform-origin: 0 0;
@@ -333,7 +355,7 @@
                 opacity: 1
             }
         }
-
+        
         @-webkit-keyframes ivuMoveLeftOut {
             0% {
                 -webkit-transform-origin: 0 0;
@@ -350,7 +372,7 @@
                 opacity: 0
             }
         }
-
+        
         @keyframes ivuMoveLeftOut {
             0% {
                 -webkit-transform-origin: 0 0;
@@ -367,7 +389,7 @@
                 opacity: 0
             }
         }
-
+        
         @-webkit-keyframes ivuMoveRightIn {
             0% {
                 opacity: 0;
@@ -384,7 +406,7 @@
                 transform: translateX(0)
             }
         }
-
+        
         @keyframes ivuMoveRightIn {
             0% {
                 opacity: 0;
@@ -401,7 +423,7 @@
                 transform: translateX(0)
             }
         }
-
+        
         @-webkit-keyframes ivuMoveRightOut {
             0% {
                 -webkit-transform-origin: 0 0;
@@ -418,7 +440,7 @@
                 opacity: 0
             }
         }
-
+        
         @keyframes ivuMoveRightOut {
             0% {
                 -webkit-transform-origin: 0 0;
@@ -437,6 +459,7 @@
         }
     </style>
 </head>
+
 <body>
     <div id="container">
         <div id="controller">
@@ -455,13 +478,7 @@
                         <i-button style="width:100px;" icon="md-add" @click="openDrawer">系统围栏</i-button>
                     </i-col>
                 </Row>
-                <i-table border stripe 
-                    ref="selection"
-                    :columns="columns" 
-                    :data="tableData" 
-                    :loading="loading" 
-                    @on-row-click="handleClickRow" 
-                    @on-selection-change="handleSelectChange"></i-table>
+                <i-table border stripe ref="selection" :columns="columns" :data="tableData" :loading="loading" @on-row-click="handleClickRow" @on-selection-change="handleSelectChange"></i-table>
             </div>
         </div>
         <div id="bmap"></div>
@@ -514,7 +531,7 @@
                 </Row>
                 <Row style="padding: 10px">
                     <i-col :span="6" style="text-align:center;line-height:32px;">
-                         选择区域:   
+                        选择区域:
                     </i-col>
                     <i-col :span="16">
                         <Cascader :data="provinceList" v-model="areaAddress"></Cascader>
@@ -530,7 +547,7 @@
         <Modal v-model="geoNameModal" width="400" title="修改围栏名称">
             <Row style="padding: 10px">
                 <i-col :span="6" style="text-align:center;line-height:32px;">
-                    围栏名称:   
+                    围栏名称:
                 </i-col>
                 <i-col :span="16">
                     <i-input v-model.trim="geoName"></i-input>
@@ -546,7 +563,7 @@
                     <i-input style="width:100%;" v-model="searchValue" suffix="ios-search" placeholder="搜索"></i-input>
                 </i-col>
                 <i-col :span="8" style="padding:0 0 0 10px;">
-                   <i-button @click="jumpSystemFence" style="width:100%;">设置系统围栏</i-button>
+                    <i-button @click="jumpSystemFence" style="width:100%;">设置系统围栏</i-button>
                 </i-col>
             </Row>
             <Row style="width:100%" v-else>
@@ -573,8 +590,14 @@
                                     <Icon type="ios-close"></Icon>
                                 </slot>
                             </a>
-                            <div :class="[prefixCls + '-header']" v-if="showHead"><slot name="header"><div :class="[prefixCls + '-header-inner']">{{ title }}</div></slot></div>
-                            <div :class="[prefixCls + '-body']" :style="styles"><slot></slot></div>
+                            <div :class="[prefixCls + '-header']" v-if="showHead">
+                                <slot name="header">
+                                    <div :class="[prefixCls + '-header-inner']">{{ title }}</div>
+                                </slot>
+                            </div>
+                            <div :class="[prefixCls + '-body']" :style="styles">
+                                <slot></slot>
+                            </div>
                         </div>
                     </div>
                 </transition>
@@ -594,19 +617,20 @@
     <script src="js/util.js"></script>
     <script src="js/area.js"></script>
     <script src="https://api.map.baidu.com/api?v=3.0&ak=e7SC5rvmn2FsRNE4R1ygg44n"></script>
-    <script type="text/javascript" src="https://api.map.baidu.com/library/DrawingManager/1.4/src/DrawingManager_min.js"></script>  
-    <link rel="stylesheet" href="https://api.map.baidu.com/library/DrawingManager/1.4/src/DrawingManager_min.css" />  
+    <script type="text/javascript" src="https://api.map.baidu.com/library/DrawingManager/1.4/src/DrawingManager_min.js"></script>
+    <link rel="stylesheet" href="https://api.map.baidu.com/library/DrawingManager/1.4/src/DrawingManager_min.css" />
     <script>
-
-        function getTarget (node) {
+        function getTarget(node) {
             if (node === void 0) {
                 node = document.body
             }
-            if (node === true) { return document.body }
+            if (node === true) {
+                return document.body
+            }
             return node instanceof window.Node ? node : document.querySelector(node)
         };
 
-        function findComponentsUpward (context, componentName) {
+        function findComponentsUpward(context, componentName) {
             var parents = [];
             var parent = context.$parent;
             if (parent) {
@@ -617,7 +641,7 @@
             }
         }
 
-        function findBrothersComponents (context, componentName, exceptMe) {
+        function findBrothersComponents(context, componentName, exceptMe) {
             var res = context.$parent.$children.filter(item => {
                 return item.$options.name === componentName;
             });
@@ -626,7 +650,7 @@
             return res;
         }
 
-        function oneOf (value, validList) {
+        function oneOf(value, validList) {
             for (let i = 0; i < validList.length; i++) {
                 if (value === validList[i]) {
                     return true;
@@ -646,7 +670,7 @@
             });
         }
 
-        function getScrollBarSize (fresh) {
+        function getScrollBarSize(fresh) {
             if (isServer) return 0;
             if (fresh || cached === undefined) {
                 var inner = document.createElement('div');
@@ -686,7 +710,7 @@
         var prefixCls = 'ivu-drawer';
         var emitter = {
             methods: {
-                dispatch :function (componentName, eventName, params) {
+                dispatch: function(componentName, eventName, params) {
                     var parent = this.$parent || this.$root;
                     var name = parent.$options.name;
 
@@ -701,7 +725,7 @@
                         parent.$emit.apply(parent, [eventName].concat(params));
                     }
                 },
-                broadcast:function(componentName, eventName, params) {
+                broadcast: function(componentName, eventName, params) {
                     broadcast.call(this, componentName, eventName, params);
                 }
             }
@@ -709,7 +733,7 @@
 
         var ScrollbarMixins = {
             methods: {
-                checkScrollBar :function() {
+                checkScrollBar: function() {
                     var fullWindowWidth = window.innerWidth;
                     if (!fullWindowWidth) { // workaround for missing window.innerWidth in IE8
                         var documentElementRect = document.documentElement.getBoundingClientRect();
@@ -720,24 +744,24 @@
                         this.scrollBarWidth = getScrollBarSize();
                     }
                 },
-                checkMaskInVisible :function() {
+                checkMaskInVisible: function() {
                     var masks = document.getElementsByClassName('ivu-modal-mask') || [];
                     return Array.from(masks).every(m => m.style.display === 'none' || m.classList.contains('fade-leave-to'));
                 },
-                setScrollBar :function() {
+                setScrollBar: function() {
                     if (this.bodyIsOverflowing && this.scrollBarWidth !== undefined) {
                         document.body.style.paddingRight = `${this.scrollBarWidth}px`;
                     }
                 },
-                resetScrollBar :function() {
+                resetScrollBar: function() {
                     document.body.style.paddingRight = '';
                 },
-                addScrollEffect :function() {
+                addScrollEffect: function() {
                     this.checkScrollBar();
                     this.setScrollBar();
                     document.body.style.overflow = 'hidden';
                 },
-                removeScrollEffect:function() {
+                removeScrollEffect: function() {
                     if (this.checkMaskInVisible()) {
                         document.body.style.overflow = '';
                         this.resetScrollBar();
@@ -745,13 +769,13 @@
                 }
             }
         };
-        Vue.component('Drawer',{
-            template:document.getElementById("drawer-template").innerHTML,
-            directives:{
-                TransferDom:{
-                    inserted :function(el, params, vnode) {
+        Vue.component('Drawer', {
+            template: document.getElementById("drawer-template").innerHTML,
+            directives: {
+                TransferDom: {
+                    inserted: function(el, params, vnode) {
                         var value = params.value;
-                        if ( el.dataset && el.dataset.transfer !== 'true') return false;
+                        if (el.dataset && el.dataset.transfer !== 'true') return false;
                         el.className = el.className ? el.className + ' v-transfer-dom' : 'v-transfer-dom';
                         var parentNode = el.parentNode;
                         if (!parentNode) return;
@@ -772,9 +796,9 @@
                             }
                         }
                     },
-                    componentUpdated :function(el, params) {
+                    componentUpdated: function(el, params) {
                         var value = params.value;
-                        if ( el.dataset && el.dataset.transfer !== 'true') return false;
+                        if (el.dataset && el.dataset.transfer !== 'true') return false;
                         // need to make sure children are done updating (vs. `update`)
                         var ref$1 = el.__transferDomData;
                         if (!ref$1) return;
@@ -788,17 +812,23 @@
                             parentNode.replaceChild(home, el);
                             // append to target
                             getTarget(value).appendChild(el);
-                            el.__transferDomData = Object.assign({}, el.__transferDomData, { hasMovedOut: true, target: getTarget(value) });
+                            el.__transferDomData = Object.assign({}, el.__transferDomData, {
+                                hasMovedOut: true,
+                                target: getTarget(value)
+                            });
                         } else if (hasMovedOut && value === false) {
                             // previously moved, coming back home
                             parentNode.replaceChild(el, home);
-                            el.__transferDomData = Object.assign({}, el.__transferDomData, { hasMovedOut: false, target: getTarget(value) });
+                            el.__transferDomData = Object.assign({}, el.__transferDomData, {
+                                hasMovedOut: false,
+                                target: getTarget(value)
+                            });
                         } else if (value) {
                             // already moved, going somewhere else
                             getTarget(value).appendChild(el);
                         }
                     },
-                    unbind  :function(el) {
+                    unbind: function(el) {
                         if (el.dataset && el.dataset.transfer !== 'true') return false;
                         el.className = el.className.replace('v-transfer-dom', '');
                         var ref$1 = el.__transferDomData;
@@ -810,7 +840,7 @@
                     }
                 }
             },
-            mixins:[emitter,ScrollbarMixins],
+            mixins: [emitter, ScrollbarMixins],
             props: {
                 value: {
                     type: Boolean,
@@ -846,7 +876,7 @@
                     default: false
                 },
                 placement: {
-                    validator (value) {
+                    validator(value) {
                         return oneOf(value, ['left', 'right']);
                     },
                     default: 'right'
@@ -869,19 +899,18 @@
                     default: false
                 }
             },
-            data  :function() {
+            data: function() {
                 return {
-                    prefixCls:prefixCls,
+                    prefixCls: prefixCls,
                     visible: this.value,
                     wrapShow: false,
                     showHead: true,
                 };
             },
             computed: {
-                wrapClasses  :function() {
+                wrapClasses: function() {
                     return [
-                        `${prefixCls}-wrap`,
-                        {
+                        `${prefixCls}-wrap`, {
                             [`${prefixCls}-hidden`]: !this.wrapShow,
                             [`${this.className}`]: !!this.className,
                             [`${prefixCls}-no-mask`]: !this.mask,
@@ -889,7 +918,7 @@
                         }
                     ];
                 },
-                mainStyles  :function() {
+                mainStyles: function() {
                     var style = {};
 
                     var width = parseInt(this.width);
@@ -902,51 +931,48 @@
 
                     return style;
                 },
-                contentClasses  :function() {
+                contentClasses: function() {
                     return [
-                        `${prefixCls}-content`,
-                        {
+                        `${prefixCls}-content`, {
                             [`${prefixCls}-content-no-mask`]: !this.mask
                         }
                     ];
                 },
-                classes  :function() {
+                classes: function() {
                     return [
                         `${prefixCls}`,
-                        `${prefixCls}-${this.placement}`,
-                        {
+                        `${prefixCls}-${this.placement}`, {
                             [`${prefixCls}-no-header`]: !this.showHead,
                             [`${prefixCls}-inner`]: this.inner
                         }
                     ];
                 },
-                maskClasses  :function() {
+                maskClasses: function() {
                     return [
-                        `${prefixCls}-mask`,
-                        {
+                        `${prefixCls}-mask`, {
                             [`${prefixCls}-mask-inner`]: this.inner
                         }
                     ];
                 }
             },
             methods: {
-                close  :function() {
+                close: function() {
                     this.visible = false;
                     this.$emit('input', false);
                     this.$emit('on-close');
                 },
-                handleMask  :function() {
+                handleMask: function() {
                     if (this.maskClosable && this.mask) {
                         this.close();
                     }
                 },
-                handleWrapClick  :function(event) {
+                handleWrapClick: function(event) {
                     // use indexOf,do not use === ,because ivu-modal-wrap can have other custom className
                     var className = event.target.getAttribute('class');
                     if (className && className.indexOf(`${prefixCls}-wrap`) > -1) this.handleMask();
                 },
             },
-            mounted  :function() {
+            mounted: function() {
                 if (this.visible) {
                     this.wrapShow = true;
                 }
@@ -959,19 +985,19 @@
 
                 this.showHead = showHead;
             },
-            beforeDestroy :function() {
+            beforeDestroy: function() {
                 this.removeScrollEffect();
             },
             watch: {
-                value  : function(val) {
+                value: function(val) {
                     this.visible = val;
                 },
-                visible : function(val) {
+                visible: function(val) {
                     if (val === false) {
                         this.timer = setTimeout(() => {
                             this.wrapShow = false;
                             // #4831 Check if there are any drawers left at the parent level
-                            var brotherDrawers = findBrothersComponents(this, 'Drawer',true) || [];
+                            var brotherDrawers = findBrothersComponents(this, 'Drawer', true) || [];
                             var parentDrawers = findComponentsUpward(this, 'Drawer') || [];
 
                             var otherDrawers = [].concat(brotherDrawers).concat(parentDrawers);
@@ -990,17 +1016,17 @@
                         }
                     }
                     this.broadcast('Table', 'on-visible-change', val);
-                    this.broadcast('Slider', 'on-visible-change', val);  // #2852
+                    this.broadcast('Slider', 'on-visible-change', val); // #2852
                     this.$emit('on-visible-change', val);
                 },
-                scrollable :function(val) {
+                scrollable: function(val) {
                     if (!val) {
                         this.addScrollEffect();
                     } else {
                         this.removeScrollEffect();
                     }
                 },
-                title :function(val) {
+                title: function(val) {
                     if (this.$slots.header === undefined) {
                         this.showHead = !!val;
                     }
@@ -1013,805 +1039,817 @@
         var map = null;
         var vRoot = null;
         var rowData = null;
- 
-        var styleOptions = {  
-            strokeColor:"red",    //边线颜色。  
-            fillColor:"red",      //填充颜色。当参数为空时，圆形将没有填充效果。  
-            strokeWeight: 3,       //边线的宽度，以像素为单位。  
-            strokeOpacity: 0.8,    //边线透明度，取值范围0 - 1。  
-            fillOpacity: 0.6,      //填充的透明度，取值范围0 - 1。  
+
+        var styleOptions = {
+            strokeColor: "red", //边线颜色。  
+            fillColor: "red", //填充颜色。当参数为空时，圆形将没有填充效果。  
+            strokeWeight: 3, //边线的宽度，以像素为单位。  
+            strokeOpacity: 0.8, //边线透明度，取值范围0 - 1。  
+            fillOpacity: 0.6, //填充的透明度，取值范围0 - 1。  
             strokeStyle: 'solid' //边线的样式，solid或dashed。  
-        }  
+        }
 
         //实例化鼠标绘制工具  
-        var drawingManager = null;  
+        var drawingManager = null;
 
- 
-        function startDrawPolygon(type){  
-            drawingManager.open();   
-            drawingManager.setDrawingMode(type);  
-        }  
 
-         function treeItemRender (h, params) {
-            var root = params.root, node = params.node, row = params.data;
-                            return h('span', {
-                                style: {
-                                    display: 'inline-block',
-                                    width: '343px'
-                                },
-                            }, [
-                                h('span', [
-                                    h('span',{
-                                        style: {
-                                            width: '271px',
-                                            lineHeight: '23px',
-                                            display: 'inline-block',
-                                        } ,
-                                        on:{
-                                            click:function(e){
-                                                e.preventDefault(); 
-                                                e.stopPropagation();
-                                                if(row.children){
-                                                    vRoot.handleSelectChange(row.children);
-                                                }     
-                                                return false;
-                                            },
-                                        } 
-                                    }, row.title)
-                                ]),
-                                row.children? 
-                                h('Button', {
-                                            props: {
-                                                type: 'primary',
-                                                size: 'small'
-                                            },
-                                            style: {
-                                                
-                                            } ,
-                                            on: {
-                                                click:function (e)  { 
-                                                    e.preventDefault(); 
-                                                    e.stopPropagation();
-                                             
-                                                    var url = myUrls.addGeoRecord();
-                                                    var data = {
-                                                        type:4,
-                                                        categoryid4:row.categoryid,
-                                                        name:row.title,
-                                                        deviceid:deviceid
-                                                    };
-                                                    console.log('data', data);
-                                                    utils.sendAjax(url,data,function (resp) { 
-                                                        if(resp.status == 0){
-                                                            vRoot.$Message.success("添加成功");
-                                                            vRoot.getFenceInfo();
-                                                        }else{
-                                                            vRoot.$Message.error("添加失败");
-                                                        }
-                                                    })
-                                                    return false;
-                                                }
-                                            }
-                                },"添加"):null,
-                            ]);
-                    }
+        function startDrawPolygon(type) {
+            drawingManager.open();
+            drawingManager.setDrawingMode(type);
+        }
 
-        (function () { 
-            vRoot = new Vue({
-                    el:"#container",
-                    data:{
-                        tipTitle:"多边形提示",
-                        tipContent:'点击多边形按钮,单击画图,双击结束',
-                        isEidt:false,
-                        map:null,
-                        geoName:'',
-                        geoNameModal:false,
-                        drawerModal:false,
-                        searchValue:'',
-                        columns:[
-                            {
-                                type: 'selection',
-                                width: 60,
-                                align: 'center'
-                            },
-                            {
-                                type:'index',
-                                width:60,
-                                align:'center',
-                            },
-                            {
-                                title: '类型',
-                                key: 'type',
-                                width:90,
-                                render: function(h, params) {
-                                    var type = '';
-                                    switch(params.row.type){
-                                        case 1 :
-                                            type = '圆'
-                                            break;
-                                        case 2 :
-                                            type = '多边形'
-                                            break;
-                                        case 3 :
-                                            type = '行政区域'
-                                            break;
-                                        case 4 :
-                                            type = '系统围栏'
-                                            break;
-                                    }
-                                    return h('div',[h('span', {}, type)]);
-                                } 
-                            },
-                            {
-                                title: '名称',
-                                key: 'geoname',
-                                render: function(h, params) {
-                                    return h('div',[
-                                    h('span', {                                       
-                                        }, params.row.name),
-                                    ,
-                                    h('Icon', {
-                                            props: {
-                                                size: 20,
-                                                type:"md-create" 
-                                            },
-                                            style: {
-                                                marginLeft:'5px'
-                                            },
-                                            on: {
-                                                click: function(e) {
-                                                    e.preventDefault(); 
-                                                    e.stopPropagation();
-                                                   vRoot.geoNameModal = true;
-                                                   rowData = params.row;
-                                                   vRoot.geoName = params.row.name;
-                                                   return false;
-                                                }
-                                            }
-                                        }, ""),
-                                    ])
+        function treeItemRender(h, params) {
+            var root = params.root,
+                node = params.node,
+                row = params.data;
+            return h('span', {
+                style: {
+                    display: 'inline-block',
+                    width: '343px'
+                },
+            }, [
+                h('span', [
+                    h('span', {
+                        style: {
+                            width: '271px',
+                            lineHeight: '23px',
+                            display: 'inline-block',
+                        },
+                        on: {
+                            click: function(e) {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                if (row.children) {
+                                    vRoot.handleSelectChange(row.children);
                                 }
+                                return false;
                             },
-                            {
-                                title: '操作',
-                                key: 'action',
-                                width: 80,
-                                render: function(h, params) {
-                                    return h('div', [
-                                        h('Button', {
-                                            props: {
-                                                type: 'error',
-                                                size: 'small'
-                                            },
-                                            style: {
-                                                marginRight: '5px'
-                                            },
-                                            on: {
-                                                click: function(e) {
-                                                    e.preventDefault();
-                                                    e.stopPropagation();
-                                                    vRoot.$Modal.confirm({
-                                                        title: "温馨提示",
-                                                        content:"确定要删除围栏吗?",
-                                                        onOk:function(){
-                                                            var url = myUrls.delGeoRecord() , index = params.index , row = params.row ;
-                                                            var data = {
-                                                                deviceid:deviceid,
-                                                                georecordid:row.georecordid
-                                                            };
-                                                            utils.sendAjax(url,data,function (resp) {
-                                                                if(resp.status === 0){
-                                                                    vRoot.tableData.splice(index,1);
-                                                                    vRoot.$Message.success("删除成功");
-                                                                    vRoot.map.clearOverlays();
-                                                                }else{
-                                                                    vRoot.$Message.success("删除失败");
-                                                                }
-                                                            })
-                                                        }
-                                                    })
-                                                    return false;
-                                                }
-                                            }
-                                        }, "删除"),
-                                    ]);
-                                }
-                            }
-                        ],
-                        tableData:[],
-                        treeData:[],
-                        originalData:[],
-                        loading:false,
-                        isCircular:false,
-                        isPolygon:false,
-                        markerIns:null,
-                        circularIns:null,
-                        radius:2000,
-                        min:200,
-                        max:100000,
-                        modal:false,
-                        type:null, // 1 是圈 2是多边形 3是行政区域'
-                        areaAddress:[],
-                        mapCenterPoint:null,
-                        provinceList:provinceList,
-                        userType:Cookies.get('userType')
+                        }
+                    }, row.title)
+                ]),
+                row.children ?
+                h('Button', {
+                    props: {
+                        type: 'primary',
+                        size: 'small'
                     },
-                    methods: {
-                        jumpSystemFence:function(){
-                            var url = 'setfencesystem.html?deviceid=' + deviceid + '&token=' + token;
-                            window.open(url);
-                        },
-                        initMap : function(){
-                            var self = this;
-                            var point = null;
-                            this.map = new BMap.Map("bmap",{minZoom:4,maxZoom:20});           
-                            this.map.enableScrollWheelZoom();
-                            this.map.enableAutoResize();
-                            this.map.disableDoubleClickZoom();
-                            this.map.centerAndZoom(new BMap.Point(108.0017245, 35.926895), 5)
-                            this.map.addControl(new BMap.CityListControl({
-                                anchor: BMAP_ANCHOR_TOP_LEFT,
-                                offset: new BMap.Size(10, 20),
-                                // 切换城市之间事件
-                                // onChangeBefore: function(){
-                                //    alert('before');
-                                // },
-                                // 切换城市之后事件
-                                // onChangeAfter:function(){
-                                 
-                                // }
-                            }));
+                    style: {
 
+                    },
+                    on: {
+                        click: function(e) {
+                            e.preventDefault();
+                            e.stopPropagation();
 
-                            this.map.addEventListener("moveend",function(e){   
-                                if(!self.isCircular) return;	
-                                self.getMapCenterPoint();
-                                self.markerIns.setPosition(self.mapCenterPoint);
-                                self.circularIns.setCenter(self.mapCenterPoint);
-                            },false);   
+                            var url = myUrls.addGeoRecord();
+                            var data = {
+                                type: 4,
+                                categoryid4: row.categoryid,
+                                name: row.title,
+                                deviceid: deviceid
+                            };
+                            console.log('data', data);
+                            utils.sendAjax(url, data, function(resp) {
+                                if (resp.status == 0) {
+                                    vRoot.$Message.success("添加成功");
+                                    vRoot.getFenceInfo();
+                                } else {
+                                    vRoot.$Message.error("添加失败");
+                                }
+                            })
+                            return false;
+                        }
+                    }
+                }, "添加") : null,
+            ]);
+        }
 
-                            this.map.addEventListener("zoomend",function(e){   	  
-                                if(!self.isCircular) return;	
-                                self.getMapCenterPoint();
-                                self.markerIns.setPosition(self.mapCenterPoint);
-                                self.circularIns.setCenter(self.mapCenterPoint);
-                            },false);
-
-
-                            this.map.addEventListener("rightclick",function(e){  
-                                if(self.type!== 2) return;
-                                drawingManager.close();  
-                                self.map.clearOverlays();
-                            }); 
-
-                            drawingManager = new BMapLib.DrawingManager(this.map, {  
-                                isOpen: false, //是否开启绘制模式  
-                                enableDrawingTool: false, //是否显示工具栏  
-                                drawingToolOptions: {  
-                                    anchor: BMAP_ANCHOR_TOP_RIGHT, //位置  
-                                    offset: new BMap.Size(5, 5), //偏离值  
-                                },  
-                                circleOptions: styleOptions, //圆的样式  
-                                polylineOptions: styleOptions, //线的样式  
-                                polygonOptions: styleOptions, //多边形的样式  
-                                rectangleOptions: styleOptions //矩形的样式  
-                            });    
-
-                            //添加鼠标绘制工具监听事件，用于获取绘制结果  
-                            drawingManager.addEventListener('polygoncomplete', this.overlaycomplete);  
-
-                            map = this.map;
-
-                        },
-                        overlaycomplete : function(overlay){  
-                            var path = overlay.getPath() , self = this;
-                            self.$Modal.confirm({
-                                    title: "温馨提示",
-                                    content:"是否提交多边形围栏?",
-                                    onOk:function(){
-                                        console.log('overlay', overlay);
-                                        var mapPath = function (item) {  
-                                            var lon_lat = bd09towgs84(item.lng,item.lat);
-                                            wgs84Path.push({
-                                                lon:lon_lat[0].toFixed(6),
-                                                lat:lon_lat[1].toFixed(6)
-                                            });
-                                        };
-                                        var wgs84Path = [];
-                                        path.forEach(mapPath);
-                                        var url = myUrls.addGeoRecord(),
-                                            data = {
-                                                points2:JSON.stringify(wgs84Path),
-                                                type:self.type,
-                                                deviceid:deviceid
-                                            };
-
-                                        utils.sendAjax(url,data,function (resp) {     
-                                            if(resp.status === 0){
-                                                self.$Message.success("添加成功")
-                                                self.getFenceInfo();
-                                            }else{
-                                                self.$Message.error("添加失败")
-                                            };
-                                            self.map.removeOverlay(overlay)
-                                        })
+        (function() {
+            vRoot = new Vue({
+                el: "#container",
+                data: {
+                    tipTitle: "多边形提示",
+                    tipContent: '点击多边形按钮,单击画图,双击结束',
+                    isEidt: false,
+                    map: null,
+                    geoName: '',
+                    geoNameModal: false,
+                    drawerModal: false,
+                    searchValue: '',
+                    columns: [{
+                        type: 'selection',
+                        width: 60,
+                        align: 'center'
+                    }, {
+                        type: 'index',
+                        width: 60,
+                        align: 'center',
+                    }, {
+                        title: '类型',
+                        key: 'type',
+                        width: 90,
+                        render: function(h, params) {
+                            var type = '';
+                            switch (params.row.type) {
+                                case 1:
+                                    type = '圆'
+                                    break;
+                                case 2:
+                                    type = '多边形'
+                                    break;
+                                case 3:
+                                    type = '行政区域'
+                                    break;
+                                case 4:
+                                    type = '系统围栏'
+                                    break;
+                            }
+                            return h('div', [h('span', {}, type)]);
+                        }
+                    }, {
+                        title: '名称',
+                        key: 'geoname',
+                        render: function(h, params) {
+                            return h('div', [
+                                h('span', {}, params.row.name), ,
+                                h('Icon', {
+                                    props: {
+                                        size: 20,
+                                        type: "md-create"
                                     },
-                                    onCancel:function(){
-                                        self.map.removeOverlay(overlay);
+                                    style: {
+                                        marginLeft: '5px'
+                                    },
+                                    on: {
+                                        click: function(e) {
+                                            e.preventDefault();
+                                            e.stopPropagation();
+                                            vRoot.geoNameModal = true;
+                                            rowData = params.row;
+                                            vRoot.geoName = params.row.name;
+                                            return false;
+                                        }
                                     }
-                                })
-                        },
-                        claerPolygon:function(){
-                            this.map.clearOverlays();
-                            this.drawingManager.close(); 
-                            startDrawPolygon(BMAP_DRAWING_POLYGON);
-                        },
-                        getAreaName:function(province,city,county){
-                            var result = [];
-                             for (var index = 0; index < provinceList.length; index++) {
-                                 var provinceInfo = provinceList[index];
-                                 if(provinceInfo.value == province){
-                                     var cityList = provinceInfo.children;
-                                     result.push(provinceInfo.label);
-                                     cityList.forEach(function (cityInfo) { 
-                                         if(cityInfo.value == city){
-                                            result.push(cityInfo.label);
-                                            var countyList = cityInfo.children;
-                                            countyList.forEach(function (countyInfo) {
-                                                if(countyInfo.value == county){
-                                                    result.push(countyInfo.label);
-                                                    return false;
+                                }, ""),
+                            ])
+                        }
+                    }, {
+                        title: '操作',
+                        key: 'action',
+                        width: 80,
+                        render: function(h, params) {
+                            return h('div', [
+                                h('Button', {
+                                    props: {
+                                        type: 'error',
+                                        size: 'small'
+                                    },
+                                    style: {
+                                        marginRight: '5px'
+                                    },
+                                    on: {
+                                        click: function(e) {
+                                            e.preventDefault();
+                                            e.stopPropagation();
+                                            vRoot.$Modal.confirm({
+                                                title: "温馨提示",
+                                                content: "确定要删除围栏吗?",
+                                                onOk: function() {
+                                                    var url = myUrls.delGeoRecord(),
+                                                        index = params.index,
+                                                        row = params.row;
+                                                    var data = {
+                                                        deviceid: deviceid,
+                                                        georecordid: row.georecordid
+                                                    };
+                                                    utils.sendAjax(url, data, function(resp) {
+                                                        if (resp.status === 0) {
+                                                            vRoot.tableData.splice(index, 1);
+                                                            vRoot.$Message.success("删除成功");
+                                                            vRoot.map.clearOverlays();
+                                                        } else {
+                                                            vRoot.$Message.success("删除失败");
+                                                        }
+                                                    })
                                                 }
                                             })
                                             return false;
-                                         }
-                                     });
-                                     break;
-                                 }
-                             } 
-                            return result;
-                        },
-                        transformPoint:function(pointList){
-                            var points = [];
-                            var iteratior = function (item) { 
-                                var pointStr = item.split(',')
-                                var pointArr = bd09towgs84(Number(pointStr[0].trim()),Number(pointStr[1].trim()));
-                                points.push({
-                                    lon:pointArr[0].toFixed(6),
-                                    lat:pointArr[1].toFixed(6),
-                                })
-                            }
-                            pointList.forEach(iteratior);
-                            return points;
-                        },
-                        getWgs84Boundaries:function(boundaries){
-                            var pointList = [] , me = this;
-                            boundaries.forEach(function (item) { 
-                                var points = me.transformPoint(item.split(";"));
-                                pointList = pointList.concat(points);
-                            })
-                            return pointList;
-                        },
-                        handleSubmitArea:function(){
-                            if(this.areaAddress.length){
-                                var areaName = this.getAreaName(this.areaAddress[0],this.areaAddress[1],this.areaAddress[2]) , me = this;
-                                var myBoundary  = new BMap.Boundary();
-                                myBoundary.get(areaName.join(','),function(resp){
-                                    if(resp.boundaries.length){
-                                        var points3 = me.getWgs84Boundaries(resp.boundaries);                                        
-                                        var points3Str = JSON.stringify(points3);
-                                        if(me.isEidt){
-                                            var url = myUrls.editGeoRecord();
-                                            var data = deepClone(rowData);
-                                            data.points3 = points3Str;
-                                            data.provinceindex3=Number(me.areaAddress[0]);
-                                            data.cityindex3=Number(me.areaAddress[1]);
-                                            data.areaindex3=Number(me.areaAddress[2]);
-                                            data.provincestr3=areaName[0];
-                                            data.citystr3=areaName[1];
-                                            data.areastr3=areaName[2];
-                                        }else{
-                                            var url = myUrls.addGeoRecord();
-                                            var data = {
-                                                name:areaName.join(','),
-                                                points3:points3Str,
-                                                deviceid:deviceid,
-                                                provinceindex3:Number(me.areaAddress[0]),
-                                                cityindex3:Number(me.areaAddress[1]),
-                                                areaindex3:Number(me.areaAddress[2]),
-                                                provincestr3:areaName[0],
-                                                citystr3:areaName[1],
-                                                areastr3:areaName[2],
-                                                type:me.type,
-                                            }
                                         }
-                                        
-                                        utils.sendAjax(url,data,function (resp) { 
-                                            if(resp.status === 0){
-                                                if(me.isEidt){
-                                                    me.$Message.success("编辑成功");
-                                                }else{
-                                                    me.$Message.success("添加成功");
-                                                }
-                                                me.map.clearOverlays();
-                                                me.redrawAreaAndViewPortCenter(points3Str);
-                                                me.getFenceInfo();
-                                            }else{
-                                                me.$Message.error("操作失败");
+                                    }
+                                }, "删除"),
+                            ]);
+                        }
+                    }],
+                    tableData: [],
+                    treeData: [],
+                    originalData: [],
+                    loading: false,
+                    isCircular: false,
+                    isPolygon: false,
+                    markerIns: null,
+                    circularIns: null,
+                    radius: 2000,
+                    min: 200,
+                    max: 100000,
+                    modal: false,
+                    type: null, // 1 是圈 2是多边形 3是行政区域'
+                    areaAddress: [],
+                    mapCenterPoint: null,
+                    provinceList: provinceList,
+                    userType: Cookies.get('userType')
+                },
+                methods: {
+                    jumpSystemFence: function() {
+                        var url = 'setfencesystem.html?deviceid=' + deviceid + '&token=' + token;
+                        window.open(url);
+                    },
+                    initMap: function() {
+                        var self = this;
+                        var point = null;
+                        this.map = new BMap.Map("bmap", {
+                            minZoom: 4,
+                            maxZoom: 20
+                        });
+                        this.map.enableScrollWheelZoom();
+                        this.map.enableAutoResize();
+                        this.map.disableDoubleClickZoom();
+                        this.map.centerAndZoom(new BMap.Point(108.0017245, 35.926895), 5)
+                        this.map.addControl(new BMap.CityListControl({
+                            anchor: BMAP_ANCHOR_TOP_LEFT,
+                            offset: new BMap.Size(10, 20),
+                            // 切换城市之间事件
+                            // onChangeBefore: function(){
+                            //    alert('before');
+                            // },
+                            // 切换城市之后事件
+                            // onChangeAfter:function(){
+
+                            // }
+                        }));
+
+
+                        this.map.addEventListener("moveend", function(e) {
+                            if (!self.isCircular) return;
+                            self.getMapCenterPoint();
+                            self.markerIns.setPosition(self.mapCenterPoint);
+                            self.circularIns.setCenter(self.mapCenterPoint);
+                        }, false);
+
+                        this.map.addEventListener("zoomend", function(e) {
+                            if (!self.isCircular) return;
+                            self.getMapCenterPoint();
+                            self.markerIns.setPosition(self.mapCenterPoint);
+                            self.circularIns.setCenter(self.mapCenterPoint);
+                        }, false);
+
+
+                        this.map.addEventListener("rightclick", function(e) {
+                            if (self.type !== 2) return;
+                            drawingManager.close();
+                            self.map.clearOverlays();
+                        });
+
+                        drawingManager = new BMapLib.DrawingManager(this.map, {
+                            isOpen: false, //是否开启绘制模式  
+                            enableDrawingTool: false, //是否显示工具栏  
+                            drawingToolOptions: {
+                                anchor: BMAP_ANCHOR_TOP_RIGHT, //位置  
+                                offset: new BMap.Size(5, 5), //偏离值  
+                            },
+                            circleOptions: styleOptions, //圆的样式  
+                            polylineOptions: styleOptions, //线的样式  
+                            polygonOptions: styleOptions, //多边形的样式  
+                            rectangleOptions: styleOptions //矩形的样式  
+                        });
+
+                        //添加鼠标绘制工具监听事件，用于获取绘制结果  
+                        drawingManager.addEventListener('polygoncomplete', this.overlaycomplete);
+
+                        map = this.map;
+
+                    },
+                    overlaycomplete: function(overlay) {
+                        var path = overlay.getPath(),
+                            self = this;
+                        self.$Modal.confirm({
+                            title: "温馨提示",
+                            content: "是否提交多边形围栏?",
+                            onOk: function() {
+                                console.log('overlay', overlay);
+                                var mapPath = function(item) {
+                                    var lon_lat = bd09towgs84(item.lng, item.lat);
+                                    wgs84Path.push({
+                                        lon: lon_lat[0].toFixed(6),
+                                        lat: lon_lat[1].toFixed(6)
+                                    });
+                                };
+                                var wgs84Path = [];
+                                path.forEach(mapPath);
+                                var url = myUrls.addGeoRecord(),
+                                    data = {
+                                        points2: JSON.stringify(wgs84Path),
+                                        type: self.type,
+                                        deviceid: deviceid
+                                    };
+
+                                utils.sendAjax(url, data, function(resp) {
+                                    if (resp.status === 0) {
+                                        self.$Message.success("添加成功")
+                                        self.getFenceInfo();
+                                    } else {
+                                        self.$Message.error("添加失败")
+                                    };
+                                    self.map.removeOverlay(overlay)
+                                })
+                            },
+                            onCancel: function() {
+                                self.map.removeOverlay(overlay);
+                            }
+                        })
+                    },
+                    claerPolygon: function() {
+                        this.map.clearOverlays();
+                        this.drawingManager.close();
+                        startDrawPolygon(BMAP_DRAWING_POLYGON);
+                    },
+                    getAreaName: function(province, city, county) {
+                        var result = [];
+                        for (var index = 0; index < provinceList.length; index++) {
+                            var provinceInfo = provinceList[index];
+                            if (provinceInfo.value == province) {
+                                var cityList = provinceInfo.children;
+                                result.push(provinceInfo.label);
+                                cityList.forEach(function(cityInfo) {
+                                    if (cityInfo.value == city) {
+                                        result.push(cityInfo.label);
+                                        var countyList = cityInfo.children;
+                                        countyList.forEach(function(countyInfo) {
+                                            if (countyInfo.value == county) {
+                                                result.push(countyInfo.label);
+                                                return false;
                                             }
                                         })
-                                    }else{
-
+                                        return false;
                                     }
                                 });
-                            }else{
-                                this.$Message.error("请选择地区");
-                            }
-
-                        },
-                        changeValue:function(e){
-                            this.circularIns.setRadius(e);
-                        },
-                        changeGeoName:function(){
-                            if(this.geoName.trim()!==""){
-                                var url = myUrls.editGeoRecord() , me = this;
-                                var data = deepClone(rowData);
-                                data.name = me.geoName;
-                                utils.sendAjax(url,data,function (resp) { 
-                                    if(resp.status === 0){
-                                        rowData.name = me.geoName;
-                                        me.geoNameModal = false;
-                                        me.geoName = "";
-                                        me.$Message.success("修改成功");
-                                    }else{
-                                        me.$Message.error("修改失败");
-                                    }
-                                })
-                            }else{
-                                this.$Message.error("请填写名称");
-                            }
-                        },
-                        areaModal:function(){
-                            this.isCircular = false;
-                            this.isPolygon = false;
-                            this.type = 3;
-                            this.modal = true;
-                            this.isEidt = false;
-                            this.areaAddress = [];
-                            drawingManager.close();  
-                            this.map.clearOverlays();
-                        },
-                        handleClickRow:function(row,index){
-                            rowData = row;
-                            var type = row.type , me = this;
-                            this.$refs.selection.selectAll(false);
-                            this.map.clearOverlays();
-                            this.isEidt = true;
-                            drawingManager.close();  
-                            switch(type){
-                                case 1 :
-                                me.modal = false;
-                                var lon_lan = wgs84tobd09(row.lon1,row.lat1);
-                                var point = new BMap.Point(lon_lan[0],lon_lan[1]);
-                                    me.radius = row.radius1;
-                                    me.map.setCenter(point);
-                                    me.setMapZoom(me.radius);
-                                    setTimeout(function () { 
-                                        me.drawCircular();
-                                        me.isEidt = true;     
-                                    },300);
-                                    break;
-                                case 2 :
-                                    this.modal = false;
-                                    this.isCircular = false;
-                                    this.isPolygon = true;
-                                    this.redrawPolygon(row);
-                                    break;
-                                case 3 :
-                                    me.isCircular = false;
-                                    me.areaAddress = [String(row.provinceindex3),String(row.cityindex3),String(row.areaindex3)];
-                                    me.modal = true;
-                                    me.redrawAreaAndViewPortCenter(row.points3);
-                                    break;
-                                case 4 :
-                                    var categoryid = row.categoryid4;
-                                    var info = me.getTreeItemData(categoryid);
-                                    me.handleSelectChange(info.children)                                  
-                                    break;
-                            }
-                        },
-                        getTreeItemData:function(categoryid){
-                            var result = null;
-                            this.originalData.forEach(function(record){
-                                if(record.categoryid === categoryid){
-                                    result = record;
-                                }
-                            });
-                            return result;
-                        },
-                        handleSelectChange:function(selection){
-                            this.modal = false;
-                            this.isCircular = false;
-                            this.isPolygon = false;
-                            this.map.clearOverlays();
-                            drawingManager.close(); 
-                            var me = this;
-                            if(selection.length){
-                                var points = []
-                                for (var index = 0; index < selection.length; index++) {
-                                    var element = selection[index];
-                                    this.drawAllOverlays(element);
-                                    switch(element.type){
-                                        case 1 :
-                                            var lon_lan = wgs84tobd09(element.lon1,element.lat1);
-                                            var point = new BMap.Point(lon_lan[0],lon_lan[1]);
-                                            points.push(point);
-                                            break;
-                                        case 2 :
-                                            points = points.concat(this.wgs84tobd09Points(element.points2));
-                                            break;
-                                        case 3 :
-                                            points = points.concat(this.wgs84tobd09Points(element.points3));
-                                            break;
-                                        case 4 :
-                                            var categoryid = element.categoryid4; 
-                                            var info = this.getTreeItemData(categoryid);
-                                            if(info){
-                                                info.children.forEach(function(record){
-                                                    me.drawAllOverlays(record);
-                                                    switch(record.type){
-                                                        case 1 :
-                                                            var lon_lan = wgs84tobd09(record.lon1,record.lat1);
-                                                            var point = new BMap.Point(lon_lan[0],lon_lan[1]);
-                                                            points.push(point);
-                                                            break;
-                                                        case 2 :
-                                                            points = points.concat(me.wgs84tobd09Points(record.points2));
-                                                            break;
-                                                    }
-                                                });
-                                            }
-                                            break;
-                                    }
-                                }
-                                this.setViewPortCenter(points);
-                            }
-                        },
-                        drawAllOverlays:function(row){
-                            var type = row.type , me = this;
-                            switch(type){
-                                case 1 :
-                                    var lon_lan = wgs84tobd09(row.lon1,row.lat1);
-                                    var markerPoint = new BMap.Point(lon_lan[0],lon_lan[1]);
-                                    var marker = new BMap.Marker(markerPoint);
-                                    var circular = new BMap.Circle(markerPoint,row.radius1,styleOptions);
-                                    this.map.addOverlay(marker);  
-                                    this.map.addOverlay(circular); 
-                                    break;
-                                case 2 :
-                                    var bdpoints = this.wgs84tobd09Points(row.points2);
-                                    var polygon = new BMap.Polygon(bdpoints, styleOptions);  
-                                    this.map.addOverlay(polygon); 
-                                    break;
-                                case 3 :
-                                    this.redrawArea(row.points3);
-                                    break;
-                            }
-                        },
-                        drawCircular:function(){
-                            drawingManager.close(); 
-                            this.map.clearOverlays();   
-                            this.isEidt = false;
-                            this.getMapCenterPoint();
-                            this.isCircular = true;
-                            this.isPolygon = false;
-                            this.type = 1;
-                            this.markerIns = new BMap.Marker(this.mapCenterPoint);
-                            // this.markerIns .enableDragging();
-                            this.map.addOverlay(this.markerIns);  
-                            this.circularIns = new BMap.Circle(this.mapCenterPoint,this.radius,styleOptions);
-                            this.map.addOverlay(this.circularIns);  
-                        },
-                        addCircular:function(){
-                            var url = null , me = this , data = null;
-                            var lng_lat = bd09towgs84(this.mapCenterPoint.lng,this.mapCenterPoint.lat);  	
-                            
-                            if(this.isEidt){
-                                url = myUrls.editGeoRecord() ;
-                                data = deepClone(rowData);
-                                data.lat1 = lng_lat[1];
-                                data.lon1 = lng_lat[0];
-                                data.radius1 = this.radius;
-                            }else{
-                                url = myUrls.addGeoRecord() ;
-                                data = {
-                                    deviceid:deviceid,
-                                    type:this.type,
-                                    lat1: lng_lat[1],   
-                                    lon1: lng_lat[0],   
-                                    radius1:this.radius
-                                };
-                            }
-                            utils.sendAjax(url,data,function (resp) { 
-                                if(resp.status === 0){
-                                    me.map.clearOverlays();
-                                    me.getFenceInfo();
-                                    me.isCircular = false;
-                                    if(me.isEidt){
-                                        me.$Message.success("编辑围栏成功");
-                                    }else{
-                                        me.$Message.success("保存围栏成功");
-                                    }; 
-                                }else{
-                                    me.$Message.error("保存围栏失败");
-                                };
-                            });
-                        },
-                        drawPolygon:function(){
-                            this.type = 2;
-                            this.map.clearOverlays();
-                            this.isCircular = false;
-                            this.modal = false;
-                            this.isPolygon = true;
-                            this.isEidt = false;
-                            startDrawPolygon(BMAP_DRAWING_POLYGON);
-                        },
-                        wgs84tobd09Points:function(pointsStr){
-                            var points = JSON.parse(pointsStr);
-                            var bdpoints = [];
-                                points.forEach(function (item) { 
-                                    var lon_lat = wgs84tobd09(Number(item.lon),Number(item.lat));                     
-                                    bdpoints.push(new BMap.Point(lon_lat[0],lon_lat[1]))
-                                });
-                            return bdpoints;
-                        },
-                        redrawPolygon:function(row){
-                            var bdpoints = this.wgs84tobd09Points(row.points2);
-                            var polygon = new BMap.Polygon(bdpoints, styleOptions);  
-                            this.map.addOverlay(polygon); 
-                            this.setViewPortCenter(bdpoints);
-                        },
-                        redrawArea:function(pointsStr){
-                            var bdpoints = this.wgs84tobd09Points(pointsStr);
-                            var polygon = new BMap.Polygon(bdpoints, styleOptions);  
-                            this.map.addOverlay(polygon); 
-                        },
-                        redrawAreaAndViewPortCenter:function(pointsStr){
-                            var bdpoints = this.wgs84tobd09Points(pointsStr);
-                            var polygon = new BMap.Polygon(bdpoints,styleOptions);  
-                            this.map.addOverlay(polygon); 
-                            this.setViewPortCenter(bdpoints);
-                        },
-                        setViewPortCenter: function (lines) {
-                            var view = this.map.getViewport(eval(lines));
-                            var mapZoom = view.zoom;
-                            var centerPoint = view.center;
-                            this.map.centerAndZoom(centerPoint, mapZoom);
-                        },
-                        getMapCenterPoint:function(){
-                            var pt = this.map.getCenter();							
-                                this.mapCenterPoint = pt;                               
-                        },
-                        getFenceInfo:function(){
-                            var url = myUrls.queryGeoRecords();
-                            utils.sendAjax(url,{deviceid:deviceid},this.doFenceInfo);
-                        },
-                        doFenceInfo:function(resp){
-                            if(resp.status === 0 && resp.records && resp.records.length){
-                                this.tableData = resp.records;
-                            }else{
-                                this.$Message.error('没有数据');
-                            }
-                        },
-                        setMapZoom:function(value){
-                            var zoom = 4;
-                            if(value > 90000){
-                                zoom = 5;
-                            }else if(value > 90000){
-                                zoom = 6;
-                            }else if(value > 70000){
-                                zoom = 7;
-                            }else if(value > 50000){
-                                zoom = 8;
-                            }else if(value > 40000){
-                                zoom = 9;
-                            }else if(value > 30000){
-                                zoom = 10;
-                            }else if(value > 20000){
-                                zoom = 11;
-                            }else if(value > 10000){
-                                zoom = 12;
-                            }else if(value > 5000){
-                                zoom = 13;
-                            }else if(value > 1000){
-                                zoom = 14;
-                            }else{
-                                zoom = 16;
-                            };
-                            this.map.setZoom(zoom);
-                        },
-                        openDrawer:function(){
-                            this.drawerModal = true;
-                        },
-                        _queryGeoSystemRecords:function(){
-                            var url = myUrls.queryGeoSystemRecords() , me = this;
-                            utils.sendAjax(url,{},function(resp){
-                                if(resp.status == 0){
-                                    if(resp.categorys){
-                                        me.filterOriginalData(resp.categorys);
-                                    }
-                                }
-                            })
-                        },
-                        filterOriginalData:function(categorys){
-                            var originalData = [];
-                            categorys.forEach(function(item){
-                                var treeItem = {
-                                    title:item.name,
-                                    categoryid:item.categoryid,
-                                    children:[],
-                                    render:treeItemRender
-                                };
-                                item.records.forEach(function(record){
-                                    record.title = record.name;
-                                    record.render = treeItemRender;
-                                    record.categoryid = item.categoryid,
-                                    treeItem.children.push(record);
-                                
-                                });
-                                originalData.push(treeItem);
-                            });
-                            this.originalData = originalData;
-                            this.treeData = originalData;
-                        },
-                        searchChange:utils.debounce(function(vm,value){
-                            if(value){
-                                var filterData = [];
-                                var originalData = deepClone(vm.originalData);
-                                originalData.forEach(function (item) {
-                                    item.expand = true;
-                                    if(item.title.indexOf(value)!=-1){
-                                        filterData.push(item);     
-                                    }else{
-                                        var children = []
-                                        item.children.forEach(function(record){
-                                            if(record.title.indexOf(value)!=-1){
-                                                children.push(record);
-                                            }
-                                        });
-                                        if(children.length){
-                                            item.children = children;
-                                            filterData.push(item);  
-                                        }
-                                    }
-                                });
-                                vm.treeData = filterData;
-                            }else{
-                                vm.treeData = vm.originalData; 
-                            } 
-                        },500),
-                    },
-                    computed:{
-                        areaTitle:function(){
-                            if(this.isEidt){
-                                return '编辑区域围栏';
-                            }else{
-                                return '添加区域围栏';
+                                break;
                             }
                         }
+                        return result;
                     },
-                    watch: {
-                        searchValue:function(newValue){
-                            this.searchChange(this,newValue);   
-                        },
+                    transformPoint: function(pointList) {
+                        var points = [];
+                        var iteratior = function(item) {
+                            var pointStr = item.split(',')
+                            var pointArr = bd09towgs84(Number(pointStr[0].trim()), Number(pointStr[1].trim()));
+                            points.push({
+                                lon: pointArr[0].toFixed(6),
+                                lat: pointArr[1].toFixed(6),
+                            })
+                        }
+                        pointList.forEach(iteratior);
+                        return points;
                     },
-                    mounted:function () {
-                        this.initMap();
-                        this.getFenceInfo();
-                        this._queryGeoSystemRecords();
+                    getWgs84Boundaries: function(boundaries) {
+                        var pointList = [],
+                            me = this;
+                        boundaries.forEach(function(item) {
+                            var points = me.transformPoint(item.split(";"));
+                            pointList = pointList.concat(points);
+                        })
+                        return pointList;
+                    },
+                    handleSubmitArea: function() {
+                        if (this.areaAddress.length) {
+                            var areaName = this.getAreaName(this.areaAddress[0], this.areaAddress[1], this.areaAddress[2]),
+                                me = this;
+                            var myBoundary = new BMap.Boundary();
+                            myBoundary.get(areaName.join(','), function(resp) {
+                                if (resp.boundaries.length) {
+                                    var points3 = me.getWgs84Boundaries(resp.boundaries);
+                                    var points3Str = JSON.stringify(points3);
+                                    console.log('points3', points3);
+                                    if (me.isEidt) {
+                                        var url = myUrls.editGeoRecord();
+                                        var data = deepClone(rowData);
+                                        data.points3 = points3Str;
+                                        data.provinceindex3 = Number(me.areaAddress[0]);
+                                        data.cityindex3 = Number(me.areaAddress[1]);
+                                        data.areaindex3 = Number(me.areaAddress[2]);
+                                        data.provincestr3 = areaName[0];
+                                        data.citystr3 = areaName[1];
+                                        data.areastr3 = areaName[2];
+                                    } else {
+                                        var url = myUrls.addGeoRecord();
+                                        var data = {
+                                            name: areaName.join(','),
+                                            points3: points3Str,
+                                            deviceid: deviceid,
+                                            provinceindex3: Number(me.areaAddress[0]),
+                                            cityindex3: Number(me.areaAddress[1]),
+                                            areaindex3: Number(me.areaAddress[2]),
+                                            provincestr3: areaName[0],
+                                            citystr3: areaName[1],
+                                            areastr3: areaName[2],
+                                            type: me.type,
+                                        }
+                                    }
+
+                                    utils.sendAjax(url, data, function(resp) {
+                                        if (resp.status === 0) {
+                                            if (me.isEidt) {
+                                                me.$Message.success("编辑成功");
+                                            } else {
+                                                me.$Message.success("添加成功");
+                                            }
+                                            me.map.clearOverlays();
+                                            me.redrawAreaAndViewPortCenter(points3Str);
+                                            me.getFenceInfo();
+                                        } else {
+                                            me.$Message.error("操作失败");
+                                        }
+                                    })
+                                } else {
+
+                                }
+                            });
+                        } else {
+                            this.$Message.error("请选择地区");
+                        }
+
+                    },
+                    changeValue: function(e) {
+                        this.circularIns.setRadius(e);
+                    },
+                    changeGeoName: function() {
+                        if (this.geoName.trim() !== "") {
+                            var url = myUrls.editGeoRecord(),
+                                me = this;
+                            var data = deepClone(rowData);
+                            data.name = me.geoName;
+                            utils.sendAjax(url, data, function(resp) {
+                                if (resp.status === 0) {
+                                    rowData.name = me.geoName;
+                                    me.geoNameModal = false;
+                                    me.geoName = "";
+                                    me.$Message.success("修改成功");
+                                } else {
+                                    me.$Message.error("修改失败");
+                                }
+                            })
+                        } else {
+                            this.$Message.error("请填写名称");
+                        }
+                    },
+                    areaModal: function() {
+                        this.isCircular = false;
+                        this.isPolygon = false;
+                        this.type = 3;
+                        this.modal = true;
+                        this.isEidt = false;
+                        this.areaAddress = [];
+                        drawingManager.close();
+                        this.map.clearOverlays();
+                    },
+                    handleClickRow: function(row, index) {
+                        rowData = row;
+                        var type = row.type,
+                            me = this;
+                        this.$refs.selection.selectAll(false);
+                        this.map.clearOverlays();
+                        this.isEidt = true;
+                        drawingManager.close();
+                        switch (type) {
+                            case 1:
+                                me.modal = false;
+                                var lon_lan = wgs84tobd09(row.lon1, row.lat1);
+                                var point = new BMap.Point(lon_lan[0], lon_lan[1]);
+                                me.radius = row.radius1;
+                                me.map.setCenter(point);
+                                me.setMapZoom(me.radius);
+                                setTimeout(function() {
+                                    me.drawCircular();
+                                    me.isEidt = true;
+                                }, 300);
+                                break;
+                            case 2:
+                                this.modal = false;
+                                this.isCircular = false;
+                                this.isPolygon = true;
+                                this.redrawPolygon(row);
+                                break;
+                            case 3:
+                                me.isCircular = false;
+                                me.areaAddress = [String(row.provinceindex3), String(row.cityindex3), String(row.areaindex3)];
+                                me.modal = true;
+                                me.redrawAreaAndViewPortCenter(row.points3);
+                                break;
+                            case 4:
+                                var categoryid = row.categoryid4;
+                                var info = me.getTreeItemData(categoryid);
+                                me.handleSelectChange(info.children)
+                                break;
+                        }
+                    },
+                    getTreeItemData: function(categoryid) {
+                        var result = null;
+                        this.originalData.forEach(function(record) {
+                            if (record.categoryid === categoryid) {
+                                result = record;
+                            }
+                        });
+                        return result;
+                    },
+                    handleSelectChange: function(selection) {
+                        this.modal = false;
+                        this.isCircular = false;
+                        this.isPolygon = false;
+                        this.map.clearOverlays();
+                        drawingManager.close();
+                        var me = this;
+                        if (selection.length) {
+                            var points = []
+                            for (var index = 0; index < selection.length; index++) {
+                                var element = selection[index];
+                                this.drawAllOverlays(element);
+                                switch (element.type) {
+                                    case 1:
+                                        var lon_lan = wgs84tobd09(element.lon1, element.lat1);
+                                        var point = new BMap.Point(lon_lan[0], lon_lan[1]);
+                                        points.push(point);
+                                        break;
+                                    case 2:
+                                        points = points.concat(this.wgs84tobd09Points(element.points2));
+                                        break;
+                                    case 3:
+                                        points = points.concat(this.wgs84tobd09Points(element.points3));
+                                        break;
+                                    case 4:
+                                        var categoryid = element.categoryid4;
+                                        var info = this.getTreeItemData(categoryid);
+                                        if (info) {
+                                            info.children.forEach(function(record) {
+                                                me.drawAllOverlays(record);
+                                                switch (record.type) {
+                                                    case 1:
+                                                        var lon_lan = wgs84tobd09(record.lon1, record.lat1);
+                                                        var point = new BMap.Point(lon_lan[0], lon_lan[1]);
+                                                        points.push(point);
+                                                        break;
+                                                    case 2:
+                                                        points = points.concat(me.wgs84tobd09Points(record.points2));
+                                                        break;
+                                                }
+                                            });
+                                        }
+                                        break;
+                                }
+                            }
+                            this.setViewPortCenter(points);
+                        }
+                    },
+                    drawAllOverlays: function(row) {
+                        var type = row.type,
+                            me = this;
+                        switch (type) {
+                            case 1:
+                                var lon_lan = wgs84tobd09(row.lon1, row.lat1);
+                                var markerPoint = new BMap.Point(lon_lan[0], lon_lan[1]);
+                                var marker = new BMap.Marker(markerPoint);
+                                var circular = new BMap.Circle(markerPoint, row.radius1, styleOptions);
+                                this.map.addOverlay(marker);
+                                this.map.addOverlay(circular);
+                                break;
+                            case 2:
+                                var bdpoints = this.wgs84tobd09Points(row.points2);
+                                var polygon = new BMap.Polygon(bdpoints, styleOptions);
+                                this.map.addOverlay(polygon);
+                                break;
+                            case 3:
+                                this.redrawArea(row.points3);
+                                break;
+                        }
+                    },
+                    drawCircular: function() {
+                        drawingManager.close();
+                        this.map.clearOverlays();
+                        this.isEidt = false;
+                        this.getMapCenterPoint();
+                        this.isCircular = true;
+                        this.isPolygon = false;
+                        this.type = 1;
+                        this.markerIns = new BMap.Marker(this.mapCenterPoint);
+                        // this.markerIns .enableDragging();
+                        this.map.addOverlay(this.markerIns);
+                        this.circularIns = new BMap.Circle(this.mapCenterPoint, this.radius, styleOptions);
+                        this.map.addOverlay(this.circularIns);
+                    },
+                    addCircular: function() {
+                        var url = null,
+                            me = this,
+                            data = null;
+                        var lng_lat = bd09towgs84(this.mapCenterPoint.lng, this.mapCenterPoint.lat);
+
+                        if (this.isEidt) {
+                            url = myUrls.editGeoRecord();
+                            data = deepClone(rowData);
+                            data.lat1 = lng_lat[1];
+                            data.lon1 = lng_lat[0];
+                            data.radius1 = this.radius;
+                        } else {
+                            url = myUrls.addGeoRecord();
+                            data = {
+                                deviceid: deviceid,
+                                type: this.type,
+                                lat1: lng_lat[1],
+                                lon1: lng_lat[0],
+                                radius1: this.radius
+                            };
+                        }
+                        utils.sendAjax(url, data, function(resp) {
+                            if (resp.status === 0) {
+                                me.map.clearOverlays();
+                                me.getFenceInfo();
+                                me.isCircular = false;
+                                if (me.isEidt) {
+                                    me.$Message.success("编辑围栏成功");
+                                } else {
+                                    me.$Message.success("保存围栏成功");
+                                };
+                            } else {
+                                me.$Message.error("保存围栏失败");
+                            };
+                        });
+                    },
+                    drawPolygon: function() {
+                        this.type = 2;
+                        this.map.clearOverlays();
+                        this.isCircular = false;
+                        this.modal = false;
+                        this.isPolygon = true;
+                        this.isEidt = false;
+                        startDrawPolygon(BMAP_DRAWING_POLYGON);
+                    },
+                    wgs84tobd09Points: function(pointsStr) {
+                        var points = JSON.parse(pointsStr);
+                        var bdpoints = [];
+                        points.forEach(function(item) {
+                            var lon_lat = wgs84tobd09(Number(item.lon), Number(item.lat));
+                            bdpoints.push(new BMap.Point(lon_lat[0], lon_lat[1]))
+                        });
+                        return bdpoints;
+                    },
+                    redrawPolygon: function(row) {
+                        var bdpoints = this.wgs84tobd09Points(row.points2);
+                        var polygon = new BMap.Polygon(bdpoints, styleOptions);
+                        this.map.addOverlay(polygon);
+                        this.setViewPortCenter(bdpoints);
+                    },
+                    redrawArea: function(pointsStr) {
+                        var bdpoints = this.wgs84tobd09Points(pointsStr);
+                        var polygon = new BMap.Polygon(bdpoints, styleOptions);
+                        this.map.addOverlay(polygon);
+                    },
+                    redrawAreaAndViewPortCenter: function(pointsStr) {
+                        var bdpoints = this.wgs84tobd09Points(pointsStr);
+                        var polygon = new BMap.Polygon(bdpoints, styleOptions);
+                        this.map.addOverlay(polygon);
+                        this.setViewPortCenter(bdpoints);
+                    },
+                    setViewPortCenter: function(lines) {
+                        var view = this.map.getViewport(eval(lines));
+                        var mapZoom = view.zoom;
+                        var centerPoint = view.center;
+                        this.map.centerAndZoom(centerPoint, mapZoom);
+                    },
+                    getMapCenterPoint: function() {
+                        var pt = this.map.getCenter();
+                        this.mapCenterPoint = pt;
+                    },
+                    getFenceInfo: function() {
+                        var url = myUrls.queryGeoRecords();
+                        utils.sendAjax(url, {
+                            deviceid: deviceid
+                        }, this.doFenceInfo);
+                    },
+                    doFenceInfo: function(resp) {
+                        if (resp.status === 0 && resp.records && resp.records.length) {
+                            this.tableData = resp.records;
+                        } else {
+                            this.$Message.error('没有数据');
+                        }
+                    },
+                    setMapZoom: function(value) {
+                        var zoom = 4;
+                        if (value > 90000) {
+                            zoom = 5;
+                        } else if (value > 90000) {
+                            zoom = 6;
+                        } else if (value > 70000) {
+                            zoom = 7;
+                        } else if (value > 50000) {
+                            zoom = 8;
+                        } else if (value > 40000) {
+                            zoom = 9;
+                        } else if (value > 30000) {
+                            zoom = 10;
+                        } else if (value > 20000) {
+                            zoom = 11;
+                        } else if (value > 10000) {
+                            zoom = 12;
+                        } else if (value > 5000) {
+                            zoom = 13;
+                        } else if (value > 1000) {
+                            zoom = 14;
+                        } else {
+                            zoom = 16;
+                        };
+                        this.map.setZoom(zoom);
+                    },
+                    openDrawer: function() {
+                        this.drawerModal = true;
+                    },
+                    _queryGeoSystemRecords: function() {
+                        var url = myUrls.queryGeoSystemRecords(),
+                            me = this;
+                        utils.sendAjax(url, {}, function(resp) {
+                            if (resp.status == 0) {
+                                if (resp.categorys) {
+                                    me.filterOriginalData(resp.categorys);
+                                }
+                            }
+                        })
+                    },
+                    filterOriginalData: function(categorys) {
+                        var originalData = [];
+                        categorys.forEach(function(item) {
+                            var treeItem = {
+                                title: item.name,
+                                categoryid: item.categoryid,
+                                children: [],
+                                render: treeItemRender
+                            };
+                            item.records.forEach(function(record) {
+                                record.title = record.name;
+                                record.render = treeItemRender;
+                                record.categoryid = item.categoryid,
+                                    treeItem.children.push(record);
+
+                            });
+                            originalData.push(treeItem);
+                        });
+                        this.originalData = originalData;
+                        this.treeData = originalData;
+                    },
+                    searchChange: utils.debounce(function(vm, value) {
+                        if (value) {
+                            var filterData = [];
+                            var originalData = deepClone(vm.originalData);
+                            originalData.forEach(function(item) {
+                                item.expand = true;
+                                if (item.title.indexOf(value) != -1) {
+                                    filterData.push(item);
+                                } else {
+                                    var children = []
+                                    item.children.forEach(function(record) {
+                                        if (record.title.indexOf(value) != -1) {
+                                            children.push(record);
+                                        }
+                                    });
+                                    if (children.length) {
+                                        item.children = children;
+                                        filterData.push(item);
+                                    }
+                                }
+                            });
+                            vm.treeData = filterData;
+                        } else {
+                            vm.treeData = vm.originalData;
+                        }
+                    }, 500),
+                },
+                computed: {
+                    areaTitle: function() {
+                        if (this.isEidt) {
+                            return '编辑区域围栏';
+                        } else {
+                            return '添加区域围栏';
+                        }
                     }
+                },
+                watch: {
+                    searchValue: function(newValue) {
+                        this.searchChange(this, newValue);
+                    },
+                },
+                mounted: function() {
+                    this.initMap();
+                    this.getFenceInfo();
+                    this._queryGeoSystemRecords();
+                }
             });
         })();
     </script>
 </body>
+
 </html>

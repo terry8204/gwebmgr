@@ -487,7 +487,7 @@
                     <Spin fix size="large"></Spin>
                 </div>
                 </div>
-                <div class="map-wraper">
+                <div class="map-wraper" ref="mapWraper">
                     <div class="map_manager">
                         <div style="float:left;height:35px; line-height:35px;padding-left:15px;color:red;font-size:12px;">{{intervalTime}}{{$t("monitor.refreshAfter")}}</div>
                         <ul class="ul-manager-wraper">
@@ -495,6 +495,9 @@
                                 <i-select v-model="mapType" size="small" style="width:100px">
                                     <i-option v-for="item in mapList" :value="item.value" :key="item.value">{{ item.label }}</i-option>
                                 </i-select>
+                            </li>
+                            <li class="full-map-wraper">
+                                <Icon @click.native="handleMapSizeChange" :type="isFullMap ?'md-contract':'md-expand'" size="23"></Icon>
                             </li>
                             <li class="gongju">
                                 <Dropdown transfer>

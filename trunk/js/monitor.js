@@ -24,6 +24,7 @@ var monitor = {
     data: function() {
         var vm = this;
         return {
+            isFullMap: false,
             readonly: true,
             cmdSettings: {},
             placeholder: "",
@@ -698,6 +699,32 @@ var monitor = {
                 };
             };
         },
+        handleMapSizeChange: function() {
+            var mapWraper = this.$refs.mapWraper;
+            if (this.isFullMap) {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen()
+                } else if (document.mozCancelFullScreen) {
+                    document.mozCancelFullScreen()
+                } else if (document.webkitCancelFullScreen) {
+                    document.webkitCancelFullScreen()
+                } else if (document.msExitFullscreen) {
+                    document.msExitFullscreen()
+                }
+                this.isFullMap = false;
+            } else {
+                if (mapWraper.requestFullscreen) {
+                    mapWraper.requestFullscreen()
+                } else if (mapWraper.mozRequestFullScreen) {
+                    mapWraper.mozRequestFullScreen()
+                } else if (mapWraper.webkitRequestFullScreen) {
+                    mapWraper.webkitRequestFullScreen()
+                } else if (mapWraper.msRequestFullscreen) {
+                    mapWraper.msRequestFullscreen()
+                }
+                this.isFullMap = true;
+            }
+        },
         sosoSelect: function(value) {
             this.sosoValue = value.devicename;
             this.filterData = [];
@@ -1367,6 +1394,11 @@ var monitor = {
                 }
 
             }
+        },
+        changeIsFullMapIcon: function() {
+            var isFullscreen = document.fullscreenElement || document.mozFullScreenElement || document.webkitFullscreenElement || document.fullScreen || document.mozFullScreen || document.webkitIsFullScreen
+            isFullscreen = !!isFullscreen;
+            this.isFullMap = isFullscreen;
         }
     },
     computed: {
@@ -1442,12 +1474,30 @@ var monitor = {
         }
     },
     mounted: function() {
+        var me = this;
         this.intervalTime = Number(this.stateIntervalTime);
         this.placeholder = this.$t("monitor.placeholder");
         this.initMap();
         if (this.deviceTypes.length) {
             this.getMonitorList();
         }
+
+        document.addEventListener('fullscreenchange', function() {
+            me.changeIsFullMapIcon();
+        })
+        document.addEventListener('mozfullscreenchange', function() {
+            var isFullscreen = document.fullscreenElement || document.mozFullScreenElement || document.webkitFullscreenElement || document.fullScreen || document.mozFullScreen || document.webkitIsFullScreen
+            isFullscreen = !!isFullscreen;
+            me.isFullMap = isFullscreen;
+        })
+        document.addEventListener('webkitfullscreenchange', function() {
+            var isFullscreen = document.fullscreenElement || document.mozFullScreenElement || document.webkitFullscreenElement || document.fullScreen || document.mozFullScreen || document.webkitIsFullScreen
+            isFullscreen = !!isFullscreen;
+            me.isFullMap = isFullscreen;
+        })
+        document.addEventListener('msfullscreenchange', function() {
+
+        })
     },
     created: function() {
         this.positionLastrecords = {}; // 全部设备最后一次位置记录
