@@ -492,6 +492,7 @@
                         <div style="float:left;height:35px; line-height:35px;padding-left:15px;color:red;font-size:12px;">{{intervalTime}}{{$t("monitor.refreshAfter")}}</div>
                         <ul class="ul-manager-wraper">
                             <li style="height:35px; line-height:35px;" v-show="isShowAreaCount">
+                                <span>{{areaName.join('/')}}</span>
                                 <span>在线:{{areaOnlineCount}}</span>
                                 <span>离线:{{areaOfflineCount}}</span>
                                 <span>静止:{{areaStaticCount}}</span>
@@ -507,7 +508,7 @@
                                             <div style="padding-top:10px;">
                                                 <Row>
                                                     <i-Col span="12" style="padding-right:6.5px;">
-                                                        <i-button type="primary" style="width:100%;" @click="handleQueryArea"> 查询 </i-button>
+                                                        <i-button type="primary" style="width:100%;" :loading="arealoading" @click="handleQueryArea"> 查询 </i-button>
                                                     </i-Col>
                                                     <i-Col span="12" style="padding-left:6.5px;">
                                                         <i-button type="error" style="width:100%;" @click="handleRemoveAreaOverlay"> 清除 </i-button>

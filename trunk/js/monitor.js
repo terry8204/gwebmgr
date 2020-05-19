@@ -24,8 +24,10 @@ var monitor = {
     data: function() {
         var vm = this;
         return {
+            arealoading: false,
             isFullMap: false,
             isShowAreaCount: false,
+            areaName: [],
             areaAddress: [],
             areaOnlineCount: 0,
             areaOfflineCount: 0,
@@ -243,8 +245,9 @@ var monitor = {
             }
             switch (this.mapType) {
                 case 'bMap':
-                    var areaName = utils.getAreaName(this.areaAddress[0], this.areaAddress[1], this.areaAddress[2]);
-                    this.map.qeuryBMapAreaPoint(areaName, this.calcAreaBaiduMarkerStatus);
+                    this.arealoading = true;
+                    this.areaName = utils.getAreaName(this.areaAddress[0], this.areaAddress[1], this.areaAddress[2]);
+                    this.map.qeuryBMapAreaPoint(this.areaName, this.calcAreaBaiduMarkerStatus);
                     break;
                 case 'gMap':
                     this.$Message.error('该地图暂时不支持该功能');
@@ -258,7 +261,6 @@ var monitor = {
             this.map.removePolygonOverlay();
         },
         calcAreaBaiduMarkerStatus: function(bdpoints) {
-
             var polylatList = [],
                 polylonList = [];
             bdpoints.forEach(function(item) {
@@ -271,7 +273,6 @@ var monitor = {
             for (var key in this.positionLastrecords) {
                 var track = this.positionLastrecords[key];
                 if (utils.pointInPolygon(track.b_lat, track.b_lon, polylatList, polylonList)) {
-                    console.log(track);
                     if (track.online) {
                         if (track.moving == 0) {
                             areaStaticCount++;
@@ -286,6 +287,7 @@ var monitor = {
             this.areaOfflineCount = areaOfflineCount;
             this.areaStaticCount = areaStaticCount;
             this.isShowAreaCount = true;
+            this.arealoading = false;
         },
         handleWebSocket: function(data) {
             var me = this;

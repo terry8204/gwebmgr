@@ -102,6 +102,10 @@ li {
     margin-top: -7px;
 }
 
+#app div.map_manager .ivu-poptip-content .ivu-btn .ivu-icon {
+    margin-top: 0px;
+}
+
 
 /* autocomplete */
 
