@@ -29,7 +29,7 @@ var monitor = {
             isShowAreaCount: false,
             areaName: [],
             areaAddress: [],
-            areaOnlineCount: 0,
+            areaMovingCount: 0,
             areaOfflineCount: 0,
             areaStaticCount: 0,
             provinceList: provinceList,
@@ -267,23 +267,24 @@ var monitor = {
                 polylatList.push(item.lat);
                 polylonList.push(item.lng);
             });
-            var areaOnlineCount = 0,
+            var areaMovingCount = 0,
                 areaOfflineCount = 0,
                 areaStaticCount = 0;
             for (var key in this.positionLastrecords) {
                 var track = this.positionLastrecords[key];
                 if (utils.pointInPolygon(track.b_lat, track.b_lon, polylatList, polylonList)) {
-                    if (track.online) {
+                    if (this.getIsOnline(track.deviceid)) {
                         if (track.moving == 0) {
                             areaStaticCount++;
+                        } else {
+                            areaMovingCount++;
                         }
-                        areaOnlineCount++;
                     } else {
                         areaOfflineCount++;
                     }
                 }
             }
-            this.areaOnlineCount = areaOnlineCount;
+            this.areaMovingCount = areaMovingCount;
             this.areaOfflineCount = areaOfflineCount;
             this.areaStaticCount = areaStaticCount;
             this.isShowAreaCount = true;
