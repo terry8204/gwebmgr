@@ -230,18 +230,31 @@ OpenStreeMapCls.pt.fromLonLat = function(lon, lat) {
     return ol.proj.fromLonLat([lon, lat]);
 }
 
-OpenStreeMapCls.pt.updateLastTracks = function(lastTracks) {
-    this.lastTracks = lastTracks;
+OpenStreeMapCls.pt.updateLastTracks = function(deviceid) {
     var isNeedRefreshMarkers = false;
     for (var key in this.lastTracks) {
         if (this.lastTracks.hasOwnProperty(key)) {
-            var isHas = false;
+
             var track = this.lastTracks[key];
             track.online = utils.getIsOnline(track);
             if (this.markerHashMap[key]) {
-                isHas = true;
-            }
-            if (!isHas) {
+                var marker = this.markerHashMap[key];
+                marker.setStyle(this.getIcon(track, 1));
+                marker.setGeometry(new ol.geom.Point(this.fromLonLat(track.callon, track.callat)));
+                if (deviceid && key === deviceid) {
+                    var popup = document.getElementById('popup');
+                    if (popup.style.display === 'block') {
+                        var track = this.lastTracks[deviceid];
+                        if (track) {
+                            var wContainer = document.getElementById('popup-content'),
+                                posi = this.fromLonLat(track.callon, track.callat);
+                            wContainer.innerHTML = this.getInfoWindowContent(track);
+                            this.popup.setPosition(posi);
+                            // this.mapInstance.getView().setCenter(posi);
+                        }
+                    }
+                }
+            } else {
                 var marker = this.createMarkr(track);
                 this.markerHashMap[track.deviceid] = marker;
                 isNeedRefreshMarkers = true;

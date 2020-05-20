@@ -227,17 +227,34 @@ BMapClass.pt.cancelFence = function(deviceid) {
 }
 
 
-BMapClass.pt.updateLastTracks = function(lastTracks) {
-    this.lastTracks = lastTracks;
+BMapClass.pt.updateLastTracks = function(deviceid) {
+    // this.lastTracks = lastTracks;
     for (var key in this.lastTracks) {
         if (this.lastTracks.hasOwnProperty(key)) {
-            var isHas = false;
+
             var track = this.lastTracks[key];
             track.online = utils.getIsOnline(track);
             if (this.markerHashMap[key]) {
-                isHas = true;
-            }
-            if (!isHas) {
+                var marker = this.markerHashMap[key];
+                var newPoint = new BMap.Point(track.b_lon, track.b_lat);
+                var isEq = marker.point.equals(newPoint);
+                var myIcon = this.getIcon(track);
+                marker.setIcon(myIcon);
+                marker.setRotation(track.course);
+                if (!isEq) {
+                    marker.setPosition(newPoint);
+                    if (this.mapInfoWindow && marker.deviceid == deviceid && this.mapInfoWindow.isOpen()) {
+                        this.openInfoWindow(marker, deviceid);
+                    };
+                } else {
+                    if (this.mapInfoWindow && marker.deviceid == deviceid && this.mapInfoWindow.isOpen()) {
+                        var address = this.getDevAddress(track);
+                        var content = utils.getWindowContent(track, address);
+                        $("#windowInfo").html(content);
+                    };
+                };
+
+            } else {
                 var myIcon = this.getIcon(track);
                 var point = new BMap.Point(track.b_lon, track.b_lat);
                 var marker = new BMap.Marker(point, { icon: myIcon, rotation: track.course });
@@ -248,6 +265,8 @@ BMapClass.pt.updateLastTracks = function(lastTracks) {
                 this.markerClusterer.addMarker(marker);
                 this.markerHashMap[key] = marker;
             }
+
+
         }
     }
 }

@@ -1,4 +1,4 @@
-function GoogleMap () {
+function GoogleMap() {
     this.mapInstance = null;
     this.markerClusterer = null;
     this.lastTracks = null;
@@ -10,7 +10,7 @@ function GoogleMap () {
 
 GoogleMap.pt = GoogleMap.prototype;
 
-GoogleMap.pt.initMap = function () {
+GoogleMap.pt.initMap = function() {
     var center = new google.maps.LatLng(35.129163, 102.264435);
     this.mapInstance = new google.maps.Map(document.getElementById('my-map'), {
         zoom: 4,
@@ -19,7 +19,7 @@ GoogleMap.pt.initMap = function () {
     });
 }
 
-GoogleMap.pt.setMarkerClusterer = function (lastTracks) {
+GoogleMap.pt.setMarkerClusterer = function(lastTracks) {
     this.lastTracks = lastTracks;
     if (this.markerClusterer == null) {
         var markers = this.getMarkers(lastTracks);
@@ -36,7 +36,7 @@ GoogleMap.pt.setMarkerClusterer = function (lastTracks) {
     }
 }
 
-GoogleMap.pt.updateMarkerLabel = function (deviceid) {
+GoogleMap.pt.updateMarkerLabel = function(deviceid) {
     var marker = AMARKER = this.markerHashMap[deviceid];
     if (marker) {
         var track = this.lastTracks[deviceid];
@@ -47,7 +47,7 @@ GoogleMap.pt.updateMarkerLabel = function (deviceid) {
 }
 
 
-GoogleMap.pt.getMarkers = function (lastTracks) {
+GoogleMap.pt.getMarkers = function(lastTracks) {
     var markers = [];
     for (var deviceid in lastTracks) {
         if (lastTracks.hasOwnProperty(deviceid)) {
@@ -78,9 +78,9 @@ GoogleMap.pt.getMarkers = function (lastTracks) {
 }
 
 
-GoogleMap.pt.addMarkerEvent = function (marker) {
+GoogleMap.pt.addMarkerEvent = function(marker) {
     var self = this;
-    google.maps.event.addListener(marker, "click", function (e) {
+    google.maps.event.addListener(marker, "click", function(e) {
         var deviceid = marker.deviceid;
         self.mapInstance.panTo(marker.position);
         self.openInfoWindow(marker, deviceid);
@@ -88,7 +88,7 @@ GoogleMap.pt.addMarkerEvent = function (marker) {
     });
 }
 
-GoogleMap.pt.openInfoWindow = function (marker, deviceid) {
+GoogleMap.pt.openInfoWindow = function(marker, deviceid) {
     var track = this.lastTracks[deviceid];
     var address = this.getDevAddress(track);
     this.mapInfoWindow ? this.mapInfoWindow.close() : '';
@@ -97,7 +97,7 @@ GoogleMap.pt.openInfoWindow = function (marker, deviceid) {
 }
 
 
-GoogleMap.pt.getIcon = function (track) {
+GoogleMap.pt.getIcon = function(track) {
     var pathname = location.pathname;
     var imgPath = ''
     if (utils.isLocalhost()) {
@@ -123,7 +123,7 @@ GoogleMap.pt.getIcon = function (track) {
 }
 
 
-GoogleMap.pt.getDevAddress = function (track) {
+GoogleMap.pt.getDevAddress = function(track) {
     var self = this;
     var callon = track.callon.toFixed(5);
     var callat = track.callat.toFixed(5);
@@ -133,13 +133,13 @@ GoogleMap.pt.getDevAddress = function (track) {
     if (address != null) {
         return address;
     };
-    utils.getGoogleAddressSyn(track.g_lat, track.g_lon, function (b_address) {
+    utils.getGoogleAddressSyn(track.g_lat, track.g_lon, function(b_address) {
         if (b_address.length) {
             var content = utils.getWindowContent(track, b_address);
             self.mapInfoWindow && self.mapInfoWindow.setContent(content);
             LocalCacheMgr.setAddress(callon, callat, b_address);
         } else {
-            utils.getJiuHuAddressSyn(callon, callat, function (resp) {
+            utils.getJiuHuAddressSyn(callon, callat, function(resp) {
                 var j_address = resp.address
                 var content = utils.getWindowContent(track, j_address);
                 self.mapInfoWindow && self.mapInfoWindow.setContent(content);
@@ -150,13 +150,13 @@ GoogleMap.pt.getDevAddress = function (track) {
     return '正在解析地址...';
 }
 
-GoogleMap.pt.getInfoWindow = function (track, address) {
+GoogleMap.pt.getInfoWindow = function(track, address) {
     var content = utils.getWindowContent(track, address);
     var infoWindow = new google.maps.InfoWindow({ content: '<div id="windowInfo" style="width:360px;">' + content + '</div>' });
     return infoWindow;
 }
 
-GoogleMap.pt.onClickDevice = function (deviceid) {
+GoogleMap.pt.onClickDevice = function(deviceid) {
     for (var key in this.markerHashMap) {
         var itemMarker = this.markerHashMap[key];
         if (key != deviceid) {
@@ -173,7 +173,7 @@ GoogleMap.pt.onClickDevice = function (deviceid) {
     }
 }
 
-GoogleMap.pt.addMapFence = function (deviceid, distance) {
+GoogleMap.pt.addMapFence = function(deviceid, distance) {
     var mks = this.markerClusterer.getMarkers();
     var point = null;
     for (var i = 0; i < mks.length; i++) {
@@ -195,7 +195,7 @@ GoogleMap.pt.addMapFence = function (deviceid, distance) {
     }
 }
 
-GoogleMap.pt.cancelFence = function (deviceid) {
+GoogleMap.pt.cancelFence = function(deviceid) {
     for (var i = 0; i < this.circleList.length; i++) {
         var mk = this.circleList[i];
         if (mk && mk.deviceid === deviceid) {
@@ -207,18 +207,25 @@ GoogleMap.pt.cancelFence = function (deviceid) {
 
 
 
-GoogleMap.pt.updateLastTracks = function (lastTracks) {
-    this.lastTracks = lastTracks;
-    var markers = this.markerClusterer.getMarkers();
+GoogleMap.pt.updateLastTracks = function(deviceid) {
+
     for (var key in this.lastTracks) {
-        var isHas = false;
         var track = this.lastTracks[key];
         track.online = utils.getIsOnline(track);
-
         if (this.markerHashMap[track.deviceid]) {
-            isHas = true
-        };
-        if (!isHas) {
+            var marker = this.markerHashMap[track.deviceid];
+            var track = this.lastTracks[marker.deviceid];
+            var latLng = new google.maps.LatLng(track.g_lat, track.g_lon);
+            // var mPoint = marker.internalPosition;
+            var myIcon = this.getIcon(track);
+            marker.setPosition(latLng);
+            marker.setIcon(myIcon);
+            if (marker.deviceid == deviceid) {
+                var address = this.getDevAddress(track);
+                var content = utils.getWindowContent(track, address);
+                $("#windowInfo").html(content);
+            };
+        } else {
             var myIcon = this.getIcon(track);
             var latLng = new google.maps.LatLng(track.g_lat, track.g_lon);
             var marker = new MarkerWithLabel({
@@ -244,7 +251,7 @@ GoogleMap.pt.updateLastTracks = function (lastTracks) {
     }
 }
 
-GoogleMap.pt.updateMarkersState = function (deviceid) {
+GoogleMap.pt.updateMarkersState = function(deviceid) {
     console.log('gl updateMarkersState');
     var markers = this.markerClusterer.getMarkers();
     for (var i = 0; i < markers.length; i++) {
@@ -263,7 +270,7 @@ GoogleMap.pt.updateMarkersState = function (deviceid) {
     }
 }
 
-GoogleMap.pt.updateSingleMarkerState = function (deviceid) {
+GoogleMap.pt.updateSingleMarkerState = function(deviceid) {
     var markers = this.markerClusterer.getMarkers();
     for (var i = 0; i < markers.length; i++) {
         var marker = markers[i];

@@ -292,7 +292,6 @@ var monitor = {
         },
         handleWebSocket: function(data) {
             var me = this;
-
             var deviceid = data.deviceid;
             // console.log("handleWebSocket deviceid=", deviceid);
             data.devicename = this.deviceInfos[deviceid] ? this.deviceInfos[deviceid].devicename : "";
@@ -300,9 +299,9 @@ var monitor = {
             // me.updateTreeOnlineState();
             me.updateDevLastPosition(data);
             // // console.log('轨迹push', deviceid, DateFormat.longToDateTimeStr(data.updatetime, 0));
-            if (me.currentDeviceId == deviceid) {
-                me.map && me.map.updateSingleMarkerState(deviceid);
-            };
+            // if (me.currentDeviceId == deviceid) {
+            //     me.map && me.map.updateSingleMarkerState(deviceid);
+            // };
         },
         openDistance: function() {
             if (this.myDis != null) {
@@ -1280,7 +1279,6 @@ var monitor = {
                 item.devicename = this.deviceInfos[deviceid].devicename;
                 item.updatetimeStr = DateFormat.longToDateTimeStr(item.updatetime, 0);
                 this.positionLastrecords[deviceid] = item;
-                //this.map && this.map.updateLastTracks(this.positionLastrecords);
             }
         },
 
@@ -1289,8 +1287,8 @@ var monitor = {
             if (isNeedRefreshMapUI == true) {
                 // console.log("dorefreshMapUI refresh true");
                 isNeedRefreshMapUI = false;
-                this.map && this.map.updateLastTracks && this.map.updateLastTracks(this.positionLastrecords);
-                this.map && this.map.updateMarkersState && this.map.updateMarkersState(this.currentDeviceId);
+                this.map && this.map.updateLastTracks && this.map.updateLastTracks(this.currentDeviceId);
+                // this.map && this.map.updateMarkersState && this.map.updateMarkersState(this.currentDeviceId);
                 this.updateTreeOnlineState();
                 this.caclOnlineCount();
             }
@@ -1304,9 +1302,9 @@ var monitor = {
                 me.intervalTime--;
                 if (me.intervalTime <= 0) {
                     me.intervalTime = me.stateIntervalTime;
-                    // var devIdList = Object.keys(me.deviceInfos);
                     me.getLastPosition([], function() {
-                        // isNeedRefreshMapUI = true;
+                        isNeedRefreshMapUI = true;
+                        me.dorefreshMapUI();
                     }, function(error) {});
                 }
 
