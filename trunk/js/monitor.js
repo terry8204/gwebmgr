@@ -294,7 +294,7 @@ var monitor = {
             var me = this;
 
             var deviceid = data.deviceid;
-            console.log("handleWebSocket deviceid=", deviceid);
+            // console.log("handleWebSocket deviceid=", deviceid);
             data.devicename = this.deviceInfos[deviceid] ? this.deviceInfos[deviceid].devicename : "";
             isNeedRefreshMapUI = true;
             // me.updateTreeOnlineState();
