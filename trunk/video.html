@@ -983,14 +983,14 @@
                                             实时流目标码率 :
                                         </i-Col>
                                         <i-Col span="7" style="height: 100%;line-height:32px;">
-                                            <Input-Number :max="1000" :min="1" v-model="item.realtimeframebitrate"></Input-Number>
+                                            <Input-Number :max="2000" :min="1" v-model="item.realtimeframebitrate"></Input-Number>
                                             kbps
                                         </i-Col>
                                         <i-Col span="5" style="height: 100%;line-height:32px;text-align: center;">
                                             存储流目标码率 :
                                         </i-Col>
                                         <i-Col span="7" style="height: 100%;line-height:32px;">
-                                            <Input-Number :max="1000" :min="1" v-model="item.storeframebitrate"></Input-Number>
+                                            <Input-Number :max="2000" :min="1" v-model="item.storeframebitrate"></Input-Number>
                                             kbps
                                         </i-Col>
                                     </Row>
@@ -2097,13 +2097,13 @@
                         latlon: true,
                         osdsetting: 31,
                         realtimebitratemode: 0,
-                        realtimeframebitrate: 1000,
+                        realtimeframebitrate: 2000,
                         realtimeframerate: 12,
                         realtimekeyframeinterval: 25,
-                        realtimeresolution: 2,
+                        realtimeresolution: 1,
                         recorderspeed: false,
                         storebitratemode: 1,
-                        storeframebitrate: 1000,
+                        storeframebitrate: 2000,
                         storeframerate: 12,
                         storekeyframeinterval: 25,
                         storeresolution: 3,
