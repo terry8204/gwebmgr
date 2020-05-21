@@ -1278,8 +1278,53 @@ var monitor = {
                 item.online = online;
                 item.devicename = this.deviceInfos[deviceid].devicename;
                 item.updatetimeStr = DateFormat.longToDateTimeStr(item.updatetime, 0);
-                this.positionLastrecords[deviceid] = item;
+                //this.positionLastrecords[deviceid] = item;
+                var oldPositionLast = this.positionLastrecords[deviceid];
+                this.copyPositionLastValue(oldPositionLast, item);
             }
+        },
+        
+        copyPositionLastValue: function(oldPositionLast, newPositionLast)
+        {
+        	oldPositionLast.b_lon                      =        newPositionLast.b_lon;              
+        	oldPositionLast.b_lat                      =        newPositionLast.b_lat;             
+        	oldPositionLast.g_lat                      =        newPositionLast.g_lat;              
+        	oldPositionLast.g_lon                      =        newPositionLast.g_lon;              
+        	oldPositionLast.online                     =        newPositionLast.online;             
+        	oldPositionLast.updatetimeStr              =        newPositionLast.updatetimeStr;      
+        	//============================             =        //============================     
+        	oldPositionLast.positionlastid             =        newPositionLast.positionlastid;     
+        	oldPositionLast.deviceid                   =        newPositionLast.deviceid;           
+        	oldPositionLast.username                   =        newPositionLast.username;           
+        	oldPositionLast.devicetime                 =        newPositionLast.devicetime;         
+        	oldPositionLast.arrivedtime                =        newPositionLast.arrivedtime;        
+        	oldPositionLast.updatetime                 =        newPositionLast.updatetime;         
+        	oldPositionLast.validpoistiontime          =        newPositionLast.validpoistiontime;  
+        	oldPositionLast.callat                     =        newPositionLast.callat;             
+        	oldPositionLast.callon                     =        newPositionLast.callon;             
+        	oldPositionLast.radius                     =        newPositionLast.radius;             
+        	oldPositionLast.speed                      =        newPositionLast.speed;              
+        	oldPositionLast.altitude                   =        newPositionLast.altitude;           
+        	oldPositionLast.course                     =        newPositionLast.course;             
+        	oldPositionLast.mileage                    =        newPositionLast.mileage;            
+        	oldPositionLast.totaldistance              =        newPositionLast.totaldistance;      
+        	oldPositionLast.status                     =        newPositionLast.status;             
+        	oldPositionLast.alarm                      =        newPositionLast.alarm;              
+        	oldPositionLast.strstatus                  =        newPositionLast.strstatus;          
+        	oldPositionLast.strstatusen                =        newPositionLast.strstatusen;        
+        	oldPositionLast.gotsrc                     =        newPositionLast.gotsrc;             
+        	oldPositionLast.rxlevel                    =        newPositionLast.rxlevel;            
+        	oldPositionLast.gpstotalnum                =        newPositionLast.gpstotalnum;        
+        	oldPositionLast.gpsvalidnum                =        newPositionLast.gpsvalidnum;        
+        	oldPositionLast.exvoltage                  =        newPositionLast.exvoltage;       
+        	oldPositionLast.voltagev                   =        newPositionLast.voltagev;           
+        	oldPositionLast.voltagepercent             =        newPositionLast.voltagepercent;     
+        	oldPositionLast.reportmode                 =        newPositionLast.reportmode;         
+        	oldPositionLast.moving                     =        newPositionLast.moving;             
+        	oldPositionLast.parklat                    =        newPositionLast.parklat;            
+        	oldPositionLast.parklon                    =        newPositionLast.parklon;            
+        	oldPositionLast.parktime                   =        newPositionLast.parktime;           
+        	oldPositionLast.parkduration               =        newPositionLast.parkduration;       
         },
 
         dorefreshMapUI: function() {
