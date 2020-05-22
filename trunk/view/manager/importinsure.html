@@ -64,7 +64,7 @@
                                 color = '#000';
                                 break;
                             case 0:
-                                statusStr = '失败';
+                                statusStr = params.row.cause;
                                 color = '#e4393c';
                                 break;
                             case 1:
@@ -139,17 +139,21 @@
                             } else {
                                 me.$Message.error("总共:" + respData.total + ",失败:" + respData.fail);
                                 var errorrecords = respData.errorrecords;
+                                var tableData = deepClone(me.tableData);
                                 errorrecords.forEach(function(failItem) {
-                                    me.tableData.forEach(function(item) {
-                                        if (item.status == -1) {
-                                            if (failItem.deviceid == item.deviceid) {
-                                                item.status = 0;
-                                            } else {
-                                                item.status = 1;
-                                            }
+                                    tableData.forEach(function(item) {
+                                        if (failItem.deviceid == item.deviceid) {
+                                            item.status = 0;
+                                            item.cause = failItem.cause;
                                         }
                                     });
-                                })
+                                });
+                                tableData.forEach(function(item) {
+                                    if (item.status == -1) {
+                                        item.status = 1;
+                                    }
+                                });
+                                me.tableData = tableData;
                             }
                         } else {
                             me.$Message.success("导入失败");

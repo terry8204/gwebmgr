@@ -568,6 +568,10 @@ var myUrls = {
     importInsureInfo: function() {
         return this.apihosts + 'webapi?action=importinsureinfo&token=' + token;
     },
+    // 导入保单信息
+    importPolicynos: function() {
+        return this.apihosts + 'webapi?action=importpolicynos&token=' + token;
+    },
     // 导入SIM卡信息
     importSimInfo: function() {
         return this.apihosts + 'webapi?action=importsiminfo&token=' + token;

@@ -52,6 +52,7 @@ var bgManager = {
                     children: [
                         { title: "导入车主信息", name: 'ImportOwner', icon: 'md-add' },
                         { title: "导入保险信息", name: 'ImportInsure', icon: 'md-add' },
+                        { title: "导入保单信息", name: 'ImportInsure2', icon: 'md-add' },
                         { title: "导入SIM卡信息", name: 'ImportSim', icon: 'md-add' },
                         { title: "导入设备名称", name: 'ImportDeviceName', icon: 'md-add' },
                     ]
@@ -106,6 +107,9 @@ var bgManager = {
                     break
                 case 'ImportInsure':
                     page = 'importinsure.html'
+                    break
+                case 'ImportInsure2':
+                    page = 'importinsure2.html'
                     break
                 case 'ImportSim':
                     page = 'importsim.html'
