@@ -23,4 +23,45 @@
     <div style="margin:10px;">
         <i-table :columns="columns" border ref="table" :height="tableHeight" :data="tableData" :loading="loading"></i-table>
     </div>
+    <Modal v-model="modal" width="500">
+        <p slot="header" style="color:#f60;text-align:center">
+            <Icon type="ios-create-outline"></Icon>
+            <span>车主信息</span>
+        </p>
+        <div style="text-align:center">
+            <Row style="margin:10px 0;">
+                <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">车主名称 : &nbsp;</i-col>
+                <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
+                    <i-input v-model.trim="editObjectRow.name" style="width: 100%;"></i-input>
+                </i-col>
+            </Row>
+            <Row style="margin:10px 0;">
+                <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">身份证号码 : &nbsp;</i-col>
+                <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
+                    <i-input v-model.trim="editObjectRow.cardid" style="width: 100%;"></i-input>
+                </i-col>
+            </Row>
+            <Row style="margin:10px 0;">
+                <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">车主号码 : &nbsp;</i-col>
+                <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
+                    <i-input v-model.trim="editObjectRow.phonenum" style="width: 100%;"></i-input>
+                </i-col>
+            </Row>
+            <Row style="margin:10px 0;">
+                <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">车架号 : &nbsp;</i-col>
+                <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
+                    <i-input v-model.trim="editObjectRow.vinno" style="width: 100%;"></i-input>
+                </i-col>
+            </Row>
+            <Row style="margin:10px 0;">
+                <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">经销商号码 : &nbsp;</i-col>
+                <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
+                    <i-input v-model.trim="editObjectRow.usernamephonenum" style="width: 100%;"></i-input>
+                </i-col>
+            </Row>
+        </div>
+        <div slot="footer">
+            <i-button type="primary" style="width: 100%" @click="handleEditInsure">提交</i-button>
+        </div>
+    </Modal>
 </div>

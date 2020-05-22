@@ -1746,13 +1746,14 @@ function rechargeRecords(groupslist) {
 
 
 function insureRecords(groupslist) {
-    new Vue({
+    vueInstanse = new Vue({
         el: '#insure-records',
         i18n: utils.getI18n(),
         mixins: [treeMixin],
         data: {
             error: 123,
             createrToUser: userName,
+            modal: false,
             columns: [{
                     title: "序号",
                     key: 'index',
@@ -1877,13 +1878,108 @@ function insureRecords(groupslist) {
                         return h('a', { attrs: { href: parmas.row.insurenoticeurl, target: '_blank' } }, '点击预览');
                     }
                 },
+                {
+                    title: vRoot.$t("bgMgr.action"),
+                    key: 'action',
+                    width: 130,
+                    fixed: 'right',
+                    render: function(h, params) {
+                        return h('div', [
+                            h('Button', {
+                                props: {
+                                    type: 'primary',
+                                    size: 'small'
+                                },
+                                style: {
+                                    marginRight: '5px'
+                                },
+                                on: {
+                                    click: function() {
+                                        vueInstanse.editDeviceIndex = params.index;
+                                        vueInstanse.editObjectRow.name = params.row.name;
+                                        vueInstanse.editObjectRow.cardid = params.row.cardid;
+                                        vueInstanse.editObjectRow.phonenum = params.row.phonenum;
+                                        vueInstanse.editObjectRow.vinno = params.row.vinno;
+                                        vueInstanse.editObjectRow.usernamephonenum = params.row.usernamephonenum;
+                                        vueInstanse.editObjectRow.insureid = params.row.insureid
+                                        vueInstanse.modal = true;
+                                    }
+                                }
+                            }, vRoot.$t("bgMgr.edit")),
+                            h('Button', {
+                                props: {
+                                    type: 'error',
+                                    size: 'small',
+                                },
+                                style: {
+                                    marginRight: '5px'
+                                },
+                                on: {
+                                    click: function() {
+                                        vueInstanse.editDeviceIndex = params.index;
+                                        vueInstanse.handleDelete(params.row);
+                                    }
+                                }
+                            }, vRoot.$t("bgMgr.delete"))
+                        ]);
+                    }
+                }
             ],
             tableHeight: 300,
             tableData: [],
             loading: false,
-            isFilter: false
+            isFilter: false,
+            editObjectRow: {
+                name: '',
+                cardid: '',
+                phonenum: '',
+                vinno: "",
+                usernamephonenum: ''
+            }
         },
         methods: {
+            handleEditInsure: function() {
+                var url = myUrls.editInsure(),
+                    me = this;
+                utils.sendAjax(url, this.editObjectRow, function(respData) {
+                    if (respData.status == 0) {
+                        var data = me.tableData[me.editDeviceIndex];
+                        data.name = me.editObjectRow.name;
+                        data.cardid = me.editObjectRow.cardid;
+                        data.phonenum = me.editObjectRow.phonenum;
+                        data.vinno = me.editObjectRow.vinno;
+                        data.usernamephonenum = me.editObjectRow.usernamephonenum;
+                        me.modal = false;
+                        me.$Message.success('编辑成功');
+                    } else {
+                        me.$Message.error('编辑失败');
+                    }
+                })
+            },
+            handleDelete: function(row) {
+
+
+                var index = this.editDeviceIndex,
+                    me = this;
+                this.$Modal.confirm({
+                    title: "提示",
+                    content: "是否删除这个保单信息!",
+                    onOk: function() {
+                        var url = myUrls.deleteInsure();
+                        utils.sendAjax(url, { insureid: row.insureid }, function(respData) {
+                            console.log(respData);
+                            if (respData.status == 0) {
+                                me.$Message.success('删除成功');
+                                me.tableData.splice(index, 1);
+                            } else {
+                                me.$Message.error('删除失败');
+                            }
+                        });
+                    },
+                    onCancel: function() {}
+                })
+
+            },
             queryUsersTree: function(callback) {
                 var url = myUrls.queryUsersTree(),
                     me = this;
@@ -2050,7 +2146,7 @@ function insureRecords(groupslist) {
             this.sosoValue = userName;
             this.calcTableHeight();
             this.queryInsures();
-
+            this.editDeviceIndex = null;
         },
     })
 }

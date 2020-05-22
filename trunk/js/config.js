@@ -583,7 +583,13 @@ var myUrls = {
     queryVideoPlayParameters: function() {
         return this.apihosts + 'webapi?action=queryvideoplayparameters&token=' + token;
     },
-
+    // deleteinsure
+    deleteInsure: function() {
+        return this.apihosts + 'webapi?action=deleteinsure&token=' + token;
+    },
+    editInsure: function() {
+        return this.apihosts + 'webapi?action=editinsure&token=' + token;
+    },
 }
 
 
