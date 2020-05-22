@@ -1760,7 +1760,7 @@ function insureRecords(groupslist) {
                     }
                 },
                 { title: '姓名', key: 'name', width: 100 },
-                { title: '身份证号', key: 'cardid', width: 150 },
+                { title: '身份证号', key: 'cardid', width: 160 },
                 { title: '地址', key: 'usingaddress', width: 150 },
                 { title: '手机号', key: 'phonenum', width: 150 },
                 // { title: '电动车类型', key: 'phonenum', width: 150 },
