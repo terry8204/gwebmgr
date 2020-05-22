@@ -1,8 +1,5 @@
 <div id="insure-records">
     <div style="margin:10px;height: 32px;">
-        <div style="margin-right:20px;float: left;line-height: 30px;">
-            <Checkbox v-model="isFilter">已付款</Checkbox>
-        </div>
         <div style="float: left;position: relative;width: 300px;line-height:32px;">
             <div class="search-wrapper" v-click-outside.capture="onClickOutside">
                 <i-input v-model.trim="sosoValue" icon="ios-search-outline" @on-change="sosoValueChange" @on-blur="blur" @on-focus="focus" :readonly="readonly" @on-click="focus" :placeholder="placeholder"></i-input>
@@ -12,6 +9,9 @@
                     </div>
                 </transition>
             </div>
+        </div>
+        <div style="margin-left:20px;float: left;line-height: 30px;">
+            <Checkbox v-model="isFilter">已付款</Checkbox>
         </div>
         <div style="margin-left:20px;float: left;">
             <i-button @click="queryInsures">{{$t("reportForm.query")}}</i-button>

@@ -1754,18 +1754,33 @@ function insureRecords(groupslist) {
             error: 123,
             createrToUser: userName,
             columns: [{
+                    title: "序号",
+                    key: 'index',
+                    width: 70,
+                    fixed: 'left',
+                },
+                {
                     title: '是否付费',
                     key: 'isPay',
                     width: 100,
                     fixed: 'left',
-                    render: function(h, parmas) {
-                        return h('span', {}, parmas.row.insurestate == 1 ? '已付款' : '未付款');
-                    }
                 },
                 { title: '姓名', key: 'name', width: 100, fixed: 'left', },
                 { title: '身份证号', key: 'cardid', width: 160, fixed: 'left', },
-                { title: '地址', key: 'usingaddress', width: 150 },
-                { title: '手机号', key: 'phonenum', width: 150 },
+                {
+                    title: '保单号',
+                    width: 100,
+                    fixed: 'left',
+                    render: function(h, parmas) {
+
+                        return h('span', {}, parmas.row.policyno == null ? '保单审核中' : parmas.row.policyno);
+                    }
+                },
+                { title: '经销商', key: 'username', width: 150 },
+                { title: '经销商地址', key: 'useraddress', width: 150 },
+                { title: '经销商手机号', key: 'usernamephonenum', width: 120 },
+                { title: '用户手机号', key: 'phonenum', width: 120 },
+                { title: '用户地址', key: 'usingaddress', width: 150 },
                 // { title: '电动车类型', key: 'phonenum', width: 150 },
                 { title: '品牌型号', key: 'brandtype', width: 100 },
                 { title: '车架号', key: 'vinno', width: 150 },
@@ -1866,7 +1881,7 @@ function insureRecords(groupslist) {
             tableHeight: 300,
             tableData: [],
             loading: false,
-            isFilter: true
+            isFilter: false
         },
         methods: {
             queryUsersTree: function(callback) {
@@ -1987,17 +2002,24 @@ function insureRecords(groupslist) {
                 utils.sendAjax(url, { username: this.createrToUser }, function(resp) {
                     console.log('resp', resp);
                     if (resp.status === 0) {
+
                         if (me.isFilter) {
                             me.tableData = (function() {
                                 var tableData = [];
                                 resp.insures.forEach(function(item) {
                                     if (item.insurestate === 1) {
+                                        item.index = tableData.length + 1;
+                                        item.isPay = item.insurestate == 1 ? '已付款' : '未付款'
                                         tableData.push(item);
                                     };
                                 })
                                 return tableData;
                             })();
                         } else {
+                            resp.insures.forEach(function(item, index) {
+                                item.index = index + 1;
+                                item.isPay = item.insurestate == 1 ? '已付款' : '未付款'
+                            })
                             me.tableData = resp.insures;
                         }
                     }
@@ -2005,57 +2027,18 @@ function insureRecords(groupslist) {
                 })
             },
             exportData: function() {
-                var jsonData = this.tableData.map(function(item) {
-                    return {
-                        name: item.name,
-                        cardid: item.cardid,
-                        usingaddress: item.usingaddress,
-                        phonenum: item.phonenum,
-                        brandtype: item.brandtype,
-                        vinno: item.vinno,
-                        deviceid: item.deviceid,
-                        buycarday: item.buycarday,
-                        carvalue: item.carvalue,
-                        insureprice: item.insureprice,
-                        insurefee: item.insurefee,
-                        carpicurl: item.carpicurl,
-                        positivecardidurl: item.positivecardidurl,
-                        negativecardidurl: item.negativecardidurl,
-                        invoiceurl: item.invoiceurl,
-                        groupphotourl: item.groupphotourl,
-                        carkeypicurl: item.carkeypicurl,
-                        insurenoticeurl: item.insurenoticeurl,
-                    };
+                var tableData = deepClone(this.tableData);
+                tableData.forEach(function(item) {
+                    item.cardid = "\t" + item.cardid;
+                    item.usernamephonenum = "\t" + item.usernamephonenum;
+                    item.phonenum = "\t" + item.phonenum;
                 });
-
-                var columnsStr = [
-                    '姓名', '身份证号', '地址', '手机号', '品牌型号',
-                    '车架号', 'GPS序列号', '购车日期', '销售价格', '保险金额',
-                    '保费', '合格证', '身份证正面', '身份证反面', '购车发票', '车主与车合影', '车钥匙/遥控器', '保险告知书'
-                ].map(function(item) { return "<td>" + item + "</td>"; });
-
-                var str = '<tr>' + columnsStr.join('') + '</tr>';
-                for (var i = 0; i < jsonData.length; i++) {
-                    str += '<tr>';
-                    for (var item in jsonData[i]) {
-                        str += '<td>' + jsonData[i][item] + '\t' + '</td>';
-                    }
-                    str += '</tr>';
-                }
-                // console.log(str);
-                var worksheet = 'Sheet1'
-                var uri = 'data:application/vnd.ms-excel;base64,';
-                //下载的表格模板数据
-                var template = '<html xmlns:o="urn:schemas-microsoft-com:office:office"xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">' +
-                    '<head><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet>' +
-                    '<x:Name>' + worksheet + '</x:Name>'
-                '<x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet>' +
-                +'</x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]-->' +
-                '</head><body><table>' + str + '</table></body></html>';
-                //下载模板
-                window.location.href = uri + base64(template)
-
-                function base64(s) { return window.btoa(unescape(encodeURIComponent(s))) }
+                this.$refs.table.exportCsv({
+                    filename: '保险数据',
+                    original: false,
+                    columns: this.columns,
+                    data: tableData
+                });
             },
         },
         mounted: function() {
@@ -3122,7 +3105,6 @@ var reportForm = {
                         { title: me.$t("reportForm.phoneAlarm"), name: 'phoneAlarm', icon: 'ios-call' },
                         { title: "微信报警", name: 'wechatAlarm', icon: 'md-ionitron' },
                         { title: me.$t("reportForm.rechargeRecords"), name: 'rechargeRecords', icon: 'ios-list-box-outline' },
-                        { title: "保险记录", name: 'insureRecords', icon: 'ios-list-box-outline' },
                     ]
                 },
                 {
@@ -3135,6 +3117,15 @@ var reportForm = {
                         { title: '车辆日在线率', name: 'deviceOnlineDaily', icon: 'md-bulb' },
                         { title: '车队日在线率', name: 'groupsOnlineDaily', icon: 'md-contacts' },
                         { title: '车辆月在线率', name: 'deviceMonthOnlineDaily', icon: 'md-contrast' },
+                    ]
+                },
+                {
+                    title: '保险管理',
+                    name: 'insure',
+                    icon: 'md-medkit',
+                    children: [
+                        { title: "保险记录", name: 'insureRecords', icon: 'ios-list-box-outline' },
+
                     ]
                 },
             ]
