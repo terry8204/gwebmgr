@@ -1773,9 +1773,23 @@ function insureRecords(groupslist) {
                 { title: '保费', key: 'insurefee', width: 80 },
                 {
                     title: '合格证',
+                    key: 'qualitycerturl',
+                    width: 100,
+                    render: function(h, parmas) {
+                        if (parmas.row.qualitycerturl == null) {
+                            return h('span', {}, '无');
+                        }
+                        return h('a', { attrs: { href: parmas.row.qualitycerturl, target: '_blank' } }, '点击预览');
+                    }
+                },
+                {
+                    title: '整车照',
                     key: 'carpicurl',
                     width: 100,
                     render: function(h, parmas) {
+                        if (parmas.row.carpicurl == null) {
+                            return h('span', {}, '无');
+                        }
                         return h('a', { attrs: { href: parmas.row.carpicurl, target: '_blank' } }, '点击预览');
                     }
                 },
@@ -1784,6 +1798,9 @@ function insureRecords(groupslist) {
                     key: 'positivecardidurl',
                     width: 100,
                     render: function(h, parmas) {
+                        if (parmas.row.positivecardidurl == null) {
+                            return h('span', {}, '无');
+                        }
                         return h('a', { attrs: { href: parmas.row.positivecardidurl, target: '_blank' } }, '点击预览');
                     }
                 },
@@ -1792,6 +1809,9 @@ function insureRecords(groupslist) {
                     key: 'negativecardidurl',
                     width: 100,
                     render: function(h, parmas) {
+                        if (parmas.row.negativecardidurl == null) {
+                            return h('span', {}, '无');
+                        }
                         return h('a', { attrs: { href: parmas.row.negativecardidurl, target: '_blank' } }, '点击预览');
                     }
                 },
@@ -1800,6 +1820,9 @@ function insureRecords(groupslist) {
                     key: 'invoiceurl',
                     width: 100,
                     render: function(h, parmas) {
+                        if (parmas.row.invoiceurl == null) {
+                            return h('span', {}, '无');
+                        }
                         return h('a', { attrs: { href: parmas.row.invoiceurl, target: '_blank' } }, '点击预览');
                     }
                 },
@@ -1808,7 +1831,32 @@ function insureRecords(groupslist) {
                     key: 'groupphotourl',
                     width: 120,
                     render: function(h, parmas) {
+                        if (parmas.row.groupphotourl == null) {
+                            return h('span', {}, '无');
+                        }
                         return h('a', { attrs: { href: parmas.row.groupphotourl, target: '_blank' } }, '点击预览');
+                    }
+                },
+                {
+                    title: '车钥匙/遥控器',
+                    key: 'carkeypicurl',
+                    width: 120,
+                    render: function(h, parmas) {
+                        if (parmas.row.carkeypicurl == null) {
+                            return h('span', {}, '无');
+                        }
+                        return h('a', { attrs: { href: parmas.row.carkeypicurl, target: '_blank' } }, '点击预览');
+                    }
+                },
+                {
+                    title: '保险告知书',
+                    key: 'insurenoticeurl',
+                    width: 120,
+                    render: function(h, parmas) {
+                        if (parmas.row.insurenoticeurl == null) {
+                            return h('span', {}, '无');
+                        }
+                        return h('a', { attrs: { href: parmas.row.insurenoticeurl, target: '_blank' } }, '点击预览');
                     }
                 },
             ],
