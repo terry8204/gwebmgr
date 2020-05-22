@@ -3,8 +3,18 @@
         <div style="margin-right:20px;float: left;line-height: 30px;">
             <Checkbox v-model="isFilter">已付款</Checkbox>
         </div>
-        <div style="margin-right:20px;float: left;">
-            <i-button @click="queryInsures" >{{$t("reportForm.query")}}</i-button>
+        <div style="float: left;position: relative;width: 300px;line-height:32px;">
+            <div class="search-wrapper" v-click-outside.capture="onClickOutside">
+                <i-input v-model.trim="sosoValue" icon="ios-search-outline" @on-change="sosoValueChange" @on-blur="blur" @on-focus="focus" :readonly="readonly" @on-click="focus" :placeholder="placeholder"></i-input>
+                <transition name="fade">
+                    <div class="search-item-wrapper" v-show="isShowMatchDev">
+                        <Tree :data="treeData" @on-check-change="onCheckedDevice"></Tree>
+                    </div>
+                </transition>
+            </div>
+        </div>
+        <div style="margin-left:20px;float: left;">
+            <i-button @click="queryInsures">{{$t("reportForm.query")}}</i-button>
         </div>
         <div style="margin-right:20px;float: right;">
             <i-button @click="exportData" type="primary">导出数据</i-button>

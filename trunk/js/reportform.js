@@ -1749,18 +1749,21 @@ function insureRecords(groupslist) {
     new Vue({
         el: '#insure-records',
         i18n: utils.getI18n(),
+        mixins: [treeMixin],
         data: {
             error: 123,
+            createrToUser: userName,
             columns: [{
                     title: '是否付费',
                     key: 'isPay',
                     width: 100,
+                    fixed: 'left',
                     render: function(h, parmas) {
                         return h('span', {}, parmas.row.insurestate == 1 ? '已付款' : '未付款');
                     }
                 },
-                { title: '姓名', key: 'name', width: 100 },
-                { title: '身份证号', key: 'cardid', width: 160 },
+                { title: '姓名', key: 'name', width: 100, fixed: 'left', },
+                { title: '身份证号', key: 'cardid', width: 160, fixed: 'left', },
                 { title: '地址', key: 'usingaddress', width: 150 },
                 { title: '手机号', key: 'phonenum', width: 150 },
                 // { title: '电动车类型', key: 'phonenum', width: 150 },
@@ -1866,6 +1869,110 @@ function insureRecords(groupslist) {
             isFilter: true
         },
         methods: {
+            queryUsersTree: function(callback) {
+                var url = myUrls.queryUsersTree(),
+                    me = this;
+                utils.sendAjax(url, { username: userName }, function(respData) {
+                    if (respData.status == 0) {
+                        callback([me.castUsersTreeToDevicesTree(respData.rootuser)]);
+                    } else {
+                        me.$Message.error('查询失败')
+                    }
+                });
+            },
+            castUsersTreeToDevicesTree: function(devicesTreeRecord) {
+                var me = this;
+                var iViewTree = {
+                    render: function(h, params) {
+                        var username = params.data.title;
+                        return h('span', {
+                            on: {
+                                'click': function() {
+                                    me.createrToUser = username;
+                                    me.sosoValue = username;
+                                }
+                            },
+                            style: {
+                                cursor: 'pointer',
+                                color: (me.createrToUser == username) ? '#2D8CF0' : '#000'
+                            }
+                        }, [
+                            h('span', [
+                                h('Radio', {
+                                    props: {
+                                        value: username == me.createrToUser
+                                    },
+                                    style: {
+                                        marginRight: '4px',
+                                        marginLeft: '4px'
+                                    }
+                                }),
+                                h('span', params.data.title)
+                            ]),
+                        ])
+                    },
+                    expand: true,
+                };
+                if (devicesTreeRecord != null) {
+                    var username = devicesTreeRecord.user.username;
+                    var subusers = devicesTreeRecord.subusers;
+                    iViewTree.title = username;
+                    if (username != null && subusers != null && subusers.length > 0) {
+                        var subDevicesTreeRecord = this.doCastUsersTreeToDevicesTree(subusers);
+                        iViewTree.children = subDevicesTreeRecord;
+
+                    }
+                }
+                return iViewTree;
+            },
+            doCastUsersTreeToDevicesTree: function(usersTrees) {
+                var devicesTreeRecord = [],
+                    me = this;
+                if (usersTrees != null && usersTrees.length > 0) {
+                    for (var i = 0; i < usersTrees.length; ++i) {
+                        var usersTree = usersTrees[i];
+                        var username = usersTree.user.username;
+                        var subusers = usersTree.subusers;
+                        var currentsubDevicesTreeRecord = {
+                            render: function(h, params) {
+                                var username = params.data.title;
+                                return h('span', {
+                                    on: {
+                                        'click': function() {
+                                            me.createrToUser = username;
+                                            me.sosoValue = username;
+                                        }
+                                    },
+                                    style: {
+                                        cursor: 'pointer',
+                                        color: (me.createrToUser == username) ? '#2D8CF0' : '#000'
+                                    }
+                                }, [
+                                    h('span', [
+                                        h('Radio', {
+                                            props: {
+                                                value: username == me.createrToUser
+                                            },
+                                            style: {
+                                                marginRight: '4px',
+                                                marginLeft: '4px'
+                                            }
+                                        }),
+                                        h('span', params.data.title)
+                                    ]),
+                                ])
+                            },
+                        };
+                        currentsubDevicesTreeRecord.title = username;
+                        if (username != null && subusers != null && subusers.length > 0) {
+                            var subDevicesTreeRecord = this.doCastUsersTreeToDevicesTree(subusers);
+                            currentsubDevicesTreeRecord.children = subDevicesTreeRecord;
+                        }
+                        devicesTreeRecord.push(currentsubDevicesTreeRecord);
+                    }
+                }
+                return devicesTreeRecord;
+            },
             calcTableHeight: function() {
                 var wHeight = window.innerHeight;
                 this.tableHeight = wHeight - 125;
@@ -1877,7 +1984,7 @@ function insureRecords(groupslist) {
                 this.loading = true;
                 var url = myUrls.queryInsures(),
                     me = this;
-                utils.sendAjax(url, { username: userName }, function(resp) {
+                utils.sendAjax(url, { username: this.createrToUser }, function(resp) {
                     console.log('resp', resp);
                     if (resp.status === 0) {
                         if (me.isFilter) {
@@ -1898,9 +2005,6 @@ function insureRecords(groupslist) {
                 })
             },
             exportData: function() {
-                // this.$refs.table.exportCsv({
-                //     filename: 'device info'
-                // });
                 var jsonData = this.tableData.map(function(item) {
                     return {
                         name: item.name,
@@ -1919,14 +2023,17 @@ function insureRecords(groupslist) {
                         negativecardidurl: item.negativecardidurl,
                         invoiceurl: item.invoiceurl,
                         groupphotourl: item.groupphotourl,
+                        carkeypicurl: item.carkeypicurl,
+                        insurenoticeurl: item.insurenoticeurl,
                     };
                 });
 
                 var columnsStr = [
                     '姓名', '身份证号', '地址', '手机号', '品牌型号',
                     '车架号', 'GPS序列号', '购车日期', '销售价格', '保险金额',
-                    '保费', '合格证', '身份证正面', '身份证反面', '购车发票', '车主与车合影'
+                    '保费', '合格证', '身份证正面', '身份证反面', '购车发票', '车主与车合影', '车钥匙/遥控器', '保险告知书'
                 ].map(function(item) { return "<td>" + item + "</td>"; });
+
                 var str = '<tr>' + columnsStr.join('') + '</tr>';
                 for (var i = 0; i < jsonData.length; i++) {
                     str += '<tr>';
@@ -1935,7 +2042,7 @@ function insureRecords(groupslist) {
                     }
                     str += '</tr>';
                 }
-
+                // console.log(str);
                 var worksheet = 'Sheet1'
                 var uri = 'data:application/vnd.ms-excel;base64,';
                 //下载的表格模板数据
@@ -1952,8 +2059,15 @@ function insureRecords(groupslist) {
             },
         },
         mounted: function() {
+            var me = this;
+            me.queryUsersTree(function(usersTree) {
+                me.groupslist = usersTree;
+                me.treeData = usersTree;
+            });
+            this.sosoValue = userName;
             this.calcTableHeight();
             this.queryInsures();
+
         },
     })
 }
