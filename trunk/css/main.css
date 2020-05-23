@@ -957,16 +957,18 @@ div.video_body {
     right: 0;
     bottom: 35px;
     background-color: red;
+    overflow: hidden;
 }
 
 div.video_body>div.video-wrap {
     float: left;
-    width: 50%;
-    height: 50%;
+    /* width: 50%;
+    height: 50%; */
     background-image: url('../images/tv_default.jpg');
     background-size: cover;
     position: relative;
     box-sizing: border-box;
+    overflow: hidden;
 }
 
 div.videoElementWrap {

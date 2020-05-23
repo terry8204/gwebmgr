@@ -707,9 +707,6 @@
                             </i-col>
                         </Row>
                     </div>
-
-
-
                     <div slot="footer">
                         <i-button type="primary" @click="disposeDirectiveFn" style="width: 100%">{{$t("monitor.confirm")}}</i-button>
                     </div>
@@ -1172,7 +1169,7 @@
                     </div>
                 </div>
                 <div class="video_body" @click="onClickVideoBody">
-                    <div class="video-wrap" :style="{border:playerIndex == 1? '1px solid #0071DB':'1px solid #000'}">
+                    <div class="video-wrap" :style="player1Style">
                         <div class="videoElementWrap">
                             <video id="videoElement1" controls :muted="isMute"></video>
                         </div>
@@ -1180,7 +1177,7 @@
                             <div v-text="playerStateTips.yi"></div>
                         </div>
                     </div>
-                    <div class="video-wrap" :style="{border:playerIndex == 2? '1px solid #0071DB':'1px solid #000'}">
+                    <div class="video-wrap" :style="player2Style">
                         <div class="videoElementWrap">
                             <video id="videoElement2" controls :muted="isMute"></video>
                         </div>
@@ -1188,7 +1185,7 @@
                             <div v-text="playerStateTips.er"></div>
                         </div>
                     </div>
-                    <div class="video-wrap" :style="{border:playerIndex == 3? '1px solid #0071DB':'1px solid #000'}">
+                    <div class="video-wrap" :style="player3Style">
                         <div class="videoElementWrap">
                             <video id="videoElement3" controls :muted="isMute"></video>
                         </div>
@@ -1196,7 +1193,7 @@
                             <div v-text="playerStateTips.san"></div>
                         </div>
                     </div>
-                    <div class="video-wrap" :style="{border:playerIndex == 4? '1px solid #0071DB':'1px solid #000'}">
+                    <div class="video-wrap" :style="player4Style">
                         <div class="videoElementWrap">
                             <video id="videoElement4" controls :muted="isMute"></video>
                         </div>

@@ -659,6 +659,7 @@ var videoPlayer = {
     template: document.getElementById('video-player-template').innerHTML,
     data: function() {
         return {
+            videosNumber: 2,
             isMute: false,
             activesafety: null,
             allDeviceIdTitle: '',
@@ -915,60 +916,63 @@ var videoPlayer = {
         },
         handleStartAllVideo: function(callback) {
             this.singlePlayerState = true;
-            var me = this;
-            me.playerStateTips[this.playerStateKeyList[1]] = "正在请求请求播放";
-            me.playerStateTips[this.playerStateKeyList[2]] = "正在请求请求播放";
-            me.playerStateTips[this.playerStateKeyList[3]] = "正在请求请求播放";
-            me.playerStateTips[this.playerStateKeyList[4]] = "正在请求请求播放";
+            var me = this,
+                channels = [];
+            for (var i = 1; i <= this.videosNumber; i++) {
+                channels.push(i);
+                me.playerStateTips[this.playerStateKeyList[i]] = "正在请求请求播放";
+            }
 
             utils.sendAjax(myUrls.startVideos(), {
-                deviceid: this.deviceId,
-                channels: [1, 2, 3, 4],
-                playtype: ishttps ? 'flvs' : 'flv',
-            }, function(resp) {
-                me.isSendAjaxState = false;
-                var records = resp.records,
-                    status = resp.status;
+                    deviceid: this.deviceId,
+                    channels: channels,
+                    playtype: ishttps ? 'flvs' : 'flv',
+                },
+                function(resp) {
+                    me.isSendAjaxState = false;
+                    var records = resp.records,
+                        status = resp.status;
 
-                if (status == CMD_SEND_RESULT_UNCONFIRM) {
-                    me.$Message.error('发送成功，未收到确认');
-                } else if (status === CMD_SEND_RESULT_PASSWORD_ERROR) {
-                    me.$Message.error('密码错误');
-                } else if (status === CMD_SEND_RESULT_OFFLINE_NOT_CACHE) {
-                    me.$Message.error("设备离线，未缓存");
-                } else if (status === CMD_SEND_RESULT_OFFLINE_CACHED) {
-                    me.$Message.error("设备离线，已缓存");
-                } else if (status === CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD) {
-                    me.$Message.error("需要修改默认密码");
-                } else if (status === CMD_SEND_RESULT_DETAIL_ERROR) {
-                    me.$Message.error("错误:" + resp.cause);
-                } else if (status === CMD_SEND_CONFIRMED) {
-                    var acc = resp.acc
-                    var accState = '';
-                    if (acc === 3) {
-                        accState = 'ACC开,'
-                    } else if (acc === 2) {
-                        accState = 'ACC关,'
+                    if (status == CMD_SEND_RESULT_UNCONFIRM) {
+                        me.$Message.error('发送成功，未收到确认');
+                    } else if (status === CMD_SEND_RESULT_PASSWORD_ERROR) {
+                        me.$Message.error('密码错误');
+                    } else if (status === CMD_SEND_RESULT_OFFLINE_NOT_CACHE) {
+                        me.$Message.error("设备离线，未缓存");
+                    } else if (status === CMD_SEND_RESULT_OFFLINE_CACHED) {
+                        me.$Message.error("设备离线，已缓存");
+                    } else if (status === CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD) {
+                        me.$Message.error("需要修改默认密码");
+                    } else if (status === CMD_SEND_RESULT_DETAIL_ERROR) {
+                        me.$Message.error("错误:" + resp.cause);
+                    } else if (status === CMD_SEND_CONFIRMED) {
+                        var acc = resp.acc
+                        var accState = '';
+                        if (acc === 3) {
+                            accState = 'ACC开,'
+                        } else if (acc === 2) {
+                            accState = 'ACC关,'
+                        }
+                        me.$Message.success(accState + "请求播放成功,请稍后...");
+                        callback(records);
+                    } else if (status === CMD_SEND_OVER_RETRY_TIMES) {
+                        me.$Message.error("尝试发送3次失败");
+                    } else if (status === CMD_SEND_SYNC_TIMEOUT) {
+                        var accState = '';
+                        if (acc === 3) {
+                            accState = 'ACC开,'
+                        } else if (acc === 2) {
+                            accState = 'ACC关,'
+                        }
+                        me.$Message.error(accState + "请求播放超时");
+                        callback(records);
                     }
-                    me.$Message.success(accState + "请求播放成功,请稍后...");
-                    callback(records);
-                } else if (status === CMD_SEND_OVER_RETRY_TIMES) {
-                    me.$Message.error("尝试发送3次失败");
-                } else if (status === CMD_SEND_SYNC_TIMEOUT) {
-                    var accState = '';
-                    if (acc === 3) {
-                        accState = 'ACC开,'
-                    } else if (acc === 2) {
-                        accState = 'ACC关,'
-                    }
-                    me.$Message.error(accState + "请求播放超时");
-                    callback(records);
-                }
 
-            }, function() {
-                me.$Message.error("请求超时");
-                me.isSendAjaxState = false;
-            })
+                },
+                function() {
+                    me.$Message.error("请求超时");
+                    me.isSendAjaxState = false;
+                })
         },
         htmlToImage: function(index) {
             var canvas = document.getElementById('V2I_canvas');
@@ -1068,6 +1072,67 @@ var videoPlayer = {
         activeComponent: function() {
             return this.$store.state.headerActiveName;
         },
+        player1Style: function() {
+            var styleObject = { border: this.playerIndex == 1 ? '1px solid #0071DB' : '1px solid #000' }
+            switch (this.videosNumber) {
+                case 1:
+                    styleObject.width = '100%';
+                    styleObject.height = '100%';
+                    break;
+                case 2:
+                    styleObject.width = '50%';
+                    styleObject.height = '100%';
+                    break;
+                case 3:
+                    styleObject.width = '50%';
+                    styleObject.height = '50%';
+                    break;
+                case 4:
+                    styleObject.width = '50%';
+                    styleObject.height = '50%';
+                    break;
+            }
+            return styleObject;
+        },
+        player2Style: function() {
+            var styleObject = { border: this.playerIndex == 2 ? '1px solid #0071DB' : '1px solid #000' }
+            switch (this.videosNumber) {
+                case 2:
+                    styleObject.width = '50%';
+                    styleObject.height = '100%';
+                    break;
+                case 3:
+                    styleObject.width = '50%';
+                    styleObject.height = '50%';
+                    break;
+                case 4:
+                    styleObject.width = '50%';
+                    styleObject.height = '50%';
+                    break;
+            }
+            return styleObject;
+        },
+        player3Style: function() {
+            var styleObject = { border: this.playerIndex == 3 ? '1px solid #0071DB' : '1px solid #000' }
+            switch (this.videosNumber) {
+                case 3:
+                    styleObject.width = '100%';
+                    styleObject.height = '50%';
+                    break;
+                case 4:
+                    styleObject.width = '50%';
+                    styleObject.height = '50%';
+                    break;
+            }
+            return styleObject;
+        },
+        player4Style: function() {
+            return {
+                border: this.playerIndex == 4 ? '1px solid #0071DB' : '1px solid #000',
+                width: '50%',
+                height: '50%',
+            };
+        }
     },
     watch: {
         isLargen: function() {
@@ -1092,9 +1157,26 @@ var videoPlayer = {
             me.deviceName = device.devicename;
             me.activesafety = device.activesafety;
             me.allDeviceIdTitle = device.allDeviceIdTitle;
+            me.videosNumber = Math.floor(Math.random() * (4 - 1 + 1)) + 1;
             if (me.isLargen == 0) {
                 me.changeLargen(1);
             };
+            if (me.singlePlayerState) {
+                for (var i = 1; i < 5; i++) {
+                    var player = me.videoIns[i];
+                    var key = me.playerStateKeyList[i];
+                    if (player != null) {
+                        player.pause();
+                        player.unload();
+                        player.detachMediaElement();
+                        player.destroy();
+                    }
+                    me.playerStateTips[key] = "停止播放";
+                    me.isSendAjaxState = false;
+                }
+                me.videoTimes = null;
+                me.videoIns = {};
+            }
             me.handleStartAllVideo(function(records) {
                 records.forEach(function(item) {
                     me.switchflvPlayer(item.channel, item.playurl, item.hasaudio);
