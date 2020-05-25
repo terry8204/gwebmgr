@@ -1,0 +1,322 @@
+<meta charset="UTF-8">
+<div id="importofflineinsure">
+    <input type="file" id="file" style="display: none;" />
+    <div class="full" style="padding: 10px;">
+        <h3 class="h3-title">导入保单信息</h3>
+        <div style="padding: 10px 0;">
+            <i-table border ref="table" :columns="columns" :data="tableData" :loading="loading" :height="taleHeight"></i-table>
+        </div>
+        <div style="padding: 5px; text-align: center;border: 1px solid #DCDEE2;">
+            <i-button @click="importTownerInfo">导入文件</i-button>
+            <i-button @click="handleSubmit" :loading="loading" style="margin: 0 10px;">提交</i-button>
+            <i-button @click="downloadTemplate">模版下载</i-button>
+        </div>
+    </div>
+    <script>
+        vueInstanse = new Vue({
+            el: "#importofflineinsure",
+            i18n: utils.getI18n(),
+            data: {
+                loading: false,
+                taleHeight: 300,
+                columns: [{
+                    type: 'index',
+                    fixed: 'left',
+                    width: 60
+                }, {
+                    title: '是否付费',
+                    key: "insurestate",
+                    fixed: 'left',
+                    width: 120,
+                }, {
+                    title: '姓名',
+                    key: "name",
+                    fixed: 'left',
+                    width: 120,
+                }, {
+                    title: '身份证号',
+                    key: "cardid",
+                    fixed: 'left',
+                    width: 120,
+                }, {
+                    title: '保单号',
+                    key: "policyno",
+                    fixed: 'left',
+                    width: 120,
+                }, {
+                    title: '经销商',
+                    key: "username",
+                    width: 120,
+                }, {
+                    title: '经销商地址',
+                    key: "useraddress",
+                    width: 180,
+                }, {
+                    title: '经销商手机号',
+                    key: "usernamephonenum",
+                    width: 140,
+                }, {
+                    title: '用户手机号',
+                    key: "phonenum",
+                    width: 140,
+                }, {
+                    title: '用户地址',
+                    key: "usingaddress",
+                    width: 160,
+                }, {
+                    title: '品牌型号',
+                    key: "brandtype",
+                    width: 120,
+                }, {
+                    title: '车架号',
+                    key: "vinno",
+                    width: 140,
+                }, {
+                    title: 'GPS序列号',
+                    key: "deviceid",
+                    width: 140,
+                }, {
+                    title: '购车日期',
+                    key: "buycarday",
+                    width: 140,
+                }, {
+                    title: '销售价格',
+                    key: "carvalue",
+                    width: 100,
+                }, {
+                    title: '保险金额',
+                    key: "insureprice",
+                    width: 100,
+                }, {
+                    title: '保费',
+                    key: "insurefee",
+                    width: 100,
+                }, {
+                    'title': "添加状态",
+                    width: 300,
+                    fixed: 'right',
+                    render: function(h, params) {
+                        var status = params.row.status;
+                        var statusStr = '';
+                        var color = '';
+                        switch (status) {
+                            case -1:
+                                statusStr = '未提交';
+                                color = '#000';
+                                break;
+                            case 0:
+                                statusStr = params.row.cause;
+                                color = '#e4393c';
+                                break;
+                            case 1:
+                                statusStr = '提交成功';
+                                color = '#007ACC';
+                                break;
+                        }
+                        return h('span', {
+                            style: {
+                                color: color
+                            }
+                        }, statusStr)
+                    },
+                }, {
+                    'title': "操作",
+                    width: 85,
+                    fixed: 'right',
+                    render: function(h, params) {
+                        return h('Button', {
+                                props: {
+                                    type: 'error',
+                                    size: 'small'
+                                },
+                                style: {
+                                    marginRight: '5px'
+                                },
+                                on: {
+                                    click: function() {
+                                        vueInstanse.tableData.splice(params.index, 1);
+                                    }
+                                }
+                            },
+                            '移除')
+                    }
+                }],
+
+                tableData: [],
+
+                excelX: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q']
+            },
+            methods: {
+                calcTableHeight: function() {
+                    var wHeight = window.innerHeight;
+                    this.taleHeight = wHeight - 170;
+                },
+                downloadTemplate: function() {
+                    var a = document.createElement('a');
+                    a.href = myUrls.apihost + 'offlineinsuretemplate.xlsx';
+                    a.download = 'offlineinsuretemplate';
+                    a.click();
+                },
+                handleSubmit: function() {
+                    if (this.tableData.length == 0) {
+                        this.$Message.error("请导入保单信息");
+                        return;
+                    }
+                    this.loading = true;
+                    var tableData = deepClone(this.tableData),
+                        me = this;
+                    var url = myUrls.importOfflineInsureInfo();
+                    var data = {
+                        insures: tableData,
+                        isforcecover: true,
+                    }
+                    utils.sendAjax(url, data, function(respData) {
+                        me.loading = false;
+                        if (respData.status == 0) {
+                            if (respData.total === respData.success) {
+                                me.$Message.success("导入成功");
+                                me.tableData.forEach(function(item) {
+                                    item.status = 1;
+                                });
+                            } else {
+                                me.$Message.error("总共:" + respData.total + ",失败:" + respData.fail);
+                                var errorrecords = respData.errorrecords;
+                                errorrecords.forEach(function(failItem) {
+                                    tableData.forEach(function(item) {
+                                        if (failItem.vinno == item.vinno) {
+                                            item.cause = failItem.cause;
+                                            item.status = 0;
+                                        }
+                                    });
+                                });
+                                tableData.forEach(function(item) {
+                                    if (item.status == -1) {
+                                        item.status = 1;
+                                    }
+                                });
+                                me.tableData = tableData;
+                            }
+                        } else {
+                            me.$Message.success("导入失败");
+                        }
+                    }, function() {
+                        me.loading = false;
+                        me.$Message.error("导入超时");
+                    });
+                },
+                importTownerInfo: function() {
+                    this.fileEl.files.length = 0;
+                    this.fileEl.value = "";
+                    this.fileEl.click();
+                },
+                readWorkbookFromLocalFile: function(file, callback) {
+                    var reader = new FileReader();
+                    reader.onload = function(e) {
+                        var data = e.target.result;
+                        var workbook = XLSX.read(data, {
+                            type: 'binary'
+                        });
+                        if (callback) callback(workbook);
+                    };
+                    reader.readAsBinaryString(file);
+                },
+                parserExcelData: function(excelData) {
+                    try {
+                        var indexY = 2;
+                        var tableData = [];
+                        while (true) {
+                            var insurestateKey = this.excelX[1] + indexY; //是否付费
+                            var nameKey = this.excelX[2] + indexY; //姓名
+                            var cardidKey = this.excelX[3] + indexY; //姓名
+                            var policynoKey = this.excelX[4] + indexY; //保单号
+                            var usernameKey = this.excelX[5] + indexY; //经销商
+                            var useraddressKey = this.excelX[6] + indexY; //经销商地址
+                            var usernamephonenumKey = this.excelX[7] + indexY; //经销商手机号
+                            var phonenumKey = this.excelX[8] + indexY; //用户手机号
+                            var usingaddressKey = this.excelX[9] + indexY; //用户地址
+                            var brandtypeKey = this.excelX[10] + indexY; //品牌型号
+                            var vinnoKey = this.excelX[11] + indexY; //车架号
+                            var deviceidKey = this.excelX[12] + indexY; //GPS序列号
+                            var buycardayKey = this.excelX[13] + indexY; //购车日期
+                            var carvalueKey = this.excelX[14] + indexY; //销售价格
+                            var insurepriceKey = this.excelX[15] + indexY; //保险金额
+                            var insurefeeKey = this.excelX[16] + indexY; //保费
+
+                            if (excelData[insurestateKey] == undefined) {
+                                break;
+                            }
+                            var insurestate = 0;
+                            if (excelData[insurestateKey]) {
+                                var insurestateVlaue = excelData[insurestateKey].v;
+                                if (insurestateVlaue.indexOf('是')) {
+                                    insurestate = 1;
+                                }
+                            }
+                            tableData.push({
+                                insurestate: insurestate,
+                                name: excelData[nameKey] ? excelData[nameKey].v : '',
+                                cardid: excelData[cardidKey] ? excelData[cardidKey].v : '',
+                                policyno: excelData[policynoKey] ? excelData[policynoKey].v : '',
+                                username: excelData[usernameKey] ? excelData[usernameKey].v : '',
+                                useraddress: excelData[useraddressKey] ? excelData[useraddressKey].v : '',
+                                usernamephonenum: excelData[usernamephonenumKey] ? excelData[usernamephonenumKey].v : '',
+                                phonenum: excelData[phonenumKey] ? excelData[phonenumKey].v : '',
+                                usingaddress: excelData[usingaddressKey] ? excelData[usingaddressKey].v : '',
+                                brandtype: excelData[brandtypeKey] ? excelData[brandtypeKey].v : '',
+                                vinno: excelData[vinnoKey] ? excelData[vinnoKey].v : '',
+                                deviceid: excelData[deviceidKey] ? excelData[deviceidKey].v : '',
+                                buycarday: excelData[buycardayKey] ? excelData[buycardayKey].v : '',
+                                carvalue: excelData[carvalueKey] ? excelData[carvalueKey].v : '',
+                                insureprice: excelData[insurepriceKey] ? excelData[insurepriceKey].v : '',
+                                insurefee: excelData[insurefeeKey] ? excelData[insurefeeKey].v : '',
+                                status: -1
+                            });
+                            // key: "insurestate", //是否付费
+                            // key: "name", //姓名
+                            // key: "cardid", //身份证号
+                            // key: "policyno", //保单号
+                            // key: "username", //经销商
+                            // key: "useraddress", //经销商地址
+                            // key: "usernamephonenum", // 经销商手机号
+                            // key: "phonenum", //用户手机号
+                            // key: "usingaddress", // 用户地址
+                            // key: "brandtype", //品牌型号
+                            // key: "vinno", // 车架号
+                            // key: "deviceid", //GPS序列号
+                            // key: "buycarday", //购车日期
+                            // key: "carvalue", // 销售价格
+                            // key: "insureprice", //保险金额
+                            // key: "insurefee", // 保费
+
+                            indexY++;
+                        }
+                        this.tableData = tableData;
+                    } catch (error) {
+                        this.$Message.error('请使用我们提供的模版填写');
+                    }
+                }
+            },
+            mounted: function() {
+                var me = this;
+                this.fileEl = document.getElementById('file');
+                this.fileEl.onchange = function(e) {
+                    var idx = e.srcElement.value.lastIndexOf('.');
+                    var houzhui = e.srcElement.value.slice(idx);
+                    if (houzhui.indexOf('xlsx') == -1) {
+                        me.$Message.error("请选择我们提供的模版提交");
+                        return;
+                    }
+                    var file = e.target.files[0];
+                    me.readWorkbookFromLocalFile(file, function(workbook) {
+                        me.parserExcelData(workbook.Sheets['保险数据'])
+                    });
+                };
+                this.calcTableHeight();
+                window.onresize = function() {
+                    me.calcTableHeight();
+                }
+
+            },
+        })
+    </script>
+</div>

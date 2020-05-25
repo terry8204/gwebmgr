@@ -593,6 +593,9 @@ var myUrls = {
     queryAllSubgroups: function() {
         return this.apihosts + 'webapi?action=queryallsubgroups&token=' + token;
     },
+    importOfflineInsureInfo: function() {
+        return this.apihosts + 'webapi?action=importofflineinsureinfo&token=' + token;
+    },
 }
 
 
