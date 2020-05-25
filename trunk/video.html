@@ -734,6 +734,14 @@
                                 </i-Col>
                             </Row>
                             <Row style="height:32px;margin: 10px 0;">
+                                <i-Col span="5" style="height: 100%;line-height:32px;text-align: center;">
+                                    视频播放个数 :
+                                </i-Col>
+                                <i-Col span="12" style="height: 100%;line-height:32px;">
+                                    <Input-Number :max="4" :min="1" v-model="videochannelcount"></Input-Number>
+                                </i-Col>
+                            </Row>
+                            <Row style="height:32px;margin: 10px 0;">
                                 <i-Col span="17" style="height: 100%;line-height:32px;text-align: center;">
                                     <i-button type='primary' @click='handleSetPlayParamter' :disabled="userType > 2">设置播放视频参数</i-button>
                                 </i-Col>
@@ -1816,6 +1824,7 @@
                 videoCheckboxGroup: [],
                 usingaudio: '',
 
+
                 // 视频播放参数
                 videotranstype: '',
                 videostreamtype: '',
@@ -1823,6 +1832,7 @@
                 historyaudiocodec: '0',
                 needuploadfilename: false,
                 videotimestamptype: '0',
+                videochannelcount: 4,
 
                 // channelnum
                 channelsData: [],
@@ -2670,6 +2680,7 @@
                         historyaudiocodec: Number(this.historyaudiocodec),
                         needuploadfilename: this.needuploadfilename ? 1 : 0,
                         videotimestamptype: Number(this.videotimestamptype),
+                        videochannelcount: this.videochannelcount
                     }
 
                     utils.sendAjax(url, data, function(data) {

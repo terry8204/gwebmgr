@@ -1157,7 +1157,7 @@ var videoPlayer = {
             me.deviceName = device.devicename;
             me.activesafety = device.activesafety;
             me.allDeviceIdTitle = device.allDeviceIdTitle;
-            // me.videosNumber = Math.floor(Math.random() * (4 - 1 + 1)) + 1;
+            me.videosNumber = device.videochannelcount;
             if (me.isLargen == 0) {
                 me.changeLargen(1);
             };
