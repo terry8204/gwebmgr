@@ -935,10 +935,6 @@ var monitor = {
             deviceInfo.isSelected = true;
             this.selectedDevObj = deviceInfo;
             this.handleClickDev(deviceInfo.deviceid);
-            var groups = utils.allSubgroups[device.creater];
-            if (groups) {
-                this.currentDevCreateUserGroupList = groups;
-            }
         },
         handleClickDev: function(deviceid) {
             globalDeviceId = deviceid;
@@ -955,6 +951,13 @@ var monitor = {
                 };
                 this.$Message.error(this.$t("monitor.noRecordTrack"))
                 this.$store.commit('currentDeviceId', deviceid);
+            }
+
+
+            var device = this.deviceInfos[deviceid];
+            var groups = utils.allSubgroups[device.creater];
+            if (groups) {
+                this.currentDevCreateUserGroupList = groups;
             }
         },
         querySingleAllCmdDefaultValue: function(deviceid) {
