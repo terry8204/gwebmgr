@@ -302,17 +302,6 @@
                         </i-dropdown-menu>
                         </Dropdown>
                         </DropdownItem>
-                        <DropdownItem name="luyin" v-show="isShowRecordBtn">{{$t("monitor.media")}}</DropdownItem>
-                        <DropdownItem name="bms" v-show="isShowBmsBtn">电池管理</DropdownItem>
-                        <DropdownItem name="obd" v-show="isShowObdBtn">OBD</DropdownItem>
-                        <DropdownItem name="weight" v-show="isShowWeightBtn">称重</DropdownItem>
-                        <DropdownItem name="watermeter" v-show="isShowWatermeterBtn">水表</DropdownItem>
-                        <DropdownItem name="video" v-show="isShowVideoBtn">视频</DropdownItem>
-                        <DropdownItem name="cmdrecord">{{$t("monitor.cmdRecord")}}</DropdownItem>
-                        <DropdownItem name="alarmList">{{$t("monitor.alarmRecords")}}</DropdownItem>
-                        <DropdownItem name="phoneAlarm">{{$t("reportForm.phoneAlarm")}}</DropdownItem>
-                        <DropdownItem name="devbaseinfo">{{$t("monitor.devBaseInfo")}}</DropdownItem>
-                        <DropdownItem name="ownerInfo">车主信息</DropdownItem>
                         <DropdownItem name="transferDeviceGroup">
                             <Dropdown transfer placement="right-start" @on-click="handleClickTransferDeviceGroup" style="width:100%;">
                                 转移分组
@@ -324,6 +313,17 @@
                                 </i-dropdown-menu>
                             </Dropdown>
                         </DropdownItem>
+                        <DropdownItem name="luyin" v-show="isShowRecordBtn">{{$t("monitor.media")}}</DropdownItem>
+                        <DropdownItem name="bms" v-show="isShowBmsBtn">电池管理</DropdownItem>
+                        <DropdownItem name="obd" v-show="isShowObdBtn">OBD</DropdownItem>
+                        <DropdownItem name="weight" v-show="isShowWeightBtn">称重</DropdownItem>
+                        <DropdownItem name="watermeter" v-show="isShowWatermeterBtn">水表</DropdownItem>
+                        <DropdownItem name="video" v-show="isShowVideoBtn">视频</DropdownItem>
+                        <DropdownItem name="cmdrecord">{{$t("monitor.cmdRecord")}}</DropdownItem>
+                        <DropdownItem name="alarmList">{{$t("monitor.alarmRecords")}}</DropdownItem>
+                        <DropdownItem name="phoneAlarm">{{$t("reportForm.phoneAlarm")}}</DropdownItem>
+                        <DropdownItem name="devbaseinfo">{{$t("monitor.devBaseInfo")}}</DropdownItem>
+                        <DropdownItem name="ownerInfo">车主信息</DropdownItem>
                         </i-dropdown-menu>
                         </Dropdown>
                         <li>
@@ -365,6 +365,17 @@
                                                                         </template>
             </i-dropdown-menu>
             </Dropdown>
+            </DropdownItem>
+            <DropdownItem name="transferDeviceGroup">
+                <Dropdown transfer placement="right-start" @on-click="handleClickTransferDeviceGroup" style="width:100%;">
+                    转移分组
+                    <Icon type="ios-arrow-forward"></Icon>
+                    <i-dropdown-menu slot="list">
+                        <template v-for="(item, index) in currentDevCreateUserGroupList" :key="item.groupid"> 
+                            <DropdownItem :name="item.groupid" >{{item.groupname}}</DropdownItem>
+                        </template>
+                    </i-dropdown-menu>
+                </Dropdown>
             </DropdownItem>
             <DropdownItem name="luyin" v-show="isShowRecordBtn">{{$t("monitor.media")}}</DropdownItem>
             <DropdownItem name="bms" v-show="isShowBmsBtn">电池管理</DropdownItem>
@@ -419,6 +430,17 @@
         </i-dropdown-menu>
         </Dropdown>
         </DropdownItem>
+        <DropdownItem name="transferDeviceGroup">
+            <Dropdown transfer placement="right-start" @on-click="handleClickTransferDeviceGroup" style="width:100%;">
+                转移分组
+                <Icon type="ios-arrow-forward"></Icon>
+                <i-dropdown-menu slot="list">
+                    <template v-for="(item, index) in currentDevCreateUserGroupList" :key="item.groupid"> 
+                        <DropdownItem :name="item.groupid" >{{item.groupname}}</DropdownItem>
+                    </template>
+                </i-dropdown-menu>
+            </Dropdown>
+        </DropdownItem>
         <DropdownItem name="luyin" v-show="isShowRecordBtn">{{$t("monitor.media")}}</DropdownItem>
         <DropdownItem name="bms" v-show="isShowBmsBtn">电池管理</DropdownItem>
         <DropdownItem name="obd" v-show="isShowObdBtn">OBD</DropdownItem>
@@ -471,6 +493,17 @@
                                                     </template>
             </i-dropdown-menu>
             </Dropdown>
+            </DropdownItem>
+            <DropdownItem name="transferDeviceGroup">
+                <Dropdown transfer placement="right-start" @on-click="handleClickTransferDeviceGroup" style="width:100%;">
+                    转移分组
+                    <Icon type="ios-arrow-forward"></Icon>
+                    <i-dropdown-menu slot="list">
+                        <template v-for="(item, index) in currentDevCreateUserGroupList" :key="item.groupid"> 
+                            <DropdownItem :name="item.groupid" >{{item.groupname}}</DropdownItem>
+                        </template>
+                    </i-dropdown-menu>
+                </Dropdown>
             </DropdownItem>
             <DropdownItem name="luyin" v-show="isShowRecordBtn">{{$t("monitor.media")}}</DropdownItem>
             <DropdownItem name="bms" v-show="isShowBmsBtn">电池管理</DropdownItem>

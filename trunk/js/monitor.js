@@ -412,7 +412,8 @@ var monitor = {
             })
         },
         handleClickTransferDeviceGroup: function(groupid) {
-            var url = myUrls.batchOperate();
+            var url = myUrls.batchOperate(),
+                me = this;
             var data = {
                 "action": "move",
                 "deviceids": [this.currentDeviceId],
@@ -420,8 +421,60 @@ var monitor = {
                 "targetusername": userName
             }
             utils.sendAjax(url, data, function(resp) {
-                console.log(resp);
+                if (resp.status == 0 && resp.total == resp.success) {
+                    var deviceSpliceList = null;
+                    for (var i = 0; i < me.groups.length; i++) {
+                        var group = me.groups[i];
+                        for (var j = 0; j < group.devices.length; j++) {
+                            var device = group.devices[j];
+                            if (device.deviceid == me.currentDeviceId) {
+                                deviceSpliceList = group.devices.splice(j, 1);
+                                me.transferAfterChangeGroupTitle(group);
+                                break;
+                            }
+                        }
+                    }
+                    for (var k = 0; k < me.groups.length; k++) {
+                        var group = me.groups[k];
+                        if (group.groupid == groupid) {
+                            if (deviceSpliceList && deviceSpliceList.length) {
+                                group.devices.push(deviceSpliceList[0]);
+                                me.transferAfterChangeGroupTitle(group);
+                            }
+                            break;
+                        }
+                    }
+                    me.$Message.success('转移成功');
+                } else {
+                    me.$Message.error('转移成功');
+                }
             });
+        },
+        transferAfterChangeGroupTitle: function(group) {
+            var devCount = group.devCount - 1;
+            group.devCount = devCount;
+            var onlineCount = 0;
+            var offlineCount = 0;
+            var storeCount = 0;
+            group.devices.forEach(function(item) {
+                if (item.isOnline) {
+                    onlineCount++;
+                } else {
+                    var track = me.positionLastrecords[item.deviceid];
+                    if (item.lastactivetime <= 0 && track == undefined) {
+                        storeCount++;
+                    } else {
+                        offlineCount++;
+                    }
+                }
+            });
+            if (me.selectedState == 'all' || me.selectedState == 'online') {
+                group.title = group.title.replace(/\((.+?)\)/g, '(' + onlineCount + '/' + devCount + ')');
+            } else if (me.selectedState == 'offline') {
+                group.title = group.title.replace(/\((.+?)\)/g, '(' + offlineCount + '/' + devCount + ')');
+            } else if (me.selectedState == 'stock') {
+                group.title = group.title.replace(/\((.+?)\)/g, '(' + storeCount + '/' + devCount + ')');
+            }
         },
         handleClickDirective: function(cmdCode) {
             this.cmdParams = {};
@@ -1143,7 +1196,7 @@ var monitor = {
                     }
                     device.allDeviceIdTitle = device.devicetitle + "-" + device.deviceid;
                 });
-
+                group.devCount = devCount;
                 group.devices.sort(function(a, b) {
                     return a.devicetitle.localeCompare(b.devicetitle);
                 });
