@@ -168,7 +168,7 @@
                     tableData.forEach(function(item) {
                         var insurestate = 0;
                         if (item.insurestate) {
-                            if (item.insurestate.indexOf('是')) {
+                            if (item.insurestate.indexOf('是') >= 0) {
                                 insurestate = 1;
                             }
                         }
