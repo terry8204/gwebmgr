@@ -4,6 +4,12 @@
     <div class="demo-spin-container" v-if="loading">
         <Spin size="large" fix></Spin>
     </div>
+    <div class="demo-spin-container" v-if="batchSendCmdLoading">
+        <Spin fix>
+            <Icon type="ios-loading" size=18 class="demo-spin-icon-load"></Icon>
+            <div>正在发送中:{{idx}}/{{tableData.length}}</div>
+        </Spin>
+    </div>
     <div class="full">
         <h3 class="h3-title">{{$t("bgMgr.batchMgr")}}</h3>
         <Row>
@@ -144,6 +150,8 @@
         i18n: utils.getI18n(),
         data: {
             loading: false,
+            batchSendCmdLoading: false,
+            idx: 0,
             showBatchModalType: 1, // 1批量地址  2
             importModal: false,
             batchModal: false,
@@ -299,7 +307,10 @@
                     data.action = 'changedevicetype';
                     data.devicetype = this.deviceType;
                 } else if (this.showBatchModalType == 5) {
+                    this.batchSendCmdLoading = true;
                     var url = myUrls.sendCmd();
+                    this.idx = 0;
+                    var tableData = deepClone(me.tableData);
                     this.tableData.forEach(function(item) {
                         var deviceid = item.deviceid
                         var data = {
@@ -311,7 +322,8 @@
                             "cmdpwd": me.cmdPassword
                         };
                         utils.sendAjax(url, data, function(resp) {
-                            me.tableData.forEach(function(item) {
+                            me.idx++;
+                            tableData.forEach(function(item) {
                                 if (item.deviceid == deviceid) {
                                     if (resp.status === 0) {
                                         item.resultType = 0;
@@ -327,7 +339,24 @@
                                         item.resultType = 8;
                                     }
                                 }
-                            })
+                            });
+                            if (me.idx >= tableData.length - 1) {
+                                me.tableData = tableData;
+                                me.batchSendCmdLoading = false;
+                            }
+                        }, function() {
+                            me.idx++;
+                            tableData.forEach(function(item) {
+                                if (item.deviceid == deviceid) {
+                                    if (resp.status === 0) {
+                                        item.resultType = 1;
+                                    };
+                                }
+                            });
+                            if (me.idx >= tableData.length - 1) {
+                                me.tableData = tableData;
+                                me.batchSendCmdLoading = false;
+                            }
                         });
                     });
                     me.batchModal = false;

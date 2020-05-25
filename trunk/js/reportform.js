@@ -286,6 +286,9 @@ var reportMixin = {
                 if (isReturn) { return false };
             });
             return title;
+        },
+        cleanSelectedDev: function() {
+            this.sosoValue = '';
         }
     },
     mounted: function() {

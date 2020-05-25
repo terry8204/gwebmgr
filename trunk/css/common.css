@@ -72,15 +72,24 @@ li {
     margin-top: 0px;
 }
 
+.demo-spin-icon-load {
+    animation: ani-demo-spin 1s linear infinite;
+}
+
 
 /* iview  模态框垂直水平居中 */
 
-.vertical-center-modal {
-    /* position: fixed;     
+
+/* .vertical-center-modal { */
+
+
+/* position: fixed;     
     left: 50%;
     top: 40%;
     transform: translate(-50%,-50%); */
-}
+
+
+/* } */
 
 
 /* .ivu-modal-fullscreen {
