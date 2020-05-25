@@ -659,7 +659,7 @@ var videoPlayer = {
     template: document.getElementById('video-player-template').innerHTML,
     data: function() {
         return {
-            videosNumber: 2,
+            videosNumber: 4,
             isMute: false,
             activesafety: null,
             allDeviceIdTitle: '',

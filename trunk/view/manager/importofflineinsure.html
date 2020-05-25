@@ -165,6 +165,15 @@
                     this.loading = true;
                     var tableData = deepClone(this.tableData),
                         me = this;
+                    tableData.forEach(function(item) {
+                        var insurestate = 0;
+                        if (item.insurestate) {
+                            if (item.insurestate.indexOf('是')) {
+                                insurestate = 1;
+                            }
+                        }
+                        item.insurestate = insurestate;
+                    });
                     var url = myUrls.importOfflineInsureInfo();
                     var data = {
                         insures: tableData,
@@ -181,6 +190,7 @@
                             } else {
                                 me.$Message.error("总共:" + respData.total + ",失败:" + respData.fail);
                                 var errorrecords = respData.errorrecords;
+                                var tableData = deepClone(this.tableData);
                                 errorrecords.forEach(function(failItem) {
                                     tableData.forEach(function(item) {
                                         if (failItem.vinno == item.vinno) {
@@ -245,15 +255,9 @@
                             if (excelData[insurestateKey] == undefined) {
                                 break;
                             }
-                            var insurestate = 0;
-                            if (excelData[insurestateKey]) {
-                                var insurestateVlaue = excelData[insurestateKey].v;
-                                if (insurestateVlaue.indexOf('是')) {
-                                    insurestate = 1;
-                                }
-                            }
+
                             tableData.push({
-                                insurestate: insurestate,
+                                insurestate: excelData[insurestateKey] ? excelData[insurestateKey].v : '',
                                 name: excelData[nameKey] ? excelData[nameKey].v : '',
                                 cardid: excelData[cardidKey] ? excelData[cardidKey].v : '',
                                 policyno: excelData[policynoKey] ? excelData[policynoKey].v : '',
