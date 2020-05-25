@@ -2275,6 +2275,7 @@
                             me.historyaudiocodec = String(respData.historyaudiocodec);
                             me.needuploadfilename = respData.needuploadfilename == 1 ? true : false;
                             me.videotimestamptype = String(respData.videotimestamptype);
+                            me.videochannelcount = Number(respData.videochannelcount);
                             me.$Message.success("查询成功");
                         } else {
                             me.$Message.error("查询失败");
