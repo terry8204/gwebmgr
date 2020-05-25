@@ -1,5 +1,17 @@
 var utils = {
     deviceInfos: {},
+    allSubgroups: {},
+    queryAllSubgroups: function() {
+        var url = myUrls.queryAllSubgroups(),
+            me = this;
+        this.sendAjax(url, {}, function(resp) {
+            if (resp.records && resp.records.length) {
+                resp.records.forEach(function(item) {
+                    me.allSubgroups[item.creater] = item.groups;
+                });
+            }
+        })
+    },
     renderPerson: function(h, params) {
         var data = params.data;
         return h('span', {}, [

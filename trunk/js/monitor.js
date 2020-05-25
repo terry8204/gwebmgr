@@ -98,6 +98,7 @@ var monitor = {
             expirenotifytime: DateFormat.longToDateTimeStr(Date.now(), 0),
             currentDeviceType: null, // 选中设备的类型
             currentDevDirectiveList: [], // 选中设备的类型对应的设备指令
+            currentDevCreateUserGroupList: [], // 选中设备的类型对应的设备指令
             selectedCmdInfo: {}, // 选中设备指令的信息
             cmdParams: {},
             deviceBaseInfo: {},
@@ -409,6 +410,18 @@ var monitor = {
                 resp.overdueDateStr = DateFormat.longToDateStr(resp.overduetime, 0);
                 me.deviceBaseInfo = resp;
             })
+        },
+        handleClickTransferDeviceGroup: function(groupid) {
+            var url = myUrls.batchOperate();
+            var data = {
+                "action": "move",
+                "deviceids": [this.currentDeviceId],
+                "targetgroupid": groupid,
+                "targetusername": userName
+            }
+            utils.sendAjax(url, data, function(resp) {
+                console.log(resp);
+            });
         },
         handleClickDirective: function(cmdCode) {
             this.cmdParams = {};
@@ -869,6 +882,10 @@ var monitor = {
             deviceInfo.isSelected = true;
             this.selectedDevObj = deviceInfo;
             this.handleClickDev(deviceInfo.deviceid);
+            var groups = utils.allSubgroups[device.creater];
+            if (groups) {
+                this.currentDevCreateUserGroupList = groups;
+            }
         },
         handleClickDev: function(deviceid) {
             globalDeviceId = deviceid;

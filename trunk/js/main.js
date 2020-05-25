@@ -1259,5 +1259,6 @@ var vRoot = new Vue({
         }
         vueInstanse = this; // 备份monitor实例
         utils.getUserInfoList();
+        utils.queryAllSubgroups();
     }
 });

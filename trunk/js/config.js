@@ -590,6 +590,9 @@ var myUrls = {
     editInsure: function() {
         return this.apihosts + 'webapi?action=editinsure&token=' + token;
     },
+    queryAllSubgroups: function() {
+        return this.apihosts + 'webapi?action=queryallsubgroups&token=' + token;
+    },
 }
 
 

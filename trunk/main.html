@@ -313,6 +313,17 @@
                         <DropdownItem name="phoneAlarm">{{$t("reportForm.phoneAlarm")}}</DropdownItem>
                         <DropdownItem name="devbaseinfo">{{$t("monitor.devBaseInfo")}}</DropdownItem>
                         <DropdownItem name="ownerInfo">车主信息</DropdownItem>
+                        <DropdownItem name="transferDeviceGroup">
+                            <Dropdown transfer placement="right-start" @on-click="handleClickTransferDeviceGroup" style="width:100%;">
+                                转移分组
+                                <Icon type="ios-arrow-forward"></Icon>
+                                <i-dropdown-menu slot="list">
+                                    <template v-for="(item, index) in currentDevCreateUserGroupList" :key="item.groupid"> 
+                                        <DropdownItem :name="item.groupid" >{{item.groupname}}</DropdownItem>
+                                    </template>
+                                </i-dropdown-menu>
+                            </Dropdown>
+                        </DropdownItem>
                         </i-dropdown-menu>
                         </Dropdown>
                         <li>
