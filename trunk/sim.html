@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <link rel="shortcut icon" href="./favicon.ico" />
@@ -10,12 +11,14 @@
     <script src="js/js.cookie.min.js"></script>
     <script src="js/polyfill.min.js"></script>
     <style>
-        html,body{
+        html,
+        body {
             height: 100%;
             width: 100%;
             background: #F8F8F9;
         }
-        #container{
+        
+        #container {
             position: absolute;
             left: 0;
             top: 0;
@@ -26,43 +29,50 @@
             margin: 50px auto;
             overflow-y: auto;
         }
-        h2.title{
+        
+        h2.title {
             text-align: center;
         }
-        .demo-spin-container{
+        
+        .demo-spin-container {
             position: fixed;
             left: 0;
             top: 0;
             right: 0;
             bottom: 0;
+            background-color: rgba(255, 255, 255, 8);
         }
-        .cause{
+        
+        .cause {
             font-size: 16px;
         }
+        
         [v-cloak] {
             display: none;
         }
     </style>
 </head>
+
 <body>
     <div id="container" ref="wrap" v-cloak>
-        <Card style="width:100%;" v-show="isShow&&!isError">
+        <Card style="width:100%;">
             <h2 slot="title" class="title">当月流量使用情况</h2>
             <Row>
                 <i-col :span="6">手机号</i-col>
-                <i-col :span="18">{{phone}}</i-col>
+                <i-col :span="18">
+                    {{phone}}
+                    <span onclick="copyToClipboard()" v-show="isError">
+                        <Icon type="ios-copy-outline" size="24" style="cursor: pointer;"></Icon>
+                    </span>
+                </i-col>
             </Row>
             <Row v-for="item in cardDataList" :key="item.label">
                 <i-col :span="6">{{item.label}}</i-col>
                 <i-col :span="18">{{item.value | filterFlow}}</i-col>
             </Row>
         </Card>
-        <div class="demo-spin-container" v-show="!isShow">
+        <div class="demo-spin-container" v-show="isShow">
             <Spin fix></Spin>
-        </div>
-        <div class="cause" v-show="isError">
-            <p>不支持的手机号码</p>
-            <p>提示信息：{{cause}}</p>
         </div>
     </div>
     <script src="dist/vue.min.js"></script>
@@ -70,109 +80,185 @@
     <script src="js/gps51-jquery.js"></script>
     <script src="js/vue-i18n.min.js"></script>
     <script src="dist/iview.min.js"></script>
+    <script src="js/config.js"></script>
     <script type="text/javascript">
-        
-
-        new Vue({
-            el:"#container",
-            data: function () {
-                return {
-                    isShow:false,
-                    isError:false,
-                    cardDataList:[{label:""},{label:""},{label:""}],
-                    phone:"",
-                    cause:""
+        function getParameterByName(name) {
+            var url = location.search;
+            url = decodeURIComponent(url);
+            var theRequest = new Object();
+            if (url.indexOf("?") != -1) {
+                var str = url.substr(1);
+                var strs = str.split("&");
+                for (var i = 0; i < strs.length; i++) {
+                    theRequest[strs[i].split("=")[0]] = unescape(strs[i].split("=")[1]);
                 }
-            },
-            filters: {
-                filterFlow:function(val){
-                    if(isNaN(val)){
-                        return val;
-                    }else{
-                        if(val%1024 == 0){ 
-                            return val/1024 + "M";
-                        }else{
-                            return  (val/1024).toFixed(2) + "M";
-                        }
-                    }  
-                }  
-            },
-            methods: {
-                getParameterByName: function (name) {
-                    var url = location.search;
-                    url = decodeURIComponent(url);
-                    var theRequest = new Object();
-                    if (url.indexOf("?") != -1) {
-                        var str = url.substr(1);
-                        var strs = str.split("&");
-                        for (var i = 0; i < strs.length; i++) {
-                            theRequest[strs[i].split("=")[0]] = unescape(strs[i].split("=")[1]);
-                        }
-                    }
-                    return theRequest[name];
-                },
-                getCardInfo:function(sim,callback){
-                    var action = "";
-                    var type =  this.getParameterByName("type");
-                   
-                    if(type == "simnum"){
-                        action = "queryuseddatabyphonenum"
-                    }else if(type == "simiccid"){
-                        action = "queryuseddatabyiccid"
-                    }else if(type == "simimsi"){
-                        action = "queryuseddatabyimsi";
-                    }
-           
-                    // 460042506202035  simnum simimsi simiccid
-                    $.ajax({
-                        url: "https://jh.tt/siminfo?action=" + action + "&id=" + sim,
-                        type: 'get',
-                        data: {},
-                        timeout: 10000,
-                        dataType: 'json',
-                        success: function (resp) {
-                            callback(resp);
-                        },
-                        error: function (e) {},
-                        complete: function () {}
-                    })
-                },
-                doCardInfo:function(resp){
-                    this.isShow = true;
-                    if(resp.code){
-                        var cardDataListTotal = [];
-                        var cardDataUseds =resp.cardDataUseds ? resp.cardDataUseds: null;
-                        // var activeTime = {label:"激活时间",value:resp.active_time?resp.active_time:'空'}
-                        // cardDataListTotal.push(activeTime);
-                        if(cardDataUseds){
-                            for(var i = 0 ; i< cardDataUseds.length ; i++ ){
-                                var item = cardDataUseds[i];
-                                cardDataListTotal.push({label:"开始时间",value:item.startDate?item.startDate:'空'});
-                                cardDataListTotal.push({label:"到期时间",value:item.expiryDate?item.expiryDate:'空'});
-                                cardDataListTotal.push({label:"套餐名称",value:item.packageName?item.packageName:'空'});
-                                cardDataListTotal.push({label:"总流量",value:item.dataCount?item.dataCount:0});
-                                cardDataListTotal.push({label:"已用流量",value:item.usedCount?item.usedCount:0});
-                                cardDataListTotal.push({label:"剩余流量",value:item.leftCount?item.leftCount:0}); 
-                            }
-                            this.cardDataList = cardDataListTotal;
-                        }else{
-
-                        }
-                        this.phone = resp.phone;
-                    }else{
-                        this.isError = true;
-                        this.cause = resp.cause;
-                    }
-                }
-            },
-            mounted:function () {
-                var sim = this.getParameterByName("sim");
-                sim ? this.getCardInfo(sim,this.doCardInfo) : this.$Message.error("请设置设备的手机号码");
             }
-        })
-        // queryuseddatabyphonenum "460042506202035" 
-        // queryuseddatabyiccid   
-        
+            return theRequest[name];
+        };
+
+        function copyToClipboard() {
+            if (text == null) {
+                return;
+            }
+            var textArea = document.createElement("textarea");
+            textArea.style.position = 'fixed';
+            textArea.style.top = '0';
+            textArea.style.left = '0';
+            textArea.style.width = '2em';
+            textArea.style.height = '2em';
+            textArea.style.padding = '0';
+            textArea.style.border = 'none';
+            textArea.style.outline = 'none';
+            textArea.style.boxShadow = 'none';
+            textArea.style.display = 'none';
+            textArea.style.background = 'transparent';
+
+            textArea.value = text;
+            document.body.appendChild(textArea);
+            textArea.select();
+
+            try {
+                var successful = document.execCommand('copy');
+                var msg = successful ? '成功复制到剪贴板' : '该浏览器不支持点击复制到剪贴板';
+                new Vue().$Message.success(msg);
+            } catch (err) {
+                new Vue().$Message.error('该浏览器不支持点击复制到剪贴板');
+            }
+            setTimeout(function() {
+                document.body.removeChild(textArea);
+            }, 2000)
+        };
+        var token = getParameterByName("token");
+        var text = null;
+        new Vue({
+                el: "#container",
+                data: function() {
+                    return {
+                        isShow: true,
+                        isError: false,
+                        cardDataList: [{
+                            label: "开始时间",
+                            value: '无'
+                        }, {
+                            label: "到期时间",
+                            value: '无'
+                        }, {
+                            label: "套餐名称",
+                            value: '无'
+                        }, {
+                            label: "总流量",
+                            value: '无'
+                        }, {
+                            label: "已用流量",
+                            value: '无'
+                        }, {
+                            label: "剩余流量",
+                            value: '无'
+                        }, ],
+                        phone: "无",
+                        cause: ""
+                    }
+                },
+                filters: {
+                    filterFlow: function(val) {
+                        if (isNaN(val)) {
+                            return val;
+                        } else {
+                            if (val % 1024 == 0) {
+                                return val / 1024 + "M";
+                            } else {
+                                return (val / 1024).toFixed(2) + "M";
+                            }
+                        }
+                    }
+                },
+                methods: {
+
+                    getCardInfo: function(sim, callback) {
+                        var action = "",
+                            me = this;
+                        var type = getParameterByName("type");
+
+                        if (type == "simnum") {
+                            action = "queryuseddatabyphonenum"
+                        } else if (type == "simiccid") {
+                            action = "queryuseddatabyiccid"
+                        } else if (type == "simimsi") {
+                            action = "queryuseddatabyimsi";
+                        }
+
+                        // 460042506202035  simnum simimsi simiccid
+                        $.ajax({
+                            url: myUrls.getCardInfo(action) + "&id=" + sim,
+                            type: 'get',
+                            data: {},
+                            timeout: 10000,
+                            dataType: 'json',
+                            success: function(resp) {
+                                callback(resp);
+                            },
+                            error: function(e) {
+                                me.isShow = false;
+                            },
+                            complete: function() {
+
+                            }
+                        })
+                    },
+                    doCardInfo: function(resp) {
+                        this.isShow = false;
+                        if (resp.code) {
+                            var cardDataListTotal = [];
+                            var cardDataUseds = resp.cardDataUseds ? resp.cardDataUseds : null;
+                            // var activeTime = {label:"激活时间",value:resp.active_time?resp.active_time:'空'}
+                            // cardDataListTotal.push(activeTime);
+                            if (cardDataUseds) {
+                                for (var i = 0; i < cardDataUseds.length; i++) {
+                                    var item = cardDataUseds[i];
+                                    cardDataListTotal.push({
+                                        label: "开始时间",
+                                        value: item.startDate ? item.startDate : '空'
+                                    });
+                                    cardDataListTotal.push({
+                                        label: "到期时间",
+                                        value: item.expiryDate ? item.expiryDate : '空'
+                                    });
+                                    cardDataListTotal.push({
+                                        label: "套餐名称",
+                                        value: item.packageName ? item.packageName : '空'
+                                    });
+                                    cardDataListTotal.push({
+                                        label: "总流量",
+                                        value: item.dataCount ? item.dataCount : 0
+                                    });
+                                    cardDataListTotal.push({
+                                        label: "已用流量",
+                                        value: item.usedCount ? item.usedCount : 0
+                                    });
+                                    cardDataListTotal.push({
+                                        label: "剩余流量",
+                                        value: item.leftCount ? item.leftCount : 0
+                                    });
+                                }
+                                this.cardDataList = cardDataListTotal;
+                            }
+                            this.phone = resp.phone;
+                            text = resp.phone;
+                            this.isError = true;
+                        } else {
+
+                            this.cause = resp.cause;
+                        }
+                    }
+                },
+                mounted: function() {
+                    var sim = getParameterByName("sim");
+                    sim ? this.getCardInfo(sim, this.doCardInfo) : this.$Message.error("请设置设备的手机号码");
+                }
+            })
+            // queryuseddatabyphonenum "460042506202035" 
+            // queryuseddatabyiccid
     </script>
 </body>
+
 </html>

@@ -596,6 +596,9 @@ var myUrls = {
     importOfflineInsureInfo: function() {
         return this.apihosts + 'webapi?action=importofflineinsureinfo&token=' + token;
     },
+    getCardInfo: function(action) {
+        return this.apihosts + 'webapi?action=' + action + '&token=' + token;
+    },
 }
 
 

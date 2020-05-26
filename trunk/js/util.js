@@ -1189,7 +1189,7 @@ function openSim(deviceId) {
             type = "simnum";
         };
         if (sim) {
-            var url = 'sim.html?sim=' + sim + '&type=' + type;
+            var url = 'sim.html?sim=' + sim + '&type=' + type + '&token=' + token;
             window.open(url);
         } else {
             vRoot.$Message.error(isZh ? "请设置设备手机号" : "Please set the mobile phone number of the device.");
