@@ -982,7 +982,9 @@ function copyToClipboard() {
     textArea.style.border = 'none';
     textArea.style.outline = 'none';
     textArea.style.boxShadow = 'none';
+    textArea.style.display = 'none';
     textArea.style.background = 'transparent';
+
     textArea.value = text;
     document.body.appendChild(textArea);
     textArea.select();
@@ -994,6 +996,9 @@ function copyToClipboard() {
     } catch (err) {
         new Vue().$Message.error('该浏览器不支持点击复制到剪贴板');
     }
+    setTimeout(function() {
+        document.body.removeChild(textArea);
+    }, 2000)
 }
 
 //  vue组件   配合查询分组表格使用
