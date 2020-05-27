@@ -38,7 +38,8 @@ th span .ivu-icon {
     margin-top: 0px;
 }
 
-#insure-records .search-wrapper .ivu-icon {
+#insure-records .search-wrapper .ivu-icon,
+#insure-records .ivu-date-picker-rel .ivu-icon {
     margin-top: 0px;
 }
 
@@ -256,7 +257,8 @@ p.last-address {
 #droplinereport .ivu-table-sort .ivu-icon,
 #deviceonlinedaily .ivu-table-sort .ivu-icon,
 #groupsonlinedaily .ivu-table-sort .ivu-icon,
-#devicemonthonlinedaily .ivu-table-sort .ivu-icon {
+#devicemonthonlinedaily .ivu-table-sort .ivu-icon,
+#insure-records .ivu-table-sort .ivu-icon {
     margin-top: 0px;
 }
 

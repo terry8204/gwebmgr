@@ -1,39 +1,80 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>主动安全</title>
-    <link rel="shortcut icon" href="./favicon.ico"  type="image/x-icon" />
+    <link rel="shortcut icon" href="./favicon.ico" type="image/x-icon" />
     <link rel="stylesheet" href="dist/styles/iview.css">
     <link rel="stylesheet" href="css/common.css">
     <link rel="stylesheet" href="css/login.css">
     <script src="js/config.js"></script>
     <style>
-         html,body,#dsm-wraper{width: 100%;height: 100%;}
-         div.content-box{position:absolute;left: 0;right: 0;top: 0;bottom: 320px;}
-         div.table-wrapper{position:absolute;left: 0;right: 0;bottom: 0;height: 320px;}
-         #dsm-wraper .ivu-tabs-bar{margin-bottom: 0;}
+        html,
+        body,
+        #dsm-wraper {
+            width: 100%;
+            height: 100%;
+        }
+        
+        div.content-box {
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 0;
+            bottom: 320px;
+        }
+        
+        div.table-wrapper {
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            height: 320px;
+        }
+        
+        #dsm-wraper .ivu-tabs-bar {
+            margin-bottom: 0;
+        }
         /* content-box start*/
-        div.content-box>div{float: left;height: 100%;width: 30%;}
-        #video-wrapper{width: 40%}
-        #video-wrapper>div{width: 50%;height: 50%;float: left;}
-        #video-wrapper>div>div{
-            height: 100%;width: 100%;
+        
+        div.content-box>div {
+            float: left;
+            height: 100%;
+            width: 30%;
+        }
+        
+        #video-wrapper {
+            width: 40%
+        }
+        
+        #video-wrapper>div {
+            width: 50%;
+            height: 50%;
+            float: left;
+        }
+        
+        #video-wrapper>div>div {
+            height: 100%;
+            width: 100%;
             display: flex;
             justify-content: center;
             align-items: center;
         }
-        div.video{
+        
+        div.video {
             background-image: url('./images/tv_default.jpg');
             background-size: cover;
         }
-        #dsm-wraper .ivu-tabs{
+        
+        #dsm-wraper .ivu-tabs {
             /* overflow: visible; */
         }
         /* content-box end */
-        .mask-wrapper{
+        
+        .mask-wrapper {
             position: absolute;
             right: 0px;
             bottom: 0px;
@@ -45,6 +86,7 @@
             justify-content: center;
             align-items: center;
         }
+        
         .loader-05 {
             width: 50px;
             height: 50px;
@@ -55,6 +97,7 @@
             animation: 1s loader-05 linear infinite;
             position: relative;
         }
+        
         .loader-05:before {
             content: '';
             display: block;
@@ -67,6 +110,7 @@
             border-radius: 50%;
             opacity: .5;
         }
+        
         @keyframes loader-05 {
             0% {
                 -webkit-transform: rotate(0deg);
@@ -77,6 +121,7 @@
                 transform: rotate(360deg);
             }
         }
+        
         @-webkit-keyframes loader-05 {
             0% {
                 -webkit-transform: rotate(0deg);
@@ -89,6 +134,7 @@
         }
     </style>
 </head>
+
 <body>
     <div class="mask-wrapper" id="mask-wrapper">
         <div class="box" style="position:relative;">
@@ -112,46 +158,24 @@
                 </div>
             </div>
             <div>
-                <i-table 
-                    border 
-                    highlight-row
-                    ref="detailTable"
-                    :loading="loading"
-                    @on-current-change="onDetailChange"
-                    :columns="alarmSummaryColumns"
-                    :data="detailTableData"
-                    :height="tableHeight"></i-table>   
+                <i-table border highlight-row ref="detailTable" :loading="loading" @on-current-change="onDetailChange" :columns="alarmSummaryColumns" :data="detailTableData" :height="tableHeight"></i-table>
             </div>
         </div>
         <div class="table-wrapper">
             <keep-alive>
                 <Tabs :animated="true" @on-click="onClickTabs">
                     <Tab-Pane label="前向报警" name="forwardAlarm">
-                        <i-table 
-                            border 
-                            highlight-row
-                            :loading="loading"
-                            ref="forwardTable"
-                            @on-current-change="onForwardAlarmChange"
-                            :columns="forwardAlarmColumns"
-                            :data="forwardAlarmList" height="283"></i-table>   
+                        <i-table border highlight-row :loading="loading" ref="forwardTable" @on-current-change="onForwardAlarmChange" :columns="forwardAlarmColumns" :data="forwardAlarmList" height="283"></i-table>
                     </Tab-Pane>
                     <Tab-Pane label="驾驶异常" name="abnormalDriving">
-                        <i-table 
-                            border 
-                            :loading="loading"
-                            highlight-row
-                            ref="abnormalTable"
-                            @on-current-change="onAbnormalDrivingChange"
-                            :columns="abnormalDrivingColumns"
-                            :data="abnormalDrivingList" height="283"></i-table>  
+                        <i-table border :loading="loading" highlight-row ref="abnormalTable" @on-current-change="onAbnormalDrivingChange" :columns="abnormalDrivingColumns" :data="abnormalDrivingList" height="283"></i-table>
                     </Tab-Pane>
                     <date-picker type="date" v-model="date" slot="extra" size="small" style="margin-top:5px;margin-right:8px;"></date-picker>
                     <i-button size="small" slot="extra" type="primary" style="margin-top:1px;margin-right:5px;" @click="queryActiveSafety">查询</i-button>
                     <i-button size="small" slot="extra" type="primary" style="margin-top:1px;margin-right:35px;">证据中心</i-button>
                     <i-button size="small" slot="extra" type="success" style="margin-top:1px;margin-right:5px;" @click="prevArticle">上一条</i-button>
-                    <i-button size="small"  v-if="detailTableData.length" slot="extra" style="margin-top:1px;margin-right:5px;width:100px;" >{{detailIndex+1}}/{{detailTableData.length}}条</i-button>
-                    <i-button size="small"  v-else="detailTableData.length" slot="extra"  style="margin-top:1px;margin-right:5px;width:100px;" >0/0条</i-button>
+                    <i-button size="small" v-if="detailTableData.length" slot="extra" style="margin-top:1px;margin-right:5px;width:100px;">{{detailIndex+1}}/{{detailTableData.length}}条</i-button>
+                    <i-button size="small" v-else="detailTableData.length" slot="extra" style="margin-top:1px;margin-right:5px;width:100px;">0/0条</i-button>
                     <i-button size="small" slot="extra" type="success" style="margin-top:1px;margin-right:5px;" @click="nextArticle">下一条</i-button>
                 </Tabs>
             </keep-alive>
@@ -176,166 +200,48 @@
         var isZh = utils.locale === 'zh';
         var isLoadingMap = false;
         var vRoot = new Vue({
-            el:'#dsm-wraper',
-            data:{
-                loading:false,
-                date:new Date(),
+            el: '#dsm-wraper',
+            data: {
+                loading: false,
+                date: new Date(),
                 mapType: mapType ? mapType : 'bMap',
-                tabsKey:'forwardAlarm',
-                tableHeight:100,
-                detailIndex:0,
-                alarmSummaryColumns:[
-                    {
-                        type: 'index',
-                        width: 60,
-                        align: 'center'
-                    },
-                    { 
-                        title:'报警事件',key:'alarmevent',width:120,
-                        render:function(h,params){ 
-                            var alarmevent = '';
-                            if(vRoot.tabsKey == 'forwardAlarm'){
-                                switch(params.row.alarmevent){
-                                    case 1 :
-                                        alarmevent = '前向碰撞报警';
-                                        break;
-                                    case 2 :
-                                        alarmevent = '车道偏离报警';
-                                        break;
-                                    case 3 :
-                                        alarmevent = '车距过近报警'; 
-                                        break;
-                                    case 4 :
-                                        alarmevent = '行人碰撞报警'; 
-                                        break;
-                                    case 5 :
-                                        alarmevent = '频繁变道报警'; 
-                                        break;
-                                    case 6 :
-                                        alarmevent = '道路标识超限报警'; 
-                                        break;
-                                    case 7 :
-                                        alarmevent = '障碍物报警'; 
-                                        break;
-                                    case 8 :
-                                    case 9:
-                                    case 0xA:
-                                    case 0xB:
-                                    case 0xC:
-                                    case 0xD:
-                                    case 0xE:
-                                    case 0xF:
-                                        alarmevent = '用户自定义'; 
-                                        break;
-                                    case 0x10 :
-                                        alarmevent = '道路标志识别事件';  
-                                        break;
-                                    case 0x11 :
-                                        alarmevent = '主动抓拍事件';   
-                                        break;
-                                    case 0x12 :
-                                    case 0x13 :
-                                    case 0x14 :
-                                    case 0x15 :
-                                    case 0x16 :
-                                    case 0x17 :
-                                    case 0x18 :
-                                    case 0x19 :
-                                    case 0x1A :
-                                    case 0x1B :
-                                    case 0x1C :
-                                    case 0x1D :
-                                    case 0x1E :
-                                    case 0x1F :
-                                        alarmevent = '用户自定义';   
-                                        break;
-                                }   
-                            }else{
-                                switch(params.row.alarmevent){
-                                    case 1 :
-                                        alarmevent = '疲劳驾驶报警';
-                                        break;
-                                    case 2 :
-                                        alarmevent = '接打电话报警';
-                                        break;
-                                    case 3 :
-                                        alarmevent = '抽烟报警'; 
-                                        break;
-                                    case 4 :
-                                        alarmevent = '分神驾驶报警'; 
-                                        break;
-                                    case 5 :
-                                        alarmevent = '驾驶员异常报警'; 
-                                        break;
-                                    case 0x06 :
-                                    case 0x07 :
-                                    case 0x08 :
-                                    case 0x09 :
-                                    case 0x0A :
-                                    case 0x0B :
-                                    case 0x0C :
-                                    case 0x0D :
-                                    case 0x0E :
-                                    case 0x0F :
-                                        alarmevent = '用户自定义'; 
-                                        break;
-                                    case 0x10 :
-                                        alarmevent = '自动抓拍事件'; 
-                                        break;
-                                    case 0x11 :
-                                        alarmevent = '驾驶员变更事件'; 
-                                        break;
-                                    case 0x12:
-                                        alarmevent = '自定义事件'; 
-                                        break;
-                                }
-                            }
-                   
-                            
-                            return h('span',{},alarmevent); 
-                        }
-                    },
-                    {title:'报警等级',key:'alarmlevel',width:90,},
-                    { 
-                        title:"报警时间" , key:"alarmtime",
-                        render:function(h,params){
-                            return h('span',{},DateFormat.longToDateTimeStr(params.row.updatetime, 0)); 
-                        }
-                    }
-                ],
-                forwardAlarmColumns:[
-                    {
-                        type: 'index',
-                        width: 60,
-                        align: 'center'
-                    },
-                    {
-                        title:'报警事件',key:'alarmevent',width:120,
-                        render:function(h,params){ 
-                            var alarmevent = '';
-                            switch(params.row.alarmevent){
-                                case 1 :
+                tabsKey: 'forwardAlarm',
+                tableHeight: 100,
+                detailIndex: 0,
+                alarmSummaryColumns: [{
+                    type: 'index',
+                    width: 60,
+                    align: 'center'
+                }, {
+                    title: '报警事件',
+                    key: 'alarmevent',
+                    width: 120,
+                    render: function(h, params) {
+                        var alarmevent = '';
+                        if (vRoot.tabsKey == 'forwardAlarm') {
+                            switch (params.row.alarmevent) {
+                                case 1:
                                     alarmevent = '前向碰撞报警';
                                     break;
-                                case 2 :
+                                case 2:
                                     alarmevent = '车道偏离报警';
                                     break;
-                                case 3 :
-                                    alarmevent = '车距过近报警'; 
+                                case 3:
+                                    alarmevent = '车距过近报警';
                                     break;
-                                case 4 :
-                                    alarmevent = '行人碰撞报警'; 
+                                case 4:
+                                    alarmevent = '行人碰撞报警';
                                     break;
-                                case 5 :
-                                    alarmevent = '频繁变道报警'; 
+                                case 5:
+                                    alarmevent = '频繁变道报警';
                                     break;
-                                case 6 :
-                                    alarmevent = '道路标识超限报警'; 
+                                case 6:
+                                    alarmevent = '道路标识超限报警';
                                     break;
-                                case 7 :
-                                    alarmevent = '障碍物报警'; 
+                                case 7:
+                                    alarmevent = '障碍物报警';
                                     break;
-                                case 8 :
+                                case 8:
                                 case 9:
                                 case 0xA:
                                 case 0xB:
@@ -343,318 +249,473 @@
                                 case 0xD:
                                 case 0xE:
                                 case 0xF:
-                                    alarmevent = '用户自定义'; 
+                                    alarmevent = '用户自定义';
                                     break;
-                                case 0x10 :
-                                    alarmevent = '道路标志识别事件';  
+                                case 0x10:
+                                    alarmevent = '道路标志识别事件';
                                     break;
-                                case 0x11 :
-                                    alarmevent = '主动抓拍事件';   
-                                    break;
-                                case 0x12 :
-                                case 0x13 :
-                                case 0x14 :
-                                case 0x15 :
-                                case 0x16 :
-                                case 0x17 :
-                                case 0x18 :
-                                case 0x19 :
-                                case 0x1A :
-                                case 0x1B :
-                                case 0x1C :
-                                case 0x1D :
-                                case 0x1E :
-                                case 0x1F :
-                                    alarmevent = '用户自定义';   
-                                    break;
-                            }
-                            return h('span',{},alarmevent); 
-                        }
-                    },
-                    {title:'报警等级',key:'alarmlevel',width:90,},
-                    {title:'报警次数',key:'alarmcount',width:90,},
-                    {
-                        title:'最初报警时间',key:'startalarmtime',width:160,
-                        render:function(h,params){
-                            return h('span',{},DateFormat.longToDateTimeStr(params.row.startalarmtime, 0)); 
-                        }
-                    },
-                    {
-                        title:'最后报警时间',key:'endalarmtime',width:160,
-                        render:function(h,params){
-                            return h('span',{},DateFormat.longToDateTimeStr(params.row.endalarmtime, 0)); 
-                        }
-                    },
-                    {
-                        title:'最初报警速度',key:'startspeed',width:110,
-                        render:function(h,params){
-                            var startspeed = params.row.startspeed/1000
-                            return h('span',{},startspeed+'km/h'); 
-                        }
-                    },
-                    {
-                        title:'最后报警速度',key:'endspeed',width:110,
-                        render:function(h,params){
-                            var endspeed = params.row.endspeed/1000
-                            return h('span',{},endspeed+'km/h'); 
-                        }
-                    },
-                    {
-                        title:'开始报警位置',key:'startposition',
-                        render:function(h,params){
-                            var callat= params.row.startlat.toFixed(5);
-                            var callon= params.row.startlon.toFixed(5);
-                            var address = LocalCacheMgr.getAddress(callon, callat);
-                            if(address){
-                                return h('span',{},address);
-                            }else{
-                                return h('Button', {
-                                    props: {
-                                        type: 'primary',
-                                        size: 'small',
-                                    },
-                                    on: {
-                                        click: function (e) {
-                                            e.preventDefault();
-                                            vRoot.queryAddress(callon,callat,function (address) { 
-                    
-                                                if(vRoot.tabsKey === 'abnormalDriving'){
-                                                    vRoot.abnormalDrivingList[params.index].address = address;
-                                                }else{
-                                                    vRoot.forwardAlarmList[params.index].address = address;
-                                                }
-                                                LocalCacheMgr.setAddress(callon, callat, address);
-                                            })
-                                        }
-                                    }
-                                }, "获取地址");
-                            }
-                        }
-                    },
-                    {
-                        title:'最后报警位置',key:'endposition',
-                        render:function(h,params){
-                            var callat= params.row.endlat.toFixed(5);
-                            var callon= params.row.endlon.toFixed(5);
-                            var address = LocalCacheMgr.getAddress(callon, callat);
-                            if(address){
-                                return h('span',{},address);
-                            }else{
-                                return h('Button', {
-                                    props: {
-                                        type: 'primary',
-                                        size: 'small',
-                                    },
-                                    on: {
-                                        click: function (e) {
-                                            e.preventDefault();
-                                            e.preventDefault();
-                                            vRoot.queryAddress(callon,callat,function (address) { 
-                                                if(vRoot.tabsKey === 'abnormalDriving'){
-                                                    vRoot.abnormalDrivingList[params.index].address = address;
-                                                }else{
-                                                    vRoot.forwardAlarmList[params.index].address = address;
-                                                }
-                                                LocalCacheMgr.setAddress(callon, callat, address);
-                                            });
-                                        }
-                                    }
-                                }, "获取地址");
-                            }
-                        }
-                    },
-                ],
-                abnormalDrivingColumns:[
-                {
-                        type: 'index',
-                        width: 60,
-                        align: 'center'
-                    },
-                    {
-                        title:'报警事件',key:'alarmevent',width:120,
-                        render:function(h,params){ 
-                            var alarmevent = '';
-                            switch(params.row.alarmevent){
-                                case 1 :
-                                    alarmevent = '疲劳驾驶报警';
-                                    break;
-                                case 2 :
-                                    alarmevent = '接打电话报警';
-                                    break;
-                                case 3 :
-                                    alarmevent = '抽烟报警'; 
-                                    break;
-                                case 4 :
-                                    alarmevent = '分神驾驶报警'; 
-                                    break;
-                                case 5 :
-                                    alarmevent = '驾驶员异常报警'; 
-                                    break;
-                                case 0x06 :
-                                case 0x07 :
-                                case 0x08 :
-                                case 0x09 :
-                                case 0x0A :
-                                case 0x0B :
-                                case 0x0C :
-                                case 0x0D :
-                                case 0x0E :
-                                case 0x0F :
-                                    alarmevent = '用户自定义'; 
-                                    break;
-                                case 0x10 :
-                                    alarmevent = '自动抓拍事件'; 
-                                    break;
-                                case 0x11 :
-                                    alarmevent = '驾驶员变更事件'; 
+                                case 0x11:
+                                    alarmevent = '主动抓拍事件';
                                     break;
                                 case 0x12:
-                                    alarmevent = '自定义事件'; 
+                                case 0x13:
+                                case 0x14:
+                                case 0x15:
+                                case 0x16:
+                                case 0x17:
+                                case 0x18:
+                                case 0x19:
+                                case 0x1A:
+                                case 0x1B:
+                                case 0x1C:
+                                case 0x1D:
+                                case 0x1E:
+                                case 0x1F:
+                                    alarmevent = '用户自定义';
                                     break;
                             }
-                            return h('span',{},alarmevent); 
-                        }
-                    },
-                    {title:'报警等级',key:'alarmlevel',width:90,},
-                    {title:'报警次数',key:'alarmcount',width:90,},
-                    {
-                        title:'最初报警时间',key:'startalarmtime',width:160,
-                        render:function(h,params){
-                            return h('span',{},DateFormat.longToDateTimeStr(params.row.startalarmtime, 0)); 
-                        }
-                    },
-                    {
-                        title:'最后报警时间',key:'endalarmtime',width:160,
-                        render:function(h,params){
-                            return h('span',{},DateFormat.longToDateTimeStr(params.row.endalarmtime, 0)); 
-                        }
-                    },
-                    {
-                        title:'最初报警速度',key:'startspeed',width:110,
-                        render:function(h,params){
-                            var startspeed = params.row.startspeed/1000
-                            return h('span',{},startspeed+'km/h'); 
-                        }
-                    },
-                    {
-                        title:'最后报警速度',key:'endspeed',width:110,
-                        render:function(h,params){
-                            var endspeed = params.row.endspeed/1000
-                            return h('span',{},endspeed+'km/h'); 
-                        }
-                    },
-                    {
-                        title:'开始报警位置',key:'startposition',
-                        render:function(h,params){
-                            var callat= params.row.startlat.toFixed(5);
-                            var callon= params.row.startlon.toFixed(5);
-                            var address = LocalCacheMgr.getAddress(callon, callat);
-                            if(address){
-                                return h('span',{},address);
-                            }else{
-                                return h('Button', {
-                                    props: {
-                                        type: 'primary',
-                                        size: 'small',
-                                    },
-                                    on: {
-                                        click: function (e) {
-                                            e.preventDefault();
-                                            vRoot.queryAddress(callon,callat,function (address) { 
-        
-                                                if(vRoot.tabsKey === 'abnormalDriving'){
-                                                    vRoot.abnormalDrivingList[params.index].address = address;
-                                                }else{
-                                                    alert(1)
-                                                    vRoot.forwardAlarmList[params.index].address = address;
-                                                }
-                                                LocalCacheMgr.setAddress(callon, callat, address);
-                                            })
-                                        }
-                                    }
-                                }, "获取地址");
+                        } else {
+                            switch (params.row.alarmevent) {
+                                case 1:
+                                    alarmevent = '疲劳驾驶报警';
+                                    break;
+                                case 2:
+                                    alarmevent = '接打电话报警';
+                                    break;
+                                case 3:
+                                    alarmevent = '抽烟报警';
+                                    break;
+                                case 4:
+                                    alarmevent = '分神驾驶报警';
+                                    break;
+                                case 5:
+                                    alarmevent = '驾驶员异常报警';
+                                    break;
+                                case 0x06:
+                                case 0x07:
+                                case 0x08:
+                                case 0x09:
+                                case 0x0A:
+                                case 0x0B:
+                                case 0x0C:
+                                case 0x0D:
+                                case 0x0E:
+                                case 0x0F:
+                                    alarmevent = '用户自定义';
+                                    break;
+                                case 0x10:
+                                    alarmevent = '自动抓拍事件';
+                                    break;
+                                case 0x11:
+                                    alarmevent = '驾驶员变更事件';
+                                    break;
+                                case 0x12:
+                                    alarmevent = '自定义事件';
+                                    break;
                             }
                         }
-                    },
-                    {
-                        title:'最后报警位置',key:'endposition',
-                        render:function(h,params){
-                            var callat= params.row.endlat.toFixed(5);
-                            var callon= params.row.endlon.toFixed(5);
-                            var address = LocalCacheMgr.getAddress(callon, callat);
-                            if(address){
-                                return h('span',{},address);
-                            }else{
-                                return h('Button', {
-                                    props: {
-                                        type: 'primary',
-                                        size: 'small',
-                                    },
-                                    on: {
-                                        click: function (e) {
-                                            e.preventDefault();
-                                            e.preventDefault();
-                                            vRoot.queryAddress(callon,callat,function (address) { 
-                                                if(vRoot.tabsKey === 'abnormalDriving'){
-                                                    vRoot.abnormalDrivingList[params.index].address = address;
-                                                }else{
-                                                    alert(1)
-                                                    vRoot.forwardAlarmList[params.index].address = address;
-                                                }
-                                                LocalCacheMgr.setAddress(callon, callat, address);
-                                            });
-                                        }
-                                    }
-                                }, "获取地址");
-                            }
+
+
+                        return h('span', {}, alarmevent);
+                    }
+                }, {
+                    title: '报警等级',
+                    key: 'alarmlevel',
+                    width: 90,
+                }, {
+                    title: "报警时间",
+                    key: "alarmtime",
+                    render: function(h, params) {
+                        return h('span', {}, DateFormat.longToDateTimeStr(params.row.updatetime, 0));
+                    }
+                }],
+                forwardAlarmColumns: [{
+                    type: 'index',
+                    width: 60,
+                    align: 'center'
+                }, {
+                    title: '报警事件',
+                    key: 'alarmevent',
+                    width: 120,
+                    render: function(h, params) {
+                        var alarmevent = '';
+                        switch (params.row.alarmevent) {
+                            case 1:
+                                alarmevent = '前向碰撞报警';
+                                break;
+                            case 2:
+                                alarmevent = '车道偏离报警';
+                                break;
+                            case 3:
+                                alarmevent = '车距过近报警';
+                                break;
+                            case 4:
+                                alarmevent = '行人碰撞报警';
+                                break;
+                            case 5:
+                                alarmevent = '频繁变道报警';
+                                break;
+                            case 6:
+                                alarmevent = '道路标识超限报警';
+                                break;
+                            case 7:
+                                alarmevent = '障碍物报警';
+                                break;
+                            case 8:
+                            case 9:
+                            case 0xA:
+                            case 0xB:
+                            case 0xC:
+                            case 0xD:
+                            case 0xE:
+                            case 0xF:
+                                alarmevent = '用户自定义';
+                                break;
+                            case 0x10:
+                                alarmevent = '道路标志识别事件';
+                                break;
+                            case 0x11:
+                                alarmevent = '主动抓拍事件';
+                                break;
+                            case 0x12:
+                            case 0x13:
+                            case 0x14:
+                            case 0x15:
+                            case 0x16:
+                            case 0x17:
+                            case 0x18:
+                            case 0x19:
+                            case 0x1A:
+                            case 0x1B:
+                            case 0x1C:
+                            case 0x1D:
+                            case 0x1E:
+                            case 0x1F:
+                                alarmevent = '用户自定义';
+                                break;
                         }
-                    }, 
-                ],
-                abnormalDrivingList:[],
-                forwardAlarmList:[],
-                detailTableData:[],
-                imageAndVideoList:[
-                    {image:true,imageUrl:'./images/tv_default.jpg',videoUrl:''},
-                    {image:true,imageUrl:'./images/tv_default.jpg',videoUrl:''},
-                    {image:true,imageUrl:'./images/tv_default.jpg',videoUrl:''},
-                    {image:true,imageUrl:'./images/tv_default.jpg',videoUrl:''},
-                ]
+                        return h('span', {}, alarmevent);
+                    }
+                }, {
+                    title: '报警等级',
+                    key: 'alarmlevel',
+                    width: 90,
+                }, {
+                    title: '报警次数',
+                    key: 'alarmcount',
+                    width: 90,
+                }, {
+                    title: '最初报警时间',
+                    key: 'startalarmtime',
+                    width: 160,
+                    render: function(h, params) {
+                        return h('span', {}, DateFormat.longToDateTimeStr(params.row.startalarmtime, 0));
+                    }
+                }, {
+                    title: '最后报警时间',
+                    key: 'endalarmtime',
+                    width: 160,
+                    render: function(h, params) {
+                        return h('span', {}, DateFormat.longToDateTimeStr(params.row.endalarmtime, 0));
+                    }
+                }, {
+                    title: '最初报警速度',
+                    key: 'startspeed',
+                    width: 110,
+                    render: function(h, params) {
+                        var startspeed = params.row.startspeed / 1000
+                        return h('span', {}, startspeed + 'km/h');
+                    }
+                }, {
+                    title: '最后报警速度',
+                    key: 'endspeed',
+                    width: 110,
+                    render: function(h, params) {
+                        var endspeed = params.row.endspeed / 1000
+                        return h('span', {}, endspeed + 'km/h');
+                    }
+                }, {
+                    title: '开始报警位置',
+                    key: 'startposition',
+                    render: function(h, params) {
+                        var callat = params.row.startlat.toFixed(5);
+                        var callon = params.row.startlon.toFixed(5);
+                        var address = LocalCacheMgr.getAddress(callon, callat);
+                        if (address) {
+                            return h('span', {}, address);
+                        } else {
+                            return h('Button', {
+                                props: {
+                                    type: 'primary',
+                                    size: 'small',
+                                },
+                                on: {
+                                    click: function(e) {
+                                        e.preventDefault();
+                                        vRoot.queryAddress(callon, callat, function(address) {
+
+                                            if (vRoot.tabsKey === 'abnormalDriving') {
+                                                vRoot.abnormalDrivingList[params.index].address = address;
+                                            } else {
+                                                vRoot.forwardAlarmList[params.index].address = address;
+                                            }
+                                            LocalCacheMgr.setAddress(callon, callat, address);
+                                        })
+                                    }
+                                }
+                            }, "获取地址");
+                        }
+                    }
+                }, {
+                    title: '最后报警位置',
+                    key: 'endposition',
+                    render: function(h, params) {
+                        var callat = params.row.endlat.toFixed(5);
+                        var callon = params.row.endlon.toFixed(5);
+                        var address = LocalCacheMgr.getAddress(callon, callat);
+                        if (address) {
+                            return h('span', {}, address);
+                        } else {
+                            return h('Button', {
+                                props: {
+                                    type: 'primary',
+                                    size: 'small',
+                                },
+                                on: {
+                                    click: function(e) {
+                                        e.preventDefault();
+                                        e.preventDefault();
+                                        vRoot.queryAddress(callon, callat, function(address) {
+                                            if (vRoot.tabsKey === 'abnormalDriving') {
+                                                vRoot.abnormalDrivingList[params.index].address = address;
+                                            } else {
+                                                vRoot.forwardAlarmList[params.index].address = address;
+                                            }
+                                            LocalCacheMgr.setAddress(callon, callat, address);
+                                        });
+                                    }
+                                }
+                            }, "获取地址");
+                        }
+                    }
+                }, ],
+                abnormalDrivingColumns: [{
+                    type: 'index',
+                    width: 60,
+                    align: 'center'
+                }, {
+                    title: '报警事件',
+                    key: 'alarmevent',
+                    width: 120,
+                    render: function(h, params) {
+                        var alarmevent = '';
+                        switch (params.row.alarmevent) {
+                            case 1:
+                                alarmevent = '疲劳驾驶报警';
+                                break;
+                            case 2:
+                                alarmevent = '接打电话报警';
+                                break;
+                            case 3:
+                                alarmevent = '抽烟报警';
+                                break;
+                            case 4:
+                                alarmevent = '分神驾驶报警';
+                                break;
+                            case 5:
+                                alarmevent = '驾驶员异常报警';
+                                break;
+                            case 0x06:
+                            case 0x07:
+                            case 0x08:
+                            case 0x09:
+                            case 0x0A:
+                            case 0x0B:
+                            case 0x0C:
+                            case 0x0D:
+                            case 0x0E:
+                            case 0x0F:
+                                alarmevent = '用户自定义';
+                                break;
+                            case 0x10:
+                                alarmevent = '自动抓拍事件';
+                                break;
+                            case 0x11:
+                                alarmevent = '驾驶员变更事件';
+                                break;
+                            case 0x12:
+                                alarmevent = '自定义事件';
+                                break;
+                        }
+                        return h('span', {}, alarmevent);
+                    }
+                }, {
+                    title: '报警等级',
+                    key: 'alarmlevel',
+                    width: 90,
+                }, {
+                    title: '报警次数',
+                    key: 'alarmcount',
+                    width: 90,
+                }, {
+                    title: '最初报警时间',
+                    key: 'startalarmtime',
+                    width: 160,
+                    render: function(h, params) {
+                        return h('span', {}, DateFormat.longToDateTimeStr(params.row.startalarmtime, 0));
+                    }
+                }, {
+                    title: '最后报警时间',
+                    key: 'endalarmtime',
+                    width: 160,
+                    render: function(h, params) {
+                        return h('span', {}, DateFormat.longToDateTimeStr(params.row.endalarmtime, 0));
+                    }
+                }, {
+                    title: '最初报警速度',
+                    key: 'startspeed',
+                    width: 110,
+                    render: function(h, params) {
+                        var startspeed = params.row.startspeed / 1000
+                        return h('span', {}, startspeed + 'km/h');
+                    }
+                }, {
+                    title: '最后报警速度',
+                    key: 'endspeed',
+                    width: 110,
+                    render: function(h, params) {
+                        var endspeed = params.row.endspeed / 1000
+                        return h('span', {}, endspeed + 'km/h');
+                    }
+                }, {
+                    title: '开始报警位置',
+                    key: 'startposition',
+                    render: function(h, params) {
+                        var callat = params.row.startlat.toFixed(5);
+                        var callon = params.row.startlon.toFixed(5);
+                        var address = LocalCacheMgr.getAddress(callon, callat);
+                        if (address) {
+                            return h('span', {}, address);
+                        } else {
+                            return h('Button', {
+                                props: {
+                                    type: 'primary',
+                                    size: 'small',
+                                },
+                                on: {
+                                    click: function(e) {
+                                        e.preventDefault();
+                                        vRoot.queryAddress(callon, callat, function(address) {
+
+                                            if (vRoot.tabsKey === 'abnormalDriving') {
+                                                vRoot.abnormalDrivingList[params.index].address = address;
+                                            } else {
+                                                alert(1)
+                                                vRoot.forwardAlarmList[params.index].address = address;
+                                            }
+                                            LocalCacheMgr.setAddress(callon, callat, address);
+                                        })
+                                    }
+                                }
+                            }, "获取地址");
+                        }
+                    }
+                }, {
+                    title: '最后报警位置',
+                    key: 'endposition',
+                    render: function(h, params) {
+                        var callat = params.row.endlat.toFixed(5);
+                        var callon = params.row.endlon.toFixed(5);
+                        var address = LocalCacheMgr.getAddress(callon, callat);
+                        if (address) {
+                            return h('span', {}, address);
+                        } else {
+                            return h('Button', {
+                                props: {
+                                    type: 'primary',
+                                    size: 'small',
+                                },
+                                on: {
+                                    click: function(e) {
+                                        e.preventDefault();
+                                        e.preventDefault();
+                                        vRoot.queryAddress(callon, callat, function(address) {
+                                            if (vRoot.tabsKey === 'abnormalDriving') {
+                                                vRoot.abnormalDrivingList[params.index].address = address;
+                                            } else {
+                                                alert(1)
+                                                vRoot.forwardAlarmList[params.index].address = address;
+                                            }
+                                            LocalCacheMgr.setAddress(callon, callat, address);
+                                        });
+                                    }
+                                }
+                            }, "获取地址");
+                        }
+                    }
+                }, ],
+                abnormalDrivingList: [],
+                forwardAlarmList: [],
+                detailTableData: [],
+                imageAndVideoList: [{
+                    image: true,
+                    imageUrl: './images/tv_default.jpg',
+                    videoUrl: ''
+                }, {
+                    image: true,
+                    imageUrl: './images/tv_default.jpg',
+                    videoUrl: ''
+                }, {
+                    image: true,
+                    imageUrl: './images/tv_default.jpg',
+                    videoUrl: ''
+                }, {
+                    image: true,
+                    imageUrl: './images/tv_default.jpg',
+                    videoUrl: ''
+                }, ]
             },
             methods: {
-                prevArticle:function(){
-                    if(this.detailTableData.length){
-                        this.detailIndex --;
-                        if(this.detailIndex<0){
-                            this.detailIndex = this.detailTableData.length-1;
+                prevArticle: function() {
+                    if (this.detailTableData.length) {
+                        this.detailIndex--;
+                        if (this.detailIndex < 0) {
+                            this.detailIndex = this.detailTableData.length - 1;
                         }
                         this.$refs.detailTable.$refs.tbody.clickCurrentRow(this.detailIndex);
                     }
                 },
-                nextArticle:function(){
-                    if(this.detailTableData.length){
+                nextArticle: function() {
+                    if (this.detailTableData.length) {
                         this.detailIndex++;
-                        if(this.detailIndex> this.detailTableData.length-1){
+                        if (this.detailIndex > this.detailTableData.length - 1) {
                             this.detailIndex = 0;
                         }
                         this.$refs.detailTable.$refs.tbody.clickCurrentRow(this.detailIndex);
                     }
                 },
-                onClickTabs:function(name){
+                onClickTabs: function(name) {
                     this.tabsKey = name;
                 },
-                initMap:function(){
+                initMap: function() {
                     var self = this;
-                    if(self.mapType === 'bMap'){
-                        asyncLoadJs('baidu', function () {
-                            self.map = new BMap.Map("map",{minZoom:4,maxZoom:20});           
+                    if (self.mapType === 'bMap') {
+                        asyncLoadJs('baidu', function() {
+                            self.map = new BMap.Map("map", {
+                                minZoom: 4,
+                                maxZoom: 20
+                            });
                             self.map.enableScrollWheelZoom();
                             self.map.enableAutoResize();
                             self.map.disableDoubleClickZoom();
                             self.map.centerAndZoom(new BMap.Point(108.0017245, 35.926895), 5)
-                            self.map.addControl(new BMap.CityListControl({anchor: BMAP_ANCHOR_TOP_LEFT,offset: new BMap.Size(10, 20),}));  
+                            self.map.addControl(new BMap.CityListControl({
+                                anchor: BMAP_ANCHOR_TOP_LEFT,
+                                offset: new BMap.Size(10, 20),
+                            }));
                         });
-                    }else if(self.mapType === 'gMap'){
-                        asyncLoadJs('google', function () {
+                    } else if (self.mapType === 'gMap') {
+                        asyncLoadJs('google', function() {
                             var center = new google.maps.LatLng(35.129163, 102.264435);
                             self.map = new google.maps.Map(document.getElementById('map'), {
                                 zoom: 4,
@@ -662,7 +723,7 @@
                                 mapTypeId: google.maps.MapTypeId.ROADMAP
                             });
                         });
-                    }else if(self.mapType === 'oMap'){
+                    } else if (self.mapType === 'oMap') {
                         var projection = ol.proj.get('EPSG:4326');
                         this.map = new ol.Map({
                             target: 'map',
@@ -679,103 +740,107 @@
                         });
                     }
                 },
-                createMarker : function (track) {
-                    var tempPoint = ol.proj.fromLonLat([track.callon, track.callat]), iconFeature;
+                createMarker: function(track) {
+                    var tempPoint = ol.proj.fromLonLat([track.callon, track.callat]),
+                        iconFeature;
                     iconFeature = new ol.Feature({
                         geometry: new ol.geom.Point(tempPoint),
                     });
                     iconFeature.setStyle(this.getIcon(track));
                     return iconFeature;
                 },
-                selectedDetailFirstRow:function(){
+                selectedDetailFirstRow: function() {
                     var that = this;
-                    setTimeout(()=>{
+                    setTimeout(() => {
                         try {
-                            if(that.detailTableData.length){
+                            if (that.detailTableData.length) {
                                 that.$refs.detailTable.$refs.tbody.clickCurrentRow(0);
-                            } 
+                            }
                         } catch (error) {
-                            
-                        }
-                    },500);
-                },
-                onAbnormalDrivingChange:function(current){
-                    this.detailTableData = current?current.records:[];
-                    this.detailIndex = 0;
-                    if(this.detailTableData.length === 0) return;
-                    this.selectedDetailFirstRow();
-                },
-                onForwardAlarmChange:function(current){
 
-                    this.detailTableData =  current?current.records:[];
+                        }
+                    }, 500);
+                },
+                onAbnormalDrivingChange: function(current) {
+                    this.detailTableData = current ? current.records : [];
                     this.detailIndex = 0;
-                    if(this.detailTableData.length === 0) return;
+                    if (this.detailTableData.length === 0) return;
                     this.selectedDetailFirstRow();
                 },
-                onDetailChange:function(current){
+                onForwardAlarmChange: function(current) {
+
+                    this.detailTableData = current ? current.records : [];
+                    this.detailIndex = 0;
+                    if (this.detailTableData.length === 0) return;
+                    this.selectedDetailFirstRow();
+                },
+                onDetailChange: function(current) {
                     var that = this;
-                    this.detailTableData.forEach(function (item,index) { 
-                        if(current.activesafetyid === item.activesafetyid){
+                    this.detailTableData.forEach(function(item, index) {
+                        if (current.activesafetyid === item.activesafetyid) {
                             that.detailIndex = index;
                         }
                     });
-                    if( this.mapType == 'bMap'){
+                    if (this.mapType == 'bMap') {
                         var b_lon_lat = wgs84tobd09(Number(current.lon), Number(current.lat));
-                        var point = new BMap.Point(b_lon_lat[0],b_lon_lat[1]);
-                        if(!this.markerIns){
+                        var point = new BMap.Point(b_lon_lat[0], b_lon_lat[1]);
+                        if (!this.markerIns) {
                             this.markerIns = new BMap.Marker(point);
                             this.map.addOverlay(this.markerIns);
                         }
                         this.markerIns.setPosition(point);
                         this.map.setZoom(18);
                         this.map.setCenter(point);
-                    }else if( this.mapType == 'gMap'){
-                        var g_lon_and_g_lat = wgs84togcj02( current.lon, current.lat);
-                        var myLatLng = {lat:g_lon_and_g_lat[1], lng:g_lon_and_g_lat[0]};
-                        if(!this.markerIns){
+                    } else if (this.mapType == 'gMap') {
+                        var g_lon_and_g_lat = wgs84togcj02(current.lon, current.lat);
+                        var myLatLng = {
+                            lat: g_lon_and_g_lat[1],
+                            lng: g_lon_and_g_lat[0]
+                        };
+                        if (!this.markerIns) {
                             this.markerIns = new google.maps.Marker({
                                 position: myLatLng,
                                 map: this.map,
                             });
-                        }else{
+                        } else {
                             this.markerIns.setPosition(myLatLng);
                         }
                         this.map.setCenter(myLatLng);
                         this.map.setZoom(18);
-                        
-                    }else if( this.mapType == 'oMap'){
+
+                    } else if (this.mapType == 'oMap') {
                         var tempPoint = ol.proj.fromLonLat([current.lon, current.lat]);
                         var iconFeature = new ol.Feature({
-                                geometry: new ol.geom.Point(tempPoint),
-                            });
-                        if(!this.markerIns){
+                            geometry: new ol.geom.Point(tempPoint),
+                        });
+                        if (!this.markerIns) {
                             var features = [iconFeature];
                             this.markerIns = new ol.layer.Vector({
                                 source: new ol.source.Vector({
-                                    features:features
+                                    features: features
                                 }),
                             });
                             this.map.addLayer(this.markerIns);
-                        }else{
-                            this.markerIns.setSource(new ol.source.Vector({features:[iconFeature]}));
+                        } else {
+                            this.markerIns.setSource(new ol.source.Vector({
+                                features: [iconFeature]
+                            }));
                             this.map.getView().setCenter(tempPoint);
                         }
                     }
 
                     this.imageAndVideoList = this.getImageAndVideoList(current);
-                    
+
                 },
-                getMediaTypeWithIndex:function(data, filetype, index)
-                {
+                getMediaTypeWithIndex: function(data, filetype, index) {
                     var playURL = null;
                     var foundCount = 0;
-                    for(var i = 1 ; i < 5 ; i++ ){
-                        var attachfile = data['attachfile'+i];
-                        if(attachfile && data['attachstatus' + i] === 1){
-                            if(data['attachfiletype'+i] === filetype){
+                    for (var i = 1; i < 5; i++) {
+                        var attachfile = data['attachfile' + i];
+                        if (attachfile && data['attachstatus' + i] === 1) {
+                            if (data['attachfiletype' + i] === filetype) {
                                 foundCount++;
-                                if(foundCount === index)
-                                {
+                                if (foundCount === index) {
                                     playURL = this.playRootPath + attachfile;
                                     break;
                                 }
@@ -784,88 +849,87 @@
                     }
                     return playURL;
                 },
-                getImageAndVideoList:function(data){
+                getImageAndVideoList: function(data) {
                     var defaultUrl = './images/tv_default.jpg';
                     var imageAndVideoList = [];
-                    var videoUrl = this.getMediaTypeWithIndex(data,2,1);
-                    var imageUrl1 = this.getMediaTypeWithIndex(data,0,1);
-                    var imageUrl2 = this.getMediaTypeWithIndex(data,0,2);
-                    var imageUrl3 = this.getMediaTypeWithIndex(data,0,3);
-                    if(videoUrl){
+                    var videoUrl = this.getMediaTypeWithIndex(data, 2, 1);
+                    var imageUrl1 = this.getMediaTypeWithIndex(data, 0, 1);
+                    var imageUrl2 = this.getMediaTypeWithIndex(data, 0, 2);
+                    var imageUrl3 = this.getMediaTypeWithIndex(data, 0, 3);
+                    if (videoUrl) {
                         imageAndVideoList.push({
-                            image:false,
-                            videoUrl:videoUrl
+                            image: false,
+                            videoUrl: videoUrl
                         })
-                    }else{
+                    } else {
                         imageAndVideoList.push({
-                            image:true,
-                            imageUrl:defaultUrl
-                        }) 
+                            image: true,
+                            imageUrl: defaultUrl
+                        })
                     };
-                    if(imageUrl1){
+                    if (imageUrl1) {
                         imageAndVideoList.push({
-                            image:true,
-                            imageUrl:imageUrl1
+                            image: true,
+                            imageUrl: imageUrl1
                         })
-                    }else{
+                    } else {
                         imageAndVideoList.push({
-                            image:true,
-                            imageUrl:defaultUrl
-                        }) 
+                            image: true,
+                            imageUrl: defaultUrl
+                        })
                     };
-                    if(imageUrl2){
+                    if (imageUrl2) {
                         imageAndVideoList.push({
-                            image:true,
-                            imageUrl:imageUrl2
+                            image: true,
+                            imageUrl: imageUrl2
                         })
-                    }else{
+                    } else {
                         imageAndVideoList.push({
-                            image:true,
-                            imageUrl:defaultUrl
-                        }) 
+                            image: true,
+                            imageUrl: defaultUrl
+                        })
                     };
-                    if(imageUrl3){
+                    if (imageUrl3) {
                         imageAndVideoList.push({
-                            image:true,
-                            imageUrl:imageUrl3
+                            image: true,
+                            imageUrl: imageUrl3
                         })
-                    }else{
+                    } else {
                         imageAndVideoList.push({
-                            image:true,
-                            imageUrl:defaultUrl
-                        }) 
+                            image: true,
+                            imageUrl: defaultUrl
+                        })
                     };
                     return imageAndVideoList;
                 },
-                queryAddress:function(callon,callat,callback){
+                queryAddress: function(callon, callat, callback) {
                     var b_lon_lat = wgs84tobd09(Number(callon), Number(callat));
-                    utils.getBaiduAddressFromBaidu(b_lon_lat[0], b_lon_lat[1], function (b_address) {
+                    utils.getBaiduAddressFromBaidu(b_lon_lat[0], b_lon_lat[1], function(b_address) {
                         if (b_address.length) {
                             callback(b_address);
                         } else {
-                            utils.getJiuHuAddressSyn(callon,callat, function (resp) {
+                            utils.getJiuHuAddressSyn(callon, callat, function(resp) {
                                 var j_address = resp.address;
                                 callback(j_address);
                             })
                         }
                     });
                 },
-                getTableHeight:function(){
-                    var wHeight = document.documentElement.clientHeight || document.body.clientHeight ;
+                getTableHeight: function() {
+                    var wHeight = document.documentElement.clientHeight || document.body.clientHeight;
                     return wHeight - 320;
                 },
-                handleAlarmEventClassify:function(alarmTypeObject, record){
-                   var alarmevent = record.alarmevent;
-                   var eventList = alarmTypeObject[alarmevent];
-                   if(eventList === undefined)
-                   {
+                handleAlarmEventClassify: function(alarmTypeObject, record) {
+                    var alarmevent = record.alarmevent;
+                    var eventList = alarmTypeObject[alarmevent];
+                    if (eventList === undefined) {
                         eventList = {};
                         eventList.records = [];
                         eventList.startalarmtime = 0;
                         eventList.endalarmtime = 0;
                         eventList.startspeed = 0;
                         eventList.endspeed = 0;
-                        eventList.alarmcount = 0; 
+                        eventList.alarmcount = 0;
                         eventList.startlon = 0;
                         eventList.startlat = 0;
                         eventList.endlat = 0;
@@ -873,168 +937,174 @@
                         eventList.alarmevent = alarmevent;
                         eventList.alarmlevel = record.alarmlevel;
                         alarmTypeObject[alarmevent] = eventList;
-                   }
+                    }
 
-                   eventList.alarmcount++;
-                   if(eventList.startalarmtime == 0)
-                   {
-                      eventList.startalarmtime = record.updatetime;
-                      eventList.startspeed = record.speed;
-                      eventList.startlat = record.lat;
-                      eventList.startlon = record.lon;
-                   }
+                    eventList.alarmcount++;
+                    if (eventList.startalarmtime == 0) {
+                        eventList.startalarmtime = record.updatetime;
+                        eventList.startspeed = record.speed;
+                        eventList.startlat = record.lat;
+                        eventList.startlon = record.lon;
+                    }
 
-                   if(eventList.endalarmtime == 0)
-                   {
-                      eventList.endalarmtime = record.updatetime;
-                      eventList.endspeed = record.speed;
-                      eventList.endlat = record.lat;
-                      eventList.endlon = record.lon;
-                   }
-                   if(eventList.startalarmtime > record.updatetime)
-                   {
-                     eventList.startalarmtime = record.updatetime;
-                     eventList.startspeed = record.speed;
-                      eventList.startlat = record.lat;
-                      eventList.startlon = record.lon;
-                   }
-                   if(eventList.endalarmtime < record.updatetime)
-                   {
+                    if (eventList.endalarmtime == 0) {
                         eventList.endalarmtime = record.updatetime;
                         eventList.endspeed = record.speed;
                         eventList.endlat = record.lat;
                         eventList.endlon = record.lon;
-                   }
+                    }
+                    if (eventList.startalarmtime > record.updatetime) {
+                        eventList.startalarmtime = record.updatetime;
+                        eventList.startspeed = record.speed;
+                        eventList.startlat = record.lat;
+                        eventList.startlon = record.lon;
+                    }
+                    if (eventList.endalarmtime < record.updatetime) {
+                        eventList.endalarmtime = record.updatetime;
+                        eventList.endspeed = record.speed;
+                        eventList.endlat = record.lat;
+                        eventList.endlon = record.lon;
+                    }
 
-                   eventList.records.push(record);
+                    eventList.records.push(record);
                 },
-                handleAlarmTypeClassify:function(records){
+                handleAlarmTypeClassify: function(records) {
                     var that = this;
                     that.recordsObj = {};
-                    records.forEach(function (item) { 
+                    records.forEach(function(item) {
                         var alarmTypeObject = that.recordsObj[item.alarmtype + ''];
-                        if(alarmTypeObject === undefined){
+                        if (alarmTypeObject === undefined) {
                             alarmTypeObject = {};
-                            that.recordsObj[item.alarmtype] =alarmTypeObject;
+                            that.recordsObj[item.alarmtype] = alarmTypeObject;
                         }
                         that.handleAlarmEventClassify(alarmTypeObject, item);
                     })
 
                     this.getEventList(that.recordsObj);
                 },
-                getEventList:function(alarmTypeObject){
-                    var abnormalDrivingList = [] , forwardAlarmList = [] , that = this;
-                    for(var key in alarmTypeObject){
-                        if(key == 100){
+                getEventList: function(alarmTypeObject) {
+                    var abnormalDrivingList = [],
+                        forwardAlarmList = [],
+                        that = this;
+                    for (var key in alarmTypeObject) {
+                        if (key == 100) {
                             var forwardAlarmObj = alarmTypeObject[key];
-                            for(var k in forwardAlarmObj){
+                            for (var k in forwardAlarmObj) {
                                 var item = forwardAlarmObj[k];
-                                var callat= item.endlat.toFixed(5);
-                                var callon= item.endlon.toFixed(5);
-                                var address =  LocalCacheMgr.getAddress(callon, callat);
+                                var callat = item.endlat.toFixed(5);
+                                var callon = item.endlon.toFixed(5);
+                                var address = LocalCacheMgr.getAddress(callon, callat);
                                 item.address = address;
                                 item.disabled = address ? true : false;
                                 forwardAlarmList.push(item);
                             }
-                        }else if(key == 101){
+                        } else if (key == 101) {
                             var abnormalDriving = alarmTypeObject[key];
-                            for(var k in abnormalDriving){
+                            for (var k in abnormalDriving) {
                                 var item = abnormalDriving[k];
-                                var callat= item.endlat.toFixed(5);
-                                var callon= item.endlon.toFixed(5);
-                                var address =  LocalCacheMgr.getAddress(callon, callat);
+                                var callat = item.endlat.toFixed(5);
+                                var callon = item.endlon.toFixed(5);
+                                var address = LocalCacheMgr.getAddress(callon, callat);
                                 item.address = address;
                                 item.disabled = address ? true : false;
                                 abnormalDrivingList.push(item);
                             }
                         }
                     }
-                    this.forwardAlarmList = forwardAlarmList.sort(function (a,b) { return b.endalarmtime - a.endalarmtime ;});
-                    this.abnormalDrivingList = abnormalDrivingList.sort(function (a,b) { return b.endalarmtime - a.endalarmtime ;});
-                    setTimeout(()=>{
-                        if(that.forwardAlarmList.length){
+                    this.forwardAlarmList = forwardAlarmList.sort(function(a, b) {
+                        return b.endalarmtime - a.endalarmtime;
+                    });
+                    this.abnormalDrivingList = abnormalDrivingList.sort(function(a, b) {
+                        return b.endalarmtime - a.endalarmtime;
+                    });
+                    setTimeout(() => {
+                        if (that.forwardAlarmList.length) {
                             that.$refs.forwardTable.$refs.tbody.clickCurrentRow(0);
                             that.selectedDetailFirstRow();
                         }
-                    },500)
+                    }, 500)
                 },
-                queryActiveSafety:function() {
-                    var url = myUrls.queryActiveSafetyTrack() , that = this;
+                queryActiveSafety: function() {
+                    var url = myUrls.queryActiveSafetyTrack(),
+                        that = this;
                     var data = {
-                        deviceid:deviceid,
-                        begintime:DateFormat.format(this.date,'yyyy-MM-dd')+' 00:00:00',
-                        endtime:DateFormat.format(this.date,'yyyy-MM-dd')+' 23:59:59',
-                        timezone : 8
+                        deviceid: deviceid,
+                        begintime: DateFormat.format(this.date, 'yyyy-MM-dd') + ' 00:00:00',
+                        endtime: DateFormat.format(this.date, 'yyyy-MM-dd') + ' 23:59:59',
+                        timezone: 8
                     };
                     that.loading = true;
-                    utils.sendAjax(url,data,function (resp) { 
+                    utils.sendAjax(url, data, function(resp) {
                         that.loading = false;
-                        if(resp.status == 0){
+                        if (resp.status == 0) {
                             var records = resp.records;
-                            if(records.length){
-                                records.sort(function (a,b) { return b.updatetime - a.updatetime ;});
+                            if (records.length) {
+                                records.sort(function(a, b) {
+                                    return b.updatetime - a.updatetime;
+                                });
                                 that.playRootPath = resp.playrootpath;
                                 that.handleAlarmTypeClassify(records);
-                            }else{
+                            } else {
                                 that.$Message.error('没有数据');
                                 that.forwardAlarmList = [];
-                                that.abnormalDrivingList = []; 
+                                that.abnormalDrivingList = [];
                                 that.detailTableData = [];
                             }
-                        }else{
+                        } else {
                             that.$Message.error('查询失败');
                         }
                         document.getElementById('mask-wrapper').style.display = 'none';
                     })
                 },
-                initApp:function(){
+                initApp: function() {
                     var me = this;
                     this.initMap();
                     this.tableHeight = this.getTableHeight();
                     this.queryActiveSafety();
-                    window.onresize = function () { 
+                    window.onresize = function() {
                         me.tableHeight = me.getTableHeight();
                     };
                 }
             },
-            computed:{
-                videoStyle:function(){
+            computed: {
+                videoStyle: function() {
                     var videoWrapper = this.$refs.videoWrapper;
                     return {
-                        width:(getComputedStyle(videoWrapper).width / 2 ) + 'px',
-                        height:(getComputedStyle(videoWrapper).height / 2) + 'px',
+                        width: (getComputedStyle(videoWrapper).width / 2) + 'px',
+                        height: (getComputedStyle(videoWrapper).height / 2) + 'px',
                     }
                 }
             },
             watch: {
-                tabsKey:function(newVal){
+                tabsKey: function(newVal) {
                     var that = this;
                     this.detailIndex = 0;
                     that.detailTableData = [];
-                    setTimeout(function(){
-                        if(newVal == 'forwardAlarm'){
+                    setTimeout(function() {
+                        if (newVal == 'forwardAlarm') {
                             that.$refs.abnormalTable.clearCurrentRow(that.detailIndex);
-                            if(that.forwardAlarmList.length){
+                            if (that.forwardAlarmList.length) {
                                 that.$refs.forwardTable.$refs.tbody.clickCurrentRow(that.detailIndex);
                                 that.selectedDetailFirstRow();
                             }
-                          
-                        }else if(newVal == 'abnormalDriving'){
+
+                        } else if (newVal == 'abnormalDriving') {
                             that.$refs.forwardTable.clearCurrentRow();
-                            if(that.abnormalDrivingList.length){
+                            if (that.abnormalDrivingList.length) {
                                 that.$refs.abnormalTable.$refs.tbody.clickCurrentRow(that.detailIndex);
                                 that.selectedDetailFirstRow();
                             }
                         }
 
-                    },500)
+                    }, 500)
                 }
             },
-            mounted :function() {
+            mounted: function() {
                 this.map = null;
                 this.initApp();
             },
         })
     </script>
 </body>
+
 </html>

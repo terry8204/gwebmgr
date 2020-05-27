@@ -1754,6 +1754,8 @@ function insureRecords(groupslist) {
         i18n: utils.getI18n(),
         mixins: [treeMixin],
         data: {
+            dayNumberType: 0,
+            dateVal: [DateFormat.longToDateStr(Date.now(), DateFormat.getOffset()), DateFormat.longToDateStr(Date.now(), DateFormat.getOffset())],
             error: 123,
             createrToUser: userName,
             modal: false,
@@ -1775,11 +1777,13 @@ function insureRecords(groupslist) {
                     title: '保单号',
                     width: 100,
                     fixed: 'left',
+                    "sortable": true,
                     render: function(h, parmas) {
 
                         return h('span', {}, parmas.row.policyno == null ? '保单审核中' : parmas.row.policyno);
                     }
                 },
+                { title: '添加时间', key: 'createtimeStr', width: 150, "sortable": true },
                 { title: '经销商', key: 'username', width: 150 },
                 { title: '经销商地址', key: 'useraddress', width: 150 },
                 { title: '经销商手机号', key: 'usernamephonenum', width: 120 },
@@ -1904,7 +1908,8 @@ function insureRecords(groupslist) {
                                         vueInstanse.editObjectRow.phonenum = params.row.phonenum;
                                         vueInstanse.editObjectRow.vinno = params.row.vinno;
                                         vueInstanse.editObjectRow.usernamephonenum = params.row.usernamephonenum;
-                                        vueInstanse.editObjectRow.insureid = params.row.insureid
+                                        vueInstanse.editObjectRow.insureid = params.row.insureid;
+                                        vueInstanse.editObjectRow.isRecharge = params.row.insurestate == 1 ? true : false;
                                         vueInstanse.modal = true;
                                     }
                                 }
@@ -1937,13 +1942,31 @@ function insureRecords(groupslist) {
                 cardid: '',
                 phonenum: '',
                 vinno: "",
-                usernamephonenum: ''
+                usernamephonenum: '',
+                isRecharge: false,
             }
         },
         methods: {
+            handleSelectdDate: function(dayNumber) {
+                this.dayNumberType = dayNumber;
+                var dayTime = 24 * 60 * 60 * 1000;
+                if (dayNumber == 0) {
+                    this.dateVal = [DateFormat.longToDateStr(Date.now(), DateFormat.getOffset()), DateFormat.longToDateStr(Date.now(), DateFormat.getOffset())];
+                } else if (dayNumber == 1) {
+                    this.dateVal = [DateFormat.longToDateStr(Date.now() - dayTime, DateFormat.getOffset()), DateFormat.longToDateStr(Date.now() - dayTime, DateFormat.getOffset())];
+                } else if (dayNumber == 3) {
+                    this.dateVal = [DateFormat.longToDateStr(Date.now() - dayTime * 2, DateFormat.getOffset()), DateFormat.longToDateStr(Date.now(), DateFormat.getOffset())];
+                } else if (dayNumber == 7) {
+                    this.dateVal = [DateFormat.longToDateStr(Date.now() - dayTime * 6, DateFormat.getOffset()), DateFormat.longToDateStr(Date.now(), DateFormat.getOffset())];
+                }
+            },
+            onChange: function(value) {
+                this.dateVal = value;
+            },
             handleEditInsure: function() {
                 var url = myUrls.editInsure(),
                     me = this;
+                this.editObjectRow.insurestate = me.editObjectRow.isRecharge ? 1 : 0;
                 utils.sendAjax(url, this.editObjectRow, function(respData) {
                     if (respData.status == 0) {
                         var data = me.tableData[me.editDeviceIndex];
@@ -1952,6 +1975,8 @@ function insureRecords(groupslist) {
                         data.phonenum = me.editObjectRow.phonenum;
                         data.vinno = me.editObjectRow.vinno;
                         data.usernamephonenum = me.editObjectRow.usernamephonenum;
+                        data.insurestate = me.editObjectRow.isRecharge ? 1 : 0;
+                        data.isPay = data.insurestate == 1 ? '已付款' : '未付款';
                         me.modal = false;
                         me.$Message.success('编辑成功');
                     } else {
@@ -2097,8 +2122,10 @@ function insureRecords(groupslist) {
             queryInsures: function() {
                 this.loading = true;
                 var url = myUrls.queryInsures(),
-                    me = this;
-                utils.sendAjax(url, { username: this.createrToUser }, function(resp) {
+                    me = this,
+                    startday = DateFormat.format(new Date(this.dateVal[0]), 'yyyy-MM-dd'),
+                    endday = DateFormat.format(new Date(this.dateVal[1]), 'yyyy-MM-dd');
+                utils.sendAjax(url, { username: this.createrToUser, startday: startday, endday: endday, offset: DateFormat.getOffset() }, function(resp) {
                     console.log('resp', resp);
                     if (resp.status === 0) {
 
@@ -2106,6 +2133,7 @@ function insureRecords(groupslist) {
                             me.tableData = (function() {
                                 var tableData = [];
                                 resp.insures.forEach(function(item) {
+                                    item.createtimeStr = DateFormat.format(new Date(item.createtime), 'yyyy-MM-dd')
                                     if (item.insurestate === 1) {
                                         item.index = tableData.length + 1;
                                         item.isPay = item.insurestate == 1 ? '已付款' : '未付款'
@@ -2118,6 +2146,7 @@ function insureRecords(groupslist) {
                             resp.insures.forEach(function(item, index) {
                                 item.index = index + 1;
                                 item.isPay = item.insurestate == 1 ? '已付款' : '未付款'
+                                item.createtimeStr = DateFormat.format(new Date(item.createtime), 'yyyy-MM-dd')
                             })
                             me.tableData = resp.insures;
                         }

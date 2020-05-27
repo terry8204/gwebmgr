@@ -14,6 +14,15 @@
             <Checkbox v-model="isFilter">已付款</Checkbox>
         </div>
         <div style="margin-left:20px;float: left;">
+            <date-picker type="daterange" :value="dateVal" :editable="false" :clearable="false" @on-change="onChange" show-week-numbers style="width:200px" placement="bottom-start"></date-picker>
+        </div>
+        <div style="float: left;height: 30px; line-height: 30px;margin-left: 20px;" class="spans-wrap">
+            <span class="cursor-pointer" @click="handleSelectdDate(0)" :style="{color: dayNumberType == 0 ? '#2D8CF0' : '#515A6E'}">{{$t("reportForm.toDay")}}</span> <b>｜</b>
+            <span class="cursor-pointer" @click="handleSelectdDate(1)" :style="{color: dayNumberType == 1 ? '#2D8CF0' : '#515A6E'}">{{$t("reportForm.yesterDay")}}</span> <b>｜</b>
+            <span class="cursor-pointer" @click="handleSelectdDate(3)" :style="{color: dayNumberType == 3 ? '#2D8CF0' : '#515A6E'}">{{$t("reportForm.threeDays")}}</span> <b>｜</b>
+            <span class="cursor-pointer" @click="handleSelectdDate(7)" :style="{color: dayNumberType == 7 ? '#2D8CF0' : '#515A6E'}">{{$t("reportForm.sevenDays")}}</span>
+        </div>
+        <div style="margin-left:20px;float: left;">
             <i-button @click="queryInsures">{{$t("reportForm.query")}}</i-button>
         </div>
         <div style="margin-right:20px;float: right;">
@@ -57,6 +66,12 @@
                 <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">经销商号码 : &nbsp;</i-col>
                 <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
                     <i-input v-model.trim="editObjectRow.usernamephonenum" style="width: 100%;"></i-input>
+                </i-col>
+            </Row>
+            <Row style="margin:10px 0;">
+                <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">是否付费 : &nbsp;</i-col>
+                <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
+                    <Checkbox v-model="editObjectRow.isRecharge">已付款</Checkbox>
                 </i-col>
             </Row>
         </div>
