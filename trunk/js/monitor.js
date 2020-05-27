@@ -1359,7 +1359,12 @@ var monitor = {
                 // item.updatetimeStr = DateFormat.longToDateTimeStr(item.updatetime, 0);
                 //this.positionLastrecords[deviceid] = item;
                 var oldPositionLast = this.positionLastrecords[deviceid];
-                this.copyPositionLastValue(oldPositionLast, item);
+               
+                if (oldPositionLast == undefined) {
+                    this.positionLastrecords[deviceid] = item;
+                } else {
+                    this.copyPositionLastValue(oldPositionLast, item);
+                }
             }
         },
 
