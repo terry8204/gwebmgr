@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="divport" content="width=device-width, initial-scale=1.0">
@@ -7,141 +8,155 @@
     <link rel="stylesheet" href="dist/styles/iview.css">
     <title>录音记录</title>
     <style>
-        *{
+        * {
             padding: 0;
             margin: 0;
             box-sizing: border-box;
         }
-        html,body{
+        
+        html,
+        body {
             height: 100%;
             width: 100%;
             background-color: rgba(246, 246, 246, 0.897);
         }
-        div.container{
+        
+        div.container {
             width: 375px;
             height: 667px;
             position: absolute;
             left: 50%;
             top: 50%;
-            margin-top:-333.5px;
-            margin-left:-187.5px;    
-            background-color:#fff; 
+            margin-top: -333.5px;
+            margin-left: -187.5px;
+            background-color: #fff;
             display: flex;
             flex-direction: column;
         }
-        div.record-body{
+        
+        div.record-body {
             overflow-y: auto;
             flex: 1;
         }
-
-.body-item{
-  display: flex;
-  flex-direction: row;
-}
-.body-item .person,.send-item .person{
-  height: 60px;
-  line-height: 58px;
-  padding: 0 10px;
-  font-size: 24px;
-  color: #090909;
-}
-.send-item{
-  display: flex;
-  flex-direction: row-reverse;
-}
-
-/* 语音气泡 */
-.speech {
-    float: left;
-    margin: 8px;
-    padding: 6px;
-    table-layout: fixed;
-    word-break: break-all;
-    position: relative;
-    background: #ffffff;
-    border: 1px solid #989898;
-    border-radius: 8px;
-    display: flex;
-    flex-direction: row;
-    cursor: pointer;
-}
-.duration{
-    height: 30px;
-    line-height: 30px;
-    padding: 0 20px 0 30px;
-    font-size: 14px;
-}
-.audio-icon{
-  width: 30px;
-  height: 30px;
-  position: relative;
-}
-.speech:before {
-    content: '';
-    position: absolute;
-    width: 0;
-    height: 0;
-    left: -20px;
-    top: 10px;
-    border: 10px solid;
-    border-color:  transparent #989898 transparent  transparent ;
-}
-.speech:after {
- content: '';
- position: absolute;
- width: 0;
- height: 0;
- left: -16px;
- top: 12px;
- border: 8px solid;
- border-color: transparent #ffffff transparent transparent ;
-}
-
-.speech2 {
-    float: left;
-    margin: 8px;
-    padding: 6px;
-    table-layout: fixed;
-    word-break: break-all;
-    position: relative;
-    background: #ffffff;
-    border: 1px solid #989898;
-    border-radius: 8px;
-    display: flex;
-    flex-direction: row;
-}
-.speech2 .duration{
-    height: 30px;
-    line-height: 30px;
-    padding: 0 20px;
-    font-size: 14px;
-}
-.speech2:before {
-    content: '';
-    position: absolute;
-    width: 0;
-    height: 0;
-    right: -20px;
-    top: 10px;
-    border: 10px solid;
-    border-color:  transparent transparent  transparent #989898;
-}
-.speech2:after {
- content: '';
- position: absolute;
- width: 0;
- height: 0;
- right: -16px;
- top: 12px;
- border: 8px solid;
- border-color: transparent  transparent transparent #ffffff;
-}
-
-
+        
+        .body-item {
+            display: flex;
+            flex-direction: row;
+        }
+        
+        .body-item .person,
+        .send-item .person {
+            height: 60px;
+            line-height: 58px;
+            padding: 0 10px;
+            font-size: 24px;
+            color: #090909;
+        }
+        
+        .send-item {
+            display: flex;
+            flex-direction: row-reverse;
+        }
+        /* 语音气泡 */
+        
+        .speech {
+            float: left;
+            margin: 8px;
+            padding: 6px;
+            table-layout: fixed;
+            word-break: break-all;
+            position: relative;
+            background: #ffffff;
+            border: 1px solid #989898;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: row;
+            cursor: pointer;
+        }
+        
+        .duration {
+            height: 30px;
+            line-height: 30px;
+            padding: 0 20px 0 30px;
+            font-size: 14px;
+        }
+        
+        .audio-icon {
+            width: 30px;
+            height: 30px;
+            position: relative;
+        }
+        
+        .speech:before {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 0;
+            left: -20px;
+            top: 10px;
+            border: 10px solid;
+            border-color: transparent #989898 transparent transparent;
+        }
+        
+        .speech:after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 0;
+            left: -16px;
+            top: 12px;
+            border: 8px solid;
+            border-color: transparent #ffffff transparent transparent;
+        }
+        
+        .speech2 {
+            float: left;
+            margin: 8px;
+            padding: 6px;
+            table-layout: fixed;
+            word-break: break-all;
+            position: relative;
+            background: #ffffff;
+            border: 1px solid #989898;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: row;
+        }
+        
+        .speech2 .duration {
+            height: 30px;
+            line-height: 30px;
+            padding: 0 20px;
+            font-size: 14px;
+        }
+        
+        .speech2:before {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 0;
+            right: -20px;
+            top: 10px;
+            border: 10px solid;
+            border-color: transparent transparent transparent #989898;
+        }
+        
+        .speech2:after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 0;
+            right: -16px;
+            top: 12px;
+            border: 8px solid;
+            border-color: transparent transparent transparent #ffffff;
+        }
+        
         .box {
             box-sizing: border-box;
             position: relative;
         }
+        
         .wifi-symbol {
             width: 30px;
             height: 30px;
@@ -149,12 +164,13 @@
             overflow: hidden;
             transform: rotate(135deg);
         }
+        
         .wifi-circle {
             border: 3px solid #999999;
             border-radius: 50%;
             position: absolute;
         }
-
+        
         .first {
             width: 3px;
             height: 3px;
@@ -162,7 +178,7 @@
             top: 26px;
             left: 26px;
         }
-
+        
         .second {
             width: 15px;
             height: 15px;
@@ -170,7 +186,7 @@
             left: 19.8px;
             animation: fadeInOut 1s infinite 0.3s;
         }
-
+        
         .third {
             width: 24px;
             height: 24px;
@@ -178,73 +194,80 @@
             left: 15px;
             animation: fadeInOut 1s infinite 0.6s;
         }
-
+        
         @keyframes fadeInOut {
             0% {
-                opacity: 0; /*初始状态 透明度为0*/
+                opacity: 0;
+                /*初始状态 透明度为0*/
             }
             100% {
-                opacity: 1; /*结尾状态 透明度为1*/
+                opacity: 1;
+                /*结尾状态 透明度为1*/
             }
         }
-
-.is-played{
-  width: 10px;
-  position: relative;
-}
-.is-played::before{
-  content: '';
-  position: absolute;
-  width: 0;
-  height: 0;
-  left: 0px;
-  top: 24px;
-  border: 4px solid;
-  border-color: red;
-  border-radius: 50%;
-}
-
-div.delete-media>div{
-    width: 30px;
-    height: 30px;
-    margin-top: 15px;
-    cursor: pointer;
-}
-
-/* 底部 控制器 */
-.ctrl{
-  height: 45px;
-  position: relative;
-  display: flex;
-  flex-direction: row;
-  box-sizing:  border-box;
-}
-.time-wrappr{
-  width: 120px;
-  height: 45px;
-  border-top: 1px solid #f3f3f3;
-}
-.fast-record{
-  height: 45px;
-  text-align: center;
-  line-height: 45px;
-  flex: 1;
-  color: #ffffff;
-  background-color: #206AC9;
-  font-size: 15px;
-  cursor: pointer;
-}
-
-[v-cloak]{display: none}
-
-
-        .select-wrap{
+        
+        .is-played {
+            width: 10px;
+            position: relative;
+        }
+        
+        .is-played::before {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 0;
+            left: 0px;
+            top: 24px;
+            border: 4px solid;
+            border-color: red;
+            border-radius: 50%;
+        }
+        
+        div.delete-media>div {
+            width: 30px;
+            height: 30px;
+            margin-top: 15px;
+            cursor: pointer;
+        }
+        /* 底部 控制器 */
+        
+        .ctrl {
+            height: 45px;
+            position: relative;
+            display: flex;
+            flex-direction: row;
+            box-sizing: border-box;
+        }
+        
+        .time-wrappr {
+            width: 120px;
+            height: 45px;
+            border-top: 1px solid #f3f3f3;
+        }
+        
+        .fast-record {
+            height: 45px;
+            text-align: center;
+            line-height: 45px;
+            flex: 1;
+            color: #ffffff;
+            background-color: #206AC9;
+            font-size: 15px;
+            cursor: pointer;
+        }
+        
+        [v-cloak] {
+            display: none
+        }
+        
+        .select-wrap {
             height: 100%;
             width: 100%;
             position: relative;
             cursor: pointer;
         }
-        div.now-text{
+        
+        div.now-text {
             height: 100%;
             width: 100%;
             text-align: center;
@@ -252,7 +275,8 @@ div.delete-media>div{
             position: relative;
             padding-left: 20px;
         }
-        div.now-text::before{
+        
+        div.now-text::before {
             content: '';
             position: absolute;
             width: 0;
@@ -260,40 +284,44 @@ div.delete-media>div{
             left: 20px;
             top: 7px;
             border: 10px solid;
-            border-color:  transparent transparent #989898 transparent ;
+            border-color: transparent transparent #989898 transparent;
         }
-        div.options-wrap{
+        
+        div.options-wrap {
             position: absolute;
             bottom: 45px;
             left: 0;
             width: 120px;
             z-index: 9999;
-            border-left: 1px solid #f6f6f6; 
-            border-right: 1px solid #f6f6f6; 
+            border-left: 1px solid #f6f6f6;
+            border-right: 1px solid #f6f6f6;
             background-color: #fff;
         }
-        div.options-item{
+        
+        div.options-item {
             height: 45px;
             text-align: center;
             line-height: 45px;
-            border-top: 1px solid #f6f6f6; 
+            border-top: 1px solid #f6f6f6;
         }
-        .interval-number{
-  position: absolute;
-  bottom: 48px;
-  left: 3px;
-  width: 45px;
-  height: 45px;
-  background-color: #e4393c;
-  border-radius: 50%;
-  line-height: 45px;
-  text-align: center;
-  color: #ffffff;
-}   
+        
+        .interval-number {
+            position: absolute;
+            bottom: 48px;
+            left: 3px;
+            width: 45px;
+            height: 45px;
+            background-color: #e4393c;
+            border-radius: 50%;
+            line-height: 45px;
+            text-align: center;
+            color: #ffffff;
+        }
     </style>
     <script src="js/js.cookie.min.js"></script>
     <script src="js/polyfill.min.js"></script>
 </head>
+
 <body>
     <div class="container" id="app" v-cloak>
         <audio ref="music"></audio>
@@ -336,18 +364,18 @@ div.delete-media>div{
             </template>
         </div>
         <div class='ctrl'>
-                
-                <div class='time-wrappr'>
-                    <div class="select-wrap">
-                        <div class="now-text" @click="isShowSelect=!isShowSelect">{{selectVal}}</div>
-                        <div class="options-wrap" v-show="isShowSelect">
-                            <div class="options-item" v-for="item in selectArr" :key="item" @click="onSelect(item)">{{item}}</div>
-                        </div>
+
+            <div class='time-wrappr'>
+                <div class="select-wrap">
+                    <div class="now-text" @click="isShowSelect=!isShowSelect">{{selectVal}}</div>
+                    <div class="options-wrap" v-show="isShowSelect">
+                        <div class="options-item" v-for="item in selectArr" :key="item" @click="onSelect(item)">{{item}}</div>
                     </div>
                 </div>
-                <div class='fast-record' @click="handleClickSound">
-                    点击录音
-                </div>
+            </div>
+            <div class='fast-record' @click="handleClickSound">
+                点击录音
+            </div>
         </div>
         <div class="interval-number">{{intervalNumber}}</div>
     </div>
@@ -361,44 +389,49 @@ div.delete-media>div{
     <script src="js/dateformat.js"></script>
     <script>
         var token = utils.getParameterByName("token");
-        
+
         var vRoot = new Vue({
             i18n: utils.getI18n(),
-            el:"#app",
-            data:{
-                intervalNumber:60,
-                currentIndex:null,
-                audio:null,
-                deviceId:"",
-                isShowSelect:false,
-                selectVal:"10s",
-                selectArr:["10s","20s","30s"],
-                tableData:[]
+            el: "#app",
+            data: {
+                intervalNumber: 60,
+                currentIndex: null,
+                audio: null,
+                deviceId: "",
+                isShowSelect: false,
+                selectVal: "10s",
+                selectArr: ["10s", "20s", "30s"],
+                tableData: []
             },
             methods: {
-                deleteRecord:function(item){
+                deleteRecord: function(item) {
                     var index = this.tableData.indexOf(item);
-                    var url = myUrls.deleteAudio() , me = this;
-                    if(!confirm("确认删除这条记录?")) return ;
-                    utils.sendAjax(url,{mediaid:item.mediaid},function (resp) { 
-                        if(resp.status == 0){
-                            me.tableData.splice(index,1);
+                    var url = myUrls.deleteAudio(),
+                        me = this;
+                    if (!confirm("确认删除这条记录?")) return;
+                    utils.sendAjax(url, {
+                        mediaid: item.mediaid
+                    }, function(resp) {
+                        if (resp.status == 0) {
+                            me.tableData.splice(index, 1);
                         }
                     });
                 },
-                onSelect:function(val){
+                onSelect: function(val) {
                     this.isShowSelect = false;
                     this.selectVal = val;
                 },
-                playYuYin:function(index){
-                    if(index === this.currentIndex) return;
+                playYuYin: function(index) {
+                    if (index === this.currentIndex) return;
                     var audio = this.$refs.music;
-                    var item =  this.tableData[index];
-                    this.tableData.forEach(function(record){ record.show = false; });
+                    var item = this.tableData[index];
+                    this.tableData.forEach(function(record) {
+                        record.show = false;
+                    });
                     item.show = true;
-                    if(!audio.paused){              
-                        audio.pause();  
-                    }   
+                    if (!audio.paused) {
+                        audio.pause();
+                    }
                     audio.src = item.url;
                     audio.play();
                     item.readstatus !== 1 ? this.readMedia(item.mediaid) : "";
@@ -406,75 +439,101 @@ div.delete-media>div{
                     this.currentIndex = index;
 
                 },
-                readMedia:function (mediaid) { 
+                readMedia: function(mediaid) {
                     var url = myUrls.readMedia();
-                    utils.sendAjax(url,{mediaid:mediaid},function (resp) {});
+                    utils.sendAjax(url, {
+                        mediaid: mediaid
+                    }, function(resp) {});
                 },
-                handleClickSound:function(){
-                    if(this.deviceId == "") return; 
+                handleClickSound: function() {
+                    if (this.deviceId == "") return;
                     var me = this;
                     var url = myUrls.recordAudio();
-                    utils.sendAjax(url, { deviceid: this.deviceId, interval: parseFloat(this.selectVal)} ,function (resp) { 
-                        if(resp.status == 0){
-                            setTimeout(function () { document.getElementsByClassName("record-body")[0].scrollTop = 10000; },10);
+                    utils.sendAjax(url, {
+                        deviceid: this.deviceId,
+                        interval: parseFloat(this.selectVal)
+                    }, function(resp) {
+                        if (resp.status == 0) {
+                            setTimeout(function() {
+                                document.getElementsByClassName("record-body")[0].scrollTop = 10000;
+                            }, 10);
                             me.queryMedia();
+                            me.setInterval();
                             me.$Message.success("发送成功");
-                        }else{
+                        } else {
                             me.$Message.error("发送失败");
                         }
                     });
                 },
+                setInterval: function() {
+                    if (this.intervalIns !== null) return;
+                    var me = this;
+                    this.intervalIns = setInterval(function() {
+                        me.intervalNumber = --me.intervalNumber;
+                        if (me.intervalNumber < 1) {
+                            me.intervalNumber = 60;
+                            clearInterval(me.intervalIns);
+                            me.intervalIns = null;
+                        };
+                    }, 1000);
+                },
                 queryMedia() {
-                    var url = myUrls.queryMedia() , me = this;
-                    utils.sendAjax(url,{deviceid:this.deviceId},function (resp) { 
-                        if(resp.status == 0){
-                            if(resp.records && resp.records.length){
-                                var tableData = [] ,
+                    var url = myUrls.queryMedia(),
+                        me = this;
+                    utils.sendAjax(url, {
+                        deviceid: this.deviceId
+                    }, function(resp) {
+                        if (resp.status == 0) {
+                            if (resp.records && resp.records.length) {
+                                var tableData = [],
                                     records = resp.records;
-                                    for (var index = 0; index < records.length; index++) {
-                                        const record = records[index];
-                                        record.show = false;
-                                        record.updatetimeStr = DateFormat.longToDateTimeStr(record.updatetime, 0);
-                                        tableData.push(record);
-                                    }
-                                me.tableData = tableData.sort(function (a,b) { return a.updatetime - b.updatetime;});
-                                setTimeout(function () { document.getElementsByClassName("record-body")[0].scrollTop = 10000; },10);
+                                for (var index = 0; index < records.length; index++) {
+                                    const record = records[index];
+                                    record.show = false;
+                                    record.updatetimeStr = DateFormat.longToDateTimeStr(record.updatetime, 0);
+                                    tableData.push(record);
+                                }
+                                me.tableData = tableData.sort(function(a, b) {
+                                    return a.updatetime - b.updatetime;
+                                });
+                                setTimeout(function() {
+                                    document.getElementsByClassName("record-body")[0].scrollTop = 10000;
+                                }, 10);
                             }
-                            
-                        }else{
+
+                        } else {
 
                         }
 
                     })
                 },
-                getLocalMediaByDeviceId:function(deviceId){
-                    var isHas = true; 
+                getLocalMediaByDeviceId: function(deviceId) {
+                    var isHas = true;
                     var newPushLocalMedia = localStorage.getItem("devicemedia-" + deviceId);
                     console.log("newPushLocalMedia", newPushLocalMedia);
-                    if(newPushLocalMedia !== null && newPushLocalMedia !== "null"){
+                    if (newPushLocalMedia !== null && newPushLocalMedia !== "null") {
 
                         var newPushLocalMediaObject = JSON.parse(newPushLocalMedia);
                         var mediaid = newPushLocalMediaObject.mediaid;
-                        for(var i = 0 ; i < this.tableData.length ;i++){
+                        for (var i = 0; i < this.tableData.length; i++) {
                             console.log(mediaid, this.tableData[i].mediaid);
-                            if(mediaid == this.tableData[i].mediaid){
+                            if (mediaid == this.tableData[i].mediaid) {
                                 isHas = false;
                                 break;
                             }
                         }
-                    }else{
+                    } else {
                         isHas = false;
                     }
                     return isHas;
                 },
-                clearLocalMedia:function(){
-                    localStorage.setItem("devicemedia",null);
+                clearLocalMedia: function() {
+                    localStorage.setItem("devicemedia", null);
                 },
-                queryLocalMedia:function(){
-                    var newMedia = this.getLocalMediaByDeviceId(this.deviceId) , me = this;
-                    console.log('newMedia', newMedia);
-                    if(newMedia == true)
-                    {
+                queryLocalMedia: function() {
+                    var newMedia = this.getLocalMediaByDeviceId(this.deviceId),
+                        me = this;
+                    if (newMedia == true) {
 
                         // newMedia.show = false;
                         // newMedia.updatetimeStr = DateFormat.longToDateTimeStr(newMedia.updatetime, 0);
@@ -485,26 +544,30 @@ div.delete-media>div{
                     }
                 }
             },
-            mounted:function(){
+            mounted: function() {
                 var deviceId = utils.getParameterByName("deviceid");
                 var me = this;
-                this.audio = this.$refs.music; 
-                if(deviceId){
+                this.audio = this.$refs.music;
+                if (deviceId) {
                     this.deviceId = deviceId;
                     this.queryMedia();
                 }
-                setInterval(function () { 
-                    me.intervalNumber = --me.intervalNumber;
-                    if(me.intervalNumber%5 == 0){
+                this.intervalNum = 60;
+                setInterval(function() {
+                    me.intervalNum = --me.intervalNum;
+                    if (me.intervalNum % 5 == 0) {
                         me.queryMedia();
                     }
-                    if(me.intervalNumber < 1){
-                        me.intervalNumber = 60;
+                    if (me.intervalNum < 1) {
+                        me.intervalNum = 60;
                         // me.queryMedia();
                     };
-                 },1000);
+                }, 1000);
+
+                this.intervalIns = null;
             }
         })
     </script>
 </body>
+
 </html>
