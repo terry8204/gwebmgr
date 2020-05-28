@@ -982,7 +982,7 @@ function copyToClipboard() {
     textArea.style.border = 'none';
     textArea.style.outline = 'none';
     textArea.style.boxShadow = 'none';
-    textArea.style.display = 'none';
+    textArea.style.zIndex = -99;
     textArea.style.background = 'transparent';
 
     textArea.value = text;

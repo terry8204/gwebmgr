@@ -23,7 +23,7 @@
             <span class="cursor-pointer" @click="handleSelectdDate(7)" :style="{color: dayNumberType == 7 ? '#2D8CF0' : '#515A6E'}">{{$t("reportForm.sevenDays")}}</span>
         </div>
         <div style="margin-left:20px;float: left;">
-            <i-button @click="queryInsures">{{$t("reportForm.query")}}</i-button>
+            <i-button @click="queryInsures" :loading="loading">{{$t("reportForm.query")}}</i-button>
         </div>
         <div style="margin-right:20px;float: right;">
             <i-button @click="exportData" type="primary">导出数据</i-button>

@@ -2152,6 +2152,8 @@ function insureRecords(groupslist) {
                         }
                     }
                     me.loading = false;
+                }, function() {
+                    me.loading = false;
                 })
             },
             exportData: function() {
