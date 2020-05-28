@@ -457,6 +457,7 @@
                             setTimeout(function() {
                                 document.getElementsByClassName("record-body")[0].scrollTop = 10000;
                             }, 10);
+                            me.intervalNumber = 60;
                             me.queryMedia();
                             me.setInterval();
                             me.$Message.success("发送成功");
@@ -508,7 +509,6 @@
                                 if (arrivedtime > me.arrivedtime) {
                                     clearInterval(me.intervalIns);
                                     me.intervalIns = null;
-                                    me.intervalNumber = 60;
                                 }
                                 me.arrivedtime = arrivedtime;
                                 setTimeout(function() {
