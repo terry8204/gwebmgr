@@ -496,6 +496,21 @@
                                 me.tableData = tableData.sort(function(a, b) {
                                     return a.updatetime - b.updatetime;
                                 });
+                                var arrivedtime = 0;
+                                var len = me.tableData.length - 1;
+                                for (var i = len; i >= 0; i--) {
+                                    var record = me.tableData[i];
+                                    if (record.senddirection === 1) {
+                                        arrivedtime = record.arrivedtime;
+                                        break;
+                                    }
+                                };
+                                if (arrivedtime > me.arrivedtime) {
+                                    clearInterval(me.intervalIns);
+                                    me.intervalIns = null;
+                                    me.intervalNumber = 60;
+                                }
+                                me.arrivedtime = arrivedtime;
                                 setTimeout(function() {
                                     document.getElementsByClassName("record-body")[0].scrollTop = 10000;
                                 }, 10);
@@ -563,7 +578,7 @@
                         // me.queryMedia();
                     };
                 }, 1000);
-
+                this.arrivedtime = 0;
                 this.intervalIns = null;
             }
         })
