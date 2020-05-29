@@ -637,7 +637,7 @@ var utils = {
                     callback(b_address);
                 } else {
                     utils.getJiuHuAddressSyn(info.callon, info.callat, function(resp) {
-                        var j_address = resp.address;
+                        var j_address = resp.display_name;
                         callback(j_address);
                     })
                 }
@@ -649,7 +649,7 @@ var utils = {
                     callback(b_address);
                 } else {
                     utils.getJiuHuAddressSyn(callon, callat, function(resp) {
-                        var j_address = resp.address
+                        var j_address = resp.display_name
                         callback(j_address);
                     });
                 }

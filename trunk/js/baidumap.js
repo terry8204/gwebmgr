@@ -150,7 +150,7 @@ BMapClass.pt.getDevAddress = function(track) {
         return address;
     }
     utils.getBaiduAddressFromBaidu(b_lon, b_lat, function(b_address) {
-        if (b_address.length) {
+        if (b_address != undefined && b_address.length) {
             if (self.mapInfoWindow.isOpen()) {
                 var content = utils.getWindowContent(track, b_address);
                 self.mapInfoWindow.setContent(content);
@@ -158,12 +158,14 @@ BMapClass.pt.getDevAddress = function(track) {
             LocalCacheMgr.setAddress(callon, callat, b_address);
         } else {
             utils.getJiuHuAddressSyn(callon, callat, function(resp) {
-                var j_address = resp.address
-                if (self.mapInfoWindow.isOpen()) {
-                    var content = utils.getWindowContent(track, j_address);
-                    self.mapInfoWindow.setContent(content);
-                };
-                LocalCacheMgr.setAddress(callon, callat, j_address);
+                var j_address = resp.address;
+                if (j_address && j_address != undefined) {
+                    if (self.mapInfoWindow.isOpen()) {
+                        var content = utils.getWindowContent(track, j_address);
+                        self.mapInfoWindow.setContent(content);
+                    };
+                    LocalCacheMgr.setAddress(callon, callat, j_address);
+                }
             })
         }
     });

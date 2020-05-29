@@ -1758,6 +1758,8 @@ function insureRecords(groupslist) {
             dateVal: [DateFormat.longToDateStr(Date.now(), timeDifference), DateFormat.longToDateStr(Date.now(), timeDifference)],
             error: 123,
             createrToUser: userName,
+            currentIndex: 1,
+            total: 0,
             modal: false,
             columns: [{
                     title: "序号",
@@ -2114,7 +2116,13 @@ function insureRecords(groupslist) {
             },
             calcTableHeight: function() {
                 var wHeight = window.innerHeight;
-                this.tableHeight = wHeight - 125;
+                this.tableHeight = wHeight - 165;
+            },
+            changePage: function(index) {
+                var offset = index * 20;
+                var start = (index - 1) * 20;
+                this.currentPageIndex = index;
+                this.tableData = this.insureRecords.slice(start, offset);
             },
             changeTableColumns: function() {
                 this.columns = this.getTableColumns();
@@ -2126,11 +2134,10 @@ function insureRecords(groupslist) {
                     startday = DateFormat.format(new Date(this.dateVal[0]), 'yyyy-MM-dd'),
                     endday = DateFormat.format(new Date(this.dateVal[1]), 'yyyy-MM-dd');
                 utils.sendAjax(url, { username: this.createrToUser, startday: startday, endday: endday, offset: timeDifference }, function(resp) {
-                    console.log('resp', resp);
+                    me.loading = false;
                     if (resp.status === 0) {
-
                         if (me.isFilter) {
-                            me.tableData = (function() {
+                            me.insureRecords = (function() {
                                 var tableData = [];
                                 resp.insures.forEach(function(item) {
                                     item.createtimeStr = DateFormat.format(new Date(item.createtime), 'yyyy-MM-dd')
@@ -2148,10 +2155,19 @@ function insureRecords(groupslist) {
                                 item.isPay = item.insurestate == 1 ? '已付款' : '未付款'
                                 item.createtimeStr = DateFormat.format(new Date(item.createtime), 'yyyy-MM-dd')
                             })
-                            me.tableData = resp.insures;
+
+                            me.insureRecords = resp.insures;
                         }
+                        me.total = me.insureRecords.length;
+                        me.currentIndex = 1;
+                        me.tableData = me.insureRecords.slice(0, 20);
+                    } else {
+                        me.total = 0;
+                        me.currentIndex = 1;
+                        me.tableData = [];
+                        me.insureRecords = [];
                     }
-                    me.loading = false;
+
                 }, function() {
                     me.loading = false;
                 })
@@ -2181,6 +2197,7 @@ function insureRecords(groupslist) {
             this.calcTableHeight();
             this.queryInsures();
             this.editDeviceIndex = null;
+            this.insureRecords = [];
         },
     })
 }

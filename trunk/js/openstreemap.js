@@ -148,7 +148,7 @@ OpenStreeMapCls.pt.getDevAddress = function(track) {
         return address;
     } else {
         utils.getJiuHuAddressSyn(callon, callat, function(respAddress) {
-            var display_name = respAddress.display_name;
+            var display_name = respAddress && respAddress.display_name;
             if (display_name) {
                 var wContent = utils.getWindowContent(track, display_name);
                 document.getElementById('popup-content').innerHTML = wContent;
