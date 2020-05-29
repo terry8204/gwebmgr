@@ -1391,9 +1391,13 @@ var monitor = {
             oldPositionLast.mileage = newPositionLast.mileage;
             oldPositionLast.totaldistance = newPositionLast.totaldistance;
             oldPositionLast.status = newPositionLast.status;
-            oldPositionLast.alarm = newPositionLast.alarm;
             oldPositionLast.strstatus = newPositionLast.strstatus;
             oldPositionLast.strstatusen = newPositionLast.strstatusen;
+            
+            oldPositionLast.alarm = newPositionLast.alarm;
+            oldPositionLast.stralarm = newPositionLast.stralarm;
+            oldPositionLast.stralarmen = newPositionLast.stralarmen;
+            
             oldPositionLast.gotsrc = newPositionLast.gotsrc;
             oldPositionLast.rxlevel = newPositionLast.rxlevel;
             oldPositionLast.gpstotalnum = newPositionLast.gpstotalnum;
