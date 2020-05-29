@@ -407,7 +407,7 @@ var monitor = {
                 deviceid: globalDeviceId
             };
             utils.sendAjax(url, data, function(resp) {
-                resp.overdueDateStr = DateFormat.longToDateStr(resp.overduetime, 0);
+                resp.overdueDateStr = DateFormat.longToDateStr(resp.overduetime, timeDifference);
                 me.deviceBaseInfo = resp;
             })
         },
@@ -1359,7 +1359,7 @@ var monitor = {
                 // item.updatetimeStr = DateFormat.longToDateTimeStr(item.updatetime, 0);
                 //this.positionLastrecords[deviceid] = item;
                 var oldPositionLast = this.positionLastrecords[deviceid];
-               
+
                 if (oldPositionLast == undefined) {
                     this.positionLastrecords[deviceid] = item;
                 } else {

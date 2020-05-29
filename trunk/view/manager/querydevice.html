@@ -619,8 +619,8 @@
                         dev.devicenamekey = "\t" + dev.devicename;
                         dev.simnum ? (dev.simnumkey = "\t" + dev.simnum) : (dev.simnumkey = "");
                         dev.bindpwd = dev.bindpwd != null ? dev.bindpwd : '';
-                        dev.createtimestr = DateFormat.longToDateTimeStr(dev.createtime, 0);
-                        dev.expirenotifytimestr = DateFormat.longToDateTimeStr(dev.expirenotifytime, 0);
+                        dev.createtimestr = DateFormat.longToDateTimeStr(dev.createtime, timeDifference);
+                        dev.expirenotifytimestr = DateFormat.longToDateTimeStr(dev.expirenotifytime, timeDifference);
                         dev.groupname = me.getGroupName(dev.groupid);
                         dev.pinYin = __pinyin.getPinyin(dev.devicename);
                         dev.firstLetter = __pinyin.getFirstLetter(dev.devicename);
@@ -794,7 +794,7 @@
                         if (resp.status == 0) {
                             editObject.teltype = String(data.teltype);
                             var newData = Object.assign(editObject, data);
-                            newData.expirenotifytimestr = DateFormat.longToDateTimeStr(data.expirenotifytime, 0);
+                            newData.expirenotifytimestr = DateFormat.longToDateTimeStr(data.expirenotifytime, timeDifference);
                             me.tableData[me.editDeviceIndex] = newData;
                             utils.changeSingleItemData(me.recordsList, newData, 'deviceid');
                             isNeedRefresh = true;

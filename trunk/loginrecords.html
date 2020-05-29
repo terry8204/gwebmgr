@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,20 +10,26 @@
     <link rel="stylesheet" href="dist/styles/iview.css">
     <script src="js/js.cookie.min.js"></script>
     <style>
-        html,body,.container{
-            width: 100%;height: 100%;
+        html,
+        body,
+        .container {
+            width: 100%;
+            height: 100%;
         }
-        .container{
+        
+        .container {
             position: relative;
             padding: 10px;
             overflow: hidden;
         }
-        .header{
+        
+        .header {
             height: 40px;
             width: 100px;
         }
     </style>
 </head>
+
 <body>
     <div class="container" id="container">
         <Row style="margin: 10px 0">
@@ -44,105 +51,98 @@
     <script src="js/dateformat.js"></script>
 
     <script>
+        var timeDifference = DateFormat.getOffset();
         var token = utils.getParameterByName("token");
         new Vue({
-            el:"#container",
-            data:{
-                loading:false,
-                username:"",
-                tableHeight:100,
-                columns:[
-                    {
-                        title:"logintimeStr",
-                        key: 'logintimeStr',
-                        width:160
-                    },
-                    {
-                        title: "userid",
-                        key: 'userid',
-                        width:120
-                    },
-                    {
-                        title: "fromstr",
-                        key: 'fromstr',
-                        width:80
-                    },
-                    {
-                        title: "logintype",
-                        key: 'logintype',
-                        width:100
-                    },
-                    {
-                        title: "pcbrowser",
-                        key: 'pcbrowser'
-                    },
-                    {
-                        title: "phonebrand",
-                        key: 'phonebrand'
-                    },
-                    {
-                        title: "phonemodel",
-                        key: 'phonemodel'
-                    },
-                    {
-                        title: "phonesdkversion",
-                        key: 'phonesdkversion'
-                    },
-                    {
-                        title: "phonesystem",
-                        key: 'phonesystem'
-                    },
-                    {
-                        title: "wxversion",
-                        key: 'wxversion'
-                    },
-                    {
-                        title: "ip",
-                        key: 'ip'
-                    },
-                ],
-                tableData:[]
+            el: "#container",
+            data: {
+                loading: false,
+                username: "",
+                tableHeight: 100,
+                columns: [{
+                    title: "logintimeStr",
+                    key: 'logintimeStr',
+                    width: 160
+                }, {
+                    title: "userid",
+                    key: 'userid',
+                    width: 120
+                }, {
+                    title: "fromstr",
+                    key: 'fromstr',
+                    width: 80
+                }, {
+                    title: "logintype",
+                    key: 'logintype',
+                    width: 100
+                }, {
+                    title: "pcbrowser",
+                    key: 'pcbrowser'
+                }, {
+                    title: "phonebrand",
+                    key: 'phonebrand'
+                }, {
+                    title: "phonemodel",
+                    key: 'phonemodel'
+                }, {
+                    title: "phonesdkversion",
+                    key: 'phonesdkversion'
+                }, {
+                    title: "phonesystem",
+                    key: 'phonesystem'
+                }, {
+                    title: "wxversion",
+                    key: 'wxversion'
+                }, {
+                    title: "ip",
+                    key: 'ip'
+                }, ],
+                tableData: []
             },
             methods: {
-                getLoginRecords:function(){
+                getLoginRecords: function() {
 
                 },
-                calcTableHeight: function () {
+                calcTableHeight: function() {
                     var wHeight = window.innerHeight;
                     this.tableHeight = wHeight - 72;
                 },
-                onHandleClick:function(){
-                    var url = myUrls.reportLoginLog() , me = this;
+                onHandleClick: function() {
+                    var url = myUrls.reportLoginLog(),
+                        me = this;
                     me.loading = true;
                     $.ajax({
-                        url:url,
-                        data:JSON.stringify({userid:this.username}),
-                        method:"post",
-                        success:function(resp){                           
-                            if( resp.status == 0 && resp.logs){
-                                resp.logs.forEach(function (item) { 
-                                    item.logintimeStr = DateFormat.longToDateTimeStr(item.logintime, 0);
+                        url: url,
+                        data: JSON.stringify({
+                            userid: this.username
+                        }),
+                        method: "post",
+                        success: function(resp) {
+                            if (resp.status == 0 && resp.logs) {
+                                resp.logs.forEach(function(item) {
+                                    item.logintimeStr = DateFormat.longToDateTimeStr(item.logintime, timeDifference);
                                 });
                                 me.tableData = resp.logs;
-                            }else{
+                            } else {
                                 me.tableData = [];
                             }
                         },
-                        complete:function(){
+                        complete: function() {
                             me.loading = false;
                         }
                     })
                 }
             },
-            mounted () {
+            mounted() {
                 var me = this;
                 this.calcTableHeight();
-                window.onresize = function () { 
+                window.onresize = function() {
                     me.calcTableHeight();
                 }
             },
         })
     </script>
- 
+
 </body>
+
 </html>

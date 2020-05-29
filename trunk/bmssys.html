@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,63 +9,83 @@
     <link rel="shortcut icon" href="./favicon.ico" />
     <link rel="stylesheet" href="dist/styles/iview.css">
     <style>
-        html,body,#app{width:100%;height:100%;};
+        html,
+        body,
+        #app {
+            width: 100%;
+            height: 100%;
+        }
+        
+        ;
         [v-cloak] {
             display: none;
         }
-        .width-100{width:100%;}
-        table.default-table{
+        
+        .width-100 {
+            width: 100%;
+        }
+        
+        table.default-table {
             /* -moz-border-radius: 5px;
             -webkit-border-radius:5px;
             border-radius:5px; */
             width: 100%;
-            border:solid #333; 
-            border-width:1px 0px 0px 1px;
+            border: solid #333;
+            border-width: 1px 0px 0px 1px;
             font-size: #333;
             border-collapse: collapse;
             border-spacing: 0;
         }
-
-        table.default-table tbody tr{
+        
+        table.default-table tbody tr {
             height: 20px;
             line-height: 20px;
         }
-        table.default-table tbody tr.odd{
+        
+        table.default-table tbody tr.odd {
             background-color: #fff;
         }
-        table.default-table tbody tr.even{
+        
+        table.default-table tbody tr.even {
             background-color: #F5F5F5;
         }
-        table.default-table tbody tr:hover{
+        
+        table.default-table tbody tr:hover {
             background-color: #eee;
         }
-        table.default-table tbody tr th,table.default-table tbody tr td,table.default-table thead  th{
-            padding:3px 5px;
+        
+        table.default-table tbody tr th,
+        table.default-table tbody tr td,
+        table.default-table thead th {
+            padding: 3px 5px;
             text-align: left;
             /* border: 1px solid #ddd; */
-            border:solid #333; 
-            border-width:0px 1px 1px 0px; 
+            border: solid #333;
+            border-width: 0px 1px 1px 0px;
             text-align: center;
             width: 33.333%;
         }
-        table.default-table tbody tr th{
+        
+        table.default-table tbody tr th {
             font-weight: bold;
             text-align: center;
         }
-
-        table.default-table tbody tr td.tac{
+        
+        table.default-table tbody tr td.tac {
             text-align: center;
         }
-        table.default-table tbody tr td a:hover{
-            color:#0080c0;
-        }        
+        
+        table.default-table tbody tr td a:hover {
+            color: #0080c0;
+        }
     </style>
 </head>
+
 <body>
     <div id='app'>
         <Layout style="height:100%;">
             <i-Header>
-                <Row>   
+                <Row>
                     <i-Col span="15">
                         <h2 style="color:#fff;">电池参数 &nbsp;&nbsp;更新时间:{{updatetimeStr}}</h2>
                     </i-Col>
@@ -75,7 +96,7 @@
                             <i-button type="error">StopRead</i-button>
                         </Button-Group>
                     </i-Col>
-                </Row>   
+                </Row>
             </i-Header>
             <i-Content>
                 <Row>
@@ -98,22 +119,22 @@
                         </Card>
                     </i-Col>
                     <i-Col span="12" style="padding:10px;">
-                            <Card>
-                                <table class="default-table" v-cloak>
-                                    <thead>
-                                        <th>Name</th>
-                                        <th>Value</th>
-                                        <th>Unit</th>
-                                    </thead>
-                                    <tbody>
-                                        <tr v-for="item in batteryInfo2" :key="item.name">
-                                            <td>{{item.name}}</td>
-                                            <td>{{item.value}}</td>
-                                            <td>{{item.unit}}</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </Card>                   
+                        <Card>
+                            <table class="default-table" v-cloak>
+                                <thead>
+                                    <th>Name</th>
+                                    <th>Value</th>
+                                    <th>Unit</th>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="item in batteryInfo2" :key="item.name">
+                                        <td>{{item.name}}</td>
+                                        <td>{{item.value}}</td>
+                                        <td>{{item.unit}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </Card>
                     </i-Col>
                 </Row>
             </i-Content>
@@ -135,53 +156,173 @@
     <script src="./js/config.js"></script>
     <script src="./js/util.js"></script>
     <script>
+        var timeDifference = DateFormat.getOffset();
         new Vue({
-            el:'#app',
-            data:{
-                updatetimeStr:'',
-                batteryInfo1:[
-                    {name:'vcell1',value:'',unit:'MV'},
-                    {name:'vcell2',value:'',unit:'MV'},
-                    {name:'vcell3',value:'',unit:'MV'},
-                    {name:'vcell4',value:'',unit:'MV'},
-                    {name:'vcell5',value:'',unit:'MV'},
-                    {name:'vcell6',value:'',unit:'MV'},
-                    {name:'vcell7',value:'',unit:'MV'},
-                    {name:'vcell8',value:'',unit:'MV'},
-                    {name:'vcell9',value:'',unit:'MV'},
-                    {name:'vcell10',value:'',unit:'MV'},
-                    {name:'vcell11',value:'',unit:'MV'},
-                    {name:'vcell12',value:'',unit:'MV'},
-                    {name:'vcell13',value:'',unit:'MV'},
-                    {name:'vcell14',value:'',unit:'MV'},
-                    {name:'vcell15',value:'',unit:'MV'},
-                    {name:'vcell16',value:'',unit:'MV'},
-                    {name:'vcell17',value:'',unit:'MV'},
-                    {name:'vcell18',value:'',unit:'MV'},
-                    {name:'vcell19',value:'',unit:'MV'},
-                    {name:'vcell20',value:'',unit:'MV'},
-                    {name:'vcell21',value:'',unit:'MV'},
-                    {name:'vcell22',value:'',unit:'MV'},
-                    {name:'vcell23',value:'',unit:'MV'},
-                    {name:'vcell24',value:'',unit:'MV'},
-                ],
-                batteryInfo2:[
-                    {name:'voltagePack',value:'',unit:'MV'},
-                    {name:'currentMa',value:'',unit:'MA'},
-                    {name:'temperature1',value:'',unit:'℃'},
-                    {name:'relativeStateOfCharge',value:'',unit:'%'},
-                    {name:'remainingCapacityMah',value:'',unit:'Mah'},
-                    {name:'fullChargeMah',value:'',unit:'Mv'},
-                    {name:'designCapacityMah',value:'',unit:'Mah'},
-                    {name:'designVoltageMv',value:'',unit:'Mv'},
-                    {name:'fullChargeVoltageMv',value:'',unit:'Mv'},
-                    {name:'chargingCurrentMa',value:'',unit:'Ma'},
-                    {name:'cycleCount',value:'',unit:'DEC'},
-                    {name:'serialNumber',value:'',unit:'DEC'},
-                    {name:'manufactureDate',value:'',unit:'Ymd'},
-                    {name:'manufacturerName',value:'',unit:''},
-                    {name:'deviceName',value:'',unit:''},
-                    {name:'deviceChemistry',value:'',unit:''},
+            el: '#app',
+            data: {
+                updatetimeStr: '',
+                batteryInfo1: [{
+                    name: 'vcell1',
+                    value: '',
+                    unit: 'MV'
+                }, {
+                    name: 'vcell2',
+                    value: '',
+                    unit: 'MV'
+                }, {
+                    name: 'vcell3',
+                    value: '',
+                    unit: 'MV'
+                }, {
+                    name: 'vcell4',
+                    value: '',
+                    unit: 'MV'
+                }, {
+                    name: 'vcell5',
+                    value: '',
+                    unit: 'MV'
+                }, {
+                    name: 'vcell6',
+                    value: '',
+                    unit: 'MV'
+                }, {
+                    name: 'vcell7',
+                    value: '',
+                    unit: 'MV'
+                }, {
+                    name: 'vcell8',
+                    value: '',
+                    unit: 'MV'
+                }, {
+                    name: 'vcell9',
+                    value: '',
+                    unit: 'MV'
+                }, {
+                    name: 'vcell10',
+                    value: '',
+                    unit: 'MV'
+                }, {
+                    name: 'vcell11',
+                    value: '',
+                    unit: 'MV'
+                }, {
+                    name: 'vcell12',
+                    value: '',
+                    unit: 'MV'
+                }, {
+                    name: 'vcell13',
+                    value: '',
+                    unit: 'MV'
+                }, {
+                    name: 'vcell14',
+                    value: '',
+                    unit: 'MV'
+                }, {
+                    name: 'vcell15',
+                    value: '',
+                    unit: 'MV'
+                }, {
+                    name: 'vcell16',
+                    value: '',
+                    unit: 'MV'
+                }, {
+                    name: 'vcell17',
+                    value: '',
+                    unit: 'MV'
+                }, {
+                    name: 'vcell18',
+                    value: '',
+                    unit: 'MV'
+                }, {
+                    name: 'vcell19',
+                    value: '',
+                    unit: 'MV'
+                }, {
+                    name: 'vcell20',
+                    value: '',
+                    unit: 'MV'
+                }, {
+                    name: 'vcell21',
+                    value: '',
+                    unit: 'MV'
+                }, {
+                    name: 'vcell22',
+                    value: '',
+                    unit: 'MV'
+                }, {
+                    name: 'vcell23',
+                    value: '',
+                    unit: 'MV'
+                }, {
+                    name: 'vcell24',
+                    value: '',
+                    unit: 'MV'
+                }, ],
+                batteryInfo2: [{
+                        name: 'voltagePack',
+                        value: '',
+                        unit: 'MV'
+                    }, {
+                        name: 'currentMa',
+                        value: '',
+                        unit: 'MA'
+                    }, {
+                        name: 'temperature1',
+                        value: '',
+                        unit: '℃'
+                    }, {
+                        name: 'relativeStateOfCharge',
+                        value: '',
+                        unit: '%'
+                    }, {
+                        name: 'remainingCapacityMah',
+                        value: '',
+                        unit: 'Mah'
+                    }, {
+                        name: 'fullChargeMah',
+                        value: '',
+                        unit: 'Mv'
+                    }, {
+                        name: 'designCapacityMah',
+                        value: '',
+                        unit: 'Mah'
+                    }, {
+                        name: 'designVoltageMv',
+                        value: '',
+                        unit: 'Mv'
+                    }, {
+                        name: 'fullChargeVoltageMv',
+                        value: '',
+                        unit: 'Mv'
+                    }, {
+                        name: 'chargingCurrentMa',
+                        value: '',
+                        unit: 'Ma'
+                    }, {
+                        name: 'cycleCount',
+                        value: '',
+                        unit: 'DEC'
+                    }, {
+                        name: 'serialNumber',
+                        value: '',
+                        unit: 'DEC'
+                    }, {
+                        name: 'manufactureDate',
+                        value: '',
+                        unit: 'Ymd'
+                    }, {
+                        name: 'manufacturerName',
+                        value: '',
+                        unit: ''
+                    }, {
+                        name: 'deviceName',
+                        value: '',
+                        unit: ''
+                    }, {
+                        name: 'deviceChemistry',
+                        value: '',
+                        unit: ''
+                    },
                     // {name:'chargestatus',value:'',unit:'Mah'},
                     // {name:'dischargestatus',value:'',unit:'Mah'},
                     // {name:'chargewarning',value:'',unit:'Mah'},
@@ -192,49 +333,53 @@
                 ],
             },
             methods: {
-                readInfo:function(){
+                readInfo: function() {
                     this.queryBmsInfo();
                 },
-                queryBmsInfo:function(){
-                    var url = myUrls.queryBmsInfo() , me = this;
-                    utils.sendAjax(url,{deviceid:this.deviceid},function (resp) { 
+                queryBmsInfo: function() {
+                    var url = myUrls.queryBmsInfo(),
+                        me = this;
+                    utils.sendAjax(url, {
+                        deviceid: this.deviceid
+                    }, function(resp) {
                         console.log('resp', resp);
-                        if(resp.status === 0){
-                            if(resp.bms){
+                        if (resp.status === 0) {
+                            if (resp.bms) {
                                 resp.bms.manufacturedate = resp.bms.year + '-' + resp.bms.month + '-' + resp.bms.day;
                                 me.setValue(resp.bms);
-                            }else{
+                            } else {
 
                             }
                         };
                     })
                 },
-                setValue:function(bms){
+                setValue: function(bms) {
                     var batteryInfo1 = this.batteryInfo1;
                     var batteryInfo2 = this.batteryInfo2;
                     var newBatteryInfo1 = [];
                     var newBatteryInfo2 = [];
-                    
-                    batteryInfo1.forEach(function (item,index) {
+
+                    batteryInfo1.forEach(function(item, index) {
                         var key = item.name.toLowerCase();
                         item.value = bms[key];
                         newBatteryInfo1.push(item);
                     })
-                    batteryInfo2.forEach(function (item,index) {
+                    batteryInfo2.forEach(function(item, index) {
                         var key = item.name.toLowerCase();
                         item.value = bms[key];
                         newBatteryInfo2.push(item);
                     })
                     this.batteryInfo1 = newBatteryInfo1;
                     this.batteryInfo2 = newBatteryInfo2;
-                    this.updatetimeStr = DateFormat.longToDateTimeStr(bms.updatetime, 0);
+                    this.updatetimeStr = DateFormat.longToDateTimeStr(bms.updatetime, timeDifference);
                 }
             },
-            mounted:function(){
+            mounted: function() {
                 this.deviceid = utils.getParameterByName('deviceid');
                 this.queryBmsInfo();
             }
         })
     </script>
 </body>
+
 </html>

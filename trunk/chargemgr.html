@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,24 +9,48 @@
     <link rel="shortcut icon" href="./favicon.ico" />
     <link rel="stylesheet" href="dist/styles/iview.css">
     <style>
-        html,body,#app{width:100%;height:100%;position: relative;};
-        #app{
+        html,
+        body,
+        #app {
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+        
+        ;
+        #app {
             display: none;
         }
+        
         [v-cloak] {
             display: none;
         }
-        .header{
-            position: absolute;left: 0;right: 0;top: 0;height: 60px;
+        
+        .header {
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 0;
+            height: 60px;
             padding: 10px;
             line-height: 40px;
         }
-        .header > div{float: left;margin:0 10px 0 10px;}
-        .table-body{
-            position: absolute;left: 10px;right: 10px;top: 60px;bottom: 10px;
+        
+        .header>div {
+            float: left;
+            margin: 0 10px 0 10px;
+        }
+        
+        .table-body {
+            position: absolute;
+            left: 10px;
+            right: 10px;
+            top: 60px;
+            bottom: 10px;
         }
     </style>
 </head>
+
 <body>
     <div id='app'>
         <div class="header" v-cloak>
@@ -37,7 +62,7 @@
                     <i-option value="1">用户账号</i-option>
                     <i-option value="2">设备序号</i-option>
                 </i-select>
-            </div> 
+            </div>
             <div class="label">
                 充值状态:
             </div>
@@ -58,7 +83,7 @@
                 <Checkbox v-model="isIncludeSub">是否包含下级</Checkbox>
             </div>
             <div>
-                <i-button  :loading="loading" @click="handleQuery">查询</i-button>
+                <i-button :loading="loading" @click="handleQuery">查询</i-button>
             </div>
             <div>
                 <i-button type="primary" @click="modal=true" :disabled="isDisabled">充值</i-button>
@@ -74,7 +99,7 @@
             <p slot="header" style="color:#2D8CF0;text-align:center">
                 操作
             </p>
-            <div> 
+            <div>
                 <Row style="margin: 10px 0">
                     <i-col span="6" style="height: 100%;line-height:32px;text-align:center">操作类型:</i-col>
                     <i-col span="12" style="height: 100%;line-height:32px;">
@@ -116,7 +141,7 @@
                 </Row>
             </div>
             <div slot="footer" style="padding:6.5px 15px;">
-              <i-button style="width:100%;" type="primary" @click="handlerChargeDevices">提交</i-button>
+                <i-button style="width:100%;" type="primary" @click="handlerChargeDevices">提交</i-button>
             </div>
         </Modal>
     </div>
@@ -133,13 +158,17 @@
         var filterDeviceTypes = [];
         var deviceTypeMap = {};
         var vRoot = new Vue();
-        function getDeviceTypes(){
-            var url =  myUrls.queryDeviceTypeByUser();
-            utils.sendAjax(url,{},function(data){
-                if(data.status == 0 ){
-                    data.devicetypes.forEach(function(item,index){
+
+        function getDeviceTypes() {
+            var url = myUrls.queryDeviceTypeByUser();
+            utils.sendAjax(url, {}, function(data) {
+                if (data.status == 0) {
+                    data.devicetypes.forEach(function(item, index) {
                         deviceTypeMap[item.devicetypeid] = item.typename;
-                        filterDeviceTypes.push({label:item.typename,value:item.devicetypeid});
+                        filterDeviceTypes.push({
+                            label: item.typename,
+                            value: item.devicetypeid
+                        });
                     });
                 }
                 initVue();
@@ -148,119 +177,103 @@
 
         getDeviceTypes();
 
-        function initVue(){
-            var yearTime = 60*60*24*365*1000;
+        function initVue() {
+            var yearTime = 60 * 60 * 24 * 365 * 1000;
             vRoot = new Vue({
-                el:"#app",
-                data:{
-                    years:"1年",
-                    chargeStatus:'0',
-                    queryType:'1',
-                    overdueDate:DateFormat.addYear(new Date(),1),
+                el: "#app",
+                data: {
+                    years: "1年",
+                    chargeStatus: '0',
+                    queryType: '1',
+                    overdueDate: DateFormat.addYear(new Date(), 1),
                     isLifelong: true,
-                    selectionArray:[],
-                    activeType:"1",
-                    modal : false,
-                    loading:false,
-                    userName:userName,
-                    searchValue:userName,
-                    isIncludeSub : false,
-                    tHeight:100,
-                    columns: [
-                        {
-                            type: 'selection',
-                            width: 60,
-                            align: 'center'
-                        },
-                        {
-                            type: 'index',
-                            width: 60,
-                            align: 'center'
-                        },
-                        {
-                            title: '管理账号',
-                            key: 'username'
-                        },
-                        {
-                            title: '设备序号',
-                            key: 'deviceid'
-                        },
-                        {
-                            title: '设备名称',
-                            key: 'devicename'
-                        },
-                        {
-                            title: '设备型号',
-                            key: 'devicetype',
-                            filters:filterDeviceTypes,
-                            filterMultiple: false,
-                            filterMethod (value, row) {
-                                for(var i = 0 ; i < filterDeviceTypes.length; i++){
-                                    var item = filterDeviceTypes[i];
-                                    var label = item.label;
-                                    if(row.devicetypeid == value){
-                                        return true;
-                                    }
+                    selectionArray: [],
+                    activeType: "1",
+                    modal: false,
+                    loading: false,
+                    userName: userName,
+                    searchValue: userName,
+                    isIncludeSub: false,
+                    tHeight: 100,
+                    columns: [{
+                        type: 'selection',
+                        width: 60,
+                        align: 'center'
+                    }, {
+                        type: 'index',
+                        width: 60,
+                        align: 'center'
+                    }, {
+                        title: '管理账号',
+                        key: 'username'
+                    }, {
+                        title: '设备序号',
+                        key: 'deviceid'
+                    }, {
+                        title: '设备名称',
+                        key: 'devicename'
+                    }, {
+                        title: '设备型号',
+                        key: 'devicetype',
+                        filters: filterDeviceTypes,
+                        filterMultiple: false,
+                        filterMethod(value, row) {
+                            for (var i = 0; i < filterDeviceTypes.length; i++) {
+                                var item = filterDeviceTypes[i];
+                                var label = item.label;
+                                if (row.devicetypeid == value) {
+                                    return true;
                                 }
                             }
-                        },
-                        {
-                            width:110,
-                            title: '充值状态',
-                            render:function(h,params) {
-                                var chargestatus = params.row.chargestatus;
-                                var status = chargestatus == 1 ? "已充值" : "未充值" ;
-                                return h('span', {}, status );
-                            },
-                            filters: [
-                                {
-                                    label: '已充值',
-                                    value: 1
-                                },
-                                {
-                                    label: '未充值',
-                                    value: 0
-                                }
-                            ],
-                            filterMultiple: false,
-                            filterMethod (value, row) {
-                                if (value == 1) {
-                                    return row.chargestatus == 1;
-                                } else if (value == 0) {
-                                    return row.chargestatus == 0;
-                                }
-                            }
-                        },
-                        {
-                            width:80,
-                            title: '终身',
-                            key: 'lifelong',
-                            filters: [
-                                {
-                                    label: '是',
-                                    value: 1
-                                },
-                                {
-                                    label: '否',
-                                    value: 0
-                                }
-                            ],
-                            filterMultiple: false,
-                            filterMethod (value, row) {
-                                if (value === 1) {
-                                    return row.lifelong == "是";
-                                } else if (value === 0) {
-                                    return row.lifelong == "否";
-                                }
-                            }
-                        },
-                        {
-                            title: '过期时间',
-                            width:120,
-                            key: 'overduedate'
                         }
-                    ],
-                    tableData:[
+                    }, {
+                        width: 110,
+                        title: '充值状态',
+                        render: function(h, params) {
+                            var chargestatus = params.row.chargestatus;
+                            var status = chargestatus == 1 ? "已充值" : "未充值";
+                            return h('span', {}, status);
+                        },
+                        filters: [{
+                            label: '已充值',
+                            value: 1
+                        }, {
+                            label: '未充值',
+                            value: 0
+                        }],
+                        filterMultiple: false,
+                        filterMethod(value, row) {
+                            if (value == 1) {
+                                return row.chargestatus == 1;
+                            } else if (value == 0) {
+                                return row.chargestatus == 0;
+                            }
+                        }
+                    }, {
+                        width: 80,
+                        title: '终身',
+                        key: 'lifelong',
+                        filters: [{
+                            label: '是',
+                            value: 1
+                        }, {
+                            label: '否',
+                            value: 0
+                        }],
+                        filterMultiple: false,
+                        filterMethod(value, row) {
+                            if (value === 1) {
+                                return row.lifelong == "是";
+                            } else if (value === 0) {
+                                return row.lifelong == "否";
+                            }
+                        }
+                    }, {
+                        title: '过期时间',
+                        width: 120,
+                        key: 'overduedate'
+                    }],
+                    tableData: [
                         // {
                         //     username:"abc",
                         //     deviceid:"13642818912",
@@ -273,125 +286,132 @@
                         // },
                     ],
                 },
-                computed:{
-                    isDisabled:function(){
+                computed: {
+                    isDisabled: function() {
                         return this.userName !== 'admin';
                     }
                 },
                 watch: {
-                    years:function(newVal){
-                       this.overdueDate = DateFormat.addYear(new Date(),parseFloat(newVal)) ;
+                    years: function(newVal) {
+                        this.overdueDate = DateFormat.addYear(new Date(), parseFloat(newVal));
                     }
                 },
                 methods: {
-                    manyDelete:function(){
-                        if(this.selectionArray.length == 0){
+                    manyDelete: function() {
+                        if (this.selectionArray.length == 0) {
                             this.$Message.error("请选择要删除的设备");
-                        }else{
-                            if(confirm('确定删除吗?')){
-                                var url = myUrls.deleteDevices() , me = this;
-                                var deviceids = this.selectionArray.map(function(item){ return item.deviceid});
-                                    if(deviceids.length >= 100){
-                                        this.$Message.error("一次性删除不能超过100个设备");
-                                        return;
-                                    }
-                                utils.sendAjax(url,{deviceids:deviceids},function(resp){
-                                    if(resp.status == 0){
+                        } else {
+                            if (confirm('确定删除吗?')) {
+                                var url = myUrls.deleteDevices(),
+                                    me = this;
+                                var deviceids = this.selectionArray.map(function(item) {
+                                    return item.deviceid
+                                });
+                                if (deviceids.length >= 100) {
+                                    this.$Message.error("一次性删除不能超过100个设备");
+                                    return;
+                                }
+                                utils.sendAjax(url, {
+                                    deviceids: deviceids
+                                }, function(resp) {
+                                    if (resp.status == 0) {
                                         me.handleQuery();
                                         me.$Message.success("删除成功");
-                                    }else{
+                                    } else {
                                         me.$Message.error("删除失败");
                                     }
                                 });
                             }
                         }
                     },
-                    handlerChargeDevices:function(){
-                        if(this.selectionArray.length == 0){
+                    handlerChargeDevices: function() {
+                        if (this.selectionArray.length == 0) {
                             this.$Message.error("请选择要充值的设备");
                             return;
                         };
-                        var url = myUrls.chargeDevices() , me = this;
+                        var url = myUrls.chargeDevices(),
+                            me = this;
                         var data = {
-                            chargestatus : Number(this.activeType),
-                            isfree:this.isLifelong ? 1 : 0,
-                            deviceids:[],
-                            overduetime:DateFormat.format(this.overdueDate,'yyyy-MM-dd HH:mm:ss')
+                            chargestatus: Number(this.activeType),
+                            isfree: this.isLifelong ? 1 : 0,
+                            deviceids: [],
+                            overduetime: DateFormat.format(this.overdueDate, 'yyyy-MM-dd HH:mm:ss')
                         }
-                        this.selectionArray.forEach(function (item) {
+                        this.selectionArray.forEach(function(item) {
                             data.deviceids.push(item.deviceid);
                         });
 
-                        utils.sendAjax(url,data,function (respData) { 
-                            if(respData.status == 0){
+                        utils.sendAjax(url, data, function(respData) {
+                            if (respData.status == 0) {
                                 me.modal = false;
                                 me.$Message.success("充值成功:" + respData.successcount + "个");
-                            }else{
+                            } else {
                                 me.$Message.error("充值失败");
                             }
                         });
                     },
-                    handleQuery:function(){
-                        if(this.searchValue.length == 0){
+                    handleQuery: function() {
+                        if (this.searchValue.length == 0) {
                             this.$Message.error("填写搜索内容");
                             return;
                         };
-                        this.selectionArray  = [];
+                        this.selectionArray = [];
                         var data = {
-                            querytype:Number(this.queryType), //1是 账号 2是设备
-                            querykey:this.searchValue,
-                            isquerysubaccount:this.isIncludeSub,
-                            chargestatus:Number(this.chargeStatus)
+                            querytype: Number(this.queryType), //1是 账号 2是设备
+                            querykey: this.searchValue,
+                            isquerysubaccount: this.isIncludeSub,
+                            chargestatus: Number(this.chargeStatus)
                         };
                         this.loading = true;
-                        var url = myUrls.queryChargeDeviceList() , me = this;
-                        utils.sendAjax(url,data,function (respData) { 
+                        var url = myUrls.queryChargeDeviceList(),
+                            me = this;
+                        utils.sendAjax(url, data, function(respData) {
                             me.loading = false;
-                            if(respData.status == 0){
-                               if(respData.devices.length){
+                            if (respData.status == 0) {
+                                if (respData.devices.length) {
                                     var resultArray = [];
-                                    respData.devices.forEach(function (item,index) { 
+                                    respData.devices.forEach(function(item, index) {
                                         resultArray.push({
-                                            username:item.creater,
-                                            deviceid:item.deviceid,
-                                            devicename:item.devicename,
-                                            devicetype:deviceTypeMap[item.devicetype],
-                                            devicetypeid:item.devicetype,
-                                            lifelong:item.isfree == 1 ? '是' : '否',
-                                            chargestatus:item.chargestatus,
-                                            overduedate:DateFormat.longToDateStr(item.overduetime,0),
-                                            overduetime:item.overduetime
+                                            username: item.creater,
+                                            deviceid: item.deviceid,
+                                            devicename: item.devicename,
+                                            devicetype: deviceTypeMap[item.devicetype],
+                                            devicetypeid: item.devicetype,
+                                            lifelong: item.isfree == 1 ? '是' : '否',
+                                            chargestatus: item.chargestatus,
+                                            overduedate: DateFormat.longToDateStr(item.overduetime, timeDifference),
+                                            overduetime: item.overduetime
                                         });
                                     });
                                     me.tableData = resultArray;
-                               }else{
+                                } else {
                                     me.$Message.error("没有搜索到内容");
-                               }
-                            }else{
+                                }
+                            } else {
                                 me.$Message.error("没有该用户权限");
                             }
                         });
-    
+
                     },
-                    onSelection:function(result){
+                    onSelection: function(result) {
                         this.selectionArray = result;
                     },
-                    getTableHeight:function(){
+                    getTableHeight: function() {
                         var winHeight = document.documentElement.clientHeight || document.body.clientHeight;
                         return winHeight - 70;
                     },
                 },
-                mounted () {
+                mounted() {
                     var me = this;
                     this.tHeight = this.getTableHeight();
-                    window.onresize  = function(){
+                    window.onresize = function() {
                         me.tHeight = me.getTableHeight();
                     }
                     document.getElementById("app").style.display = "block";
                 },
             })
         }
-
     </script>
 </body>
+
 </html>

@@ -320,7 +320,7 @@
                     utils.sendAjax(url, data, function(resp) {
                         if (resp.status == 0) {
                             var newData = Object.assign(editObject, data);
-                            newData.overduetimestr = data.registerdate ? DateFormat.longToDateTimeStr(data.registerdate, 0) : 0;
+                            newData.overduetimestr = data.registerdate ? DateFormat.longToDateTimeStr(data.registerdate, timeDifference) : 0;
                             me.tableData[me.editDeviceIndex] = newData;
                             utils.changeSingleItemData(me.recordsList, newData, 'companyid');
                             me.$Message.success(isZh ? "修改成功" : "Editorial success");
@@ -354,7 +354,7 @@
                     this.companyname = editObject.companyname;
                     this.orgcode = editObject.orgcode;
                     this.companyphone = editObject.companyphone;
-                    this.registerdate = editObject.registerdate ? DateFormat.longToDateStr(editObject.registerdate, 0) : null;
+                    this.registerdate = editObject.registerdate ? DateFormat.longToDateStr(editObject.registerdate, timeDifference) : null;
                     this.jurdcperson = editObject.jurdcperson;
                     this.alldayphone = editObject.alldayphone;
                     this.empcount = editObject.empcount;

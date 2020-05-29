@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,34 +9,38 @@
     <title>消息</title>
     <link rel="stylesheet" href="dist/styles/iview.css">
     <style>
-        html,body,#container{
+        html,
+        body,
+        #container {
             width: 100%;
-            height: 100%;  
+            height: 100%;
             position: relative;
         }
-        .content{
+        
+        .content {
             box-sizing: border-box;
             padding: 10px;
         }
     </style>
 </head>
+
 <body>
     <div id="container">
         <Layout style="height:100%;">
             <i-Header>
-                <Row style="height: 100%;">   
+                <Row style="height: 100%;">
                     <i-col :span="12" style="color:#ffffff;">
                         <h1>消息列表</h1>
                     </i-col>
                     <i-col :span="12" style="text-align:right;">
                         <i-button @click="jumpSendMsg" type="primary">发送消息</i-button>
                     </i-col>
-                </Row> 
+                </Row>
             </i-Header>
             <i-Content class="content">
                 <i-table border :columns="columns" :data="data"></i-table>
             </i-Content>
-        </Layout>      
+        </Layout>
     </div>
     <script src="js/polyfill.min.js"></script>
     <script src="dist/vue.min.js"></script>
@@ -47,129 +52,135 @@
     <script src="js/util.js"></script>
     <script>
         var token = utils.getParameterByName("token");
+        var timeDifference = DateFormat.getOffset();
         var userName = Cookies.get('name');
         var vRoot = new Vue({
-                    el:'#container',
-                    data:{
-                        columns:[
-                            {
-                                title: '用户名',
-                                key: 'createraccount',
-                                width:200,
-                            },
-                            {
-                                title: '发送者名称',
-                                key: 'creatername',
-                                width:200,  
-                            },
-                            {
-                                title: '发送时间',
-                                key: 'createtimeStr',
-                                width:160, 
-                            },
-                            {
-                                title: '内容',
-                                key: 'content'
-                            },
-                            {
-                                title: '操作',
-                                type: 'action',
-                                width:170,
-                                render:function(h,params){
-                                    var row = params.row ;
-                                    var disabled = !(row.createraccount == userName);
-                                    return h('div',[
-                                        h('Poptip', {
-                                                props: {
-                                                    confirm: true,
-                                                    title: '确定删除吗?'
-                                                },
-                                                style: {
-                                                    marginRight: '10px'
-                                                },
-                                                on: {
-                                                    'on-ok': function () {
-                                                        vRoot.deleteSystemMsg(row.systemmsgid,params.index);
-                                                    }
-                                                }
-                                            },[
-                                            h('Button', {
-                                                    props: {
-                                                    type: 'error',
-                                                    size: 'small'
-                                                    }
-                                                },"删除") 
-                                            ]) ,
-                                        h('Poptip', {
-                                                props: {
-                                                    confirm: true,
-                                                    title: '确定撤回吗?'
-                                                },
-                                                style: {
-                                               
-                                                },
-                                                on: {
-                                                    'on-ok': function () {
-                                                        vRoot.recallSystemMsg(row.systemmsgid,row.systemmsguuid,params.index);
-                                                    }
-                                                }
-                                            },[
-                                            h('Button', {
-                                                    props: {
-                                                        type: 'error',
-                                                        size: 'small',
-                                                        disabled:disabled
-                                                    }
-                                                },"撤回") 
-                                            ]) ,
-                                    ])
+            el: '#container',
+            data: {
+                columns: [{
+                    title: '用户名',
+                    key: 'createraccount',
+                    width: 200,
+                }, {
+                    title: '发送者名称',
+                    key: 'creatername',
+                    width: 200,
+                }, {
+                    title: '发送时间',
+                    key: 'createtimeStr',
+                    width: 160,
+                }, {
+                    title: '内容',
+                    key: 'content'
+                }, {
+                    title: '操作',
+                    type: 'action',
+                    width: 170,
+                    render: function(h, params) {
+                        var row = params.row;
+                        var disabled = !(row.createraccount == userName);
+                        return h('div', [
+                            h('Poptip', {
+                                props: {
+                                    confirm: true,
+                                    title: '确定删除吗?'
+                                },
+                                style: {
+                                    marginRight: '10px'
+                                },
+                                on: {
+                                    'on-ok': function() {
+                                        vRoot.deleteSystemMsg(row.systemmsgid, params.index);
+                                    }
                                 }
-                            },
-                        ],
-                        data:[]
-                    },
-                    methods: {
-                        getSystemMsg:function(){
-                            var url = myUrls.querySystemMsg() , me = this;
-                            utils.sendAjax( url , { username:userName } , function (resp) { 
-                                if(resp.status === 0){
-                                    resp.records.forEach(function (record) { 
-                                        record.createtimeStr = DateFormat.longToDateTimeStr(record.createtime, 0)
-                                    })
-                                    me.data = resp.records;
-                                };
-                            });
-                        },
-                        jumpSendMsg:function(){
-                            open('sendmsg.html?token=' + token);
-                        },
-                        deleteSystemMsg:function(systemmsgid,index){
-                            var url = myUrls.deleteSystemMsg() , me = this;
-                            utils.sendAjax(url,{systemmsgid:systemmsgid},function (resp) {
-                                if(resp.status == 0){
-                                    me.data.splice(index,1);
-                                    me.$Message.success("删除成功");
-                                }else{
-                                    me.$Message.error("删除失败");
+                            }, [
+                                h('Button', {
+                                    props: {
+                                        type: 'error',
+                                        size: 'small'
+                                    }
+                                }, "删除")
+                            ]),
+                            h('Poptip', {
+                                props: {
+                                    confirm: true,
+                                    title: '确定撤回吗?'
+                                },
+                                style: {
+
+                                },
+                                on: {
+                                    'on-ok': function() {
+                                        vRoot.recallSystemMsg(row.systemmsgid, row.systemmsguuid, params.index);
+                                    }
                                 }
-                            });
-                        },
-                        recallSystemMsg:function(systemmsgid,systemmsguuid,index){
-                            var url = myUrls.recallSystemMsg() , me = this;
-                            utils.sendAjax(url,{systemmsgid:systemmsgid,systemmsguuid:systemmsguuid},function (resp) {
-                                if(resp.status == 0){
-                                    me.data.splice(index,1);
-                                    me.$Message.success("撤回成功");
-                                }else{
-                                    me.$Message.error("撤回失败");
-                                }
+                            }, [
+                                h('Button', {
+                                    props: {
+                                        type: 'error',
+                                        size: 'small',
+                                        disabled: disabled
+                                    }
+                                }, "撤回")
+                            ]),
+                        ])
+                    }
+                }, ],
+                data: []
+            },
+            methods: {
+                getSystemMsg: function() {
+                    var url = myUrls.querySystemMsg(),
+                        me = this;
+                    utils.sendAjax(url, {
+                        username: userName
+                    }, function(resp) {
+                        if (resp.status === 0) {
+                            resp.records.forEach(function(record) {
+                                record.createtimeStr = DateFormat.longToDateTimeStr(record.createtime, timeDifference)
                             })
+                            me.data = resp.records;
+                        };
+                    });
+                },
+                jumpSendMsg: function() {
+                    open('sendmsg.html?token=' + token);
+                },
+                deleteSystemMsg: function(systemmsgid, index) {
+                    var url = myUrls.deleteSystemMsg(),
+                        me = this;
+                    utils.sendAjax(url, {
+                        systemmsgid: systemmsgid
+                    }, function(resp) {
+                        if (resp.status == 0) {
+                            me.data.splice(index, 1);
+                            me.$Message.success("删除成功");
+                        } else {
+                            me.$Message.error("删除失败");
                         }
-                    },
-                    mounted:function() {
-                        this.getSystemMsg();
-                    },
-                })
+                    });
+                },
+                recallSystemMsg: function(systemmsgid, systemmsguuid, index) {
+                    var url = myUrls.recallSystemMsg(),
+                        me = this;
+                    utils.sendAjax(url, {
+                        systemmsgid: systemmsgid,
+                        systemmsguuid: systemmsguuid
+                    }, function(resp) {
+                        if (resp.status == 0) {
+                            me.data.splice(index, 1);
+                            me.$Message.success("撤回成功");
+                        } else {
+                            me.$Message.error("撤回失败");
+                        }
+                    })
+                }
+            },
+            mounted: function() {
+                this.getSystemMsg();
+            },
+        })
     </script>
 </body>
+
 </html>

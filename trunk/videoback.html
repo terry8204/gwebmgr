@@ -362,6 +362,7 @@
         var startPlayerTimer = null;
         var isRequsetPlaying = false; // 防止连续点击
         var isResize = false;
+        var timeDifference = DateFormat.getOffset();
 
         function calcFileSizeM(filesize) {
             var mSize = (filesize / 1024 / 1024).toFixed(2);
@@ -618,7 +619,7 @@
                     width: 240,
                     render: function(h, params) {
                         if (params.row.lastupdatetime > 0) {
-                            var lastupdatetimeStr = DateFormat.longToDateTimeStr(params.row.lastupdatetime, 8);
+                            var lastupdatetimeStr = DateFormat.longToDateTimeStr(params.row.lastupdatetime, timeDifference);
                             var currentLength = calcFileSizeM(params.row.currentlength);
                             var needfiLesize = calcFileSizeM(params.row.needfilesize);
                             return h('span', {}, lastupdatetimeStr + " " + currentLength + '/' + needfiLesize);
@@ -646,7 +647,7 @@
                     key: 'downloadstarttime',
                     render: function(h, params) {
                         var row = params.row;
-                        return h('span', {}, DateFormat.longToDateTimeStr(row.downloadstarttime, 8))
+                        return h('span', {}, DateFormat.longToDateTimeStr(row.downloadstarttime, timeDifference))
                     }
 
                 }, {
@@ -654,7 +655,7 @@
                     key: 'downloadendtime',
                     render: function(h, params) {
                         var row = params.row;
-                        return row.downloadendtime ? h('span', {}, DateFormat.longToDateTimeStr(row.downloadendtime, 8)) : '';
+                        return row.downloadendtime ? h('span', {}, DateFormat.longToDateTimeStr(row.downloadendtime, timeDifference)) : '';
                     }
                 }],
                 timeReminder: '',
@@ -1095,7 +1096,7 @@
                             that.$Message.success("查询成功");
 
                             records.sort(function(a, b) {
-                                return DateFormat.dateStrToLong(b.starttime, 0) - DateFormat.dateStrToLong(a.starttime, 0);
+                                return DateFormat.dateStrToLong(b.starttime, timeDifference) - DateFormat.dateStrToLong(a.starttime, timeDifference);
                             });
                             records.forEach(function(item, index) {
                                 item.index = ++index;

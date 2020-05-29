@@ -148,10 +148,11 @@ OpenStreeMapCls.pt.getDevAddress = function(track) {
         return address;
     } else {
         utils.getJiuHuAddressSyn(callon, callat, function(respAddress) {
-            if (respAddress.address) {
-                var wContent = utils.getWindowContent(track, respAddress.address);
+            var display_name = respAddress.display_name;
+            if (display_name) {
+                var wContent = utils.getWindowContent(track, display_name);
                 document.getElementById('popup-content').innerHTML = wContent;
-                LocalCacheMgr.setAddress(callon, callat, respAddress.address);
+                LocalCacheMgr.setAddress(callon, callat, display_name);
             }
         })
         return '正在解析地址...';

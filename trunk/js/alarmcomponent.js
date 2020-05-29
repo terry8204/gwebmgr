@@ -157,7 +157,7 @@ var waringComponent = {
                 if (deviceInfo) {
                     var deviceName = deviceInfo.devicename;
                     item.devicename = deviceName;
-                    item.lastalarmtimeStr = DateFormat.longToDateTimeStr(item.lastalarmtime, 0);
+                    item.lastalarmtimeStr = DateFormat.longToDateTimeStr(item.lastalarmtime, timeDifference);
                     if (isZh) {
                         item.isdispose = item.disposestatus === 0 ? "未处理" : "已处理";
                     } else {
@@ -193,7 +193,7 @@ var waringComponent = {
                             var records = resp.records;
                             records.forEach(function(item) {
                                 item.devicename = me.getDeviceName(item.deviceid);
-                                item.createtimeStr = DateFormat.longToDateTimeStr(item.createtime, 0);
+                                item.createtimeStr = DateFormat.longToDateTimeStr(item.createtime, timeDifference);
                                 me.msgListObj.addMsg(item);
                             });
                             me.overdueDevice = me.msgListObj.getMsgList().reverse();
@@ -622,7 +622,7 @@ var waringComponent = {
         });
         communicate.$on("reminddevicemsg", function(data) {
             data.devicename = me.getDeviceName(data.deviceid);
-            data.createtimeStr = DateFormat.longToDateTimeStr(data.createtime, 0);
+            data.createtimeStr = DateFormat.longToDateTimeStr(data.createtime, timeDifference);
             me.msgListObj.addMsg(data);
             me.overdueDevice = me.msgListObj.getMsgList().reverse();
         });

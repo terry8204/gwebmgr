@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,17 +8,31 @@
     <title>ODB信息</title>
     <link rel="stylesheet" href="dist/styles/iview.css">
     <style>
-        html,body,#app,.height-100{width:100%;height:100%;box-sizing: border-box;overflow: hidden;};
+        html,
+        body,
+        #app,
+        .height-100 {
+            width: 100%;
+            height: 100%;
+            box-sizing: border-box;
+            overflow: hidden;
+        }
+        
+        ;
         [v-cloak] {
             display: none;
         }
-        .speed-wrapper{
+        
+        .speed-wrapper {
             height: 100%;
         }
-        .i-col{
-            height:100%;padding: 10px
+        
+        .i-col {
+            height: 100%;
+            padding: 10px
         }
-        div.total-mileage{
+        
+        div.total-mileage {
             position: absolute;
             left: 0;
             top: 0;
@@ -43,68 +58,72 @@
         };
     </script>
 </head>
+
 <body>
     <div id="app">
         <Layout style="height:100%;">
             <i-Header>
-                <Row style="height: 100%;">   
+                <Row style="height: 100%;">
                     <i-Col span="12" style="height: 100%;color: #ffffff">
                         <h1 v-show="updatetime">On-Board Diagnostics</h1>
                     </i-Col>
-                    <i-Col span="12" style="height: 100%;color: #ffffff;text-align: right;"> 
+                    <i-Col span="12" style="height: 100%;color: #ffffff;text-align: right;">
                         <h2>更新时间 : {{updatetime}}</h2>
                     </i-Col>
-                </Row> 
+                </Row>
             </i-Header>
-            <i-Content  style="background-color:#1E2542">
+            <i-Content style="background-color:#1E2542">
                 <div style="position: absolute;left: 0;right: 0; top: 64px;bottom: 0;">
-                        <Row style="height: 60%;">   
-                            <i-Col span="10" style="height: 100%;">
-                                <div class="speed-wrapper" id="speed"></div>
-                            </i-Col>
-                            <i-Col span="4" style="height: 100%;position: relative;">
-                                <div class="total-mileage">
-                                    总里程:{{totalMileage}}km
-                                </div>
-                            </i-Col>
-                            <i-Col span="10" style="height: 100%;"> 
-                                <div class="speed-wrapper" id="rpm"></div>
-                            </i-Col>
-                        </Row> 
-                        <Row style="height:40%;overflow: hidden;">   
-                            <i-Col span="8" style="height:100%" v-for="(item,index) in counterList" :key="index">
-                                <Row style="height: 50%;">   
-                                    <i-Col span="12"  class="i-col">
-                                        <count-to :end="item.end1" :title="item.title1" :icon="item.icon1" :unit="item.unit1" :decimals="item.decimals1"></count-to>
-                                    </i-Col>
-                                    <i-Col span="12" class="i-col">
-                                        <count-to :end="item.end2" :title="item.title2" :icon="item.icon2" :unit="item.unit2" :decimals="item.decimals2"></count-to>
-                                    </i-Col>
-                                </Row>
-                                <Row style="height: 50%;">   
-                                    <i-Col span="12" class="i-col">
-                                        <count-to :end="item.end3" :title="item.title3" :icon="item.icon3" :unit="item.unit3" :decimals="item.decimals3"></count-to>
-                                    </i-Col>
-                                    <i-Col span="12" class="i-col" v-if="item.title4">
-                                        <count-to :end="item.end4" :title="item.title4" :icon="item.icon4" :unit="item.unit4" :decimals="item.decimals4"></count-to>
-                                    </i-Col>
-                                </Row>
-                            </i-Col>
-                        </Row> 
+                    <Row style="height: 60%;">
+                        <i-Col span="10" style="height: 100%;">
+                            <div class="speed-wrapper" id="speed"></div>
+                        </i-Col>
+                        <i-Col span="4" style="height: 100%;position: relative;">
+                            <div class="total-mileage">
+                                总里程:{{totalMileage}}km
+                            </div>
+                        </i-Col>
+                        <i-Col span="10" style="height: 100%;">
+                            <div class="speed-wrapper" id="rpm"></div>
+                        </i-Col>
+                    </Row>
+                    <Row style="height:40%;overflow: hidden;">
+                        <i-Col span="8" style="height:100%" v-for="(item,index) in counterList" :key="index">
+                            <Row style="height: 50%;">
+                                <i-Col span="12" class="i-col">
+                                    <count-to :end="item.end1" :title="item.title1" :icon="item.icon1" :unit="item.unit1" :decimals="item.decimals1"></count-to>
+                                </i-Col>
+                                <i-Col span="12" class="i-col">
+                                    <count-to :end="item.end2" :title="item.title2" :icon="item.icon2" :unit="item.unit2" :decimals="item.decimals2"></count-to>
+                                </i-Col>
+                            </Row>
+                            <Row style="height: 50%;">
+                                <i-Col span="12" class="i-col">
+                                    <count-to :end="item.end3" :title="item.title3" :icon="item.icon3" :unit="item.unit3" :decimals="item.decimals3"></count-to>
+                                </i-Col>
+                                <i-Col span="12" class="i-col" v-if="item.title4">
+                                    <count-to :end="item.end4" :title="item.title4" :icon="item.icon4" :unit="item.unit4" :decimals="item.decimals4"></count-to>
+                                </i-Col>
+                            </Row>
+                        </i-Col>
+                    </Row>
                 </div>
             </i-Content>
-        </Layout>   
+        </Layout>
     </div>
     <style>
-        .count-to-wrap{
-            width: 100%;height: 100%;
+        .count-to-wrap {
+            width: 100%;
+            height: 100%;
             /* border:1px solid #EFF1F3; */
         }
-        .count-to-wrap>div{
+        
+        .count-to-wrap>div {
             float: left;
             height: 100%;
         }
-        .count-to-wrap>div.left{
+        
+        .count-to-wrap>div.left {
             width: 30%;
             border-radius: 10px 0 0 10px;
             display: flex;
@@ -112,14 +131,16 @@
             align-items: center;
             color: #ffffff;
         }
-        .count-to-wrap>div.right{
+        
+        .count-to-wrap>div.right {
             width: 70%;
             border-radius: 0px 10px 10px 0px;
             /* background-color: #21273F; */
             background-color: #3C4264;
             color: #ffffff;
         }
-        .count-to-wrap>div.right>.conut{
+        
+        .count-to-wrap>div.right>.conut {
             height: 70%;
             display: flex;
             justify-content: center;
@@ -127,7 +148,8 @@
             font-size: 30px;
             font-weight: 600;
         }
-        .count-to-wrap>div.right>.title{
+        
+        .count-to-wrap>div.right>.title {
             display: flex;
             justify-content: center;
             align-items: center;
@@ -135,18 +157,18 @@
     </style>
     <script type="text/template" id="count-to">
         <div class='count-to-wrap'>
-             <div class="left" :style="{backgroundColor:randomColor}">
+            <div class="left" :style="{backgroundColor:randomColor}">
                 <Icon :type="icon" :size="28" />
-             </div> 
-             <div class="right">
-                 <div class='conut'>
-                     <span :id="countid">{{end}}</span>
-                     <span>{{unit}}</span>
+            </div>
+            <div class="right">
+                <div class='conut'>
+                    <span :id="countid">{{end}}</span>
+                    <span>{{unit}}</span>
                 </div>
-                 <div class='title'>
-                     <h2>{{title}}</h2>
-                 </div>
-             </div> 
+                <div class='title'>
+                    <h2>{{title}}</h2>
+                </div>
+            </div>
         </div>
     </script>
     <script src="dist/vue.min.js"></script>
@@ -158,19 +180,20 @@
     <script src="./js/echarts.min.js"></script>
     <script src="./js/countup.min.js"></script>
     <script>
-        Vue.component('count-to',{
-            template:document.getElementById('count-to').innerHTML,
-            props:{
-                start:{
-                    type:Number,
-                    default:0,
+        var timeDifference = DateFormat.getOffset();
+        Vue.component('count-to', {
+            template: document.getElementById('count-to').innerHTML,
+            props: {
+                start: {
+                    type: Number,
+                    default: 0,
                 },
-                end:{
-                    type:Number,
+                end: {
+                    type: Number,
                     required: true
                 },
-                title:{
-                    type:String,
+                title: {
+                    type: String,
                     required: true
                 },
                 duration: {
@@ -185,251 +208,306 @@
                     type: String,
                     default: ""
                 },
-                decimals :{
-                    type:Number,
-                    default:0
+                decimals: {
+                    type: Number,
+                    default: 0
                 }
             },
-            data:function () {  
+            data: function() {
                 return {
-                    counter:null,
+                    counter: null,
                 }
             },
             watch: {
-                end:function(newVal){
+                end: function(newVal) {
                     this.counter.update(newVal);
                 }
             },
-            computed:{
-                countid:function(){
-                    return 'count-to'+ this._uid;
+            computed: {
+                countid: function() {
+                    return 'count-to' + this._uid;
                 },
-                randomColor:function(){
+                randomColor: function() {
                     function randomNumber() {
-                        return Math.floor(Math.random()*255-1)
+                        return Math.floor(Math.random() * 255 - 1)
                     }
-                    return ('rgb(' +  randomNumber() +','+  randomNumber()+','+  randomNumber()+ ')')
+                    return ('rgb(' + randomNumber() + ',' + randomNumber() + ',' + randomNumber() + ')')
                 }
             },
             methods: {
-        
+
                 initCountTo() {
                     console.log('decimals', this.decimals);
                     var that = this;
-                    this.counter = new CountUp(this.countid, this.start, this.end,this.decimals, this.duration, {
+                    this.counter = new CountUp(this.countid, this.start, this.end, this.decimals, this.duration, {
                         useEasing: true,
                         useGrouping: false,
                         decimal: '.'
                     })
-                    setTimeout(function (){
+                    setTimeout(function() {
                         if (!that.counter.error) that.counter.start();
                     }, 0)
                 }
             },
-            mounted:function(){
+            mounted: function() {
                 var that = this;
-                this.$nextTick(function () { 
+                this.$nextTick(function() {
                     that.initCountTo();
                 });
             }
         })
         new Vue({
-            el:"#app",
-            data : {
-                deviceid:utils.getParameterByName('deviceid'),
-                speedChart:null,
-                rpmChart:null,
-                updatetime:'' ,
-                totalMileage:0,
-                counterList:[
-                    {
-                        end1:0,end2:0,end3:0,end4:0,
-                        title1:"发动机负荷",title2:"电瓶电压",title3:"行驶瞬间油耗",title4:"怠速瞬间油耗", 
-                        decimals1:0,decimals2:1,decimals3:2,decimals4:2,
-                        icon1:"ios-car",icon2:"md-analytics",icon3:"ios-analytics",icon4:"ios-beaker-outline",
-                        unit1:'%',unit2:'V',unit3:'L/100km',unit4:'L/h',
-                    },
-                    {
-                        end1:0,end2:0,end3:0,end4:0,
-                        title1:"冷却液温度",title2:"空气流量",title3:"节气门位置",title4:"燃油压力",
-                        decimals1:0,decimals2:0,decimals3:0,decimals4:0,
-                        icon1:"md-snow",icon2:"ios-aperture",icon3:"ios-hammer",icon4:"ios-water",
-                        unit1:'℃',unit2:'g/s',unit3:'%',unit4:'kPa',
-                    },
-                    {
-                        end1:0,end2:0,end3:0,end4:false,
-                        title1:"进气温度",title2:"进气压力",title3:"油量百分比",title4:false,
-                        decimals1:0,decimals2:0,decimals3:0,decimals4:0,
-                        icon1:"ios-thermometer-outline",icon2:"md-aperture",icon3:"ios-trending-up",icon4:false, 
-                        unit1:'℃',unit2:'kPa',unit3:'%',unit4:false,
-                    },
-                ]
+            el: "#app",
+            data: {
+                deviceid: utils.getParameterByName('deviceid'),
+                speedChart: null,
+                rpmChart: null,
+                updatetime: '',
+                totalMileage: 0,
+                counterList: [{
+                    end1: 0,
+                    end2: 0,
+                    end3: 0,
+                    end4: 0,
+                    title1: "发动机负荷",
+                    title2: "电瓶电压",
+                    title3: "行驶瞬间油耗",
+                    title4: "怠速瞬间油耗",
+                    decimals1: 0,
+                    decimals2: 1,
+                    decimals3: 2,
+                    decimals4: 2,
+                    icon1: "ios-car",
+                    icon2: "md-analytics",
+                    icon3: "ios-analytics",
+                    icon4: "ios-beaker-outline",
+                    unit1: '%',
+                    unit2: 'V',
+                    unit3: 'L/100km',
+                    unit4: 'L/h',
+                }, {
+                    end1: 0,
+                    end2: 0,
+                    end3: 0,
+                    end4: 0,
+                    title1: "冷却液温度",
+                    title2: "空气流量",
+                    title3: "节气门位置",
+                    title4: "燃油压力",
+                    decimals1: 0,
+                    decimals2: 0,
+                    decimals3: 0,
+                    decimals4: 0,
+                    icon1: "md-snow",
+                    icon2: "ios-aperture",
+                    icon3: "ios-hammer",
+                    icon4: "ios-water",
+                    unit1: '℃',
+                    unit2: 'g/s',
+                    unit3: '%',
+                    unit4: 'kPa',
+                }, {
+                    end1: 0,
+                    end2: 0,
+                    end3: 0,
+                    end4: false,
+                    title1: "进气温度",
+                    title2: "进气压力",
+                    title3: "油量百分比",
+                    title4: false,
+                    decimals1: 0,
+                    decimals2: 0,
+                    decimals3: 0,
+                    decimals4: 0,
+                    icon1: "ios-thermometer-outline",
+                    icon2: "md-aperture",
+                    icon3: "ios-trending-up",
+                    icon4: false,
+                    unit1: '℃',
+                    unit2: 'kPa',
+                    unit3: '%',
+                    unit4: false,
+                }, ]
             },
             methods: {
-                initApp:function() {
+                initApp: function() {
                     var that = this;
                     this.speedChart = echarts.init(document.getElementById('speed'));
                     this.rpmChart = echarts.init(document.getElementById('rpm'));
                     this.setOptionSpeedChart();
                     this.setOptionRpmChart();
 
-                    window.onresize = function () { 
+                    window.onresize = function() {
                         that.speedChart.resize();
                         that.rpmChart.resize();
                     }
 
-                    that.$nextTick(function(){
+                    that.$nextTick(function() {
                         that.deviceid && that.queryObdInfo();
-                        that.deviceid && setInterval(function () {  that.queryObdInfo(); },10000);
+                        that.deviceid && setInterval(function() {
+                            that.queryObdInfo();
+                        }, 10000);
                     })
-                },  
-                queryObdInfo:function () { 
-                    var url = myUrls.queryObdInfo() , me = this;
-                    utils.sendAjax(url,{deviceid:this.deviceid},function (resp) { 
-                        if(resp.status == 0 && resp.record){
+                },
+                queryObdInfo: function() {
+                    var url = myUrls.queryObdInfo(),
+                        me = this;
+                    utils.sendAjax(url, {
+                        deviceid: this.deviceid
+                    }, function(resp) {
+                        if (resp.status == 0 && resp.record) {
                             me.setInfoValue(resp.record);
                         }
                     })
                 },
-                setInfoValue:function(record){
-                    this.updatetime = DateFormat.longToDateTimeStr(record.updatetime, 0);
-                    this.counterList[0].end1 = record.overloadcalculate;            // 发动机负荷
-                    this.counterList[0].end2 = record.controlvoltage;               // 电瓶电压
-                    this.counterList[0].end3 = record.gasolineconsumptionperhunkm;  // 行驶瞬时油耗
-                    this.counterList[0].end4 = record.gasolineconsumptionperhour;   // 怠速瞬时油耗
-                    this.counterList[1].end1 = record.coolanttemperature;           // 冷却液温度
-                    this.counterList[1].end2 = record.airmassflow;                 // 空气流量
-                    this.counterList[1].end3 = record.throttleposition;           // 节气门绝对位置
-                    this.counterList[1].end4 = record.oilpressure;                // 燃油压力 
-                    this.counterList[2].end1 = record.inlettemperature;           // 进气温度 
-                    this.counterList[2].end2 = record.inletbranchpressure;        // 进气管压力
-                    this.counterList[2].end3 = record.oilvalue;                   // 剩余油量 
+                setInfoValue: function(record) {
+                    this.updatetime = DateFormat.longToDateTimeStr(record.updatetime, timeDifference);
+                    this.counterList[0].end1 = record.overloadcalculate; // 发动机负荷
+                    this.counterList[0].end2 = record.controlvoltage; // 电瓶电压
+                    this.counterList[0].end3 = record.gasolineconsumptionperhunkm; // 行驶瞬时油耗
+                    this.counterList[0].end4 = record.gasolineconsumptionperhour; // 怠速瞬时油耗
+                    this.counterList[1].end1 = record.coolanttemperature; // 冷却液温度
+                    this.counterList[1].end2 = record.airmassflow; // 空气流量
+                    this.counterList[1].end3 = record.throttleposition; // 节气门绝对位置
+                    this.counterList[1].end4 = record.oilpressure; // 燃油压力 
+                    this.counterList[2].end1 = record.inlettemperature; // 进气温度 
+                    this.counterList[2].end2 = record.inletbranchpressure; // 进气管压力
+                    this.counterList[2].end3 = record.oilvalue; // 剩余油量 
                     this.totalMileage = record.mileage;
-                    this.speedChart.setOption(this.getSeedOption(record.speed)); 
-                    this.rpmChart.setOption(this.getRpmOption(record.engineturnrate)); 
-               
+                    this.speedChart.setOption(this.getSeedOption(record.speed));
+                    this.rpmChart.setOption(this.getRpmOption(record.engineturnrate));
+
                 },
-                setOptionSpeedChart:function(){
+                setOptionSpeedChart: function() {
                     this.speedChart.setOption(this.getSeedOption(0));
                 },
-                getSeedOption:function(value){
+                getSeedOption: function(value) {
                     var option = {
-                            backgroundColor: '#1E2542',
-                            tooltip : {
-                                formatter: "速度 : {c}km/h"
-                            },
-                            series: [
-                                {
-                                    name: '速度',
-                                    type: 'gauge',
-                                    min:0,
-                                    max:400,
-                                    // detail: {formatter:'{value}km/h'},
-                                    // splitNumber:11,
-                                    // radius: '50%',
-                                    axisLine: {            // 坐标轴线
-                                        lineStyle: {       // 属性lineStyle控制线条样式
-                                            color: [[0.09, 'lime'],[0.82, '#1e90ff'],[1, '#ff4500']],
-                                            width: 3,
-                                            shadowColor : '#fff', //默认透明
-                                            shadowBlur: 10
-                                        }
-                                    },
-                                    axisLabel: {            // 坐标轴小标记
-                                        textStyle: {       // 属性lineStyle控制线条样式
-                                            fontWeight: 'bolder',
-                                            color: '#fff',
-                                            shadowColor : '#fff', //默认透明
-                                            shadowBlur: 10
-                                        }
-                                    },
-                                    axisTick: {            // 坐标轴小标记
-                                        length :15,        // 属性length控制线长
-                                        lineStyle: {       // 属性lineStyle控制线条样式
-                                            color: 'auto',
-                                            shadowColor : '#fff', //默认透明
-                                            shadowBlur: 10
-                                        }
-                                    },
-                                    splitLine: {           // 分隔线
-                                        length :25,         // 属性length控制线长
-                                        lineStyle: {       // 属性lineStyle（详见lineStyle）控制线条样式
-                                            width:3,
-                                            color: '#fff',
-                                            shadowColor : '#fff', //默认透明
-                                            shadowBlur: 10
-                                        }
-                                    },
-                                    pointer: {           // 分隔线
-                                        shadowColor : '#fff', //默认透明
-                                        shadowBlur: 5
-                                    },
-                                    title : {
-                                        textStyle: {       // 其余属性默认使用全局文本样式，详见TEXTSTYLE
-                                            fontWeight: 'bolder',
-                                            fontSize: 20,
-                                            fontStyle: 'italic',
-                                            color: '#fff',
-                                            shadowColor : '#fff', //默认透明
-                                            shadowBlur: 10
-                                        }
-                                    },
-                                    detail : {
-                                        backgroundColor: 'rgba(30,144,255,0.8)',
-                                        borderWidth: 1,
-                                        borderColor: '#fff',
-                                        shadowColor : '#fff', //默认透明
-                                        shadowBlur: 5,
-                                        offsetCenter: [0, '50%'],       // x, y，单位px
-                                        textStyle: {       // 其余属性默认使用全局文本样式，详见TEXTSTYLE
-                                            fontWeight: 'bolder',
-                                            color: '#fff'
-                                        }
-                                    },
-                                    data: [{value: value, name: 'km/h'}]
+                        backgroundColor: '#1E2542',
+                        tooltip: {
+                            formatter: "速度 : {c}km/h"
+                        },
+                        series: [{
+                            name: '速度',
+                            type: 'gauge',
+                            min: 0,
+                            max: 400,
+                            // detail: {formatter:'{value}km/h'},
+                            // splitNumber:11,
+                            // radius: '50%',
+                            axisLine: { // 坐标轴线
+                                lineStyle: { // 属性lineStyle控制线条样式
+                                    color: [
+                                        [0.09, 'lime'],
+                                        [0.82, '#1e90ff'],
+                                        [1, '#ff4500']
+                                    ],
+                                    width: 3,
+                                    shadowColor: '#fff', //默认透明
+                                    shadowBlur: 10
                                 }
-                            ]
-                        };
-                        return option
+                            },
+                            axisLabel: { // 坐标轴小标记
+                                textStyle: { // 属性lineStyle控制线条样式
+                                    fontWeight: 'bolder',
+                                    color: '#fff',
+                                    shadowColor: '#fff', //默认透明
+                                    shadowBlur: 10
+                                }
+                            },
+                            axisTick: { // 坐标轴小标记
+                                length: 15, // 属性length控制线长
+                                lineStyle: { // 属性lineStyle控制线条样式
+                                    color: 'auto',
+                                    shadowColor: '#fff', //默认透明
+                                    shadowBlur: 10
+                                }
+                            },
+                            splitLine: { // 分隔线
+                                length: 25, // 属性length控制线长
+                                lineStyle: { // 属性lineStyle（详见lineStyle）控制线条样式
+                                    width: 3,
+                                    color: '#fff',
+                                    shadowColor: '#fff', //默认透明
+                                    shadowBlur: 10
+                                }
+                            },
+                            pointer: { // 分隔线
+                                shadowColor: '#fff', //默认透明
+                                shadowBlur: 5
+                            },
+                            title: {
+                                textStyle: { // 其余属性默认使用全局文本样式，详见TEXTSTYLE
+                                    fontWeight: 'bolder',
+                                    fontSize: 20,
+                                    fontStyle: 'italic',
+                                    color: '#fff',
+                                    shadowColor: '#fff', //默认透明
+                                    shadowBlur: 10
+                                }
+                            },
+                            detail: {
+                                backgroundColor: 'rgba(30,144,255,0.8)',
+                                borderWidth: 1,
+                                borderColor: '#fff',
+                                shadowColor: '#fff', //默认透明
+                                shadowBlur: 5,
+                                offsetCenter: [0, '50%'], // x, y，单位px
+                                textStyle: { // 其余属性默认使用全局文本样式，详见TEXTSTYLE
+                                    fontWeight: 'bolder',
+                                    color: '#fff'
+                                }
+                            },
+                            data: [{
+                                value: value,
+                                name: 'km/h'
+                            }]
+                        }]
+                    };
+                    return option
                 },
-                setOptionRpmChart:function(){
+                setOptionRpmChart: function() {
                     this.rpmChart.setOption(this.getRpmOption(0));
                 },
-                getRpmOption:function (value) {
+                getRpmOption: function(value) {
                     var option = {
-                            backgroundColor: '#1E2542',
-                            tooltip : {
-                                formatter: "{b} : {c}"
+                        backgroundColor: '#1E2542',
+                        tooltip: {
+                            formatter: "{b} : {c}"
+                        },
+                        series: [{
+                            min: 0,
+                            max: 10000,
+                            name: 'RPM',
+                            type: 'gauge',
+                            detail: {
+                                formatter: '{value}'
                             },
-                            series: [
-                                {
-                                    min:0,
-                                    max:10000,
-                                    name: 'RPM',
-                                    type: 'gauge',
-                                    detail: {formatter:'{value}'},
-                                    data: [{value: value, name: 'RPM'}],
-                                    title : {
-                                        textStyle: {       // 其余属性默认使用全局文本样式，详见TEXTSTYLE
-                                            fontWeight: 'bolder',
-                                            fontSize: 20,
-                                            fontStyle: 'italic',
-                                            color: '#fff',
-                                            shadowColor : '#fff', //默认透明
-                                            shadowBlur: 10
-                                        }
-                                    },
+                            data: [{
+                                value: value,
+                                name: 'RPM'
+                            }],
+                            title: {
+                                textStyle: { // 其余属性默认使用全局文本样式，详见TEXTSTYLE
+                                    fontWeight: 'bolder',
+                                    fontSize: 20,
+                                    fontStyle: 'italic',
+                                    color: '#fff',
+                                    shadowColor: '#fff', //默认透明
+                                    shadowBlur: 10
                                 }
-                            ]
-                        };
-                        return option
+                            },
+                        }]
+                    };
+                    return option
                 }
             },
-            mounted:function(){
+            mounted: function() {
                 this.initApp();
 
             }
         })
     </script>
 </body>
+
 </html>

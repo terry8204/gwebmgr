@@ -13,6 +13,7 @@ var isNeedRefresh = false;
 var isToAlarmListRecords = false;
 var isToPhoneAlarmRecords = false;
 var isNeedRefreshMapUI = false;
+var timeDifference = DateFormat.getOffset();
 document.title = isZh ? "位置信息服务平台" : "Location information service platform";
 
 
@@ -561,7 +562,7 @@ var trackDebug = {
                     var type = "0x" + parseInt(record.messagetype, 10).toString(16) + '(' + record.messagetype + ')';
                     record.messagetype = type;
                     record.reportmodeStr = getReportModeStr(record.reportmode);
-                    record.updatetimeStr = DateFormat.longToDateTimeStr(record.updatetime, 0);
+                    record.updatetimeStr = DateFormat.longToDateTimeStr(record.updatetime, timeDifference);
                 });
                 resp.records.sort(function(a, b) {
                     return b.updatetime - a.updatetime;
@@ -994,7 +995,7 @@ var videoPlayer = {
                 return;
             };
             var ele = document.createElement('a');
-            var now = DateFormat.longToDateTimeStrNoSplit(Date.now(), 8);
+            var now = DateFormat.longToDateTimeStrNoSplit(Date.now(), timeDifference);
             var fileName = this.deviceId + '-' + this.playerIndex + '-' + now;
             ele.setAttribute('href', this.htmlToImage(this.playerIndex)); //设置下载文件的url地址
             ele.setAttribute('download', fileName); //用于设置下载文件的文件名

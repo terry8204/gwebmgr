@@ -389,7 +389,7 @@
     <script src="js/dateformat.js"></script>
     <script>
         var token = utils.getParameterByName("token");
-
+        var timeDifference = DateFormat.getOffset();
         var vRoot = new Vue({
             i18n: utils.getI18n(),
             el: "#app",
@@ -491,7 +491,7 @@
                                 for (var index = 0; index < records.length; index++) {
                                     const record = records[index];
                                     record.show = false;
-                                    record.updatetimeStr = DateFormat.longToDateTimeStr(record.updatetime, 0);
+                                    record.updatetimeStr = DateFormat.longToDateTimeStr(record.updatetime, timeDifference);
                                     tableData.push(record);
                                 }
                                 me.tableData = tableData.sort(function(a, b) {

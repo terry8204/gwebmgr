@@ -194,6 +194,7 @@
     <script src="js/ol.js"></script>
     <!-- <script src="https://api.map.baidu.com/api?v=3.0&ak=e7SC5rvmn2FsRNE4R1ygg44n"></script> -->
     <script type="text/javascript">
+        var timeDifference = DateFormat.getOffset();
         var deviceid = utils.getParameterByName("deviceid");
         var token = utils.getParameterByName("token");
         var mapType = utils.getParameterByName("maptype");
@@ -326,7 +327,7 @@
                     title: "报警时间",
                     key: "alarmtime",
                     render: function(h, params) {
-                        return h('span', {}, DateFormat.longToDateTimeStr(params.row.updatetime, 0));
+                        return h('span', {}, DateFormat.longToDateTimeStr(params.row.updatetime, timeDifference));
                     }
                 }],
                 forwardAlarmColumns: [{
@@ -409,14 +410,14 @@
                     key: 'startalarmtime',
                     width: 160,
                     render: function(h, params) {
-                        return h('span', {}, DateFormat.longToDateTimeStr(params.row.startalarmtime, 0));
+                        return h('span', {}, DateFormat.longToDateTimeStr(params.row.startalarmtime, timeDifference));
                     }
                 }, {
                     title: '最后报警时间',
                     key: 'endalarmtime',
                     width: 160,
                     render: function(h, params) {
-                        return h('span', {}, DateFormat.longToDateTimeStr(params.row.endalarmtime, 0));
+                        return h('span', {}, DateFormat.longToDateTimeStr(params.row.endalarmtime, timeDifference));
                     }
                 }, {
                     title: '最初报警速度',
@@ -562,14 +563,14 @@
                     key: 'startalarmtime',
                     width: 160,
                     render: function(h, params) {
-                        return h('span', {}, DateFormat.longToDateTimeStr(params.row.startalarmtime, 0));
+                        return h('span', {}, DateFormat.longToDateTimeStr(params.row.startalarmtime, timeDifference));
                     }
                 }, {
                     title: '最后报警时间',
                     key: 'endalarmtime',
                     width: 160,
                     render: function(h, params) {
-                        return h('span', {}, DateFormat.longToDateTimeStr(params.row.endalarmtime, 0));
+                        return h('span', {}, DateFormat.longToDateTimeStr(params.row.endalarmtime, timeDifference));
                     }
                 }, {
                     title: '最初报警速度',
@@ -1031,7 +1032,7 @@
                         deviceid: deviceid,
                         begintime: DateFormat.format(this.date, 'yyyy-MM-dd') + ' 00:00:00',
                         endtime: DateFormat.format(this.date, 'yyyy-MM-dd') + ' 23:59:59',
-                        timezone: 8
+                        timezone: timeDifference
                     };
                     that.loading = true;
                     utils.sendAjax(url, data, function(resp) {

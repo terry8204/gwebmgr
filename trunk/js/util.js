@@ -307,11 +307,9 @@ var utils = {
     getJiuHuAddressSyn: function(lon, lat, callback) {
         $.ajax({
             type: 'get',
-            url: 'https://www.jh.tt/w?lat=' + lat + '&lon=' + lon,
+            url: 'https://www.gps51.com/reverse?format=json&lat=' + lat + '&lon=' + lon + '&addressdetails=0',
             success: function(data) {
-                if (data && data.status == 0) {
-                    callback(data)
-                }
+                callback(data)
             }
         })
     },
@@ -506,8 +504,8 @@ var utils = {
             '<p> ' + (isZh ? '设备序号' : 'Device Number') + ': ' + track.deviceid + '<i onclick="copyToClipboard()" class="ivu-icon ivu-icon-ios-copy-outline" style="font-size: 24px;cursor: pointer;"></i></p>' +
             '<p> ' + (isZh ? '定位类型' : 'Position Type') + ': ' + posiType + '</p>' +
             '<p> ' + (isZh ? '经纬度' : 'Longitude and latitude') + ': ' + track.callon.toFixed(6) + ',' + track.callat.toFixed(6) + '</p>' +
-            '<p> ' + (isZh ? '更新时间' : 'Update time') + ': ' + DateFormat.longToDateTimeStr(track.updatetime, 0) + '(' + isOnineStr + ')</p>' +
-            '<p> ' + (isZh ? '定位时间' : 'Posi time') + ': ' + DateFormat.longToDateTimeStr(track.validpoistiontime, 0) + '</p>' +
+            '<p> ' + (isZh ? '更新时间' : 'Update time') + ': ' + DateFormat.longToDateTimeStr(track.updatetime, timeDifference) + '(' + isOnineStr + ')</p>' +
+            '<p> ' + (isZh ? '定位时间' : 'Posi time') + ': ' + DateFormat.longToDateTimeStr(track.validpoistiontime, timeDifference) + '</p>' +
             '<p> ' + (isZh ? '速度' : 'Speed') + ': ' + speed + rxlevel + '</p>' +
             '<p> ' + (isZh ? '总里程' : 'Park Duration') + ': ' + this.getMileage(track.totaldistance) + '</p>' +
             '<p> ' + (isZh ? '停留时长' : 'Mileage') + ': ' + this.timeStamp(track.parkduration, isZh) + '</p>' +
@@ -959,6 +957,7 @@ var utils = {
 
 }
 
+var timeDifference = DateFormat.getOffset();
 try {
     //自定义 vue指令
     vClickOutside.install(Vue);

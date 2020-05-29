@@ -1,7 +1,7 @@
 var treeMixin = {
     data: {
         readonly: true,
-        dateVal: [DateFormat.longToDateStr(Date.now(), DateFormat.getOffset()), DateFormat.longToDateStr(Date.now(), DateFormat.getOffset())],
+        dateVal: [DateFormat.longToDateStr(Date.now(), timeDifference), DateFormat.longToDateStr(Date.now(), timeDifference)],
         total: 0,
         currentPageIndex: 1,
         lastTableHeight: 100,
@@ -30,13 +30,13 @@ var treeMixin = {
             this.dayNumberType = dayNumber;
             var dayTime = 24 * 60 * 60 * 1000;
             if (dayNumber == 0) {
-                this.dateVal = [DateFormat.longToDateStr(Date.now(), DateFormat.getOffset()), DateFormat.longToDateStr(Date.now(), DateFormat.getOffset())];
+                this.dateVal = [DateFormat.longToDateStr(Date.now(), timeDifference), DateFormat.longToDateStr(Date.now(), timeDifference)];
             } else if (dayNumber == 1) {
-                this.dateVal = [DateFormat.longToDateStr(Date.now() - dayTime, DateFormat.getOffset()), DateFormat.longToDateStr(Date.now() - dayTime, DateFormat.getOffset())];
+                this.dateVal = [DateFormat.longToDateStr(Date.now() - dayTime, timeDifference), DateFormat.longToDateStr(Date.now() - dayTime, timeDifference)];
             } else if (dayNumber == 3) {
-                this.dateVal = [DateFormat.longToDateStr(Date.now() - dayTime * 2, DateFormat.getOffset()), DateFormat.longToDateStr(Date.now(), DateFormat.getOffset())];
+                this.dateVal = [DateFormat.longToDateStr(Date.now() - dayTime * 2, timeDifference), DateFormat.longToDateStr(Date.now(), timeDifference)];
             } else if (dayNumber == 7) {
-                this.dateVal = [DateFormat.longToDateStr(Date.now() - dayTime * 6, DateFormat.getOffset()), DateFormat.longToDateStr(Date.now(), DateFormat.getOffset())];
+                this.dateVal = [DateFormat.longToDateStr(Date.now() - dayTime * 6, timeDifference), DateFormat.longToDateStr(Date.now(), timeDifference)];
             }
         },
         focus: function() {
@@ -146,7 +146,7 @@ var treeMixin = {
 var reportMixin = {
     data: {
         readonly: true,
-        dateVal: [DateFormat.longToDateStr(Date.now(), DateFormat.getOffset()), DateFormat.longToDateStr(Date.now(), DateFormat.getOffset())],
+        dateVal: [DateFormat.longToDateStr(Date.now(), timeDifference), DateFormat.longToDateStr(Date.now(), timeDifference)],
         total: 0,
         currentPageIndex: 1,
         lastTableHeight: 100,
@@ -176,13 +176,13 @@ var reportMixin = {
             this.dayNumberType = dayNumber;
             var dayTime = 24 * 60 * 60 * 1000;
             if (dayNumber == 0) {
-                this.dateVal = [DateFormat.longToDateStr(Date.now(), DateFormat.getOffset()), DateFormat.longToDateStr(Date.now(), DateFormat.getOffset())];
+                this.dateVal = [DateFormat.longToDateStr(Date.now(), timeDifference), DateFormat.longToDateStr(Date.now(), timeDifference)];
             } else if (dayNumber == 1) {
-                this.dateVal = [DateFormat.longToDateStr(Date.now() - dayTime, DateFormat.getOffset()), DateFormat.longToDateStr(Date.now() - dayTime, DateFormat.getOffset())];
+                this.dateVal = [DateFormat.longToDateStr(Date.now() - dayTime, timeDifference), DateFormat.longToDateStr(Date.now() - dayTime, timeDifference)];
             } else if (dayNumber == 3) {
-                this.dateVal = [DateFormat.longToDateStr(Date.now() - dayTime * 2, DateFormat.getOffset()), DateFormat.longToDateStr(Date.now(), DateFormat.getOffset())];
+                this.dateVal = [DateFormat.longToDateStr(Date.now() - dayTime * 2, timeDifference), DateFormat.longToDateStr(Date.now(), timeDifference)];
             } else if (dayNumber == 7) {
-                this.dateVal = [DateFormat.longToDateStr(Date.now() - dayTime * 6, DateFormat.getOffset()), DateFormat.longToDateStr(Date.now(), DateFormat.getOffset())];
+                this.dateVal = [DateFormat.longToDateStr(Date.now() - dayTime * 6, timeDifference), DateFormat.longToDateStr(Date.now(), timeDifference)];
             }
         },
         focus: function() {
@@ -345,7 +345,7 @@ function cmdReport(groupslist) {
                     // username: vstore.state.userName,
                     startday: this.dateVal[0],
                     endday: this.dateVal[1],
-                    offset: DateFormat.getOffset(),
+                    offset: timeDifference,
                     devices: [this.queryDeviceId],
                 };
                 this.loading = true;
@@ -356,7 +356,7 @@ function cmdReport(groupslist) {
 
                             resp.cmdrecords.forEach(function(item, index) {
                                 item.index = ++index;
-                                item.cmdtimeStr = DateFormat.longToDateTimeStr(item.cmdtime, 0);
+                                item.cmdtimeStr = DateFormat.longToDateTimeStr(item.cmdtime, timeDifference);
                                 item.deviceName = vstore.state.deviceInfos[item.deviceid].devicename;
                             });
                             self.cmdRecords = resp.cmdrecords;
@@ -535,7 +535,7 @@ function posiReport(groupslist) {
                                 if (item) {
                                     var deviceid = item.deviceid;
                                     item.devicename = vstore.state.deviceInfos[deviceid].devicename;
-                                    item.updatetimeStr = DateFormat.longToDateTimeStr(item.updatetime, 0);
+                                    item.updatetimeStr = DateFormat.longToDateTimeStr(item.updatetime, timeDifference);
                                     item.fixedLon = item.callon.toFixed(5);
                                     item.fixedLat = item.callat.toFixed(5);
                                     var address = LocalCacheMgr.getAddress(item.fixedLon, item.fixedLat);
@@ -564,7 +564,7 @@ function posiReport(groupslist) {
                     "begintime": this.dateVal[0] + " 00:00:00",
                     "endtime": this.dateVal[1] + " 23:59:00",
                     'interval': this.minuteNum * 60,
-                    'timezone': DateFormat.getOffset()
+                    'timezone': timeDifference
                 };
 
                 utils.sendAjax(url, data, function(resp) {
@@ -583,7 +583,7 @@ function posiReport(groupslist) {
                                 newArr.push({
                                     deviceid: item.deviceid,
                                     devicename: devicename,
-                                    updatetimeStr: DateFormat.longToDateTimeStr(item.updatetime, 0),
+                                    updatetimeStr: DateFormat.longToDateTimeStr(item.updatetime, timeDifference),
                                     callon: item.callon,
                                     callat: item.callat,
                                     fixedLon: fixedLon,
@@ -679,7 +679,7 @@ function reportMileageDetail(groupslist) {
         mixins: [reportMixin],
         data: {
             loading: false,
-            dateVal: [DateFormat.longToDateStr(Date.now(), DateFormat.getOffset()), DateFormat.longToDateStr(Date.now(), DateFormat.getOffset())],
+            dateVal: [DateFormat.longToDateStr(Date.now(), timeDifference), DateFormat.longToDateStr(Date.now(), timeDifference)],
             lastTableHeight: 100,
             groupslist: [],
             timeoutIns: null,
@@ -709,7 +709,7 @@ function reportMileageDetail(groupslist) {
                     var data = {
                         startday: this.dateVal[0],
                         endday: this.dateVal[1],
-                        offset: DateFormat.getOffset(),
+                        offset: timeDifference,
                         deviceid: this.queryDeviceId
                     }
                     me.loading = true;
@@ -764,7 +764,7 @@ function parkDetails(groupslist) {
             mapInstance: null,
             markerIns: null,
             loading: false,
-            dateVal: [DateFormat.longToDateStr(Date.now(), DateFormat.getOffset()), DateFormat.longToDateStr(Date.now(), DateFormat.getOffset())],
+            dateVal: [DateFormat.longToDateStr(Date.now(), timeDifference), DateFormat.longToDateStr(Date.now(), timeDifference)],
             lastTableHeight: 100,
             groupslist: [],
             timeoutIns: null,
@@ -846,7 +846,7 @@ function parkDetails(groupslist) {
                     var data = {
                         startday: this.dateVal[0],
                         endday: this.dateVal[1],
-                        offset: DateFormat.getOffset(),
+                        offset: timeDifference,
                         deviceid: this.queryDeviceId
                     }
                     me.loading = true;
@@ -863,8 +863,8 @@ function parkDetails(groupslist) {
                                     var address = LocalCacheMgr.getAddress(callon, callat);
                                     newRecords.push({
                                         deviceName: deviceName,
-                                        startDate: DateFormat.longToDateTimeStr(item.starttime, 0),
-                                        endDate: DateFormat.longToDateTimeStr(item.endtime, 0),
+                                        startDate: DateFormat.longToDateTimeStr(item.starttime, timeDifference),
+                                        endDate: DateFormat.longToDateTimeStr(item.endtime, timeDifference),
                                         parkTime: parkTime,
                                         callon_callat: callon + ',' + callat,
                                         callon: callon,
@@ -938,7 +938,7 @@ function accDetails(groupslist) {
             mapInstance: null,
             markerIns: null,
             loading: false,
-            dateVal: [DateFormat.longToDateStr(Date.now(), DateFormat.getOffset()), DateFormat.longToDateStr(Date.now(), DateFormat.getOffset())],
+            dateVal: [DateFormat.longToDateStr(Date.now(), timeDifference), DateFormat.longToDateStr(Date.now(), timeDifference)],
             lastTableHeight: 100,
             groupslist: [],
             timeoutIns: null,
@@ -1046,7 +1046,7 @@ function accDetails(groupslist) {
                     var data = {
                         startday: this.dateVal[0],
                         endday: this.dateVal[1],
-                        offset: DateFormat.getOffset(),
+                        offset: timeDifference,
                         deviceids: deviceids
                     }
                     me.loading = true;
@@ -1123,8 +1123,8 @@ function accDetails(groupslist) {
                         index: index + 1,
                         deviceid: item.deviceid,
                         deviceName: deviceName,
-                        startDate: DateFormat.longToDateTimeStr(item.begintime, 0),
-                        endDate: DateFormat.longToDateTimeStr(item.endtime, 0),
+                        startDate: DateFormat.longToDateTimeStr(item.begintime, timeDifference),
+                        endDate: DateFormat.longToDateTimeStr(item.endtime, timeDifference),
                         accStatus: accStatus,
                         duration: durationStr
                     });
@@ -1233,7 +1233,7 @@ function devRecords(groupslist) {
                             tableData.push({
                                 devicename: me.sosoValue,
                                 deviceid: me.queryDeviceId,
-                                updatetimeStr: DateFormat.longToDateTimeStr(record.updatetime, 0),
+                                updatetimeStr: DateFormat.longToDateTimeStr(record.updatetime, timeDifference),
                                 url: record.url
                             })
                         });
@@ -1380,7 +1380,7 @@ function messageRecords(groupslist) {
                             var type = "0x" + parseInt(record.messagetype, 10).toString(16) + '(' + record.messagetype + ')';
                             record.messagetype = type;
                             record.reportmodeStr = getReportModeStr(record.reportmode);
-                            record.updatetimeStr = DateFormat.longToDateTimeStr(record.updatetime, 0);
+                            record.updatetimeStr = DateFormat.longToDateTimeStr(record.updatetime, timeDifference);
                         });
                         resp.records.sort(function(a, b) {
                             return b.updatetime - a.updatetime;
@@ -1493,8 +1493,8 @@ function allAlarm(groupslist) {
                                 alarmRecords.push({
                                     devicename: vstore.state.deviceInfos[record.deviceid].devicename,
                                     alarmcount: record.alarmcount,
-                                    lastalarmtimeStr: DateFormat.longToDateTimeStr(record.lastalarmtime, 0),
-                                    startalarmtimeStr: DateFormat.longToDateTimeStr(record.startalarmtime, 0),
+                                    lastalarmtimeStr: DateFormat.longToDateTimeStr(record.lastalarmtime, timeDifference),
+                                    startalarmtimeStr: DateFormat.longToDateTimeStr(record.startalarmtime, timeDifference),
                                     isdispose: isdispose,
                                     stralarm: record.stralarm,
                                     stralarmen: record.stralarmen,
@@ -1579,7 +1579,7 @@ function phoneAlarm(groupslist) {
                             tableData.push({
                                 deviceid: me.queryDeviceId,
                                 notifyresult: record.notifyresult,
-                                datestr: DateFormat.longToDateTimeStr(new Date(record.lastalarmtime), 0),
+                                datestr: DateFormat.longToDateTimeStr(new Date(record.lastalarmtime), timeDifference),
                                 stralarm: record.stralarm
                             })
                         });
@@ -1652,7 +1652,7 @@ function wechatAlarm(groupslist) {
                             tableData.push({
                                 deviceid: me.queryDeviceId,
                                 notifyresult: record.notifyresult,
-                                datestr: DateFormat.longToDateTimeStr(new Date(record.lastalarmtime), 0),
+                                datestr: DateFormat.longToDateTimeStr(new Date(record.lastalarmtime), timeDifference),
                                 stralarm: record.stralarm
                             })
                         });
@@ -1755,7 +1755,7 @@ function insureRecords(groupslist) {
         mixins: [treeMixin],
         data: {
             dayNumberType: 0,
-            dateVal: [DateFormat.longToDateStr(Date.now(), DateFormat.getOffset()), DateFormat.longToDateStr(Date.now(), DateFormat.getOffset())],
+            dateVal: [DateFormat.longToDateStr(Date.now(), timeDifference), DateFormat.longToDateStr(Date.now(), timeDifference)],
             error: 123,
             createrToUser: userName,
             modal: false,
@@ -1951,13 +1951,13 @@ function insureRecords(groupslist) {
                 this.dayNumberType = dayNumber;
                 var dayTime = 24 * 60 * 60 * 1000;
                 if (dayNumber == 0) {
-                    this.dateVal = [DateFormat.longToDateStr(Date.now(), DateFormat.getOffset()), DateFormat.longToDateStr(Date.now(), DateFormat.getOffset())];
+                    this.dateVal = [DateFormat.longToDateStr(Date.now(), timeDifference), DateFormat.longToDateStr(Date.now(), timeDifference)];
                 } else if (dayNumber == 1) {
-                    this.dateVal = [DateFormat.longToDateStr(Date.now() - dayTime, DateFormat.getOffset()), DateFormat.longToDateStr(Date.now() - dayTime, DateFormat.getOffset())];
+                    this.dateVal = [DateFormat.longToDateStr(Date.now() - dayTime, timeDifference), DateFormat.longToDateStr(Date.now() - dayTime, timeDifference)];
                 } else if (dayNumber == 3) {
-                    this.dateVal = [DateFormat.longToDateStr(Date.now() - dayTime * 2, DateFormat.getOffset()), DateFormat.longToDateStr(Date.now(), DateFormat.getOffset())];
+                    this.dateVal = [DateFormat.longToDateStr(Date.now() - dayTime * 2, timeDifference), DateFormat.longToDateStr(Date.now(), timeDifference)];
                 } else if (dayNumber == 7) {
-                    this.dateVal = [DateFormat.longToDateStr(Date.now() - dayTime * 6, DateFormat.getOffset()), DateFormat.longToDateStr(Date.now(), DateFormat.getOffset())];
+                    this.dateVal = [DateFormat.longToDateStr(Date.now() - dayTime * 6, timeDifference), DateFormat.longToDateStr(Date.now(), timeDifference)];
                 }
             },
             onChange: function(value) {
@@ -2125,7 +2125,7 @@ function insureRecords(groupslist) {
                     me = this,
                     startday = DateFormat.format(new Date(this.dateVal[0]), 'yyyy-MM-dd'),
                     endday = DateFormat.format(new Date(this.dateVal[1]), 'yyyy-MM-dd');
-                utils.sendAjax(url, { username: this.createrToUser, startday: startday, endday: endday, offset: DateFormat.getOffset() }, function(resp) {
+                utils.sendAjax(url, { username: this.createrToUser, startday: startday, endday: endday, offset: timeDifference }, function(resp) {
                     console.log('resp', resp);
                     if (resp.status === 0) {
 
@@ -2264,7 +2264,7 @@ function reportOnlineSummary(groupslist) {
                         var updatetime = params.row.updatetime;
                         var updatetimeStr = '未上报';
                         if (updatetime > 0) {
-                            updatetimeStr = DateFormat.longToDateTimeStr(updatetime, 0);
+                            updatetimeStr = DateFormat.longToDateTimeStr(updatetime, timeDifference);
                         }
                         return h('span', {}, updatetimeStr)
                     }
@@ -2544,7 +2544,7 @@ function dropLineReport(groupslist) {
                         var updatetime = params.row.updatetime;
                         var updatetimeStr = '未上报';
                         if (updatetime > 0) {
-                            updatetimeStr = DateFormat.longToDateTimeStr(updatetime, 0);
+                            updatetimeStr = DateFormat.longToDateTimeStr(updatetime, timeDifference);
                         }
                         return h('span', {}, updatetimeStr)
                     }
@@ -2685,7 +2685,7 @@ function deviceOnlineDaily(groupslist) {
                     me = this;
                 var data = {
                     deviceids: [],
-                    offset: DateFormat.getOffset(),
+                    offset: timeDifference,
                     year: this.yearMonth.getFullYear(),
                     month: this.yearMonth.getMonth() + 1,
                 }
@@ -2896,7 +2896,7 @@ function groupsOnlineDaily(groupslist) {
                     me = this;
                 var data = {
                     groups: [],
-                    offset: DateFormat.getOffset(),
+                    offset: timeDifference,
                     daystr: DateFormat.format(this.yearMonth, 'yyyy-MM-dd'),
                 }
 
@@ -3065,7 +3065,7 @@ function deviceMonthOnlineDaily(groupslist) {
                     me = this;
                 var data = {
                     deviceids: [],
-                    offset: DateFormat.getOffset(),
+                    offset: timeDifference,
                     year: this.yearMonth.getFullYear(),
                     month: this.yearMonth.getMonth() + 1,
                 }
