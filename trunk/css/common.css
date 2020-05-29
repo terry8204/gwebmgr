@@ -240,7 +240,8 @@ li {
     margin-top: -7px;
 }
 
-p.last-address {
+p.last-address,
+p.last-strstatus {
     min-height: 21px;
     max-height: 42px;
     display: -webkit-box;

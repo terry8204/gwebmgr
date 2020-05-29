@@ -475,9 +475,17 @@ var utils = {
         var strstatus = '';
         var posiType = this.getPosiType(track);
         if (isZh) {
+            var stralarm = track.stralarm;
             strstatus = track.strstatus ? track.strstatus : '';
+            if (stralarm) {
+                strstatus += '<span style="color:red;">' + stralarm + '</span>';
+            }
         } else {
+            var stralarmen = track.stralarmen;
             strstatus = track.strstatusen ? track.strstatusen : '';
+            if (stralarm) {
+                strstatus += '<span style="color:red;">' + stralarmen + '</span>';
+            }
         }
         if (track.radius > 0) {
             var radiuDesc = null;
@@ -509,7 +517,7 @@ var utils = {
             '<p> ' + (isZh ? '速度' : 'Speed') + ': ' + speed + rxlevel + '</p>' +
             '<p> ' + (isZh ? '总里程' : 'Park Duration') + ': ' + this.getMileage(track.totaldistance) + '</p>' +
             '<p> ' + (isZh ? '停留时长' : 'Mileage') + ': ' + this.timeStamp(track.parkduration, isZh) + '</p>' +
-            '<p> ' + (isZh ? '状态' : 'Status') + ': ' + strstatus + '</p>' +
+            '<p class="last-strstatus"> ' + (isZh ? '状态' : 'Status') + ': ' + strstatus + '</p>' +
             '<p class="last-address"> ' + (isZh ? '详细地址' : 'Address') + ': ' + b_address + '</p>' +
             '<p class="operation">' +
             '<span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="playBack(' +
