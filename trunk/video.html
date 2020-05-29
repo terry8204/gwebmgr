@@ -1066,6 +1066,12 @@
                                 </i-Col>
                             </Row>
                             <Row style="height:32px;">
+                                <i-Col span="8" style="height: 100%;text-align:right;line-height:32px;">音频采样率 : &nbsp;</i-Col>
+                                <i-Col span="16" style="height: 100%;line-height:32px;">
+                                    {{videoProperty.audiosamplerate}}
+                                </i-Col>
+                            </Row>
+                            <Row style="height:32px;">
                                 <i-Col span="8" style="height: 100%;text-align:right;line-height:32px;">音频采样位数 : &nbsp;</i-Col>
                                 <i-Col span="16" style="height: 100%;line-height:32px;">
                                     {{videoProperty.audiosamplebits}}
@@ -1515,7 +1521,6 @@
     <script src="js/util.js"></script>
     <script src="js/lame.min.js"></script>
     <script>
-        var timeDifference = DateFormat.getOffset();
         (function(window) {
             //兼容
             window.URL = window.URL || window.webkitURL;
@@ -2304,20 +2309,32 @@
                         } else if (status === CMD_SEND_RESULT_DETAIL_ERROR) {
                             that.$Message.error("错误:" + resp.cause);
                         } else if (status === CMD_SEND_CONFIRMED) {
-                            var audiosamplebits = data.audiosamplebits;
                             that.$Message.success("查询成功");
-                            switch (audiosamplebits) {
+                            var audiosamplerate = data.audiosamplerate;
+                            switch (audiosamplerate) {
                                 case 0:
-                                    data.audiosamplebits = '8 kHz';
+                                    data.audiosamplerate = '8 kHz';
                                     break;
                                 case 1:
-                                    data.audiosamplebits = '22.05 kHz';
+                                    data.audiosamplerate = '22.05 kHz';
                                     break;
                                 case 2:
-                                    data.audiosamplebits = '44.1 kHz';
+                                    data.audiosamplerate = '44.1 kHz';
                                     break;
                                 case 3:
-                                    data.audiosamplebits = '48 kHz';
+                                    data.audiosamplerate = '48 kHz';
+                                    break;
+                            }
+                            var audiosamplebits = data.audiosamplebits;
+                            switch (audiosamplebits) {
+                                case 0:
+                                    data.audiosamplebits = '8bits';
+                                    break;
+                                case 1:
+                                    data.audiosamplebits = '16bits';
+                                    break;
+                                case 2:
+                                    data.audiosamplebits = '32bits';
                                     break;
                             }
                             that.videoProperty = data;

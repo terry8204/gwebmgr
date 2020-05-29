@@ -1972,6 +1972,7 @@ function insureRecords(groupslist) {
                 utils.sendAjax(url, this.editObjectRow, function(respData) {
                     if (respData.status == 0) {
                         var data = me.tableData[me.editDeviceIndex];
+                        var cdata = me.insureRecords[data.index - 1];
                         data.name = me.editObjectRow.name;
                         data.cardid = me.editObjectRow.cardid;
                         data.phonenum = me.editObjectRow.phonenum;
@@ -1979,6 +1980,15 @@ function insureRecords(groupslist) {
                         data.usernamephonenum = me.editObjectRow.usernamephonenum;
                         data.insurestate = me.editObjectRow.isRecharge ? 1 : 0;
                         data.isPay = data.insurestate == 1 ? '已付款' : '未付款';
+
+                        cdata.name = me.editObjectRow.name;
+                        cdata.cardid = me.editObjectRow.cardid;
+                        cdata.phonenum = me.editObjectRow.phonenum;
+                        cdata.vinno = me.editObjectRow.vinno;
+                        cdata.usernamephonenum = me.editObjectRow.usernamephonenum;
+                        cdata.insurestate = me.editObjectRow.isRecharge ? 1 : 0;
+                        cdata.isPay = data.insurestate == 1 ? '已付款' : '未付款';
+
                         me.modal = false;
                         me.$Message.success('编辑成功');
                     } else {
@@ -1987,8 +1997,7 @@ function insureRecords(groupslist) {
                 })
             },
             handleDelete: function(row) {
-
-
+                console.log(row.index - 1)
                 var index = this.editDeviceIndex,
                     me = this;
                 this.$Modal.confirm({
@@ -2001,6 +2010,8 @@ function insureRecords(groupslist) {
                             if (respData.status == 0) {
                                 me.$Message.success('删除成功');
                                 me.tableData.splice(index, 1);
+                                me.insureRecords.splice(row.index - 1, 1);
+                                me.total = me.insureRecords.length;
                             } else {
                                 me.$Message.error('删除失败');
                             }
