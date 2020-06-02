@@ -1116,9 +1116,10 @@
                         hasVideo: true,
                         withCredentials: false,
                     }, {
-                        enableWorker: false,
-                        lazyLoadMaxDuration: 3 * 60,
-                        seekType: 'range',
+                            enableWorker: false,
+                			enableStashBuffer: false,
+                			isLive: true,
+                			lazyLoad:false
                     });
                     this.flvPlayer.on(flvjs.Events.LOADING_COMPLETE, function() {
                         alert("加载完成");

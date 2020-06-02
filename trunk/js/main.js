@@ -849,8 +849,9 @@ var videoPlayer = {
                 // url: 'http://video.gps51.com:81/live/teststream.flv'
             }, {
                 enableWorker: false,
-                lazyLoadMaxDuration: 3 * 60,
-                seekType: 'range',
+                enableStashBuffer: false,
+                isLive: true,
+                lazyLoad:false
             });
             var player = document.getElementById('videoElement' + index);
             flvPlayer.attachMediaElement(player);
