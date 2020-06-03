@@ -641,8 +641,9 @@
                         <Tab-Pane label="视频播放参数" name="videoPlay">
                             <Row style="height:32px;margin: 10px 0;">
                                 <i-Col span="5" style="height: 100%;line-height:32px;text-align: right;">
-                                    传输模式 :
+                                    传输模式
                                 </i-Col>
+                                <i-Col span="1" style="height: 100%;line-height:32px;text-align: center;">:</i-Col>
                                 <i-Col span="12" style="height: 100%;line-height:32px;padding-left: 3px;">
                                     <i-select v-model="videotranstype" style="width:300px">
                                         <i-option value="0">TCP</i-option>
@@ -652,8 +653,9 @@
                             </Row>
                             <Row style="height:32px;margin: 10px 0;">
                                 <i-Col span="5" style="height: 100%;line-height:32px;text-align: right;">
-                                    实时性 :
+                                    实时性
                                 </i-Col>
+                                <i-Col span="1" style="height: 100%;line-height:32px;text-align: center;">:</i-Col>
                                 <i-Col span="12" style="height: 100%;line-height:32px;padding-left: 3px;">
                                     <i-select placement="top" v-model="videostreamtype" style="width:300px">
                                         <i-option value="0">一般</i-option>
@@ -663,16 +665,18 @@
                             </Row>
                             <Row style="height:32px;margin: 10px 0;">
                                 <i-Col span="5" style="height: 100%;line-height:32px;text-align: right;">
-                                    对讲通道 :
+                                    对讲通道
                                 </i-Col>
+                                <i-Col span="1" style="height: 100%;line-height:32px;text-align: center;">:</i-Col>
                                 <i-Col span="12" style="height: 100%;line-height:32px;padding-left: 3px;">
                                     <i-input v-model="audiochannel" style="width:300px"></i-input>
                                 </i-Col>
                             </Row>
                             <Row style="height:32px;margin: 10px 0;">
                                 <i-Col span="5" style="height: 100%;line-height:32px;text-align: right;">
-                                    回放音频格式 :
+                                    回放音频格式
                                 </i-Col>
+                                <i-Col span="1" style="height: 100%;line-height:32px;text-align: center;">:</i-Col>
                                 <i-Col span="12" style="height: 100%;line-height:32px;padding-left: 3px;">
                                     <i-select placement="top" v-model="historyaudiocodec" style="width:300px">
                                         <i-option value="0">0-reserve</i-option>
@@ -715,16 +719,18 @@
                             </Row>
                             <Row style="height:32px;margin: 10px 0;">
                                 <i-Col span="5" style="height: 100%;line-height:32px;text-align: right;">
-                                    指定上传文件名 :
+                                    指定上传文件名
                                 </i-Col>
+                                <i-Col span="1" style="height: 100%;line-height:32px;text-align: center;">:</i-Col>
                                 <i-Col span="12" style="height: 100%;line-height:32px;padding-left: 3px;">
                                     <Checkbox v-model="needuploadfilename"></Checkbox>
                                 </i-Col>
                             </Row>
                             <Row style="height:32px;margin: 10px 0;">
                                 <i-Col span="5" style="height: 100%;line-height:32px;text-align: right;">
-                                    视频时间戳 :
+                                    视频时间戳
                                 </i-Col>
+                                <i-Col span="1" style="height: 100%;line-height:32px;text-align: center;">:</i-Col>
                                 <i-Col span="12" style="height: 100%;line-height:32px;padding-left: 3px;">
                                     <i-select placement="top" v-model="videotimestamptype" style="width:300px">
                                         <i-option value="0">设备计算</i-option>
@@ -734,16 +740,18 @@
                             </Row>
                             <Row style="height:32px;margin: 10px 0;">
                                 <i-Col span="5" style="height: 100%;line-height:32px;text-align: right;">
-                                    视频播放个数 :
+                                    视频播放个数
                                 </i-Col>
+                                <i-Col span="1" style="height: 100%;line-height:32px;text-align: center;">:</i-Col>
                                 <i-Col span="12" style="height: 100%;line-height:32px;padding-left: 3px;">
                                     <Input-Number :max="4" :min="1" v-model="videochannelcount"></Input-Number>
                                 </i-Col>
                             </Row>
                             <Row style="height:32px;margin: 10px 0;">
                                 <i-Col span="5" style="height: 100%;line-height:32px;text-align: right;">
-                                    通道1 :
+                                    通道1
                                 </i-Col>
+                                <i-Col span="1" style="height: 100%;line-height:32px;text-align: center;">:</i-Col>
                                 <i-Col span="10" style="height: 100%;line-height:32px;padding-left: 3px;">
                                     <i-select placement="top" v-model="physicalchannel1" style="width:300px">
                                         <i-option value="0">音视频</i-option>
@@ -754,8 +762,9 @@
                             </Row>
                             <Row style="height:32px;margin: 10px 0;" v-show="videochannelcount > 1">
                                 <i-Col span="5" style="height: 100%;line-height:32px;text-align: right;">
-                                    通道2 :
+                                    通道2
                                 </i-Col>
+                                <i-Col span="1" style="height: 100%;line-height:32px;text-align: center;">:</i-Col>
                                 <i-Col span="10" style="height: 100%;line-height:32px;padding-left: 3px;">
                                     <i-select placement="top" v-model="physicalchannel2" style="width:300px">
                                         <i-option value="0">音视频</i-option>
@@ -766,8 +775,9 @@
                             </Row>
                             <Row style="height:32px;margin: 10px 0;" v-show="videochannelcount > 2">
                                 <i-Col span="5" style="height: 100%;line-height:32px;text-align: right;">
-                                    通道3 :
+                                    通道3
                                 </i-Col>
+                                <i-Col span="1" style="height: 100%;line-height:32px;text-align: center;">:</i-Col>
                                 <i-Col span="10" style="height: 100%;line-height:32px;padding-left: 3px;">
                                     <i-select placement="top" v-model="physicalchannel3" style="width:300px">
                                         <i-option value="0">音视频</i-option>
@@ -778,8 +788,9 @@
                             </Row>
                             <Row style="height:32px;margin: 10px 0;" v-show="videochannelcount > 3">
                                 <i-Col span="5" style="height: 100%;line-height:32px;text-align: right;">
-                                    通道4 :
+                                    通道4
                                 </i-Col>
+                                <i-Col span="1" style="height: 100%;line-height:32px;text-align: center;">:</i-Col>
                                 <i-Col span="10" style="height: 100%;line-height:32px;padding-left: 3px;">
                                     <i-select placement="top" v-model="physicalchannel4" style="width:300px">
                                         <i-option value="0">音视频</i-option>
@@ -804,8 +815,11 @@
                                 </i-Col>
                             </Row>
                             <Row style="height:32px;margin: 10px 0;">
-                                <i-Col span="5" style="height: 100%;line-height:32px;text-align: center;">
+                                <i-Col span="4" style="height: 100%;line-height:32px;text-align: right;">
                                     实时流编码模式 :
+                                </i-Col>
+                                <i-Col span="1" style="height: 100%;line-height:32px;text-align: center;">
+                                    :
                                 </i-Col>
                                 <i-Col span="7" style="height: 100%;line-height:32px;">
                                     <i-select v-model="realtimebitratemode">
@@ -814,8 +828,11 @@
                                         <i-option value="2">ABR(平均码率)</i-option>
                                     </i-select>
                                 </i-Col>
-                                <i-Col span="5" style="height: 100%;line-height:32px;text-align: center;">
-                                    存储流编码模式 :
+                                <i-Col span="4" style="height: 100%;line-height:32px;text-align: right;">
+                                    存储流编码模式
+                                </i-Col>
+                                <i-Col span="1" style="height: 100%;line-height:32px;text-align: center;">
+                                    :
                                 </i-Col>
                                 <i-Col span="7" style="height: 100%;line-height:32px;">
                                     <i-select v-model="storebitratemode">
@@ -826,8 +843,11 @@
                                 </i-Col>
                             </Row>
                             <Row style="height:32px;margin: 10px 0;">
-                                <i-Col span="5" style="height: 100%;line-height:32px;text-align: center;">
-                                    实时流分辨率 :
+                                <i-Col span="4" style="height: 100%;line-height:32px;text-align: right;">
+                                    实时流分辨率
+                                </i-Col>
+                                <i-Col span="1" style="height: 100%;line-height:32px;text-align: center;">
+                                    :
                                 </i-Col>
                                 <i-Col span="7" style="height: 100%;line-height:32px;">
                                     <i-select v-model="realtimeresolution">
@@ -840,8 +860,11 @@
                                         <i-option value="6">1080p</i-option>
                                     </i-select>
                                 </i-Col>
-                                <i-Col span="5" style="height: 100%;line-height:32px;text-align: center;">
-                                    存储流分辨率 :
+                                <i-Col span="4" style="height: 100%;line-height:32px;text-align: right;">
+                                    存储流分辨率
+                                </i-Col>
+                                <i-Col span="1" style="height: 100%;line-height:32px;text-align: center;">
+                                    :
                                 </i-Col>
                                 <i-Col span="7" style="height: 100%;line-height:32px;">
                                     <i-select v-model="storeresolution">
@@ -856,15 +879,21 @@
                                 </i-Col>
                             </Row>
                             <Row style="height:32px;margin: 10px 0;">
-                                <i-Col span="5" style="height: 100%;line-height:32px;text-align: center;">
+                                <i-Col span="4" style="height: 100%;line-height:32px;text-align: right;">
                                     实时流关键帧间隔 :
+                                </i-Col>
+                                <i-Col span="1" style="height: 100%;line-height:32px;text-align: center;">
+                                    :
                                 </i-Col>
                                 <i-Col span="7" style="height: 100%;line-height:32px;">
                                     <Input-Number :max="1000" :min="1" v-model="realtimekeyframeinterval"></Input-Number>
                                     范围1~1000
                                 </i-Col>
-                                <i-Col span="5" style="height: 100%;line-height:32px;text-align: center;">
-                                    存储流关键帧间隔 :
+                                <i-Col span="4" style="height: 100%;line-height:32px;text-align: right;">
+                                    存储流关键帧间隔
+                                </i-Col>
+                                <i-Col span="1" style="height: 100%;line-height:32px;text-align: center;">
+                                    :
                                 </i-Col>
                                 <i-Col span="7" style="height: 100%;line-height:32px;">
                                     <Input-Number :max="1000" :min="1" v-model="storekeyframeinterval"></Input-Number>
@@ -872,15 +901,21 @@
                                 </i-Col>
                             </Row>
                             <Row style="height:32px;margin: 10px 0;">
-                                <i-Col span="5" style="height: 100%;line-height:32px;text-align: center;">
-                                    实时流目标帧率 :
+                                <i-Col span="4" style="height: 100%;line-height:32px;text-align: right;">
+                                    实时流目标帧率
+                                </i-Col>
+                                <i-Col span="1" style="height: 100%;line-height:32px;text-align: center;">
+                                    :
                                 </i-Col>
                                 <i-Col span="7" style="height: 100%;line-height:32px;">
                                     <Input-Number :max="120" :min="1" v-model="realtimeframerate"></Input-Number>
                                     范围1~120 帧/秒
                                 </i-Col>
-                                <i-Col span="5" style="height: 100%;line-height:32px;text-align: center;">
-                                    存储流目标帧率 :
+                                <i-Col span="4" style="height: 100%;line-height:32px;text-align: right;">
+                                    存储流目标帧率
+                                </i-Col>
+                                <i-Col span="1" style="height: 100%;line-height:32px;text-align: center;">
+                                    :
                                 </i-Col>
                                 <i-Col span="7" style="height: 100%;line-height:32px;">
                                     <Input-Number :max="120" :min="1" v-model="storeframerate"></Input-Number>
@@ -888,15 +923,21 @@
                                 </i-Col>
                             </Row>
                             <Row style="height:32px;margin: 10px 0;">
-                                <i-Col span="5" style="height: 100%;line-height:32px;text-align: center;">
-                                    实时流目标码率 :
+                                <i-Col span="4" style="height: 100%;line-height:32px;text-align: right;">
+                                    实时流目标码率
+                                </i-Col>
+                                <i-Col span="1" style="height: 100%;line-height:32px;text-align: center;">
+                                    :
                                 </i-Col>
                                 <i-Col span="7" style="height: 100%;line-height:32px;">
                                     <Input-Number :max="2000" :min="1" v-model="realtimeframebitrate"></Input-Number>
                                     kbps
                                 </i-Col>
-                                <i-Col span="5" style="height: 100%;line-height:32px;text-align: center;">
-                                    存储流目标码率 :
+                                <i-Col span="4" style="height: 100%;line-height:32px;text-align: right;">
+                                    存储流目标码率
+                                </i-Col>
+                                <i-Col span="1" style="height: 100%;line-height:32px;text-align: center;">
+                                    :
                                 </i-Col>
                                 <i-Col span="7" style="height: 100%;line-height:32px;">
                                     <Input-Number :max="2000" :min="1" v-model="storeframebitrate"></Input-Number>
@@ -935,8 +976,11 @@
                                 </Row>
                             </fieldset>
                             <Row style="height:32px;margin: 10px 0;">
-                                <i-Col span="5" style="height: 100%;line-height:32px;text-align: center;">
-                                    是否启用音频输出 :
+                                <i-Col span="4" style="height: 100%;line-height:32px;text-align: right;">
+                                    是否启用音频输出
+                                </i-Col>
+                                <i-Col span="1" style="height: 100%;line-height:32px;text-align: center;">
+                                    :
                                 </i-Col>
                                 <i-Col span="7" style="height: 100%;line-height:32px;">
                                     <i-select placement="top" v-model="usingaudio">
@@ -2612,6 +2656,7 @@
                     this.initVideo(index, url, hasaudio);
                 },
                 initVideo: function(index, url, hasaudio) {
+                    console.log(index, hasaudio === 1);
                     var flvPlayer = flvjs.createPlayer({
                         type: 'flv',
                         url: url,
@@ -3028,6 +3073,18 @@
                             that.needuploadfilename = respData.needuploadfilename == 1 ? true : false;
                             that.videotimestamptype = String(respData.videotimestamptype);
                             that.videochannelcount = Number(respData.videochannelcount);
+                            var channelinfos = respData.channelinfos;
+                            channelinfos.forEach(function(item) {
+                                if (item.physicalchannel == 1) {
+                                    that.physicalchannel1 = String(item.channeltype);
+                                } else if (item.physicalchannel == 2) {
+                                    that.physicalchannel2 = String(item.channeltype);
+                                } else if (item.physicalchannel == 3) {
+                                    that.physicalchannel3 = String(item.channeltype);
+                                } else if (item.physicalchannel == 4) {
+                                    that.physicalchannel4 = String(item.channeltype);
+                                }
+                            });
                         }
                     });
 
