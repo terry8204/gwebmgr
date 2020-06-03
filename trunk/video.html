@@ -742,6 +742,48 @@
                                 </i-Col>
                             </Row>
                             <Row style="height:32px;margin: 10px 0;">
+                                <i-Col span="2" style="height: 100%;line-height:32px;text-align: center;">
+                                    通道1 :
+                                </i-Col>
+                                <i-Col span="4" style="height: 100%;line-height:32px;">
+                                    <i-select placement="top" v-model="physicalchannel1">
+                                        <i-option value="0">音视频</i-option>
+                                        <i-option value="1">音频 </i-option>
+                                        <i-option value="2">视频</i-option>
+                                    </i-select>
+                                </i-Col>
+                                <i-Col span="2" style="height: 100%;line-height:32px;text-align: center;" v-show="videochannelcount > 1">
+                                    通道2 :
+                                </i-Col>
+                                <i-Col span="4" style="height: 100%;line-height:32px;" v-show="videochannelcount > 1">
+                                    <i-select placement="top" v-model="physicalchannel2">
+                                        <i-option value="0">音视频</i-option>
+                                        <i-option value="1">音频 </i-option>
+                                        <i-option value="2">视频</i-option>
+                                    </i-select>
+                                </i-Col>
+                                <i-Col span="2" style="height: 100%;line-height:32px;text-align: center;" v-show="videochannelcount > 2">
+                                    通道3 :
+                                </i-Col>
+                                <i-Col span="4" style="height: 100%;line-height:32px;" v-show="videochannelcount > 2">
+                                    <i-select placement="top" v-model="physicalchannel3">
+                                        <i-option value="0">音视频</i-option>
+                                        <i-option value="1">音频 </i-option>
+                                        <i-option value="2">视频</i-option>
+                                    </i-select>
+                                </i-Col>
+                                <i-Col span="2" style="height: 100%;line-height:32px;text-align: center;" v-show="videochannelcount > 3">
+                                    通道4 :
+                                </i-Col>
+                                <i-Col span="4" style="height: 100%;line-height:32px;" v-show="videochannelcount > 3">
+                                    <i-select placement="top" v-model="physicalchannel4">
+                                        <i-option value="0">音视频</i-option>
+                                        <i-option value="1">音频 </i-option>
+                                        <i-option value="2">视频</i-option>
+                                    </i-select>
+                                </i-Col>
+                            </Row>
+                            <Row style="height:32px;margin: 10px 0;">
                                 <i-Col span="17" style="height: 100%;line-height:32px;text-align: center;">
                                     <i-button type='primary' @click='handleSetPlayParamter' :disabled="userType > 2">设置播放视频参数</i-button>
                                 </i-Col>
@@ -1786,6 +1828,10 @@
                     'shiwu': '',
                     'shiliu': '',
                 },
+                physicalchannel1: '0',
+                physicalchannel2: '0',
+                physicalchannel3: '0',
+                physicalchannel4: '0',
                 activeSafety: activeSafety == '1' ? true : false,
                 activeSafetyStr: '主动安全',
                 brightness: 128, //1     亮度
@@ -2282,6 +2328,18 @@
                             me.needuploadfilename = respData.needuploadfilename == 1 ? true : false;
                             me.videotimestamptype = String(respData.videotimestamptype);
                             me.videochannelcount = Number(respData.videochannelcount);
+                            var channelinfos = respData.channelinfos;
+                            channelinfos.forEach(function(item) {
+                                if (item.physicalchannel == 1) {
+                                    me.physicalchannel1 = String(item.channeltype);
+                                } else if (item.physicalchannel == 2) {
+                                    me.physicalchannel2 = String(item.channeltype);
+                                } else if (item.physicalchannel == 3) {
+                                    me.physicalchannel3 = String(item.channeltype);
+                                } else if (item.physicalchannel == 4) {
+                                    me.physicalchannel4 = String(item.channeltype);
+                                }
+                            });
                             me.$Message.success("查询成功");
                         } else {
                             me.$Message.error("查询失败");
@@ -2559,7 +2617,7 @@
                         enableWorker: false,
                         enableStashBuffer: false,
                         isLive: true,
-                        lazyLoad:false
+                        lazyLoad: false
                     });
                     var player = document.getElementById('videoElement' + index);
                     flvPlayer.attachMediaElement(player);
@@ -2700,7 +2758,54 @@
                         historyaudiocodec: Number(this.historyaudiocodec),
                         needuploadfilename: this.needuploadfilename ? 1 : 0,
                         videotimestamptype: Number(this.videotimestamptype),
-                        videochannelcount: this.videochannelcount
+                        videochannelcount: this.videochannelcount,
+                        channelinfos: []
+                    }
+
+                    if (this.videochannelcount == 1) {
+                        data.channelinfos.push({
+                            physicalchannel: 1,
+                            channeltype: Number(this.physicalchannel1)
+                        });
+                    } else if (this.videochannelcount == 2) {
+                        data.channelinfos.push({
+                            physicalchannel: 1,
+                            channeltype: Number(this.physicalchannel1)
+                        });
+                        data.channelinfos.push({
+                            physicalchannel: 2,
+                            channeltype: Number(this.physicalchannel2)
+                        });
+                    } else if (this.videochannelcount == 3) {
+                        data.channelinfos.push({
+                            physicalchannel: 1,
+                            channeltype: Number(this.physicalchannel1)
+                        });
+                        data.channelinfos.push({
+                            physicalchannel: 2,
+                            channeltype: Number(this.physicalchannel2)
+                        });
+                        data.channelinfos.push({
+                            physicalchannel: 3,
+                            channeltype: Number(this.physicalchannel3)
+                        });
+                    } else if (this.videochannelcount == 4) {
+                        data.channelinfos.push({
+                            physicalchannel: 1,
+                            channeltype: Number(this.physicalchannel1)
+                        });
+                        data.channelinfos.push({
+                            physicalchannel: 2,
+                            channeltype: Number(this.physicalchannel2)
+                        });
+                        data.channelinfos.push({
+                            physicalchannel: 3,
+                            channeltype: Number(this.physicalchannel3)
+                        });
+                        data.channelinfos.push({
+                            physicalchannel: 4,
+                            channeltype: Number(this.physicalchannel4)
+                        });
                     }
 
                     utils.sendAjax(url, data, function(data) {
@@ -2734,7 +2839,7 @@
                         enableWorker: false,
                         enableStashBuffer: false,
                         isLive: true,
-                        lazyLoad:false
+                        lazyLoad: false
                     });
                     var player = document.getElementById('audio-player');
                     audioPlayer.attachMediaElement(player);

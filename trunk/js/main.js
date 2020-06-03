@@ -851,7 +851,7 @@ var videoPlayer = {
                 enableWorker: false,
                 enableStashBuffer: false,
                 isLive: true,
-                lazyLoad:false
+                lazyLoad: false
             });
             var player = document.getElementById('videoElement' + index);
             flvPlayer.attachMediaElement(player);
