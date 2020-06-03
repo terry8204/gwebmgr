@@ -233,7 +233,6 @@ BMapClass.pt.updateLastTracks = function(deviceid) {
     // this.lastTracks = lastTracks;
     for (var key in this.lastTracks) {
         if (this.lastTracks.hasOwnProperty(key)) {
-
             var track = this.lastTracks[key];
             track.online = utils.getIsOnline(track);
             if (this.markerHashMap[key]) {

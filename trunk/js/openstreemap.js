@@ -147,14 +147,24 @@ OpenStreeMapCls.pt.getDevAddress = function(track) {
     if (address) {
         return address;
     } else {
-        utils.getJiuHuAddressSyn(callon, callat, function(respAddress) {
-            var display_name = respAddress && respAddress.display_name;
-            if (display_name) {
-                var wContent = utils.getWindowContent(track, display_name);
-                document.getElementById('popup-content').innerHTML = wContent;
-                LocalCacheMgr.setAddress(callon, callat, display_name);
-            }
-        })
+        if (isZh) {
+            utils.getJiuHuAddressSyn(callon, callat, function(respAddress) {
+                var jh_address = respAddress && respAddress.address;
+                if (jh_address) {
+                    var wContent = utils.getWindowContent(track, jh_address);
+                    document.getElementById('popup-content').innerHTML = wContent;
+                    LocalCacheMgr.setAddress(callon, callat, jh_address);
+                }
+            })
+        } else {
+            utils.getAbroadAddressSyn(callon, callat, function(abroad_address) {
+                if (abroad_address) {
+                    var wContent = utils.getWindowContent(track, abroad_address);
+                    document.getElementById('popup-content').innerHTML = wContent;
+                    LocalCacheMgr.setAddress(callon, callat, abroad_address);
+                }
+            });
+        }
         return '正在解析地址...';
     }
 }

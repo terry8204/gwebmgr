@@ -390,7 +390,6 @@ var monitor = {
         handleEditDeviceex: function() {
             var me = this;
             utils.editDeviceex('owner', me.ownerInfoData, function(resp) {
-                console.log(resp);
                 if (resp.status === 0) {
                     me.$Message.success("编辑成功");
                     me.ownerInfoModal = false;
@@ -1033,9 +1032,10 @@ var monitor = {
 
                                 }
                             })
-                            isNeedRefreshMapUI = true;
-                            callback ? callback() : '';
+
                         }
+                        isNeedRefreshMapUI = true;
+                        callback ? callback() : '';
                     } else if (resp.status > 9000) {
                         me.$Message.error(me.$t("monitor.reLogin"))
                         Cookies.remove('token')
@@ -1393,11 +1393,11 @@ var monitor = {
             oldPositionLast.status = newPositionLast.status;
             oldPositionLast.strstatus = newPositionLast.strstatus;
             oldPositionLast.strstatusen = newPositionLast.strstatusen;
-            
+
             oldPositionLast.alarm = newPositionLast.alarm;
             oldPositionLast.stralarm = newPositionLast.stralarm;
             oldPositionLast.stralarmen = newPositionLast.stralarmen;
-            
+
             oldPositionLast.gotsrc = newPositionLast.gotsrc;
             oldPositionLast.rxlevel = newPositionLast.rxlevel;
             oldPositionLast.gpstotalnum = newPositionLast.gpstotalnum;
@@ -1434,7 +1434,6 @@ var monitor = {
                 if (me.intervalTime <= 0) {
                     me.intervalTime = me.stateIntervalTime;
                     me.getLastPosition([], function() {
-                        isNeedRefreshMapUI = true;
                         me.dorefreshMapUI();
                     }, function(error) {});
                 }
@@ -1549,7 +1548,6 @@ var monitor = {
                 });
                 me.$store.dispatch('setdeviceInfos', me.groups);
                 me.getLastPosition([], function(resp) {
-                    isNeedRefreshMapUI = true;
                     me.lastquerypositiontime = DateFormat.getCurrentUTC();
                     // me.caclOnlineCount();
                     // me.updateTreeOnlineState();

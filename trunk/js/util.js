@@ -307,9 +307,18 @@ var utils = {
     getJiuHuAddressSyn: function(lon, lat, callback) {
         $.ajax({
             type: 'get',
+            url: 'https://www.gps51.com/webapi?action=w&lat=' + lat + '&lon=' + lon + '&token=' + token,
+            success: function(data) {
+                (data.address != "") && callback(data)
+            }
+        })
+    },
+    getAbroadAddressSyn: function(lon, lat, callback) {
+        $.ajax({
+            type: 'get',
             url: 'https://www.gps51.com/reverse?format=json&lat=' + lat + '&lon=' + lon + '&addressdetails=0',
             success: function(data) {
-                callback(data)
+                callback && callback(data.display_name);
             }
         })
     },
@@ -637,8 +646,8 @@ var utils = {
                     callback(b_address);
                 } else {
                     utils.getJiuHuAddressSyn(info.callon, info.callat, function(resp) {
-                        var j_address = resp.display_name;
-                        callback(j_address);
+                        var j_address = resp.address;
+                        j_address && callback(j_address);
                     })
                 }
             });
@@ -649,8 +658,8 @@ var utils = {
                     callback(b_address);
                 } else {
                     utils.getJiuHuAddressSyn(callon, callat, function(resp) {
-                        var j_address = resp.display_name
-                        callback(j_address);
+                        var j_address = resp.address
+                        j_address && callback(j_address);
                     });
                 }
             });
