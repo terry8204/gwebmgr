@@ -639,12 +639,11 @@
                     </p>
                     <Tabs value="" :animated="false">
                         <Tab-Pane label="视频播放参数" name="videoPlay">
-                            <i-button type="info" @click="queryVideoPlayParameters" style="width:180px;margin-bottom:10px;">查询</i-button>
                             <Row style="height:32px;margin: 10px 0;">
-                                <i-Col span="5" style="height: 100%;line-height:32px;text-align: center;">
+                                <i-Col span="5" style="height: 100%;line-height:32px;text-align: right;">
                                     传输模式 :
                                 </i-Col>
-                                <i-Col span="12" style="height: 100%;line-height:32px;">
+                                <i-Col span="12" style="height: 100%;line-height:32px;padding-left: 3px;">
                                     <i-select v-model="videotranstype" style="width:300px">
                                         <i-option value="0">TCP</i-option>
                                         <i-option value="1">UDP</i-option>
@@ -652,10 +651,10 @@
                                 </i-Col>
                             </Row>
                             <Row style="height:32px;margin: 10px 0;">
-                                <i-Col span="5" style="height: 100%;line-height:32px;text-align: center;">
+                                <i-Col span="5" style="height: 100%;line-height:32px;text-align: right;">
                                     实时性 :
                                 </i-Col>
-                                <i-Col span="12" style="height: 100%;line-height:32px;">
+                                <i-Col span="12" style="height: 100%;line-height:32px;padding-left: 3px;">
                                     <i-select placement="top" v-model="videostreamtype" style="width:300px">
                                         <i-option value="0">一般</i-option>
                                         <i-option value="1">好</i-option>
@@ -663,18 +662,18 @@
                                 </i-Col>
                             </Row>
                             <Row style="height:32px;margin: 10px 0;">
-                                <i-Col span="5" style="height: 100%;line-height:32px;text-align: center;">
+                                <i-Col span="5" style="height: 100%;line-height:32px;text-align: right;">
                                     对讲通道 :
                                 </i-Col>
-                                <i-Col span="12" style="height: 100%;line-height:32px;">
+                                <i-Col span="12" style="height: 100%;line-height:32px;padding-left: 3px;">
                                     <i-input v-model="audiochannel" style="width:300px"></i-input>
                                 </i-Col>
                             </Row>
                             <Row style="height:32px;margin: 10px 0;">
-                                <i-Col span="5" style="height: 100%;line-height:32px;text-align: center;">
+                                <i-Col span="5" style="height: 100%;line-height:32px;text-align: right;">
                                     回放音频格式 :
                                 </i-Col>
-                                <i-Col span="12" style="height: 100%;line-height:32px;">
+                                <i-Col span="12" style="height: 100%;line-height:32px;padding-left: 3px;">
                                     <i-select placement="top" v-model="historyaudiocodec" style="width:300px">
                                         <i-option value="0">0-reserve</i-option>
                                         <i-option value="1">1-Audio_G721</i-option>
@@ -715,18 +714,18 @@
                                 </i-Col>
                             </Row>
                             <Row style="height:32px;margin: 10px 0;">
-                                <i-Col span="5" style="height: 100%;line-height:32px;text-align: center;">
+                                <i-Col span="5" style="height: 100%;line-height:32px;text-align: right;">
                                     指定上传文件名 :
                                 </i-Col>
-                                <i-Col span="12" style="height: 100%;line-height:32px;">
+                                <i-Col span="12" style="height: 100%;line-height:32px;padding-left: 3px;">
                                     <Checkbox v-model="needuploadfilename"></Checkbox>
                                 </i-Col>
                             </Row>
                             <Row style="height:32px;margin: 10px 0;">
-                                <i-Col span="5" style="height: 100%;line-height:32px;text-align: center;">
+                                <i-Col span="5" style="height: 100%;line-height:32px;text-align: right;">
                                     视频时间戳 :
                                 </i-Col>
-                                <i-Col span="12" style="height: 100%;line-height:32px;">
+                                <i-Col span="12" style="height: 100%;line-height:32px;padding-left: 3px;">
                                     <i-select placement="top" v-model="videotimestamptype" style="width:300px">
                                         <i-option value="0">设备计算</i-option>
                                         <i-option value="1">服务器计算</i-option>
@@ -734,49 +733,55 @@
                                 </i-Col>
                             </Row>
                             <Row style="height:32px;margin: 10px 0;">
-                                <i-Col span="5" style="height: 100%;line-height:32px;text-align: center;">
+                                <i-Col span="5" style="height: 100%;line-height:32px;text-align: right;">
                                     视频播放个数 :
                                 </i-Col>
-                                <i-Col span="12" style="height: 100%;line-height:32px;">
+                                <i-Col span="12" style="height: 100%;line-height:32px;padding-left: 3px;">
                                     <Input-Number :max="4" :min="1" v-model="videochannelcount"></Input-Number>
                                 </i-Col>
                             </Row>
                             <Row style="height:32px;margin: 10px 0;">
-                                <i-Col span="2" style="height: 100%;line-height:32px;text-align: center;">
+                                <i-Col span="5" style="height: 100%;line-height:32px;text-align: right;">
                                     通道1 :
                                 </i-Col>
-                                <i-Col span="4" style="height: 100%;line-height:32px;">
-                                    <i-select placement="top" v-model="physicalchannel1">
+                                <i-Col span="10" style="height: 100%;line-height:32px;padding-left: 3px;">
+                                    <i-select placement="top" v-model="physicalchannel1" style="width:300px">
                                         <i-option value="0">音视频</i-option>
                                         <i-option value="1">音频 </i-option>
                                         <i-option value="2">视频</i-option>
                                     </i-select>
                                 </i-Col>
-                                <i-Col span="2" style="height: 100%;line-height:32px;text-align: center;" v-show="videochannelcount > 1">
+                            </Row>
+                            <Row style="height:32px;margin: 10px 0;" v-show="videochannelcount > 1">
+                                <i-Col span="5" style="height: 100%;line-height:32px;text-align: right;">
                                     通道2 :
                                 </i-Col>
-                                <i-Col span="4" style="height: 100%;line-height:32px;" v-show="videochannelcount > 1">
-                                    <i-select placement="top" v-model="physicalchannel2">
+                                <i-Col span="10" style="height: 100%;line-height:32px;padding-left: 3px;">
+                                    <i-select placement="top" v-model="physicalchannel2" style="width:300px">
                                         <i-option value="0">音视频</i-option>
                                         <i-option value="1">音频 </i-option>
                                         <i-option value="2">视频</i-option>
                                     </i-select>
                                 </i-Col>
-                                <i-Col span="2" style="height: 100%;line-height:32px;text-align: center;" v-show="videochannelcount > 2">
+                            </Row>
+                            <Row style="height:32px;margin: 10px 0;" v-show="videochannelcount > 2">
+                                <i-Col span="5" style="height: 100%;line-height:32px;text-align: right;">
                                     通道3 :
                                 </i-Col>
-                                <i-Col span="4" style="height: 100%;line-height:32px;" v-show="videochannelcount > 2">
-                                    <i-select placement="top" v-model="physicalchannel3">
+                                <i-Col span="10" style="height: 100%;line-height:32px;padding-left: 3px;">
+                                    <i-select placement="top" v-model="physicalchannel3" style="width:300px">
                                         <i-option value="0">音视频</i-option>
                                         <i-option value="1">音频 </i-option>
                                         <i-option value="2">视频</i-option>
                                     </i-select>
                                 </i-Col>
-                                <i-Col span="2" style="height: 100%;line-height:32px;text-align: center;" v-show="videochannelcount > 3">
+                            </Row>
+                            <Row style="height:32px;margin: 10px 0;" v-show="videochannelcount > 3">
+                                <i-Col span="5" style="height: 100%;line-height:32px;text-align: right;">
                                     通道4 :
                                 </i-Col>
-                                <i-Col span="4" style="height: 100%;line-height:32px;" v-show="videochannelcount > 3">
-                                    <i-select placement="top" v-model="physicalchannel4">
+                                <i-Col span="10" style="height: 100%;line-height:32px;padding-left: 3px;">
+                                    <i-select placement="top" v-model="physicalchannel4" style="width:300px">
                                         <i-option value="0">音视频</i-option>
                                         <i-option value="1">音频 </i-option>
                                         <i-option value="2">视频</i-option>
@@ -784,8 +789,9 @@
                                 </i-Col>
                             </Row>
                             <Row style="height:32px;margin: 10px 0;">
-                                <i-Col span="17" style="height: 100%;line-height:32px;text-align: center;">
+                                <i-Col span="18" style="height: 100%;line-height:32px;text-align: center;">
                                     <i-button type='primary' @click='handleSetPlayParamter' :disabled="userType > 2">设置播放视频参数</i-button>
+                                    <i-button type="info" @click="queryVideoPlayParameters" style="width:130px;">查询</i-button>
                                 </i-Col>
                             </Row>
                         </Tab-Pane>
@@ -1670,7 +1676,8 @@
             };
             //抛出异常
             HZRecorder.throwError = function(message) {
-                    alert(message);
+                    // alert(message);
+                    new Vue().$Message.error(message);
                     // throw new function () { this.toString = function () { return message; } }
                 }
                 //是否支持录音
