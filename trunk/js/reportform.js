@@ -1997,7 +1997,6 @@ function insureRecords(groupslist) {
                 })
             },
             handleDelete: function(row) {
-                console.log(row.index - 1)
                 var index = this.editDeviceIndex,
                     me = this;
                 this.$Modal.confirm({
@@ -2006,7 +2005,6 @@ function insureRecords(groupslist) {
                     onOk: function() {
                         var url = myUrls.deleteInsure();
                         utils.sendAjax(url, { insureid: row.insureid }, function(respData) {
-                            console.log(respData);
                             if (respData.status == 0) {
                                 me.$Message.success('删除成功');
                                 me.tableData.splice(index, 1);

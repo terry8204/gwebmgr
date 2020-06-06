@@ -285,6 +285,11 @@
                         return;
                     };
 
+                    if (this.devicetype === "") {
+                        me.$Message.error('请选择设备类型');
+                        return;
+                    }
+
                     var data = {
                         deviceids: deviceids,
                         devicetype: this.devicetype,
@@ -362,7 +367,7 @@
                 },
                 resetInfo: function() {
                     this.deviceid = "";
-                    this.devicetype = "";
+                    this.devicetype = 1;
                     // this.overduetime = "";
                     this.loginenable = "1";
                     this.deviceenable = "1";
