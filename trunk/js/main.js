@@ -781,11 +781,28 @@ var videoPlayer = {
 
             }
 
-            this.setWaringWraperStyle();
 
+            // this.setWaringWraperStyle();
+
+
+            $('#videoWraper').css({
+                width: this.wrapperWidth + 'px',
+                height: this.wrapperHeight + 'px',
+                right: "3px",
+                bottom: "25px",
+                top: 'auto',
+                left: 'auto',
+            })
         },
         setWaringWraperStyle: function() {
-            this.wraperStyle = { width: this.wrapperWidth + 'px', height: this.wrapperHeight + 'px' };
+            this.wraperStyle = {
+                width: this.wrapperWidth + 'px',
+                height: this.wrapperHeight + 'px',
+                right: "3px",
+                bottom: "25px",
+                top: 'auto',
+                left: 'auto',
+            };
         },
         // onClickVideoBody: function(e) {
         //     console.log(e);
