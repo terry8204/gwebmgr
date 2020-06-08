@@ -1116,10 +1116,10 @@
                         hasVideo: true,
                         withCredentials: false,
                     }, {
-                            enableWorker: false,
-                			enableStashBuffer: false,
-                			isLive: true,
-                			lazyLoad:false
+                        enableWorker: false,
+                        enableStashBuffer: false,
+                        isLive: true,
+                        lazyLoad: false
                     });
                     this.flvPlayer.on(flvjs.Events.LOADING_COMPLETE, function() {
                         alert("加载完成");
@@ -1199,7 +1199,7 @@
                                     shape: echarts.graphic.clipRectByRect({ // 矩形的位置和大小。
                                         x: start[0],
                                         y: start[1] - height / 2,
-                                        width: end[0] - start[0],
+                                        width: end[0] - start[0] + 1,
                                         height: height
                                     }, { // 当前坐标系的包围盒。
                                         x: params.coordSys.x,
@@ -1285,7 +1285,6 @@
                             me.tableData.forEach(function(item) {
                                 var starttimeStr = item.starttime.replace('-', '/').replace('-', '/');
                                 var endtimeStr = item.endtime.replace('-', '/').replace('-', '/');
-
                                 data.push({
                                     itemStyle: {
                                         normal: {
@@ -1308,7 +1307,6 @@
                         newVal.forEach(function(item) {
                             var starttimeStr = item.starttime.replace('-', '/').replace('-', '/');
                             var endtimeStr = item.endtime.replace('-', '/').replace('-', '/');
-
                             data.push({
                                 itemStyle: {
                                     normal: {

@@ -231,7 +231,6 @@
                     reader.readAsBinaryString(file);
                 },
                 parserExcelData: function(excelData) {
-                    console.log(excelData);
                     try {
                         var indexY = 2;
                         var tableData = [];
@@ -259,10 +258,10 @@
 
                             tableData.push({
                                 insurestate: excelData[insurestateKey] ? excelData[insurestateKey].v : '',
-                                name: excelData[nameKey] ? excelData[nameKey].v : '',
-                                cardid: excelData[cardidKey] ? excelData[cardidKey].v : '',
+                                name: excelData[nameKey] ? excelData[nameKey].v.trim() : '',
+                                cardid: excelData[cardidKey] ? excelData[cardidKey].v.trim() : '',
                                 policyno: excelData[policynoKey] ? excelData[policynoKey].v : '',
-                                username: excelData[usernameKey] ? excelData[usernameKey].v : '',
+                                username: excelData[usernameKey] ? excelData[usernameKey].v.trim() : '',
                                 useraddress: excelData[useraddressKey] ? excelData[useraddressKey].v : '',
                                 usernamephonenum: excelData[usernamephonenumKey] ? excelData[usernamephonenumKey].v : '',
                                 phonenum: excelData[phonenumKey] ? excelData[phonenumKey].v : '',
