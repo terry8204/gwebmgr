@@ -6,6 +6,13 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "8420285",
+      "name": "右下角",
+      "font_class": "youxiajiao",
+      "unicode": "e641",
+      "unicode_decimal": 58945
+    },
+    {
       "icon_id": "586866",
       "name": "drag",
       "font_class": "drag",

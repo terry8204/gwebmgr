@@ -699,15 +699,17 @@ var videoPlayer = {
 
                 var evt = e || window.event;
                 evt.preventDefault();
+                // var left = targetDiv.style.left;
+                // var top = targetDiv.style.top;
                 //得到鼠标拖动的宽高距离：取绝对值
                 var distX = evt.clientX - startX;
                 var distY = evt.clientY - startY;
 
-                var elementWidth = targetDivWidth - distX;
-                var elementHeight = targetDivHeight - distY;
 
-
-
+                var elementWidth = targetDivWidth + distX;
+                var elementHeight = targetDivHeight + distY;
+                // left = left + distX;
+                // top = top + distY;
 
                 //设置最大最小范围：不能无限制缩放，影响体验
                 if (elementWidth < 300) {
@@ -728,6 +730,9 @@ var videoPlayer = {
 
                 targetDiv.style.width = elementWidth + 'px';
                 targetDiv.style.height = elementHeight + 'px';
+
+                // targetDiv.style.left = left + 'px';
+                // targetDiv.style.top = top + 'px';
             }
 
             document.onmouseup = function() {
@@ -782,38 +787,38 @@ var videoPlayer = {
         setWaringWraperStyle: function() {
             this.wraperStyle = { width: this.wrapperWidth + 'px', height: this.wrapperHeight + 'px' };
         },
-        onClickVideoBody: function(e) {
+        // onClickVideoBody: function(e) {
+        //     console.log(e);
+        //     var offsetX = 0;
+        //     var offsetY = 0;
+        //     var clientWidth = document.documentElement.clientWidth || document.body.clientWidth;
+        //     var clientHeight = document.documentElement.clientHeight || document.body.clientHeight;
+        //     if (this.isLargen == 1) {
+        //         offsetX = clientWidth - 900;
+        //         offsetY = clientHeight - 535;
+        //     } else if (this.isLargen == 2) {
+        //         offsetX = clientWidth - this.wrapperWidth;
+        //         offsetY = clientHeight - this.wrapperHeight - 22 - 35;
+        //     }
+        //     var layerX = e.x - offsetX;
+        //     var layerY = e.y - offsetY;
+        //     var playerIndex = 0;
 
-            var offsetX = 0;
-            var offsetY = 0;
-            var clientWidth = document.documentElement.clientWidth || document.body.clientWidth;
-            var clientHeight = document.documentElement.clientHeight || document.body.clientHeight;
-            if (this.isLargen == 1) {
-                offsetX = clientWidth - 900;
-                offsetY = clientHeight - 535;
-            } else if (this.isLargen == 2) {
-                offsetX = clientWidth - this.wrapperWidth;
-                offsetY = clientHeight - this.wrapperHeight - 22 - 35;
-            }
-            var layerX = e.x - offsetX;
-            var layerY = e.y - offsetY;
-            var playerIndex = 0;
+        //     if (layerX < this.wrapperWidth / 2 && layerY < (this.wrapperHeight - 22 - 35) / 2) {
+        //         playerIndex = 1;
+        //     } else if (layerX > (this.wrapperWidth / 2) && layerX < this.wrapperWidth && layerY < (this.wrapperHeight - 22 - 35) / 2) {
+        //         playerIndex = 2;
+        //     } else if (layerX < this.wrapperWidth / 2 && layerY > (this.wrapperHeight - 22 - 35) / 2 && layerY < (this.wrapperHeight - 22 - 35)) {
+        //         playerIndex = 3;
+        //     } else {
+        //         playerIndex = 4;
+        //     }
 
-            if (layerX < this.wrapperWidth / 2 && layerY < (this.wrapperHeight - 22 - 35) / 2) {
-                playerIndex = 1;
-            } else if (layerX > (this.wrapperWidth / 2) && layerX < this.wrapperWidth && layerY < (this.wrapperHeight - 22 - 35) / 2) {
-                playerIndex = 2;
-            } else if (layerX < this.wrapperWidth / 2 && layerY > (this.wrapperHeight - 22 - 35) / 2 && layerY < (this.wrapperHeight - 22 - 35)) {
-                playerIndex = 3;
-            } else {
-                playerIndex = 4;
-            }
+        //     if (playerIndex != 0) {
+        //         this.playerIndex = playerIndex;
+        //     }
 
-            if (playerIndex != 0) {
-                this.playerIndex = playerIndex;
-            }
-
-        },
+        // },
         addEventListenerToPlayer: function(player, index) {
 
             var me = this,
@@ -1185,6 +1190,15 @@ var videoPlayer = {
                 })
             });
         })
+        $('#videoWraper').dragging({
+            move: 'both',
+            randomPosition: false
+        });
+        $('#videoWraper').dragging({
+            move: 'both',
+            randomPosition: false,
+            hander: ".waring-controller"
+        });
     }
 }
 
@@ -1262,5 +1276,6 @@ var vRoot = new Vue({
         vueInstanse = this; // 备份monitor实例
         utils.getUserInfoList();
         utils.queryAllSubgroups();
+
     }
 });

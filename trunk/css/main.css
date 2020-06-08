@@ -6,6 +6,7 @@
     min-width: 1300px;
     min-height: 580px;
     position: relative;
+    overflow: hidden;
 }
 
 
@@ -934,20 +935,25 @@ div.video_header ul {
     overflow: hidden;
 }
 
+div.mouseicon {
+    padding: 0px;
+    cursor: nw-resize;
+    width: 22px;
+    height: 22px;
+    font-size: 16px;
+    line-height: 22px;
+    text-align: center;
+    position: absolute;
+    right: 0px;
+    bottom: 0px;
+}
+
 div.video_header ul li {
     float: left;
     text-align: center;
     line-height: 22px;
     cursor: pointer;
     padding: 0 5px;
-}
-
-div.video_header ul li:first-child {
-    padding: 0px;
-    cursor: nw-resize;
-    width: 22px;
-    height: 22px;
-    font-size: 16px;
 }
 
 div.video_body {

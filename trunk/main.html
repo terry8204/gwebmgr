@@ -1195,10 +1195,7 @@
             </ul>
             <div class="msg_main" v-show="isLargen !== 0">
                 <div class="video_header">
-                    <ul>
-                        <li @mousedown="handleMousedown">
-                            <i class="icon iconfont icon-drag"></i>
-                        </li>
+                    <ul id="move_element">
                         <li v-if="allDeviceIdTitle!=''">{{allDeviceIdTitle}}</li>
                         <li v-if="allDeviceIdTitle==''">未选择设备</li>
                         <li>通道{{playerIndex}}</li>
@@ -1212,8 +1209,8 @@
                         </span>
                     </div>
                 </div>
-                <div class="video_body" @click="onClickVideoBody">
-                    <div class="video-wrap" :style="player1Style">
+                <div class="video_body">
+                    <div class="video-wrap" :style="player1Style" @click="playerIndex=1">
                         <div class="videoElementWrap">
                             <video id="videoElement1" controls :muted="isMute"></video>
                         </div>
@@ -1221,7 +1218,7 @@
                             <div v-text="playerStateTips.yi"></div>
                         </div>
                     </div>
-                    <div class="video-wrap" :style="player2Style">
+                    <div class="video-wrap" :style="player2Style" @click="playerIndex=2">
                         <div class="videoElementWrap">
                             <video id="videoElement2" controls :muted="isMute"></video>
                         </div>
@@ -1229,7 +1226,7 @@
                             <div v-text="playerStateTips.er"></div>
                         </div>
                     </div>
-                    <div class="video-wrap" :style="player3Style">
+                    <div class="video-wrap" :style="player3Style" @click="playerIndex=3">
                         <div class="videoElementWrap">
                             <video id="videoElement3" controls :muted="isMute"></video>
                         </div>
@@ -1237,7 +1234,7 @@
                             <div v-text="playerStateTips.san"></div>
                         </div>
                     </div>
-                    <div class="video-wrap" :style="player4Style">
+                    <div class="video-wrap" :style="player4Style" @click="playerIndex=4">
                         <div class="videoElementWrap">
                             <video id="videoElement4" controls :muted="isMute"></video>
                         </div>
@@ -1265,6 +1262,9 @@
                     <div @click="openActivesafety" v-if="activesafety == 1">
                         <i class="icon iconfont icon-safety-icon"></i>
                     </div>
+                </div>
+                <div class="mouseicon" @mousedown="handleMousedown">
+                    <i class="icon iconfont icon-youxiajiao" style="color:#A1A1A1"></i>
                 </div>
             </div>
         </div>
@@ -1300,6 +1300,7 @@
     <script src="js/monitor.js"></script>
     <script src="js/reportform.js"></script>
     <script src="js/bgmanager.js"></script>
+    <script src="js/drag.js"></script>
     <script src="js/alarmcomponent.js"></script>
     <script src="js/xlsx.full.min.js"></script>
     <script src="./js/flv.min.js"></script>
