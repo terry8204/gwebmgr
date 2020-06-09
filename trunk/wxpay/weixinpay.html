@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<title>九护关爱充值</title>
+<style>
+* {
+            padding: 0;
+            margin: 0;
+        }
+        
+        boay {
+            font-size: 12px;
+            font-family: "微软雅黑";
+        }
+        div.text{
+            padding-top: 4rem;
+            text-align: center;
+        }        
+        .form{
+            padding: 1rem 2rem;
+        }
+        #txst{
+           width: 100%;
+           text-align: left;
+           font-size: 1.1rem;
+           padding: 0.5rem 0;
+        }
+        p.idInput{
+            width: 100%; 
+        }
+        p.idInput input{
+           width: 96%; 
+           border:1px solid #ccc;
+           height: 3rem;
+           border-radius: 0.3rem;
+           outline: 0;
+           padding-left: 0.5rem;
+           font-size: 0.9rem;
+           box-shadow: 0;
+            outline: none;
+    -webkit-appearance: none; /*去除系统默认的样式*/
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0); /* 点击高亮的颜色*/
+        }
+        p.btnbox{
+            padding: 1.3rem 0;
+        }
+        #submit{
+            width: 100%;
+            height: 36px;
+            border-radius: 5px;
+            font-size: 1.2rem;
+            height: 3rem;
+            color: white;
+            border:0;
+            outline: 0;
+            background: green;
+        }
+        h1{
+          color: #000;  
+           text-align: center;
+        }
+        h4{
+            text-align: center;
+            padding-top: 1rem;
+            color: #E8081F;
+        }
+      input[type='button'], input[type='submit'], input[type='file'], button { cursor: pointer; -webkit-appearance: none; } 
+</style>
+</head>
+<body>
+<!-- <input type="text" id="slaveid"> 
+<input type="button" value="Pay" onClick="getPrePayInfo()">  -->
+
+        <div class="text">
+            <h1>九护关爱充值</h1>
+            <h4>年费:99元/年</h4>
+        </div>
+        <div class="form">
+            <p id="txst">九护号:</p> 
+            <p class="idInput">
+                <input type="text" name="jhid" id="jiuhuid" placeholder="请长按粘贴九护关爱的九护号">
+            </p>
+            <p class="btnbox">
+                <input type="button" value="立即支付" id="submit" onClick="getPrePayInfo()">
+            </p>
+        </div>
+
+
+<script type="text/javascript" src="../js/jquery.min.js"></script>
+<script type="text/javascript">
+function getParameterByName(name)  
+{  
+  var url = location.search;
+	  url = decodeURIComponent(url); 
+  var theRequest = new Object();
+     if (url.indexOf("?") != -1) {
+          var str = url.substr(1);
+              strs = str.split("&");
+            for(var i = 0; i < strs.length; i ++) {
+             theRequest[strs[i].split("=")[0]]=unescape(strs[i].split("=")[1]);
+           }
+        }
+   return theRequest[name]; 
+}  
+
+
+function notifyPayOK(slaveid, nonceStr)
+{
+       //调用通知服务器充值成功
+      $.ajax({
+        url:"/wxpay/notify?nonestr="+nonceStr + "&slaveid=" + slaveid,
+        type: "get",
+        dataType: "json",
+        success: function(json) {
+	        if(json.status == 0)
+	       	{
+	         	var enddaystr =  json.enddaystr;
+	         	window.location.href = "/wxpay/successpage.html?"+"slaveid="+slaveid+"&enddaystr="+enddaystr;
+	        }	
+	        else
+	       	{
+	       		alert("充值失败，请联系在线客服!"); 
+	       	}
+        },
+        //调起微信支付失败，恢复到原来的订单量
+        error:function(JSON){
+         alert("充值失败，请联系在线客服!"); 
+        }
+      });
+}
+
+function onBridgeReady(appId,timeStamp,nonceStr,packAge,signType,paySign){
+	   WeixinJSBridge.invoke(
+	       'getBrandWCPayRequest', {
+	           "appId":appId,     //公众号名称，由商户传入     
+	           "timeStamp":timeStamp,    
+	           "nonceStr":nonceStr,//随机串     
+	           "package":packAge,     
+	           "signType":signType,//微信签名方式：     
+	           "paySign":paySign//微信签名 
+	       },
+	       function(res){  
+	           if(res.err_msg == "get_brand_wcpay_request:ok" ) {
+	           	// 使用以上方式判断前端返回,微信团队郑重提示：res.err_msg将在用户支付成功后返回    ok，但并不保证它绝对可靠。 
+	           	var slaveid = document.getElementById("jiuhuid").value;
+	           	notifyPayOK(slaveid, nonceStr);
+	           }     
+	       }
+	   ); 
+	}
+
+
+	function getPrePayInfo()
+	{
+		console.log("getPrePayInfo");
+        var openId = getParameterByName("openid");
+        var slaveid = document.getElementById("jiuhuid").value;
+			if(!openId){
+				alert("openId"+openId);
+			}
+        //var getPrePayIdUrl = "/wxpay/towxpay";   
+        if(slaveid.length===15)        
+      {
+                  //调用支付接口
+                  $.ajax({
+                    url:"/wxpay/towxpay?openid="+openId + "&slaveid="+slaveid,
+                    type: "get",
+                    dataType: "json",
+                    success: function(json) {
+                    	console.log(json);
+	                    var appId = json.appId;
+	                    var timeStamp = json.timeStamp;
+	                    var nonceStr = json.nonceStr;
+	                    var packAge = json.packAge;
+	                    var signType = json.signType;
+	                    var paySign = json.paySign;
+	                    onBridgeReady(appId,timeStamp,nonceStr,packAge,signType,paySign);
+                    },
+                    //调起微信支付失败，恢复到原来的订单量
+                    error:function(){
+                     alert("充值失败，请联系在线客服!");  
+                    }
+                  });
+                //error=0 表示增加订单后总订单数大于10
+       }else{
+           alert("请输入正确的九护号");
+       }           
+                    
+	}
+	function doGetPrePayIdCallBack()
+	{
+		if (typeof WeixinJSBridge == "undefined"){
+			   if( document.addEventListener ){
+			       document.addEventListener('WeixinJSBridgeReady', onBridgeReady, false);
+			   }else if (document.attachEvent){
+			       document.attachEvent('WeixinJSBridgeReady', onBridgeReady); 
+			       document.attachEvent('onWeixinJSBridgeReady', onBridgeReady);
+			   }
+		}else{
+		   onBridgeReady();
+		}
+	}
+</script>
+
+</body>
+</html>

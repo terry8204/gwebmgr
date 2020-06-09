@@ -1,0 +1,140 @@
+/*垂直居中*/
+.verticalAlign
+{ 
+    vertical-align:middle; 
+    display:inline-block; 
+    height:100%; 
+    margin-left:-1px;
+}
+.xcConfirm .xc_layer
+{
+    position: fixed; 
+    top: 0; 
+    left: 0;
+    width: 100%; 
+    height: 100%; 
+    background-color: #666666;
+    opacity: 0.5; 
+    z-index: 2147000000;
+}
+.xcConfirm .popBox
+{
+    position: fixed;
+    left: 50%; 
+    top: 50%; 
+    background-color:#ffffff; 
+    z-index: 2147000001; 
+    width: 80%; 
+    margin-left: -40%; 
+    margin-top: -25%; 
+    border-radius: 5px;
+    font-weight: bold; 
+    color: #535e66;
+}
+.xcConfirm .popBox .ttBox
+{
+    height: 2rem; 
+    line-height: 2rem; 
+    border-bottom: solid 1px #eef0f1;
+    text-align: center;
+    font-size: 1.2rem;
+    border-radius: 5px 5px 0 0;
+    background-color: #72BE9C；
+}
+.xcConfirm .popBox .ttBox .tt
+{
+    font-size: 18px;
+    display: block;
+    float: left;
+    height: 30px; 
+    position: relative;
+}
+.xcConfirm .popBox .ttBox .clsBtn
+{
+    display: block; 
+    cursor: pointer; 
+    width: 12px;
+    height: 12px;
+    position: absolute;
+    top: 22px; 
+    right: 30px; 
+    /*根据图片位置改变引用路径*/
+   
+}
+.xcConfirm .popBox .txtBox
+{
+    font-size:1rem;
+    width:100%;
+    margin:0;
+    padding:0;
+    overflow: hidden;
+}
+.xcConfirm .popBox .txtBox .bigIcon
+{
+    float: left; 
+    margin-right: 20px; 
+    width: 48px;
+    height: 48px;
+    /*根据图片位置改变引用路径*/
+
+    background-repeat: no-repeat;
+    background-position: 48px 0;
+}
+.xcConfirm .popBox .txtBox p
+{ 
+	text-align:center;
+    font-size:1rem;
+    margin: 7% 0;
+    padding:0 .5rem;
+    font-weight:normal;
+}
+.xcConfirm .popBox .txtBox p input
+{
+
+    border: solid 1px #eef0f1; 
+    font-size: 1rem;
+
+}
+
+.xcConfirm .popBox .btnArea
+{
+    border-top: solid 1px #eef0f1;
+    height:3rem;
+    width:100%;
+    background: #72BE9C;
+     border-radius: 0 0 5px 5px;
+}
+.xcConfirm .popBox .btnGroup
+{
+ height:100%;
+	width:100%;
+}
+.xcConfirm .popBox .btnGroup .sgBtn
+{
+	height:100%;
+	width:100%;
+}
+.xcConfirm .popBox .sgBtn
+{
+    display: block; 
+    cursor: pointer; 
+    float: left; 
+    width: 95px; 
+    height:100%;
+    line-height: 3rem;; 
+    text-align: center; 
+    border-radius: 0 0 5px 5px;
+}
+.xcConfirm .popBox .sgBtn.ok
+{
+    background-color: #72BE9C;
+    color: #FFFFFF;
+}
+.xcConfirm .popBox .sgBtn.cancel
+{
+    background-color: #546a79; 
+    color: #FFFFFF;
+}
+
+/* loading */
+.loadEffect{ width: 100px; height: 100px; position: absolute;left:50%;top:50%; margin-left: -50px; margin-top:-50px; } .loadEffect span{ display: inline-block; width: 16px; height: 16px; border-radius: 50%; background: lightgreen; position: absolute; -webkit-animation: load 1.04s ease infinite; } @-webkit-keyframes load{ 0%{ opacity: 1; } 100%{ opacity: 0.2; } } .loadEffect span:nth-child(1){ left: 0; top: 50%; margin-top:-8px; -webkit-animation-delay:0.13s; } .loadEffect span:nth-child(2){ left: 14px; top: 14px; -webkit-animation-delay:0.26s; } .loadEffect span:nth-child(3){ left: 50%; top: 0; margin-left: -8px; -webkit-animation-delay:0.39s; } .loadEffect span:nth-child(4){ top: 14px; right:14px; -webkit-animation-delay:0.52s; } .loadEffect span:nth-child(5){ right: 0; top: 50%; margin-top:-8px; -webkit-animation-delay:0.65s; } .loadEffect span:nth-child(6){ right: 14px; bottom:14px; -webkit-animation-delay:0.78s; } .loadEffect span:nth-child(7){ bottom: 0; left: 50%; margin-left: -8px; -webkit-animation-delay:0.91s; } .loadEffect span:nth-child(8){ bottom: 14px; left: 14px; -webkit-animation-delay:1.04s; }
