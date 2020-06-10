@@ -94,13 +94,15 @@
 <input type="button" value="Pay" onClick="getPrePayInfo()">  -->
 
     <div class="text">
-        <h1>九护关爱充值</h1>
-        <h4>年费:99元/年</h4>
+        <h1 id="goodsname"></h1>
+        <h4 id="goodsdesc"></h4>
+        <h4 id="goodsprice" style="text-decoration:line-through;color:#e3e3e3;"></h4>
+        <h4 id="goodsdiscount"></h4>
     </div>
     <div class="form">
-        <p id="txst">九护号:</p>
+        <p id="txst">门店号:</p>
         <p class="idInput">
-            <input type="text" name="jhid" id="jiuhuid" placeholder="请长按粘贴九护关爱的九护号">
+            <input type="text" name="jhid" id="jiuhuid" placeholder="请长按粘贴门店号">
         </p>
         <p class="btnbox">
             <input type="button" value="立即支付" id="submit" onClick="getPrePayInfo()">
@@ -108,7 +110,7 @@
     </div>
 
 
-    <script type="text/javascript" src="../js/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/gps51-jquery.js"></script>
     <script type="text/javascript">
         function getParameterByName(name) {
             var url = location.search;
@@ -128,7 +130,7 @@
         function notifyPayOK(slaveid, nonceStr) {
             //调用通知服务器充值成功
             $.ajax({
-                url: "/wxpay/notify?nonestr=" + nonceStr + "&slaveid=" + slaveid,
+                url: "https://www.gps51.com/wxpay/notify?nonestr=" + nonceStr + "&slaveid=" + slaveid,
                 type: "get",
                 dataType: "json",
                 success: function(json) {
@@ -165,23 +167,42 @@
                 }
             );
         }
+        var userNameEl = document.getElementById("jiuhuid");
+        var openId = getParameterByName("openid");
+        var goodsid = getParameterByName("goodsid");
+        var goodsname = getParameterByName("goodsname");
+        var goodsdesc = getParameterByName("goodsdesc");
+        var goodsprice = Number(getParameterByName("goodsprice"));
+        var goodsdiscount = Number(getParameterByName("goodsdiscount"));
 
+        document.getElementById('goodsname').innerHTML = goodsname;
+        document.getElementById('goodsdesc').innerHTML = goodsdesc;
+        document.getElementById('goodsprice').innerHTML = '原价 : ' + goodsprice.toFixed(2) + '元';
+        document.getElementById('goodsdiscount').innerHTML = '折后 : ' + (goodsprice * goodsdiscount).toFixed(2) + '元';
+
+        userNameEl.value = "minigps";
 
         function getPrePayInfo() {
-            var openId = getParameterByName("openid");
-            var slaveid = document.getElementById("jiuhuid").value;
+            var username = userNameEl.value.trim();
             if (!openId) {
                 alert("openId" + openId);
             }
             //var getPrePayIdUrl = "/wxpay/towxpay";   
-            if (slaveid.length === 15) {
+            // String openid = request.getParameter("openid");
+            // String goodscreater = request.getParameter("goodscreater");
+            //   String goodsid = request.getParameter("goodsid");
+            //   String countStr = request.getParameter("count");
+            //   String username = request.getParameter("username");
+            var state = "wxe44094ffe9730359" + "_" + "insureagent_insureagent20_charge";
+            if (username != "") {
+                // window.location.href = "https://www.gps51.com/wxpay/payaction?openid=" + openId + "&username=" + username + "&goodsid=" + goodsid + "&count=1" + "&state=" + state;
+                // return;
                 //调用支付接口
                 $.ajax({
-                    url: "/wxpay/towxpay?openid=" + openId + "&slaveid=" + slaveid,
+                    url: "https://www.gps51.com/wxpay/payaction?openid=" + openId + "&username=" + username + "&goodsid=" + goodsid + "&count=1" + "&state=" + state,
                     type: "get",
                     dataType: "json",
                     success: function(json) {
-                        console.log(json);
                         var appId = json.appId;
                         var timeStamp = json.timeStamp;
                         var nonceStr = json.nonceStr;
