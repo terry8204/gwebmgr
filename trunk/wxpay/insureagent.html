@@ -174,15 +174,13 @@
                         mask: true,
                     })
                     toast.show();
-
                     try {
                         $.ajax({
-                            url: "https://www.gps51.com/wxpay/payaction?nonestr=" + nonceStr + "&state=" + state,
+                            url: "https://www.gps51.com/wxpay/payaction?noncestr=" + nonceStr + "&state=" + state,
                             type: "get",
                             dataType: "json",
                             success: function(json) {
                                 toast.hide();
-                                alert(json.cause);
                                 if (json.status == 0) {
                                     var insurecount = json.insurecount;
                                     alert("充值成功，剩余" + insurecount + "份保单");
