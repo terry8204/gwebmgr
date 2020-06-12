@@ -4,113 +4,65 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <title>九护关爱充值</title>
+    <title>保险支付</title>
+    <link rel="stylesheet" href="./cube.min.css">
     <style>
-        * {
-            padding: 0;
-            margin: 0;
-        }
-        
         boay {
             font-size: 12px;
             font-family: "微软雅黑";
         }
         
-        div.text {
+        #app {
             padding-top: 4rem;
+        }
+        
+        #app h1 {
             text-align: center;
+            font-size: 28px;
+            font-weight: 600;
+            padding-bottom: 10px;
         }
         
-        .form {
-            padding: 1rem 2rem;
+        #app h4 {
+            text-align: center;
+            font-size: 16px;
+            padding: 10px 0;
+            color: red;
         }
         
-        #txst {
-            width: 100%;
-            text-align: left;
-            font-size: 1.1rem;
-            padding: 0.5rem 0;
-        }
-        
-        p.idInput {
-            width: 100%;
-        }
-        
-        p.idInput input {
-            width: 96%;
+        #app .cube-input:after {
             border: 1px solid #ccc;
-            height: 3rem;
-            border-radius: 0.3rem;
-            outline: 0;
-            padding-left: 0.5rem;
-            font-size: 0.9rem;
-            box-shadow: 0;
-            outline: none;
-            -webkit-appearance: none;
-            /*去除系统默认的样式*/
-            -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-            /* 点击高亮的颜色*/
         }
         
-        p.btnbox {
-            padding: 1.3rem 0;
-        }
-        
-        #submit {
-            width: 100%;
-            height: 36px;
-            border-radius: 5px;
-            font-size: 1.2rem;
-            height: 3rem;
-            color: white;
-            border: 0;
-            outline: 0;
+        #app .cube-btn {
             background: green;
         }
         
-        h1 {
-            color: #000;
-            text-align: center;
-        }
-        
-        h4 {
-            text-align: center;
-            padding-top: 1rem;
-            color: #E8081F;
-        }
-        
-        input[type='button'],
-        input[type='submit'],
-        input[type='file'],
-        button {
-            cursor: pointer;
-            -webkit-appearance: none;
+        #app>div {
+            padding: 10px 2rem;
         }
     </style>
 </head>
 
 <body>
-    <!-- <input type="text" id="slaveid"> 
-<input type="button" value="Pay" onClick="getPrePayInfo()">  -->
-
-    <div class="text">
-        <h1 id="goodsname"></h1>
-        <h4 id="goodsdesc"></h4>
-        <h4 id="goodsprice" style="text-decoration:line-through;color:#e3e3e3;"></h4>
-        <h4 id="goodsdiscount"></h4>
-    </div>
-    <div class="form">
-        <p id="txst">门店号:</p>
-        <p class="idInput">
-            <input type="text" name="jhid" id="jiuhuid" placeholder="请长按粘贴门店号">
-        </p>
-        <p class="btnbox">
-            <input type="button" value="立即支付" id="submit" onClick="getPrePayInfo()">
-        </p>
+    <div id="app">
+        <h1 v-text="goodsname"></h1>
+        <h4 v-text="goodsdesc"></h4>
+        <h4 v-text="goodspriceStr" style="text-decoration:line-through;color:#e3e3e3;"></h4>
+        <h4 v-text="goodsdiscountStr"></h4>
+        <div v-text="label"></div>
+        <div>
+            <cube-input v-model="username" :clearable="true"></cube-input>
+        </div>
+        <div>
+            <cube-button @click="getPrePayInfo" :loading="loading">立即支付</cube-button>
+        </div>
     </div>
 
 
     <script type="text/javascript" src="../js/gps51-jquery.js"></script>
+    <script type="text/javascript" src="./vue.min.js"></script>
+    <script type="text/javascript" src="./cube.min.js"></script>
     <script type="text/javascript">
         function getParameterByName(name) {
             var url = location.search;
@@ -127,114 +79,135 @@
         }
 
 
-        function notifyPayOK(slaveid, nonceStr) {
-            //调用通知服务器充值成功
-            $.ajax({
-                url: "https://www.gps51.com/wxpay/notify?nonestr=" + nonceStr + "&slaveid=" + slaveid,
-                type: "get",
-                dataType: "json",
-                success: function(json) {
-                    if (json.status == 0) {
-                        var enddaystr = json.enddaystr;
-                        window.location.href = "/wxpay/successpage.html?" + "slaveid=" + slaveid + "&enddaystr=" + enddaystr;
-                    } else {
-                        alert("充值失败，请联系在线客服!");
-                    }
-                },
-                //调起微信支付失败，恢复到原来的订单量
-                error: function(JSON) {
-                    alert("充值失败，请联系在线客服!");
-                }
-            });
-        }
-
-        function onBridgeReady(appId, timeStamp, nonceStr, packAge, signType, paySign) {
-            WeixinJSBridge.invoke(
-                'getBrandWCPayRequest', {
-                    "appId": appId, //公众号名称，由商户传入     
-                    "timeStamp": timeStamp,
-                    "nonceStr": nonceStr, //随机串     
-                    "package": packAge,
-                    "signType": signType, //微信签名方式：     
-                    "paySign": paySign //微信签名 
-                },
-                function(res) {
-                    if (res.err_msg == "get_brand_wcpay_request:ok") {
-                        // 使用以上方式判断前端返回,微信团队郑重提示：res.err_msg将在用户支付成功后返回    ok，但并不保证它绝对可靠。 
-                        var slaveid = document.getElementById("jiuhuid").value;
-                        notifyPayOK(slaveid, nonceStr);
-                    }
-                }
-            );
-        }
-        var userNameEl = document.getElementById("jiuhuid");
         var openId = getParameterByName("openid");
         var goodsid = getParameterByName("goodsid");
         var goodsname = getParameterByName("goodsname");
         var goodsdesc = getParameterByName("goodsdesc");
-        var goodsprice = Number(getParameterByName("goodsprice"));
-        var goodsdiscount = Number(getParameterByName("goodsdiscount"));
+        var goodsprice = Number(getParameterByName("goodsprice")).toFixed(2);
+        var goodsdiscount = Number(getParameterByName("goodsdiscount")).toFixed(2);
 
-        document.getElementById('goodsname').innerHTML = goodsname;
-        document.getElementById('goodsdesc').innerHTML = goodsdesc;
-        document.getElementById('goodsprice').innerHTML = '原价 : ' + goodsprice.toFixed(2) + '元';
-        document.getElementById('goodsdiscount').innerHTML = '折后 : ' + (goodsprice * goodsdiscount).toFixed(2) + '元';
-
-        userNameEl.value = "minigps";
-
-        function getPrePayInfo() {
-            var username = userNameEl.value.trim();
-            if (!openId) {
-                alert("openId" + openId);
-            }
-            //var getPrePayIdUrl = "/wxpay/towxpay";   
-            // String openid = request.getParameter("openid");
-            // String goodscreater = request.getParameter("goodscreater");
-            //   String goodsid = request.getParameter("goodsid");
-            //   String countStr = request.getParameter("count");
-            //   String username = request.getParameter("username");
-            var state = "wxe44094ffe9730359" + "_" + "insureagent_insureagent20_charge";
-            if (username != "") {
-                // window.location.href = "https://www.gps51.com/wxpay/payaction?openid=" + openId + "&username=" + username + "&goodsid=" + goodsid + "&count=1" + "&state=" + state;
-                // return;
-                //调用支付接口
-                $.ajax({
-                    url: "https://www.gps51.com/wxpay/payaction?openid=" + openId + "&username=" + username + "&goodsid=" + goodsid + "&count=1" + "&state=" + state,
-                    type: "get",
-                    dataType: "json",
-                    success: function(json) {
-                        var appId = json.appId;
-                        var timeStamp = json.timeStamp;
-                        var nonceStr = json.nonceStr;
-                        var packAge = json.packAge;
-                        var signType = json.signType;
-                        var paySign = json.paySign;
-                        onBridgeReady(appId, timeStamp, nonceStr, packAge, signType, paySign);
-                    },
-                    //调起微信支付失败，恢复到原来的订单量
-                    error: function() {
-                        alert("充值失败，请联系在线客服!");
+        new Vue({
+            el: '#app',
+            data: {
+                loading: false,
+                label: '门店号 :',
+                username: 'minigps',
+                goodsname: goodsname,
+                goodsdesc: goodsdesc,
+                goodsprice: goodsprice,
+                goodsdiscount: (goodsprice * goodsdiscount).toFixed(2)
+            },
+            computed: {
+                goodspriceStr: function() {
+                    return '原价 : ' + this.goodsprice + '元';
+                },
+                goodsdiscountStr: function() {
+                    return '折后 : ' + this.goodsdiscount + '元';
+                },
+            },
+            methods: {
+                getPrePayInfo: function() {
+                    var state = "wxe44094ffe9730359_insureagent_insureagent20_charge",
+                        me = this;
+                    if (this.username != "") {
+                        // window.location.href = "https://www.gps51.com/wxpay/payaction?openid=" + openId + "&username=" + username + "&goodsid=" + goodsid + "&count=1" + "&state=" + state;
+                        // return;
+                        //调用支付接口
+                        me.loading = true;
+                        $.ajax({
+                            url: "https://www.gps51.com/wxpay/payaction?openid=" + openId + "&username=" + this.username + "&goodsid=" + goodsid + "&count=1" + "&state=" + state,
+                            type: "get",
+                            dataType: "json",
+                            success: function(json) {
+                                var appId = json.appId;
+                                var timeStamp = json.timeStamp;
+                                var nonceStr = json.nonceStr;
+                                var packAge = json.packAge;
+                                var signType = json.signType;
+                                var paySign = json.paySign;
+                                me.onBridgeReady(appId, timeStamp, nonceStr, packAge, signType, paySign);
+                            },
+                            //调起微信支付失败，恢复到原来的订单量
+                            error: function() {
+                                me.loading = false;
+                                me.$createToast({
+                                    txt: '充值失败，请联系客服!',
+                                    type: 'txt'
+                                }).show();
+                            }
+                        });
+                        //error=0 表示增加订单后总订单数大于10
+                    } else {
+                        me.$createToast({
+                            txt: '请输入门店号!',
+                            type: 'txt'
+                        }).show();
                     }
-                });
-                //error=0 表示增加订单后总订单数大于10
-            } else {
-                alert("请输入正确的九护号");
-            }
+                },
+                onBridgeReady: function(appId, timeStamp, nonceStr, packAge, signType, paySign) {
+                    var me = this;
+                    WeixinJSBridge.invoke(
+                        'getBrandWCPayRequest', {
+                            "appId": appId, //公众号名称，由商户传入     
+                            "timeStamp": timeStamp,
+                            "nonceStr": nonceStr, //随机串     
+                            "package": packAge,
+                            "signType": signType, //微信签名方式：     
+                            "paySign": paySign //微信签名 
+                        },
+                        function(res) {
+                            me.loading = false;
+                            if (res.err_msg == "get_brand_wcpay_request:ok") {
+                                // 使用以上方式判断前端返回,微信团队郑重提示：res.err_msg将在用户支付成功后返回    ok，但并不保证它绝对可靠。 
+                                me.notifyPayOK(nonceStr);
+                            }
+                        }
+                    );
+                },
+                notifyPayOK: function(nonceStr) {
+                    var state = "wxe44094ffe9730359_insureagent_insureagent20_query";
+                    //调用通知服务器充值成功
+                    var me = this;
+                    var toast = this.$createToast({
+                        time: 0,
+                        txt: '查询中',
+                        mask: true,
+                    })
+                    toast.show();
 
-        }
-
-        function doGetPrePayIdCallBack() {
-            if (typeof WeixinJSBridge == "undefined") {
-                if (document.addEventListener) {
-                    document.addEventListener('WeixinJSBridgeReady', onBridgeReady, false);
-                } else if (document.attachEvent) {
-                    document.attachEvent('WeixinJSBridgeReady', onBridgeReady);
-                    document.attachEvent('onWeixinJSBridgeReady', onBridgeReady);
+                    try {
+                        $.ajax({
+                            url: "https://www.gps51.com/wxpay/payaction?nonestr=" + nonceStr + "&state=" + state,
+                            type: "get",
+                            dataType: "json",
+                            success: function(json) {
+                                toast.hide();
+                                alert(json.cause);
+                                if (json.status == 0) {
+                                    var insurecount = json.insurecount;
+                                    alert("充值成功，剩余" + insurecount + "份保单");
+                                } else {
+                                    me.$createToast({
+                                        txt: '查询失败',
+                                        type: 'txt'
+                                    }).show();
+                                }
+                            },
+                            //调起微信支付失败，恢复到原来的订单量
+                            error: function(JSON) {
+                                toast.hide();
+                                me.$createToast({
+                                    txt: '查询失败',
+                                    type: 'txt'
+                                }).show();
+                            }
+                        });
+                    } catch (error) {
+                        toast.hide();
+                    }
                 }
-            } else {
-                onBridgeReady();
             }
-        }
+        })
     </script>
 
 </body>
