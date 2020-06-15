@@ -172,12 +172,7 @@
         var goodsdesc = getParameterByName("goodsdesc");
         var goodsprice = getParameterByName("goodsprice");
         var goodsdiscount = getParameterByName("goodsdiscount");
-        alert(openId);
-        alert(goodsid);
-        alert(goodsname);
-        alert(goodsdesc);
-        alert(goodsprice);
-        alert(goodsdiscount);
+
 
         function getPrePayInfo() {
             var openId = getParameterByName("openid");
@@ -193,7 +188,6 @@
                     type: "get",
                     dataType: "json",
                     success: function(json) {
-                        console.log(json);
                         var appId = json.appId;
                         var timeStamp = json.timeStamp;
                         var nonceStr = json.nonceStr;

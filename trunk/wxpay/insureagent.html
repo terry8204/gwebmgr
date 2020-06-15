@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <title>保险支付</title>
+    <title>增值服务支付</title>
     <link rel="stylesheet" href="./cube.min.css">
     <style>
         boay {
@@ -13,7 +13,7 @@
         }
         
         #app {
-            padding-top: 4rem;
+            padding-top: 1rem;
         }
         
         #app h1 {
@@ -34,6 +34,14 @@
             border: 1px solid #ccc;
         }
         
+        #app p {
+            padding: 1rem 5rem;
+        }
+        
+        #app p img {
+            width: 100%;
+        }
+        
         #app .cube-btn {
             background: green;
         }
@@ -41,24 +49,70 @@
         #app>div {
             padding: 10px 2rem;
         }
+        
+        #app .goods {
+            height: 3rem;
+            background-color: #D9D9D9;
+        }
+        
+        #app .goods>div {
+            float: left;
+            width: 50%;
+            height: 100%;
+        }
+        
+        div.goods-desc {
+            line-height: 3rem;
+            padding-left: 1rem;
+            box-sizing: border-box;
+        }
+        
+        div.goods-price {
+            height: 3rem;
+            padding-right: 1rem;
+            box-sizing: border-box;
+            font-size: 12px;
+        }
+        
+        div.goods-desc>b {
+            font-weight: 700;
+        }
+        
+        div.goods-price>div {
+            line-height: 1.5rem;
+            height: 1.5rem;
+            text-align: right;
+        }
+        
+        div.goods-price>div>span {
+            text-decoration: line-through;
+        }
     </style>
 </head>
 
 <body>
     <div id="app">
+        <p>
+            <img src="./images/logo.png">
+        </p>
         <h1 v-text="goodsname"></h1>
-        <h4 v-text="goodsdesc"></h4>
-        <h4 v-text="goodspriceStr" style="text-decoration:line-through;color:#e3e3e3;"></h4>
-        <h4 v-text="goodsdiscountStr"></h4>
+        <div>
+            <div class="goods">
+                <div class="goods-desc" v-html="goodsdesc"></div>
+                <div class="goods-price">
+                    <div v-text="goodsdiscountStr" style="font-size: 16px;font-weight: 700;color: #E26C0A;"></div>
+                    <div v-html="goodspriceStr"></div>
+                </div>
+            </div>
+        </div>
         <div v-text="label"></div>
         <div>
             <cube-input v-model="username" :clearable="true"></cube-input>
         </div>
         <div>
-            <cube-button @click="getPrePayInfo" :loading="loading">立即支付</cube-button>
+            <cube-button @click="getPrePayInfo" :loading="loading"><span v-text="btnStr"></span></cube-button>
         </div>
     </div>
-
 
     <script type="text/javascript" src="../js/gps51-jquery.js"></script>
     <script type="text/javascript" src="./vue.min.js"></script>
@@ -78,7 +132,7 @@
             return theRequest[name];
         }
 
-
+        var gappid = getParameterByName("appid");
         var openId = getParameterByName("openid");
         var goodsid = getParameterByName("goodsid");
         var goodsname = getParameterByName("goodsname");
@@ -90,25 +144,26 @@
             el: '#app',
             data: {
                 loading: false,
-                label: '门店号 :',
+                label: '门店备案编号 :',
+                btnStr: '立即支付',
                 username: '',
                 goodsname: goodsname,
-                goodsdesc: goodsdesc,
+                goodsdesc: "锐新保 x <b>20</b> 份",
                 goodsprice: goodsprice,
                 goodsdiscount: (goodsprice * goodsdiscount).toFixed(2)
             },
             computed: {
                 goodspriceStr: function() {
-                    return '原价 : ' + this.goodsprice + '元';
+                    return '原价:<span>' + this.goodsprice + '</span>';
                 },
                 goodsdiscountStr: function() {
-                    return '折后 : ' + this.goodsdiscount + '元';
+                    return '¥' + this.goodsdiscount;
                 },
             },
             methods: {
                 getPrePayInfo: function() {
-                    var state = "wxe44094ffe9730359_insureagent_insureagent20_charge",
-                        me = this;
+                    var state = gappid + "_insureagent_insureagent20_charge";
+                    var me = this;
                     if (this.username != "") {
                         // window.location.href = "https://www.gps51.com/wxpay/payaction?openid=" + openId + "&username=" + username + "&goodsid=" + goodsid + "&count=1" + "&state=" + state;
                         // return;
@@ -165,7 +220,7 @@
                     );
                 },
                 notifyPayOK: function(nonceStr) {
-                    var state = "wxe44094ffe9730359_insureagent_insureagent20_query";
+                    var state = gappid + "_insureagent_insureagent20_query";
                     //调用通知服务器充值成功
                     var me = this;
                     var toast = this.$createToast({
