@@ -2174,8 +2174,12 @@
                 },
                 handlePlayAllVideos: function() {
                     for (var i = 0; i < this.videoNumber; i++) {
-                        if (!this.playerState[playerStateKeyList[i + 1]]) {
-                            this.playerState[playerStateKeyList[i + 1]] = true;
+                        var flvPlayer = this.videoIns[i + 1];
+                        this.playerState[playerStateKeyList[i + 1]] = true;
+                        if (flvPlayer) {
+                            flvPlayer.play();
+                        } else {
+
                             this.handleStartVideos(i + 1);
                         }
                     }
