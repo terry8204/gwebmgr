@@ -13,79 +13,110 @@
         }
         
         #app {
-            padding-top: 1rem;
-        }
-        
-        #app h1 {
-            text-align: center;
-            font-size: 28px;
-            font-weight: 600;
-            padding-bottom: 10px;
-        }
-        
-        #app h4 {
-            text-align: center;
-            font-size: 16px;
-            padding: 10px 0;
-            color: red;
+            padding: 3rem 0.5rem 0 0.5rem;
         }
         
         #app .cube-input:after {
             border: 1px solid #ccc;
         }
         
+        #app .cube-input:after {
+            border: 1px solid #EE6900;
+        }
+        
         #app p {
-            padding: 1rem 5rem;
+            padding: 1rem;
+            text-align: center;
         }
         
         #app p img {
-            width: 100%;
+            width: 8rem;
         }
         
-        #app .cube-btn {
-            background: green;
+        div.card {
+            margin: 1rem;
+            border: 1px solid #EE6900;
+            border-radius: 1rem;
+            overflow: hidden;
         }
         
-        #app>div {
-            padding: 10px 2rem;
+        div.card>h1 {
+            text-align: center;
+            font-size: 22px;
+            font-weight: 600;
+            padding-bottom: 10px;
+            padding: 2rem 0 0.5rem 0;
         }
         
-        #app .goods {
+        div.card>div.goods {
+            overflow: hidden;
+            margin: 1rem 0;
+            background-color: #EE6900;
+            ;
             height: 3rem;
-            background-color: #D9D9D9;
+            padding: 0.5rem;
+            color: #fff;
         }
         
-        #app .goods>div {
+        div.card>div.goods>div {
             float: left;
-            width: 50%;
-            height: 100%;
-        }
-        
-        div.goods-desc {
-            line-height: 3rem;
-            padding-left: 1rem;
-            box-sizing: border-box;
-        }
-        
-        div.goods-price {
             height: 3rem;
-            padding-right: 1rem;
-            box-sizing: border-box;
+        }
+        
+        div.card>div.goods>div:first-child {
+            width: 70%;
+        }
+        
+        div.card>div.goods>div:last-child {
+            width: 30%;
+        }
+        
+        div.card>div.goods>div>div {
+            height: 1.5rem;
+            line-height: 1.5rem;
             font-size: 12px;
         }
         
-        div.goods-desc>b {
-            font-weight: 700;
-        }
-        
         div.goods-price>div {
-            line-height: 1.5rem;
-            height: 1.5rem;
             text-align: right;
         }
         
-        div.goods-price>div>span {
-            text-decoration: line-through;
+        div.card>div.input-wrap {
+            display: flex;
+            flex-direction: row;
+            padding: 1rem 0;
+        }
+        
+        .input-wrap .label {
+            line-height: 40px;
+            font-size: 14px;
+            width: 100px;
+            text-align: center;
+        }
+        
+        div.btns {
+            overflow: hidden;
+            border-radius: 10px;
+            margin: 3rem 1rem 1rem 1rem;
+        }
+        
+        div.btns>div {
+            float: left;
+            height: 45px;
+            text-align: center;
+            line-height: 45px;
+            color: #ffffff;
+            font-size: 16px;
+        }
+        
+        div.btns>div:first-child {
+            width: 70%;
+            background-color: #EE6900;
+        }
+        
+        div.btns>div:last-child {
+            width: 30%;
+            background-color: #868686;
         }
     </style>
 </head>
@@ -95,22 +126,35 @@
         <p>
             <img src="./images/logo.png">
         </p>
-        <h1 v-text="goodsname"></h1>
-        <div>
+
+        <div class="card">
+
+            <h1 v-text="goodsname"></h1>
+
             <div class="goods">
-                <div class="goods-desc" v-html="goodsdesc"></div>
+                <div class="goods-desc">
+                    <div v-html="goodsdesc" style="font-size: 16px;font-weight: 700;"></div>
+                    <div>整车一年盗抢保障服务</div>
+                </div>
                 <div class="goods-price">
-                    <div v-text="goodsdiscountStr" style="font-size: 16px;font-weight: 700;color: #E26C0A;"></div>
-                    <div v-html="goodspriceStr"></div>
+                    <div v-text="goodsdiscountStr" style="font-size: 16px;font-weight: 700;"></div>
+                    <div v-html="goodspriceStr" style="font-size: 12px;text-decoration: line-through;"></div>
                 </div>
             </div>
+
+            <div class="input-wrap">
+                <div v-text="label" class="label"></div>
+                <div style="flex: 1;padding: 0 0.5rem;">
+                    <cube-input v-model="username" :placeholder="placeholder" style="width: 100%;" :clearable="true"></cube-input>
+                </div>
+            </div>
+
         </div>
-        <div v-text="label"></div>
-        <div>
-            <cube-input v-model="username" :clearable="true"></cube-input>
-        </div>
-        <div>
-            <cube-button @click="getPrePayInfo" :loading="loading"><span v-text="btnStr"></span></cube-button>
+
+        <div class="btns">
+            <div v-text="btnStr" @click="getPrePayInfo"></div>
+            <div v-text="btnStr1" @click="handleBeiAn"></div>
+            <!-- <cube-button @click="getPrePayInfo" :loading="loading"><span ></span></cube-button> -->
         </div>
     </div>
 
@@ -143,12 +187,14 @@
         new Vue({
             el: '#app',
             data: {
+                placeholder: "请输入门店投保备案编号",
                 loading: false,
                 label: '门店备案编号 :',
                 btnStr: '立即支付',
+                btnStr1: '门店备案',
                 username: '',
                 goodsname: goodsname,
-                goodsdesc: "锐新保 x <b>20</b> 份",
+                goodsdesc: goodsdesc, //"锐新保 x <b>20</b> 份",
                 goodsprice: goodsprice,
                 goodsdiscount: (goodsprice * goodsdiscount).toFixed(2)
             },
@@ -161,6 +207,9 @@
                 },
             },
             methods: {
+                handleBeiAn() {
+                    window.location.href = "https://su-c2db0da8022f6f3e.jinshuju.com/f/4iIHuV";
+                },
                 getPrePayInfo: function() {
                     var state = gappid + "_insureagent_insureagent20_charge";
                     var me = this;
