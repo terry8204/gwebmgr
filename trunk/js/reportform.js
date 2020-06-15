@@ -1786,6 +1786,21 @@ function insureRecords(groupslist) {
                     }
                 },
                 { title: '添加时间', key: 'createtimeStr', width: 150, "sortable": true },
+                {
+                    title: '购买方式',
+                    key: 'buytype',
+                    width: 100,
+                    render: function(h, parmas) {
+                        var buytype = parmas.row.buytype,
+                            reslut = '未知';
+                        if (buytype === 1) {
+                            reslut = '自行购买';
+                        } else if (buytype === 2) {
+                            reslut = '厂家购买';
+                        }
+                        return h('span', {}, reslut);
+                    }
+                },
                 { title: '经销商', key: 'username', width: 150 },
                 { title: '经销商地址', key: 'useraddress', width: 150 },
                 { title: '经销商手机号', key: 'usernamephonenum', width: 120 },
