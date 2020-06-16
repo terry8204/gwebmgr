@@ -211,7 +211,7 @@
                     window.location.href = "https://su-c2db0da8022f6f3e.jinshuju.com/f/4iIHuV";
                 },
                 getPrePayInfo: function() {
-                    var state = gappid + "_insureagent_insureagent20_charge";
+                    var state = gappid + "_insureagent_" + goodsid + "_charge";
                     var me = this;
                     if (this.username != "") {
                         // window.location.href = "https://www.gps51.com/wxpay/payaction?openid=" + openId + "&username=" + username + "&goodsid=" + goodsid + "&count=1" + "&state=" + state;
@@ -269,7 +269,7 @@
                     );
                 },
                 notifyPayOK: function(nonceStr) {
-                    var state = gappid + "_insureagent_insureagent20_query";
+                    var state = gappid + "_insureagent_" + goodsid + "_query";
                     //调用通知服务器充值成功
                     var me = this;
                     var toast = this.$createToast({
