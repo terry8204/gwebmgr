@@ -2232,6 +2232,7 @@ function salesRecord(groupslist) {
         i18n: utils.getI18n(),
         mixins: [treeMixin],
         data: {
+            isFilter: false,
             dayNumberType: 0,
             dateVal: [DateFormat.longToDateStr(Date.now(), timeDifference), DateFormat.longToDateStr(Date.now(), timeDifference)],
             error: 123,
@@ -2407,11 +2408,25 @@ function salesRecord(groupslist) {
                 utils.sendAjax(url, { username: this.createrToUser, startday: startday, endday: endday, offset: timeDifference }, function(resp) {
                     me.loading = false;
                     if (resp.status === 0) {
+                        if (me.isFilter) {
+                            var filters = [];
+                            var index = 1;
+                            resp.records.forEach(function(item) {
+                                if (item.agentinsurecount != 0 || item.individualinsurecount != 0 || item.remaininsurecount != 0) {
+                                    filters.push(item);
+                                    index++;
+                                }
+                            });
+                            me.insureRecords = filters;
+                        } else {
+                            resp.records.forEach(function(item, index) {
+                                item.index = index + 1;
+                            });
+                            me.insureRecords = resp.records;
+                        }
 
-                        me.insureRecords = [];
 
                         me.total = me.insureRecords.length;
-
                         me.currentIndex = 1;
                         me.tableData = me.insureRecords.slice(0, 20);
                     } else {
