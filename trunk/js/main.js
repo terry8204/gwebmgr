@@ -14,7 +14,7 @@ var isToAlarmListRecords = false;
 var isToPhoneAlarmRecords = false;
 var isNeedRefreshMapUI = false;
 var timeDifference = DateFormat.getOffset();
-document.title = isZh ? "位置信息服务平台" : "Location information service platform";
+document.title = isZh ? "位置视频服务平台" : "Location video service platform";
 
 
 // vuex store

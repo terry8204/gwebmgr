@@ -30,7 +30,7 @@
                 selectCorrectAccount: "Please select the correct account!",
             },
             login: {
-                title: "Location information service platform",
+                title: "Location video service platform",
                 chinese: "Chinese",
                 english: "英文",
                 companyLogin: "User",
@@ -353,7 +353,7 @@
                 selectCorrectAccount: "请选择正确的账号!",
             },
             login: {
-                title: "位置信息服务平台",
+                title: "位置视频服务平台",
                 chinese: "中文",
                 english: "English",
                 companyLogin: "用户登录",
