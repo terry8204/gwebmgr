@@ -238,7 +238,7 @@ BMapClass.pt.updateLastTracks = function(deviceid) {
             if (this.markerHashMap[key]) {
                 var marker = this.markerHashMap[key];
                 var newPoint = new BMap.Point(track.b_lon, track.b_lat);
-                var isEq = marker.point.equals(newPoint);
+                var isEq = newPoint.equals(marker.point);
                 var myIcon = this.getIcon(track);
                 marker.setIcon(myIcon);
                 marker.setRotation(track.course);

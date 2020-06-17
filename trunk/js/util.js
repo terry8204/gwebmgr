@@ -394,6 +394,17 @@ var utils = {
         }
         return angle
     },
+    playTextVoice: function(text) {
+        var zhText = text;
+        zhText = encodeURI(zhText);
+        var audio = "<audio autoplay=\"autoplay\">" + "<source src=\"http://tts.baidu.com/text2audio?lan=zh&ie=UTF-8&spd=4&text=" + zhText + "\" type=\"audio/mpeg\">" + "<embed height=\"0\" width=\"0\" src=\"http://tts.baidu.com/text2audio?text=" + zhText + "\">" + "</audio>";
+        $('body').append(audio);
+        // setTimeout(function() {
+        //     var audioEl = document.getElementsByTagName('audio')[0];
+        //     audioEl.pause();
+        //     audioEl && document.body.removeChild(audioEl);
+        // }, 3000);
+    },
     getDirectionImage: function(isOnline, angle) {
         var pathname = location.pathname
         var imgPath = ''
@@ -516,6 +527,8 @@ var utils = {
         var speed = track.speed == 0 ? "0km/h" : (track.speed / 1000).toFixed(2) + "km/h";
         var rxlevel = track.rxlevel === 0 ? '' : ('(' + (isZh ? '信号' : 'Signal') + ':' + track.rxlevel + '%)');
         var deviceid = "'" + track.deviceid + "'";
+        var extendsBtns = this.getIsAddExtendBtns(),
+            extendsStr = '';
         var content =
             '<p> ' + (isZh ? '设备名称' : 'Device Name') + ': ' + track.devicename + '</p>' +
             '<p> ' + (isZh ? '设备序号' : 'Device Number') + ': ' + track.deviceid + '<i onclick="copyToClipboard()" class="ivu-icon ivu-icon-ios-copy-outline" style="font-size: 24px;cursor: pointer;"></i></p>' +
@@ -527,7 +540,8 @@ var utils = {
             '<p> ' + (isZh ? '总里程' : 'Park Duration') + ': ' + this.getMileage(track.totaldistance) + '</p>' +
             '<p> ' + (isZh ? '停留时长' : 'Mileage') + ': ' + this.timeStamp(track.parkduration, isZh) + '</p>' +
             '<p class="last-strstatus"> ' + (isZh ? '状态' : 'Status') + ': ' + strstatus + '</p>' +
-            '<p class="last-address"> ' + (isZh ? '详细地址' : 'Address') + ': ' + b_address + '</p>' +
+            (extendsBtns.video ? ('<p> ' + (isZh ? '视频' : 'video') + ': ' + (isZh ? track.strvideoalarm : track.strvideoalarmen) + '</p>') : ("")) +
+            '<p class="last-address"> ' + (isZh ? '地址' : 'Address') + ': ' + b_address + '</p>' +
             '<p class="operation">' +
             '<span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="playBack(' +
             deviceid +
@@ -543,8 +557,7 @@ var utils = {
             ')">' + (isZh ? '设置围栏' : 'SetFence') + '</span><span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="setPanorama(' +
             deviceid +
             ')">' + (isZh ? '查看街景' : 'Panorama') + '</span></p>';
-        var extendsBtns = this.getIsAddExtendBtns(),
-            extendsStr = '';
+
         if (extendsBtns.video) {
             var devicename = "'" + track.devicename + "'";
             var activeSafety = extendsBtns.activesafety ? 1 : 0;
