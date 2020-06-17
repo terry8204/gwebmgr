@@ -1,0 +1,35 @@
+<div id="sales-record">
+    <div style="margin:10px;height: 32px;">
+        <div style="float: left;position: relative;width: 300px;line-height:32px;">
+            <div class="search-wrapper" v-click-outside.capture="onClickOutside">
+                <i-input v-model.trim="sosoValue" icon="ios-search-outline" @on-change="sosoValueChange" @on-blur="blur" @on-focus="focus" :readonly="readonly" @on-click="focus" :placeholder="placeholder"></i-input>
+                <transition name="fade">
+                    <div class="search-item-wrapper" v-show="isShowMatchDev">
+                        <Tree :data="treeData" @on-check-change="onCheckedDevice"></Tree>
+                    </div>
+                </transition>
+            </div>
+        </div>
+        <div style="margin-left:20px;float: left;">
+            <date-picker type="daterange" :value="dateVal" :editable="false" :clearable="false" @on-change="onChange" show-week-numbers style="width:200px" placement="bottom-start"></date-picker>
+        </div>
+        <div style="float: left;height: 30px; line-height: 30px;margin-left: 20px;" class="spans-wrap">
+            <span class="cursor-pointer" @click="handleSelectdDate(0)" :style="{color: dayNumberType == 0 ? '#2D8CF0' : '#515A6E'}">{{$t("reportForm.toDay")}}</span> <b>｜</b>
+            <span class="cursor-pointer" @click="handleSelectdDate(1)" :style="{color: dayNumberType == 1 ? '#2D8CF0' : '#515A6E'}">{{$t("reportForm.yesterDay")}}</span> <b>｜</b>
+            <span class="cursor-pointer" @click="handleSelectdDate(3)" :style="{color: dayNumberType == 3 ? '#2D8CF0' : '#515A6E'}">{{$t("reportForm.threeDays")}}</span> <b>｜</b>
+            <span class="cursor-pointer" @click="handleSelectdDate(7)" :style="{color: dayNumberType == 7 ? '#2D8CF0' : '#515A6E'}">{{$t("reportForm.sevenDays")}}</span>
+        </div>
+        <div style="margin-left:20px;float: left;">
+            <i-button @click="queryInsures" :loading="loading">{{$t("reportForm.query")}}</i-button>
+        </div>
+        <!-- <div style="margin-right:20px;float: right;">
+            <i-button @click="exportData" type="primary">导出数据</i-button>
+        </div> -->
+    </div>
+    <div style="margin:10px;">
+        <i-table :columns="columns" border ref="table" :height="tableHeight" :data="tableData" :loading="loading"></i-table>
+    </div>
+    <div style="padding-left:10px;">
+        <Page :total="total" show-total @on-change="changePage" :page-size="20" :current="currentIndex" />
+    </div>
+</div>

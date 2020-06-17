@@ -2226,6 +2226,713 @@ function insureRecords(groupslist) {
     })
 }
 
+function salesRecord(groupslist) {
+    vueInstanse = new Vue({
+        el: '#sales-record',
+        i18n: utils.getI18n(),
+        mixins: [treeMixin],
+        data: {
+            dayNumberType: 0,
+            dateVal: [DateFormat.longToDateStr(Date.now(), timeDifference), DateFormat.longToDateStr(Date.now(), timeDifference)],
+            error: 123,
+            createrToUser: userName,
+            currentIndex: 1,
+            total: 0,
+            columns: [{
+                    title: "序号",
+                    key: 'index',
+                    width: 70,
+                },
+                {
+                    title: '用户名',
+                    key: 'username',
+                },
+                {
+                    title: '剩余保单数',
+                    key: 'remaininsurecount',
+                },
+                {
+                    title: '出厂已购保单销售数',
+                    key: 'agentinsurecount',
+                },
+                {
+                    title: '自行购买保单销售数',
+                    key: 'individualinsurecount',
+                },
+            ],
+            tableHeight: 300,
+            tableData: [],
+            loading: false,
+        },
+        methods: {
+            handleSelectdDate: function(dayNumber) {
+                this.dayNumberType = dayNumber;
+                var dayTime = 24 * 60 * 60 * 1000;
+                if (dayNumber == 0) {
+                    this.dateVal = [DateFormat.longToDateStr(Date.now(), timeDifference), DateFormat.longToDateStr(Date.now(), timeDifference)];
+                } else if (dayNumber == 1) {
+                    this.dateVal = [DateFormat.longToDateStr(Date.now() - dayTime, timeDifference), DateFormat.longToDateStr(Date.now() - dayTime, timeDifference)];
+                } else if (dayNumber == 3) {
+                    this.dateVal = [DateFormat.longToDateStr(Date.now() - dayTime * 2, timeDifference), DateFormat.longToDateStr(Date.now(), timeDifference)];
+                } else if (dayNumber == 7) {
+                    this.dateVal = [DateFormat.longToDateStr(Date.now() - dayTime * 6, timeDifference), DateFormat.longToDateStr(Date.now(), timeDifference)];
+                }
+            },
+            onChange: function(value) {
+                this.dateVal = value;
+            },
+            queryUsersTree: function(callback) {
+                var url = myUrls.queryUsersTree(),
+                    me = this;
+                utils.sendAjax(url, { username: userName }, function(respData) {
+                    if (respData.status == 0) {
+                        callback([me.castUsersTreeToDevicesTree(respData.rootuser)]);
+                    } else {
+                        me.$Message.error('查询失败')
+                    }
+                });
+            },
+            castUsersTreeToDevicesTree: function(devicesTreeRecord) {
+                var me = this;
+                var iViewTree = {
+                    render: function(h, params) {
+                        var username = params.data.title;
+                        return h('span', {
+                            on: {
+                                'click': function() {
+                                    me.createrToUser = username;
+                                    me.sosoValue = username;
+                                }
+                            },
+                            style: {
+                                cursor: 'pointer',
+                                color: (me.createrToUser == username) ? '#2D8CF0' : '#000'
+                            }
+                        }, [
+                            h('span', [
+                                h('Radio', {
+                                    props: {
+                                        value: username == me.createrToUser
+                                    },
+                                    style: {
+                                        marginRight: '4px',
+                                        marginLeft: '4px'
+                                    }
+                                }),
+                                h('span', params.data.title)
+                            ]),
+                        ])
+                    },
+                    expand: true,
+                };
+                if (devicesTreeRecord != null) {
+                    var username = devicesTreeRecord.user.username;
+                    var subusers = devicesTreeRecord.subusers;
+                    iViewTree.title = username;
+                    if (username != null && subusers != null && subusers.length > 0) {
+                        var subDevicesTreeRecord = this.doCastUsersTreeToDevicesTree(subusers);
+                        iViewTree.children = subDevicesTreeRecord;
+
+                    }
+                }
+                return iViewTree;
+            },
+            doCastUsersTreeToDevicesTree: function(usersTrees) {
+                var devicesTreeRecord = [],
+                    me = this;
+                if (usersTrees != null && usersTrees.length > 0) {
+                    for (var i = 0; i < usersTrees.length; ++i) {
+                        var usersTree = usersTrees[i];
+                        var username = usersTree.user.username;
+                        var subusers = usersTree.subusers;
+                        var currentsubDevicesTreeRecord = {
+                            render: function(h, params) {
+                                var username = params.data.title;
+                                return h('span', {
+                                    on: {
+                                        'click': function() {
+                                            me.createrToUser = username;
+                                            me.sosoValue = username;
+                                        }
+                                    },
+                                    style: {
+                                        cursor: 'pointer',
+                                        color: (me.createrToUser == username) ? '#2D8CF0' : '#000'
+                                    }
+                                }, [
+                                    h('span', [
+                                        h('Radio', {
+                                            props: {
+                                                value: username == me.createrToUser
+                                            },
+                                            style: {
+                                                marginRight: '4px',
+                                                marginLeft: '4px'
+                                            }
+                                        }),
+                                        h('span', params.data.title)
+                                    ]),
+                                ])
+                            },
+                        };
+                        currentsubDevicesTreeRecord.title = username;
+                        if (username != null && subusers != null && subusers.length > 0) {
+                            var subDevicesTreeRecord = this.doCastUsersTreeToDevicesTree(subusers);
+                            currentsubDevicesTreeRecord.children = subDevicesTreeRecord;
+                        }
+                        devicesTreeRecord.push(currentsubDevicesTreeRecord);
+                    }
+                }
+                return devicesTreeRecord;
+            },
+            calcTableHeight: function() {
+                var wHeight = window.innerHeight;
+                this.tableHeight = wHeight - 165;
+            },
+            changePage: function(index) {
+                var offset = index * 20;
+                var start = (index - 1) * 20;
+                this.currentPageIndex = index;
+                this.tableData = this.insureRecords.slice(start, offset);
+            },
+            changeTableColumns: function() {
+                this.columns = this.getTableColumns();
+            },
+            queryInsures: function() {
+                this.loading = true;
+                var url = myUrls.reportInsure(),
+                    me = this,
+                    startday = DateFormat.format(new Date(this.dateVal[0]), 'yyyy-MM-dd'),
+                    endday = DateFormat.format(new Date(this.dateVal[1]), 'yyyy-MM-dd');
+                utils.sendAjax(url, { username: this.createrToUser, startday: startday, endday: endday, offset: timeDifference }, function(resp) {
+                    me.loading = false;
+                    if (resp.status === 0) {
+
+                        me.insureRecords = [];
+
+                        me.total = me.insureRecords.length;
+
+                        me.currentIndex = 1;
+                        me.tableData = me.insureRecords.slice(0, 20);
+                    } else {
+                        me.total = 0;
+                        me.currentIndex = 1;
+                        me.tableData = [];
+                        me.insureRecords = [];
+                    }
+
+                }, function() {
+                    me.loading = false;
+                })
+            },
+            exportData: function() {
+                var tableData = deepClone(this.tableData);
+                tableData.forEach(function(item) {
+                    item.cardid = "\t" + item.cardid;
+                    item.usernamephonenum = "\t" + item.usernamephonenum;
+                    item.phonenum = "\t" + item.phonenum;
+                });
+                this.$refs.table.exportCsv({
+                    filename: '保险数据',
+                    original: false,
+                    columns: this.columns,
+                    data: tableData
+                });
+            },
+        },
+        mounted: function() {
+            var me = this;
+            me.queryUsersTree(function(usersTree) {
+                me.groupslist = usersTree;
+                me.treeData = usersTree;
+            });
+            this.sosoValue = userName;
+            this.calcTableHeight();
+            this.queryInsures();
+            this.editDeviceIndex = null;
+            this.insureRecords = [];
+        },
+    })
+}
+
+
+function insureRecords(groupslist) {
+    vueInstanse = new Vue({
+        el: '#insure-records',
+        i18n: utils.getI18n(),
+        mixins: [treeMixin],
+        data: {
+            dayNumberType: 0,
+            dateVal: [DateFormat.longToDateStr(Date.now(), timeDifference), DateFormat.longToDateStr(Date.now(), timeDifference)],
+            error: 123,
+            createrToUser: userName,
+            currentIndex: 1,
+            total: 0,
+            modal: false,
+            columns: [{
+                    title: "序号",
+                    key: 'index',
+                    width: 70,
+                    fixed: 'left',
+                },
+                {
+                    title: '是否付费',
+                    key: 'isPay',
+                    width: 100,
+                    fixed: 'left',
+                },
+                { title: '姓名', key: 'name', width: 100, fixed: 'left', },
+                { title: '身份证号', key: 'cardid', width: 160, fixed: 'left', },
+                {
+                    title: '保单号',
+                    width: 100,
+                    fixed: 'left',
+                    "sortable": true,
+                    render: function(h, parmas) {
+
+                        return h('span', {}, parmas.row.policyno == null ? '保单审核中' : parmas.row.policyno);
+                    }
+                },
+                { title: '添加时间', key: 'createtimeStr', width: 150, "sortable": true },
+                {
+                    title: '购买方式',
+                    key: 'buytype',
+                    width: 100,
+                    render: function(h, parmas) {
+                        var buytype = parmas.row.buytype,
+                            reslut = '未知';
+                        if (buytype === 1) {
+                            reslut = '自行购买';
+                        } else if (buytype === 2) {
+                            reslut = '厂家购买';
+                        }
+                        return h('span', {}, reslut);
+                    }
+                },
+                { title: '经销商', key: 'username', width: 150 },
+                { title: '经销商地址', key: 'useraddress', width: 150 },
+                { title: '经销商手机号', key: 'usernamephonenum', width: 120 },
+                { title: '用户手机号', key: 'phonenum', width: 120 },
+                { title: '用户地址', key: 'usingaddress', width: 150 },
+                // { title: '电动车类型', key: 'phonenum', width: 150 },
+                { title: '品牌型号', key: 'brandtype', width: 100 },
+                { title: '车架号', key: 'vinno', width: 150 },
+                { title: 'GPS序列号', key: 'deviceid', width: 150 },
+                { title: '购车日期', key: 'buycarday', width: 100 },
+                { title: '销售价格', key: 'carvalue', width: 100 },
+                { title: '保险金额', key: 'insureprice', width: 100 },
+                { title: '保费', key: 'insurefee', width: 80 },
+                {
+                    title: '合格证',
+                    key: 'qualitycerturl',
+                    width: 100,
+                    render: function(h, parmas) {
+                        if (parmas.row.qualitycerturl == null) {
+                            return h('span', {}, '无');
+                        }
+                        return h('a', { attrs: { href: parmas.row.qualitycerturl, target: '_blank' } }, '点击预览');
+                    }
+                },
+                {
+                    title: '整车照',
+                    key: 'carpicurl',
+                    width: 100,
+                    render: function(h, parmas) {
+                        if (parmas.row.carpicurl == null) {
+                            return h('span', {}, '无');
+                        }
+                        return h('a', { attrs: { href: parmas.row.carpicurl, target: '_blank' } }, '点击预览');
+                    }
+                },
+                {
+                    title: '身份证正面',
+                    key: 'positivecardidurl',
+                    width: 100,
+                    render: function(h, parmas) {
+                        if (parmas.row.positivecardidurl == null) {
+                            return h('span', {}, '无');
+                        }
+                        return h('a', { attrs: { href: parmas.row.positivecardidurl, target: '_blank' } }, '点击预览');
+                    }
+                },
+                {
+                    title: '身份证反面',
+                    key: 'negativecardidurl',
+                    width: 100,
+                    render: function(h, parmas) {
+                        if (parmas.row.negativecardidurl == null) {
+                            return h('span', {}, '无');
+                        }
+                        return h('a', { attrs: { href: parmas.row.negativecardidurl, target: '_blank' } }, '点击预览');
+                    }
+                },
+                {
+                    title: '购车发票',
+                    key: 'invoiceurl',
+                    width: 100,
+                    render: function(h, parmas) {
+                        if (parmas.row.invoiceurl == null) {
+                            return h('span', {}, '无');
+                        }
+                        return h('a', { attrs: { href: parmas.row.invoiceurl, target: '_blank' } }, '点击预览');
+                    }
+                },
+                {
+                    title: '车主与车合影',
+                    key: 'groupphotourl',
+                    width: 120,
+                    render: function(h, parmas) {
+                        if (parmas.row.groupphotourl == null) {
+                            return h('span', {}, '无');
+                        }
+                        return h('a', { attrs: { href: parmas.row.groupphotourl, target: '_blank' } }, '点击预览');
+                    }
+                },
+                {
+                    title: '车钥匙/遥控器',
+                    key: 'carkeypicurl',
+                    width: 120,
+                    render: function(h, parmas) {
+                        if (parmas.row.carkeypicurl == null) {
+                            return h('span', {}, '无');
+                        }
+                        return h('a', { attrs: { href: parmas.row.carkeypicurl, target: '_blank' } }, '点击预览');
+                    }
+                },
+                {
+                    title: '保险告知书',
+                    key: 'insurenoticeurl',
+                    width: 120,
+                    render: function(h, parmas) {
+                        if (parmas.row.insurenoticeurl == null) {
+                            return h('span', {}, '无');
+                        }
+                        return h('a', { attrs: { href: parmas.row.insurenoticeurl, target: '_blank' } }, '点击预览');
+                    }
+                },
+                {
+                    title: vRoot.$t("bgMgr.action"),
+                    key: 'action',
+                    width: 130,
+                    fixed: 'right',
+                    render: function(h, params) {
+                        return h('div', [
+                            h('Button', {
+                                props: {
+                                    type: 'primary',
+                                    size: 'small'
+                                },
+                                style: {
+                                    marginRight: '5px'
+                                },
+                                on: {
+                                    click: function() {
+                                        vueInstanse.editDeviceIndex = params.index;
+                                        vueInstanse.editObjectRow.name = params.row.name;
+                                        vueInstanse.editObjectRow.cardid = params.row.cardid;
+                                        vueInstanse.editObjectRow.phonenum = params.row.phonenum;
+                                        vueInstanse.editObjectRow.vinno = params.row.vinno;
+                                        vueInstanse.editObjectRow.usernamephonenum = params.row.usernamephonenum;
+                                        vueInstanse.editObjectRow.insureid = params.row.insureid;
+                                        vueInstanse.editObjectRow.isRecharge = params.row.insurestate == 1 ? true : false;
+                                        vueInstanse.modal = true;
+                                    }
+                                }
+                            }, vRoot.$t("bgMgr.edit")),
+                            h('Button', {
+                                props: {
+                                    type: 'error',
+                                    size: 'small',
+                                },
+                                style: {
+                                    marginRight: '5px'
+                                },
+                                on: {
+                                    click: function() {
+                                        vueInstanse.editDeviceIndex = params.index;
+                                        vueInstanse.handleDelete(params.row);
+                                    }
+                                }
+                            }, vRoot.$t("bgMgr.delete"))
+                        ]);
+                    }
+                }
+            ],
+            tableHeight: 300,
+            tableData: [],
+            loading: false,
+            isFilter: false,
+            editObjectRow: {
+                name: '',
+                cardid: '',
+                phonenum: '',
+                vinno: "",
+                usernamephonenum: '',
+                isRecharge: false,
+            }
+        },
+        methods: {
+            handleSelectdDate: function(dayNumber) {
+                this.dayNumberType = dayNumber;
+                var dayTime = 24 * 60 * 60 * 1000;
+                if (dayNumber == 0) {
+                    this.dateVal = [DateFormat.longToDateStr(Date.now(), timeDifference), DateFormat.longToDateStr(Date.now(), timeDifference)];
+                } else if (dayNumber == 1) {
+                    this.dateVal = [DateFormat.longToDateStr(Date.now() - dayTime, timeDifference), DateFormat.longToDateStr(Date.now() - dayTime, timeDifference)];
+                } else if (dayNumber == 3) {
+                    this.dateVal = [DateFormat.longToDateStr(Date.now() - dayTime * 2, timeDifference), DateFormat.longToDateStr(Date.now(), timeDifference)];
+                } else if (dayNumber == 7) {
+                    this.dateVal = [DateFormat.longToDateStr(Date.now() - dayTime * 6, timeDifference), DateFormat.longToDateStr(Date.now(), timeDifference)];
+                }
+            },
+            onChange: function(value) {
+                this.dateVal = value;
+            },
+            handleEditInsure: function() {
+                var url = myUrls.editInsure(),
+                    me = this;
+                this.editObjectRow.insurestate = me.editObjectRow.isRecharge ? 1 : 0;
+                utils.sendAjax(url, this.editObjectRow, function(respData) {
+                    if (respData.status == 0) {
+                        var data = me.tableData[me.editDeviceIndex];
+                        var cdata = me.insureRecords[data.index - 1];
+                        data.name = me.editObjectRow.name;
+                        data.cardid = me.editObjectRow.cardid;
+                        data.phonenum = me.editObjectRow.phonenum;
+                        data.vinno = me.editObjectRow.vinno;
+                        data.usernamephonenum = me.editObjectRow.usernamephonenum;
+                        data.insurestate = me.editObjectRow.isRecharge ? 1 : 0;
+                        data.isPay = data.insurestate == 1 ? '已付款' : '未付款';
+
+                        cdata.name = me.editObjectRow.name;
+                        cdata.cardid = me.editObjectRow.cardid;
+                        cdata.phonenum = me.editObjectRow.phonenum;
+                        cdata.vinno = me.editObjectRow.vinno;
+                        cdata.usernamephonenum = me.editObjectRow.usernamephonenum;
+                        cdata.insurestate = me.editObjectRow.isRecharge ? 1 : 0;
+                        cdata.isPay = data.insurestate == 1 ? '已付款' : '未付款';
+
+                        me.modal = false;
+                        me.$Message.success('编辑成功');
+                    } else {
+                        me.$Message.error('编辑失败');
+                    }
+                })
+            },
+            handleDelete: function(row) {
+                var index = this.editDeviceIndex,
+                    me = this;
+                this.$Modal.confirm({
+                    title: "提示",
+                    content: "是否删除这个保单信息!",
+                    onOk: function() {
+                        var url = myUrls.deleteInsure();
+                        utils.sendAjax(url, { insureid: row.insureid }, function(respData) {
+                            if (respData.status == 0) {
+                                me.$Message.success('删除成功');
+                                me.tableData.splice(index, 1);
+                                me.insureRecords.splice(row.index - 1, 1);
+                                me.total = me.insureRecords.length;
+                            } else {
+                                me.$Message.error('删除失败');
+                            }
+                        });
+                    },
+                    onCancel: function() {}
+                })
+
+            },
+            queryUsersTree: function(callback) {
+                var url = myUrls.queryUsersTree(),
+                    me = this;
+                utils.sendAjax(url, { username: userName }, function(respData) {
+                    if (respData.status == 0) {
+                        callback([me.castUsersTreeToDevicesTree(respData.rootuser)]);
+                    } else {
+                        me.$Message.error('查询失败')
+                    }
+                });
+            },
+            castUsersTreeToDevicesTree: function(devicesTreeRecord) {
+                var me = this;
+                var iViewTree = {
+                    render: function(h, params) {
+                        var username = params.data.title;
+                        return h('span', {
+                            on: {
+                                'click': function() {
+                                    me.createrToUser = username;
+                                    me.sosoValue = username;
+                                }
+                            },
+                            style: {
+                                cursor: 'pointer',
+                                color: (me.createrToUser == username) ? '#2D8CF0' : '#000'
+                            }
+                        }, [
+                            h('span', [
+                                h('Radio', {
+                                    props: {
+                                        value: username == me.createrToUser
+                                    },
+                                    style: {
+                                        marginRight: '4px',
+                                        marginLeft: '4px'
+                                    }
+                                }),
+                                h('span', params.data.title)
+                            ]),
+                        ])
+                    },
+                    expand: true,
+                };
+                if (devicesTreeRecord != null) {
+                    var username = devicesTreeRecord.user.username;
+                    var subusers = devicesTreeRecord.subusers;
+                    iViewTree.title = username;
+                    if (username != null && subusers != null && subusers.length > 0) {
+                        var subDevicesTreeRecord = this.doCastUsersTreeToDevicesTree(subusers);
+                        iViewTree.children = subDevicesTreeRecord;
+
+                    }
+                }
+                return iViewTree;
+            },
+            doCastUsersTreeToDevicesTree: function(usersTrees) {
+                var devicesTreeRecord = [],
+                    me = this;
+                if (usersTrees != null && usersTrees.length > 0) {
+                    for (var i = 0; i < usersTrees.length; ++i) {
+                        var usersTree = usersTrees[i];
+                        var username = usersTree.user.username;
+                        var subusers = usersTree.subusers;
+                        var currentsubDevicesTreeRecord = {
+                            render: function(h, params) {
+                                var username = params.data.title;
+                                return h('span', {
+                                    on: {
+                                        'click': function() {
+                                            me.createrToUser = username;
+                                            me.sosoValue = username;
+                                        }
+                                    },
+                                    style: {
+                                        cursor: 'pointer',
+                                        color: (me.createrToUser == username) ? '#2D8CF0' : '#000'
+                                    }
+                                }, [
+                                    h('span', [
+                                        h('Radio', {
+                                            props: {
+                                                value: username == me.createrToUser
+                                            },
+                                            style: {
+                                                marginRight: '4px',
+                                                marginLeft: '4px'
+                                            }
+                                        }),
+                                        h('span', params.data.title)
+                                    ]),
+                                ])
+                            },
+                        };
+                        currentsubDevicesTreeRecord.title = username;
+                        if (username != null && subusers != null && subusers.length > 0) {
+                            var subDevicesTreeRecord = this.doCastUsersTreeToDevicesTree(subusers);
+                            currentsubDevicesTreeRecord.children = subDevicesTreeRecord;
+                        }
+                        devicesTreeRecord.push(currentsubDevicesTreeRecord);
+                    }
+                }
+                return devicesTreeRecord;
+            },
+            calcTableHeight: function() {
+                var wHeight = window.innerHeight;
+                this.tableHeight = wHeight - 165;
+            },
+            changePage: function(index) {
+                var offset = index * 20;
+                var start = (index - 1) * 20;
+                this.currentPageIndex = index;
+                this.tableData = this.insureRecords.slice(start, offset);
+            },
+            changeTableColumns: function() {
+                this.columns = this.getTableColumns();
+            },
+            queryInsures: function() {
+                this.loading = true;
+                var url = myUrls.queryInsures(),
+                    me = this,
+                    startday = DateFormat.format(new Date(this.dateVal[0]), 'yyyy-MM-dd'),
+                    endday = DateFormat.format(new Date(this.dateVal[1]), 'yyyy-MM-dd');
+                utils.sendAjax(url, { username: this.createrToUser, startday: startday, endday: endday, offset: timeDifference }, function(resp) {
+                    me.loading = false;
+                    if (resp.status === 0) {
+                        if (me.isFilter) {
+                            me.insureRecords = (function() {
+                                var tableData = [];
+                                resp.insures.forEach(function(item) {
+                                    item.createtimeStr = DateFormat.format(new Date(item.createtime), 'yyyy-MM-dd')
+                                    if (item.insurestate === 1) {
+                                        item.index = tableData.length + 1;
+                                        item.isPay = item.insurestate == 1 ? '已付款' : '未付款'
+                                        tableData.push(item);
+                                    };
+                                })
+                                return tableData;
+                            })();
+                        } else {
+                            resp.insures.forEach(function(item, index) {
+                                item.index = index + 1;
+                                item.isPay = item.insurestate == 1 ? '已付款' : '未付款'
+                                item.createtimeStr = DateFormat.format(new Date(item.createtime), 'yyyy-MM-dd')
+                            })
+
+                            me.insureRecords = resp.insures;
+                        }
+                        me.total = me.insureRecords.length;
+                        me.currentIndex = 1;
+                        me.tableData = me.insureRecords.slice(0, 20);
+                    } else {
+                        me.total = 0;
+                        me.currentIndex = 1;
+                        me.tableData = [];
+                        me.insureRecords = [];
+                    }
+
+                }, function() {
+                    me.loading = false;
+                })
+            },
+            exportData: function() {
+                var tableData = deepClone(this.tableData);
+                tableData.forEach(function(item) {
+                    item.cardid = "\t" + item.cardid;
+                    item.usernamephonenum = "\t" + item.usernamephonenum;
+                    item.phonenum = "\t" + item.phonenum;
+                });
+                this.$refs.table.exportCsv({
+                    filename: '保险数据',
+                    original: false,
+                    columns: this.columns,
+                    data: tableData
+                });
+            },
+        },
+        mounted: function() {
+            var me = this;
+            me.queryUsersTree(function(usersTree) {
+                me.groupslist = usersTree;
+                me.treeData = usersTree;
+            });
+            this.sosoValue = userName;
+            this.calcTableHeight();
+            this.queryInsures();
+            this.editDeviceIndex = null;
+            this.insureRecords = [];
+        },
+    })
+}
 
 //综合上线统计
 function reportOnlineSummary(groupslist) {
@@ -3296,7 +4003,7 @@ var reportForm = {
                     icon: 'md-medkit',
                     children: [
                         { title: "保险记录", name: 'insureRecords', icon: 'ios-list-box-outline' },
-
+                        { title: "销售记录", name: 'salesRecord', icon: 'ios-book-outline' },
                     ]
                 },
             ]
@@ -3353,6 +4060,9 @@ var reportForm = {
                         break;
                     case 'insurerecords.html':
                         insureRecords(groupslist);
+                        break;
+                    case 'salesrecord.html':
+                        salesRecord(groupslist);
                         break;
                     case 'wechatalarm.html':
                         wechatAlarm(groupslist);
