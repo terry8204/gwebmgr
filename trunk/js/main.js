@@ -660,6 +660,7 @@ var videoPlayer = {
     template: document.getElementById('video-player-template').innerHTML,
     data: function() {
         return {
+            videoDeviceState: null,
             videosNumber: 4,
             isMute: false,
             activesafety: null,
@@ -1182,6 +1183,7 @@ var videoPlayer = {
             me.activesafety = device.activesafety;
             me.allDeviceIdTitle = device.allDeviceIdTitle;
             me.videosNumber = device.videochannelcount;
+            me.videoDeviceState = device.state;
             if (me.isLargen == 0) {
                 me.changeLargen(1);
             };

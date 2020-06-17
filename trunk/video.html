@@ -336,6 +336,16 @@
             margin-top: 3px;
         }
         
+        .deviceState {
+            line-height: 50px;
+            text-align: center;
+            float: left;
+            height: 50px;
+            position: absolute;
+            top: 0;
+            color: #ffffff;
+        }
+        
         .blackBoxSpeak {
             width: 176px;
             height: 176px;
@@ -601,6 +611,9 @@
                         <div></div>
                     </div>
                     <div class="text" v-text="activeSafetyStr"></div>
+                </div>
+                <div class="deviceState" :style="{left:activeSafety? '180px':'100px'}" v-if="deviceState">
+                    <span v-text="deviceState"></span>
                 </div>
                 <div style="height: 100%;text-align: right;" class="tv_box">
                     <span title="显示一个通道"><i class="icon icon_num1" @click="openAndCloseVideoWindows(1)"></i></span>
@@ -1806,11 +1819,17 @@
         var mapType = utils.getParameterByName("maptype");
         var devName = utils.getParameterByName("name");
         var activeSafety = utils.getParameterByName("activesafety");
+        var deviceState = utils.getParameterByName("state");
         // var playerStates = {};
         var playerStateKeyList = ['', 'yi', 'er', 'san', 'si', 'wu', 'liu', 'qi', 'ba', 'jiu', 'shi', 'shiyi', 'shier', 'shisan', 'shisi', 'shiwu', 'shiliu'];
         var audioPlayer = null;
         var audioPlayerTime = 0;
-
+        if (deviceState == '' || deviceState == 'null' || deviceState == 'undefined') {
+            deviceState = null;
+        }
+        if (deviceState != null) {
+            deviceState = "视频状态 ：" + deviceState;
+        }
 
         HZRecorder.get(
             function(rec) {
@@ -1843,6 +1862,7 @@
         var vRoot = new Vue({
             el: "#container",
             data: {
+                deviceState: deviceState,
                 playerState: {
                     'yi': false,
                     'er': false,

@@ -962,7 +962,7 @@ div.video_body {
     left: 0;
     right: 0;
     bottom: 35px;
-    background-color: red;
+    background-color: #000000;
     overflow: hidden;
 }
 

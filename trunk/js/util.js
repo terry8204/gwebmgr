@@ -491,6 +491,7 @@ var utils = {
         };
         return type;
     },
+    videoState: null,
     getWindowContent: function(track, b_address) {
         var strstatus = '';
         var posiType = this.getPosiType(track);
@@ -528,7 +529,9 @@ var utils = {
         var rxlevel = track.rxlevel === 0 ? '' : ('(' + (isZh ? '信号' : 'Signal') + ':' + track.rxlevel + '%)');
         var deviceid = "'" + track.deviceid + "'";
         var extendsBtns = this.getIsAddExtendBtns(),
-            extendsStr = '';
+            extendsStr = '',
+            videoState = isZh ? track.strvideoalarm : track.strvideoalarmen;
+        this.videoState = videoState;
         var content =
             '<p> ' + (isZh ? '设备名称' : 'Device Name') + ': ' + track.devicename + '</p>' +
             '<p> ' + (isZh ? '设备序号' : 'Device Number') + ': ' + track.deviceid + '<i onclick="copyToClipboard()" class="ivu-icon ivu-icon-ios-copy-outline" style="font-size: 24px;cursor: pointer;"></i></p>' +
@@ -540,7 +543,7 @@ var utils = {
             '<p> ' + (isZh ? '总里程' : 'Park Duration') + ': ' + this.getMileage(track.totaldistance) + '</p>' +
             '<p> ' + (isZh ? '停留时长' : 'Mileage') + ': ' + this.timeStamp(track.parkduration, isZh) + '</p>' +
             '<p class="last-strstatus"> ' + (isZh ? '状态' : 'Status') + ': ' + strstatus + '</p>' +
-            (extendsBtns.video ? ('<p> ' + (isZh ? '视频' : 'video') + ': ' + (isZh ? track.strvideoalarm : track.strvideoalarmen) + '</p>') : ("")) +
+            (extendsBtns.video ? ('<p> ' + (isZh ? '视频' : 'video') + ': ' + videoState + '</p>') : ("")) +
             '<p class="last-address"> ' + (isZh ? '地址' : 'Address') + ': ' + b_address + '</p>' +
             '<p class="operation">' +
             '<span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="playBack(' +
@@ -1140,7 +1143,8 @@ function openAudio(deviceid) {
 function openVdeio(deviceid, name, activesafety) {
     var mapType = utils.getMapType();
     mapType = mapType ? mapType : 'bMap';
-    var url = myUrls.viewhosts + 'video.html?deviceid=' + deviceid + "&maptype=" + mapType + '&token=' + token + '&name=' + name + "&activesafety=" + activesafety;
+    var url = myUrls.viewhosts + 'video.html?deviceid=' + deviceid + "&maptype=" + mapType + '&token=' + token + '&name=' + name + "&activesafety=" + activesafety +
+        "&state=" + encodeURIComponent(utils.videoState);
     window.open(url);
 }
 

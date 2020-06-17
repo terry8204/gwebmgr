@@ -1199,6 +1199,7 @@
                         <li v-if="allDeviceIdTitle!=''">{{allDeviceIdTitle}}</li>
                         <li v-if="allDeviceIdTitle==''">未选择设备</li>
                         <li>通道{{playerIndex}}</li>
+                        <li v-if="videoDeviceState">{{videoDeviceState}}</li>
                     </ul>
                     <div class="shrink-btn">
                         <span @click="changeLargen(0)" :title="$t('alarm.min')">

@@ -377,12 +377,14 @@ var monitor = {
                     });
                     break;
                 case 'video':
+                    var state = this.positionLastrecords[this.currentDeviceId] ? this.positionLastrecords[this.currentDeviceId].strvideoalarm : null;
                     window.open(
                         myUrls.viewhosts + "video.html?deviceid=" +
                         this.currentDeviceId + "&maptype=" +
                         this.mapType + "&token=" +
                         token + '&name=' + encodeURIComponent(this.deviceInfos[this.currentDeviceId].devicename) +
-                        '&activesafety=' + (this.isShowActiveSafetyBtn ? 1 : 0)
+                        '&activesafety=' + (this.isShowActiveSafetyBtn ? 1 : 0) +
+                        '&state=' + encodeURIComponent(state)
                     );
                     break;
             }
@@ -922,6 +924,7 @@ var monitor = {
             var activesafety = this.isShowActiveSafetyBtn ? 1 : 0;
             var deviceInfo = this.deviceInfos[this.currentDeviceId];
             deviceInfo.activesafety = activesafety;
+            deviceInfo.state = this.positionLastrecords[this.currentDeviceId] ? this.positionLastrecords[this.currentDeviceId].strvideoalarm : null;
             communicate.$emit("playerVideos", deviceInfo);
         },
         selectedDev: function(deviceInfo) {
