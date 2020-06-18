@@ -1250,7 +1250,8 @@
                     initWebSocket(wsHost, Cookies.get('name') + "-download", function(data) {
                         var action = data.action;
                         if (action === "downloadprogress") {
-                            console.log('push downloadprogress');
+                            console.log('push downloadprogress - ', Date.now());
+                            return;
                             var downloadtask = data.downloadtask;
                             var tasksn = downloadtask.tasksn;
 
