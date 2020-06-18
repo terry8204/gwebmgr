@@ -397,13 +397,13 @@ var utils = {
     playTextVoice: function(text) {
         var zhText = text;
         zhText = encodeURI(zhText);
-        var audio = "<audio autoplay=\"autoplay\">" + "<source src=\"http://tts.baidu.com/text2audio?lan=zh&ie=UTF-8&spd=4&text=" + zhText + "\" type=\"audio/mpeg\">" + "<embed height=\"0\" width=\"0\" src=\"http://tts.baidu.com/text2audio?text=" + zhText + "\">" + "</audio>";
-        $('body').append(audio);
-        // setTimeout(function() {
-        //     var audioEl = document.getElementsByTagName('audio')[0];
-        //     audioEl.pause();
-        //     audioEl && document.body.removeChild(audioEl);
-        // }, 3000);
+
+        var source = document.getElementById('source');
+        var embed = document.getElementById('embed');
+        source.setAttribute('src', "http://tts.baidu.com/text2audio?lan=zh&ie=UTF-8&spd=4&text=" + zhText);
+        embed.setAttribute('src', "http://tts.baidu.com/text2audio?text=" + zhText);
+
+        audio.load();
     },
     getDirectionImage: function(isOnline, angle) {
         var pathname = location.pathname

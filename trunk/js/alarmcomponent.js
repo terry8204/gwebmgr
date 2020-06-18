@@ -4,6 +4,7 @@ var waringComponent = {
     data: function() {
         return {
             isZh: isZh,
+            isMute: false,
             isLargen: 0,
             index: 1,
             waringRowIndex: null,
@@ -615,6 +616,13 @@ var waringComponent = {
         communicate.$on("remindmsg", function(data) {
             me.alarmMgr.addRecord(data);
             me.refreshAlarmToUi();
+
+            if (data.action == 'sound') {
+                console.log(data);
+                if (me.isMute == false) {
+                    // utils.playTextVoice(text);
+                }
+            }
         });
         communicate.$on("disposeAlarm", function() {
             me.alarmMgr.updateDisposeStatus(me.currentDeviceId, 0);

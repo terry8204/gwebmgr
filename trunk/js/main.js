@@ -14,7 +14,11 @@ var isToAlarmListRecords = false;
 var isToPhoneAlarmRecords = false;
 var isNeedRefreshMapUI = false;
 var timeDifference = DateFormat.getOffset();
+var voiceQueue = []; //语音报警队列
+var isPlayAlarmVoice = false;
+
 document.title = isZh ? "位置视频服务平台" : "Location video service platform";
+
 
 
 // vuex store
@@ -1259,7 +1263,7 @@ var vRoot = new Vue({
             } else if (action == "reminddevicemedia") {
                 var devicemediatemp = resp.devicemedia;
                 this.addPushMediaToLocalStore(devicemediatemp);
-            };;
+            };
         }
     },
     computed: {
@@ -1298,3 +1302,12 @@ var vRoot = new Vue({
 
     }
 });
+
+var audio = document.getElementById('myaudio');
+audio.addEventListener('canplay', function() {
+    console.log('语音加载成功');
+    audio.play();
+}, true)
+audio.addEventListener('ended', function() {
+    alert('over');
+}, false);
