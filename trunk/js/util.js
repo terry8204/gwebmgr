@@ -402,7 +402,7 @@ var utils = {
 
         var source = document.getElementById('source');
         var embed = document.getElementById('embed');
-        source.setAttribute('src', "http://tts.baidu.com/text2audio?lan=zh&ie=UTF-8&spd=4&text=" + zhText);
+        source.setAttribute('src', "http://tts.baidu.com/text2audio?lan=zh&ie=UTF-8&spd=3&text=" + zhText);
         embed.setAttribute('src', "http://tts.baidu.com/text2audio?text=" + zhText);
 
         audio.load();

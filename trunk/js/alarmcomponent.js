@@ -61,7 +61,9 @@ var waringComponent = {
                 this.isWaring = false;
             }
         },
-
+        isMute: function(val) {
+            audio.muted = val;
+        },
         disposeAlarm: function() {
             // var me = this
             // this.currentDevTypeCmdList.forEach(function (item) {
