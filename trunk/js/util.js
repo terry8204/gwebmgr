@@ -395,6 +395,8 @@ var utils = {
         return angle
     },
     playTextVoice: function(text) {
+        console.log(text);
+        isPlayAlarmVoice = true;
         var zhText = text;
         zhText = encodeURI(zhText);
 

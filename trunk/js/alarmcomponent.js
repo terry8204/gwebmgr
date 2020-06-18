@@ -620,7 +620,14 @@ var waringComponent = {
             if (data.action == 'sound') {
                 console.log(data);
                 if (me.isMute == false) {
-                    // utils.playTextVoice(text);
+                    for (var i = 0; i < data.actionloopcount; i++) {
+                        voiceQueue.push(data.devicename + data.stralarm);
+                    }
+                    if (voiceQueue.length > 0) {
+                        if (isPlayAlarmVoice == false) {
+                            utils.playTextVoice(voiceQueue.shift());
+                        }
+                    }
                 }
             }
         });

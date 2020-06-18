@@ -1308,6 +1308,11 @@ audio.addEventListener('canplay', function() {
     console.log('语音加载成功');
     audio.play();
 }, true)
+
 audio.addEventListener('ended', function() {
-    alert('over');
+    console.log('语音成功');
+    isPlayAlarmVoice = false;
+    if (voiceQueue.length > 0) {
+        utils.playTextVoice(voiceQueue.shift());
+    }
 }, false);
