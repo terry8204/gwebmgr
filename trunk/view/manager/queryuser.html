@@ -38,7 +38,7 @@
                     <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">
                         <i style="color: red;display: inline-block;">*</i>&nbsp;{{$t("user.userType")}} : &nbsp;</i-col>
                     <i-col span="12">
-                        <i-select v-model="usertype">
+                        <i-select v-model="usertype" :disabled="usertypeDisabled">
                             <i-option v-for="item in userTypeList" :value="item.type" :key="item.type">{{ item.name }}</i-option>
                         </i-select>
                     </i-col>
@@ -286,6 +286,7 @@
                 phone: "",
                 wechat: "",
                 taleHeight: 300,
+                usertypeDisabled: false,
             },
             methods: {
                 handlerClickQuery() {
@@ -497,25 +498,34 @@
                 setUserTypeByUser: function() {
                     var userType = vstore.state.userType;
                     var newArray = [{
-                        "name": isZh ? "一级管理员" : 'Supervisor',
+                        "name": isZh ? "一级管理员" : '1Supervisor',
                         "type": 1
                     }, {
-                        "name": isZh ? "二级管理员" : 'Manager',
+                        "name": isZh ? "二级管理员" : '2Manager',
                         "type": 2
                     }, {
-                        "name": isZh ? "三级管理员" : 'Manager',
+                        "name": isZh ? "三级管理员" : '3Manager',
                         "type": 3
-                    }, ];
+                    }, {
+                        "name": isZh ? "普通监控员" : 'Monitor',
+                        "type": 20
+                    }];
                     if (userType == 1) {
                         newArray.shift();
                     } else if (userType == 2) {
                         newArray.shift();
                         newArray.shift();
-                    } else if (userType >= 3) {
-                        newArray = [];
+                    } else if (userType == 3) {
+                        newArray.shift();
+                        newArray.shift();
+                    } else if (userType == 20) {
+                        newArray.shift();
+                        newArray.shift();
+                        newArray.shift();
                     }
                     this.userTypeList = newArray;
                     this.usertype = editObject.usertype;
+                    this.usertypeDisabled = editObject.usertype === 20;
                 },
                 setUserInfo: function() {
                     this.username = editObject.username;
