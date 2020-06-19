@@ -2261,7 +2261,7 @@ function salesRecord(groupslist) {
                     title: '地址',
                     key: 'companyaddr'
                 }, {
-                    title: '计保险充值记录',
+                    title: '累计保险充值记录',
                     key: 'totalinsurecount'
                 },
                 {

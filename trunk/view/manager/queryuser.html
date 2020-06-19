@@ -215,7 +215,9 @@
                                         click: function() {
                                             vueInstanse.editDeviceIndex = params.index;
                                             editObject = params.row;
-
+                                            vueInstanse.modal = true;
+                                            vueInstanse.setUserInfo();
+                                            vueInstanse.setUserTypeByUser();
                                         }
                                     }
                                 }, vRoot.$t("bgMgr.edit")),
@@ -262,7 +264,6 @@
                 ],
                 tableData: [],
                 recordsList: [],
-
                 username: "",
                 usertype: "",
                 singleLogin: "0",
