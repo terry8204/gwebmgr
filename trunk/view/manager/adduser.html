@@ -1,351 +1,398 @@
-
 <meta charset="UTF-8">
 <div id="adduser">
     <div class="full">
         <h3 class="h3-title">{{$t("bgMgr.addUser")}}</h3>
 
-                <div>
-                    <Row style="margin: 10px 0">
-                        <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">
-                            <i style="color: red;display: inline-block;">*</i>&nbsp;{{$t("user.username")}} : &nbsp;</i-col>
-                        <i-col span="12">
-                            <i-input v-model.trim="username" :disabled="!isDisabled"></i-input>
-                        </i-col>
-                    </Row>
-                
-                    <Row style="margin: 10px 0">
-                        <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">
-                            <i style="color: red;display: inline-block;">*</i>&nbsp;{{$t("user.password")}} : &nbsp;</i-col>
-                        <i-col span="12">
-                            <i-input v-model.trim="password" type="password"></i-input>
-                        </i-col>
-                    </Row>
-                
-                    <Row style="margin: 10px 0">
-                        <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">
-                            <i style="color: red;display: inline-block;">*</i>&nbsp;{{$t("user.checkPwd")}} : &nbsp;</i-col>
-                        <i-col span="12">
-                            <i-input v-model.trim="confirmPassword" type="password"></i-input>
-                        </i-col>
-                    </Row>
-                                
-                    <Row style="margin: 10px 0">
-                        <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">
-                            <i style="color: red;display: inline-block;">*</i>&nbsp;{{$t("user.userType")}}  : &nbsp;</i-col>
-                        <i-col span="12">
-                            <i-select v-model="usertype">
-                                <i-option v-for="item in userTypeList" :value="item.type" :key="item.type">{{ item.name }}</i-option>
-                            </i-select>
-                        </i-col>
-                    </Row>
-                
-                    <Row style="margin: 10px 0">
-                        <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">
-                            <i style="color: red;display: inline-block;">*</i>&nbsp;{{$t("user.client")}} : &nbsp;</i-col>
-                        <i-col span="12">
-                            <i-select v-model="companyid">
-                                <i-option v-for="item in companyList" :value="item.value" :key="item.value">{{ item.label }}</i-option>
-                            </i-select>
-                        </i-col>
-                    </Row>
-                
-                    <Row style="margin: 10px 0" v-show="isShowGroup">
-                        <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t("user.grouping")}} : &nbsp;</i-col>
-                        <i-col span="12">
-                            <i-select v-model="groupids" multiple>
-                                <i-option v-for="item in groupList" :value="item.value" :key="item.value">{{ item.label }}</i-option>
-                            </i-select>
-                        </i-col>
-                    </Row>
-                
-                    <Row style="margin: 10px 0">
-                        <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">多点登陆 : &nbsp;</i-col>
-                        <i-col span="12">
-                            <i-select v-model="multilogin">
-                                <i-option value="1" >是</i-option>
-                                <i-option value="0" >否</i-option>
-                            </i-select>
-                        </i-col>
-                    </Row>
+        <div>
+            <Row style="margin: 10px 0">
+                <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">
+                    <i style="color: red;display: inline-block;">*</i>&nbsp;{{$t("user.username")}} : &nbsp;</i-col>
+                <i-col span="12">
+                    <i-input v-model.trim="username" :disabled="!isDisabled"></i-input>
+                </i-col>
+            </Row>
 
-                    <Row style="margin: 10px 0">
-                        <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">
-                            &nbsp;电话 : &nbsp;</i-col>
-                        <i-col span="12">
-                            <i-input v-model.trim="phone"></i-input>
-                        </i-col>
-                    </Row>
-                    <Row style="margin: 10px 0">
-                        <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">
-                            &nbsp;QQ : &nbsp;</i-col>
-                        <i-col span="12">
-                            <i-input v-model.trim="qq"></i-input>
-                        </i-col>
-                    </Row>
-                    <Row style="margin: 10px 0">
-                        <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">
-                            &nbsp;微信 : &nbsp;</i-col>
-                        <i-col span="12">
-                            <i-input v-model.trim="wechat"></i-input>
-                        </i-col>
-                    </Row>
-                    <Row style="margin: 10px 0">
-                        <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">
-                            &nbsp;邮箱 : &nbsp;</i-col>
-                        <i-col span="12">
-                            <i-input v-model.trim="email"></i-input>
-                        </i-col>
-                    </Row>
+            <Row style="margin: 10px 0">
+                <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">
+                    <i style="color: red;display: inline-block;">*</i>&nbsp;{{$t("user.password")}} : &nbsp;</i-col>
+                <i-col span="12">
+                    <i-input v-model.trim="password" type="password"></i-input>
+                </i-col>
+            </Row>
 
-            
-                    
-                    <Row style="margin: 10px 0" v-show="!isShowGroup">
-                        <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">
-                            <i style="color: red;display: inline-block;">*</i>&nbsp;{{$t("user.groupCount")}} : &nbsp;</i-col>
-                        <i-col span="3">
-                            <input-number :max="20" :min="1" v-model.trim.number="groupcount"></input-number>
-                        </i-col>
-                
-                        <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">
-                            <i style="color: red;display: inline-block;">*</i>&nbsp;{{$t("group.userCount")}} : &nbsp;</i-col>
-                        <i-col span="3">
-                            <input-number :max="100" :min="10" v-model.trim.number="usercount"></input-number>
-                        </i-col>
-                
-                        <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">
-                            <i style="color: red;display: inline-block;">*</i>&nbsp;{{$t("group.devCount")}} : &nbsp;</i-col>
-                        <i-col span="3">
-                            <input-number :max="500" :min="10" v-model.trim.number="devicecount"></input-number>
-                        </i-col>
-                    </Row>
-                    <Row style="margin: 10px 0">
-                        <i-col span="12" :offset="4">
-                            <i-button style="width:100%" @click="handleSubmit">{{$t("user.add")}}</i-button>
-                        </i-col>
-                    </Row>
-                </div>  
-    </div> 
+            <Row style="margin: 10px 0">
+                <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">
+                    <i style="color: red;display: inline-block;">*</i>&nbsp;{{$t("user.checkPwd")}} : &nbsp;</i-col>
+                <i-col span="12">
+                    <i-input v-model.trim="confirmPassword" type="password"></i-input>
+                </i-col>
+            </Row>
+
+            <Row style="margin: 10px 0">
+                <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">
+                    <i style="color: red;display: inline-block;">*</i>&nbsp;{{$t("user.userType")}} : &nbsp;</i-col>
+                <i-col span="12">
+                    <i-select v-model="usertype">
+                        <i-option v-for="item in userTypeList" :value="item.type" :key="item.type">{{ item.name }}</i-option>
+                    </i-select>
+                </i-col>
+            </Row>
+
+            <Row style="margin: 10px 0">
+                <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">
+                    <i style="color: red;display: inline-block;">*</i>&nbsp;{{$t("user.client")}} : &nbsp;</i-col>
+                <i-col span="12">
+                    <i-select v-model="companyid">
+                        <i-option v-for="item in companyList" :value="item.value" :key="item.value">{{ item.label }}</i-option>
+                    </i-select>
+                </i-col>
+            </Row>
+
+            <Row style="margin: 10px 0" v-show="isShowGroup">
+                <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t("user.grouping")}} : &nbsp;</i-col>
+                <i-col span="12">
+                    <i-select v-model="groupids" multiple>
+                        <i-option v-for="item in groupList" :value="item.value" :key="item.value">{{ item.label }}</i-option>
+                    </i-select>
+                </i-col>
+            </Row>
+
+            <Row style="margin: 10px 0">
+                <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">
+                    &nbsp;公司名称 : &nbsp;
+                </i-col>
+                <i-col span="12">
+                    <i-input v-model.trim="companyname"></i-input>
+                </i-col>
+            </Row>
+
+            <Row style="margin: 10px 0">
+                <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">
+                    &nbsp;真实姓名 : &nbsp;
+                </i-col>
+                <i-col span="12">
+                    <i-input v-model.trim="cardname"></i-input>
+                </i-col>
+            </Row>
+
+
+            <Row style="margin: 10px 0">
+                <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">
+                    &nbsp;电话 : &nbsp;</i-col>
+                <i-col span="12">
+                    <i-input v-model.trim="phone"></i-input>
+                </i-col>
+            </Row>
+
+            <Row style="margin: 10px 0">
+                <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">
+                    &nbsp;地址 : &nbsp;
+                </i-col>
+                <i-col span="12">
+                    <i-input v-model.trim="companyaddr"></i-input>
+                </i-col>
+            </Row>
+
+            <Row style="margin: 10px 0">
+                <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">多点登陆 : &nbsp;</i-col>
+                <i-col span="12">
+                    <i-select v-model="multilogin">
+                        <i-option value="1">是</i-option>
+                        <i-option value="0">否</i-option>
+                    </i-select>
+                </i-col>
+            </Row>
+
+            <Row style="margin: 10px 0">
+                <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">
+                    &nbsp;QQ : &nbsp;</i-col>
+                <i-col span="12">
+                    <i-input v-model.trim="qq"></i-input>
+                </i-col>
+            </Row>
+            <Row style="margin: 10px 0">
+                <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">
+                    &nbsp;微信 : &nbsp;</i-col>
+                <i-col span="12">
+                    <i-input v-model.trim="wechat"></i-input>
+                </i-col>
+            </Row>
+            <Row style="margin: 10px 0">
+                <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">
+                    &nbsp;邮箱 : &nbsp;</i-col>
+                <i-col span="12">
+                    <i-input v-model.trim="email"></i-input>
+                </i-col>
+            </Row>
+
+
+
+            <Row style="margin: 10px 0" v-show="!isShowGroup">
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">
+                    <i style="color: red;display: inline-block;">*</i>&nbsp;{{$t("user.groupCount")}} : &nbsp;</i-col>
+                <i-col span="3">
+                    <input-number :max="20" :min="1" v-model.trim.number="groupcount"></input-number>
+                </i-col>
+
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">
+                    <i style="color: red;display: inline-block;">*</i>&nbsp;{{$t("group.userCount")}} : &nbsp;</i-col>
+                <i-col span="3">
+                    <input-number :max="100" :min="10" v-model.trim.number="usercount"></input-number>
+                </i-col>
+
+                <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">
+                    <i style="color: red;display: inline-block;">*</i>&nbsp;{{$t("group.devCount")}} : &nbsp;</i-col>
+                <i-col span="3">
+                    <input-number :max="500" :min="10" v-model.trim.number="devicecount"></input-number>
+                </i-col>
+            </Row>
+            <Row style="margin: 10px 0">
+                <i-col span="12" :offset="4">
+                    <i-button style="width:100%" @click="handleSubmit">{{$t("user.add")}}</i-button>
+                </i-col>
+            </Row>
+        </div>
+    </div>
     <script>
         new Vue({
-            el:"#adduser",
+            el: "#adduser",
             i18n: utils.getI18n(),
-            data:{
-                username:"",
-                password:"",
-                confirmPassword:"",
-                usertype:"",
-                singleLogin:"0",
-                phoneLogin:"0",
-                weixinLogin:"0",
-                companyid:"",
-                multilogin:"1",
-                groupcount:10,
-                devicecount:500,
-                usercount:10,
-                companyList:[],
-                groupids:[],
-                groupList:[],
+            data: {
+                username: "",
+                password: "",
+                confirmPassword: "",
+                usertype: "",
+                singleLogin: "0",
+                phoneLogin: "0",
+                weixinLogin: "0",
+                companyid: "",
+                multilogin: "1",
+                groupcount: 10,
+                devicecount: 500,
+                usercount: 10,
+                companyList: [],
+                companyname: '',
+                cardname: '',
+                companyaddr: '',
+                groupids: [],
+                groupList: [],
                 dateOptions: {
-                    disabledDate:function(date) {
+                    disabledDate: function(date) {
                         return date && date.valueOf() < Date.now() - 86400000;
                     }
                 },
-                isDisabled:true,
-                isShowGroup:false,
-                devicetypes:[],
-                directiveList:[], 
-                userTypeList:[],
-                hadDeviceCmd:[],
-                directiveInfo:{},
-                qq:"",
-                email:"",
-                phone:"",
-                wechat:""
+                isDisabled: true,
+                isShowGroup: false,
+                devicetypes: [],
+                directiveList: [],
+                userTypeList: [],
+                hadDeviceCmd: [],
+                directiveInfo: {},
+                qq: "",
+                email: "",
+                phone: "",
+                wechat: ""
             },
             methods: {
 
 
-                queryAllCompanyInfo:function(claaback){
+                queryAllCompanyInfo: function(claaback) {
                     var url = myUrls.queryCompanyByCreater();
-                    utils.sendAjax(url,{},claaback)
+                    utils.sendAjax(url, {}, claaback)
                 },
-                doQueryAllCompanyInfo:function(resp){
+                doQueryAllCompanyInfo: function(resp) {
                     var me = this;
-                    if(resp.status == 0){
-                        resp.records.forEach(function(item){
+                    if (resp.status == 0) {
+                        resp.records.forEach(function(item) {
                             me.companyList.push({
-                                label:item.companyname,
-                                value:item.companyid
+                                label: item.companyname,
+                                value: item.companyid
                             })
                         });
                     }
                 },
-                handleSubmit:function(){
-                    var url  = myUrls.addUser();
+                handleSubmit: function() {
+                    var url = myUrls.addUser();
                     var userType = this.usertype;
-                  
-                    var reg = /^[a-zA-Z0-9_-]{4,32}$/;
-                    var data ={
-                        username:this.username,
-                        password:"",
-                        usertype:userType,
-                        companyid:this.companyid,
-                        
-                    };    
 
-                    if(this.password !== this.confirmPassword){
-                        this.$Message.error(this.$t("header.error_3"));  
+                    var reg = /^[a-zA-Z0-9_-]{4,32}$/;
+                    var data = {
+                        username: this.username,
+                        password: "",
+                        usertype: userType,
+                        companyid: this.companyid,
+
+                    };
+
+                    if (this.password !== this.confirmPassword) {
+                        this.$Message.error(this.$t("header.error_3"));
                         return;
-                    }else{
+                    } else {
                         data.password = $.md5(this.password);
                     }
-                  
 
-                    if(!reg.test(this.username)){
-                        this.$Message.error(this.$t("message.usernameRule"));  
+
+                    if (!reg.test(this.username)) {
+                        this.$Message.error(this.$t("message.usernameRule"));
                         return;
                     }
 
-                    for(var key in data){
-                        if(data.hasOwnProperty(key)){
-                            if(data[key] === "" || data[key] == NaN ){
-                                this.$Message.error(this.$t("message.fullComplete"));    
+                    for (var key in data) {
+                        if (data.hasOwnProperty(key)) {
+                            if (data[key] === "" || data[key] == NaN) {
+                                this.$Message.error(this.$t("message.fullComplete"));
                                 return;
                             }
                         };
                     };
                     data.multilogin = Number(this.multilogin);
-                    this.qq?data.qq=this.qq:"";
-                    this.email?data.email=this.email:"";
-                    this.phone?data.phone=this.phone:"";
-                    this.wechat?data.wechat=this.wechat:"";
-                    
-                    if(this.isShowGroup){
-                        data.groupids = this.groupids; 
-                    }else{
+                    this.qq ? data.qq = this.qq : "";
+                    this.email ? data.email = this.email : "";
+                    this.phone ? data.phone = this.phone : "";
+                    this.wechat ? data.wechat = this.wechat : "";
+                    this.companyname ? data.companyname = this.companyname : null;
+                    this.cardname ? data.cardname = this.cardname : null;
+                    this.companyaddr ? data.companyaddr = this.companyaddr : null;
+                    //     companyname: '',
+                    // cardname: '',
+                    // companyaddr: '',
+
+                    if (this.isShowGroup) {
+                        data.groupids = this.groupids;
+                    } else {
                         data.groupcount = this.groupcount;
                         data.devicecount = this.devicecount;
                         data.usercount = this.usercount;
-                    }    
+                    }
 
-                    utils.sendAjax(url,data,this.doAddUserCalback);
+                    utils.sendAjax(url, data, this.doAddUserCalback);
                 },
-                doAddUserCalback:function(resp){
-                    if(resp.status == 0){
+                doAddUserCalback: function(resp) {
+                    if (resp.status == 0) {
                         this.$Message.success(this.$t("message.addSucc"));
                         userlists.push(this.username);
-                    }else{
+                    } else {
                         var cause = resp.cause;
-                        if(cause.indexOf("exists")!=-1){
-                            this.$Message.error(this.$t("message.userExists"));    
-                        }else{
+                        if (cause.indexOf("exists") != -1) {
+                            this.$Message.error(this.$t("message.userExists"));
+                        } else {
                             this.$Message.error(resp.cause);
-                        }                      
+                        }
                     }
                 },
-                getGroupsList:function(){
-                    var me = this; 
-                    var url = myUrls.queryCompanyGroup();                        
-                    utils.sendAjax(url,{companyid:this.companyid},function (resp) { 
+                getGroupsList: function() {
+                    var me = this;
+                    var url = myUrls.queryCompanyGroup();
+                    utils.sendAjax(url, {
+                        companyid: this.companyid
+                    }, function(resp) {
                         me.groupList = [];
                         me.groupids = [];
-                        if(resp.status == 0){
+                        if (resp.status == 0) {
                             var companys = resp.companys
-                            for(var i = 0 ; i < companys.length ; i++){
+                            for (var i = 0; i < companys.length; i++) {
                                 var item = companys[i];
-                                if(item.companyid == me.companyid && item.groups != null){
+                                if (item.companyid == me.companyid && item.groups != null) {
                                     var groups = item.groups;
-                                    groups.forEach(function(group){
-                                        me.groupList.push({label:group.groupname,value:group.groupid});
+                                    groups.forEach(function(group) {
+                                        me.groupList.push({
+                                            label: group.groupname,
+                                            value: group.groupid
+                                        });
                                     });
                                 }
                             }
                         }
                     });
                 },
-                queryAllgroupsInfo:function(){
+                queryAllgroupsInfo: function() {
                     var url = myUrls.queryGroupByUser();
-                    utils.sendAjax(url,{},this.doQueryAllGroupsInfo);
+                    utils.sendAjax(url, {}, this.doQueryAllGroupsInfo);
                 },
-                doQueryAllGroupsInfo:function(resp){
+                doQueryAllGroupsInfo: function(resp) {
                     var me = this;
-                    if(resp.status === 0 && resp.grouplist){
-                        resp.grouplist.forEach(function (group) { 
+                    if (resp.status === 0 && resp.grouplist) {
+                        resp.grouplist.forEach(function(group) {
                             me.groupList.push({
-                                label:group.groupname,
-                                value:group.groupid
+                                label: group.groupname,
+                                value: group.groupid
                             });
                         });
                     };
                 },
-                setUserTypeByUser:function(){
+                setUserTypeByUser: function() {
                     var userType = vstore.state.userType;
-                    var newArray = [
-                        { "name": isZh ? "一级管理员" : 'Supervisor', "type": 1 },
-                        { "name": isZh ? "二级管理员" : 'Manager', "type": 2 },
-                        { "name": isZh ? "三级管理员" : 'Manager', "type": 3 },
-                    ];
-                    if(userType == 1){
+                    var newArray = [{
+                        "name": isZh ? "一级管理员" : 'Supervisor',
+                        "type": 1
+                    }, {
+                        "name": isZh ? "二级管理员" : 'Manager',
+                        "type": 2
+                    }, {
+                        "name": isZh ? "三级管理员" : 'Manager',
+                        "type": 3
+                    }, ];
+                    if (userType == 1) {
                         newArray.shift();
-                    }else if(userType == 2){
+                    } else if (userType == 2) {
                         newArray.shift();
                         newArray.shift();
-                    }else if(userType >10){
+                    } else if (userType > 10) {
                         newArray = [];
                     }
                     this.userTypeList = newArray;
-                       
+
                 }
             },
-            computed:{
-                
+            computed: {
+
             },
-            watch:{
-                usertype:function(){
-                    if(this.usertype >= 10){
-                        this.isShowGroup = true;             
-                    }else{
+            watch: {
+                usertype: function() {
+                    if (this.usertype >= 10) {
+                        this.isShowGroup = true;
+                    } else {
                         this.isShowGroup = false;
                     }
                 },
-                devicetypes:function(){
+                devicetypes: function() {
                     var devicetypes = this.devicetypes;
                     var directiveList = this.directiveList;
                     var datas = [];
-                    
-                    devicetypes.forEach(function (type) { 
+
+                    devicetypes.forEach(function(type) {
                         var children = [];
                         var typeObj = {
-                            title:type.typename,
-                            typecode:type.typecode,
-                            devicetype:type.devicetypeid,
+                            title: type.typename,
+                            typecode: type.typecode,
+                            devicetype: type.devicetypeid,
                             expand: true,
-                            children:children
+                            children: children
                         };
-                        directiveList.forEach(function (directive) { 
-                            if(type.devicetypeid == directive.devicetype){
+                        directiveList.forEach(function(directive) {
+                            if (type.devicetypeid == directive.devicetype) {
                                 var directiveObj = {
-                                    title:directive.cmdname,
+                                    title: directive.cmdname,
                                     checked: false,
-                                    cmdcode:directive.cmdcode,
-                                    params:directive.params,
-                                    typename:type.typename,
-                                    devicetype:type.devicetypeid,
+                                    cmdcode: directive.cmdcode,
+                                    params: directive.params,
+                                    typename: type.typename,
+                                    devicetype: type.devicetypeid,
                                 }
                                 children.push(directiveObj)
                             }
                         });
                         datas.push(typeObj);
                     })
-                    this.treeData[0].children = datas;             
-                }  
+                    this.treeData[0].children = datas;
+                }
             },
-            mounted:function () {
+            mounted: function() {
                 this.queryAllCompanyInfo(this.doQueryAllCompanyInfo);
                 this.queryAllgroupsInfo();
                 this.setUserTypeByUser();
                 // this.queryAllDeviceCmdByUser();
             }
         })
-    </script>    
-</div>        
+    </script>
+</div>

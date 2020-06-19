@@ -2249,6 +2249,22 @@ function salesRecord(groupslist) {
                     key: 'username',
                 },
                 {
+                    title: '公司名称',
+                    key: 'companyname'
+                }, {
+                    title: '真实姓名',
+                    key: 'cardname'
+                }, {
+                    title: '电话',
+                    key: 'phone'
+                }, {
+                    title: '地址',
+                    key: 'companyaddr'
+                }, {
+                    title: '计保险充值记录',
+                    key: 'totalinsurecount'
+                },
+                {
                     title: '剩余保单数',
                     key: 'remaininsurecount',
                 },

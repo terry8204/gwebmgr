@@ -63,6 +63,36 @@
                     </i-col>
                 </Row>
 
+
+                <Row style="margin: 10px 0">
+                    <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">
+                        &nbsp;公司名称 : &nbsp;</i-col>
+                    <i-col span="12">
+                        <i-input v-model.trim="companyname"></i-input>
+                    </i-col>
+                </Row>
+                <Row style="margin: 10px 0">
+                    <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">
+                        &nbsp;真实姓名 : &nbsp;</i-col>
+                    <i-col span="12">
+                        <i-input v-model.trim="cardname"></i-input>
+                    </i-col>
+                </Row>
+                <Row style="margin: 10px 0">
+                    <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">
+                        &nbsp;电话 : &nbsp;</i-col>
+                    <i-col span="12">
+                        <i-input v-model.trim="phone"></i-input>
+                    </i-col>
+                </Row>
+                <Row style="margin: 10px 0">
+                    <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">
+                        &nbsp;地址 : &nbsp;</i-col>
+                    <i-col span="12">
+                        <i-input v-model.trim="companyaddr"></i-input>
+                    </i-col>
+                </Row>
+
                 <Row style="margin: 10px 0">
                     <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">多点登陆 : &nbsp;</i-col>
                     <i-col span="12">
@@ -73,13 +103,6 @@
                     </i-col>
                 </Row>
 
-                <Row style="margin: 10px 0">
-                    <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">
-                        &nbsp;电话 : &nbsp;</i-col>
-                    <i-col span="12">
-                        <i-input v-model.trim="phone"></i-input>
-                    </i-col>
-                </Row>
                 <Row style="margin: 10px 0">
                     <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">
                         &nbsp;QQ : &nbsp;</i-col>
@@ -150,13 +173,25 @@
                 currentIndex: 1,
                 columns: [{
                     title: vRoot.$t("user.client"),
-                    key: 'companyname'
+                    key: 'company'
                 }, {
                     title: vRoot.$t("user.username"),
                     key: 'username',
                 }, {
                     title: vRoot.$t("user.userType"),
                     key: 'userTypeStr'
+                }, {
+                    title: '公司名称',
+                    key: 'companyname'
+                }, {
+                    title: '真实姓名',
+                    key: 'cardname'
+                }, {
+                    title: '电话',
+                    key: 'phone'
+                }, {
+                    title: '地址',
+                    key: 'companyaddr'
                 }, {
                     title: vRoot.$t("user.groupCount"),
                     key: 'usedGroupCount'
@@ -249,6 +284,9 @@
                 groupList: [],
                 userTypeList: [],
                 isShowGroup: false,
+                companyname: '',
+                cardname: '',
+                companyaddr: '',
                 qq: "",
                 email: "",
                 phone: "",
@@ -302,7 +340,8 @@
                             item.usedUserCount = item.company ? item.currusercount + "/" + item.usercount : "";
                             item.usedDeviceCount = item.company ? item.currdevicecount + "/" + item.devicecount : "";
                             item.usedGroupCount = item.company ? item.currgroupcount + "/" + item.groupcount : "";
-                            item.companyname = item.company ? item.company.companyname : "";
+                            item.company = item.company ? item.company.companyname : "";
+                            console.log('company', item.company);
                             currdevicecount += item.company ? item.currdevicecount : 0;
                             currgroupcount += item.company ? item.currgroupcount : 0;
 
@@ -464,7 +503,9 @@
                     this.email ? data.email = this.email : "";
                     this.phone ? data.phone = this.phone : "";
                     this.phone ? data.wechat = this.phone : "";
-
+                    this.companyname ? data.companyname = this.companyname : null;
+                    this.cardname ? data.cardname = this.cardname : null;
+                    this.companyaddr ? data.companyaddr = this.companyaddr : null;
 
 
                     if (this.isShowGroup) {
@@ -547,6 +588,9 @@
                     this.groupcount = editObject.groupcount;
                     this.devicecount = editObject.devicecount;
                     this.usercount = editObject.usercount;
+                    this.companyname = editObject.companyname;
+                    this.cardname = editObject.cardname;
+                    this.companyaddr = editObject.companyaddr;
                 }
             },
             mixins: [mixIn],
