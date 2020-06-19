@@ -163,7 +163,6 @@
                 groupsList: [],
                 deviceTypeList: [],
                 groupid: '',
-                companyid: '',
                 reportedpoint: 0,
                 totalpoint: 1500,
                 checkboxObj: {},
@@ -298,10 +297,6 @@
                         deviceenable: Number(this.deviceenable),
                     };
 
-
-                    if (this.companyid) {
-                        data.companyid = this.companyid;
-                    }
                     if (this.teltype) {
                         data.teltype = Number(this.teltype);
                     }
@@ -372,48 +367,9 @@
                     this.loginenable = "1";
                     this.deviceenable = "1";
                     this.groupid = "";
-                    this.companyid = "";
+
                 },
-                queryAllCompanyInfo: function(claaback) {
-                    var url = myUrls.queryCompanyByCreater();
-                    utils.sendAjax(url, {}, claaback)
-                },
-                doQueryAllCompanyInfo: function(resp) {
-                    var me = this;
-                    if (resp.status == 0) {
-                        resp.records.forEach(function(item) {
-                            me.customersList.push({
-                                label: item.companyname,
-                                value: item.companyid
-                            })
-                        });
-                    }
-                },
-                getGroupsList: function() {
-                    var me = this;
-                    var url = myUrls.queryCompanyGroup();
-                    utils.sendAjax(url, {
-                        companyid: this.companyid
-                    }, function(resp) {
-                        me.groupList = [];
-                        me.groupids = [];
-                        if (resp.status == 0) {
-                            var companys = resp.companys
-                            for (var i = 0; i < companys.length; i++) {
-                                var item = companys[i];
-                                if (item.companyid == me.companyid && item.groups != null) {
-                                    var groups = item.groups;
-                                    groups.forEach(function(group) {
-                                        me.groupsList.push({
-                                            label: group.groupname,
-                                            value: group.groupid
-                                        });
-                                    });
-                                }
-                            }
-                        }
-                    });
-                },
+
                 getDeviceType: function() {
                     var me = this;
                     vstore.state.deviceTypes.forEach(function(item) {
@@ -569,11 +525,7 @@
                 }, 1000)
             },
             watch: {
-                companyid: function() {
-                    this.groupsList = [];
-                    this.groupid = "";
-                    this.getGroupsList();
-                },
+
                 isShowMatchDev: function() {
                     if (!this.isShowMatchDev) {
                         this.iconState = "ios-arrow-down";
@@ -582,24 +534,7 @@
                     }
                 },
                 createrToUser: function(newVal) {
-                    // var me = this, url = myUrls.queryCompanyByCreater();
-                    // utils.sendAjax(url,{username:this.createrToUser},function (resp) { 
-                    //     if(resp.status === 0){
-                    //         var customersList = [];
-                    //         resp.records.forEach(function(item){
-                    //             customersList.push({
-                    //                 label:item.companyname,
-                    //                 value:item.companyid
-                    //             });
-                    //         });
-                    //         me.customersList = customersList;
-                    //         if(me.userType == 0){
-                    //             me.companyid = customersList.length ? customersList[0].companyid : "";
-                    //         }else{
-                    //             me.companyid = editObject.companyid;
-                    //         }    
-                    //     }
-                    // });
+
                     if (userlists.indexOf(newVal) != -1) {
                         this.groupid = "";
                         this.queryGroupsByUserName(newVal);
@@ -623,7 +558,7 @@
                 }
             },
             mounted: function() {
-                // this.queryAllCompanyInfo(this.doQueryAllCompanyInfo);
+
                 this.getDeviceType();
                 this.createrToUser = userName;
                 this.userlists = userlists;

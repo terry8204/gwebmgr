@@ -56,7 +56,6 @@ var monitor = {
             sosoValue: '', // 搜索框的值
             sosoData: [], // 搜索框里面的数据
             openGroupIds: {},
-            openCompanyIds: {},
             selectedState: 'all', // 选择nav的状态 all online offline;
             companys: [], //公司名称id
             groups: [], // 原始列表数据
@@ -901,16 +900,6 @@ var monitor = {
         selectedStateNav: function(state) {
             this.selectedState = state;
             this.openGroupIds = {};
-            this.openCompanyIds = {};
-        },
-        openCompany: function(company) {
-            var companyid = company.companyid;
-            company.expand = !company.expand;
-            if (company.expand) {
-                this.openCompanyIds[companyid] = "";
-            } else {
-                delete this.openCompanyIds[companyid];
-            }
         },
         openGroupItem: function(groupInfo) {
             groupInfo.expand = !groupInfo.expand;

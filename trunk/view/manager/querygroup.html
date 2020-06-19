@@ -264,10 +264,7 @@
                     this.taleHeight = wHeight - 184;
                 },
                 handleSubmit: function() {
-                    if (this.companyid == "") {
-                        this.$Message.error(this.$t("message.selectCustomersTip"));
-                        return;
-                    };
+
                     if (this.groupname == "") {
                         this.$Message.error(this.$t("message.fillGroupNameTip"));
                         return;
@@ -280,7 +277,6 @@
                         mintime: this.mintime,
                         maxtime: this.maxtime,
                         groupname: this.groupname,
-                        companyid: this.companyid,
                     };
                     if (this.usercount == "") {
                         data.usercount = 0;

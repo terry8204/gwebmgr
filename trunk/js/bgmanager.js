@@ -6,15 +6,8 @@ var bgManager = {
         return {
             userType: null,
             theme: 'light',
-            navList: [{
-                    title: me.$t("bgMgr.customerMgr"),
-                    name: 'customerMar',
-                    icon: 'md-contact',
-                    children: [
-                        { title: me.$t("bgMgr.addCustomer"), name: 'addCustomer', icon: 'md-person-add' },
-                        { title: me.$t("bgMgr.queryCustomer"), name: 'queryCustomer', icon: 'md-search' }
-                    ]
-                },
+            navList: [
+
                 {
                     title: me.$t("bgMgr.userMgr"),
                     name: 'userMar',

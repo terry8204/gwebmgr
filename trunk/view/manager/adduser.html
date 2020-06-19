@@ -38,15 +38,6 @@
                 </i-col>
             </Row>
 
-            <Row style="margin: 10px 0">
-                <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">
-                    <i style="color: red;display: inline-block;">*</i>&nbsp;{{$t("user.client")}} : &nbsp;</i-col>
-                <i-col span="12">
-                    <i-select v-model="companyid">
-                        <i-option v-for="item in companyList" :value="item.value" :key="item.value">{{ item.label }}</i-option>
-                    </i-select>
-                </i-col>
-            </Row>
 
             <Row style="margin: 10px 0" v-show="isShowGroup">
                 <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t("user.grouping")}} : &nbsp;</i-col>
@@ -163,12 +154,10 @@
                 singleLogin: "0",
                 phoneLogin: "0",
                 weixinLogin: "0",
-                companyid: "",
                 multilogin: "1",
                 groupcount: 10,
                 devicecount: 500,
                 usercount: 10,
-                companyList: [],
                 companyname: '',
                 cardname: '',
                 companyaddr: '',
@@ -194,21 +183,6 @@
             methods: {
 
 
-                queryAllCompanyInfo: function(claaback) {
-                    var url = myUrls.queryCompanyByCreater();
-                    utils.sendAjax(url, {}, claaback)
-                },
-                doQueryAllCompanyInfo: function(resp) {
-                    var me = this;
-                    if (resp.status == 0) {
-                        resp.records.forEach(function(item) {
-                            me.companyList.push({
-                                label: item.companyname,
-                                value: item.companyid
-                            })
-                        });
-                    }
-                },
                 handleSubmit: function() {
                     var url = myUrls.addUser();
                     var userType = this.usertype;
@@ -218,8 +192,6 @@
                         username: this.username,
                         password: "",
                         usertype: userType,
-                        companyid: this.companyid,
-
                     };
 
                     if (this.password !== this.confirmPassword) {
@@ -277,31 +249,6 @@
                             this.$Message.error(resp.cause);
                         }
                     }
-                },
-                getGroupsList: function() {
-                    var me = this;
-                    var url = myUrls.queryCompanyGroup();
-                    utils.sendAjax(url, {
-                        companyid: this.companyid
-                    }, function(resp) {
-                        me.groupList = [];
-                        me.groupids = [];
-                        if (resp.status == 0) {
-                            var companys = resp.companys
-                            for (var i = 0; i < companys.length; i++) {
-                                var item = companys[i];
-                                if (item.companyid == me.companyid && item.groups != null) {
-                                    var groups = item.groups;
-                                    groups.forEach(function(group) {
-                                        me.groupList.push({
-                                            label: group.groupname,
-                                            value: group.groupid
-                                        });
-                                    });
-                                }
-                            }
-                        }
-                    });
                 },
                 queryAllgroupsInfo: function() {
                     var url = myUrls.queryGroupByUser();
@@ -386,7 +333,6 @@
                 }
             },
             mounted: function() {
-                this.queryAllCompanyInfo(this.doQueryAllCompanyInfo);
                 this.queryAllgroupsInfo();
                 this.setUserTypeByUser();
                 // this.queryAllDeviceCmdByUser();

@@ -44,15 +44,6 @@
                     </i-col>
                 </Row>
 
-                <Row style="margin: 10px 0">
-                    <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">
-                        <i style="color: red;display: inline-block;">*</i>&nbsp;{{$t("user.client")}} : &nbsp;</i-col>
-                    <i-col span="12">
-                        <i-select v-model="companyid">
-                            <i-option v-for="item in companyList" :value="item.value" :key="item.value">{{ item.label }}</i-option>
-                        </i-select>
-                    </i-col>
-                </Row>
 
                 <Row style="margin: 10px 0" v-show="isShowGroup">
                     <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t("user.grouping")}} : &nbsp;</i-col>
@@ -171,101 +162,104 @@
                 loading: true,
                 total: 0,
                 currentIndex: 1,
-                columns: [{
-                    title: vRoot.$t("user.client"),
-                    key: 'company'
-                }, {
-                    title: vRoot.$t("user.username"),
-                    key: 'username',
-                }, {
-                    title: vRoot.$t("user.userType"),
-                    key: 'userTypeStr'
-                }, {
-                    title: '公司名称',
-                    key: 'companyname'
-                }, {
-                    title: '真实姓名',
-                    key: 'cardname'
-                }, {
-                    title: '电话',
-                    key: 'phone'
-                }, {
-                    title: '地址',
-                    key: 'companyaddr'
-                }, {
-                    title: vRoot.$t("user.groupCount"),
-                    key: 'usedGroupCount'
-                }, {
-                    title: vRoot.$t("group.userCount"),
-                    key: 'usedUserCount'
-                }, {
-                    title: vRoot.$t("group.devCount"),
-                    key: 'usedDeviceCount'
-                }, {
-                    title: vRoot.$t("user.createTime"),
-                    key: 'createtime'
-                }, {
-                    title: vRoot.$t("bgMgr.action"),
-                    key: 'action',
-                    width: 250,
-                    render: function(h, params) {
-                        return h('div', [
-                            h('Button', {
-                                props: {
-                                    type: 'primary',
-                                    size: 'small'
-                                },
-                                style: {
-                                    marginRight: '5px'
-                                },
-                                on: {
-                                    click: function() {
-                                        vueInstanse.editDeviceIndex = params.index;
-                                        editObject = params.row;
-                                        vueInstanse.queryAllCompanyInfo(vueInstanse.doQueryAllCompanyInfo);
-                                    }
-                                }
-                            }, vRoot.$t("bgMgr.edit")),
-
-                            h('Poptip', {
-                                props: {
-                                    confirm: true,
-                                    title: vRoot.$t("message.confirmDel")
-                                },
-                                style: {
-                                    marginRight: '5px'
-                                },
-                                on: {
-                                    'on-ok': function() {
-                                        vueInstanse.handleDelete(params.row.username);
-                                    }
-                                }
-                            }, [
+                columns: [
+                    //     {
+                    //     title: vRoot.$t("user.client"),
+                    //     key: 'company'
+                    // },
+                    {
+                        title: vRoot.$t("user.username"),
+                        key: 'username',
+                    }, {
+                        title: vRoot.$t("user.userType"),
+                        key: 'userTypeStr'
+                    }, {
+                        title: '公司名称',
+                        key: 'companyname'
+                    }, {
+                        title: '真实姓名',
+                        key: 'cardname'
+                    }, {
+                        title: '电话',
+                        key: 'phone'
+                    }, {
+                        title: '地址',
+                        key: 'companyaddr'
+                    }, {
+                        title: vRoot.$t("user.groupCount"),
+                        key: 'usedGroupCount'
+                    }, {
+                        title: vRoot.$t("group.userCount"),
+                        key: 'usedUserCount'
+                    }, {
+                        title: vRoot.$t("group.devCount"),
+                        key: 'usedDeviceCount'
+                    }, {
+                        title: vRoot.$t("user.createTime"),
+                        key: 'createtime'
+                    }, {
+                        title: vRoot.$t("bgMgr.action"),
+                        key: 'action',
+                        width: 250,
+                        render: function(h, params) {
+                            return h('div', [
                                 h('Button', {
                                     props: {
-                                        type: 'error',
+                                        type: 'primary',
                                         size: 'small'
-                                    }
-                                }, vRoot.$t("bgMgr.delete"))
-                            ]),
+                                    },
+                                    style: {
+                                        marginRight: '5px'
+                                    },
+                                    on: {
+                                        click: function() {
+                                            vueInstanse.editDeviceIndex = params.index;
+                                            editObject = params.row;
 
-                            h('Button', {
-                                props: {
-                                    type: 'primary',
-                                    size: 'small'
-                                },
-                                style: {
-                                    marginRight: '5px'
-                                },
-                                on: {
-                                    click: function() {
-                                        vueInstanse.resetDevicePwd(params.index);
+                                        }
                                     }
-                                }
-                            }, vRoot.$t("user.resetPwd"))
-                        ]);
+                                }, vRoot.$t("bgMgr.edit")),
+
+                                h('Poptip', {
+                                    props: {
+                                        confirm: true,
+                                        title: vRoot.$t("message.confirmDel")
+                                    },
+                                    style: {
+                                        marginRight: '5px'
+                                    },
+                                    on: {
+                                        'on-ok': function() {
+                                            vueInstanse.handleDelete(params.row.username);
+                                        }
+                                    }
+                                }, [
+                                    h('Button', {
+                                        props: {
+                                            type: 'error',
+                                            size: 'small'
+                                        }
+                                    }, vRoot.$t("bgMgr.delete"))
+                                ]),
+
+                                h('Button', {
+                                    props: {
+                                        type: 'primary',
+                                        size: 'small'
+                                    },
+                                    style: {
+                                        marginRight: '5px'
+                                    },
+                                    on: {
+                                        click: function() {
+                                            vueInstanse.resetDevicePwd(params.index);
+                                        }
+                                    }
+                                }, vRoot.$t("user.resetPwd"))
+                            ]);
+                        }
                     }
-                }],
+                ],
                 tableData: [],
                 recordsList: [],
 
@@ -274,7 +268,6 @@
                 singleLogin: "0",
                 phoneLogin: "0",
                 weixinLogin: "0",
-                companyid: "",
                 multilogin: "1",
                 groupcount: 10,
                 devicecount: 500,
@@ -302,8 +295,8 @@
                     this.recordsList.forEach(function(record) {
 
                         var username = record.username,
-                            companynamePinyin = record.companynamePinyin,
-                            companynameFirstLetter = record.companynameFirstLetter,
+                            // companynamePinyin = record.companynamePinyin,
+                            // companynameFirstLetter = record.companynameFirstLetter,
                             userTypeStrPinyin = record.userTypeStrPinyin,
                             userTypeStrFirstLetter = record.userTypeStrFirstLetter;
 
@@ -311,8 +304,8 @@
                             record.userTypeStr.indexOf(self.queryParameter) != -1 ||
                             (record.companyname.indexOf(self.queryParameter)) != -1 ||
                             username.toLowerCase().indexOf(queryParameterLowerCase) != -1 ||
-                            companynamePinyin.indexOf(queryParameterLowerCase) != -1 ||
-                            companynameFirstLetter.indexOf(queryParameterLowerCase) != -1 ||
+                            // companynamePinyin.indexOf(queryParameterLowerCase) != -1 ||
+                            // companynameFirstLetter.indexOf(queryParameterLowerCase) != -1 ||
                             userTypeStrPinyin.indexOf(queryParameterLowerCase) != -1 ||
                             userTypeStrFirstLetter.indexOf(queryParameterLowerCase) != -1
                         ) {
@@ -340,16 +333,16 @@
                             item.usedUserCount = item.company ? item.currusercount + "/" + item.usercount : "";
                             item.usedDeviceCount = item.company ? item.currdevicecount + "/" + item.devicecount : "";
                             item.usedGroupCount = item.company ? item.currgroupcount + "/" + item.groupcount : "";
-                            item.company = item.company ? item.company.companyname : "";
-                            console.log('company', item.company);
+                            // item.company = item.company ? item.company.companyname : "";
+                            // console.log('company', item.company);
                             currdevicecount += item.company ? item.currdevicecount : 0;
                             currgroupcount += item.company ? item.currgroupcount : 0;
 
                             item.userTypeStr = me.getUserTypeStr(item.usertype);
                             item.createtime = me.timeToDateStr(item.createtime);
 
-                            item.companynamePinyin = __pinyin.getPinyin(item.company && item.company.companyname);
-                            item.companynameFirstLetter = __pinyin.getFirstLetter(item.company && item.company.companyname);
+                            // item.companynamePinyin = __pinyin.getPinyin(item.company && item.company.companyname);
+                            // item.companynameFirstLetter = __pinyin.getFirstLetter(item.company && item.company.companyname);
                             item.userTypeStrPinyin = __pinyin.getPinyin(item.userTypeStr);
                             item.userTypeStrFirstLetter = __pinyin.getFirstLetter(item.userTypeStr);
                         });
@@ -425,35 +418,6 @@
                         }
                     });
                 },
-                queryAllCompanyInfo: function(claaback) {
-                    var me = this;
-                    if (this.companyList.length) {
-                        me.setUserInfo();
-                        me.modal = true;
-                    } else {
-                        var url = myUrls.queryCompanyByCreater();
-                        utils.sendAjax(url, {}, claaback)
-                    }
-
-                },
-                doQueryAllCompanyInfo: function(resp) {
-                    var me = this;
-                    if (resp.status == 0) {
-                        resp.records.forEach(function(item) {
-                            me.companyList.push({
-                                label: item.companyname,
-                                value: item.companyid
-                            })
-                        });
-                        me.$nextTick(function() {
-                            me.setUserTypeByUser();
-                            me.companyid = editObject.company ? editObject.company.companyid : "";
-                            // me.queryAllgroupsInfo();
-                        });
-                        me.setUserInfo();
-                        me.modal = true;
-                    }
-                },
                 queryAllgroupsInfo: function() {
                     var url = myUrls.queryGroupByUser();
                     utils.sendAjax(url, {}, this.doQueryAllgroupsInfo);
@@ -487,7 +451,6 @@
                     var data = {
                         username: this.username,
                         usertype: userType,
-                        companyid: this.companyid,
                     }
 
                     for (var key in data) {
@@ -527,31 +490,6 @@
                             me.$Message.success(me.$t("message.changeSucc"));
                         } else {
                             me.$Message.error(me.$t("message.changeFail"));
-                        }
-                    });
-                },
-                getGroupsList: function() {
-                    var me = this;
-                    var url = myUrls.queryCompanyGroup();
-                    utils.sendAjax(url, {
-                        companyid: this.companyid
-                    }, function(resp) {
-                        me.groupList = [];
-                        me.groupids = [];
-                        if (resp.status == 0) {
-                            var companys = resp.companys
-                            for (var i = 0; i < companys.length; i++) {
-                                var item = companys[i];
-                                if (item.companyid == me.companyid && item.groups != null) {
-                                    var groups = item.groups;
-                                    groups.forEach(function(group) {
-                                        me.groupList.push({
-                                            label: group.groupname,
-                                            value: group.groupid
-                                        });
-                                    });
-                                };
-                            };
                         }
                     });
                 },
