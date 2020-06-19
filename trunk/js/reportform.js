@@ -2245,14 +2245,14 @@ function salesRecord(groupslist) {
                     width: 70,
                 },
                 {
-                    title: '用户名',
+                    title: '门店编号',
                     key: 'username',
                 },
                 {
-                    title: '公司名称',
+                    title: '门店名称',
                     key: 'companyname'
                 }, {
-                    title: '真实姓名',
+                    title: '姓名',
                     key: 'cardname'
                 }, {
                     title: '电话',

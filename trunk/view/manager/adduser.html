@@ -94,16 +94,6 @@
             </Row>
 
             <Row style="margin: 10px 0">
-                <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">多点登陆 : &nbsp;</i-col>
-                <i-col span="12">
-                    <i-select v-model="multilogin">
-                        <i-option value="1">是</i-option>
-                        <i-option value="0">否</i-option>
-                    </i-select>
-                </i-col>
-            </Row>
-
-            <Row style="margin: 10px 0">
                 <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">
                     &nbsp;QQ : &nbsp;</i-col>
                 <i-col span="12">
@@ -125,7 +115,15 @@
                 </i-col>
             </Row>
 
-
+            <Row style="margin: 10px 0">
+                <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">多点登陆 : &nbsp;</i-col>
+                <i-col span="12">
+                    <i-select v-model="multilogin">
+                        <i-option value="1">是</i-option>
+                        <i-option value="0">否</i-option>
+                    </i-select>
+                </i-col>
+            </Row>
 
             <Row style="margin: 10px 0" v-show="!isShowGroup">
                 <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">
