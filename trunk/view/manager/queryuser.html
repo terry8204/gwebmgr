@@ -510,22 +510,26 @@
                         "name": isZh ? "普通监控员" : 'Monitor',
                         "type": 20
                     }];
-                    if (userType == 1) {
-                        newArray.shift();
-                        newArray.pop();
-                    } else if (userType == 2) {
-                        newArray.shift();
-                        newArray.shift();
-                        newArray.pop();
-                    } else if (userType == 3) {
-                        newArray.shift();
-                        newArray.shift();
-                        newArray.pop();
-                    } else if (userType == 20) {
+                    if (editObject.usertype == 20) {
                         newArray.shift();
                         newArray.shift();
                         newArray.shift();
+                    } else {
+                        if (userType == 1) {
+                            newArray.shift();
+                            newArray.pop();
+                        } else if (userType == 2) {
+                            newArray.shift();
+                            newArray.shift();
+                            newArray.pop();
+                        } else if (userType == 3) {
+                            newArray.shift();
+                            newArray.shift();
+                            newArray.pop();
+                        }
                     }
+
+
                     this.userTypeList = newArray;
                     this.usertype = editObject.usertype;
                     this.usertypeDisabled = editObject.usertype === 20;
