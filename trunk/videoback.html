@@ -322,6 +322,9 @@
                                         </i-button>
                                     </Button-Group>
                                 </div>
+                                <div style="float:right;">
+                                    <i-button @click="stopVideo">停止播放</i-button>
+                                </div>
                             </div>
                             <div style="height:250px;">
                                 <i-table v-if="isTable=='file'" border ref="table" @on-row-dblclick="handleDblclick" :columns="columns" :data="tableData" height="250" :loading="loading"></i-table>
@@ -363,6 +366,10 @@
         var isRequsetPlaying = false; // 防止连续点击
         var isResize = false;
         var timeDifference = DateFormat.getOffset();
+        var gchannel = null,
+            gstartTimeStr = null,
+            gendTimeStr = null;
+
 
         function calcFileSizeM(filesize) {
             var mSize = (filesize / 1024 / 1024).toFixed(2);
@@ -666,6 +673,49 @@
                 playerStateTip: '',
             },
             methods: {
+                stopVideo: function() {
+                    if (this.flvPlayer != null) {
+                        this.flvPlayer.pause();
+                        this.flvPlayer.unload();
+                        this.flvPlayer.detachMediaElement();
+                        this.flvPlayer.destroy();
+                        this.flvPlayer = null;
+                        this.playerStateTip = "停止播放";
+                        var url = myUrls.playRecordControl(),
+                            me = this;
+
+                        utils.sendAjax(url, {
+                            deviceid: deviceid,
+                            channel: gchannel,
+                            starttime: gstartTimeStr,
+                            endtime: gendTimeStr,
+                            playcontrol: 2,
+                        }, function(resp) {
+                            var status = resp.status;
+                            if (status == CMD_SEND_RESULT_UNCONFIRM) {
+                                me.$Message.error('发送成功，未收到确认');
+                            } else if (status === CMD_SEND_RESULT_PASSWORD_ERROR) {
+                                me.$Message.error('密码错误');
+                            } else if (status === CMD_SEND_RESULT_OFFLINE_NOT_CACHE) {
+                                me.$Message.error("设备离线，未缓存");
+                            } else if (status === CMD_SEND_RESULT_OFFLINE_CACHED) {
+                                me.$Message.error("设备离线，已缓存");
+                            } else if (status === CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD) {
+                                me.$Message.error("需要修改默认密码");
+                            } else if (status === CMD_SEND_RESULT_DETAIL_ERROR) {
+                                me.$Message.error("错误:" + resp.cause);
+                            } else if (status === CMD_SEND_CONFIRMED) {
+                                me.$Message.success("停止成功");
+                            } else if (status === CMD_SEND_OVER_RETRY_TIMES) {
+                                me.$Message.error("尝试发送3次失败");
+                            } else if (status === CMD_SEND_SYNC_TIMEOUT) {
+                                me.$Message.error("发送超时");
+                            }
+
+                        })
+
+                    }
+                },
                 controlUploadFileFn: function(data, callback) {
                     var url = myUrls.controlUploadFile(),
                         me = this;
@@ -906,6 +956,12 @@
                         this.playerStateTip = "正在请求播放";
                         this.isSpin = true;
                         var url = myUrls.playRecordControl();
+                        gendTimeStr = endTimeStr;
+                        gstartTimeStr = startTimeStr;
+                        gchannel = channel;
+                        console.log(gendTimeStr);
+                        console.log(gstartTimeStr);
+                        console.log(gchannel);
                         utils.sendAjax(url, {
                             deviceid: deviceid,
                             channel: channel,
@@ -978,6 +1034,9 @@
                         clearTimeout(startPlayerTimer);
                     }
                     this.playerStateTip = "正在请求播放";
+                    gendTimeStr = row.endtime;
+                    gstartTimeStr = row.starttime;
+                    gchannel = row.channel;
                     var url = myUrls.playRecord(),
                         me = this,
                         data = {
@@ -1122,7 +1181,7 @@
                         lazyLoad: false
                     });
                     this.flvPlayer.on(flvjs.Events.LOADING_COMPLETE, function() {
-                        alert("加载完成");
+                        // alert("加载完成");
                     });
                     this.flvPlayer.attachMediaElement(player);
                     this.flvPlayer.load(); //加载
