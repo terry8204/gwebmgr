@@ -118,6 +118,13 @@
             width: 30%;
             background-color: #868686;
         }
+        
+        div.tips {
+            font-size: 12px;
+            color: #CCCCCC;
+            padding: 1rem;
+            line-height: 16px;
+        }
     </style>
 </head>
 
@@ -154,7 +161,11 @@
         <div class="btns">
             <div v-text="btnStr" @click="getPrePayInfo"></div>
             <div v-text="btnStr1" @click="handleBeiAn"></div>
-            <!-- <cube-button @click="getPrePayInfo" :loading="loading"><span ></span></cube-button> -->
+        </div>
+
+        <div class="tips">
+            <div style="color:#2F2F30;">温馨提示：</div>
+            新进门店需要先进行门店备案取得系统的备案编码，然后输入备案编码充值购买。门店备案编码请妥善保管。
         </div>
     </div>
 
