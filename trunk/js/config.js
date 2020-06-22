@@ -599,9 +599,13 @@ var myUrls = {
     reportInsure: function() {
         return this.apihosts + 'webapi?action=reportinsure&token=' + token;
     },
+    reportOilTime: function() {
+        return this.apihosts + 'webapi?action=reportoiltime&token=' + token;
+    },
     getCardInfo: function(action) {
         return this.apihosts + 'webapi?action=' + action + '&token=' + token;
     },
+
 }
 
 

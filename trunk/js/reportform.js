@@ -3981,6 +3981,85 @@ function deviceMonthOnlineDaily(groupslist) {
     })
 }
 
+
+function timeOilConsumption(groupslist) {
+    new Vue({
+        el: "#time-oil-consumption",
+        i18n: utils.getI18n(),
+        data: {
+            loading: false,
+            groupslist: [],
+            columns: [
+                { title: '编号', type: 'index', width: 60 },
+                { title: '设备名称', key: 'devicename' },
+                { title: '时间', key: 'time', sortable: true },
+                { title: '总里程', key: 'time' },
+                { title: '总油量', key: 'time' },
+                { title: '油量(1)', key: 'time' },
+                { title: '油量(2)', key: 'time' },
+                { title: '速递', key: 'time' },
+                { title: '状态', key: 'time' },
+                { title: '位置(点击查看地图)', key: 'time' },
+            ],
+            tableData: [],
+            cmdRecords: []
+        },
+        mixins: [reportMixin],
+        methods: {
+            calcTableHeight: function() {
+                var wHeight = window.innerHeight;
+                this.lastTableHeight = wHeight - 170;
+                this.posiDetailHeight = wHeight - 144;
+            },
+            onClickQuery: function() {
+                if (this.queryDeviceId == "") { return };
+                var self = this;
+                if (this.isSelectAll === null) {
+                    this.$Message.error(this.$t("reportForm.selectDevTip"));
+                    return;
+                };
+                var data = {
+                    // username: vstore.state.userName,
+                    startday: this.dateVal[0],
+                    endday: this.dateVal[1],
+                    offset: timeDifference,
+                    devices: [this.queryDeviceId],
+                };
+                this.loading = true;
+                utils.sendAjax(myUrls.reportOilTime(), data, function(resp) {
+                    self.loading = false;
+                    console.log(resp);
+                    return
+                    if (resp.status == 0) {
+                        if (resp.cmdrecords) {
+
+                            resp.cmdrecords.forEach(function(item, index) {
+                                item.index = ++index;
+                                item.cmdtimeStr = DateFormat.longToDateTimeStr(item.cmdtime, timeDifference);
+                                item.deviceName = vstore.state.deviceInfos[item.deviceid].devicename;
+                            });
+                            self.cmdRecords = resp.cmdrecords;
+                            self.total = self.cmdRecords.length;
+                            self.tableData = self.cmdRecords;
+                            self.currentPageIndex = 1;
+                        } else {
+                            self.$Message.error(self.$t("reportForm.noRecord"));
+                        }
+                    } else {
+                        self.$Message.error(resp.cause);
+                    }
+                })
+            },
+            onSortChange: function(column) {
+
+            }
+        },
+        mounted: function() {
+            this.groupslist = groupslist;
+        }
+    });
+}
+
 // 统计报表
 var reportForm = {
     template: document.getElementById('report-template').innerHTML,
@@ -4035,6 +4114,14 @@ var reportForm = {
                     children: [
                         { title: "保险记录", name: 'insureRecords', icon: 'ios-list-box-outline' },
                         { title: "销售记录", name: 'salesRecord', icon: 'ios-book-outline' },
+                    ]
+                },
+                {
+                    title: '油耗报表',
+                    name: 'oilConsumption',
+                    icon: 'ios-speedometer-outline',
+                    children: [
+                        { title: "时间油耗报表", name: 'timeOilConsumption', icon: 'ios-stopwatch-outline' },
                     ]
                 },
             ]
@@ -4112,6 +4199,9 @@ var reportForm = {
                         break;
                     case 'devicemonthonlinedaily.html':
                         deviceMonthOnlineDaily(groupslist);
+                        break;
+                    case 'timeoilconsumption.html':
+                        timeOilConsumption(groupslist);
                         break;
                 }
             });
