@@ -8,6 +8,7 @@ var isLoadBMap = false;
 var globalDeviceId = "";
 var reportDeviceId = null;
 var userlists = [];
+var globalGroups = [];
 var rootuser = null; // tree users
 var isNeedRefresh = false;
 var isToAlarmListRecords = false;
@@ -47,6 +48,7 @@ vstore = new Vuex.Store({
     },
     actions: {
         setdeviceInfos: function(context, groups) {
+            globalGroups = groups;
             context.commit('setdeviceInfos', groups);
         },
         setDeviceTypes: function(context) {

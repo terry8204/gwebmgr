@@ -31,7 +31,7 @@
                                 <span>{{ item.groupname }}</span>
                             </div>
                             <div v-for="option in item.devices" :value="option.groupname" :key="option.groupname" class="ivu-select-item">
-                                <span :style="{color:option.isOnline ? '#33DAD0':'#B1BBC2'}" @click="sosoSelect(option)" class="demo-auto-complete-title">{{ option.title }}</span>
+                                <span :style="{color:option.isOnline ? '#33DAD0':'#B1BBC2'}" @click="sosoSelect(option)" class="demo-auto-complete-title">{{ option.allDeviceIdTitle }}</span>
                             </div>
                         </li>
                     </ul>

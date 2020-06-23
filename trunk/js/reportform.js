@@ -99,7 +99,7 @@ var treeMixin = {
         },
         sosoSelect: function(item) {
             reportDeviceId = item.deviceid;
-            this.sosoValue = item.title;
+            this.sosoValue = item.allDeviceIdTitle;
             this.queryDeviceId = item.deviceid;
             this.isShowMatchDev = false;
         },
@@ -188,7 +188,8 @@ var reportMixin = {
         focus: function() {
             this.readonly = false;
             var me = this;
-            if (this.sosoValue.trim()) {
+            console.log('this.sosoValue', this.sosoValue)
+            if (this.sosoValue && this.sosoValue.trim()) {
                 me.sosoValueChange()
             } else {
                 this.groupslist.forEach(function(group) {
@@ -268,7 +269,7 @@ var reportMixin = {
         },
         sosoSelect: function(item) {
             reportDeviceId = item.deviceid;
-            this.sosoValue = item.title;
+            this.sosoValue = item.allDeviceIdTitle;
             this.queryDeviceId = item.deviceid;
             this.isShowMatchDev = false;
         },
@@ -3983,7 +3984,7 @@ function deviceMonthOnlineDaily(groupslist) {
 
 
 function timeOilConsumption(groupslist) {
-    new Vue({
+    vueInstanse = new Vue({
         el: "#time-oil-consumption",
         i18n: utils.getI18n(),
         data: {
@@ -3992,24 +3993,201 @@ function timeOilConsumption(groupslist) {
             columns: [
                 { title: '编号', type: 'index', width: 60 },
                 { title: '设备名称', key: 'devicename' },
-                { title: '时间', key: 'time', sortable: true },
-                { title: '总里程', key: 'time' },
-                { title: '总油量', key: 'time' },
-                { title: '油量(1)', key: 'time' },
-                { title: '油量(2)', key: 'time' },
-                { title: '速递', key: 'time' },
-                { title: '状态', key: 'time' },
-                { title: '位置(点击查看地图)', key: 'time' },
+                { title: '时间', key: 'updatetimeStr', sortable: true },
+                { title: '总里程', key: 'totaldistance' },
+                { title: '总油量', key: 'oil' },
+                { title: '油量(1)', key: 'ad0' },
+                { title: '油量(2)', key: 'ad1' },
+                { title: '速度', key: 'speed' },
+                { title: '状态', key: 'strstatus' },
+                {
+                    title: '经度,纬度',
+                    render: function(h, params) {
+                        var row = params.row;
+                        var callat = row.callat.toFixed(5);
+                        var callon = row.callon.toFixed(5);
+                        if (row.address == null) {
+                            return h(
+                                'a', {
+                                    on: {
+                                        'click': function() {
+                                            utils.getJiuHuAddressSyn(callon, callat, function(resp) {
+                                                if (resp && resp.address) {
+                                                    vueInstanse.records[params.index].address = resp.address;
+                                                    LocalCacheMgr.setAddress(callon, callat, resp.address);
+                                                }
+                                            })
+                                        }
+                                    }
+                                },
+                                callat + ',' + callon
+                            );
+                        } else {
+                            return h('span', {}, row.address);
+                        }
+                    },
+                },
             ],
             tableData: [],
-            cmdRecords: []
+            recvtime: [],
+            oil: [],
+            veo: [],
+            distance: [],
+            oil1: [],
+            oil2: [],
+            canvasWidth: 1000
         },
         mixins: [reportMixin],
         methods: {
+            charts: function() {
+                var charts = echarts.init(document.getElementById('charts'));
+                var totoil = "总油量";
+                var speed = "速度";
+                var dis = "里程";
+                var time = "时间";
+                var usoil1 = "油量1";
+                var usoil2 = "油量2";
+                var cotgasus = "油量";
+                var option = {
+                    title: {
+                        text: time + '/' + cotgasus,
+                        x: 'center',
+                        textStyle: {
+                            fontSize: 12,
+                            fontWeight: 'bolder',
+                            color: '#333'
+                        }
+                    },
+                    grid: {
+                        x: 50,
+                        y: 40,
+                        x2: 50,
+                        y2: 40
+                    },
+                    tooltip: {
+                        trigger: 'axis'
+                    },
+                    legend: {
+                        data: [totoil, speed, dis, usoil1, usoil2],
+                        //selected: {
+                        //    '里程' : false
+                        // },
+                        x: 'left'
+                    },
+                    toolbox: {
+                        show: true,
+                        feature: {
+                            magicType: { show: true, type: ['line', 'bar'] },
+                            restore: { show: true },
+                            saveAsImage: {
+                                show: true
+                            }
+                        },
+                        itemSize: 14
+                    },
+                    dataZoom: [{
+                        show: true,
+                        realtime: true,
+                        start: 0,
+                        end: 100,
+                        height: 20,
+                        backgroundColor: '#EDEDED',
+                        fillerColor: 'rgb(54, 72, 96,0.5)',
+                        //fillerColor:'rgb(244,129,38,0.8)',
+                        bottom: 0
+                    }, {
+                        type: "inside",
+                        realtime: true,
+                        start: 0,
+                        end: 100,
+                        height: 20,
+                        bottom: 0
+                    }],
+                    xAxis: [{
+                        type: 'category',
+                        boundaryGap: false,
+                        axisLine: {
+                            onZero: false
+                        },
+                        data: this.recvtime
+                    }],
+                    yAxis: [{
+                        name: totoil + '/' + speed,
+                        type: 'value',
+                        nameTextStyle: 10,
+                        nameGap: 5,
+
+                    }, {
+                        name: dis,
+                        type: 'value',
+                        nameTextStyle: 10,
+                        nameGap: 2,
+
+                        axisLabel: {
+                            formatter: '{value} km',
+                        },
+                        axisTick: {
+                            show: false
+                        }
+                    }],
+                    series: [{
+                            //show:'false',
+                            name: totoil,
+                            type: 'line',
+                            symbol: 'none',
+                            color: '#C1232B',
+                            data: this.oil
+                        }, {
+                            name: speed,
+                            type: 'line',
+                            symbol: 'none',
+                            yAxisIndex: 0,
+                            //itemStyle: {normal: {areaStyle: {type: 'default'}}},
+                            color: '#4876FF',
+                            data: this.veo
+                        }, {
+                            name: dis,
+                            type: 'line',
+                            symbol: 'none',
+                            yAxisIndex: 1,
+                            color: '#3CB371',
+                            //itemStyle: {normal: {areaStyle: {type: 'default'}}},
+                            data: this.distance
+                        }, {
+                            name: time,
+                            type: 'line',
+                            symbol: 'none',
+                            yAxisIndex: 1,
+                            color: '#F0805A',
+                            //itemStyle: {normal: {areaStyle: {type: 'default'}}},
+                            data: this.recvtime
+                        }, {
+                            //show:'false',
+                            name: usoil1,
+                            type: 'line',
+                            symbol: 'none',
+                            color: '#8E388E',
+                            data: this.oil1
+                        },
+
+                        {
+                            //show:'false',
+                            name: usoil2,
+                            type: 'line',
+                            symbol: 'none',
+                            color: '#FF4500',
+                            data: this.oil2
+                        },
+                    ]
+                };
+
+                charts.setOption(option);
+                this.myChart = charts;
+            },
             calcTableHeight: function() {
                 var wHeight = window.innerHeight;
-                this.lastTableHeight = wHeight - 170;
-                this.posiDetailHeight = wHeight - 144;
+                this.lastTableHeight = wHeight - 580;
+                this.canvasWidth = window.innerWidth - 240;
             },
             onClickQuery: function() {
                 if (this.queryDeviceId == "") { return };
@@ -4029,19 +4207,49 @@ function timeOilConsumption(groupslist) {
                 utils.sendAjax(myUrls.reportOilTime(), data, function(resp) {
                     self.loading = false;
                     console.log(resp);
-                    return
                     if (resp.status == 0) {
-                        if (resp.cmdrecords) {
-
-                            resp.cmdrecords.forEach(function(item, index) {
-                                item.index = ++index;
-                                item.cmdtimeStr = DateFormat.longToDateTimeStr(item.cmdtime, timeDifference);
-                                item.deviceName = vstore.state.deviceInfos[item.deviceid].devicename;
+                        if (resp.records) {
+                            var records = [],
+                                oil = [],
+                                veo = [],
+                                distance = [],
+                                recvtime = [],
+                                oil1 = [],
+                                oil2 = [];
+                            resp.records.forEach(function(item, index) {
+                                records = item.records;
+                                records.forEach(function(record) {
+                                    var callon = record.callon.toFixed(5);
+                                    var callat = record.callat.toFixed(5);
+                                    var address = LocalCacheMgr.getAddress(callon, callat);
+                                    if (address != null) {
+                                        record.address = address;
+                                    } else {
+                                        record.address = null;
+                                    }
+                                    record.oil = record.ad0 + record.ad1;
+                                    record.updatetimeStr = DateFormat.longToDateTimeStr(record.updatetime, timeDifference);
+                                    record.devicename = vstore.state.deviceInfos[self.queryDeviceId].devicename;
+                                    oil.push(record.oil);
+                                    veo.push(record.speed);
+                                    distance.push(record.totaldistance);
+                                    recvtime.push(record.updatetimeStr);
+                                    oil1.push(record.oil1);
+                                    oil2.push(record.oil2);
+                                });
                             });
-                            self.cmdRecords = resp.cmdrecords;
-                            self.total = self.cmdRecords.length;
-                            self.tableData = self.cmdRecords;
+
+                            self.oil = oil;
+                            self.veo = veo;
+                            self.distance = distance;
+                            self.recvtime = recvtime;
+                            self.oil1 = oil1;
+                            self.oil2 = oil2;
+                            self.records = records;
+                            self.total = records.length;
+                            self.tableData = records;
                             self.currentPageIndex = 1;
+                            self.charts();
                         } else {
                             self.$Message.error(self.$t("reportForm.noRecord"));
                         }
@@ -4056,6 +4264,10 @@ function timeOilConsumption(groupslist) {
         },
         mounted: function() {
             this.groupslist = groupslist;
+            this.myChart = null;
+            this.records = [];
+            this.charts();
+
         }
     });
 }
@@ -4258,21 +4470,31 @@ var reportForm = {
     },
     mounted: function() {
         var me = this;
-        this.getMonitorListByUser(function(groups) {
-            me.groupslist = utils.getPinyin(groups);
-            me.groupslist.sort(function(a, b) {
-                return a.groupname.localeCompare(b.groupname);
-            });
-            me.groupslist.forEach(function(group) {
-                group.devices.sort(function(a, b) {
-                    return a.title.localeCompare(b.title);
-                });
-            });
-            if (isToAlarmListRecords) {
-                me.toAlarmRecords("allAlarm", "allalarm.html");
-            } else if (isToPhoneAlarmRecords) {
-                me.toAlarmRecords("phoneAlarm", "phonealarm.html");
-            }
-        })
+        // if (globalGroups.length > 0) {
+        me.groupslist = globalGroups;
+        if (isToAlarmListRecords) {
+            me.toAlarmRecords("allAlarm", "allalarm.html");
+        } else if (isToPhoneAlarmRecords) {
+            me.toAlarmRecords("phoneAlarm", "phonealarm.html");
+        }
+        // } else {
+        //     this.getMonitorListByUser(function(groups) {
+        //         me.groupslist = utils.getPinyin(groups);
+        //         me.groupslist.sort(function(a, b) {
+        //             return a.groupname.localeCompare(b.groupname);
+        //         });
+        //         me.groupslist.forEach(function(group) {
+        //             group.devices.sort(function(a, b) {
+        //                 return a.title.localeCompare(b.title);
+        //             });
+        //         });
+        //         if (isToAlarmListRecords) {
+        //             me.toAlarmRecords("allAlarm", "allalarm.html");
+        //         } else if (isToPhoneAlarmRecords) {
+        //             me.toAlarmRecords("phoneAlarm", "phonealarm.html");
+        //         }
+        //     })
+        // }
+
     }
 }

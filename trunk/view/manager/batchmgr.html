@@ -424,6 +424,8 @@
                         }
                         me.updatedActionState(respData.errorrecords);
                         me.queryDevicesTree();
+                    } else {
+                        me.$Message.error(respData.cause);
                     }
                 });
             },
