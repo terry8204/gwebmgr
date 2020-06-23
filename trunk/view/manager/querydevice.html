@@ -1153,7 +1153,7 @@
                         deviceid: deviceid
                     }, function(resp) {
                         if (resp.oildetectors != null) {
-                            me.$Message.success('查询油箱成功');
+                            me.$Message.success('查询油量标注成功');
                             console.log(resp.oildetectors);
                             var oildetectors = resp.oildetectors;
                             oildetectors.forEach(function(item, index) {
@@ -1199,7 +1199,7 @@
                                 }
                             })
                         } else {
-                            me.$Message.success('没有查询到油箱信息');
+                            me.$Message.success('没有查询到油量标注信息');
                         }
                     });
                 },
