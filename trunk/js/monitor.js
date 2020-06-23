@@ -1553,12 +1553,32 @@ var monitor = {
                 me.isLoadGroup = false;
                 me.setIntervalReqRecords();
                 if (userName) {
-                    var initIsPass = initWebSocket(wsHost, userName, this.wsCallback); // 连接webSocket
+                    var initIsPass = initWebSocket(wsHost, userName, me.wsCallback); // 连接webSocket
                     if (!initIsPass) {
                         this.$Message.error("浏览器不支持webSocket");
                     }
                 }
             });
+        },
+        wsCallback: function(resp) {
+            var action = resp.action;
+            if (action === "remindmsg") {
+                var data = resp.remindMsg;
+                communicate.$emit("remindmsg", data);
+            } else if (action === "positionlast") {
+                var data = resp.positionLast;
+                communicate.$emit("positionlast", data);
+            } else if (action === "reminddevicemsg") {
+                var data = resp.devicemsg;
+                communicate.$emit("reminddevicemsg", data);
+            } else if (action == "reminddevicemedia") {
+                var devicemediatemp = resp.devicemedia;
+                this.addPushMediaToLocalStore(devicemediatemp);
+            };
+        },
+        addPushMediaToLocalStore: function(devicemedia) {
+            var deviceid = devicemedia.deviceid;
+            localStorage.setItem("devicemedia-" + deviceid, JSON.stringify(devicemedia));
         },
         refreshMonitorRestartOpen: function() {
             var me = this;

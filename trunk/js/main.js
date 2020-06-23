@@ -1247,26 +1247,6 @@ var vRoot = new Vue({
         jumpReport: function(activeName) {
             this.$store.commit('setHeaderActiveName', activeName);
         },
-        addPushMediaToLocalStore: function(devicemedia) {
-            var deviceid = devicemedia.deviceid;
-            localStorage.setItem("devicemedia-" + deviceid, JSON.stringify(devicemedia));
-        },
-        wsCallback: function(resp) {
-            var action = resp.action;
-            if (action === "remindmsg") {
-                var data = resp.remindMsg;
-                communicate.$emit("remindmsg", data);
-            } else if (action === "positionlast") {
-                var data = resp.positionLast;
-                communicate.$emit("positionlast", data);
-            } else if (action === "reminddevicemsg") {
-                var data = resp.devicemsg;
-                communicate.$emit("reminddevicemsg", data);
-            } else if (action == "reminddevicemedia") {
-                var devicemediatemp = resp.devicemedia;
-                this.addPushMediaToLocalStore(devicemediatemp);
-            };
-        }
     },
     computed: {
         activeName: function() {
