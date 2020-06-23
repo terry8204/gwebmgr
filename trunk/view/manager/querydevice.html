@@ -589,25 +589,25 @@
 
                 oilModal: false, //石油 
                 tankShape1: '1', //油箱形状
-                tankVolume1: '', //油箱容积
-                sensorLength1: '', //传感器长度
-                length1: '',
-                width1: '',
-                height1: '',
-                diameter1: '', //圆柱体直径
-                tagging1: '',
-                taggingOil1: '',
+                tankVolume1: 0, //油箱容积
+                sensorLength1: 0, //传感器长度
+                length1: 0,
+                width1: 0,
+                height1: 0,
+                diameter1: 0, //圆柱体直径
+                tagging1: 0,
+                taggingOil1: 0,
                 taggingData1: [],
                 //
                 tankShape2: '1', //油箱形状
-                tankVolume2: '', //油箱容积
-                sensorLength2: '', //传感器长度
-                length2: '',
-                width2: '',
-                height2: '',
-                diameter2: '', //圆柱体直径
-                tagging2: '',
-                taggingOil2: '',
+                tankVolume2: 0, //油箱容积
+                sensorLength2: 0, //传感器长度
+                length2: 0,
+                width2: 0,
+                height2: 0,
+                diameter2: 0, //圆柱体直径
+                tagging2: 0,
+                taggingOil2: 0,
                 taggingData2: [],
                 taggingColumns: [{
                     type: 'index',
@@ -1104,7 +1104,7 @@
                     // taggingOil2: '',
                     // taggingData2: [],
                     var oilDetector1 = {
-                        appearance: this.tankShape1,
+                        appearance: Number(this.tankShape1),
                         capacity: this.tankVolume1,
                         detectorLength: this.sensorLength1,
                         maxAdValue: 1000,
@@ -1115,7 +1115,7 @@
                         markers: this.taggingData1,
                     };
                     var oilDetector2 = {
-                        appearance: this.tankShape2,
+                        appearance: Number(this.tankShape2),
                         capacity: this.tankVolume2,
                         detectorLength: this.sensorLength2,
                         maxAdValue: 1000,
