@@ -702,6 +702,7 @@
                                     on: {
                                         click: function() {
                                             vueInstanse.oilModal = true;
+                                            editObject = params.row;
                                             vueInstanse.queryOilInfo(params.row.deviceid);
                                         }
                                     }
@@ -1127,6 +1128,7 @@
                     var oildetectors = [oilDetector1, oilDetector2];
                     var url = myUrls.saveOilDetectors();
                     var data = {
+                        deviceid: editObject.deviceid,
                         oildetectors: oildetectors
                     };
                     utils.sendAjax(url, data, function(resp) {
