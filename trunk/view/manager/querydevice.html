@@ -289,13 +289,14 @@
             </p>
             <div>
                 <Tabs type="card">
-                    <tab-pane label="油量1" style="min-height: 180px;">
+                    <tab-pane label="油量1" style="min-height: 210px;">
                         <Row style="margin: 10px 0;">
                             <i-col span="4" style="line-height: 32px;text-align: center;">
                                 油箱形状:
                             </i-col>
                             <i-col span="8">
                                 <i-select v-model="tankShape1" style="width:100%">
+                                    <i-option value="0">无油箱</i-option>
                                     <i-option value="1">长方体</i-option>
                                     <i-option value="2">竖圆柱体</i-option>
                                     <i-option value="3">横圆柱体</i-option>
@@ -319,8 +320,14 @@
                             <i-col span="5">
                                 <input-number :max="1500" :min="1" v-model.trim.number="sensorLength1"></input-number>
                             </i-col>
-                            <i-col span="4" style="line-height: 32px;">
+                            <i-col span="3" style="line-height: 32px;">
                                 cm
+                            </i-col>
+                            <i-col span="4" style="line-height: 32px;text-align: center;">
+                                最大模拟量:
+                            </i-col>
+                            <i-col span="5">
+                                <input-number :max="10000" :min="1" v-model.trim.number="maxAdValue1"></input-number>
                             </i-col>
                         </Row>
                         <div v-if="tankShape1 == 1">
@@ -427,13 +434,14 @@
                             <i-table border :columns="taggingColumns" :data="taggingData1" height="200"></i-table>
                         </div>
                     </tab-pane>
-                    <tab-pane label="油量2" style="min-height: 180px;">
+                    <tab-pane label="油量2" style="min-height: 210px;">
                         <Row style="margin: 10px 0;">
                             <i-col span="4" style="line-height: 32px;text-align: center;">
                                 油箱形状:
                             </i-col>
                             <i-col span="8">
                                 <i-select v-model="tankShape2" style="width:100%">
+                                    <i-option value="0">无油箱</i-option>
                                     <i-option value="1">长方体</i-option>
                                     <i-option value="2">竖圆柱体</i-option>
                                     <i-option value="3">横圆柱体</i-option>
@@ -459,6 +467,12 @@
                             </i-col>
                             <i-col span="4" style="line-height: 32px;">
                                 cm
+                            </i-col>
+                            <i-col span="4" style="line-height: 32px;text-align: center;">
+                                最大模拟量:
+                            </i-col>
+                            <i-col span="5">
+                                <input-number :max="10000" :min="1" v-model.trim.number="maxAdValue2"></input-number>
                             </i-col>
                         </Row>
                         <div v-if="tankShape2 == 1">
@@ -588,9 +602,10 @@
                 teltype: '1',
 
                 oilModal: false, //石油 
-                tankShape1: '1', //油箱形状
+                tankShape1: '0', //油箱形状
                 tankVolume1: 0, //油箱容积
                 sensorLength1: 0, //传感器长度
+                maxAdValue1: 0,
                 length1: 0,
                 width1: 0,
                 height1: 0,
@@ -599,9 +614,10 @@
                 taggingOil1: 0,
                 taggingData1: [],
                 //
-                tankShape2: '1', //油箱形状
+                tankShape2: '0', //油箱形状
                 tankVolume2: 0, //油箱容积
                 sensorLength2: 0, //传感器长度
+                maxAdValue2: 0,
                 length2: 0,
                 width2: 0,
                 height2: 0,
@@ -1073,41 +1089,69 @@
                     });
                 },
                 queryOilInfo: function(deviceid) {
-                    var url = myUrls.queryOilDetectors();
-                    this.$Message.success('查询中...');
+                    var url = myUrls.queryOilDetectors(),
+                        me = this;
+
                     utils.sendAjax(url, {
                         deviceid: deviceid
                     }, function(resp) {
-                        console.log(resp);
+                        if (resp.oildetectors != null) {
+                            me.$Message.success('查询油箱成功');
+                            console.log(resp.oildetectors);
+                            var oildetectors = resp.oildetectors;
+                            oildetectors.forEach(function(item, index) {
+                                // appearance: 0
+                                // capacity: 0
+                                // detectorLength: 0
+                                // diameter: 0
+                                // height: 0
+                                // length: 0
+                                // markers: []
+                                // maxAdValue: 1000
+                                // width: 0
+
+                                // appearance: Number(this.tankShape1),
+                                // capacity: this.tankVolume1,
+                                // detectorLength: this.sensorLength1,
+                                // maxAdValue: this.maxAdValue1,
+                                // length: this.length1,
+                                // width: this.width1,
+                                // height: this.height1,
+                                // diameter: this.diameter1,
+                                // markers: this.taggingData1,
+                                if (index == 0) {
+                                    me.tankShape1 = String(item.appearance);
+                                    me.tankVolume1 = item.capacity;
+                                    me.sensorLength1 = item.detectorLength
+                                    me.diameter1 = item.diameter;
+                                    me.height1 = item.height;
+                                    me.length1 = item.length;
+                                    me.width1 = item.width;
+                                    me.maxAdValue1 = item.maxAdValue;
+                                    me.taggingData1 = item.markers;
+                                } else if (index == 1) {
+                                    me.tankShape2 = String(item.appearance);
+                                    me.tankVolume2 = item.capacity;
+                                    me.sensorLength2 = item.detectorLength
+                                    me.diameter2 = item.diameter;
+                                    me.height2 = item.height;
+                                    me.length2 = item.length;
+                                    me.width2 = item.width;
+                                    me.maxAdValue2 = item.maxAdValue;
+                                    me.taggingData2 = item.markers;
+                                }
+                            })
+                        } else {
+                            me.$Message.success('没有查询到油箱信息');
+                        }
                     });
                 },
                 saveOilDetectors: function() {
-                    // tankShape1: '1', //油箱形状
-                    // tankVolume1: '', //油箱容积
-                    // sensorLength1: '', //传感器长度
-                    // length1: '',
-                    // width1: '',
-                    // height1: '',
-                    // diameter1: '', //圆柱体直径
-                    // tagging1: '',
-                    // taggingOil1: '',
-                    // taggingData1: [],
-                    // //
-                    // tankShape2: '1', //油箱形状
-                    // tankVolume2: '', //油箱容积
-                    // sensorLength2: '', //传感器长度
-                    // length2: '',
-                    // width2: '',
-                    // height2: '',
-                    // diameter2: '', //圆柱体直径
-                    // tagging2: '',
-                    // taggingOil2: '',
-                    // taggingData2: [],
                     var oilDetector1 = {
                         appearance: Number(this.tankShape1),
                         capacity: this.tankVolume1,
                         detectorLength: this.sensorLength1,
-                        maxAdValue: 1000,
+                        maxAdValue: this.maxAdValue1,
                         length: this.length1,
                         width: this.width1,
                         height: this.height1,
@@ -1118,7 +1162,7 @@
                         appearance: Number(this.tankShape2),
                         capacity: this.tankVolume2,
                         detectorLength: this.sensorLength2,
-                        maxAdValue: 1000,
+                        maxAdValue: this.maxAdValue2,
                         length: this.length2,
                         width: this.width2,
                         height: this.height2,
@@ -1132,7 +1176,11 @@
                         oildetectors: oildetectors
                     };
                     utils.sendAjax(url, data, function(resp) {
-                        console.log(resp);
+                        if (resp.status == 0) {
+                            me.$Message.success('保存成功');
+                        } else {
+                            me.$Message.error('保存失败:' + resp.cause);
+                        }
                     });
                 },
                 exportDevice: function() {
