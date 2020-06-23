@@ -1233,7 +1233,8 @@
                         markers: this.taggingData2,
                     };
                     var oildetectors = [oilDetector1, oilDetector2];
-                    var url = myUrls.saveOilDetectors();
+                    var url = myUrls.saveOilDetectors(),
+                        me = this;
                     var data = {
                         deviceid: editObject.deviceid,
                         oildetectors: oildetectors
