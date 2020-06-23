@@ -1291,13 +1291,6 @@ var vRoot = new Vue({
         // this.$store.dispatch('setUserTypeDescr');
         this.$store.dispatch('setAllCmdList');
         this.$store.dispatch('setDeviceTypes');
-
-        if (userName) {
-            var initIsPass = initWebSocket(wsHost, userName, this.wsCallback); // 连接webSocket
-            if (!initIsPass) {
-                this.$Message.error("浏览器不支持webSocket");
-            }
-        }
         vueInstanse = this; // 备份monitor实例
         utils.getUserInfoList();
         utils.queryAllSubgroups();

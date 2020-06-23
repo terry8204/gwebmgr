@@ -602,6 +602,12 @@ var myUrls = {
     reportOilTime: function() {
         return this.apihosts + 'webapi?action=reportoiltime&token=' + token;
     },
+    queryOilDetectors: function() {
+        return this.apihosts + 'webapi?action=queryoildetectors&token=' + token;
+    },
+    saveOilDetectors: function() {
+        return this.apihosts + 'webapi?action=saveoildetectors&token=' + token;
+    },
     getCardInfo: function(action) {
         return this.apihosts + 'webapi?action=' + action + '&token=' + token;
     },

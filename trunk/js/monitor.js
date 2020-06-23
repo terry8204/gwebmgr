@@ -1552,6 +1552,12 @@ var monitor = {
                 }, function(error) {});
                 me.isLoadGroup = false;
                 me.setIntervalReqRecords();
+                if (userName) {
+                    var initIsPass = initWebSocket(wsHost, userName, this.wsCallback); // 连接webSocket
+                    if (!initIsPass) {
+                        this.$Message.error("浏览器不支持webSocket");
+                    }
+                }
             });
         },
         refreshMonitorRestartOpen: function() {
@@ -1660,7 +1666,6 @@ var monitor = {
         if (this.deviceTypes.length) {
             this.getMonitorList();
         }
-
         document.addEventListener('fullscreenchange', function() {
             me.changeIsFullMapIcon();
         })

@@ -288,163 +288,292 @@
                 <span>油量标注</span>
             </p>
             <div>
-                <Row style="margin: 10px 0;">
-                    <i-col span="12">
-                        <Button-group>
-                            <i-button>油量1</i-button>
-                            <i-button type="primary">油量2</i-button>
-                        </Button-group>
-                    </i-col>
-                </Row>
-                <Row style="margin: 10px 0;">
-                    <i-col span="4" style="line-height: 32px;text-align: center;">
-                        油箱形状:
-                    </i-col>
-                    <i-col span="8">
-                        <i-select v-model="tankShape" style="width:100%">
-                            <i-option value="1">长方体</i-option>
-                            <i-option value="2">竖圆柱体</i-option>
-                            <i-option value="3">横圆柱体</i-option>
-                            <i-option value="4">不规则</i-option>
-                        </i-select>
-                    </i-col>
-                    <i-col span="4" style="line-height: 32px;text-align: center;">
-                        油箱容积:
-                    </i-col>
-                    <i-col span="5">
-                        <input-number :max="500" :min="5" v-model.trim.number="tankVolume"></input-number>
-                    </i-col>
-                    <i-col span="3" style="line-height: 32px;">
-                        L
-                    </i-col>
-                </Row>
-                <Row style="margin: 10px 0;">
-                    <i-col span="4" style="line-height: 32px;text-align: center;">
-                        传感器长度:
-                    </i-col>
-                    <i-col span="5">
-                        <input-number :max="500" :min="1" v-model.trim.number="sensorLength"></input-number>
-                    </i-col>
-                    <i-col span="4" style="line-height: 32px;">
-                        cm
-                    </i-col>
-                </Row>
-                <div v-if="tankShape == 1">
-                    <Row style="margin: 10px 0;">
-                        <i-col span="4" style="line-height: 32px;text-align: center;">
-                            油箱长度:
-                        </i-col>
-                        <i-col span="5">
-                            <input-number :max="500" :min="5" v-model.trim.number="length1"></input-number>
-                        </i-col>
-                        <i-col span="3" style="line-height: 32px;">
-                            cm
-                        </i-col>
-                        <i-col span="4" style="line-height: 32px;text-align: center;">
-                            油箱宽度:
-                        </i-col>
-                        <i-col span="5">
-                            <input-number :max="500" :min="5" v-model.trim.number="width1"></input-number>
-                        </i-col>
-                        <i-col span="3" style="line-height: 32px;">
-                            cm
-                        </i-col>
-                    </Row>
-                    <Row style="margin: 10px 0;">
-                        <i-col span="4" style="line-height: 32px;text-align: center;">
-                            油箱高度:
-                        </i-col>
-                        <i-col span="5">
-                            <input-number :max="500" :min="5" v-model.trim.number="height1"></input-number>
-                        </i-col>
-                        <i-col span="3" style="line-height: 32px;">
-                            cm
-                        </i-col>
-                    </Row>
-                </div>
-                <div v-if="tankShape == 2">
-                    <Row style="margin: 10px 0;">
-                        <i-col span="4" style="line-height: 32px;text-align: center;">
-                            油箱高度:
-                        </i-col>
-                        <i-col span="5">
-                            <input-number :max="500" :min="5" v-model.trim.number="height1"></input-number>
-                        </i-col>
-                        <i-col span="3" style="line-height: 32px;">
-                            cm
-                        </i-col>
-                        <i-col span="4" style="line-height: 32px;text-align: center;">
-                            油箱直径:
-                        </i-col>
-                        <i-col span="5">
-                            <input-number :max="500" :min="5" v-model.trim.number="diameter"></input-number>
-                        </i-col>
-                        <i-col span="3" style="line-height: 32px;">
-                            cm
-                        </i-col>
-                    </Row>
-                </div>
-                <div v-if="tankShape == 3">
-                    <Row style="margin: 10px 0;">
-                        <i-col span="4" style="line-height: 32px;text-align: center;">
-                            油箱长度:
-                        </i-col>
-                        <i-col span="5">
-                            <input-number :max="500" :min="5" v-model.trim.number="width1"></input-number>
-                        </i-col>
-                        <i-col span="3" style="line-height: 32px;">
-                            cm
-                        </i-col>
-                        <i-col span="4" style="line-height: 32px;text-align: center;">
-                            油箱直径:
-                        </i-col>
-                        <i-col span="5">
-                            <input-number :max="500" :min="5" v-model.trim.number="diameter"></input-number>
-                        </i-col>
-                        <i-col span="3" style="line-height: 32px;">
-                            cm
-                        </i-col>
-                    </Row>
-                </div>
-                <div v-if="tankShape == 4">
-                    <Row style="margin: 10px 0;">
-                        <i-col span="2" style="line-height: 32px;text-align: center;">
-                            标定:
-                        </i-col>
-                        <i-col span="5">
-                            <input-number :max="500" :min="5" v-model.trim.number="width1"></input-number>
-                        </i-col>
-                        <i-col span="2" style="line-height: 32px;">
-                            cm
-                        </i-col>
-                        <i-col span="2" style="line-height: 32px;text-align: center;">
-                            油量:
-                        </i-col>
-                        <i-col span="5">
-                            <input-number :max="500" :min="5" v-model.trim.number="diameter"></input-number>
-                        </i-col>
-                        <i-col span="2" style="line-height: 32px;">
-                            L
-                        </i-col>
-                        <i-col span="4">
-                            <i-button type="primary">添加</i-button>
-                        </i-col>
-                    </Row>
-                    <table border="0" id="oil-table" width="100%" cellspacing="1" cellpadding="0">
-                        <thead>
-                            <th>标定</th>
-                            <th>油量</th>
-                            <th>操作</th>
-                        </thead>
-                        <tbody>
-                            <td>1</td>
-                            <td>2</td>
-                            <td>3</td>
-                        </tbody>
-                    </table>
-                </div>
+                <Tabs type="card">
+                    <tab-pane label="油量1">
+                        <Row style="margin: 10px 0;">
+                            <i-col span="4" style="line-height: 32px;text-align: center;">
+                                油箱形状:
+                            </i-col>
+                            <i-col span="8">
+                                <i-select v-model="tankShape" style="width:100%">
+                                    <i-option value="1">长方体</i-option>
+                                    <i-option value="2">竖圆柱体</i-option>
+                                    <i-option value="3">横圆柱体</i-option>
+                                    <i-option value="4">不规则</i-option>
+                                </i-select>
+                            </i-col>
+                            <i-col span="4" style="line-height: 32px;text-align: center;">
+                                油箱容积:
+                            </i-col>
+                            <i-col span="5">
+                                <input-number :max="1500" :min="1" v-model.trim.number="tankVolume"></input-number>
+                            </i-col>
+                            <i-col span="3" style="line-height: 32px;">
+                                L
+                            </i-col>
+                        </Row>
+                        <Row style="margin: 10px 0;">
+                            <i-col span="4" style="line-height: 32px;text-align: center;">
+                                传感器长度:
+                            </i-col>
+                            <i-col span="5">
+                                <input-number :max="1500" :min="1" v-model.trim.number="sensorLength"></input-number>
+                            </i-col>
+                            <i-col span="4" style="line-height: 32px;">
+                                cm
+                            </i-col>
+                        </Row>
+                        <div v-if="tankShape == 1">
+                            <Row style="margin: 10px 0;">
+                                <i-col span="4" style="line-height: 32px;text-align: center;">
+                                    油箱长度:
+                                </i-col>
+                                <i-col span="5">
+                                    <input-number :max="1500" :min="1" v-model.trim.number="length1"></input-number>
+                                </i-col>
+                                <i-col span="3" style="line-height: 32px;">
+                                    cm
+                                </i-col>
+                                <i-col span="4" style="line-height: 32px;text-align: center;">
+                                    油箱宽度:
+                                </i-col>
+                                <i-col span="5">
+                                    <input-number :max="1500" :min="1" v-model.trim.number="width1"></input-number>
+                                </i-col>
+                                <i-col span="3" style="line-height: 32px;">
+                                    cm
+                                </i-col>
+                            </Row>
+                            <Row style="margin: 10px 0;">
+                                <i-col span="4" style="line-height: 32px;text-align: center;">
+                                    油箱高度:
+                                </i-col>
+                                <i-col span="5">
+                                    <input-number :max="1500" :min="1" v-model.trim.number="height1"></input-number>
+                                </i-col>
+                                <i-col span="3" style="line-height: 32px;">
+                                    cm
+                                </i-col>
+                            </Row>
+                        </div>
+                        <div v-if="tankShape == 2">
+                            <Row style="margin: 10px 0;">
+                                <i-col span="4" style="line-height: 32px;text-align: center;">
+                                    油箱高度:
+                                </i-col>
+                                <i-col span="5">
+                                    <input-number :max="1500" :min="1" v-model.trim.number="height1"></input-number>
+                                </i-col>
+                                <i-col span="3" style="line-height: 32px;">
+                                    cm
+                                </i-col>
+                                <i-col span="4" style="line-height: 32px;text-align: center;">
+                                    油箱直径:
+                                </i-col>
+                                <i-col span="5">
+                                    <input-number :max="1500" :min="1" v-model.trim.number="diameter"></input-number>
+                                </i-col>
+                                <i-col span="3" style="line-height: 32px;">
+                                    cm
+                                </i-col>
+                            </Row>
+                        </div>
+                        <div v-if="tankShape == 3">
+                            <Row style="margin: 10px 0;">
+                                <i-col span="4" style="line-height: 32px;text-align: center;">
+                                    油箱长度:
+                                </i-col>
+                                <i-col span="5">
+                                    <input-number :max="1500" :min="1" v-model.trim.number="width1"></input-number>
+                                </i-col>
+                                <i-col span="3" style="line-height: 32px;">
+                                    cm
+                                </i-col>
+                                <i-col span="4" style="line-height: 32px;text-align: center;">
+                                    油箱直径:
+                                </i-col>
+                                <i-col span="5">
+                                    <input-number :max="1500" :min="1" v-model.trim.number="diameter"></input-number>
+                                </i-col>
+                                <i-col span="3" style="line-height: 32px;">
+                                    cm
+                                </i-col>
+                            </Row>
+                        </div>
+                        <div v-if="tankShape == 4">
+                            <Row style="margin: 10px 0;">
+                                <i-col span="2" style="line-height: 32px;text-align: center;">
+                                    标定:
+                                </i-col>
+                                <i-col span="5">
+                                    <input-number :max="1500" :min="0" v-model.trim.number="tagging"></input-number>
+                                </i-col>
+                                <i-col span="2" style="line-height: 32px;">
+                                    cm
+                                </i-col>
+                                <i-col span="2" style="line-height: 32px;text-align: center;">
+                                    油量:
+                                </i-col>
+                                <i-col span="5">
+                                    <input-number :max="1500" :min="0" v-model.trim.number="taggingOil"></input-number>
+                                </i-col>
+                                <i-col span="2" style="line-height: 32px;">
+                                    L
+                                </i-col>
+                                <i-col span="4">
+                                    <i-button type="primary" @click="addTaggingRowData">添加</i-button>
+                                </i-col>
+                            </Row>
+                            <i-table border :columns="taggingColumns" :data="taggingData" height="200"></i-table>
+                        </div>
+                    </tab-pane>
+                    <tab-pane label="油量2">
+                        <Row style="margin: 10px 0;">
+                            <i-col span="4" style="line-height: 32px;text-align: center;">
+                                油箱形状:
+                            </i-col>
+                            <i-col span="8">
+                                <i-select v-model="tankShape" style="width:100%">
+                                    <i-option value="1">长方体</i-option>
+                                    <i-option value="2">竖圆柱体</i-option>
+                                    <i-option value="3">横圆柱体</i-option>
+                                    <i-option value="4">不规则</i-option>
+                                </i-select>
+                            </i-col>
+                            <i-col span="4" style="line-height: 32px;text-align: center;">
+                                油箱容积:
+                            </i-col>
+                            <i-col span="5">
+                                <input-number :max="1500" :min="1" v-model.trim.number="tankVolume"></input-number>
+                            </i-col>
+                            <i-col span="3" style="line-height: 32px;">
+                                L
+                            </i-col>
+                        </Row>
+                        <Row style="margin: 10px 0;">
+                            <i-col span="4" style="line-height: 32px;text-align: center;">
+                                传感器长度:
+                            </i-col>
+                            <i-col span="5">
+                                <input-number :max="1500" :min="1" v-model.trim.number="sensorLength"></input-number>
+                            </i-col>
+                            <i-col span="4" style="line-height: 32px;">
+                                cm
+                            </i-col>
+                        </Row>
+                        <div v-if="tankShape == 1">
+                            <Row style="margin: 10px 0;">
+                                <i-col span="4" style="line-height: 32px;text-align: center;">
+                                    油箱长度:
+                                </i-col>
+                                <i-col span="5">
+                                    <input-number :max="1500" :min="1" v-model.trim.number="length1"></input-number>
+                                </i-col>
+                                <i-col span="3" style="line-height: 32px;">
+                                    cm
+                                </i-col>
+                                <i-col span="4" style="line-height: 32px;text-align: center;">
+                                    油箱宽度:
+                                </i-col>
+                                <i-col span="5">
+                                    <input-number :max="1500" :min="1" v-model.trim.number="width1"></input-number>
+                                </i-col>
+                                <i-col span="3" style="line-height: 32px;">
+                                    cm
+                                </i-col>
+                            </Row>
+                            <Row style="margin: 10px 0;">
+                                <i-col span="4" style="line-height: 32px;text-align: center;">
+                                    油箱高度:
+                                </i-col>
+                                <i-col span="5">
+                                    <input-number :max="1500" :min="1" v-model.trim.number="height1"></input-number>
+                                </i-col>
+                                <i-col span="3" style="line-height: 32px;">
+                                    cm
+                                </i-col>
+                            </Row>
+                        </div>
+                        <div v-if="tankShape == 2">
+                            <Row style="margin: 10px 0;">
+                                <i-col span="4" style="line-height: 32px;text-align: center;">
+                                    油箱高度:
+                                </i-col>
+                                <i-col span="5">
+                                    <input-number :max="1500" :min="1" v-model.trim.number="height1"></input-number>
+                                </i-col>
+                                <i-col span="3" style="line-height: 32px;">
+                                    cm
+                                </i-col>
+                                <i-col span="4" style="line-height: 32px;text-align: center;">
+                                    油箱直径:
+                                </i-col>
+                                <i-col span="5">
+                                    <input-number :max="1500" :min="1" v-model.trim.number="diameter"></input-number>
+                                </i-col>
+                                <i-col span="3" style="line-height: 32px;">
+                                    cm
+                                </i-col>
+                            </Row>
+                        </div>
+                        <div v-if="tankShape == 3">
+                            <Row style="margin: 10px 0;">
+                                <i-col span="4" style="line-height: 32px;text-align: center;">
+                                    油箱长度:
+                                </i-col>
+                                <i-col span="5">
+                                    <input-number :max="1500" :min="1" v-model.trim.number="width1"></input-number>
+                                </i-col>
+                                <i-col span="3" style="line-height: 32px;">
+                                    cm
+                                </i-col>
+                                <i-col span="4" style="line-height: 32px;text-align: center;">
+                                    油箱直径:
+                                </i-col>
+                                <i-col span="5">
+                                    <input-number :max="1500" :min="1" v-model.trim.number="diameter"></input-number>
+                                </i-col>
+                                <i-col span="3" style="line-height: 32px;">
+                                    cm
+                                </i-col>
+                            </Row>
+                        </div>
+                        <div v-if="tankShape == 4">
+                            <Row style="margin: 10px 0;">
+                                <i-col span="2" style="line-height: 32px;text-align: center;">
+                                    标定:
+                                </i-col>
+                                <i-col span="5">
+                                    <input-number :max="1500" :min="0" v-model.trim.number="tagging"></input-number>
+                                </i-col>
+                                <i-col span="2" style="line-height: 32px;">
+                                    cm
+                                </i-col>
+                                <i-col span="2" style="line-height: 32px;text-align: center;">
+                                    油量:
+                                </i-col>
+                                <i-col span="5">
+                                    <input-number :max="1500" :min="0" v-model.trim.number="taggingOil"></input-number>
+                                </i-col>
+                                <i-col span="2" style="line-height: 32px;">
+                                    L
+                                </i-col>
+                                <i-col span="4">
+                                    <i-button type="primary" @click="addTaggingRowData">添加</i-button>
+                                </i-col>
+                            </Row>
+                            <i-table border :columns="taggingColumns" :data="taggingData" height="200"></i-table>
+                        </div>
+                    </tab-pane>
+                </Tabs>
             </div>
-            <div slot="footer"></div>
+            <div slot="footer">
+                <Row>
+                    <i-col span="6" :offset="9">
+                        <i-button style="width: 300px" type="primary" @click="saveOilDetectors">{{$t("bgMgr.submit")}}</i-button>
+                    </i-col>
+                </Row>
+            </div>
         </Modal>
     </div>
     <script>
@@ -461,15 +590,45 @@
                 total: 0,
                 currentIndex: 1,
                 teltype: '1',
-                oilModal: true, //石油 
+                oilType: '1',
+                oilModal: false, //石油 
                 tankShape: '1', //油箱形状
                 tankVolume: 50, //油箱容积
                 sensorLength: 50, //传感器长度
                 sensorLength: 50, //传感器长度
-                length1: '',
-                width1: '',
-                height1: '',
-                diameter: '', //圆柱体直径
+                length1: 50,
+                width1: 50,
+                height1: 50,
+                diameter: 50, //圆柱体直径
+                tagging: 50,
+                taggingOil: 50,
+                taggingData: [],
+                taggingColumns: [{
+                    type: 'index',
+                    width: 50
+                }, {
+                    key: 'tagging',
+                    title: "标注",
+                }, {
+                    key: 'oil',
+                    title: "油量",
+                }, {
+                    title: "操作",
+                    width: 80,
+                    render: function(h) {
+                        return h('Button', {
+                            props: {
+                                type: 'error',
+                                size: 'small'
+                            },
+                            on: {
+                                click: function() {
+
+                                }
+                            }
+                        }, '删除')
+                    },
+                }],
                 columns: [{
                         title: vRoot.$t("alarm.devName"),
                         key: 'devicenamekey',
@@ -537,6 +696,7 @@
                                     on: {
                                         click: function() {
                                             vueInstanse.oilModal = true;
+                                            vueInstanse.queryOilInfo(params.row.deviceid);
                                         }
                                     }
                                 }, '油箱标注'),
@@ -698,6 +858,12 @@
                 },
             },
             methods: {
+                addTaggingRowData: function() {
+                    this.taggingData.push({
+                        tagging: this.tagging,
+                        oil: this.taggingOil
+                    });
+                },
                 handleEditInsure: function() {
                     var me = this;
                     utils.editDeviceex('insure', me.ownerInfoData, function(resp) {
@@ -890,6 +1056,24 @@
                             me.$Message.error(me.$t("message.deleteFail"));
                         }
                         me.modal = false;
+
+                    });
+                },
+                queryOilInfo: function(deviceid) {
+                    var url = myUrls.queryOilDetectors();
+                    this.$Message.success('查询中...');
+                    utils.sendAjax(url, {
+                        deviceid: deviceid
+                    }, function(resp) {
+                        console.log(resp);
+                    });
+                },
+                saveOilDetectors: function() {
+                    var url = myUrls.saveOilDetectors();
+                    var data = {
+                        // appearance:
+                    };
+                    utils.sendAjax(url, data, function(resp) {
 
                     });
                 },
