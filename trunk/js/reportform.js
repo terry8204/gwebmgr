@@ -4309,14 +4309,12 @@ function dayOil(groupslist) {
             columns: [
                 { title: '编号', type: 'index', width: 60 },
                 { title: '设备名称', key: 'devicename' },
-                { title: '日期', key: 'updatetimeStr', sortable: true },
-                { title: '行驶里程(公里)', key: 'totaldistance' },
+                { title: '日期', key: 'statisticsday', sortable: true },
+                { title: '行驶里程(公里)', key: 'distance' },
                 { title: '油耗', key: 'oil' },
-                { title: '超速次数', key: 'ad0' },
-                { title: '超时停车次数', key: 'ad1' },
-                { title: '加油量', key: 'speed' },
-                { title: '漏油量', key: 'strstatus' },
-                { title: '百公里油耗', key: 'strstatus' },
+                { title: '加油量', key: 'addoil' },
+                { title: '漏油量', key: 'leakoil' },
+                { title: '百公里油耗', key: 'oilPercent' },
             ],
             tableData: [],
             recvtime: [],
@@ -4375,7 +4373,7 @@ function dayOil(groupslist) {
                                 fontSize: 12
                             }
                         },
-                        data: ['20200624', '20200625']
+                        data: this.recvtime
                     }],
                     yAxis: [{
                         type: 'value',
@@ -4403,7 +4401,7 @@ function dayOil(groupslist) {
                                 }
                                 //悬浮式样式
                             },
-                            data: [218, 20]
+                            data: this.distance
                         },
                         {
                             name: cotgas,
@@ -4421,7 +4419,7 @@ function dayOil(groupslist) {
                                     }
                                 }
                             },
-                            data: [50, 10]
+                            data: this.oil
                         }
                     ]
                 };
@@ -4448,7 +4446,7 @@ function dayOil(groupslist) {
                     devices: [this.queryDeviceId],
                 };
                 this.loading = true;
-                utils.sendAjax(myUrls.reportOilTime(), data, function(resp) {
+                utils.sendAjax(myUrls.reportOilDaily(), data, function(resp) {
                     self.loading = false;
                     console.log(resp);
                     if (resp.status == 0) {
@@ -4457,7 +4455,26 @@ function dayOil(groupslist) {
                                 oil = [],
                                 distance = [],
                                 recvtime = [];
+                            resp.records.forEach(function(item, index) {
+                                records = item.records;
+                                records.forEach(function(record) {
 
+
+                                    record.devicename = vstore.state.deviceInfos[self.queryDeviceId].devicename;
+                                    record.distance = record.enddis - record.begindis;
+                                    record.oil = record.endoil - record.beginoil - record.addoil + record.leakoil;
+                                    if (record.distance != 0) {
+                                        record.oilPercent = (((record.oil / 100) / (record.distance / 100)) * 100).toFixed(2);
+                                    } else {
+                                        record.oilPercent = 0;
+                                    }
+                                    oil.push(record.oil);
+                                    distance.push((record.distance / 1000).toFixed(2));
+                                    recvtime.push(record.statisticsday);
+
+
+                                });
+                            });
                             self.oil = oil;
                             self.distance = distance;
                             self.recvtime = recvtime;

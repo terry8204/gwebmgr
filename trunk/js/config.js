@@ -608,6 +608,9 @@ var myUrls = {
     saveOilDetectors: function() {
         return this.apihosts + 'webapi?action=saveoildetectors&token=' + token;
     },
+    reportOilDaily: function() {
+        return this.apihosts + 'webapi?action=reportoildaily&token=' + token;
+    },
     getCardInfo: function(action) {
         return this.apihosts + 'webapi?action=' + action + '&token=' + token;
     },
