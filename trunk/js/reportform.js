@@ -4240,8 +4240,16 @@ function timeOilConsumption(groupslist) {
                                     } else {
                                         record.address = null;
                                     }
-                                    record.ad0 = record.ad0 / 100;
-                                    record.ad1 = record.ad1 / 100;
+                                    var ad0 = record.ad0;
+                                    var ad1 = record.ad1;
+                                    if (ad0 < 0) {
+                                        ad0 = 0;
+                                    };
+                                    if (ad1 < 0) {
+                                        ad1 = 0;
+                                    };
+                                    record.ad0 = ad0 / 100;
+                                    record.ad1 = ad1 / 100;
                                     record.oil = record.ad0 + record.ad1;
                                     record.updatetimeStr = DateFormat.longToDateTimeStr(record.updatetime, timeDifference);
                                     record.devicename = vstore.state.deviceInfos[self.queryDeviceId].devicename;
