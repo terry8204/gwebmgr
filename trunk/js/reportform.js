@@ -3994,10 +3994,10 @@ function timeOilConsumption(groupslist) {
                 { title: '编号', type: 'index', width: 60 },
                 { title: '设备名称', key: 'devicename' },
                 { title: '时间', key: 'updatetimeStr', sortable: true },
-                { title: '总里程', key: 'totaldistance' },
-                { title: '总油量', key: 'oil' },
-                { title: '油量(1)', key: 'ad0' },
-                { title: '油量(2)', key: 'ad1' },
+                { title: '总里程(公里)', key: 'totaldistance' },
+                { title: '总油量(升)', key: 'oil' },
+                { title: '油量1(升)', key: 'ad0' },
+                { title: '油量2(升)', key: 'ad1' },
                 { title: '速度', key: 'speed' },
                 { title: '状态', key: 'strstatus' },
                 {
@@ -4255,6 +4255,7 @@ function timeOilConsumption(groupslist) {
                                     record.devicename = vstore.state.deviceInfos[self.queryDeviceId].devicename;
                                     oil.push(record.oil);
                                     veo.push(record.speed);
+                                    record.totaldistance = (record.totaldistance / 1000).toFixed(2);
                                     distance.push(record.totaldistance);
                                     recvtime.push(record.updatetimeStr);
                                     oil1.push(record.ad0);
@@ -4270,6 +4271,9 @@ function timeOilConsumption(groupslist) {
                             self.oil2 = oil2;
                             self.records = records;
                             self.total = records.length;
+                            records.sort(function(a, b) {
+                                return b.updatetime - a.updatetime;
+                            })
                             self.currentPageIndex = 1;
                             self.tableData = records.slice(0, 10);
                             self.charts();
