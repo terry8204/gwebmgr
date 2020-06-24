@@ -237,7 +237,7 @@ var reportMixin = {
                     }
                     for (var j = 0; j < devices.length; j++) {
                         var device = devices[j]
-                        var title = device.title
+                        var title = device.allDeviceIdTitle
                         device.isOnline = vstore.state.deviceInfos[device.deviceid] ? vstore.state.deviceInfos[device.deviceid].isOnline : false;
                         if (
                             title.toLowerCase().indexOf(value) !== -1 ||
@@ -4035,12 +4035,19 @@ function timeOilConsumption(groupslist) {
             distance: [],
             oil1: [],
             oil2: [],
-            canvasWidth: 1000
+            currentIndex: 1,
         },
         mixins: [reportMixin],
         methods: {
+            changePage: function(index) {
+                var offset = index * 10;
+                var start = (index - 1) * 10;
+                this.currentPageIndex = index;
+                this.tableData = this.records.slice(start, offset);
+            },
             charts: function() {
-                var charts = echarts.init(document.getElementById('charts'));
+                var canvasEl = document.getElementById('charts');
+                var charts = echarts.init(canvasEl);
                 var totoil = "总油量";
                 var speed = "速度";
                 var dis = "里程";
@@ -4065,7 +4072,14 @@ function timeOilConsumption(groupslist) {
                         y2: 40
                     },
                     tooltip: {
-                        trigger: 'axis'
+                        trigger: 'axis',
+                        formatter: function(v) {
+                            var data = '时间 : ' + v[0].name + '<br/>';
+                            for (i in v) {
+                                if (v[i].seriesName != '时间') data += v[i].seriesName + ' : ' + v[i].value + '<br/>';
+                            }
+                            return data;
+                        }
                     },
                     legend: {
                         data: [totoil, speed, dis, usoil1, usoil2],
@@ -4186,8 +4200,7 @@ function timeOilConsumption(groupslist) {
             },
             calcTableHeight: function() {
                 var wHeight = window.innerHeight;
-                this.lastTableHeight = wHeight - 580;
-                this.canvasWidth = window.innerWidth - 240;
+                this.lastTableHeight = wHeight - 620;
             },
             onClickQuery: function() {
                 if (this.queryDeviceId == "") { return };
@@ -4227,6 +4240,8 @@ function timeOilConsumption(groupslist) {
                                     } else {
                                         record.address = null;
                                     }
+                                    record.ad0 = record.ad0 / 100;
+                                    record.ad1 = record.ad1 / 100;
                                     record.oil = record.ad0 + record.ad1;
                                     record.updatetimeStr = DateFormat.longToDateTimeStr(record.updatetime, timeDifference);
                                     record.devicename = vstore.state.deviceInfos[self.queryDeviceId].devicename;
@@ -4234,8 +4249,8 @@ function timeOilConsumption(groupslist) {
                                     veo.push(record.speed);
                                     distance.push(record.totaldistance);
                                     recvtime.push(record.updatetimeStr);
-                                    oil1.push(record.oil1);
-                                    oil2.push(record.oil2);
+                                    oil1.push(record.ad0);
+                                    oil2.push(record.ad1);
                                 });
                             });
 
@@ -4247,8 +4262,8 @@ function timeOilConsumption(groupslist) {
                             self.oil2 = oil2;
                             self.records = records;
                             self.total = records.length;
-                            self.tableData = records;
                             self.currentPageIndex = 1;
+                            self.tableData = records.slice(0, 10);
                             self.charts();
                         } else {
                             self.$Message.error(self.$t("reportForm.noRecord"));

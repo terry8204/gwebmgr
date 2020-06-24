@@ -66,7 +66,7 @@
         <i-table :columns="columns" :height="tableHeight" :data="tableData" :loading="loading" @on-row-click="onRowClick"></i-table>
     </div>
     <div style="padding-left:10px;">
-        <Page :total="total" show-total @on-change="onChange" :page-size="30" :current="currentIndex" />
+        <Page :total="total" show-total @on-change="onChange" :page-size="10" :current="currentIndex" />
     </div>
     <div class="content-wrap" v-show="isShowCard">
         <Card style="width:650px">

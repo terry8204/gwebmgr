@@ -41,11 +41,14 @@
                 <i-button @click="onClickQuery">{{$t("reportForm.query")}}</i-button>
             </div>
         </Row>
-        <div style="width:100%;height: 400px;">
-            <canvas id="charts" :width="canvasWidth" height="400"></canvas>
+        <div style="width:100%;height: 400px;position: relative;">
+            <div id="charts" style="height: 400px;width: 100%;"></div>
         </div>
         <div style="margin:10px;">
             <i-table :columns="columns" :height="lastTableHeight" :data="tableData" :loading="loading" @on-sort-change="onSortChange"></i-table>
+        </div>
+        <div style="padding-left:10px;">
+            <Page :total="total" show-total @on-change="changePage" :page-size="30" :current="currentIndex" />
         </div>
     </div>
 </div>
