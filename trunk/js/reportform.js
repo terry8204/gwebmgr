@@ -4299,6 +4299,197 @@ function timeOilConsumption(groupslist) {
     });
 }
 
+function dayOil(groupslist) {
+    vueInstanse = new Vue({
+        el: "#day-oil",
+        i18n: utils.getI18n(),
+        data: {
+            loading: false,
+            groupslist: [],
+            columns: [
+                { title: '编号', type: 'index', width: 60 },
+                { title: '设备名称', key: 'devicename' },
+                { title: '日期', key: 'updatetimeStr', sortable: true },
+                { title: '行驶里程(公里)', key: 'totaldistance' },
+                { title: '油耗', key: 'oil' },
+                { title: '超速次数', key: 'ad0' },
+                { title: '超时停车次数', key: 'ad1' },
+                { title: '加油量', key: 'speed' },
+                { title: '漏油量', key: 'strstatus' },
+                { title: '百公里油耗', key: 'strstatus' },
+            ],
+            tableData: [],
+            recvtime: [],
+            oil: [],
+            distance: [],
+            currentIndex: 1,
+        },
+        mixins: [reportMixin],
+        methods: {
+            changePage: function(index) {
+                var offset = index * 10;
+                var start = (index - 1) * 10;
+                this.currentPageIndex = index;
+                this.tableData = this.records.slice(start, offset);
+            },
+            charts: function() {
+                var canvasEl = document.getElementById('charts');
+                var charts = echarts.init(canvasEl);
+                var dis = "里程";
+                var cotgas = "油耗";
+                var no_data = "无数据"
+                    // if (null == ars3 || "" == ars3 || null == ars4 || "" == ars4) {
+                    //     ars3 = [0];
+                    //     ars4 = [no_data];
+                    // }
+                    //加载
+                var option = {
+                    tooltip: {
+                        show: true,
+                        trigger: 'axis',
+                        axisPointer: {
+                            type: 'shadow'
+                        }
+                    },
+                    legend: {
+                        data: [dis, cotgas],
+                        y: 13,
+                        x: 'center'
+                    },
+
+                    grid: {
+                        x: 100,
+                        y: 40,
+                        x2: 80,
+                        y2: 30
+                    },
+                    xAxis: [{
+                        type: 'category',
+                        //boundaryGap : false,
+                        axisLabel: {
+                            show: true,
+                            interval: 0, // {number}
+                            rotate: 0,
+                            margin: 8,
+                            textStyle: {
+                                fontSize: 12
+                            }
+                        },
+                        data: ['20200624', '20200625']
+                    }],
+                    yAxis: [{
+                        type: 'value',
+                        position: 'bottom',
+                        nameLocation: 'end',
+                        boundaryGap: [0, 0.2],
+                        axisLabel: {
+                            formatter: '{value}'
+                        }
+                    }],
+                    series: [{
+                            name: dis,
+                            type: 'bar',
+                            itemStyle: {
+                                //默认样式
+                                normal: {
+                                    label: {
+                                        show: true,
+                                        textStyle: {
+                                            fontSize: '12',
+                                            fontFamily: '微软雅黑',
+                                            fontWeight: 'bold'
+                                        }
+                                    }
+                                }
+                                //悬浮式样式
+                            },
+                            data: [218, 20]
+                        },
+                        {
+                            name: cotgas,
+                            type: 'bar',
+                            itemStyle: {
+                                //默认样式
+                                normal: {
+                                    label: {
+                                        show: true,
+                                        textStyle: {
+                                            fontSize: '12',
+                                            fontFamily: '微软雅黑',
+                                            fontWeight: 'bold'
+                                        }
+                                    }
+                                }
+                            },
+                            data: [50, 10]
+                        }
+                    ]
+                };
+                charts.setOption(option);
+                this.myChart = charts;
+            },
+
+            calcTableHeight: function() {
+                var wHeight = window.innerHeight;
+                this.lastTableHeight = wHeight - 620;
+            },
+            onClickQuery: function() {
+                if (this.queryDeviceId == "") { return };
+                var self = this;
+                if (this.isSelectAll === null) {
+                    this.$Message.error(this.$t("reportForm.selectDevTip"));
+                    return;
+                };
+                var data = {
+                    // username: vstore.state.userName,
+                    startday: this.dateVal[0],
+                    endday: this.dateVal[1],
+                    offset: timeDifference,
+                    devices: [this.queryDeviceId],
+                };
+                this.loading = true;
+                utils.sendAjax(myUrls.reportOilTime(), data, function(resp) {
+                    self.loading = false;
+                    console.log(resp);
+                    if (resp.status == 0) {
+                        if (resp.records) {
+                            var records = [],
+                                oil = [],
+                                distance = [],
+                                recvtime = [];
+
+                            self.oil = oil;
+                            self.distance = distance;
+                            self.recvtime = recvtime;
+
+                            self.records = records;
+                            self.total = records.length;
+
+                            self.currentPageIndex = 1;
+                            self.tableData = records.slice(0, 10);
+                            self.charts();
+                        } else {
+                            self.$Message.error(self.$t("reportForm.noRecord"));
+                        }
+                    } else {
+                        self.$Message.error(resp.cause);
+                    }
+                })
+            },
+            onSortChange: function(column) {
+
+            }
+        },
+        mounted: function() {
+            this.groupslist = groupslist;
+            this.myChart = null;
+            this.records = [];
+            this.charts();
+
+        }
+    });
+}
+
 // 统计报表
 var reportForm = {
     template: document.getElementById('report-template').innerHTML,
@@ -4360,6 +4551,7 @@ var reportForm = {
                     name: 'oilConsumption',
                     icon: 'ios-speedometer-outline',
                     children: [
+                        { title: "日行油耗报表", name: 'dayOil', icon: 'ios-stopwatch-outline' },
                         { title: "时间油耗报表", name: 'timeOilConsumption', icon: 'ios-stopwatch-outline' },
                     ]
                 },
@@ -4441,6 +4633,9 @@ var reportForm = {
                         break;
                     case 'timeoilconsumption.html':
                         timeOilConsumption(groupslist);
+                        break;
+                    case 'dayoil.html':
+                        dayOil(groupslist);
                         break;
                 }
             });
