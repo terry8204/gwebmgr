@@ -1777,11 +1777,11 @@ function insureRecords(groupslist) {
                     title: '保单号',
                     width: 100,
                     fixed: 'left',
+                    key: 'policyno',
                     "sortable": true,
-                    render: function(h, parmas) {
-
-                        return h('span', {}, parmas.row.policyno == null ? '保单审核中' : parmas.row.policyno);
-                    }
+                    // render: function(h, parmas) {
+                    //     return h('span', {}, parmas.row.policyno == null ? '保单审核中' : parmas.row.policyno);
+                    // }
                 },
                 { title: '添加时间', key: 'createtimeStr', width: 150, "sortable": true },
                 {
@@ -2186,8 +2186,12 @@ function insureRecords(groupslist) {
 
                             me.insureRecords = (function() {
                                 var tableData = [];
-                                resp.insures.forEach(function(item) {
+                                resp.insures.forEach(function(item, index) {
+                                    item.index = index + 1;
                                     item.createtimeStr = DateFormat.format(new Date(item.createtime), 'yyyy-MM-dd')
+                                    if (item.policyno == null) {
+                                        item.policyno = '保单审核中';
+                                    };
                                     if (item.insurestate !== 1) {
                                         item.index = tableData.length + 1;
                                         item.isPay = item.insurestate == 1 ? '已审核' : '未审核'
@@ -2200,8 +2204,13 @@ function insureRecords(groupslist) {
                             // me.insureRecords = resp.insures;
                             me.insureRecords = (function() {
                                 var tableData = [];
-                                resp.insures.forEach(function(item) {
+
+                                resp.insures.forEach(function(item, index) {
+                                    item.index = index + 1;
                                     item.createtimeStr = DateFormat.format(new Date(item.createtime), 'yyyy-MM-dd')
+                                    if (item.policyno == null) {
+                                        item.policyno = '保单审核中';
+                                    };
                                     if (item.insurestate === 1) {
                                         item.index = tableData.length + 1;
                                         item.isPay = item.insurestate == 1 ? '已审核' : '未审核'
@@ -2214,6 +2223,9 @@ function insureRecords(groupslist) {
                             //2代表全部
                             resp.insures.forEach(function(item, index) {
                                 item.index = index + 1;
+                                if (item.policyno == null) {
+                                    item.policyno = '保单审核中';
+                                };
                                 item.isPay = item.insurestate == 1 ? '已审核' : '未审核'
                                 item.createtimeStr = DateFormat.format(new Date(item.createtime), 'yyyy-MM-dd')
                             })
@@ -2234,11 +2246,13 @@ function insureRecords(groupslist) {
                 })
             },
             exportData: function() {
-                var tableData = deepClone(this.tableData);
+                var tableData = deepClone(this.insureRecords);
                 tableData.forEach(function(item) {
                     item.cardid = "\t" + item.cardid;
                     item.usernamephonenum = "\t" + item.usernamephonenum;
                     item.phonenum = "\t" + item.phonenum;
+                    item.policyno = "\t" + item.policyno;
+                    item.vinno = "\t" + item.vinno;
                 });
                 this.$refs.table.exportCsv({
                     filename: '保险数据',
