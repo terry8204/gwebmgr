@@ -3909,12 +3909,7 @@ function dayOil(groupslist) {
                 var charts = echarts.init(canvasEl);
                 var dis = "里程";
                 var cotgas = "油耗";
-                var no_data = "无数据"
-                    // if (null == ars3 || "" == ars3 || null == ars4 || "" == ars4) {
-                    //     ars3 = [0];
-                    //     ars4 = [no_data];
-                    // }
-                    //加载
+                var no_data = "无数据";
                 var option = {
                     tooltip: {
                         show: true,
@@ -3947,7 +3942,7 @@ function dayOil(groupslist) {
                                 fontSize: 12
                             }
                         },
-                        data: this.recvtime
+                        data: this.recvtime.length === 0 ? [no_data] : this.recvtime
                     }],
                     yAxis: [{
                         type: 'value',
@@ -4032,21 +4027,18 @@ function dayOil(groupslist) {
                             resp.records.forEach(function(item, index) {
                                 records = item.records;
                                 records.forEach(function(record) {
-
-
                                     record.devicename = vstore.state.deviceInfos[self.queryDeviceId].devicename;
                                     record.distance = record.enddis - record.begindis;
                                     record.oil = record.endoil - record.beginoil - record.addoil + record.leakoil;
+                                    record.distance = (record.distance / 1000).toFixed(2);
                                     if (record.distance != 0) {
                                         record.oilPercent = (((record.oil / 100) / (record.distance / 100)) * 100).toFixed(2);
                                     } else {
                                         record.oilPercent = 0;
                                     }
                                     oil.push(record.oil);
-                                    distance.push((record.distance / 1000).toFixed(2));
+                                    distance.push(record.distance);
                                     recvtime.push(record.statisticsday);
-
-
                                 });
                             });
                             self.oil = oil;
