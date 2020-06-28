@@ -4029,7 +4029,7 @@ function dayOil(groupslist) {
                                 records.forEach(function(record) {
                                     record.devicename = vstore.state.deviceInfos[self.queryDeviceId].devicename;
                                     record.distance = record.enddis - record.begindis;
-                                    record.oil = record.endoil - record.beginoil - record.addoil + record.leakoil;
+                                    record.oil = record.beginoil - record.endoil - record.addoil + record.leakoil;
                                     record.distance = (record.distance / 1000).toFixed(2);
                                     if (record.distance != 0) {
                                         record.oilPercent = (((record.oil / 100) / (record.distance / 100)) * 100).toFixed(2);
