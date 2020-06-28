@@ -44,17 +44,13 @@
                     fixed: 'left',
                     width: 120,
                 }, {
+                    title: '购买方式',
+                    key: "buytype",
+                    width: 180,
+                }, {
                     title: '经销商',
                     key: "username",
                     width: 120,
-                }, {
-                    title: '经销商地址',
-                    key: "useraddress",
-                    width: 180,
-                }, {
-                    title: '经销商手机号',
-                    key: "usernamephonenum",
-                    width: 140,
                 }, {
                     title: '用户手机号',
                     key: "phonenum",
@@ -144,7 +140,7 @@
 
                 tableData: [],
 
-                excelX: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q']
+                excelX: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P']
             },
             methods: {
                 calcTableHeight: function() {
@@ -173,6 +169,13 @@
                             }
                         }
                         item.insurestate = insurestate;
+                        var buytype = 0;
+                        if (item.buytype.indexOf('自行') != -1) {
+                            buytype = 1;
+                        } else if (item.buytype.indexOf('厂家') != -1) {
+                            buytype = 2;
+                        }
+                        item.buytype = buytype;
                     });
                     var url = myUrls.importOfflineInsureInfo();
                     var data = {
@@ -190,7 +193,7 @@
                             } else {
                                 me.$Message.error("总共:" + respData.total + ",失败:" + respData.fail);
                                 var errorrecords = respData.errorrecords;
-                                var tableData = deepClone(this.tableData);
+                                var tableData = deepClone(me.tableData);
                                 errorrecords.forEach(function(failItem) {
                                     tableData.forEach(function(item) {
                                         if (failItem.vinno == item.vinno) {
@@ -199,11 +202,14 @@
                                         }
                                     });
                                 });
-                                tableData.forEach(function(item) {
-                                    if (item.status == -1) {
-                                        item.status = 1;
-                                    }
-                                });
+                                if (tableData && tableData.length) {
+                                    tableData.forEach(function(item) {
+                                        if (item.status == -1) {
+                                            item.status = 1;
+                                        }
+                                    });
+                                }
+
                                 me.tableData = tableData;
                             }
                         } else {
@@ -231,6 +237,7 @@
                     reader.readAsBinaryString(file);
                 },
                 parserExcelData: function(excelData) {
+                    console.log(excelData);
                     try {
                         var indexY = 2;
                         var tableData = [];
@@ -239,18 +246,17 @@
                             var nameKey = this.excelX[2] + indexY; //姓名
                             var cardidKey = this.excelX[3] + indexY; //姓名
                             var policynoKey = this.excelX[4] + indexY; //保单号
-                            var usernameKey = this.excelX[5] + indexY; //经销商
-                            var useraddressKey = this.excelX[6] + indexY; //经销商地址
-                            var usernamephonenumKey = this.excelX[7] + indexY; //经销商手机号
-                            var phonenumKey = this.excelX[8] + indexY; //用户手机号
-                            var usingaddressKey = this.excelX[9] + indexY; //用户地址
-                            var brandtypeKey = this.excelX[10] + indexY; //品牌型号
-                            var vinnoKey = this.excelX[11] + indexY; //车架号
-                            var deviceidKey = this.excelX[12] + indexY; //GPS序列号
-                            var buycardayKey = this.excelX[13] + indexY; //购车日期
-                            var carvalueKey = this.excelX[14] + indexY; //销售价格
-                            var insurepriceKey = this.excelX[15] + indexY; //保险金额
-                            var insurefeeKey = this.excelX[16] + indexY; //保费
+                            var buytypeKey = this.excelX[5] + indexY; //购买方式
+                            var usernameKey = this.excelX[6] + indexY; //经销商
+                            var phonenumKey = this.excelX[7] + indexY; //用户手机号
+                            var usingaddressKey = this.excelX[8] + indexY; //用户地址
+                            var brandtypeKey = this.excelX[9] + indexY; //品牌型号
+                            var vinnoKey = this.excelX[10] + indexY; //车架号
+                            var deviceidKey = this.excelX[11] + indexY; //GPS序列号
+                            var buycardayKey = this.excelX[12] + indexY; //购车日期
+                            var carvalueKey = this.excelX[13] + indexY; //销售价格
+                            var insurepriceKey = this.excelX[14] + indexY; //保险金额
+                            var insurefeeKey = this.excelX[15] + indexY; //保费
 
                             if (excelData[insurestateKey] == undefined) {
                                 break;
@@ -262,8 +268,7 @@
                                 cardid: excelData[cardidKey] ? excelData[cardidKey].v.trim() : '',
                                 policyno: excelData[policynoKey] ? excelData[policynoKey].v : '',
                                 username: excelData[usernameKey] ? excelData[usernameKey].v.trim() : '',
-                                useraddress: excelData[useraddressKey] ? excelData[useraddressKey].v : '',
-                                usernamephonenum: excelData[usernamephonenumKey] ? excelData[usernamephonenumKey].v : '',
+                                buytype: excelData[buytypeKey] ? excelData[buytypeKey].v.trim() : '',
                                 phonenum: excelData[phonenumKey] ? excelData[phonenumKey].v : '',
                                 usingaddress: excelData[usingaddressKey] ? excelData[usingaddressKey].v : '',
                                 brandtype: excelData[brandtypeKey] ? excelData[brandtypeKey].v : '',
