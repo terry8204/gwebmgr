@@ -57,17 +57,14 @@ var treeMixin = {
             }
         },
         variableDeepSearch: function(treeDataFilter, searchWord, limitcount) {
-
             var childTemp = [];
             var that = this;
             for (var i = 0; i < treeDataFilter.length; i++) {
                 var copyItem = null;
                 var item = treeDataFilter[i];
                 if (item != null) {
-
                     var isFound = false;
-
-                    if (item.title.indexOf(searchWord) != -1) {
+                    if (item.title.indexOf(searchWord) != -1 || (item.deviceid && item.deviceid.indexOf(searchWord) != -1)) {
                         copyItem = item;
                         copyItem.expand = false;
                         isFound = true;
