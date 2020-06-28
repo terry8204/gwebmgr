@@ -10,8 +10,12 @@
                 </transition>
             </div>
         </div>
-        <div style="margin-left:20px;float: left;line-height: 30px;">
-            <Checkbox v-model="isFilter">已付款</Checkbox>
+        <div style="margin-left:20px;float: left;line-height: 30px;position: relative;width: 70px;">
+            <i-select v-model="isFilter">
+                <i-option value="2">全部</i-option>
+                <i-option value="1">已审核</i-option>
+                <i-option value="0">未审核</i-option>
+            </i-select>
         </div>
         <div style="margin-left:20px;float: left;">
             <date-picker type="daterange" :value="dateVal" :editable="false" :clearable="false" @on-change="onChange" show-week-numbers style="width:200px" placement="bottom-start"></date-picker>
@@ -72,9 +76,9 @@
                 </i-col>
             </Row>
             <Row style="margin:10px 0;">
-                <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">是否付费 : &nbsp;</i-col>
+                <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">是否审核 : &nbsp;</i-col>
                 <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
-                    <Checkbox v-model="editObjectRow.isRecharge">已付款</Checkbox>
+                    <Checkbox v-model="editObjectRow.isRecharge"></Checkbox>
                 </i-col>
             </Row>
         </div>
