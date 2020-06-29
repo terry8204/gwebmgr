@@ -4085,49 +4085,88 @@ function refuelingReport(groupslist) {
             groupslist: [],
             columns: [
                 { title: '编号', type: 'index', width: 60 },
+                { title: '设备名称', key: 'devicename' },
+                { title: '加油前油量(L)', key: 'soil' },
+                { title: '加油后油量(L)', key: 'eoil' },
                 {
-                    title: '操作',
-                    width: 120,
-                    render: function(h, parmas) {
-                        return h(
-                            'a', {
-                                style: {
-
-                                },
-                                on: {
-                                    click: function() {
-                                        alert(1);
-                                    }
-                                }
-                            },
-                            '[加油明细]'
-                        )
+                    title: '加油量(L)',
+                    key: 'addoil',
+                },
+                { title: '开始时间', key: 'begintimeStr' },
+                { title: '结束时间', key: 'endtimeStr' },
+                {
+                    title: '开始位置(点击获取位置)',
+                    render: function(h, params) {
+                        var row = params.row;
+                        var lat = row.slat ? row.slat.toFixed(5) : null;
+                        var lon = row.slon ? row.slon.toFixed(5) : null;
+                        if (lat && lon) {
+                            if (row.saddress == null) {
+                                return h(
+                                    'a', {
+                                        on: {
+                                            click: function() {
+                                                utils.getJiuHuAddressSyn(lon, lat, function(resp) {
+                                                    if (resp && resp.address) {
+                                                        vueInstanse.records[params.index].saddress = resp.address;
+                                                        LocalCacheMgr.setAddress(lon, lat, resp.address);
+                                                    }
+                                                })
+                                            }
+                                        }
+                                    },
+                                    lon + "," + lat
+                                )
+                            } else {
+                                return h('span', {}, row.saddress);
+                            }
+                        } else {
+                            return h('span', {}, '');
+                        }
                     },
                 },
-                { title: '设备名称', key: 'devicename' },
-                { title: '所属分组', key: 'groupname' },
-                { title: '加油量', key: 'addoil' },
-                { title: '加油次数', key: 'leakoil' },
-                { title: '百公里油耗', key: 'oilPercent' },
+                {
+                    title: '结束位置(点击获取位置)',
+                    render: function(h, params) {
+                        var row = params.row;
+                        var lat = row.elat ? row.elat.toFixed(5) : null;
+                        var lon = row.elon ? row.elon.toFixed(5) : null;
+                        if (lat && lon) {
+                            if (row.eaddress == null) {
+                                return h(
+                                    'a', {
+                                        on: {
+                                            click: function() {
+                                                utils.getJiuHuAddressSyn(lon, lat, function(resp) {
+                                                    if (resp && resp.address) {
+                                                        vueInstanse.records[params.index].eaddress = resp.address;
+                                                        LocalCacheMgr.setAddress(lon, lat, resp.address);
+                                                    }
+                                                })
+                                            }
+                                        }
+                                    },
+                                    lon + "," + lat
+                                )
+                            } else {
+                                return h('span', {}, row.eaddress);
+                            }
+                        } else {
+                            return h('span', {}, '');
+                        }
+                    },
+                },
             ],
             tableData: [],
             recvtime: [],
             oil: [],
             distance: [],
-            currentIndex: 1,
         },
         mixins: [reportMixin],
         methods: {
-            changePage: function(index) {
-                var offset = index * 10;
-                var start = (index - 1) * 10;
-                this.currentPageIndex = index;
-                this.tableData = this.records.slice(start, offset);
-            },
             charts: function() {
                 var canvasEl = document.getElementById('charts');
                 var charts = echarts.init(canvasEl);
-                var dis = "里程";
                 var cotgas = "油耗";
                 var no_data = "无数据";
                 var option = {
@@ -4139,7 +4178,7 @@ function refuelingReport(groupslist) {
                         }
                     },
                     legend: {
-                        data: [dis, cotgas],
+                        data: [cotgas],
                         y: 13,
                         x: 'center'
                     },
@@ -4170,47 +4209,27 @@ function refuelingReport(groupslist) {
                         nameLocation: 'end',
                         boundaryGap: [0, 0.2],
                         axisLabel: {
-                            formatter: '{value}'
+                            formatter: '{value}L'
                         }
                     }],
                     series: [{
-                            name: dis,
-                            type: 'bar',
-                            itemStyle: {
-                                //默认样式
-                                normal: {
-                                    label: {
-                                        show: true,
-                                        textStyle: {
-                                            fontSize: '12',
-                                            fontFamily: '微软雅黑',
-                                            fontWeight: 'bold'
-                                        }
+                        name: cotgas,
+                        type: 'bar',
+                        itemStyle: {
+                            //默认样式
+                            normal: {
+                                label: {
+                                    show: true,
+                                    textStyle: {
+                                        fontSize: '12',
+                                        fontFamily: '微软雅黑',
+                                        fontWeight: 'bold'
                                     }
                                 }
-                                //悬浮式样式
-                            },
-                            data: this.distance
+                            }
                         },
-                        {
-                            name: cotgas,
-                            type: 'bar',
-                            itemStyle: {
-                                //默认样式
-                                normal: {
-                                    label: {
-                                        show: true,
-                                        textStyle: {
-                                            fontSize: '12',
-                                            fontFamily: '微软雅黑',
-                                            fontWeight: 'bold'
-                                        }
-                                    }
-                                }
-                            },
-                            data: this.oil
-                        }
-                    ]
+                        data: this.oil
+                    }]
                 };
                 charts.setOption(option);
                 this.myChart = charts;
@@ -4218,7 +4237,7 @@ function refuelingReport(groupslist) {
 
             calcTableHeight: function() {
                 var wHeight = window.innerHeight;
-                this.lastTableHeight = wHeight - 620;
+                this.lastTableHeight = wHeight - 580;
             },
             onClickQuery: function() {
                 if (this.queryDeviceId == "") { return };
@@ -4233,43 +4252,60 @@ function refuelingReport(groupslist) {
                     endday: this.dateVal[1],
                     offset: timeDifference,
                     devices: [this.queryDeviceId],
+                    oilstate: 1,
                 };
                 this.loading = true;
-                utils.sendAjax(myUrls.reportOilDaily(), data, function(resp) {
+                utils.sendAjax(myUrls.reportOilRecord(), data, function(resp) {
                     self.loading = false;
                     console.log(resp);
                     if (resp.status == 0) {
                         if (resp.records) {
                             var records = [],
-                                oil = [],
+                                oilArr = [],
                                 distance = [],
-                                recvtime = [];
+                                recvtime = [],
+                                totalOil = 0;
                             resp.records.forEach(function(item, index) {
                                 records = item.records;
                                 records.forEach(function(record) {
-                                    record.devicename = vstore.state.deviceInfos[self.queryDeviceId].devicename;
-                                    record.distance = record.enddis - record.begindis;
-                                    record.oil = record.beginoil - record.endoil - record.addoil + record.leakoil;
-                                    record.distance = (record.distance / 1000).toFixed(2);
-                                    if (record.distance != 0) {
-                                        record.oilPercent = (((record.oil / 100) / (record.distance / 100)) * 100).toFixed(2);
+                                    var callat = record.elat.toFixed(5);
+                                    var callon = record.elon.toFixed(5);
+                                    var eaddress = LocalCacheMgr.getAddress(callon, callat);
+                                    if (eaddress != null) {
+                                        record.eaddress = eaddress;
                                     } else {
-                                        record.oilPercent = 0;
-                                    }
-                                    oil.push(record.oil);
-                                    distance.push(record.distance);
-                                    recvtime.push(record.statisticsday);
+                                        record.eaddress = null;
+                                    };
+                                    var slat = record.slat.toFixed(5);
+                                    var slon = record.slon.toFixed(5);
+                                    var saddress = LocalCacheMgr.getAddress(slon, slat);
+                                    if (saddress != null) {
+                                        record.saddress = saddress;
+                                    } else {
+                                        record.saddress = null;
+                                    };
+                                    record.eoil = record.eoil / 100;
+                                    record.soil = record.soil / 100;
+                                    var oil = record.eoil - record.soil;
+                                    record.devicename = vstore.state.deviceInfos[self.queryDeviceId].devicename;
+                                    record.begintimeStr = DateFormat.longToDateTimeStr(record.begintime, timeDifference);
+                                    record.endtimeStr = DateFormat.longToDateTimeStr(record.endtime, timeDifference);
+                                    record.addoil = oil;
+                                    totalOil += oil;
+                                    oilArr.push(oil);
+                                    recvtime.push(record.devicename);
                                 });
                             });
-                            self.oil = oil;
+                            records.push({
+                                addoil: '合计:' + totalOil
+                            });
+                            self.oil = oilArr;
                             self.distance = distance;
                             self.recvtime = recvtime;
 
                             self.records = records;
-                            self.total = records.length;
 
-                            self.currentPageIndex = 1;
-                            self.tableData = records.slice(0, 10);
+                            self.tableData = records;
                             self.charts();
                         } else {
                             self.$Message.error(self.$t("reportForm.noRecord"));
@@ -4292,6 +4328,262 @@ function refuelingReport(groupslist) {
         }
     });
 }
+
+function oilLeakageReport(groupslist) {
+    vueInstanse = new Vue({
+        el: "#oil-leakage-report",
+        i18n: utils.getI18n(),
+        data: {
+            loading: false,
+            groupslist: [],
+            columns: [
+                { title: '编号', type: 'index', width: 60 },
+                { title: '设备名称', key: 'devicename' },
+                {
+                    title: '漏油量(L)',
+                    key: 'addoil',
+                },
+                { title: '漏油前油量(L)', key: 'soil' },
+                { title: '漏油后油量(L)', key: 'eoil' },
+
+                { title: '开始时间', key: 'begintimeStr' },
+                { title: '结束时间', key: 'endtimeStr' },
+                {
+                    title: '开始位置(点击获取位置)',
+                    render: function(h, params) {
+                        var row = params.row;
+                        var lat = row.slat ? row.slat.toFixed(5) : null;
+                        var lon = row.slon ? row.slon.toFixed(5) : null;
+                        if (lat && lon) {
+                            if (row.saddress == null) {
+                                return h(
+                                    'a', {
+                                        on: {
+                                            click: function() {
+                                                utils.getJiuHuAddressSyn(lon, lat, function(resp) {
+                                                    if (resp && resp.address) {
+                                                        vueInstanse.records[params.index].saddress = resp.address;
+                                                        LocalCacheMgr.setAddress(lon, lat, resp.address);
+                                                    }
+                                                })
+                                            }
+                                        }
+                                    },
+                                    lon + "," + lat
+                                )
+                            } else {
+                                return h('span', {}, row.saddress);
+                            }
+                        } else {
+                            return h('span', {}, '');
+                        }
+                    },
+                },
+                {
+                    title: '结束位置(点击获取位置)',
+                    render: function(h, params) {
+                        var row = params.row;
+                        var lat = row.elat ? row.elat.toFixed(5) : null;
+                        var lon = row.elon ? row.elon.toFixed(5) : null;
+                        if (lat && lon) {
+                            if (row.eaddress == null) {
+                                return h(
+                                    'a', {
+                                        on: {
+                                            click: function() {
+                                                utils.getJiuHuAddressSyn(lon, lat, function(resp) {
+                                                    if (resp && resp.address) {
+                                                        vueInstanse.records[params.index].eaddress = resp.address;
+                                                        LocalCacheMgr.setAddress(lon, lat, resp.address);
+                                                    }
+                                                })
+                                            }
+                                        }
+                                    },
+                                    lon + "," + lat
+                                )
+                            } else {
+                                return h('span', {}, row.eaddress);
+                            }
+                        } else {
+                            return h('span', {}, '');
+                        }
+                    },
+                },
+            ],
+            tableData: [],
+            recvtime: [],
+            oil: [],
+            distance: [],
+        },
+        mixins: [reportMixin],
+        methods: {
+            charts: function() {
+                var canvasEl = document.getElementById('charts');
+                var charts = echarts.init(canvasEl);
+                var cotgas = "油耗";
+                var no_data = "无数据";
+                var option = {
+                    tooltip: {
+                        show: true,
+                        trigger: 'axis',
+                        axisPointer: {
+                            type: 'shadow'
+                        }
+                    },
+                    legend: {
+                        data: [cotgas],
+                        y: 13,
+                        x: 'center'
+                    },
+
+                    grid: {
+                        x: 100,
+                        y: 40,
+                        x2: 80,
+                        y2: 30
+                    },
+                    xAxis: [{
+                        type: 'category',
+                        //boundaryGap : false,
+                        axisLabel: {
+                            show: true,
+                            interval: 0, // {number}
+                            rotate: 0,
+                            margin: 8,
+                            textStyle: {
+                                fontSize: 12
+                            }
+                        },
+                        data: this.recvtime.length === 0 ? [no_data] : this.recvtime
+                    }],
+                    yAxis: [{
+                        type: 'value',
+                        position: 'bottom',
+                        nameLocation: 'end',
+                        boundaryGap: [0, 0.2],
+                        axisLabel: {
+                            formatter: '{value}L'
+                        }
+                    }],
+                    series: [{
+                        name: cotgas,
+                        type: 'bar',
+                        itemStyle: {
+                            //默认样式
+                            normal: {
+                                label: {
+                                    show: true,
+                                    textStyle: {
+                                        fontSize: '12',
+                                        fontFamily: '微软雅黑',
+                                        fontWeight: 'bold'
+                                    }
+                                }
+                            }
+                        },
+                        data: this.oil
+                    }]
+                };
+                charts.setOption(option);
+                this.myChart = charts;
+            },
+
+            calcTableHeight: function() {
+                var wHeight = window.innerHeight;
+                this.lastTableHeight = wHeight - 580;
+            },
+            onClickQuery: function() {
+                if (this.queryDeviceId == "") { return };
+                var self = this;
+                if (this.isSelectAll === null) {
+                    this.$Message.error(this.$t("reportForm.selectDevTip"));
+                    return;
+                };
+                var data = {
+                    // username: vstore.state.userName,
+                    startday: this.dateVal[0],
+                    endday: this.dateVal[1],
+                    offset: timeDifference,
+                    devices: [this.queryDeviceId],
+                    oilstate: -1,
+                };
+                this.loading = true;
+                utils.sendAjax(myUrls.reportOilRecord(), data, function(resp) {
+                    self.loading = false;
+                    console.log(resp);
+                    if (resp.status == 0) {
+                        if (resp.records) {
+                            var records = [],
+                                oilArr = [],
+                                distance = [],
+                                recvtime = [],
+                                totalOil = 0;
+                            resp.records.forEach(function(item, index) {
+                                records = item.records;
+                                records.forEach(function(record) {
+                                    var callat = record.elat.toFixed(5);
+                                    var callon = record.elon.toFixed(5);
+                                    var saddress = LocalCacheMgr.getAddress(callon, callat);
+                                    if (saddress != null) {
+                                        record.saddress = saddress;
+                                    } else {
+                                        record.saddress = null;
+                                    };
+                                    var elat = record.elat.toFixed(5);
+                                    var elon = record.elon.toFixed(5);
+                                    var eaddress = LocalCacheMgr.getAddress(elon, elat);
+                                    if (eaddress != null) {
+                                        record.eaddress = eaddress;
+                                    } else {
+                                        record.eaddress = null;
+                                    };
+                                    record.eoil = record.eoil / 100;
+                                    record.soil = record.soil / 100;
+                                    var oil = record.soil - record.eoil;
+                                    record.devicename = vstore.state.deviceInfos[self.queryDeviceId].devicename;
+                                    record.begintimeStr = DateFormat.longToDateTimeStr(record.begintime, timeDifference);
+                                    record.endtimeStr = DateFormat.longToDateTimeStr(record.endtime, timeDifference);
+                                    record.addoil = oil;
+                                    totalOil += oil;
+                                    oilArr.push(oil);
+                                    recvtime.push(record.devicename);
+                                });
+                            });
+                            records.push({
+                                addoil: '合计:' + totalOil
+                            });
+                            self.oil = oilArr;
+                            self.distance = distance;
+                            self.recvtime = recvtime;
+
+                            self.records = records;
+                            self.total = records.length;
+
+                            self.tableData = self.records;
+                            self.charts();
+                        } else {
+                            self.$Message.error(self.$t("reportForm.noRecord"));
+                        }
+                    } else {
+                        self.$Message.error(resp.cause);
+                    }
+                })
+            },
+            onSortChange: function(column) {
+
+            }
+        },
+        mounted: function() {
+            this.groupslist = groupslist;
+            this.myChart = null;
+            this.records = [];
+            this.charts();
+
+        }
+    });
+}
+
 
 // 统计报表
 var reportForm = {
@@ -4357,7 +4649,7 @@ var reportForm = {
                         { title: "日行油耗报表", name: 'dayOil', icon: 'ios-stopwatch-outline' },
                         { title: "时间油耗报表", name: 'timeOilConsumption', icon: 'ios-timer-outline' },
                         { title: "加油报表", name: 'refuelingReport', icon: 'ios-trending-up' },
-                        { title: "漏油报表", name: 'timeOilConsumption', icon: 'ios-trending-down' },
+                        { title: "漏油报表", name: 'oilLeakageReport', icon: 'ios-trending-down' },
                     ]
                 },
             ]
@@ -4444,6 +4736,9 @@ var reportForm = {
                         break;
                     case 'refuelingreport.html':
                         refuelingReport(groupslist);
+                        break;
+                    case 'oilleakagereport.html':
+                        oilLeakageReport(groupslist);
                         break;
                 }
             });

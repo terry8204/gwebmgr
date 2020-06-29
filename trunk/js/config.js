@@ -611,6 +611,9 @@ var myUrls = {
     reportOilDaily: function() {
         return this.apihosts + 'webapi?action=reportoildaily&token=' + token;
     },
+    reportOilRecord: function() {
+        return this.apihosts + 'webapi?action=reportoilrecord&token=' + token;
+    },
     getCardInfo: function(action) {
         return this.apihosts + 'webapi?action=' + action + '&token=' + token;
     },
