@@ -289,6 +289,20 @@
             </p>
             <div>
                 <Tabs type="card">
+                    <tab-pane label="阀值" style="min-height: 210px;">
+                        <div style="padding: 10px 0;line-height: 16px;">油量变化阀值：油量变化的大小大于阀值系统判定加油/漏油开始，小于阀值系统则判定无加油/漏油。油量变化阀值用户可以根据车</div>
+                        <Row style="margin: 10px 0;">
+                            <i-col span="4" style="line-height: 32px;text-align: center;">
+                                阀值:
+                            </i-col>
+                            <i-col span="5">
+                                <input-number :max="200" :min="1" v-model.trim.number="threshold" style="width:100%"></input-number>
+                            </i-col>
+                            <i-col span="3" style="line-height: 32px;">
+                                L
+                            </i-col>
+                        </Row>
+                    </tab-pane>
                     <tab-pane label="油量1" style="min-height: 210px;">
                         <Row style="margin: 10px 0;">
                             <i-col span="4" style="line-height: 32px;text-align: center;">
@@ -595,6 +609,7 @@
                 currentIndex: 1,
                 teltype: '1',
 
+                threshold: 5,
                 oilModal: false, //石油 
                 tankShape1: '0', //油箱形状
                 tankVolume1: 0, //油箱容积
@@ -1152,30 +1167,12 @@
                     utils.sendAjax(url, {
                         deviceid: deviceid
                     }, function(resp) {
+                        me.threshold = resp.threshold ? resp.threshold : 5;
                         if (resp.oildetectors != null) {
                             me.$Message.success('查询油量标注成功');
                             console.log(resp.oildetectors);
                             var oildetectors = resp.oildetectors;
                             oildetectors.forEach(function(item, index) {
-                                // appearance: 0
-                                // capacity: 0
-                                // detectorLength: 0
-                                // diameter: 0
-                                // height: 0
-                                // length: 0
-                                // markers: []
-                                // maxAdValue: 1000
-                                // width: 0
-
-                                // appearance: Number(this.tankShape1),
-                                // capacity: this.tankVolume1,
-                                // detectorLength: this.sensorLength1,
-                                // maxAdValue: this.maxAdValue1,
-                                // length: this.length1,
-                                // width: this.width1,
-                                // height: this.height1,
-                                // diameter: this.diameter1,
-                                // markers: this.taggingData1,
                                 if (index == 0) {
                                     me.tankShape1 = String(item.appearance);
                                     me.tankVolume1 = item.capacity;
@@ -1230,6 +1227,7 @@
                     var url = myUrls.saveOilDetectors(),
                         me = this;
                     var data = {
+                        threshold: me.threshold,
                         deviceid: editObject.deviceid,
                         oildetectors: oildetectors
                     };
