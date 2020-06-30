@@ -614,6 +614,15 @@ var myUrls = {
     reportOilRecord: function() {
         return this.apihosts + 'webapi?action=reportoilrecord&token=' + token;
     },
+    saveOilDetectorTemplate: function() {
+        return this.apihosts + 'webapi?action=saveoildetectortemplate&token=' + token;
+    },
+    queryOilDetectorTemplate: function() {
+        return this.apihosts + 'webapi?action=queryoildetectortemplate&token=' + token;
+    },
+    deleteOilDetectorTemplate: function() {
+        return this.apihosts + 'webapi?action=deleteoildetectortemplate&token=' + token;
+    },
     getCardInfo: function(action) {
         return this.apihosts + 'webapi?action=' + action + '&token=' + token;
     },

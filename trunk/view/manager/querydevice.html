@@ -282,7 +282,7 @@
             </div>
             <div slot="footer" style="height:20px;"></div>
         </Modal>
-        <Modal v-model="oilModal" width="500">
+        <Modal v-model="oilModal" width="650">
             <p slot="header" style="color:#f60;text-align:center">
                 <Icon type="ios-create-outline"></Icon>
                 <span>油量标注</span>
@@ -796,7 +796,6 @@
                                         click: function() {
                                             vueInstanse.oilModal = true;
                                             editObject = params.row;
-                                            vueInstanse.queryTemplateInfo();
                                             vueInstanse.queryOilInfo(params.row.deviceid);
                                         }
                                     }
@@ -915,12 +914,30 @@
                     title: "模版名称",
                     key: 'templatename',
                 }, {
+                    title: "创建者",
+                    key: 'creater',
+                    width: 90,
+                }, {
                     title: "品牌",
                     key: 'brand',
+                    width: 80,
                 }, {
                     title: "类型",
                     key: 'model',
+                    width: 80,
                 }, {
+                    title: "油箱参数",
+                    render: function(h, params) {
+                        var row = params.row;
+                        return h(
+                            'div', {}, [
+                                h('p', {}, row.oil1),
+                                h('p', {}, row.oil2),
+                            ]
+                        )
+                    },
+                }, {
+                    width: 130,
                     title: '操作',
                     render: function(h, params) {
                         var row = params.row;
@@ -928,12 +945,50 @@
                             'div', {}, [
                                 h('Button', {
                                     props: {
-                                        type: 'error',
+                                        type: 'primary',
                                         size: 'small'
                                     },
                                     on: {
                                         click: function() {
-
+                                            var oildetectors = row.oildetectors;
+                                            oildetectors.forEach(function(item, index) {
+                                                if (index == 0) {
+                                                    vueInstanse.tankShape1 = String(item.appearance);
+                                                    vueInstanse.tankVolume1 = item.capacity;
+                                                    vueInstanse.sensorLength1 = item.detectorLength
+                                                    vueInstanse.diameter1 = item.diameter;
+                                                    vueInstanse.height1 = item.height;
+                                                    vueInstanse.length1 = item.length;
+                                                    vueInstanse.width1 = item.width;
+                                                    vueInstanse.maxAdValue1 = item.maxAdValue;
+                                                    vueInstanse.taggingData1 = item.markers;
+                                                } else if (index == 1) {
+                                                    vueInstanse.tankShape2 = String(item.appearance);
+                                                    vueInstanse.tankVolume2 = item.capacity;
+                                                    vueInstanse.sensorLength2 = item.detectorLength
+                                                    vueInstanse.diameter2 = item.diameter;
+                                                    vueInstanse.height2 = item.height;
+                                                    vueInstanse.length2 = item.length;
+                                                    vueInstanse.width2 = item.width;
+                                                    vueInstanse.maxAdValue2 = item.maxAdValue;
+                                                    vueInstanse.taggingData2 = item.markers;
+                                                }
+                                            });
+                                            vueInstanse.$Message.success('导入成功');
+                                        }
+                                    }
+                                }, '导入'),
+                                h('Button', {
+                                    props: {
+                                        type: 'error',
+                                        size: 'small'
+                                    },
+                                    style: {
+                                        marginLeft: '5px'
+                                    },
+                                    on: {
+                                        click: function() {
+                                            vueInstanse.deleteOilDetectorTemplate(row.oildetectortemplateid, params.index);
                                         }
                                     }
                                 }, '删除')
@@ -990,12 +1045,62 @@
                 },
             },
             methods: {
+                deleteOilDetectorTemplate: function(id, index) {
+                    var me = this;
+                    utils.sendAjax(myUrls.deleteOilDetectorTemplate(), {
+                        oildetectortemplateid: id
+                    }, function(resp) {
+                        if (resp.status == 0) {
+                            me.$Message.success('删除成功');
+                            me.templateData.splice(index, 1);
+                        } else if (resp.status == 1) {
+                            me.$Message.error('没有删除权限');
+                        } else {
+                            me.$Message.error('删除失败');
+                        }
+                    })
+                },
                 queryTemplateInfo: function() {
+                    var me = this;
                     utils.sendAjax(myUrls.queryOilDetectorTemplate(), {
                         isall: this.allTemp
                     }, function(resp) {
+                        if (resp.status === 0) {
+                            me.$Message.success('查询成功');
+                            var records = resp.records;
+                            records.forEach(function(item) {
+                                var oildetectors = item.oildetectors;
+                                var oil1 = oildetectors[0];
+                                var oil2 = oildetectors[1];
+                                console.log('oil2', oil2);
+                                item.oil1 = me.getTankShape(oil1.appearance) + '/' + oil1.capacity + '/' + oil1.detectorLength;
+                                item.oil2 = me.getTankShape(oil2.appearance) + '/' + oil2.capacity + '/' + oil2.detectorLength;
+                            });
+                            me.templateData = records;
+                        }
                         console.log(resp);
                     })
+                },
+                getTankShape: function(type) {
+                    var tankShape = '';
+                    switch (type) {
+                        case 0:
+                            tankShape = '无油箱';
+                            break;
+                        case 1:
+                            tankShape = '长方体';
+                            break;
+                        case 2:
+                            tankShape = '竖圆柱体';
+                            break;
+                        case 3:
+                            tankShape = '横圆柱体';
+                            break;
+                        case 4:
+                            tankShape = '不规则';
+                            break;
+                    }
+                    return tankShape
                 },
                 saveTemplateInfo: function() {
                     if (this.tabsActive == 'templateInfo') {
