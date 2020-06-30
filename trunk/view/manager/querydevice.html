@@ -288,8 +288,8 @@
                 <span>油量标注</span>
             </p>
             <div>
-                <Tabs type="card">
-                    <tab-pane label="阀值" style="min-height: 210px;">
+                <Tabs type="card" v-model="tabsActive">
+                    <tab-pane label="阀值" style="min-height: 210px;" name="threshold">
                         <div style="padding: 10px 0;line-height: 16px;">油量变化阀值：油量变化的大小大于阀值系统判定加油/漏油开始，小于阀值系统则判定无加油/漏油。油量变化阀值用户可以根据车</div>
                         <Row style="margin: 10px 0;">
                             <i-col span="4" style="line-height: 32px;text-align: center;">
@@ -303,7 +303,7 @@
                             </i-col>
                         </Row>
                     </tab-pane>
-                    <tab-pane label="油量1" style="min-height: 210px;">
+                    <tab-pane label="油量1" style="min-height: 210px;" name="oil1">
                         <Row style="margin: 10px 0;">
                             <i-col span="4" style="line-height: 32px;text-align: center;">
                                 油箱的形状:
@@ -445,7 +445,7 @@
                             <i-table border :columns="taggingColumns1" :data="taggingData1" height="200"></i-table>
                         </div>
                     </tab-pane>
-                    <tab-pane label="油量2" style="min-height: 210px;">
+                    <tab-pane label="油量2" style="min-height: 210px;" name="oil2">
                         <Row style="margin: 10px 0;">
                             <i-col span="4" style="line-height: 32px;text-align: center;">
                                 油箱的形状:
@@ -587,10 +587,45 @@
                             <i-table border :columns="taggingColumns2" :data="taggingData2" height="200"></i-table>
                         </div>
                     </tab-pane>
+                    <tab-pane label="模版" style="min-height: 210px;" name="template">
+                        <i-table border :columns="templateColumns" :data="templateData" height="200"></i-table>
+                    </tab-pane>
+                    <tab-pane label="添加模版信息" style="min-height: 210px;" name="templateInfo">
+                        <Row style="margin: 10px 0;">
+                            <i-col span="4" style="line-height: 32px;text-align: center;">
+                                模版名称:
+                            </i-col>
+                            <i-col span="12">
+                                <i-input v-model.trim="templatename" style="width:100%"></i-input>
+                            </i-col>
+                            <i-col span="2" style="line-height: 32px;text-align: center;color: red;">
+                                (必填)
+                            </i-col>
+                        </Row>
+                        <Row style="margin: 10px 0;">
+                            <i-col span="4" style="line-height: 32px;text-align: center;">
+                                品牌:
+                            </i-col>
+                            <i-col span="12">
+                                <i-input v-model.trim="brand" style="width:100%"></i-input>
+                            </i-col>
+                        </Row>
+                        <Row style="margin: 10px 0;">
+                            <i-col span="4" style="line-height: 32px;text-align: center;">
+                                型号:
+                            </i-col>
+                            <i-col span="12">
+                                <i-input v-model.trim="model" style="width:100%"></i-input>
+                            </i-col>
+                        </Row>
+                    </tab-pane>
                 </Tabs>
             </div>
             <div slot="footer" style="text-align: center;">
-                <i-button style="width: 300px" type="primary" @click="saveOilDetectors">{{$t("bgMgr.submit")}}</i-button>
+                <i-button style="width: 100px" type="primary" @click="saveOilDetectors">{{$t("bgMgr.submit")}}</i-button>
+                <i-button style="width: 100px" type="primary" @click="saveTemplateInfo">保存模版</i-button>
+                <Checkbox v-show="tabsActive == 'template'" v-model="allTemp">全部模版</Checkbox>
+                <i-button v-show="tabsActive == 'template'" style="width: 100px" type="primary" @click="queryTemplateInfo">查询模版</i-button>
             </div>
         </Modal>
     </div>
@@ -599,6 +634,11 @@
             el: "#querydev",
             i18n: utils.getI18n(),
             data: {
+                templatename: '',
+                brand: '',
+                model: "",
+                tabsActive: 'template',
+                allTemp: false,
                 taleHeight: 300,
                 isQuery: false,
                 userType: Cookies.get('userType'),
@@ -756,6 +796,7 @@
                                         click: function() {
                                             vueInstanse.oilModal = true;
                                             editObject = params.row;
+                                            vueInstanse.queryTemplateInfo();
                                             vueInstanse.queryOilInfo(params.row.deviceid);
                                         }
                                     }
@@ -870,6 +911,37 @@
                         }
                     }
                 ],
+                templateColumns: [{
+                    title: "模版名称",
+                    key: 'templatename',
+                }, {
+                    title: "品牌",
+                    key: 'brand',
+                }, {
+                    title: "类型",
+                    key: 'model',
+                }, {
+                    title: '操作',
+                    render: function(h, params) {
+                        var row = params.row;
+                        return h(
+                            'div', {}, [
+                                h('Button', {
+                                    props: {
+                                        type: 'error',
+                                        size: 'small'
+                                    },
+                                    on: {
+                                        click: function() {
+
+                                        }
+                                    }
+                                }, '删除')
+                            ]
+                        )
+                    },
+                }],
+                templateData: [],
                 editDeviceIndex: null,
                 queryTableData: [],
                 tableData: [],
@@ -918,6 +990,64 @@
                 },
             },
             methods: {
+                queryTemplateInfo: function() {
+                    utils.sendAjax(myUrls.queryOilDetectorTemplate(), {
+                        isall: this.allTemp
+                    }, function(resp) {
+                        console.log(resp);
+                    })
+                },
+                saveTemplateInfo: function() {
+                    if (this.tabsActive == 'templateInfo') {
+                        if (this.templatename.length === 0) {
+                            this.$Message.error('模版名称是必填的');
+                            return;
+                        }
+                        var oilDetector1 = {
+                            appearance: Number(this.tankShape1),
+                            capacity: this.tankVolume1,
+                            detectorLength: this.sensorLength1,
+                            maxAdValue: this.maxAdValue1,
+                            length: this.length1,
+                            width: this.width1,
+                            height: this.height1,
+                            diameter: this.diameter1,
+                            markers: this.taggingData1,
+                        };
+                        var oilDetector2 = {
+                            appearance: Number(this.tankShape2),
+                            capacity: this.tankVolume2,
+                            detectorLength: this.sensorLength2,
+                            maxAdValue: this.maxAdValue2,
+                            length: this.length2,
+                            width: this.width2,
+                            height: this.height2,
+                            diameter: this.diameter2,
+                            markers: this.taggingData2,
+                        };
+                        var oildetectors = [oilDetector1, oilDetector2];
+                        var url = myUrls.saveOilDetectors(),
+                            me = this;
+                        var data = {
+                            templatename: this.templatename,
+                            threshold: me.threshold,
+                            deviceid: editObject.deviceid,
+                            oildetectors: oildetectors
+                        };
+                        me.brand ? data.brand = me.brand : null;
+                        me.model ? data.model = me.model : null;
+                        utils.sendAjax(myUrls.saveOilDetectorTemplate(), data, function(resp) {
+                            console.log(resp);
+                            if (resp.status == 0) {
+                                me.$Message.success('模版保存成功');
+                            } else {
+                                me.$Message.error('模版保存失败');
+                            }
+                        });
+                    } else {
+                        this.tabsActive = 'templateInfo';
+                    }
+                },
                 addTaggingRowData1: function() {
                     var isHas = false;
                     var taggingData = deepClone(this.taggingData1);
