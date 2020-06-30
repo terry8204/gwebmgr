@@ -587,9 +587,6 @@
                             <i-table border :columns="taggingColumns2" :data="taggingData2" height="200"></i-table>
                         </div>
                     </tab-pane>
-                    <tab-pane label="模版" style="min-height: 210px;" name="template">
-                        <i-table border :columns="templateColumns" :data="templateData" height="200"></i-table>
-                    </tab-pane>
                     <tab-pane label="添加模版信息" style="min-height: 210px;" name="templateInfo">
                         <Row style="margin: 10px 0;">
                             <i-col span="4" style="line-height: 32px;text-align: center;">
@@ -619,11 +616,14 @@
                             </i-col>
                         </Row>
                     </tab-pane>
+                    <tab-pane label="模版列表" style="min-height: 210px;" name="template">
+                        <i-table border :columns="templateColumns" :data="templateData" height="200"></i-table>
+                    </tab-pane>
                 </Tabs>
             </div>
             <div slot="footer" style="text-align: center;">
-                <i-button style="width: 100px" type="primary" @click="saveOilDetectors">{{$t("bgMgr.submit")}}</i-button>
-                <i-button style="width: 100px" type="primary" @click="saveTemplateInfo">保存模版</i-button>
+                <i-button v-show="tabsActive !== 'template'" style="width: 100px" type="primary" @click="saveOilDetectors">{{$t("bgMgr.submit")}}</i-button>
+                <i-button v-show="tabsActive !== 'template'" style="width: 100px" type="primary" @click="saveTemplateInfo">保存模版</i-button>
                 <Checkbox v-show="tabsActive == 'template'" v-model="allTemp">全部模版</Checkbox>
                 <i-button v-show="tabsActive == 'template'" style="width: 100px" type="primary" @click="queryTemplateInfo">查询模版</i-button>
             </div>
@@ -637,7 +637,7 @@
                 templatename: '',
                 brand: '',
                 model: "",
-                tabsActive: 'template',
+                tabsActive: 'threshold',
                 allTemp: false,
                 taleHeight: 300,
                 isQuery: false,
@@ -914,10 +914,6 @@
                     title: "模版名称",
                     key: 'templatename',
                 }, {
-                    title: "创建者",
-                    key: 'creater',
-                    width: 90,
-                }, {
                     title: "品牌",
                     key: 'brand',
                     width: 80,
@@ -1072,13 +1068,11 @@
                                 var oildetectors = item.oildetectors;
                                 var oil1 = oildetectors[0];
                                 var oil2 = oildetectors[1];
-                                console.log('oil2', oil2);
                                 item.oil1 = me.getTankShape(oil1.appearance) + '/' + oil1.capacity + '/' + oil1.detectorLength;
                                 item.oil2 = me.getTankShape(oil2.appearance) + '/' + oil2.capacity + '/' + oil2.detectorLength;
                             });
                             me.templateData = records;
                         }
-                        console.log(resp);
                     })
                 },
                 getTankShape: function(type) {
@@ -1142,7 +1136,6 @@
                         me.brand ? data.brand = me.brand : null;
                         me.model ? data.model = me.model : null;
                         utils.sendAjax(myUrls.saveOilDetectorTemplate(), data, function(resp) {
-                            console.log(resp);
                             if (resp.status == 0) {
                                 me.$Message.success('模版保存成功');
                             } else {
@@ -1203,7 +1196,6 @@
                 handleEditInsure: function() {
                     var me = this;
                     utils.editDeviceex('insure', me.ownerInfoData, function(resp) {
-                        console.log(resp);
                         if (resp.status === 0) {
                             me.$Message.success("编辑成功");
                             me.ownerInfoModal = false;
