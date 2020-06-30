@@ -290,7 +290,7 @@
             <div>
                 <Tabs type="card" v-model="tabsActive">
                     <tab-pane label="阀值" style="min-height: 210px;" name="threshold">
-                        <div style="padding: 10px 0;line-height: 16px;">油量变化阀值：油量变化的大小大于阀值系统判定加油/漏油开始，小于阀值系统则判定无加油/漏油。油量变化阀值用户可以根据车</div>
+                        <div style="padding: 10px 0;line-height: 16px;">油量变化阀值：通过阀值来判定车辆加油/漏油状态，可以根据车辆的油箱大小设置合适的阀值</div>
                         <Row style="margin: 10px 0;">
                             <i-col span="4" style="line-height: 32px;text-align: center;">
                                 阀值:
@@ -623,7 +623,7 @@
             </div>
             <div slot="footer" style="text-align: center;">
                 <i-button v-show="tabsActive !== 'template'" style="width: 100px" type="primary" @click="saveOilDetectors">{{$t("bgMgr.submit")}}</i-button>
-                <i-button v-show="tabsActive !== 'template'" style="width: 100px" type="primary" @click="saveTemplateInfo">保存模版</i-button>
+                <i-button v-show="tabsActive !== 'template'" style="width: 100px" type="primary" @click="saveTemplateInfo">添加模版</i-button>
                 <Checkbox v-show="tabsActive == 'template'" v-model="allTemp">全部模版</Checkbox>
                 <i-button v-show="tabsActive == 'template'" style="width: 100px" type="primary" @click="queryTemplateInfo">查询模版</i-button>
             </div>
@@ -914,11 +914,11 @@
                     title: "模版名称",
                     key: 'templatename',
                 }, {
-                    title: "品牌",
+                    title: "油杆品牌",
                     key: 'brand',
                     width: 80,
                 }, {
-                    title: "类型",
+                    title: "油杆型号",
                     key: 'model',
                     width: 80,
                 }, {
