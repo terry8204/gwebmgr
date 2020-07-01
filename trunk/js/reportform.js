@@ -795,11 +795,12 @@ function groupMileage(groupslist) {
                         return h('span', {}, groupName)
                     }
                 },
+                { title: '总里程(km)', key: 'totaldistance', sortable: true },
                 { title: '开始时间', key: 'starttimeStr' },
                 { title: '结束时间', key: 'endtimeStr' },
-                { title: '开始里程', key: 'startdistance' },
-                { title: '结束里程', key: 'enddistance' },
-                { title: '总里程', key: 'totaldistance', sortable: true },
+                { title: '开始里程(km)', key: 'startdistance' },
+                { title: '结束里程(km)', key: 'enddistance' },
+
             ],
             tableData: [],
             currentIndex: 1,
@@ -4768,7 +4769,7 @@ var reportForm = {
                         { title: me.$t("reportForm.cmdReport"), name: 'cmdReport', icon: 'ios-pricetag-outline' },
                         { title: me.$t("reportForm.posiReport"), name: 'posiReport', icon: 'ios-pin' },
                         { title: me.$t("reportForm.reportmileagedetail"), name: 'mileageDetail', icon: 'ios-color-wand' },
-                        { title: "里程总览", name: 'groupMileage', icon: 'ios-color-wand' },
+                        { title: "里程总览", name: 'groupMileage', icon: 'md-globe' },
                         { title: me.$t("reportForm.parkDetails"), name: 'parkDetails', icon: 'md-analytics' },
                         { title: me.$t("reportForm.acc"), name: 'accDetails', icon: 'md-bulb' },
                         { title: isZh ? '语音报表' : 'Voice report', name: 'records', icon: 'md-volume-up' },

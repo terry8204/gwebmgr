@@ -262,7 +262,8 @@ p.last-strstatus {
 #sales-record .ivu-icon,
 #time-oil-consumption .ivu-icon,
 #day-oil .ivu-icon,
-#insure-records .ivu-table-sort .ivu-icon {
+#insure-records .ivu-table-sort .ivu-icon,
+#group-mileage .ivu-table-sort .ivu-icon {
     margin-top: 0px;
 }
 
