@@ -1218,7 +1218,10 @@
                             <video id="videoElement1" controls :muted="isMute"></video>
                         </div>
                         <div class="state-event-tip" v-show="playerStateTips.yi!=''">
-                            <div v-text="playerStateTips.yi"></div>
+                            <div>
+                                <span v-text="playerStateTips.yi"></span>
+                                <span v-text="networkSpeed.yi"></span>
+                            </div>
                         </div>
                     </div>
                     <div class="video-wrap" :style="player2Style" @click="playerIndex=2">
@@ -1226,7 +1229,10 @@
                             <video id="videoElement2" controls :muted="isMute"></video>
                         </div>
                         <div class="state-event-tip" v-show="playerStateTips.er!=''">
-                            <div v-text="playerStateTips.er"></div>
+                            <div>
+                                <span v-text="playerStateTips.er"></span>
+                                <span v-text="networkSpeed.er"></span>
+                            </div>
                         </div>
                     </div>
                     <div class="video-wrap" :style="player3Style" @click="playerIndex=3">
@@ -1234,7 +1240,10 @@
                             <video id="videoElement3" controls :muted="isMute"></video>
                         </div>
                         <div class="state-event-tip" v-show="playerStateTips.san!=''">
-                            <div v-text="playerStateTips.san"></div>
+                            <div>
+                                <span v-text="playerStateTips.san"></span>
+                                <span v-text="networkSpeed.san"></span>
+                            </div>
                         </div>
                     </div>
                     <div class="video-wrap" :style="player4Style" @click="playerIndex=4">
@@ -1242,7 +1251,10 @@
                             <video id="videoElement4" controls :muted="isMute"></video>
                         </div>
                         <div class="state-event-tip" v-show="playerStateTips.si!=''">
-                            <div v-text="playerStateTips.si"></div>
+                            <div>
+                                <span v-text="playerStateTips.si"></span>
+                                <span v-text="networkSpeed.si"></span>
+                            </div>
                         </div>
                     </div>
                 </div>

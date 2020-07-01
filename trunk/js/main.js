@@ -684,7 +684,13 @@ var videoPlayer = {
                 'er': '',
                 'san': '',
                 'si': '',
-            }
+            },
+            networkSpeed: {
+                'yi': '0KB/S',
+                'er': '0KB/S',
+                'san': '0KB/S',
+                'si': '0KB/S',
+            },
         }
     },
     methods: {
@@ -882,14 +888,17 @@ var videoPlayer = {
                 isLive: true,
                 lazyLoad: false
             });
-            var player = document.getElementById('videoElement' + index);
+            var player = document.getElementById('videoElement' + index),
+                me = this;
             flvPlayer.attachMediaElement(player);
             flvPlayer.load(); //加载
             flvPlayer.play();
 
-            console.log('index', index);
             this.videoIns[index] = flvPlayer;
             this.videoTimes = Date.now();
+            flvPlayer.on(flvjs.Events.STATISTICS_INFO, function(e) {
+                me.networkSpeed[me.playerStateKeyList[index]] = parseInt(e.speed * 10) / 10 + 'KB/S';
+            })
         },
         switchflvPlayer: function(index, url, hasaudio) {
             try {
