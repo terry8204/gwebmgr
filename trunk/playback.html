@@ -22,8 +22,37 @@
         
         div.controller {
             position: absolute;
-            bottom: 10px;
+            bottom: 0px;
             line-height: 60px;
+            height: 300px;
+            left: 0px;
+        }
+        
+        .echart-wrap {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 500px;
+            background: #E8F0F7;
+            border: 1px solid #C3CEDE;
+            border-right: none;
+        }
+        
+        .echart-wrap>div {
+            width: 100%;
+            height: 100%;
+        }
+        
+        .ctrl-wrap {
+            position: absolute;
+            top: 0px;
+            right: 0px;
+            width: 500px;
+            height: 300px;
+            background: #E8F0F7;
+            border: 1px solid #C3CEDE;
+            border-left: none;
         }
         
         div.close-icon {
@@ -37,6 +66,8 @@
         div.pull-up {
             position: absolute;
             bottom: 10px;
+            right: 10px;
+            width: 32px;
         }
         
         div.right-ctrl {
@@ -261,7 +292,10 @@
                 <div class="close-icon" @click="onShowCtrl">
                     <i-button shape="circle" icon="ios-arrow-down"></i-button>
                 </div>
-                <div style="width: 500px;height: 300px;background: #E8F0F7;border: 1px solid #C3CEDE;">
+                <div class="echart-wrap">
+                    <div id="charts"></div>
+                </div>
+                <div class="ctrl-wrap">
                     <Row>
                         <i-col :span="4" style="text-align: center;height:45px;">{{$t("main.selectDate")}} : &nbsp;</i-col>
                         <i-col :span="11" style="height:45px;">
@@ -366,6 +400,7 @@
     <script src="./js/dateformat.js"></script>
     <script src="./js/util.js"></script>
     <script src="./js/js.cookie.min.js"></script>
+    <script src="./js/echarts.min.js"></script>
     <script src="./js/en-US.js"></script>
     <script src="./js/zh-CN.js"></script>
     <!-- <script src="http://api.map.baidu.com/api?v=3.0&ak=e7SC5rvmn2FsRNE4R1ygg44n"></script>
@@ -532,7 +567,7 @@
                         label: "OpenStreeMap",
                         value: "oMap"
                     }, ],
-                    mapType: mapType
+                    mapType: mapType,
                 },
                 methods: {
                     initMap: function(callback) {
@@ -696,6 +731,7 @@
                         this.isExtract = !this.isExtract;
                         this.resetMapState();
                         this.drawingLine();
+                        this.redrawCharts();
                     },
                     nextDay: function() {
                         this.startTime = new Date(this.startTime.getTime() + this.dayTime);
@@ -771,6 +807,7 @@
                                 });
                                 me.filtertracks(records);
                                 me.drawingLine();
+                                me.redrawCharts();
                             } else if (resp.status == 3) {
                                 me.totalMileage = '0km';
                                 me.$Message.error(resp.cause);
@@ -1440,6 +1477,215 @@
                             }
                         }
                         this.isShowMarker = !this.isShowMarker;
+                    },
+                    initCharts: function() {
+                        this.distance = [];
+                        this.veo = [];
+                        this.recvtime = [];
+                        this.oil = [];
+                        this.oil1 = [];
+                        this.oil2 = [];
+                        // 19930114
+                        this.charts = echarts.init(document.getElementById('charts'));
+                        this.charts.setOption(this.getChartsOption());
+                    },
+                    getChartsOption: function() {
+                        var totoil = "总油量";
+                        var speed = "速度";
+                        var dis = "里程";
+                        var time = "时间";
+                        var usoil1 = "油量1";
+                        var usoil2 = "油量2";
+                        var cotgasus = "油量";
+                        var option = {
+                            title: {
+                                text: time + '/' + cotgasus,
+                                x: 'center',
+                                textStyle: {
+                                    fontSize: 12,
+                                    fontWeight: 'bolder',
+                                    color: '#333'
+                                }
+                            },
+                            grid: {
+                                x: 50,
+                                y: 40,
+                                x2: 50,
+                                y2: 40
+                            },
+                            tooltip: {
+                                trigger: 'axis',
+                                formatter: function(v) {
+                                    var data = '时间 : ' + v[0].name + '<br/>';
+                                    for (i in v) {
+                                        if (v[i].seriesName != '时间') data += v[i].seriesName + ' : ' + v[i].value + '<br/>';
+                                    }
+                                    return data;
+                                }
+                            },
+                            legend: {
+                                data: [dis, speed, totoil, usoil1, usoil2],
+                                //selected: {
+                                //    '里程' : false
+                                // },
+                                x: 'left'
+                            },
+                            toolbox: {
+                                show: true,
+                                feature: {
+                                    magicType: {
+                                        show: true,
+                                        type: ['line', 'bar']
+                                    },
+                                    restore: {
+                                        show: true
+                                    },
+                                    saveAsImage: {
+                                        show: true
+                                    }
+                                },
+                                itemSize: 14
+                            },
+                            dataZoom: [{
+                                show: true,
+                                realtime: true,
+                                start: 0,
+                                end: 100,
+                                height: 20,
+                                backgroundColor: '#EDEDED',
+                                fillerColor: 'rgb(54, 72, 96,0.5)',
+                                //fillerColor:'rgb(244,129,38,0.8)',
+                                bottom: 0
+                            }, {
+                                type: "inside",
+                                realtime: true,
+                                start: 0,
+                                end: 100,
+                                height: 20,
+                                bottom: 0
+                            }],
+                            xAxis: [{
+                                type: 'category',
+                                boundaryGap: false,
+                                axisLine: {
+                                    onZero: false
+                                },
+                                data: this.recvtime
+                            }],
+                            yAxis: [{
+                                name: totoil + '/' + speed,
+                                type: 'value',
+                                nameTextStyle: 10,
+                                nameGap: 5,
+
+                            }, {
+                                name: dis,
+                                type: 'value',
+                                nameTextStyle: 10,
+                                nameGap: 2,
+                                min: this.disMin,
+                                axisLabel: {
+                                    formatter: '{value} km',
+                                },
+                                axisTick: {
+                                    show: false
+                                }
+                            }],
+                            series: [{
+                                    //show:'false',
+                                    name: totoil,
+                                    type: 'line',
+                                    symbol: 'none',
+                                    color: '#C1232B',
+                                    data: this.oil
+                                }, {
+                                    name: speed,
+                                    type: 'line',
+                                    symbol: 'none',
+                                    yAxisIndex: 0,
+                                    //itemStyle: {normal: {areaStyle: {type: 'default'}}},
+                                    color: '#4876FF',
+                                    data: this.veo
+                                }, {
+                                    name: dis,
+                                    type: 'line',
+                                    symbol: 'none',
+                                    yAxisIndex: 1,
+                                    color: '#3CB371',
+                                    //itemStyle: {normal: {areaStyle: {type: 'default'}}},
+                                    data: this.distance
+                                }, {
+                                    name: time,
+                                    type: 'line',
+                                    symbol: 'none',
+                                    yAxisIndex: 1,
+                                    color: '#F0805A',
+                                    //itemStyle: {normal: {areaStyle: {type: 'default'}}},
+                                    data: this.recvtime
+                                }, {
+                                    //show:'false',
+                                    name: usoil1,
+                                    type: 'line',
+                                    symbol: 'none',
+                                    color: '#8E388E',
+                                    data: this.oil1
+                                },
+
+                                {
+                                    //show:'false',
+                                    name: usoil2,
+                                    type: 'line',
+                                    symbol: 'none',
+                                    color: '#FF4500',
+                                    data: this.oil2
+                                },
+                            ]
+                        };
+                        return option;
+                    },
+                    redrawCharts: function() {
+                        var records = this.getTypeRecords(),
+                            me = this;
+                        var distance = []; //总里程;
+                        var recvtime = []; //时间
+                        var veo = []; //速度
+                        var oil = []; //速度
+                        var oil1 = []; //速度
+                        var oil2 = []; //速度
+                        this.disMin = 0;
+
+                        records.forEach(function(item, index) {
+                            item.totaldistance = (item.totaldistance / 1000).toFixed(2)
+                            if (index == 0) {
+                                me.disMin = item.totaldistance
+                            }
+                            var ad0 = item.ad0;
+                            var ad1 = item.ad1;
+                            if (ad0 < 0) {
+                                ad0 = 0;
+                            };
+                            if (ad1 < 0) {
+                                ad1 = 0;
+                            };
+                            item.ad0 = ad0 / 100;
+                            item.ad1 = ad1 / 100;
+                            oil1.push(item.ad0);
+                            oil2.push(item.ad1);
+                            oil.push(item.ad0 + item.ad1);
+                            recvtime.push(DateFormat.longToDateTimeStr(item.updatetime, timeDifference));
+                            veo.push(item.speed / 100);
+                            distance.push(item.totaldistance);
+                        });
+                        this.distance = distance;
+                        this.recvtime = recvtime;
+                        this.veo = veo;
+                        this.oil = oil;
+                        this.oil1 = oil1;
+                        this.oil2 = oil2;
+
+
+                        this.charts.setOption(this.getChartsOption());
+
                     }
                 },
                 computed: {
@@ -1516,6 +1762,7 @@
                                     });
                                     me.filtertracks(records);
                                     me.drawingLine();
+                                    me.redrawCharts();
                                 } else if (resp.status == 3) {
                                     me.totalMileage = '0km';
                                     me.$Message.error(resp.cause);
@@ -1529,6 +1776,7 @@
                 },
                 mounted: function() {
                     this.initMap();
+                    this.initCharts();
                     var deviceid = utils.getParameterByName("deviceid");
                     this.startTime = new Date();
                     if (deviceid) {
@@ -1536,6 +1784,10 @@
                     } else {
                         this.$Message.error("设备序号不能为空!");
                     };
+                    var me = this;
+                    window.onresize = function() {
+                        me.charts.resize();
+                    }
                 }
             });
         })();
