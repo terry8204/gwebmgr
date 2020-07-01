@@ -1203,7 +1203,9 @@ function accDetails(groupslist) {
                 var deviceids = [];
                 this.checkedDevice.forEach(function(group) {
                     if (!group.children) {
-                        deviceids.push(group.deviceid);
+                        if (group.deviceid != null) {
+                            deviceids.push(group.deviceid);
+                        }
                     }
                 });
                 if (deviceids.length) {
@@ -3111,7 +3113,10 @@ function dropLineReport(groupslist) {
                 }
                 this.checkedDevice.forEach(function(group) {
                     if (!group.children) {
-                        data.deviceids.push(group.deviceid);
+                        if (group.deviceid) {
+                            data.deviceids.push(group.deviceid);
+                        }
+
                     }
                 });
 
