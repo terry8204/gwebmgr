@@ -1673,7 +1673,7 @@
                             oil2.push(item.ad1);
                             oil.push(item.ad0 + item.ad1);
                             recvtime.push(DateFormat.longToDateTimeStr(item.updatetime, timeDifference));
-                            veo.push(item.speed / 100);
+                            veo.push((item.speed / 1000).toFixed(2));
                             distance.push(item.totaldistance);
                         });
                         this.distance = distance;

@@ -4001,7 +4001,7 @@ function timeOilConsumption(groupslist) {
                                     record.updatetimeStr = DateFormat.longToDateTimeStr(record.updatetime, timeDifference);
                                     record.devicename = vstore.state.deviceInfos[self.queryDeviceId].devicename;
                                     oil.push(record.oil);
-                                    veo.push(record.speed);
+                                    veo.push((record.speed / 1000).toFixed(2));
                                     record.totaldistance = (record.totaldistance / 1000).toFixed(2);
                                     distance.push(record.totaldistance);
                                     recvtime.push(record.updatetimeStr);
