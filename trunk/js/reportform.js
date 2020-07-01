@@ -3829,7 +3829,7 @@ function timeOilConsumption(groupslist) {
                         }
                     },
                     legend: {
-                        data: [totoil, speed, dis, usoil1, usoil2],
+                        data: [speed, dis, totoil, usoil1, usoil2],
                         //selected: {
                         //    '里程' : false
                         // },
@@ -3892,12 +3892,13 @@ function timeOilConsumption(groupslist) {
                         }
                     }],
                     series: [{
-                            //show:'false',
-                            name: totoil,
+                            name: time,
                             type: 'line',
                             symbol: 'none',
-                            color: '#C1232B',
-                            data: this.oil
+                            yAxisIndex: 1,
+                            color: '#F0805A',
+                            //itemStyle: {normal: {areaStyle: {type: 'default'}}},
+                            data: this.recvtime
                         }, {
                             name: speed,
                             type: 'line',
@@ -3915,13 +3916,12 @@ function timeOilConsumption(groupslist) {
                             //itemStyle: {normal: {areaStyle: {type: 'default'}}},
                             data: this.distance
                         }, {
-                            name: time,
+                            //show:'false',
+                            name: totoil,
                             type: 'line',
                             symbol: 'none',
-                            yAxisIndex: 1,
-                            color: '#F0805A',
-                            //itemStyle: {normal: {areaStyle: {type: 'default'}}},
-                            data: this.recvtime
+                            color: '#C1232B',
+                            data: this.oil
                         }, {
                             //show:'false',
                             name: usoil1,
