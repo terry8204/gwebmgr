@@ -838,7 +838,9 @@ function groupMileage(groupslist) {
                 var deviceids = [];
                 this.checkedDevice.forEach(function(group) {
                     if (!group.children) {
-                        deviceids.push(group.deviceid);
+                        if (group.deviceid != null) {
+                            deviceids.push(group.deviceid);
+                        }
                     }
                 });
                 if (deviceids.length > 0) {
@@ -868,7 +870,7 @@ function groupMileage(groupslist) {
                                     } else {
                                         item.endtimeStr = DateFormat.longToDateTimeStr(item.endtime, timeDifference);
                                     }
-                                    item.devicename = vstore.state.deviceInfos[item.deviceid].devicename;
+                                    item.devicename = vstore.state.deviceInfos[item.deviceid] ? vstore.state.deviceInfos[item.deviceid].devicename : item.deviceid;
                                     item.enddistance != 0 ? item.enddistance = (item.enddistance / 1000).toFixed(2) : null;
                                     item.startdistance != 0 ? item.startdistance = (item.startdistance / 1000).toFixed(2) : null;
                                     item.totaldistance != 0 ? item.totaldistance = (item.totaldistance / 1000).toFixed(2) : null;
