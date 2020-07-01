@@ -4768,7 +4768,7 @@ var reportForm = {
                         { title: me.$t("reportForm.cmdReport"), name: 'cmdReport', icon: 'ios-pricetag-outline' },
                         { title: me.$t("reportForm.posiReport"), name: 'posiReport', icon: 'ios-pin' },
                         { title: me.$t("reportForm.reportmileagedetail"), name: 'mileageDetail', icon: 'ios-color-wand' },
-                        { title: "分组里程", name: 'groupMileage', icon: 'ios-color-wand' },
+                        { title: "里程总览", name: 'groupMileage', icon: 'ios-color-wand' },
                         { title: me.$t("reportForm.parkDetails"), name: 'parkDetails', icon: 'md-analytics' },
                         { title: me.$t("reportForm.acc"), name: 'accDetails', icon: 'md-bulb' },
                         { title: isZh ? '语音报表' : 'Voice report', name: 'records', icon: 'md-volume-up' },
