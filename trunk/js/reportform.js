@@ -823,7 +823,7 @@ function groupMileage(groupslist) {
                     }
                 }
             },
-            changePage: function(value) {
+            changePage: function(index) {
                 var offset = index * 30;
                 var start = (index - 1) * 30;
                 this.currentIndex = index;
