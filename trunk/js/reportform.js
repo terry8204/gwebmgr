@@ -765,11 +765,41 @@ function groupMileage(groupslist) {
             groupslist: [],
             timeoutIns: null,
             columns: [
-                { title: vRoot.$t("alarm.devName"), key: 'deviceName' },
-                { title: vRoot.$t("reportForm.date"), key: 'day', sortable: true },
-                { title: vRoot.$t("reportForm.minMileage"), key: 'mintotaldistance', sortable: true },
-                { title: vRoot.$t("reportForm.maxMileage"), key: 'maxtotaldistance', sortable: true },
-                { title: vRoot.$t("reportForm.totalMileage"), key: 'totaldistance', sortable: true },
+                { key: 'index', width: 60, title: '编号' },
+                { title: vRoot.$t("alarm.devName"), key: 'devicename' },
+                { title: '设备序号', key: 'deviceid' },
+                {
+                    title: '分组',
+                    key: 'groupid',
+                    render: function(h, params) {
+                        var deviceid = params.row.deviceid;
+                        var groupName = '';
+
+                        for (var i = 0; i < groupslist.length; i++) {
+                            var group = groupslist[i];
+                            for (var j = 0; j < group.devices.length; j++) {
+                                var device = group.devices[j];
+
+                                if (device.deviceid === deviceid) {
+                                    if (group.groupname.indexOf('-') == -1) {
+                                        groupName = group.groupname;
+                                    } else {
+                                        groupName = group.groupname.split('-')[1];
+                                    }
+                                    break;
+                                }
+                                if (groupName != '') { break };
+                            }
+                        }
+
+                        return h('span', {}, groupName)
+                    }
+                },
+                { title: '开始时间', key: 'starttimeStr' },
+                { title: '结束时间', key: 'endtimeStr' },
+                { title: '开始里程', key: 'startdistance' },
+                { title: '结束里程', key: 'enddistance' },
+                { title: '总里程', key: 'totaldistance', sortable: true },
             ],
             tableData: [],
             currentIndex: 1,
@@ -794,10 +824,10 @@ function groupMileage(groupslist) {
                 }
             },
             changePage: function(value) {
-                var offset = index * 20;
-                var start = (index - 1) * 20;
-                this.currentPageIndex = index;
-                this.tableData = this.insureRecords.slice(start, offset);
+                var offset = index * 30;
+                var start = (index - 1) * 30;
+                this.currentIndex = index;
+                this.tableData = this.records.slice(start, offset);
             },
             calcTableHeight: function() {
                 var wHeight = window.innerHeight;
@@ -825,21 +855,31 @@ function groupMileage(groupslist) {
                         me.loading = false;
                         if (resp.status === 0) {
                             if (resp.records.length) {
-                                var total = 0;
-                                resp.records.forEach(function(item) {
-                                    total += item.totaldistance;
-                                    item.deviceName = vstore.state.deviceInfos[me.queryDeviceId].devicename;
-                                    item.mintotaldistance = utils.getMileage(item.mintotaldistance);
-                                    item.maxtotaldistance = utils.getMileage(item.maxtotaldistance);
-                                    item.totaldistance = utils.getMileage(item.totaldistance);
+                                resp.records.forEach(function(item, index) {
+                                    item.index = index + 1;
+                                    if (item.starttime == 0) {
+                                        item.starttimeStr = '无';
+                                    } else {
+                                        item.starttimeStr = DateFormat.longToDateTimeStr(item.starttime, timeDifference);
+                                    }
+                                    if (item.endtime == 0) {
+                                        item.endtimeStr = '无';
+                                    } else {
+                                        item.endtimeStr = DateFormat.longToDateTimeStr(item.endtime, timeDifference);
+                                    }
+                                    item.devicename = vstore.state.deviceInfos[item.deviceid].devicename;
+                                    item.enddistance != 0 ? item.enddistance = (item.enddistance / 1000).toFixed(2) : null;
+                                    item.startdistance != 0 ? item.startdistance = (item.startdistance / 1000).toFixed(2) : null;
+                                    item.totaldistance != 0 ? item.totaldistance = (item.totaldistance / 1000).toFixed(2) : null;
                                 });
-                                resp.records.push({
-                                    totaldistance: me.$t("reportForm.total") + utils.getMileage(total),
-                                });
-                                me.tableData = resp.records;
+                                me.records = resp.records;
+                                me.tableData = me.records.slice(0, 30);
+                                me.total = me.records.length;
+
                             } else {
                                 me.tableData = [];
                             };
+                            me.currentIndex = 1;
                         } else {
                             me.tableData = [];
                         }
@@ -851,6 +891,7 @@ function groupMileage(groupslist) {
         },
         mounted: function() {
             var me = this;
+            me.records = [];
             if (rootuser == null) {
                 me.isSpin = true;
                 utils.queryDevicesTree(function(rootuserinfo) {
