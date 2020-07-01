@@ -305,6 +305,8 @@ var reportMixin = {
 }
 
 
+
+
 //  指令查询 DateFormat.longToDateStr(Date.now(),0)
 function cmdReport(groupslist) {
 
@@ -749,6 +751,128 @@ function reportMileageDetail(groupslist) {
         }
     })
 }
+
+function groupMileage(groupslist) {
+    new Vue({
+        el: '#group-mileage',
+        i18n: utils.getI18n(),
+        mixins: [treeMixin],
+        data: {
+            loading: false,
+            isSpin: false,
+            dateVal: [DateFormat.longToDateStr(Date.now(), timeDifference), DateFormat.longToDateStr(Date.now(), timeDifference)],
+            lastTableHeight: 100,
+            groupslist: [],
+            timeoutIns: null,
+            columns: [
+                { title: vRoot.$t("alarm.devName"), key: 'deviceName' },
+                { title: vRoot.$t("reportForm.date"), key: 'day', sortable: true },
+                { title: vRoot.$t("reportForm.minMileage"), key: 'mintotaldistance', sortable: true },
+                { title: vRoot.$t("reportForm.maxMileage"), key: 'maxtotaldistance', sortable: true },
+                { title: vRoot.$t("reportForm.totalMileage"), key: 'totaldistance', sortable: true },
+            ],
+            tableData: [],
+            currentIndex: 1,
+        },
+        methods: {
+            clean: function() {
+                this.sosoValue = '';
+                this.checkedDevice = [];
+                this.cleanSelected(this.groupslist);
+                this.treeData = this.groupslist;
+            },
+            cleanSelected: function(treeDataFilter) {
+                var that = this;
+                for (var i = 0; i < treeDataFilter.length; i++) {
+                    var item = treeDataFilter[i];
+                    if (item != null) {
+                        item.checked = false;
+                        if (item.children && item.children.length > 0) {
+                            that.cleanSelected(item.children);
+                        }
+                    }
+                }
+            },
+            changePage: function(value) {
+                var offset = index * 20;
+                var start = (index - 1) * 20;
+                this.currentPageIndex = index;
+                this.tableData = this.insureRecords.slice(start, offset);
+            },
+            calcTableHeight: function() {
+                var wHeight = window.innerHeight;
+                this.lastTableHeight = wHeight - 210;
+            },
+            onClickQuery: function() {
+                var deviceids = [];
+                this.checkedDevice.forEach(function(group) {
+                    if (!group.children) {
+                        deviceids.push(group.deviceid);
+                    }
+                });
+                if (deviceids.length > 0) {
+                    var me = this;
+                    var url = myUrls.reportMileageSummary();
+                    var data = {
+                        startday: this.dateVal[0],
+                        endday: this.dateVal[1],
+                        offset: timeDifference,
+                        deviceids: deviceids
+                    }
+                    me.loading = true;
+                    utils.sendAjax(url, data, function(resp) {
+                        console.log(resp);
+                        me.loading = false;
+                        if (resp.status === 0) {
+                            if (resp.records.length) {
+                                var total = 0;
+                                resp.records.forEach(function(item) {
+                                    total += item.totaldistance;
+                                    item.deviceName = vstore.state.deviceInfos[me.queryDeviceId].devicename;
+                                    item.mintotaldistance = utils.getMileage(item.mintotaldistance);
+                                    item.maxtotaldistance = utils.getMileage(item.maxtotaldistance);
+                                    item.totaldistance = utils.getMileage(item.totaldistance);
+                                });
+                                resp.records.push({
+                                    totaldistance: me.$t("reportForm.total") + utils.getMileage(total),
+                                });
+                                me.tableData = resp.records;
+                            } else {
+                                me.tableData = [];
+                            };
+                        } else {
+                            me.tableData = [];
+                        }
+                    })
+                } else {
+                    this.$Message.error(this.$t("reportForm.selectDevTip"));
+                }
+            }
+        },
+        mounted: function() {
+            var me = this;
+            if (rootuser == null) {
+                me.isSpin = true;
+                utils.queryDevicesTree(function(rootuserinfo) {
+                    me.isSpin = false;
+                    if (rootuserinfo) {
+                        rootuser = rootuserinfo;
+                        me.groupslist = [utils.castUsersTreeToDevicesTree(rootuserinfo, true)];
+                        me.treeData = me.groupslist;
+                    }
+                });
+            } else {
+                me.groupslist = [utils.castUsersTreeToDevicesTree(rootuser, true)];
+                me.treeData = me.groupslist;
+            }
+            this.calcTableHeight();
+            window.onresize = function() {
+                me.calcTableHeight();
+            }
+        }
+    })
+}
+
 
 // 停车表报
 function parkDetails(groupslist) {
@@ -4603,6 +4727,7 @@ var reportForm = {
                         { title: me.$t("reportForm.cmdReport"), name: 'cmdReport', icon: 'ios-pricetag-outline' },
                         { title: me.$t("reportForm.posiReport"), name: 'posiReport', icon: 'ios-pin' },
                         { title: me.$t("reportForm.reportmileagedetail"), name: 'mileageDetail', icon: 'ios-color-wand' },
+                        { title: "分组里程", name: 'groupMileage', icon: 'ios-color-wand' },
                         { title: me.$t("reportForm.parkDetails"), name: 'parkDetails', icon: 'md-analytics' },
                         { title: me.$t("reportForm.acc"), name: 'accDetails', icon: 'md-bulb' },
                         { title: isZh ? '语音报表' : 'Voice report', name: 'records', icon: 'md-volume-up' },
@@ -4688,6 +4813,9 @@ var reportForm = {
                         break;
                     case 'mileagedetail.html':
                         reportMileageDetail(groupslist);
+                        break;
+                    case 'groupmileage.html':
+                        groupMileage(groupslist);
                         break;
                     case 'parkdetails.html':
                         parkDetails(groupslist);
