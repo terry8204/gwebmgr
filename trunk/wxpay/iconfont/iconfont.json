@@ -1,0 +1,86 @@
+{
+  "id": "1239235",
+  "name": "insure",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "609890",
+      "name": "对号",
+      "font_class": "duihaocheckmark17",
+      "unicode": "e770",
+      "unicode_decimal": 59248
+    },
+    {
+      "icon_id": "2699977",
+      "name": "错",
+      "font_class": "cuo",
+      "unicode": "e723",
+      "unicode_decimal": 59171
+    },
+    {
+      "icon_id": "11741026",
+      "name": "phone",
+      "font_class": "phone",
+      "unicode": "e686",
+      "unicode_decimal": 59014
+    },
+    {
+      "icon_id": "13480218",
+      "name": "close",
+      "font_class": "close",
+      "unicode": "e713",
+      "unicode_decimal": 59155
+    },
+    {
+      "icon_id": "2155433",
+      "name": "定位",
+      "font_class": "dingwei",
+      "unicode": "e643",
+      "unicode_decimal": 58947
+    },
+    {
+      "icon_id": "1380733",
+      "name": "scan",
+      "font_class": "saoma",
+      "unicode": "e606",
+      "unicode_decimal": 58886
+    },
+    {
+      "icon_id": "13874782",
+      "name": "scan",
+      "font_class": "scan",
+      "unicode": "e649",
+      "unicode_decimal": 58953
+    },
+    {
+      "icon_id": "1381397",
+      "name": "left",
+      "font_class": "left",
+      "unicode": "e62e",
+      "unicode_decimal": 58926
+    },
+    {
+      "icon_id": "2674929",
+      "name": "箭头 下",
+      "font_class": "jiantouxia",
+      "unicode": "e62d",
+      "unicode_decimal": 58925
+    },
+    {
+      "icon_id": "4422022",
+      "name": "保单",
+      "font_class": "baodan",
+      "unicode": "e618",
+      "unicode_decimal": 58904
+    },
+    {
+      "icon_id": "8797886",
+      "name": "data analysis",
+      "font_class": "dataanalysis",
+      "unicode": "e87b",
+      "unicode_decimal": 59515
+    }
+  ]
+}

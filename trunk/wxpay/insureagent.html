@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <title>增值服务支付</title>
     <link rel="stylesheet" href="./cube.min.css">
+    <link rel="stylesheet" href="./iconfont/iconfont.css">
     <style>
         boay {
             font-size: 12px;
@@ -152,7 +153,14 @@
             <div class="input-wrap">
                 <div v-text="label" class="label"></div>
                 <div style="flex: 1;padding: 0 0.5rem;">
-                    <cube-input v-model="username" :placeholder="placeholder" style="width: 100%;" :clearable="true"></cube-input>
+                    <cube-input v-model="username" :placeholder="placeholder" style="width: 100%;" :clearable="true">
+                        <div slot="append">
+                            <div style="height:45px;width:45px;text-align:center;line-height:45px;">
+                                <span v-if="isMatchDealer" class="icon iconfont icon-duihaocheckmark17" style="color:#40E476;font-size: 20px;"></span>
+                                <span v-else class="icon iconfont icon-cuo" style="color:red; font-size: 20px;"></span>
+                            </div>
+                        </div>
+                    </cube-input>
                 </div>
             </div>
 
@@ -198,6 +206,7 @@
         new Vue({
             el: '#app',
             data: {
+                isMatchDealer: false,
                 placeholder: "请输入门店投保备案编号",
                 loading: false,
                 label: '门店备案编号 :',
@@ -218,16 +227,56 @@
                 },
             },
             methods: {
+                debounce: function(func, wait, immediate) {
+                    var timeout, args, context, timestamp, result;
+                    var later = function() {
+                        var last = Date.now() - timestamp;
+                        if (last < wait && last >= 0) {
+                            timeout = setTimeout(later, wait - last);
+                        } else {
+                            timeout = null;
+
+                            if (!immediate) {
+                                result = func.apply(context, args);
+                                if (!timeout)
+                                    context = args = null;
+                            }
+                        }
+                    };
+                    return function() {
+                        context = this;
+                        args = arguments;
+                        timestamp = Date.now();
+                        var callNow = immediate && !timeout;
+
+                        if (!timeout)
+                            timeout = setTimeout(later, wait);
+
+                        if (callNow) {
+                            result = func.apply(context, args);
+                            context = args = null;
+                        }
+                        return result;
+                    };
+                },
                 handleBeiAn() {
                     window.location.href = "https://su-c2db0da8022f6f3e.jinshuju.com/f/4iIHuV";
                 },
                 getPrePayInfo: function() {
+
                     var state = gappid + "_insureagent_" + goodsid + "_charge";
                     var me = this;
                     if (this.username != "") {
                         // window.location.href = "https://www.gps51.com/wxpay/payaction?openid=" + openId + "&username=" + username + "&goodsid=" + goodsid + "&count=1" + "&state=" + state;
                         // return;
                         //调用支付接口
+                        if (me.isMatchDealer === false) {
+                            me.$createToast({
+                                txt: '该门店没有备案,请点击门店备案',
+                                type: 'txt'
+                            }).show();
+                            return;
+                        }
                         me.loading = true;
                         $.ajax({
                             url: "https://www.gps51.com/wxpay/payaction?openid=" + openId + "&username=" + this.username + "&goodsid=" + goodsid + "&count=1" + "&state=" + state,
@@ -319,7 +368,44 @@
                         toast.hide();
                     }
                 }
-            }
+            },
+            watch: {
+                username: function(newVal) {
+                    this.matchKeyWord(newVal);
+                }
+            },
+            mounted: function() {
+                var me = this;
+                this.matchKeyWord = this.debounce(function(needmatchkey) {
+                    $.ajax({
+                        url: "https://www.gps51.com/webapi?action=matchkeyword",
+                        type: "post",
+                        dataType: "json",
+                        data: JSON.stringify({
+                            type: "username",
+                            needmatchkey: me.username
+                        }),
+                        success: function(data) {
+                            var result = needmatchkey !== '' && data.matchstrlist != null && data.matchstrlist.length > 0;
+                            if (result) {
+                                var isFound = false;
+                                for (var i = 0; i < data.matchstrlist.length; i++) {
+                                    var item = data.matchstrlist[i];
+                                    if (item.username == needmatchkey) {
+                                        isFound = true;
+                                    }
+                                }
+                                me.isMatchDealer = isFound;
+                            } else {
+                                me.isMatchDealer = false;
+                            }
+                        },
+                        error: function(JSON) {
+
+                        }
+                    });
+                }, 300);
+            },
         })
     </script>
 

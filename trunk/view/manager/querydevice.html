@@ -1335,9 +1335,9 @@
                     utils.sendAjax(url, {}, function(resp) {
                         me.loading = false;
                         if (resp.status == 0 && resp.devices != null) {
-                            resp.groups.forEach(function(item) {
-                                me.allGroups[item.groupid] = item;
-                            });
+                            // resp.groups.forEach(function(item) {
+                            //     me.allGroups[item.groupid] = item;
+                            // });
                             me.recordsList = me.filterDataInfo(resp.devices);
                             me.tableData = me.recordsList.slice(0, 10);
                             me.total = me.recordsList.length;
@@ -1695,6 +1695,17 @@
                     var wHeight = window.innerHeight;
                     this.taleHeight = wHeight - 184;
                 },
+                queryGroupInfos: function(callback) {
+                    var me = this;
+                    utils.sendAjax(myUrls.queryGroupInfos(), {}, function(resp) {
+                        if (resp.status === 0) {
+                            resp.groups.forEach(function(item) {
+                                me.allGroups[item.groupid] = item;
+                            });
+                        }
+                        callback();
+                    })
+                }
             },
             watch: {
                 isShowMatchDev: function() {
@@ -1730,7 +1741,9 @@
                 this.userlists = userlists;
                 this.userType = vstore.state.userType;
                 this.allGroups = {};
-                this.getDeviceList();
+                this.queryGroupInfos(function() {
+                    me.getDeviceList();
+                });
                 this.getDeviceType();
                 this.calcTableHeight();
                 window.onresize = function() {

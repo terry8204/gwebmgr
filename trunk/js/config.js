@@ -102,6 +102,9 @@ var myUrls = {
     queryGroupByUser: function() {
         return this.apihost + 'webapi?action=queryallgroups&token=' + token
     },
+    queryGroupInfos: function() {
+        return this.apihost + 'webapi?action=querygroupinfos&token=' + token
+    },
     addUser: function() {
         return this.apihost + 'webapi?action=adduser&token=' + token
     },
