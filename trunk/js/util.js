@@ -989,7 +989,9 @@ var utils = {
         }
         return oddNodes;
     },
-
+    setCurrentDeviceid: function(deviceid) {
+        this.sendAjax(myUrls.setCurrentDeviceid(), { deviceid: deviceid }, function() {});
+    }
 }
 
 var timeDifference = DateFormat.getOffset();

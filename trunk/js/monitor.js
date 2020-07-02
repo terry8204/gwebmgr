@@ -931,6 +931,7 @@ var monitor = {
             globalDeviceId = deviceid;
             this.querySingleAllCmdDefaultValue(deviceid);
             if (!this.map) { return; }
+            utils.setCurrentDeviceid(deviceid);
             var record = this.getSingleDeviceInfo(deviceid);
             this.currentDeviceName = this.deviceInfos[deviceid].devicename;
             if (record) {
@@ -1046,6 +1047,7 @@ var monitor = {
         },
         openTreeDeviceNav: function(deviceid) {
             var me = this;
+            utils.setCurrentDeviceid(deviceid);
             var devLastInfo = me.getSingleDeviceInfo(deviceid);
             var device = this.deviceInfos[deviceid];
             var devicetype = device.devicetype;

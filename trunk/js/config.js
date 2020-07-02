@@ -530,6 +530,9 @@ var myUrls = {
     queryDevicesTree: function() {
         return this.apihosts + 'webapi?action=querydevicestree&token=' + token;
     },
+    setCurrentDeviceid: function() {
+        return this.apihosts + 'webapi?action=setcurrentdeviceid&token=' + token;
+    },
     // 批量转移
     batchOperate: function() {
         return this.apihosts + 'webapi?action=batchoperate&token=' + token;

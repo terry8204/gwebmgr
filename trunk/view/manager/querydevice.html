@@ -1327,6 +1327,7 @@
                     var me = this;
                     var url = myUrls.queryDevices();
                     // var url = myUrls.queryDeviceListWithGroupInfo();
+                    me.loading = true;
                     utils.sendAjax(url, {
                         count: 10,
                         keyword: this.queryString,
@@ -1346,6 +1347,9 @@
                         } else {
                             me.$Message.error(resp.cause);
                         }
+                    }, function() {
+                        me.loading = false;
+                        me.$Message.error('网络错误');
                     });
                 },
                 handleDelete: function(deviceid) {
@@ -1478,7 +1482,28 @@
                     });
                 },
                 exportAllDevice: function() {
-
+                    var url = myUrls.queryDevices(),
+                        me = this;
+                    utils.sendAjax(url, {
+                        all: true,
+                    }, function(resp) {
+                        if (resp.status == 0 && resp.devices != null) {
+                            me.$Message.error('导出成功');
+                            me.$refs.table.exportCsv({
+                                filename: 'deviceids',
+                                columns: me.columns.filter(function(col, index) {
+                                    return index < 8
+                                }),
+                                data: me.filterDataInfo(resp.devices),
+                                quoted: true,
+                            });
+                        } else {
+                            me.$Message.error('导出失败');
+                        }
+                    }, function() {
+                        me.loading = false;
+                        me.$Message.error('网络错误');
+                    });
                 },
                 handleSubmit: function() {
                     var me = this;
@@ -1487,7 +1512,6 @@
                         me.$Message.error(me.$t("message.plSelectTime"));
                         return;
                     }
-
                     var data = {
                         deviceid: this.deviceid,
                         devicetype: this.devicetype,
