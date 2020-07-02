@@ -154,6 +154,9 @@ var myUrls = {
     queryDeviceListWithGroupInfo: function() {
         return this.apihost + 'webapi?action=querydevicelistwithgroupinfo&token=' + token
     },
+    queryDevices: function() {
+        return this.apihost + 'webapi?action=querydevices&token=' + token
+    },
     resetDeviceLoginPwd: function() {
         return this.apihost + 'webapi?action=resetdeviceloginpwd&token=' + token
     },

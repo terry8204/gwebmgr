@@ -4,31 +4,37 @@
         <h3 class="h3-title">{{$t("bgMgr.queryDev")}}</h3>
         <ul>
             <li>
-                <i-input v-model.trim="queryParameter"></i-input>
+                <i-input v-model.trim="queryString"></i-input>
             </li>
             <li>
-                <i-button type="primary" @click="handlerClickQuery">{{$t("reportForm.query")}}</i-button>
+                <i-button type="primary" icon="ios-search" @click="handlerClickQuery">{{$t("reportForm.query")}}</i-button>
+            </li>
+            <li style="float:right;width:auto;">
+                <i-button @click="exportAllDevice">导出全部设备</i-button>
             </li>
             <li style="float:right;width:auto;">
                 <i-button @click="exportDevice">导出当前设备</i-button>
             </li>
             <li style="float:right;width:auto;">
-                <i-button @click="expireNotifyTime(180)">已过期</i-button>
+                <i-button @click="expireNotifyTime(-1)" :type="queryType=='ot' ? 'info':'default'" icon="ios-close-circle">已过期</i-button>
             </li>
             <li style="float:right;width:auto;">
-                <i-button @click="expireNotifyTime(30)">一个月内过期</i-button>
+                <i-button @click="expireNotifyTime(60)" :type="queryType=='60ot' ? 'info':'md-checkbox'" icon="ios-search">60天内过期</i-button>
             </li>
-
             <li style="float:right;width:auto;">
-                <i-button @click="expireNotifyTime(7)">7天内过期</i-button>
+                <i-button @click="expireNotifyTime(7)" :type="queryType=='7ot' ? 'info':'default'" icon="ios-checkmark-circle">7天内过期</i-button>
             </li>
+            <li style="float:right;width:auto;">
+                <i-button @click="expireNotifyTime(0)" :type="queryType=='all' ? 'info':'default'" icon="ios-tablet-portrait">所有设备</i-button>
+            </li>
+            <!-- all 7ot 60ot ot  -->
         </ul>
 
         <div class="table-wraper">
             <i-table border ref="table" :columns="columns" :data="tableData" :height="taleHeight" :loading="loading"></i-table>
         </div>
         <div class="my-page" style="margin: 5px 0;">
-            <Page :total="total" :page-size="10" :current="currentIndex" @on-change="changePage"></Page>
+            <Page :total="total" :page-size="10" :current="currentIndex" @on-change="changeDevicePage"></Page>
         </div>
 
         <Modal v-model="ownerInfoModal" width="500">
@@ -634,6 +640,8 @@
             el: "#querydev",
             i18n: utils.getI18n(),
             data: {
+                queryType: 'all', // all 7ot 60ot ot
+
                 templatename: '',
                 brand: '',
                 model: "",
@@ -643,9 +651,9 @@
                 isQuery: false,
                 userType: Cookies.get('userType'),
                 modal: false,
-                queryParameter: "",
+                queryString: "",
                 loading: true,
-                total: 0,
+                total: vRoot.$children[1].allDevCount,
                 currentIndex: 1,
                 teltype: '1',
 
@@ -994,7 +1002,6 @@
                 }],
                 templateData: [],
                 editDeviceIndex: null,
-                queryTableData: [],
                 tableData: [],
                 recordsList: [],
                 groupsList: [],
@@ -1041,6 +1048,10 @@
                 },
             },
             methods: {
+                changeDevicePage: function(index) {
+                    this.currentIndex = index;
+                    this.getDeviceList(false, this.getQueryTypeNumber());
+                },
                 deleteOilDetectorTemplate: function(id, index) {
                     var me = this;
                     utils.sendAjax(myUrls.deleteOilDetectorTemplate(), {
@@ -1218,62 +1229,45 @@
                 },
                 handlerClickQuery() {
                     var self = this;
-                    var queryTableData = [];
-                    var queryParameterLowerCase = this.queryParameter.toLowerCase();
-                    if (!self.queryParameter) {
-                        return;
-                    };
-                    this.isQuery = true;
-                    this.recordsList.forEach(function(record) {
-                        var deviceid = record.deviceid;
-                        var devicename = record.devicename;
-                        var monitor = record.monitor;
-                        var creater = record.creater;
-                        if (
-                            creater.indexOf(self.queryParameter) != -1 ||
-                            devicename.indexOf(self.queryParameter) != -1 ||
-                            deviceid.indexOf(self.queryParameter) != -1 ||
-                            record.pinYin.indexOf(queryParameterLowerCase) != -1 ||
-                            record.firstLetter.indexOf(queryParameterLowerCase) != -1 ||
-                            (record.forwardurl && record.forwardurl.indexOf(queryParameterLowerCase) != -1) ||
-                            (monitor && (monitor.indexOf(self.queryParameter) != -1))
-                        ) {
-                            queryTableData.push(record);
-                        }
-                    });
-
                     this.currentIndex = 1;
-                    this.queryTableData = queryTableData;
-                    this.tableData = this.queryTableData.slice(0, 10);
-                    this.total = this.queryTableData.length;
-
+                    self.getDeviceList(false, this.getQueryTypeNumber());
+                },
+                getQueryTypeNumber: function() {
+                    var result = 0;
+                    switch (this.queryType) {
+                        case 'all':
+                            result = 0;
+                            break;
+                        case '7ot':
+                            result = 7;
+                            break;
+                        case '60ot':
+                            result = 60;
+                            break;
+                        case 'ot':
+                            result = -1;
+                            break;
+                    }
+                    return result;
                 },
                 expireNotifyTime: function(dayNumber) {
-                    this.isQuery = true;
-                    var queryTableData = [];
-
-                    this.recordsList.forEach(function(record) {
-                        if (record.expirenotifytime > 0) {
-                            var time = record.expirenotifytime - Date.now();
-                            var days = parseInt(time / (1000 * 60 * 60 * 24));
-                            if (dayNumber == 180) {
-                                if (days < 0) {
-                                    queryTableData.push(record);
-                                }
-                            } else {
-                                if (days >= 0) {
-                                    if (days <= dayNumber) {
-                                        queryTableData.push(record);
-                                    }
-                                }
-                            }
-                        }
-                    });
-
+                    console.log('dayNumber', dayNumber);
+                    switch (dayNumber) {
+                        case 0:
+                            this.queryType = 'all';
+                            break;
+                        case 7:
+                            this.queryType = '7ot';
+                            break;
+                        case 60:
+                            this.queryType = '60ot';
+                            break;
+                        case -1:
+                            this.queryType = 'ot';
+                            break;
+                    }
                     this.currentIndex = 1;
-                    this.queryTableData = queryTableData;
-                    this.tableData = this.queryTableData.slice(0, 10);
-                    this.total = this.queryTableData.length;
+                    this.getDeviceList(false, dayNumber);
                 },
                 getDevType: function(row) {
 
@@ -1329,19 +1323,26 @@
                     }
                     return groupName;
                 },
-                getDeviceList: function() {
+                getDeviceList: function(isAll, expiredays) {
                     var me = this;
-                    var url = myUrls.queryDeviceListWithGroupInfo();
-                    utils.sendAjax(url, {}, function(resp) {
+                    var url = myUrls.queryDevices();
+                    // var url = myUrls.queryDeviceListWithGroupInfo();
+                    utils.sendAjax(url, {
+                        count: 10,
+                        keyword: this.queryString,
+                        offset: this.currentIndex - 1,
+                        all: isAll,
+                        expiredays: expiredays
+                    }, function(resp) {
+                        console.log(resp);
                         me.loading = false;
                         if (resp.status == 0 && resp.devices != null) {
-                            // resp.groups.forEach(function(item) {
-                            //     me.allGroups[item.groupid] = item;
-                            // });
-                            me.recordsList = me.filterDataInfo(resp.devices);
-                            me.tableData = me.recordsList.slice(0, 10);
-                            me.total = me.recordsList.length;
+                            if (isAll) {
 
+                            } else {
+                                me.tableData = me.filterDataInfo(resp.devices);
+                                me.total = resp.totalcount;
+                            }
                         } else {
                             me.$Message.error(resp.cause);
                         }
@@ -1467,31 +1468,18 @@
                     });
                 },
                 exportDevice: function() {
-                    if (this.queryParameter == "") {
-                        if (this.tableData.length) {
-                            this.$refs.table.exportCsv({
-                                filename: 'deviceids',
-                                columns: this.columns.filter(function(col, index) {
-                                    return index < 8
-                                }),
-                                data: this.recordsList,
-                                quoted: true,
-                            });
-                        }
-                    } else {
-                        if (this.queryTableData.length) {
-                            this.$refs.table.exportCsv({
-                                filename: 'deviceids',
-                                columns: this.columns.filter(function(col, index) {
-                                    return index < 8
-                                }),
-                                data: this.queryTableData,
-                                quoted: true,
-                            });
-                        }
-                    }
+                    this.$refs.table.exportCsv({
+                        filename: 'deviceids',
+                        columns: this.columns.filter(function(col, index) {
+                            return index < 8
+                        }),
+                        data: this.tableData,
+                        quoted: true,
+                    });
                 },
+                exportAllDevice: function() {
 
+                },
                 handleSubmit: function() {
                     var me = this;
                     var url = myUrls.editDevice();
@@ -1742,7 +1730,7 @@
                 this.userType = vstore.state.userType;
                 this.allGroups = {};
                 this.queryGroupInfos(function() {
-                    me.getDeviceList();
+                    me.getDeviceList(false, 0);
                 });
                 this.getDeviceType();
                 this.calcTableHeight();
