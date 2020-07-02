@@ -16,16 +16,16 @@
                 <i-button @click="exportDevice">导出当前设备</i-button>
             </li>
             <li style="float:right;width:auto;">
-                <i-button @click="expireNotifyTime(-1)" :type="queryType=='ot' ? 'info':'default'" icon="ios-close-circle">已过期</i-button>
+                <i-button @click="expireNotifyTime(-1)" :type="queryType=='ot' ? 'info':'default'" icon="ios-close-circle">已过期 <span v-if="queryType=='ot'">({{total}})</span></i-button>
             </li>
             <li style="float:right;width:auto;">
-                <i-button @click="expireNotifyTime(60)" :type="queryType=='60ot' ? 'info':'md-checkbox'" icon="ios-search">60天内过期</i-button>
+                <i-button @click="expireNotifyTime(60)" :type="queryType=='60ot' ? 'info':'md-checkbox'" icon="ios-search">60天内过期<span v-if="queryType=='60ot'">({{total}})</span></i-button>
             </li>
             <li style="float:right;width:auto;">
-                <i-button @click="expireNotifyTime(7)" :type="queryType=='7ot' ? 'info':'default'" icon="ios-checkmark-circle">7天内过期</i-button>
+                <i-button @click="expireNotifyTime(7)" :type="queryType=='7ot' ? 'info':'default'" icon="ios-checkmark-circle">7天内过期<span v-if="queryType=='7ot'">({{total}})</span></i-button>
             </li>
             <li style="float:right;width:auto;">
-                <i-button @click="expireNotifyTime(0)" :type="queryType=='all' ? 'info':'default'" icon="ios-tablet-portrait">所有设备</i-button>
+                <i-button @click="expireNotifyTime(0)" :type="queryType=='all' ? 'info':'default'" icon="ios-tablet-portrait">所有设备<span v-if="queryType=='all'">({{total}})</span></i-button>
             </li>
             <!-- all 7ot 60ot ot  -->
         </ul>
