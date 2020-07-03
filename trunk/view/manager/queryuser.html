@@ -13,8 +13,6 @@
         </ul>
         <div class="my-total">
             <span>{{$t("bgMgr.userTotal")}} : {{userTotal}}</span>
-            <span>{{$t("bgMgr.groupTotal")}} : {{groupTotal}}</span>
-            <span>{{$t("bgMgr.deviceTotal")}} : {{deviceTotal}}</span>
         </div>
         <div class="table-wraper">
             <i-table border :columns="columns" :height="taleHeight" :data="tableData" :loading="loading"></i-table>
@@ -155,9 +153,7 @@
                 modal: false,
                 editDeviceIndex: null,
                 queryTableData: [],
-                deviceTotal: '',
                 userTotal: '',
-                groupTotal: '',
                 queryParameter: "",
                 loading: true,
                 total: 0,
@@ -185,15 +181,6 @@
                     }, {
                         title: '地址',
                         key: 'companyaddr'
-                    }, {
-                        title: vRoot.$t("user.groupCount"),
-                        key: 'usedGroupCount'
-                    }, {
-                        title: vRoot.$t("group.userCount"),
-                        key: 'usedUserCount'
-                    }, {
-                        title: vRoot.$t("group.devCount"),
-                        key: 'usedDeviceCount'
                     }, {
                         title: vRoot.$t("user.createTime"),
                         key: 'createtime'
@@ -351,9 +338,7 @@
 
                         this.tableData = this.recordsList.slice(0, 10);
                         this.total = this.recordsList.length;
-                        this.deviceTotal = currdevicecount;
                         this.userTotal = resp.userlists.length;
-                        this.groupTotal = currgroupcount;
                     }
                     this.loading = false;
                 },
@@ -383,9 +368,7 @@
                             me.recordsList.forEach(function(item, index) {
                                 if (item.username == username) {
                                     var delUserItem = me.recordsList[index];
-                                    me.deviceTotal -= delUserItem.currdevicecount;
                                     me.userTotal -= 1;
-                                    me.groupTotal -= delUserItem.currgroupcount;
                                     me.$delete(me.recordsList, index);
                                 }
                             });

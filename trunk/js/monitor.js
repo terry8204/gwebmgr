@@ -1410,7 +1410,6 @@ var monitor = {
         dorefreshMapUI: function() {
             // console.log("dorefreshMapUI enter isNeedRefreshMapUI=",isNeedRefreshMapUI);
             if (isNeedRefreshMapUI == true) {
-                // console.log("dorefreshMapUI refresh true");
                 isNeedRefreshMapUI = false;
                 this.map && this.map.updateLastTracks && this.map.updateLastTracks(this.currentDeviceId);
                 // this.map && this.map.updateMarkersState && this.map.updateMarkersState(this.currentDeviceId);

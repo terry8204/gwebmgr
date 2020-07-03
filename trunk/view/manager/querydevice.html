@@ -1335,7 +1335,6 @@
                         all: isAll,
                         expiredays: expiredays
                     }, function(resp) {
-                        console.log(resp);
                         me.loading = false;
                         if (resp.status == 0 && resp.devices != null) {
                             if (isAll) {

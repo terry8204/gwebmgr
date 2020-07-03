@@ -230,6 +230,7 @@ BMapClass.pt.cancelFence = function(deviceid) {
 
 
 BMapClass.pt.updateLastTracks = function(deviceid) {
+    // console.log('updateLastTracks', deviceid)
     // this.lastTracks = lastTracks;
     for (var key in this.lastTracks) {
         if (this.lastTracks.hasOwnProperty(key)) {
@@ -242,17 +243,39 @@ BMapClass.pt.updateLastTracks = function(deviceid) {
                 var myIcon = this.getIcon(track);
                 marker.setIcon(myIcon);
                 marker.setRotation(track.course);
+
                 if (!isEq) {
                     marker.setPosition(newPoint);
+
                     if (this.mapInfoWindow && marker.deviceid == deviceid && this.mapInfoWindow.isOpen()) {
+                        console.log('shuju --change1')
                         this.openInfoWindow(marker, deviceid);
-                    };
+                    } else {
+                        // if (marker.deviceid == deviceid) {
+                        //     if (this.mapInfoWindow) {
+                        //         console.log("this.mapInfoWindow.isOpen():1", this.mapInfoWindow.isOpen());
+                        //     } else {
+                        //         console.log("this.mapInfoWindow:1", this.mapInfoWindow);
+                        //     }
+                        //     console.log("marker.deviceid == deviceid:1", deviceid);
+                        // }
+                    }
                 } else {
                     if (this.mapInfoWindow && marker.deviceid == deviceid && this.mapInfoWindow.isOpen()) {
+                        console.log('shuju --change2')
                         var address = this.getDevAddress(track);
                         var content = utils.getWindowContent(track, address);
                         $("#windowInfo").html(content);
-                    };
+                    } else {
+                        // if (marker.deviceid == deviceid) {
+                        //     if (this.mapInfoWindow) {
+                        //         console.log("this.mapInfoWindow.isOpen()2:", this.mapInfoWindow.isOpen());
+                        //     } else {
+                        //         console.log("this.mapInfoWindow:2", this.mapInfoWindow);
+                        //     }
+                        //     console.log("marker.deviceid == deviceid:2", deviceid);
+                        // }
+                    }
                 };
 
             } else {
