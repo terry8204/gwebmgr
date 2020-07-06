@@ -254,6 +254,7 @@ var appHeader = {
             })
         },
         changePassword: function() {
+            this.modal = false;
             this.modalPass = true;
             this.oldPass = '';
             this.newPass = '';

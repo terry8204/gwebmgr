@@ -69,10 +69,6 @@
                     </li>
                     <li style="padding:0">|</li>
                     <li>
-                        <span @click="changePassword"><Icon type="md-create" style="margin-right:3px"></Icon>{{$t("header.changePwd")}}</span>
-                    </li>
-                    <li style="padding:0">|</li>
-                    <li>
                         <span @click="showSetup"><Icon type="ios-hammer-outline" style="margin-right:3px"></Icon>{{$t("header.setting")}}</span>
                     </li>
                     <li style="padding:0">|</li>
@@ -92,6 +88,12 @@
                         <i-col span="8" style="height: 100%;text-align:right;line-height:32px;">{{$t("header.setIntaival")}} : &nbsp;</i-col>
                         <i-col span="16" style="height: 100%;line-height:32px;">
                             <input-number :max="1800" :min="5" v-model="intervalTime"></input-number>
+                        </i-col>
+                    </Row>
+                    <Row style="margin: 10px 0">
+                        <i-col span="8" style="height: 100%;text-align:right;line-height:32px;">修改密码 : &nbsp;</i-col>
+                        <i-col span="16" style="height: 100%;line-height:32px;">
+                            <i-button type="primary" style="width:80px;" @click="changePassword">修改密码</i-button>
                         </i-col>
                     </Row>
                 </div>
