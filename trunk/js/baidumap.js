@@ -263,15 +263,14 @@ BMapClass.pt.updateLastTracks = function(deviceid) {
                 } else {
                     if (this.mapInfoWindow && marker.deviceid == deviceid && this.mapInfoWindow.isOpen()) {
                         console.log('shuju --change2')
-                        var address = this.getDevAddress(track);
-                        var content = utils.getWindowContent(track, address);
                         var windowInfo = document.getElementById('windowInfo');
-                        if (windowInfo == null) {
-                            this.openInfoWindow(marker, deviceid);
+                        if (windowInfo != null) {
+                            var address = this.getDevAddress(track);
+                            var content = utils.getWindowContent(track, address);
+                            windowInfo.innerHTML = content;
                         } else {
-                            windowInfo.html(content);
+                            this.openInfoWindow(marker, deviceid);
                         }
-
                     } else {
                         if (marker.deviceid == deviceid) {
                             if (this.mapInfoWindow) {
