@@ -293,11 +293,12 @@ var monitor = {
         handleWebSocket: function(data) {
             var me = this;
             var deviceid = data.deviceid;
-            // console.log("handleWebSocket deviceid=", deviceid);
+            console.log("handleWebSocket deviceid=", deviceid, DateFormat.longToDateTimeStr(data.updatetime, timeDifference));
             data.devicename = this.deviceInfos[deviceid] ? this.deviceInfos[deviceid].devicename : "";
+            me.updateDevLastPosition(data);
             isNeedRefreshMapUI = true;
             // me.updateTreeOnlineState();
-            me.updateDevLastPosition(data);
+
             // // console.log('轨迹push', deviceid, DateFormat.longToDateTimeStr(data.updatetime, 0));
             // if (me.currentDeviceId == deviceid) {
             //     me.map && me.map.updateSingleMarkerState(deviceid);
