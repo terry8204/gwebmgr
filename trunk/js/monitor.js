@@ -293,7 +293,7 @@ var monitor = {
         handleWebSocket: function(data) {
             var me = this;
             var deviceid = data.deviceid;
-            console.log("handleWebSocket deviceid=", deviceid, DateFormat.longToDateTimeStr(data.updatetime, timeDifference));
+            // console.log("handleWebSocket deviceid=", deviceid, DateFormat.longToDateTimeStr(data.updatetime, timeDifference));
             data.devicename = this.deviceInfos[deviceid] ? this.deviceInfos[deviceid].devicename : "";
             me.updateDevLastPosition(data);
             isNeedRefreshMapUI = true;

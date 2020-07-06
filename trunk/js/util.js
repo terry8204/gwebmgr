@@ -533,7 +533,7 @@ var utils = {
             extendsStr = '',
             videoState = isZh ? track.strvideoalarm : track.strvideoalarmen;
         this.videoState = videoState;
-        console.log('Update time : ', DateFormat.longToDateTimeStr(track.updatetime, timeDifference));
+        // console.log('Update time : ', DateFormat.longToDateTimeStr(track.updatetime, timeDifference));
         var content =
             '<p> ' + (isZh ? '设备名称' : 'Device Name') + ': ' + track.devicename + '</p>' +
             '<p> ' + (isZh ? '设备序号' : 'Device Number') + ': ' + track.deviceid + '<i onclick="copyToClipboard()" class="ivu-icon ivu-icon-ios-copy-outline" style="font-size: 24px;cursor: pointer;"></i></p>' +

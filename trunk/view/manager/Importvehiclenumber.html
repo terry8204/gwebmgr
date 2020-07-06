@@ -1,0 +1,208 @@
+<meta charset="UTF-8">
+<div id="importinsure2">
+    <input type="file" id="file" style="display: none;" />
+    <div class="full" style="padding: 10px;">
+        <h3 class="h3-title">导入保单信息</h3>
+        <div style="padding: 10px 0;">
+            <i-table border ref="table" :columns="columns" :data="tableData" :loading="loading" :height="taleHeight"></i-table>
+        </div>
+        <div style="padding: 5px; text-align: center;border: 1px solid #DCDEE2;">
+            <i-button @click="importTownerInfo">导入文件</i-button>
+            <i-button @click="handleSubmit" :loading="loading" style="margin: 0 10px;">提交</i-button>
+            <i-button @click="downloadTemplate">模版下载</i-button>
+        </div>
+    </div>
+    <script>
+        vueInstanse = new Vue({
+            el: "#importinsure2",
+            i18n: utils.getI18n(),
+            data: {
+                loading: false,
+                taleHeight: 300,
+                columns: [{
+                    type: 'index',
+                    width: 60
+                }, {
+                    title: '车架号',
+                    key: "vinno",
+                }, {
+                    title: '厂商',
+                    key: "factory"
+                }, {
+                    'title': "添加状态",
+                    width: 300,
+                    render: function(h, params) {
+                        var status = params.row.status;
+                        var statusStr = '';
+                        var color = '';
+                        switch (status) {
+                            case -1:
+                                statusStr = '未提交';
+                                color = '#000';
+                                break;
+                            case 0:
+                                statusStr = params.row.cause;
+                                color = '#e4393c';
+                                break;
+                            case 1:
+                                statusStr = '提交成功';
+                                color = '#007ACC';
+                                break;
+                        }
+                        return h('span', {
+                            style: {
+                                color: color
+                            }
+                        }, statusStr)
+                    },
+                }, {
+                    'title': "操作",
+                    width: 85,
+                    render: function(h, params) {
+                        return h('Button', {
+                                props: {
+                                    type: 'error',
+                                    size: 'small'
+                                },
+                                style: {
+                                    marginRight: '5px'
+                                },
+                                on: {
+                                    click: function() {
+                                        vueInstanse.tableData.splice(params.index, 1);
+                                    }
+                                }
+                            },
+                            '移除')
+                    }
+                }],
+
+                tableData: [],
+
+                excelX: ['A', 'B', 'C']
+            },
+            methods: {
+                calcTableHeight: function() {
+                    var wHeight = window.innerHeight;
+                    this.taleHeight = wHeight - 170;
+                },
+                downloadTemplate: function() {
+                    var a = document.createElement('a');
+                    a.href = myUrls.apihost + 'vinnotemplate.xlsx';
+                    a.download = 'vinnotemplate';
+                    a.click();
+                },
+                handleSubmit: function() {
+                    if (this.tableData.length == 0) {
+                        this.$Message.error("请导入保单信息");
+                        return;
+                    }
+                    this.loading = true;
+                    var tableData = deepClone(this.tableData),
+                        me = this;
+                    var url = myUrls.importVinnos();
+                    var data = {
+                        vinnos: tableData,
+                    }
+                    utils.sendAjax(url, data, function(respData) {
+                        me.loading = false;
+                        if (respData.status == 0) {
+                            if (respData.total === respData.success) {
+                                me.$Message.success("导入成功");
+                                me.tableData.forEach(function(item) {
+                                    item.status = 1;
+                                });
+                            } else {
+                                me.$Message.error("总共:" + respData.total + ",失败:" + respData.fail);
+                                var errorrecords = respData.errorrecords;
+                                var tableData = deepClone(me.tableData);
+                                errorrecords.forEach(function(failItem) {
+                                    tableData.forEach(function(item) {
+                                        if (failItem.vinno == item.vinno) {
+                                            item.cause = failItem.cause;
+                                            item.status = 0;
+                                        }
+                                    });
+                                });
+                                tableData.forEach(function(item) {
+                                    if (item.status == -1) {
+                                        item.status = 1;
+                                    }
+                                });
+                                me.tableData = tableData;
+                            }
+                        } else {
+                            me.$Message.success("导入失败");
+                        }
+                    }, function() {
+                        me.loading = false;
+                        me.$Message.error("导入超时");
+                    });
+                },
+                importTownerInfo: function() {
+                    this.fileEl.files.length = 0;
+                    this.fileEl.value = "";
+                    this.fileEl.click();
+                },
+                readWorkbookFromLocalFile: function(file, callback) {
+                    var reader = new FileReader();
+                    reader.onload = function(e) {
+                        var data = e.target.result;
+                        var workbook = XLSX.read(data, {
+                            type: 'binary'
+                        });
+                        if (callback) callback(workbook);
+                    };
+                    reader.readAsBinaryString(file);
+                },
+                parserExcelData: function(excelData) {
+                    console.log(excelData);
+                    try {
+                        var indexY = 2;
+                        var tableData = [];
+                        while (true) {
+                            var vinnoKey = this.excelX[1] + indexY; //设备ID
+                            var policynoKey = this.excelX[2] + indexY; //防盗号
+
+                            if (excelData[vinnoKey] == undefined) {
+                                break;
+                            }
+
+                            tableData.push({
+                                vinno: excelData[vinnoKey] ? excelData[vinnoKey].v : '',
+                                factory: excelData[policynoKey] ? excelData[policynoKey].v : '',
+                                status: -1
+                            })
+
+                            indexY++;
+                        }
+                        this.tableData = tableData;
+                    } catch (error) {
+                        this.$Message.error('请使用我们提供的模版填写');
+                    }
+                }
+            },
+            mounted: function() {
+                var me = this;
+                this.fileEl = document.getElementById('file');
+                this.fileEl.onchange = function(e) {
+                    var idx = e.srcElement.value.lastIndexOf('.');
+                    var houzhui = e.srcElement.value.slice(idx);
+                    if (houzhui.indexOf('xls') == -1) {
+                        me.$Message.error("请选择我们提供的模版提交");
+                        return;
+                    }
+                    var file = e.target.files[0]
+                    me.readWorkbookFromLocalFile(file, function(workbook) {
+                        me.parserExcelData(workbook.Sheets['车架号'])
+                    });
+                };
+                this.calcTableHeight();
+                window.onresize = function() {
+                    me.calcTableHeight();
+                }
+
+            },
+        })
+    </script>
+</div>

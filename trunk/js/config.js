@@ -565,6 +565,9 @@ var myUrls = {
     importOwnerInfo: function() {
         return this.apihosts + 'webapi?action=importownerinfo&token=' + token;
     },
+    importVinnos: function() {
+        return this.apihosts + 'webapi?action=importvinnos&token=' + token;
+    },
     // 查询车主信息
     queryDeviceex: function() {
         return this.apihosts + 'webapi?action=querydeviceex&token=' + token;
