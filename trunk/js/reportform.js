@@ -3978,6 +3978,7 @@ function timeOilConsumption(groupslist) {
                                 oil2 = [];
                             resp.records.forEach(function(item, index) {
                                 records = item.records;
+                                var independent = item.independent === 0;
                                 records.forEach(function(record) {
                                     var callon = record.callon.toFixed(5);
                                     var callat = record.callat.toFixed(5);
@@ -3997,7 +3998,11 @@ function timeOilConsumption(groupslist) {
                                     };
                                     record.ad0 = ad0 / 100;
                                     record.ad1 = ad1 / 100;
-                                    record.oil = record.ad0 + record.ad1;
+                                    if (independent) {
+                                        record.oil = record.ad0 + record.ad1;
+                                    } else {
+                                        record.oil = record.ad0;
+                                    }
                                     record.updatetimeStr = DateFormat.longToDateTimeStr(record.updatetime, timeDifference);
                                     record.devicename = vstore.state.deviceInfos[self.queryDeviceId].devicename;
                                     oil.push(record.oil);
