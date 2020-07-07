@@ -549,7 +549,8 @@ var trackDebug = {
         requestTracks: function(callback) {
             if (!this.deviceId) { return; };
             this.loading = true;
-            var url = myUrls.queryTracks();
+            // var url = myUrls.queryTracks();
+            var url = myUrls.queryTracksDetail();
             var data = {
                 deviceid: this.deviceId,
                 lbs: 1,

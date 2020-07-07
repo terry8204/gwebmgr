@@ -178,6 +178,9 @@ var myUrls = {
     queryTracks: function() {
         return this.apihost + 'webapi?action=querytracks&token=' + token
     },
+    queryTracksDetail: function() {
+        return this.apihost + 'webapi?action=querytracksdetail&token=' + token
+    },
     // 查询报警信息
     queryAlarm: function() {
         return this.apihost + 'webapi?action=queryalarm&token=' + token
