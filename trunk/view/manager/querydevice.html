@@ -308,6 +308,14 @@
                                 L
                             </i-col>
                         </Row>
+                        <Row style="margin: 10px 0;">
+                            <i-col span="4" style="line-height: 32px;text-align: center;">
+                                油箱合并统计:
+                            </i-col>
+                            <i-col span="5" style="line-height: 32px;">
+                                <Checkbox v-model="isIndependent"></Checkbox>
+                            </i-col>
+                        </Row>
                     </tab-pane>
                     <tab-pane label="油量1" style="min-height: 210px;" name="oil1">
                         <Row style="margin: 10px 0;">
@@ -640,6 +648,7 @@
             el: "#querydev",
             i18n: utils.getI18n(),
             data: {
+                isIndependent: false,
                 queryType: 'all', // all 7ot 60ot ot
 
                 templatename: '',
@@ -1142,7 +1151,8 @@
                             templatename: this.templatename,
                             threshold: me.threshold,
                             deviceid: editObject.deviceid,
-                            oildetectors: oildetectors
+                            oildetectors: oildetectors,
+                            independent: me.isIndependent ? 0 : 1,
                         };
                         me.brand ? data.brand = me.brand : null;
                         me.model ? data.model = me.model : null;
@@ -1399,6 +1409,7 @@
                         deviceid: deviceid
                     }, function(resp) {
                         me.threshold = resp.threshold ? resp.threshold : 5;
+                        me.isIndependent = resp.independent == 0 ? true : false;
                         if (resp.oildetectors != null) {
                             me.$Message.success('查询油量标注成功');
                             console.log(resp.oildetectors);
@@ -1460,7 +1471,8 @@
                     var data = {
                         threshold: me.threshold,
                         deviceid: editObject.deviceid,
-                        oildetectors: oildetectors
+                        oildetectors: oildetectors,
+                        independent: me.isIndependent ? 0 : 1,
                     };
                     utils.sendAjax(url, data, function(resp) {
                         if (resp.status == 0) {
