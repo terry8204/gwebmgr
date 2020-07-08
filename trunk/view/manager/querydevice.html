@@ -1,5 +1,7 @@
 <meta charset="UTF-8">
 <div id="querydev">
+    <input type="file" id="file1" style="display: none;" />
+    <input type="file" id="file2" style="display: none;" />
     <div class="full">
         <h3 class="h3-title">{{$t("bgMgr.queryDev")}}</h3>
         <ul>
@@ -355,7 +357,7 @@
                                 最大模拟量:
                             </i-col>
                             <i-col span="5">
-                                <input-number :max="10000" :min="1" v-model.trim.number="maxAdValue1" style="width:100%"></input-number>
+                                <input-number :max="100000" :min="1" v-model.trim.number="maxAdValue1" style="width:100%"></input-number>
                             </i-col>
                         </Row>
                         <div v-if="tankShape1 == 1">
@@ -456,7 +458,11 @@
                                     <i-button type="primary" @click="addTaggingRowData1">添加</i-button>
                                 </i-col>
                             </Row>
-                            <i-table border :columns="taggingColumns1" :data="taggingData1" height="200"></i-table>
+                            <i-table border :columns="taggingColumns1" ref="taggingTab1" :data="taggingData1" height="200"></i-table>
+                            <div style="margin: 10px 0 0 0;text-align: right;">
+                                <i-button type="primary" style="width:80px;" @click="importTownerInfo1">导入</i-button>
+                                <i-button type="info" style="width:80px;" @click="exportDevice1">导出</i-button>
+                            </div>
                         </div>
                     </tab-pane>
                     <tab-pane label="油量2" style="min-height: 210px;" name="oil2">
@@ -497,7 +503,7 @@
                                 最大模拟量:
                             </i-col>
                             <i-col span="5">
-                                <input-number :max="10000" :min="1" v-model.trim.number="maxAdValue2" style="width:100%"></input-number>
+                                <input-number :max="100000" :min="1" v-model.trim.number="maxAdValue2" style="width:100%"></input-number>
                             </i-col>
                         </Row>
                         <div v-if="tankShape2 == 1">
@@ -598,7 +604,11 @@
                                     <i-button type="primary" @click="addTaggingRowData2">添加</i-button>
                                 </i-col>
                             </Row>
-                            <i-table border :columns="taggingColumns2" :data="taggingData2" height="200"></i-table>
+                            <i-table border :columns="taggingColumns2" ref="taggingTab2" :data="taggingData2" height="200"></i-table>
+                            <div style="margin: 10px 0 0 0;text-align: right;">
+                                <i-button type="primary" style="width:80px;" @click="importTownerInfo2">导入</i-button>
+                                <i-button type="info" style="width:80px;" @click="exportDevice2">导出</i-button>
+                            </div>
                         </div>
                     </tab-pane>
                     <tab-pane label="添加模版信息" style="min-height: 210px;" name="templateInfo">
@@ -639,6 +649,7 @@
                 <i-button v-show="tabsActive !== 'template'" style="width: 100px" type="primary" @click="saveOilDetectors">{{$t("bgMgr.submit")}}</i-button>
                 <i-button v-show="tabsActive !== 'template'" style="width: 100px" type="primary" @click="saveTemplateInfo">添加模版</i-button>
                 <Checkbox v-show="tabsActive == 'template'" v-model="allTemp">全部模版</Checkbox>
+                <i-input v-show="tabsActive == 'template'" v-model.trim="matchingTemp" style="width:100px" placeholder="过滤模版"></i-input>
                 <i-button v-show="tabsActive == 'template'" style="width: 100px" type="primary" @click="queryTemplateInfo">查询模版</i-button>
             </div>
         </Modal>
@@ -650,7 +661,7 @@
             data: {
                 isIndependent: false,
                 queryType: 'all', // all 7ot 60ot ot
-
+                matchingTemp: '',
                 templatename: '',
                 brand: '',
                 model: "",
@@ -1084,14 +1095,31 @@
                         if (resp.status === 0) {
                             me.$Message.success('查询成功');
                             var records = resp.records;
-                            records.forEach(function(item) {
-                                var oildetectors = item.oildetectors;
-                                var oil1 = oildetectors[0];
-                                var oil2 = oildetectors[1];
-                                item.oil1 = me.getTankShape(oil1.appearance) + '/' + oil1.capacity + '/' + oil1.detectorLength;
-                                item.oil2 = me.getTankShape(oil2.appearance) + '/' + oil2.capacity + '/' + oil2.detectorLength;
-                            });
-                            me.templateData = records;
+                            if (me.matchingTemp === '') {
+                                records.forEach(function(item) {
+                                    var oildetectors = item.oildetectors;
+                                    var oil1 = oildetectors[0];
+                                    var oil2 = oildetectors[1];
+                                    item.oil1 = me.getTankShape(oil1.appearance) + '/' + oil1.capacity + '/' + oil1.detectorLength;
+                                    item.oil2 = me.getTankShape(oil2.appearance) + '/' + oil2.capacity + '/' + oil2.detectorLength;
+                                });
+                                me.templateData = records;
+                            } else {
+                                var filters = [];
+                                records.forEach(function(item) {
+                                    var oildetectors = item.oildetectors;
+                                    var oil1 = oildetectors[0];
+                                    var oil2 = oildetectors[1];
+                                    item.oil1 = me.getTankShape(oil1.appearance) + '/' + oil1.capacity + '/' + oil1.detectorLength;
+                                    item.oil2 = me.getTankShape(oil2.appearance) + '/' + oil2.capacity + '/' + oil2.detectorLength;
+                                    if (item.templatename.indexOf(me.matchingTemp) != -1 || item.brand.indexOf(me.matchingTemp) != -1 || item.model.indexOf(me.matchingTemp) != -1) {
+                                        filters.push(item);
+                                    }
+                                });
+                                me.templateData = filters;
+                            }
+                        } else {
+                            me.$Message.error('查询失败');
                         }
                     })
                 },
@@ -1728,7 +1756,110 @@
                         }
                         callback();
                     })
-                }
+                },
+                readWorkbookFromLocalFile1: function(file, callback) {
+                    var reader = new FileReader();
+                    reader.onload = function(e) {
+                        var data = e.target.result;
+                        var workbook = XLSX.read(data, {
+                            type: 'binary'
+                        });
+                        if (callback) callback(workbook);
+                    };
+                    reader.readAsBinaryString(file);
+                },
+                parserExcelData1: function(excelData) {
+
+                    try {
+                        var indexY = 2;
+                        var tableData = [];
+                        while (true) {
+                            var vinnoKey = this.excelX[0] + indexY; //设备ID
+                            var policynoKey = this.excelX[1] + indexY; //防盗号
+
+                            if (excelData[vinnoKey] == undefined) {
+                                break;
+                            }
+                            tableData.push({
+                                height: excelData[vinnoKey] ? excelData[vinnoKey].v : '',
+                                volume: excelData[policynoKey] ? excelData[policynoKey].v : '',
+                            })
+
+                            indexY++;
+                        }
+                        this.taggingData1 = tableData;
+                    } catch (error) {
+                        this.$Message.error('请使用我们提供的模版填写');
+                    }
+                },
+                readWorkbookFromLocalFile2: function(file, callback) {
+                    var reader = new FileReader();
+                    reader.onload = function(e) {
+                        var data = e.target.result;
+                        var workbook = XLSX.read(data, {
+                            type: 'binary'
+                        });
+                        if (callback) callback(workbook);
+                    };
+                    reader.readAsBinaryString(file);
+                },
+                parserExcelData2: function(excelData) {
+
+                    try {
+                        var indexY = 2;
+                        var tableData = [];
+                        while (true) {
+                            var vinnoKey = this.excelX[0] + indexY; //设备ID
+                            var policynoKey = this.excelX[1] + indexY; //防盗号
+
+                            if (excelData[vinnoKey] == undefined) {
+                                break;
+                            }
+
+                            tableData.push({
+                                height: excelData[vinnoKey] ? excelData[vinnoKey].v : '',
+                                volume: excelData[policynoKey] ? excelData[policynoKey].v : '',
+                            })
+
+                            indexY++;
+                        }
+                        this.taggingData2 = tableData;
+                    } catch (error) {
+                        this.$Message.error('请使用我们提供的模版填写');
+                    }
+                },
+                importTownerInfo1: function() {
+                    this.fileEl1.files.length = 0;
+                    this.fileEl1.value = "";
+                    this.fileEl1.click();
+                },
+                importTownerInfo2: function() {
+                    this.fileEl2.files.length = 0;
+                    this.fileEl2.value = "";
+                    this.fileEl2.click();
+                },
+                exportDevice1: function() {
+                    var taggingColumns1 = deepClone(this.taggingColumns1);
+                    taggingColumns1.pop();
+                    taggingColumns1.shift();
+                    this.$refs.taggingTab1.exportCsv({
+                        filename: '测量标定',
+                        columns: taggingColumns1,
+                        data: this.taggingData1,
+                        quoted: true,
+                    });
+                },
+                exportDevice2: function() {
+                    var taggingColumns2 = deepClone(this.taggingColumns2);
+                    taggingColumns2.pop();
+                    taggingColumns2.shift();
+                    this.$refs.taggingTab2.exportCsv({
+                        filename: '测量标定',
+                        columns: taggingColumns2,
+                        data: this.taggingData2,
+                        quoted: true,
+                    });
+                },
             },
             watch: {
                 isShowMatchDev: function() {
@@ -1769,6 +1900,33 @@
                 });
                 this.getDeviceType();
                 this.calcTableHeight();
+                this.fileEl1 = document.getElementById('file1');
+                this.fileEl1.onchange = function(e) {
+                    var idx = e.srcElement.value.lastIndexOf('.');
+                    var houzhui = e.srcElement.value.slice(idx);
+                    // if (houzhui.indexOf('xls') == -1) {
+                    //     me.$Message.error("请选择我们提供的模版提交");
+                    //     return;
+                    // }
+                    var file = e.target.files[0]
+                    me.readWorkbookFromLocalFile1(file, function(workbook) {
+                        me.parserExcelData1(workbook.Sheets['测量标定']);
+                    });
+                };
+                this.excelX = ['A', 'B', 'C'];
+                this.fileEl2 = document.getElementById('file2');
+                this.fileEl2.onchange = function(e) {
+                    var idx = e.srcElement.value.lastIndexOf('.');
+                    var houzhui = e.srcElement.value.slice(idx);
+                    // if (houzhui.indexOf('xls') == -1) {
+                    //     me.$Message.error("请选择我们提供的模版提交");
+                    //     return;
+                    // }
+                    var file = e.target.files[0]
+                    me.readWorkbookFromLocalFile2(file, function(workbook) {
+                        me.parserExcelData2(workbook.Sheets['测量标定']);
+                    });
+                };
                 window.onresize = function() {
                     me.calcTableHeight();
                 }
