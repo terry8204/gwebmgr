@@ -168,8 +168,8 @@
                                 break;
                             }
                             tableData.push({
-                                deviceid: excelData[deviceidKey].v,
-                                name: excelData[devicenameKey].v,
+                                deviceid: excelData[deviceidKey].v.trim(),
+                                name: excelData[devicenameKey].v.trim(),
                                 status: -1
                             })
 

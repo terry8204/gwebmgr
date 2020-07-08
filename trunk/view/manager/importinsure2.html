@@ -119,12 +119,13 @@
                                 var tableData = deepClone(me.tableData);
                                 errorrecords.forEach(function(failItem) {
                                     tableData.forEach(function(item) {
-                                        if (failItem.vinno == item.vinno) {
+                                        if (failItem.vinno.trim() == item.vinno.trim()) {
                                             item.cause = failItem.cause;
                                             item.status = 0;
                                         }
                                     });
                                 });
+                                console.log('tableData', tableData);
                                 tableData.forEach(function(item) {
                                     if (item.status == -1) {
                                         item.status = 1;
@@ -169,8 +170,8 @@
                             }
 
                             tableData.push({
-                                vinno: excelData[vinnoKey] ? excelData[vinnoKey].v : '',
-                                policyno: excelData[policynoKey] ? excelData[policynoKey].v : '',
+                                vinno: excelData[vinnoKey] ? excelData[vinnoKey].v.trim() : '',
+                                policyno: excelData[policynoKey] ? excelData[policynoKey].v.trim() : '',
                                 status: -1
                             })
 

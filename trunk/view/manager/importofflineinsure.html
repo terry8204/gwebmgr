@@ -196,7 +196,7 @@
                                 var tableData = deepClone(me.tableData);
                                 errorrecords.forEach(function(failItem) {
                                     tableData.forEach(function(item) {
-                                        if (failItem.vinno == item.vinno) {
+                                        if (failItem.vinno.trim() == item.vinno.trim()) {
                                             item.cause = failItem.cause;
                                             item.status = 0;
                                         }

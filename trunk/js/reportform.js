@@ -287,6 +287,7 @@ var reportMixin = {
         },
         cleanSelectedDev: function() {
             this.sosoValue = '';
+            this.queryDeviceId = '';
         }
     },
     mounted: function() {
@@ -3966,7 +3967,6 @@ function timeOilConsumption(groupslist) {
                 this.loading = true;
                 utils.sendAjax(myUrls.reportOilTime(), data, function(resp) {
                     self.loading = false;
-                    console.log(resp);
                     if (resp.status == 0) {
                         if (resp.records) {
                             var records = [],

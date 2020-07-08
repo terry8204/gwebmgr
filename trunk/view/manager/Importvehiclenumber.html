@@ -169,8 +169,8 @@
                             }
 
                             tableData.push({
-                                vinno: excelData[vinnoKey] ? excelData[vinnoKey].v : '',
-                                factory: excelData[policynoKey] ? excelData[policynoKey].v : '',
+                                vinno: excelData[vinnoKey] ? excelData[vinnoKey].v.trim() : '',
+                                factory: excelData[policynoKey] ? excelData[policynoKey].v.trim() : '',
                                 status: -1
                             })
 

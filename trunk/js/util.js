@@ -533,6 +533,9 @@ var utils = {
             extendsStr = '',
             videoState = isZh ? track.strvideoalarm : track.strvideoalarmen;
         this.videoState = videoState;
+        var oil = '';
+
+
         // console.log('Update time : ', DateFormat.longToDateTimeStr(track.updatetime, timeDifference));
         var content =
             '<p> ' + (isZh ? '设备名称' : 'Device Name') + ': ' + track.devicename + '</p>' +
@@ -542,7 +545,7 @@ var utils = {
             '<p> ' + (isZh ? '更新时间' : 'Update time') + ': ' + DateFormat.longToDateTimeStr(track.updatetime, timeDifference) + '(' + isOnineStr + ')</p>' +
             '<p> ' + (isZh ? '定位时间' : 'Posi time') + ': ' + DateFormat.longToDateTimeStr(track.validpoistiontime, timeDifference) + '</p>' +
             '<p> ' + (isZh ? '速度' : 'Speed') + ': ' + speed + rxlevel + '</p>' +
-            '<p> ' + (isZh ? '总里程' : 'Park Duration') + ': ' + this.getMileage(track.totaldistance) + (track.totaloil > 0 ? (isZh ? '(油量:' + track.totaloil / 100 + 'L)' : '(oil:' + track.totaloil / 100 + 'L)') : '') + '</p>' +
+            '<p> ' + (isZh ? '总里程' : 'Park Duration') + ': ' + this.getMileage(track.totaldistance) + oil + '</p>' +
             '<p> ' + (isZh ? '停留时长' : 'Mileage') + ': ' + this.timeStamp(track.parkduration, isZh) + '</p>' +
             '<p class="last-strstatus"> ' + (isZh ? '状态' : 'Status') + ': ' + strstatus + '</p>' +
             (extendsBtns.video ? ('<p> ' + (isZh ? '视频' : 'video') + ': ' + videoState + '</p>') : ("")) +

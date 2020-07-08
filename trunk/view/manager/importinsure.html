@@ -142,7 +142,7 @@
                                 var tableData = deepClone(me.tableData);
                                 errorrecords.forEach(function(failItem) {
                                     tableData.forEach(function(item) {
-                                        if (failItem.deviceid == item.deviceid) {
+                                        if (failItem.deviceid.trim() == item.deviceid.trim()) {
                                             item.status = 0;
                                             item.cause = failItem.cause;
                                         }
@@ -198,9 +198,9 @@
                             }
 
                             tableData.push({
-                                deviceid: excelData[deviceIdKey].v,
-                                securitynum: excelData[securitynumKey] ? excelData[securitynumKey].v : '',
-                                vin: excelData[vinKey] ? excelData[vinKey].v : '',
+                                deviceid: excelData[deviceIdKey].v.trim(),
+                                securitynum: excelData[securitynumKey] ? excelData[securitynumKey].v.trim() : '',
+                                vin: excelData[vinKey] ? excelData[vinKey].v.trim() : '',
                                 insurecompany: excelData[insurecompanyKey] ? excelData[insurecompanyKey].v : '',
                                 insurenum: excelData[insurenumKey] ? excelData[insurenumKey].v : '',
                                 subinsuretime: excelData[subinsuretimeKey] ? excelData[subinsuretimeKey].v : '',

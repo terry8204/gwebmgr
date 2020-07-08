@@ -152,7 +152,7 @@
                                 var tableData = deepClone(me.tableData);
                                 errorrecords.forEach(function(failItem) {
                                     tableData.forEach(function(item) {
-                                        if (failItem.deviceid == item.deviceid) {
+                                        if (failItem.deviceid.trim() == item.deviceid.trim()) {
                                             item.status = 0;
                                             item.cause = failItem.cause;
                                         }
