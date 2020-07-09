@@ -293,12 +293,12 @@
         <Modal v-model="oilModal" width="650">
             <p slot="header" style="color:#f60;text-align:center">
                 <Icon type="ios-create-outline"></Icon>
-                <span>油量标注</span>
+                <span>油液标注</span>
             </p>
             <div>
                 <Tabs type="card" v-model="tabsActive">
                     <tab-pane label="阀值" style="min-height: 210px;" name="threshold">
-                        <div style="padding: 10px 0;line-height: 16px;">油量变化阀值：通过阀值来判定车辆加油/漏油状态，可以根据车辆的油箱大小设置合适的阀值</div>
+                        <div style="padding: 10px 0;line-height: 16px;">油液变化阀值：通过阀值来判定车辆加油/漏油状态，可以根据车辆的油箱大小设置合适的阀值</div>
                         <Row style="margin: 10px 0;">
                             <i-col span="4" style="line-height: 32px;text-align: center;">
                                 阀值:
@@ -446,7 +446,7 @@
                                     <input-number :max="1500" :min="0" v-model.trim.number="tagging1" style="width:100%"></input-number>
                                 </i-col>
                                 <i-col span="4" offset="1" style="line-height: 32px;text-align: center;">
-                                    标定的油量:
+                                    标定的油液:
                                 </i-col>
                                 <i-col span="5">
                                     <input-number :max="1500" :min="0" v-model.trim.number="taggingOil1" style="width:100%"></input-number>
@@ -592,7 +592,7 @@
                                     <input-number :max="1500" :min="0" v-model.trim.number="tagging2" style="width:100%"></input-number>
                                 </i-col>
                                 <i-col offset="1" span="4" style="line-height: 32px;text-align: center;">
-                                    标定的油量:
+                                    标定的油液:
                                 </i-col>
                                 <i-col span="5">
                                     <input-number :max="1500" :min="0" v-model.trim.number="taggingOil2" style="width:100%"></input-number>
@@ -710,7 +710,7 @@
                     title: "刻度",
                 }, {
                     key: 'volume',
-                    title: "油量",
+                    title: "油液",
                 }, {
                     title: "操作",
                     width: 80,
@@ -737,7 +737,7 @@
                     title: "刻度",
                 }, {
                     key: 'volume',
-                    title: "油量",
+                    title: "油液",
                 }, {
                     title: "操作",
                     width: 80,
@@ -1439,7 +1439,7 @@
                         me.threshold = resp.threshold ? resp.threshold : 5;
                         me.isIndependent = resp.independent == 0 ? true : false;
                         if (resp.oildetectors != null) {
-                            me.$Message.success('查询油量标注成功');
+                            me.$Message.success('查询油液标注成功');
                             console.log(resp.oildetectors);
                             var oildetectors = resp.oildetectors;
                             oildetectors.forEach(function(item, index) {
@@ -1466,7 +1466,7 @@
                                 }
                             })
                         } else {
-                            me.$Message.success('没有查询到油量标注信息');
+                            me.$Message.success('没有查询到油液标注信息');
                         }
                     });
                 },

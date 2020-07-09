@@ -3743,9 +3743,9 @@ function timeOilConsumption(groupslist) {
                 { title: '设备名称', key: 'devicename' },
                 { title: '时间', key: 'updatetimeStr', sortable: true },
                 { title: '总里程(公里)', key: 'totaldistance' },
-                { title: '总油量(升)', key: 'oil' },
-                { title: '油量1(升)', key: 'ad0' },
-                { title: '油量2(升)', key: 'ad1' },
+                { title: '总油液(升)', key: 'oil' },
+                { title: '油液1(升)', key: 'ad0' },
+                { title: '油液2(升)', key: 'ad1' },
                 { title: '速度', key: 'speed' },
                 { title: '状态', key: 'strstatus' },
                 {
@@ -3796,13 +3796,13 @@ function timeOilConsumption(groupslist) {
             charts: function() {
                 var canvasEl = document.getElementById('charts');
                 var charts = echarts.init(canvasEl);
-                var totoil = "总油量";
+                var totoil = "总油液";
                 var speed = "速度";
                 var dis = "里程";
                 var time = "时间";
-                var usoil1 = "油量1";
-                var usoil2 = "油量2";
-                var cotgasus = "油量";
+                var usoil1 = "油液1";
+                var usoil2 = "油液2";
+                var cotgasus = "油液";
                 var option = {
                     title: {
                         text: time + '/' + cotgasus,
@@ -4067,8 +4067,8 @@ function dayOil(groupslist) {
                 { title: '日期', key: 'statisticsday', sortable: true },
                 { title: '行驶里程(公里)', key: 'distance' },
                 { title: '油耗', key: 'oil' },
-                { title: '加油量', key: 'addoil' },
-                { title: '漏油量', key: 'leakoil' },
+                { title: '加油液量', key: 'addoil' },
+                { title: '漏油液量', key: 'leakoil' },
                 { title: '百公里油耗', key: 'oilPercent' },
             ],
             tableData: [],
@@ -4264,10 +4264,10 @@ function refuelingReport(groupslist) {
             columns: [
                 { title: '编号', type: 'index', width: 60 },
                 { title: '设备名称', key: 'devicename' },
-                { title: '加油前油量(L)', key: 'soil' },
-                { title: '加油后油量(L)', key: 'eoil' },
+                { title: '加油液前油液量(L)', key: 'soil' },
+                { title: '加油液后油液量(L)', key: 'eoil' },
                 {
-                    title: '加油量(L)',
+                    title: '加油液量(L)',
                     key: 'addoil',
                 },
                 { title: '开始时间', key: 'begintimeStr' },
@@ -4518,11 +4518,11 @@ function oilLeakageReport(groupslist) {
                 { title: '编号', type: 'index', width: 60 },
                 { title: '设备名称', key: 'devicename' },
                 {
-                    title: '漏油量(L)',
+                    title: '漏油液量(L)',
                     key: 'addoil',
                 },
-                { title: '漏油前油量(L)', key: 'soil' },
-                { title: '漏油后油量(L)', key: 'eoil' },
+                { title: '漏油液前油液量(L)', key: 'soil' },
+                { title: '漏油液后油液量(L)', key: 'eoil' },
 
                 { title: '开始时间', key: 'begintimeStr' },
                 { title: '结束时间', key: 'endtimeStr' },
