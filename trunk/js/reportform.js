@@ -4821,14 +4821,14 @@ var reportForm = {
                     ]
                 },
                 {
-                    title: '油耗报表',
+                    title: '油液报表',
                     name: 'oilConsumption',
                     icon: 'ios-speedometer-outline',
                     children: [
-                        { title: "日行油耗报表", name: 'dayOil', icon: 'ios-stopwatch-outline' },
-                        { title: "时间油耗报表", name: 'timeOilConsumption', icon: 'ios-timer-outline' },
-                        { title: "加油报表", name: 'refuelingReport', icon: 'ios-trending-up' },
-                        { title: "漏油报表", name: 'oilLeakageReport', icon: 'ios-trending-down' },
+                        { title: "日行油液报表", name: 'dayOil', icon: 'ios-stopwatch-outline' },
+                        { title: "时间油液报表", name: 'timeOilConsumption', icon: 'ios-timer-outline' },
+                        { title: "加油液报表", name: 'refuelingReport', icon: 'ios-trending-up' },
+                        { title: "漏油液报表", name: 'oilLeakageReport', icon: 'ios-trending-down' },
                     ]
                 },
             ]
