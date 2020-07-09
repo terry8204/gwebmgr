@@ -21,7 +21,7 @@
         <div style="float: left;">
             <div style="height: 35px; line-height: 35px;">{{$t("reportForm.selectDev")}}:&nbsp;</div>
         </div>
-        <div style="float: left;position: relative;width: 300px;">
+        <div style="float: left;position: relative;width: 270px;">
             <div class="search-wrapper" v-click-outside.capture="onClickOutside">
                 <i-input v-model.trim="sosoValue" icon="ios-search-outline" @on-change="sosoValueChange" :readonly="readonly" @on-blur="blur" @on-focus="focus" :placeholder="placeholder" @on-click="focus"></i-input>
                 <transition name="fade">

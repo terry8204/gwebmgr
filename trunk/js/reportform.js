@@ -1524,7 +1524,7 @@ function messageRecords(groupslist) {
             requestTracks: function(callback) {
                 if (!this.queryDeviceId) return;
                 this.loading = true;
-                var url = myUrls.queryTracks(),
+                var url = myUrls.queryTracksDetail(),
                     me = this;
                 var startTimeStr = DateFormat.format(this.startDate, 'yyyy-MM-dd') + ' 00:00:00';
                 var endTimeStr = DateFormat.format(this.startDate, 'yyyy-MM-dd') + ' 23:59:00';

@@ -435,10 +435,12 @@ var monitor = {
                             }
                         }
                     }
+                    console.log('deviceSpliceList', deviceSpliceList);
                     for (var k = 0; k < me.groups.length; k++) {
                         var group = me.groups[k];
                         if (group.groupid == groupid) {
                             if (deviceSpliceList && deviceSpliceList.length) {
+                                console.log('找到组了');
                                 group.devices.push(deviceSpliceList[0]);
                                 me.transferAfterChangeGroupTitle(group);
                             }
@@ -452,12 +454,14 @@ var monitor = {
             });
         },
         transferAfterChangeGroupTitle: function(group) {
-            var devCount = group.devCount - 1;
+            var devCount = 0,
+                me = this;
             group.devCount = devCount;
             var onlineCount = 0;
             var offlineCount = 0;
             var storeCount = 0;
             group.devices.forEach(function(item) {
+                devCount++;
                 if (item.isOnline) {
                     onlineCount++;
                 } else {

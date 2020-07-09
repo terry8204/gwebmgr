@@ -534,7 +534,25 @@ var utils = {
             videoState = isZh ? track.strvideoalarm : track.strvideoalarmen;
         this.videoState = videoState;
         var oil = '';
-
+        if (track.totaloil > 0 && track.auxoil > 0) {
+            if (isZh) {
+                oil = '(油液:' + track.totaloil / 100 + 'L/' + track.auxoil / 100 + 'L)';
+            } else {
+                oil = '(oil:' + track.totaloil / 100 + 'L/' + track.auxoil / 100 + 'L)';
+            }
+        } else if (track.totaloil > 0) {
+            if (isZh) {
+                oil = '(油液:' + track.totaloil / 100 + 'L)';
+            } else {
+                oil = '(oil:' + track.totaloil / 100 + 'L)';
+            }
+        } else if (track.auxoil > 0) {
+            if (isZh) {
+                oil = '(油液:' + track.auxoil / 100 + 'L)';
+            } else {
+                oil = '(oil:' + track.auxoil / 100 + 'L)';
+            }
+        };
 
         // console.log('Update time : ', DateFormat.longToDateTimeStr(track.updatetime, timeDifference));
         var content =
