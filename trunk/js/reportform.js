@@ -4260,6 +4260,7 @@ function refuelingReport(groupslist) {
         i18n: utils.getI18n(),
         data: {
             loading: false,
+            tank: '0',
             groupslist: [],
             columns: [
                 { title: '编号', type: 'index', width: 60 },
@@ -4431,6 +4432,7 @@ function refuelingReport(groupslist) {
                     offset: timeDifference,
                     devices: [this.queryDeviceId],
                     oilstate: 1,
+                    oilindex: Number(self.tank)
                 };
                 this.loading = true;
                 utils.sendAjax(myUrls.reportOilRecord(), data, function(resp) {

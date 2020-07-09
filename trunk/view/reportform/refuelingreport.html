@@ -37,6 +37,12 @@
             <div style="margin-left:20px;float: left;">
                 <i-button @click="cleanSelectedDev" icon="ios-nuclear-outline">清除</i-button>
             </div>
+            <div style="margin-left:20px;float: left;width: 80px;position: relative;">
+                <i-select v-model="tank">
+                    <i-option value="0">油液1</i-option>
+                    <i-option value="1">油液2</i-option>
+                </i-select>
+            </div>
             <div style="margin-left:20px;float: left;">
                 <i-button @click="onClickQuery">{{$t("reportForm.query")}}</i-button>
             </div>

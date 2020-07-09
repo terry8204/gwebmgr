@@ -297,29 +297,21 @@
             </p>
             <div>
                 <Tabs type="card" v-model="tabsActive">
-                    <tab-pane label="阀值" style="min-height: 210px;" name="threshold">
-                        <div style="padding: 10px 0;line-height: 16px;">油液变化阀值：通过阀值来判定车辆加油/漏油状态，可以根据车辆的油箱大小设置合适的阀值</div>
+                    <tab-pane label="油液1" style="min-height: 210px;" name="oil1">
                         <Row style="margin: 10px 0;">
                             <i-col span="4" style="line-height: 32px;text-align: center;">
                                 阀值:
                             </i-col>
                             <i-col span="5">
-                                <input-number :max="200" :min="1" v-model.trim.number="threshold" style="width:100%"></input-number>
+                                <input-number :max="10000" :min="1" v-model.trim.number="threshold1" style="width:100%"></input-number>
                             </i-col>
-                            <i-col span="3" style="line-height: 32px;">
+                            <i-col span="1" style="line-height: 32px;">
                                 L
                             </i-col>
-                        </Row>
-                        <Row style="margin: 10px 0;">
-                            <i-col span="4" style="line-height: 32px;text-align: center;">
-                                油箱合并统计:
-                            </i-col>
-                            <i-col span="5" style="line-height: 32px;">
-                                <Checkbox v-model="isIndependent"></Checkbox>
+                            <i-col span="14" style="line-height: 18px;">
+                                通过阀值来判定车辆加油/漏油状态，根据车辆的油箱大小设置合适的阀值
                             </i-col>
                         </Row>
-                    </tab-pane>
-                    <tab-pane label="油液1" style="min-height: 210px;" name="oil1">
                         <Row style="margin: 10px 0;">
                             <i-col span="4" style="line-height: 32px;text-align: center;">
                                 油箱的形状:
@@ -466,6 +458,20 @@
                         </div>
                     </tab-pane>
                     <tab-pane label="油液2" style="min-height: 210px;" name="oil2">
+                        <Row style="margin: 10px 0;">
+                            <i-col span="4" style="line-height: 32px;text-align: center;">
+                                阀值:
+                            </i-col>
+                            <i-col span="5">
+                                <input-number :max="10000" :min="1" v-model.trim.number="threshold2" style="width:100%"></input-number>
+                            </i-col>
+                            <i-col span="1" style="line-height: 32px;">
+                                L
+                            </i-col>
+                            <i-col span="14" style="line-height: 18px;">
+                                通过阀值来判定车辆加油/漏油状态，根据车辆的油箱大小设置合适的阀值
+                            </i-col>
+                        </Row>
                         <Row style="margin: 10px 0;">
                             <i-col span="4" style="line-height: 32px;text-align: center;">
                                 油箱的形状:
@@ -646,6 +652,7 @@
                 </Tabs>
             </div>
             <div slot="footer" style="text-align: center;">
+                <Checkbox v-show="tabsActive !== 'template'" v-model="isIndependent">油箱合并统计</Checkbox>
                 <i-button v-show="tabsActive !== 'template'" style="width: 100px" type="primary" @click="saveOilDetectors">{{$t("bgMgr.submit")}}</i-button>
                 <i-button v-show="tabsActive !== 'template'" style="width: 100px" type="primary" @click="saveTemplateInfo">添加模版</i-button>
                 <Checkbox v-show="tabsActive == 'template'" v-model="allTemp">全部模版</Checkbox>
@@ -677,7 +684,9 @@
                 currentIndex: 1,
                 teltype: '1',
 
-                threshold: 5,
+                threshold1: 5,
+                threshold2: 5,
+
                 oilModal: false, //石油 
                 tankShape1: '0', //油箱形状
                 tankVolume1: 0, //油箱容积
@@ -986,6 +995,7 @@
                                                     vueInstanse.width1 = item.width;
                                                     vueInstanse.maxAdValue1 = item.maxAdValue;
                                                     vueInstanse.taggingData1 = item.markers;
+                                                    vueInstanse.threshold1 = item.threshold;
                                                 } else if (index == 1) {
                                                     vueInstanse.tankShape2 = String(item.appearance);
                                                     vueInstanse.tankVolume2 = item.capacity;
@@ -996,6 +1006,7 @@
                                                     vueInstanse.width2 = item.width;
                                                     vueInstanse.maxAdValue2 = item.maxAdValue;
                                                     vueInstanse.taggingData2 = item.markers;
+                                                    vueInstanse.threshold2 = item.threshold;
                                                 }
                                             });
                                             vueInstanse.$Message.success('导入成功');
@@ -1160,6 +1171,7 @@
                             height: this.height1,
                             diameter: this.diameter1,
                             markers: this.taggingData1,
+                            threshold: this.threshold1
                         };
                         var oilDetector2 = {
                             appearance: Number(this.tankShape2),
@@ -1171,13 +1183,13 @@
                             height: this.height2,
                             diameter: this.diameter2,
                             markers: this.taggingData2,
+                            threshold: this.threshold2
                         };
                         var oildetectors = [oilDetector1, oilDetector2];
                         var url = myUrls.saveOilDetectors(),
                             me = this;
                         var data = {
                             templatename: this.templatename,
-                            threshold: me.threshold,
                             deviceid: editObject.deviceid,
                             oildetectors: oildetectors,
                             independent: me.isIndependent ? 0 : 1,
@@ -1436,7 +1448,6 @@
                     utils.sendAjax(url, {
                         deviceid: deviceid
                     }, function(resp) {
-                        me.threshold = resp.threshold ? resp.threshold : 5;
                         me.isIndependent = resp.independent == 0 ? true : false;
                         if (resp.oildetectors != null) {
                             me.$Message.success('查询油液标注成功');
@@ -1453,6 +1464,7 @@
                                     me.width1 = item.width;
                                     me.maxAdValue1 = item.maxAdValue;
                                     me.taggingData1 = item.markers;
+                                    me.threshold1 = item.threshold;
                                 } else if (index == 1) {
                                     me.tankShape2 = String(item.appearance);
                                     me.tankVolume2 = item.capacity;
@@ -1463,6 +1475,7 @@
                                     me.width2 = item.width;
                                     me.maxAdValue2 = item.maxAdValue;
                                     me.taggingData2 = item.markers;
+                                    me.threshold2 = item.threshold;
                                 }
                             })
                         } else {
@@ -1481,6 +1494,7 @@
                         height: this.height1,
                         diameter: this.diameter1,
                         markers: this.taggingData1,
+                        threshold: this.threshold1
                     };
                     var oilDetector2 = {
                         appearance: Number(this.tankShape2),
@@ -1492,12 +1506,12 @@
                         height: this.height2,
                         diameter: this.diameter2,
                         markers: this.taggingData2,
+                        threshold: this.threshold2
                     };
                     var oildetectors = [oilDetector1, oilDetector2];
                     var url = myUrls.saveOilDetectors(),
                         me = this;
                     var data = {
-                        threshold: me.threshold,
                         deviceid: editObject.deviceid,
                         oildetectors: oildetectors,
                         independent: me.isIndependent ? 0 : 1,
