@@ -465,6 +465,7 @@ var trackDebug = {
                 { title: 'typedescr', key: 'typedescr', width: 120 },
                 { title: 'status', key: 'status', width: 80 },
                 { title: 'strstatus', key: 'strstatus', width: 220 },
+                { title: 'stralarm', key: 'stralarm', width: 120 },
                 { title: 'updatetime', key: 'updatetimeStr', width: 160 },
                 { title: 'reportmode', key: 'reportmodeStr', width: 120 },
                 { title: 're', key: 'reissue', width: 80 },
@@ -637,7 +638,7 @@ var trackDebug = {
                 var that = this;
                 var filterArr = [];
                 this.data.forEach(function(item) {
-                    if ((item.typedescr && item.typedescr.indexOf(that.filterStr) != -1) || item.strstatus.indexOf(that.filterStr) != -1) {
+                    if ((item.typedescr && item.typedescr.indexOf(that.filterStr) != -1) || item.strstatus.indexOf(that.filterStr) != -1 || item.stralarm.indexOf(that.filterStr) != -1) {
                         filterArr.push(item);
                     }
                 });
