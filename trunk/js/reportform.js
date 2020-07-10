@@ -4728,12 +4728,12 @@ function oilLeakageReport(groupslist) {
                                     record.endtimeStr = DateFormat.longToDateTimeStr(record.endtime, timeDifference);
                                     record.addoil = oil;
                                     totalOil += oil;
-                                    oilArr.push(oil);
+                                    oilArr.push(oil.toFixed(2));
                                     recvtime.push(record.devicename);
                                 });
                             });
                             records.push({
-                                addoil: '合计:' + totalOil
+                                addoil: '合计:' + totalOil.toFixed(2)
                             });
                             self.oil = oilArr;
                             self.distance = distance;
