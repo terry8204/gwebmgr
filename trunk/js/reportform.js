@@ -3740,13 +3740,13 @@ function timeOilConsumption(groupslist) {
             groupslist: [],
             columns: [
                 { title: '编号', type: 'index', width: 60 },
-                { title: '设备名称', key: 'devicename' },
-                { title: '时间', key: 'updatetimeStr', sortable: true },
-                { title: '总里程(公里)', key: 'totaldistance' },
-                { title: '总油液(升)', key: 'oil' },
-                { title: '油液1(升)', key: 'ad0' },
-                { title: '油液2(升)', key: 'ad1' },
-                { title: '速度', key: 'speed' },
+                { title: '设备名称', key: 'devicename', width: 100 },
+                { title: '时间', key: 'updatetimeStr', sortable: true, width: 160 },
+                { title: '总里程(公里)', key: 'totaldistance', width: 110 },
+                { title: '总油液(升)', key: 'oil', width: 100 },
+                { title: '油液1(升)', key: 'ad0', width: 90 },
+                { title: '油液2(升)', key: 'ad1', width: 90 },
+                { title: '速度', key: 'speed', width: 80 },
                 { title: '状态', key: 'strstatus' },
                 {
                     title: '经度,纬度',
@@ -3754,11 +3754,17 @@ function timeOilConsumption(groupslist) {
                         var row = params.row;
                         var callat = row.callat.toFixed(5);
                         var callon = row.callon.toFixed(5);
-                        if (row.address == null) {
-                            return h(
-                                'a', {
+
+                        if (callat && callon) {
+                            if (row.address == null) {
+
+                                return h('Button', {
+                                    props: {
+                                        type: 'error',
+                                        size: 'small'
+                                    },
                                     on: {
-                                        'click': function() {
+                                        click: function() {
                                             utils.getJiuHuAddressSyn(callon, callat, function(resp) {
                                                 if (resp && resp.address) {
                                                     vueInstanse.records[params.index].address = resp.address;
@@ -3767,11 +3773,26 @@ function timeOilConsumption(groupslist) {
                                             })
                                         }
                                     }
-                                },
-                                callat + ',' + callon
-                            );
+                                }, callon + "," + callat)
+
+                            } else {
+                                return h('Tooltip', {
+                                    props: {
+                                        content: row.address,
+                                        placement: "top-start",
+                                        maxWidth: 200
+                                    },
+                                }, [
+                                    h('Button', {
+                                        props: {
+                                            type: 'primary',
+                                            size: 'small'
+                                        }
+                                    }, callon + "," + callat)
+                                ]);
+                            }
                         } else {
-                            return h('span', {}, row.address);
+                            return h('span', {}, '');
                         }
                     },
                 },
@@ -4065,8 +4086,8 @@ function dayOil(groupslist) {
                 { title: '编号', type: 'index', width: 60 },
                 { title: '设备名称', key: 'devicename' },
                 { title: '日期', key: 'statisticsday', sortable: true },
-                { title: '行驶里程(公里)', key: 'distance' },
-                { title: '油耗', key: 'oil' },
+                { title: '行驶里程(公里)', key: 'distance', },
+                { title: '油耗', key: 'oil', },
                 { title: '加油液量', key: 'addoil' },
                 { title: '漏油液量', key: 'leakoil' },
                 { title: '百公里油耗', key: 'oilPercent' },
@@ -4281,23 +4302,40 @@ function refuelingReport(groupslist) {
                         var lon = row.slon ? row.slon.toFixed(5) : null;
                         if (lat && lon) {
                             if (row.saddress == null) {
-                                return h(
-                                    'a', {
-                                        on: {
-                                            click: function() {
-                                                utils.getJiuHuAddressSyn(lon, lat, function(resp) {
-                                                    if (resp && resp.address) {
-                                                        vueInstanse.records[params.index].saddress = resp.address;
-                                                        LocalCacheMgr.setAddress(lon, lat, resp.address);
-                                                    }
-                                                })
-                                            }
-                                        }
+
+                                return h('Button', {
+                                    props: {
+                                        type: 'error',
+                                        size: 'small'
                                     },
-                                    lon + "," + lat
-                                )
+                                    on: {
+                                        click: function() {
+                                            utils.getJiuHuAddressSyn(lon, lat, function(resp) {
+                                                if (resp && resp.address) {
+                                                    vueInstanse.records[params.index].saddress = resp.address;
+                                                    LocalCacheMgr.setAddress(lon, lat, resp.address);
+                                                }
+                                            })
+                                        }
+                                    }
+                                }, lon + "," + lat)
+
                             } else {
-                                return h('span', {}, row.saddress);
+                                // return h('span', {}, row.saddress);
+                                return h('Tooltip', {
+                                    props: {
+                                        content: row.saddress,
+                                        placement: "top-start",
+                                        maxWidth: 200
+                                    },
+                                }, [
+                                    h('Button', {
+                                        props: {
+                                            type: 'primary',
+                                            size: 'small'
+                                        }
+                                    }, lon + "," + lat)
+                                ]);
                             }
                         } else {
                             return h('span', {}, '');
@@ -4312,23 +4350,39 @@ function refuelingReport(groupslist) {
                         var lon = row.elon ? row.elon.toFixed(5) : null;
                         if (lat && lon) {
                             if (row.eaddress == null) {
-                                return h(
-                                    'a', {
-                                        on: {
-                                            click: function() {
-                                                utils.getJiuHuAddressSyn(lon, lat, function(resp) {
-                                                    if (resp && resp.address) {
-                                                        vueInstanse.records[params.index].eaddress = resp.address;
-                                                        LocalCacheMgr.setAddress(lon, lat, resp.address);
-                                                    }
-                                                })
-                                            }
-                                        }
+
+                                return h('Button', {
+                                    props: {
+                                        type: 'error',
+                                        size: 'small'
                                     },
-                                    lon + "," + lat
-                                )
+                                    on: {
+                                        click: function() {
+                                            utils.getJiuHuAddressSyn(lon, lat, function(resp) {
+                                                if (resp && resp.address) {
+                                                    vueInstanse.records[params.index].eaddress = resp.address;
+                                                    LocalCacheMgr.setAddress(lon, lat, resp.address);
+                                                }
+                                            })
+                                        }
+                                    }
+                                }, lon + "," + lat)
                             } else {
-                                return h('span', {}, row.eaddress);
+                                return h('Tooltip', {
+                                    props: {
+                                        content: row.eaddress,
+                                        placement: "top-start",
+                                        maxWidth: 200
+                                    },
+                                }, [
+                                    h('Button', {
+                                        props: {
+                                            type: 'primary',
+                                            size: 'small'
+                                        }
+                                    }, lon + "," + lat)
+                                ]);
+                                // return h('span', {}, row.eaddress);
                             }
                         } else {
                             return h('span', {}, '');
@@ -4437,7 +4491,6 @@ function refuelingReport(groupslist) {
                 this.loading = true;
                 utils.sendAjax(myUrls.reportOilRecord(), data, function(resp) {
                     self.loading = false;
-                    console.log(resp);
                     if (resp.status == 0) {
                         if (resp.records) {
                             var records = [],
@@ -4541,23 +4594,39 @@ function oilLeakageReport(groupslist) {
                         var lon = row.slon ? row.slon.toFixed(5) : null;
                         if (lat && lon) {
                             if (row.saddress == null) {
-                                return h(
-                                    'a', {
-                                        on: {
-                                            click: function() {
-                                                utils.getJiuHuAddressSyn(lon, lat, function(resp) {
-                                                    if (resp && resp.address) {
-                                                        vueInstanse.records[params.index].saddress = resp.address;
-                                                        LocalCacheMgr.setAddress(lon, lat, resp.address);
-                                                    }
-                                                })
-                                            }
-                                        }
+
+                                return h('Button', {
+                                    props: {
+                                        type: 'error',
+                                        size: 'small'
                                     },
-                                    lon + "," + lat
-                                )
+                                    on: {
+                                        click: function() {
+                                            utils.getJiuHuAddressSyn(lon, lat, function(resp) {
+                                                if (resp && resp.address) {
+                                                    vueInstanse.records[params.index].saddress = resp.address;
+                                                    LocalCacheMgr.setAddress(lon, lat, resp.address);
+                                                }
+                                            })
+                                        }
+                                    }
+                                }, lon + "," + lat)
+
                             } else {
-                                return h('span', {}, row.saddress);
+                                return h('Tooltip', {
+                                    props: {
+                                        content: row.saddress,
+                                        placement: "top-start",
+                                        maxWidth: 200
+                                    },
+                                }, [
+                                    h('Button', {
+                                        props: {
+                                            type: 'primary',
+                                            size: 'small'
+                                        }
+                                    }, lon + "," + lat)
+                                ]);
                             }
                         } else {
                             return h('span', {}, '');
@@ -4572,23 +4641,39 @@ function oilLeakageReport(groupslist) {
                         var lon = row.elon ? row.elon.toFixed(5) : null;
                         if (lat && lon) {
                             if (row.eaddress == null) {
-                                return h(
-                                    'a', {
-                                        on: {
-                                            click: function() {
-                                                utils.getJiuHuAddressSyn(lon, lat, function(resp) {
-                                                    if (resp && resp.address) {
-                                                        vueInstanse.records[params.index].eaddress = resp.address;
-                                                        LocalCacheMgr.setAddress(lon, lat, resp.address);
-                                                    }
-                                                })
-                                            }
-                                        }
+
+                                return h('Button', {
+                                    props: {
+                                        type: 'error',
+                                        size: 'small'
                                     },
-                                    lon + "," + lat
-                                )
+                                    on: {
+                                        click: function() {
+                                            utils.getJiuHuAddressSyn(lon, lat, function(resp) {
+                                                if (resp && resp.address) {
+                                                    vueInstanse.records[params.index].eaddress = resp.address;
+                                                    LocalCacheMgr.setAddress(lon, lat, resp.address);
+                                                }
+                                            })
+                                        }
+                                    }
+                                }, lon + "," + lat)
                             } else {
-                                return h('span', {}, row.eaddress);
+                                return h('Tooltip', {
+                                    props: {
+                                        content: row.eaddress,
+                                        placement: "top-start",
+                                        maxWidth: 200
+                                    },
+                                }, [
+                                    h('Button', {
+                                        props: {
+                                            type: 'primary',
+                                            size: 'small'
+                                        }
+                                    }, lon + "," + lat)
+                                ]);
+                                // return h('span', {}, row.eaddress);
                             }
                         } else {
                             return h('span', {}, '');
