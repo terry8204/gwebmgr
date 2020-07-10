@@ -4447,6 +4447,9 @@ function refuelingReport(groupslist) {
                                 totalOil = 0;
                             resp.records.forEach(function(item, index) {
                                 records = item.records;
+                                records.sort(function(a, b) {
+                                    return b.begintime - a.begintime;
+                                })
                                 records.forEach(function(record) {
                                     var callat = record.elat.toFixed(5);
                                     var callon = record.elon.toFixed(5);
@@ -4704,6 +4707,9 @@ function oilLeakageReport(groupslist) {
                                 totalOil = 0;
                             resp.records.forEach(function(item, index) {
                                 records = item.records;
+                                records.sort(function(a, b) {
+                                    return b.begintime - a.begintime;
+                                })
                                 records.forEach(function(record) {
                                     var callat = record.elat.toFixed(5);
                                     var callon = record.elon.toFixed(5);
