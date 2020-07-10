@@ -4467,12 +4467,13 @@ function refuelingReport(groupslist) {
                                     record.eoil = record.eoil / 100;
                                     record.soil = record.soil / 100;
                                     var oil = record.eoil - record.soil;
+                                    oil = oil.toFixed(2);
                                     record.devicename = vstore.state.deviceInfos[self.queryDeviceId].devicename;
                                     record.begintimeStr = DateFormat.longToDateTimeStr(record.begintime, timeDifference);
                                     record.endtimeStr = DateFormat.longToDateTimeStr(record.endtime, timeDifference);
                                     record.addoil = oil;
-                                    totalOil += oil;
-                                    oilArr.push(oil.toFixed(2));
+                                    totalOil += Number(oil);
+                                    oilArr.push(oil);
                                     recvtime.push(record.devicename);
                                 });
                             });
@@ -4723,17 +4724,18 @@ function oilLeakageReport(groupslist) {
                                     record.eoil = record.eoil / 100;
                                     record.soil = record.soil / 100;
                                     var oil = record.soil - record.eoil;
+                                    oil = oil.toFixed(2);
                                     record.devicename = vstore.state.deviceInfos[self.queryDeviceId].devicename;
                                     record.begintimeStr = DateFormat.longToDateTimeStr(record.begintime, timeDifference);
                                     record.endtimeStr = DateFormat.longToDateTimeStr(record.endtime, timeDifference);
                                     record.addoil = oil;
-                                    totalOil += oil;
-                                    oilArr.push(oil.toFixed(2));
+                                    totalOil += Number(oil);
+                                    oilArr.push(oil);
                                     recvtime.push(record.devicename);
                                 });
                             });
                             records.push({
-                                addoil: '合计:' + totalOil.toFixed(2)
+                                addoil: '合计:' + totalOil
                             });
                             self.oil = oilArr;
                             self.distance = distance;
