@@ -4472,7 +4472,7 @@ function refuelingReport(groupslist) {
                                     record.endtimeStr = DateFormat.longToDateTimeStr(record.endtime, timeDifference);
                                     record.addoil = oil;
                                     totalOil += oil;
-                                    oilArr.push(oil);
+                                    oilArr.push(oil.toFixed(2));
                                     recvtime.push(record.devicename);
                                 });
                             });
@@ -4516,6 +4516,7 @@ function oilLeakageReport(groupslist) {
         data: {
             loading: false,
             groupslist: [],
+            tank: '0',
             columns: [
                 { title: '编号', type: 'index', width: 60 },
                 { title: '设备名称', key: 'devicename' },
@@ -4687,6 +4688,7 @@ function oilLeakageReport(groupslist) {
                     offset: timeDifference,
                     devices: [this.queryDeviceId],
                     oilstate: -1,
+                    oilindex: Number(this.tank)
                 };
                 this.loading = true;
                 utils.sendAjax(myUrls.reportOilRecord(), data, function(resp) {
