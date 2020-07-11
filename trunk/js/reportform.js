@@ -3970,7 +3970,7 @@ function timeOilConsumption(groupslist) {
             },
             calcTableHeight: function() {
                 var wHeight = window.innerHeight;
-                this.lastTableHeight = wHeight - 620;
+                this.lastTableHeight = wHeight - 520;
             },
             onClickQuery: function() {
                 if (this.queryDeviceId == "") { return };
@@ -4201,7 +4201,7 @@ function dayOil(groupslist) {
 
             calcTableHeight: function() {
                 var wHeight = window.innerHeight;
-                this.lastTableHeight = wHeight - 620;
+                this.lastTableHeight = wHeight - 520;
             },
             onClickQuery: function() {
                 if (this.queryDeviceId == "") { return };
@@ -4471,7 +4471,7 @@ function refuelingReport(groupslist) {
 
             calcTableHeight: function() {
                 var wHeight = window.innerHeight;
-                this.lastTableHeight = wHeight - 580;
+                this.lastTableHeight = wHeight - 480;
             },
             onClickQuery: function() {
                 if (this.queryDeviceId == "") { return };
@@ -4762,7 +4762,7 @@ function oilLeakageReport(groupslist) {
 
             calcTableHeight: function() {
                 var wHeight = window.innerHeight;
-                this.lastTableHeight = wHeight - 580;
+                this.lastTableHeight = wHeight - 480;
             },
             onClickQuery: function() {
                 if (this.queryDeviceId == "") { return };
