@@ -775,6 +775,17 @@
                     if (this.detailTableData.length === 0) return;
                     this.selectedDetailFirstRow();
                 },
+                getIcon: function() {
+                    var imgPath = '';
+                    if (utils.isLocalhost()) {
+                        imgPath = myUrls.viewhost + 'images/carstate';
+                    } else {
+                        imgPath = './images/carstate';
+                    }
+
+                    imgPath += '/a_green_0.png'
+                    return new BMap.Icon(imgPath, new BMap.Size(32, 32));
+                },
                 onDetailChange: function(current) {
                     var that = this;
                     this.detailTableData.forEach(function(item, index) {
@@ -786,7 +797,11 @@
                         var b_lon_lat = wgs84tobd09(Number(current.lon), Number(current.lat));
                         var point = new BMap.Point(b_lon_lat[0], b_lon_lat[1]);
                         if (!this.markerIns) {
-                            this.markerIns = new BMap.Marker(point);
+                            this.markerIns = new BMap.Marker(point, {
+                                icon: this.getIcon(),
+                                rotation: current.course
+                                    // rotation: current.course
+                            });
                             this.map.addOverlay(this.markerIns);
                         }
                         this.markerIns.setPosition(point);
