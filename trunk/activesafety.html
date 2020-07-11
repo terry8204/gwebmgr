@@ -799,12 +799,12 @@
                         if (!this.markerIns) {
                             this.markerIns = new BMap.Marker(point, {
                                 icon: this.getIcon(),
-                                rotation: current.course
-                                    // rotation: current.course
+                                // rotation: current.course
                             });
                             this.map.addOverlay(this.markerIns);
                         }
                         this.markerIns.setPosition(point);
+                        this.markerIns.setRotation(current.course);
                         this.map.setZoom(18);
                         this.map.setCenter(point);
                     } else if (this.mapType == 'gMap') {
