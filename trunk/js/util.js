@@ -582,6 +582,7 @@ var utils = {
                 oil = '(oil:' + track.auxoil / 100 + 'L)';
             }
         };
+
         var temp = this.getTemperature(isZh, track);
         // console.log('Update time : ', DateFormat.longToDateTimeStr(track.updatetime, timeDifference));
         var content =
