@@ -493,6 +493,35 @@ var utils = {
         return type;
     },
     videoState: null,
+    getTemperature: function(isZh, track) {
+        var tempStr = null;
+        var temp = track.temp1;
+        if (temp && temp != 0xffff) {
+            tempStr = temp / 10 + '℃';
+        }
+
+        temp = track.temp2;
+        if (temp && temp != 0xffff) {
+            tempStr += "|"
+            tempStr += temp / 10 + '℃';
+        }
+
+        temp = track.temp3;
+        if (temp && temp != 0xffff) {
+            tempStr += "|"
+            tempStr += temp / 10 + '℃';
+        }
+
+        temp = track.temp4;
+        if (temp && temp != 0xffff) {
+            tempStr += "|"
+            tempStr += temp / 10 + '℃';
+        }
+        if (tempStr != null) {
+            tempStr = '<p>' + (isZh ? '温度: ' : 'Temperature: ') + tempStr + '</p>'
+        }
+        return tempStr;
+    },
     getWindowContent: function(track, b_address) {
         var strstatus = '';
         var posiType = this.getPosiType(track);
@@ -553,7 +582,7 @@ var utils = {
                 oil = '(oil:' + track.auxoil / 100 + 'L)';
             }
         };
-
+        var temp = this.getTemperature(isZh, track);
         // console.log('Update time : ', DateFormat.longToDateTimeStr(track.updatetime, timeDifference));
         var content =
             '<p> ' + (isZh ? '设备名称' : 'Device Name') + ': ' + track.devicename + '</p>' +
@@ -564,6 +593,7 @@ var utils = {
             '<p> ' + (isZh ? '定位时间' : 'Posi time') + ': ' + DateFormat.longToDateTimeStr(track.validpoistiontime, timeDifference) + '</p>' +
             '<p> ' + (isZh ? '速度' : 'Speed') + ': ' + speed + rxlevel + '</p>' +
             '<p> ' + (isZh ? '总里程' : 'Park Duration') + ': ' + this.getMileage(track.totaldistance) + oil + '</p>' +
+            (temp ? temp : '') +
             '<p> ' + (isZh ? '停留时长' : 'Mileage') + ': ' + this.timeStamp(track.parkduration, isZh) + '</p>' +
             '<p class="last-strstatus"> ' + (isZh ? '状态' : 'Status') + ': ' + strstatus + '</p>' +
             (extendsBtns.video ? ('<p> ' + (isZh ? '视频' : 'video') + ': ' + videoState + '</p>') : ("")) +
