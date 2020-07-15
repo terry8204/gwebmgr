@@ -4984,7 +4984,7 @@ function temperature(groupslist) {
                         }
                     },
                     legend: {
-                        data: [speed, temp1, temp2, temp3, temp4, averageTemp],
+                        data: [temp1, temp2, temp3, temp4, averageTemp, speed],
                         x: 'left'
                     },
                     toolbox: {
@@ -5024,6 +5024,15 @@ function temperature(groupslist) {
                         data: this.recvtime
                     }],
                     yAxis: [{
+                        name: '温度',
+                        type: 'value',
+                        nameTextStyle: 10,
+                        nameGap: 5,
+                        axisLabel: {
+                            formatter: '{value}℃',
+                        },
+
+                    }, {
                         name: speed,
                         type: 'value',
                         nameTextStyle: 10,
@@ -5035,21 +5044,12 @@ function temperature(groupslist) {
                         axisTick: {
                             show: false
                         }
-                    }, {
-                        name: temp1,
-                        type: 'value',
-                        nameTextStyle: 10,
-                        nameGap: 5,
-                        axisLabel: {
-                            formatter: '{value}℃',
-                        },
-
-                    }, ],
+                    }],
                     series: [{
                             name: time,
                             type: 'line',
                             symbol: 'none',
-                            yAxisIndex: 1,
+                            xAxisIndex: 0,
                             color: '#F0805A',
                             //itemStyle: {normal: {areaStyle: {type: 'default'}}},
                             data: this.recvtime
@@ -5057,24 +5057,26 @@ function temperature(groupslist) {
                             name: speed,
                             type: 'line',
                             symbol: 'none',
-                            yAxisIndex: 0,
+                            yAxisIndex: 1,
                             //itemStyle: {normal: {areaStyle: {type: 'default'}}},
                             color: '#4876FF',
-                            data: this.veo
+                            data: this.veo,
                         }, {
                             //show:'false',
                             name: temp1,
                             type: 'line',
                             symbol: 'none',
                             color: '#C1232B',
-                            data: this.temp1
+                            data: this.temp1,
+                            yAxisIndex: 0,
                         }, {
                             //show:'false',
                             name: temp2,
                             type: 'line',
                             symbol: 'none',
                             color: '#8E388E',
-                            data: this.temp2
+                            data: this.temp2,
+                            yAxisIndex: 0,
                         },
 
                         {
@@ -5083,7 +5085,8 @@ function temperature(groupslist) {
                             type: 'line',
                             symbol: 'none',
                             color: '#FF4500',
-                            data: this.temp3
+                            data: this.temp3,
+                            yAxisIndex: 0,
                         },
                         {
                             //show:'false',
@@ -5091,13 +5094,14 @@ function temperature(groupslist) {
                             type: 'line',
                             symbol: 'none',
                             color: '#e4393c',
+                            yAxisIndex: 0,
                             data: this.temp4
                         },
                         {
                             name: averageTemp,
                             type: 'line',
                             symbol: 'none',
-                            yAxisIndex: 1,
+                            yAxisIndex: 0,
                             color: '#3CB371',
                             //itemStyle: {normal: {areaStyle: {type: 'default'}}},
                             data: this.averageTemp
