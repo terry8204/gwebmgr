@@ -4877,7 +4877,7 @@ function temperature(groupslist) {
                 { title: '温度2', key: 'temp2', width: 90 },
                 { title: '温度3', key: 'temp3', width: 90 },
                 { title: '温度4', key: 'temp4', width: 90 },
-                { title: '平均温度', key: 'temp4', width: 110 },
+                { title: '平均温度', key: 'averageTemp', width: 110 },
                 { title: '状态', key: 'strstatus' },
                 {
                     title: '经度,纬度',
@@ -5187,7 +5187,6 @@ function temperature(groupslist) {
                                     }
 
 
-
                                     veo.push((record.speed / 1000).toFixed(2));
                                     temp1.push(record.temp1)
                                     temp2.push(record.temp2)
@@ -5195,14 +5194,17 @@ function temperature(groupslist) {
                                     temp4.push(record.temp4)
                                     if (averageCount == 0) {
                                         averageTemp.push('无');
+                                        record.averageTemp = '无';
                                     } else {
-                                        averageTemp.push((averageT / averageCount).toFixed(2));
+                                        var temp = (averageT / averageCount).toFixed(1);
+                                        record.averageTemp = temp;
+                                        averageTemp.push(temp);
                                     }
                                     recvtime.push(record.updatetimeStr);
 
                                 });
                             });
-
+                            console.log(averageTemp)
                             self.veo = veo;
                             self.recvtime = recvtime;
                             self.temp1 = temp1;
