@@ -638,6 +638,9 @@ var myUrls = {
     deleteOilDetectorTemplate: function() {
         return this.apihosts + 'webapi?action=deleteoildetectortemplate&token=' + token;
     },
+    reportTempTime: function() {
+        return this.apihosts + 'webapi?action=reporttemptime&token=' + token;
+    },
     getCardInfo: function(action) {
         return this.apihosts + 'webapi?action=' + action + '&token=' + token;
     },

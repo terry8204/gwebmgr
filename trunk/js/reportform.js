@@ -4861,6 +4861,385 @@ function oilLeakageReport(groupslist) {
 }
 
 
+function temperature(groupslist) {
+    vueInstanse = new Vue({
+        el: "#temperature",
+        i18n: utils.getI18n(),
+        data: {
+            loading: false,
+            groupslist: [],
+            columns: [
+                { title: '编号', type: 'index', width: 60 },
+                { title: '设备名称', key: 'devicename', width: 100 },
+                { title: '时间', key: 'updatetimeStr', sortable: true, width: 160 },
+                { title: '速度', key: 'speed', width: 90 },
+                { title: '温度1', key: 'temp1', width: 90 },
+                { title: '温度2', key: 'temp2', width: 90 },
+                { title: '温度3', key: 'temp3', width: 90 },
+                { title: '温度4', key: 'temp4', width: 90 },
+                { title: '平均温度', key: 'temp4', width: 110 },
+                { title: '状态', key: 'strstatus' },
+                {
+                    title: '经度,纬度',
+                    render: function(h, params) {
+                        var row = params.row;
+                        var callat = row.callat.toFixed(5);
+                        var callon = row.callon.toFixed(5);
+
+                        if (callat && callon) {
+                            if (row.address == null) {
+
+                                return h('Button', {
+                                    props: {
+                                        type: 'error',
+                                        size: 'small'
+                                    },
+                                    on: {
+                                        click: function() {
+                                            utils.getJiuHuAddressSyn(callon, callat, function(resp) {
+                                                if (resp && resp.address) {
+                                                    vueInstanse.records[params.index].address = resp.address;
+                                                    LocalCacheMgr.setAddress(callon, callat, resp.address);
+                                                }
+                                            })
+                                        }
+                                    }
+                                }, callon + "," + callat)
+
+                            } else {
+                                return h('Tooltip', {
+                                    props: {
+                                        content: row.address,
+                                        placement: "top-start",
+                                        maxWidth: 200
+                                    },
+                                }, [
+                                    h('Button', {
+                                        props: {
+                                            type: 'primary',
+                                            size: 'small'
+                                        }
+                                    }, callon + "," + callat)
+                                ]);
+                            }
+                        } else {
+                            return h('span', {}, '');
+                        }
+                    },
+                },
+            ],
+            tableData: [],
+            recvtime: [],
+            veo: [],
+            temp1: [],
+            temp2: [],
+            temp3: [],
+            temp4: [],
+            averageTemp: [],
+            currentIndex: 1,
+        },
+        mixins: [reportMixin],
+        methods: {
+            changePage: function(index) {
+                var offset = index * 10;
+                var start = (index - 1) * 10;
+                this.currentPageIndex = index;
+                this.tableData = this.records.slice(start, offset);
+            },
+            charts: function() {
+                var canvasEl = document.getElementById('charts');
+                var charts = echarts.init(canvasEl);
+                var speed = "速度";
+                var time = "时间";
+                var temp = "温度";
+                var temp1 = "温度1";
+                var temp2 = "温度2";
+                var temp3 = "温度3";
+                var temp4 = "温度4";
+                var averageTemp = "平均温度";
+                var option = {
+                    title: {
+                        text: speed + '/' + temp,
+                        x: 'center',
+                        textStyle: {
+                            fontSize: 12,
+                            fontWeight: 'bolder',
+                            color: '#333'
+                        }
+                    },
+                    grid: {
+                        x: 50,
+                        y: 40,
+                        x2: 50,
+                        y2: 40
+                    },
+                    tooltip: {
+                        trigger: 'axis',
+                        formatter: function(v) {
+                            var data = '时间 : ' + v[0].name + '<br/>';
+                            for (i in v) {
+                                if (v[i].seriesName != '时间') data += v[i].seriesName + ' : ' + v[i].value + '<br/>';
+                            }
+                            return data;
+                        }
+                    },
+                    legend: {
+                        data: [speed, temp1, temp2, temp3, temp4, averageTemp],
+                        x: 'left'
+                    },
+                    toolbox: {
+                        show: true,
+                        feature: {
+                            magicType: { show: true, type: ['line', 'bar'] },
+                            restore: { show: true },
+                            saveAsImage: {
+                                show: true
+                            }
+                        },
+                        itemSize: 14
+                    },
+                    dataZoom: [{
+                        show: true,
+                        realtime: true,
+                        start: 0,
+                        end: 100,
+                        height: 20,
+                        backgroundColor: '#EDEDED',
+                        fillerColor: 'rgb(54, 72, 96,0.5)',
+                        bottom: 0
+                    }, {
+                        type: "inside",
+                        realtime: true,
+                        start: 0,
+                        end: 100,
+                        height: 20,
+                        bottom: 0
+                    }],
+                    xAxis: [{
+                        type: 'category',
+                        boundaryGap: false,
+                        axisLine: {
+                            onZero: false
+                        },
+                        data: this.recvtime
+                    }],
+                    yAxis: [{
+                        name: speed,
+                        type: 'value',
+                        nameTextStyle: 10,
+                        nameGap: 2,
+
+                        axisLabel: {
+                            formatter: '{value} km',
+                        },
+                        axisTick: {
+                            show: false
+                        }
+                    }, {
+                        name: temp1,
+                        type: 'value',
+                        nameTextStyle: 10,
+                        nameGap: 5,
+                        axisLabel: {
+                            formatter: '{value}℃',
+                        },
+
+                    }, ],
+                    series: [{
+                            name: time,
+                            type: 'line',
+                            symbol: 'none',
+                            yAxisIndex: 1,
+                            color: '#F0805A',
+                            //itemStyle: {normal: {areaStyle: {type: 'default'}}},
+                            data: this.recvtime
+                        }, {
+                            name: speed,
+                            type: 'line',
+                            symbol: 'none',
+                            yAxisIndex: 0,
+                            //itemStyle: {normal: {areaStyle: {type: 'default'}}},
+                            color: '#4876FF',
+                            data: this.veo
+                        }, {
+                            //show:'false',
+                            name: temp1,
+                            type: 'line',
+                            symbol: 'none',
+                            color: '#C1232B',
+                            data: this.temp1
+                        }, {
+                            //show:'false',
+                            name: temp2,
+                            type: 'line',
+                            symbol: 'none',
+                            color: '#8E388E',
+                            data: this.temp2
+                        },
+
+                        {
+                            //show:'false',
+                            name: temp3,
+                            type: 'line',
+                            symbol: 'none',
+                            color: '#FF4500',
+                            data: this.temp3
+                        },
+                        {
+                            //show:'false',
+                            name: temp4,
+                            type: 'line',
+                            symbol: 'none',
+                            color: '#e4393c',
+                            data: this.temp4
+                        },
+                        {
+                            name: averageTemp,
+                            type: 'line',
+                            symbol: 'none',
+                            yAxisIndex: 1,
+                            color: '#3CB371',
+                            //itemStyle: {normal: {areaStyle: {type: 'default'}}},
+                            data: this.averageTemp
+                        },
+                    ]
+                };
+
+                charts.setOption(option);
+                this.myChart = charts;
+            },
+            calcTableHeight: function() {
+                var wHeight = window.innerHeight;
+                this.lastTableHeight = wHeight - 520;
+            },
+            onClickQuery: function() {
+                if (this.queryDeviceId == "") { return };
+                var self = this;
+                if (this.isSelectAll === null) {
+                    this.$Message.error(this.$t("reportForm.selectDevTip"));
+                    return;
+                };
+                var data = {
+                    // username: vstore.state.userName,
+                    startday: this.dateVal[0],
+                    endday: this.dateVal[1],
+                    offset: timeDifference,
+                    devices: [this.queryDeviceId],
+                };
+                this.loading = true;
+                utils.sendAjax(myUrls.reportTempTime(), data, function(resp) {
+                    self.loading = false;
+                    if (resp.status == 0) {
+                        if (resp.records) {
+                            var records = [],
+                                veo = [],
+                                recvtime = [],
+                                temp1 = [],
+                                temp2 = [],
+                                temp3 = [],
+                                temp4 = [],
+                                averageTemp = [];
+                            resp.records.forEach(function(item, index) {
+                                records = item.records;
+                                var independent = item.independent === 0;
+                                records.forEach(function(record) {
+                                    var averageT = 0;
+                                    var averageCount = 0;
+                                    var callon = record.callon.toFixed(5);
+                                    var callat = record.callat.toFixed(5);
+                                    var address = LocalCacheMgr.getAddress(callon, callat);
+                                    if (address != null) {
+                                        record.address = address;
+                                    } else {
+                                        record.address = null;
+                                    }
+
+                                    record.updatetimeStr = DateFormat.longToDateTimeStr(record.updatetime, timeDifference);
+                                    record.devicename = vstore.state.deviceInfos[self.queryDeviceId].devicename;
+
+                                    if (record.temp1 != 0xffff) {
+                                        record.temp1 = record.temp1 / 10
+                                        averageT += record.temp1;
+                                        averageCount++;
+                                    } else {
+                                        record.temp1 = '无';
+                                    }
+                                    if (record.temp2 != 0xffff) {
+                                        record.temp2 = record.temp2 / 10
+                                        averageT += record.temp2;
+                                        averageCount++;
+                                    } else {
+                                        record.temp2 = '无';
+                                    }
+                                    if (record.temp3 != 0xffff) {
+                                        record.temp3 = record.temp3 / 10
+                                        averageT += record.temp3;
+                                        averageCount++;
+                                    } else {
+                                        record.temp3 = '无';
+                                    }
+                                    if (record.temp4 != 0xffff) {
+                                        record.temp4 = record.temp4 / 10
+                                        averageT += record.temp4;
+                                        averageCount++;
+                                    } else {
+                                        record.temp4 = '无';
+                                    }
+
+
+
+                                    veo.push((record.speed / 1000).toFixed(2));
+                                    temp1.push(record.temp1)
+                                    temp2.push(record.temp2)
+                                    temp3.push(record.temp3)
+                                    temp4.push(record.temp4)
+                                    if (averageCount == 0) {
+                                        averageTemp.push('无');
+                                    } else {
+                                        averageTemp.push((averageT / averageCount).toFixed(2));
+                                    }
+                                    recvtime.push(record.updatetimeStr);
+
+                                });
+                            });
+
+                            self.veo = veo;
+                            self.recvtime = recvtime;
+                            self.temp1 = temp1;
+                            self.temp2 = temp2;
+                            self.temp3 = temp3;
+                            self.temp4 = temp4;
+                            self.averageTemp = averageTemp;
+                            self.records = records;
+                            self.total = records.length;
+                            records.sort(function(a, b) {
+                                return b.updatetime - a.updatetime;
+                            })
+                            self.currentPageIndex = 1;
+                            self.tableData = records.slice(0, 10);
+                            self.charts();
+                        } else {
+                            self.$Message.error(self.$t("reportForm.noRecord"));
+                        }
+                    } else {
+                        self.$Message.error(resp.cause);
+                    }
+                })
+            },
+            onSortChange: function(column) {
+
+            }
+        },
+        mounted: function() {
+            this.groupslist = groupslist;
+            this.myChart = null;
+            this.records = [];
+            this.charts();
+
+        }
+    });
+}
+
 // 统计报表
 var reportForm = {
     template: document.getElementById('report-template').innerHTML,
@@ -4927,6 +5306,14 @@ var reportForm = {
                         { title: "时间油液报表", name: 'timeOilConsumption', icon: 'ios-timer-outline' },
                         { title: "加油液报表", name: 'refuelingReport', icon: 'ios-trending-up' },
                         { title: "漏油液报表", name: 'oilLeakageReport', icon: 'ios-trending-down' },
+                    ]
+                },
+                {
+                    title: '温度报表',
+                    name: 'temperatureConsumption',
+                    icon: 'ios-color-wand-outline',
+                    children: [
+                        { title: "温度报表", name: 'temperature', icon: 'ios-stopwatch-outline' },
                     ]
                 },
             ]
@@ -5019,6 +5406,9 @@ var reportForm = {
                         break;
                     case 'oilleakagereport.html':
                         oilLeakageReport(groupslist);
+                        break;
+                    case 'temperature.html':
+                        temperature(groupslist);
                         break;
                 }
             });
