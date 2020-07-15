@@ -5204,7 +5204,7 @@ function temperature(groupslist) {
 
                                 });
                             });
-                            console.log(averageTemp)
+
                             self.veo = veo;
                             self.recvtime = recvtime;
                             self.temp1 = temp1;
