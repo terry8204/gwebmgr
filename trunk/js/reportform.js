@@ -4891,7 +4891,7 @@ function temperature(groupslist) {
                                         click: function() {
                                             utils.getJiuHuAddressSyn(callon, callat, function(resp) {
                                                 if (resp && resp.address) {
-                                                    vueInstanse.records[params.index].address = resp.address;
+                                                    vueInstanse.tableData[params.index].address = resp.address;
                                                     LocalCacheMgr.setAddress(callon, callat, resp.address);
                                                 }
                                             })
