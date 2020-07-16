@@ -48,7 +48,7 @@
             <i-table :columns="columns" :height="lastTableHeight" :data="tableData" :loading="loading" @on-sort-change="onSortChange"></i-table>
         </div>
         <div style="padding-left:10px;">
-            <Page :total="total" show-total @on-change="changePage" :page-size="30" :current="currentIndex" />
+            <Page :total="total" show-total @on-change="changePage" :page-size="20" :current="currentIndex" />
         </div>
     </div>
 </div>

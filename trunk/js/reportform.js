@@ -14,8 +14,8 @@ var treeMixin = {
     },
     methods: {
         changePage: function(index) {
-            var offset = index * 10;
-            var start = (index - 1) * 10;
+            var offset = index * 20;
+            var start = (index - 1) * 20;
             this.currentPageIndex = index;
             this.tableData = this.cmdRecords.slice(start, offset);
         },
@@ -157,8 +157,8 @@ var reportMixin = {
     },
     methods: {
         changePage: function(index) {
-            var offset = index * 10;
-            var start = (index - 1) * 10;
+            var offset = index * 20;
+            var start = (index - 1) * 20;
             this.currentPageIndex = index;
             this.tableData = this.cmdRecords.slice(start, offset);
         },
@@ -601,7 +601,6 @@ function posiReport(groupslist) {
                             me.posiDetailData = newArr.reverse();
                             me.total = newArr.length;
                             me.currentIndex = 1;
-                            // me.tableData = me.posiDetailData.slice(0, 8);
 
                         } else {
                             me.tableData = [];
@@ -649,12 +648,6 @@ function posiReport(groupslist) {
                     }
                     LocalCacheMgr.setAddress(row.fixedLon, row.fixedLat, address);
                 });
-            },
-            changePage: function(index) {
-                var offset = index * 8;
-                var start = (index - 1) * 8;
-                this.currentIndex = index;
-                this.tableData = this.posiDetailData.slice(start, offset);
             },
         },
         watch: {
@@ -826,8 +819,8 @@ function groupMileage(groupslist) {
                 }
             },
             changePage: function(index) {
-                var offset = index * 30;
-                var start = (index - 1) * 30;
+                var offset = index * 20;
+                var start = (index - 1) * 20;
                 this.currentIndex = index;
                 this.tableData = this.records.slice(start, offset);
             },
@@ -877,7 +870,7 @@ function groupMileage(groupslist) {
                                     item.totaldistance != 0 ? item.totaldistance = (item.totaldistance / 1000).toFixed(2) : null;
                                 });
                                 me.records = resp.records;
-                                me.tableData = me.records.slice(0, 30);
+                                me.tableData = me.records.slice(0, 20);
                                 me.total = me.records.length;
 
                             } else {
@@ -1509,7 +1502,7 @@ function messageRecords(groupslist) {
             onChange: function(index) {
                 this.isShowCard = false;
                 this.currentIndex = index;
-                this.tableData = this.data.slice((index - 1) * 30, (index - 1) * 30 + 30);
+                this.tableData = this.data.slice((index - 1) * 20, (index - 1) * 20 + 20);
             },
             calcTableHeight: function() {
                 var wHeight = window.innerHeight;
@@ -1557,7 +1550,7 @@ function messageRecords(groupslist) {
                         });
                         me.data = Object.freeze(resp.records);
                         me.total = me.data.length;
-                        me.tableData = me.data.slice(0, 30);
+                        me.tableData = me.data.slice(0, 20);
                         me.currentIndex = 1;
                     } else {
                         me.total = 0;
@@ -1570,7 +1563,7 @@ function messageRecords(groupslist) {
         watch: {
             filterStr: function() {
                 if (this.filterStr == '') {
-                    this.tableData = this.data.slice((this.currentIndex - 1) * 30, (this.currentIndex - 1) * 30 + 30);
+                    this.tableData = this.data.slice((this.currentIndex - 1) * 20, (this.currentIndex - 1) * 20 + 20);
                 }
             }
         },
@@ -3810,8 +3803,8 @@ function timeOilConsumption(groupslist) {
         mixins: [reportMixin],
         methods: {
             changePage: function(index) {
-                var offset = index * 10;
-                var start = (index - 1) * 10;
+                var offset = index * 20;
+                var start = (index - 1) * 20;
                 this.currentPageIndex = index;
                 this.tableData = this.records.slice(start, offset);
             },
@@ -4049,7 +4042,7 @@ function timeOilConsumption(groupslist) {
                                 return b.updatetime - a.updatetime;
                             })
                             self.currentPageIndex = 1;
-                            self.tableData = records.slice(0, 10);
+                            self.tableData = records.slice(0, 20);
                             self.charts();
                         } else {
                             self.$Message.error(self.$t("reportForm.noRecord"));
@@ -4102,8 +4095,8 @@ function dayOil(groupslist) {
         mixins: [reportMixin],
         methods: {
             changePage: function(index) {
-                var offset = index * 10;
-                var start = (index - 1) * 10;
+                var offset = index * 20;
+                var start = (index - 1) * 20;
                 this.currentPageIndex = index;
                 this.tableData = this.records.slice(start, offset);
             },
@@ -4252,7 +4245,7 @@ function dayOil(groupslist) {
                             self.total = records.length;
 
                             self.currentPageIndex = 1;
-                            self.tableData = records.slice(0, 10);
+                            self.tableData = records.slice(0, 20);
                             self.charts();
                         } else {
                             self.$Message.error(self.$t("reportForm.noRecord"));
@@ -4941,8 +4934,8 @@ function temperature(groupslist) {
         mixins: [reportMixin],
         methods: {
             changePage: function(index) {
-                var offset = index * 10;
-                var start = (index - 1) * 10;
+                var offset = index * 20;
+                var start = (index - 1) * 20;
                 this.currentPageIndex = index;
                 this.tableData = this.records.slice(start, offset);
             },
@@ -5222,7 +5215,7 @@ function temperature(groupslist) {
                                 return b.updatetime - a.updatetime;
                             })
                             self.currentPageIndex = 1;
-                            self.tableData = records.slice(0, 10);
+                            self.tableData = records.slice(0, 20);
                             self.charts();
                         } else {
                             self.$Message.error(self.$t("reportForm.noRecord"));
