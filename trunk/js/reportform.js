@@ -4871,6 +4871,7 @@ function temperature(groupslist) {
                 { title: '温度3', key: 'temp3', width: 90 },
                 { title: '温度4', key: 'temp4', width: 90 },
                 { title: '平均温度', key: 'averageTemp', width: 110 },
+                { title: '湿度', key: 'humi1', width: 90 },
                 { title: '状态', key: 'strstatus' },
                 {
                     title: '经度,纬度',
@@ -4929,6 +4930,7 @@ function temperature(groupslist) {
             temp3: [],
             temp4: [],
             averageTemp: [],
+            humi1s: [],
             currentIndex: 1,
         },
         mixins: [reportMixin],
@@ -4950,6 +4952,7 @@ function temperature(groupslist) {
                 var temp3 = "温度3";
                 var temp4 = "温度4";
                 var averageTemp = "平均温度";
+                var humi1 = '湿度';
                 var option = {
                     title: {
                         text: speed + '/' + temp,
@@ -4977,7 +4980,7 @@ function temperature(groupslist) {
                         }
                     },
                     legend: {
-                        data: [temp1, temp2, temp3, temp4, averageTemp, speed],
+                        data: [temp1, temp2, temp3, temp4, averageTemp, humi1, speed],
                         x: 'left'
                     },
                     toolbox: {
@@ -5099,6 +5102,15 @@ function temperature(groupslist) {
                             //itemStyle: {normal: {areaStyle: {type: 'default'}}},
                             data: this.averageTemp
                         },
+                        {
+                            name: humi1,
+                            type: 'line',
+                            symbol: 'none',
+                            yAxisIndex: 0,
+                            color: '#9EEA6A',
+                            //itemStyle: {normal: {areaStyle: {type: 'default'}}},
+                            data: this.humi1s
+                        },
                     ]
                 };
 
@@ -5135,6 +5147,7 @@ function temperature(groupslist) {
                                 temp2 = [],
                                 temp3 = [],
                                 temp4 = [],
+                                humi1s = [],
                                 averageTemp = [];
                             resp.records.forEach(function(item, index) {
                                 records = item.records;
@@ -5145,6 +5158,7 @@ function temperature(groupslist) {
                                     var callon = record.callon.toFixed(5);
                                     var callat = record.callat.toFixed(5);
                                     var address = LocalCacheMgr.getAddress(callon, callat);
+
                                     if (address != null) {
                                         record.address = address;
                                     } else {
@@ -5182,7 +5196,13 @@ function temperature(groupslist) {
                                     } else {
                                         record.temp4 = '无';
                                     }
-
+                                    if (record.humi1 > 0) {
+                                        record.humi1 = record.humi1 / 10;
+                                        humi1s.push(record.humi1 / 10)
+                                    } else {
+                                        record.humi1 = '无';
+                                        humi1s.push('无');
+                                    }
 
                                     veo.push((record.speed / 1000).toFixed(2));
                                     temp1.push(record.temp1)
@@ -5308,11 +5328,11 @@ var reportForm = {
                     ]
                 },
                 {
-                    title: '温度报表',
+                    title: '温湿度报表',
                     name: 'temperatureConsumption',
                     icon: 'ios-color-wand-outline',
                     children: [
-                        { title: "温度报表", name: 'temperature', icon: 'ios-stopwatch-outline' },
+                        { title: "温湿度报表", name: 'temperature', icon: 'ios-stopwatch-outline' },
                     ]
                 },
             ]

@@ -517,8 +517,15 @@ var utils = {
             tempStr += "|"
             tempStr += temp / 10 + '℃';
         }
+
+        temp = track.humi1;
+        if (temp && temp > 0) {
+            tempStr += "|";
+            tempStr += temp / 10 + '%';
+        }
+
         if (tempStr != null) {
-            tempStr = '<p>' + (isZh ? '温度: ' : 'Temperature: ') + tempStr + '</p>'
+            tempStr = '<p>' + (isZh ? '温湿度: ' : 'Temperature: ') + tempStr + '</p>'
         }
         return tempStr;
     },
