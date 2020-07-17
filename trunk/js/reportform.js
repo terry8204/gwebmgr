@@ -617,7 +617,6 @@ function posiReport(groupslist) {
                     callback();
                 });
             },
-
             initMap: function() {
                 if (this.mapType == 'bMap') {
                     this.mapInstance = new BMap.Map('posi-map', { minZoom: 4, maxZoom: 18, enableMapClick: false });
@@ -4776,7 +4775,6 @@ function oilLeakageReport(groupslist) {
                 this.loading = true;
                 utils.sendAjax(myUrls.reportOilRecord(), data, function(resp) {
                     self.loading = false;
-                    console.log(resp);
                     if (resp.status == 0) {
                         if (resp.records) {
                             var records = [],
@@ -5260,6 +5258,288 @@ function temperature(groupslist) {
     });
 }
 
+
+function driverWorkDetails() {
+    vueInstanse = new Vue({
+        el: '#driver-work-details',
+        i18n: utils.getI18n(),
+        mixins: [treeMixin],
+        data: {
+            loading: false,
+            isSpin: false,
+            dateVal: [DateFormat.longToDateStr(Date.now(), timeDifference), DateFormat.longToDateStr(Date.now(), timeDifference)],
+            lastTableHeight: 100,
+            groupslist: [],
+            timeoutIns: null,
+            columns: [
+                { key: 'index', width: 60, title: '编号' },
+                { title: vRoot.$t("alarm.devName"), key: 'devicename' },
+                { title: '设备序号', key: 'deviceid' },
+                { title: '司机名称', key: 'drivername' },
+                { title: '装点时间(插卡)', key: 'uptimeStr', },
+                {
+                    title: '装点地点(插卡)',
+                    render: function(h, params) {
+                        var row = params.row;
+                        var lat = row.uplat ? row.uplat.toFixed(5) : null;
+                        var lon = row.uplon ? row.uplon.toFixed(5) : null;
+                        if (lat && lon) {
+                            if (row.saddress == null) {
+
+                                return h('Button', {
+                                    props: {
+                                        type: 'error',
+                                        size: 'small'
+                                    },
+                                    on: {
+                                        click: function() {
+                                            utils.getJiuHuAddressSyn(lon, lat, function(resp) {
+                                                if (resp && resp.address) {
+                                                    vueInstanse.records[params.index].saddress = resp.address;
+                                                    LocalCacheMgr.setAddress(lon, lat, resp.address);
+                                                }
+                                            })
+                                        }
+                                    }
+                                }, lon + "," + lat)
+
+                            } else {
+                                return h('Tooltip', {
+                                    props: {
+                                        content: row.saddress,
+                                        placement: "top-start",
+                                        maxWidth: 200
+                                    },
+                                }, [
+                                    h('Button', {
+                                        props: {
+                                            type: 'primary',
+                                            size: 'small'
+                                        }
+                                    }, lon + "," + lat)
+                                ]);
+                            }
+                        } else {
+                            return h('span', {}, '');
+                        }
+                    },
+                },
+                { title: '卸点时间(拔卡)', key: 'downtimeStr' },
+                {
+                    title: '卸点地点(拔卡)',
+                    render: function(h, params) {
+                        var row = params.row;
+                        var lat = row.downlat ? row.downlat.toFixed(5) : null;
+                        var lon = row.downlon ? row.downlon.toFixed(5) : null;
+                        if (lat && lon) {
+                            if (row.eaddress == null) {
+                                return h('Button', {
+                                    props: {
+                                        type: 'error',
+                                        size: 'small'
+                                    },
+                                    on: {
+                                        click: function() {
+                                            utils.getJiuHuAddressSyn(lon, lat, function(resp) {
+                                                if (resp && resp.address) {
+                                                    vueInstanse.records[params.index].eaddress = resp.address;
+                                                    LocalCacheMgr.setAddress(lon, lat, resp.address);
+                                                }
+                                            })
+                                        }
+                                    }
+                                }, lon + "," + lat)
+
+                            } else {
+                                return h('Tooltip', {
+                                    props: {
+                                        content: row.eaddress,
+                                        placement: "top-start",
+                                        maxWidth: 200
+                                    },
+                                }, [
+                                    h('Button', {
+                                        props: {
+                                            type: 'primary',
+                                            size: 'small'
+                                        }
+                                    }, lon + "," + lat)
+                                ]);
+                            }
+                        } else {
+                            return h('span', {}, '');
+                        }
+                    },
+                },
+                { title: '工作时长', key: 'endtimeStr' },
+                {
+                    title: '行驶里程(km)',
+                    render: function(h, params) {
+                        var row = params.row;
+                        var distance = ((row.downdistance - row.updistance) / 1000).toFixed(2);
+                        return h('span', {}, distance);
+                    },
+                },
+                { title: '驾驶证号', key: 'certificationcode' },
+                {
+                    title: '操作',
+                    render: function(h, params) {
+                        return h(
+                            'Button', {
+                                on: {
+                                    click: function() {
+                                        vueInstanse.trackDetailModal = true;
+                                    }
+                                },
+                                props: {
+                                    size: 'small'
+                                }
+                            },
+                            '查看轨迹'
+                        )
+                    },
+                },
+            ],
+            tableData: [{}],
+            currentIndex: 1,
+            trackDetailModal: false,
+            deviceName: '',
+        },
+        methods: {
+            initMap: function() {
+                if (utils.getMapType() == 'bMap') {
+                    this.mapInstance = new BMap.Map('work-details-map', { minZoom: 4, maxZoom: 18, enableMapClick: false });
+                    this.mapInstance.enableScrollWheelZoom();
+                    this.mapInstance.enableAutoResize();
+                    this.mapInstance.disableDoubleClickZoom();
+                    this.mapInstance.centerAndZoom(new BMap.Point(113.264435, 24.129163), 4);
+                } else {
+                    var center = new google.maps.LatLng(24.129163, 113.264435);
+                    this.mapInstance = new google.maps.Map(document.getElementById('work-details-map'), {
+                        zoom: 4,
+                        center: center,
+                        mapTypeId: google.maps.MapTypeId.ROADMAP
+                    });
+                };
+            },
+            clean: function() {
+                this.sosoValue = '';
+                this.checkedDevice = [];
+                this.cleanSelected(this.groupslist);
+                this.treeData = this.groupslist;
+            },
+            cleanSelected: function(treeDataFilter) {
+                var that = this;
+                for (var i = 0; i < treeDataFilter.length; i++) {
+                    var item = treeDataFilter[i];
+                    if (item != null) {
+                        item.checked = false;
+                        if (item.children && item.children.length > 0) {
+                            that.cleanSelected(item.children);
+                        }
+                    }
+                }
+            },
+            changePage: function(index) {
+                var offset = index * 20;
+                var start = (index - 1) * 20;
+                this.currentIndex = index;
+                this.tableData = this.records.slice(start, offset);
+            },
+            calcTableHeight: function() {
+                var wHeight = window.innerHeight;
+                this.lastTableHeight = wHeight - 210;
+            },
+            onClickQuery: function() {
+                var deviceids = [];
+                this.checkedDevice.forEach(function(group) {
+                    if (!group.children) {
+                        if (group.deviceid != null) {
+                            deviceids.push(group.deviceid);
+                        }
+                    }
+                });
+                if (deviceids.length > 0) {
+                    var me = this;
+                    var url = myUrls.reportDriverRecords();
+                    var data = {
+                        startday: this.dateVal[0],
+                        endday: this.dateVal[1],
+                        offset: timeDifference,
+                        deviceids: deviceids
+                    }
+                    me.loading = true;
+                    utils.sendAjax(url, data, function(resp) {
+                        console.log(resp);
+                        me.loading = false;
+                        if (resp.status === 0) {
+                            if (resp.records.length) {
+                                resp.records.forEach(function(item, index) {
+                                    item.index = index + 1;
+                                    var callat = record.uplat.toFixed(5);
+                                    var callon = record.uplon.toFixed(5);
+                                    var saddress = LocalCacheMgr.getAddress(callon, callat);
+                                    if (saddress != null) {
+                                        record.saddress = saddress;
+                                    } else {
+                                        record.saddress = null;
+                                    };
+                                    var elat = record.downlat.toFixed(5);
+                                    var elon = record.downlon.toFixed(5);
+                                    var eaddress = LocalCacheMgr.getAddress(elon, elat);
+                                    if (eaddress != null) {
+                                        record.eaddress = eaddress;
+                                    } else {
+                                        record.eaddress = null;
+                                    };
+                                    item.devicename = vstore.state.deviceInfos[item.deviceid] ? vstore.state.deviceInfos[item.deviceid].devicename : item.deviceid;
+                                    item.uptimeStr = DateFormat.longToDateTimeStr(item.uptime, timeDifference);
+                                    item.downtimeStr = DateFormat.longToDateTimeStr(item.downtime, timeDifference);
+                                });
+                                me.records = resp.records;
+                                me.tableData = me.records.slice(0, 20);
+                                me.total = me.records.length;
+
+                            } else {
+                                me.tableData = [];
+                            };
+                            me.currentIndex = 1;
+                        } else {
+                            me.tableData = [];
+                        }
+                    })
+                } else {
+                    this.$Message.error(this.$t("reportForm.selectDevTip"));
+                }
+            }
+        },
+        mounted: function() {
+            var me = this;
+            me.records = [];
+            me.initMap();
+            if (rootuser == null) {
+                me.isSpin = true;
+                utils.queryDevicesTree(function(rootuserinfo) {
+                    me.isSpin = false;
+                    if (rootuserinfo) {
+                        rootuser = rootuserinfo;
+                        me.groupslist = [utils.castUsersTreeToDevicesTree(rootuserinfo, true)];
+                        me.treeData = me.groupslist;
+                    }
+                });
+            } else {
+                me.groupslist = [utils.castUsersTreeToDevicesTree(rootuser, true)];
+                me.treeData = me.groupslist;
+            }
+            this.calcTableHeight();
+            window.onresize = function() {
+                me.calcTableHeight();
+            }
+        }
+    })
+}
+
+
 // 统计报表
 var reportForm = {
     template: document.getElementById('report-template').innerHTML,
@@ -5334,6 +5614,14 @@ var reportForm = {
                     icon: 'ios-color-wand-outline',
                     children: [
                         { title: "温湿度报表", name: 'temperature', icon: 'ios-stopwatch-outline' },
+                    ]
+                },
+                {
+                    title: '物流报表',
+                    name: 'logisticsReport',
+                    icon: 'ios-bicycle',
+                    children: [
+                        { title: "司机工作明细", name: 'driverWorkDetails', icon: 'md-car' },
                     ]
                 },
             ]
@@ -5430,6 +5718,9 @@ var reportForm = {
                     case 'temperature.html':
                         temperature(groupslist);
                         break;
+                    case 'driverworkdetails.html':
+                        driverWorkDetails(groupslist);
+                        break;
                 }
             });
         },
@@ -5485,31 +5776,11 @@ var reportForm = {
     },
     mounted: function() {
         var me = this;
-        // if (globalGroups.length > 0) {
         me.groupslist = globalGroups;
         if (isToAlarmListRecords) {
             me.toAlarmRecords("allAlarm", "allalarm.html");
         } else if (isToPhoneAlarmRecords) {
             me.toAlarmRecords("phoneAlarm", "phonealarm.html");
         }
-        // } else {
-        //     this.getMonitorListByUser(function(groups) {
-        //         me.groupslist = utils.getPinyin(groups);
-        //         me.groupslist.sort(function(a, b) {
-        //             return a.groupname.localeCompare(b.groupname);
-        //         });
-        //         me.groupslist.forEach(function(group) {
-        //             group.devices.sort(function(a, b) {
-        //                 return a.title.localeCompare(b.title);
-        //             });
-        //         });
-        //         if (isToAlarmListRecords) {
-        //             me.toAlarmRecords("allAlarm", "allalarm.html");
-        //         } else if (isToPhoneAlarmRecords) {
-        //             me.toAlarmRecords("phoneAlarm", "phonealarm.html");
-        //         }
-        //     })
-        // }
-
     }
 }

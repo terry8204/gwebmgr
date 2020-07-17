@@ -641,6 +641,9 @@ var myUrls = {
     reportTempTime: function() {
         return this.apihosts + 'webapi?action=reporttemptime&token=' + token;
     },
+    reportDriverRecords: function() {
+        return this.apihosts + 'webapi?action=reportdriverrecords&token=' + token;
+    },
     getCardInfo: function(action) {
         return this.apihosts + 'webapi?action=' + action + '&token=' + token;
     },
