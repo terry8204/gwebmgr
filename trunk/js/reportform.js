@@ -5276,9 +5276,10 @@ function driverWorkDetails() {
                 { title: vRoot.$t("alarm.devName"), key: 'devicename' },
                 { title: '设备序号', key: 'deviceid' },
                 { title: '司机名称', key: 'drivername' },
-                { title: '装点时间(插卡)', key: 'uptimeStr', },
+                { title: '装点时间(插卡)', key: 'uptimeStr', width: 150, },
                 {
                     title: '装点地点(插卡)',
+                    width: 145,
                     render: function(h, params) {
                         var row = params.row;
                         var lat = row.uplat ? row.uplat.toFixed(5) : null;
@@ -5324,9 +5325,10 @@ function driverWorkDetails() {
                         }
                     },
                 },
-                { title: '卸点时间(拔卡)', key: 'downtimeStr' },
+                { title: '卸点时间(拔卡)', key: 'downtimeStr', width: 150, },
                 {
                     title: '卸点地点(拔卡)',
+                    width: 145,
                     render: function(h, params) {
                         var row = params.row;
                         var lat = row.downlat ? row.downlat.toFixed(5) : null;
@@ -5392,7 +5394,8 @@ function driverWorkDetails() {
                                     }
                                 },
                                 props: {
-                                    size: 'small'
+                                    size: 'small',
+                                    type: 'info'
                                 }
                             },
                             '查看轨迹'
@@ -5400,7 +5403,7 @@ function driverWorkDetails() {
                     },
                 },
             ],
-            tableData: [{}],
+            tableData: [],
             currentIndex: 1,
             trackDetailModal: false,
             deviceName: '',
@@ -5408,14 +5411,14 @@ function driverWorkDetails() {
         methods: {
             initMap: function() {
                 if (utils.getMapType() == 'bMap') {
-                    this.mapInstance = new BMap.Map('work-details-map', { minZoom: 4, maxZoom: 18, enableMapClick: false });
+                    this.mapInstance = new BMap.Map(document.getElementsByClassName('work-details-map')[0], { minZoom: 4, maxZoom: 18, enableMapClick: false });
                     this.mapInstance.enableScrollWheelZoom();
                     this.mapInstance.enableAutoResize();
                     this.mapInstance.disableDoubleClickZoom();
                     this.mapInstance.centerAndZoom(new BMap.Point(113.264435, 24.129163), 4);
                 } else {
                     var center = new google.maps.LatLng(24.129163, 113.264435);
-                    this.mapInstance = new google.maps.Map(document.getElementById('work-details-map'), {
+                    this.mapInstance = new google.maps.Map(document.getElementsByClassName('work-details-map')[0], {
                         zoom: 4,
                         center: center,
                         mapTypeId: google.maps.MapTypeId.ROADMAP
@@ -5474,34 +5477,42 @@ function driverWorkDetails() {
                         me.loading = false;
                         if (resp.status === 0) {
                             if (resp.records.length) {
-                                resp.records.forEach(function(item, index) {
-                                    item.index = index + 1;
-                                    var callat = record.uplat.toFixed(5);
-                                    var callon = record.uplon.toFixed(5);
-                                    var saddress = LocalCacheMgr.getAddress(callon, callat);
-                                    if (saddress != null) {
-                                        record.saddress = saddress;
-                                    } else {
-                                        record.saddress = null;
-                                    };
-                                    var elat = record.downlat.toFixed(5);
-                                    var elon = record.downlon.toFixed(5);
-                                    var eaddress = LocalCacheMgr.getAddress(elon, elat);
-                                    if (eaddress != null) {
-                                        record.eaddress = eaddress;
-                                    } else {
-                                        record.eaddress = null;
-                                    };
-                                    item.devicename = vstore.state.deviceInfos[item.deviceid] ? vstore.state.deviceInfos[item.deviceid].devicename : item.deviceid;
-                                    item.uptimeStr = DateFormat.longToDateTimeStr(item.uptime, timeDifference);
-                                    item.downtimeStr = DateFormat.longToDateTimeStr(item.downtime, timeDifference);
+                                var records = [],
+                                    index = 1;
+                                resp.records.forEach(function(item) {
+                                    item.records.forEach(function(item) {
+                                        item.index = index;
+                                        var callat = item.uplat.toFixed(5);
+                                        var callon = item.uplon.toFixed(5);
+                                        var saddress = LocalCacheMgr.getAddress(callon, callat);
+                                        if (saddress != null) {
+                                            item.saddress = saddress;
+                                        } else {
+                                            item.saddress = null;
+                                        };
+                                        var elat = item.downlat.toFixed(5);
+                                        var elon = item.downlon.toFixed(5);
+                                        var eaddress = LocalCacheMgr.getAddress(elon, elat);
+                                        if (eaddress != null) {
+                                            item.eaddress = eaddress;
+                                        } else {
+                                            item.eaddress = null;
+                                        };
+                                        item.devicename = vstore.state.deviceInfos[item.deviceid] ? vstore.state.deviceInfos[item.deviceid].devicename : item.deviceid;
+                                        item.uptimeStr = DateFormat.longToDateTimeStr(item.uptime, timeDifference);
+                                        item.downtimeStr = DateFormat.longToDateTimeStr(item.downtime, timeDifference);
+                                        records.push(item);
+                                        index++;
+                                    })
                                 });
-                                me.records = resp.records;
-                                me.tableData = me.records.slice(0, 20);
+                                me.records = records;
+                                me.tableData = records.slice(0, 20);
                                 me.total = me.records.length;
 
                             } else {
                                 me.tableData = [];
+                                me.total = 1;
+                                me.records = [];
                             };
                             me.currentIndex = 1;
                         } else {

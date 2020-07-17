@@ -42,13 +42,16 @@
     <div style="padding-left:10px;">
         <Page :total="total" show-total @on-change="changePage" :page-size="20" :current="currentIndex" />
     </div>
-    <Modal v-model="trackDetailModal" fullscreen>
-        <p slot="header" style="color:#f60;text-align:center">
-            <Icon type="ios-create-outline"></Icon>
-            <span>工作轨迹-{{deviceName}}</span>
-        </p>
-        <div style="width: 100%;height: 100%;">
-            <div id="work-details-map" style="width: 100%;height: 100%;"></div>
+    <transition name="fade">
+        <div v-show="trackDetailModal" class="posi-map-wraper">
+            <div class="map-modal" @click="trackDetailModal=false"></div>
+            <div class="work-inner-map-wraper">
+                <div class="posi-map-title">
+                    工作轨迹
+                    <div class="map-close"></div>
+                </div>
+                <div class="work-details-map"></div>
+            </div>
         </div>
-    </Modal>
+    </transition>
 </div>
