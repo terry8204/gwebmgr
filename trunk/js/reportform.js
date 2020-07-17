@@ -5197,11 +5197,11 @@ function temperature(groupslist) {
                                         record.temp4 = '无';
                                     }
                                     if (record.humi1 > 0) {
-                                        record.humi1 = record.humi1 / 10;
-                                        humi1s.push(record.humi1 / 10)
+                                        record.humi1 = (record.humi1 / 10).toFixed(1);
+                                        humi1s.push(record.humi1)
                                     } else {
                                         record.humi1 = '无';
-                                        humi1s.push('无');
+                                        humi1s.push(record.humi1);
                                     }
 
                                     veo.push((record.speed / 1000).toFixed(2));
@@ -5228,6 +5228,7 @@ function temperature(groupslist) {
                             self.temp2 = temp2;
                             self.temp3 = temp3;
                             self.temp4 = temp4;
+                            self.humi1s = humi1s;
                             self.averageTemp = averageTemp;
                             self.records = records;
                             self.total = records.length;
