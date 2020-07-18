@@ -5321,11 +5321,19 @@ function driverWorkDetails() {
                                 ]);
                             }
                         } else {
-                            return h('span', {}, '');
+                            return h('span', {}, '无');
                         }
                     },
                 },
-                { title: '卸点时间(拔卡)', key: 'downtimeStr', width: 150, },
+                {
+                    title: '卸点时间(拔卡)',
+                    width: 150,
+                    render: function(h, params) {
+                        var row = params.row;
+                        return h('span', {}, row.downtime == 0 ? '无' : row.downtimeStr)
+                    },
+
+                },
                 {
                     title: '卸点地点(拔卡)',
                     width: 145,
@@ -5369,7 +5377,7 @@ function driverWorkDetails() {
                                 ]);
                             }
                         } else {
-                            return h('span', {}, '');
+                            return h('span', {}, '无');
                         }
                     },
                 },
@@ -5377,14 +5385,14 @@ function driverWorkDetails() {
                     title: '工作时长',
                     render: function(h, params) {
                         var row = params.row;
-                        return h('span', {}, utils.timeStamp(row.downtime - row.uptime, isZh));
+                        return h('span', {}, row.downtime <= 0 ? '无' : utils.timeStamp(row.downtime - row.uptime, isZh));
                     },
                 },
                 {
                     title: '行驶里程(km)',
                     render: function(h, params) {
                         var row = params.row;
-                        var distance = ((row.downdistance - row.updistance) / 1000).toFixed(2);
+                        var distance = row.downdistance == 0 ? '无' : ((row.downdistance - row.updistance) / 1000).toFixed(2);
                         return h('span', {}, distance);
                     },
                 },
@@ -5457,9 +5465,12 @@ function driverWorkDetails() {
                         deviceid: row.deviceid,
                         begintime: row.uptimeStr,
                         endtime: row.downtimeStr,
-                        interval: 10,
+                        interval: 60,
                         timezone: timeDifference
                     };
+                if (row.downtime <= 0) {
+                    data.endtime = DateFormat.longToDateTimeStr(row.uptime + 60000, timeDifference)
+                }
                 utils.sendAjax(url, data, function(respData) {
                     if (respData.status === 0) {
                         var records = respData.records;
@@ -5574,6 +5585,9 @@ function driverWorkDetails() {
                                         item.devicename = vstore.state.deviceInfos[item.deviceid] ? vstore.state.deviceInfos[item.deviceid].devicename : item.deviceid;
                                         item.uptimeStr = DateFormat.longToDateTimeStr(item.uptime, timeDifference);
                                         item.downtimeStr = DateFormat.longToDateTimeStr(item.downtime, timeDifference);
+                                        if (!item.certificationcode) {
+                                            item.certificationcode = '无';
+                                        }
                                         records.push(item);
                                         index++;
                                     })
