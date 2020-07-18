@@ -395,7 +395,7 @@
         var vRoot = new Vue({
             el: "#container",
             data: {
-                networkSpeed: 'KB/S',
+                networkSpeed: '0KB/S',
                 isSpin: false,
                 modal: false,
                 isTable: 'time',
@@ -1190,7 +1190,7 @@
                     this.flvPlayer.load(); //加载
                     this.flvPlayer.play(); // canplay;
                     var me = this;
-                    flvPlayer.on(flvjs.Events.STATISTICS_INFO, function(e) {
+                    this.flvPlayer.on(flvjs.Events.STATISTICS_INFO, function(e) {
                         me.networkSpeed = parseInt(e.speed * 10) / 10 + 'KB/S';
                     })
                 },
