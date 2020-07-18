@@ -5592,7 +5592,7 @@ function driverWorkDetails() {
                                         index++;
                                     })
                                 });
-                                me.records = records;
+                                me.records = records.sort(function(a, b) { return b.uptime - a.uptime });
                                 me.tableData = records.slice(0, 20);
                                 me.total = me.records.length;
 
