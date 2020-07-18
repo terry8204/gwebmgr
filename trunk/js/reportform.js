@@ -5373,7 +5373,13 @@ function driverWorkDetails() {
                         }
                     },
                 },
-                { title: '工作时长', key: 'endtimeStr' },
+                {
+                    title: '工作时长',
+                    render: function(h, params) {
+                        var row = params.row;
+                        return h('span', {}, utils.timeStamp(row.downtime - row.uptime, isZh));
+                    },
+                },
                 {
                     title: '行驶里程(km)',
                     render: function(h, params) {
@@ -5385,12 +5391,12 @@ function driverWorkDetails() {
                 { title: '驾驶证号', key: 'certificationcode' },
                 {
                     title: '操作',
-                    render: function(h, params) {
+                    render: function(h, parmas) {
                         return h(
                             'Button', {
                                 on: {
                                     click: function() {
-                                        vueInstanse.trackDetailModal = true;
+                                        vueInstanse.queryTracks(parmas.row);
                                     }
                                 },
                                 props: {
@@ -5415,7 +5421,7 @@ function driverWorkDetails() {
                     this.mapInstance.enableScrollWheelZoom();
                     this.mapInstance.enableAutoResize();
                     this.mapInstance.disableDoubleClickZoom();
-                    this.mapInstance.centerAndZoom(new BMap.Point(113.264435, 24.129163), 4);
+                    this.mapInstance.centerAndZoom(new BMap.Point(108.0017245, 35.926895), 5);
                 } else {
                     var center = new google.maps.LatLng(24.129163, 113.264435);
                     this.mapInstance = new google.maps.Map(document.getElementsByClassName('work-details-map')[0], {
@@ -5442,6 +5448,73 @@ function driverWorkDetails() {
                         }
                     }
                 }
+            },
+            queryTracks: function(row) {
+                this.mapInstance.clearOverlays();
+                var url = myUrls.queryTracks(),
+                    me = this,
+                    data = {
+                        deviceid: row.deviceid,
+                        begintime: row.uptimeStr,
+                        endtime: row.downtimeStr,
+                        interval: 10,
+                        timezone: timeDifference
+                    };
+                utils.sendAjax(url, data, function(respData) {
+                    if (respData.status === 0) {
+                        var records = respData.records;
+                        if (records) {
+                            me.trackDetailModal = true;
+                            var poinsts = me.getBdPoints(records);
+                            if (poinsts.length === 1) {
+                                var startMarker = new BMap.Marker(poinsts[0], {
+                                    icon: new BMap.Icon("./images/map/marker_qidian.png", new BMap.Size(32, 32), { imageOffset: new BMap.Size(0, 0) })
+                                });
+                            } else if (poinsts.length > 1) {
+                                var startMarker = new BMap.Marker(poinsts[0], {
+                                    icon: new BMap.Icon("./images/map/marker_qidian.png", new BMap.Size(32, 32), { imageOffset: new BMap.Size(0, 0) })
+                                });
+                                var endMarker = new BMap.Marker(poinsts[poinsts.length - 1], {
+                                    icon: new BMap.Icon("./images/map/marker_zhongdian.png", new BMap.Size(32, 32), { imageOffset: new BMap.Size(0, 0) })
+                                });
+                                var polyline = new BMap.Polyline(poinsts, {
+                                    enableEditing: false, //是否启用线编辑，默认为false
+                                    enableClicking: true, //是否响应点击事件，默认为true
+                                    enableMassClear: true,
+                                    strokeWeight: '4', //折线的宽度，以像素为单位
+                                    strokeOpacity: 0.8, //折线的透明度，取值范围0 - 1
+                                    strokeColor: "red" //折线颜色
+                                });
+                                me.mapInstance.addOverlay(startMarker);
+                                me.mapInstance.addOverlay(endMarker);
+                                me.mapInstance.addOverlay(polyline);
+                            }
+                            me.setViewPortCenter(poinsts);
+                        } else {
+                            me.$Message.error('没有轨迹');
+                        }
+                    } else {
+                        me.$Message.error('轨迹查询失败');
+                    }
+
+                });
+            },
+            setViewPortCenter: function(lines) {
+                var me = this;
+                setTimeout(function() {
+                    var view = me.mapInstance.getViewport(eval(lines));
+                    var mapZoom = view.zoom;
+                    var centerPoint = view.center;
+                    me.mapInstance.centerAndZoom(centerPoint, mapZoom);
+                }, 300)
+            },
+            getBdPoints: function(records) {
+                var points = [];
+                records.forEach(function(item) {
+                    var lon_lat = wgs84tobd09(item.callon, item.callat);
+                    points.push(new BMap.Point(lon_lat[0], lon_lat[1]));
+                });
+                return points;
             },
             changePage: function(index) {
                 var offset = index * 20;
