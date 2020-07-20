@@ -2112,6 +2112,7 @@ function insureRecords(groupslist) {
                                         vueInstanse.editObjectRow.usernamephonenum = params.row.usernamephonenum;
                                         vueInstanse.editObjectRow.insureid = params.row.insureid;
                                         vueInstanse.editObjectRow.isRecharge = params.row.insurestate == 1 ? true : false;
+                                        vueInstanse.editObjectRow.createtime = new Date(params.row.createtimeStr);
                                         vueInstanse.modal = true;
                                     }
                                 }
@@ -2146,6 +2147,7 @@ function insureRecords(groupslist) {
                 vinno: "",
                 usernamephonenum: '',
                 isRecharge: false,
+                createtime: '',
             }
         },
         methods: {
@@ -2169,7 +2171,9 @@ function insureRecords(groupslist) {
                 var url = myUrls.editInsure(),
                     me = this;
                 this.editObjectRow.insurestate = me.editObjectRow.isRecharge ? 1 : 0;
-                utils.sendAjax(url, this.editObjectRow, function(respData) {
+                var d = deepClone(this.editObjectRow);
+                d.createtime = new Date(d.createtime).getTime();
+                utils.sendAjax(url, d, function(respData) {
                     if (respData.status == 0) {
                         var data = me.tableData[me.editDeviceIndex];
                         var cdata = me.insureRecords[data.index - 1];
@@ -2180,6 +2184,8 @@ function insureRecords(groupslist) {
                         data.usernamephonenum = me.editObjectRow.usernamephonenum;
                         data.insurestate = me.editObjectRow.isRecharge ? 1 : 0;
                         data.isPay = data.insurestate == 1 ? '已审核' : '未审核';
+                        data.createtimeStr = DateFormat.longToDateStr(d.createtime, timeDifference);
+                        data.createtime = data.createtime;
 
                         cdata.name = me.editObjectRow.name;
                         cdata.cardid = me.editObjectRow.cardid;
@@ -2188,6 +2194,8 @@ function insureRecords(groupslist) {
                         cdata.usernamephonenum = me.editObjectRow.usernamephonenum;
                         cdata.insurestate = me.editObjectRow.isRecharge ? 1 : 0;
                         cdata.isPay = data.insurestate == 1 ? '已审核' : '未审核';
+                        cdata.createtimeStr = DateFormat.longToDateStr(d.createtime, timeDifference);
+                        cdata.createtime = data.createtime;
 
                         me.modal = false;
                         me.$Message.success('编辑成功');
@@ -2352,7 +2360,7 @@ function insureRecords(groupslist) {
                                 var tableData = [];
                                 resp.insures.forEach(function(item, index) {
                                     item.index = index + 1;
-                                    item.createtimeStr = DateFormat.format(new Date(item.createtime), 'yyyy-MM-dd')
+                                    item.createtimeStr = DateFormat.longToDateStr(item.createtime, timeDifference)
                                     if (item.policyno == null) {
                                         item.policyno = '保单审核中';
                                     };

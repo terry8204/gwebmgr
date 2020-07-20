@@ -81,6 +81,12 @@
                     <Checkbox v-model="editObjectRow.isRecharge"></Checkbox>
                 </i-col>
             </Row>
+            <Row style="margin:10px 0;">
+                <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">添加时间 : &nbsp;</i-col>
+                <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
+                    <date-picker type="date" v-model="editObjectRow.createtime"></date-picker>
+                </i-col>
+            </Row>
         </div>
         <div slot="footer">
             <i-button type="primary" style="width: 100%" @click="handleEditInsure">提交</i-button>

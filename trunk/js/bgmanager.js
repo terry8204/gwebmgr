@@ -51,7 +51,16 @@ var bgManager = {
                         { title: "导入SIM卡信息", name: 'ImportSim', icon: 'md-add' },
                         { title: "导入设备名称", name: 'ImportDeviceName', icon: 'md-add' },
                     ]
-                }
+                },
+                {
+                    title: '维修管理',
+                    name: 'repairMar',
+                    icon: 'md-build',
+                    children: [
+                        { title: "添加记录", name: 'addRepair', icon: 'ios-add' },
+                        { title: "维修记录", name: 'repairRecord', icon: 'ios-document' },
+                    ]
+                },
             ]
         }
     },
@@ -117,6 +126,12 @@ var bgManager = {
                     break
                 case 'ImportDeviceName':
                     page = 'importdevicename.html'
+                    break
+                case 'repairRecord':
+                    page = 'repairrecord.html'
+                    break
+                case 'addRepair':
+                    page = 'addrepair.html'
                     break
             }
             this.currentPage = name

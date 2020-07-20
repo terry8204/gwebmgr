@@ -1,0 +1,188 @@
+<div id="addrepair">
+    <div class="full">
+        <h3 class="h3-title" style="margin: 10px;">添加维修记录</h3>
+        <div>
+            <Row style="margin: 10px 0">
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;" :offset="2"><i style="color: red;display: inline-block;">*</i>&nbsp;设备序号 : &nbsp;</i-col>
+                <i-col span="8">
+                    <i-input v-model.trim="deviceid"></i-input>
+                </i-col>
+                <i-col span="10" style="height: 100%;line-height:32px;padding-left:20px;">
+                    <span>
+                            <!-- <Icon type="star"></Icon> {{$t("group.groupNameTip")}}  -->
+                        </span>
+                </i-col>
+            </Row>
+
+            <Row style="margin: 10px 0">
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;" :offset="2">维修项 : &nbsp;</i-col>
+                <i-col span="8">
+                    <i-input v-model.trim="repairitem"></i-input>
+                </i-col>
+                <i-col span="10" style="height: 100%;line-height:32px;padding-left:20px;">
+                    <span>
+                            <!-- <Icon type="star"></Icon> {{$t("group.userCountTip")}} -->
+                        </span>
+                </i-col>
+            </Row>
+
+            <Row style="margin: 10px 0">
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;" :offset="2">维修金额 : &nbsp;</i-col>
+                <i-col span="8">
+                    <i-input v-model.trim="fee"></i-input>
+                </i-col>
+                <i-col span="10" style="height: 100%;line-height:32px;padding-left:20px;">
+                    <span>
+                            <!-- <Icon type="star"></Icon> {{$t("group.userCountTip")}} -->
+                        </span>
+                </i-col>
+            </Row>
+
+            <Row style="margin: 10px 0">
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;" :offset="2">维修店名 : &nbsp;</i-col>
+                <i-col span="8">
+                    <i-input v-model.trim="repairagent"></i-input>
+                </i-col>
+                <i-col span="10" style="height: 100%;line-height:32px;padding-left:20px;">
+                    <span>
+                            <!-- <Icon type="star"></Icon> {{$t("group.userCountTip")}} -->
+                        </span>
+                </i-col>
+            </Row>
+
+            <Row style="margin: 10px 0">
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;" :offset="2">维修店地址 : &nbsp;</i-col>
+                <i-col span="8">
+                    <i-input v-model.trim="repairaddress"></i-input>
+                </i-col>
+                <i-col span="10" style="height: 100%;line-height:32px;padding-left:20px;">
+                    <span>
+                            <!-- <Icon type="star"></Icon> {{$t("group.userCountTip")}} -->
+                        </span>
+                </i-col>
+            </Row>
+
+            <Row style="margin: 10px 0">
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;" :offset="2">维修店联系电话 : &nbsp;</i-col>
+                <i-col span="8">
+                    <i-input v-model.trim="repairphone"></i-input>
+                </i-col>
+                <i-col span="10" style="height: 100%;line-height:32px;padding-left:20px;">
+                    <span>
+                            <!-- <Icon type="star"></Icon> {{$t("group.userCountTip")}} -->
+                        </span>
+                </i-col>
+            </Row>
+
+            <Row style="margin: 10px 0">
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;" :offset="2">维修店人姓名 : &nbsp;</i-col>
+                <i-col span="8">
+                    <i-input v-model.trim="repairname"></i-input>
+                </i-col>
+                <i-col span="10" style="height: 100%;line-height:32px;padding-left:20px;">
+                    <span>
+                            <!-- <Icon type="star"></Icon> {{$t("group.userCountTip")}} -->
+                        </span>
+                </i-col>
+            </Row>
+
+            <Row style="margin: 10px 0">
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;" :offset="2">送修人姓名 : &nbsp;</i-col>
+                <i-col span="8">
+                    <i-input v-model.trim="submitrepairname"></i-input>
+                </i-col>
+                <i-col span="10" style="height: 100%;line-height:32px;padding-left:20px;">
+                    <span>
+                            <!-- <Icon type="star"></Icon> {{$t("group.userCountTip")}} -->
+                        </span>
+                </i-col>
+            </Row>
+
+            <Row style="margin: 10px 0">
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;" :offset="2">送修人电话 : &nbsp;</i-col>
+                <i-col span="8">
+                    <i-input v-model.trim="submitrepairphone"></i-input>
+                </i-col>
+                <i-col span="10" style="height: 100%;line-height:32px;padding-left:20px;">
+                    <span>
+                            <!-- <Icon type="star"></Icon> {{$t("group.userCountTip")}} -->
+                        </span>
+                </i-col>
+            </Row>
+
+            <Row style="margin: 10px 0">
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;" :offset="2">备注 : &nbsp;</i-col>
+                <i-col span="8">
+                    <i-input v-model.trim="remark"></i-input>
+                </i-col>
+                <i-col span="10" style="height: 100%;line-height:32px;padding-left:20px;">
+                    <span>
+                            <!-- <Icon type="star"></Icon> {{$t("group.userCountTip")}} -->
+                        </span>
+                </i-col>
+            </Row>
+
+            <Row style="margin: 10px 0">
+                <i-col span="6" :offset="6">
+                    <i-button style="width: 100%" @click="handleSubmit">{{$t("bgMgr.submit")}}</i-button>
+                </i-col>
+            </Row>
+        </div>
+    </div>
+
+    <script>
+        new Vue({
+            el: "#addrepair",
+            i18n: utils.getI18n(),
+            data: {
+                deviceid: '',
+                repairitem: '', //维修项' ,
+                fee: '', //多少钱元,精确到小数点后2位
+                repairagent: '', //维修店名' ,
+                repairaddress: '', //维修店地址' ,
+                repairphone: '', //维修店联系电话' ,
+                repairname: '', //维修店联系人' ,
+                submitrepairname: '', //送修人员名字' ,
+                submitrepairphone: '', //送修人员电话' ,
+                remark: '', //备注' ,
+            },
+            methods: {
+                handleSubmit: function() {
+                    if (this.groupname == "") {
+                        this.$Message.error(this.$t("message.fillGroupNameTip"));
+                        return;
+                    };
+                    var url = myUrls.addGroup();
+                    var data = {
+                        groupname: this.groupname,
+                        mintime: this.mintime,
+                        maxtime: this.maxtime,
+                        groupname: this.groupname,
+                    };
+                    if (this.usercount == "") {
+                        data.usercount = 0;
+                    } else {
+                        data.usercount = this.usercount;
+                    }
+                    if (this.devicecount == "") {
+                        data.devicecount = 0;
+                    } else {
+                        data.devicecount = this.devicecount;
+                    }
+                    utils.sendAjax(url, data, this.doAddcallback);
+                },
+                doAddcallback: function(resp) {
+                    if (resp.status == 0) {
+                        rootuser = null;
+                        this.$Message.success(this.$t("message.addSucc"));
+                    } else {
+                        this.$Message.error(resp.cause);
+                    }
+                },
+            },
+            mounted: function() {
+
+            }
+        })
+    </script>
+</div>

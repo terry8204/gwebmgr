@@ -1541,11 +1541,11 @@
                         all: true,
                     }, function(resp) {
                         if (resp.status == 0 && resp.devices != null) {
-                            me.$Message.error('导出成功');
+                            me.$Message.success('导出成功');
                             me.$refs.table.exportCsv({
                                 filename: 'deviceids',
                                 columns: me.columns.filter(function(col, index) {
-                                    return index < 8
+                                    return index < 9
                                 }),
                                 data: me.filterDataInfo(resp.devices),
                                 quoted: true,
