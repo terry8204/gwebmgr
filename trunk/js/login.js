@@ -87,6 +87,7 @@ new Vue({
                 type: "post",
                 data: encode,
                 dataType: "json",
+                contentType: "application/json;charset=utf-8",
                 timeout: 30000,
                 success: function(resp) {
                     me.loading = false;
@@ -195,6 +196,7 @@ new Vue({
                 url: url,
                 type: "post",
                 data: encode,
+                contentType: "application/json;charset=utf-8",
                 dataType: "json",
                 timeout: 30000,
                 success: function(resp) {

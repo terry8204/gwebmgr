@@ -5336,11 +5336,7 @@ function driverWorkDetails() {
                 {
                     title: '卸点时间(拔卡)',
                     width: 150,
-                    render: function(h, params) {
-                        var row = params.row;
-                        return h('span', {}, row.downtime == 0 ? '无' : row.downtimeStr)
-                    },
-
+                    key: 'downtimeStr',
                 },
                 {
                     title: '卸点地点(拔卡)',
@@ -5391,18 +5387,11 @@ function driverWorkDetails() {
                 },
                 {
                     title: '工作时长',
-                    render: function(h, params) {
-                        var row = params.row;
-                        return h('span', {}, row.downtime <= 0 ? '无' : utils.timeStamp(row.downtime - row.uptime, isZh));
-                    },
+                    key: 'workingHours',
                 },
                 {
                     title: '行驶里程(km)',
-                    render: function(h, params) {
-                        var row = params.row;
-                        var distance = row.downdistance == 0 ? '无' : ((row.downdistance - row.updistance) / 1000).toFixed(2);
-                        return h('span', {}, distance);
-                    },
+                    key: 'mileage',
                 },
                 { title: '驾驶证号', key: 'certificationcode' },
                 {
@@ -5431,6 +5420,14 @@ function driverWorkDetails() {
             deviceName: '',
         },
         methods: {
+            exportTableData: function() {
+                this.$refs.table.exportCsv({
+                    filename: '工作明细',
+                    columns: this.columns,
+                    data: this.records,
+                    quoted: true,
+                });
+            },
             initMap: function() {
                 if (utils.getMapType() == 'bMap') {
                     this.mapInstance = new BMap.Map(document.getElementsByClassName('work-details-map')[0], { minZoom: 4, maxZoom: 18, enableMapClick: false });
@@ -5574,16 +5571,16 @@ function driverWorkDetails() {
                                 resp.records.forEach(function(item) {
                                     item.records.forEach(function(item) {
                                         item.index = index;
-                                        var callat = item.uplat.toFixed(5);
-                                        var callon = item.uplon.toFixed(5);
+                                        var callat = item.uplat = item.uplat.toFixed(5);
+                                        var callon = item.uplon = item.uplon.toFixed(5);
                                         var saddress = LocalCacheMgr.getAddress(callon, callat);
                                         if (saddress != null) {
                                             item.saddress = saddress;
                                         } else {
                                             item.saddress = null;
                                         };
-                                        var elat = item.downlat.toFixed(5);
-                                        var elon = item.downlon.toFixed(5);
+                                        var elat = item.downlat = item.downlat.toFixed(5);
+                                        var elon = item.downlon = item.downlon.toFixed(5);
                                         var eaddress = LocalCacheMgr.getAddress(elon, elat);
                                         if (eaddress != null) {
                                             item.eaddress = eaddress;
@@ -5592,7 +5589,9 @@ function driverWorkDetails() {
                                         };
                                         item.devicename = vstore.state.deviceInfos[item.deviceid] ? vstore.state.deviceInfos[item.deviceid].devicename : item.deviceid;
                                         item.uptimeStr = DateFormat.longToDateTimeStr(item.uptime, timeDifference);
-                                        item.downtimeStr = DateFormat.longToDateTimeStr(item.downtime, timeDifference);
+                                        item.downtimeStr = item.downtime == 0 ? '无' : DateFormat.longToDateTimeStr(item.downtime, timeDifference);
+                                        item.workingHours = item.downtime == 0 ? '无' : utils.timeStamp(item.downtime - item.uptime, isZh);
+                                        item.mileage = item.downdistance == 0 ? '无' : ((item.downdistance - item.updistance) / 1000).toFixed(2);
                                         if (!item.certificationcode) {
                                             item.certificationcode = '无';
                                         }

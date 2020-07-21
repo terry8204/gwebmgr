@@ -35,9 +35,12 @@
         <div style="margin-left:20px;float: left;">
             <i-button @click="onClickQuery" icon="ios-search">{{$t("reportForm.query")}}</i-button>
         </div>
+        <div style="float: right;">
+            <i-button @click="exportTableData" icon="ios-search" type="primary">导出</i-button>
+        </div>
     </Row>
     <div style="margin:10px;">
-        <i-table :columns="columns" :height="lastTableHeight" :data="tableData" :loading="loading"></i-table>
+        <i-table :columns="columns" ref="table" :height="lastTableHeight" :data="tableData" :loading="loading"></i-table>
     </div>
     <div style="padding-left:10px;">
         <Page :total="total" show-total @on-change="changePage" :page-size="20" :current="currentIndex" />

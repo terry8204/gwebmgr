@@ -227,6 +227,7 @@ var utils = {
             type: 'post',
             data: encode,
             timeout: 30000,
+            contentType: "application/json;charset=utf-8",
             dataType: 'json',
             success: function(resp) {
                 if (resp) {
