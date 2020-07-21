@@ -1,1417 +1,1496 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title id="title">九护-流量充值</title>
     <link rel="shortcut icon" href="../favicon.ico" />
     <meta name="viewport" content="target-densitydpi=device-dpi, width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
     <meta name="apple-mobile-web-app-capable" content="yes" />
-	<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
     <style>
-        *{
+        * {
             padding: 0;
             margin: 0;
             box-sizing: border-box;
         }
-        html,body{
         
-        	width:100%;
-            height: 100%;
-            font-family: "Microsoft YaHei"
-            overflow:hidden;
-           	position: fixed;
-           	left:0;
-           	top:0;
-        }
+        html,
         body {
-			-moz-user-select: none;
-			-webkit-user-select: none;
-			-ms-user-select: none;
-			-khtml-user-select: none;
-			user-select: none;
-		}  
-        #phone{
-        	-webkit-user-select:text;
-        	user-select:text;
+            width: 100%;
+            height: 100%;
+            font-family: "Microsoft YaHei" overflow: hidden;
+            position: fixed;
+            left: 0;
+            top: 0;
         }
-        input{
-	        cursor: pointer;
-		    outline: none;
-		    -webkit-appearance: none;
-		    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+        
+        body {
+            -moz-user-select: none;
+            -webkit-user-select: none;
+            -ms-user-select: none;
+            -khtml-user-select: none;
+            user-select: none;
         }
-        ul,ol{
+        
+        #phone {
+            -webkit-user-select: text;
+            user-select: text;
+        }
+        
+        input {
+            cursor: pointer;
+            outline: none;
+            -webkit-appearance: none;
+            -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+        }
+        
+        ul,
+        ol {
             list-style: none;
         }
-        .container{
+        
+        .container {
             margin: 0rem 1rem 0rem 1rem;
             display: none;
             overflow-y: auto;
             position: absolute;
-            top:0;
+            top: 0;
             left: 0;
             right: 0;
             bottom: 4rem;
         }
-        div.show{
+        
+        div.show {
             display: block;
         }
-        div.hide{
+        
+        div.hide {
             display: none;
         }
-        #containerbox{      	
-        	position: absolute;
-        	left:0;
-        	top:6.5rem;
-        	bottom:0;
-        	width:100%;
-        	min-height: 400px;
+        
+        #containerbox {
+            position: absolute;
+            left: 0;
+            top: 6.5rem;
+            bottom: 0;
+            width: 100%;
+            min-height: 400px;
         }
-        #containerbox>div{
-        	width: 100%;
-        	height:100%;
-        	position: relative;
+        
+        #containerbox>div {
+            width: 100%;
+            height: 100%;
+            position: relative;
         }
-        .container>h1{
+        
+        .container>h1 {
             text-align: center;
             font-size: 2rem;
             color: #72BE9C;
         }
-        #iframe{
-        	display: none;
+        
+        #iframe {
+            display: none;
         }
-        input{
+        
+        input {
             outline: 0;
             border: 0;
         }
-        .input-text{
+        
+        .input-text {
             width: 100%;
             height: 2.8rem;
             border-radius: 0.4rem;
             padding-left: 1rem;
             border: 1px solid #72BE9C;
         }
-        .input-btn{
-            width:90%;
+        
+        .input-btn {
+            width: 90%;
             height: 3rem;
             border-radius: 0.5rem;
             font-size: 1.3rem;
             color: #72BE9C;
-            background:#fff;
+            background: #fff;
             border: 1px solid #72BE9C;
         }
-        .btnfocus{
+        
+        .btnfocus {
             background: #72BE9C;
-            color:#fff;
+            color: #fff;
         }
-
-
-        div.buttons>div{
+        
+        div.buttons>div {
             width: 50%;
             float: left;
             text-align: center;
         }
-        div.buttons{
+        
+        div.buttons {
             width: 100%;
             position: absolute;
             bottom: 0.5rem;
             left: 0px;
-			background: #fff;
+            background: #fff;
         }
         /* header */
-        div.header{
+        
+        div.header {
             padding: 1.5rem 1rem 1rem 1rem;
             position: absolute;
-            top:0;
+            top: 0;
             left: 0;
             width: 100%
         }
-        div.header{
-        	
+        
+        div.header {}
+        
+        div.header>p {
+            height: 2rem;
+            line-height: 2rem;
+            padding: 0 1.5rem;
+            color: #4FABAB;
         }
-        div.header>p{
-        	height:2rem;
-        	line-height: 2rem;
-        	padding:0 1.5rem ;
-        	color:#4FABAB;
-        }
-
-       /*  输入框  */
-
-       div.input-box{
+        /*  输入框  */
+        
+        div.input-box {
             position: relative;
-            padding:0 0.5rem ;
-       }
-
-       div.clear{
+            padding: 0 0.5rem;
+        }
+        
+        div.clear {
             position: absolute;
             right: .5rem;
             top: 50%;
             width: 1.5rem;
             height: 1.5rem;
-            margin-top:-0.75rem;
-            margin-right:0.3rem;
-            background:url("images/close.png");
-            background-size:1.5rem 1.5rem;
+            margin-top: -0.75rem;
+            margin-right: 0.3rem;
+            background: url("images/close.png");
+            background-size: 1.5rem 1.5rem;
             display: none;
-
-       }
-       ul.phone-list{
+        }
+        
+        ul.phone-list {
             position: absolute;
-            left:.4rem;
-            top:102%;
-            right:.4rem;
-
+            left: .4rem;
+            top: 102%;
+            right: .4rem;
             z-index: 9999;
             background: #fff;
-			height:21.5rem;
-            border-left:1px solid #fff;
-            border-right:1px solid #fff;
-       }
-       ul.phone-list>li{
+            height: 21.5rem;
+            border-left: 1px solid #fff;
+            border-right: 1px solid #fff;
+        }
+        
+        ul.phone-list>li {
             padding: .5rem 1rem;
             font-size: 1.2rem;
-            border-bottom:1px solid #F5F5F5;
-       }
-       ul.phone-list>li:hover{
+            border-bottom: 1px solid #F5F5F5;
+        }
+        
+        ul.phone-list>li:hover {
             background: #72BE9C;
-       }
-       /**********************************/
-        #box{
+        }
+        /**********************************/
+        
+        #box {
             overflow-y: auto;
         }
-        #rechary-view{
+        
+        #rechary-view {
             overflow: hidden;
         }
-        #rechary-view>div{
+        
+        #rechary-view>div {
             float: left;
             width: 33.33%;
             cursor:
         }
+        
         div {
-          /*关键代码*/
-          -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+            /*关键代码*/
+            -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
         }
-        #rechary-view>div>div{
+        
+        #rechary-view>div>div {
             border-radius: .4rem;
-            border:1px solid #72BE9C;
-            text-align:center;
-            padding:7% 0;
-            color:#72BE9C;
+            border: 1px solid #72BE9C;
+            text-align: center;
+            padding: 7% 0;
+            color: #72BE9C;
             overflow: hidden;
-            margin:0.5rem ;
+            margin: 0.5rem;
         }
-
-        #rechary-view>div>div>h4{
-        	font-size:1.25rem;
-        	margin:0 .5rem;
+        
+        #rechary-view>div>div>h4 {
+            font-size: 1.25rem;
+            margin: 0 .5rem;
         }
-		#rechary-view>div>div>p{
-			font-size:0.875rem;
-		}
-            /*      流量查询        */
-       div.container div.query-btns{
-        	width:100%;
-        	height:98%;
-        	
+        
+        #rechary-view>div>div>p {
+            font-size: 0.875rem;
         }
-        div.query-btns>div{
-            float:left;
-            width:50%;
-        	height: 7rem;  
-        	overflow:hidden;
-        	padding:.5rem;
+        /*      流量查询        */
+        
+        div.container div.query-btns {
+            width: 100%;
+            height: 98%;
         }
-        div.query-btns>div>div{
-        	border:1px solid #72BE9C;
-        	height: 100%;
-            border-radius:5px;
-        	font-size: 1.2rem;
-        	color:#72BE9C;;
-        	position: relative;
+        
+        div.query-btns>div {
+            float: left;
+            width: 50%;
+            height: 7rem;
+            overflow: hidden;
+            padding: .5rem;
         }
-        div.query-btns>div>div>p>img{
-        	width:100%;
+        
+        div.query-btns>div>div {
+            border: 1px solid #72BE9C;
+            height: 100%;
+            border-radius: 5px;
+            font-size: 1.2rem;
+            color: #72BE9C;
+            ;
+            position: relative;
         }
-         div.query-btns>div>div>p:nth-child(1){
-         	 width:4rem;
-         	 margin:0 auto;
-         	 margin-top:5px;
-         }
-         
-		 div.query-btns>div>div>p:nth-child(2){
-		 	position: absolute;
-		 	left:0;
-		 	top:65%;
-		 	width:100%;
-		 	height:2rem;
-		 	line-height:2rem;
-		 	font-size:1rem;
-		 	text-align:center;
-		 }
+        
+        div.query-btns>div>div>p>img {
+            width: 100%;
+        }
+        
+        div.query-btns>div>div>p:nth-child(1) {
+            width: 4rem;
+            margin: 0 auto;
+            margin-top: 5px;
+        }
+        
+        div.query-btns>div>div>p:nth-child(2) {
+            position: absolute;
+            left: 0;
+            top: 65%;
+            width: 100%;
+            height: 2rem;
+            line-height: 2rem;
+            font-size: 1rem;
+            text-align: center;
+        }
         /* 模态框 */
-        #modal{
-            position:absolute;
-            right:-100%;
+        
+        #modal {
+            position: absolute;
+            right: -100%;
             top: 0;
             height: 100%;
             width: 100%;
             background: #F9F9F9;
         }
-        div.query-title>h3{
-        	height:2rem;
-        	text-align: center;
-        	background:#72BE9C;
-        	font-size: 1.2rem;
-        	line-height: 2rem;
-        	color:#fff;
-        	font-weight:normal;
-
+        
+        div.query-title>h3 {
+            height: 2rem;
+            text-align: center;
+            background: #72BE9C;
+            font-size: 1.2rem;
+            line-height: 2rem;
+            color: #fff;
+            font-weight: normal;
         }
-        div.close{
-        	position: absolute;
-        	left:0.5rem;
-        	right:0.5rem;
-        	height:3rem;
-        	bottom:0.5rem;
-        	background:#72BE9C;
-        	border-radius:5px;
-        	color:#fff;
-        	text-align: center;
-        	line-height: 3rem;
-        	font-size: 1.5rem;
+        
+        div.close {
+            position: absolute;
+            left: 0.5rem;
+            right: 0.5rem;
+            height: 3rem;
+            bottom: 0.5rem;
+            background: #72BE9C;
+            border-radius: 5px;
+            color: #fff;
+            text-align: center;
+            line-height: 3rem;
+            font-size: 1.5rem;
         }
-        div.modal-info{
-        	position: absolute;
-        	top:2rem;
-        	width:100%;
-        	bottom:4rem;
-        	overflow-y:auto;
-        	padding:.5rem;
+        
+        div.modal-info {
+            position: absolute;
+            top: 2rem;
+            width: 100%;
+            bottom: 4rem;
+            overflow-y: auto;
+            padding: .5rem;
         }
-        div.modal-info>div{
-
+        
+        div.modal-info>div {}
+        
+        div.modal-info>div.cardInfoStr>ul {
+            background: #eee;
         }
-
-        div.modal-info>div.cardInfoStr>ul{
-        	background: #eee;
+        
+        div.modal-info>div.cardInfoStr>ul>li {
+            height: 2rem;
+            line-height: 2rem;
+            border-bottom: 1px solid #ccc;
         }
-        div.modal-info>div.cardInfoStr>ul>li{
-           height:2rem;
-           line-height:2rem;
-           border-bottom:1px solid #ccc;
-        }
-        div.modal-info>div.cardInfoStr>ul>li>span{
-        	display: inline-block;
-        	width:28%;
-        	border-right:1px solid #ccc;
-			margin-right:0.2rem;
-			padding-left:0.2rem;
+        
+        div.modal-info>div.cardInfoStr>ul>li>span {
+            display: inline-block;
+            width: 28%;
+            border-right: 1px solid #ccc;
+            margin-right: 0.2rem;
+            padding-left: 0.2rem;
         }
         /* 当月剩余流量  */
-        div.modal-info>div>div.cardDataUsed{
-        	background: #eee;
+        
+        div.modal-info>div>div.cardDataUsed {
+            background: #eee;
         }
-        div.modal-info>div>div.cardDataUsed>p{
-        	border-bottom:1px solid #ccc;
-        	height:2rem;
-        	line-height: 2rem;
+        
+        div.modal-info>div>div.cardDataUsed>p {
+            border-bottom: 1px solid #ccc;
+            height: 2rem;
+            line-height: 2rem;
         }
-        div.modal-info>div>div.cardDataUsed>p>span{
-        	display: inline-block;
-        	width:25%;
-        	border-right:1px solid #ccc;
-        	margin-right:.3rem;
-        	height:2rem;
+        
+        div.modal-info>div>div.cardDataUsed>p>span {
+            display: inline-block;
+            width: 25%;
+            border-right: 1px solid #ccc;
+            margin-right: .3rem;
+            height: 2rem;
         }
         /* 订购的套餐信息 */
-        ul.cardPackageInfos{
-        	background: #eee;
+        
+        ul.cardPackageInfos {
+            background: #eee;
         }
-        ul.cardPackageInfos>li{
-        	line-height: 2rem;
-        	height:2rem;
-        	white-space: nowrap;
- 			text-overflow:ellipsis;
-			overflow:hidden;
-			border-bottom:1px solid #ccc;
+        
+        ul.cardPackageInfos>li {
+            line-height: 2rem;
+            height: 2rem;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            border-bottom: 1px solid #ccc;
         }
-        ul.cardPackageInfos>li>span{
-        	display:inline-block;
-        	padding-left:.3rem;
-        	text-overflow:ellipsis;
-			overflow:hidden;
+        
+        ul.cardPackageInfos>li>span {
+            display: inline-block;
+            padding-left: .3rem;
+            text-overflow: ellipsis;
+            overflow: hidden;
         }
-         ul.cardPackageInfos>li>span:nth-child(1){
-         	border-right:1px solid #ccc;
-         	width:30%;
-         }
-          ul.cardPackageInfos>li>span:nth-child(2){
-         	width:70%;
-         }
-         /* 最近三个月 box */
-         #monthsBtns{
-         	font-size: 0px;
+        
+        ul.cardPackageInfos>li>span:nth-child(1) {
+            border-right: 1px solid #ccc;
+            width: 30%;
+        }
+        
+        ul.cardPackageInfos>li>span:nth-child(2) {
+            width: 70%;
+        }
+        /* 最近三个月 box */
+        
+        #monthsBtns {
+            font-size: 0px;
             position: relative;
-
-         }
-         #monthsBtns:after{
-         	content:"";
-          	height:.3rem;
-          	width:0px;
-          	border-left:1px solid #ECE9D8;
-          	position: absolute;
-          	top:50%;
-          	right:33.333%;
-          	margin-top:-0.2rem;
-         }
-         #monthsBtns:before{
-         	content:"";
-          	height:.3rem;
-          	width:0px;
-          	border-left:1px solid #ECE9D8;
-          	position: absolute;
-          	top:50%;
-          	left:33.333%;
-          	margin-top:-0.2rem;
-         }
-
-
-          #monthsBtns>input{
-          	width:33.33%;
-          	height:3rem;
-          	color:#72BE9C;
-    	    box-sizing:border-box;
-    	    border-bottom:2px solid #fff;
-    	    background: #FFFFFF;
-    	    font-size: 1.2rem;
-    	    outline:none;
-    	    border-radius:0;
-          }
-
-
-          #monthsBtns>input:last-child{
-          	border-right:none;
-
-          }
-
-          div.lastThreeMonthsBox{
-          	position: absolute;
-          	top:4rem;
-          	left:0.5rem;
-          	right:0.5rem;
-          	bottom:0rem;
-         	border-top:1px solid #ddd;
-          	overflow-y:auto;
-          	background: #fff;
-          }
-          /*  提示信息  */
-          div.lastThreeMonthsBox>p.info{
-          	position: absolute;
-          	left:0;
-          	top:50%;
-          	height:2rem;
-          	line-height: 2rem;
-          	margin-top;-1rem;
-          	text-align: center;
-          	width:100%;
-          	color: #72BE9C;
-          }
-           div.lastThreeMonthsBox>p.list{
-
-           }
-           div.lastThreeMonthsBox>p.list>span{
-           		display: inline-block;
-           		width:50%;
-           		padding:1rem 0;
-           		text-align: center;
-                font-size:1.5rem;
-
-           		color:#808080;
-           }
-
-           div.lastThreeMonthsBox>p.list>span:nth-child(2){
-           		text-align: left;
-           }
-
-           p.daylist>b{
-           		display:block;
-           		text-align: center;
-           		font-size: 2rem;
-           		padding-top:2rem;
-           }
-           p.daylist{
-
-           }
-            p.daylist>span{
-            	display: inline-block;
-            	width: 50%;
-            	text-align: center;
-            	padding:0.5rem 0;
-           	    border-bottom:1px dashed #eee;
-            }
-            p.daylist>span:nth-child(1){
-            	border-right:1px dashed #eee;
-            }
-            p.daylist>span:last-child{
-
-            }
+        }
+        
+        #monthsBtns:after {
+            content: "";
+            height: .3rem;
+            width: 0px;
+            border-left: 1px solid #ECE9D8;
+            position: absolute;
+            top: 50%;
+            right: 33.333%;
+            margin-top: -0.2rem;
+        }
+        
+        #monthsBtns:before {
+            content: "";
+            height: .3rem;
+            width: 0px;
+            border-left: 1px solid #ECE9D8;
+            position: absolute;
+            top: 50%;
+            left: 33.333%;
+            margin-top: -0.2rem;
+        }
+        
+        #monthsBtns>input {
+            width: 33.33%;
+            height: 3rem;
+            color: #72BE9C;
+            box-sizing: border-box;
+            border-bottom: 2px solid #fff;
+            background: #FFFFFF;
+            font-size: 1.2rem;
+            outline: none;
+            border-radius: 0;
+        }
+        
+        #monthsBtns>input:last-child {
+            border-right: none;
+        }
+        
+        div.lastThreeMonthsBox {
+            position: absolute;
+            top: 4rem;
+            left: 0.5rem;
+            right: 0.5rem;
+            bottom: 0rem;
+            border-top: 1px solid #ddd;
+            overflow-y: auto;
+            background: #fff;
+        }
+        /*  提示信息  */
+        
+        div.lastThreeMonthsBox>p.info {
+            position: absolute;
+            left: 0;
+            top: 50%;
+            height: 2rem;
+            line-height: 2rem;
+            margin-top;
+            -1rem;
+            text-align: center;
+            width: 100%;
+            color: #72BE9C;
+        }
+        
+        div.lastThreeMonthsBox>p.list {}
+        
+        div.lastThreeMonthsBox>p.list>span {
+            display: inline-block;
+            width: 50%;
+            padding: 1rem 0;
+            text-align: center;
+            font-size: 1.5rem;
+            color: #808080;
+        }
+        
+        div.lastThreeMonthsBox>p.list>span:nth-child(2) {
+            text-align: left;
+        }
+        
+        p.daylist>b {
+            display: block;
+            text-align: center;
+            font-size: 2rem;
+            padding-top: 2rem;
+        }
+        
+        p.daylist {}
+        
+        p.daylist>span {
+            display: inline-block;
+            width: 50%;
+            text-align: center;
+            padding: 0.5rem 0;
+            border-bottom: 1px dashed #eee;
+        }
+        
+        p.daylist>span:nth-child(1) {
+            border-right: 1px dashed #eee;
+        }
+        
+        p.daylist>span:last-child {}
     </style>
-    <link type="text/css" rel="stylesheet" href="alert.css"/>
+    <link type="text/css" rel="stylesheet" href="alert.css" />
     <script type="text/javascript" src="../js/jquery.min.js"></script>
     <script type="text/javascript" src="myplugin.js"></script>
     <script type="text/javascript" src="alert.js"></script>
-   	<script type="text/javascript" src="../js/jquery.cookie.js"></script>
+    <script type="text/javascript" src="../js/jquery.cookie.js"></script>
     <script type="text/javascript">
-	    
-		pushHistory();
-	    function pushHistory() {
-	        var state = {
-	            title: "title",
-	            url: "#"    };
-	        window.history.pushState(state, "title", "#");
-	    };
-	    window.onpopstate = function() {
-	    	// 微信浏览器关闭事件
-	        WeixinJSBridge.call('closeWindow');
-	    }; 
+        pushHistory();
 
-    	 function getParameterByName(name)
-		 {
-			var url = location.search;
-				url = decodeURIComponent(url);
+        function pushHistory() {
+            var state = {
+                title: "title",
+                url: "#"
+            };
+            window.history.pushState(state, "title", "#");
+        };
+        window.onpopstate = function() {
+            // 微信浏览器关闭事件
+            WeixinJSBridge.call('closeWindow');
+        };
+
+        function getParameterByName(name) {
+            var url = location.search;
+            url = decodeURIComponent(url);
 
             var theRequest = new Object();
 
-                if (url.indexOf("?") != -1) {
-                   var str = url.substr(1);
-                       strs = str.split("&");
-                       for(var i = 0; i < strs.length; i ++) {
-                           theRequest[strs[i].split("=")[0]]=unescape(strs[i].split("=")[1]);
-                       }
-                 }
+            if (url.indexOf("?") != -1) {
+                var str = url.substr(1);
+                strs = str.split("&");
+                for (var i = 0; i < strs.length; i++) {
+                    theRequest[strs[i].split("=")[0]] = unescape(strs[i].split("=")[1]);
+                }
+            }
             return theRequest[name];
-		}
+        }
 
-         function sendRandomid(){
-        		// 添加loading
-				window.location = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxe44094ffe9730359&redirect_uri=http://www.jiuhuwq.com/wxpay/simcharge?response_type=code&scope=snsapi_base&state=park#wechat_redirect";
+        function sendRandomid() {
+            // 添加loading
+            window.location = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxe44094ffe9730359&redirect_uri=http://www.jiuhuwq.com/wxpay/simcharge?response_type=code&scope=snsapi_base&state=park#wechat_redirect";
 
-         }
+        }
 
-    	 var isneedgetpackages = false;
-		 var isWx = false;
-		 var openid = getParameterByName("openid"); 
-		
-		 var ua = navigator.userAgent.toLowerCase();//获取判断用的对象
+        var isneedgetpackages = false;
+        var isWx = false;
+        var openid = getParameterByName("openid");
+
+        var ua = navigator.userAgent.toLowerCase(); //获取判断用的对象
 
 
 
-					  if (ua.match(/micromessenger/i) == "micromessenger") {
-					     isWx = true;
-					     if(isWx && (openid == undefined || openid.length < 4)){
-					     	isneedgetpackages = false;
-					     	sendRandomid();
-					     }else{
-					       	 isneedgetpackages = true;
-					       	 if(openid == undefined || openid.length < 4)
-							 {
-							   isneedgetpackages = false;
-					     		sendRandomid();
-							 }
-					     }
-				      }else{
-				      	  isneedgetpackages = true;
-				      }
+        if (ua.match(/micromessenger/i) == "micromessenger") {
+            isWx = true;
+            if (isWx && (openid == undefined || openid.length < 4)) {
+                isneedgetpackages = false;
+                sendRandomid();
+            } else {
+                isneedgetpackages = true;
+                if (openid == undefined || openid.length < 4) {
+                    isneedgetpackages = false;
+                    sendRandomid();
+                }
+            }
+        } else {
+            isneedgetpackages = true;
+        }
 
-			$(function(){
-				if(isWx && isneedgetpackages){
-					$("body").show();
-				}else{
+        $(function() {
+            if (isWx && isneedgetpackages) {
+                $("body").show();
+            } else {
 
-				    $("body").hide();
-				}
+                $("body").hide();
+            }
 
-				if(isneedgetpackages){
+            if (isneedgetpackages) {
 
-					$("body").show();
-				}
-			});
+                $("body").show();
+            }
+        });
     </script>
 </head>
+
 <body>
 
-	<div class="header">
-		<p>请输入13位物联网卡号</p>
+    <div class="header">
+        <p>请输入13位物联网卡号</p>
         <div class="input-box">
             <input type="tel" class="input-text" placeholder="请输入物联网卡号" id="phone" value="" pattern="[0-9]*" style="font-size:1.2rem">
             <div class="clear"></div>
         </div>
-	</div>
-	<div id="containerbox">
-		<div>
-			 <div class="container show">
-		        <div id="box">
-		            <div id="rechary-view" class="show"></div>
-		        </div>
-		    </div>
-		    <!-- 信息查询  -->
-		    <div class="container">
-		        <div class="query-btns"></div>
-		    </div>
-			<!--  切换btn -->
-		    <div class="buttons">
-		        <div>
-		            <input type="button" value="流量充值" class="input-btn btnfocus" id="rechargebtn">
-		        </div>
-		        <div>
-		            <input type="button" value="流量查询" class="input-btn" id="queryinfobtn">
-		        </div>
-		    </div>
-		</div>
+    </div>
+    <div id="containerbox">
+        <div>
+            <div class="container show">
+                <div id="box">
+                    <div id="rechary-view" class="show"></div>
+                </div>
+            </div>
+            <!-- 信息查询  -->
+            <div class="container">
+                <div class="query-btns"></div>
+            </div>
+            <!--  切换btn -->
+            <div class="buttons">
+                <div>
+                    <input type="button" value="流量充值" class="input-btn btnfocus" id="rechargebtn">
+                </div>
+                <div>
+                    <input type="button" value="流量查询" class="input-btn" id="queryinfobtn">
+                </div>
+            </div>
+        </div>
 
-	</div>
+    </div>
 
     <!-- 模态框 -->
     <div id="modal">
-    	<div class="query-title">
-    		<h3></h3>
-    	</div>
-    	<div class="modal-info">
+        <div class="query-title">
+            <h3></h3>
+        </div>
+        <div class="modal-info">
 
-    	</div>
-    	<div class="close">返回</div>
+        </div>
+        <div class="close">返回</div>
     </div>
 
-    		<script type="text/javascript">
-				setHTMLFontSize();
-		
-				window.onresize = setHTMLFontSize;
-		
-				function setHTMLFontSize(){
-					var ww = parseFloat(document.documentElement.clientWidth);		
-					if(ww>370){
-						ww = 370;
-					}else if(ww < 320){
-						ww = 320;
-						$("html,body").css("min-width",320);
-					}
-												
-					var fontsize = ww / (320 / 16);
-					document.documentElement.style.fontSize = fontsize + "px";
-				}
-		</script>
-		<script type="text/javascript">
+    <script type="text/javascript">
+        setHTMLFontSize();
 
-            	   // 全局phoneID
-                   var phoneNnmber = "" ;   //1064794380001
-                   var regPhone = /^\w{13}$/;
-                   function doGetPrePayIdCallBack()
-					{
-						if (typeof WeixinJSBridge == "undefined"){
-							   if( document.addEventListener ){
-							       document.addEventListener('WeixinJSBridgeReady', onBridgeReady, false);
-							   }else if (document.attachEvent){
-							       document.attachEvent('WeixinJSBridgeReady', onBridgeReady);
-							       document.attachEvent('onWeixinJSBridgeReady', onBridgeReady);
-							   }
-						}else{
-						   onBridgeReady();
-						}
-					}
-                   function notifyPayOK(phonenum,packageid,nonceStr)
-					{
+        window.onresize = setHTMLFontSize;
 
-					       //调用通知服务器充值成功
-					      $.ajax({
-					        url:"/wxpay/notify?nonestr="+nonceStr+"&phonenum="+phonenum+"&packageid="+packageid,
-					        type: "get",
-					        dataType: "json",
-					        success: function(json) {
-						        if(json.status == 0)
-						       	{
-						         	window.wxc.xcConfirm("充值成功","物联网卡<br>"+phonenum);
-						        }
-						        else
-						       	{
+        function setHTMLFontSize() {
+            var ww = parseFloat(document.documentElement.clientWidth);
+            if (ww > 370) {
+                ww = 370;
+            } else if (ww < 320) {
+                ww = 320;
+                $("html,body").css("min-width", 320);
+            }
 
-						       		window.wxc.xcConfirm("提示","充值失败!<br>请联系在线客服!");
-						       	}
-					        },
-					        //调起微信支付失败，恢复到原来的订单量
-					        error:function(JSON){
+            var fontsize = ww / (320 / 16);
+            document.documentElement.style.fontSize = fontsize + "px";
+        }
+    </script>
+    <script type="text/javascript">
+        // 全局phoneID
+        var phoneNnmber = ""; //1064794380001
+        var regPhone = /^\w{13}$/;
 
-					         window.wxc.xcConfirm("提示","充值失败!<br>请联系在线客服!");
-					        }
-					      });
-					}
+        function doGetPrePayIdCallBack() {
+            if (typeof WeixinJSBridge == "undefined") {
+                if (document.addEventListener) {
+                    document.addEventListener('WeixinJSBridgeReady', onBridgeReady, false);
+                } else if (document.attachEvent) {
+                    document.attachEvent('WeixinJSBridgeReady', onBridgeReady);
+                    document.attachEvent('onWeixinJSBridgeReady', onBridgeReady);
+                }
+            } else {
+                onBridgeReady();
+            }
+        }
 
-					function onBridgeReady(appId,timeStamp,nonceStr,packAge,signType,paySign,packageid){
-						   WeixinJSBridge.invoke(
-						       'getBrandWCPayRequest', {
-						           "appId":appId,     //公众号名称，由商户传入
-						           "timeStamp":timeStamp,
-						           "nonceStr":nonceStr,//随机串
-						           "package":packAge,
-						           "signType":signType,//微信签名方式：
-						           "paySign":paySign//微信签名
-						       },
-						       function(res){
-						           if(res.err_msg == "get_brand_wcpay_request:ok" ) {
-						           	// 使用以上方式判断前端返回,微信团队郑重提示：res.err_msg将在用户支付成功后返回    ok，但并不保证它绝对可靠。
-				                     setPhoneCookie();
-						             notifyPayOK(phoneNnmber,packageid,nonceStr);
-						           }
-						       }
-						   );
-						}
-                   	function getPrePayInfo(packageid,phonenum)
-					{
-				        //var getPrePayIdUrl = "/wxpay/towxpay";
+        function notifyPayOK(phonenum, packageid, nonceStr) {
 
+            //调用通知服务器充值成功
+            $.ajax({
+                url: "/wxpay/notify?nonestr=" + nonceStr + "&phonenum=" + phonenum + "&packageid=" + packageid,
+                type: "get",
+                dataType: "json",
+                contentType: "application/json;charset=utf-8",
+                success: function(json) {
+                    if (json.status == 0) {
+                        window.wxc.xcConfirm("充值成功", "物联网卡<br>" + phonenum);
+                    } else {
 
-				        	if(isWx){
-								 if(phonenum.length == 13)
-				        		{
-					        		 $.ajax({
-									   url:"/wxpay/towxpay?packageid="+packageid+ "&phonenum="+phonenum+"&openid="+openid,
-									      type: "get",
-									      dataType: "json",
-									      success: function(json) {
-									           var appId = json.appId;
-									           var timeStamp = json.timeStamp;
-									           var nonceStr = json.nonceStr;
-									           var packAge = json.packAge;
-									           var signType = json.signType;
-									           var paySign = json.paySign;
-									           onBridgeReady(appId,timeStamp,nonceStr,packAge,signType,paySign,packageid);
-									      },
-									      error:function(err){
-
-									          window.wxc.xcConfirm("提示","充值失败!<br>请联系在线客服");
-									      }
-									});
-								}else{
-
-				                  window.wxc.xcConfirm("提示","请输入正确物联网卡号!");
-				                }
-
-				        	}else{
-				        		window.wxc.xcConfirm("提示","请在微信公众号里面充值");
-				        	}
-
-					};
-
-
-
-				   	// 得到跟目录
-					function getRootPath(){
-						//获取当前网址，如： http://localhost:8083/uimcardprj/share/meun.jsp
-       					var curWwwPath=window.document.location.href;
-				        //获取主机地址之后的目录，如： /uimcardprj/share/meun.jsp
-				        var pathName=window.document.location.pathname;
-				        var pos=curWwwPath.indexOf(pathName);
-				        //获取主机地址，如： http://localhost:8083
-				        var localhostPaht=curWwwPath.substring(0,pos);
-				        //获取带"/"的项目名，如：/uimcardprj
-				        var projectName=pathName.substring(0,pathName.substr(1).indexOf('/')+1);
-				        if(localhostPaht.indexOf("localhost")!=-1){
-				        	return(localhostPaht+projectName);
-				        }else{
-				        	return(localhostPaht);
-				        }
-
-				    }
-					// 移除历史phoneID
-                    function removeulList(){
-                        $("ul.phone-list").remove();
+                        window.wxc.xcConfirm("提示", "充值失败!<br>请联系在线客服!");
                     }
-                    // 设置cookie
-                    function setPhoneCookie(){
-                    	//$.cookie("phoneId",phoneCookie+"phone="+phoneNnmber+",");
+                },
+                //调起微信支付失败，恢复到原来的订单量
+                error: function(JSON) {
 
-                        var phoneCookie = $.cookie("phoneId");
-						if(phoneCookie!=undefined){
-							var cookieArr = phoneCookie.split(",");
+                    window.wxc.xcConfirm("提示", "充值失败!<br>请联系在线客服!");
+                }
+            });
+        }
 
-							cookieArr.shift();
-
-						 if(cookieArr.length>2){
-						 	var newArr = [];
-						 	newArr.unshift(cookieArr[1]);
-						 	newArr.unshift(cookieArr[0]);
-                            cookieArr = newArr;
-						 }
-						 if(isRepeatPhone()){
-						 	 cookieArr.unshift(",phone="+phoneNnmber.trim());
-						 	$.cookie("phoneId",cookieArr.join(","),{ expires: 31});
-						 }else{
-						   //	console.log("phone相同了");
-
-						 }
-						}else{
-							 $.cookie("phoneId",",phone="+phoneNnmber.trim(),{ expires: 31});
-						}
+        function onBridgeReady(appId, timeStamp, nonceStr, packAge, signType, paySign, packageid) {
+            WeixinJSBridge.invoke(
+                'getBrandWCPayRequest', {
+                    "appId": appId, //公众号名称，由商户传入
+                    "timeStamp": timeStamp,
+                    "nonceStr": nonceStr, //随机串
+                    "package": packAge,
+                    "signType": signType, //微信签名方式：
+                    "paySign": paySign //微信签名
+                },
+                function(res) {
+                    if (res.err_msg == "get_brand_wcpay_request:ok") {
+                        // 使用以上方式判断前端返回,微信团队郑重提示：res.err_msg将在用户支付成功后返回    ok，但并不保证它绝对可靠。
+                        setPhoneCookie();
+                        notifyPayOK(phoneNnmber, packageid, nonceStr);
                     }
-                    // 得到cookie
-                    function getPhoneCookie(){
-                    	var phoneCookie = $.cookie("phoneId");
+                }
+            );
+        }
 
-                    	if(phoneCookie != undefined){
-                    		var phoneArr = phoneCookie.split(",");
-                    			phoneArr.shift();
-                    			return phoneArr ;
-                    	}
+        function getPrePayInfo(packageid, phonenum) {
+            //var getPrePayIdUrl = "/wxpay/towxpay";
 
-                    	return null ;
+
+            if (isWx) {
+                if (phonenum.length == 13) {
+                    $.ajax({
+                        url: "/wxpay/towxpay?packageid=" + packageid + "&phonenum=" + phonenum + "&openid=" + openid,
+                        type: "get",
+                        dataType: "json",
+                        contentType: "application/json;charset=utf-8",
+                        success: function(json) {
+                            var appId = json.appId;
+                            var timeStamp = json.timeStamp;
+                            var nonceStr = json.nonceStr;
+                            var packAge = json.packAge;
+                            var signType = json.signType;
+                            var paySign = json.paySign;
+                            onBridgeReady(appId, timeStamp, nonceStr, packAge, signType, paySign, packageid);
+                        },
+                        error: function(err) {
+
+                            window.wxc.xcConfirm("提示", "充值失败!<br>请联系在线客服");
+                        }
+                    });
+                } else {
+
+                    window.wxc.xcConfirm("提示", "请输入正确物联网卡号!");
+                }
+
+            } else {
+                window.wxc.xcConfirm("提示", "请在微信公众号里面充值");
+            }
+
+        };
+
+
+
+        // 得到跟目录
+        function getRootPath() {
+            //获取当前网址，如： http://localhost:8083/uimcardprj/share/meun.jsp
+            var curWwwPath = window.document.location.href;
+            //获取主机地址之后的目录，如： /uimcardprj/share/meun.jsp
+            var pathName = window.document.location.pathname;
+            var pos = curWwwPath.indexOf(pathName);
+            //获取主机地址，如： http://localhost:8083
+            var localhostPaht = curWwwPath.substring(0, pos);
+            //获取带"/"的项目名，如：/uimcardprj
+            var projectName = pathName.substring(0, pathName.substr(1).indexOf('/') + 1);
+            if (localhostPaht.indexOf("localhost") != -1) {
+                return (localhostPaht + projectName);
+            } else {
+                return (localhostPaht);
+            }
+
+        }
+        // 移除历史phoneID
+        function removeulList() {
+            $("ul.phone-list").remove();
+        }
+        // 设置cookie
+        function setPhoneCookie() {
+            //$.cookie("phoneId",phoneCookie+"phone="+phoneNnmber+",");
+
+            var phoneCookie = $.cookie("phoneId");
+            if (phoneCookie != undefined) {
+                var cookieArr = phoneCookie.split(",");
+
+                cookieArr.shift();
+
+                if (cookieArr.length > 2) {
+                    var newArr = [];
+                    newArr.unshift(cookieArr[1]);
+                    newArr.unshift(cookieArr[0]);
+                    cookieArr = newArr;
+                }
+                if (isRepeatPhone()) {
+                    cookieArr.unshift(",phone=" + phoneNnmber.trim());
+                    $.cookie("phoneId", cookieArr.join(","), {
+                        expires: 31
+                    });
+                } else {
+                    //	console.log("phone相同了");
+
+                }
+            } else {
+                $.cookie("phoneId", ",phone=" + phoneNnmber.trim(), {
+                    expires: 31
+                });
+            }
+        }
+        // 得到cookie
+        function getPhoneCookie() {
+            var phoneCookie = $.cookie("phoneId");
+
+            if (phoneCookie != undefined) {
+                var phoneArr = phoneCookie.split(",");
+                phoneArr.shift();
+                return phoneArr;
+            }
+
+            return null;
+        }
+        // 判断是否重复phoneCookie
+        function isRepeatPhone() {
+            var lock = true;
+            var phoneCookie = $.cookie("phoneId");
+            var phoneArr = phoneCookie.split(",");
+            phoneArr.shift();
+            phoneArr.forEach(function(value) {
+                var phoneid = value.split("=");
+
+                if (phoneid[1].trim() == phoneNnmber.trim()) {
+                    lock = false;
+                }
+            });
+            return lock;
+        }
+
+        // 充值类
+        function RechargeFlow(packages) {
+            this.productList = packages;
+            this.btns = document.querySelectorAll(".buttons>div>input");
+            this.productView = $("#rechary-view");
+            this.containers = document.querySelectorAll(".container");
+            this.phone = document.querySelector("#phone");
+            this.isShowPhoneList = false;
+            this.isSendAjax = false;
+            this.init();
+
+        }
+        RechargeFlow.prototype = {
+            constructor: RechargeFlow,
+            init: function() {
+                this.phoneInputEvent();
+                this.renderProductList();
+                this.bindClickEvent();
+                this.switchView();
+
+                var phoneCookie = getPhoneCookie();
+
+                if (phoneCookie != null) {
+                    var lastPhone = phoneCookie[0].split("=")[1].trim();
+                    phoneNnmber = lastPhone;
+                    this.phone.value = lastPhone;
+                }
+
+            },
+            phoneInputEvent: function() {
+                var self = this;
+                //  input 发生改变时候
+                this.phone.oninput = function() {
+                    var phone = $(this).val().trim();
+                    phoneNnmber = phone;
+                    $("div.clear").show();
+                    if (!self.isShowPhoneList) {
+                        var cookiePhone = $.cookie("phoneId");
+                        var phoneListStr = "<ul class='phone-list'>";
+                        var phoneList = getPhoneCookie();
+                        if (phoneList != null) {
+
+                            phoneList.forEach(function(value) {
+                                var phoneId = value.split("=")[1];
+                                phoneListStr += "<li>" + phoneId + "</li>";
+                            });
+                            phoneListStr += "</ul>";
+                            $("div.input-box").append(phoneListStr);
+
+                            $("ul.phone-list>li").click(function() {
+                                var phoneId = $(this).html().trim();
+                                $("#phone").val(phoneId);
+                                phoneNnmber = phoneId;
+                                $(this).parent().remove();
+                                self.isShowPhoneList = false;
+                            });
+                            self.isShowPhoneList = true;
+                        }
                     }
-                   // 判断是否重复phoneCookie
-                   function isRepeatPhone(){
-                   		var lock = true;
-                   		var phoneCookie = $.cookie("phoneId");
-                   		var phoneArr = phoneCookie.split(",");
-                    		phoneArr.shift();
-                    		phoneArr.forEach(function(value){
-                    			var phoneid = value.split("=");
+                    if (phoneNnmber == "") {
+                        $("div.clear").hide();
+                    }
+                };
 
-                    			if(phoneid[1].trim() == phoneNnmber.trim()){
-                    				lock = false;
-                    			}
-                    		});
-                    	return lock;
-                   }
-
-                    // 充值类
-                   function RechargeFlow(packages){
-                   		this.productList = packages;
-                        this.btns = document.querySelectorAll(".buttons>div>input");
-						this.productView = $("#rechary-view");
-                        this.containers = document.querySelectorAll(".container");
-                        this.phone = document.querySelector("#phone");
-                        this.isShowPhoneList = false;
-                        this.isSendAjax = false;
-                        this.init();
-
-                   }
-                   RechargeFlow.prototype = {
-                       constructor:RechargeFlow,
-                       init:function(){
-                           this.phoneInputEvent();
-                       	   this.renderProductList();
-                           this.bindClickEvent();
-                           this.switchView();
-
-                           var phoneCookie = getPhoneCookie();
-
-                           if(phoneCookie!=null){
-                           	 var lastPhone = phoneCookie[0].split("=")[1].trim();
-                           	 phoneNnmber = lastPhone;
-                           	 this.phone.value = lastPhone;
-                           }
-
-                       },
-                       phoneInputEvent:function(){
-                          var self = this;
-                           //  input 发生改变时候
-                           this.phone.oninput = function(){
-                            var phone = $(this).val().trim();
-                                phoneNnmber = phone;
-                                $("div.clear").show();
-                                if(!self.isShowPhoneList){
-                                	var cookiePhone = $.cookie("phoneId");
-			                          var phoneListStr = "<ul class='phone-list'>";
-			                      	   var phoneList = getPhoneCookie();
-			                      	   if(phoneList!=null)
-			                      	   {
-
-				                      	   	phoneList.forEach(function(value){
-				                      	   		var phoneId =  value.split("=")[1];
-				                      	   		phoneListStr += "<li>"+phoneId+"</li>";
-				                      	   });
-				                      	   phoneListStr += "</ul>";
-				                           $("div.input-box").append(phoneListStr);
-
-				                           $("ul.phone-list>li").click(function(){
-				                           		var phoneId = $(this).html().trim();
-				                           		$("#phone").val(phoneId);
-				                           		phoneNnmber = phoneId;
-				                           		$(this).parent().remove();
-				                           		self.isShowPhoneList = false;
-			                           		});
-			                           		self.isShowPhoneList = true;
-				                        }
-                                }
-                                if(phoneNnmber == "")
-                                {
-                                	$("div.clear").hide();
-                                }
-                           };
-
-	                       $(this.phone).focus(function(event) {
-	                           var value = this.value;
-	                           if(value){
-	                              $("div.clear").show();
-	                           }
-	                           var cookiePhone = $.cookie("phoneId");
-	                           var phoneListStr = "<ul class='phone-list'>";
-	                      	   var phoneList = getPhoneCookie();
-	                      	   if(phoneList!=null)
-	                      	   {
-		                      	   	phoneList.forEach(function(value){
-		                      	   		var phoneId =  value.split("=")[1];
-		                      	   		phoneListStr += "<li>"+phoneId+"</li>";
-		                      	   });
-		                      	   phoneListStr += "</ul>";
-		                           $("div.input-box").append(phoneListStr);
-
-		                           $("ul.phone-list>li").click(function(){
-		                           		var phoneId = $(this).html().trim();
-		                           		$("#phone").val(phoneId);
-		                           		phoneNnmber = phoneId;
-		                           		$(this).parent().remove();
-		                           		$("div.clear").hide();
-		                           		self.isShowPhoneList = false;
-	                           		});
-		                        }
-                       		});
-
-						$(this.phone).blur(function(event) {
-						
-						      setTimeout(function(){
-						      	 $("ul.phone-list").remove();
-						      	 self.isShowPhoneList = false;
-						      	 $("div.clear").hide();
-						      }, 300);
-
-						});
-
-                        // 删除 input 数据
-                        $("div.clear").click(function(){
-                            $("#phone").val("");
-                            phoneNnmber = "";
-                            $(this).hide();
-                            $("#phone")[0].focus();
+                $(this.phone).focus(function(event) {
+                    var value = this.value;
+                    if (value) {
+                        $("div.clear").show();
+                    }
+                    var cookiePhone = $.cookie("phoneId");
+                    var phoneListStr = "<ul class='phone-list'>";
+                    var phoneList = getPhoneCookie();
+                    if (phoneList != null) {
+                        phoneList.forEach(function(value) {
+                            var phoneId = value.split("=")[1];
+                            phoneListStr += "<li>" + phoneId + "</li>";
                         });
-
-                       },
-                       renderProductList:function(){
-                       		var productListData = this.productList;
-                       		var domStr = "";
-                       		if(productListData){
-                       		productListData.forEach(function(value){
-                       			var desc = '';
-                       			if(value.package_type === 2){
-                       				desc = '流量叠加包';
-                       			}else if(value.package_type === 1){
-                       				desc = '延长一个月';
-                       			}
-                       		    var originalPrice = value.price/(value.discount/100);
-                       			domStr += [
-                       						"<div data-productid='"+value.package_id+"'>",
-                       							"<div>",
-                       								"<h4 style='margin:0'>"+value.flow+"</h4>",
-                       								"<p style='margin:.2rem 0'>"+value.discount.toFixed(2)+"元</p>",
-                       								"<p style='margin:.2rem 0'>"+desc+"</p>",
-                       								"<p style='font-size:.8rem;color:#AAAAAB'>"+value.desc+"</p>",
-                       							"</div>",
-                       						"</div>"
-                       					  ].join("");
-                       		});
-                       		this.productView.html(domStr);
-
-                            $("#rechary-view>div>div").MyPlugin({
-						        touchendCall:function($self){
-
-						           	var productId = $self.parent().attr("data-productid");
-							 			getPrePayInfo(productId,phoneNnmber);
-						        }
-						    });
-						   }
-     
-                       },
-                       bindClickEvent:function(){
-                           var self = this;
-                           $("#rechary-view>div").click(function(e){
-								if(!isWx){
-									window.wxc.xcConfirm("提示","请在微信充值!");
-								}                          		
-                           });
-
-                       },
-                       payment:function(phone,package_id){
-                           if(phone && package_id){
-                                var encode = JSON.stringify({
-                                    phone:phone,
-                                    package_id:package_id,
-                                });
-
-                                var xhr = new XMLHttpRequest();
-                                xhr.onreadystatechange = function(){
-                                    if(xhr.status == 200 && xhr.readyState ==4){
-                                        var data = JSON.parse(xhr.responseText);
-                                    }
-                                };
-
-                                xhr.open("post",getRootPath()+"/siminfo?action=changeorderpackage",true);
-                                xhr.send(encode);
-                           }else{
-                              window.wxc.xcConfirm("提示","请输入正确物联网卡号!");
-                           }
-                       },
-                       switchView:function(){
-                            var self = this;
-                            for(var i = 0; i < this.btns.length;i++)
-                            {
-                                this.btns[i].index = i;
-                                this.btns[i].onclick = function()
-                                {
-                                	var phoneReg = /^\d{13}$/;
-
-                                        var index = this.index;
-                                        for(var i = 0; i < self.containers.length;i++)
-                                        {
-                                             self.containers[i].className = "container";
-                                             self.btns[i].className = "input-btn";
-                                        }
-                                        self.containers[index].className = "container show";
-                                        self.btns[index].className = "input-btn btnfocus";
-
-
-										if(index == 0){
-										    $("title").html("九护-流量充值");
-											//document.title = '九护-流量充值';
-										}else if(index == 1){
-										    $("title").html("九护-流量查询");
-											//document.title =  '九护-流量查询';
-										}
-
-									  	if(navigator.userAgent.indexOf("MQQBrowser")>-1){
-							 				var $iframe = $('<iframe src="favicon.ico" id="iframe"></iframe>').on('load', function() {      setTimeout(function() {        $iframe.off('load').remove()      }, 0)    }).appendTo($("body"));
-							            }
-
-
-                                }
-                            };
-                       },
-                   };
-
-
-
-                    // 查询类
-                   function QueryFLow(){
-                   		this.queryBtnsData = [
-                   								{
-                                             		btnName:"<p>剩余流量</p>",
-                                             		id:"querycarddataused",
-                                             		imageUrl:"images/flow.png"
-                                             	},
-                                             	{
-                                             		btnName:"<p>卡信息</p>",
-                                             		id:"querycardinfo",
-                                             		imageUrl:"images/simcardinfo.png"
-                                             	},
-                                             	{
-                                             		btnName:"<p>套餐详情</p>",
-                                             		id:"querycardpackage",
-                                             		imageUrl:"images/buypackage.png"
-                                             	},
-
-                                             	{
-                                             		btnName:"<p>月流量</p>",
-                                             		id:"querycardmonthdataused",
-                                             		imageUrl:"images/monthflow.png"
-                                             	},
-                                             	{
-                                             		btnName:"<p>日流量</p>",
-                                             		id:"querycarddailydataused",
-                                             		imageUrl:"images/dailyflow.png"
-                                             	}
-                                              ];
-						this.isSendAjax = false;
-                        this.$btnsBox = $("div.query-btns");
-                        this.btnsDataToDom();
-                   		this.$modal = $("#modal");
-                   		this.$modalInfo = $("div.modal-info");
-						this.$title = $("div.query-title>h3");
-                        this.init();
-                   }
-
-                   QueryFLow.prototype = {
-                       constructor:QueryFLow,
-                       init:function(){
-                         var self = this;
- 
-						  $("div.query-btns>div>div").click(function(){
-						  
-						  		if(!self.isSendAjax){
-						  			self.openModal($(this));
-						  		}					  
-						  })
-
-			              $("div.query-btns>div>div").MyPlugin({
-			              	 touchendCall:function($self){	
-							        self.openModal($self);
-							 }
-			              });
-		
-						 // 模态框隐藏事件
-						 $("div.close").click(function(){
-						    if(!self.isSendAjax){
-						    	$("#modal").animate({"right": "-100%"},300,function(){
-						 			self.removeLoading();
-						 	    });
-						    }
-						 });
-                       },
-                       openModal:function($self){
-                           var self = this;
-                       		var queryUrl = $self.attr("id");
-								 	
-								if(queryUrl == "querycardinfo"){
-							       	 self.queryCardInfo();
-							     }else if(queryUrl == "querycardpackage"){
-							       		        self.queryCardPackage();
-							    }else if(queryUrl == "querycarddataused"){
-							       		        self.queryCardDataUsed();
-							    }else if(queryUrl == "querycardmonthdataused"){
-							    
-							    	if(regPhone.test(phoneNnmber)){
-							    		self.queryCardMonthDataUsed();
-							    	}else{
-							    		window.wxc.xcConfirm("提示","请输入正确物联网卡号!");
-							    	}
-							       	  
-							    }else if(queryUrl == "querycarddailydataused"){
-							    
-							       	if(regPhone.test(phoneNnmber)){
-							    		 self.queryCardDailyDataUsed();
-							    	}else{
-							    		window.wxc.xcConfirm("提示","请输入正确物联网卡号!");
-							    	}	
-							    }; 	
-                       },
-                       btnsDataToDom:function(){
-                            var self = this ;
-                       		var data = this.queryBtnsData;
-                       		data.forEach(function(val){
-                       			var divBox = $("<div>");
-                       			var divBtn = $("<div>");
-                       			var p = $("<p></p>");
-                       			var img = $("<img>");
-                       			    img.attr("src",val.imageUrl);
-                       			    p.append(img);
-                       			    divBtn.append(p);
-                       			    divBtn.append(val.btnName);
-                       			    divBtn.attr("id",val.id);
-                       			    divBox.append(divBtn);
-                       			    self.$btnsBox.append(divBox);
-                       		});
-                       },
-                       sendAjax:function(encode,url,callback){
-                            var self = this;
-                            this.isSendAjax = true;
-                       		var xhr = new XMLHttpRequest();
-                                xhr.onreadystatechange = function(){
-                                    if(xhr.status == 200 && xhr.readyState ==4){
-                                        var data = JSON.parse(xhr.responseText);
-                                        self.isSendAjax = false;
-                                        callback(data);
-                                    }
-                                };
-
-                                xhr.open("post",getRootPath()+"/siminfo?action="+url,true);
-                                xhr.send(encode);
-                       },
-                       addLoading:function(ok){
-                       		 var loading = '<div class="loadEffect"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>'
-                       		 if(ok){
-                       		 	this.$modalInfo.html(loading);
-                       		 }else{
-                       		 	$("div.lastThreeMonthsBox").html(loading);
-                       		 }
-                       },
-                       removeLoading:function(){
-                       		 this.$modalInfo.html("");
-                       },
-                       // 查信息查询
-   					   queryCardInfo:function(){
-   					   		var self = this;
-
-								if(!regPhone.test(phoneNnmber)){window.wxc.xcConfirm("提示","请输入正确物联网卡号!"); return; };
-								 this.$title.html("物联网卡信息")
-								 this.addLoading(true);
-                                 this.$modal.animate({"right": "0"},300);
-
-                                var encode = JSON.stringify({
-                                	phone:phoneNnmber
-                                });
-
-                                this.sendAjax(encode,"querycardinfo",function(data){
-                                	console.log(data);
-
-                                	self.removeLoading();
-                                	if(data.code == 1000){
-
-                                		var str = self.getCardInfoStr(data);
-                                     	self.$modalInfo.html(str);
-                                        setPhoneCookie();
-
-                                	}else{
-                                		self.$modalInfo.html("没有相关信息!");
-                                	}
-
-                                });
-
-
-   					   },
-   					   getCardInfoStr:function(data){
-   					   		var active_time = data.active_time == null?"无":data.active_time;
-   					   		var str = "<div class='cardInfoStr'><ul>"+
-   					   		 		  "<li><span>卡号</span>"+data.phoneNum+"</li>"+
-   					   		 		  "<li><span>运营商</span>"+data.op+"</li>"+  					   				  
-   					   				  "<li><span>iccid</span>"+data.iccid+"</li>"+
-   					   				  "<li><span>imsi</span>"+data.imsi+"</li>"+
-   					   				  "<li><span>激活时间</span>"+active_time+"</li>"+
-                                      "<li><span>当前状态</span>"+data.status_desc+"</li></ul></div>";                                     
-   					   		return str;
-   					   },
-   					   // 查询卡包
-   					   queryCardPackage:function(){
-   					        var self = this;
-
-   					   			if(!regPhone.test(phoneNnmber)){ window.wxc.xcConfirm("提示","请输入正确物联网卡号!"); return; };
-
-   					   		     this.$title.html("套餐订购信息")
-								 this.addLoading(true);
-                                 this.$modal.animate({"right": "0"},300);
-
-   					   		    var encode = JSON.stringify({
-                                    phone:phoneNnmber
-                                });
-
-                                self.sendAjax(encode,"querycardpackage",function(data){
-                                    console.log(data);
-                                    self.removeLoading();
-                                    if(data.code == 1000){
-                                    var cardPackage = data.cardPackage;
-	                                    if(cardPackage){
-
-	                                    	var str = self.getCardPackageInfoStr(cardPackage);
-
-	                                        self.$modalInfo.html(str);
-	                                        setPhoneCookie();
-	                                    }else{
-
-	                                    };
-                                    }else{
-                                    	self.$modalInfo.html("没有相关信息!");
-                                    }
-                                })
-
-   					   },
-   					   getCardPackageInfoStr:function(cardPackage){
-   					   		var str = "<div><ul class='cardPackageInfos'>";
-                             cardPackage.forEach(function(val,index){
-                                  str += "<li><span>套餐名称</span><span>"+val.packageName+"</span></li>";
-                                  str += "<li><span>开始时间</span><span>"+val.beginTime+"</span></li>";
-                                  str += "<li><span>结束时间</span><span>"+val.endTime+"</span></li>";
-                             });
-                                return str +"</ul></div>";
-   					   },
-   					   // 查询套餐使用情况
-   					   queryCardDataUsed:function(){
-                            var self = this;
-
-   					   		if(!regPhone.test(phoneNnmber)){ window.wxc.xcConfirm("提示","请输入正确物联网卡号!"); return; };
-
-                            this.$title.html("当前月流量套餐使用情况")
-							this.addLoading(true);
-                            this.$modal.animate({"right": "0"},300);
-
-                                var encode = JSON.stringify({
-                                    phone:phoneNnmber
-                                });
-
-                                self.sendAjax(encode,"querycarddataused",function(data){
-									self.removeLoading();
-									console.log(data);
-                                    if(data.code == 1000){
-	                                    if(data.cardDataUseds){
-	                                        var cardDataUseds = data.cardDataUseds;
-	                                        var str = self.getCardDataUsed(cardDataUseds);
-
-	                                        self.$modalInfo.html(str);
-
-	                                        setPhoneCookie();
-	                                    };
-	                                 }else{
-	                                 	self.$modalInfo.html("没有相关信息");
-	                                 }
-                                });
-
-   					   },
-                       getCardDataUsed:function(cardDataUseds){
-                            var str = "<div><div class='cardDataUsed'>";
-                               console.log(cardDataUseds);
-                                cardDataUseds.forEach(function(val){
-                                	var dataCount = val.dataCount%1024 == 0 ? val.dataCount/1024 + "M" : parseInt(val.dataCount/1024) +"M" + (val.dataCount%1024) +"KB",
-                                		usedCount = val.usedCount%1024 == 0 ? val.usedCount/1024 + "M&nbsp;" : (parseInt(val.usedCount/1024)== 0 ? "":parseInt(val.usedCount/1024)+"M&nbsp;" )+ (val.usedCount%1024) +"KB",
-                                		leftCount = val.leftCount%1024 == 0 ? val.leftCount/1024 + "M&nbsp;" : (parseInt(val.leftCount/1024)== 0 ? "":parseInt(val.leftCount/1024)+"M&nbsp;") + (val.leftCount%1024) +"KB";
-                                    str += "<p><span>套餐名称</span>"+val.packageName+"</p>";
-                                    str += "<p><span>总流量</span>"+dataCount+"</p>";
-                                    str += "<p><span>已用流量</span>"+usedCount+"</p>";
-                                    str += "<p><span>剩余流量</span>"+leftCount+"</p>";
-                                });
-                                str += "</div></div>";
-                                return str ;
-                       },
-   					   //  月流量信息查询
-   					   queryCardMonthDataUsed:function(){
-   					    	var self = this;
-
-   					   	    this.$title.html("最近三个月流量使用情况");
-
-                            this.$modal.animate({"right": "0"},300);
-							var months = this.getTheLastMonth();
-                            var str = self.getCardMonthDataUsedInfoStr();
-                            this.$modalInfo.append(str);
-					        this.$modalInfo.append("<div class='lastThreeMonthsBox'></div>");
-
-									$("#monthsBtns").click(function(e){
-									        self.addLoading(false);
-											if(!regPhone.test(phoneNnmber)){ window.wxc.xcConfirm("提示","请输入正确物联网卡号!"); return; }
-					                         var name = e.target.nodeName;
-					                         if(name == "INPUT"){
-					                            $(e.target).css({"border-bottom":"2px solid #72BE9C"}).siblings().css({"border-bottom":"2px solid #fff"});
-
-
-					                            self.monthAjax(e.target.value,"querycardmonthdataused");
-					                         }
-									});
-								var dateStr = $("#monthsBtns").children().eq(0).val();
-
-								this.addLoading(false);
-								this.monthAjax(dateStr,"querycardmonthdataused");
-								$("#monthsBtns").children().eq(0).css({"border-bottom":"2px solid #72BE9C"});
-   					   },
-   					   monthAjax:function(dateStr,url){
-   					         var self = this;
-   					   		 var encode = JSON.stringify({
-					             phone:phoneNnmber,
-								 dateStr:dateStr
-					         });
-					         self.sendAjax(encode,url,function(data){
-					              console.log(data);
-					              var str = "";
-					              var monthRecords = data.monthRecords;
-						          var dailyRecords = data.dailyRecords;
-
-					              if(data.code == 1000){
-
-
-
-
-						                     if(monthRecords != null){
-						                       	var flow = monthRecords[0].flowTotal,
-						                       	    flowTotal = (flow%1024 == 0)? ( flow/1024 +"M"): ( ( parseInt(flow/1024) == 0?"":parseInt(flow/1024) +"M&nbsp;") + flow%1024 +"KB");
-						                     		str += "<p class='list'><span>使用总量:</span><span>"+flowTotal+"</span></p>";
-
-						                     }else if(dailyRecords != null){
-
-						                         dailyRecords.forEach(function(val,idx){
-						                             var flowTotal = (val.flowTotal%1024 == 0)? ( val.flowTotal/1024 +"M"): ( ( parseInt(val.flowTotal/1024) == 0?"":parseInt(val.flowTotal/1024) +"M&nbsp;") + val.flowTotal%1024 +"KB");
-						                         	 str += "<p class='daylist'><span>"+val.dataStr+"</span><span>"+flowTotal+"</span></p>";
-						                         })
-
-						                     }
-
-						                     setPhoneCookie();
-											 $("div.lastThreeMonthsBox").html(str);
-						         }else{
-						              console.log(monthRecords,dailyRecords)
-						              if(monthRecords === null){
-						                    str += "<p class='daylist'><b>没有数据</b></p>";
-						              }else if(dailyRecords === null){
-
-						                 //  str += "<p class='daylist'><span>2017-12-12</span><span>222m</span></p>";
-						                   str = "<p class='daylist'><b>没有数据</b></p>";
-						              }
-									 $("div.lastThreeMonthsBox").html(str);
-						       }
-
-					       });
-   					   },
-   					   getCardMonthDataUsedInfoStr:function(){
-   					   		var months = this.getTheLastMonth(3);
-   					   		var str = "<p id='monthsBtns' class='monthsBtns'><input type='button'  value='"+months[0]+"' data-id='"+1+"'/> <input type='button' value='"+months[1]+"' data-id='"+2+"'/> <input type='button' value='"+months[2]+"' data-id='"+3+"'/></p>";
-   					   		return str;
-   					   },
-   					   // 得到最近月份
-   					  getTheLastMonth:function(number){
-			                //创建现在的时间
-			                var data=new Date();
-			                //获取年
-			                var year=data.getFullYear();
-			                //获取月
-			                var mon=data.getMonth()+1;
-			                var arry=new Array();
-			                for(var i=0;i<number;i++){
-			                    mon=mon-1;
-			                    if(mon<=0){
-			                        year=year-1;
-			                        mon=mon+12;
-			                      
-			                    }
-			                    if(mon<10){
-			                        mon="0"+mon;
-			                    }
-			                    arry[i]=year+"-"+mon;
-			                }
-			                
-			                arry.unshift(data.getFullYear()+"-"+((data.getMonth()+1)<10? "0"+(data.getMonth()+1):(data.getMonth()+1)));
-			                return arry;
-			            } ,
-   					   // 日流量查询
-   					   queryCardDailyDataUsed:function(){
-   					   		var self = this;
-
-                            this.$title.html("最近三个月每日流量情况");
-							//this.addLoading();
-                            this.$modal.animate({"right": "0"},300);
-							var months = this.getTheLastMonth();
-                            var str = self.getCardMonthDataUsedInfoStr();
-                            this.$modalInfo.append(str);
-					        this.$modalInfo.append("<div class='lastThreeMonthsBox'><p class='info'>请点击事件按钮查询!</p></div>");
-
-
-							$("#monthsBtns").click(function(e){
-								if(!regPhone.test(phoneNnmber)){ window.wxc.xcConfirm("提示","请输入正确物联网卡号!"); return; };
-					          $(e.target).css({"border-bottom":"2px solid #72BE9C"}).siblings().css({"border-bottom":"2px solid #fff"});
-					            self.addLoading(false);
-					            var name = e.target.nodeName;
-					            if(name == "INPUT"){
-					            self.monthAjax(e.target.value,"querycarddailydataused");
-					          }
-						   });
-
-						   var dateStr = $("#monthsBtns").children().eq(0).val();
-							$("#monthsBtns").children().eq(0).css({"border-bottom":"2px solid #72BE9C"});
-							this.addLoading(false);
-							this.monthAjax(dateStr,"querycarddailydataused");
-   					   }
-                   };
-
-
-                   QueryFLow.prototype.sendAjax({},"querypackages",function(data){
-                        new RechargeFlow(data.packages);
+                        phoneListStr += "</ul>";
+                        $("div.input-box").append(phoneListStr);
+
+                        $("ul.phone-list>li").click(function() {
+                            var phoneId = $(this).html().trim();
+                            $("#phone").val(phoneId);
+                            phoneNnmber = phoneId;
+                            $(this).parent().remove();
+                            $("div.clear").hide();
+                            self.isShowPhoneList = false;
+                        });
+                    }
+                });
+
+                $(this.phone).blur(function(event) {
+
+                    setTimeout(function() {
+                        $("ul.phone-list").remove();
+                        self.isShowPhoneList = false;
+                        $("div.clear").hide();
+                    }, 300);
+
+                });
+
+                // 删除 input 数据
+                $("div.clear").click(function() {
+                    $("#phone").val("");
+                    phoneNnmber = "";
+                    $(this).hide();
+                    $("#phone")[0].focus();
+                });
+
+            },
+            renderProductList: function() {
+                var productListData = this.productList;
+                var domStr = "";
+                if (productListData) {
+                    productListData.forEach(function(value) {
+                        var desc = '';
+                        if (value.package_type === 2) {
+                            desc = '流量叠加包';
+                        } else if (value.package_type === 1) {
+                            desc = '延长一个月';
+                        }
+                        var originalPrice = value.price / (value.discount / 100);
+                        domStr += [
+                            "<div data-productid='" + value.package_id + "'>",
+                            "<div>",
+                            "<h4 style='margin:0'>" + value.flow + "</h4>",
+                            "<p style='margin:.2rem 0'>" + value.discount.toFixed(2) + "元</p>",
+                            "<p style='margin:.2rem 0'>" + desc + "</p>",
+                            "<p style='font-size:.8rem;color:#AAAAAB'>" + value.desc + "</p>",
+                            "</div>",
+                            "</div>"
+                        ].join("");
+                    });
+                    this.productView.html(domStr);
+
+                    $("#rechary-view>div>div").MyPlugin({
+                        touchendCall: function($self) {
+
+                            var productId = $self.parent().attr("data-productid");
+                            getPrePayInfo(productId, phoneNnmber);
+                        }
+                    });
+                }
+
+            },
+            bindClickEvent: function() {
+                var self = this;
+                $("#rechary-view>div").click(function(e) {
+                    if (!isWx) {
+                        window.wxc.xcConfirm("提示", "请在微信充值!");
+                    }
+                });
+
+            },
+            payment: function(phone, package_id) {
+                if (phone && package_id) {
+                    var encode = JSON.stringify({
+                        phone: phone,
+                        package_id: package_id,
                     });
 
-                   new QueryFLow();
-			
-				   
-            document.body.onselectstart=document.body.oncontextmenu=function(){return false;};			
-		</script>
+                    var xhr = new XMLHttpRequest();
+                    xhr.onreadystatechange = function() {
+                        if (xhr.status == 200 && xhr.readyState == 4) {
+                            var data = JSON.parse(xhr.responseText);
+                        }
+                    };
+
+                    xhr.open("post", getRootPath() + "/siminfo?action=changeorderpackage", true);
+                    xhr.send(encode);
+                } else {
+                    window.wxc.xcConfirm("提示", "请输入正确物联网卡号!");
+                }
+            },
+            switchView: function() {
+                var self = this;
+                for (var i = 0; i < this.btns.length; i++) {
+                    this.btns[i].index = i;
+                    this.btns[i].onclick = function() {
+                        var phoneReg = /^\d{13}$/;
+
+                        var index = this.index;
+                        for (var i = 0; i < self.containers.length; i++) {
+                            self.containers[i].className = "container";
+                            self.btns[i].className = "input-btn";
+                        }
+                        self.containers[index].className = "container show";
+                        self.btns[index].className = "input-btn btnfocus";
+
+
+                        if (index == 0) {
+                            $("title").html("九护-流量充值");
+                            //document.title = '九护-流量充值';
+                        } else if (index == 1) {
+                            $("title").html("九护-流量查询");
+                            //document.title =  '九护-流量查询';
+                        }
+
+                        if (navigator.userAgent.indexOf("MQQBrowser") > -1) {
+                            var $iframe = $('<iframe src="favicon.ico" id="iframe"></iframe>').on('load', function() {
+                                setTimeout(function() {
+                                    $iframe.off('load').remove()
+                                }, 0)
+                            }).appendTo($("body"));
+                        }
+
+
+                    }
+                };
+            },
+        };
+
+
+
+        // 查询类
+        function QueryFLow() {
+            this.queryBtnsData = [{
+                    btnName: "<p>剩余流量</p>",
+                    id: "querycarddataused",
+                    imageUrl: "images/flow.png"
+                }, {
+                    btnName: "<p>卡信息</p>",
+                    id: "querycardinfo",
+                    imageUrl: "images/simcardinfo.png"
+                }, {
+                    btnName: "<p>套餐详情</p>",
+                    id: "querycardpackage",
+                    imageUrl: "images/buypackage.png"
+                },
+
+                {
+                    btnName: "<p>月流量</p>",
+                    id: "querycardmonthdataused",
+                    imageUrl: "images/monthflow.png"
+                }, {
+                    btnName: "<p>日流量</p>",
+                    id: "querycarddailydataused",
+                    imageUrl: "images/dailyflow.png"
+                }
+            ];
+            this.isSendAjax = false;
+            this.$btnsBox = $("div.query-btns");
+            this.btnsDataToDom();
+            this.$modal = $("#modal");
+            this.$modalInfo = $("div.modal-info");
+            this.$title = $("div.query-title>h3");
+            this.init();
+        }
+
+        QueryFLow.prototype = {
+            constructor: QueryFLow,
+            init: function() {
+                var self = this;
+
+                $("div.query-btns>div>div").click(function() {
+
+                    if (!self.isSendAjax) {
+                        self.openModal($(this));
+                    }
+                })
+
+                $("div.query-btns>div>div").MyPlugin({
+                    touchendCall: function($self) {
+                        self.openModal($self);
+                    }
+                });
+
+                // 模态框隐藏事件
+                $("div.close").click(function() {
+                    if (!self.isSendAjax) {
+                        $("#modal").animate({
+                            "right": "-100%"
+                        }, 300, function() {
+                            self.removeLoading();
+                        });
+                    }
+                });
+            },
+            openModal: function($self) {
+                var self = this;
+                var queryUrl = $self.attr("id");
+
+                if (queryUrl == "querycardinfo") {
+                    self.queryCardInfo();
+                } else if (queryUrl == "querycardpackage") {
+                    self.queryCardPackage();
+                } else if (queryUrl == "querycarddataused") {
+                    self.queryCardDataUsed();
+                } else if (queryUrl == "querycardmonthdataused") {
+
+                    if (regPhone.test(phoneNnmber)) {
+                        self.queryCardMonthDataUsed();
+                    } else {
+                        window.wxc.xcConfirm("提示", "请输入正确物联网卡号!");
+                    }
+
+                } else if (queryUrl == "querycarddailydataused") {
+
+                    if (regPhone.test(phoneNnmber)) {
+                        self.queryCardDailyDataUsed();
+                    } else {
+                        window.wxc.xcConfirm("提示", "请输入正确物联网卡号!");
+                    }
+                };
+            },
+            btnsDataToDom: function() {
+                var self = this;
+                var data = this.queryBtnsData;
+                data.forEach(function(val) {
+                    var divBox = $("<div>");
+                    var divBtn = $("<div>");
+                    var p = $("<p></p>");
+                    var img = $("<img>");
+                    img.attr("src", val.imageUrl);
+                    p.append(img);
+                    divBtn.append(p);
+                    divBtn.append(val.btnName);
+                    divBtn.attr("id", val.id);
+                    divBox.append(divBtn);
+                    self.$btnsBox.append(divBox);
+                });
+            },
+            sendAjax: function(encode, url, callback) {
+                var self = this;
+                this.isSendAjax = true;
+                var xhr = new XMLHttpRequest();
+                xhr.onreadystatechange = function() {
+                    if (xhr.status == 200 && xhr.readyState == 4) {
+                        var data = JSON.parse(xhr.responseText);
+                        self.isSendAjax = false;
+                        callback(data);
+                    }
+                };
+
+                xhr.open("post", getRootPath() + "/siminfo?action=" + url, true);
+                xhr.send(encode);
+            },
+            addLoading: function(ok) {
+                var loading = '<div class="loadEffect"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>'
+                if (ok) {
+                    this.$modalInfo.html(loading);
+                } else {
+                    $("div.lastThreeMonthsBox").html(loading);
+                }
+            },
+            removeLoading: function() {
+                this.$modalInfo.html("");
+            },
+            // 查信息查询
+            queryCardInfo: function() {
+                var self = this;
+
+                if (!regPhone.test(phoneNnmber)) {
+                    window.wxc.xcConfirm("提示", "请输入正确物联网卡号!");
+                    return;
+                };
+                this.$title.html("物联网卡信息")
+                this.addLoading(true);
+                this.$modal.animate({
+                    "right": "0"
+                }, 300);
+
+                var encode = JSON.stringify({
+                    phone: phoneNnmber
+                });
+
+                this.sendAjax(encode, "querycardinfo", function(data) {
+                    console.log(data);
+
+                    self.removeLoading();
+                    if (data.code == 1000) {
+
+                        var str = self.getCardInfoStr(data);
+                        self.$modalInfo.html(str);
+                        setPhoneCookie();
+
+                    } else {
+                        self.$modalInfo.html("没有相关信息!");
+                    }
+
+                });
+
+
+            },
+            getCardInfoStr: function(data) {
+                var active_time = data.active_time == null ? "无" : data.active_time;
+                var str = "<div class='cardInfoStr'><ul>" +
+                    "<li><span>卡号</span>" + data.phoneNum + "</li>" +
+                    "<li><span>运营商</span>" + data.op + "</li>" +
+                    "<li><span>iccid</span>" + data.iccid + "</li>" +
+                    "<li><span>imsi</span>" + data.imsi + "</li>" +
+                    "<li><span>激活时间</span>" + active_time + "</li>" +
+                    "<li><span>当前状态</span>" + data.status_desc + "</li></ul></div>";
+                return str;
+            },
+            // 查询卡包
+            queryCardPackage: function() {
+                var self = this;
+
+                if (!regPhone.test(phoneNnmber)) {
+                    window.wxc.xcConfirm("提示", "请输入正确物联网卡号!");
+                    return;
+                };
+
+                this.$title.html("套餐订购信息")
+                this.addLoading(true);
+                this.$modal.animate({
+                    "right": "0"
+                }, 300);
+
+                var encode = JSON.stringify({
+                    phone: phoneNnmber
+                });
+
+                self.sendAjax(encode, "querycardpackage", function(data) {
+                    console.log(data);
+                    self.removeLoading();
+                    if (data.code == 1000) {
+                        var cardPackage = data.cardPackage;
+                        if (cardPackage) {
+
+                            var str = self.getCardPackageInfoStr(cardPackage);
+
+                            self.$modalInfo.html(str);
+                            setPhoneCookie();
+                        } else {
+
+                        };
+                    } else {
+                        self.$modalInfo.html("没有相关信息!");
+                    }
+                })
+
+            },
+            getCardPackageInfoStr: function(cardPackage) {
+                var str = "<div><ul class='cardPackageInfos'>";
+                cardPackage.forEach(function(val, index) {
+                    str += "<li><span>套餐名称</span><span>" + val.packageName + "</span></li>";
+                    str += "<li><span>开始时间</span><span>" + val.beginTime + "</span></li>";
+                    str += "<li><span>结束时间</span><span>" + val.endTime + "</span></li>";
+                });
+                return str + "</ul></div>";
+            },
+            // 查询套餐使用情况
+            queryCardDataUsed: function() {
+                var self = this;
+
+                if (!regPhone.test(phoneNnmber)) {
+                    window.wxc.xcConfirm("提示", "请输入正确物联网卡号!");
+                    return;
+                };
+
+                this.$title.html("当前月流量套餐使用情况")
+                this.addLoading(true);
+                this.$modal.animate({
+                    "right": "0"
+                }, 300);
+
+                var encode = JSON.stringify({
+                    phone: phoneNnmber
+                });
+
+                self.sendAjax(encode, "querycarddataused", function(data) {
+                    self.removeLoading();
+                    console.log(data);
+                    if (data.code == 1000) {
+                        if (data.cardDataUseds) {
+                            var cardDataUseds = data.cardDataUseds;
+                            var str = self.getCardDataUsed(cardDataUseds);
+
+                            self.$modalInfo.html(str);
+
+                            setPhoneCookie();
+                        };
+                    } else {
+                        self.$modalInfo.html("没有相关信息");
+                    }
+                });
+
+            },
+            getCardDataUsed: function(cardDataUseds) {
+                var str = "<div><div class='cardDataUsed'>";
+                console.log(cardDataUseds);
+                cardDataUseds.forEach(function(val) {
+                    var dataCount = val.dataCount % 1024 == 0 ? val.dataCount / 1024 + "M" : parseInt(val.dataCount / 1024) + "M" + (val.dataCount % 1024) + "KB",
+                        usedCount = val.usedCount % 1024 == 0 ? val.usedCount / 1024 + "M&nbsp;" : (parseInt(val.usedCount / 1024) == 0 ? "" : parseInt(val.usedCount / 1024) + "M&nbsp;") + (val.usedCount % 1024) + "KB",
+                        leftCount = val.leftCount % 1024 == 0 ? val.leftCount / 1024 + "M&nbsp;" : (parseInt(val.leftCount / 1024) == 0 ? "" : parseInt(val.leftCount / 1024) + "M&nbsp;") + (val.leftCount % 1024) + "KB";
+                    str += "<p><span>套餐名称</span>" + val.packageName + "</p>";
+                    str += "<p><span>总流量</span>" + dataCount + "</p>";
+                    str += "<p><span>已用流量</span>" + usedCount + "</p>";
+                    str += "<p><span>剩余流量</span>" + leftCount + "</p>";
+                });
+                str += "</div></div>";
+                return str;
+            },
+            //  月流量信息查询
+            queryCardMonthDataUsed: function() {
+                var self = this;
+
+                this.$title.html("最近三个月流量使用情况");
+
+                this.$modal.animate({
+                    "right": "0"
+                }, 300);
+                var months = this.getTheLastMonth();
+                var str = self.getCardMonthDataUsedInfoStr();
+                this.$modalInfo.append(str);
+                this.$modalInfo.append("<div class='lastThreeMonthsBox'></div>");
+
+                $("#monthsBtns").click(function(e) {
+                    self.addLoading(false);
+                    if (!regPhone.test(phoneNnmber)) {
+                        window.wxc.xcConfirm("提示", "请输入正确物联网卡号!");
+                        return;
+                    }
+                    var name = e.target.nodeName;
+                    if (name == "INPUT") {
+                        $(e.target).css({
+                            "border-bottom": "2px solid #72BE9C"
+                        }).siblings().css({
+                            "border-bottom": "2px solid #fff"
+                        });
+
+
+                        self.monthAjax(e.target.value, "querycardmonthdataused");
+                    }
+                });
+                var dateStr = $("#monthsBtns").children().eq(0).val();
+
+                this.addLoading(false);
+                this.monthAjax(dateStr, "querycardmonthdataused");
+                $("#monthsBtns").children().eq(0).css({
+                    "border-bottom": "2px solid #72BE9C"
+                });
+            },
+            monthAjax: function(dateStr, url) {
+                var self = this;
+                var encode = JSON.stringify({
+                    phone: phoneNnmber,
+                    dateStr: dateStr
+                });
+                self.sendAjax(encode, url, function(data) {
+                    console.log(data);
+                    var str = "";
+                    var monthRecords = data.monthRecords;
+                    var dailyRecords = data.dailyRecords;
+
+                    if (data.code == 1000) {
+
+
+
+
+                        if (monthRecords != null) {
+                            var flow = monthRecords[0].flowTotal,
+                                flowTotal = (flow % 1024 == 0) ? (flow / 1024 + "M") : ((parseInt(flow / 1024) == 0 ? "" : parseInt(flow / 1024) + "M&nbsp;") + flow % 1024 + "KB");
+                            str += "<p class='list'><span>使用总量:</span><span>" + flowTotal + "</span></p>";
+
+                        } else if (dailyRecords != null) {
+
+                            dailyRecords.forEach(function(val, idx) {
+                                var flowTotal = (val.flowTotal % 1024 == 0) ? (val.flowTotal / 1024 + "M") : ((parseInt(val.flowTotal / 1024) == 0 ? "" : parseInt(val.flowTotal / 1024) + "M&nbsp;") + val.flowTotal % 1024 + "KB");
+                                str += "<p class='daylist'><span>" + val.dataStr + "</span><span>" + flowTotal + "</span></p>";
+                            })
+
+                        }
+
+                        setPhoneCookie();
+                        $("div.lastThreeMonthsBox").html(str);
+                    } else {
+                        console.log(monthRecords, dailyRecords)
+                        if (monthRecords === null) {
+                            str += "<p class='daylist'><b>没有数据</b></p>";
+                        } else if (dailyRecords === null) {
+
+                            //  str += "<p class='daylist'><span>2017-12-12</span><span>222m</span></p>";
+                            str = "<p class='daylist'><b>没有数据</b></p>";
+                        }
+                        $("div.lastThreeMonthsBox").html(str);
+                    }
+
+                });
+            },
+            getCardMonthDataUsedInfoStr: function() {
+                var months = this.getTheLastMonth(3);
+                var str = "<p id='monthsBtns' class='monthsBtns'><input type='button'  value='" + months[0] + "' data-id='" + 1 + "'/> <input type='button' value='" + months[1] + "' data-id='" + 2 + "'/> <input type='button' value='" + months[2] + "' data-id='" + 3 + "'/></p>";
+                return str;
+            },
+            // 得到最近月份
+            getTheLastMonth: function(number) {
+                //创建现在的时间
+                var data = new Date();
+                //获取年
+                var year = data.getFullYear();
+                //获取月
+                var mon = data.getMonth() + 1;
+                var arry = new Array();
+                for (var i = 0; i < number; i++) {
+                    mon = mon - 1;
+                    if (mon <= 0) {
+                        year = year - 1;
+                        mon = mon + 12;
+
+                    }
+                    if (mon < 10) {
+                        mon = "0" + mon;
+                    }
+                    arry[i] = year + "-" + mon;
+                }
+
+                arry.unshift(data.getFullYear() + "-" + ((data.getMonth() + 1) < 10 ? "0" + (data.getMonth() + 1) : (data.getMonth() + 1)));
+                return arry;
+            },
+            // 日流量查询
+            queryCardDailyDataUsed: function() {
+                var self = this;
+
+                this.$title.html("最近三个月每日流量情况");
+                //this.addLoading();
+                this.$modal.animate({
+                    "right": "0"
+                }, 300);
+                var months = this.getTheLastMonth();
+                var str = self.getCardMonthDataUsedInfoStr();
+                this.$modalInfo.append(str);
+                this.$modalInfo.append("<div class='lastThreeMonthsBox'><p class='info'>请点击事件按钮查询!</p></div>");
+
+
+                $("#monthsBtns").click(function(e) {
+                    if (!regPhone.test(phoneNnmber)) {
+                        window.wxc.xcConfirm("提示", "请输入正确物联网卡号!");
+                        return;
+                    };
+                    $(e.target).css({
+                        "border-bottom": "2px solid #72BE9C"
+                    }).siblings().css({
+                        "border-bottom": "2px solid #fff"
+                    });
+                    self.addLoading(false);
+                    var name = e.target.nodeName;
+                    if (name == "INPUT") {
+                        self.monthAjax(e.target.value, "querycarddailydataused");
+                    }
+                });
+
+                var dateStr = $("#monthsBtns").children().eq(0).val();
+                $("#monthsBtns").children().eq(0).css({
+                    "border-bottom": "2px solid #72BE9C"
+                });
+                this.addLoading(false);
+                this.monthAjax(dateStr, "querycarddailydataused");
+            }
+        };
+
+
+        QueryFLow.prototype.sendAjax({}, "querypackages", function(data) {
+            new RechargeFlow(data.packages);
+        });
+
+        new QueryFLow();
+
+
+        document.body.onselectstart = document.body.oncontextmenu = function() {
+            return false;
+        };
+    </script>
 
 
 </body>
+
+
 </html>

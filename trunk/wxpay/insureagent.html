@@ -282,6 +282,7 @@
                             url: "https://www.gps51.com/wxpay/payaction?openid=" + openId + "&username=" + this.username + "&goodsid=" + goodsid + "&count=1" + "&state=" + state,
                             type: "get",
                             dataType: "json",
+                            contentType: "application/json;charset=utf-8",
                             success: function(json) {
                                 var appId = json.appId;
                                 var timeStamp = json.timeStamp;
@@ -343,6 +344,7 @@
                             url: "https://www.gps51.com/wxpay/payaction?noncestr=" + nonceStr + "&state=" + state,
                             type: "get",
                             dataType: "json",
+                            contentType: "application/json;charset=utf-8",
                             success: function(json) {
                                 toast.hide();
                                 if (json.status == 0) {
@@ -380,6 +382,7 @@
                     $.ajax({
                         url: "https://www.gps51.com/webapi?action=matchkeyword",
                         type: "post",
+                        contentType: "application/json;charset=utf-8",
                         dataType: "json",
                         data: JSON.stringify({
                             type: "username",

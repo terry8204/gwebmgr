@@ -131,6 +131,7 @@
                 url: "/wxpay/notify?nonestr=" + nonceStr + "&slaveid=" + slaveid,
                 type: "get",
                 dataType: "json",
+                contentType: "application/json;charset=utf-8",
                 success: function(json) {
                     if (json.status == 0) {
                         var enddaystr = json.enddaystr;
@@ -180,6 +181,7 @@
                     url: "/wxpay/towxpay?openid=" + openId + "&slaveid=" + slaveid,
                     type: "get",
                     dataType: "json",
+                    contentType: "application/json;charset=utf-8",
                     success: function(json) {
                         console.log(json);
                         var appId = json.appId;

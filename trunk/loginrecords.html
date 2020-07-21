@@ -113,6 +113,7 @@
                     me.loading = true;
                     $.ajax({
                         url: url,
+                        contentType: "application/json;charset=utf-8",
                         data: JSON.stringify({
                             userid: this.username
                         }),

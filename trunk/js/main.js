@@ -65,6 +65,7 @@ vstore = new Vuex.Store({
                 url: url,
                 method: 'post',
                 data: {},
+                contentType: "application/json;charset=utf-8",
                 async: false,
                 success: function(resp) {
                     if (resp.status == 0) {
