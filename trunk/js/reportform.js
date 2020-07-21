@@ -5421,9 +5421,10 @@ function driverWorkDetails() {
         },
         methods: {
             exportTableData: function() {
+                var columns = deepClone(this.columns);
                 this.$refs.table.exportCsv({
                     filename: '工作明细',
-                    columns: this.columns,
+                    columns: columns,
                     data: this.records,
                     quoted: true,
                 });

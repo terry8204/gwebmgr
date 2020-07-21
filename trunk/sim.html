@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <link rel="shortcut icon" href="./favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Access-Control-Allow-Origin" content="*" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>SIM流量管理</title>
     <link rel="stylesheet" href="dist/styles/iview.css">
@@ -82,6 +83,8 @@
     <script src="dist/iview.min.js"></script>
     <script src="js/config.js"></script>
     <script type="text/javascript">
+        jQuery.support.cors = true;
+
         function getParameterByName(name) {
             var url = location.search;
             url = decodeURIComponent(url);
