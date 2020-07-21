@@ -1917,6 +1917,7 @@ function insureRecords(groupslist) {
         mixins: [treeMixin],
         data: {
             dayNumberType: 0,
+            clearable: false,
             dateVal: [DateFormat.longToDateStr(Date.now(), timeDifference), DateFormat.longToDateStr(Date.now(), timeDifference)],
             error: 123,
             createrToUser: userName,
@@ -2172,8 +2173,7 @@ function insureRecords(groupslist) {
                     me = this;
                 this.editObjectRow.insurestate = me.editObjectRow.isRecharge ? 1 : 0;
                 var d = deepClone(this.editObjectRow);
-                console.log(d.createtime);
-                if (d.createtime == null) {
+                if (d.createtime == "" || d.createtime == null) {
                     this.$Message.error('请选择时间');
                     return;
                 };

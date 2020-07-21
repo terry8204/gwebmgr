@@ -84,7 +84,7 @@
             <Row style="margin:10px 0;">
                 <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">添加时间 : &nbsp;</i-col>
                 <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
-                    <date-picker type="date" v-model="editObjectRow.createtime"></date-picker>
+                    <date-picker type="date" v-model="editObjectRow.createtime" :clearable="clearable"></date-picker>
                 </i-col>
             </Row>
         </div>
