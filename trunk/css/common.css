@@ -265,7 +265,9 @@ p.last-strstatus {
 #insure-records .ivu-table-sort .ivu-icon,
 #temperature .ivu-table-sort .ivu-icon,
 #group-mileage .ivu-table-sort .ivu-icon,
-#querydev .ivu-icon {
+#querydev .ivu-icon,
+#driver-work-details .ivu-icon,
+#repair-record .ivu-icon {
     margin-top: 0px;
 }
 

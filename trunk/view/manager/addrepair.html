@@ -148,33 +148,29 @@
             },
             methods: {
                 handleSubmit: function() {
-                    if (this.groupname == "") {
-                        this.$Message.error(this.$t("message.fillGroupNameTip"));
+                    if (this.deviceid == "") {
+                        this.$Message.error("设备序号是必填的");
                         return;
                     };
-                    var url = myUrls.addGroup();
+                    var url = myUrls.addRepairRecord();
                     var data = {
-                        groupname: this.groupname,
-                        mintime: this.mintime,
-                        maxtime: this.maxtime,
-                        groupname: this.groupname,
+                        deviceid: this.deviceid,
+                        repairitem: this.repairitem, //维修项' ,
+                        fee: this.fee, //多少钱元,精确到小数点后2位
+                        repairagent: this.repairagent, //维修店名' ,
+                        repairaddress: this.repairaddress, //维修店地址' ,
+                        repairphone: this.repairphone, //维修店联系电话' ,
+                        repairname: this.repairname, //维修店联系人' ,
+                        submitrepairname: this.submitrepairname, //送修人员名字' ,
+                        submitrepairphone: this.submitrepairphone, //送修人员电话' ,
+                        remark: this.remark, //备注' ,
                     };
-                    if (this.usercount == "") {
-                        data.usercount = 0;
-                    } else {
-                        data.usercount = this.usercount;
-                    }
-                    if (this.devicecount == "") {
-                        data.devicecount = 0;
-                    } else {
-                        data.devicecount = this.devicecount;
-                    }
+
                     utils.sendAjax(url, data, this.doAddcallback);
                 },
                 doAddcallback: function(resp) {
                     if (resp.status == 0) {
-                        rootuser = null;
-                        this.$Message.success(this.$t("message.addSucc"));
+                        this.$Message.success('添加成功');
                     } else {
                         this.$Message.error(resp.cause);
                     }

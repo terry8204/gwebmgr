@@ -644,6 +644,18 @@ var myUrls = {
     reportDriverRecords: function() {
         return this.apihosts + 'webapi?action=reportdriverrecords&token=' + token;
     },
+    addRepairRecord: function() {
+        return this.apihosts + 'webapi?action=addrepairrecord&token=' + token;
+    },
+    queryRepairRecords: function() {
+        return this.apihosts + 'webapi?action=queryrepairrecords&token=' + token;
+    },
+    deleteRepairRecord: function() {
+        return this.apihosts + 'webapi?action=deleterepairrecord&token=' + token;
+    },
+    repairRecordid: function() {
+        return this.apihosts + 'webapi?action=repairrecordid&token=' + token;
+    },
     getCardInfo: function(action) {
         return this.apihosts + 'webapi?action=' + action + '&token=' + token;
     },

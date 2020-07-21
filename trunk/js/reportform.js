@@ -2172,7 +2172,13 @@ function insureRecords(groupslist) {
                     me = this;
                 this.editObjectRow.insurestate = me.editObjectRow.isRecharge ? 1 : 0;
                 var d = deepClone(this.editObjectRow);
+                console.log(d.createtime);
+                if (d.createtime == null) {
+                    this.$Message.error('请选择时间');
+                    return;
+                };
                 d.createtime = new Date(d.createtime).getTime();
+
                 utils.sendAjax(url, d, function(respData) {
                     if (respData.status == 0) {
                         var data = me.tableData[me.editDeviceIndex];
@@ -5290,8 +5296,8 @@ function driverWorkDetails() {
                     width: 145,
                     render: function(h, params) {
                         var row = params.row;
-                        var lat = row.uplat ? row.uplat.toFixed(5) : null;
-                        var lon = row.uplon ? row.uplon.toFixed(5) : null;
+                        var lat = row.uplat;
+                        var lon = row.uplon;
                         if (lat && lon) {
                             if (row.saddress == null) {
 
@@ -5343,9 +5349,9 @@ function driverWorkDetails() {
                     width: 145,
                     render: function(h, params) {
                         var row = params.row;
-                        var lat = row.downlat ? row.downlat.toFixed(5) : null;
-                        var lon = row.downlon ? row.downlon.toFixed(5) : null;
-                        if (lat && lon) {
+                        var lat = row.downlat;
+                        var lon = row.downlon;
+                        if (lat != '0.00000' && lon != '0.00000') {
                             if (row.eaddress == null) {
                                 return h('Button', {
                                     props: {
@@ -5422,10 +5428,22 @@ function driverWorkDetails() {
         methods: {
             exportTableData: function() {
                 var columns = deepClone(this.columns);
+                var records = deepClone(this.records);
+                columns.splice(5, 1, { title: '装点地点(插卡)', key: 'saddress' });
+                columns.splice(7, 1, { title: '装点地点(插卡)', key: 'eaddress' });
+                columns.pop();
+                records.forEach(function(item) {
+                    if (item.saddress == null) {
+                        item.saddress = item.uplat + "," + item.uplon;
+                    }
+                    if (item.eaddress == null) {
+                        item.eaddress = item.downlat + "," + item.downlon;
+                    }
+                });
                 this.$refs.table.exportCsv({
                     filename: '工作明细',
                     columns: columns,
-                    data: this.records,
+                    data: records,
                     quoted: true,
                 });
             },

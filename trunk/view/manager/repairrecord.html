@@ -1,3 +1,400 @@
-<div>
-    1212
+<meta charset="UTF-8">
+<div id="repair-record">
+    <div class="demo-spin-container" v-if="isSpin">
+        <Spin size="large" fix></Spin>
+    </div>
+    <Row style="margin:10px;height: 35px;">
+        <div style="float: left;">
+            <span>{{$t("reportForm.selectTime")}}:</span>
+            <date-picker type="daterange" :value="dateVal" :editable="false" :clearable="false" @on-change="onChange" show-week-numbers style="width:300px" placement="bottom-start"></date-picker>
+        </div>
+        <div style="float: left;height: 35px; line-height: 35px;margin-left: 20px;" class="spans-wrap">
+            <span class="cursor-pointer" @click="handleSelectdDate(0)" :style="{color: dayNumberType == 0 ? '#2D8CF0' : '#515A6E'}">{{$t("reportForm.toDay")}}</span> <b>｜</b>
+            <span class="cursor-pointer" @click="handleSelectdDate(1)" :style="{color: dayNumberType == 1 ? '#2D8CF0' : '#515A6E'}">{{$t("reportForm.yesterDay")}}</span> <b>｜</b>
+            <span class="cursor-pointer" @click="handleSelectdDate(3)" :style="{color: dayNumberType == 3 ? '#2D8CF0' : '#515A6E'}">{{$t("reportForm.threeDays")}}</span> <b>｜</b>
+            <span class="cursor-pointer" @click="handleSelectdDate(7)" :style="{color: dayNumberType == 7 ? '#2D8CF0' : '#515A6E'}">{{$t("reportForm.sevenDays")}}</span>
+        </div>
+    </Row>
+    <Row style="margin:10px;height: 35px;">
+        <div style="float: left;">
+            <div style="height: 35px; line-height: 35px;">{{$t("reportForm.selectDev")}}:&nbsp;</div>
+        </div>
+        <div style="float: left;position: relative;width: 300px;">
+            <div class="search-wrapper" v-click-outside.capture="onClickOutside">
+                <i-input v-model.trim="sosoValue" icon="ios-search-outline" @on-change="sosoValueChange" :readonly="readonly" @on-focus="focus" :placeholder="placeholder"></i-input>
+                <transition name="fade">
+                    <div class="search-item-wrapper" v-show="isShowMatchDev">
+                        <Tree :data="treeData" show-checkbox @on-check-change="onCheckedDevice"></Tree>
+                    </div>
+                </transition>
+            </div>
+        </div>
+        <div style="margin-left:20px;float: left;">
+            <i-button @click="clean" icon="ios-nuclear-outline">清除</i-button>
+        </div>
+        <div style="margin-left:20px;float: left;">
+            <i-button @click="onClickQuery" icon="ios-search">{{$t("reportForm.query")}}</i-button>
+        </div>
+        <div style="float: right;">
+            <i-button @click="exportTableData" icon="ios-search" type="primary">导出</i-button>
+        </div>
+    </Row>
+    <div style="margin:10px;">
+        <i-table :columns="columns" ref="table" :height="lastTableHeight" :data="tableData" :loading="loading"></i-table>
+    </div>
+    <div style="padding-left:10px;">
+        <Page :total="total" show-total @on-change="changePage" :page-size="20" :current="currentIndex" />
+    </div>
+    <Modal v-model="repairModal" width="500">
+        <p slot="header" style="color:#f60;text-align:center">
+            <Icon type="ios-create-outline"></Icon>
+            <span>编辑维修信息</span>
+        </p>
+        <div style="text-align:center">
+            <Row style="margin:10px 0;">
+                <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">设备序号 : &nbsp;</i-col>
+                <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
+                    {{repairEdit.deviceid}}
+                </i-col>
+            </Row>
+
+            <Row style="margin:10px 0;">
+                <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">维修项目 : &nbsp;</i-col>
+                <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
+                    <i-input v-model.trim="repairEdit.repairitem"></i-input>
+                </i-col>
+            </Row>
+
+            <Row style="margin:10px 0;">
+                <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">维修金额 : &nbsp;</i-col>
+                <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
+                    <i-input v-model.trim="repairEdit.fee"></i-input>
+                </i-col>
+            </Row>
+
+            <Row style="margin:10px 0;">
+                <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">维修店名 : &nbsp;</i-col>
+                <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
+                    <i-input v-model.trim="repairEdit.repairagent"></i-input>
+                </i-col>
+            </Row>
+
+            <Row style="margin:10px 0;">
+                <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">维修店地址 : &nbsp;</i-col>
+                <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
+                    <i-input v-model.trim="repairEdit.repairaddress"></i-input>
+                </i-col>
+            </Row>
+
+            <Row style="margin:10px 0;">
+                <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">维修店联系电话 : &nbsp;</i-col>
+                <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
+                    <i-input v-model.trim="repairEdit.repairphone"></i-input>
+                </i-col>
+            </Row>
+            <Row style="margin:10px 0;">
+                <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">维修店人姓名 : &nbsp;</i-col>
+                <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
+                    <i-input v-model.trim="repairEdit.repairname"></i-input>
+                </i-col>
+            </Row>
+            <Row style="margin:10px 0;">
+                <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">送修人姓名 : &nbsp;</i-col>
+                <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
+                    <i-input v-model.trim="repairEdit.submitrepairname"></i-input>
+                </i-col>
+            </Row>
+            <Row style="margin:10px 0;">
+                <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">送修人电话 : &nbsp;</i-col>
+                <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
+                    <i-input v-model.trim="repairEdit.submitrepairphone"></i-input>
+                </i-col>
+            </Row>
+            <Row style="margin:10px 0;">
+                <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">备注 : &nbsp;</i-col>
+                <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
+                    <i-input v-model.trim="repairEdit.remark" style="width: 100%;"></i-input>
+                </i-col>
+            </Row>
+        </div>
+        <div slot="footer">
+            <i-button type="primary" style="width: 100%" click="editRepair">提交</i-button>
+        </div>
+    </Modal>
+    <script>
+        vueInstanse = new Vue({
+            el: '#repair-record',
+            i18n: utils.getI18n(),
+            mixins: [treeMixin],
+            data: {
+                loading: false,
+                isSpin: false,
+                repairModal: false,
+                repairEdit: {
+                    deviceid: '',
+                    repairitem: '', //维修项' ,
+                    fee: '', //多少钱元,精确到小数点后2位
+                    repairagent: '', //维修店名' ,
+                    repairaddress: '', //维修店地址' ,
+                    repairphone: '', //维修店联系电话' ,
+                    repairname: '', //维修店联系人' ,
+                    submitrepairname: '', //送修人员名字' ,
+                    submitrepairphone: '', //送修人员电话' ,
+                    remark: '', //备注' ,
+                    repairrecordid: '',
+                },
+                dateVal: [DateFormat.longToDateStr(Date.now(), timeDifference), DateFormat.longToDateStr(Date.now(), timeDifference)],
+                lastTableHeight: 100,
+                groupslist: [],
+                timeoutIns: null,
+                columns: [{
+                    key: 'index',
+                    width: 60,
+                    title: '编号'
+                }, {
+                    title: vRoot.$t("alarm.devName"),
+                    key: 'devicename'
+                }, {
+                    title: '设备序号',
+                    key: 'deviceid'
+                }, {
+                    title: '维修项目',
+                    key: 'repairitem'
+                }, {
+                    title: '价格(元)',
+                    key: 'fee',
+                }, {
+                    title: '维修店名',
+                    key: 'repairagent'
+                }, {
+                    title: '维修店地址',
+                    key: 'repairaddress'
+                }, {
+                    title: '维修店电话',
+                    key: 'repairphone'
+                }, {
+                    title: '维修店联系人',
+                    key: 'repairname'
+                }, {
+                    title: '送修时间',
+                    key: 'createtimeStr'
+                }, {
+                    title: '送修人',
+                    key: 'submitrepairname'
+                }, {
+                    title: '送修人电话',
+                    key: 'submitrepairphone'
+                }, {
+                    title: '备注',
+                    key: 'remark'
+                }, {
+                    title: '操作',
+                    width: 150,
+                    render: function(h, parmas) {
+                        return h(
+                            'div', {}, [
+                                h(
+                                    'Button', {
+                                        on: {
+                                            click: function() {
+                                                var row = parmas.row;
+                                                vueInstanse.repairEdit.deviceid = row.deviceid;
+                                                vueInstanse.repairEdit.repairitem = row.repairitem;
+                                                vueInstanse.repairEdit.fee = row.fee;
+                                                vueInstanse.repairEdit.repairagent = row.repairagent;
+                                                vueInstanse.repairEdit.repairaddress = row.repairaddress;
+                                                vueInstanse.repairEdit.repairphone = row.repairphone;
+                                                vueInstanse.repairEdit.repairname = row.repairname;
+                                                vueInstanse.repairEdit.submitrepairname = row.submitrepairname;
+                                                vueInstanse.repairEdit.submitrepairphone = row.submitrepairphone;
+                                                vueInstanse.repairEdit.remark = row.remark;
+                                                vueInstanse.repairEdit.repairrecordid = row.repairrecordid;
+                                                vueInstanse.repairModal = true;
+                                            }
+                                        },
+                                        props: {
+                                            size: 'small',
+                                            type: 'info'
+                                        }
+                                    },
+                                    '编辑'
+                                ),
+                                h(
+                                    'Button', {
+                                        on: {
+                                            click: function() {
+                                                vueInstanse.deleteRepairRecord(parmas.index, parmas.row);
+                                            }
+                                        },
+                                        props: {
+                                            size: 'small',
+                                            type: 'error'
+                                        },
+                                        style: {
+                                            marginLeft: '5px'
+                                        }
+                                    },
+                                    '删除'
+                                ),
+                            ]
+                        )
+                    },
+                }, ],
+                tableData: [],
+                currentIndex: 1,
+                deviceName: '',
+            },
+            methods: {
+                exportTableData: function() {
+                    var columns = deepClone(this.columns);
+                    var records = deepClone(this.records);
+                    columns.pop();
+                    records.forEach(function(item) {
+                        item.deviceid = "\t" + item.deviceid;
+                        item.submitrepairphone = "\t" + item.submitrepairphone;
+                        item.createtimeStr = "\t" + item.createtimeStr;
+                        item.devicename = "\t" + item.devicename;
+                    });
+                    this.$refs.table.exportCsv({
+                        filename: '送修记录',
+                        columns: columns,
+                        data: records,
+                        quoted: true,
+                    });
+                },
+                editRepair: function() {
+
+                },
+                deleteRepairRecord: function(index, row) {
+                    var url = myUrls.deleteRepairRecord(),
+                        repairrecordid = row.repairrecordid;
+                    var data = {
+                            repairrecordid: repairrecordid
+                        },
+                        me = this;
+                    utils.sendAjax(url, data, function(respData) {
+                        console.log(respData)
+                        if (respData.status == 0) {
+                            me.tableData.splice(index, 1);
+                            var idx = null;
+                            me.records.forEach(function(item, index) {
+                                if (item.repairrecordid == repairrecordid) {
+                                    idx = index;
+                                }
+                            });
+                            if (idx !== null) {
+                                me.records.splice(idx, 1);
+                            }
+                        } else {
+                            me.$Message.error('删除失败');
+                        }
+                    })
+                },
+                clean: function() {
+                    this.sosoValue = '';
+                    this.checkedDevice = [];
+                    this.cleanSelected(this.groupslist);
+                    this.treeData = this.groupslist;
+                },
+                cleanSelected: function(treeDataFilter) {
+                    var that = this;
+                    for (var i = 0; i < treeDataFilter.length; i++) {
+                        var item = treeDataFilter[i];
+                        if (item != null) {
+                            item.checked = false;
+                            if (item.children && item.children.length > 0) {
+                                that.cleanSelected(item.children);
+                            }
+                        }
+                    }
+                },
+                changePage: function(index) {
+                    var offset = index * 20;
+                    var start = (index - 1) * 20;
+                    this.currentIndex = index;
+                    this.tableData = this.records.slice(start, offset);
+                },
+                calcTableHeight: function() {
+                    var wHeight = window.innerHeight;
+                    this.lastTableHeight = wHeight - 210;
+                },
+                onClickQuery: function() {
+                    var deviceids = [];
+                    this.checkedDevice.forEach(function(group) {
+                        if (!group.children) {
+                            if (group.deviceid != null) {
+                                deviceids.push(group.deviceid);
+                            }
+                        }
+                    });
+                    if (deviceids.length > 0) {
+                        var me = this;
+                        var url = myUrls.queryRepairRecords();
+                        var data = {
+                            startday: this.dateVal[0],
+                            endday: this.dateVal[1],
+                            offset: timeDifference,
+                            deviceids: deviceids
+                        }
+                        me.loading = true;
+                        utils.sendAjax(url, data, function(resp) {
+                            console.log(resp);
+                            me.loading = false;
+                            if (resp.status === 0) {
+                                if (resp.records.length) {
+                                    var records = [],
+                                        index = 1;
+                                    resp.records.forEach(function(item) {
+                                        item.records.forEach(function(record) {
+                                            record.index = index;
+                                            record.devicename = vstore.state.deviceInfos[record.deviceid] ? vstore.state.deviceInfos[record.deviceid].devicename : record.deviceid;
+                                            record.createtimeStr = DateFormat.longToDateTimeStr(record.createtime, timeDifference);
+                                            records.push(record);
+                                            index++;
+                                        })
+                                    });
+
+                                    me.tableData = records.slice(0, 20);
+                                    me.records = records;
+                                    me.total = records.length;
+
+                                } else {
+                                    me.tableData = [];
+                                    me.total = 1;
+                                    me.records = [];
+                                };
+                                me.currentIndex = 1;
+                            } else {
+                                me.tableData = [];
+                            }
+                        })
+                    } else {
+                        this.$Message.error(this.$t("reportForm.selectDevTip"));
+                    }
+                }
+            },
+            mounted: function() {
+                var me = this;
+                me.records = [];
+                if (rootuser == null) {
+                    me.isSpin = true;
+                    utils.queryDevicesTree(function(rootuserinfo) {
+                        me.isSpin = false;
+                        if (rootuserinfo) {
+                            rootuser = rootuserinfo;
+                            me.groupslist = [utils.castUsersTreeToDevicesTree(rootuserinfo, true)];
+                            me.treeData = me.groupslist;
+                        }
+                    });
+                } else {
+                    me.groupslist = [utils.castUsersTreeToDevicesTree(rootuser, true)];
+                    me.treeData = me.groupslist;
+                }
+                this.calcTableHeight();
+                window.onresize = function() {
+                    me.calcTableHeight();
+                }
+            }
+        })
+    </script>
 </div>
