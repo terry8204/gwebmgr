@@ -268,6 +268,7 @@
                         me = this;
                     utils.sendAjax(url, this.repairEdit, function(resp) {
                         if (resp.status == 0) {
+                            me.repairModal = false;
                             me.$Message.success("编辑成功");
                             editObject.repairitem = me.repairEdit.repairitem;
                             editObject.fee = me.repairEdit.fee;
@@ -279,7 +280,7 @@
                             editObject.submitrepairphone = me.repairEdit.submitrepairphone;
                             editObject.remark = me.repairEdit.remark;
                             editObject.repairrecordid = me.repairEdit.repairrecordid;
-                            me.repairModal = false;
+
                         } else {
                             me.$Message.error("编辑失败");
                         }
