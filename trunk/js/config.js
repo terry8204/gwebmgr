@@ -656,6 +656,9 @@ var myUrls = {
     repairRecordid: function() {
         return this.apihosts + 'webapi?action=repairrecordid&token=' + token;
     },
+    editRepaiRecord: function() {
+        return this.apihosts + 'webapi?action=editrepairrecord&token=' + token;
+    },
     getCardInfo: function(action) {
         return this.apihosts + 'webapi?action=' + action + '&token=' + token;
     },

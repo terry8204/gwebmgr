@@ -118,7 +118,7 @@
             </Row>
         </div>
         <div slot="footer">
-            <i-button type="primary" style="width: 100%" click="editRepair">提交</i-button>
+            <i-button type="primary" style="width: 100%" @click="editRepair">提交</i-button>
         </div>
     </Modal>
     <script>
@@ -210,6 +210,7 @@
                                                 vueInstanse.repairEdit.remark = row.remark;
                                                 vueInstanse.repairEdit.repairrecordid = row.repairrecordid;
                                                 vueInstanse.repairModal = true;
+                                                editObject = row;
                                             }
                                         },
                                         props: {
@@ -263,7 +264,26 @@
                     });
                 },
                 editRepair: function() {
-
+                    var url = myUrls.editRepaiRecord(),
+                        me = this;
+                    utils.sendAjax(url, this.repairEdit, function(resp) {
+                        if (resp.status == 0) {
+                            me.$Message.success("编辑成功");
+                            editObject.repairitem = me.repairEdit.repairitem;
+                            editObject.fee = me.repairEdit.fee;
+                            editObject.repairagent = me.repairEdit.repairagent;
+                            editObject.repairaddress = me.repairEdit.repairaddress;
+                            editObject.repairphone = me.repairEdit.repairphone;
+                            editObject.repairname = me.repairEdit.repairname;
+                            editObject.submitrepairname = me.repairEdit.submitrepairname;
+                            editObject.submitrepairphone = me.repairEdit.submitrepairphone;
+                            editObject.remark = me.repairEdit.remark;
+                            editObject.repairrecordid = me.repairEdit.repairrecordid;
+                            me.repairModal = false;
+                        } else {
+                            me.$Message.error("编辑失败");
+                        }
+                    })
                 },
                 deleteRepairRecord: function(index, row) {
                     var url = myUrls.deleteRepairRecord(),
