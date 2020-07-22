@@ -2168,6 +2168,7 @@ function insureRecords(groupslist) {
             onChange: function(value) {
                 this.dateVal = value;
             },
+
             handleEditInsure: function() {
                 var url = myUrls.editInsure(),
                     me = this;
@@ -5426,6 +5427,37 @@ function driverWorkDetails() {
             deviceName: '',
         },
         methods: {
+            queryAllAddress: function() {
+                var records = this.records;
+                records.forEach(function(item) {
+                    if (item.saddress == null) {
+                        var uplat = Number(item.uplat);
+                        var uplon = Number(item.uplon);
+                        if (uplat && uplon) {
+                            utils.getJiuHuAddressSyn(uplon, uplat, function(resp) {
+                                if (resp && resp.address) {
+                                    item.saddress = resp.address;
+                                    LocalCacheMgr.setAddress(uplon, uplat, resp.address);
+                                }
+                            })
+                        }
+                    }
+                    if (item.eaddress == null) {
+                        var downlat = Number(item.downlat);
+                        var downlon = Number(item.downlon);
+                        if (downlat && downlon) {
+                            utils.getJiuHuAddressSyn(downlon, downlat, function(resp) {
+                                if (resp && resp.address) {
+                                    item.eaddress = resp.address;
+                                    LocalCacheMgr.setAddress(downlon, downlat, resp.address);
+                                }
+                            })
+                        }
+                    }
+                });
+
+                this.$Message.success('发生成功');
+            },
             exportTableData: function() {
                 var columns = deepClone(this.columns);
                 var records = deepClone(this.records);
@@ -5437,13 +5469,19 @@ function driverWorkDetails() {
                         item.saddress = item.uplat + "," + item.uplon;
                     }
                     if (item.eaddress == null) {
-                        item.eaddress = item.downlat + "," + item.downlon;
+                        item.eaddress = '无';
                     }
+                    item.deviceid = "\t" + item.deviceid;
+                    item.devicename = "\t" + item.devicename;
+                    item.certificationcode = "\t" + item.certificationcode;
+                    item.downtimeStr = "\t" + item.downtimeStr;
+                    item.uptimeStr = "\t" + item.uptimeStr;
                 });
                 this.$refs.table.exportCsv({
                     filename: '工作明细',
                     columns: columns,
                     data: records,
+                    original: false,
                     quoted: true,
                 });
             },
@@ -5616,6 +5654,7 @@ function driverWorkDetails() {
                                         }
                                         records.push(item);
                                         index++;
+
                                     })
                                 });
                                 me.records = records.sort(function(a, b) { return b.uptime - a.uptime });

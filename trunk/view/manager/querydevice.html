@@ -672,7 +672,7 @@
                 templatename: '',
                 brand: '',
                 model: "",
-                tabsActive: 'threshold',
+                tabsActive: '',
                 allTemp: false,
                 taleHeight: 300,
                 isQuery: false,
@@ -832,6 +832,7 @@
                                     on: {
                                         click: function() {
                                             vueInstanse.oilModal = true;
+                                            vueInstanse.tabsActive = 'oil1';
                                             editObject = params.row;
                                             vueInstanse.queryOilInfo(params.row.deviceid);
                                         }
