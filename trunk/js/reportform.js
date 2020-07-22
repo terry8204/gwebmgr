@@ -5456,7 +5456,7 @@ function driverWorkDetails() {
                     }
                 });
 
-                this.$Message.success('发生成功');
+                this.$Message.success('查询成功');
             },
             exportTableData: function() {
                 var columns = deepClone(this.columns);
