@@ -878,7 +878,7 @@
                     // var imageUrl1 = this.getMediaTypeWithIndex(data, 0, 1);
                     // var imageUrl2 = this.getMediaTypeWithIndex(data, 0, 2);
                     // var imageUrl3 = this.getMediaTypeWithIndex(data, 0, 3);
-                    if (imageUrl1) {
+                    if (imageUrl1 && data.attachstatus1 == 1) {
                         imageAndVideoList.push({
                             image: data.attachfiletype1 == 0,
                             url: this.playRootPath + imageUrl1
@@ -889,7 +889,7 @@
                             url: defaultUrl
                         })
                     };
-                    if (imageUrl2) {
+                    if (imageUrl2 && data.attachstatus2 == 1) {
                         imageAndVideoList.push({
                             image: data.attachfiletype2 == 0,
                             url: this.playRootPath + imageUrl2
@@ -900,7 +900,7 @@
                             url: defaultUrl
                         })
                     };
-                    if (imageUrl3) {
+                    if (imageUrl3 && data.attachstatus3 == 1) {
                         imageAndVideoList.push({
                             image: data.attachfiletype3 == 0,
                             url: this.playRootPath + imageUrl3
@@ -911,7 +911,7 @@
                             url: defaultUrl
                         })
                     };
-                    if (imageUrl4) {
+                    if (imageUrl4 && data.attachstatus4 == 1) {
                         imageAndVideoList.push({
                             image: data.attachfiletype4 == 0,
                             url: this.playRootPath + imageUrl4
