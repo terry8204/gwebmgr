@@ -10,11 +10,12 @@ var waringComponent = {
             waringRowIndex: null,
             componentName: 'waringMsg',
             disposeModal: false,
-            waringModal: false,
+            settingModal: false,
             checkboxObj: {},
             waringRecords: [],
             overdueDevice: [],
             alarmTypeList: [],
+            emergencyAlarmList: [],
             overdueinfolist: [],
             // alarmCmdList: [[]],
             isWaring: false,
@@ -131,6 +132,9 @@ var waringComponent = {
                 case 3:
                     this.componentName = 'overdueInfo'
                     break;
+                case 4:
+                    this.componentName = 'emergencyAlarm'
+                    break;
             }
         },
         queryWaringMsg: function() {
@@ -172,7 +176,7 @@ var waringComponent = {
         },
         filterWaringType: function() {
             this.settingCheckboxObj();
-            this.waringModal = true;
+            this.settingModal = true;
         },
         settingCheckboxObj: function() {
             var checkboxObjJson = Cookies.get('checkboxObj')
@@ -272,8 +276,9 @@ var waringComponent = {
             }
         },
         saveReqMsgParameter: function() {
-            Cookies.set('checkboxObj', this.checkboxObj)
-            this.waringModal = false
+            // Cookies.set('checkboxObj', this.checkboxObj)
+            console.log(this.checkboxObj);
+            // this.waringModal = false
         },
         showDisposeModalFrame: function(param) {
             this.waringRowIndex = param.index;
@@ -351,7 +356,7 @@ var waringComponent = {
                         } else {
                             me.alarmTypeList[me.alarmTypeList.length - 1].push(item);
                         };
-                        me.checkboxObj[item.alarmcode] = true;
+                        me.checkboxObj[item.index] = false;
                     });
                     me.queryWaringMsg();
                 }
@@ -532,6 +537,73 @@ var waringComponent = {
             mounted: function() {
 
             }
+        },
+        emergencyAlarm: {
+            template: '<Table :height="tabheight" border :columns="columns" :data="emergencyAlarmList"></Table>',
+            props: ['emergencyAlarmList', 'tabletype', 'wrapperheight'],
+            data: function() {
+                var me = this;
+                return {
+                    columns: [{
+                            title: me.$t("alarm.devName"),
+                            key: 'devicename',
+                            width: 120,
+                        },
+                        {
+                            title: me.$t("alarm.devNum"),
+                            key: 'deviceid',
+                            width: 130,
+                        },
+                        {
+                            title: me.$t("alarm.alarmTime"),
+                            key: 'lastalarmtimeStr',
+                            width: 160
+                        },
+                        {
+                            title: me.$t("alarm.alarmMsg"),
+                            key: isZh ? 'stralarm' : 'stralarmen',
+                        },
+                        {
+                            title: me.$t("alarm.alarmCount"),
+                            key: 'alarmcount',
+                            width: 120
+                        },
+                        {
+                            title: me.$t("alarm.isDispose"),
+                            key: 'isdispose',
+                            width: 100
+                        },
+                        {
+                            title: me.$t("alarm.action"),
+                            key: 'action',
+                            width: 120,
+                            render: function(h, params, a) {
+                                return h('div', [
+                                    h(
+                                        'Button', {
+                                            props: {
+                                                type: 'primary',
+                                                size: 'small'
+                                            },
+                                            on: {
+                                                click: function() {
+                                                    me.$emit('showdisposemodal', params);
+                                                }
+                                            }
+                                        },
+                                        me.$t("alarm.alarmDispose")
+                                    )
+                                ])
+                            }
+                        }
+                    ],
+                }
+            },
+            computed: {
+                tabheight: function() {
+                    return this.wrapperheight - 24;
+                }
+            },
         },
         overdueInfo: {
             template: '<Table :height="tabheight" border :columns="columns" :data="overdueinfolist"></Table>',

@@ -150,10 +150,10 @@
             <div id="video-wrapper" ref="videoWrapper">
                 <div v-for="(item,index) in imageAndVideoList" :key="index">
                     <div v-if="item.image" style="width:100%;height:100%;">
-                        <img :src="item.imageUrl" style="width:100%;height:100%;">
+                        <img :src="item.url" style="width:100%;height:100%;">
                     </div>
                     <div v-else="item.image" class="video">
-                        <video :src="item.videoUrl" autoplay controls loop style="width:100%;height:100%;"></video>
+                        <video :src="item.url" autoplay controls loop style="width:100%;height:100%;"></video>
                     </div>
                 </div>
             </div>
@@ -868,54 +868,61 @@
                 getImageAndVideoList: function(data) {
                     var defaultUrl = './images/tv_default.jpg';
                     var imageAndVideoList = [];
-                    var videoUrl = this.getMediaTypeWithIndex(data, 2, 1);
-                    var imageUrl1 = this.getMediaTypeWithIndex(data, 0, 1);
-                    var imageUrl2 = this.getMediaTypeWithIndex(data, 0, 2);
-                    var imageUrl3 = this.getMediaTypeWithIndex(data, 0, 3);
-                    if (videoUrl) {
-                        imageAndVideoList.push({
-                            image: false,
-                            videoUrl: videoUrl
-                        })
-                    } else {
-                        imageAndVideoList.push({
-                            image: true,
-                            imageUrl: defaultUrl
-                        })
-                    };
+                    var imageUrl1 = data.attachfile1;
+                    var imageUrl2 = data.attachfile2;
+                    var imageUrl3 = data.attachfile3;
+                    var imageUrl4 = data.attachfile4;
+
+
+                    // var videoUrl = this.getMediaTypeWithIndex(data, 2, 1);
+                    // var imageUrl1 = this.getMediaTypeWithIndex(data, 0, 1);
+                    // var imageUrl2 = this.getMediaTypeWithIndex(data, 0, 2);
+                    // var imageUrl3 = this.getMediaTypeWithIndex(data, 0, 3);
                     if (imageUrl1) {
                         imageAndVideoList.push({
-                            image: true,
-                            imageUrl: imageUrl1
+                            image: data.attachfiletype1 == 0,
+                            url: this.playRootPath + imageUrl1
                         })
                     } else {
                         imageAndVideoList.push({
                             image: true,
-                            imageUrl: defaultUrl
+                            url: defaultUrl
                         })
                     };
                     if (imageUrl2) {
                         imageAndVideoList.push({
-                            image: true,
-                            imageUrl: imageUrl2
+                            image: data.attachfiletype2 == 0,
+                            url: this.playRootPath + imageUrl2
                         })
                     } else {
                         imageAndVideoList.push({
                             image: true,
-                            imageUrl: defaultUrl
+                            url: defaultUrl
                         })
                     };
                     if (imageUrl3) {
                         imageAndVideoList.push({
-                            image: true,
-                            imageUrl: imageUrl3
+                            image: data.attachfiletype3 == 0,
+                            url: this.playRootPath + imageUrl3
                         })
                     } else {
                         imageAndVideoList.push({
                             image: true,
-                            imageUrl: defaultUrl
+                            url: defaultUrl
                         })
                     };
+                    if (imageUrl4) {
+                        imageAndVideoList.push({
+                            image: data.attachfiletype4 == 0,
+                            url: this.playRootPath + imageUrl4
+                        })
+                    } else {
+                        imageAndVideoList.push({
+                            image: true,
+                            url: defaultUrl
+                        })
+                    };
+
                     return imageAndVideoList;
                 },
                 queryAddress: function(callon, callat, callback) {
