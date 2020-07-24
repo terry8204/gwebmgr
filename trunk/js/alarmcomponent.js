@@ -16,7 +16,7 @@ var waringComponent = {
             waringRecords: [],
             overdueDevice: [],
             alarmTypeList: [],
-            emergencyAlarmList: [{}],
+            emergencyAlarmList: [],
             overdueinfolist: [],
             // alarmCmdList: [[]],
             isWaring: false,
@@ -71,15 +71,15 @@ var waringComponent = {
                 }
             }
         },
-        disposeAlarm: function() {
-            // var me = this
-            // this.currentDevTypeCmdList.forEach(function (item) {
-            //     if (me.disposeAlarm == item.cmdcode) {
-            //         me.params = item.params;
-            //     }
-            // })
-            console.log('this.disposeAlarm', this.disposeAlarm);
-        }
+        // disposeAlarm: function() {
+        //     // var me = this
+        //     // this.currentDevTypeCmdList.forEach(function (item) {
+        //     //     if (me.disposeAlarm == item.cmdcode) {
+        //     //         me.params = item.params;
+        //     //     }
+        //     // })
+        //     console.log('this.disposeAlarm', this.disposeAlarm);
+        // }
     },
     methods: {
         changeWrapperCls: function() {
@@ -208,15 +208,49 @@ var waringComponent = {
                 // this.checkboxObj.lastqueryallalarmtime = me.lastQueryAllAlarmTime;
                 utils.sendAjax(url, { lastqueryallalarmtime: me.lastQueryAllAlarmTime }, function(resp) {
                     if (resp.status == 0) {
-                        me.lastQueryAllAlarmTime = DateFormat.getCurrentUTC();
                         if (resp.records) {
                             resp.records.forEach(function(item) {
                                 me.alarmMgr.addRecord(item);
                             });
+                            me.queryAlarmAudioTip(resp.records);
                             me.refreshAlarmToUi();
                         }
+                        me.lastQueryAllAlarmTime = DateFormat.getCurrentUTC();
                     }
                 })
+            }
+        },
+        queryAlarmAudioTip: function(records) {
+            var me = this;
+            if (records && records.length) {
+                for (var i = 0; i < records.length; i++) {
+                    var item = records[i];
+                    if (me.isNeedForceAlarm(item.alarm)) {
+                        if (me.isMute) {
+                            audio.play().then(() => {
+                                console.log('可以自动播放')
+                            }).catch(err => {
+                                // 不支持自动播放
+                                console.log('不支持自动播放')
+                            })
+                        }
+                        if (me.isPopup) {
+                            var deviceInfo = me.$store.state.deviceInfos[item.deviceid];
+                            var desc = '';
+                            if (deviceInfo) {
+                                desc = DateFormat.longToDateTimeStr(item.lastalarmtime, timeDifference) + "<br/>" + deviceInfo.devicename + " : " + item.stralarm;
+                            } else {
+                                desc = DateFormat.longToDateTimeStr(item.lastalarmtime, timeDifference) + "<br/>" + item.deviceid + " : " + item.stralarm;
+                            }
+                            me.$Notice.warning({
+                                title: '设备报警提醒',
+                                duration: 0,
+                                desc: desc
+                            });
+                        }
+                        break;
+                    }
+                }
             }
         },
         refreshAlarmToUi: function() {
@@ -329,11 +363,6 @@ var waringComponent = {
                 // this.waringRecords = newArr.concat(this.waringRecords);
             }
         },
-        saveReqMsgParameter: function() {
-            // Cookies.set('checkboxObj', this.checkboxObj)
-            console.log(this.checkboxObj);
-            // this.waringModal = false
-        },
         showDisposeModalFrame: function(param) {
             this.waringRowIndex = param.index;
             var deviceInfos = this.$store.state.deviceInfos;
@@ -442,13 +471,12 @@ var waringComponent = {
         isNeedForceAlarm: function(alarm) {
             var result = false;
             result = alarm & gForcealarm;
-            console.log('result=', result, 'alarm = ', alarm)
             return result;
         }
     },
     components: {
         waringMsg: {
-            template: '<Table :height="tabheight" border :columns="columns" :data="waringrecords"></Table>',
+            template: '<Table :height="tabheight" border :columns="columns" @on-row-click="onRowClick" :data="waringrecords"></Table>',
             props: ['waringrecords', 'tabletype', 'wrapperheight'],
             data: function() {
                 var me = this;
@@ -509,9 +537,10 @@ var waringComponent = {
                 }
             },
             methods: {
-                removeWaring: function(index) {
-                    console.log(index)
-                },
+                onRowClick: function(row) {
+                    vRoot.$children[1].selectedDev(row);
+                    communicate.$emit("on-click-marker", row.deviceid);
+                }
             },
             watch: {
                 tabletype: function() {
@@ -523,12 +552,9 @@ var waringComponent = {
                     return this.wrapperheight - 24;
                 }
             },
-            mounted: function() {
-
-            }
         },
         deviceMsg: {
-            template: '<Table :height="tabheight" border :columns="columns" :data="deviceinfolist"></Table>',
+            template: '<Table :height="tabheight" border :columns="columns" @on-row-click="onRowClick" :data="deviceinfolist"></Table>',
             props: ['deviceinfolist', 'tabletype', 'wrapperheight'],
             data: function() {
                 var me = this;
@@ -592,14 +618,17 @@ var waringComponent = {
                 },
             },
             methods: {
-
+                onRowClick: function(row) {
+                    vRoot.$children[1].selectedDev(row);
+                    communicate.$emit("on-click-marker", row.deviceid);
+                }
             },
             mounted: function() {
 
             }
         },
         emergencyAlarm: {
-            template: '<Table :height="tabheight" border :columns="columns" :data="emergencyAlarmList"></Table>',
+            template: '<Table :height="tabheight" border :columns="columns" @on-row-click="onRowClick" :data="emergencyAlarmList"></Table>',
             props: ['emergencyAlarmList', 'tabletype', 'wrapperheight'],
             data: function() {
                 var me = this;
@@ -664,12 +693,15 @@ var waringComponent = {
                     return this.wrapperheight - 24;
                 }
             },
-            mounted() {
-                console.log(this.emergencyAlarmList);
+            methods: {
+                onRowClick: function(row) {
+                    vRoot.$children[1].selectedDev(row);
+                    communicate.$emit("on-click-marker", row.deviceid);
+                }
             },
         },
         overdueInfo: {
-            template: '<Table :height="tabheight" border :columns="columns" :data="overdueinfolist"></Table>',
+            template: '<Table :height="tabheight" border :columns="columns" @on-row-click="onRowClick" :data="overdueinfolist"></Table>',
             props: ['overdueinfolist', 'tabletype', 'wrapperheight'],
             data: function() {
                 var me = this;
@@ -738,6 +770,12 @@ var waringComponent = {
                     return this.wrapperheight - 24;
                 },
             },
+            methods: {
+                onRowClick: function(row) {
+                    vRoot.$children[1].selectedDev(row);
+                    communicate.$emit("on-click-marker", row.deviceid);
+                }
+            },
         }
     },
     mounted: function() {
@@ -762,13 +800,18 @@ var waringComponent = {
                     //         // utils.playTextVoice(voiceQueue.shift());
                     //     }
                     // }
-                    audio.play();
+                    audio.play().then(() => {
+                        console.log('可以自动播放')
+                    }).catch(err => {
+                        // 不支持自动播放
+                        console.log('不支持自动播放')
+                    });
                 }
                 if (me.isPopup) {
                     me.$Notice.warning({
                         title: '设备报警提醒',
                         duration: 0,
-                        desc: data.devicename + " : " + data.stralarm
+                        desc: data.lastalarmtimeStr + "<br/>" + data.devicename + " : " + data.stralarm
                     });
                 }
             }
