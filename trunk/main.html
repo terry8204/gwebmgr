@@ -1125,9 +1125,9 @@
                 <div class="msg_header">
                     <ul>
                         <li :class="{selected:index == 1}" @click="changeComponent(1)">{{$t("alarm.alarmMsg")}}</li>
-                        <li :class="{selected:index == 4}" @click="changeComponent(4)">紧急报警</li>
                         <li :class="{selected:index == 2}" @click="changeComponent(2)">{{$t("alarm.devMsg")}}</li>
                         <li :class="{selected:index == 3}" @click="changeComponent(3)">{{$t("alarm.expirationInfo")}}({{overdueinfolist.length}})</li>
+                        <li :class="{selected:index == 4}" @click="changeComponent(4)">紧急报警</li>
                         <li>
                             <Checkbox v-model="isMute">声音</Checkbox>
                         </li>

@@ -170,8 +170,8 @@
                             }
 
                             tableData.push({
-                                vinno: excelData[vinnoKey] ? excelData[vinnoKey].v.trim() : '',
-                                policyno: excelData[policynoKey] ? excelData[policynoKey].v.trim() : '',
+                                vinno: excelData[vinnoKey] ? String(excelData[vinnoKey].v).trim() : '',
+                                policyno: excelData[policynoKey] ? String(excelData[policynoKey].v).trim() : '',
                                 status: -1
                             })
 

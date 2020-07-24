@@ -264,11 +264,11 @@
 
                             tableData.push({
                                 insurestate: excelData[insurestateKey] ? excelData[insurestateKey].v : '',
-                                name: excelData[nameKey] ? excelData[nameKey].v.trim() : '',
-                                cardid: excelData[cardidKey] ? excelData[cardidKey].v.trim() : '',
+                                name: excelData[nameKey] ? String(excelData[nameKey].v).trim() : '',
+                                cardid: excelData[cardidKey] ? String(excelData[cardidKey].v).trim() : '',
                                 policyno: excelData[policynoKey] ? excelData[policynoKey].v : '',
-                                username: excelData[usernameKey] ? excelData[usernameKey].v.trim() : '',
-                                buytype: excelData[buytypeKey] ? excelData[buytypeKey].v.trim() : '',
+                                username: excelData[usernameKey] ? String(excelData[usernameKey].v).trim() : '',
+                                buytype: excelData[buytypeKey] ? String(excelData[buytypeKey].v).trim() : '',
                                 phonenum: excelData[phonenumKey] ? excelData[phonenumKey].v : '',
                                 usingaddress: excelData[usingaddressKey] ? excelData[usingaddressKey].v : '',
                                 brandtype: excelData[brandtypeKey] ? excelData[brandtypeKey].v : '',
