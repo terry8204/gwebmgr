@@ -244,7 +244,7 @@ var waringComponent = {
                             }
                             me.$Notice.warning({
                                 title: '设备报警提醒',
-                                duration: 0,
+                                duration: 6,
                                 desc: desc
                             });
                         }
@@ -810,7 +810,7 @@ var waringComponent = {
                 if (me.isPopup) {
                     me.$Notice.warning({
                         title: '设备报警提醒',
-                        duration: 0,
+                        duration: 6,
                         desc: data.lastalarmtimeStr + "<br/>" + data.devicename + " : " + data.stralarm
                     });
                 }
