@@ -102,7 +102,7 @@
 
                 tableData: [],
 
-                excelX: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I']
+                excelX: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J']
             },
             methods: {
                 calcTableHeight: function() {
@@ -180,6 +180,7 @@
                     reader.readAsBinaryString(file);
                 },
                 parserExcelData: function(excelData) {
+
                     try {
                         var indexY = 2;
                         var tableData = [];
@@ -196,11 +197,10 @@
                             if (excelData[deviceIdKey] == undefined) {
                                 break;
                             }
-
                             tableData.push({
-                                deviceid: excelData[deviceIdKey].v.trim(),
-                                securitynum: excelData[securitynumKey] ? excelData[securitynumKey].v.trim() : '',
-                                vin: excelData[vinKey] ? excelData[vinKey].v.trim() : '',
+                                deviceid: String(excelData[deviceIdKey].v).trim(),
+                                securitynum: excelData[securitynumKey] ? String(excelData[securitynumKey].v).trim() : '',
+                                vin: excelData[vinKey] ? String(excelData[vinKey].v).trim() : '',
                                 insurecompany: excelData[insurecompanyKey] ? excelData[insurecompanyKey].v : '',
                                 insurenum: excelData[insurenumKey] ? excelData[insurenumKey].v : '',
                                 subinsuretime: excelData[subinsuretimeKey] ? excelData[subinsuretimeKey].v : '',
@@ -213,6 +213,7 @@
                         }
                         this.tableData = tableData;
                     } catch (error) {
+                        console.log(error);
                         this.$Message.error('请使用我们提供的模版填写');
                     }
                 }

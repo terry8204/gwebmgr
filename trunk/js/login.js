@@ -107,6 +107,8 @@ new Vue({
                         Cookies.set("token", resp.token);
                         Cookies.set("userType", resp.usertype);
                         Cookies.set("name", "minigps");
+                        Cookies.set("forcealarm", resp.forcealarm);
+                        Cookies.set("alarmaction", resp.alarmaction);
                         Cookies.set("minigps" + "-multilogin", resp.multilogin);
                         // window.location.href = "main.html?token=" + resp.token + "&usertype=" + resp.usertype;
                         window.location.href = "main.html";
@@ -170,6 +172,8 @@ new Vue({
                     Cookies.set("token", resp.token);
                     Cookies.set("userType", resp.usertype);
                     Cookies.set("name", me.username);
+                    Cookies.set("forcealarm", resp.forcealarm);
+                    Cookies.set("alarmaction", resp.alarmaction);
                     Cookies.set(me.username + "-multilogin", resp.multilogin);
                     // window.location.href = "main.html?token=" + resp.token + "&usertype=" + resp.usertype;
                     window.location.href = "main.html";

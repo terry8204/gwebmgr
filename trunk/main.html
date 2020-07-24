@@ -1129,7 +1129,10 @@
                         <li :class="{selected:index == 2}" @click="changeComponent(2)">{{$t("alarm.devMsg")}}</li>
                         <li :class="{selected:index == 3}" @click="changeComponent(3)">{{$t("alarm.expirationInfo")}}({{overdueinfolist.length}})</li>
                         <li>
-                            <Checkbox v-model="isMute">静音</Checkbox>
+                            <Checkbox v-model="isMute">声音</Checkbox>
+                        </li>
+                        <li>
+                            <Checkbox v-model="isPopup">弹窗</Checkbox>
                         </li>
                         <li @click="settingModal=true">
                             [紧急报警设置]
@@ -1146,7 +1149,7 @@
                 </div>
                 <div class="msg_content">
                     <keep-alive>
-                        <component :is="componentName" :tabletype="isLargen" :waringrecords="waringRecords" :wrapperheight="wrapperHeight" :deviceinfolist="overdueDevice" :overdueinfolist="overdueinfolist" @deletemsg="deleteMsg" @showdisposemodal="showDisposeModalFrame">
+                        <component :is="componentName" :tabletype="isLargen" :waringrecords="waringRecords" :wrapperheight="wrapperHeight" :deviceinfolist="overdueDevice" :emergencyAlarmList="emergencyAlarmList" :overdueinfolist="overdueinfolist" @deletemsg="deleteMsg" @showdisposemodal="showDisposeModalFrame">
                         </component>
                     </keep-alive>
                 </div>
@@ -1161,12 +1164,12 @@
                 <div>
                     <Row style="margin: 10px 0" v-for="(item,index) in alarmTypeList" :key="index">
                         <i-col span="8" v-for="(type , index) in item" :key="type.alarmcode">
-                            <Checkbox v-model="checkboxObj[type.index]">{{ isZh ? type.alarmname : type.alarmcode}}</Checkbox>
+                            <Checkbox v-model="checkboxObj[type.index]">{{ isZh ? type.alarmname : type.index}}</Checkbox>
                         </i-col>
                     </Row>
                 </div>
                 <div slot="footer">
-                    <i-button type="primary" @click="saveReqMsgParameter" style="width: 100%">{{$t("monitor.confirm")}}</i-button>
+                    <i-button type="primary" @click="setForceAlarm" style="width: 100%">{{$t("monitor.confirm")}}</i-button>
                 </div>
             </Modal>
 
@@ -1292,10 +1295,7 @@
         </div>
     </script>
 
-    <audio id="myaudio" muted>
-        <source id="source" type="audio/mpeg"> 
-        <embed id="embed" height="0" width="0">
-    </audio>
+    <audio id="myaudio" src="./custom/sos.mp3"></audio>
 
 
     <script src="dist/vue.min.js"></script>

@@ -315,6 +315,28 @@ var utils = {
             }
         })
     },
+
+    longToBits: function(iLong, len) {
+        var temp = iLong;
+        var result = new Array(len);
+        for (var i = 0; i < len; i++) {
+            result[len - 1 - i] = (temp % 2 == 1);
+            // result[i] = (temp % 2 == 1);
+            temp = temp >> 1;
+        }
+        return result;
+    },
+    bitsToULong: function(bits) {
+        var result = 0;
+        for (var i = 0; i < bits.length; i++) {
+            if (bits[i]) {
+                //result = result + pow2 ;//(int) java.lang.Math.pow(2, (bits.length - i - 1));
+                result += Math.pow(2, (bits.length - i - 1));
+            }
+            //pow2 = pow2 * 2;
+        }
+        return result;
+    },
     getAbroadAddressSyn: function(lon, lat, callback) {
         $.ajax({
             type: 'get',

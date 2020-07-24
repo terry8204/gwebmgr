@@ -2,6 +2,7 @@
 var isShowCompany = Cookies.get('isShowCompany');
 var communicate = new Vue({}); // 组件之间通信的vue实例
 var userName = Cookies.get('name');
+var gForcealarm = Cookies.get("forcealarm");
 var isZh = utils.locale === 'zh';
 var mapType = utils.getMapType();
 var isLoadBMap = false;
@@ -1292,15 +1293,15 @@ var vRoot = new Vue({
 });
 
 var audio = document.getElementById('myaudio');
-audio.addEventListener('canplay', function() {
-    console.log('语音加载成功');
-    audio.play();
-}, true)
+// audio.addEventListener('canplay', function() {
+//     console.log('语音加载成功');
+//     audio.play();
+// }, true)
 
-audio.addEventListener('ended', function() {
-    console.log('语音成功');
-    isPlayAlarmVoice = false;
-    if (voiceQueue.length > 0) {
-        utils.playTextVoice(voiceQueue.shift());
-    }
-}, false);
+// audio.addEventListener('ended', function() {
+//     console.log('语音成功');
+//     isPlayAlarmVoice = false;
+//     if (voiceQueue.length > 0) {
+//         utils.playTextVoice(voiceQueue.shift());
+//     }
+// }, false);

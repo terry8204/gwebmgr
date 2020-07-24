@@ -5,6 +5,7 @@ var waringComponent = {
         return {
             isZh: isZh,
             isMute: false,
+            isPopup: false,
             isLargen: 0,
             index: 1,
             waringRowIndex: null,
@@ -15,7 +16,7 @@ var waringComponent = {
             waringRecords: [],
             overdueDevice: [],
             alarmTypeList: [],
-            emergencyAlarmList: [],
+            emergencyAlarmList: [{}],
             overdueinfolist: [],
             // alarmCmdList: [[]],
             isWaring: false,
@@ -62,8 +63,13 @@ var waringComponent = {
                 this.isWaring = false;
             }
         },
-        isMute: function(val) {
-            audio.muted = val;
+        settingModal: function(newVal) {
+            if (newVal) {
+                var arr = utils.longToBits(Number(gForcealarm), 63).reverse();
+                for (var key in this.checkboxObj) {
+                    this.checkboxObj[key] = arr[key];
+                }
+            }
         },
         disposeAlarm: function() {
             // var me = this
@@ -120,6 +126,64 @@ var waringComponent = {
                 this.isLargen = 1;
             }
         },
+        getForceAlarmData: function() {
+            var arr = [];
+            for (var i = 0; i < 64; i++) {
+                var val = this.checkboxObj[i];
+                if (val !== null && val !== undefined) {
+                    arr.push(val)
+                } else {
+                    arr.push(false)
+                }
+            }
+            return utils.bitsToULong(arr.reverse());
+        },
+        setAlarmAction: function() {
+            var alarmaction = Number(Cookies.get("alarmaction"));
+            if ((alarmaction & 0x01) == 1) {
+                this.isMute = true;
+            }
+            if ((alarmaction & 0x02) == 2) {
+                this.isPopup = true;
+            }
+
+        },
+        setForceAlarm: function() {
+            var me = this;
+            var url = myUrls.setForceAlarm();
+            var forcealarm = this.getForceAlarmData();
+            var alarmaction = 0x0;
+            if (this.isMute) {
+                alarmaction = alarmaction | 0x01;
+            }
+
+            if (this.isPopup) {
+                alarmaction = alarmaction | 0x02;
+            }
+
+            if (this.isMute && this.isPopup) {
+                alarmaction = alarmaction | 0x03;
+            }
+
+            // if(alarmaction & 1 == 1 )
+            // {
+            //     soundaction.setcheck
+            // }
+            var data = {
+                forcealarm: forcealarm,
+                alarmaction: alarmaction,
+            }
+            utils.sendAjax(url, data, function(resp) {
+                if (resp.status === 0) {
+                    gForcealarm = data.forcealarm;
+                    Cookies.set("forcealarm", data.forcealarm);
+                    Cookies.set("alarmaction", data.alarmaction);
+                    me.$Message.success('设置成功');
+                } else {
+                    me.$Message.error('设置失败');
+                }
+            });
+        },
         changeComponent: function(index) {
             this.index = index
             switch (index) {
@@ -141,8 +205,8 @@ var waringComponent = {
             if (!$.isEmptyObject(this.deviceInfos)) {
                 var me = this;
                 var url = myUrls.queryAlarm();
-                this.checkboxObj.lastqueryallalarmtime = me.lastQueryAllAlarmTime;
-                utils.sendAjax(url, this.checkboxObj, function(resp) {
+                // this.checkboxObj.lastqueryallalarmtime = me.lastQueryAllAlarmTime;
+                utils.sendAjax(url, { lastqueryallalarmtime: me.lastQueryAllAlarmTime }, function(resp) {
                     if (resp.status == 0) {
                         me.lastQueryAllAlarmTime = DateFormat.getCurrentUTC();
                         if (resp.records) {
@@ -158,6 +222,7 @@ var waringComponent = {
         refreshAlarmToUi: function() {
             var me = this;
             var alarmList = me.alarmMgr.getAlarmList();
+            var emergencyAlarmList = [];
             alarmList.forEach(function(item) {
                 var deviceid = item.deviceid;
                 var deviceInfo = me.$store.state.deviceInfos[deviceid];
@@ -171,23 +236,12 @@ var waringComponent = {
                         item.isdispose = item.disposestatus === 0 ? "Untreated" : "Handled";
                     }
                 };
+                if (item.alarm & gForcealarm) {
+                    emergencyAlarmList.push(item);
+                }
             });
             me.waringRecords = alarmList;
-        },
-        filterWaringType: function() {
-            this.settingCheckboxObj();
-            this.settingModal = true;
-        },
-        settingCheckboxObj: function() {
-            var checkboxObjJson = Cookies.get('checkboxObj')
-            if (checkboxObjJson) {
-                var checkboxObj = JSON.parse(checkboxObjJson)
-                for (var key in this.checkboxObj) {
-                    if (this.checkboxObj.hasOwnProperty(key)) {
-                        this.checkboxObj[key] = checkboxObj[key]
-                    }
-                }
-            }
+            me.emergencyAlarmList = emergencyAlarmList;
         },
         queryDeviceMsgList: function() {
             var me = this;
@@ -356,7 +410,7 @@ var waringComponent = {
                         } else {
                             me.alarmTypeList[me.alarmTypeList.length - 1].push(item);
                         };
-                        me.checkboxObj[item.index] = false;
+                        me.checkboxObj[item.index] = true;
                     });
                     me.queryWaringMsg();
                 }
@@ -384,6 +438,12 @@ var waringComponent = {
                 return b.days - a.days;
             });
             return list;
+        },
+        isNeedForceAlarm: function(alarm) {
+            var result = false;
+            result = alarm & gForcealarm;
+            console.log('result=', result, 'alarm = ', alarm)
+            return result;
         }
     },
     components: {
@@ -604,6 +664,9 @@ var waringComponent = {
                     return this.wrapperheight - 24;
                 }
             },
+            mounted() {
+                console.log(this.emergencyAlarmList);
+            },
         },
         overdueInfo: {
             template: '<Table :height="tabheight" border :columns="columns" :data="overdueinfolist"></Table>',
@@ -681,27 +744,32 @@ var waringComponent = {
         var me = this;
         // if (this.userType) {
         this.alarmMgr = new AlarmMgr();
-        this.settingCheckboxObj();
         this.queryDeviceMsgList();
         this.timingRequestMsg();
         this.queryAlarmDescr();
         this.changeWrapperCls();
-
+        this.setAlarmAction();
         communicate.$on("remindmsg", function(data) {
             me.alarmMgr.addRecord(data);
             me.refreshAlarmToUi();
-
-            if (data.action == 'sound') {
-                console.log(data);
-                if (me.isMute == false) {
-                    for (var i = 0; i < data.actionloopcount; i++) {
-                        voiceQueue.push(data.devicename + data.stralarm);
-                    }
-                    if (voiceQueue.length > 0) {
-                        if (isPlayAlarmVoice == false) {
-                            utils.playTextVoice(voiceQueue.shift());
-                        }
-                    }
+            if (me.isNeedForceAlarm(data.alarm)) {
+                if (me.isMute) {
+                    // for (var i = 0; i < data.actionloopcount; i++) {
+                    //     voiceQueue.push(data.devicename + data.stralarm);
+                    // }
+                    // if (voiceQueue.length > 0) {
+                    //     if (isPlayAlarmVoice == false) {
+                    //         // utils.playTextVoice(voiceQueue.shift());
+                    //     }
+                    // }
+                    audio.play();
+                }
+                if (me.isPopup) {
+                    me.$Notice.warning({
+                        title: '设备报警提醒',
+                        duration: 0,
+                        desc: data.devicename + " : " + data.stralarm
+                    });
                 }
             }
         });

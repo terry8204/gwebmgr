@@ -659,6 +659,9 @@ var myUrls = {
     editRepaiRecord: function() {
         return this.apihosts + 'webapi?action=editrepairrecord&token=' + token;
     },
+    setForceAlarm: function() {
+        return this.apihosts + 'webapi?action=setforcealarm&token=' + token;
+    },
     getCardInfo: function(action) {
         return this.apihosts + 'webapi?action=' + action + '&token=' + token;
     },
