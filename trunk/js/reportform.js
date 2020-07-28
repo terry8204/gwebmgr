@@ -1655,31 +1655,137 @@ function rotateReport(groupslist) {
                             var zStr = "";
                             var fStr = "";
                             var tStr = "";
-                            if (v[0][2] > 60) {
-                                zStr = parseInt(v[0].value / 60) + dw_hour + (v[0].value % 60) + dw_min;
-                            } else if (v[0].value % 60 == 0 && v[2].value != 0) {
-                                zStr = parseInt(v[0].value / 60) + dw_hour;
-                            } else {
-                                zStr = v[0].value + dw_min;
+                            if (v.length == 1) {
+                                var item1 = v[0];
+                                if (item1.seriesIndex == 0) {
+                                    if (v[0].value > 60) {
+                                        zStr = parseInt(v[0].value / 60) + dw_hour + (v[0].value % 60) + dw_min;
+                                    } else if (v[0] && v[0].value % 60 == 0 && v[0].value != 0) {
+                                        zStr = parseInt(v[0].value / 60) + dw_hour;
+                                    } else {
+                                        zStr = 0 + dw_min;
+                                    }
+                                    return car + ': ' + v[0].name + '</br>' +
+                                        zz + ': ' + zStr + '</br>';
+                                } else if (item1.seriesIndex == 1) {
+                                    if (v[0].value > 60) {
+                                        fStr = parseInt(v[0].value / 60) + dw_hour + (v[0].value % 60) + dw_min;
+                                    } else if (v[0] && v[0].value % 60 == 0 && v[0].value != 0) {
+                                        fStr = parseInt(v[0].value / 60) + dw_hour;
+                                    } else {
+                                        fStr = 0 + dw_min;
+                                    }
+                                    return car + ': ' + v[0].name + '</br>' +
+                                        fz + ': ' + fStr + '</br>';
+
+                                } else if (item1.seriesIndex == 2) {
+                                    if (v[0].value > 60) {
+                                        tStr = parseInt(v[0].value / 60) + dw_hour + (v[0].value % 60) + dw_min;
+                                    } else if (v[0] && v[0].value % 60 == 0 && v[0].value != 0) {
+                                        tStr = parseInt(v[0].value / 60) + dw_hour;
+                                    } else {
+                                        tStr = 0 + dw_min;
+                                    }
+                                    return car + ': ' + v[0].name + '</br>' +
+                                        tz + ': ' + tStr;
+                                }
+                            } else if (v.length == 2) {
+                                var item1 = v[0];
+                                var item2 = v[1];
+                                if (item1.seriesIndex == 0) {
+                                    if (item1.value > 60) {
+                                        zStr = parseInt(item1.value / 60) + dw_hour + (item1.value % 60) + dw_min;
+                                    } else if (item1 && item1.value % 60 == 0 && item1.value != 0) {
+                                        zStr = parseInt(item1.value / 60) + dw_hour;
+                                    } else {
+                                        zStr = 0 + dw_min;
+                                    }
+                                } else if (item1.seriesIndex == 1) {
+                                    if (item1.value > 60) {
+                                        fStr = parseInt(item1.value / 60) + dw_hour + (item1.value % 60) + dw_min;
+                                    } else if (item1 && item1.value % 60 == 0 && item1.value != 0) {
+                                        fStr = parseInt(item1.value / 60) + dw_hour;
+                                    } else {
+                                        fStr = 0 + dw_min;
+                                    }
+                                } else if (item1.seriesIndex == 2) {
+                                    if (item1.value > 60) {
+                                        tStr = parseInt(item1.value / 60) + dw_hour + (item1.value % 60) + dw_min;
+                                    } else if (item1 && item1.value % 60 == 0 && item1.value != 0) {
+                                        tStr = parseInt(item1.value / 60) + dw_hour;
+                                    } else {
+                                        tStr = 0 + dw_min;
+                                    }
+                                }
+                                if (item2.seriesIndex == 0) {
+                                    if (item2.value > 60) {
+                                        zStr = parseInt(item2.value / 60) + dw_hour + (item2.value % 60) + dw_min;
+                                    } else if (item2 && item2.value % 60 == 0 && item2.value != 0) {
+                                        zStr = parseInt(item2.value / 60) + dw_hour;
+                                    } else {
+                                        zStr = 0 + dw_min;
+                                    }
+                                } else if (item2.seriesIndex == 1) {
+                                    if (item2.value > 60) {
+                                        fStr = parseInt(item2.value / 60) + dw_hour + (item2.value % 60) + dw_min;
+                                    } else if (item2 && item2.value % 60 == 0 && item2.value != 0) {
+                                        fStr = parseInt(item2.value / 60) + dw_hour;
+                                    } else {
+                                        fStr = 0 + dw_min;
+                                    }
+                                } else if (item2.seriesIndex == 2) {
+                                    if (item2.value > 60) {
+                                        tStr = parseInt(item2.value / 60) + dw_hour + (item2.value % 60) + dw_min;
+                                    } else if (item2 && item2.value % 60 == 0 && item2.value != 0) {
+                                        tStr = parseInt(item2.value / 60) + dw_hour;
+                                    } else {
+                                        tStr = 0 + dw_min;
+                                    }
+                                }
+
+                                if (zStr === "") {
+                                    return car + ': ' + v[0].name + '</br>' +
+                                        fz + ': ' + fStr + '</br>' +
+                                        tz + ': ' + tStr;
+                                }
+                                if (fStr === "") {
+                                    return car + ': ' + v[0].name + '</br>' +
+                                        zz + ': ' + zStr + '</br>' +
+                                        tz + ': ' + tStr;
+                                }
+                                if (tStr === "") {
+                                    return car + ': ' + v[0].name + '</br>' +
+                                        zz + ': ' + zStr + '</br>' +
+                                        fz + ': ' + fStr + '</br>';
+                                }
+                            } else if (v.length == 3) {
+                                if (v[0].value > 60) {
+                                    zStr = parseInt(v[0].value / 60) + dw_hour + (v[0].value % 60) + dw_min;
+                                } else if (v[0] && v[0].value % 60 == 0 && v[0].value != 0) {
+                                    zStr = parseInt(v[0].value / 60) + dw_hour;
+                                } else {
+                                    zStr = 0 + dw_min;
+                                }
+                                if (v[1] && v[1].value > 60) {
+                                    fStr = parseInt(v[1].value / 60) + dw_hour + (v[1].value % 60) + dw_min;
+                                } else if (v[1] && v[1].value % 60 == 0 && v[1].value != 0) {
+                                    fStr = parseInt(v[1].value / 60) + dw_hour;
+                                } else {
+                                    fStr = 0 + dw_min;
+                                }
+                                if (v[2] && v[2].value > 60) {
+                                    tStr = parseInt(v[2].value / 60) + dw_hour + (v[2].value % 60) + dw_min;
+                                } else if (v[2] && v[2].value % 60 == 0 && v[2].value != 0) {
+                                    tStr = parseInt(v[2].value / 60) + dw_hour;
+                                } else {
+                                    tStr = 0 + dw_min;
+                                }
+                                return car + ': ' + v[0].name + '</br>' +
+                                    zz + ': ' + zStr + '</br>' +
+                                    fz + ': ' + fStr + '</br>' +
+                                    tz + ': ' + tStr;
                             }
-                            if (v[1].value > 60) {
-                                fStr = parseInt(v[1].value / 60) + dw_hour + (v[1].value % 60) + dw_min;
-                            } else if (v[1].value % 60 == 0 && v[2].value != 0) {
-                                fStr = parseInt(v[1].value / 60) + dw_hour;
-                            } else {
-                                fStr = v[1].value + dw_min;
-                            }
-                            if (v[2].value > 60) {
-                                tStr = parseInt(v[2].value / 60) + dw_hour + (v[2].value % 60) + dw_min;
-                            } else if (v[2].value % 60 == 0 && v[2].value != 0) {
-                                tStr = parseInt(v[2].value / 60) + dw_hour;
-                            } else {
-                                tStr = v[2].value + dw_min;
-                            }
-                            return car + ': ' + v[0].name + '</br>' +
-                                zz + ': ' + zStr + '</br>' +
-                                fz + ': ' + fStr + '</br>' +
-                                tz + ': ' + tStr;
+
                         }
                     },
                     legend: {
