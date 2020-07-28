@@ -886,6 +886,8 @@ var videoPlayer = {
                 hasAudio: hasaudio === 1,
                 hasVideo: true,
                 withCredentials: false,
+                enableStashBuffer: true,
+                stashInitialSize: 50,
                 // url: 'http://video.gps51.com:81/live/teststream.flv'
             }, {
                 enableWorker: false,

@@ -662,6 +662,9 @@ var myUrls = {
     setForceAlarm: function() {
         return this.apihosts + 'webapi?action=setforcealarm&token=' + token;
     },
+    rotateReports: function() {
+        return this.apihosts + 'webapi?action=reportrotates&token=' + token;
+    },
     getCardInfo: function(action) {
         return this.apihosts + 'webapi?action=' + action + '&token=' + token;
     },

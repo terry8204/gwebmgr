@@ -315,7 +315,6 @@ var utils = {
             }
         })
     },
-
     longToBits: function(iLong, len) {
         var temp = iLong;
         var result = new Array(len);
