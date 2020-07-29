@@ -290,6 +290,92 @@
             </div>
             <div slot="footer" style="height:20px;"></div>
         </Modal>
+
+        <Modal v-model="ioModal" width="650">
+            <p slot="header" style="color:#f60;text-align:center">
+                <Icon type="ios-create-outline"></Icon>
+                <span>IO配置</span>
+            </p>
+            <div>
+                <Row style="height:32px;margin: 10px 0;">
+                    <i-Col span="4" style="height: 100%;line-height:32px;text-align: right;">
+                        IO个数:
+                    </i-Col>
+                    <i-Col span="8" style="height: 100%;line-height:32px;padding-left: 3px;">
+                        <Input-Number :max="4" :min="1" v-model="ioCount" style="width: 100%;"></Input-Number>
+                    </i-Col>
+                    <i-Col span="2" style="height: 100%;line-height:32px;text-align: right;">
+                        设备号：
+                    </i-Col>
+                    <i-Col span="5" style="height: 100%;padding-left: 3px;">
+                        <i-input v-model.trim="ioObject.io1g" style="width: 100%;" placeholder="要导入的设备序号"></i-input>
+                    </i-Col>
+                    <i-Col span="3" style="height: 100%;padding-left: 3px;">
+                        <i-button type="primary" style="width: 75px;" @click="referenceResources">参考</i-button>
+                    </i-Col>
+                </Row>
+                <Row style="height:32px;margin: 10px 0;">
+                    <i-Col span="4" style="height: 100%;line-height:32px;text-align: right;">
+                        io1开：
+                    </i-Col>
+                    <i-Col span="8" style="height: 100%;padding-left: 3px;">
+                        <i-input v-model.trim="ioObject.io1k" style="width: 100%;"></i-input>
+                    </i-Col>
+                    <i-Col span="2" style="height: 100%;line-height:32px;text-align: right;">
+                        io1关：
+                    </i-Col>
+                    <i-Col span="8" style="height: 100%;padding-left: 3px;">
+                        <i-input v-model.trim="ioObject.io1g" style="width: 100%;"></i-input>
+                    </i-Col>
+                </Row>
+                <Row style="height:32px;margin: 10px 0;" v-show="ioCount > 1">
+                    <i-Col span="4" style="height: 100%;line-height:32px;text-align: right;">
+                        io2开：
+                    </i-Col>
+                    <i-Col span="8" style="height: 100%;padding-left: 3px;">
+                        <i-input v-model.trim="ioObject.io2k" style="width: 100%;"></i-input>
+                    </i-Col>
+                    <i-Col span="2" style="height: 100%;line-height:32px;text-align: right;">
+                        io2关：
+                    </i-Col>
+                    <i-Col span="8" style="height: 100%;padding-left: 3px;">
+                        <i-input v-model.trim="ioObject.io2g" style="width: 100%;"></i-input>
+                    </i-Col>
+                </Row>
+                <Row style="height:32px;margin: 10px 0;" v-show="ioCount > 2">
+                    <i-Col span="4" style="height: 100%;line-height:32px;text-align: right;">
+                        io3开：
+                    </i-Col>
+                    <i-Col span="8" style="height: 100%;padding-left: 3px;">
+                        <i-input v-model.trim="ioObject.io3k" style="width: 100%;"></i-input>
+                    </i-Col>
+                    <i-Col span="2" style="height: 100%;line-height:32px;text-align: right;">
+                        io3关：
+                    </i-Col>
+                    <i-Col span="8" style="height: 100%;padding-left: 3px;">
+                        <i-input v-model.trim="ioObject.io3g" style="width: 100%;"></i-input>
+                    </i-Col>
+                </Row>
+                <Row style="height:32px;margin: 10px 0;" v-show="ioCount > 3">
+                    <i-Col span="4" style="height: 100%;line-height:32px;text-align: right;">
+                        io4开：
+                    </i-Col>
+                    <i-Col span="8" style="height: 100%;padding-left: 3px;">
+                        <i-input v-model.trim="ioObject.io4k" style="width: 100%;"></i-input>
+                    </i-Col>
+                    <i-Col span="2" style="height: 100%;line-height:32px;text-align: right;">
+                        io4关：
+                    </i-Col>
+                    <i-Col span="8" style="height: 100%;padding-left: 3px;">
+                        <i-input v-model.trim="ioObject.io4g" style="width: 100%;"></i-input>
+                    </i-Col>
+                </Row>
+            </div>
+            <div slot="footer" style="text-align: center;">
+                <i-button style="width: 260px" type="primary" @click="setIoConfig">设置</i-button>
+            </div>
+        </Modal>
+
         <Modal v-model="oilModal" width="650">
             <p slot="header" style="color:#f60;text-align:center">
                 <Icon type="ios-create-outline"></Icon>
@@ -666,6 +752,18 @@
             el: "#querydev",
             i18n: utils.getI18n(),
             data: {
+                ioModal: false,
+                ioCount: 4,
+                ioObject: {
+                    io1k: "1开",
+                    io1g: "1关",
+                    io2k: "2开",
+                    io2g: "2关",
+                    io3k: "3开",
+                    io3g: "3关",
+                    io4k: "4开",
+                    io4g: "4关",
+                },
                 isIndependent: false,
                 queryType: 'all', // all 7ot 60ot ot
                 matchingTemp: '',
@@ -798,7 +896,7 @@
                     }, {
                         title: vRoot.$t("bgMgr.action"),
                         key: 'action',
-                        width: 420,
+                        width: 470,
                         render: function(h, params) {
                             return h('div', [
                                 h('Button', {
@@ -838,6 +936,23 @@
                                         }
                                     }
                                 }, '油液标注'),
+                                h('Button', {
+                                    props: {
+                                        type: 'primary',
+                                        size: 'small'
+                                    },
+                                    style: {
+                                        marginRight: '5px'
+                                    },
+                                    on: {
+                                        click: function() {
+                                            editObject = params.row;
+                                            vueInstanse.queryIoConfig(editObject.deviceid);
+                                            vueInstanse.ioModal = true;
+                                            // vueInstanse.queryOilInfo(params.row.deviceid);
+                                        }
+                                    }
+                                }, 'IO配置'),
                                 h('Poptip', {
                                     props: {
                                         confirm: true,
@@ -1080,6 +1195,44 @@
                 },
             },
             methods: {
+                referenceResources: function() {
+                    this.queryIoConfig(editObject.deviceid);
+                },
+                queryIoConfig: function(deviceid) {
+                    var url = myUrls.queryIoConfig();
+                    utils.sendAjax(url, {
+                        deviceid: deviceid
+                    }, function(resp) {
+                        console.log(resp);
+                    });
+                },
+                setIoConfig: function() {
+                    var url = myUrls.setIoConfig();
+                    var records = [],
+                        me = this;
+                    for (var i = 1; i <= this.ioCount; i++) {
+                        records.push({
+                            index: i,
+                            openstr: this.ioObject['io' + i + 'k'],
+                            closestr: this.ioObject['io' + i + 'g'],
+                        })
+                    }
+                    var data = {
+                        deviceid: editObject.deviceid,
+                        records: records
+                    }
+
+                    utils.sendAjax(url, data, function(resp) {
+                        console.log(resp);
+                        if (resp.status === 0) {
+                            me.ioModal = false;
+                            me.$Message.success('设置成功');
+                        } else {
+                            me.$Message.error('设置失败');
+                        }
+                    })
+
+                },
                 changeDevicePage: function(index) {
                     this.currentIndex = index;
                     this.getDeviceList(false, this.getQueryTypeNumber());

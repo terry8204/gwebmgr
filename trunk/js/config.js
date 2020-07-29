@@ -665,6 +665,12 @@ var myUrls = {
     rotateReports: function() {
         return this.apihosts + 'webapi?action=reportrotates&token=' + token;
     },
+    setIoConfig: function() {
+        return this.apihosts + 'webapi?action=setioconfig&token=' + token;
+    },
+    queryIoConfig: function() {
+        return this.apihosts + 'webapi?action=queryioconfig&token=' + token;
+    },
     getCardInfo: function(action) {
         return this.apihosts + 'webapi?action=' + action + '&token=' + token;
     },
