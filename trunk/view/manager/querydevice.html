@@ -302,10 +302,10 @@
                         IO个数:
                     </i-Col>
                     <i-Col span="8" style="height: 100%;line-height:32px;padding-left: 3px;">
-                        <Input-Number :max="4" :min="1" v-model="ioCount" style="width: 100%;"></Input-Number>
+                        <Input-Number :max="4" :min="0" v-model="ioCount" style="width: 100%;"></Input-Number>
                     </i-Col>
                 </Row>
-                <Row style="height:32px;margin: 10px 0;">
+                <Row style="height:32px;margin: 10px 0;" style="height:32px;margin: 10px 0;" v-show="ioCount > 0">
                     <i-Col span="4" style="height: 100%;line-height:32px;text-align: right;">
                         io1开：
                     </i-Col>
@@ -746,7 +746,7 @@
             i18n: utils.getI18n(),
             data: {
                 ioModal: false,
-                ioCount: 4,
+                ioCount: 0,
                 ioObject: {
                     io1k: "",
                     io1g: "",
@@ -1202,25 +1202,31 @@
                     utils.sendAjax(url, {
                         deviceid: deviceid
                     }, function(resp) {
-                        if (resp.status == 0 && resp.records) {
+                        if (resp.status == 0) {
                             var records = resp.records;
-                            for (var i = 0; i < 4; i++) {
-                                var item = records[i];
-                                if (item) {
-                                    me.ioObject['io' + (i + 1) + 'k'] = item.openstr;
-                                    me.ioObject['io' + (i + 1) + 'g'] = item.closestr;
-                                } else {
+                            if (records) {
+                                for (var i = 0; i < 4; i++) {
+                                    var item = records[i];
+                                    if (item) {
+                                        me.ioObject['io' + (i + 1) + 'k'] = item.openstr;
+                                        me.ioObject['io' + (i + 1) + 'g'] = item.closestr;
+                                    } else {
+                                        me.ioObject['io' + (i + 1) + 'k'] = '';
+                                        me.ioObject['io' + (i + 1) + 'g'] = '';
+                                    }
+                                }
+                                me.ioCount = records.length;
+                            } else {
+                                for (var i = 0; i < 4; i++) {
                                     me.ioObject['io' + (i + 1) + 'k'] = '';
                                     me.ioObject['io' + (i + 1) + 'g'] = '';
                                 }
+                                me.ioCount = 0;
+                                me.$Message.error('没有查询到数据');
                             }
-                            me.ioCount = records.length;
+
                         } else {
-                            for (var i = 0; i < 4; i++) {
-                                me.ioObject['io' + (i + 1) + 'k'] = '';
-                                me.ioObject['io' + (i + 1) + 'g'] = '';
-                            }
-                            me.$Message.error('没有查询到数据');
+                            me.$Message.error('查询失败');
                         }
                     });
                 },
