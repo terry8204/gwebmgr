@@ -5,7 +5,21 @@
             <Row style="margin: 10px 0">
                 <i-col span="4" style="height: 100%;text-align:right;line-height:32px;" :offset="2"><i style="color: red;display: inline-block;">*</i>&nbsp;设备序号 : &nbsp;</i-col>
                 <i-col span="8">
-                    <i-input v-model.trim="deviceid"></i-input>
+                    <div class="search-wrapper">
+                        <i-input v-model.trim="sosoValue" icon="ios-search-outline" :readonly="readonly" @on-change="sosoValueChange" @on-blur="blur" @on-click="focus" @on-focus="focus"></i-input>
+                        <transition name="fade">
+                            <ul class="search-item-wrapper" v-show="isShowMatchDev">
+                                <li class="demo-auto-complete-item" v-for="item in filterData">
+                                    <div class="demo-auto-complete-group">
+                                        <span>{{ item.groupname }}</span>
+                                    </div>
+                                    <i-option v-for="option in item.devices" :value="option.groupname" :key="option.groupname">
+                                        <span style="color:#B1BBC2" @click="sosoSelect(option)" class="demo-auto-complete-title">{{ option.allDeviceIdTitle }}</span>
+                                    </i-option>
+                                </li>
+                            </ul>
+                        </transition>
+                    </div>
                 </i-col>
                 <i-col span="10" style="height: 100%;line-height:32px;padding-left:20px;">
                     <span>
@@ -135,6 +149,11 @@
             el: "#addrepair",
             i18n: utils.getI18n(),
             data: {
+                groups: vRoot.$children[1].groups,
+                sosoValue: '',
+                readonly: false,
+                isShowMatchDev: false,
+                filterData: [],
                 deviceid: '',
                 repairitem: '', //维修项' ,
                 fee: '', //多少钱元,精确到小数点后2位
@@ -147,9 +166,98 @@
                 remark: '', //备注' ,
             },
             methods: {
+                sosoSelect: function(device) {
+                    this.deviceid = device.deviceid;
+                    this.sosoValue = device.allDeviceIdTitle;
+                    this.isShowMatchDev = false;
+                },
+                sosoValueChange: function() {
+                    var me = this;
+                    var value = this.sosoValue;
+
+                    if (this.timeoutIns != null) {
+                        clearTimeout(this.timeoutIns);
+                    }
+
+                    if (!value.trim()) {
+                        this.filterData = [];
+                        return;
+                    }
+
+                    if (this.deviceid != null) {
+                        this.deviceid = null;
+                    }
+
+                    this.timeoutIns = setTimeout(function() {
+                        me.filterMethod(value);
+                    }, 300);
+                },
+                focus: function() {
+                    this.readonly = false;
+                    var me = this;
+                    if (this.sosoValue.trim()) {
+                        me.sosoValueChange();
+                    }
+                },
+                blur: function() {
+                    this.readonly = true;
+                    var me = this
+                    setTimeout(function() {
+                        me.isShowMatchDev = false;
+                    }, 300)
+                },
+                filterMethod: function(value) {
+
+                    this.filterData = []
+                    var me = this;
+                    value = value.toLowerCase();
+                    for (var i = 0; i < this.groups.length; i++) {
+                        var group = this.groups[i]
+                        if (
+                            group.groupname.toLowerCase().indexOf(value) !== -1 ||
+                            group.firstLetter.indexOf(value) !== -1 ||
+                            group.pinyin.indexOf(value) !== -1
+                        ) {
+
+                            this.filterData.push(group);
+                        } else {
+                            var devices = group.devices
+                            var obj = {
+                                groupname: group.groupname,
+                                devices: []
+                            }
+                            for (var j = 0; j < devices.length; j++) {
+                                var device = devices[j]
+                                var devicename = device.devicename;
+                                if (
+                                    device.devicetitle.toLowerCase().indexOf(value) !== -1 ||
+                                    device.allDeviceIdTitle.toLowerCase().indexOf(value) !== -1 ||
+                                    devicename.toLowerCase().indexOf(value) !== -1 ||
+                                    device.firstLetter.indexOf(value) !== -1 ||
+                                    device.pinyin.indexOf(value) !== -1 ||
+                                    device.deviceid.indexOf(value) !== -1
+                                ) {
+                                    obj.devices.push(device)
+                                } else {
+                                    if (device.remark) {
+                                        if (device.remark.indexOf(value) !== -1) {
+                                            obj.devices.push(device)
+                                        };
+                                    };
+                                };
+                            }
+                            if (obj.devices.length) {
+                                this.filterData.push(obj);
+                            };
+                        };
+                    };
+                    if (this.filterData.length) {
+                        this.isShowMatchDev = true;
+                    }
+                },
                 handleSubmit: function() {
-                    if (this.deviceid == "") {
-                        this.$Message.error("设备序号是必填的");
+                    if (this.deviceid == "" || this.deviceid == null) {
+                        this.$Message.error("设备序号是必选的");
                         return;
                     };
                     var url = myUrls.addRepairRecord();
@@ -177,7 +285,7 @@
                 },
             },
             mounted: function() {
-
+                this.timeoutIns = null;
             }
         })
     </script>
