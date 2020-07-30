@@ -140,6 +140,39 @@ vstore = new Vuex.Store({
     }
 });
 
+Vue.component('table-dropdown', {
+    template: document.getElementById('table-dropdown-template').innerHTML,
+    props: ['params'],
+    methods: {
+        onClickItem(name) {
+            console.log(this.params);
+            switch (name) {
+                case 'oil':
+                    vueInstanse.onClickCalibration(this.params);
+                    break;
+                case 'io':
+                    vueInstanse.onClickIoSetting(this.params);
+                    break;
+                case 'carMaster':
+                    vueInstanse.queryCarMasterInfo(this.params);
+                    break;
+                case 'insure':
+                    vueInstanse.queryInsureInfo(this.params);
+                    break;
+                case 'resetPass':
+                    vueInstanse.resetDevicePwd(this.params.index);
+                    break;
+            }
+
+        }
+    }
+});
+
+
+
+
+
+
 // 头部组建
 var appHeader = {
     template: document.getElementById('header-template').innerHTML,

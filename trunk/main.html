@@ -1295,6 +1295,22 @@
         </div>
     </script>
 
+    <script type="text/x-template" id="table-dropdown-template">
+        <Dropdown transfer @on-click="onClickItem">
+            <i-button type="info" size="small">
+                更多
+                <Icon type="ios-arrow-down"></Icon>
+            </i-button>
+            <i-dropdown-menu slot="list">
+                <DropdownItem name="oil">油液标注</DropdownItem>
+                <DropdownItem name="io">IO配置</DropdownItem>
+                <DropdownItem name="carMaster">车主信息</DropdownItem>
+                <DropdownItem name="insure">保险信息</DropdownItem>
+                <DropdownItem name="resetPass">重置密码</DropdownItem>
+            </i-dropdown-menu>
+        </Dropdown>
+    </script>
+
     <audio id="myaudio" src="./custom/sos.mp3"></audio>
 
 

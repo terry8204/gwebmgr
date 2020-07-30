@@ -42,7 +42,7 @@
         <Modal v-model="ownerInfoModal" width="500">
             <p slot="header" style="color:#f60;text-align:center">
                 <Icon type="ios-create-outline"></Icon>
-                <span>编辑保单信息</span>
+                <span>编辑车主信息</span>
             </p>
             <div style="text-align:center">
                 <Row style="margin:10px 0;">
@@ -890,63 +890,9 @@
                     }, {
                         title: vRoot.$t("bgMgr.action"),
                         key: 'action',
-                        width: 470,
+                        width: 190,
                         render: function(h, params) {
                             return h('div', [
-                                h('Button', {
-                                    props: {
-                                        type: 'primary',
-                                        size: 'small'
-                                    },
-                                    style: {
-                                        marginRight: '5px'
-                                    },
-                                    on: {
-                                        click: function() {
-                                            // vueInstanse.editDevice(params.row);
-                                            vueInstanse.editDeviceIndex = params.index;
-                                            editObject = params.row;
-                                            vueInstanse.groupid = editObject.groupid;
-                                            vueInstanse.createrToUser = editObject.creater;
-                                            vueInstanse.setDeviceData();
-                                            vueInstanse.modal = true;
-                                        }
-                                    }
-                                }, vRoot.$t("bgMgr.edit")),
-                                h('Button', {
-                                    props: {
-                                        type: 'primary',
-                                        size: 'small'
-                                    },
-                                    style: {
-                                        marginRight: '5px'
-                                    },
-                                    on: {
-                                        click: function() {
-                                            vueInstanse.oilModal = true;
-                                            vueInstanse.tabsActive = 'oil1';
-                                            editObject = params.row;
-                                            vueInstanse.queryOilInfo(params.row.deviceid);
-                                        }
-                                    }
-                                }, '油液标注'),
-                                h('Button', {
-                                    props: {
-                                        type: 'primary',
-                                        size: 'small'
-                                    },
-                                    style: {
-                                        marginRight: '5px'
-                                    },
-                                    on: {
-                                        click: function() {
-                                            editObject = params.row;
-                                            vueInstanse.queryIoConfig(editObject.deviceid);
-                                            vueInstanse.ioModal = true;
-                                            // vueInstanse.queryOilInfo(params.row.deviceid);
-                                        }
-                                    }
-                                }, 'IO配置'),
                                 h('Poptip', {
                                     props: {
                                         confirm: true,
@@ -980,80 +926,22 @@
                                     },
                                     on: {
                                         click: function() {
-                                            utils.queryDeviceex(params.row.deviceid, function(resp) {
-                                                vueInstanse.ownerInfoData.deviceid = params.row.deviceid;
-                                                if (resp) {
-                                                    vueInstanse.ownerInfoData.ownername = resp.ownername;
-                                                    vueInstanse.ownerInfoData.phonenum1 = resp.phonenum1;
-                                                    vueInstanse.ownerInfoData.phonenum2 = resp.phonenum2;
-                                                    vueInstanse.ownerInfoData.idnum = resp.idnum;
-                                                    vueInstanse.ownerInfoData.gender = String(resp.gender);
-                                                    vueInstanse.ownerInfoData.ownerremark = resp.remark;
-                                                    vueInstanse.ownerInfoData.address = resp.address;
-                                                } else {
-                                                    vueInstanse.ownerInfoData.ownername = '';
-                                                    vueInstanse.ownerInfoData.phonenum1 = '';
-                                                    vueInstanse.ownerInfoData.phonenum2 = '';
-                                                    vueInstanse.ownerInfoData.idnum = '';
-                                                    vueInstanse.ownerInfoData.gender = '';
-                                                    vueInstanse.ownerInfoData.ownerremark = '';
-                                                    vueInstanse.ownerInfoData.address = '';
-                                                }
-                                                vueInstanse.ownerInfoModal = true;
-                                            });
+                                            // vueInstanse.editDevice(params.row);
+                                            vueInstanse.editDeviceIndex = params.index;
+                                            editObject = params.row;
+                                            vueInstanse.groupid = editObject.groupid;
+                                            vueInstanse.createrToUser = editObject.creater;
+                                            vueInstanse.setDeviceData();
+                                            vueInstanse.modal = true;
                                         }
                                     }
-                                }, '车主信息'),
-                                h('Button', {
+                                }, vRoot.$t("bgMgr.edit")),
+                                h('table-dropdown', {
                                     props: {
-                                        type: 'primary',
-                                        size: 'small'
+                                        params: params
                                     },
-                                    style: {
-                                        marginRight: '5px'
-                                    },
-                                    on: {
-                                        click: function() {
-                                            utils.queryDeviceex(params.row.deviceid, function(resp) {
-                                                console.log('resp', resp)
-                                                vueInstanse.insureInfoData.deviceid = params.row.deviceid;
-                                                if (resp) {
-                                                    vueInstanse.insureInfoData.securitynum = resp.securitynum;
-                                                    vueInstanse.insureInfoData.vin = resp.vin;
-                                                    vueInstanse.insureInfoData.insurecompany = resp.insurecompany;
-                                                    vueInstanse.insureInfoData.insurenum = resp.insurenum;
-                                                    vueInstanse.insureInfoData.subinsuretime = resp.subinsuretime;
-                                                    vueInstanse.insureInfoData.effecttime = resp.effecttime;
-                                                    vueInstanse.insureInfoData.insuremark = resp.insuremark;
-                                                } else {
-                                                    vueInstanse.insureInfoData.securitynum = '';
-                                                    vueInstanse.insureInfoData.vin = '';
-                                                    vueInstanse.insureInfoData.insurecompany = '';
-                                                    vueInstanse.insureInfoData.insurenum = '';
-                                                    vueInstanse.insureInfoData.subinsuretime = '';
-                                                    vueInstanse.insureInfoData.effecttime = '';
-                                                    vueInstanse.insureInfoData.insuremark = '';
-                                                }
-                                                vueInstanse.insureInfoModal = true;
-                                            });
-                                        }
-                                    }
-                                }, '保险信息'),
-                                h('Button', {
-                                    props: {
-                                        type: 'primary',
-                                        size: 'small'
-                                    },
-                                    style: {
-                                        marginRight: '5px'
-                                    },
-                                    on: {
-                                        click: function() {
-                                            vueInstanse.resetDevicePwd(params.index);
-                                        }
-                                    }
-                                }, vRoot.$t("user.resetPwd")),
-                            ]);
+                                }, ''),
+                            ])
                         }
                     }
                 ],
@@ -1189,12 +1077,70 @@
                 },
             },
             methods: {
+                onClickCalibration: function(params) {
+                    this.oilModal = true;
+                    this.tabsActive = 'oil1';
+                    editObject = params.row;
+                    this.queryOilInfo(params.row.deviceid);
+                },
+                onClickIoSetting: function(params) {
+                    editObject = params.row;
+                    this.queryIoConfig(editObject.deviceid);
+                    this.ioModal = true;
+                },
+                queryCarMasterInfo: function(params) {
+                    utils.queryDeviceex(params.row.deviceid, function(resp) {
+                        vueInstanse.ownerInfoData.deviceid = params.row.deviceid;
+                        if (resp) {
+                            vueInstanse.ownerInfoData.ownername = resp.ownername;
+                            vueInstanse.ownerInfoData.phonenum1 = resp.phonenum1;
+                            vueInstanse.ownerInfoData.phonenum2 = resp.phonenum2;
+                            vueInstanse.ownerInfoData.idnum = resp.idnum;
+                            vueInstanse.ownerInfoData.gender = String(resp.gender);
+                            vueInstanse.ownerInfoData.ownerremark = resp.remark;
+                            vueInstanse.ownerInfoData.address = resp.address;
+                        } else {
+                            vueInstanse.ownerInfoData.ownername = '';
+                            vueInstanse.ownerInfoData.phonenum1 = '';
+                            vueInstanse.ownerInfoData.phonenum2 = '';
+                            vueInstanse.ownerInfoData.idnum = '';
+                            vueInstanse.ownerInfoData.gender = '';
+                            vueInstanse.ownerInfoData.ownerremark = '';
+                            vueInstanse.ownerInfoData.address = '';
+                        }
+                        vueInstanse.ownerInfoModal = true;
+                    });
+                },
                 referenceResources: function() {
                     if (this.referenceResourcesDeviceid == '') {
                         this.$Message.error('请填写参考设备序号');
                         return;
                     }
                     this.queryIoConfig(this.referenceResourcesDeviceid);
+                },
+                queryInsureInfo: function(params) {
+                    utils.queryDeviceex(params.row.deviceid, function(resp) {
+                        console.log('resp', resp)
+                        vueInstanse.insureInfoData.deviceid = params.row.deviceid;
+                        if (resp) {
+                            vueInstanse.insureInfoData.securitynum = resp.securitynum;
+                            vueInstanse.insureInfoData.vin = resp.vin;
+                            vueInstanse.insureInfoData.insurecompany = resp.insurecompany;
+                            vueInstanse.insureInfoData.insurenum = resp.insurenum;
+                            vueInstanse.insureInfoData.subinsuretime = resp.subinsuretime;
+                            vueInstanse.insureInfoData.effecttime = resp.effecttime;
+                            vueInstanse.insureInfoData.insuremark = resp.insuremark;
+                        } else {
+                            vueInstanse.insureInfoData.securitynum = '';
+                            vueInstanse.insureInfoData.vin = '';
+                            vueInstanse.insureInfoData.insurecompany = '';
+                            vueInstanse.insureInfoData.insurenum = '';
+                            vueInstanse.insureInfoData.subinsuretime = '';
+                            vueInstanse.insureInfoData.effecttime = '';
+                            vueInstanse.insureInfoData.insuremark = '';
+                        }
+                        vueInstanse.insureInfoModal = true;
+                    });
                 },
                 queryIoConfig: function(deviceid) {
                     var me = this;
