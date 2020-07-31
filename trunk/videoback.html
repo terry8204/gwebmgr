@@ -51,6 +51,14 @@
             font-size: 10px;
         }
         
+        div.time-wrapper {
+            position: absolute;
+            left: 0;
+            top: 0;
+            right: 0;
+            bottom: 0;
+        }
+        
         .mask {
             position: absolute;
             left: 18px;
@@ -313,44 +321,31 @@
                                 </div>
                             </div>
                         </div>
-                        <div style="position: absolute;left: 0px;right: 0;bottom: 0px;height: 300px;">
-                            <div style="height:50px;line-height: 50px;">
-                                <div style="float:left;">
-                                    <Button-Group shape="circle">
-                                        <i-button :type="isTable=='time'?'primary':'default'" @click="isTable='time'">
-                                            时间
-                                        </i-button>
-                                        <i-button :type="isTable=='file'?'primary':'default'" @click="isTable='file'">
-                                            文件
-                                        </i-button>
-                                        <i-button :type="isTable=='downloadfile'?'primary':'default'" @click="isTable='downloadfile'">
-                                            下载任务
-                                        </i-button>
-                                    </Button-Group>
-                                </div>
-                                <div style="float:right;">
-                                    <i-button @click="stopVideo">停止播放</i-button>
-                                </div>
-                            </div>
-                            <div style="height:250px;">
-                                <i-table v-if="isTable=='file'" border ref="table" @on-row-dblclick="handleDblclick" :columns="columns" :data="tableData" height="250" :loading="loading"></i-table>
-                                <div v-show="isTable=='time'" style="width:100%;height:250px;position: relative;">
-                                    <div id="videoTime" style="width:100%;height:250px;"></div>
-                                    <div class="mask" @click="handleClickMask" ref="videoTimeMask" @mousemove="onMouseMove">
-                                        <div class="time-line" :style='timeLineElStyle'></div>
-                                        <span class="time-reminder" :style='timeReminderElStyle' v-text="timeReminder"></span>
+                        <div style="height:300px;position: absolute;bottom: 0;left: 0;right: 0;padding-top: 10px;">
+                            <Tabs type="card" v-model="isTable">
+                                <tab-pane label="时间" name="time">
+                                    <div class="time-wrapper">
+                                        <div id="videoTime" style="width:100%;height:250px;"></div>
+                                        <div class="mask" @click="handleClickMask" ref="videoTimeMask" @mousemove="onMouseMove">
+                                            <div class="time-line" :style='timeLineElStyle'></div>
+                                            <span class="time-reminder" :style='timeReminderElStyle' v-text="timeReminder"></span>
+                                        </div>
                                     </div>
-                                </div>
-                                <div v-if="isTable=='downloadfile'" style="width:100%;height:250px;position: relative;">
+                                </tab-pane>
+                                <tab-pane label="文件" name="file">
+                                    <i-table border ref="table" @on-row-dblclick="handleDblclick" :columns="columns" :data="tableData" height="250" :loading="loading"></i-table>
+                                </tab-pane>
+                                <tab-pane label="下载任务" name="downloadfile">
                                     <i-table border :columns="downloadColumns" :data="downloadTableData" height="250" :loading="loading"></i-table>
-                                </div>
-                            </div>
-
+                                </tab-pane>
+                                <i-button @click="stopVideo" size="small" slot="extra">停止播放</i-button>
+                            </Tabs>
                         </div>
                     </div>
                 </div>
-            </Layout>
-        </Layout>
+    </div>
+    </Layout>
+    </Layout>
     </div>
     <script src="js/polyfill.min.js"></script>
     <script src="js/flv.min.js"></script>
@@ -374,8 +369,9 @@
         var timeDifference = DateFormat.getOffset();
         var gchannel = null,
             gstartTimeStr = null,
-            gendTimeStr = null;
-
+            gendTimeStr = null,
+            timeReminderElStyle = null,
+            timeLineElStyle = null;
 
         function calcFileSizeM(filesize) {
             var mSize = (filesize / 1024 / 1024).toFixed(2);
@@ -890,6 +886,7 @@
                     });
                 },
                 onMouseMove: function(e) {
+
                     var rect = this.maskEl.getBoundingClientRect();
                     var elWidth = rect.width;
                     var offsetX = e.clientX - rect.left;
@@ -916,14 +913,16 @@
                         left = elWidth - 54;
                     }
 
-                    this.timeReminderElStyle = {
+                    this.timeReminderElStyle = timeReminderElStyle = {
                         left: left + 'px',
                         top: top + 'px',
                     };
 
-                    this.timeLineElStyle = {
+                    this.timeLineElStyle = timeLineElStyle = {
                         left: (e.clientX - rect.left - 1) + 'px',
                     }
+
+
 
                 },
                 queryDownloadTasks: function() {
@@ -1312,6 +1311,7 @@
                         } else {
                             isResize = true;
                         }
+
                     }
                 },
                 initWebSocket: function() {
@@ -1347,33 +1347,34 @@
             },
             watch: {
                 isTable: function(newVal) {
-                    var me = this;
-                    if (newVal === 'time') {
-                        setTimeout(function() {
-                            chart = echarts.init(document.getElementById('videoTime'));
-                            var data = [];
-                            me.tableData.forEach(function(item) {
-                                var starttimeStr = item.starttime.replace('-', '/').replace('-', '/');
-                                var endtimeStr = item.endtime.replace('-', '/').replace('-', '/');
-                                data.push({
-                                    itemStyle: {
-                                        normal: {
-                                            color: '#e4393c'
-                                        }
-                                    },
-                                    name: '',
-                                    value: [0, starttimeStr, endtimeStr]
-                                })
-                            })
-                            chart.setOption(me.getEchartOption(DateFormat.format(me.date, 'yyyy-MM-dd'), data));
+                    // var me = this;
+                    // if (newVal === 'time') {
+                    //     me.timeReminderElStyle = timeReminderElStyle;
+                    //     me.timeLineElStyle = timeLineElStyle;
+                    //     setTimeout(function() {
+                    //         chart = echarts.init(document.getElementById('videoTime'));
+                    //         var data = [];
+                    //         me.tableData.forEach(function(item) {
+                    //             var starttimeStr = item.starttime.replace('-', '/').replace('-', '/');
+                    //             var endtimeStr = item.endtime.replace('-', '/').replace('-', '/');
+                    //             data.push({
+                    //                 itemStyle: {
+                    //                     normal: {
+                    //                         color: '#e4393c'
+                    //                     }
+                    //                 },
+                    //                 name: '',
+                    //                 value: [0, starttimeStr, endtimeStr]
+                    //             })
+                    //         })
+                    //         chart.setOption(me.getEchartOption(DateFormat.format(me.date, 'yyyy-MM-dd'), data));
 
-                        }, 300);
-                    }
+                    //     }, 300);
+                    // }
                 },
                 tableData: function(newVal) {
                     if (newVal.length) {
                         var data = [];
-
                         newVal.forEach(function(item) {
                             var starttimeStr = item.starttime.replace('-', '/').replace('-', '/');
                             var endtimeStr = item.endtime.replace('-', '/').replace('-', '/');
