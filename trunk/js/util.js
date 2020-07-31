@@ -227,7 +227,7 @@ var utils = {
             type: 'post',
             data: encode,
             timeout: 30000,
-            contentType: "application/json;charset=utf-8",
+            //contentType: "application/json;charset=utf-8",
             dataType: 'json',
             success: function(resp) {
                 if (resp) {
@@ -308,7 +308,7 @@ var utils = {
     getJiuHuAddressSyn: function(lon, lat, callback) {
         $.ajax({
             type: 'get',
-            contentType: "application/json;charset=utf-8",
+            //contentType: "application/json;charset=utf-8",
             url: 'https://www.gps51.com/webapi?action=w&lat=' + lat + '&lon=' + lon + '&token=' + token,
             success: function(data) {
                 (data.address != "") && callback(data)
@@ -339,7 +339,7 @@ var utils = {
     getAbroadAddressSyn: function(lon, lat, callback) {
         $.ajax({
             type: 'get',
-            contentType: "application/json;charset=utf-8",
+            //contentType: "application/json;charset=utf-8",
             url: 'https://www.gps51.com/reverse?format=json&lat=' + lat + '&lon=' + lon + '&addressdetails=0',
             success: function(data) {
                 callback && callback(data.display_name);

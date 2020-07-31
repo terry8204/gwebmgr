@@ -139,7 +139,7 @@
                                             $.ajax({
                                                 url: url,
                                                 method: "post",
-                                                contentType: "application/json;charset=utf-8",
+                                                //contentType: "application/json;charset=utf-8",
                                                 data: JSON.stringify({
                                                     id: row.serverconfigid
                                                 }),
@@ -195,7 +195,7 @@
                     $.ajax({
                         url: url,
                         method: "post",
-                        contentType: "application/json;charset=utf-8",
+                        //contentType: "application/json;charset=utf-8",
                         data: JSON.stringify(this.editObj),
                         success: function(data) {
                             if (data.status === 0) {
@@ -213,7 +213,7 @@
                     $.ajax({
                         url: url,
                         method: "get",
-                        contentType: "application/json;charset=utf-8",
+                        //contentType: "application/json;charset=utf-8",
                         success: function(data) {
                             if (data.status === 0 && data.configs.length) {
                                 that.tableData = data.configs;

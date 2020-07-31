@@ -667,7 +667,7 @@
                 url: "/wxpay/notify?nonestr=" + nonceStr + "&phonenum=" + phonenum + "&packageid=" + packageid,
                 type: "get",
                 dataType: "json",
-                contentType: "application/json;charset=utf-8",
+                //contentType: "application/json;charset=utf-8",
                 success: function(json) {
                     if (json.status == 0) {
                         window.wxc.xcConfirm("充值成功", "物联网卡<br>" + phonenum);
@@ -714,7 +714,7 @@
                         url: "/wxpay/towxpay?packageid=" + packageid + "&phonenum=" + phonenum + "&openid=" + openid,
                         type: "get",
                         dataType: "json",
-                        contentType: "application/json;charset=utf-8",
+                        //contentType: "application/json;charset=utf-8",
                         success: function(json) {
                             var appId = json.appId;
                             var timeStamp = json.timeStamp;
