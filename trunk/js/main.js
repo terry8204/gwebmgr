@@ -144,7 +144,7 @@ Vue.component('table-dropdown', {
     template: document.getElementById('table-dropdown-template').innerHTML,
     props: ['params'],
     methods: {
-        onClickItem(name) {
+        onClickItem: function(name) {
             console.log(this.params);
             switch (name) {
                 case 'oil':

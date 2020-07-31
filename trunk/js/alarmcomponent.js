@@ -227,9 +227,9 @@ var waringComponent = {
                     var item = records[i];
                     if (me.isNeedForceAlarm(item.alarm)) {
                         if (me.isMute) {
-                            audio.play().then(() => {
+                            audio.play().then(function() {
                                 console.log('可以自动播放')
-                            }).catch(err => {
+                            }).catch(function(err) {
                                 // 不支持自动播放
                                 console.log('不支持自动播放')
                             })
@@ -800,9 +800,9 @@ var waringComponent = {
                     //         // utils.playTextVoice(voiceQueue.shift());
                     //     }
                     // }
-                    audio.play().then(() => {
+                    audio.play().then(function() {
                         console.log('可以自动播放')
-                    }).catch(err => {
+                    }).catch(function(err) {
                         // 不支持自动播放
                         console.log('不支持自动播放')
                     });

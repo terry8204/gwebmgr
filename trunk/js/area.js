@@ -17856,9 +17856,9 @@ const areaList = {
     ]
 }
 
-provinceList.forEach((province) => {
+provinceList.forEach(function(province) {
     province.children = cityList[province.value]
-    province.children.forEach((city) => {
+    province.children.forEach(function(city) {
         city.children = areaList[city.value]
     })
 })

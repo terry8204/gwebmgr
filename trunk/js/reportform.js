@@ -1922,6 +1922,611 @@ function rotateReport(groupslist) {
 
 }
 
+function speedingReport(groupslist) {
+    vueInstanse = new Vue({
+        el: '#speeding-report',
+        i18n: utils.getI18n(),
+        mixins: [treeMixin],
+        data: {
+            isSpin: false,
+            activeTab: 'tabTotal',
+            mapModal: false,
+            mapType: utils.getMapType(),
+            mapInstance: null,
+            markerIns: null,
+            loading: false,
+            dateVal: [DateFormat.longToDateStr(Date.now(), timeDifference), DateFormat.longToDateStr(Date.now(), timeDifference)],
+            lastTableHeight: 100,
+            groupslist: [],
+            timeoutIns: null,
+            allAccColumns: [
+                { title: '序号', width: 60, key: 'index' },
+                {
+                    title: "操作",
+                    width: 110,
+                    render: function(h, params) {
+
+                        return h('span', {
+                            on: {
+                                click: function() {
+                                    vueInstanse.activeTab = "tabDetail";
+                                    vueInstanse.getRotateDetailTableData(params.row.records);
+                                }
+                            },
+                            style: {
+                                color: '#e4393c',
+                                cursor: 'pointer'
+                            }
+                        }, "[超速明细]")
+                    }
+                },
+                {
+                    title: '设备名称',
+                    key: 'devicename'
+                },
+                {
+                    title: '设备序号',
+                    key: 'deviceid',
+                    width: 160,
+                },
+                {
+                    title: '超速时长',
+                    key: 'zzTimes'
+                },
+                {
+                    title: '超速里程',
+                    key: 'fzTimes'
+                },
+                {
+                    title: '超速次数',
+                    key: 'tzTimes'
+                },
+                {
+                    title: '最大速度',
+                    key: 'count'
+                },
+                {
+                    title: '最小速度',
+                    key: 'count'
+                },
+                {
+                    title: '平均速度',
+                    key: 'count'
+                },
+            ],
+            allRotateTableData: [],
+            columns: [
+                { title: '序号', width: 60, key: 'index' },
+                { title: vRoot.$t("alarm.devName"), key: 'deviceName', width: 160 },
+                { title: vRoot.$t("alarm.devNum"), key: 'deviceid', width: 160 },
+                { title: '状态', key: 'accStatus', width: 100 },
+                { title: vRoot.$t("reportForm.startDate"), key: 'startDate', width: 180 },
+                { title: vRoot.$t("reportForm.endDate"), key: 'endDate', width: 180 },
+                {
+                    title: '地址',
+                    width: 145,
+                    render: function(h, params) {
+                        var row = params.row;
+                        var lat = row.slat ? row.slat : null;
+                        var lon = row.slon ? row.slon : null;
+                        if (lat && lon) {
+                            if (row.address == null) {
+
+                                return h('Button', {
+                                    props: {
+                                        type: 'error',
+                                        size: 'small'
+                                    },
+                                    on: {
+                                        click: function() {
+                                            utils.getJiuHuAddressSyn(lon, lat, function(resp) {
+                                                if (resp && resp.address) {
+                                                    vueInstanse.tableData[params.index].address = resp.address;
+                                                    LocalCacheMgr.setAddress(lon, lat, resp.address);
+                                                }
+                                            })
+                                        }
+                                    }
+                                }, lon + "," + lat)
+
+                            } else {
+                                // return h('span', {}, row.saddress);
+                                return h('Tooltip', {
+                                    props: {
+                                        content: row.address,
+                                        placement: "top-start",
+                                        maxWidth: 200
+                                    },
+                                }, [
+                                    h('Button', {
+                                        props: {
+                                            type: 'primary',
+                                            size: 'small'
+                                        }
+                                    }, lon + "," + lat)
+                                ]);
+                            }
+                        } else {
+                            return h('span', {}, '');
+                        }
+                    },
+                },
+                { title: vRoot.$t("reportForm.duration"), key: 'duration' },
+            ],
+            tableData: [],
+            deviceNamesArr: [],
+            zzTimesArr: [],
+            fzTimesArr: [],
+            tzTimesArr: [],
+        },
+        methods: {
+            exportData: function() {
+                var startday = this.dateVal[0];
+                var endday = this.dateVal[1];
+                this.$refs.totalTable.exportCsv({
+                    filename: '正反转统计' + startday + '-' + endday,
+                    original: false,
+                    columns: this.allAccColumns.filter(function(col, index) { return index != 1; }),
+                    data: this.allRotateTableData
+                });
+            },
+            clean: function() {
+                this.sosoValue = '';
+                this.checkedDevice = [];
+                this.cleanSelected(this.groupslist);
+                this.treeData = this.groupslist;
+            },
+            cleanSelected: function(treeDataFilter) {
+                var that = this;
+                for (var i = 0; i < treeDataFilter.length; i++) {
+                    var item = treeDataFilter[i];
+                    if (item != null) {
+                        item.checked = false;
+                        if (item.children && item.children.length > 0) {
+                            that.cleanSelected(item.children);
+                        }
+                    }
+                }
+            },
+            onClickTab: function(name) {
+                this.activeTab = name;
+            },
+            onChange: function(value) {
+                this.dateVal = value;
+            },
+            calcTableHeight: function() {
+                var wHeight = window.innerHeight;
+                this.lastTableHeight = wHeight - 535;
+            },
+            onClickQuery: function() {
+                var deviceids = [];
+                this.checkedDevice.forEach(function(group) {
+                    if (!group.children) {
+                        if (group.deviceid != null) {
+                            deviceids.push(group.deviceid);
+                        }
+                    }
+                });
+                if (deviceids.length) {
+                    var me = this;
+                    var url = myUrls.rotateReports();
+                    var data = {
+                        startday: this.dateVal[0],
+                        endday: this.dateVal[1],
+                        offset: timeDifference,
+                        deviceids: deviceids
+                    }
+                    me.loading = true;
+                    utils.sendAjax(url, data, function(resp) {
+                        me.loading = false;
+                        if (resp.status == 0) {
+                            if (resp.records && resp.records.length) {
+                                me.tableData = [];
+                                me.allRotateTableData = me.getAllRotateTableData(resp.records);
+                            } else {
+                                me.tableData = [];
+                                me.allRotateTableData = [];
+                                me.deviceNamesArr = [];
+                                me.zzTimesArr = [];
+                                me.fzTimesArr = [];
+                                me.tzTimesArr = [];
+                                me.$Message.error("没有数据");
+                            }
+                        } else {
+                            me.tableData = [];
+                            me.allRotateTableData = [];
+                            me.deviceNamesArr = [];
+                            me.zzTimesArr = [];
+                            me.fzTimesArr = [];
+                            me.tzTimesArr = [];
+                        }
+                        if (me.activeTab != "tabTotal") {
+                            me.onClickTab("tabTotal");
+                        }
+                        me.displayChart();
+                    });
+                } else {
+                    this.$Message.error(this.$t("reportForm.selectDevTip"));
+                }
+            },
+            getAllRotateTableData: function(records) {
+                var me = this;
+                var allRotateTableData = [];
+                var deviceNamesArr = [];
+                var zzTimesArr = [];
+                var fzTimesArr = [];
+                var tzTimesArr = [];
+                records.forEach(function(item, index) {
+                    var Obj = {
+                            index: index + 1,
+                            deviceid: "\t" + item.deviceid,
+                            devicename: vstore.state.deviceInfos[item.deviceid].devicename,
+                            records: item.records,
+                        },
+                        count = 0,
+                        zzTimes = 0,
+                        fzTimes = 0,
+                        tzTimes = 0;
+                    item.records.forEach(function(record) {
+                        if (record.rotatestate == 1) {
+                            zzTimes += record.endtime - record.begintime;
+                        }
+                        if (record.rotatestate == 2) {
+                            fzTimes += record.endtime - record.begintime;
+                        }
+                        if (record.rotatestate == 3) {
+                            tzTimes += record.endtime - record.begintime;
+                        }
+                        count++;
+                    });
+                    Obj.zzTimes = utils.timeStamp(zzTimes);
+                    Obj.fzTimes = utils.timeStamp(fzTimes);
+                    Obj.tzTimes = utils.timeStamp(tzTimes);
+                    Obj.count = count;
+                    deviceNamesArr.push(Obj.devicename);
+                    zzTimesArr.push(parseInt(zzTimes / 1000 / 60));
+                    fzTimesArr.push(parseInt(fzTimes / 1000 / 60));
+                    tzTimesArr.push(parseInt(tzTimes / 1000 / 60));
+                    allRotateTableData.push(Obj);
+                });
+                if (deviceNamesArr.length) {
+                    this.deviceNamesArr = deviceNamesArr;
+                    this.zzTimesArr = zzTimesArr;
+                    this.fzTimesArr = fzTimesArr;
+                    this.tzTimesArr = tzTimesArr;
+                }
+                return allRotateTableData;
+            },
+            getRotateDetailTableData: function(records) {
+                var newRecords = [],
+                    me = this;
+                var zzTimes = 0;
+                var fzTimes = 0;
+                var tzTimes = 0;
+                records.sort(function(a, b) {
+                    return a.begintime - b.begintime;
+                });
+                records.forEach(function(item, index) {
+                    var deviceName = vstore.state.deviceInfos[item.deviceid].devicename;
+                    var duration = item.endtime - item.begintime;
+                    var durationStr = utils.timeStamp(duration);
+                    var status = "";
+                    var slon = item.slon.toFixed(5);
+                    var slat = item.slat.toFixed(5);
+                    var address = LocalCacheMgr.getAddress(slon, slat);
+                    if (item.rotatestate == 1) {
+                        status = '正转';
+                        zzTimes += duration;
+                    } else if (item.rotatestate == 2) {
+                        status = '反转';
+                        fzTimes += duration;
+                    } else if (item.rotatestate == 3) {
+                        tzTimes += duration;
+                        status = '停转';
+                    }
+                    newRecords.push({
+                        index: index + 1,
+                        deviceid: item.deviceid,
+                        deviceName: deviceName,
+                        startDate: DateFormat.longToDateTimeStr(item.begintime, timeDifference),
+                        endDate: DateFormat.longToDateTimeStr(item.endtime, timeDifference),
+                        accStatus: status,
+                        address: address,
+                        duration: durationStr,
+                        slon: slon,
+                        slat: slat,
+                    });
+                });
+                newRecords.push({
+                    duration: '正转:' + utils.timeStamp(zzTimes) + ',反转:' + utils.timeStamp(fzTimes) + ',停转:' + utils.timeStamp(tzTimes)
+                })
+                me.tableData = newRecords;
+            },
+            displayChart: function() {
+                var barChartOtion = this.getChartOption();
+                this.barChartJourney.setOption(barChartOtion);
+            },
+            getChartOption: function() {
+                var dw_hour = '小时';
+                var dw_min = '分钟';
+                var car = '车辆';
+                var zz = '正转';
+                var fz = '反转';
+                var tz = '停转';
+                //加载
+                option = {
+                    tooltip: {
+                        show: true,
+                        trigger: 'axis',
+                        formatter: function(v) {
+                            var zStr = "";
+                            var fStr = "";
+                            var tStr = "";
+                            if (v.length == 1) {
+                                var item1 = v[0];
+                                if (item1.seriesIndex == 0) {
+                                    if (v[0].value > 60) {
+                                        zStr = parseInt(v[0].value / 60) + dw_hour + (v[0].value % 60) + dw_min;
+                                    } else if (v[0] && v[0].value % 60 == 0 && v[0].value != 0) {
+                                        zStr = parseInt(v[0].value / 60) + dw_hour;
+                                    } else {
+                                        zStr = 0 + dw_min;
+                                    }
+                                    return car + ': ' + v[0].name + '</br>' +
+                                        zz + ': ' + zStr + '</br>';
+                                } else if (item1.seriesIndex == 1) {
+                                    if (v[0].value > 60) {
+                                        fStr = parseInt(v[0].value / 60) + dw_hour + (v[0].value % 60) + dw_min;
+                                    } else if (v[0] && v[0].value % 60 == 0 && v[0].value != 0) {
+                                        fStr = parseInt(v[0].value / 60) + dw_hour;
+                                    } else {
+                                        fStr = 0 + dw_min;
+                                    }
+                                    return car + ': ' + v[0].name + '</br>' +
+                                        fz + ': ' + fStr + '</br>';
+
+                                } else if (item1.seriesIndex == 2) {
+                                    if (v[0].value > 60) {
+                                        tStr = parseInt(v[0].value / 60) + dw_hour + (v[0].value % 60) + dw_min;
+                                    } else if (v[0] && v[0].value % 60 == 0 && v[0].value != 0) {
+                                        tStr = parseInt(v[0].value / 60) + dw_hour;
+                                    } else {
+                                        tStr = 0 + dw_min;
+                                    }
+                                    return car + ': ' + v[0].name + '</br>' +
+                                        tz + ': ' + tStr;
+                                }
+                            } else if (v.length == 2) {
+                                var item1 = v[0];
+                                var item2 = v[1];
+                                if (item1.seriesIndex == 0) {
+                                    if (item1.value > 60) {
+                                        zStr = parseInt(item1.value / 60) + dw_hour + (item1.value % 60) + dw_min;
+                                    } else if (item1 && item1.value % 60 == 0 && item1.value != 0) {
+                                        zStr = parseInt(item1.value / 60) + dw_hour;
+                                    } else {
+                                        zStr = 0 + dw_min;
+                                    }
+                                } else if (item1.seriesIndex == 1) {
+                                    if (item1.value > 60) {
+                                        fStr = parseInt(item1.value / 60) + dw_hour + (item1.value % 60) + dw_min;
+                                    } else if (item1 && item1.value % 60 == 0 && item1.value != 0) {
+                                        fStr = parseInt(item1.value / 60) + dw_hour;
+                                    } else {
+                                        fStr = 0 + dw_min;
+                                    }
+                                } else if (item1.seriesIndex == 2) {
+                                    if (item1.value > 60) {
+                                        tStr = parseInt(item1.value / 60) + dw_hour + (item1.value % 60) + dw_min;
+                                    } else if (item1 && item1.value % 60 == 0 && item1.value != 0) {
+                                        tStr = parseInt(item1.value / 60) + dw_hour;
+                                    } else {
+                                        tStr = 0 + dw_min;
+                                    }
+                                }
+                                if (item2.seriesIndex == 0) {
+                                    if (item2.value > 60) {
+                                        zStr = parseInt(item2.value / 60) + dw_hour + (item2.value % 60) + dw_min;
+                                    } else if (item2 && item2.value % 60 == 0 && item2.value != 0) {
+                                        zStr = parseInt(item2.value / 60) + dw_hour;
+                                    } else {
+                                        zStr = 0 + dw_min;
+                                    }
+                                } else if (item2.seriesIndex == 1) {
+                                    if (item2.value > 60) {
+                                        fStr = parseInt(item2.value / 60) + dw_hour + (item2.value % 60) + dw_min;
+                                    } else if (item2 && item2.value % 60 == 0 && item2.value != 0) {
+                                        fStr = parseInt(item2.value / 60) + dw_hour;
+                                    } else {
+                                        fStr = 0 + dw_min;
+                                    }
+                                } else if (item2.seriesIndex == 2) {
+                                    if (item2.value > 60) {
+                                        tStr = parseInt(item2.value / 60) + dw_hour + (item2.value % 60) + dw_min;
+                                    } else if (item2 && item2.value % 60 == 0 && item2.value != 0) {
+                                        tStr = parseInt(item2.value / 60) + dw_hour;
+                                    } else {
+                                        tStr = 0 + dw_min;
+                                    }
+                                }
+
+                                if (zStr === "") {
+                                    return car + ': ' + v[0].name + '</br>' +
+                                        fz + ': ' + fStr + '</br>' +
+                                        tz + ': ' + tStr;
+                                }
+                                if (fStr === "") {
+                                    return car + ': ' + v[0].name + '</br>' +
+                                        zz + ': ' + zStr + '</br>' +
+                                        tz + ': ' + tStr;
+                                }
+                                if (tStr === "") {
+                                    return car + ': ' + v[0].name + '</br>' +
+                                        zz + ': ' + zStr + '</br>' +
+                                        fz + ': ' + fStr + '</br>';
+                                }
+                            } else if (v.length == 3) {
+                                if (v[0].value > 60) {
+                                    zStr = parseInt(v[0].value / 60) + dw_hour + (v[0].value % 60) + dw_min;
+                                } else if (v[0] && v[0].value % 60 == 0 && v[0].value != 0) {
+                                    zStr = parseInt(v[0].value / 60) + dw_hour;
+                                } else {
+                                    zStr = 0 + dw_min;
+                                }
+                                if (v[1] && v[1].value > 60) {
+                                    fStr = parseInt(v[1].value / 60) + dw_hour + (v[1].value % 60) + dw_min;
+                                } else if (v[1] && v[1].value % 60 == 0 && v[1].value != 0) {
+                                    fStr = parseInt(v[1].value / 60) + dw_hour;
+                                } else {
+                                    fStr = 0 + dw_min;
+                                }
+                                if (v[2] && v[2].value > 60) {
+                                    tStr = parseInt(v[2].value / 60) + dw_hour + (v[2].value % 60) + dw_min;
+                                } else if (v[2] && v[2].value % 60 == 0 && v[2].value != 0) {
+                                    tStr = parseInt(v[2].value / 60) + dw_hour;
+                                } else {
+                                    tStr = 0 + dw_min;
+                                }
+                                return car + ': ' + v[0].name + '</br>' +
+                                    zz + ': ' + zStr + '</br>' +
+                                    fz + ': ' + fStr + '</br>' +
+                                    tz + ': ' + tStr;
+                            }
+
+                        }
+                    },
+                    legend: {
+                        data: [zz, fz, tz],
+                        y: 13,
+                        x: 'center'
+                    },
+                    toolbox: {
+                        show: true,
+                        feature: {
+                            magicType: { show: true, type: ['line', 'bar'] },
+                            restore: { show: true },
+                            saveAsImage: {
+                                show: true
+                            }
+                        },
+                        itemSize: 14,
+                        y: 'top',
+                        x: 'right'
+                    },
+                    grid: {
+                        x: 100,
+                        y: 40,
+                        x2: 80,
+                        y2: 30
+                    },
+                    xAxis: [{
+                        type: 'category',
+                        //boundaryGap : false,
+                        axisLabel: {
+                            show: true,
+                            interval: 0, // {number}
+                            rotate: 0,
+                            margin: 8,
+                            textStyle: {
+                                fontSize: 12
+                            }
+                        },
+                        data: this.deviceNamesArr
+                    }],
+                    yAxis: [{
+                        type: 'value',
+                        position: 'bottom',
+                        nameLocation: 'end',
+                        boundaryGap: [0, 0.2],
+                        axisLabel: {
+                            formatter: '{value}'
+                        }
+                    }],
+                    series: [{
+                            name: zz,
+                            type: 'bar',
+                            itemStyle: {
+                                //默认样式
+                                normal: {
+                                    label: {
+                                        show: true,
+                                        textStyle: {
+                                            fontSize: '12',
+                                            fontFamily: '微软雅黑',
+                                            fontWeight: 'bold'
+                                        }
+                                    }
+                                }
+                            },
+                            data: this.zzTimesArr
+                        },
+                        {
+                            name: fz,
+                            type: 'bar',
+                            itemStyle: {
+                                //默认样式
+                                normal: {
+                                    label: {
+                                        show: true,
+                                        textStyle: {
+                                            fontSize: '12',
+                                            fontFamily: '微软雅黑',
+                                            fontWeight: 'bold'
+                                        }
+                                    }
+                                }
+                            },
+                            data: this.fzTimesArr
+                        },
+                        {
+                            name: tz,
+                            type: 'bar',
+                            itemStyle: {
+                                //默认样式
+                                normal: {
+                                    label: {
+                                        show: true,
+                                        textStyle: {
+                                            fontSize: '14',
+                                            fontFamily: '微软雅黑',
+                                            fontWeight: 'bold'
+                                        }
+                                    }
+                                }
+                            },
+                            data: this.tzTimesArr
+                        }
+                    ]
+                };
+                return option;
+            }
+        },
+        mounted: function() {
+            var me = this;
+            if (rootuser == null) {
+                me.isSpin = true;
+                utils.queryDevicesTree(function(rootuserinfo) {
+                    me.isSpin = false;
+                    if (rootuserinfo) {
+                        rootuser = rootuserinfo;
+                        me.groupslist = [utils.castUsersTreeToDevicesTree(rootuserinfo, true)];
+                        me.treeData = me.groupslist;
+                    }
+                });
+            } else {
+                me.groupslist = [utils.castUsersTreeToDevicesTree(rootuser, true)];
+                me.treeData = me.groupslist;
+            }
+            this.barChartJourney = echarts.init(document.getElementById('barContainer'));
+            this.displayChart();
+            this.calcTableHeight();
+            window.onresize = function() {
+                me.calcTableHeight();
+                me.barChartJourney.resize();
+            }
+        }
+    })
+}
 
 
 function devRecords(groupslist) {
@@ -6318,6 +6923,7 @@ var reportForm = {
                         { title: isZh ? '语音报表' : 'Voice report', name: 'records', icon: 'md-volume-up' },
                         { title: isZh ? '报文报表' : 'Message report', name: 'messageRecords', icon: 'ios-book' },
                         { title: '正反转统计', name: 'rotateReport', icon: 'ios-aperture' },
+                        { title: '超速报表', name: 'speedingReport', icon: 'md-remove-circle' },
                     ]
                 },
                 {
@@ -6427,6 +7033,9 @@ var reportForm = {
                         break;
                     case 'rotatereport.html':
                         rotateReport(groupslist);
+                        break;
+                    case 'speedingreport.html':
+                        speedingReport(groupslist);
                         break;
                     case 'records.html':
                         devRecords(groupslist);

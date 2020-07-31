@@ -290,7 +290,6 @@
             </div>
             <div slot="footer" style="height:20px;"></div>
         </Modal>
-
         <Modal v-model="ioModal" width="650">
             <p slot="header" style="color:#f60;text-align:center">
                 <Icon type="ios-create-outline"></Icon>
@@ -1077,6 +1076,10 @@
                 },
             },
             methods: {
+                querySpeedSetting: function(params) {
+                    this.speedSettingModal = true;
+
+                },
                 onClickCalibration: function(params) {
                     this.oilModal = true;
                     this.tabsActive = 'oil1';
