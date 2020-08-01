@@ -2113,6 +2113,7 @@ function speedingReport(groupslist) {
                                             imageOffset: new BMap.Size(0, 0)
                                         })
                                     });
+                                    me.mapInstance.addOverlay(startMarker);
                                 } else if (poinsts.length > 1) {
                                     var startMarker = new BMap.Marker(poinsts[0], {
                                         icon: new BMap.Icon("./images/map/marker_qidian.png", new BMap.Size(32, 32), {
@@ -6814,6 +6815,7 @@ function driverWorkDetails() {
                                 var startMarker = new BMap.Marker(poinsts[0], {
                                     icon: new BMap.Icon("./images/map/marker_qidian.png", new BMap.Size(32, 32), { imageOffset: new BMap.Size(0, 0) })
                                 });
+                                me.mapInstance.addOverlay(startMarker);
                             } else if (poinsts.length > 1) {
                                 var startMarker = new BMap.Marker(poinsts[0], {
                                     icon: new BMap.Icon("./images/map/marker_qidian.png", new BMap.Size(32, 32), { imageOffset: new BMap.Size(0, 0) })
