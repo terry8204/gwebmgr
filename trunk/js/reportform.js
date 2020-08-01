@@ -1992,11 +1992,11 @@ function speedingReport(groupslist) {
                 },
                 {
                     title: '最大速度(km/h)',
-                    key: 'minSpeed'
+                    key: 'maxSpeed'
                 },
                 {
                     title: '最小速度(km/h)',
-                    key: 'maxSpeed'
+                    key: 'minSpeed'
                 }
             ],
             allRotateTableData: [],
@@ -2300,16 +2300,16 @@ function speedingReport(groupslist) {
                         count = 0,
                         duration = 0,
                         distance = 0,
-                        maxSpeed = 0,
-                        minSpeed = 0;
+                        maxSpeed = '',
+                        minSpeed = '';
                     item.records.sort(function(a, b) {
                         return b.endtime - a.endtime;
                     });
                     item.records.forEach(function(record) {
                         duration += record.endtime - record.begintime;
                         distance += record.edistance - record.sdistance;
-                        maxSpeed === 0 && (maxSpeed = record.maxspeed);
-                        minSpeed === 0 && (minSpeed = record.minspeed);
+                        maxSpeed === '' && (maxSpeed = record.maxspeed);
+                        minSpeed === '' && (minSpeed = record.minspeed);
                         if (record.maxspeed > maxSpeed) {
                             maxSpeed = record.maxspeed;
                         }
@@ -2317,6 +2317,7 @@ function speedingReport(groupslist) {
                             minSpeed = record.minspeed;
                         }
                         count++;
+
                     });
                     Obj.maxSpeed = (maxSpeed / 1000).toFixed(2);
                     Obj.minSpeed = (minSpeed / 1000).toFixed(2);
