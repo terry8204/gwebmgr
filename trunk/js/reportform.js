@@ -2258,10 +2258,10 @@ function speedingReport(groupslist) {
                     me.loading = true;
                     utils.sendAjax(url, data, function(resp) {
                         me.loading = false;
-                        console.log(resp);
                         if (resp.status == 0) {
                             if (resp.records && resp.records.length) {
                                 me.tableData = [];
+
                                 me.allRotateTableData = me.getAllRotateTableData(resp.records);
                             } else {
                                 me.tableData = [];
@@ -2302,6 +2302,9 @@ function speedingReport(groupslist) {
                         distance = 0,
                         maxSpeed = 0,
                         minSpeed = 0;
+                    item.records.sort(function(a, b) {
+                        return b.endtime - a.endtime;
+                    });
                     item.records.forEach(function(record) {
                         duration += record.endtime - record.begintime;
                         distance += record.edistance - record.sdistance;
@@ -2333,9 +2336,6 @@ function speedingReport(groupslist) {
             getRotateDetailTableData: function(records) {
                 var newRecords = [],
                     me = this;
-                records.sort(function(a, b) {
-                    return a.begintime - b.begintime;
-                });
                 records.forEach(function(item, index) {
                     var deviceName = vstore.state.deviceInfos[item.deviceid].devicename;
                     var duration = item.endtime - item.begintime;
