@@ -514,7 +514,7 @@ var waringComponent = {
                             title: me.$t("alarm.action"),
                             key: 'action',
                             width: 120,
-                            render: function(h, params, a) {
+                            render: function(h, params) {
                                 return h('div', [
                                     h(
                                         'Button', {
@@ -523,7 +523,9 @@ var waringComponent = {
                                                 size: 'small'
                                             },
                                             on: {
-                                                click: function() {
+                                                click: function(e) {
+                                                    e.stopPropagation();
+                                                    e.preventDefault();
                                                     me.$emit('showdisposemodal', params);
                                                 }
                                             }
@@ -591,7 +593,9 @@ var waringComponent = {
                                                 size: 'small'
                                             },
                                             on: {
-                                                click: function() {
+                                                click: function(e) {
+                                                    e.stopPropagation();
+                                                    e.preventDefault();
                                                     var devicemsgid = params.row.devicemsgid;
                                                     var url = myUrls.deleteMsg();
                                                     utils.sendAjax(url, { devicemsgid: devicemsgid }, function(resp) {
@@ -743,7 +747,7 @@ var waringComponent = {
                             title: me.$t("alarm.action"),
                             key: 'action',
                             width: 120,
-                            render: function(h, params, a) {
+                            render: function(h, params) {
                                 return h('div', [
                                     h(
                                         'Button', {
@@ -752,7 +756,9 @@ var waringComponent = {
                                                 size: 'small'
                                             },
                                             on: {
-                                                click: function() {
+                                                click: function(e) {
+                                                    e.stopPropagation();
+                                                    e.preventDefault();
                                                     communicate.$emit('on-click-expiration', params.row.deviceid);
                                                 }
                                             }

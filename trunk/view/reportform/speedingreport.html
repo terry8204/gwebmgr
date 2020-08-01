@@ -50,7 +50,7 @@
                 <div style="width:100%;height: 300px;position: relative;">
                     <div id="spedding-chart" style="height: 300px;width: 100%;"></div>
                 </div>
-                <i-table ref="detailTable" :columns="columns" :height="lastTableHeight" :data="tableData" :loading="loading"></i-table>
+                <i-table ref="detailTable" :columns="columns" :height="lastTableHeight" :data="tableData" :loading="loading" @on-row-click="onRowClick"></i-table>
             </Tab-pane>
         </Tabs>
     </div>

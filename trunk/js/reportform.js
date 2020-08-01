@@ -1945,12 +1945,21 @@ function speedingReport(groupslist) {
                     title: "操作",
                     width: 110,
                     render: function(h, params) {
-
+                        var records = params.row.records;
                         return h('span', {
                             on: {
                                 click: function() {
+
                                     vueInstanse.activeTab = "tabDetail";
-                                    vueInstanse.getRotateDetailTableData(params.row.records);
+                                    vueInstanse.getRotateDetailTableData(records);
+                                    vueInstanse.isSpin = true;
+                                    if (records.length) {
+                                        var row = deepClone(records[0]);
+                                        row.startDate = DateFormat.longToDateTimeStr(row.begintime, timeDifference);
+                                        row.endDate = DateFormat.longToDateTimeStr(row.endtime, timeDifference);
+                                        vueInstanse.querySingleDevTracks('charts', row);
+                                    }
+
                                 }
                             },
                             style: {
@@ -2049,7 +2058,6 @@ function speedingReport(groupslist) {
                 { title: vRoot.$t("reportForm.duration"), key: 'duration' },
                 {
                     title: '操作',
-                    width: 185,
                     render: function(h, params) {
                         return h(
                             'div', {}, [
@@ -2058,27 +2066,15 @@ function speedingReport(groupslist) {
                                         size: 'small',
                                     },
                                     on: {
-                                        click: function() {
+                                        click: function(e) {
+                                            e.stopPropagation();
+                                            e.preventDefault();
                                             vueInstanse.isSpin = true;
                                             vueInstanse.mapInstance.clearOverlays();
                                             vueInstanse.querySingleDevTracks('map', params.row);
                                         }
                                     }
                                 }, "显示轨迹"),
-                                h('Button', {
-                                    props: {
-                                        size: 'small',
-                                    },
-                                    style: {
-                                        marginLeft: '5px'
-                                    },
-                                    on: {
-                                        click: function() {
-                                            vueInstanse.isSpin = true;
-                                            vueInstanse.querySingleDevTracks('charts', params.row);
-                                        }
-                                    }
-                                }, "速度曲线"),
                             ]
                         )
                     },
@@ -2088,6 +2084,10 @@ function speedingReport(groupslist) {
             trackDetailModal: false,
         },
         methods: {
+            onRowClick: function(row) {
+                this.isSpin = true;
+                this.querySingleDevTracks('charts', row);
+            },
             querySingleDevTracks: function(type, row) {
                 var me = this;
                 var url = myUrls.queryTracks();
@@ -2332,7 +2332,6 @@ function speedingReport(groupslist) {
             getRotateDetailTableData: function(records) {
                 var newRecords = [],
                     me = this;
-                var durationTotal = 0;
                 records.sort(function(a, b) {
                     return a.begintime - b.begintime;
                 });
@@ -2344,7 +2343,6 @@ function speedingReport(groupslist) {
                     var slon = item.slon.toFixed(5);
                     var slat = item.slat.toFixed(5);
                     var address = LocalCacheMgr.getAddress(slon, slat);
-                    durationTotal += duration;
                     newRecords.push({
                         index: index + 1,
                         deviceid: item.deviceid,
@@ -2358,9 +2356,6 @@ function speedingReport(groupslist) {
                         slat: slat,
                     });
                 });
-                newRecords.push({
-                    duration: '总超时间:' + utils.timeStamp(durationTotal)
-                })
                 me.tableData = newRecords;
             },
             displayChart: function() {
