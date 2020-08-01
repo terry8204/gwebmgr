@@ -1971,35 +1971,30 @@ function speedingReport(groupslist) {
                 },
                 {
                     title: '超速时长',
-                    key: 'zzTimes'
+                    key: 'duration'
                 },
                 {
                     title: '超速里程',
-                    key: 'fzTimes'
+                    key: 'distance'
                 },
                 {
                     title: '超速次数',
-                    key: 'tzTimes'
-                },
-                {
-                    title: '最大速度',
                     key: 'count'
                 },
                 {
-                    title: '最小速度',
-                    key: 'count'
+                    title: '最大速度(km/h)',
+                    key: 'minSpeed'
                 },
                 {
-                    title: '平均速度',
-                    key: 'count'
-                },
+                    title: '最小速度(km/h)',
+                    key: 'maxSpeed'
+                }
             ],
             allRotateTableData: [],
             columns: [
                 { title: '序号', width: 60, key: 'index' },
                 { title: vRoot.$t("alarm.devName"), key: 'deviceName', width: 160 },
                 { title: vRoot.$t("alarm.devNum"), key: 'deviceid', width: 160 },
-                { title: '状态', key: 'accStatus', width: 100 },
                 { title: vRoot.$t("reportForm.startDate"), key: 'startDate', width: 180 },
                 { title: vRoot.$t("reportForm.endDate"), key: 'endDate', width: 180 },
                 {
@@ -2052,19 +2047,161 @@ function speedingReport(groupslist) {
                     },
                 },
                 { title: vRoot.$t("reportForm.duration"), key: 'duration' },
+                {
+                    title: '操作',
+                    render: function(h, params) {
+                        return h(
+                            'div', {}, [
+                                h('Button', {
+                                    props: {
+                                        size: 'small',
+                                    },
+                                    on: {
+                                        click: function() {
+                                            vueInstanse.isSpin = true;
+                                            vueInstanse.mapInstance.clearOverlays();
+                                            vueInstanse.querySingleDevTracks('map', params.row);
+                                        }
+                                    }
+                                }, "显示轨迹"),
+                                h('Button', {
+                                    props: {
+                                        size: 'small',
+                                    },
+                                    style: {
+                                        marginLeft: '5px'
+                                    },
+                                    on: {
+                                        click: function() {
+                                            vueInstanse.isSpin = true;
+                                            vueInstanse.querySingleDevTracks('charts', params.row);
+                                        }
+                                    }
+                                }, "速度曲线"),
+                            ]
+                        )
+                    },
+                },
             ],
             tableData: [],
-            deviceNamesArr: [],
-            zzTimesArr: [],
-            fzTimesArr: [],
-            tzTimesArr: [],
+            trackDetailModal: false,
         },
         methods: {
+            querySingleDevTracks: function(type, row) {
+                var me = this;
+                var url = myUrls.queryTracks();
+                var data = {
+                    deviceid: row.deviceid,
+                    begintime: row.startDate,
+                    endtime: row.endDate,
+                    interval: 10,
+                    timezone: timeDifference
+                };
+
+                utils.sendAjax(url, data, function(resp) {
+                    me.isSpin = false;
+                    if (resp.status == 0) {
+                        var records = resp.records;
+                        if (records) {
+                            if (type == 'map') {
+                                me.trackDetailModal = true;
+                                var poinsts = me.getBdPoints(records);
+                                if (poinsts.length === 1) {
+                                    var startMarker = new BMap.Marker(poinsts[0], {
+                                        icon: new BMap.Icon("./images/map/marker_qidian.png", new BMap.Size(32, 32), {
+                                            imageOffset: new BMap.Size(0, 0)
+                                        })
+                                    });
+                                } else if (poinsts.length > 1) {
+                                    var startMarker = new BMap.Marker(poinsts[0], {
+                                        icon: new BMap.Icon("./images/map/marker_qidian.png", new BMap.Size(32, 32), {
+                                            imageOffset: new BMap.Size(0, 0)
+                                        })
+                                    });
+                                    var endMarker = new BMap.Marker(poinsts[poinsts.length - 1], {
+                                        icon: new BMap.Icon("./images/map/marker_zhongdian.png", new BMap.Size(32, 32), {
+                                            imageOffset: new BMap.Size(0, 0)
+                                        })
+                                    });
+                                    var polyline = new BMap.Polyline(poinsts, {
+                                        enableEditing: false, //是否启用线编辑，默认为false
+                                        enableClicking: true, //是否响应点击事件，默认为true
+                                        enableMassClear: true,
+                                        strokeWeight: '4', //折线的宽度，以像素为单位
+                                        strokeOpacity: 0.8, //折线的透明度，取值范围0 - 1
+                                        strokeColor: "red" //折线颜色
+                                    });
+                                    me.mapInstance.addOverlay(startMarker);
+                                    me.mapInstance.addOverlay(endMarker);
+                                    me.mapInstance.addOverlay(polyline);
+                                }
+
+                                me.setViewPortCenter(poinsts);
+                            } else {
+                                var distance = []; //总里程;
+                                var recvtime = []; //时间
+                                var veo = []; //速度
+                                me.disMin = 0;
+
+                                records.forEach(function(item, index) {
+                                    item.totaldistance = (item.totaldistance / 1000).toFixed(2)
+                                    if (index == 0) {
+                                        me.disMin = item.totaldistance
+                                    }
+
+                                    recvtime.push(DateFormat.longToDateTimeStr(item.updatetime, timeDifference));
+                                    veo.push((item.speed / 1000).toFixed(2));
+                                    distance.push(item.totaldistance);
+                                });
+                                me.distance = distance;
+                                me.recvtime = recvtime;
+                                me.veo = veo;
+                                me.speedChart.setOption(me.getSpeedChartsOption());
+                            }
+                        }
+                    }
+                }, function() {
+                    me.isSpin = false;
+                });
+            },
+            setViewPortCenter: function(lines) {
+                var me = this;
+                setTimeout(function() {
+                    var view = me.mapInstance.getViewport(eval(lines));
+                    var mapZoom = view.zoom;
+                    var centerPoint = view.center;
+                    me.mapInstance.centerAndZoom(centerPoint, mapZoom);
+                }, 300)
+            },
+            getBdPoints: function(records) {
+                var points = [];
+                records.forEach(function(item) {
+                    var lon_lat = wgs84tobd09(item.callon, item.callat);
+                    points.push(new BMap.Point(lon_lat[0], lon_lat[1]));
+                });
+                return points;
+            },
+            initMap: function() {
+                if (utils.getMapType() == 'bMap') {
+                    this.mapInstance = new BMap.Map('spedding-map', { minZoom: 4, maxZoom: 18, enableMapClick: false });
+                    this.mapInstance.enableScrollWheelZoom();
+                    this.mapInstance.enableAutoResize();
+                    this.mapInstance.disableDoubleClickZoom();
+                    this.mapInstance.centerAndZoom(new BMap.Point(113.264435, 24.129163), 4);
+                } else {
+                    var center = new google.maps.LatLng(24.129163, 113.264435);
+                    this.mapInstance = new google.maps.Map(document.getElementById('posi-map'), {
+                        zoom: 4,
+                        center: center,
+                        mapTypeId: google.maps.MapTypeId.ROADMAP
+                    });
+                };
+            },
             exportData: function() {
                 var startday = this.dateVal[0];
                 var endday = this.dateVal[1];
                 this.$refs.totalTable.exportCsv({
-                    filename: '正反转统计' + startday + '-' + endday,
+                    filename: '超速统计' + startday + '-' + endday,
                     original: false,
                     columns: this.allAccColumns.filter(function(col, index) { return index != 1; }),
                     data: this.allRotateTableData
@@ -2120,7 +2257,6 @@ function speedingReport(groupslist) {
                     utils.sendAjax(url, data, function(resp) {
                         me.loading = false;
                         console.log(resp);
-                        return;
                         if (resp.status == 0) {
                             if (resp.records && resp.records.length) {
                                 me.tableData = [];
@@ -2129,18 +2265,14 @@ function speedingReport(groupslist) {
                                 me.tableData = [];
                                 me.allRotateTableData = [];
                                 me.deviceNamesArr = [];
-                                me.zzTimesArr = [];
-                                me.fzTimesArr = [];
-                                me.tzTimesArr = [];
+                                me.countArr = [];
                                 me.$Message.error("没有数据");
                             }
                         } else {
                             me.tableData = [];
                             me.allRotateTableData = [];
                             me.deviceNamesArr = [];
-                            me.zzTimesArr = [];
-                            me.fzTimesArr = [];
-                            me.tzTimesArr = [];
+                            me.countArr = [];
                         }
                         if (me.activeTab != "tabTotal") {
                             me.onClickTab("tabTotal");
@@ -2155,9 +2287,7 @@ function speedingReport(groupslist) {
                 var me = this;
                 var allRotateTableData = [];
                 var deviceNamesArr = [];
-                var zzTimesArr = [];
-                var fzTimesArr = [];
-                var tzTimesArr = [];
+                var countArr = [];
                 records.forEach(function(item, index) {
                     var Obj = {
                             index: index + 1,
@@ -2166,45 +2296,42 @@ function speedingReport(groupslist) {
                             records: item.records,
                         },
                         count = 0,
-                        zzTimes = 0,
-                        fzTimes = 0,
-                        tzTimes = 0;
+                        duration = 0,
+                        distance = 0,
+                        maxSpeed = 0,
+                        minSpeed = 0;
                     item.records.forEach(function(record) {
-                        if (record.rotatestate == 1) {
-                            zzTimes += record.endtime - record.begintime;
+                        duration += record.endtime - record.begintime;
+                        distance += record.edistance - record.sdistance;
+                        maxSpeed === 0 && (maxSpeed = record.maxspeed);
+                        minSpeed === 0 && (minSpeed = record.minspeed);
+                        if (maxSpeed > record.maxspeed) {
+                            maxSpeed = record.maxspeed;
                         }
-                        if (record.rotatestate == 2) {
-                            fzTimes += record.endtime - record.begintime;
-                        }
-                        if (record.rotatestate == 3) {
-                            tzTimes += record.endtime - record.begintime;
+                        if (minSpeed < record.minspeed) {
+                            minSpeed = record.minspeed;
                         }
                         count++;
                     });
-                    Obj.zzTimes = utils.timeStamp(zzTimes);
-                    Obj.fzTimes = utils.timeStamp(fzTimes);
-                    Obj.tzTimes = utils.timeStamp(tzTimes);
+                    Obj.maxSpeed = (maxSpeed / 1000).toFixed(2);
+                    Obj.minSpeed = (minSpeed / 1000).toFixed(2);
                     Obj.count = count;
+                    Obj.duration = utils.timeStamp(duration);
+                    Obj.distance = (distance / 1000).toFixed(2) + 'km';
                     deviceNamesArr.push(Obj.devicename);
-                    zzTimesArr.push(parseInt(zzTimes / 1000 / 60));
-                    fzTimesArr.push(parseInt(fzTimes / 1000 / 60));
-                    tzTimesArr.push(parseInt(tzTimes / 1000 / 60));
+                    countArr.push(count);
                     allRotateTableData.push(Obj);
                 });
                 if (deviceNamesArr.length) {
                     this.deviceNamesArr = deviceNamesArr;
-                    this.zzTimesArr = zzTimesArr;
-                    this.fzTimesArr = fzTimesArr;
-                    this.tzTimesArr = tzTimesArr;
+                    this.countArr = countArr;
                 }
                 return allRotateTableData;
             },
             getRotateDetailTableData: function(records) {
                 var newRecords = [],
                     me = this;
-                var zzTimes = 0;
-                var fzTimes = 0;
-                var tzTimes = 0;
+                var durationTotal = 0;
                 records.sort(function(a, b) {
                     return a.begintime - b.begintime;
                 });
@@ -2216,16 +2343,7 @@ function speedingReport(groupslist) {
                     var slon = item.slon.toFixed(5);
                     var slat = item.slat.toFixed(5);
                     var address = LocalCacheMgr.getAddress(slon, slat);
-                    if (item.rotatestate == 1) {
-                        status = '正转';
-                        zzTimes += duration;
-                    } else if (item.rotatestate == 2) {
-                        status = '反转';
-                        fzTimes += duration;
-                    } else if (item.rotatestate == 3) {
-                        tzTimes += duration;
-                        status = '停转';
-                    }
+                    durationTotal += duration;
                     newRecords.push({
                         index: index + 1,
                         deviceid: item.deviceid,
@@ -2240,7 +2358,7 @@ function speedingReport(groupslist) {
                     });
                 });
                 newRecords.push({
-                    duration: '正转:' + utils.timeStamp(zzTimes) + ',反转:' + utils.timeStamp(fzTimes) + ',停转:' + utils.timeStamp(tzTimes)
+                    duration: '总超时间:' + utils.timeStamp(durationTotal)
                 })
                 me.tableData = newRecords;
             },
@@ -2249,156 +2367,17 @@ function speedingReport(groupslist) {
                 this.barChartJourney.setOption(barChartOtion);
             },
             getChartOption: function() {
-                var dw_hour = '小时';
-                var dw_min = '分钟';
                 var car = '车辆';
-                var zz = '正转';
-                var fz = '反转';
-                var tz = '停转';
+                var cs = '超速次数';
                 //加载
                 option = {
                     tooltip: {
                         show: true,
                         trigger: 'axis',
-                        formatter: function(v) {
-                            var zStr = "";
-                            var fStr = "";
-                            var tStr = "";
-                            if (v.length == 1) {
-                                var item1 = v[0];
-                                if (item1.seriesIndex == 0) {
-                                    if (v[0].value > 60) {
-                                        zStr = parseInt(v[0].value / 60) + dw_hour + (v[0].value % 60) + dw_min;
-                                    } else if (v[0] && v[0].value % 60 == 0 && v[0].value != 0) {
-                                        zStr = parseInt(v[0].value / 60) + dw_hour;
-                                    } else {
-                                        zStr = 0 + dw_min;
-                                    }
-                                    return car + ': ' + v[0].name + '</br>' +
-                                        zz + ': ' + zStr + '</br>';
-                                } else if (item1.seriesIndex == 1) {
-                                    if (v[0].value > 60) {
-                                        fStr = parseInt(v[0].value / 60) + dw_hour + (v[0].value % 60) + dw_min;
-                                    } else if (v[0] && v[0].value % 60 == 0 && v[0].value != 0) {
-                                        fStr = parseInt(v[0].value / 60) + dw_hour;
-                                    } else {
-                                        fStr = 0 + dw_min;
-                                    }
-                                    return car + ': ' + v[0].name + '</br>' +
-                                        fz + ': ' + fStr + '</br>';
 
-                                } else if (item1.seriesIndex == 2) {
-                                    if (v[0].value > 60) {
-                                        tStr = parseInt(v[0].value / 60) + dw_hour + (v[0].value % 60) + dw_min;
-                                    } else if (v[0] && v[0].value % 60 == 0 && v[0].value != 0) {
-                                        tStr = parseInt(v[0].value / 60) + dw_hour;
-                                    } else {
-                                        tStr = 0 + dw_min;
-                                    }
-                                    return car + ': ' + v[0].name + '</br>' +
-                                        tz + ': ' + tStr;
-                                }
-                            } else if (v.length == 2) {
-                                var item1 = v[0];
-                                var item2 = v[1];
-                                if (item1.seriesIndex == 0) {
-                                    if (item1.value > 60) {
-                                        zStr = parseInt(item1.value / 60) + dw_hour + (item1.value % 60) + dw_min;
-                                    } else if (item1 && item1.value % 60 == 0 && item1.value != 0) {
-                                        zStr = parseInt(item1.value / 60) + dw_hour;
-                                    } else {
-                                        zStr = 0 + dw_min;
-                                    }
-                                } else if (item1.seriesIndex == 1) {
-                                    if (item1.value > 60) {
-                                        fStr = parseInt(item1.value / 60) + dw_hour + (item1.value % 60) + dw_min;
-                                    } else if (item1 && item1.value % 60 == 0 && item1.value != 0) {
-                                        fStr = parseInt(item1.value / 60) + dw_hour;
-                                    } else {
-                                        fStr = 0 + dw_min;
-                                    }
-                                } else if (item1.seriesIndex == 2) {
-                                    if (item1.value > 60) {
-                                        tStr = parseInt(item1.value / 60) + dw_hour + (item1.value % 60) + dw_min;
-                                    } else if (item1 && item1.value % 60 == 0 && item1.value != 0) {
-                                        tStr = parseInt(item1.value / 60) + dw_hour;
-                                    } else {
-                                        tStr = 0 + dw_min;
-                                    }
-                                }
-                                if (item2.seriesIndex == 0) {
-                                    if (item2.value > 60) {
-                                        zStr = parseInt(item2.value / 60) + dw_hour + (item2.value % 60) + dw_min;
-                                    } else if (item2 && item2.value % 60 == 0 && item2.value != 0) {
-                                        zStr = parseInt(item2.value / 60) + dw_hour;
-                                    } else {
-                                        zStr = 0 + dw_min;
-                                    }
-                                } else if (item2.seriesIndex == 1) {
-                                    if (item2.value > 60) {
-                                        fStr = parseInt(item2.value / 60) + dw_hour + (item2.value % 60) + dw_min;
-                                    } else if (item2 && item2.value % 60 == 0 && item2.value != 0) {
-                                        fStr = parseInt(item2.value / 60) + dw_hour;
-                                    } else {
-                                        fStr = 0 + dw_min;
-                                    }
-                                } else if (item2.seriesIndex == 2) {
-                                    if (item2.value > 60) {
-                                        tStr = parseInt(item2.value / 60) + dw_hour + (item2.value % 60) + dw_min;
-                                    } else if (item2 && item2.value % 60 == 0 && item2.value != 0) {
-                                        tStr = parseInt(item2.value / 60) + dw_hour;
-                                    } else {
-                                        tStr = 0 + dw_min;
-                                    }
-                                }
-
-                                if (zStr === "") {
-                                    return car + ': ' + v[0].name + '</br>' +
-                                        fz + ': ' + fStr + '</br>' +
-                                        tz + ': ' + tStr;
-                                }
-                                if (fStr === "") {
-                                    return car + ': ' + v[0].name + '</br>' +
-                                        zz + ': ' + zStr + '</br>' +
-                                        tz + ': ' + tStr;
-                                }
-                                if (tStr === "") {
-                                    return car + ': ' + v[0].name + '</br>' +
-                                        zz + ': ' + zStr + '</br>' +
-                                        fz + ': ' + fStr + '</br>';
-                                }
-                            } else if (v.length == 3) {
-                                if (v[0].value > 60) {
-                                    zStr = parseInt(v[0].value / 60) + dw_hour + (v[0].value % 60) + dw_min;
-                                } else if (v[0] && v[0].value % 60 == 0 && v[0].value != 0) {
-                                    zStr = parseInt(v[0].value / 60) + dw_hour;
-                                } else {
-                                    zStr = 0 + dw_min;
-                                }
-                                if (v[1] && v[1].value > 60) {
-                                    fStr = parseInt(v[1].value / 60) + dw_hour + (v[1].value % 60) + dw_min;
-                                } else if (v[1] && v[1].value % 60 == 0 && v[1].value != 0) {
-                                    fStr = parseInt(v[1].value / 60) + dw_hour;
-                                } else {
-                                    fStr = 0 + dw_min;
-                                }
-                                if (v[2] && v[2].value > 60) {
-                                    tStr = parseInt(v[2].value / 60) + dw_hour + (v[2].value % 60) + dw_min;
-                                } else if (v[2] && v[2].value % 60 == 0 && v[2].value != 0) {
-                                    tStr = parseInt(v[2].value / 60) + dw_hour;
-                                } else {
-                                    tStr = 0 + dw_min;
-                                }
-                                return car + ': ' + v[0].name + '</br>' +
-                                    zz + ': ' + zStr + '</br>' +
-                                    fz + ': ' + fStr + '</br>' +
-                                    tz + ': ' + tStr;
-                            }
-
-                        }
                     },
                     legend: {
-                        data: [zz, fz, tz],
+                        data: [cs],
                         y: 13,
                         x: 'center'
                     },
@@ -2445,63 +2424,152 @@ function speedingReport(groupslist) {
                         }
                     }],
                     series: [{
-                            name: zz,
-                            type: 'bar',
-                            itemStyle: {
-                                //默认样式
-                                normal: {
-                                    label: {
-                                        show: true,
-                                        textStyle: {
-                                            fontSize: '12',
-                                            fontFamily: '微软雅黑',
-                                            fontWeight: 'bold'
-                                        }
+                        name: cs,
+                        type: 'bar',
+                        itemStyle: {
+                            //默认样式
+                            normal: {
+                                label: {
+                                    show: true,
+                                    textStyle: {
+                                        fontSize: '12',
+                                        fontFamily: '微软雅黑',
+                                        fontWeight: 'bold'
                                     }
                                 }
-                            },
-                            data: this.zzTimesArr
+                            }
                         },
-                        {
-                            name: fz,
-                            type: 'bar',
-                            itemStyle: {
-                                //默认样式
-                                normal: {
-                                    label: {
-                                        show: true,
-                                        textStyle: {
-                                            fontSize: '12',
-                                            fontFamily: '微软雅黑',
-                                            fontWeight: 'bold'
-                                        }
-                                    }
-                                }
-                            },
-                            data: this.fzTimesArr
-                        },
-                        {
-                            name: tz,
-                            type: 'bar',
-                            itemStyle: {
-                                //默认样式
-                                normal: {
-                                    label: {
-                                        show: true,
-                                        textStyle: {
-                                            fontSize: '14',
-                                            fontFamily: '微软雅黑',
-                                            fontWeight: 'bold'
-                                        }
-                                    }
-                                }
-                            },
-                            data: this.tzTimesArr
-                        }
-                    ]
+                        data: this.countArr
+                    }]
                 };
                 return option;
-            }
+            },
+            getSpeedChartsOption: function() {
+                var speed = "速度";
+                var dis = "里程";
+                var time = "时间";
+                var option = {
+                    title: {
+                        text: time + '/超速',
+                        x: 'center',
+                        textStyle: {
+                            fontSize: 12,
+                            fontWeight: 'bolder',
+                            color: '#333'
+                        }
+                    },
+                    grid: {
+                        x: 50,
+                        y: 40,
+                        x2: 50,
+                        y2: 40
+                    },
+                    tooltip: {
+                        trigger: 'axis',
+                        formatter: function(v) {
+                            var data = '时间 : ' + v[0].name + '<br/>';
+                            for (i in v) {
+                                if (v[i].seriesName != '时间') data += v[i].seriesName + ' : ' + v[i].value + '<br/>';
+                            }
+                            return data;
+                        }
+                    },
+                    legend: {
+                        data: [dis, speed],
+                        //selected: {
+                        //    '里程' : false
+                        // },
+                        x: 'left'
+                    },
+                    toolbox: {
+                        show: true,
+                        feature: {
+                            magicType: {
+                                show: true,
+                                type: ['line', 'bar']
+                            },
+                            restore: {
+                                show: true
+                            },
+                            saveAsImage: {
+                                show: true
+                            }
+                        },
+                        itemSize: 14
+                    },
+                    dataZoom: [{
+                        show: true,
+                        realtime: true,
+                        start: 0,
+                        end: 100,
+                        height: 20,
+                        backgroundColor: '#EDEDED',
+                        fillerColor: 'rgb(54, 72, 96,0.5)',
+                        //fillerColor:'rgb(244,129,38,0.8)',
+                        bottom: 0
+                    }, {
+                        type: "inside",
+                        realtime: true,
+                        start: 0,
+                        end: 100,
+                        height: 20,
+                        bottom: 0
+                    }],
+                    xAxis: [{
+                        type: 'category',
+                        boundaryGap: false,
+                        axisLine: {
+                            onZero: false
+                        },
+                        data: this.recvtime
+                    }],
+                    yAxis: [{
+                        name: speed,
+                        type: 'value',
+                        nameTextStyle: 10,
+                        nameGap: 5,
+
+                    }, {
+                        name: dis,
+                        type: 'value',
+                        nameTextStyle: 10,
+                        nameGap: 2,
+                        min: this.disMin,
+                        axisLabel: {
+                            formatter: '{value} km',
+                        },
+                        axisTick: {
+                            show: false
+                        }
+                    }],
+                    series: [{
+                        name: time,
+                        type: 'line',
+                        symbol: 'none',
+                        yAxisIndex: 1,
+                        color: '#F0805A',
+                        //itemStyle: {normal: {areaStyle: {type: 'default'}}},
+                        data: this.recvtime
+                    }, {
+                        name: dis,
+                        type: 'line',
+                        symbol: 'none',
+                        yAxisIndex: 1,
+                        color: '#3CB371',
+                        //itemStyle: {normal: {areaStyle: {type: 'default'}}},
+                        data: this.distance
+                    }, {
+                        name: speed,
+                        type: 'line',
+                        symbol: 'none',
+                        yAxisIndex: 0,
+                        //itemStyle: {normal: {areaStyle: {type: 'default'}}},
+                        color: '#4876FF',
+                        data: this.veo
+                    }]
+                };
+                return option;
+            },
         },
         mounted: function() {
             var me = this;
@@ -2519,12 +2587,21 @@ function speedingReport(groupslist) {
                 me.groupslist = [utils.castUsersTreeToDevicesTree(rootuser, true)];
                 me.treeData = me.groupslist;
             }
+            this.initMap();
             this.barChartJourney = echarts.init(document.getElementById('barContainer'));
             this.displayChart();
+            this.deviceNamesArr = [];
+            this.countArr = [];
+            this.distance = [];
+            this.recvtime = [];
+            this.veo = [];
+            this.speedChart = echarts.init(document.getElementById('spedding-chart'));
+            this.speedChart.setOption(this.getSpeedChartsOption());
             this.calcTableHeight();
             window.onresize = function() {
                 me.calcTableHeight();
                 me.barChartJourney.resize();
+                me.speedChart.resize();
             }
         }
     })
@@ -6925,7 +7002,6 @@ var reportForm = {
                         { title: isZh ? '语音报表' : 'Voice report', name: 'records', icon: 'md-volume-up' },
                         { title: isZh ? '报文报表' : 'Message report', name: 'messageRecords', icon: 'ios-book' },
                         { title: '正反转统计', name: 'rotateReport', icon: 'ios-aperture' },
-                        { title: '超速报表', name: 'speedingReport', icon: 'md-remove-circle' },
                     ]
                 },
                 {
@@ -6937,6 +7013,7 @@ var reportForm = {
                         { title: me.$t("reportForm.phoneAlarm"), name: 'phoneAlarm', icon: 'ios-call' },
                         { title: "微信报警", name: 'wechatAlarm', icon: 'md-ionitron' },
                         { title: me.$t("reportForm.rechargeRecords"), name: 'rechargeRecords', icon: 'ios-list-box-outline' },
+                        { title: '超速报表', name: 'speedingReport', icon: 'md-remove-circle' },
                     ]
                 },
                 {
