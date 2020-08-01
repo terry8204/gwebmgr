@@ -2300,16 +2300,16 @@ function speedingReport(groupslist) {
                         count = 0,
                         duration = 0,
                         distance = 0,
-                        maxSpeed = '',
-                        minSpeed = '';
+                        maxSpeed = '-',
+                        minSpeed = '-';
                     item.records.sort(function(a, b) {
                         return b.endtime - a.endtime;
                     });
                     item.records.forEach(function(record) {
                         duration += record.endtime - record.begintime;
                         distance += record.edistance - record.sdistance;
-                        maxSpeed === '' && (maxSpeed = record.maxspeed);
-                        minSpeed === '' && (minSpeed = record.minspeed);
+                        maxSpeed === '-' && (maxSpeed = record.maxspeed);
+                        minSpeed === '-' && (minSpeed = record.minspeed);
                         if (record.maxspeed > maxSpeed) {
                             maxSpeed = record.maxspeed;
                         }
@@ -2319,8 +2319,8 @@ function speedingReport(groupslist) {
                         count++;
 
                     });
-                    Obj.maxSpeed = (maxSpeed / 1000).toFixed(2);
-                    Obj.minSpeed = (minSpeed / 1000).toFixed(2);
+                    Obj.maxSpeed = maxSpeed === '-' ? '-' : (maxSpeed / 1000).toFixed(2);
+                    Obj.minSpeed = minSpeed === '-' ? '-' : (minSpeed / 1000).toFixed(2);
                     Obj.count = count;
                     Obj.duration = utils.timeStamp(duration);
                     Obj.distance = (distance / 1000).toFixed(2) + 'km';
