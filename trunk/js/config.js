@@ -671,6 +671,9 @@ var myUrls = {
     queryIoConfig: function() {
         return this.apihosts + 'webapi?action=queryioconfig&token=' + token;
     },
+    reportOverSpeeds: function() {
+        return this.apihosts + 'webapi?action=reportoverspeeds&token=' + token;
+    },
     getCardInfo: function(action) {
         return this.apihosts + 'webapi?action=' + action + '&token=' + token;
     },

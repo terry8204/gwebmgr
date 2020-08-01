@@ -2109,7 +2109,7 @@ function speedingReport(groupslist) {
                 });
                 if (deviceids.length) {
                     var me = this;
-                    var url = myUrls.rotateReports();
+                    var url = myUrls.reportOverSpeeds();
                     var data = {
                         startday: this.dateVal[0],
                         endday: this.dateVal[1],
@@ -2119,6 +2119,8 @@ function speedingReport(groupslist) {
                     me.loading = true;
                     utils.sendAjax(url, data, function(resp) {
                         me.loading = false;
+                        console.log(resp);
+                        return;
                         if (resp.status == 0) {
                             if (resp.records && resp.records.length) {
                                 me.tableData = [];
