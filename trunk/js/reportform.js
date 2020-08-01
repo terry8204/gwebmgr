@@ -1993,10 +1993,10 @@ function speedingReport(groupslist) {
             allRotateTableData: [],
             columns: [
                 { title: '序号', width: 60, key: 'index' },
-                { title: vRoot.$t("alarm.devName"), key: 'deviceName', width: 160 },
-                { title: vRoot.$t("alarm.devNum"), key: 'deviceid', width: 160 },
-                { title: vRoot.$t("reportForm.startDate"), key: 'startDate', width: 180 },
-                { title: vRoot.$t("reportForm.endDate"), key: 'endDate', width: 180 },
+                { title: vRoot.$t("alarm.devName"), key: 'deviceName' },
+                { title: vRoot.$t("alarm.devNum"), key: 'deviceid' },
+                { title: vRoot.$t("reportForm.startDate"), key: 'startDate' },
+                { title: vRoot.$t("reportForm.endDate"), key: 'endDate' },
                 {
                     title: '地址',
                     width: 145,
@@ -2049,6 +2049,7 @@ function speedingReport(groupslist) {
                 { title: vRoot.$t("reportForm.duration"), key: 'duration' },
                 {
                     title: '操作',
+                    width: 185,
                     render: function(h, params) {
                         return h(
                             'div', {}, [
