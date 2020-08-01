@@ -2310,10 +2310,10 @@ function speedingReport(groupslist) {
                         distance += record.edistance - record.sdistance;
                         maxSpeed === 0 && (maxSpeed = record.maxspeed);
                         minSpeed === 0 && (minSpeed = record.minspeed);
-                        if (maxSpeed > record.maxspeed) {
+                        if (record.maxspeed > maxSpeed) {
                             maxSpeed = record.maxspeed;
                         }
-                        if (minSpeed < record.minspeed) {
+                        if (record.minspeed < minSpeed) {
                             minSpeed = record.minspeed;
                         }
                         count++;
