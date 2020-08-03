@@ -101,8 +101,15 @@
                     var tableData = deepClone(this.tableData),
                         me = this;
                     var url = myUrls.importRename();
+
+                    var renamerecords = [];
+                    tableData.forEach(function(item) {
+                        if (String(item.deviceid).length > 0 && String(item.name).length > 0) {
+                            renamerecords.push(item)
+                        }
+                    });
                     var data = {
-                        renamerecords: tableData,
+                        renamerecords: renamerecords,
                     }
                     utils.sendAjax(url, data, function(respData) {
                         me.loading = false;
@@ -111,7 +118,9 @@
                             if (respData.total === respData.success) {
                                 me.$Message.success("导入成功");
                                 me.tableData.forEach(function(item) {
-                                    item.status = 1;
+                                    if (String(item.deviceid).length > 0 && String(item.name).length > 0 && item.status == -1) {
+                                        item.status = 1;
+                                    }
                                 });
                             } else {
                                 me.$Message.error("总共:" + respData.total + ",失败:" + respData.fail);
@@ -126,7 +135,7 @@
                                     });
                                 });
                                 tableData.forEach(function(item) {
-                                    if (item.status == -1) {
+                                    if (String(item.deviceid).length > 0 && String(item.name).length > 0 && item.status == -1) {
                                         item.status = 1;
                                     }
                                 });
@@ -164,12 +173,12 @@
                         while (true) {
                             var deviceidKey = this.excelX[1] + indexY; //设备ID
                             var devicenameKey = this.excelX[2] + indexY; //防盗号
-                            if (excelData[deviceidKey] == undefined) {
+                            if (excelData[deviceidKey] == undefined && excelData[devicenameKey] == undefined) {
                                 break;
                             }
                             tableData.push({
-                                deviceid: excelData[deviceidKey].v.trim(),
-                                name: excelData[devicenameKey].v.trim(),
+                                deviceid: excelData[deviceidKey] ? String(excelData[deviceidKey].v).trim() : '',
+                                name: excelData[devicenameKey] ? String(excelData[devicenameKey].v).trim() : '',
                                 status: -1
                             })
 
@@ -177,6 +186,7 @@
                         }
                         this.tableData = tableData;
                     } catch (error) {
+                        console.log(error);
                         this.$Message.error('请使用我们提供的模版填写');
                     }
 

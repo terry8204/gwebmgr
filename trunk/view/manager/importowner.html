@@ -124,7 +124,15 @@
                     this.loading = true;
                     var tableData = deepClone(this.tableData),
                         me = this;
+
+                    var owners = [];
                     tableData.forEach(function(item) {
+                        if (String(item.deviceid).trim() != "") {
+                            owners.push(item);
+                        }
+                    })
+
+                    owners.forEach(function(item) {
                         if (item.gender.indexOf('男') != -1) {
                             item.gender = 1
                         } else if (item.gender.indexOf('女') != -1) {
@@ -135,7 +143,7 @@
                     });
                     var url = myUrls.importOwnerInfo();
                     var data = {
-                        owners: tableData,
+                        owners: owners,
                         isforcecover: true,
                     }
                     utils.sendAjax(url, data, function(respData) {
@@ -144,7 +152,9 @@
                             if (respData.total === respData.success) {
                                 me.$Message.success("导入成功");
                                 me.tableData.forEach(function(item) {
-                                    item.status = 1;
+                                    if (String(failItem.deviceid).trim() == String(item.deviceid).trim()) {
+                                        item.status = 1;
+                                    }
                                 });
                             } else {
                                 me.$Message.error("总共:" + respData.total + ",失败:" + respData.fail);
@@ -152,14 +162,14 @@
                                 var tableData = deepClone(me.tableData);
                                 errorrecords.forEach(function(failItem) {
                                     tableData.forEach(function(item) {
-                                        if (failItem.deviceid.trim() == item.deviceid.trim()) {
+                                        if (String(failItem.deviceid).trim() == String(item.deviceid).trim()) {
                                             item.status = 0;
                                             item.cause = failItem.cause;
                                         }
                                     });
                                 })
                                 tableData.forEach(function(item) {
-                                    if (item.status == -1) {
+                                    if (String(item.deviceid).trim() != "" && item.status == -1) {
                                         item.status = 1;
                                     }
                                 });
@@ -204,7 +214,7 @@
                             var addressKey = this.excelX[7] + indexY; //地址
                             var remarkKey = this.excelX[8] + indexY; //备注
 
-                            if (excelData[deviceIdKey] == undefined) {
+                            if (excelData[deviceIdKey] == undefined && excelData[ownerNameKey] == undefined) {
                                 break;
                             }
 
