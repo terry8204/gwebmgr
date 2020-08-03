@@ -1,6 +1,6 @@
 <div id="insure-records">
     <div style="margin:10px;height: 32px;">
-        <div style="float: left;position: relative;width: 300px;line-height:32px;">
+        <div style="float: left;position: relative;width: 250px;line-height:32px;">
             <div class="search-wrapper" v-click-outside.capture="onClickOutside">
                 <i-input v-model.trim="sosoValue" icon="ios-search-outline" @on-change="sosoValueChange" @on-blur="blur" @on-focus="focus" :readonly="readonly" @on-click="focus" :placeholder="placeholder"></i-input>
                 <transition name="fade">
@@ -10,26 +10,31 @@
                 </transition>
             </div>
         </div>
-        <div style="margin-left:20px;float: left;line-height: 30px;position: relative;width: 70px;">
+        <div style="margin-left:10px;float: left;line-height: 30px;position: relative;width: 70px;">
             <i-select v-model="isFilter">
                 <i-option value="2">全部</i-option>
                 <i-option value="1">已审核</i-option>
                 <i-option value="0">未审核</i-option>
             </i-select>
         </div>
-        <div style="margin-left:20px;float: left;">
+        <div style="margin-left:10px;float: left;">
             <date-picker type="daterange" :value="dateVal" :editable="false" :clearable="false" @on-change="onChange" show-week-numbers style="width:200px" placement="bottom-start"></date-picker>
         </div>
-        <div style="float: left;height: 30px; line-height: 30px;margin-left: 20px;" class="spans-wrap">
+        <div style="float: left;height: 30px; line-height: 30px;margin-left: 10px;" class="spans-wrap">
             <span class="cursor-pointer" @click="handleSelectdDate(0)" :style="{color: dayNumberType == 0 ? '#2D8CF0' : '#515A6E'}">{{$t("reportForm.toDay")}}</span> <b>｜</b>
             <span class="cursor-pointer" @click="handleSelectdDate(1)" :style="{color: dayNumberType == 1 ? '#2D8CF0' : '#515A6E'}">{{$t("reportForm.yesterDay")}}</span> <b>｜</b>
-            <span class="cursor-pointer" @click="handleSelectdDate(3)" :style="{color: dayNumberType == 3 ? '#2D8CF0' : '#515A6E'}">{{$t("reportForm.threeDays")}}</span> <b>｜</b>
-            <span class="cursor-pointer" @click="handleSelectdDate(7)" :style="{color: dayNumberType == 7 ? '#2D8CF0' : '#515A6E'}">{{$t("reportForm.sevenDays")}}</span>
+            <span class="cursor-pointer" @click="handleSelectdDate(3)" :style="{color: dayNumberType == 3 ? '#2D8CF0' : '#515A6E'}">{{$t("reportForm.threeDays")}}</span>
         </div>
-        <div style="margin-left:20px;float: left;">
+        <div style="margin-left:10px;float: left;">
             <i-button @click="queryInsures" :loading="loading">{{$t("reportForm.query")}}</i-button>
         </div>
-        <div style="margin-right:20px;float: right;">
+        <div style="margin-left:20px;float: left;">
+            <i-input v-model.trim="exactValue" placeholder="姓名|手机号|身份证号"></i-input>
+        </div>
+        <div style="margin-left:10px;float: left;">
+            <i-button @click="exactQueryInsures" :loading="loading">精确查找</i-button>
+        </div>
+        <div style="float: right;">
             <i-button @click="exportData" type="primary">导出数据</i-button>
         </div>
     </div>

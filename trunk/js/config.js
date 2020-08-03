@@ -674,6 +674,9 @@ var myUrls = {
     reportOverSpeeds: function() {
         return this.apihosts + 'webapi?action=reportoverspeeds&token=' + token;
     },
+    queryInsureByKeyWord: function() {
+        return this.apihosts + 'webapi?action=queryinsurebykeyword&token=' + token;
+    },
     getCardInfo: function(action) {
         return this.apihosts + 'webapi?action=' + action + '&token=' + token;
     },

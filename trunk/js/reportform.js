@@ -3198,6 +3198,7 @@ function insureRecords(groupslist) {
         i18n: utils.getI18n(),
         mixins: [treeMixin],
         data: {
+            exactValue: '',
             dayNumberType: 0,
             clearable: false,
             dateVal: [DateFormat.longToDateStr(Date.now(), timeDifference), DateFormat.longToDateStr(Date.now(), timeDifference)],
@@ -3705,6 +3706,35 @@ function insureRecords(groupslist) {
                 }, function() {
                     me.loading = false;
                 })
+            },
+            exactQueryInsures: function() {
+                if (this.exactValue == '') {
+                    this.$Message.error('请输入要查询的姓名|身份证号|手机号')
+                    return;
+                };
+                var url = myUrls.queryInsureByKeyWord(),
+                    me = this;
+                utils.sendAjax(url, { keyword: this.exactValue }, function(resp) {
+                    me.loading = false;
+                    if (resp.status == 0) {
+                        resp.insures.forEach(function(item, index) {
+                            item.index = index + 1;
+                            if (item.policyno == null) {
+                                item.policyno = '保单审核中';
+                            };
+                            item.isPay = item.insurestate == 1 ? '已审核' : '未审核'
+                            item.createtimeStr = DateFormat.format(new Date(item.createtime), 'yyyy-MM-dd')
+                        })
+                        me.insureRecords = resp.insures;
+                        me.total = me.insureRecords.length;
+                        me.currentIndex = 1;
+                        me.tableData = me.insureRecords.slice(0, 20);
+                    } else {
+                        me.$Message.error('查询失败')
+                    }
+                }, function() {
+                    me.loading = false;
+                });
             },
             exportData: function() {
                 var tableData = deepClone(this.insureRecords);
