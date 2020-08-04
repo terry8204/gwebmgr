@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>大屏展示</title>
     <link rel="stylesheet" href="dist/styles/iview.css">
     <style>
         html,
@@ -262,6 +262,8 @@
                 clickChinaMap: function() {
                     var that = this;
                     that.myChart.on('click', function(params) {
+                        console.log(mapJson);
+                        console.log(params);
                         var item = mapJson.features[params.dataIndex];
                         that.getProvinceJson(item.properties);
                     });
@@ -277,6 +279,7 @@
                         async: false,
                         success: function(json) {
                             mapJson = json;
+
                             that.qeuryDatavOnlineSummary(province.adcode);
                         }
                     });
@@ -302,6 +305,17 @@
                     }, function(resp) {
                         // this.changeData();
                         console.log(resp);
+                        if (resp.status === 0) {
+                            that.offlines = resp.offlines;
+                            that.onlines = resp.onlines;
+                            that.movings = resp.movings;
+                            that.statics = resp.statics;
+                            that.total = resp.total;
+                            that.data = resp.summarys;
+                            that.changeData();
+                        } else {
+                            that.$Message.error('查询错误');
+                        }
 
                     }, function(error) {
                         that.$Message.error('网络错误');
@@ -332,14 +346,14 @@
                             //type: 'scatter',
                             type: 'map',
                             mapType: 'map',
-                            // data: [{
-                            //     name: "广东省",
-                            //     value: [0, 1, 0, 0, 1]
-                            // }, {
-                            //     name: "山东省",
-                            //     value: [0, 1, 0, 0, 1]
-                            // }],
-                            data: this.data,
+                            data: [{
+                                name: "广东省",
+                                value: [0, 1, 0, 0, 1]
+                            }, {
+                                name: "山东省",
+                                value: [0, 1, 0, 0, 1]
+                            }],
+                            // data: this.data,
                             label: {
                                 normal: {
                                     formatter: function(a) {
