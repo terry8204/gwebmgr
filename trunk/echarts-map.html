@@ -143,7 +143,7 @@
                 <div style="height: 30%;" class="center">
                     <i-circle :percent="100" stroke-color="#AD0051" :stroke-width="strokeWidth">
                         <div class="circle-custom">
-                            <h1>12</h1>
+                            <h1 v-text="total"></h1>
                             <p>全部</p>
                         </div>
                     </i-circle>
@@ -152,7 +152,7 @@
                     <div style="float: left;width: 50%;height: 50%;" class="center">
                         <i-circle :percent="100" stroke-color="#08D511" :stroke-width="strokeWidth">
                             <div class="circle-custom">
-                                <h1>12</h1>
+                                <h1 v-text="onlines"></h1>
                                 <p>在线</p>
                             </div>
                         </i-circle>
@@ -160,7 +160,7 @@
                     <div style="float: left;width: 50%;height: 50%;" class="center">
                         <i-circle :percent="100" stroke-color="#8B9BBA" :stroke-width="strokeWidth">
                             <div class="circle-custom">
-                                <h1>12</h1>
+                                <h1 v-text="offlines"></h1>
                                 <p>离线</p>
                             </div>
                         </i-circle>
@@ -168,7 +168,7 @@
                     <div style="float: left;width: 50%;height: 50%;" class="center">
                         <i-circle :percent="100" stroke-color="#C44453" :stroke-width="strokeWidth">
                             <div class="circle-custom">
-                                <h1>12</h1>
+                                <h1 v-text="statics"></h1>
                                 <p>停止</p>
                             </div>
                         </i-circle>
@@ -176,7 +176,7 @@
                     <div style="float: left;width: 50%;height: 50%;" class="center">
                         <i-circle :percent="100" stroke-color="#678EFF" :stroke-width="strokeWidth">
                             <div class="circle-custom">
-                                <h1>12</h1>
+                                <h1 v-text="movings"></h1>
                                 <p>行驶</p>
                             </div>
                         </i-circle>
@@ -235,7 +235,12 @@
                         type: 'get',
                         success: function(json) {
                             mapJson = json;
+
                             echarts.registerMap('map', mapJson);
+                            that.displayEcharts();
+                            that.clickChinaMap();
+                            window.onresize = that.myChart.resize;
+
                             var area = [{
                                 adcode: 100000,
                                 name: '中国'
@@ -249,10 +254,8 @@
                             });
 
                             that.area = area;
-                            window.onresize = that.myChart.resize;
                             that.qeuryDatavOnlineSummary(100000);
-                            that.displayEcharts();
-                            that.clickChinaMap();
+
                         }
                     });
                 },
@@ -275,12 +278,8 @@
                         success: function(json) {
                             mapJson = json;
                             that.qeuryDatavOnlineSummary(province.adcode);
-                            that.showMap();
                         }
                     });
-                },
-                showMap: function() {
-                    this.changeData();
                 },
                 displayEcharts: function() {
                     var options = this.getEchartsOptions();
@@ -291,7 +290,7 @@
                     this.myChart.setOption({
                         series: [{
                             mapType: 'map',
-                            data: [],
+                            data: this.data,
                         }],
                     });
                 },
@@ -301,7 +300,9 @@
                     utils.sendAjax(url, {
                         adcode: adcode
                     }, function(resp) {
+                        // this.changeData();
                         console.log(resp);
+
                     }, function(error) {
                         that.$Message.error('网络错误');
                     });
