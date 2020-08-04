@@ -245,6 +245,7 @@
                                 adcode: 100000,
                                 name: '中国'
                             }];
+
                             mapJson.features.forEach(function(item) {
                                 var properties = item.properties;
                                 area.push({
@@ -262,17 +263,14 @@
                 clickChinaMap: function() {
                     var that = this;
                     that.myChart.on('click', function(params) {
-                        console.log(mapJson);
-                        console.log(params);
-                        var item = mapJson.features[params.dataIndex];
-                        that.getProvinceJson(item.properties);
+                        console.log(mapJson.features);
+                        console.log('params.dataIndex', params);
+
+                        that.getProvinceJson(params.data);
                     });
                 },
                 getProvinceJson: function(province) {
-                    if (province.acroutes && province.acroutes.length == 3) {
-                        this.$Message.error('只支持地级市');
-                        return;
-                    }
+
                     var that = this;
                     $.ajax({
                         url: myUrls.queryGeoJson(province.adcode),
@@ -348,10 +346,10 @@
                             mapType: 'map',
                             data: [{
                                 name: "广东省",
-                                value: [0, 1, 0, 0, 1]
+                                value: [0, 1, 0, 0, 1000]
                             }, {
                                 name: "山东省",
-                                value: [0, 1, 0, 0, 1]
+                                value: [0, 1, 0, 0, 9]
                             }],
                             // data: this.data,
                             label: {
