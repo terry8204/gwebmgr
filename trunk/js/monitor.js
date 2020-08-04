@@ -1210,6 +1210,9 @@ var monitor = {
             this.offlineDevCount = all;
             return groups.filter(function(group) { return group.devices.length });
         },
+        echartsMapPage: function() {
+            window.open('echarts-map.html?token=' + token);
+        },
         getAllHideCompanyTreeData: function() {
             var me = this;
             this.groups.forEach(function(group) {

@@ -543,7 +543,7 @@
                                 <span>静止:{{areaStaticCount}}</span>
                                 <span>离线:{{areaOfflineCount}}</span>
                             </li>
-                            <li style="padding-top:6px;margin:0 10px;">
+                            <li style="padding-top:6px;margin:0 0 0 10px;">
                                 <Poptip trigger="click" title="区域选择">
                                     <i-button size="small"> 区域选择 </i-button>
                                     <div slot="content" style="width:300px;padding:5px 0;">
@@ -564,6 +564,9 @@
                                         </div>
                                     </div>
                                 </Poptip>
+                            </li>
+                            <li style="padding-top:6px;">
+                                <i-button size="small" @click="echartsMapPage"> 大屏展示 </i-button>
                             </li>
                             <li class="maps">
                                 <i-select v-model="mapType" size="small" style="width:100px">

@@ -677,6 +677,12 @@ var myUrls = {
     queryInsureByKeyWord: function() {
         return this.apihosts + 'webapi?action=queryinsurebykeyword&token=' + token;
     },
+    datavOnlineSummary: function() {
+        return this.apihosts + 'webapi?action=datavonlinesummary&token=' + token;
+    },
+    queryGeoJson: function(adcode) {
+        return this.apihosts + 'webapi?action=querygeojson&adcode=' + adcode;
+    },
     getCardInfo: function(action) {
         return this.apihosts + 'webapi?action=' + action + '&token=' + token;
     },

@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="dist/styles/iview.css">
+    <style>
+        html,
+        body,
+        #container {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+        
+        #echarts-map {
+            position: absolute;
+            left: 0;
+            right: 320px;
+            top: 0;
+            bottom: 0;
+            background: #072655;
+        }
+        
+        #right-wrap {
+            position: absolute;
+            right: 0px;
+            top: 0;
+            bottom: 0;
+            width: 320px;
+            background: #072655;
+        }
+        
+        #right-wrap>div {
+            height: 50%;
+            position: relative;
+        }
+        
+        .ivu-card-head {
+            background: #05144D;
+            border-bottom: 1px solid #072655;
+        }
+        
+        #right-wrap .card-title {
+            color: #FFFFFF;
+        }
+        
+        #right-wrap .ivu-select-item {
+            color: #FFFFFF;
+        }
+        
+        #right-wrap .ivu-select-item:hover {
+            background: #53A4B7;
+        }
+        
+        #right-wrap .ivu-card {
+            border-radius: 0px;
+        }
+        
+        #right-wrap .ivu-card-bordered {
+            border-color: #05144D;
+        }
+        
+        #charts {
+            position: absolute;
+            left: 0;
+            top: 0;
+            right: 0;
+            bottom: 0;
+        }
+        
+        div.circle-custom h1 {
+            color: #3f414d;
+            font-size: 24px;
+            font-weight: normal;
+        }
+        
+        div.circle-custom p {
+            color: #657180;
+            font-size: 16px;
+            margin: 10px 0 15px;
+        }
+        
+        .center {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .ul-wrapper::-webkit-scrollbar {
+            width: 16px;
+            height: 16px
+        }
+        
+        .ul-wrapper::-webkit-scrollbar-track {
+            border-radius: 10px;
+            background: rgba(0, 0, 0, .2)
+        }
+        
+        .ul-wrapper::-webkit-scrollbar-thumb {
+            width: 10px;
+            height: 50px;
+            border-radius: 10px;
+            background-color: #495569;
+            box-shadow: 0 0 5px rgba(0, 0, 0, .5)
+        }
+        
+        .ul-wrapper::-webkit-scrollbar-button:vertical:start {
+            background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyFpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQyIDc5LjE2MDkyNCwgMjAxNy8wNy8xMy0wMTowNjozOSAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIChXaW5kb3dzKSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDo2ODBFNDYwRjRCNTcxMUU4OTVGN0NGQUJBMUFBRkNFQiIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDo2ODBFNDYxMDRCNTcxMUU4OTVGN0NGQUJBMUFBRkNFQiI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOjY4MEU0NjBENEI1NzExRTg5NUY3Q0ZBQkExQUFGQ0VCIiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOjY4MEU0NjBFNEI1NzExRTg5NUY3Q0ZBQkExQUFGQ0VCIi8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+VqUBZAAAAH1JREFUeNpi/P//PwMxgImBXHDr1i0DEEYXZ0RXxMjIuAHEBjopQE1N7QKGwvv37wv8+fPnAkgBVGgBKyurg6Ki4gcGZEVA0y7cvn3bASYGYoPEQHJwz/z+/fsAkJqgqqp6AKYQyp4AlYOYdufOnQBcngPJgdQwUj0cAQIMAKZrRzvpaAEjAAAAAElFTkSuQmCC) 50% no-repeat
+        }
+        
+        .ul-wrapper::-webkit-scrollbar-button:vertical:end {
+            background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyFpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMDY3IDc5LjE1Nzc0NywgMjAxNS8wMy8zMC0yMzo0MDo0MiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6NDI2NzU1MUU0QkFGMTFFOEIzRTBDRUM2OURGREYyMkMiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6NDI2NzU1MUQ0QkFGMTFFOEIzRTBDRUM2OURGREYyMkMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIChXaW5kb3dzKSI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOjY4MEU0NjBGNEI1NzExRTg5NUY3Q0ZBQkExQUFGQ0VCIiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOjY4MEU0NjEwNEI1NzExRTg5NUY3Q0ZBQkExQUFGQ0VCIi8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+G796HwAAAHxJREFUeNpi/P//PwMxgImBWHD//n2BO3fuBOCSB8mB1IA5t27dugDECeiKQGIgObjVrKysDkCq4Pbt2w4wRVB2AVSOgRHZCb9//z4AZIJNZmRk3MDCwmKgqKj4AUUh1CoDkAIQGxgaAWpqahdweg6kGITRxRmpHo4AAQYAvDw7WzS+Z4wAAAAASUVORK5CYII=) 50% no-repeat
+        }
+        
+        [v-cloak] {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="container">
+        <div id="echarts-map">
+            <div id="charts"></div>
+        </div>
+        <div id="right-wrap">
+            <div>
+                <Card style="width:100%;height: 100%;overflow: hidden;">
+                    <p slot="title" class="card-title">
+                        <Icon type="ios-flag"></Icon>
+                        <span v-text="'选择区域'"></span>
+                    </p>
+                    <div style="overflow-y: auto;position: absolute; left: 0;right: 0;bottom: 0;top: 51px;background: #05144D;" class="ul-wrapper">
+                        <p class="ivu-select-item" v-for="item in area" @click="getProvinceJson(item)" v-cloak>{{item.name}}</p>
+                    </div>
+                </Card>
+            </div>
+            <div>
+                <div style="height: 30%;" class="center">
+                    <i-circle :percent="100" stroke-color="#AD0051" :stroke-width="strokeWidth">
+                        <div class="circle-custom">
+                            <h1>12</h1>
+                            <p>全部</p>
+                        </div>
+                    </i-circle>
+                </div>
+                <div style="height: 70%;">
+                    <div style="float: left;width: 50%;height: 50%;" class="center">
+                        <i-circle :percent="100" stroke-color="#08D511" :stroke-width="strokeWidth">
+                            <div class="circle-custom">
+                                <h1>12</h1>
+                                <p>在线</p>
+                            </div>
+                        </i-circle>
+                    </div>
+                    <div style="float: left;width: 50%;height: 50%;" class="center">
+                        <i-circle :percent="100" stroke-color="#8B9BBA" :stroke-width="strokeWidth">
+                            <div class="circle-custom">
+                                <h1>12</h1>
+                                <p>离线</p>
+                            </div>
+                        </i-circle>
+                    </div>
+                    <div style="float: left;width: 50%;height: 50%;" class="center">
+                        <i-circle :percent="100" stroke-color="#C44453" :stroke-width="strokeWidth">
+                            <div class="circle-custom">
+                                <h1>12</h1>
+                                <p>停止</p>
+                            </div>
+                        </i-circle>
+                    </div>
+                    <div style="float: left;width: 50%;height: 50%;" class="center">
+                        <i-circle :percent="100" stroke-color="#678EFF" :stroke-width="strokeWidth">
+                            <div class="circle-custom">
+                                <h1>12</h1>
+                                <p>行驶</p>
+                            </div>
+                        </i-circle>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="dist/vue.min.js"></script>
+    <script src="dist/iview.min.js"></script>
+    <script src="./js/echarts.min.js"></script>
+    <script src="./js/gps51-jquery.js"></script>
+    <script src="./js/js.cookie.min.js"></script>
+    <script src="./js/config.js"></script>
+    <script src="./js/dateformat.js"></script>
+    <script src="./js/util.js"></script>
+    <script>
+        var token = utils.getParameterByName('token');
+        var mapJson = null;
+        var options = Object();
+        options.showNum = 1;
+        options.backgroundColor = "#072655";
+        options.vsColor1 = '#50a3ba';
+        options.vsColor2 = '#d94e5d';
+        options.vsColor3 = '#eac736';
+        options.fontColor = '#ffffff';
+        options.itemFontColor = '#ffffff';
+        options.itemAreaColor = '#50a3ba';
+        options.itemBorderColor = '#1b4584';
+        options.emItemFontColor = '#f50';
+        options.emItemAreaColor = '#214884';
+        options.toolBorderColor = '#49d9fe';
+        options.toolBackgroundColor = '#214884';
+        options.toolTextColor = '#ffffff';
+        var vRoot = new Vue({
+            el: "#container",
+            data: {
+                area: [],
+                strokeWidth: 7,
+                offlines: 0, //离线的车
+                onlines: 0, //在线的车
+                movings: 0, //运动 在跑的车
+                statics: 0, //静止
+                total: 0, //总数
+            },
+            mounted: function() {
+                this.init();
+            },
+            methods: {
+                init: function() {
+                    var that = this;
+                    that.data = []; //地图数据
+                    that.myChart = echarts.init(document.getElementById('charts'));
+                    $.ajax({
+                        url: myUrls.queryGeoJson(100000),
+                        type: 'get',
+                        success: function(json) {
+                            mapJson = json;
+                            echarts.registerMap('map', mapJson);
+                            var area = [{
+                                adcode: 100000,
+                                name: '中国'
+                            }];
+                            mapJson.features.forEach(function(item) {
+                                var properties = item.properties;
+                                area.push({
+                                    adcode: properties.adcode,
+                                    name: properties.name
+                                });
+                            });
+
+                            that.area = area;
+                            window.onresize = that.myChart.resize;
+                            that.qeuryDatavOnlineSummary(100000);
+                            that.displayEcharts();
+                            that.clickChinaMap();
+                        }
+                    });
+                },
+                clickChinaMap: function() {
+                    var that = this;
+                    that.myChart.on('click', function(params) {
+                        var item = mapJson.features[params.dataIndex];
+                        that.getProvinceJson(item.properties);
+                    });
+                },
+                getProvinceJson: function(province) {
+                    if (province.acroutes && province.acroutes.length == 3) {
+                        this.$Message.error('只支持地级市');
+                        return;
+                    }
+                    var that = this;
+                    $.ajax({
+                        url: myUrls.queryGeoJson(province.adcode),
+                        async: false,
+                        success: function(json) {
+                            mapJson = json;
+                            that.qeuryDatavOnlineSummary(province.adcode);
+                            that.showMap();
+                        }
+                    });
+                },
+                showMap: function() {
+                    this.changeData();
+                },
+                displayEcharts: function() {
+                    var options = this.getEchartsOptions();
+                    this.myChart.setOption(options);
+                },
+                changeData: function() {
+                    echarts.registerMap('map', mapJson);
+                    this.myChart.setOption({
+                        series: [{
+                            mapType: 'map',
+                            data: [],
+                        }],
+                    });
+                },
+                qeuryDatavOnlineSummary: function(adcode) {
+                    var url = myUrls.datavOnlineSummary(),
+                        that = this;
+                    utils.sendAjax(url, {
+                        adcode: adcode
+                    }, function(resp) {
+                        console.log(resp);
+                    }, function(error) {
+                        that.$Message.error('网络错误');
+                    });
+                },
+                getEchartsOptions: function() {
+                    return {
+                        tooltip: {
+                            trigger: 'item'
+                        },
+                        visualMap: {
+                            min: 0,
+                            max: 100,
+                            left: '10',
+                            bottom: '10',
+                            text: ['多', '少'], // 文本，默认为数值文本
+                            inRange: {
+                                color: [options.vsColor1, options.vsColor3, options.vsColor2],
+                                symbolSize: [30, 30]
+                            },
+                            textStyle: {
+                                color: '#fff',
+                            },
+                            calculable: true
+                        },
+                        series: [{
+                            name: '',
+                            //type: 'scatter',
+                            type: 'map',
+                            mapType: 'map',
+                            // data: [{
+                            //     name: "广东省",
+                            //     value: [0, 1, 0, 0, 1]
+                            // }, {
+                            //     name: "山东省",
+                            //     value: [0, 1, 0, 0, 1]
+                            // }],
+                            data: this.data,
+                            label: {
+                                normal: {
+                                    formatter: function(a) {
+                                        if (typeof a.data !== "undefined" && typeof a.data.value !== "undefined") {
+                                            //console.log(a)
+                                            if (options.showNum == 1) {
+                                                return a.name + '\n(' + a.data.value[4] + ')';
+                                            } else {
+                                                return a.name;
+                                            }
+                                        }
+                                    },
+                                    color: '#fff',
+                                    position: 'right',
+                                    show: true
+                                },
+                                emphasis: {
+                                    color: '#fff',
+                                    show: true
+                                }
+                            },
+                            itemStyle: {
+                                normal: {
+                                    color: options.itemFontColor, //文字颜色
+                                    areaColor: options.itemAreaColor, //省背景色
+                                    borderColor: options.itemBorderColor,
+                                },
+                                emphasis: {
+                                    color: options.emItemFontColor, //文字颜色
+                                    //borderColor: 'red',
+                                    areaColor: options.emItemAreaColor,
+                                }
+                            },
+                            tooltip: {
+                                borderColor: options.toolBorderColor,
+                                backgroundColor: options.toolBackgroundColor,
+                                borderWidth: '2',
+                                padding: [15, 30, 15, 15],
+                                formatter: function(a) {
+                                    //console.log(typeof a.data.value);
+                                    if (typeof a.data !== "undefined" && typeof a.data.value !== "undefined") {
+                                        return a.name + '<br>' +
+                                            '总数：' + a.data.value[4] + '<br>' +
+                                            '在线：' + a.data.value[0] + '<br>' +
+                                            '离线：' + a.data.value[1] + '<br>' +
+                                            '运行：' + a.data.value[2] + '<br>' +
+                                            '停止：' + a.data.value[3] + '';
+                                    }
+                                },
+                                textStyle: {
+                                    color: options.toolTextColor,
+                                    fontSize: '14'
+                                },
+                                extraCssText: ''
+                            },
+                        }]
+                    }
+                }
+            },
+        })
+    </script>
+</body>
+
+</html>
