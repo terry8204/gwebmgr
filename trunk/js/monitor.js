@@ -1211,7 +1211,7 @@ var monitor = {
             return groups.filter(function(group) { return group.devices.length });
         },
         echartsMapPage: function() {
-            window.open('echarts-map.html?token=' + token);
+            window.open('datav.html?token=' + token);
         },
         getAllHideCompanyTreeData: function() {
             var me = this;

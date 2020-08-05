@@ -123,7 +123,7 @@
 </head>
 
 <body>
-    <div id="container">
+    <div id="container" ref="mapWraper">
         <div id="echarts-map">
             <div id="charts"></div>
         </div>
@@ -133,6 +133,7 @@
                     <p slot="title" class="card-title">
                         <Icon type="ios-flag"></Icon>
                         <span v-text="'选择区域'"></span>
+                        <Icon @click.native="handleMapSizeChange" :type="isFullMap ?'md-contract':'md-expand'" size="23" style="float:right;cursor: pointer;"></Icon>
                     </p>
                     <div style="overflow-y: auto;position: absolute; left: 0;right: 0;bottom: 0;top: 51px;background: #05144D;" class="ul-wrapper">
                         <p class="ivu-select-item" v-for="item in area" @click="getProvinceJson(item)" v-cloak>{{item.name}}</p>
@@ -214,6 +215,7 @@
         var vRoot = new Vue({
             el: "#container",
             data: {
+                isFullMap: false,
                 area: [],
                 strokeWidth: 7,
                 offlines: 0, //离线的车
@@ -226,6 +228,32 @@
                 this.init();
             },
             methods: {
+                handleMapSizeChange: function() {
+                    var mapWraper = this.$refs.mapWraper;
+                    if (this.isFullMap) {
+                        if (document.exitFullscreen) {
+                            document.exitFullscreen()
+                        } else if (document.mozCancelFullScreen) {
+                            document.mozCancelFullScreen()
+                        } else if (document.webkitCancelFullScreen) {
+                            document.webkitCancelFullScreen()
+                        } else if (document.msExitFullscreen) {
+                            document.msExitFullscreen()
+                        }
+                        this.isFullMap = false;
+                    } else {
+                        if (mapWraper.requestFullscreen) {
+                            mapWraper.requestFullscreen()
+                        } else if (mapWraper.mozRequestFullScreen) {
+                            mapWraper.mozRequestFullScreen()
+                        } else if (mapWraper.webkitRequestFullScreen) {
+                            mapWraper.webkitRequestFullScreen()
+                        } else if (mapWraper.msRequestFullscreen) {
+                            mapWraper.msRequestFullscreen()
+                        }
+                        this.isFullMap = true;
+                    }
+                },
                 init: function() {
                     var that = this;
                     that.data = []; //地图数据
@@ -277,7 +305,6 @@
                         async: false,
                         success: function(json) {
                             mapJson = json;
-
                             that.qeuryDatavOnlineSummary(province.adcode);
                         }
                     });
