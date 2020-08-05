@@ -815,7 +815,6 @@
                         },
                         series: [{
                             name: '',
-                            //type: 'scatter',
                             type: 'map',
                             mapType: 'map',
                             // data: [{
@@ -826,16 +825,11 @@
                             //     value: [0, 1, 0, 0, 9]
                             // }],
                             data: this.data,
-                            // left: 50,
-                            // top: 20,
-                            // right: 50,
-                            // bottom: 20,
                             zoom: 1.2,
                             label: {
                                 normal: {
                                     formatter: function(a) {
                                         if (typeof a.data !== "undefined" && typeof a.data.value !== "undefined") {
-                                            //console.log(a)
                                             if (options.showNum == 1) {
                                                 return a.name + '\n(' + a.data.value[4] + ')';
                                             } else {
