@@ -16,6 +16,15 @@
             padding: 0;
         }
         
+        #total0,
+        #total1,
+        #total2,
+        #total3,
+        #total4 {
+            width: 100%;
+            height: 100%;
+        }
+        
         #echarts-map {
             position: absolute;
             left: 0;
@@ -73,21 +82,61 @@
         }
         
         div.circle-custom h1 {
-            color: #3f414d;
             font-size: 24px;
             font-weight: normal;
         }
         
         div.circle-custom p {
-            color: #657180;
             font-size: 16px;
             margin: 10px 0 15px;
         }
         
         .center {
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            position: relative;
+        }
+        
+        .total0_num {
+            position: absolute;
+            left: 20%;
+            top: 50%;
+            margin-top: -25px;
+            color: #b5004a;
+            width: 61.7%;
+            text-align: center;
+        }
+        
+        .total0_num .p1 {
+            font-size: 30px;
+            line-height: 30px;
+            height: 30px;
+        }
+        
+        .total0_num .p2 {
+            font-size: 20px;
+            line-height: 20px;
+            height: 20px;
+        }
+        
+        .total1_num {
+            position: absolute;
+            left: 20%;
+            top: 50%;
+            margin-top: -23px;
+            color: #b5004a;
+            width: 61.7%;
+            text-align: center;
+        }
+        
+        .total1_num .p1 {
+            font-size: 28px;
+            line-height: 28px;
+            height: 28px;
+        }
+        
+        .total1_num .p2 {
+            font-size: 16px;
+            line-height: 18px;
+            height: 18px;
         }
         
         .ul-wrapper::-webkit-scrollbar {
@@ -119,11 +168,24 @@
         [v-cloak] {
             display: none;
         }
+        
+        #nav-wrapper {
+            position: absolute;
+            left: 10px;
+            top: 10px;
+            z-index: 999;
+            color: #FFFFFF;
+        }
     </style>
 </head>
 
 <body>
     <div id="container" ref="mapWraper">
+        <div id="nav-wrapper">
+            <i-button @click="clickChind" size="small" type="primary">中国</i-button>
+            <i-button @click="clickprovince" v-if='provinceName!=""' size="small" type="info"><span v-text="provinceName"></span></i-button>
+            <i-button v-if='cityName!=""' size="small" type="success"><span v-text="cityName"></span></i-button>
+        </div>
         <div id="echarts-map">
             <div id="charts"></div>
         </div>
@@ -136,51 +198,46 @@
                         <Icon @click.native="handleMapSizeChange" :type="isFullMap ?'md-contract':'md-expand'" size="23" style="float:right;cursor: pointer;"></Icon>
                     </p>
                     <div style="overflow-y: auto;position: absolute; left: 0;right: 0;bottom: 0;top: 51px;background: #05144D;" class="ul-wrapper">
-                        <p class="ivu-select-item" v-for="item in area" @click="getProvinceJson(item)" v-cloak>{{item.name}}</p>
+                        <p class="ivu-select-item" v-for="item in area" @click="selectedProvinceName(item)" v-cloak>{{item.name}}</p>
                     </div>
                 </Card>
             </div>
             <div>
-                <div style="height: 30%;" class="center">
-                    <i-circle :percent="100" stroke-color="#AD0051" :stroke-width="strokeWidth">
-                        <div class="circle-custom">
-                            <h1 v-text="total"></h1>
-                            <p>全部</p>
-                        </div>
-                    </i-circle>
+                <div style="height: 40%;" class="center">
+                    <div id="total0"></div>
+                    <div class="total0_num">
+                        <p class="p1" v-text="total"></p>
+                        <p class="p2" v-text="'总数'"></p>
+                    </div>
                 </div>
-                <div style="height: 70%;">
+                <div style="height: 60%;">
                     <div style="float: left;width: 50%;height: 50%;" class="center">
-                        <i-circle :percent="100" stroke-color="#08D511" :stroke-width="strokeWidth">
-                            <div class="circle-custom">
-                                <h1 v-text="onlines"></h1>
-                                <p>在线</p>
-                            </div>
-                        </i-circle>
+                        <div id="total1"></div>
+                        <div class="total1_num">
+                            <p class="p1" v-text="onlines"></p>
+                            <p class="p2" v-text="'在线'"></p>
+                        </div>
                     </div>
                     <div style="float: left;width: 50%;height: 50%;" class="center">
-                        <i-circle :percent="100" stroke-color="#8B9BBA" :stroke-width="strokeWidth">
-                            <div class="circle-custom">
-                                <h1 v-text="offlines"></h1>
-                                <p>离线</p>
-                            </div>
-                        </i-circle>
+                        <div id="total2"></div>
+                        <div class="total1_num">
+                            <p class="p1" v-text="offlines"></p>
+                            <p class="p2" v-text="'离线'"></p>
+                        </div>
                     </div>
                     <div style="float: left;width: 50%;height: 50%;" class="center">
-                        <i-circle :percent="100" stroke-color="#C44453" :stroke-width="strokeWidth">
-                            <div class="circle-custom">
-                                <h1 v-text="statics"></h1>
-                                <p>停止</p>
-                            </div>
-                        </i-circle>
+                        <div id="total3"></div>
+                        <div class="total1_num">
+                            <p class="p1" v-text="movings"></p>
+                            <p class="p2" v-text="'行驶'"></p>
+                        </div>
                     </div>
                     <div style="float: left;width: 50%;height: 50%;" class="center">
-                        <i-circle :percent="100" stroke-color="#678EFF" :stroke-width="strokeWidth">
-                            <div class="circle-custom">
-                                <h1 v-text="movings"></h1>
-                                <p>行驶</p>
-                            </div>
-                        </i-circle>
+                        <div id="total4"></div>
+                        <div class="total1_num">
+                            <p class="p1" v-text="statics"></p>
+                            <p class="p2" v-text="'停止'"></p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -194,9 +251,11 @@
     <script src="./js/config.js"></script>
     <script src="./js/dateformat.js"></script>
     <script src="./js/util.js"></script>
+    <script src="./infos.js"></script>
     <script>
         var token = utils.getParameterByName('token');
         var mapJson = null;
+        var copyProvinceItem = null;
         var options = Object();
         options.showNum = 1;
         options.backgroundColor = "#072655";
@@ -216,6 +275,8 @@
             el: "#container",
             data: {
                 isFullMap: false,
+                provinceName: '',
+                cityName: '',
                 area: [],
                 strokeWidth: 7,
                 offlines: 0, //离线的车
@@ -228,6 +289,14 @@
                 this.init();
             },
             methods: {
+                clickChind: function() {
+                    if (this.provinceName == '' && this.cityName == '') return;
+                    this.selectedProvinceName(this.area[0]);
+                },
+                clickprovince: function() {
+                    if (copyProvinceItem == null) return;
+                    this.selectedProvinceName(copyProvinceItem);
+                },
                 handleMapSizeChange: function() {
                     var mapWraper = this.$refs.mapWraper;
                     if (this.isFullMap) {
@@ -258,6 +327,19 @@
                     var that = this;
                     that.data = []; //地图数据
                     that.myChart = echarts.init(document.getElementById('charts'));
+                    that.chart_total0 = echarts.init(document.getElementById('total0'));
+                    that.chart_total1 = echarts.init(document.getElementById('total1'));
+                    that.chart_total2 = echarts.init(document.getElementById('total2'));
+                    that.chart_total3 = echarts.init(document.getElementById('total3'));
+                    that.chart_total4 = echarts.init(document.getElementById('total4'));
+                    window.onresize = function() {
+                        that.myChart.resize();
+                        that.chart_total0.resize();
+                        that.chart_total1.resize();
+                        that.chart_total2.resize();
+                        that.chart_total3.resize();
+                        that.chart_total4.resize();
+                    }
                     $.ajax({
                         url: myUrls.queryGeoJson(100000),
                         type: 'get',
@@ -267,7 +349,6 @@
                             echarts.registerMap('map', mapJson);
                             that.displayEcharts();
                             that.clickChinaMap();
-                            window.onresize = that.myChart.resize;
 
                             var area = [{
                                 adcode: 100000,
@@ -284,30 +365,72 @@
 
                             that.area = area;
                             that.qeuryDatavOnlineSummary(100000);
-
                         }
                     });
+
+                    document.addEventListener('fullscreenchange', function() {
+                        that.changeIsFullMapIcon();
+                    })
+                    document.addEventListener('mozfullscreenchange', function() {
+                        var isFullscreen = document.fullscreenElement || document.mozFullScreenElement || document.webkitFullscreenElement || document.fullScreen || document.mozFullScreen || document.webkitIsFullScreen
+                        isFullscreen = !!isFullscreen;
+                        that.isFullMap = isFullscreen;
+                    })
+                    document.addEventListener('webkitfullscreenchange', function() {
+                        var isFullscreen = document.fullscreenElement || document.mozFullScreenElement || document.webkitFullscreenElement || document.fullScreen || document.mozFullScreen || document.webkitIsFullScreen
+                        isFullscreen = !!isFullscreen;
+                        that.isFullMap = isFullscreen;
+                    })
+                },
+                changeIsFullMapIcon: function() {
+                    var isFullscreen = document.fullscreenElement || document.mozFullScreenElement || document.webkitFullscreenElement || document.fullScreen || document.mozFullScreen || document.webkitIsFullScreen
+                    isFullscreen = !!isFullscreen;
+                    this.isFullMap = isFullscreen;
                 },
                 clickChinaMap: function() {
                     var that = this;
                     that.myChart.on('click', function(params) {
-                        console.log(mapJson.features);
-                        console.log('params.dataIndex', params);
-
-                        that.getProvinceJson(params.data);
+                        var data = params.data;
+                        that.getProvinceJson(data, function(json) {
+                            if (data.level == 'province') {
+                                copyProvinceItem = {
+                                    adcode: data.adcode,
+                                    name: data.name
+                                }
+                                that.provinceName = data.name;
+                                that.cityName = '';
+                            } else if (data.level == 'city') {
+                                that.cityName = data.name;
+                            }
+                        });
                     });
                 },
-                getProvinceJson: function(province) {
-
+                selectedProvinceName: function(item) {
                     var that = this;
-                    $.ajax({
-                        url: myUrls.queryGeoJson(province.adcode),
-                        async: false,
-                        success: function(json) {
-                            mapJson = json;
-                            that.qeuryDatavOnlineSummary(province.adcode);
+
+                    that.getProvinceJson(item, function(json) {
+                        if (item.adcode == 100000) {
+                            that.provinceName = "";
+                        } else {
+                            that.provinceName = item.name;
+                            copyProvinceItem = item;
                         }
+                        that.cityName = "";
                     });
+                },
+                getProvinceJson: function(province, callback) {
+                    if (province && province.adcode) {
+                        var that = this;
+                        $.ajax({
+                            url: myUrls.queryGeoJson(province.adcode),
+                            async: false,
+                            success: function(json) {
+                                mapJson = json;
+                                that.qeuryDatavOnlineSummary(province.adcode);
+                                callback && callback(json);
+                            }
+                        });
+                    }
                 },
                 displayEcharts: function() {
                     var options = this.getEchartsOptions();
@@ -328,8 +451,6 @@
                     utils.sendAjax(url, {
                         adcode: adcode
                     }, function(resp) {
-                        // this.changeData();
-                        console.log(resp);
                         if (resp.status === 0) {
                             that.offlines = resp.offlines;
                             that.onlines = resp.onlines;
@@ -338,12 +459,338 @@
                             that.total = resp.total;
                             that.data = resp.summarys;
                             that.changeData();
+                            that.showTotal();
                         } else {
                             that.$Message.error('查询错误');
                         }
 
                     }, function(error) {
                         that.$Message.error('网络错误');
+                    });
+                },
+                showTotal: function() {
+                    this.chart_total0.setOption({
+                        series: [{
+                            name: '总数',
+                            type: 'pie',
+                            radius: ['77%', '90%'],
+                            avoidLabelOverlap: false,
+                            hoverOffset: 5,
+                            label: {
+                                normal: {
+                                    show: false,
+                                    position: 'center'
+                                },
+                                emphasis: {
+                                    show: false
+                                }
+
+                            },
+                            labelLine: {
+                                normal: {
+                                    show: false
+                                }
+                            },
+                            data: [{
+                                value: this.total,
+                                name: '总数',
+                                itemStyle: {
+                                    normal: {
+                                        color: {
+                                            type: 'linear',
+                                            x: 0,
+                                            y: 0,
+                                            x2: 1,
+                                            y2: 1,
+                                            colorStops: [{
+                                                offset: 0,
+                                                color: 'red' // 0% 处的颜色
+                                            }, {
+                                                offset: 1,
+                                                color: 'blue' // 100% 处的颜色
+                                            }],
+                                            global: false // 缺省为 false
+                                        }
+                                    }
+                                },
+                            }, ]
+                        }]
+                    });
+                    this.chart_total1.setOption({
+                        series: [{
+                            name: '在线',
+                            type: 'pie',
+                            radius: ['77%', '90%'],
+                            avoidLabelOverlap: false,
+                            hoverOffset: 5,
+                            label: {
+                                normal: {
+                                    show: false,
+                                    position: 'center'
+                                },
+                                emphasis: {
+                                    show: false
+                                }
+
+                            },
+                            labelLine: {
+                                normal: {
+                                    show: false
+                                }
+                            },
+                            data: [{
+                                value: this.onlines,
+                                name: '在线',
+                                itemStyle: {
+                                    normal: {
+                                        color: {
+                                            type: 'linear',
+                                            x: 0,
+                                            y: 0,
+                                            x2: 1,
+                                            y2: 1,
+                                            colorStops: [{
+                                                offset: 0,
+                                                color: '#08d511' // 0% 处的颜色
+                                            }, {
+                                                offset: 1,
+                                                color: '#fff600' // 100% 处的颜色
+                                            }],
+                                            global: false // 缺省为 false
+                                        }
+                                    }
+                                },
+                            }, {
+                                value: (this.total - this.onlines),
+                                name: '其他',
+                                itemStyle: {
+                                    normal: {
+                                        color: {
+                                            type: 'linear',
+                                            x: 0,
+                                            y: 0,
+                                            x2: 1,
+                                            y2: 1,
+                                            colorStops: [{
+                                                offset: 0,
+                                                color: '#00001d' // 0% 处的颜色
+                                            }, {
+                                                offset: 1,
+                                                color: '#00001d' // 100% 处的颜色
+                                            }],
+                                            global: false // 缺省为 false
+                                        }
+                                    }
+                                },
+                            }, ]
+                        }]
+                    });
+                    this.chart_total2.setOption({
+                        series: [{
+                            name: '离线',
+                            type: 'pie',
+                            radius: ['77%', '90%'],
+                            avoidLabelOverlap: false,
+                            hoverOffset: 5,
+                            label: {
+                                normal: {
+                                    show: false,
+                                    position: 'center'
+                                },
+                                emphasis: {
+                                    show: false
+                                }
+
+                            },
+                            labelLine: {
+                                normal: {
+                                    show: false
+                                }
+                            },
+                            data: [{
+                                value: this.offlines,
+                                name: '离线',
+                                itemStyle: {
+                                    normal: {
+                                        color: {
+                                            type: 'linear',
+                                            x: 0,
+                                            y: 0,
+                                            x2: 1,
+                                            y2: 1,
+                                            colorStops: [{
+                                                offset: 0,
+                                                color: '#8b95ba' // 0% 处的颜色
+                                            }, {
+                                                offset: 1,
+                                                color: '#8baaba' // 100% 处的颜色
+                                            }],
+                                            global: false // 缺省为 false
+                                        }
+                                    }
+                                },
+                            }, {
+                                value: (this.total - this.offlines),
+                                name: '其他',
+                                itemStyle: {
+                                    normal: {
+                                        color: {
+                                            type: 'linear',
+                                            x: 0,
+                                            y: 0,
+                                            x2: 1,
+                                            y2: 1,
+                                            colorStops: [{
+                                                offset: 0,
+                                                color: '#00001d' // 0% 处的颜色
+                                            }, {
+                                                offset: 1,
+                                                color: '#00001d' // 100% 处的颜色
+                                            }],
+                                            global: false // 缺省为 false
+                                        }
+                                    }
+                                },
+                            }, ]
+                        }]
+                    });
+                    this.chart_total3.setOption({
+                        series: [{
+                            name: '行驶',
+                            type: 'pie',
+                            radius: ['77%', '90%'],
+                            avoidLabelOverlap: false,
+                            hoverOffset: 5,
+                            label: {
+                                normal: {
+                                    show: false,
+                                    position: 'center'
+                                },
+                                emphasis: {
+                                    show: false
+                                }
+
+                            },
+                            labelLine: {
+                                normal: {
+                                    show: false
+                                }
+                            },
+                            data: [{
+                                value: this.movings,
+                                name: '行驶',
+                                itemStyle: {
+                                    normal: {
+                                        color: {
+                                            type: 'linear',
+                                            x: 0,
+                                            y: 0,
+                                            x2: 1,
+                                            y2: 1,
+                                            colorStops: [{
+                                                offset: 0,
+                                                color: '#678eff' // 0% 处的颜色
+                                            }, {
+                                                offset: 1,
+                                                color: '#67e1ff' // 100% 处的颜色
+                                            }],
+                                            global: false // 缺省为 false
+                                        }
+                                    }
+                                },
+                            }, {
+                                value: (this.total - this.movings),
+                                name: '其他',
+                                itemStyle: {
+                                    normal: {
+                                        color: {
+                                            type: 'linear',
+                                            x: 0,
+                                            y: 0,
+                                            x2: 1,
+                                            y2: 1,
+                                            colorStops: [{
+                                                offset: 0,
+                                                color: '#00001d' // 0% 处的颜色
+                                            }, {
+                                                offset: 1,
+                                                color: '#00001d' // 100% 处的颜色
+                                            }],
+                                            global: false // 缺省为 false
+                                        }
+                                    }
+                                },
+                            }, ]
+                        }]
+                    });
+                    this.chart_total4.setOption({
+                        series: [{
+                            name: '停止',
+                            type: 'pie',
+                            radius: ['77%', '90%'],
+                            avoidLabelOverlap: false,
+                            hoverOffset: 5,
+                            label: {
+                                normal: {
+                                    show: false,
+                                    position: 'center'
+                                },
+                                emphasis: {
+                                    show: false
+                                }
+
+                            },
+                            labelLine: {
+                                normal: {
+                                    show: false
+                                }
+                            },
+                            data: [{
+                                value: this.statics,
+                                name: '停止',
+                                itemStyle: {
+                                    normal: {
+                                        color: {
+                                            type: 'linear',
+                                            x: 0,
+                                            y: 0,
+                                            x2: 1,
+                                            y2: 1,
+                                            colorStops: [{
+                                                offset: 0,
+                                                color: '#ff5858' // 0% 处的颜色
+                                            }, {
+                                                offset: 1,
+                                                color: '#ffca58' // 100% 处的颜色
+                                            }],
+                                            global: false // 缺省为 false
+                                        }
+                                    }
+                                },
+                            }, {
+                                value: (this.total - this.statics),
+                                name: '其他',
+                                itemStyle: {
+                                    normal: {
+                                        color: {
+                                            type: 'linear',
+                                            x: 0,
+                                            y: 0,
+                                            x2: 1,
+                                            y2: 1,
+                                            colorStops: [{
+                                                offset: 0,
+                                                color: '#00001d' // 0% 处的颜色
+                                            }, {
+                                                offset: 1,
+                                                color: '#00001d' // 100% 处的颜色
+                                            }],
+                                            global: false // 缺省为 false
+                                        }
+                                    }
+                                },
+                            }, ]
+                        }]
                     });
                 },
                 getEchartsOptions: function() {
@@ -353,7 +800,7 @@
                         },
                         visualMap: {
                             min: 0,
-                            max: 100,
+                            max: 10000,
                             left: '10',
                             bottom: '10',
                             text: ['多', '少'], // 文本，默认为数值文本
@@ -371,14 +818,18 @@
                             //type: 'scatter',
                             type: 'map',
                             mapType: 'map',
-                            data: [{
-                                name: "广东省",
-                                value: [0, 1, 0, 0, 1000]
-                            }, {
-                                name: "山东省",
-                                value: [0, 1, 0, 0, 9]
-                            }],
-                            // data: this.data,
+                            // data: [{
+                            //     name: "广东省",
+                            //     value: [0, 1, 0, 0, 1000]
+                            // }, {
+                            //     name: "山东省",
+                            //     value: [0, 1, 0, 0, 9]
+                            // }],
+                            data: this.data,
+                            // left: 50,
+                            // top: 20,
+                            // right: 50,
+                            // bottom: 20,
                             label: {
                                 normal: {
                                     formatter: function(a) {
