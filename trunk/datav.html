@@ -251,6 +251,7 @@
     <script src="./js/config.js"></script>
     <script src="./js/dateformat.js"></script>
     <script src="./js/util.js"></script>
+    <script src="./js/protobuf.js"></script>
     <script>
         var token = utils.getParameterByName('token');
         var mapJson = null;
@@ -286,6 +287,69 @@
             },
             mounted: function() {
                 this.init();
+                // // PositionLastProto.proto
+                var data = {
+                    username: 'admin',
+                    deviceids: [],
+                    lastquerypositiontime: 0
+                };
+                $.ajax({
+                    url: myUrls.lastPosition(),
+                    method: 'post',
+                    data: JSON.stringify(data),
+                    success: function(payloadBase64Json) {
+                        console.log('请求成功')
+
+                        // protobuf.decoder(json);
+                        // $.ajax({
+                        //     url: './RespDeviceLastPositionProto.json',
+                        //     method: 'get',
+                        //     success: function(respJson) {
+
+                        //         var root = protobuf.Root.fromJSON(respJson);
+                        //         var respDeviceLastPositionProto = root.lookupType("proto.RespDeviceLastPositionProto");
+                        //         console.log('respDeviceLastPositionProto', respDeviceLastPositionProto);
+                        //         // var errMsg = respDeviceLastPositionProto.verify(payload);
+                        //         // if (errMsg)
+                        //         //     throw Error(errMsg);
+                        //         var datas = new Uint8Array(payload);
+                        //         console.log(datas);
+                        //         var message = respDeviceLastPositionProto.decode(datas);
+                        //         console.log('message', message);
+                        //     }
+                        // })
+                        var payloadHex = payloadBase64Json.cause;
+                        var decodedBinary = utils.HexStr2Bytes(payloadHex);
+                        //console.log("decodedBinary", payloadBase64);
+                        protobuf.load("./RespDeviceLastPositionProto.json", function(err, root) {
+
+                            const respDeviceLastPositionProto = root.lookupType("proto.RespDeviceLastPositionProto");
+                            //debugger;
+                            //var decodedBinary = protobuf.util.base64.decode(payloadBase64);
+                            // console.log("protobuf.util.base64 : ", decodedBinary);
+                            //var datas = new Uint8Array(decodedBinary);
+                            var decoded = respDeviceLastPositionProto.decode(decodedBinary);
+
+                            console.log('decoded', decoded);
+                        });
+                    },
+                    error: function(e) {
+
+                        var payloadBase64 = e.responseText;
+                        console.log('payloadBase64', payloadBase64);
+                        protobuf.load("./RespDeviceLastPositionProto.json", function(err, root) {
+
+                            const respDeviceLastPositionProto = root.lookupType("proto.RespDeviceLastPositionProto");
+
+                            var decodedBinary = protobuf.util.base64.decode(payloadBase64);
+                            // console.log("protobuf.util.base64 : ", decodedBinary);
+                            var datas = new Uint8Array(decodedBinary);
+                            var decoded = respDeviceLastPositionProto.decode(datas);
+
+                            console.log('decoded', decoded);
+                        });
+                    }
+                });
             },
             methods: {
                 clickChind: function() {

@@ -1,0 +1,10 @@
+syntax = "proto3";
+option java_package = "com.minigps.proto";
+option java_outer_classname = "PositionLastProto";
+package proto;
+
+
+
+message PositionLast {
+	int32 positionlastid=3;//phone status
+}
