@@ -362,6 +362,9 @@ var appHeader = {
         },
         userType: function() {
             return this.$store.state.userType;
+        },
+        aHref: function() {
+            return 'tencent://message/?uin=' + this.createrqq + '&amp;Site=' + this.creatername + '&amp;Menu=yes';
         }
     },
     mounted: function() {

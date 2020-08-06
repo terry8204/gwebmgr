@@ -1114,7 +1114,7 @@ var monitor = {
                         me.lastquerypositiontime = DateFormat.getCurrentUTC();
                         isLoadLastPositon = true;
                     } else {
-                        errorCall(err);
+                        errorCall();
                         isLoadLastPositon = true;
                     }
                 }
