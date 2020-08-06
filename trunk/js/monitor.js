@@ -999,56 +999,126 @@ var monitor = {
                 deviceids: deviceIds,
                 lastquerypositiontime: me.lastquerypositiontime
             };
-            $.ajax({
-                url: url,
-                method: 'post',
-                data: JSON.stringify(data),
-                dataType: 'json',
-                success: function(resp) {
-                    if (resp.status == 0) {
-                        if (resp.records && resp.records.length > 0) {
-                            resp.records.forEach(function(item) {
-                                if (item) {
-                                    var deviceid = item.deviceid;
-                                    var b_lon_and_b_lat = wgs84tobd09(item.callon, item.callat)
-                                    var g_lon_and_g_lat = wgs84togcj02(item.callon, item.callat);
-                                    var online = utils.getIsOnline(item);
-                                    item.b_lon = b_lon_and_b_lat[0];
-                                    item.b_lat = b_lon_and_b_lat[1];
-                                    item.g_lon = g_lon_and_g_lat[0];
-                                    item.g_lat = g_lon_and_g_lat[1];
-                                    item.online = online;
-                                    item.devicename = me.deviceInfos[deviceid] ? me.deviceInfos[deviceid].devicename : "";
-                                    //item.updatetimeStr = DateFormat.longToDateTimeStr(item.updatetime, 0);
-                                    // console.log("lastPositon", item.devicename, DateFormat.longToDateTimeStr(item.updatetime, 0));
-                                    var oldPositionLast = me.positionLastrecords[deviceid];
-                                    if (oldPositionLast == undefined) {
-                                        me.positionLastrecords[deviceid] = item;
-                                    } else {
-                                        me.copyPositionLastValue(oldPositionLast, item);
+
+            // $.ajax({
+            //     url: url,
+            //     method: 'post',
+            //     data: JSON.stringify(data),
+            //     dataType: 'json',
+            //     success: function(resp) {
+            //         if (resp.status == 0) {
+            //             if (resp.records && resp.records.length > 0) {
+            //                 resp.records.forEach(function(item) {
+            //                     if (item) {
+            //                         var deviceid = item.deviceid;
+            //                         var b_lon_and_b_lat = wgs84tobd09(item.callon, item.callat)
+            //                         var g_lon_and_g_lat = wgs84togcj02(item.callon, item.callat);
+            //                         var online = utils.getIsOnline(item);
+            //                         item.b_lon = b_lon_and_b_lat[0];
+            //                         item.b_lat = b_lon_and_b_lat[1];
+            //                         item.g_lon = g_lon_and_g_lat[0];
+            //                         item.g_lat = g_lon_and_g_lat[1];
+            //                         item.online = online;
+            //                         item.devicename = me.deviceInfos[deviceid] ? me.deviceInfos[deviceid].devicename : "";
+            //                         //item.updatetimeStr = DateFormat.longToDateTimeStr(item.updatetime, 0);
+            //                         // console.log("lastPositon", item.devicename, DateFormat.longToDateTimeStr(item.updatetime, 0));
+            //                         var oldPositionLast = me.positionLastrecords[deviceid];
+            //                         if (oldPositionLast == undefined) {
+            //                             me.positionLastrecords[deviceid] = item;
+            //                         } else {
+            //                             me.copyPositionLastValue(oldPositionLast, item);
+            //                         }
+
+            //                     }
+            //                 })
+
+            //             }
+            //             isNeedRefreshMapUI = true;
+            //             callback ? callback() : '';
+            //         } else if (resp.status > 9000) {
+            //             me.$Message.error(me.$t("monitor.reLogin"))
+            //             Cookies.remove('token')
+            //             setTimeout(function() {
+            //                 window.location.href = 'index.html'
+            //             }, 2000)
+            //         }
+            //         me.lastquerypositiontime = DateFormat.getCurrentUTC();
+            //         isLoadLastPositon = true;
+            //     },
+            //     error: function(err) {
+            //         errorCall(err);
+            //         isLoadLastPositon = true;
+            //     }
+            // })
+
+
+
+
+            var xhr = null;
+            try {
+                xhr = new XMLHttpRequest();
+            } catch (e) {
+                xhr = new ActiveXObject("Microsoft.XMLHTTP");
+            }
+            //2.调用open方法（true----异步）
+            xhr.open("post", url, true);
+            xhr.responseType = "arraybuffer";
+            //3.发送数据
+            //xhr.setRequestHeader('content-type', 'application/x-www-form-urlencoded');
+            xhr.send(JSON.stringify(data));
+
+            //4.请求状态改变事件
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == 4) {
+                    if (xhr.status == 200) {
+                        var responseArray = new Uint8Array(this.response)
+                        var protobufRoot = protobuf.Root.fromJSON(deviceLastPositionProto);
+                        var respDeviceLastPositionProto = protobufRoot.lookupType("proto.RespDeviceLastPositionProto");
+                        var resp = respDeviceLastPositionProto.decode(responseArray);
+                        if (resp.status == 0) {
+                            if (resp.records && resp.records.length > 0) {
+                                resp.records.forEach(function(item) {
+                                    if (item) {
+                                        var deviceid = item.deviceid;
+                                        var b_lon_and_b_lat = wgs84tobd09(item.callon, item.callat)
+                                        var g_lon_and_g_lat = wgs84togcj02(item.callon, item.callat);
+                                        var online = utils.getIsOnline(item);
+                                        item.b_lon = b_lon_and_b_lat[0];
+                                        item.b_lat = b_lon_and_b_lat[1];
+                                        item.g_lon = g_lon_and_g_lat[0];
+                                        item.g_lat = g_lon_and_g_lat[1];
+                                        item.online = online;
+                                        item.devicename = me.deviceInfos[deviceid] ? me.deviceInfos[deviceid].devicename : "";
+                                        //item.updatetimeStr = DateFormat.longToDateTimeStr(item.updatetime, 0);
+                                        // console.log("lastPositon", item.devicename, DateFormat.longToDateTimeStr(item.updatetime, 0));
+                                        var oldPositionLast = me.positionLastrecords[deviceid];
+                                        if (oldPositionLast == undefined) {
+                                            me.positionLastrecords[deviceid] = item;
+                                        } else {
+                                            me.copyPositionLastValue(oldPositionLast, item);
+                                        }
+
                                     }
+                                })
 
-                                }
-                            })
-
+                            }
+                            isNeedRefreshMapUI = true;
+                            callback ? callback() : '';
+                        } else if (resp.status > 9000) {
+                            me.$Message.error(me.$t("monitor.reLogin"))
+                            Cookies.remove('token')
+                            setTimeout(function() {
+                                window.location.href = 'index.html'
+                            }, 2000)
                         }
-                        isNeedRefreshMapUI = true;
-                        callback ? callback() : '';
-                    } else if (resp.status > 9000) {
-                        me.$Message.error(me.$t("monitor.reLogin"))
-                        Cookies.remove('token')
-                        setTimeout(function() {
-                            window.location.href = 'index.html'
-                        }, 2000)
+                        me.lastquerypositiontime = DateFormat.getCurrentUTC();
+                        isLoadLastPositon = true;
+                    } else {
+                        errorCall(err);
+                        isLoadLastPositon = true;
                     }
-                    me.lastquerypositiontime = DateFormat.getCurrentUTC();
-                    isLoadLastPositon = true;
-                },
-                error: function(err) {
-                    errorCall(err);
-                    isLoadLastPositon = true;
                 }
-            })
+            }
         },
         openTreeDeviceNav: function(deviceid) {
             var me = this;
