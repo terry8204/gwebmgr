@@ -1230,6 +1230,9 @@
                         <div class="videoElementWrap">
                             <video id="videoElement1" controls :muted="isMute"></video>
                         </div>
+                        <div class="resolving-power" v-show="resolvingPower.yi.width!=0">
+                            {{resolvingPower.yi.width}}*{{resolvingPower.yi.height}}
+                        </div>
                         <div class="state-event-tip" v-show="playerStateTips.yi!=''">
                             <div>
                                 <span v-text="playerStateTips.yi"></span>
@@ -1240,6 +1243,9 @@
                     <div class="video-wrap" :style="player2Style" @click="playerIndex=2">
                         <div class="videoElementWrap">
                             <video id="videoElement2" controls :muted="isMute"></video>
+                        </div>
+                        <div class="resolving-power" v-show="resolvingPower.er.width!=0">
+                            {{resolvingPower.er.width}}*{{resolvingPower.er.height}}
                         </div>
                         <div class="state-event-tip" v-show="playerStateTips.er!=''">
                             <div>
@@ -1252,6 +1258,9 @@
                         <div class="videoElementWrap">
                             <video id="videoElement3" controls :muted="isMute"></video>
                         </div>
+                        <div class="resolving-power" v-show="resolvingPower.san.width!=0">
+                            {{resolvingPower.san.width}}*{{resolvingPower.san.height}}
+                        </div>
                         <div class="state-event-tip" v-show="playerStateTips.san!=''">
                             <div>
                                 <span v-text="playerStateTips.san"></span>
@@ -1262,6 +1271,9 @@
                     <div class="video-wrap" :style="player4Style" @click="playerIndex=4">
                         <div class="videoElementWrap">
                             <video id="videoElement4" controls :muted="isMute"></video>
+                        </div>
+                        <div class="resolving-power" v-show="resolvingPower.si.width!=0">
+                            {{resolvingPower.si.width}}*{{resolvingPower.si.height}}
                         </div>
                         <div class="state-event-tip" v-show="playerStateTips.si!=''">
                             <div>

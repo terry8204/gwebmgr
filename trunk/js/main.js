@@ -732,6 +732,24 @@ var videoPlayer = {
                 'san': '0KB/S',
                 'si': '0KB/S',
             },
+            resolvingPower: {
+                'yi': {
+                    width: 0,
+                    height: 0,
+                },
+                'er': {
+                    width: 0,
+                    height: 0,
+                },
+                'san': {
+                    width: 0,
+                    height: 0,
+                },
+                'si': {
+                    width: 0,
+                    height: 0,
+                },
+            }
         }
     },
     methods: {
@@ -858,45 +876,15 @@ var videoPlayer = {
                 left: 'auto',
             };
         },
-        // onClickVideoBody: function(e) {
-        //     console.log(e);
-        //     var offsetX = 0;
-        //     var offsetY = 0;
-        //     var clientWidth = document.documentElement.clientWidth || document.body.clientWidth;
-        //     var clientHeight = document.documentElement.clientHeight || document.body.clientHeight;
-        //     if (this.isLargen == 1) {
-        //         offsetX = clientWidth - 900;
-        //         offsetY = clientHeight - 535;
-        //     } else if (this.isLargen == 2) {
-        //         offsetX = clientWidth - this.wrapperWidth;
-        //         offsetY = clientHeight - this.wrapperHeight - 22 - 35;
-        //     }
-        //     var layerX = e.x - offsetX;
-        //     var layerY = e.y - offsetY;
-        //     var playerIndex = 0;
-
-        //     if (layerX < this.wrapperWidth / 2 && layerY < (this.wrapperHeight - 22 - 35) / 2) {
-        //         playerIndex = 1;
-        //     } else if (layerX > (this.wrapperWidth / 2) && layerX < this.wrapperWidth && layerY < (this.wrapperHeight - 22 - 35) / 2) {
-        //         playerIndex = 2;
-        //     } else if (layerX < this.wrapperWidth / 2 && layerY > (this.wrapperHeight - 22 - 35) / 2 && layerY < (this.wrapperHeight - 22 - 35)) {
-        //         playerIndex = 3;
-        //     } else {
-        //         playerIndex = 4;
-        //     }
-
-        //     if (playerIndex != 0) {
-        //         this.playerIndex = playerIndex;
-        //     }
-
-        // },
         addEventListenerToPlayer: function(player, index) {
 
             var me = this,
                 key = me.playerStateKeyList[index];
             player.addEventListener('loadedmetadata', function(e) {
-                me.videoWidth = e.target.videoWidth;
-                me.videoHeight = e.target.videoHeight;
+                me.resolvingPower[key] = {
+                    width: e.target.videoWidth,
+                    height: e.target.videoHeight,
+                }
             })
             player.addEventListener('error', function() {
                 me.playerStateTips[key] = "请求数据时遇到错误";
@@ -1065,7 +1053,8 @@ var videoPlayer = {
             } else {
                 var context = canvas.getContext("2d");
                 var video = document.getElementById("videoElement" + index);
-                context.drawImage(video, 0, 0, this.videoWidth, this.videoHeight);
+                var key = this.playerStateKeyList[index];
+                context.drawImage(video, 0, 0, this.resolvingPower[key].width, this.resolvingPower[key].height);
                 return canvas.toDataURL("image/png");
             }
         },
@@ -1223,8 +1212,6 @@ var videoPlayer = {
         }
     },
     mounted: function() {
-        this.videoWidth = 750;
-        this.videoHeight = 480;
         this.videoTimes = null;
         this.videoIns = {};
         this.playerStateKeyList = ['', 'yi', 'er', 'san', 'si'];

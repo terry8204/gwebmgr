@@ -1000,6 +1000,13 @@ div.state-event-tip {
     font-size: 10px;
 }
 
+div.resolving-power {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    color: red;
+}
+
 div.video_footer {
     position: absolute;
     left: 0;
