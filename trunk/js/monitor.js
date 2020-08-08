@@ -24,6 +24,168 @@ var monitor = {
     data: function() {
         var vm = this;
         return {
+            isMute: false,
+            setupVideoModal:false,
+            videoProperty: {},
+            safetyDeviceAdas: {},
+            safetyDeviceDsm: {},
+            safetyDeviceTpms: {},
+            safetyDeviceBsd: {},
+            channelsData: [],
+            currentVideoDeviceInfo:{
+                deviceId:null,
+                deviceName:'',
+            },
+            modalHader: '视频参数',
+            physicalchannel1: '0',
+            physicalchannel2: '0',
+            physicalchannel3: '0',
+            physicalchannel4: '0',
+            // 音视频参数设置
+            realtimebitratemode: '',
+            storebitratemode: '',
+            realtimeresolution: '',
+            storeresolution: '',
+            realtimekeyframeinterval: '',
+            storekeyframeinterval: '',
+            realtimeframerate: '',
+            storeframerate: '',
+            realtimeframebitrate: '',
+            storeframebitrate: '',
+            videoCheckboxGroup: [],
+            usingaudio: '',
+      
+              // 视频播放参数
+            videotranstype: '',
+            videostreamtype: '',
+            audiochannel: '',
+            historyaudiocodec: '0',
+            needuploadfilename: false,
+            videotimestamptype: '0',
+            videochannelcount:4,
+
+            playerState: {
+                'yi': false,
+                'er': false,
+                'san': false,
+                'si': false,
+                'wu': false,
+                'liu': false,
+                'qi': false,
+                'ba': false,
+                'jiu': false,
+                'shi': false,
+                'shiyi': false,
+                'shier': false,
+                'shisan': false,
+                'shisi': false,
+                'shiwu': false,
+                'shiliu': false,
+            },
+            resolvingPower: {
+                'yi': {
+                    width: 0,
+                    height: 0,
+                },
+                'er': {
+                    width: 0,
+                    height: 0,
+                },
+                'san': {
+                    width: 0,
+                    height: 0,
+                },
+                'si': {
+                    width: 0,
+                    height: 0,
+                },
+                'wu': {
+                    width: 0,
+                    height: 0,
+                },
+                'liu': {
+                    width: 0,
+                    height: 0,
+                },
+                'qi': {
+                    width: 0,
+                    height: 0,
+                },
+                'ba': {
+                    width: 0,
+                    height: 0,
+                },
+                'jiu': {
+                    width: 0,
+                    height: 0,
+                },
+                'shi': {
+                    width: 0,
+                    height: 0,
+                },
+                'shiyi': {
+                    width: 0,
+                    height: 0,
+                },
+                'shier': {
+                    width: 0,
+                    height: 0,
+                },
+                'shisan': {
+                    width: 0,
+                    height: 0,
+                },
+                'shisi': {
+                    width: 0,
+                    height: 0,
+                },
+                'shiwu': {
+                    width: 0,
+                    height: 0,
+                },
+                'shiliu': {
+                    width: 0,
+                    height: 0,
+                },
+            },
+            playerStateTips: {
+                'yi': '',
+                'er': '',
+                'san': '',
+                'si': '',
+                'wu': '',
+                'liu': '',
+                'qi': '',
+                'ba': '',
+                'jiu': '',
+                'shi': '',
+                'shiyi': '',
+                'shier': '',
+                'shisan': '',
+                'shisi': '',
+                'shiwu': '',
+                'shiliu': '',
+            },
+            networkSpeed: {
+                'yi': '0KB/S',
+                'er': '0KB/S',
+                'san': '0KB/S',
+                'si': '0KB/S',
+                'wu': '0KB/S',
+                'liu': '0KB/S',
+                'qi': '0KB/S',
+                'ba': '0KB/S',
+                'jiu': '0KB/S',
+                'shi': '0KB/S',
+                'shiyi': '0KB/S',
+                'shier': '0KB/S',
+                'shisan': '0KB/S',
+                'shisi': '0KB/S',
+                'shiwu': '0KB/S',
+                'shiliu': '0KB/S'
+            },
+            isMapMode: false, //是否地图模式
+            videoNumber: 4,
             arealoading: false,
             isFullMap: false,
             isShowAreaCount: false,
@@ -160,10 +322,594 @@ var monitor = {
             cacheTableData: [],
             sendTableData: [],
             cmdPwd: null, //指令密码
-            lastquerypositiontime: 0
+            lastquerypositiontime: 0,
+            videoChannelsColumns: [{  
+                key: 'physicalchannel',
+                title: '物理通道号',
+            }, {
+                key: 'logicalchannel',
+                title: '逻辑通道号',
+            }, {
+                key: 'channeltype',
+                title: '通道类型',
+                render: function(h, params) {
+                    var channeltype = params.row.channeltype,
+                        type;
+                    if (channeltype === 0) {
+                        type = '音视频'
+                    } else if (channeltype === 1) {
+                        type = '音频'
+                    } else if (channeltype === 2) {
+                        type = '视频'
+                    }
+                    return h('span', {}, type);
+                }
+            }, {
+                key: 'connectptz',
+                title: '是否连接云台',
+                render: function(h, params) {
+                    var connectptz = params.row.connectptz;
+                    return h('span', {}, connectptz === 0 ? '未连接' : '已连接');
+                }
+            }, ],
+            videoChannelsTableData: [],
         }
     },
     methods: {
+        handleSetPlayParamter: function() {
+            if(this.currentVideoDeviceInfo.deviceId == null){
+                this.$Message.error('请选择视频设备');
+                return;
+            }
+            var url = myUrls.setVideoPlayParameters(),
+                that = this;
+            if (!(typeof Number(this.audiochannel) === 'number' && !isNaN(this.audiochannel))) {
+                that.$Message.error('通道号必须是1到99的数字')
+                return;
+            }
+
+            var data = {
+                deviceid: this.currentVideoDeviceInfo.deviceId,
+                audiochannel: Number(this.audiochannel),
+                videotranstype: Number(this.videotranstype),
+                videostreamtype: Number(this.videostreamtype),
+                historyaudiocodec: Number(this.historyaudiocodec),
+                needuploadfilename: this.needuploadfilename ? 1 : 0,
+                videotimestamptype: Number(this.videotimestamptype),
+                videochannelcount: this.videochannelcount,
+                channelinfos: []
+            }
+
+            if (this.videochannelcount == 1) {
+                data.channelinfos.push({
+                    physicalchannel: 1,
+                    channeltype: Number(this.physicalchannel1)
+                });
+            } else if (this.videochannelcount == 2) {
+                data.channelinfos.push({
+                    physicalchannel: 1,
+                    channeltype: Number(this.physicalchannel1)
+                });
+                data.channelinfos.push({
+                    physicalchannel: 2,
+                    channeltype: Number(this.physicalchannel2)
+                });
+            } else if (this.videochannelcount == 3) {
+                data.channelinfos.push({
+                    physicalchannel: 1,
+                    channeltype: Number(this.physicalchannel1)
+                });
+                data.channelinfos.push({
+                    physicalchannel: 2,
+                    channeltype: Number(this.physicalchannel2)
+                });
+                data.channelinfos.push({
+                    physicalchannel: 3,
+                    channeltype: Number(this.physicalchannel3)
+                });
+            } else if (this.videochannelcount == 4) {
+                data.channelinfos.push({
+                    physicalchannel: 1,
+                    channeltype: Number(this.physicalchannel1)
+                });
+                data.channelinfos.push({
+                    physicalchannel: 2,
+                    channeltype: Number(this.physicalchannel2)
+                });
+                data.channelinfos.push({
+                    physicalchannel: 3,
+                    channeltype: Number(this.physicalchannel3)
+                });
+                data.channelinfos.push({
+                    physicalchannel: 4,
+                    channeltype: Number(this.physicalchannel4)
+                });
+            }
+
+            utils.sendAjax(url, data, function(data) {
+
+                if (data.status === 0) {
+                    that.$Message.success('设置成功')
+                } else {
+                    that.$Message.error('设置失败')
+                }
+
+            })
+        },
+        queryVideoPlayParameters: function() {
+            if(this.currentVideoDeviceInfo.deviceId == null){
+                this.$Message.error('请选择视频设备');
+                return;
+            }
+            var url = myUrls.queryVideoPlayParameters(),
+                me = this;
+            utils.sendAjax(url, {
+                deviceid: this.currentVideoDeviceInfo.deviceId
+            }, function(respData) {
+                if (respData.status == 0) {
+                    me.historyaudiocodec = String(respData.historyaudiocodec);
+                    me.needuploadfilename = respData.needuploadfilename == 1 ? true : false;
+                    me.videotimestamptype = String(respData.videotimestamptype);
+                    me.videochannelcount = Number(respData.videochannelcount);
+                    var channelinfos = respData.channelinfos;
+                    channelinfos.forEach(function(item) {
+                        if (item.physicalchannel == 1) {
+                            me.physicalchannel1 = String(item.channeltype);
+                        } else if (item.physicalchannel == 2) {
+                            me.physicalchannel2 = String(item.channeltype);
+                        } else if (item.physicalchannel == 3) {
+                            me.physicalchannel3 = String(item.channeltype);
+                        } else if (item.physicalchannel == 4) {
+                            me.physicalchannel4 = String(item.channeltype);
+                        }
+                    });
+                    me.$Message.success("查询成功");
+                } else {
+                    me.$Message.error("查询失败");
+                }
+            });
+        },
+        setSingleAudioVideoParameters: function(index) {
+            if(this.currentVideoDeviceInfo.deviceId == null){
+                this.$Message.error('请选择视频设备');
+                return;
+            }
+            var originalData = this.channelsData[index];
+            var parameters = {};
+            if (
+                originalData.realtimebitratemode &&
+                originalData.storebitratemode &&
+                originalData.realtimeresolution &&
+                originalData.storeresolution &&
+                originalData.realtimekeyframeinterval &&
+                originalData.storekeyframeinterval &&
+                originalData.realtimeframerate &&
+                originalData.realtimeframebitrate &&
+                originalData.storeframebitrate
+            ) {
+                parameters.realtimebitratemode = Number(originalData.realtimebitratemode);
+                parameters.storebitratemode = Number(originalData.storebitratemode);
+                parameters.realtimeresolution = Number(originalData.realtimeresolution);
+                parameters.storeresolution = Number(originalData.storeresolution);
+                parameters.realtimekeyframeinterval = originalData.realtimekeyframeinterval;
+                parameters.storekeyframeinterval = originalData.storekeyframeinterval;
+                parameters.realtimeframerate = originalData.realtimeframerate;
+                parameters.realtimeframebitrate = originalData.realtimeframebitrate;
+                parameters.storeframebitrate = originalData.storeframebitrate;
+
+
+                var options = ['dateandtime', 'carnum', 'channel', 'latlon', 'recorderspeed', 'gpsspeed', 'drivingtime'];
+                var videoCheckboxGroup = originalData.videoCheckboxGroup;
+                var url = myUrls.setSingleAudioVideoParameters(),
+                    me = this;
+                options.forEach(function(item) {
+                        if (videoCheckboxGroup.indexOf(item) != -1) {
+                            parameters[item] = true;
+                        } else {
+                            parameters[item] = false;
+                        }
+                    })
+                    // parameters.deviceid = deviceid;
+                parameters.channelnum = ++index;
+                    
+                utils.sendAjax(url, {
+                    deviceid: this.currentVideoDeviceInfo.deviceId, //this.currentDeviceId
+                    parameters: [parameters]
+                }, function(data) {
+                    var status = data.status;
+                    if (status == CMD_SEND_RESULT_UNCONFIRM) {
+                        me.$Message.error('发送成功，未收到确认');
+                    } else if (status === CMD_SEND_RESULT_PASSWORD_ERROR) {
+                        me.$Message.error('密码错误');
+                    } else if (status === CMD_SEND_RESULT_OFFLINE_NOT_CACHE) {
+                        me.$Message.error("设备离线，未缓存");
+                    } else if (status === CMD_SEND_RESULT_OFFLINE_CACHED) {
+                        me.$Message.error("设备离线，已缓存");
+                    } else if (status === CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD) {
+                        me.$Message.error("需要修改默认密码");
+                    } else if (status === CMD_SEND_RESULT_DETAIL_ERROR) {
+                        me.$Message.error("错误:" + resp.cause);
+                    } else if (status === CMD_SEND_CONFIRMED) {
+                        me.$Message.success("发送成功");
+                    } else if (status === CMD_SEND_OVER_RETRY_TIMES) {
+                        me.$Message.error("尝试发送3次失败");
+                    } else if (status === CMD_SEND_SYNC_TIMEOUT) {
+                        me.$Message.error("发送超时");
+                    }
+                })
+            }
+        },
+        queryVideoProperty: function() {
+            if(this.currentVideoDeviceInfo.deviceId == null){
+                this.$Message.error('请选择视频设备');
+                return;
+            }
+            // that.Spin = true;
+            var url = myUrls.queryVideoProperty(),
+                that = this;
+            utils.sendAjax(url, {
+                deviceid: this.currentVideoDeviceInfo.deviceId, //this.currentDeviceId
+            }, function(data) {
+                var status = data.status;
+                if (status == CMD_SEND_RESULT_UNCONFIRM) {
+                    that.$Message.error('发送成功，未收到确认');
+                } else if (status === CMD_SEND_RESULT_PASSWORD_ERROR) {
+                    that.$Message.error('密码错误');
+                } else if (status === CMD_SEND_RESULT_OFFLINE_NOT_CACHE) {
+                    that.$Message.error("设备离线，未缓存");
+                } else if (status === CMD_SEND_RESULT_OFFLINE_CACHED) {
+                    that.$Message.error("设备离线，已缓存");
+                } else if (status === CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD) {
+                    that.$Message.error("需要修改默认密码");
+                } else if (status === CMD_SEND_RESULT_DETAIL_ERROR) {
+                    that.$Message.error("错误:" + resp.cause);
+                } else if (status === CMD_SEND_CONFIRMED) {
+                    that.$Message.success("查询成功");
+                    var audiosamplerate = data.audiosamplerate;
+                    switch (audiosamplerate) {
+                        case 0:
+                            data.audiosamplerate = '8 kHz';
+                            break;
+                        case 1:
+                            data.audiosamplerate = '22.05 kHz';
+                            break;
+                        case 2:
+                            data.audiosamplerate = '44.1 kHz';
+                            break;
+                        case 3:
+                            data.audiosamplerate = '48 kHz';
+                            break;
+                    }
+                    var audiosamplebits = data.audiosamplebits;
+                    switch (audiosamplebits) {
+                        case 0:
+                            data.audiosamplebits = '8bits';
+                            break;
+                        case 1:
+                            data.audiosamplebits = '16bits';
+                            break;
+                        case 2:
+                            data.audiosamplebits = '32bits';
+                            break;
+                    }
+                    that.videoProperty = data;
+                    that.videoPropertyModal = true;
+                } else if (status === CMD_SEND_OVER_RETRY_TIMES) {
+                    that.$Message.error("尝试发送3次失败");
+                } else if (status === CMD_SEND_SYNC_TIMEOUT) {
+                    that.$Message.error("发送超时");
+                }
+                // that.Spin = false;
+            })
+        },
+        queryVideoChannels: function() {
+            if(this.currentVideoDeviceInfo.deviceId == null){
+                this.$Message.error('请选择视频设备');
+                return;
+            }
+            var url = myUrls.queryAudioVideoChannels(),
+                me = this;
+            me.loading = true;
+            utils.sendAjax(url, {
+                deviceid: this.currentVideoDeviceInfo.deviceId
+            }, function(resp) {
+                me.loading = false;
+                var status = resp.status;
+                if (status == CMD_SEND_RESULT_UNCONFIRM) {
+                    me.$Message.error('发送成功，未收到确认');
+                } else if (status === CMD_SEND_RESULT_PASSWORD_ERROR) {
+                    me.$Message.error('密码错误');
+                } else if (status === CMD_SEND_RESULT_OFFLINE_NOT_CACHE) {
+                    me.$Message.error("设备离线，未缓存");
+                } else if (status === CMD_SEND_RESULT_OFFLINE_CACHED) {
+                    me.$Message.error("设备离线，已缓存");
+                } else if (status === CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD) {
+                    me.$Message.error("需要修改默认密码");
+                } else if (status === CMD_SEND_RESULT_DETAIL_ERROR) {
+                    me.$Message.error("错误:" + resp.cause);
+                } else if (status === CMD_SEND_CONFIRMED) {
+                    me.videoChannelsTableData = resp.uniaudiovideochannels.channels;
+                } else if (status === CMD_SEND_OVER_RETRY_TIMES) {
+                    me.$Message.error("尝试发送3次失败");
+                } else if (status === CMD_SEND_SYNC_TIMEOUT) {
+                    me.$Message.error("发送超时");
+                }
+            });
+        },
+        queryActiveSafetyDeviceInfo: function(exdevicename) {
+            if(this.currentVideoDeviceInfo.deviceId == null){
+                this.$Message.error('请选择视频设备');
+                return;
+            }
+            var url = myUrls.queryActiveSafetyDeviceInfo(),
+                me = this;
+            var data = {
+                deviceid: this.currentVideoDeviceInfo.deviceId,
+                exdevicename: exdevicename,
+                action: 'info'
+            };
+            // me.Spin = true;
+            utils.sendAjax(url, data, function(resp) {
+                // me.Spin = false;
+                var status = resp.status;
+                if (status == CMD_SEND_RESULT_UNCONFIRM) {
+                    me.$Message.error('发送成功，未收到确认');
+                } else if (status === CMD_SEND_RESULT_PASSWORD_ERROR) {
+                    me.$Message.error('密码错误');
+                } else if (status === CMD_SEND_RESULT_OFFLINE_NOT_CACHE) {
+                    me.$Message.error("设备离线，未缓存");
+                } else if (status === CMD_SEND_RESULT_OFFLINE_CACHED) {
+                    me.$Message.error("设备离线，已缓存");
+                } else if (status === CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD) {
+                    me.$Message.error("需要修改默认密码");
+                } else if (status === CMD_SEND_RESULT_DETAIL_ERROR) {
+                    me.$Message.error("错误:" + resp.cause);
+                } else if (status === CMD_SEND_CONFIRMED) {
+                    switch (exdevicename) {
+                        case 'adas':
+                            me.safetyDeviceAdas = resp;
+                            break;
+                        case 'dsm':
+                            me.safetyDeviceDsm = resp;
+                            break;
+                        case 'tpms':
+                            me.safetyDeviceTpms = resp;
+                            break;
+                        case 'bsd':
+                            me.safetyDeviceBsd = resp;
+                            break;
+                        default:
+                            console.log('tag', '');
+                    }
+                } else if (status === CMD_SEND_OVER_RETRY_TIMES) {
+                    me.$Message.error("尝试发送3次失败");
+                } else if (status === CMD_SEND_SYNC_TIMEOUT) {
+                    me.$Message.error("发送超时");
+                }
+            })
+        },
+        defaultClientParameters: function() {
+            var audiovideoparameters = {
+                carnum: true,
+                channel: true,
+                dateandtime: true,
+                drivingtime: false,
+                gpsspeed: false,
+                latlon: true,
+                osdsetting: 31,
+                realtimebitratemode: 0,
+                realtimeframebitrate: 2000,
+                realtimeframerate: 12,
+                realtimekeyframeinterval: 25,
+                realtimeresolution: 1,
+                recorderspeed: false,
+                storebitratemode: 1,
+                storeframebitrate: 2000,
+                storeframerate: 12,
+                storekeyframeinterval: 25,
+                storeresolution: 3,
+                usingaudio: 1,
+            };
+            var videoCheckboxGroup = [],
+                me = this;
+            me.realtimebitratemode = audiovideoparameters.realtimebitratemode + '';
+            me.storebitratemode = audiovideoparameters.storebitratemode + '';
+            me.realtimeresolution = audiovideoparameters.realtimeresolution + '';
+            me.storeresolution = audiovideoparameters.storeresolution + '';
+            me.realtimekeyframeinterval = audiovideoparameters.realtimekeyframeinterval;
+            me.storekeyframeinterval = audiovideoparameters.storekeyframeinterval;
+            me.realtimeframerate = audiovideoparameters.realtimeframerate;
+            me.storeframerate = audiovideoparameters.storeframerate;
+            me.realtimeframebitrate = audiovideoparameters.realtimeframebitrate;
+            me.storeframebitrate = audiovideoparameters.storeframebitrate;
+            me.usingaudio = audiovideoparameters.usingaudio + '';
+            audiovideoparameters.carnum ? videoCheckboxGroup.push('carnum') : null;
+            audiovideoparameters.channel ? videoCheckboxGroup.push('channel') : null;
+            audiovideoparameters.dateandtime ? videoCheckboxGroup.push('dateandtime') : null;
+            audiovideoparameters.drivingtime ? videoCheckboxGroup.push('drivingtime') : null;
+            audiovideoparameters.gpsspeed ? videoCheckboxGroup.push('gpsspeed') : null;
+            audiovideoparameters.latlon ? videoCheckboxGroup.push('latlon') : null;
+            audiovideoparameters.recorderspeed ? videoCheckboxGroup.push('recorderspeed') : null;
+            me.videoCheckboxGroup = videoCheckboxGroup;
+        },
+        queryClientParameters: function() {
+
+            this.Spin = true;
+            var url = myUrls.queryClientParameters(),
+                me = this;
+            utils.sendAjax(url, {
+                deviceid: deviceid
+            }, function(data) {
+                me.Spin = false;
+                var status = data.status;
+                var audiovideoparameters = data.audiovideoparameters;
+                if (audiovideoparameters != null) {
+                    if (status == CMD_SEND_RESULT_UNCONFIRM) {
+                        me.$Message.error('发送成功，未收到确认');
+                    } else if (status === CMD_SEND_RESULT_PASSWORD_ERROR) {
+                        me.$Message.error('密码错误');
+                    } else if (status === CMD_SEND_RESULT_OFFLINE_NOT_CACHE) {
+                        me.$Message.error("设备离线，未缓存");
+                    } else if (status === CMD_SEND_RESULT_OFFLINE_CACHED) {
+                        me.$Message.error("设备离线，已缓存");
+                    } else if (status === CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD) {
+                        me.$Message.error("需要修改默认密码");
+                    } else if (status === CMD_SEND_RESULT_DETAIL_ERROR) {
+                        me.$Message.error("错误:" + resp.cause);
+                    } else if (status === CMD_SEND_CONFIRMED) {
+                        me.$Message.success("查询成功!");
+                        var videoCheckboxGroup = [];
+                        me.realtimebitratemode = audiovideoparameters.realtimebitratemode + '';
+                        me.storebitratemode = audiovideoparameters.storebitratemode + '';
+                        me.realtimeresolution = audiovideoparameters.realtimeresolution + '';
+                        me.storeresolution = audiovideoparameters.storeresolution + '';
+                        me.realtimekeyframeinterval = audiovideoparameters.realtimekeyframeinterval;
+                        me.storekeyframeinterval = audiovideoparameters.storekeyframeinterval;
+                        me.realtimeframerate = audiovideoparameters.realtimeframerate;
+                        me.storeframerate = audiovideoparameters.storeframerate;
+                        me.realtimeframebitrate = audiovideoparameters.realtimeframebitrate;
+                        me.storeframebitrate = audiovideoparameters.storeframebitrate;
+                        me.usingaudio = audiovideoparameters.usingaudio + '';
+                        audiovideoparameters.carnum ? videoCheckboxGroup.push('carnum') : null;
+                        audiovideoparameters.channel ? videoCheckboxGroup.push('channel') : null;
+                        audiovideoparameters.dateandtime ? videoCheckboxGroup.push('dateandtime') : null;
+                        audiovideoparameters.drivingtime ? videoCheckboxGroup.push('drivingtime') : null;
+                        audiovideoparameters.gpsspeed ? videoCheckboxGroup.push('gpsspeed') : null;
+                        audiovideoparameters.latlon ? videoCheckboxGroup.push('latlon') : null;
+                        audiovideoparameters.recorderspeed ? videoCheckboxGroup.push('recorderspeed') : null;
+                        me.videoCheckboxGroup = videoCheckboxGroup;
+
+                    } else if (status === CMD_SEND_OVER_RETRY_TIMES) {
+                        me.$Message.error("尝试发送3次失败");
+                    } else if (status === CMD_SEND_SYNC_TIMEOUT) {
+                        me.$Message.error("发送超时");
+                    }
+                } else {
+                    me.$Message.error("设备没有返回数据");
+                }
+
+            });
+        },
+        setClientParameters: function() {
+            var parameters = {};
+            if (
+                this.realtimebitratemode &&
+                this.storebitratemode &&
+                this.realtimeresolution &&
+                this.storeresolution &&
+                this.realtimekeyframeinterval &&
+                this.storekeyframeinterval &&
+                this.realtimeframerate &&
+                this.realtimeframebitrate &&
+                this.storeframebitrate &&
+                this.usingaudio !== ''
+            ) {
+
+                parameters.realtimebitratemode = Number(this.realtimebitratemode);
+                parameters.storebitratemode = Number(this.storebitratemode);
+                parameters.realtimeresolution = Number(this.realtimeresolution);
+                parameters.storeresolution = Number(this.storeresolution);
+                parameters.realtimekeyframeinterval = this.realtimekeyframeinterval;
+                parameters.storekeyframeinterval = this.storekeyframeinterval;
+                parameters.realtimeframerate = this.realtimeframerate;
+                parameters.realtimeframebitrate = this.realtimeframebitrate;
+                parameters.storeframebitrate = this.storeframebitrate;
+                parameters.usingaudio = Number(this.usingaudio);
+
+                var options = ['dateandtime', 'carnum', 'channel', 'latlon', 'recorderspeed', 'gpsspeed', 'drivingtime'];
+                var videoCheckboxGroup = this.videoCheckboxGroup;
+                var url = myUrls.setAudioVideoParameters_Sync(),
+                    me = this;
+                options.forEach(function(item) {
+                    if (videoCheckboxGroup.indexOf(item) != -1) {
+                        parameters[item] = true;
+                    } else {
+                        parameters[item] = false;
+                    }
+                })
+                parameters.deviceid = deviceid;
+                me.Spin = true;
+                utils.sendAjax(url, parameters, function(resp) {
+                    var status = resp.status;
+                    me.Spin = false;
+                    if (status == CMD_SEND_RESULT_UNCONFIRM) {
+                        me.$Message.error('发送成功，未收到确认');
+                    } else if (status === CMD_SEND_RESULT_PASSWORD_ERROR) {
+                        me.$Message.error('密码错误');
+                    } else if (status === CMD_SEND_RESULT_OFFLINE_NOT_CACHE) {
+                        me.$Message.error("设备离线，未缓存");
+                    } else if (status === CMD_SEND_RESULT_OFFLINE_CACHED) {
+                        me.$Message.error("设备离线，已缓存");
+                    } else if (status === CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD) {
+                        me.$Message.error("需要修改默认密码");
+                    } else if (status === CMD_SEND_RESULT_DETAIL_ERROR) {
+                        me.$Message.error("错误:" + resp.cause);
+                    } else if (status === CMD_SEND_CONFIRMED) {
+                        me.$Message.success("发送成功");
+                    } else if (status === CMD_SEND_OVER_RETRY_TIMES) {
+                        me.$Message.error("尝试发送3次失败");
+                    } else if (status === CMD_SEND_SYNC_TIMEOUT) {
+                        me.$Message.error("发送超时");
+                    }
+                })
+            } else {
+                this.$Message.error("请填写全部参数")
+            }
+
+        },
+        querySingleAudioVideoParameters: function() {
+            if(this.currentVideoDeviceInfo.deviceId == null){
+                this.$Message.error('请选择视频设备');
+                return;
+            }
+            // this.Spin = true;
+            var url = myUrls.querySingleAudioVideoParameters(),
+                me = this;
+            utils.sendAjax(url, {
+                deviceid: this.currentVideoDeviceInfo.deviceId 
+            }, function(data) {
+                me.Spin = false;
+                if (data.status === 6) {
+
+                    var audiovideoparameters = data.audiovideoparameters;
+                    if (audiovideoparameters != null) {
+                        var channelsData = [];
+                        audiovideoparameters.forEach(function(item, index) {
+                            var dataInfo = {
+                                channelnum: '通道' + (++index),
+                            };
+                            var videoCheckboxGroup = [];
+                            dataInfo.realtimebitratemode = item.realtimebitratemode + '';
+                            dataInfo.storebitratemode = item.storebitratemode + '';
+                            dataInfo.realtimeresolution = item.realtimeresolution + '';
+                            dataInfo.storeresolution = item.storeresolution + '';
+                            dataInfo.realtimekeyframeinterval = item.realtimekeyframeinterval;
+                            dataInfo.storekeyframeinterval = item.storekeyframeinterval;
+                            dataInfo.realtimeframerate = item.realtimeframerate;
+                            dataInfo.storeframerate = item.storeframerate;
+                            dataInfo.realtimeframebitrate = item.realtimeframebitrate;
+                            dataInfo.storeframebitrate = item.storeframebitrate;
+
+                            item.carnum ? videoCheckboxGroup.push('carnum') : null;
+                            item.channel ? videoCheckboxGroup.push('channel') : null;
+                            item.dateandtime ? videoCheckboxGroup.push('dateandtime') : null;
+                            item.drivingtime ? videoCheckboxGroup.push('drivingtime') : null;
+                            item.gpsspeed ? videoCheckboxGroup.push('gpsspeed') : null;
+                            item.latlon ? videoCheckboxGroup.push('latlon') : null;
+                            item.recorderspeed ? videoCheckboxGroup.push('recorderspeed') : null;
+                            dataInfo.videoCheckboxGroup = videoCheckboxGroup;
+                            channelsData.push(dataInfo);
+                        });
+                        me.channelsData = channelsData;
+                    }
+                } else {
+                    me.$Message.error("查询失败");
+                }
+            });
+        },
+        handlePlayerMute: function() {
+            this.isMute = !this.isMute;
+        },
         initMap: function() {
             var me = this;
             switch (this.mapType) {
@@ -238,6 +984,83 @@ var monitor = {
             };
 
         },
+        initVideos: function() {
+            this.videoIns = {};
+            this.videoTimes = {};
+            for (var i = 1; i < 17; i++) {
+                var player = document.getElementById('videoElement' + i);
+                this.addEventListenerToPlayer(player, i)
+            }
+        },
+        addEventListenerToPlayer: function(player, index) {
+            var me = this,
+                key = playerStateKeyList[index];
+                player.addEventListener('loadedmetadata', function(e) {
+                    me.resolvingPower[key] = {
+                        width: e.target.videoWidth,
+                        height: e.target.videoHeight,
+                    }
+                })
+            player.addEventListener('error', function() {
+                isSendAjaxState[playerStateKeyList[index]] = false;
+                me.playerStateTips[key] = "请求数据时遇到错误";
+            });
+            player.addEventListener('play', function() {
+                me.playerStateTips[key] = "开始播放";
+            });
+            player.addEventListener('playing', function() {
+                me.playerStateTips[key] = "正在播放";
+                isSendAjaxState[playerStateKeyList[index]] = false;
+            });
+            player.addEventListener('pause', function() {
+                me.playerStateTips[key] = "暂停"
+            });
+            player.addEventListener('waiting', function() {
+                me.playerStateTips[key] = "等待数据"
+            });
+        },
+        flv_photograph: function(playerIndex) {
+            if (!this.videoIns[playerIndex]) {
+                this.$Message.error("请先播放视频");
+                return;
+            };
+            var ele = document.createElement('a');
+            var now = DateFormat.longToDateTimeStrNoSplit(Date.now(), timeDifference);
+            var fileName = this.currentDeviceId + '-' + playerIndex + '-' + now;
+            ele.setAttribute('href', this.htmlToImage(playerIndex)); //设置下载文件的url地址
+            ele.setAttribute('download', fileName); //用于设置下载文件的文件名
+            ele.click();
+        },
+        htmlToImage: function(index) {
+            var canvas = document.getElementById('V2I_canvas');
+            if (!canvas.getContext) {
+                alert("您的浏览器暂不支持canvas");
+                return false;
+            } else {
+                var context = canvas.getContext("2d");
+                var video = document.getElementById("videoElement" + index);
+                var key = playerStateKeyList[index];
+                context.drawImage(video, 0, 0, this.resolvingPower[key].width, this.resolvingPower[key].height);
+                return canvas.toDataURL("image/png");
+            }
+        },
+        queryVideosPlayUrl: function(callback) {
+            var url = myUrls.queryVideosPlayUrl(),
+                me = this;
+            utils.sendAjax(url, {
+                deviceid: this.currentDeviceId,
+                playtype: ishttps ? 'flvs' : 'flv',
+            }, function(data) {
+                if (data.status === 0) {
+                    // me.allPlayUrls.forEach(function(item, index) {
+                    //     me.initVideo(index + 1, item.playurl, item.hasaudio);
+                    // })
+                    callback ? callback(data.records) : null;
+                } else if (data.status === 3) {
+
+                }
+            });
+        },
         handleQueryArea: function() {
             if (this.areaAddress.length == 0) {
                 this.$Message.error('请选择区域');
@@ -311,6 +1134,315 @@ var monitor = {
             if (this.mapType == 'bMap') {
                 this.myDis = new BMapLib.DistanceTool(this.map.mapInstance);
                 this.myDis.open();
+            }
+        },
+        switchMapMode: function(type) {
+            if (this.isMapMode && type === 1) {
+                return;
+            }
+            if (this.isMapMode == false && type === 2) {
+                return;
+            }
+            switch (type) {
+                case 1:
+                    this.isMapMode = true;
+                    break;
+                case 2:
+                    this.isMapMode = false;
+                    break;
+            }
+        },
+        openAndCloseVideoWindows: function(toOpensIndex) {
+            this.videoNumber = toOpensIndex;
+        },
+        handlePlayAllVideos: function() {
+            if (this.currentDeviceId == null || this.isShowVideoBtn == false) {
+                this.$Message.error('设备不支持视频播放');
+                return;
+            };
+            for (var i = 0; i < this.videoNumber; i++) {
+                var flvPlayer = this.videoIns[i + 1];
+                this.playerState[playerStateKeyList[i + 1]] = true;
+                if (flvPlayer) {
+                    flvPlayer.play();
+                } else {
+                    this.handleStartVideos(i + 1);
+                }
+            }
+        },
+        handleStartVideos: function(index) {
+            var key = playerStateKeyList[index];
+            var url = myUrls.startVideos(),
+                me = this;
+            this.playerStateTips[key] = "正在请求播放";
+            utils.sendAjax(url, {
+                deviceid: this.currentDeviceId,
+                channels: [Number(index)],
+                playtype: ishttps ? 'flvs' : 'flv',
+            }, function(resp) {
+                isSendAjaxState[key] = false;
+                var records = resp.records;
+                var status = resp.status;
+
+
+                if (status == CMD_SEND_RESULT_UNCONFIRM) {
+                    me.$Message.error('发送成功，未收到确认');
+                } else if (status === CMD_SEND_RESULT_PASSWORD_ERROR) {
+                    me.$Message.error('密码错误');
+                } else if (status === CMD_SEND_RESULT_OFFLINE_NOT_CACHE) {
+                    me.$Message.error("设备离线，未缓存");
+                } else if (status === CMD_SEND_RESULT_OFFLINE_CACHED) {
+                    me.$Message.error("设备离线，已缓存");
+                } else if (status === CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD) {
+                    me.$Message.error("需要修改默认密码");
+                } else if (status === CMD_SEND_RESULT_DETAIL_ERROR) {
+                    me.$Message.error("错误:" + resp.cause);
+                } else if (status === CMD_SEND_CONFIRMED) {
+                    var acc = resp.acc
+                    var accState = '';
+                    if (acc === 3) {
+                        accState = 'ACC开,'
+                    } else if (acc === 2) {
+                        accState = 'ACC关,'
+                    }
+                    me.$Message.success(accState + "请求播放成功,请稍后...");
+                    me.switchflvPlayer(index, records[0].playurl, records[0].hasaudio);
+                    me.playerState[key] = true;
+                } else if (status === CMD_SEND_OVER_RETRY_TIMES) {
+                    me.$Message.error("尝试发送3次失败");
+                } else if (status === CMD_SEND_SYNC_TIMEOUT) {
+
+                    var accState = '';
+                    if (acc === 3) {
+                        accState = 'ACC开,'
+                    } else if (acc === 2) {
+                        accState = 'ACC关,'
+                    }
+                    me.$Message.error(accState + "请求播放超时");
+                    me.switchflvPlayer(index, records[0].playurl, records[0].hasaudio);
+                    me.playerState[key] = true;
+                }
+
+            }, function() {
+                me.$Message.error("请求超时");
+                isSendAjaxState[key] = false;
+            })
+        },
+        switchflvPlayer: function(index, url, hasaudio) {
+            try {
+                var flvPlayer = this.videoIns[index];
+                if (flvPlayer != null) {
+                    flvPlayer.pause();
+                    flvPlayer.unload();
+                    flvPlayer.detachMediaElement();
+                    flvPlayer.destroy();
+                    this.videoIns[index] = null;
+                }
+            } catch (error) {
+
+            }
+            this.initVideo(index, url, hasaudio);
+        },
+        initVideo: function(index, url, hasaudio) {
+
+            var flvPlayer = flvjs.createPlayer({
+                type: 'flv',
+                url: url,
+                isLive: true,
+                hasAudio: hasaudio === 1,
+                hasVideo: true,
+                withCredentials: false,
+                // url: 'http://video.gps51.com:81/live/teststream.flv'
+            }, {
+                enableWorker: false,
+                enableStashBuffer: false,
+                isLive: true,
+                lazyLoad: false
+            });
+            var player = document.getElementById('videoElement' + index),
+                me = this;
+            flvPlayer.attachMediaElement(player);
+            flvPlayer.load(); //加载
+            flvPlayer.play();
+
+            this.videoIns[index] = flvPlayer;
+            var key = 'videoPlayer' + index;
+            this.videoTimes[key] = Date.now();
+            flvPlayer.on(flvjs.Events.STATISTICS_INFO, function(e) {
+                me.networkSpeed[playerStateKeyList[index]] = parseInt(e.speed * 10) / 10 + 'KB/S';
+            })
+        },
+        handleStopAllVideos: function() {
+            if(this.currentVideoDeviceInfo.deviceId == null  || this.isShowVideoBtn == false){
+                return;
+            }
+            var url = myUrls.stopVideos(),
+            me = this;
+            utils.sendAjax(url, {
+                deviceid: this.currentVideoDeviceInfo.deviceId,
+                channels: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
+            }, function(resp) {
+                me.$Message.success("停止全部成功");
+            })
+            this.videoTimes = {};
+            for (var key in this.videoIns) {
+                try {
+                    var player = this.videoIns[key];
+                    player.unload();
+                    player.detachMediaElement();
+                    player.destroy();
+                    this.videoIns[key] = null;
+                } catch (error) {};
+                this.playerState[playerStateKeyList[key]] = false;
+                this.playerStateTips[playerStateKeyList[key]] = '';
+                isSendAjaxState[playerStateKeyList[key]] = false;
+            };
+        },
+        onChangePlayerState: function(index) {
+            if (this.currentVideoDeviceInfo.deviceId == null || this.isShowVideoBtn == false) {
+                this.$Message.error('请选择支持视频播放的设备');
+                return;
+            };
+            if (isSendAjaxState[playerStateKeyList[index]]) {
+                this.$Message.error("正在加载当前视频,请稍后...");
+                return;
+            };
+            var playerKey = playerStateKeyList[index];
+            if (this.playerState[playerKey]) {
+                this.handleStopVideos(index);
+                this.playerState[playerKey] = !this.playerState[playerKey];
+            } else {
+                this.handleStartVideos(index);
+            }
+        },
+        handleStartVideos: function(index) {
+            var key = playerStateKeyList[index];
+            isSendAjaxState[key] = true;
+            var url = myUrls.startVideos(),
+                me = this;
+            this.playerStateTips[key] = "正在请求播放";
+            utils.sendAjax(url, {
+                deviceid: this.currentVideoDeviceInfo.deviceId,
+                channels: [Number(index)],
+                playtype: ishttps ? 'flvs' : 'flv',
+            }, function(resp) {
+                isSendAjaxState[key] = false;
+                var records = resp.records;
+                var status = resp.status;
+
+
+                if (status == CMD_SEND_RESULT_UNCONFIRM) {
+                    me.$Message.error('发送成功，未收到确认');
+                } else if (status === CMD_SEND_RESULT_PASSWORD_ERROR) {
+                    me.$Message.error('密码错误');
+                } else if (status === CMD_SEND_RESULT_OFFLINE_NOT_CACHE) {
+                    me.$Message.error("设备离线，未缓存");
+                } else if (status === CMD_SEND_RESULT_OFFLINE_CACHED) {
+                    me.$Message.error("设备离线，已缓存");
+                } else if (status === CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD) {
+                    me.$Message.error("需要修改默认密码");
+                } else if (status === CMD_SEND_RESULT_DETAIL_ERROR) {
+                    me.$Message.error("错误:" + resp.cause);
+                } else if (status === CMD_SEND_CONFIRMED) {
+                    var acc = resp.acc
+                    var accState = '';
+                    if (acc === 3) {
+                        accState = 'ACC开,'
+                    } else if (acc === 2) {
+                        accState = 'ACC关,'
+                    }
+                    me.$Message.success(accState + "请求播放成功,请稍后...");
+                    me.switchflvPlayer(index, records[0].playurl, records[0].hasaudio);
+                    me.playerState[key] = true;
+                } else if (status === CMD_SEND_OVER_RETRY_TIMES) {
+                    me.$Message.error("尝试发送3次失败");
+                } else if (status === CMD_SEND_SYNC_TIMEOUT) {
+
+                    var accState = '';
+                    if (acc === 3) {
+                        accState = 'ACC开,'
+                    } else if (acc === 2) {
+                        accState = 'ACC关,'
+                    }
+                    me.$Message.error(accState + "请求播放超时");
+                    me.switchflvPlayer(index, records[0].playurl, records[0].hasaudio);
+                    me.playerState[key] = true;
+                }
+
+            }, function() {
+                me.$Message.error("请求超时");
+                isSendAjaxState[key] = false;
+            })
+        },
+        handleStopVideos: function(index) {
+            var url = myUrls.stopVideos(),
+                me = this;
+            utils.sendAjax(url, {
+                deviceid: this.currentVideoDeviceInfo.deviceId,
+                channels: [Number(index)],
+                videoclosetype: 0
+            }, function(resp) {
+                if (resp.status === 0) {
+                    // me.$Message.success("停止成功")
+                    // me.videoIns.forEach(function (item) {
+                    //     item.pause();
+                    // });
+                } else if (status === 1) {
+
+                } else if (status === 2) {
+                    me.$Message.error("设备不在线");
+                } else if (status === 3) {
+
+                } else if (status === 4) {
+
+                } else if (status === 5) {
+                    me.$Message.error("错误:" + resp.cause);
+                }
+            });
+
+            try {
+                var player = this.videoIns[index];
+                if (player != null) {
+                    player.pause();
+                    player.unload();
+                    player.detachMediaElement();
+                    player.destroy();
+                }
+            } catch (error) {
+                console.log(this.videoIns[index], index);
+            }
+            this.videoIns[index] = null;
+            var key = 'videoPlayer' + index;
+            this.videoTimes[key] = undefined;
+            this.playerStateTips[playerStateKeyList[index]] = "停止播放,请点击播放按钮";
+        },
+        stopVideoPlayer: function() {
+            var videoIns = this.videoIns;
+            for (var i in videoIns) {
+                var key = 'videoPlayer' + i;
+                var nowTime = Date.now();
+                var oldTime = this.videoTimes[key];
+                if (oldTime) {
+                    if ((nowTime - oldTime) > 1000 * 60 * 3) {
+                        try {
+                            var player = videoIns[i];
+                            if (player) {
+                                player.pause();
+                                player.unload();
+                                player.detachMediaElement();
+                                player.destroy();
+                                videoIns[i] = null;
+                            }
+                        } catch (error) {
+
+                        }
+
+                        this.playerStateTips[playerStateKeyList[i]] = '3分钟播放时间到,已关闭';
+                        this.videoTimes[key] = undefined;
+                        this.playerState[playerStateKeyList[i]] = false;
+                        isSendAjaxState[playerStateKeyList[i]] = false;
+                    }
+                }
             }
         },
         handleClickMore: function(name) {
@@ -716,7 +1848,6 @@ var monitor = {
                 }
             });
         },
-
         focus: function() {
             this.readonly = false;
             var me = this;
@@ -915,11 +2046,19 @@ var monitor = {
             }
         },
         playerVideos: function() {
+
             var activesafety = this.isShowActiveSafetyBtn ? 1 : 0;
             var deviceInfo = this.deviceInfos[this.currentDeviceId];
             deviceInfo.activesafety = activesafety;
             deviceInfo.state = this.positionLastrecords[this.currentDeviceId] ? this.positionLastrecords[this.currentDeviceId].strvideoalarm : null;
-            communicate.$emit("playerVideos", deviceInfo);
+            // communicate.$emit("playerVideos", deviceInfo);
+            console.log('deviceInfo',deviceInfo);
+            if (this.isMapMode) {
+                this.isMapMode = false;
+            }
+            this.currentVideoDeviceInfo.deviceId = this.currentDeviceId;
+            this.currentVideoDeviceInfo.deviceName = deviceInfo.devicename;
+            this.handlePlayAllVideos();
         },
         selectedDev: function(deviceInfo) {
             var device = this.deviceInfos[deviceInfo.deviceid];
@@ -970,13 +2109,11 @@ var monitor = {
             this.getCurrentStateTreeData(this.selectedState);
         },
         cancelSelected: function() {
-
             this.groups.forEach(function(group) {
                 group.devices.forEach(function(dev) {
                     dev.isSelected = false
                 })
             })
-
         },
         getMonitorListByUser: function(data, callback) {
             var me = this
@@ -993,7 +2130,7 @@ var monitor = {
         },
         getLastPosition: function(deviceIds, callback, errorCall) {
             var me = this;
-            var url = myUrls.lastPosition();
+            var url = myUrls.lastPositionProto();
             var data = {
                 username: this.username,
                 deviceids: deviceIds,
@@ -1514,8 +2651,7 @@ var monitor = {
                         me.dorefreshMapUI();
                     }, function(error) {});
                 }
-
-
+                me.intervalTim%5== 0 && me.stopVideoPlayer();
             }, 1000);
         },
         handleMousemove: function(e) {
@@ -1718,7 +2854,51 @@ var monitor = {
         },
         userType: function() {
             return this.$store.state.userType;
-        }
+        },
+        myMapStyle: function() {
+            if (this.isMapMode) {
+                return {
+                    position: 'absolute',
+                    left: '10px',
+                    top: '35px',
+                    right: '10px',
+                    bottom: '10px',
+                }
+            } else {
+                return {
+                    position: 'absolute',
+                    width: '300px',
+                    top: '35px',
+                    right: '10px',
+                    bottom: '10px',
+                }
+            }
+        },
+        videoWrapStyle: function() {
+            if (this.isMapMode) {
+                return {
+                    display: 'none',
+                }
+            } else {
+                return {
+                    position: 'absolute',
+                    left: '10px',
+                    top: '35px',
+                    bottom: '10px',
+                    right: '310px',
+                }
+            }
+        },
+        videoContentCls: function() {
+            return {
+                'videoContent-1': this.videoNumber === 1,
+                'videoContent-4': this.videoNumber === 4,
+                'videoContent-6': this.videoNumber === 6,
+                'videoContent-8': this.videoNumber === 8,
+                'videoContent-9': this.videoNumber === 9,
+                'videoContent-16': this.videoNumber === 16,
+            }
+        },
     },
     watch: {
         mapType: function(newType) {
@@ -1761,13 +2941,14 @@ var monitor = {
         },
         deviceTypes: function() {
             this.getMonitorList();
-        }
+        },
     },
     mounted: function() {
         var me = this;
         this.intervalTime = Number(this.stateIntervalTime);
         this.placeholder = this.$t("monitor.placeholder");
         this.initMap();
+        this.initVideos();
         if (this.deviceTypes.length) {
             this.getMonitorList();
         }

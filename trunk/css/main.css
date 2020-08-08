@@ -241,19 +241,175 @@ li.full-map-wraper {
     cursor: pointer;
 }
 
-#my-map,
 .spin-wraper {
     position: absolute;
     left: 10px;
     top: 35px;
     right: 10px;
     bottom: 10px;
+    z-index: 10000;
+    display: inline-block;
+    /* background: rgba(0, 0, 0, 0.5); */
+    background-color: #D5DCE1;
 }
 
-.spin-wraper {
-    z-index: 999;
+#video_wrap {
+    z-index: 10;
+}
+
+#video_wrap .tv_box span {
+    height: 22px;
+    line-height: 18px;
     display: inline-block;
-    background: rgba(0, 0, 0, 0.5);
+    padding: 0 5px;
+    position: relative;
+    margin-top: 7px;
+}
+
+#video_wrap .video_header {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    height: 35px;
+}
+
+#video_wrap .video_header .video_function {
+    float: right;
+    height: 100%;
+}
+
+#video_wrap .video_header .video_function span {
+    height: 22px;
+    line-height: 18px;
+    display: inline-block;
+    padding: 0 5px;
+    position: relative;
+    margin-top: 7px;
+    cursor: pointer;
+}
+
+#video_wrap .video_body {
+    position: absolute;
+    left: 0;
+    top: 35px;
+    right: 0;
+    bottom: 0px;
+}
+
+#videoContent {
+    overflow: hidden;
+    position: absolute;
+    height: 100%;
+    width: 100%;
+}
+
+#videoContent>div {
+    float: left;
+    overflow: hidden;
+    position: relative;
+    background-image: url('../images/tv_default.jpg');
+    background-size: cover;
+}
+
+#videoContent>div>div.videoElementWrap {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0px;
+    top: 0;
+}
+
+#videoContent>div>div>video {
+    width: 100%;
+    height: 100%;
+    object-fit: fill;
+}
+
+#videoContent>div>div:hover>div.play-btn-wrap {
+    display: block;
+}
+
+#videoContent>div>div>div.play-btn-wrap {
+    position: absolute;
+    left: 50%;
+    top: 47%;
+    width: 60px;
+    height: 60px;
+    margin-top: -30px;
+    margin-left: -30px;
+    background-color: rgba(0, 0, 0, .8);
+    border-radius: 50%;
+    text-align: center;
+    line-height: 60px;
+    cursor: pointer;
+    display: none;
+}
+
+div.state-event-tip {
+    position: absolute;
+    left: 2px;
+    padding: 0px;
+    bottom: 75px;
+    background-color: rgba(255, 0, 0, .9);
+    color: white;
+    font-size: 10px;
+}
+
+div.camera_fn{
+    position:absolute;
+    top: 2px;
+    right: 5px;
+    color: #ffffff;
+    cursor: pointer;
+}
+
+div.resolving_power{
+    position:absolute;
+    top: 2px;
+    left: 5px;
+    color: #e4393c;
+}
+
+
+.videoContent-1>div:first-child {
+    width: 100%;
+    height: 100%;
+}
+
+.videoContent-4>div {
+    width: 50%;
+    height: 50%;
+}
+
+.videoContent-6>div:first-child {
+    width: 66.66%;
+    height: 66.655%;
+}
+
+.videoContent-6>div {
+    width: 33.33%;
+    height: 33.33333%;
+}
+
+.videoContent-8>div:first-child {
+    width: 75%;
+    height: 75%;
+}
+
+.videoContent-8>div {
+    width: 25%;
+    height: 25%;
+}
+
+.videoContent-9>div {
+    width: 33.33%;
+    height: 33.33%;
+}
+
+.videoContent-16>div {
+    width: 25%;
+    height: 25%;
 }
 
 

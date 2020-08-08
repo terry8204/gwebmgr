@@ -1965,6 +1965,7 @@
                     'shiwu': '0KB/S',
                     'shiliu': '0KB/S'
                 },
+                modalHader: '视频参数',
                 physicalchannel1: '0',
                 physicalchannel2: '0',
                 physicalchannel3: '0',
@@ -2265,7 +2266,6 @@
                         if (flvPlayer) {
                             flvPlayer.play();
                         } else {
-
                             this.handleStartVideos(i + 1);
                         }
                     }
@@ -2825,7 +2825,6 @@
                         var nowTime = Date.now();
                         var oldTime = this.videoTimes[key];
                         if (oldTime) {
-
                             if ((nowTime - oldTime) > 1000 * 60 * 3) {
                                 try {
                                     var player = videoIns[i];
@@ -2841,7 +2840,7 @@
                                 }
 
                                 this.playerStateTips[playerStateKeyList[i]] = '3分钟播放时间到,已关闭';
-                                delete this.videoTimes[key];
+                                this.videoTimes[key] = undefined;
                                 this.playerState[playerStateKeyList[i]] = false;
                                 isSendAjaxState[playerStateKeyList[i]] = false;
                             }
@@ -3118,7 +3117,6 @@
                         'videoContent-8': this.videoNumber === 8,
                         'videoContent-9': this.videoNumber === 9,
                         'videoContent-16': this.videoNumber === 16,
-                        //    'full':true
                     }
                 },
                 userType: function() {

@@ -18,7 +18,25 @@ var isNeedRefreshMapUI = false;
 var timeDifference = DateFormat.getOffset();
 var voiceQueue = []; //语音报警队列
 var isPlayAlarmVoice = false;
-
+var playerStateKeyList = ['', 'yi', 'er', 'san', 'si', 'wu', 'liu', 'qi', 'ba', 'jiu', 'shi', 'shiyi', 'shier', 'shisan', 'shisi', 'shiwu', 'shiliu'];
+var isSendAjaxState = {
+    'yi': false,
+    'er': false,
+    'san': false,
+    'si': false,
+    'wu': false,
+    'liu': false,
+    'qi': false,
+    'ba': false,
+    'jiu': false,
+    'shi': false,
+    'shiyi': false,
+    'shier': false,
+    'shisan': false,
+    'shisi': false,
+    'shiwu': false,
+    'shiliu': false,
+};
 document.title = isZh ? "位置视频服务平台" : "Location video service platform";
 
 
@@ -1045,19 +1063,7 @@ var videoPlayer = {
                     me.isSendAjaxState = false;
                 })
         },
-        htmlToImage: function(index) {
-            var canvas = document.getElementById('V2I_canvas');
-            if (!canvas.getContext) {
-                alert("您的浏览器暂不支持canvas");
-                return false;
-            } else {
-                var context = canvas.getContext("2d");
-                var video = document.getElementById("videoElement" + index);
-                var key = this.playerStateKeyList[index];
-                context.drawImage(video, 0, 0, this.resolvingPower[key].width, this.resolvingPower[key].height);
-                return canvas.toDataURL("image/png");
-            }
-        },
+        
 
 
         flv_photograph: function() {
@@ -1071,6 +1077,19 @@ var videoPlayer = {
             ele.setAttribute('href', this.htmlToImage(this.playerIndex)); //设置下载文件的url地址
             ele.setAttribute('download', fileName); //用于设置下载文件的文件名
             ele.click();
+        },
+        htmlToImage: function(index) {
+            var canvas = document.getElementById('V2I_canvas');
+            if (!canvas.getContext) {
+                alert("您的浏览器暂不支持canvas");
+                return false;
+            } else {
+                var context = canvas.getContext("2d");
+                var video = document.getElementById("videoElement" + index);
+                var key = this.playerStateKeyList[index];
+                context.drawImage(video, 0, 0, this.resolvingPower[key].width, this.resolvingPower[key].height);
+                return canvas.toDataURL("image/png");
+            }
         },
         checkVideoPlayerTime: function() {
             var me = this;
@@ -1254,6 +1273,16 @@ var videoPlayer = {
                 })
             });
         })
+        communicate.$on('switchVideoMode', function() {
+            if (me.isLargen == 0) {
+                me.changeLargen(1);
+            };
+            // var videoWraper = document.getElementById('videoWraper');
+            // videoWraper.style.left = "300px";
+            // videoWraper.style.right = "300px";
+            // videoWraper.style.top = "45px";
+            // videoWraper.style.bottom = "340px";
+        });
         $('#videoWraper').dragging({
             move: 'both',
             randomPosition: false
@@ -1301,7 +1330,7 @@ var vRoot = new Vue({
         monitor: monitor,
         reportForm: reportForm,
         waringComponent: waringComponent,
-        videoPlayer: videoPlayer,
+        // videoPlayer: videoPlayer,
         systemParam: systemParam,
         trackDebug: trackDebug
     },

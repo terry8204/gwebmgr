@@ -143,20 +143,20 @@ BMapClass.pt.getDevAddress = function(track) {
     var self = this;
     var callon = track.callon.toFixed(5);
     var callat = track.callat.toFixed(5);
-    var b_lon = track.b_lon;
-    var b_lat = track.b_lat;
+    //var b_lon = track.b_lon;
+    //var b_lat = track.b_lat;
     var address = LocalCacheMgr.getAddress(callon, callat);
     if (address != null) {
         return address;
     }
-    utils.getBaiduAddressFromBaidu(b_lon, b_lat, function(b_address) {
-        if (b_address != undefined && b_address.length) {
-            if (self.mapInfoWindow.isOpen()) {
-                var content = utils.getWindowContent(track, b_address);
-                self.mapInfoWindow.setContent(content);
-            };
-            LocalCacheMgr.setAddress(callon, callat, b_address);
-        } else {
+//    utils.getBaiduAddressFromBaidu(b_lon, b_lat, function(b_address) {
+//        if (b_address != undefined && b_address.length) {
+//            if (self.mapInfoWindow.isOpen()) {
+//                var content = utils.getWindowContent(track, b_address);
+//                self.mapInfoWindow.setContent(content);
+//            };
+//            LocalCacheMgr.setAddress(callon, callat, b_address);
+//        } else {
             utils.getJiuHuAddressSyn(callon, callat, function(resp) {
                 var j_address = resp.address;
                 if (j_address && j_address != undefined) {
@@ -167,10 +167,12 @@ BMapClass.pt.getDevAddress = function(track) {
                     LocalCacheMgr.setAddress(callon, callat, j_address);
                 }
             })
-        }
-    });
+//        }
+//    }
+//    );
     return '正在解析地址...';
 }
+
 
 BMapClass.pt.getInfoWindow = function(track, address) {
     var option = {
