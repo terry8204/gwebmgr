@@ -184,7 +184,7 @@ var monitor = {
                 'shiwu': '0KB/S',
                 'shiliu': '0KB/S'
             },
-            isMapMode: false, //是否地图模式
+            isMapMode: true, //是否地图模式
             videoNumber: 4,
             arealoading: false,
             isFullMap: false,
@@ -425,7 +425,7 @@ var monitor = {
                     channeltype: Number(this.physicalchannel4)
                 });
             }
-
+            this.loading = true;
             utils.sendAjax(url, data, function(data) {
 
                 if (data.status === 0) {
@@ -433,7 +433,9 @@ var monitor = {
                 } else {
                     that.$Message.error('设置失败')
                 }
-
+                that.loading = false;
+            },function(){
+                that.loading = false;
             })
         },
         queryVideoPlayParameters: function() {
@@ -441,8 +443,10 @@ var monitor = {
                 this.$Message.error('请选择视频设备');
                 return;
             }
+
             var url = myUrls.queryVideoPlayParameters(),
                 me = this;
+                me.loading = true;
             utils.sendAjax(url, {
                 deviceid: this.currentVideoDeviceInfo.deviceId
             }, function(respData) {
@@ -467,7 +471,24 @@ var monitor = {
                 } else {
                     me.$Message.error("查询失败");
                 }
+                me.loading = false;
+            },function(){
+                me.loading = false;
             });
+        },
+        queryDeviceById: function() {
+            var url = myUrls.queryDeviceById(),
+                that = this;
+            utils.sendAjax(url, {
+                deviceid:  this.currentVideoDeviceInfo.deviceId
+            }, function(data) {
+                if (data.status == 0) {
+
+                    that.videotranstype = data.device.videotranstype + '';
+                    that.videostreamtype = data.device.videostreamtype + '';
+                    that.audiochannel = data.device.audiochannel;
+                } else {}
+            })
         },
         setSingleAudioVideoParameters: function(index) {
             if(this.currentVideoDeviceInfo.deviceId == null){
@@ -544,7 +565,7 @@ var monitor = {
                 this.$Message.error('请选择视频设备');
                 return;
             }
-            // that.Spin = true;
+            this.loading = true;
             var url = myUrls.queryVideoProperty(),
                 that = this;
             utils.sendAjax(url, {
@@ -599,8 +620,24 @@ var monitor = {
                 } else if (status === CMD_SEND_SYNC_TIMEOUT) {
                     that.$Message.error("发送超时");
                 }
-                // that.Spin = false;
-            })
+                that.loading = false;
+            },function(){
+                that.loading = false;
+            });
+        },
+        videoBack:function(){
+            if(this.currentVideoDeviceInfo.deviceId == null){
+                this.$Message.error('请选择视频设备');
+                return;
+            }
+            window.open('videoback.html?deviceid=' + this.currentVideoDeviceInfo.deviceId + '&token=' + token);
+        },
+        openActiveSafety:function(){
+            if(this.currentVideoDeviceInfo.deviceId == null){
+                this.$Message.error('请选择视频设备');
+                return;
+            }
+            openActiveSafety(this.currentVideoDeviceInfo.deviceId,this.currentVideoDeviceInfo.deviceName);
         },
         queryVideoChannels: function() {
             if(this.currentVideoDeviceInfo.deviceId == null){
@@ -634,6 +671,9 @@ var monitor = {
                 } else if (status === CMD_SEND_SYNC_TIMEOUT) {
                     me.$Message.error("发送超时");
                 }
+            },function(){
+                me.loading = false;
+                me.$Message.error("查询失败");
             });
         },
         queryActiveSafetyDeviceInfo: function(exdevicename) {
@@ -648,9 +688,9 @@ var monitor = {
                 exdevicename: exdevicename,
                 action: 'info'
             };
-            // me.Spin = true;
+            me.loading = true;
             utils.sendAjax(url, data, function(resp) {
-                // me.Spin = false;
+                me.loading = false;
                 var status = resp.status;
                 if (status == CMD_SEND_RESULT_UNCONFIRM) {
                     me.$Message.error('发送成功，未收到确认');
@@ -686,6 +726,9 @@ var monitor = {
                 } else if (status === CMD_SEND_SYNC_TIMEOUT) {
                     me.$Message.error("发送超时");
                 }
+            },function(){
+                me.loading = false;
+                me.$Message.error("查询超时");
             })
         },
         defaultClientParameters: function() {
@@ -734,13 +777,13 @@ var monitor = {
         },
         queryClientParameters: function() {
 
-            this.Spin = true;
+            this.loading = true;
             var url = myUrls.queryClientParameters(),
                 me = this;
             utils.sendAjax(url, {
-                deviceid: deviceid
+                deviceid: this.currentVideoDeviceInfo.deviceId
             }, function(data) {
-                me.Spin = false;
+                me.loading = false;
                 var status = data.status;
                 var audiovideoparameters = data.audiovideoparameters;
                 if (audiovideoparameters != null) {
@@ -788,6 +831,8 @@ var monitor = {
                     me.$Message.error("设备没有返回数据");
                 }
 
+            },function(){
+                me.loading = false;
             });
         },
         setClientParameters: function() {
@@ -862,13 +907,13 @@ var monitor = {
                 this.$Message.error('请选择视频设备');
                 return;
             }
-            // this.Spin = true;
+            this.loading = true;
             var url = myUrls.querySingleAudioVideoParameters(),
                 me = this;
             utils.sendAjax(url, {
                 deviceid: this.currentVideoDeviceInfo.deviceId 
             }, function(data) {
-                me.Spin = false;
+                me.loading = false;
                 if (data.status === 6) {
 
                     var audiovideoparameters = data.audiovideoparameters;
@@ -905,6 +950,9 @@ var monitor = {
                 } else {
                     me.$Message.error("查询失败");
                 }
+            },function(){
+                me.loading = false;
+                me.$Message.error("查询失败");
             });
         },
         handlePlayerMute: function() {
@@ -1299,7 +1347,8 @@ var monitor = {
             };
         },
         onChangePlayerState: function(index) {
-            if (this.currentVideoDeviceInfo.deviceId == null || this.isShowVideoBtn == false) {
+            console.log(this.currentVideoDeviceInfo);
+            if (this.currentVideoDeviceInfo.deviceId == null) {
                 this.$Message.error('请选择支持视频播放的设备');
                 return;
             };
@@ -2052,12 +2101,12 @@ var monitor = {
             deviceInfo.activesafety = activesafety;
             deviceInfo.state = this.positionLastrecords[this.currentDeviceId] ? this.positionLastrecords[this.currentDeviceId].strvideoalarm : null;
             // communicate.$emit("playerVideos", deviceInfo);
-            console.log('deviceInfo',deviceInfo);
             if (this.isMapMode) {
                 this.isMapMode = false;
             }
             this.currentVideoDeviceInfo.deviceId = this.currentDeviceId;
             this.currentVideoDeviceInfo.deviceName = deviceInfo.devicename;
+            this.queryDeviceById();
             this.handlePlayAllVideos();
         },
         selectedDev: function(deviceInfo) {

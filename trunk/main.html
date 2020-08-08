@@ -604,8 +604,8 @@
                         <div class="video_header">
                             <div class="video_function">
                                 <span title="静音" @click="handlePlayerMute"><i class="icon iconfont" :class="{'icon-yinliang':!isMute,'icon-guanbiyinliang':isMute}"></i></span>
-                                <span title="视频回放"><i class="icon iconfont icon-playback"></i></span>
-                                <span title="主动安全" v-show="isShowActiveSafetyBtn"><i class="ivu-icon ivu-icon-logo-angular" style="font-size:18px;margin-top:1px;"></i></span>
+                                <span title="视频回放" @click="videoBack"><i class="icon iconfont icon-playback"></i></span>
+                                <span title="主动安全" @click="openActiveSafety" v-show="isShowActiveSafetyBtn"><i class="ivu-icon ivu-icon-logo-angular" style="font-size:18px;margin-top:1px;"></i></span>
                             </div>
                             <div style="height: 100%;float:right;" class="tv_box">
                                 <span title="显示一个通道"><i class="icon icon_num1" @click="openAndCloseVideoWindows(1)"></i></span>
@@ -619,14 +619,7 @@
                                 <span @click="setupVideoModal=true"><i class="icon icon_num9"  title="视频播放设置"></i></span>
                             </div>
                             <div style="float:right;height: 100%;line-height:35px">
-                                <Poptip trigger="click">
-                                    <i-button size="small">云台</i-button>
-                                    <div slot="content" style="width:300px;padding:5px 0;height:300px;">
-                                        <div>
-                                            114545
-                                        </div>
-                                    </div>
-                                </Poptip>
+                              
                             </div>
                             <div style="float:left;height: 100%;line-height:35px;color:#FFFFFF;padding-left:10px;" v-text="currentVideoDeviceInfo.deviceName"></div>
                         </div>
@@ -1097,8 +1090,8 @@
                             </Row>
                             <Row style="height:32px;margin: 10px 0;">
                                 <i-Col span="18" style="height: 100%;line-height:32px;text-align: center;">
-                                    <i-button type='primary' @click='handleSetPlayParamter' :disabled="userType > 2">设置播放视频参数</i-button>
-                                    <i-button type="info" @click="queryVideoPlayParameters" style="width:130px;">查询</i-button>
+                                    <i-button type='primary' @click='handleSetPlayParamter' :disabled="userType > 2" :loading="loading">设置播放视频参数</i-button>
+                                    <i-button type="info" @click="queryVideoPlayParameters" style="width:130px;" :loading="loading">查询</i-button>
                                 </i-Col>
                             </Row>
                         </Tab-Pane>
@@ -1106,7 +1099,7 @@
                             <Row style="height:32px;margin: 10px 0;">
                                 <i-Col span="24" style="height: 100%;line-height:32px;text-align: right;">
                                     <i-button type="success" @click="defaultClientParameters">默认参数</i-button>
-                                    <i-button type="info" @click="queryClientParameters">查询</i-button>
+                                    <i-button type="info" @click="queryClientParameters" :loading="loading">查询</i-button>
                                     <i-button type="primary" @click="setClientParameters" :disabled="userType > 2">发送</i-button>
                                 </i-Col>
                             </Row>
@@ -1287,7 +1280,7 @@
                             </Row>
                         </Tab-Pane>
                         <Tab-Pane label="单独通道视频参数" name="aloneVideoSetup">
-                            <i-button type="info" @click="querySingleAudioVideoParameters" style="width:180px;margin-bottom:10px;">查询</i-button>
+                            <i-button type="info" @click="querySingleAudioVideoParameters" style="width:180px;margin-bottom:10px;" :loading="loading">查询</i-button>
                             <Tabs value="" :animated="false" type="card">
                                 <Tab-Pane :label="item.channelnum" v-for="(item,index) in channelsData" :key="index">
                                     <Row style="height:32px;margin: 10px 0;">
@@ -1432,7 +1425,7 @@
                         <Tab-Pane label="音视频终端属性" name="videoProperty">
                             <Row style="height:32px;margin: 10px 0;">
                                 <i-Col span="7" offset="7" style="height: 100%;line-height:32px;">
-                                    <i-button @click="queryVideoProperty" style="width:120px;" type="primary">查询</i-button>
+                                    <i-button @click="queryVideoProperty" style="width:120px;" type="primary" :loading="loading">查询</i-button>
                                 </i-Col>
                             </Row>
                             <Row style="height:32px;">
@@ -1505,7 +1498,7 @@
                         <Tab-Pane label="音视频通道列表" name="videoChannelsList">
                             <Row style="height:32px;margin: 10px 0;">
                                 <i-Col span="7" offset="7" style="height: 100%;line-height:32px;">
-                                    <i-button @click="queryVideoChannels" style="width:120px;" type="primary">查询</i-button>
+                                    <i-button @click="queryVideoChannels" style="width:120px;" type="primary" :loading="loading">查询</i-button>
                                 </i-Col>
                             </Row>
                             <i-table border :columns="videoChannelsColumns" :data="videoChannelsTableData" height="234" ></i-table>
@@ -1515,7 +1508,7 @@
                                 <Tab-Pane label="高级驾驶辅助" name="activeSecurityPeripheral1">
                                     <Row>
                                         <i-col span="6">
-                                            <i-button type="primary" @click="queryActiveSafetyDeviceInfo('adas')">查询</i-button>
+                                            <i-button type="primary" @click="queryActiveSafetyDeviceInfo('adas')" :loading="loading">查询</i-button>
                                         </i-col>
                                     </Row>
                                     <Row style="line-height:32px">
@@ -1564,7 +1557,7 @@
                                 <Tab-Pane label="驾驶员状态监测" name="activeSecurityPeripheral2">
                                     <row>
                                         <i-col span="6">
-                                            <i-button type="primary" @click="queryActiveSafetyDeviceInfo('dsm')">查询</i-button>
+                                            <i-button type="primary" @click="queryActiveSafetyDeviceInfo('dsm')" :loading="loading">查询</i-button>
                                         </i-col>
                                     </row>
                                     <Row style="line-height:32px">
@@ -1613,7 +1606,7 @@
                                 <Tab-Pane label="轮胎气压监测" name="activeSecurityPeripheral3">
                                     <row>
                                         <i-col span="6">
-                                            <i-button type="primary" @click="queryActiveSafetyDeviceInfo('tpms')">查询</i-button>
+                                            <i-button type="primary" @click="queryActiveSafetyDeviceInfo('tpms')" :loading="loading">查询</i-button>
                                         </i-col>
                                     </row>
                                     <Row style="line-height:32px">
@@ -1662,7 +1655,7 @@
                                 <Tab-Pane label="盲点监测" name="activeSecurityPeripheral4">
                                     <row>
                                         <i-col span="6">
-                                            <i-button type="primary" @click="queryActiveSafetyDeviceInfo('bsd')">查询</i-button>
+                                            <i-button type="primary" @click="queryActiveSafetyDeviceInfo('bsd')" :loading="loading">查询</i-button>
                                         </i-col>
                                     </row>
                                     <Row style="line-height:32px;">
