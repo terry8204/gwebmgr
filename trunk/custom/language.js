@@ -381,7 +381,7 @@
                 beiAn2: "粤ICP备17068924号",
             },
             header: {
-                monitor: "定位监控",
+                monitor: "实时监控",
                 reportForm: "统计报表",
                 bgManager: "后台管理",
                 systemParam: "系统参数",

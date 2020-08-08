@@ -1195,17 +1195,17 @@ var monitor = {
             switch (type) {
                 case 1:
                     this.isMapMode = true;
-                    setTimeout(function(){
-                        var record = that.getSingleDeviceInfo(that.currentDeviceId);
-                        if (record) {
-                            that.map.onClickDevice(that.currentDeviceId);
-                        } 
-                    },300);
                     break;
                 case 2:
                     this.isMapMode = false;
                     break;
             }
+            setTimeout(function(){
+                var record = that.getSingleDeviceInfo(that.currentDeviceId);
+                if (record) {
+                    that.map.onClickDevice(that.currentDeviceId);
+                } 
+            },300);
         },
         openAndCloseVideoWindows: function(toOpensIndex) {
             this.videoNumber = toOpensIndex;
@@ -2120,12 +2120,11 @@ var monitor = {
             this.queryDeviceById();
             this.handlePlayAllVideos();
             setTimeout(function(){
-                var record = that.getSingleDeviceInfo(currentDeviceId);
+                var record = that.getSingleDeviceInfo(that.currentDeviceId);
                 if (record) {
-                    that.map.onClickDevice(currentDeviceId);
+                    that.map.onClickDevice(that.currentDeviceId);
                 } 
             },300);
-            
         },
         selectedDev: function(deviceInfo) {
             var device = this.deviceInfos[deviceInfo.deviceid];
