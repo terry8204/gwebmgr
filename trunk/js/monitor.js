@@ -1467,7 +1467,6 @@ var monitor = {
         },
         stopVideoPlayer: function() {
             var videoIns = this.videoIns;
-            console.log('stopVideoPlayer');
             for (var i in videoIns) {
                 var key = 'videoPlayer' + i;
                 var nowTime = Date.now();
