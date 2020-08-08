@@ -169,6 +169,9 @@ var myUrls = {
         return this.apihost + 'webapi?action=querycompanys&token=' + token
     },
     lastPosition: function() {
+        return this.apihost + 'webapi?action=lastposition&token=' + token
+    },
+    lastPositionByProto: function() {
         return this.apihost + 'webapi?action=lastposition&streamtype=proto&token=' + token
     },
     shareTrackLastPosition: function() {

@@ -452,19 +452,24 @@
                             return;
                         }
                         if (this.mapType === 'bMap') {
-                            utils.getBaiduAddressFromBaidu(lng, lat, function(resp) {
-                                if (resp.length) {
-                                    address = resp;
-                                    LocalCacheMgr.setAddress(lng, lat, address);
-                                    callback(address);
-                                } else {
-                                    utils.getJiuHuAddressSyn(callon, callat, function(resp) {
+                            //utils.getBaiduAddressFromBaidu(lng, lat, function(resp) {
+                            //    if (resp.length) {
+                            //        address = resp;
+                            //        LocalCacheMgr.setAddress(lng, lat, address);
+                            //        callback(address);
+                            //    } else {
+                            //        utils.getJiuHuAddressSyn(callon, callat, function(resp) {
+                            //            address = resp.address
+                            //            LocalCacheMgr.setAddress(lng, lat, address);
+                            //            callback(address);
+                            //        });
+                            //    }
+                            //});
+                             utils.getJiuHuAddressSyn(callon, callat, function(resp) {
                                         address = resp.address
                                         LocalCacheMgr.setAddress(lng, lat, address);
                                         callback(address);
                                     });
-                                }
-                            });
                         } else if (this.mapType === 'gMap') {
                             var google_lng_lat = wgs84togcj02(callon, callat);
                             utils.getGoogleAddressSyn(google_lng_lat[1], google_lng_lat[0], function(address) {

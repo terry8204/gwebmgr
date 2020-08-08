@@ -271,6 +271,7 @@ var utils = {
         return result;
     },
     getBaiduAddressFromBaidu: function(offsetlon, offsetlat, callback) {
+    	
         var point = new BMap.Point(offsetlon, offsetlat);
         var geoc = new BMap.Geocoder();
         geoc.getLocation(point, function(rs) {
@@ -740,18 +741,23 @@ var utils = {
         });
     },
     queryAddress: function(info, callback) {
+    	
         if (this.getMapType() == 'bMap') {
-            var b_lon_lat = wgs84tobd09(Number(info.callon), Number(info.callat));
-            utils.getBaiduAddressFromBaidu(b_lon_lat[0], b_lon_lat[1], function(b_address) {
-                if (b_address.length) {
-                    callback(b_address);
-                } else {
-                    utils.getJiuHuAddressSyn(info.callon, info.callat, function(resp) {
-                        var j_address = resp.address;
-                        j_address && callback(j_address);
-                    })
-                }
-            });
+//            var b_lon_lat = wgs84tobd09(Number(info.callon), Number(info.callat));
+//            utils.getBaiduAddressFromBaidu(b_lon_lat[0], b_lon_lat[1], function(b_address) {
+//                if (b_address.length) {
+//                    callback(b_address);
+//                } else {
+//                    utils.getJiuHuAddressSyn(info.callon, info.callat, function(resp) {
+//                        var j_address = resp.address;
+//                        j_address && callback(j_address);
+//                    })
+//                }
+//            });
+          utils.getJiuHuAddressSyn(info.callon, info.callat, function(resp) {
+          var j_address = resp.address;
+          j_address && callback(j_address);
+          });
         } else {
             var g_lon_lat = wgs84togcj02(Number(info.callon), Number(info.callat));
             utils.getGoogleAddressSyn(g_lon_lat[1], g_lon_lat[0], function(b_address) {
@@ -1196,14 +1202,24 @@ function refreshPostion(deviceid) {
     var lat = track.callat.toFixed(5);
 
     try {
-        var b_lon_lat = wgs84tobd09(track.callon, track.callat);
-        utils.getBaiduAddressFromBaidu(b_lon_lat[0], b_lon_lat[1], function(b_address) {
-            if (b_address) {
+//        var b_lon_lat = wgs84tobd09(track.callon, track.callat);
+//        utils.getBaiduAddressFromBaidu(b_lon_lat[0], b_lon_lat[1], function(b_address) {
+//            if (b_address) {
+//
+//                $("p.last-address").html((isZh ? "详细地址: " : "Address: ") + b_address);
+//                LocalCacheMgr.setAddress(lon, lat, b_address);
+//            };
+//        })
+//        var b_lon_lat = wgs84tobd09(track.callon, track.callat);
+        utils.getJiuHuAddressSyn(track.callon, track.callat,function(resp) {
+        	var j_address = resp.address;
+            if (j_address) {
 
-                $("p.last-address").html((isZh ? "详细地址: " : "Address: ") + b_address);
-                LocalCacheMgr.setAddress(lon, lat, b_address);
+                $("p.last-address").html((isZh ? "地址: " : "Address: ") + j_address);
+                LocalCacheMgr.setAddress(lon, lat, j_address);
             };
-        })
+        });
+        
     } catch (error) {
         var g_lon_lat = wgs84togcj02(track.callon, track.callat);
         utils.getGoogleAddressSyn(g_lon_lat[1], g_lon_lat[0], function(g_address) {

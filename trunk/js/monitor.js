@@ -993,7 +993,7 @@ var monitor = {
         },
         getLastPosition: function(deviceIds, callback, errorCall) {
             var me = this;
-            var url = myUrls.lastPosition();
+            var url = myUrls.lastPositionByProto();
             var data = {
                 username: this.username,
                 deviceids: deviceIds,
