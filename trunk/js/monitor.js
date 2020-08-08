@@ -2101,11 +2101,14 @@ var monitor = {
             deviceInfo.activesafety = activesafety;
             deviceInfo.state = this.positionLastrecords[this.currentDeviceId] ? this.positionLastrecords[this.currentDeviceId].strvideoalarm : null;
             // communicate.$emit("playerVideos", deviceInfo);
+            this.startPlayer(this.currentDeviceId,deviceInfo.devicename);
+        },
+        startPlayer:function(currentDeviceId,devicename){
             if (this.isMapMode) {
                 this.isMapMode = false;
             }
-            this.currentVideoDeviceInfo.deviceId = this.currentDeviceId;
-            this.currentVideoDeviceInfo.deviceName = deviceInfo.devicename;
+            this.currentVideoDeviceInfo.deviceId = currentDeviceId;
+            this.currentVideoDeviceInfo.deviceName = devicename;
             this.queryDeviceById();
             this.handlePlayAllVideos();
         },

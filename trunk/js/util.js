@@ -650,7 +650,7 @@ var utils = {
         if (extendsBtns.video) {
             var devicename = "'" + track.devicename + "'";
             var activeSafety = extendsBtns.activesafety ? 1 : 0;
-            devicename = encodeURIComponent(devicename);
+            // devicename = encodeURIComponent(devicename);
             extendsStr += '<span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="openVdeio(' + deviceid + ',' + devicename + ',' + activeSafety + ')">视频</span>'
         };
 
@@ -1245,11 +1245,12 @@ function openAudio(deviceid) {
 }
 
 function openVdeio(deviceid, name, activesafety) {
-    var mapType = utils.getMapType();
-    mapType = mapType ? mapType : 'bMap';
-    var url = myUrls.viewhosts + 'video.html?deviceid=' + deviceid + "&maptype=" + mapType + '&token=' + token + '&name=' + name + "&activesafety=" + activesafety +
-        "&state=" + encodeURIComponent(utils.videoState);
-    window.open(url);
+    // var mapType = utils.getMapType();
+    // mapType = mapType ? mapType : 'bMap';
+    // var url = myUrls.viewhosts + 'video.html?deviceid=' + deviceid + "&maptype=" + mapType + '&token=' + token + '&name=' + name + "&activesafety=" + activesafety +
+    //     "&state=" + encodeURIComponent(utils.videoState);
+    // window.open(url);
+    vRoot.$children[1].startPlayer(deviceid,name);
 }
 
 function openActiveSafety(deviceid, name) {
