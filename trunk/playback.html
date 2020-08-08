@@ -1379,19 +1379,25 @@
                             return address;
                         }
                         if (this.mapType === 'bMap') {
-                            utils.getBaiduAddressFromBaidu(lng, lat, function(resp) {
-                                if (resp.length) {
-                                    address = resp;
-                                    $("p.last-address").html(" 详细地址: " + address);
-                                    LocalCacheMgr.setAddress(lng, lat, address);
-                                } else {
-                                    utils.getJiuHuAddressSyn(callon, callat, function(resp) {
+                            //utils.getBaiduAddressFromBaidu(lng, lat, function(resp) {
+                            //    if (resp.length) {
+                            //        address = resp;
+                            //        $("p.last-address").html(" 详细地址: " + address);
+                            //        LocalCacheMgr.setAddress(lng, lat, address);
+                            //    } else {
+                            //        utils.getJiuHuAddressSyn(callon, callat, function(resp) {
+                            //            address = resp.address
+                            //            $("p.last-address").html(" 详细地址: " + address);
+                            //            LocalCacheMgr.setAddress(lng, lat, address);
+                            //        });
+                            //    }
+                            //});
+                            
+                            utils.getJiuHuAddressSyn(callon, callat, function(resp) {
                                         address = resp.address
                                         $("p.last-address").html(" 详细地址: " + address);
                                         LocalCacheMgr.setAddress(lng, lat, address);
                                     });
-                                }
-                            });
                         } else if (this.mapType === 'gMap') {
                             var google_lng_lat = wgs84togcj02(callon, callat);
                             utils.getGoogleAddressSyn(google_lng_lat[1], google_lng_lat[0], function(address) {

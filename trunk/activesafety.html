@@ -926,17 +926,22 @@
                     return imageAndVideoList;
                 },
                 queryAddress: function(callon, callat, callback) {
-                    var b_lon_lat = wgs84tobd09(Number(callon), Number(callat));
-                    utils.getBaiduAddressFromBaidu(b_lon_lat[0], b_lon_lat[1], function(b_address) {
-                        if (b_address.length) {
-                            callback(b_address);
-                        } else {
-                            utils.getJiuHuAddressSyn(callon, callat, function(resp) {
+                    //var b_lon_lat = wgs84tobd09(Number(callon), Number(callat));
+                    //utils.getBaiduAddressFromBaidu(b_lon_lat[0], b_lon_lat[1], function(b_address) {
+                    //    if (b_address.length) {
+                    //        callback(b_address);
+                    //    } else {
+                    //        utils.getJiuHuAddressSyn(callon, callat, function(resp) {
+                    //            var j_address = resp.address;
+                    //            callback(j_address);
+                    //        })
+                    //    }
+                    //});
+                    
+                        utils.getJiuHuAddressSyn(callon, callat, function(resp) {
                                 var j_address = resp.address;
                                 callback(j_address);
-                            })
-                        }
-                    });
+                            });
                 },
                 getTableHeight: function() {
                     var wHeight = document.documentElement.clientHeight || document.body.clientHeight;
