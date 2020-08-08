@@ -1467,6 +1467,7 @@ var monitor = {
         },
         stopVideoPlayer: function() {
             var videoIns = this.videoIns;
+            console.log('stopVideoPlayer');
             for (var i in videoIns) {
                 var key = 'videoPlayer' + i;
                 var nowTime = Date.now();
@@ -2700,7 +2701,7 @@ var monitor = {
                         me.dorefreshMapUI();
                     }, function(error) {});
                 }
-                me.intervalTim%5== 0 && me.stopVideoPlayer();
+                me.intervalTime%5== 0 && me.stopVideoPlayer();
             }, 1000);
         },
         handleMousemove: function(e) {
