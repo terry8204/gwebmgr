@@ -1084,6 +1084,58 @@
                                     </i-select>
                                 </i-Col>
                             </Row>
+                            <Row style="height:32px;margin: 10px 0;" v-show="videochannelcount > 4">
+                                <i-Col span="5" style="height: 100%;line-height:32px;text-align: right;">
+                                    通道5
+                                </i-Col>
+                                <i-Col span="1" style="height: 100%;line-height:32px;text-align: center;">:</i-Col>
+                                <i-Col span="10" style="height: 100%;line-height:32px;padding-left: 3px;">
+                                    <i-select placement="top" v-model="physicalchannel5" style="width:300px">
+                                        <i-option value="0">音视频</i-option>
+                                        <i-option value="1">音频 </i-option>
+                                        <i-option value="2">视频</i-option>
+                                    </i-select>
+                                </i-Col>
+                            </Row>
+                            <Row style="height:32px;margin: 10px 0;" v-show="videochannelcount > 5">
+                                <i-Col span="5" style="height: 100%;line-height:32px;text-align: right;">
+                                    通道6
+                                </i-Col>
+                                <i-Col span="1" style="height: 100%;line-height:32px;text-align: center;">:</i-Col>
+                                <i-Col span="10" style="height: 100%;line-height:32px;padding-left: 3px;">
+                                    <i-select placement="top" v-model="physicalchannel6" style="width:300px">
+                                        <i-option value="0">音视频</i-option>
+                                        <i-option value="1">音频 </i-option>
+                                        <i-option value="2">视频</i-option>
+                                    </i-select>
+                                </i-Col>
+                            </Row>
+                            <Row style="height:32px;margin: 10px 0;" v-show="videochannelcount > 6">
+                                <i-Col span="5" style="height: 100%;line-height:32px;text-align: right;">
+                                    通道7
+                                </i-Col>
+                                <i-Col span="1" style="height: 100%;line-height:32px;text-align: center;">:</i-Col>
+                                <i-Col span="10" style="height: 100%;line-height:32px;padding-left: 3px;">
+                                    <i-select placement="top" v-model="physicalchannel7" style="width:300px">
+                                        <i-option value="0">音视频</i-option>
+                                        <i-option value="1">音频 </i-option>
+                                        <i-option value="2">视频</i-option>
+                                    </i-select>
+                                </i-Col>
+                            </Row>
+                            <Row style="height:32px;margin: 10px 0;" v-show="videochannelcount > 7">
+                                <i-Col span="5" style="height: 100%;line-height:32px;text-align: right;">
+                                    通道8
+                                </i-Col>
+                                <i-Col span="1" style="height: 100%;line-height:32px;text-align: center;">:</i-Col>
+                                <i-Col span="10" style="height: 100%;line-height:32px;padding-left: 3px;">
+                                    <i-select placement="top" v-model="physicalchannel8" style="width:300px">
+                                        <i-option value="0">音视频</i-option>
+                                        <i-option value="1">音频 </i-option>
+                                        <i-option value="2">视频</i-option>
+                                    </i-select>
+                                </i-Col>
+                            </Row>
                             <Row style="height:32px;margin: 10px 0;">
                                 <i-Col span="18" style="height: 100%;line-height:32px;text-align: center;">
                                     <i-button type='primary' @click='handleSetPlayParamter' :disabled="userType > 2" :loading="loading">设置播放视频参数</i-button>

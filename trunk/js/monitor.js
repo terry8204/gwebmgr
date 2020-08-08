@@ -41,6 +41,10 @@ var monitor = {
             physicalchannel2: '0',
             physicalchannel3: '0',
             physicalchannel4: '0',
+            physicalchannel5: '0',
+            physicalchannel6: '0',
+            physicalchannel7: '0',
+            physicalchannel8: '0',
             // 音视频参数设置
             realtimebitratemode: '',
             storebitratemode: '',
@@ -380,51 +384,14 @@ var monitor = {
                 channelinfos: []
             }
 
-            if (this.videochannelcount == 1) {
+            for(var i = 1 ; i <= this.videochannelcount;i++){
                 data.channelinfos.push({
-                    physicalchannel: 1,
-                    channeltype: Number(this.physicalchannel1)
-                });
-            } else if (this.videochannelcount == 2) {
-                data.channelinfos.push({
-                    physicalchannel: 1,
-                    channeltype: Number(this.physicalchannel1)
-                });
-                data.channelinfos.push({
-                    physicalchannel: 2,
-                    channeltype: Number(this.physicalchannel2)
-                });
-            } else if (this.videochannelcount == 3) {
-                data.channelinfos.push({
-                    physicalchannel: 1,
-                    channeltype: Number(this.physicalchannel1)
-                });
-                data.channelinfos.push({
-                    physicalchannel: 2,
-                    channeltype: Number(this.physicalchannel2)
-                });
-                data.channelinfos.push({
-                    physicalchannel: 3,
-                    channeltype: Number(this.physicalchannel3)
-                });
-            } else if (this.videochannelcount == 4) {
-                data.channelinfos.push({
-                    physicalchannel: 1,
-                    channeltype: Number(this.physicalchannel1)
-                });
-                data.channelinfos.push({
-                    physicalchannel: 2,
-                    channeltype: Number(this.physicalchannel2)
-                });
-                data.channelinfos.push({
-                    physicalchannel: 3,
-                    channeltype: Number(this.physicalchannel3)
-                });
-                data.channelinfos.push({
-                    physicalchannel: 4,
-                    channeltype: Number(this.physicalchannel4)
+                    physicalchannel: i,
+                    channeltype: Number(this['physicalchannel' + i])
                 });
             }
+
+  
             this.loading = true;
             utils.sendAjax(url, data, function(data) {
 
