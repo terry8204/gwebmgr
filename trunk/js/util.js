@@ -741,7 +741,6 @@ var utils = {
         });
     },
     queryAddress: function(info, callback) {
-    	
         if (this.getMapType() == 'bMap') {
 //            var b_lon_lat = wgs84tobd09(Number(info.callon), Number(info.callat));
 //            utils.getBaiduAddressFromBaidu(b_lon_lat[0], b_lon_lat[1], function(b_address) {

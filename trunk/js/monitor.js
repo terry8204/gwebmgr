@@ -2104,6 +2104,7 @@ var monitor = {
             this.startPlayer(this.currentDeviceId,deviceInfo.devicename);
         },
         startPlayer:function(currentDeviceId,devicename){
+            var that = this;
             if (this.isMapMode) {
                 this.isMapMode = false;
             }
@@ -2111,6 +2112,13 @@ var monitor = {
             this.currentVideoDeviceInfo.deviceName = devicename;
             this.queryDeviceById();
             this.handlePlayAllVideos();
+            setTimeout(function(){
+                var record = that.getSingleDeviceInfo(currentDeviceId);
+                if (record) {
+                    that.map.onClickDevice(currentDeviceId);
+                } 
+            },300);
+            
         },
         selectedDev: function(deviceInfo) {
             var device = this.deviceInfos[deviceInfo.deviceid];
