@@ -1185,6 +1185,7 @@ var monitor = {
             }
         },
         switchMapMode: function(type) {
+            var that = this;
             if (this.isMapMode && type === 1) {
                 return;
             }
@@ -1194,6 +1195,12 @@ var monitor = {
             switch (type) {
                 case 1:
                     this.isMapMode = true;
+                    setTimeout(function(){
+                        var record = that.getSingleDeviceInfo(that.currentDeviceId);
+                        if (record) {
+                            that.map.onClickDevice(that.currentDeviceId);
+                        } 
+                    },300);
                     break;
                 case 2:
                     this.isMapMode = false;
