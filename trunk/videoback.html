@@ -276,7 +276,7 @@
                                     开始时间 :
                                 </i-col>
                                 <i-col span="8">
-                                    <Time-Picker type="time" v-model="startValue" style="width: 100%;"></Time-Picker>
+                                    <Time-Picker type="time" v-model="startValue" style="width: 100%;" disabled></Time-Picker>
                                 </i-col>
                                 <i-col span="11" offset="1" style="height:35px;line-height:35px;color:red;">
                                     <span> ( >= {{startVideoTime}} )</span>
@@ -287,10 +287,19 @@
                                     结束时间 :
                                 </i-col>
                                 <i-col span="8">
-                                    <Time-Picker type="time" v-model="endValue" style="width: 100%;"></Time-Picker>
+                                    <Time-Picker type="time" v-model="endValue" style="width: 100%;" disabled></Time-Picker>
                                 </i-col>
                                 <i-col span="11" offset="1" style="height:35px;line-height:35px;color:red;">
                                     <span>( <= {{endVideoTime}} )</span>
+                                </i-col>
+                            </Row>
+
+                            <Row style="margin:10px 0;">
+                                <i-col span="4" style="height:35px;line-height:35px;">
+                                    时间范围 :
+                                </i-col>
+                                <i-col span="16">
+                                    <Slider v-if="showSlider" v-model="sliderValue" ref="slider" range @on-change="onSliderChange" :tip-format="tipFormat"></Slider>
                                 </i-col>
                             </Row>
                             <Row style="margin:10px 0;">
@@ -359,6 +368,8 @@
     <script src="js/websocketmgr.js"></script>
     <script src="js/echarts.min.js"></script>
     <script>
+        var totalInterval = 0;
+        var startTimes = 0;
         var player = null;
         var chart = null;
         var deviceid = utils.getParameterByName("deviceid");
@@ -414,6 +425,18 @@
                 videotppe: true,
                 tableData: [],
                 downloadTableData: [],
+                sliderValue:[0,100],
+                showSlider:false,
+                tipFormat:function(value){
+                    var startValue = null;
+                    if(totalInterval > 0){
+                        startValue = value;
+                        var startInterval = startValue /100 * totalInterval;
+                        var startValue = DateFormat.longToDateTimeStr(startTimes + startInterval,DateFormat.getOffset()).split(' ')[1];
+                    }
+                    console.log('tip',startValue);
+                    return startValue;
+                },
                 columns: [{
                     title: '序号',
                     width: 60,
@@ -495,6 +518,14 @@
                                         vRoot.startVideoTime = row.starttime;
                                         vRoot.endVideoTime = row.endtime;
                                         vRoot.row = row;
+                
+
+                                        startTimes = DateFormat.dateTimeStrToLong(row.starttime,0);
+                                        var endTimes = DateFormat.dateTimeStrToLong(row.endtime,0);
+                                        totalInterval = endTimes - startTimes;
+                                        vRoot.showSlider = true;
+                                        vRoot.sliderValue = [0,100];
+
                                         vRoot.modal = true;
                                     }
                                 }
@@ -676,6 +707,18 @@
                 playerStateTip: '',
             },
             methods: {
+                onSliderChange:function(value){
+                 
+                    var startValue = value[0];
+                    var endValue = value[1];
+
+                    var startInterval = startValue /100 * totalInterval;
+                    var endInterval = endValue /100 * totalInterval;
+
+
+                    this.startValue = DateFormat.longToDateTimeStr(startTimes + startInterval,DateFormat.getOffset()).split(' ')[1];
+                    this.endValue = DateFormat.longToDateTimeStr(startTimes + endInterval,DateFormat.getOffset()).split(' ')[1];
+                },
                 stopVideo: function() {
                     if (this.flvPlayer != null) {
                         this.flvPlayer.pause();
