@@ -2918,7 +2918,7 @@ var monitor = {
             } else {
                 return {
                     position: 'absolute',
-                    width: '300px',
+                    width: '400px',
                     top: '35px',
                     right: '10px',
                     bottom: '10px',
@@ -2936,7 +2936,7 @@ var monitor = {
                     left: '10px',
                     top: '35px',
                     bottom: '10px',
-                    right: '310px',
+                    right: '410px',
                 }
             }
         },
