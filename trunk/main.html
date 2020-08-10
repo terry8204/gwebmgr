@@ -1040,21 +1040,19 @@
                                     通道1
                                 </i-Col>
                                 <i-Col span="1" style="height: 100%;line-height:32px;text-align: center;">:</i-Col>
-                                <i-Col span="10" style="height: 100%;line-height:32px;padding-left: 3px;">
-                                    <i-select placement="top" v-model="physicalchannel1" style="width:300px">
+                                <i-Col span="4" style="height: 100%;line-height:32px;padding-left: 3px;">
+                                    <i-select placement="top" v-model="physicalchannel1" style="width:100px">
                                         <i-option value="0">音视频</i-option>
                                         <i-option value="1">音频 </i-option>
                                         <i-option value="2">视频</i-option>
                                     </i-select>
                                 </i-Col>
-                            </Row>
-                            <Row style="height:32px;margin: 10px 0;" v-show="videochannelcount > 1">
-                                <i-Col span="5" style="height: 100%;line-height:32px;text-align: right;">
+                                <i-Col span="2" style="height: 100%;line-height:32px;text-align: right;" v-show="videochannelcount > 1">
                                     通道2
                                 </i-Col>
-                                <i-Col span="1" style="height: 100%;line-height:32px;text-align: center;">:</i-Col>
-                                <i-Col span="10" style="height: 100%;line-height:32px;padding-left: 3px;">
-                                    <i-select placement="top" v-model="physicalchannel2" style="width:300px">
+                                <i-Col span="1" style="height: 100%;line-height:32px;text-align: center;" v-show="videochannelcount > 1">:</i-Col>
+                                <i-Col span="5" style="height: 100%;line-height:32px;padding-left: 3px;" v-show="videochannelcount > 1">
+                                    <i-select placement="top" v-model="physicalchannel2" style="width:100px" v-show="videochannelcount > 1">
                                         <i-option value="0">音视频</i-option>
                                         <i-option value="1">音频 </i-option>
                                         <i-option value="2">视频</i-option>
@@ -1066,21 +1064,19 @@
                                     通道3
                                 </i-Col>
                                 <i-Col span="1" style="height: 100%;line-height:32px;text-align: center;">:</i-Col>
-                                <i-Col span="10" style="height: 100%;line-height:32px;padding-left: 3px;">
-                                    <i-select placement="top" v-model="physicalchannel3" style="width:300px">
+                                <i-Col span="4" style="height: 100%;line-height:32px;padding-left: 3px;">
+                                    <i-select placement="top" v-model="physicalchannel3" style="width:100px">
                                         <i-option value="0">音视频</i-option>
                                         <i-option value="1">音频 </i-option>
                                         <i-option value="2">视频</i-option>
                                     </i-select>
                                 </i-Col>
-                            </Row>
-                            <Row style="height:32px;margin: 10px 0;" v-show="videochannelcount > 3">
-                                <i-Col span="5" style="height: 100%;line-height:32px;text-align: right;">
+                                <i-Col span="2" style="height: 100%;line-height:32px;text-align: right;" v-show="videochannelcount > 3">
                                     通道4
                                 </i-Col>
-                                <i-Col span="1" style="height: 100%;line-height:32px;text-align: center;">:</i-Col>
-                                <i-Col span="10" style="height: 100%;line-height:32px;padding-left: 3px;">
-                                    <i-select placement="top" v-model="physicalchannel4" style="width:300px">
+                                <i-Col span="1" style="height: 100%;line-height:32px;text-align: center;" v-show="videochannelcount > 3">:</i-Col>
+                                <i-Col span="5" style="height: 100%;line-height:32px;padding-left: 3px;" v-show="videochannelcount > 3">
+                                    <i-select placement="top" v-model="physicalchannel4" style="width:100px">
                                         <i-option value="0">音视频</i-option>
                                         <i-option value="1">音频 </i-option>
                                         <i-option value="2">视频</i-option>
@@ -1092,21 +1088,19 @@
                                     通道5
                                 </i-Col>
                                 <i-Col span="1" style="height: 100%;line-height:32px;text-align: center;">:</i-Col>
-                                <i-Col span="10" style="height: 100%;line-height:32px;padding-left: 3px;">
-                                    <i-select placement="top" v-model="physicalchannel5" style="width:300px">
+                                <i-Col span="4" style="height: 100%;line-height:32px;padding-left: 3px;">
+                                    <i-select placement="top" v-model="physicalchannel5" style="width:100px">
                                         <i-option value="0">音视频</i-option>
                                         <i-option value="1">音频 </i-option>
                                         <i-option value="2">视频</i-option>
                                     </i-select>
                                 </i-Col>
-                            </Row>
-                            <Row style="height:32px;margin: 10px 0;" v-show="videochannelcount > 5">
-                                <i-Col span="5" style="height: 100%;line-height:32px;text-align: right;">
+                                <i-Col span="2" style="height: 100%;line-height:32px;text-align: right;" v-show="videochannelcount > 5">
                                     通道6
                                 </i-Col>
-                                <i-Col span="1" style="height: 100%;line-height:32px;text-align: center;">:</i-Col>
-                                <i-Col span="10" style="height: 100%;line-height:32px;padding-left: 3px;">
-                                    <i-select placement="top" v-model="physicalchannel6" style="width:300px">
+                                <i-Col span="1" style="height: 100%;line-height:32px;text-align: center;" v-show="videochannelcount > 5">:</i-Col>
+                                <i-Col span="5" style="height: 100%;line-height:32px;padding-left: 3px;" v-show="videochannelcount > 5">
+                                    <i-select placement="top" v-model="physicalchannel6" style="width:100px">
                                         <i-option value="0">音视频</i-option>
                                         <i-option value="1">音频 </i-option>
                                         <i-option value="2">视频</i-option>
@@ -1118,21 +1112,19 @@
                                     通道7
                                 </i-Col>
                                 <i-Col span="1" style="height: 100%;line-height:32px;text-align: center;">:</i-Col>
-                                <i-Col span="10" style="height: 100%;line-height:32px;padding-left: 3px;">
-                                    <i-select placement="top" v-model="physicalchannel7" style="width:300px">
+                                <i-Col span="4" style="height: 100%;line-height:32px;padding-left: 3px;">
+                                    <i-select placement="top" v-model="physicalchannel7" style="width:100px">
                                         <i-option value="0">音视频</i-option>
                                         <i-option value="1">音频 </i-option>
                                         <i-option value="2">视频</i-option>
                                     </i-select>
                                 </i-Col>
-                            </Row>
-                            <Row style="height:32px;margin: 10px 0;" v-show="videochannelcount > 7">
-                                <i-Col span="5" style="height: 100%;line-height:32px;text-align: right;">
+                                <i-Col span="2" style="height: 100%;line-height:32px;text-align: right;" v-show="videochannelcount > 7">
                                     通道8
                                 </i-Col>
-                                <i-Col span="1" style="height: 100%;line-height:32px;text-align: center;">:</i-Col>
-                                <i-Col span="10" style="height: 100%;line-height:32px;padding-left: 3px;">
-                                    <i-select placement="top" v-model="physicalchannel8" style="width:300px">
+                                <i-Col span="1" style="height: 100%;line-height:32px;text-align: center;" v-show="videochannelcount > 7">:</i-Col>
+                                <i-Col span="5" style="height: 100%;line-height:32px;padding-left: 3px;" v-show="videochannelcount > 7">
+                                    <i-select placement="top" v-model="physicalchannel8" style="width:100px">
                                         <i-option value="0">音视频</i-option>
                                         <i-option value="1">音频 </i-option>
                                         <i-option value="2">视频</i-option>
