@@ -383,13 +383,13 @@ div.resolving_power{
 }
 
 .videoContent-6>div:first-child {
-    width: 66.66%;
-    height: 66.655%;
+    width:66.66%; 
+    height: 66.65%;
 }
 
 .videoContent-6>div {
     width: 33.33%;
-    height: 33.33333%;
+    height: 33.33%;
 }
 
 .videoContent-8>div:first-child {
@@ -403,8 +403,8 @@ div.resolving_power{
 }
 
 .videoContent-9>div {
-    width: 33.33%;
-    height: 33.33%;
+    width: 33.3333%;
+    height: 33.3333%;
 }
 
 .videoContent-16>div {

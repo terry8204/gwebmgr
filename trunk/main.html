@@ -618,12 +618,15 @@
                               
                             </div>
                             <div style="float:left;height: 100%;line-height:35px;color:#FFFFFF;padding-left:10px;" v-text="currentVideoDeviceInfo.deviceName"></div>
+                            <div style="float:left;height: 100%;line-height:35px;color:#FFFFFF;padding-left:5px;" v-show="currentVideoDeviceInfo.deviceName!=''">
+                                <i class="ivu-icon ivu-icon-ios-copy-outline" style="font-size: 21px;cursor: pointer;" @click="copyToClipboard"></i>
+                            </div>
                         </div>
                         <div class="video_body">
                             <div :class="videoContentCls" id="videoContent" ref="videoContent">
                                 <div>
                                     <div class="videoElementWrap">
-                                        <video id="videoElement1" controls :muted="isMute"></video>
+                                        <video id="videoElement1" controls :muted="isMute" v-show="playerState.yi"></video>
                                         <div class="play-btn-wrap" @click="onChangePlayerState(1)">
                                             <Icon :type="playerState.yi?'md-square':'ios-play'" size="40" />
                                         </div>
@@ -641,7 +644,7 @@
                                 </div>
                                 <div>
                                     <div class="videoElementWrap">
-                                        <video id="videoElement2" controls :muted="isMute"></video>
+                                        <video id="videoElement2" controls :muted="isMute" v-show="playerState.er"></video>
                                         <div class="play-btn-wrap" @click="onChangePlayerState(2)">
                                             <Icon :type="playerState.er?'md-square':'ios-play'" size="40" />
                                         </div>
@@ -659,7 +662,7 @@
                                 </div>
                                 <div>
                                     <div class="videoElementWrap">
-                                        <video id="videoElement3" controls :muted="isMute"></video>
+                                        <video id="videoElement3" controls :muted="isMute" v-show="playerState.san"></video>
                                         <div class="play-btn-wrap" @click="onChangePlayerState(3)">
                                             <Icon :type="playerState.san?'md-square':'ios-play'" size="40" />
                                         </div>
@@ -677,7 +680,7 @@
                                 </div>
                                 <div>
                                     <div class="videoElementWrap">
-                                        <video id="videoElement4" controls :muted="isMute"></video>
+                                        <video id="videoElement4" controls :muted="isMute" v-show="playerState.si"></video>
                                         <div class="play-btn-wrap" @click="onChangePlayerState(4)">
                                             <Icon :type="playerState.si?'md-square':'ios-play'" size="40" />
                                         </div>
@@ -695,7 +698,7 @@
                                 </div>
                                 <div>
                                     <div class="videoElementWrap">
-                                        <video id="videoElement5" controls :muted="isMute"></video>
+                                        <video id="videoElement5" controls :muted="isMute" v-show="playerState.wu"></video>
                                         <div class="play-btn-wrap" @click="onChangePlayerState(5)">
                                             <Icon :type="playerState.wu?'md-square':'ios-play'" size="40" />
                                         </div>
@@ -713,7 +716,7 @@
                                 </div>
                                 <div>
                                     <div class="videoElementWrap">
-                                        <video id="videoElement6" controls :muted="isMute"></video>
+                                        <video id="videoElement6" controls :muted="isMute" v-show="playerState.liu"></video>
                                         <div class="play-btn-wrap" @click="onChangePlayerState(6)">
                                             <Icon :type="playerState.liu?'md-square':'ios-play'" size="40" />
                                         </div>
@@ -731,7 +734,7 @@
                                 </div>
                                 <div>
                                     <div class="videoElementWrap">
-                                        <video id="videoElement7" controls :muted="isMute"></video>
+                                        <video id="videoElement7" controls :muted="isMute" v-show="playerState.qi"></video>
                                         <div class="play-btn-wrap" @click="onChangePlayerState(7)">
                                             <Icon :type="playerState.qi?'md-square':'ios-play'" size="40" />
                                         </div>
@@ -749,7 +752,7 @@
                                 </div>
                                 <div>
                                     <div class="videoElementWrap">
-                                        <video id="videoElement8" controls :muted="isMute"></video>
+                                        <video id="videoElement8" controls :muted="isMute" v-show="playerState.ba"></video>
                                         <div class="play-btn-wrap" @click="onChangePlayerState(8)">
                                             <Icon :type="playerState.ba?'md-square':'ios-play'" size="40" />
                                         </div>
@@ -767,7 +770,7 @@
                                 </div>
                                 <div>
                                     <div class="videoElementWrap">
-                                        <video id="videoElement9" controls :muted="isMute"></video>
+                                        <video id="videoElement9" controls :muted="isMute" v-show="playerState.jiu"></video>
                                         <div class="play-btn-wrap" @click="onChangePlayerState(9)">
                                             <Icon :type="playerState.jiu?'md-square':'ios-play'" size="40" />
                                         </div>
@@ -785,7 +788,7 @@
                                 </div>
                                 <div>
                                     <div class="videoElementWrap">
-                                        <video id="videoElement10" controls :muted="isMute"></video>
+                                        <video id="videoElement10" controls :muted="isMute" v-show="playerState.shi"></video>
                                         <div class="play-btn-wrap" @click="onChangePlayerState(10)">
                                             <Icon :type="playerState.shi?'md-square':'ios-play'" size="40" />
                                         </div>
@@ -803,7 +806,7 @@
                                 </div>
                                 <div>
                                     <div class="videoElementWrap">
-                                        <video id="videoElement11" controls :muted="isMute"></video>
+                                        <video id="videoElement11" controls :muted="isMute" v-show="playerState.shiyi"></video>
                                         <div class="play-btn-wrap" @click="onChangePlayerState(11)">
                                             <Icon :type="playerState.shiyi?'md-square':'ios-play'" size="40" />
                                         </div>
@@ -821,7 +824,7 @@
                                 </div>
                                 <div>
                                     <div class="videoElementWrap">
-                                        <video id="videoElement12" controls :muted="isMute"></video>
+                                        <video id="videoElement12" controls :muted="isMute" v-show="playerState.shier"></video>
                                         <div class="play-btn-wrap" @click="onChangePlayerState(12)">
                                             <Icon :type="playerState.shier?'md-square':'ios-play'" size="40" />
                                         </div>
@@ -839,7 +842,7 @@
                                 </div>
                                 <div>
                                     <div class="videoElementWrap">
-                                        <video id="videoElement13" controls :muted="isMute"></video>
+                                        <video id="videoElement13" controls :muted="isMute" v-show="playerState.shisan"></video>
                                         <div class="play-btn-wrap" @click="onChangePlayerState(13)">
                                             <Icon :type="playerState.shisan?'md-square':'ios-play'" size="40" />
                                         </div>
@@ -857,7 +860,7 @@
                                 </div>
                                 <div>
                                     <div class="videoElementWrap">
-                                        <video id="videoElement14" controls :muted="isMute"></video>
+                                        <video id="videoElement14" controls :muted="isMute" v-show="playerState.shisi"></video>
                                         <div class="play-btn-wrap" @click="onChangePlayerState(14)">
                                             <Icon :type="playerState.shisi?'md-square':'ios-play'" size="40" />
                                         </div>
@@ -875,7 +878,7 @@
                                 </div>
                                 <div>
                                     <div class="videoElementWrap">
-                                        <video id="videoElement15" controls :muted="isMute"></video>
+                                        <video id="videoElement15" controls :muted="isMute" v-show="playerState.shiwu"></video>
                                         <div class="play-btn-wrap" @click="onChangePlayerState(15)">
                                             <Icon :type="playerState.shiwu?'md-square':'ios-play'" size="40" />
                                         </div>
@@ -893,7 +896,7 @@
                                 </div>
                                 <div>
                                     <div class="videoElementWrap">
-                                        <video id="videoElement16" controls :muted="isMute"></video>
+                                        <video id="videoElement16" controls :muted="isMute" v-show="playerState.shiliu"></video>
                                         <div class="play-btn-wrap" @click="onChangePlayerState(16)">
                                             <Icon :type="playerState.shiliu?'md-square':'ios-play'" size="40" />
                                         </div>
