@@ -1249,7 +1249,7 @@ function openVdeio(deviceid, name, activesafety) {
     // var url = myUrls.viewhosts + 'video.html?deviceid=' + deviceid + "&maptype=" + mapType + '&token=' + token + '&name=' + name + "&activesafety=" + activesafety +
     //     "&state=" + encodeURIComponent(utils.videoState);
     // window.open(url);
-    vRoot.$children[1].startPlayer(deviceid,name);
+    vRoot.$children[1].playerVideos();
 }
 
 function openActiveSafety(deviceid, name) {

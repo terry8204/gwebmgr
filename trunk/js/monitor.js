@@ -35,6 +35,7 @@ var monitor = {
             currentVideoDeviceInfo:{
                 deviceId:null,
                 deviceName:'',
+                videochannelcount:4,
             },
             modalHader: '视频参数',
             physicalchannel1: '0',
@@ -391,12 +392,11 @@ var monitor = {
                 });
             }
 
-  
             this.loading = true;
-            utils.sendAjax(url, data, function(data) {
-
-                if (data.status === 0) {
+            utils.sendAjax(url, data, function(resp) {
+                if (resp.status === 0) {
                     that.$Message.success('设置成功')
+                    that.deviceInfos[that.currentDeviceId].videochannelcount = data.videochannelcount;
                 } else {
                     that.$Message.error('设置失败')
                 }
@@ -1182,7 +1182,7 @@ var monitor = {
                 this.$Message.error('设备不支持视频播放');
                 return;
             };
-            for (var i = 0; i < this.videoNumber; i++) {
+            for (var i = 0; i < this.currentVideoDeviceInfo.videochannelcount; i++) {
                 var flvPlayer = this.videoIns[i + 1];
                 this.playerState[playerStateKeyList[i + 1]] = true;
                 if (flvPlayer) {
@@ -2069,21 +2069,39 @@ var monitor = {
             }
         },
         playerVideos: function() {
-
+            var me = this;
+            utils.sendAjax(url = myUrls.stopVideos(), {
+                deviceid: this.currentVideoDeviceInfo.deviceId,
+                channels: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
+            }, function(resp) {});
+            this.videoTimes = {};
+            for (var key in this.videoIns) {
+                try {
+                    var player = this.videoIns[key];
+                    player.unload();
+                    player.detachMediaElement();
+                    player.destroy();
+                    this.videoIns[key] = null;
+                } catch (error) {};
+                this.playerState[playerStateKeyList[key]] = false;
+                this.playerStateTips[playerStateKeyList[key]] = '';
+                isSendAjaxState[playerStateKeyList[key]] = false;
+            };
             var activesafety = this.isShowActiveSafetyBtn ? 1 : 0;
             var deviceInfo = this.deviceInfos[this.currentDeviceId];
             deviceInfo.activesafety = activesafety;
             deviceInfo.state = this.positionLastrecords[this.currentDeviceId] ? this.positionLastrecords[this.currentDeviceId].strvideoalarm : null;
             // communicate.$emit("playerVideos", deviceInfo);
-            this.startPlayer(this.currentDeviceId,deviceInfo.devicename);
+            this.startPlayer(this.currentDeviceId,deviceInfo.devicename,deviceInfo.videochannelcount);
         },
-        startPlayer:function(currentDeviceId,devicename){
+        startPlayer:function(currentDeviceId,devicename,videochannelcount){
             var that = this;
             if (this.isMapMode) {
                 this.isMapMode = false;
             }
             this.currentVideoDeviceInfo.deviceId = currentDeviceId;
             this.currentVideoDeviceInfo.deviceName = devicename;
+            this.currentVideoDeviceInfo.videochannelcount = videochannelcount;
             this.queryDeviceById();
             this.handlePlayAllVideos();
             setTimeout(function(){
