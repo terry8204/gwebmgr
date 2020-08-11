@@ -1891,25 +1891,43 @@ var monitor = {
             });
         },
         queryDeviceBaseInfo: function(forceupdate) {
-
-            var me = this;
+            var that = this;
             var url = myUrls.queryDeviceBaseInfo();
             var data = {
                 deviceid: globalDeviceId,
                 forceupdate:forceupdate
             };
             if(forceupdate == 1){
-                me.loading = true;
+                that.loading = true;
             }else{
                 this.deviceBaseInfo = {};
             }
             utils.sendAjax(url, data, function(resp) {
-                resp.overdueDateStr = DateFormat.longToDateStr(resp.overduetime, timeDifference);
-                me.deviceBaseInfo = resp;
-                me.loading = false;
+                var status = resp.status;
+                if (status == CMD_SEND_RESULT_UNCONFIRM) {
+                    that.$Message.error('发送成功，未收到确认');
+                } else if (status === CMD_SEND_RESULT_PASSWORD_ERROR) {
+                    that.$Message.error('密码错误');
+                } else if (status === CMD_SEND_RESULT_OFFLINE_NOT_CACHE) {
+                    that.$Message.error("设备离线，未缓存");
+                } else if (status === CMD_SEND_RESULT_OFFLINE_CACHED) {
+                    that.$Message.error("设备离线，已缓存");
+                } else if (status === CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD) {
+                    that.$Message.error("需要修改默认密码");
+                } else if (status === CMD_SEND_RESULT_DETAIL_ERROR) {
+                    that.$Message.error("错误:" + resp.cause);
+                } else if (status === CMD_SEND_CONFIRMED) {
+                    resp.overdueDateStr = DateFormat.longToDateStr(resp.overduetime, timeDifference);
+                    that.deviceBaseInfo = resp;
+                } else if (status === CMD_SEND_OVER_RETRY_TIMES) {
+                    that.$Message.error("尝试发送3次失败");
+                } else if (status === CMD_SEND_SYNC_TIMEOUT) {
+                    that.$Message.error("发送超时");
+                }
+                that.loading = false;
             },function(){
-                me.loading = false;
-                me.$Message.error("查询失败");
+                that.loading = false;
+                that.$Message.error("查询失败");
             })
         },
         handleClickTransferDeviceGroup: function(groupid) {
