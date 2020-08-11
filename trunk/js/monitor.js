@@ -1814,7 +1814,7 @@ var monitor = {
                     this.$emit("jump-report", "reportForm");
                     break;
                 case 'devbaseinfo':
-                    this.queryDeviceBaseInfo();
+                    this.queryDeviceBaseInfo(0);
                     this.deviceInfoModal = true;
                     break;
                 case 'luyin':
@@ -1890,16 +1890,26 @@ var monitor = {
                 }
             });
         },
-        queryDeviceBaseInfo: function() {
-            this.deviceBaseInfo = {};
+        queryDeviceBaseInfo: function(forceupdate) {
+
             var me = this;
             var url = myUrls.queryDeviceBaseInfo();
             var data = {
-                deviceid: globalDeviceId
+                deviceid: globalDeviceId,
+                forceupdate:forceupdate
             };
+            if(forceupdate == 1){
+                me.loading = true;
+            }else{
+                this.deviceBaseInfo = {};
+            }
             utils.sendAjax(url, data, function(resp) {
                 resp.overdueDateStr = DateFormat.longToDateStr(resp.overduetime, timeDifference);
                 me.deviceBaseInfo = resp;
+                me.loading = false;
+            },function(){
+                me.loading = false;
+                me.$Message.error("查询失败");
             })
         },
         handleClickTransferDeviceGroup: function(groupid) {
