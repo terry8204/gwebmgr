@@ -17,13 +17,227 @@
 //     <script src="js/gmarkerclusterer.js"></script>
 //     <script src="js/markerwithlabel.js"></script> -->
 
+(function(window) {
+    //兼容
+    window.URL = window.URL || window.webkitURL;
+    navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
+
+    var HZRecorder = function(stream, config) {
+        config = config || {};
+        config.sampleBits = config.sampleBits || 8; //采样数位 8, 16
+        config.sampleRate = config.sampleRate || (44100 / 6); //采样率(1/6 44100)
+
+        var context = new(window.webkitAudioContext || window.AudioContext)();
+        var audioInput = context.createMediaStreamSource(stream);
+        var createScript = context.createScriptProcessor || context.createJavaScriptNode;
+        var recorder = createScript.apply(context, [16384, 1, 1]);
+        lame = new lamejs();
+        mp3Encoder = new lame.Mp3Encoder(1, config.sampleRate || 44100, config.sampleBits || 128);
+
+
+        var floatTo16BitPCM = function(input, output) {
+            for (var i = 0; i < input.length; i++) {
+                var s = Math.max(-1, Math.min(1, input[i]));
+                output[i] = (s < 0 ? s * 0x8000 : s * 0x7FFF);
+            }
+        };
+
+        var convertBuffer = function(arrayBuffer) {
+            var data = new Float32Array(arrayBuffer);
+            var out = new Int16Array(arrayBuffer.length);
+            floatTo16BitPCM(data, out);
+            return out;
+        };
+
+        var encode = function(arrayBuffer) {
+            var transformData = [];
+            var maxSamples = 1152;
+            var samplesMono = convertBuffer(arrayBuffer);
+            var remaining = samplesMono.length;
+            for (var i = 0; remaining >= 0; i += maxSamples) {
+                var left = samplesMono.subarray(i, i + maxSamples);
+                var mp3buf = mp3Encoder.encodeBuffer(left);
+                transformData.push(mp3buf);
+                remaining -= maxSamples;
+            }
+            // transformData.push(mp3Encoder.flush());
+            return transformData;
+        };
+        var audioData = {
+            size: 0 //录音文件长度
+                ,
+            buffer: [] //录音缓存
+                ,
+            callback: config.callback,
+            inputSampleRate: context.sampleRate //输入采样率
+                ,
+            inputSampleBits: 16 //输入采样数位 8, 16
+                ,
+            outputSampleRate: config.sampleRate //输出采样率
+                ,
+            oututSampleBits: config.sampleBits //输出采样数位 8, 16
+                ,
+            input: function(data) {
+                //this.buffer = [];
+                // this.buffer.push(new Float32Array(data));
+                this.buffer = data;
+                //this.buffer = new Float32Array(data);
+                this.size += data.length;
+                this.encodeMP3();
+
+            },
+            encodeMP3: function() {
+                var that = this;
+                var mp3Buffer = encode(this.buffer);
+                var blob = new Blob(mp3Buffer, {
+                    type: 'audio/mp3'
+                });
+                var reader = new FileReader();
+                reader.readAsArrayBuffer(blob);
+                reader.onload = function(e) {
+                    var buf = new Uint8Array(reader.result);
+                    var dataLength = buf.length;
+                    that.callback && that.callback(config.sampleRate, config.sampleBits, dataLength, buf);
+                }
+            }
+
+        };
+
+        //开始录音
+        this.start = function() {
+            audioInput.connect(recorder);
+            recorder.connect(context.destination);
+        }
+
+        //停止
+        this.stop = function() {
+
+            recorder.disconnect();
+        }
+
+        //音频采集
+        recorder.onaudioprocess = function(e) {
+            audioData.input(e.inputBuffer.getChannelData(0));
+            //record(e.inputBuffer.getChannelData(0));
+        }
+
+    };
+    //抛出异常
+    HZRecorder.throwError = function(message) {
+            // alert(message);
+            new Vue().$Message.error(message);
+            // throw new function () { this.toString = function () { return message; } }
+        }
+        //是否支持录音
+    HZRecorder.canRecording = (navigator.getUserMedia != null);
+    //获取录音机
+    HZRecorder.get = function(callback, config) {
+        if (callback) {
+            if (navigator.getUserMedia) {
+                navigator.getUserMedia({
+                        audio: true,
+                        audio: true
+                    } //只启用音频
+                    ,
+                    function(stream) {
+                        var rec = new HZRecorder(stream, config);
+                        callback(rec);
+                    },
+                    function(error) {
+                        isRecordingRights = false;
+                        switch (error.code || error.name) {
+                            case 'PERMISSION_DENIED':
+                            case 'PermissionDeniedError':
+                                HZRecorder.throwError('用户拒绝提供信息。');
+                                break;
+                            case 'NOT_SUPPORTED_ERROR':
+                            case 'NotSupportedError':
+                                HZRecorder.throwError('浏览器不支持硬件设备。');
+                                break;
+                            case 'MANDATORY_UNSATISFIED_ERROR':
+                            case 'MandatoryUnsatisfiedError':
+                                HZRecorder.throwError('无法发现指定的硬件设备。');
+                                break;
+                            case 8:
+                                HZRecorder.throwError('没有检测到录音设备,无法录音。');
+                                break;
+                            default:
+                                HZRecorder.throwError('无法打开麦克风。异常信息:' + (error.code || error.name));
+                                break;
+                        }
+                    });
+            } else {
+                HZRecorder.throwError('当前浏览器不支持录音功能。');
+                return;
+            }
+        }
+    }
+
+    // 判断端字节序
+    HZRecorder.littleEdian = (function() {
+        var buffer = new ArrayBuffer(2);
+        new DataView(buffer).setInt16(0, 256, true);
+        return new Int16Array(buffer)[0] === 256 ? 1 : 0;
+    })();
+
+    window.HZRecorder = HZRecorder;
+
+})(window);
+
+var lame = null;
+var myRecorder = null;
+var audioPlayer  = null;
+var isRecordingRights = true;
 var isLoadLastPositon = false;
+var sn = 0;
+HZRecorder.get(
+    function(rec) {
+        myRecorder = rec;
+    }, {
+        sampleRate: 44100,
+        sampleBits: 128,
+        callback: function(sampleRate, sampleBits, dataLength, bytes) {
+            sn++;
+            var url = myUrls.uploadAudio();
+            var data = {
+                deviceid: vRoot.$children[1].currentVideoDeviceInfo.deviceId,
+                codec: 'mp3',
+                datasize: dataLength,
+                samplebits: 32,
+                littleedian: HZRecorder.littleEdian,
+                channel: vRoot.$children[1].audiochannel,
+                sn: sn,
+                // data:arrayBufferToBase64(buf),
+                hexdata: utils.Bytes2HexStr(bytes),
+                numberofchannels: 1,
+                samplerate: sampleRate,
+            };
+            sn++;
+            utils.sendAjax(url, data, function(resp) {
+                console.log('发送成功', resp);
+            })
+        }
+    });
+
 // 定位监控
 var monitor = {
     template: document.getElementById('monitor-template').innerHTML,
     data: function() {
         var vm = this;
         return {
+            isLuyin:false,
+            isShowYunTai:false,
+            isOpenJianting:false,
+            listingChoice:'duijiang',
+            brightness: 128, //1     亮度
+            constract: 0, // 2      对比度
+            hue: 0, //         色度                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
+            saturate: 128, // 4       饱和度                                                                                  
+            exposure: 128, // 5 
+            audioPlayerTip: '对讲请先点击以下按钮',
+            isLuyin: false,
+            speechTimer: null,
+            imgSrc: './images/luyin/ic_record_ripple@2x-9.png',
             isMute: false,
             setupVideoModal:false,
             videoProperty: {},
@@ -361,6 +575,125 @@ var monitor = {
         }
     },
     methods: {
+
+        initAudioPlayer: function(url) {
+            if (audioPlayer != null) {
+                audioPlayer.pause();
+                audioPlayer.unload();
+                audioPlayer.detachMediaElement();
+                audioPlayer.destroy();
+                audioPlayer = null;
+            };
+            audioPlayer = flvjs.createPlayer({
+                type: 'flv',
+                url: url,
+                isLive: true,
+                hasAudio: true,
+                hasVideo: false,
+                withCredentials: false,
+            }, {
+                enableWorker: false,
+                enableStashBuffer: false,
+                isLive: true,
+                lazyLoad: false
+            });
+            var player = document.getElementById('audio-player');
+            audioPlayer.attachMediaElement(player);
+            audioPlayer.load(); //加载
+            audioPlayer.play();
+        },
+        onMousedown: function() {
+            var that = this;
+            if (!that.isOpenJianting) {
+                that.$Message.success("请先开启监听");
+                return;
+            }
+            try {
+                that.isLuyin = true;
+                that.setSpeechTimer();
+                myRecorder.start();
+                document.onmouseup = function() {
+                    that.isLuyin = false;
+                    myRecorder.stop();
+                    document.onmousemove = null;
+                    document.onmouseup = null;
+                    clearTimeout(that.speechTimer);
+                    setTimeout(function() {
+                        sn = 1;
+                    }, 1000);
+                };
+            } catch (error) {
+                vRoot.$Message.error('浏览器不支持录音功能')
+            }
+            return false;
+        },
+        setSpeechTimer: function() {
+            var index = [9, 8, 7, 6, 5, 4, 3, 2, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+            var num = index.length,
+                that = this;
+            this.speechTimer = setInterval(function() {
+                setTimeout(function() {
+                    num++;
+                    that.imgSrc = "./images/luyin/ic_record_ripple@2x-" + index[num] + ".png";
+                }, 70);
+                if (num >= index.length - 1) {
+                    num = 0;
+                }
+            }, 70);
+        },
+        defaultQualityParams: function() {
+            var me = this;
+            me.brightness = 128;
+            me.constract = 0;
+            me.hue = 0;
+            me.saturate = 128;
+            me.exposure = 128;
+        },
+        openDuijiang: function() {
+            if(this.currentVideoDeviceInfo.deviceId == null){
+                return;
+            }
+            if(isRecordingRights == false){
+                me.$Message.error("浏览器不支持录音功能或者没有检测到录音设备");
+                return;
+            };
+            var me = this;
+            if (this.isOpenJianting) {
+                this.isOpenJianting = false;
+                audioPlayer.pause();
+                audioPlayerTime = 0;
+                me.$Message.success("关闭成功");
+                me.audioPlayerTip = '监听已关闭';
+                var url = myUrls.stopAudio();
+                utils.sendAjax(url, {
+                    deviceid: this.currentVideoDeviceInfo.deviceId,
+                    channel: Number(this.audiochannel),
+                }, function() {});
+            } else {
+                this.loading = true;
+
+                var url = myUrls.startAudio();
+                var data = {
+                    deviceid: this.currentVideoDeviceInfo.deviceId,
+                    channel: Number(this.audiochannel),
+                    datatype: 2,
+                    playtype: ishttps ? 'flvs' : 'flv',
+                }
+                utils.sendAjax(url, data, function(resp) {
+                    me.loading = false;
+                    if (resp.status === 6) {
+                        me.isOpenJianting = true;
+                        me.$Message.success("开启成功");
+                        audioPlayerTime = Date.now();
+                        me.initAudioPlayer(resp.record.playurl);
+                        me.audioPlayerTip = '监听已打开，请按住说话'
+                    } else {
+                        me.$Message.success("开启失败,超时或者设备不在线");
+                    }
+                });
+            }
+
+        },
         handleSetPlayParamter: function() {
             if(this.currentVideoDeviceInfo.deviceId == null){
                 this.$Message.error('请选择视频设备');
@@ -410,7 +743,6 @@ var monitor = {
                 this.$Message.error('请选择视频设备');
                 return;
             }
-
             var url = myUrls.queryVideoPlayParameters(),
                 me = this;
                 me.loading = true;
@@ -839,7 +1171,7 @@ var monitor = {
                         parameters[item] = false;
                     }
                 })
-                parameters.deviceid = deviceid;
+                parameters.deviceid = this.currentVideoDeviceInfo.deviceId;
                 me.Spin = true;
                 utils.sendAjax(url, parameters, function(resp) {
                     var status = resp.status;
@@ -1162,6 +1494,9 @@ var monitor = {
             switch (type) {
                 case 1:
                     this.isMapMode = true;
+                    if(this.isShowYunTai){
+                        this.isShowYunTai = false;
+                    };
                     break;
                 case 2:
                     this.isMapMode = false;

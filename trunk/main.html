@@ -602,6 +602,7 @@
                                 <span title="静音" @click="handlePlayerMute"><i class="icon iconfont" :class="{'icon-yinliang':!isMute,'icon-guanbiyinliang':isMute}"></i></span>
                                 <span title="视频回放" @click="videoBack"><i class="icon iconfont icon-playback"></i></span>
                                 <span title="主动安全" @click="openActiveSafety" v-show="isShowActiveSafetyBtn"><i class="ivu-icon ivu-icon-logo-angular" style="font-size:18px;margin-top:1px;"></i></span>
+                                <span title="对讲" @click="isShowYunTai=true"><i class="icon iconfont icon-yuyin2" style="font-size:19px;"></i></span> 
                             </div>
                             <div style="height: 100%;float:right;" class="tv_box">
                                 <span title="显示一个通道"><i class="icon icon_num1" @click="openAndCloseVideoWindows(1)"></i></span>
@@ -915,6 +916,175 @@
                             </div>
                         </div>
                     </div>
+
+                    <div class="blackBoxSpeak" v-if="isLuyin">
+                        <div class='img-box'>
+                            <div>
+                                <img src="./images/luyin/ic_record@2x.png" alt="" style='width:100%;height:100%'>
+                            </div>
+                            <div>
+                                <img :src='imgSrc' style='width:100%;height:100%'>
+                            </div>
+                        </div>
+                        <div class="blackBoxSpeakConent">正在录音，请说话</div>
+                    </div>
+
+                    <transition name="el-zoom-in-bottom">
+                        <div id="yuntai-tab-wrapper" v-show="isShowYunTai">
+                            <Tabs :animated="false">
+                                <Tab-Pane label="云台">
+                                    <div id="tab_state_1" class="tab_state_pane">
+                                        <div class="state_1_yt" style="margin-left:15px">
+                                            <div class="fl icon_yt_box">
+                                                <a class="icon_yt_0" title=""></a>
+                                                <a class="icon_yt_1" title=""></a>
+                                                <a class="icon_yt_2" title=""></a>
+                                                <a class="icon_yt_3" title=""></a>
+                                                <a class="icon_yt_4" title=""></a>
+                                                <a class="icon_yt_5" title=""></a>
+                                                <a class="icon_yt_6" title=""></a>
+                                                <a class="icon_yt_7" title=""></a>
+                                                <a class="icon_yt_8" title=""></a>
+                                                <div id="yt_handle" class="yt" style="margin:3px;">
+                                                    <Slider></Slider>
+                                                </div>
+                                            </div>
+                                            <div class="fr yt_state2">
+                                                <span>
+                                                        <a class="icon_f0_0" title=""></a>
+                                                        <a class="icon_f0_1" title=""></a>
+                                                    </span>
+                                                <span>
+                                                        <a class="icon_y0_0" title=""></a>
+                                                        <a class="icon_y0_1" title=""></a>
+                                                    </span>
+                                                <span>
+                                                        <a class="icon_k0_0" title=""></a>
+                                                        <a class="icon_k0_1" title=""></a>
+                                                    </span>
+                                                <span>
+                                                        <a class="icon_light0_0" title=""></a>
+                                                        <a class="icon_biao0_1" title=""></a>
+                                                    </span>
+                                            </div>
+                                            <div class="spacer"></div>
+                                        </div>
+                                        <div class="yt_footer">
+                                            <Row>
+                                                <i-Col span="6" style="padding: 0 5px;">
+                                                    <Input-Number :max="1000" :min="1" style="width:60px;"></Input-Number>
+                                                </i-Col>
+                                                <i-Col span="6" style="padding: 0 5px;">
+                                                    <i-button style="width:100%;">调用</i-button>
+                                                </i-Col>
+                                                <i-Col span="6" style="padding: 0 5px;">
+                                                    <i-button style="width:100%;">设置</i-button>
+                                                </i-Col>
+                                                <i-Col span="6" style="padding: 0 5px;">
+                                                    <i-button style="width:100%;">删除</i-button>
+                                                </i-Col>
+                                            </Row>
+                                        </div>
+                                    </div>
+                                </Tab-Pane>
+                                <Tab-Pane label="色彩">
+                                    <Row class="state_color">
+                                        <i-Col span="6" style="line-height:35px;">
+                                            <i class="state_co_0" title="亮度"></i>
+                                        </i-Col>
+                                        <i-Col span="12">
+                                            <Slider v-model="brightness" :min="0" :max="255"></Slider>
+                                        </i-Col>
+                                        <i-Col span="6" class="state_co_value" style="line-height:35px;height: 35px;">
+                                            <input v-model="brightness" name="" type="text">
+                                        </i-Col>
+                                    </Row>
+                                    <Row class="state_color">
+                                        <i-Col span="6" style="line-height:35px;">
+                                            <i class="state_co_1" title="对比度"></i>
+                                        </i-Col>
+                                        <i-Col span="12">
+                                            <Slider v-model="constract" :min="-127" :max="127"></Slider>
+                                        </i-Col>
+                                        <i-Col span="6" class="state_co_value" style="line-height:35px;height: 35px;">
+                                            <input v-model="constract" name="" type="text">
+                                        </i-Col>
+                                    </Row>
+                                    <Row class="state_color">
+                                        <i-Col span="6" style="line-height:35px;">
+                                            <i class="state_co_2" title="色度"></i>
+                                        </i-Col>
+                                        <i-Col span="12">
+                                            <Slider v-model="hue" :min="-127" :max="127"></Slider>
+                                        </i-Col>
+                                        <i-Col span="6" class="state_co_value" style="line-height:35px;height: 35px;">
+                                            <input v-model="hue" name="" type="text">
+                                        </i-Col>
+                                    </Row>
+                                    <Row class="state_color">
+                                        <i-Col span="6" style="line-height:35px;">
+                                            <i class="state_co_3" title="饱和度"></i>
+                                        </i-Col>
+                                        <i-Col span="12">
+                                            <Slider v-model="saturate" :min="0" :max="255"></Slider>
+                                        </i-Col>
+                                        <i-Col span="6" class="state_co_value" style="line-height:35px;height: 35px;">
+                                            <input v-model="saturate" name="" type="text">
+                                        </i-Col>
+                                    </Row>
+                                    <Row class="state_color">
+                                        <i-Col span="6" style="line-height:35px;">
+                                            <i class="state_co_4" title="曝光"></i>
+                                        </i-Col>
+                                        <i-Col span="12">
+                                            <Slider v-model="exposure" :min="0" :max="255"></Slider>
+                                        </i-Col>
+                                        <i-Col span="6" class="state_co_value" style="line-height:35px;height: 35px;">
+                                            <input v-model="exposure" name="" type="text">
+                                        </i-Col>
+                                    </Row>
+                                    <div class="yt_footer">
+                                        <i-button style="width:120px;" @click="defaultQualityParams">默认</i-button>
+                                    </div>
+                                </Tab-Pane>
+                                <Tab-Pane label="语音">
+                                    <div class="listing_choice">
+                                        <Radio-Group v-model="listingChoice">
+                                            <Radio label="duijiang"><span>对讲</span></Radio>
+                                            <Radio label="jianting"><span>监听</span></Radio>
+                                        </Radio-Group>
+                                    </div>
+                                    <div class="listing_box" v-if="listingChoice == 'duijiang'">
+                                        <i class="icon_dj"></i>
+                                        <div class="audioPlayerTip">{{audioPlayerTip}}</div>
+                                        <div class="yt_footer">
+                                            <div>
+                                                <i-button style="width:120px;" @click="openDuijiang" :loading="loading">{{isOpenJianting?'关闭':'开启'}}</i-button>
+                                            </div>
+                                            <div @mousedown="onMousedown" style="margin-top:10px;">
+                                                <i-button style="width:120px;">按住通话</i-button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="listing_box" v-else>
+                                        <i class="icon_jt"></i>
+                                        <div class="audioPlayerTip">{{audioPlayerTip}}</div>
+                                        <div class="yt_footer">
+                                            <div>
+                                                <i-button style="width:120px;" @click="openDuijiang" :loading="loading">{{isOpenJianting?'关闭':'开启'}}</i-button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </Tab-Pane>
+                                <i-button @click="isShowYunTai=false" size="small" slot="extra" style="margin:5px 5px 0 0;">关闭</i-button>
+                            </Tabs>
+                            <div style="visibility: hidden;">
+                                <div id="audio-wrap">
+                                    <video id="audio-player" style="display: none;"></video>
+                                </div>
+                            </div>
+                        </div>
+                    </transition>    
                     <div class="spin-wraper" v-if="isSpin" style="z-index:10">
                         <Spin fix size="large"></Spin>
                     </div>
@@ -2510,6 +2680,7 @@
     <script src="js/area.js"></script>
     <script src="./js/protobuf.js"></script>
     <script src="./js/respDeviceLastPositionProto.js"></script>
+    <script src="js/lame.min.js"></script>
     <script src="js/monitor.js"></script>
     <script src="js/reportform.js"></script>
     <script src="js/bgmanager.js"></script>
