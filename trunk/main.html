@@ -2127,8 +2127,24 @@
                                 {{deviceBaseInfo.terminalmodelno}}
                             </i-col>
                         </Row>
-
-
+                        <Row>
+                            <i-col span="5" style="height: 100%;text-align:right;line-height:25px;">终端编号 : &nbsp;</i-col>
+                            <i-col span="16" style="height: 100%;line-height:25px;text-align:left;">
+                                {{deviceBaseInfo.terminalid}}
+                            </i-col>
+                        </Row>
+                        <Row>
+                            <i-col span="5" style="height: 100%;text-align:right;line-height:25px;">硬件版本 : &nbsp;</i-col>
+                            <i-col span="16" style="height: 100%;line-height:25px;text-align:left;">
+                                {{deviceBaseInfo.hardwareversion}}
+                            </i-col>
+                        </Row>
+                        <Row>
+                            <i-col span="5" style="height: 100%;text-align:right;line-height:25px;">固件版本 : &nbsp;</i-col>
+                            <i-col span="16" style="height: 100%;line-height:25px;text-align:left;">
+                                {{deviceBaseInfo.firmwareversion}}
+                            </i-col>
+                        </Row>
                         <Row>
                             <i-col span="5" style="height: 100%;text-align:right;line-height:25px;">{{$t("monitor.expireTime")}} : &nbsp;</i-col>
                             <i-col span="16" style="height: 100%;line-height:25px;text-align:left;">
