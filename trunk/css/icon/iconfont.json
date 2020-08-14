@@ -6,6 +6,13 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "5330329",
+      "name": "摄像机",
+      "font_class": "shexiangji",
+      "unicode": "e777",
+      "unicode_decimal": 59255
+    },
+    {
       "icon_id": "8420285",
       "name": "右下角",
       "font_class": "youxiajiao",

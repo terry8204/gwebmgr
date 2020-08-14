@@ -269,7 +269,266 @@
                         <canvas width="720" height="450" id="V2I_canvas" style="display: none;"></canvas>
                     </div>
                 </div>
-                <div class="device-tree" ref="treeWraper">
+                <div class='video-tree' v-if="!isMapMode">
+                    <dl class="noselect" class="dl-inner-wrapper">
+                        <template v-for="(group , index) in groups" :key="index" v-if="selectedState==='all'">
+                            <dt style="padding:5px;border-bottom:1px solid #ddd;cursor: pointer;" @click="openGroupItem(group)">
+                                <Icon type="ios-arrow-down" v-if="group.expand"/>
+                                <Icon type="ios-arrow-forward" v-else/>
+                                <b v-text="group.title"></b>
+                            </dt>
+                            <dd style="padding:5px;border-bottom:1px solid #ddd" v-if="group.expand">
+                                <div v-for="(device , index) in group.devices" :key="device.deviceid" :id="device.deviceid" :data-id="device.deviceid" style="padding-left:15px">
+                                    <div :class="{'active-dev-offline':device.isSelected}" style="margin:3px 0;" :ref="device.deviceid">
+                                        <div class="video-device-cls" :style="{color: device.isOnline ? (device.isMoving ? '#33DAD0' :'#F69679') : '#B1BBC2'}" @click="selectedDev(device)" @dblclick="dblClickDeviceVideo(device)">
+                                            <span><i class='icon iconfont icon-car'></i></span>
+                                            <span v-text="device.devicetitle" class="video-device-title-cls"></span>   
+                                            <span  @mouseover="handleMousemove($event)" style="width:32px;" v-if="device.isSelected">
+                                                <Dropdown trigger="click" transfer :placement="placement" @on-click="handleClickMore" style="width:100%;">
+                                                    <label size="small">{{$t("monitor.more")}}</label>
+                                                    <i-dropdown-menu slot="list">
+                                                        <DropdownItem name="name1"> 
+                                                            <Dropdown transfer placement="right-start" @on-click="handleClickDirective" style="width:100%;">
+                                                                {{$t("monitor.deviceCmd")}}
+                                                                <Icon type="ios-arrow-forward"></Icon>
+                                                                <i-dropdown-menu slot="list">
+                                                                    <template v-for="(item, index) in currentDevDirectiveList" :key="item.cmdcode">
+                                                                        <DropdownItem :name="item.cmdcode" >{{item.cmdname}}</DropdownItem>
+                                                                    </template>
+                                                        </i-dropdown-menu>
+                                                        </Dropdown>
+                                                        </DropdownItem>
+                                                        <DropdownItem name="transferDeviceGroup">
+                                                            <Dropdown transfer placement="right-start" @on-click="handleClickTransferDeviceGroup" style="width:100%;">
+                                                                转至分组
+                                                                <Icon type="ios-arrow-forward"></Icon>
+                                                                <i-dropdown-menu slot="list">
+                                                                    <template v-for="(item, index) in currentDevCreateUserGroupList" :key="item.groupid"> 
+                                                                        <DropdownItem :name="item.groupid" >{{item.groupname}}</DropdownItem>
+                                                                    </template>
+                                                                </i-dropdown-menu>
+                                                            </Dropdown>
+                                                        </DropdownItem>
+                                                        <DropdownItem name="luyin" v-show="isShowRecordBtn">{{$t("monitor.media")}}</DropdownItem>
+                                                        <DropdownItem name="bms" v-show="isShowBmsBtn">电池管理</DropdownItem>
+                                                        <DropdownItem name="obd" v-show="isShowObdBtn">OBD</DropdownItem>
+                                                        <DropdownItem name="weight" v-show="isShowWeightBtn">称重</DropdownItem>
+                                                        <DropdownItem name="watermeter" v-show="isShowWatermeterBtn">水表</DropdownItem>
+                                                        <DropdownItem name="videosetting" v-if="isShowVideoBtn">视频设置</DropdownItem>
+                                                        <DropdownItem name="talk" v-if="isShowVideoBtn">对讲</DropdownItem>
+                                                        <DropdownItem name="videoback" v-if="isShowVideoBtn">视频回放</DropdownItem>
+                                                        <DropdownItem name="activesafety" v-if="isShowActiveSafetyBtn">主动安全</DropdownItem>
+                                                        <DropdownItem name="cmdrecord">{{$t("monitor.cmdRecord")}}</DropdownItem>
+                                                        <DropdownItem name="alarmList">{{$t("monitor.alarmRecords")}}</DropdownItem>
+                                                        <DropdownItem name="phoneAlarm">{{$t("reportForm.phoneAlarm")}}</DropdownItem>
+                                                        <DropdownItem name="devbaseinfo">{{$t("monitor.devBaseInfo")}}</DropdownItem>
+                                                        <DropdownItem name="ownerInfo">车主信息</DropdownItem>
+                                                        </i-dropdown-menu>
+                                                        </Dropdown>
+                                                        <span>
+                                        </div>
+                                        <div v-for="(video,index) in device.videoChannels" v-if="device.isSelected" class="noselect">
+                                            <p @dblclick="handlePlayDeviceToChannel(device,index)" style="padding:0px 10px;cursor: pointer;vertical-align: middle;height:24px;line-height:24px;"> <i class='icon iconfont icon-shexiangji' style="vertical-align: middle;"></i> {{video.name}}</p>
+                                        </div>
+                </div>
+            </div>
+            </dd>
+            </template>
+            <!-- 在线 -->
+            <template v-for="(group , index) in groups" :key="index" v-if="selectedState==='online'">
+                <dt style="padding:5px;border-bottom:1px solid #ddd;cursor: pointer;" @click="openGroupItem(group)" v-if="group.isShow">
+                    <Icon type="ios-arrow-down" v-if="group.expand"/>
+                    <Icon type="ios-arrow-forward" v-else/>
+                    <b v-text="group.title"></b>
+                </dt>
+                <dd style="padding:5px;border-bottom:1px solid #ddd" v-if="group.expand && group.isShow">
+                    <div v-for="(device , index) in group.devices" :key="device.deviceid" :id="device.deviceid" style="padding-left:15px" v-if="device.isOnline">
+                        <div :class="{'active-dev-offline':device.isSelected}" style="margin:3px 0;" :ref="device.deviceid">
+                            <div class="video-device-cls" :style="{color: device.isOnline ? (device.isMoving ? '#33DAD0' :'#F69679') : '#B1BBC2'}" @click="selectedDev(device)" @dblclick="dblClickDeviceVideo(device)">
+                                <span><i class='icon iconfont icon-car'></i></span>
+                                <span v-text="device.devicetitle" class="video-device-title-cls"></span>   
+                                <span  @mouseover="handleMousemove($event)" style="width:32px;" v-if="device.isSelected">
+                                    <Dropdown trigger="click" transfer :placement="placement" @on-click="handleClickMore" style="width:100%;">
+                                        <label size="small">{{$t("monitor.more")}}</label>
+                                        <i-dropdown-menu slot="list">
+                                            <DropdownItem name="name1"> 
+                                                <Dropdown transfer placement="right-start" @on-click="handleClickDirective" style="width:100%;">
+                                                    {{$t("monitor.deviceCmd")}}
+                                                    <Icon type="ios-arrow-forward"></Icon>
+                                                    <i-dropdown-menu slot="list">
+                                                        <template v-for="(item, index) in currentDevDirectiveList" :key="item.cmdcode">
+                                                            <DropdownItem :name="item.cmdcode" >{{item.cmdname}}</DropdownItem>
+                                                        </template>
+                                            </i-dropdown-menu>
+                                            </Dropdown>
+                                            </DropdownItem>
+                                            <DropdownItem name="transferDeviceGroup">
+                                                <Dropdown transfer placement="right-start" @on-click="handleClickTransferDeviceGroup" style="width:100%;">
+                                                    转至分组
+                                                    <Icon type="ios-arrow-forward"></Icon>
+                                                    <i-dropdown-menu slot="list">
+                                                        <template v-for="(item, index) in currentDevCreateUserGroupList" :key="item.groupid"> 
+                                                            <DropdownItem :name="item.groupid" >{{item.groupname}}</DropdownItem>
+                                                        </template>
+                                                    </i-dropdown-menu>
+                                                </Dropdown>
+                                            </DropdownItem>
+                                            <DropdownItem name="luyin" v-show="isShowRecordBtn">{{$t("monitor.media")}}</DropdownItem>
+                                            <DropdownItem name="bms" v-show="isShowBmsBtn">电池管理</DropdownItem>
+                                            <DropdownItem name="obd" v-show="isShowObdBtn">OBD</DropdownItem>
+                                            <DropdownItem name="weight" v-show="isShowWeightBtn">称重</DropdownItem>
+                                            <DropdownItem name="watermeter" v-show="isShowWatermeterBtn">水表</DropdownItem>
+                                            <DropdownItem name="videosetting" v-if="isShowVideoBtn">视频设置</DropdownItem>
+                                            <DropdownItem name="talk" v-if="isShowVideoBtn">对讲</DropdownItem>
+                                            <DropdownItem name="videoback" v-if="isShowVideoBtn">视频回放</DropdownItem>
+                                            <DropdownItem name="activesafety" v-if="isShowActiveSafetyBtn">主动安全</DropdownItem>
+                                            <DropdownItem name="cmdrecord">{{$t("monitor.cmdRecord")}}</DropdownItem>
+                                            <DropdownItem name="alarmList">{{$t("monitor.alarmRecords")}}</DropdownItem>
+                                            <DropdownItem name="phoneAlarm">{{$t("reportForm.phoneAlarm")}}</DropdownItem>
+                                            <DropdownItem name="devbaseinfo">{{$t("monitor.devBaseInfo")}}</DropdownItem>
+                                            <DropdownItem name="ownerInfo">车主信息</DropdownItem>
+                                            </i-dropdown-menu>
+                                            </Dropdown>
+                                            <span>
+                            </div>
+                            <div v-for="(video,index) in device.videoChannels" v-if="device.isSelected" class="noselect">
+                                <p @dblclick="handlePlayDeviceToChannel(device,index)" style="padding:0px 10px;cursor: pointer;vertical-align: middle;height:24px;line-height:24px;"> <i class='icon iconfont icon-shexiangji' style="vertical-align: middle;"></i> {{video.name}}</p>
+                            </div>   
+                    </div>
+                </dd>
+            </template>
+                    <!-- 离线 -->
+                    <template v-for="(group , index) in groups" :key="index" v-if="selectedState==='offline'">
+                        <dt style="padding:5px;border-bottom:1px solid #ddd;cursor: pointer;" @click="openGroupItem(group)" v-if="group.isShow">
+                            <Icon type="ios-arrow-down" v-if="group.expand"/>
+                            <Icon type="ios-arrow-forward" v-else/>
+                            <b v-text="group.title"></b>
+                        </dt>
+                        <dd style="padding:5px;border-bottom:1px solid #ddd" v-if="group.expand && group.isShow">
+                            <div v-for="(device , index) in group.devices" :key="device.deviceid" :id="device.deviceid" style="padding-left:15px" v-if="device.isOffline">
+                                <div :class="{'active-dev-offline':device.isSelected}" style="margin:3px 0;" :ref="device.deviceid">
+                                    <div class="video-device-cls" :style="{color: device.isOnline ? (device.isMoving ? '#33DAD0' :'#F69679') : '#B1BBC2'}" @click="selectedDev(device)" @dblclick="dblClickDeviceVideo(device)">
+                                        <span><i class='icon iconfont icon-car'></i></span>
+                                        <span v-text="device.devicetitle" class="video-device-title-cls"></span>   
+                                        <span  @mouseover="handleMousemove($event)" style="width:32px;" v-if="device.isSelected">
+                                            <Dropdown trigger="click" transfer :placement="placement" @on-click="handleClickMore" style="width:100%;">
+                                                <label size="small">{{$t("monitor.more")}}</label>
+                                                <i-dropdown-menu slot="list">
+                                                    <DropdownItem name="name1"> 
+                                                        <Dropdown transfer placement="right-start" @on-click="handleClickDirective" style="width:100%;">
+                                                            {{$t("monitor.deviceCmd")}}
+                                                            <Icon type="ios-arrow-forward"></Icon>
+                                                            <i-dropdown-menu slot="list">
+                                                                <template v-for="(item, index) in currentDevDirectiveList" :key="item.cmdcode">
+                                                                    <DropdownItem :name="item.cmdcode" >{{item.cmdname}}</DropdownItem>
+                                                                </template>
+                                                    </i-dropdown-menu>
+                                                    </Dropdown>
+                                                    </DropdownItem>
+                                                    <DropdownItem name="transferDeviceGroup">
+                                                        <Dropdown transfer placement="right-start" @on-click="handleClickTransferDeviceGroup" style="width:100%;">
+                                                            转至分组
+                                                            <Icon type="ios-arrow-forward"></Icon>
+                                                            <i-dropdown-menu slot="list">
+                                                                <template v-for="(item, index) in currentDevCreateUserGroupList" :key="item.groupid"> 
+                                                                    <DropdownItem :name="item.groupid" >{{item.groupname}}</DropdownItem>
+                                                                </template>
+                                                            </i-dropdown-menu>
+                                                        </Dropdown>
+                                                    </DropdownItem>
+                                                    <DropdownItem name="luyin" v-show="isShowRecordBtn">{{$t("monitor.media")}}</DropdownItem>
+                                                    <DropdownItem name="bms" v-show="isShowBmsBtn">电池管理</DropdownItem>
+                                                    <DropdownItem name="obd" v-show="isShowObdBtn">OBD</DropdownItem>
+                                                    <DropdownItem name="weight" v-show="isShowWeightBtn">称重</DropdownItem>
+                                                    <DropdownItem name="watermeter" v-show="isShowWatermeterBtn">水表</DropdownItem>
+                                                    <DropdownItem name="videosetting" v-if="isShowVideoBtn">视频设置</DropdownItem>
+                                                    <DropdownItem name="talk" v-if="isShowVideoBtn">对讲</DropdownItem>
+                                                    <DropdownItem name="videoback" v-if="isShowVideoBtn">视频回放</DropdownItem>
+                                                    <DropdownItem name="activesafety" v-if="isShowActiveSafetyBtn">主动安全</DropdownItem>
+                                                    <DropdownItem name="cmdrecord">{{$t("monitor.cmdRecord")}}</DropdownItem>
+                                                    <DropdownItem name="alarmList">{{$t("monitor.alarmRecords")}}</DropdownItem>
+                                                    <DropdownItem name="phoneAlarm">{{$t("reportForm.phoneAlarm")}}</DropdownItem>
+                                                    <DropdownItem name="devbaseinfo">{{$t("monitor.devBaseInfo")}}</DropdownItem>
+                                                    <DropdownItem name="ownerInfo">车主信息</DropdownItem>
+                                                    </i-dropdown-menu>
+                                                    </Dropdown>
+                                                    <span>
+                                    </div>
+                                    <div v-for="(video,index) in device.videoChannels" v-if="device.isSelected" class="noselect">
+                                        <p @dblclick="handlePlayDeviceToChannel(device,index)" style="padding:0px 10px;cursor: pointer;vertical-align: middle;height:24px;line-height:24px;"> <i class='icon iconfont icon-shexiangji' style="vertical-align: middle;"></i> {{video.name}}</p>
+                                    </div>
+
+                            </div>
+                            </dd>
+                            </template>
+                        
+
+        <template v-for="(group , index) in groups" :key="index" v-if="selectedState==='stock'">
+            <dt style="padding:5px;border-bottom:1px solid #ddd;cursor: pointer;" @click="openGroupItem(group)" v-if="group.isShow">
+                <Icon type="ios-arrow-down" v-if="group.expand"/>
+                <Icon type="ios-arrow-forward" v-else/>
+                <b v-text="group.title"></b>
+            </dt>
+            <dd style="padding:5px;border-bottom:1px solid #ddd" v-if="group.expand && group.isShow">
+                <div v-for="(device , index) in group.devices" :key="device.deviceid" :id="device.deviceid" style="padding-left:15px" v-if="device.isStock">
+                    <div :class="{'active-dev-offline':device.isSelected}" style="margin:3px 0;" :ref="device.deviceid">
+                        <div class="video-device-cls" :style="{color: device.isOnline ? (device.isMoving ? '#33DAD0' :'#F69679') : '#B1BBC2'}" @click="selectedDev(device)" @dblclick="dblClickDeviceVideo(device)">
+                            <span><i class='icon iconfont icon-car'></i></span>
+                            <span v-text="device.devicetitle" class="video-device-title-cls"></span>   
+                            <span  @mouseover="handleMousemove($event)" style="width:32px;" v-if="device.isSelected">
+                                <Dropdown trigger="click" transfer :placement="placement" @on-click="handleClickMore" style="width:100%;">
+                                    <label size="small">{{$t("monitor.more")}}</label>
+                                    <i-dropdown-menu slot="list">
+                                        <DropdownItem name="name1"> 
+                                            <Dropdown transfer placement="right-start" @on-click="handleClickDirective" style="width:100%;">
+                                                {{$t("monitor.deviceCmd")}}
+                                                <Icon type="ios-arrow-forward"></Icon>
+                                                <i-dropdown-menu slot="list">
+                                                    <template v-for="(item, index) in currentDevDirectiveList" :key="item.cmdcode">
+                                                        <DropdownItem :name="item.cmdcode" >{{item.cmdname}}</DropdownItem>
+                                                    </template>
+                                        </i-dropdown-menu>
+                                        </Dropdown>
+                                        </DropdownItem>
+                                        <DropdownItem name="transferDeviceGroup">
+                                            <Dropdown transfer placement="right-start" @on-click="handleClickTransferDeviceGroup" style="width:100%;">
+                                                转至分组
+                                                <Icon type="ios-arrow-forward"></Icon>
+                                                <i-dropdown-menu slot="list">
+                                                    <template v-for="(item, index) in currentDevCreateUserGroupList" :key="item.groupid"> 
+                                                        <DropdownItem :name="item.groupid" >{{item.groupname}}</DropdownItem>
+                                                    </template>
+                                                </i-dropdown-menu>
+                                            </Dropdown>
+                                        </DropdownItem>
+                                        <DropdownItem name="luyin" v-show="isShowRecordBtn">{{$t("monitor.media")}}</DropdownItem>
+                                        <DropdownItem name="bms" v-show="isShowBmsBtn">电池管理</DropdownItem>
+                                        <DropdownItem name="obd" v-show="isShowObdBtn">OBD</DropdownItem>
+                                        <DropdownItem name="weight" v-show="isShowWeightBtn">称重</DropdownItem>
+                                        <DropdownItem name="watermeter" v-show="isShowWatermeterBtn">水表</DropdownItem>
+                                        <DropdownItem name="videosetting" v-if="isShowVideoBtn">视频设置</DropdownItem>
+                                        <DropdownItem name="talk" v-if="isShowVideoBtn">对讲</DropdownItem>
+                                        <DropdownItem name="videoback" v-if="isShowVideoBtn">视频回放</DropdownItem>
+                                        <DropdownItem name="activesafety" v-if="isShowActiveSafetyBtn">主动安全</DropdownItem>
+                                        <DropdownItem name="cmdrecord">{{$t("monitor.cmdRecord")}}</DropdownItem>
+                                        <DropdownItem name="alarmList">{{$t("monitor.alarmRecords")}}</DropdownItem>
+                                        <DropdownItem name="phoneAlarm">{{$t("reportForm.phoneAlarm")}}</DropdownItem>
+                                        <DropdownItem name="devbaseinfo">{{$t("monitor.devBaseInfo")}}</DropdownItem>
+                                        <DropdownItem name="ownerInfo">车主信息</DropdownItem>
+                                        </i-dropdown-menu>
+                                        </Dropdown>
+                                        <span>
+                        </div>
+                        <div v-for="(video,index) in device.videoChannels" v-if="device.isSelected" class="noselect">
+                            <p @dblclick="handlePlayDeviceToChannel(device,index)" style="padding:0px 10px;cursor: pointer;vertical-align: middle;height:24px;line-height:24px;"> <i class='icon iconfont icon-shexiangji' style="vertical-align: middle;"></i> {{video.name}}</p>
+                        </div>
+                </div>
+            </dd>
+        </template>
+        
+                    </dl>                    
+                </div>
+                <div class="device-tree" ref="treeWraper" v-if="isMapMode">
                     <!-- left tree controller 不显示公司名 -->
                     <dl class="noselect" v-if="!isShowCompanyName" class="dl-inner-wrapper">
                         <!-- all -->
@@ -599,10 +858,7 @@
                     <div id="video_wrap" :style="videoWrapStyle">
                         <div class="video_header">
                             <div class="video_function">
-                                <span title="静音" @click="handlePlayerMute"><i class="icon iconfont" :class="{'icon-yinliang':!isMute,'icon-guanbiyinliang':isMute}"></i></span>
-                                <span title="视频回放" @click="videoBack"><i class="icon iconfont icon-playback"></i></span>
-                                <span title="主动安全" @click="openActiveSafety" v-show="isShowActiveSafetyBtn"><i class="ivu-icon ivu-icon-logo-angular" style="font-size:18px;margin-top:1px;"></i></span>
-                                <span title="对讲" @click="isShowYunTai=true"><i class="icon iconfont icon-yuyin2" style="font-size:19px;"></i></span> 
+                                <span title="静音" @click="handlePlayerMute" style="color:#ffffff;"><i class="icon iconfont" :class="{'icon-yinliang':!isMute,'icon-guanbiyinliang':isMute}"></i></span>
                             </div>
                             <div style="height: 100%;float:right;" class="tv_box">
                                 <span title="显示一个通道"><i class="icon icon_num1" @click="openAndCloseVideoWindows(1)"></i></span>
@@ -613,7 +869,6 @@
                                 <span title="显示十六个通道"><i class="icon icon_num6" @click="openAndCloseVideoWindows(16)"></i></span>
                                 <span @click="handlePlayAllVideos" title="播放所有视频"><i class="icon icon_play_all"></i></span>
                                 <span id="box_stop" @click="handleStopAllVideos" title="停止所有视频"><i class="icon icon_close_show"></i></span>
-                                <span @click="setupVideoModal=true"><i class="icon icon_num9"  title="视频播放设置"></i></span>
                             </div>
                             <div style="float:right;height: 100%;line-height:35px">
                               
@@ -625,293 +880,8 @@
                         </div>
                         <div class="video_body">
                             <div :class="videoContentCls" id="videoContent" ref="videoContent">
-                                <div>
-                                    <div class="videoElementWrap">
-                                        <video id="videoElement1" controls :muted="isMute" v-show="playerState.yi"></video>
-                                        <div class="play-btn-wrap" @click="onChangePlayerState(1)">
-                                            <Icon :type="playerState.yi?'md-square':'ios-play'" size="40" />
-                                        </div>
-                                    </div>
-                                    <div class="state-event-tip" v-show="playerStateTips.yi!=''">
-                                        <div>
-                                            <span v-text="playerStateTips.yi"></span>
-                                            <span v-text="networkSpeed.yi"></span>
-                                        </div>
-                                    </div>
-                                    <div class="camera_fn" @click="flv_photograph(1)" v-show="playerState.yi"><i class="icon iconfont icon-camera"></i></div>
-                                    <div class="resolving_power" v-show="resolvingPower.yi.width!=0">
-                                        {{resolvingPower.yi.width}}*{{resolvingPower.yi.height}}
-                                    </div>
-                                </div>
-                                <div>
-                                    <div class="videoElementWrap">
-                                        <video id="videoElement2" controls :muted="isMute" v-show="playerState.er"></video>
-                                        <div class="play-btn-wrap" @click="onChangePlayerState(2)">
-                                            <Icon :type="playerState.er?'md-square':'ios-play'" size="40" />
-                                        </div>
-                                    </div>
-                                    <div class="state-event-tip" v-show="playerStateTips.er!=''">
-                                        <div>
-                                            <span v-text="playerStateTips.er"></span>
-                                            <span v-text="networkSpeed.er"></span>
-                                        </div>
-                                    </div>
-                                    <div class="camera_fn" @click="flv_photograph(2)" v-show="playerState.er"><i class="icon iconfont icon-camera"></i></div>
-                                    <div class="resolving_power" v-show="resolvingPower.er.width!=0">
-                                        {{resolvingPower.er.width}}*{{resolvingPower.er.height}}
-                                    </div>
-                                </div>
-                                <div>
-                                    <div class="videoElementWrap">
-                                        <video id="videoElement3" controls :muted="isMute" v-show="playerState.san"></video>
-                                        <div class="play-btn-wrap" @click="onChangePlayerState(3)">
-                                            <Icon :type="playerState.san?'md-square':'ios-play'" size="40" />
-                                        </div>
-                                    </div>
-                                    <div class="state-event-tip" v-show="playerStateTips.san!=''">
-                                        <div>
-                                            <span v-text="playerStateTips.san"></span>
-                                            <span v-text="networkSpeed.san"></span>
-                                        </div>
-                                    </div>
-                                    <div class="camera_fn" @click="flv_photograph(3)" v-show="playerState.san"><i class="icon iconfont icon-camera"></i></div>
-                                    <div class="resolving_power" v-show="resolvingPower.san.width!=0">
-                                        {{resolvingPower.san.width}}*{{resolvingPower.san.height}}
-                                    </div>
-                                </div>
-                                <div>
-                                    <div class="videoElementWrap">
-                                        <video id="videoElement4" controls :muted="isMute" v-show="playerState.si"></video>
-                                        <div class="play-btn-wrap" @click="onChangePlayerState(4)">
-                                            <Icon :type="playerState.si?'md-square':'ios-play'" size="40" />
-                                        </div>
-                                    </div>
-                                    <div class="state-event-tip" v-show="playerStateTips.si!=''">
-                                        <div>
-                                            <span v-text="playerStateTips.si"></span>
-                                            <span v-text="networkSpeed.si"></span>
-                                        </div>
-                                    </div>
-                                    <div class="camera_fn" @click="flv_photograph(4)" v-show="playerState.si"><i class="icon iconfont icon-camera"></i></div>
-                                    <div class="resolving_power" v-show="resolvingPower.si.width!=0">
-                                        {{resolvingPower.si.width}}*{{resolvingPower.si.height}}
-                                    </div>
-                                </div>
-                                <div>
-                                    <div class="videoElementWrap">
-                                        <video id="videoElement5" controls :muted="isMute" v-show="playerState.wu"></video>
-                                        <div class="play-btn-wrap" @click="onChangePlayerState(5)">
-                                            <Icon :type="playerState.wu?'md-square':'ios-play'" size="40" />
-                                        </div>
-                                    </div>
-                                    <div class="state-event-tip" v-show="playerStateTips.wu!=''">
-                                        <div>
-                                            <span v-text="playerStateTips.wu"></span>
-                                            <span v-text="networkSpeed.wu"></span>
-                                        </div>
-                                    </div>
-                                    <div class="camera_fn" @click="flv_photograph(5)" v-show="playerState.wu"><i class="icon iconfont icon-camera"></i></div>
-                                    <div class="resolving_power" v-show="resolvingPower.wu.width!=0">
-                                        {{resolvingPower.wu.width}}*{{resolvingPower.wu.height}}
-                                    </div>
-                                </div>
-                                <div>
-                                    <div class="videoElementWrap">
-                                        <video id="videoElement6" controls :muted="isMute" v-show="playerState.liu"></video>
-                                        <div class="play-btn-wrap" @click="onChangePlayerState(6)">
-                                            <Icon :type="playerState.liu?'md-square':'ios-play'" size="40" />
-                                        </div>
-                                    </div>
-                                    <div class="state-event-tip" v-show="playerStateTips.liu!=''">
-                                        <div>
-                                            <span v-text="playerStateTips.liu"></span>
-                                            <span v-text="networkSpeed.liu"></span>
-                                        </div>
-                                    </div>
-                                    <div class="camera_fn" @click="flv_photograph(6)" v-show="playerState.liu"><i class="icon iconfont icon-camera"></i></div>
-                                    <div class="resolving_power" v-show="resolvingPower.liu.width!=0">
-                                        {{resolvingPower.liu.width}}*{{resolvingPower.liu.height}}
-                                    </div>
-                                </div>
-                                <div>
-                                    <div class="videoElementWrap">
-                                        <video id="videoElement7" controls :muted="isMute" v-show="playerState.qi"></video>
-                                        <div class="play-btn-wrap" @click="onChangePlayerState(7)">
-                                            <Icon :type="playerState.qi?'md-square':'ios-play'" size="40" />
-                                        </div>
-                                    </div>
-                                    <div class="state-event-tip" v-show="playerStateTips.qi!=''">
-                                        <div>
-                                            <span v-text="playerStateTips.qi"></span>
-                                            <span v-text="networkSpeed.qi"></span>
-                                        </div>
-                                    </div>
-                                    <div class="camera_fn" @click="flv_photograph(7)" v-show="playerState.qi"><i class="icon iconfont icon-camera"></i></div>
-                                    <div class="resolving_power" v-show="resolvingPower.qi.width!=0">
-                                        {{resolvingPower.qi.width}}*{{resolvingPower.qi.height}}
-                                    </div>
-                                </div>
-                                <div>
-                                    <div class="videoElementWrap">
-                                        <video id="videoElement8" controls :muted="isMute" v-show="playerState.ba"></video>
-                                        <div class="play-btn-wrap" @click="onChangePlayerState(8)">
-                                            <Icon :type="playerState.ba?'md-square':'ios-play'" size="40" />
-                                        </div>
-                                    </div>
-                                    <div class="state-event-tip" v-show="playerStateTips.ba!=''">
-                                        <div>
-                                            <span v-text="playerStateTips.ba"></span>
-                                            <span v-text="networkSpeed.ba"></span>
-                                        </div>
-                                    </div>
-                                    <div class="camera_fn" @click="flv_photograph(8)" v-show="playerState.ba"><i class="icon iconfont icon-camera"></i></div>
-                                    <div class="resolving_power" v-show="resolvingPower.ba.width!=0">
-                                        {{resolvingPower.ba.width}}*{{resolvingPower.ba.height}}
-                                    </div>
-                                </div>
-                                <div>
-                                    <div class="videoElementWrap">
-                                        <video id="videoElement9" controls :muted="isMute" v-show="playerState.jiu"></video>
-                                        <div class="play-btn-wrap" @click="onChangePlayerState(9)">
-                                            <Icon :type="playerState.jiu?'md-square':'ios-play'" size="40" />
-                                        </div>
-                                    </div>
-                                    <div class="state-event-tip" v-show="playerStateTips.jiu!=''">
-                                        <div>
-                                            <span v-text="playerStateTips.jiu"></span>
-                                            <span v-text="networkSpeed.jiu"></span>
-                                        </div>
-                                    </div>
-                                    <div class="camera_fn" @click="flv_photograph(9)" v-show="playerState.jiu"><i class="icon iconfont icon-camera"></i></div>
-                                    <div class="resolving_power" v-show="resolvingPower.jiu.width!=0">
-                                        {{resolvingPower.jiu.width}}*{{resolvingPower.jiu.height}}
-                                    </div>
-                                </div>
-                                <div>
-                                    <div class="videoElementWrap">
-                                        <video id="videoElement10" controls :muted="isMute" v-show="playerState.shi"></video>
-                                        <div class="play-btn-wrap" @click="onChangePlayerState(10)">
-                                            <Icon :type="playerState.shi?'md-square':'ios-play'" size="40" />
-                                        </div>
-                                    </div>
-                                    <div class="state-event-tip" v-show="playerStateTips.shi!=''">
-                                        <div>
-                                            <span v-text="playerStateTips.shi"></span>
-                                            <span v-text="networkSpeed.shi"></span>
-                                        </div>
-                                    </div>
-                                    <div class="camera_fn" @click="flv_photograph(10)" v-show="playerState.shi"><i class="icon iconfont icon-camera"></i></div>
-                                    <div class="resolving_power" v-show="resolvingPower.shi.width!=0">
-                                        {{resolvingPower.shi.width}}*{{resolvingPower.shi.height}}
-                                    </div>
-                                </div>
-                                <div>
-                                    <div class="videoElementWrap">
-                                        <video id="videoElement11" controls :muted="isMute" v-show="playerState.shiyi"></video>
-                                        <div class="play-btn-wrap" @click="onChangePlayerState(11)">
-                                            <Icon :type="playerState.shiyi?'md-square':'ios-play'" size="40" />
-                                        </div>
-                                    </div>
-                                    <div class="state-event-tip" v-show="playerStateTips.shiyi!=''">
-                                        <div>
-                                            <span v-text="playerStateTips.shiyi"></span>
-                                            <span v-text="networkSpeed.shiyi"></span>
-                                        </div>
-                                    </div>
-                                    <div class="camera_fn" @click="flv_photograph(11)" v-show="playerState.shiyi"><i class="icon iconfont icon-camera"></i></div>
-                                    <div class="resolving_power" v-show="resolvingPower.shiyi.width!=0">
-                                        {{resolvingPower.shiyi.width}}*{{resolvingPower.shiyi.height}}
-                                    </div>
-                                </div>
-                                <div>
-                                    <div class="videoElementWrap">
-                                        <video id="videoElement12" controls :muted="isMute" v-show="playerState.shier"></video>
-                                        <div class="play-btn-wrap" @click="onChangePlayerState(12)">
-                                            <Icon :type="playerState.shier?'md-square':'ios-play'" size="40" />
-                                        </div>
-                                    </div>
-                                    <div class="state-event-tip" v-show="playerStateTips.shier!=''">
-                                        <div>
-                                            <span v-text="playerStateTips.shier"></span>
-                                            <span v-text="networkSpeed.shier"></span>
-                                        </div>
-                                    </div>
-                                    <div class="camera_fn" @click="flv_photograph(12)" v-show="playerState.shier"><i class="icon iconfont icon-camera"></i></div>
-                                    <div class="resolving_power" v-show="resolvingPower.shier.width!=0">
-                                        {{resolvingPower.shier.width}}*{{resolvingPower.shier.height}}
-                                    </div>
-                                </div>
-                                <div>
-                                    <div class="videoElementWrap">
-                                        <video id="videoElement13" controls :muted="isMute" v-show="playerState.shisan"></video>
-                                        <div class="play-btn-wrap" @click="onChangePlayerState(13)">
-                                            <Icon :type="playerState.shisan?'md-square':'ios-play'" size="40" />
-                                        </div>
-                                    </div>
-                                    <div class="state-event-tip" v-show="playerStateTips.shisan!=''">
-                                        <div>
-                                            <span v-text="playerStateTips.shisan"></span>
-                                            <span v-text="networkSpeed.shisan"></span>
-                                        </div>
-                                    </div>
-                                    <div class="camera_fn" @click="flv_photograph(13)" v-show="playerState.shisan"><i class="icon iconfont icon-camera"></i></div>
-                                    <div class="resolving_power" v-show="resolvingPower.shisan.width!=0">
-                                        {{resolvingPower.shisan.width}}*{{resolvingPower.shisan.height}}
-                                    </div>
-                                </div>
-                                <div>
-                                    <div class="videoElementWrap">
-                                        <video id="videoElement14" controls :muted="isMute" v-show="playerState.shisi"></video>
-                                        <div class="play-btn-wrap" @click="onChangePlayerState(14)">
-                                            <Icon :type="playerState.shisi?'md-square':'ios-play'" size="40" />
-                                        </div>
-                                    </div>
-                                    <div class="state-event-tip" v-show="playerStateTips.shisi!=''">
-                                        <div>
-                                            <span v-text="playerStateTips.shisi"></span>
-                                            <span v-text="networkSpeed.shisi"></span>
-                                        </div>
-                                    </div>
-                                    <div class="camera_fn" @click="flv_photograph(14)" v-show="playerState.shisi"><i class="icon iconfont icon-camera"></i></div>
-                                    <div class="resolving_power" v-show="resolvingPower.shisi.width!=0">
-                                        {{resolvingPower.shisi.width}}*{{resolvingPower.shisi.height}}
-                                    </div>
-                                </div>
-                                <div>
-                                    <div class="videoElementWrap">
-                                        <video id="videoElement15" controls :muted="isMute" v-show="playerState.shiwu"></video>
-                                        <div class="play-btn-wrap" @click="onChangePlayerState(15)">
-                                            <Icon :type="playerState.shiwu?'md-square':'ios-play'" size="40" />
-                                        </div>
-                                    </div>
-                                    <div class="state-event-tip" v-show="playerStateTips.shiwu!=''">
-                                        <div>
-                                            <span v-text="playerStateTips.shiwu"></span>
-                                            <span v-text="networkSpeed.shiwu"></span>
-                                        </div>
-                                    </div>
-                                    <div class="camera_fn" @click="flv_photograph(15)" v-show="playerState.shiwu"><i class="icon iconfont icon-camera"></i></div>
-                                    <div class="resolving_power" v-show="resolvingPower.shiwu.width!=0">
-                                        {{resolvingPower.shiwu.width}}*{{resolvingPower.shiwu.height}}
-                                    </div>
-                                </div>
-                                <div>
-                                    <div class="videoElementWrap">
-                                        <video id="videoElement16" controls :muted="isMute" v-show="playerState.shiliu"></video>
-                                        <div class="play-btn-wrap" @click="onChangePlayerState(16)">
-                                            <Icon :type="playerState.shiliu?'md-square':'ios-play'" size="40" />
-                                        </div>
-                                    </div>
-                                    <div class="state-event-tip" v-show="playerStateTips.shiliu!=''">
-                                        <div>
-                                            <span v-text="playerStateTips.shiliu"></span>
-                                            <span v-text="networkSpeed.shiliu"></span>
-                                        </div>
-                                    </div>
-                                    <div class="camera_fn" @click="flv_photograph(16)" v-show="playerState.shiliu"><i class="icon iconfont icon-camera"></i></div>
-                                    <div class="resolving_power" v-show="resolvingPower.shiliu.width!=0">
-                                        {{resolvingPower.shiliu.width}}*{{resolvingPower.shiliu.height}}
-                                    </div>
+                                <div v-for="index in 16">
+                                    <my-video :ref="'player' + index"></my-video> 
                                 </div>
                             </div>
                         </div>
@@ -2538,118 +2508,6 @@
         </div>
     </script>
 
-    <script type="text/x-template" id="video-player-template">
-        <div id="videoWraper" class="video-wraper" :style="wraperStyle" v-if="activeComponent !== 'trackDebug'">
-            <canvas width="720" height="450" id="V2I_canvas" style="display: none;"></canvas>
-            <ul class="waring-controller" v-show="isLargen == 0">
-                <li style="width:68px;border-left:1px solid #fff;"><span>视频播放</span></li>
-                <li style="width:60px;cursor: pointer;border-right:1px solid #fff;">
-                    <span @click="changeLargen(1)" :title="$t('alarm.open')"><Icon type="ios-browsers-outline" :size="14" /></span>
-                    <span @click="changeLargen(2)" :title="$t('alarm.max')" style="margin-left:10px;"><Icon type="ios-square-outline" :size="16"/></span>
-                </li>
-            </ul>
-            <div class="msg_main" v-show="isLargen !== 0">
-                <div class="video_header">
-                    <ul id="move_element">
-                        <li v-if="allDeviceIdTitle!=''">{{allDeviceIdTitle}}</li>
-                        <li v-if="allDeviceIdTitle==''">未选择设备</li>
-                        <li>通道{{playerIndex}}</li>
-                        <li v-if="videoDeviceState">{{videoDeviceState}}</li>
-                    </ul>
-                    <div class="shrink-btn">
-                        <span @click="changeLargen(0)" :title="$t('alarm.min')">
-                            <Icon type="md-remove" />
-                        </span>
-                        <span @click="changeLargen2()">     
-                            <Icon type="ios-browsers-outline" :title="$t('alarm.changeWin')" />
-                        </span>
-                    </div>
-                </div>
-                <div class="video_body">
-                    <div class="video-wrap" :style="player1Style" @click="playerIndex=1">
-                        <div class="videoElementWrap">
-                            <video id="videoElement1" controls :muted="isMute"></video>
-                        </div>
-                        <div class="resolving-power" v-show="resolvingPower.yi.width!=0">
-                            {{resolvingPower.yi.width}}*{{resolvingPower.yi.height}}
-                        </div>
-                        <div class="state-event-tip" v-show="playerStateTips.yi!=''">
-                            <div>
-                                <span v-text="playerStateTips.yi"></span>
-                                <span v-text="networkSpeed.yi"></span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="video-wrap" :style="player2Style" @click="playerIndex=2">
-                        <div class="videoElementWrap">
-                            <video id="videoElement2" controls :muted="isMute"></video>
-                        </div>
-                        <div class="resolving-power" v-show="resolvingPower.er.width!=0">
-                            {{resolvingPower.er.width}}*{{resolvingPower.er.height}}
-                        </div>
-                        <div class="state-event-tip" v-show="playerStateTips.er!=''">
-                            <div>
-                                <span v-text="playerStateTips.er"></span>
-                                <span v-text="networkSpeed.er"></span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="video-wrap" :style="player3Style" @click="playerIndex=3">
-                        <div class="videoElementWrap">
-                            <video id="videoElement3" controls :muted="isMute"></video>
-                        </div>
-                        <div class="resolving-power" v-show="resolvingPower.san.width!=0">
-                            {{resolvingPower.san.width}}*{{resolvingPower.san.height}}
-                        </div>
-                        <div class="state-event-tip" v-show="playerStateTips.san!=''">
-                            <div>
-                                <span v-text="playerStateTips.san"></span>
-                                <span v-text="networkSpeed.san"></span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="video-wrap" :style="player4Style" @click="playerIndex=4">
-                        <div class="videoElementWrap">
-                            <video id="videoElement4" controls :muted="isMute"></video>
-                        </div>
-                        <div class="resolving-power" v-show="resolvingPower.si.width!=0">
-                            {{resolvingPower.si.width}}*{{resolvingPower.si.height}}
-                        </div>
-                        <div class="state-event-tip" v-show="playerStateTips.si!=''">
-                            <div>
-                                <span v-text="playerStateTips.si"></span>
-                                <span v-text="networkSpeed.si"></span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="video_footer">
-                    <div @click="handlePlayerState">
-                        <i class="icon iconfont" :class="{'icon-play':!singlePlayerState,'icon-icon--':singlePlayerState}"></i>
-                    </div>
-                    <div @click="handlePlayerMute">
-                        <i class="icon iconfont" :class="{'icon-yinliang':!isMute,'icon-guanbiyinliang':isMute}"></i>
-                    </div>
-                    <div @click="flv_photograph">
-                        <i class="icon iconfont icon-camera"></i>
-                    </div>
-                    <div @click="openVideos">
-                        <i class="icon iconfont icon-bofang1"></i>
-                    </div>
-                    <div @click="openPlayback">
-                        <i class="icon iconfont icon-playback"></i>
-                    </div>
-                    <div @click="openActivesafety" v-if="activesafety == 1">
-                        <i class="icon iconfont icon-safety-icon"></i>
-                    </div>
-                </div>
-                <div class="mouseicon" @mousedown="handleMousedown">
-                    <i class="icon iconfont icon-youxiajiao" style="color:#A1A1A1"></i>
-                </div>
-            </div>
-        </div>
-    </script>
-
     <script type="text/x-template" id="table-dropdown-template">
         <Dropdown transfer @on-click="onClickItem">
             <i-button type="info" size="small">
@@ -2667,9 +2525,36 @@
         </Dropdown>
     </script>
 
+
+
+    <script type="text/x-template" id="video-template">
+        <div class='my-video-wrapper'>
+            <div class='player-wraper'>
+                <video ref='player' :muted="isMute"></video>
+                <div class="resolving-power" v-show="isPlaying">
+                    <span v-text='resolvingPower.width'></span>   
+                    *     
+                    <span v-text='resolvingPower.height'></span>        
+                </div>
+                <div class="state-event-tip" v-text="playerStateTips"></div>
+            </div>
+			<div class="my-video-control">
+                <div class='device-states' v-show="deviceId">
+                    <span v-text='deviceName'></span>
+                    <span v-text='channelStr'></span>
+                    <span v-text='networkSpeed'></span>
+                </div>
+                <div class='video-controls'> 
+                    <span @click="switchVideoPlayState"><i class="icon iconfont" :class="{'icon-bofang':!isPlaying,'icon-zanting':isPlaying}"></i></span>
+                    <span @click="handlePlayerMute"><i class="icon iconfont" :class="{'icon-yinliang':!isMute,'icon-guanbiyinliang':isMute}"></i></span>
+                    <span @click="flv_photograph"><i class="icon iconfont icon-camera"></i></span>
+                    <span @click="handleFullScreen"><i class="icon iconfont" :class="{'icon-quanping':!isFullScreen,'icon-tuichuquanping':isFullScreen}"></i></span> 
+                </div>
+			</div>
+        </div>
+    </script>
+
     <audio id="myaudio" src="./custom/sos.mp3"></audio>
-
-
     <script src="dist/vue.min.js"></script>
     <script src="dist/vuex.min.js"></script>
     <script src="js/v-click-outside-x.js"></script>

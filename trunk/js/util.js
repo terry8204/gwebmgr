@@ -618,7 +618,7 @@ var utils = {
         var temp = this.getTemperature(isZh, track);
         // console.log('Update time : ', DateFormat.longToDateTimeStr(track.updatetime, timeDifference));
         var content =
-            '<p> ' + (isZh ? '设备名称' : 'Device Name') + ': ' + track.devicename + '</p>' +
+            '<p> ' + (isZh ? '设备名称' : 'Device Name') + ': ' + track.devicename + '<i onclick="copyToClipboardText()" class="ivu-icon ivu-icon-ios-copy-outline" style="font-size: 24px;cursor: pointer;"></i></p>' +
             '<p> ' + (isZh ? '设备序号' : 'Device Number') + ': ' + track.deviceid + '<i onclick="copyToClipboard()" class="ivu-icon ivu-icon-ios-copy-outline" style="font-size: 24px;cursor: pointer;"></i></p>' +
             '<p> ' + (isZh ? '定位类型' : 'Position Type') + ': ' + posiType + '</p>' +
             '<p> ' + (isZh ? '经纬度' : 'Longitude and latitude') + ': ' + track.callon.toFixed(6) + ',' + track.callat.toFixed(6) + '</p>' +
@@ -690,9 +690,9 @@ var utils = {
         var result5 = false;
         var result6 = false;
         var result7 = false;
-        for (var i = 0; i < deviceTypes.length; i++) {
-            if (currentDeviceType == deviceTypes[i].devicetypeid) {
-                var functions = deviceTypes[i].functions;
+
+          
+                var functions = deviceTypes[currentDeviceType].functions;
                 if (functions) {
                     if (functions.indexOf("audio") != -1) {
                         result1 = true;
@@ -716,8 +716,8 @@ var utils = {
                         result7 = true;
                     };
                 };
-            };
-        };
+            
+ 
         return {
             audio: result1,
             bms: result2,
@@ -1091,6 +1091,41 @@ try {
 
 }
 
+function copyToClipboardText(){
+    var text = globalDeviceName;
+    if (text.indexOf('-') !== -1) {
+        let arr = text.split('-');
+        text = arr[0] + arr[1];
+    }
+    var textArea = document.createElement("textarea");
+    textArea.style.position = 'fixed';
+    textArea.style.top = '0';
+    textArea.style.left = '0';
+    textArea.style.width = '2em';
+    textArea.style.height = '2em';
+    textArea.style.padding = '0';
+    textArea.style.border = 'none';
+    textArea.style.outline = 'none';
+    textArea.style.boxShadow = 'none';
+    textArea.style.zIndex = -99;
+    textArea.style.background = 'transparent';
+
+    textArea.value = text;
+    document.body.appendChild(textArea);
+    textArea.select();
+
+    try {
+        var successful = document.execCommand('copy');
+        var msg = successful ? '成功复制到剪贴板' : '该浏览器不支持点击复制到剪贴板';
+        new Vue().$Message.success(msg);
+    } catch (err) {
+        new Vue().$Message.error('该浏览器不支持点击复制到剪贴板');
+    }
+    setTimeout(function() {
+        document.body.removeChild(textArea);
+    }, 2000)
+}
+
 function copyToClipboard() {
     var text = globalDeviceId;
     if (text.indexOf('-') !== -1) {
@@ -1253,6 +1288,7 @@ function openVdeio(deviceid, name, activesafety) {
 }
 
 function openActiveSafety(deviceid, name) {
+    console.log(deviceid, name);
     var mapType = utils.getMapType();
     mapType = mapType ? mapType : 'bMap';
     var url = myUrls.viewhosts + 'activesafety.html?deviceid=' + deviceid + "&maptype=" + mapType + '&token=' + token + '&name=' + name;

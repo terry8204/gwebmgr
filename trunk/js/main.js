@@ -7,6 +7,7 @@ var isZh = utils.locale === 'zh';
 var mapType = utils.getMapType();
 var isLoadBMap = false;
 var globalDeviceId = "";
+var globalDeviceName = "";
 var reportDeviceId = null;
 var userlists = [];
 var globalGroups = [];
@@ -18,27 +19,8 @@ var isNeedRefreshMapUI = false;
 var timeDifference = DateFormat.getOffset(); 
 var voiceQueue = []; //语音报警队列
 var isPlayAlarmVoice = false;
-var playerStateKeyList = ['', 'yi', 'er', 'san', 'si', 'wu', 'liu', 'qi', 'ba', 'jiu', 'shi', 'shiyi', 'shier', 'shisan', 'shisi', 'shiwu', 'shiliu'];
-var isSendAjaxState = {
-    'yi': false,
-    'er': false,
-    'san': false,
-    'si': false,
-    'wu': false,
-    'liu': false,
-    'qi': false,
-    'ba': false,
-    'jiu': false,
-    'shi': false,
-    'shiyi': false,
-    'shier': false,
-    'shisan': false,
-    'shisi': false,
-    'shiwu': false,
-    'shiliu': false,
-};
-document.title = isZh ? "位置视频服务平台" : "Location video service platform";
 
+document.title = isZh ? "位置视频服务平台" : "Location video service platform";
 
 
 // vuex store
@@ -153,7 +135,11 @@ vstore = new Vuex.Store({
             state.currentDeviceId = deviceid;
         },
         setDeviceTypes: function(state, devicetypes) {
-            state.deviceTypes = devicetypes;
+            var obj = {};
+            devicetypes.forEach(function(item){
+                obj[item.devicetypeid] = item;
+            });
+            state.deviceTypes = obj;
         }
     }
 });
@@ -185,6 +171,268 @@ Vue.component('table-dropdown', {
         }
     }
 });
+
+
+
+Vue.component('my-video', {
+    props:[],
+    data: function () {
+        return {
+            isPlaying:false,
+            isMute:false,
+            playerStateTips:'',
+            resolvingPower:{width:0,height:0},
+            deviceName:'',
+            deviceId:'',
+            isFullScreen:false,
+            networkSpeed:'0KB/S',
+            channel:1,
+        }
+    },
+    methods:{
+        init:function(){
+            this.startTimes = 0;
+            this.flvPlayer = null;
+            this.isSendAjaxState = false;
+            this.addEventListenerToPlayer();
+        }, 
+        setDevicedInfoAndPlay:function(device){
+            if(this.deviceId && this.deviceId!=device.deviceid) {
+                this.handleStopVideos();
+            }
+            this.deviceId = device.deviceid;
+            this.deviceName = device.devicename;
+            this.channel = device.channel;
+            this.handleStartVideos();
+        },
+        switchVideoPlayState:function(){
+            if(this.deviceId==''){
+                this.$Message.error('请选择播放设备');
+                return;
+            }
+            if(this.isPlaying){
+                this.handleStopVideos();
+            }else{
+                this.handleStartVideos();
+            }
+        },
+        initVideo: function( url, hasaudio) {
+            var flvPlayer = flvjs.createPlayer({
+                type: 'flv',
+                url: url,
+                isLive: true,
+                hasAudio: hasaudio === 1,
+                hasVideo: true,
+                withCredentials: false,
+                // url: 'http://video.gps51.com:81/live/teststream.flv'
+            }, {
+                enableWorker: false,
+                enableStashBuffer: false,
+                isLive: true,
+                lazyLoad: false
+            });
+            var me = this;
+            flvPlayer.attachMediaElement(this.$refs.player);
+            flvPlayer.load(); //加载
+            flvPlayer.play();
+            flvPlayer.on(flvjs.Events.STATISTICS_INFO, function(e) {
+                me.networkSpeed = parseInt(e.speed * 10) / 10 + 'KB/S';
+            })
+            this.flvPlayer = flvPlayer;
+        },
+        switchflvPlayer: function( url, hasaudio) {
+            try {
+                var flvPlayer = this.flvPlayer;
+                if (flvPlayer != null) {
+                    flvPlayer.pause();
+                    flvPlayer.unload();
+                    flvPlayer.detachMediaElement();
+                    flvPlayer.destroy();
+                }
+            } catch (error) {
+
+            }
+            this.initVideo(url, hasaudio);
+        },
+        addEventListenerToPlayer:function(){
+            var player = this.$refs.player,
+                me = this;
+                player.addEventListener('loadedmetadata', function(e) {
+                    me.resolvingPower = {
+                        width: e.target.videoWidth,
+                        height: e.target.videoHeight,
+                    }
+                })
+            player.addEventListener('error', function() {
+                me.isSendAjaxState = false;
+                me.playerStateTips = "请求数据时遇到错误";
+            });
+            player.addEventListener('play', function() {
+                me.playerStateTips = "开始播放";
+            });
+            player.addEventListener('playing', function() {
+                me.playerStateTips = "正在播放";
+                me.isSendAjaxState = false;
+            });
+            player.addEventListener('pause', function() {
+                me.playerStateTips = "暂停"
+            });
+            player.addEventListener('waiting', function() {
+                me.playerStateTips = "等待数据"
+            });
+            // player.addEventListener("fullscreenchange",function(e){
+            //     if(!doc.webkitIsFullScreen){//退出全屏暂停视频
+            //         this.pause();
+            //         // this.pause();
+            //     }else{
+            //         //console.log("----")
+            //     };
+            // }, false);
+        },  
+        flv_photograph: function(playerIndex) {
+            if (!this.isPlaying) {
+                return;
+            };
+            var ele = document.createElement('a');
+            var now = DateFormat.longToDateTimeStrNoSplit(Date.now(), timeDifference);
+            var fileName = this.deviceName + '-' + this.channel + '-' + now;
+            ele.setAttribute('href', this.htmlToImage(playerIndex)); //设置下载文件的url地址
+            ele.setAttribute('download', fileName); //用于设置下载文件的文件名
+            ele.click();
+        },
+        htmlToImage: function(index) {
+            var canvas = document.getElementById('V2I_canvas');
+            if (!canvas.getContext) {
+                alert("您的浏览器暂不支持canvas");
+                return false;
+            } else {
+                var context = canvas.getContext("2d");
+                context.drawImage(this.$refs.player, 0, 0, this.resolvingPower.width, this.resolvingPower.height);
+                return canvas.toDataURL("image/png");
+            }
+        }, 
+        handlePlayerMute: function() {
+            this.isMute = !this.isMute;
+        }, 
+        handleFullScreen:function(){
+            if (!this.isPlaying) {
+                return;
+            };
+            var video = this.$refs.player;
+            if (video.webkitRequestFullScreen) {
+                video.webkitRequestFullScreen();
+            }
+            else if (video.mozRequestFullScreen) {
+                video.mozRequestFullScreen();
+            }
+            else if (video.msRequestFullScreen) {
+                video.msRequestFullScreen();
+            }
+            else if (video.RequestFullScreen) {
+                video.RequestFullScreen();
+            }
+        },
+        handleStartVideos: function() {
+            var url = myUrls.startVideos(),
+                me = this;
+            this.playerStateTips= "正在请求播放";
+            utils.sendAjax(url, {
+                deviceid: this.deviceId,
+                channels: [Number(this.channel)],
+                playtype: ishttps ? 'flvs' : 'flv',
+            }, function(resp) {
+                me.isSendAjaxState = false;
+                var records = resp.records;
+                var status = resp.status;
+
+                if (status == CMD_SEND_RESULT_UNCONFIRM) {
+                    me.$Message.error('发送成功，未收到确认');
+                } else if (status === CMD_SEND_RESULT_PASSWORD_ERROR) {
+                    me.$Message.error('密码错误');
+                } else if (status === CMD_SEND_RESULT_OFFLINE_NOT_CACHE) {
+                    me.$Message.error("设备离线，未缓存");
+                } else if (status === CMD_SEND_RESULT_OFFLINE_CACHED) {
+                    me.$Message.error("设备离线，已缓存");
+                } else if (status === CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD) {
+                    me.$Message.error("需要修改默认密码");
+                } else if (status === CMD_SEND_RESULT_DETAIL_ERROR) {
+                    me.$Message.error("错误:" + resp.cause);
+                } else if (status === CMD_SEND_CONFIRMED) {
+                    var acc = resp.acc
+                    var accState = '';
+                    if (acc === 3) {
+                        accState = 'ACC开,'
+                    } else if (acc === 2) {
+                        accState = 'ACC关,'
+                    }
+                    me.$Message.success(accState + "请求播放成功,请稍后...");
+                    me.switchflvPlayer(records[0].playurl, records[0].hasaudio);
+                    me.isPlaying = true;
+                    me.startTimes = Date.now();
+                } else if (status === CMD_SEND_OVER_RETRY_TIMES) {
+                    me.$Message.error("尝试发送3次失败");
+                } else if (status === CMD_SEND_SYNC_TIMEOUT) {
+
+                    var accState = '';
+                    if (acc === 3) {
+                        accState = 'ACC开,'
+                    } else if (acc === 2) {
+                        accState = 'ACC关,'
+                    }
+                    me.$Message.error(accState + "请求播放超时");
+                    me.switchflvPlayer( records[0].playurl, records[0].hasaudio);
+                    me.isPlaying = true;
+                    me.startTimes = Date.now();
+                }
+
+            }, function() {
+                me.$Message.error("请求超时");
+                me.isSendAjaxState = false;
+            })
+        },
+        handleStopVideos: function() {
+
+            try {
+                var player = this.flvPlayer;
+                player.unload();
+                player.detachMediaElement();
+                player.destroy();
+                this.flvPlayer = null;
+            } catch (error) {};
+            this.isPlaying = false;
+            this.playerStateTips = '暂停播放';
+            this.isSendAjaxState = false;
+            this.networkSpeed ='0KB/S';
+
+            var url = myUrls.stopVideos();
+            utils.sendAjax(url, {
+                deviceid: this.deviceId,
+                channels: [Number(this.channel)]
+            }, function(resp) {})
+
+   
+        },
+        timeout:function(){
+
+                if(this.isPlaying){
+                    var nowTime = Date.now();
+                    if ((nowTime - this.startTimes) > 1000 * 60 * 3) {
+                           this.handleStopVideos(); 
+                           this.playerStateTips = '已播放三分钟时间,暂停播放';
+                    }
+                }
+        }
+    },
+    computed:{
+        channelStr:function(){
+            return this.channel ? 'CH' + this.channel + ' -' : '';
+        }
+    },
+    mounted:function(){
+        this.init();
+    },
+    template: document.getElementById('video-template').innerHTML
+})
 
 
 
@@ -721,581 +969,6 @@ var trackDebug = {
 }
 
 
-var videoPlayer = {
-    template: document.getElementById('video-player-template').innerHTML,
-    data: function() {
-        return {
-            videoDeviceState: null,
-            videosNumber: 4,
-            isMute: false,
-            activesafety: null,
-            allDeviceIdTitle: '',
-            deviceId: null,
-            deviceName: '',
-            playerIndex: 1,
-            isLargen: 0,
-            wraperStyle: { width: '130px', height: '22px' },
-            wrapperWidth: null,
-            wrapperHeight: null,
-            singlePlayerState: false,
-            playerStateTips: {
-                'yi': '',
-                'er': '',
-                'san': '',
-                'si': '',
-            },
-            networkSpeed: {
-                'yi': '0KB/S',
-                'er': '0KB/S',
-                'san': '0KB/S',
-                'si': '0KB/S',
-            },
-            resolvingPower: {
-                'yi': {
-                    width: 0,
-                    height: 0,
-                },
-                'er': {
-                    width: 0,
-                    height: 0,
-                },
-                'san': {
-                    width: 0,
-                    height: 0,
-                },
-                'si': {
-                    width: 0,
-                    height: 0,
-                },
-            }
-        }
-    },
-    methods: {
-        handleMousedown: function(e) {
-            var targetDiv = document.getElementById('videoWraper'); //e.target.parentNode.parentNode;.children[0]
-            var evt = e || window.event;
-            if (document.setCapture) this.setCapture();
-            if (window.captureEvents) window.captureEvents(Event.MOUSEMOVE | Event.MOUSEUP);
-            //得到点击时该地图容器的宽高：
-            var targetDivWidth = targetDiv.offsetWidth;
-            var targetDivHeight = targetDiv.offsetHeight;
-            var clientWidth = document.documentElement.clientWidth || document.body.clientWidth;
-            var clientHeight = document.documentElement.clientHeight || document.body.clientHeight;
-
-            var startX = evt.clientX;
-            var startY = evt.clientY;
-
-            document.onmousemove = function(e) {
-
-                var evt = e || window.event;
-                evt.preventDefault();
-                // var left = targetDiv.style.left;
-                // var top = targetDiv.style.top;
-                //得到鼠标拖动的宽高距离：取绝对值
-                var distX = evt.clientX - startX;
-                var distY = evt.clientY - startY;
-
-
-                var elementWidth = targetDivWidth + distX;
-                var elementHeight = targetDivHeight + distY;
-                // left = left + distX;
-                // top = top + distY;
-
-                //设置最大最小范围：不能无限制缩放，影响体验
-                if (elementWidth < 300) {
-                    elementWidth = 300;
-                }
-
-                if (elementWidth > clientWidth - 30) {
-                    elementWidth = clientWidth - 30;
-                }
-
-                if (elementHeight < 250) {
-                    elementHeight = 250;
-                }
-
-                if (elementHeight > clientHeight - 50) {
-                    elementHeight = clientHeight - 50;
-                }
-
-                targetDiv.style.width = elementWidth + 'px';
-                targetDiv.style.height = elementHeight + 'px';
-
-                // targetDiv.style.left = left + 'px';
-                // targetDiv.style.top = top + 'px';
-            }
-
-            document.onmouseup = function() {
-                document.onmousemove = null;
-            }
-
-        },
-        handlePlayerMute: function() {
-            this.isMute = !this.isMute;
-        },
-        changeLargen: function(type) {
-            this.isLargen = type;
-            this.isWaring = false;
-        },
-        changeLargen2: function() {
-            if (this.isLargen == 1) {
-                this.isLargen = 2;
-            } else if (this.isLargen == 2) {
-                this.isLargen = 1;
-            }
-        },
-        changeWrapperCls: function() {
-            var type = this.isLargen;
-            if (type === 0) {
-
-                this.wrapperWidth = 130;
-                this.wrapperHeight = 22;
-
-            } else if (type === 1) {
-
-                this.wrapperWidth = 900;
-                this.wrapperHeight = 500;
-
-            } else if (type === 2) {
-
-                var clientWidth = document.documentElement.clientWidth || document.body.clientWidth;
-                var clientHeight = document.documentElement.clientHeight || document.body.clientHeight;
-                if (clientWidth < 1300) {
-                    clientWidth = 1300;
-                }
-                if (clientHeight < 580) {
-                    clientHeight = 580;
-                }
-                this.wrapperWidth = clientWidth - 320;
-                this.wrapperHeight = clientHeight - 85;
-
-            }
-
-
-            // this.setWaringWraperStyle();
-
-
-            $('#videoWraper').css({
-                width: this.wrapperWidth + 'px',
-                height: this.wrapperHeight + 'px',
-                right: "3px",
-                bottom: "25px",
-                top: 'auto',
-                left: 'auto',
-            })
-        },
-        setWaringWraperStyle: function() {
-            this.wraperStyle = {
-                width: this.wrapperWidth + 'px',
-                height: this.wrapperHeight + 'px',
-                right: "3px",
-                bottom: "25px",
-                top: 'auto',
-                left: 'auto',
-            };
-        },
-        addEventListenerToPlayer: function(player, index) {
-
-            var me = this,
-                key = me.playerStateKeyList[index];
-            player.addEventListener('loadedmetadata', function(e) {
-                me.resolvingPower[key] = {
-                    width: e.target.videoWidth,
-                    height: e.target.videoHeight,
-                }
-            })
-            player.addEventListener('error', function() {
-                me.playerStateTips[key] = "请求数据时遇到错误";
-            });
-            player.addEventListener('play', function() {
-                me.playerStateTips[key] = "开始播放";
-            });
-            player.addEventListener('playing', function() {
-                me.playerStateTips[key] = "正在播放";
-            });
-            player.addEventListener('pause', function() {
-                me.playerStateTips[key] = "暂停";
-            });
-            player.addEventListener('waiting', function() {
-                me.playerStateTips[key] = "等待数据";
-            });
-        },
-        initVideo: function(index, url, hasaudio) {
-            var flvPlayer = flvjs.createPlayer({
-                type: 'flv',
-                url: url,
-                isLive: true,
-                hasAudio: hasaudio === 1,
-                hasVideo: true,
-                withCredentials: false,
-                enableStashBuffer: true,
-                stashInitialSize: 50,
-                // url: 'http://video.gps51.com:81/live/teststream.flv'
-            }, {
-                enableWorker: false,
-                enableStashBuffer: false,
-                isLive: true,
-                lazyLoad: false
-            });
-            var player = document.getElementById('videoElement' + index),
-                me = this;
-            flvPlayer.attachMediaElement(player);
-            flvPlayer.load(); //加载
-            flvPlayer.play();
-
-            this.videoIns[index] = flvPlayer;
-            this.videoTimes = Date.now();
-            flvPlayer.on(flvjs.Events.STATISTICS_INFO, function(e) {
-                me.networkSpeed[me.playerStateKeyList[index]] = parseInt(e.speed * 10) / 10 + 'KB/S';
-            })
-        },
-        switchflvPlayer: function(index, url, hasaudio) {
-            try {
-                var flvPlayer = this.videoIns[index];
-                if (flvPlayer != null) {
-                    flvPlayer.pause();
-                    flvPlayer.unload();
-                    flvPlayer.detachMediaElement();
-                    flvPlayer.destroy();
-                    this.videoIns[index] = null;
-                }
-            } catch (error) {
-
-            }
-            this.initVideo(index, url, hasaudio);
-        },
-        handlePlayerState: function() {
-            if (this.deviceId == null) {
-                this.$Message.error("请选择设备!");
-                return;
-            }
-            if (this.singlePlayerState) {
-                this.handleStopAllVideo();
-            } else {
-                var me = this;
-                this.handleStartAllVideo(function(records) {
-                    records.forEach(function(item) {
-                        me.switchflvPlayer(item.channel, item.playurl, item.hasaudio);
-                    })
-                });
-            }
-        },
-        handleStopAllVideo: function() {
-            this.singlePlayerState = false;
-            utils.sendAjax(myUrls.stopVideos(), {
-                deviceid: this.deviceId,
-                channels: [1, 2, 3, 4],
-                videoclosetype: 0
-            }, function(resp) {});
-            for (var i = 1; i < 5; i++) {
-                var player = this.videoIns[i];
-                var key = this.playerStateKeyList[i];
-                if (player != null) {
-                    player.pause();
-                    player.unload();
-                    player.detachMediaElement();
-                    player.destroy();
-                }
-                this.playerStateTips[key] = "停止播放";
-                this.isSendAjaxState = false;
-            }
-            this.videoTimes = null;
-            this.videoIns = {};
-
-        },
-        handleStartAllVideo: function(callback) {
-            this.singlePlayerState = true;
-            var me = this,
-                channels = [];
-            for (var i = 1; i <= this.videosNumber; i++) {
-                channels.push(i);
-                me.playerStateTips[this.playerStateKeyList[i]] = "正在请求请求播放";
-            }
-
-            utils.sendAjax(myUrls.startVideos(), {
-                    deviceid: this.deviceId,
-                    channels: channels,
-                    playtype: ishttps ? 'flvs' : 'flv',
-                },
-                function(resp) {
-                    me.isSendAjaxState = false;
-                    var records = resp.records,
-                        status = resp.status;
-
-                    if (status == CMD_SEND_RESULT_UNCONFIRM) {
-                        me.$Message.error('发送成功，未收到确认');
-                    } else if (status === CMD_SEND_RESULT_PASSWORD_ERROR) {
-                        me.$Message.error('密码错误');
-                    } else if (status === CMD_SEND_RESULT_OFFLINE_NOT_CACHE) {
-                        me.$Message.error("设备离线，未缓存");
-                    } else if (status === CMD_SEND_RESULT_OFFLINE_CACHED) {
-                        me.$Message.error("设备离线，已缓存");
-                    } else if (status === CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD) {
-                        me.$Message.error("需要修改默认密码");
-                    } else if (status === CMD_SEND_RESULT_DETAIL_ERROR) {
-                        me.$Message.error("错误:" + resp.cause);
-                    } else if (status === CMD_SEND_CONFIRMED) {
-                        var acc = resp.acc
-                        var accState = '';
-                        if (acc === 3) {
-                            accState = 'ACC开,'
-                        } else if (acc === 2) {
-                            accState = 'ACC关,'
-                        }
-                        me.$Message.success(accState + "请求播放成功,请稍后...");
-                        callback(records);
-                    } else if (status === CMD_SEND_OVER_RETRY_TIMES) {
-                        me.$Message.error("尝试发送3次失败");
-                    } else if (status === CMD_SEND_SYNC_TIMEOUT) {
-                        var accState = '';
-                        if (acc === 3) {
-                            accState = 'ACC开,'
-                        } else if (acc === 2) {
-                            accState = 'ACC关,'
-                        }
-                        me.$Message.error(accState + "请求播放超时");
-                        callback(records);
-                    }
-
-                },
-                function() {
-                    me.$Message.error("请求超时");
-                    me.isSendAjaxState = false;
-                })
-        },
-        
-
-
-        flv_photograph: function() {
-            if (!this.videoIns[this.playerIndex]) {
-                this.$Message.error("请先播放视频");
-                return;
-            };
-            var ele = document.createElement('a');
-            var now = DateFormat.longToDateTimeStrNoSplit(Date.now(), timeDifference);
-            var fileName = this.deviceId + '-' + this.playerIndex + '-' + now;
-            ele.setAttribute('href', this.htmlToImage(this.playerIndex)); //设置下载文件的url地址
-            ele.setAttribute('download', fileName); //用于设置下载文件的文件名
-            ele.click();
-        },
-        htmlToImage: function(index) {
-            var canvas = document.getElementById('V2I_canvas');
-            if (!canvas.getContext) {
-                alert("您的浏览器暂不支持canvas");
-                return false;
-            } else {
-                var context = canvas.getContext("2d");
-                var video = document.getElementById("videoElement" + index);
-                var key = this.playerStateKeyList[index];
-                context.drawImage(video, 0, 0, this.resolvingPower[key].width, this.resolvingPower[key].height);
-                return canvas.toDataURL("image/png");
-            }
-        },
-        checkVideoPlayerTime: function() {
-            var me = this;
-            this.myInterval = setInterval(function() {
-                me.stopVideoPlayer();
-            }, 5000);
-        },
-        stopVideoPlayer: function() {
-            var videoIns = this.videoIns;
-
-            var nowTime = Date.now();
-            var oldTime = this.videoTimes;
-            if (oldTime) {
-                if ((nowTime - oldTime) > 1000 * 60 * 3) {
-                    for (var i in videoIns) {
-                        try {
-
-                            var player = videoIns[i];
-                            if (player) {
-                                player.pause();
-                                player.unload();
-                                player.detachMediaElement();
-                                player.destroy();
-                                videoIns[i] = null;
-                            }
-
-                        } catch (error) {
-
-                        }
-                        this.playerStateTips[this.playerStateKeyList[i]] = '3分钟播放时间到,已关闭';
-                    }
-                    this.videoTimes = null;
-                    this.singlePlayerState = false;
-                }
-
-            }
-        },
-        openVideos: function() {
-            if (this.activesafety == null) {
-                this.$Message.error('请先选择设备');
-                return;
-            };
-            var mapType = utils.getMapType();
-            mapType = mapType ? mapType : 'bMap';
-            window.open(
-                myUrls.viewhosts + "video.html?deviceid=" +
-                this.deviceId + "&maptype=" +
-                mapType + "&token=" +
-                token + '&name=' + encodeURIComponent(this.deviceName) +
-                '&activesafety=' + this.activesafety
-            );
-        },
-        openPlayback: function() {
-            if (this.deviceId == null) {
-                this.$Message.error('请先选择设备');
-                return;
-            }
-            window.open('videoback.html?deviceid=' + this.deviceId + '&token=' + token);
-        },
-        openActivesafety: function() {
-            var mapType = utils.getMapType();
-            mapType = mapType ? mapType : 'bMap';
-            var url = myUrls.viewhosts + 'activesafety.html?deviceid=' + this.deviceId + "&maptype=" + mapType + '&token=' + token + '&name=' + encodeURIComponent(this.deviceName);
-            window.open(url);
-        }
-    },
-    computed: {
-        userType: function() {
-            return this.$store.state.userType;
-        },
-        activeComponent: function() {
-            return this.$store.state.headerActiveName;
-        },
-        player1Style: function() {
-            var styleObject = { border: this.playerIndex == 1 ? '1px solid #0071DB' : '1px solid #000' }
-            switch (this.videosNumber) {
-                case 1:
-                    styleObject.width = '100%';
-                    styleObject.height = '100%';
-                    break;
-                case 2:
-                    styleObject.width = '50%';
-                    styleObject.height = '100%';
-                    break;
-                case 3:
-                    styleObject.width = '50%';
-                    styleObject.height = '50%';
-                    break;
-                case 4:
-                    styleObject.width = '50%';
-                    styleObject.height = '50%';
-                    break;
-            }
-            return styleObject;
-        },
-        player2Style: function() {
-            var styleObject = { border: this.playerIndex == 2 ? '1px solid #0071DB' : '1px solid #000' }
-            switch (this.videosNumber) {
-                case 2:
-                    styleObject.width = '50%';
-                    styleObject.height = '100%';
-                    break;
-                case 3:
-                    styleObject.width = '50%';
-                    styleObject.height = '50%';
-                    break;
-                case 4:
-                    styleObject.width = '50%';
-                    styleObject.height = '50%';
-                    break;
-            }
-            return styleObject;
-        },
-        player3Style: function() {
-            var styleObject = { border: this.playerIndex == 3 ? '1px solid #0071DB' : '1px solid #000' }
-            switch (this.videosNumber) {
-                case 3:
-                    styleObject.width = '100%';
-                    styleObject.height = '50%';
-                    break;
-                case 4:
-                    styleObject.width = '50%';
-                    styleObject.height = '50%';
-                    break;
-            }
-            return styleObject;
-        },
-        player4Style: function() {
-            return {
-                border: this.playerIndex == 4 ? '1px solid #0071DB' : '1px solid #000',
-                width: '50%',
-                height: '50%',
-            };
-        }
-    },
-    watch: {
-        isLargen: function() {
-            this.changeWrapperCls();
-        }
-    },
-    mounted: function() {
-        this.videoTimes = null;
-        this.videoIns = {};
-        this.playerStateKeyList = ['', 'yi', 'er', 'san', 'si'];
-        this.isSendAjaxState = false;
-        for (var i = 1; i < 5; i++) {
-            var player = document.getElementById('videoElement' + i);
-            this.addEventListenerToPlayer(player, i)
-        }
-        this.checkVideoPlayerTime();
-        var me = this;
-        communicate.$on('playerVideos', function(device) {
-            me.deviceId = device.deviceid;
-            me.deviceName = device.devicename;
-            me.activesafety = device.activesafety;
-            me.allDeviceIdTitle = device.allDeviceIdTitle;
-            me.videosNumber = device.videochannelcount;
-            me.videoDeviceState = device.state;
-            if (me.isLargen == 0) {
-                me.changeLargen(1);
-            };
-            if (me.singlePlayerState) {
-                for (var i = 1; i < 5; i++) {
-                    var player = me.videoIns[i];
-                    var key = me.playerStateKeyList[i];
-                    if (player != null) {
-                        player.pause();
-                        player.unload();
-                        player.detachMediaElement();
-                        player.destroy();
-                    }
-                    me.playerStateTips[key] = "停止播放";
-                    me.isSendAjaxState = false;
-                }
-                me.videoTimes = null;
-                me.videoIns = {};
-            }
-            me.handleStartAllVideo(function(records) {
-                records.forEach(function(item) {
-                    me.switchflvPlayer(item.channel, item.playurl, item.hasaudio);
-                })
-            });
-        })
-        communicate.$on('switchVideoMode', function() {
-            if (me.isLargen == 0) {
-                me.changeLargen(1);
-            };
-            // var videoWraper = document.getElementById('videoWraper');
-            // videoWraper.style.left = "300px";
-            // videoWraper.style.right = "300px";
-            // videoWraper.style.top = "45px";
-            // videoWraper.style.bottom = "340px";
-        });
-        $('#videoWraper').dragging({
-            move: 'both',
-            randomPosition: false
-        });
-        $('#videoWraper').dragging({
-            move: 'both',
-            randomPosition: false,
-            hander: ".waring-controller"
-        });
-    }
-}
-
-
 Vue.devtools = false;
 // 根组件
 var vRoot = new Vue({
@@ -1330,7 +1003,6 @@ var vRoot = new Vue({
         monitor: monitor,
         reportForm: reportForm,
         waringComponent: waringComponent,
-        // videoPlayer: videoPlayer,
         systemParam: systemParam,
         trackDebug: trackDebug
     },

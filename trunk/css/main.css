@@ -177,6 +177,7 @@ div.device-soso {
 }
 
 div.device-tree,
+div.video-tree,
 div.group-spin-wraper {
     position: absolute;
     left: 10px;
@@ -187,12 +188,47 @@ div.group-spin-wraper {
     overflow-y: auto;
 }
 
+div.video-tree span{
+    -webkit-user-select:none;
+   -moz-user-select:none;
+   -ms-user-select:none;
+   user-select:none;
+}
+.no_selected{
+    -webkit-user-select:none;
+    -moz-user-select:none;
+    -ms-user-select:none;
+    user-select:none;
+}
+
 div.group-spin-wraper {
     z-index: 999;
 }
 
 
+
 /* 设备控制 tree 开始 */
+
+.video-device-cls{
+    display: flex;
+    flex-direction: row;
+    cursor: pointer;
+}
+.video-device-cls span{
+    height: 27px;
+    line-height: 27px;
+    vertical-align: bottom;
+    font-size: 12px;
+}
+.video-device-cls span.video-device-title-cls{
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+
+
 
 .active-dev-offline {
     border-radius: 5px;
@@ -272,6 +308,7 @@ li.full-map-wraper {
     top: 0;
     right: 0;
     height: 35px;
+    background-color: #495060;
 }
 
 #video_wrap .video_header .video_function {
@@ -312,65 +349,82 @@ li.full-map-wraper {
     background-size: cover;
 }
 
-#videoContent>div>div.videoElementWrap {
+.my-video-wrapper{
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+.player-wraper{
     position: absolute;
     left: 0;
     right: 0;
-    bottom: 0px;
+    bottom: 35px;
     top: 0;
+    overflow: hidden;
 }
-
-#videoContent>div>div>video {
+.player-wraper>video{
     width: 100%;
     height: 100%;
     object-fit: fill;
 }
-
-#videoContent>div>div:hover>div.play-btn-wrap {
-    display: block;
-}
-
-#videoContent>div>div>div.play-btn-wrap {
+.my-video-control{
     position: absolute;
-    left: 50%;
-    top: 47%;
-    width: 60px;
-    height: 60px;
-    margin-top: -30px;
-    margin-left: -30px;
-    background-color: rgba(0, 0, 0, .8);
-    border-radius: 50%;
-    text-align: center;
-    line-height: 60px;
-    cursor: pointer;
-    display: none;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 35px;
+    background-color: #000000;
+    color: #FFFFFF;
 }
+
+.my-video-control .device-states{
+    float: left;
+    height: 35px;
+    line-height: 35px;
+    padding-left: 5px;
+    position: absolute;
+    left:0;
+    top: 0;
+}
+
+.my-video-control .video-controls{
+    height: 35px;
+    line-height: 35px;
+    font-size: 20px;
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 115px;
+    padding-left: 5px;
+    background-color: #000000;
+    -moz-user-select:none; /*火狐*/
+    -webkit-user-select:none; /*webkit浏览器*/
+    -ms-user-select:none; /*IE10*/
+    -khtml-user-select:none; /*早期浏览器*/
+    user-select:none;
+}
+
+.my-video-control .video-controls > span{
+    cursor: pointer;
+    margin: 0 3px;
+}
+
 
 div.state-event-tip {
     position: absolute;
     left: 2px;
-    padding: 0px;
-    bottom: 75px;
+    bottom: 2px;
     background-color: rgba(255, 0, 0, .9);
     color: white;
     font-size: 10px;
 }
 
-div.camera_fn{
-    position:absolute;
+div.resolving-power {
+    position: absolute;
     top: 2px;
-    right: 5px;
-    color: #ffffff;
-    cursor: pointer;
+    right: 2px;
+    color: red;
 }
-
-div.resolving_power{
-    position:absolute;
-    top: 2px;
-    left: 5px;
-    color: #e4393c;
-}
-
 
 .videoContent-1>div:first-child {
     width: 100%;
@@ -476,6 +530,7 @@ div.resolving_power{
     width: 50%;
     padding: 10px;
 }
+
 
 .img-box>div:last-child {
     padding: 10px 20px;
@@ -1170,115 +1225,7 @@ div.msg_content {
 /* 报警css结束 */
 
 
-/* 视频css开始 */
 
-div.video_header {
-    position: absolute;
-    left: 0px;
-    height: 22px;
-    right: 0px;
-    top: 0;
-    background: #495060;
-    color: #fff;
-}
-
-div.video_header ul {
-    overflow: hidden;
-}
-
-div.mouseicon {
-    padding: 0px;
-    cursor: nw-resize;
-    width: 22px;
-    height: 22px;
-    font-size: 16px;
-    line-height: 22px;
-    text-align: center;
-    position: absolute;
-    right: 0px;
-    bottom: 0px;
-}
-
-div.video_header ul li {
-    float: left;
-    text-align: center;
-    line-height: 22px;
-    cursor: pointer;
-    padding: 0 5px;
-}
-
-div.video_body {
-    position: absolute;
-    top: 22px;
-    left: 0;
-    right: 0;
-    bottom: 35px;
-    background-color: #000000;
-    overflow: hidden;
-}
-
-div.video_body>div.video-wrap {
-    float: left;
-    /* width: 50%;
-    height: 50%; */
-    background-image: url('../images/tv_default.jpg');
-    background-size: cover;
-    position: relative;
-    box-sizing: border-box;
-    overflow: hidden;
-}
-
-div.videoElementWrap {
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0px;
-    top: 0;
-}
-
-div.video_body>div.video-wrap video {
-    width: 100%;
-    height: 100%;
-    object-fit: fill;
-}
-
-div.state-event-tip {
-    position: absolute;
-    left: 2px;
-    bottom: 75px;
-    background-color: rgba(255, 0, 0, .9);
-    color: white;
-    font-size: 10px;
-}
-
-div.resolving-power {
-    position: absolute;
-    top: 2px;
-    right: 2px;
-    color: red;
-}
-
-div.video_footer {
-    position: absolute;
-    left: 0;
-    right: 0;
-    height: 35px;
-    bottom: 0;
-    background-color: #000;
-    text-align: center;
-}
-
-div.video_footer>div {
-    width: 35px;
-    height: 35px;
-    text-align: center;
-    line-height: 35px;
-    display: inline-block;
-    cursor: pointer;
-}
-
-
-/* 视频css结束 */
 
 #system-view {
     overflow-y: auto;

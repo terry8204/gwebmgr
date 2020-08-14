@@ -1449,15 +1449,15 @@
                 getDevType: function(row) {
 
                     var devType = "";
-                    vstore.state.deviceTypes.forEach(function(item) {
-                        var label = item.typename;
+                    var item = vstore.state.deviceTypes[row.devicetype];
+                    var label = item.typename;
                         if (item.remark) {
                             label += "(" + item.remark + ")";
                         }
-                        if (item.devicetypeid == row.devicetype) {
-                            devType = label;
-                        }
-                    })
+   
+                        devType = label;
+                        
+
                     return devType;
 
                 },
@@ -1792,7 +1792,9 @@
                 },
                 getDeviceType: function() {
                     var me = this;
-                    vstore.state.deviceTypes.forEach(function(item) {
+                    var deviceTypes = vstore.state.deviceTypes;
+                    for(var key in deviceTypes){
+                        var item = deviceTypes[key];
                         var label = item.typename;
                         if (item.remark) {
                             label += "(" + item.remark + ")";
@@ -1801,7 +1803,7 @@
                             value: item.devicetypeid,
                             label: label
                         });
-                    })
+                    }
                 },
                 selectedCmd: function(item) {
                     var me = this;

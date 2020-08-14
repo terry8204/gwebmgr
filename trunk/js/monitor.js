@@ -282,128 +282,8 @@ var monitor = {
             needuploadfilename: false,
             videotimestamptype: '0',
             videochannelcount:4,
-
-            playerState: {
-                'yi': false,
-                'er': false,
-                'san': false,
-                'si': false,
-                'wu': false,
-                'liu': false,
-                'qi': false,
-                'ba': false,
-                'jiu': false,
-                'shi': false,
-                'shiyi': false,
-                'shier': false,
-                'shisan': false,
-                'shisi': false,
-                'shiwu': false,
-                'shiliu': false,
-            },
-            resolvingPower: {
-                'yi': {
-                    width: 0,
-                    height: 0,
-                },
-                'er': {
-                    width: 0,
-                    height: 0,
-                },
-                'san': {
-                    width: 0,
-                    height: 0,
-                },
-                'si': {
-                    width: 0,
-                    height: 0,
-                },
-                'wu': {
-                    width: 0,
-                    height: 0,
-                },
-                'liu': {
-                    width: 0,
-                    height: 0,
-                },
-                'qi': {
-                    width: 0,
-                    height: 0,
-                },
-                'ba': {
-                    width: 0,
-                    height: 0,
-                },
-                'jiu': {
-                    width: 0,
-                    height: 0,
-                },
-                'shi': {
-                    width: 0,
-                    height: 0,
-                },
-                'shiyi': {
-                    width: 0,
-                    height: 0,
-                },
-                'shier': {
-                    width: 0,
-                    height: 0,
-                },
-                'shisan': {
-                    width: 0,
-                    height: 0,
-                },
-                'shisi': {
-                    width: 0,
-                    height: 0,
-                },
-                'shiwu': {
-                    width: 0,
-                    height: 0,
-                },
-                'shiliu': {
-                    width: 0,
-                    height: 0,
-                },
-            },
-            playerStateTips: {
-                'yi': '',
-                'er': '',
-                'san': '',
-                'si': '',
-                'wu': '',
-                'liu': '',
-                'qi': '',
-                'ba': '',
-                'jiu': '',
-                'shi': '',
-                'shiyi': '',
-                'shier': '',
-                'shisan': '',
-                'shisi': '',
-                'shiwu': '',
-                'shiliu': '',
-            },
-            networkSpeed: {
-                'yi': '0KB/S',
-                'er': '0KB/S',
-                'san': '0KB/S',
-                'si': '0KB/S',
-                'wu': '0KB/S',
-                'liu': '0KB/S',
-                'qi': '0KB/S',
-                'ba': '0KB/S',
-                'jiu': '0KB/S',
-                'shi': '0KB/S',
-                'shiyi': '0KB/S',
-                'shier': '0KB/S',
-                'shisan': '0KB/S',
-                'shisi': '0KB/S',
-                'shiwu': '0KB/S',
-                'shiliu': '0KB/S'
-            },
-            isMapMode: true, //是否地图模式
+            
+            isMapMode: false, //是否地图模式
             videoNumber: 4,
             arealoading: false,
             isFullMap: false,
@@ -440,6 +320,7 @@ var monitor = {
             selectedState: 'all', // 选择nav的状态 all online offline;
             companys: [], //公司名称id
             groups: [], // 原始列表数据
+            videoGroups:[], //视频数据
             intervalTime: null, // 多久刷新一次设备
             offlineTime: 10 * 60 * 1000, // 根据这个时间算出是否离线
             allDevCount: 0, // 全部设备的个数
@@ -575,7 +456,6 @@ var monitor = {
         }
     },
     methods: {
-
         initAudioPlayer: function(url) {
             if (audioPlayer != null) {
                 audioPlayer.pause();
@@ -925,18 +805,11 @@ var monitor = {
             });
         },
         videoBack:function(){
-            if(this.currentVideoDeviceInfo.deviceId == null){
-                this.$Message.error('请选择视频设备');
-                return;
-            }
-            window.open('videoback.html?deviceid=' + this.currentVideoDeviceInfo.deviceId + '&token=' + token);
+            window.open('videoback.html?deviceid=' + this.currentDeviceId + '&token=' + token);
         },
         openActiveSafety:function(){
-            if(this.currentVideoDeviceInfo.deviceId == null){
-                this.$Message.error('请选择视频设备');
-                return;
-            }
-            openActiveSafety(this.currentVideoDeviceInfo.deviceId,this.currentVideoDeviceInfo.deviceName);
+            var device = this.deviceInfos[this.currentDeviceId];
+            openActiveSafety(this.currentDeviceId,device.devicename);
         },
         queryVideoChannels: function() {
             if(this.currentVideoDeviceInfo.deviceId == null){
@@ -1331,66 +1204,8 @@ var monitor = {
             };
 
         },
-        initVideos: function() {
-            this.videoIns = {};
-            this.videoTimes = {};
-            for (var i = 1; i < 17; i++) {
-                var player = document.getElementById('videoElement' + i);
-                this.addEventListenerToPlayer(player, i)
-            }
-        },
-        addEventListenerToPlayer: function(player, index) {
-            var me = this,
-                key = playerStateKeyList[index];
-                player.addEventListener('loadedmetadata', function(e) {
-                    me.resolvingPower[key] = {
-                        width: e.target.videoWidth,
-                        height: e.target.videoHeight,
-                    }
-                })
-            player.addEventListener('error', function() {
-                isSendAjaxState[playerStateKeyList[index]] = false;
-                me.playerStateTips[key] = "请求数据时遇到错误";
-            });
-            player.addEventListener('play', function() {
-                me.playerStateTips[key] = "开始播放";
-            });
-            player.addEventListener('playing', function() {
-                me.playerStateTips[key] = "正在播放";
-                isSendAjaxState[playerStateKeyList[index]] = false;
-            });
-            player.addEventListener('pause', function() {
-                me.playerStateTips[key] = "暂停"
-            });
-            player.addEventListener('waiting', function() {
-                me.playerStateTips[key] = "等待数据"
-            });
-        },
-        flv_photograph: function(playerIndex) {
-            if (!this.videoIns[playerIndex]) {
-                this.$Message.error("请先播放视频");
-                return;
-            };
-            var ele = document.createElement('a');
-            var now = DateFormat.longToDateTimeStrNoSplit(Date.now(), timeDifference);
-            var fileName = this.currentDeviceId + '-' + playerIndex + '-' + now;
-            ele.setAttribute('href', this.htmlToImage(playerIndex)); //设置下载文件的url地址
-            ele.setAttribute('download', fileName); //用于设置下载文件的文件名
-            ele.click();
-        },
-        htmlToImage: function(index) {
-            var canvas = document.getElementById('V2I_canvas');
-            if (!canvas.getContext) {
-                alert("您的浏览器暂不支持canvas");
-                return false;
-            } else {
-                var context = canvas.getContext("2d");
-                var video = document.getElementById("videoElement" + index);
-                var key = playerStateKeyList[index];
-                context.drawImage(video, 0, 0, this.resolvingPower[key].width, this.resolvingPower[key].height);
-                return canvas.toDataURL("image/png");
-            }
-        },
+
+
         queryVideosPlayUrl: function(callback) {
             var url = myUrls.queryVideosPlayUrl(),
                 me = this;
@@ -1513,294 +1328,33 @@ var monitor = {
             this.videoNumber = toOpensIndex;
         },
         handlePlayAllVideos: function() {
-            if (this.currentDeviceId == null || this.isShowVideoBtn == false) {
-                this.$Message.error('设备不支持视频播放');
-                return;
-            };
-            for (var i = 0; i < this.currentVideoDeviceInfo.videochannelcount; i++) {
-                var flvPlayer = this.videoIns[i + 1];
-                this.playerState[playerStateKeyList[i + 1]] = true;
-                if (flvPlayer) {
-                    flvPlayer.play();
-                } else {
-                    this.handleStartVideos(i + 1);
+            var playerIns = this.$refs;
+            var isTips = true;
+            for(var i = 1; i <= this.videoNumber ; i++){
+                var player = playerIns['player' + i][0];
+                if(player.deviceId!='' && !player.isPlaying){
+                    isTips = false;
+                    player.handleStartVideos();
                 }
             }
-        },
-        handleStartVideos: function(index) {
-            var key = playerStateKeyList[index];
-            var url = myUrls.startVideos(),
-                me = this;
-            this.playerStateTips[key] = "正在请求播放";
-            utils.sendAjax(url, {
-                deviceid: this.currentDeviceId,
-                channels: [Number(index)],
-                playtype: ishttps ? 'flvs' : 'flv',
-            }, function(resp) {
-                isSendAjaxState[key] = false;
-                var records = resp.records;
-                var status = resp.status;
-
-
-                if (status == CMD_SEND_RESULT_UNCONFIRM) {
-                    me.$Message.error('发送成功，未收到确认');
-                } else if (status === CMD_SEND_RESULT_PASSWORD_ERROR) {
-                    me.$Message.error('密码错误');
-                } else if (status === CMD_SEND_RESULT_OFFLINE_NOT_CACHE) {
-                    me.$Message.error("设备离线，未缓存");
-                } else if (status === CMD_SEND_RESULT_OFFLINE_CACHED) {
-                    me.$Message.error("设备离线，已缓存");
-                } else if (status === CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD) {
-                    me.$Message.error("需要修改默认密码");
-                } else if (status === CMD_SEND_RESULT_DETAIL_ERROR) {
-                    me.$Message.error("错误:" + resp.cause);
-                } else if (status === CMD_SEND_CONFIRMED) {
-                    var acc = resp.acc
-                    var accState = '';
-                    if (acc === 3) {
-                        accState = 'ACC开,'
-                    } else if (acc === 2) {
-                        accState = 'ACC关,'
-                    }
-                    me.$Message.success(accState + "请求播放成功,请稍后...");
-                    me.switchflvPlayer(index, records[0].playurl, records[0].hasaudio);
-                    me.playerState[key] = true;
-                } else if (status === CMD_SEND_OVER_RETRY_TIMES) {
-                    me.$Message.error("尝试发送3次失败");
-                } else if (status === CMD_SEND_SYNC_TIMEOUT) {
-
-                    var accState = '';
-                    if (acc === 3) {
-                        accState = 'ACC开,'
-                    } else if (acc === 2) {
-                        accState = 'ACC关,'
-                    }
-                    me.$Message.error(accState + "请求播放超时");
-                    me.switchflvPlayer(index, records[0].playurl, records[0].hasaudio);
-                    me.playerState[key] = true;
-                }
-
-            }, function() {
-                me.$Message.error("请求超时");
-                isSendAjaxState[key] = false;
-            })
-        },
-        switchflvPlayer: function(index, url, hasaudio) {
-            try {
-                var flvPlayer = this.videoIns[index];
-                if (flvPlayer != null) {
-                    flvPlayer.pause();
-                    flvPlayer.unload();
-                    flvPlayer.detachMediaElement();
-                    flvPlayer.destroy();
-                    this.videoIns[index] = null;
-                }
-            } catch (error) {
-
+            if(isTips){
+                this.$Message.error('请选择播放设备');
             }
-            this.initVideo(index, url, hasaudio);
-        },
-        initVideo: function(index, url, hasaudio) {
-
-            var flvPlayer = flvjs.createPlayer({
-                type: 'flv',
-                url: url,
-                isLive: true,
-                hasAudio: hasaudio === 1,
-                hasVideo: true,
-                withCredentials: false,
-                // url: 'http://video.gps51.com:81/live/teststream.flv'
-            }, {
-                enableWorker: false,
-                enableStashBuffer: false,
-                isLive: true,
-                lazyLoad: false
-            });
-            var player = document.getElementById('videoElement' + index),
-                me = this;
-            flvPlayer.attachMediaElement(player);
-            flvPlayer.load(); //加载
-            flvPlayer.play();
-
-            this.videoIns[index] = flvPlayer;
-            var key = 'videoPlayer' + index;
-            this.videoTimes[key] = Date.now();
-            flvPlayer.on(flvjs.Events.STATISTICS_INFO, function(e) {
-                me.networkSpeed[playerStateKeyList[index]] = parseInt(e.speed * 10) / 10 + 'KB/S';
-            })
         },
         handleStopAllVideos: function() {
-            if(this.currentVideoDeviceInfo.deviceId == null  || this.isShowVideoBtn == false){
-                return;
-            }
-            var url = myUrls.stopVideos(),
-            me = this;
-            utils.sendAjax(url, {
-                deviceid: this.currentVideoDeviceInfo.deviceId,
-                channels: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
-            }, function(resp) {
-                me.$Message.success("停止全部成功");
-            })
-            this.videoTimes = {};
-            for (var key in this.videoIns) {
-                try {
-                    var player = this.videoIns[key];
-                    player.unload();
-                    player.detachMediaElement();
-                    player.destroy();
-                    this.videoIns[key] = null;
-                } catch (error) {};
-                this.playerState[playerStateKeyList[key]] = false;
-                this.playerStateTips[playerStateKeyList[key]] = '';
-                isSendAjaxState[playerStateKeyList[key]] = false;
-            };
-        },
-        onChangePlayerState: function(index) {
-            console.log(this.currentVideoDeviceInfo);
-            if (this.currentVideoDeviceInfo.deviceId == null) {
-                this.$Message.error('请选择支持视频播放的设备');
-                return;
-            };
-            if (isSendAjaxState[playerStateKeyList[index]]) {
-                this.$Message.error("正在加载当前视频,请稍后...");
-                return;
-            };
-            var playerKey = playerStateKeyList[index];
-            if (this.playerState[playerKey]) {
-                this.handleStopVideos(index);
-                this.playerState[playerKey] = !this.playerState[playerKey];
-            } else {
-                this.handleStartVideos(index);
-            }
-        },
-        handleStartVideos: function(index) {
-            var key = playerStateKeyList[index];
-            isSendAjaxState[key] = true;
-            var url = myUrls.startVideos(),
-                me = this;
-            this.playerStateTips[key] = "正在请求播放";
-            utils.sendAjax(url, {
-                deviceid: this.currentVideoDeviceInfo.deviceId,
-                channels: [Number(index)],
-                playtype: ishttps ? 'flvs' : 'flv',
-            }, function(resp) {
-                isSendAjaxState[key] = false;
-                var records = resp.records;
-                var status = resp.status;
-
-
-                if (status == CMD_SEND_RESULT_UNCONFIRM) {
-                    me.$Message.error('发送成功，未收到确认');
-                } else if (status === CMD_SEND_RESULT_PASSWORD_ERROR) {
-                    me.$Message.error('密码错误');
-                } else if (status === CMD_SEND_RESULT_OFFLINE_NOT_CACHE) {
-                    me.$Message.error("设备离线，未缓存");
-                } else if (status === CMD_SEND_RESULT_OFFLINE_CACHED) {
-                    me.$Message.error("设备离线，已缓存");
-                } else if (status === CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD) {
-                    me.$Message.error("需要修改默认密码");
-                } else if (status === CMD_SEND_RESULT_DETAIL_ERROR) {
-                    me.$Message.error("错误:" + resp.cause);
-                } else if (status === CMD_SEND_CONFIRMED) {
-                    var acc = resp.acc
-                    var accState = '';
-                    if (acc === 3) {
-                        accState = 'ACC开,'
-                    } else if (acc === 2) {
-                        accState = 'ACC关,'
-                    }
-                    me.$Message.success(accState + "请求播放成功,请稍后...");
-                    me.switchflvPlayer(index, records[0].playurl, records[0].hasaudio);
-                    me.playerState[key] = true;
-                } else if (status === CMD_SEND_OVER_RETRY_TIMES) {
-                    me.$Message.error("尝试发送3次失败");
-                } else if (status === CMD_SEND_SYNC_TIMEOUT) {
-
-                    var accState = '';
-                    if (acc === 3) {
-                        accState = 'ACC开,'
-                    } else if (acc === 2) {
-                        accState = 'ACC关,'
-                    }
-                    me.$Message.error(accState + "请求播放超时");
-                    me.switchflvPlayer(index, records[0].playurl, records[0].hasaudio);
-                    me.playerState[key] = true;
+            var playerIns = this.$refs;
+            for(var i = 1; i <= this.videoNumber ; i++){
+                var player = playerIns['player' + i][0];
+                if(player.deviceId){
+                    player.handleStopVideos();
                 }
-
-            }, function() {
-                me.$Message.error("请求超时");
-                isSendAjaxState[key] = false;
-            })
-        },
-        handleStopVideos: function(index) {
-            var url = myUrls.stopVideos(),
-                me = this;
-            utils.sendAjax(url, {
-                deviceid: this.currentVideoDeviceInfo.deviceId,
-                channels: [Number(index)],
-                videoclosetype: 0
-            }, function(resp) {
-                if (resp.status === 0) {
-                    // me.$Message.success("停止成功")
-                    // me.videoIns.forEach(function (item) {
-                    //     item.pause();
-                    // });
-                } else if (status === 1) {
-
-                } else if (status === 2) {
-                    me.$Message.error("设备不在线");
-                } else if (status === 3) {
-
-                } else if (status === 4) {
-
-                } else if (status === 5) {
-                    me.$Message.error("错误:" + resp.cause);
-                }
-            });
-
-            try {
-                var player = this.videoIns[index];
-                if (player != null) {
-                    player.pause();
-                    player.unload();
-                    player.detachMediaElement();
-                    player.destroy();
-                }
-            } catch (error) {
-                console.log(this.videoIns[index], index);
             }
-            this.videoIns[index] = null;
-            var key = 'videoPlayer' + index;
-            this.videoTimes[key] = undefined;
-            this.playerStateTips[playerStateKeyList[index]] = "停止播放,请点击播放按钮";
         },
         stopVideoPlayer: function() {
-            var videoIns = this.videoIns;
-            for (var i in videoIns) {
-                var key = 'videoPlayer' + i;
-                var nowTime = Date.now();
-                var oldTime = this.videoTimes[key];
-                if (oldTime) {
-                    if ((nowTime - oldTime) > 1000 * 60 * 3) {
-                        try {
-                            var player = videoIns[i];
-                            if (player) {
-                                player.pause();
-                                player.unload();
-                                player.detachMediaElement();
-                                player.destroy();
-                                videoIns[i] = null;
-                            }
-                        } catch (error) {
-
-                        }
-
-                        this.playerStateTips[playerStateKeyList[i]] = '3分钟播放时间到,已关闭';
-                        this.videoTimes[key] = undefined;
-                        this.playerState[playerStateKeyList[i]] = false;
-                        isSendAjaxState[playerStateKeyList[i]] = false;
-                    }
-                }
+            var videoIns = this.$refs;
+            for(var i = 1 ; i <= 16 ; i ++){
+                var player = videoIns['player'+i][0];
+                player.timeout();
             }
         },
         handleClickMore: function(name) {
@@ -1876,6 +1430,29 @@ var monitor = {
                         '&activesafety=' + (this.isShowActiveSafetyBtn ? 1 : 0) +
                         '&state=' + encodeURIComponent(state)
                     );
+                    break;
+                case 'talk': 
+                    //currentVideoDeviceInfo
+
+                    var deviceInfo = this.deviceInfos[this.currentDeviceId];
+                    this.currentVideoDeviceInfo.deviceId = this.currentDeviceId;
+                    this.currentVideoDeviceInfo.deviceName = deviceInfo.devicename;
+                    this.isShowYunTai=true;
+                    break;
+                case 'videoback': 
+                        this.videoBack();
+                    break;
+                case 'videosetting': 
+                        var deviceInfo = this.deviceInfos[this.currentDeviceId];
+                        this.currentVideoDeviceInfo.deviceId = this.currentDeviceId;
+                        this.currentVideoDeviceInfo.deviceName = deviceInfo.devicename;
+                        this.setupVideoModal=true;
+                        this.queryVideoPlayParameters();
+                        this.queryDeviceById();
+                    break;
+                case 'activesafety': 
+                    //currentVideoDeviceInfo
+                    this.openActiveSafety();
                     break;
             }
         },
@@ -2349,27 +1926,34 @@ var monitor = {
         handleMapSizeChange: function() {
             var mapWraper = this.$refs.mapWraper;
             if (this.isFullMap) {
-                if (document.exitFullscreen) {
-                    document.exitFullscreen()
-                } else if (document.mozCancelFullScreen) {
-                    document.mozCancelFullScreen()
-                } else if (document.webkitCancelFullScreen) {
-                    document.webkitCancelFullScreen()
-                } else if (document.msExitFullscreen) {
-                    document.msExitFullscreen()
-                }
+                this.exitFullscreen();
                 this.isFullMap = false;
             } else {
-                if (mapWraper.requestFullscreen) {
-                    mapWraper.requestFullscreen()
-                } else if (mapWraper.mozRequestFullScreen) {
-                    mapWraper.mozRequestFullScreen()
-                } else if (mapWraper.webkitRequestFullScreen) {
-                    mapWraper.webkitRequestFullScreen()
-                } else if (mapWraper.msRequestFullscreen) {
-                    mapWraper.msRequestFullscreen()
-                }
+                this.requestFullscreen(mapWraper);
                 this.isFullMap = true;
+            }
+        },
+        exitFullscreen:function(){
+            if (document.exitFullscreen) {
+                document.exitFullscreen()
+            } else if (document.mozCancelFullScreen) {
+                document.mozCancelFullScreen()
+            } else if (document.webkitCancelFullScreen) {
+                document.webkitCancelFullScreen()
+            } else if (document.msExitFullscreen) {
+                document.msExitFullscreen()
+            }
+        },
+        requestFullscreen:function(mapWraper){
+            console.log('mapWraper',mapWraper);
+            if (mapWraper.requestFullscreen) {
+                mapWraper.requestFullscreen()
+            } else if (mapWraper.mozRequestFullScreen) {
+                mapWraper.mozRequestFullScreen()
+            } else if (mapWraper.webkitRequestFullScreen) {
+                mapWraper.webkitRequestFullScreen()
+            } else if (mapWraper.msRequestFullscreen) {
+                mapWraper.msRequestFullscreen()
             }
         },
         sosoSelect: function(value) {
@@ -2433,40 +2017,22 @@ var monitor = {
         },
         playerVideos: function() {
             var me = this;
-            utils.sendAjax(url = myUrls.stopVideos(), {
-                deviceid: this.currentVideoDeviceInfo.deviceId,
-                channels: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
-            }, function(resp) {});
-            this.videoTimes = {};
-            for (var key in this.videoIns) {
-                try {
-                    var player = this.videoIns[key];
-                    player.unload();
-                    player.detachMediaElement();
-                    player.destroy();
-                    this.videoIns[key] = null;
-                } catch (error) {};
-                this.playerState[playerStateKeyList[key]] = false;
-                this.playerStateTips[playerStateKeyList[key]] = '';
-                isSendAjaxState[playerStateKeyList[key]] = false;
-            };
             var activesafety = this.isShowActiveSafetyBtn ? 1 : 0;
             var deviceInfo = this.deviceInfos[this.currentDeviceId];
             deviceInfo.activesafety = activesafety;
             deviceInfo.state = this.positionLastrecords[this.currentDeviceId] ? this.positionLastrecords[this.currentDeviceId].strvideoalarm : null;
             // communicate.$emit("playerVideos", deviceInfo);
-            this.startPlayer(this.currentDeviceId,deviceInfo.devicename,deviceInfo.videochannelcount);
+            this.startPlayer(deviceInfo);
         },
-        startPlayer:function(currentDeviceId,devicename,videochannelcount){
+        startPlayer:function(deviceInfo){
             var that = this;
             if (this.isMapMode) {
                 this.isMapMode = false;
             }
-            this.currentVideoDeviceInfo.deviceId = currentDeviceId;
-            this.currentVideoDeviceInfo.deviceName = devicename;
-            this.currentVideoDeviceInfo.videochannelcount = videochannelcount;
-            this.queryDeviceById();
-            this.handlePlayAllVideos();
+            this.currentVideoDeviceInfo.deviceId = deviceInfo.currentDeviceId;
+            this.currentVideoDeviceInfo.deviceName = deviceInfo.devicename;
+            this.currentVideoDeviceInfo.videochannelcount = deviceInfo.videochannelcount;
+            this.dblClickDeviceVideo(deviceInfo);
             setTimeout(function(){
                 var record = that.getSingleDeviceInfo(that.currentDeviceId);
                 if (record) {
@@ -2492,6 +2058,7 @@ var monitor = {
             utils.setCurrentDeviceid(deviceid);
             var record = this.getSingleDeviceInfo(deviceid);
             this.currentDeviceName = this.deviceInfos[deviceid].devicename;
+            globalDeviceName =  this.currentDeviceName;
             if (record) {
                 this.$store.commit('currentDeviceRecord', record);
                 this.map.onClickDevice(deviceid);
@@ -2684,7 +2251,7 @@ var monitor = {
                 me.$store.commit('currentDeviceRecord', devLastInfo);
             }
             globalDeviceId = deviceid;
-
+            globalDeviceName = device.devicename;
             me.groups.forEach(function(group) {
                 group.devices.forEach(function(device) {
                     if (device.deviceid == deviceid) {
@@ -2791,45 +2358,124 @@ var monitor = {
         },
         filterGroups: function(groups) {
             var me = this,
-                all = 0;
-            groups.forEach(function(group, index) {
+                all = 0,
+                videoGroups = [];    
+            groups.forEach(function(group) {
                 var devCount = 0;
                 if (group.groupname == 'Default') {
                     isZh ? group.groupname = me.$t("monitor.defaultGroup") : '';
                 } else if (group.groupname == 'Device') {
                     isZh ? group.groupname = me.$t("monitor.devGroup") : '';
                 };
-                group.firstLetter = __pinyin.getFirstLetter(group.groupname);
-                group.pinyin = __pinyin.getPinyin(group.groupname);
-                group.expand = false;
+                var firstLetter = __pinyin.getFirstLetter(group.groupname);
+                var pinyin =  __pinyin.getPinyin(group.groupname);
 
+                group.firstLetter = firstLetter
+                group.pinyin = pinyin;
+                group.expand = false;
+  
+                group.children = group.devices;
                 group.devices.forEach(function(device) {
                     all++;
                     devCount++;
+                    var devicename = device.devicename;
+                    var devicetype = device.devicetype;
+                    var deviceid = device.deviceid;
                     device.isSelected = false;
-                    device.firstLetter = __pinyin.getFirstLetter(device.devicename);
-                    device.pinyin = __pinyin.getPinyin(device.devicename);
-                    var deviceTypeName = me.getDeviceTypeName(device.devicetype);
+                    device.firstLetter = __pinyin.getFirstLetter(devicename);
+                    device.pinyin = __pinyin.getPinyin(devicename);
+                    var deviceTypeName = me.getDeviceTypeName(devicetype);
                     if (deviceTypeName) {
                         device.deviceTypeName = deviceTypeName;
-                        device.devicetitle = deviceTypeName + "-" + device.devicename;
+                        device.devicetitle = deviceTypeName + "-" + devicename;
                     } else {
                         device.deviceTypeName = "";
-                        device.devicetitle = device.devicename;
+                        device.devicetitle = devicename;
                     }
-                    device.allDeviceIdTitle = device.devicetitle + "-" + device.deviceid;
+                    device.allDeviceIdTitle = device.devicetitle + "-" + deviceid;
+                    var functions = me.deviceTypes[devicetype].functions;
+                    device.videoChannels = [];
+                    if(functions && functions.indexOf('video')!=-1){
+                        for (var index = 1; index <= device.videochannelcount; index++) {
+                            device.videoChannels.push({
+                                channel:index,
+                                name:'CH' + index
+                            })
+                        }
+                    }
+   
                 });
                 group.devCount = devCount;
                 group.devices.sort(function(a, b) {
                     return a.devicetitle.localeCompare(b.devicetitle);
                 });
-
                 group.title = group.groupname + "(0/" + devCount + ")";
             });
             this.allDevCount = all;
             this.onlineCount = 0;
             this.offlineDevCount = all;
             return groups.filter(function(group) { return group.devices.length });
+        },
+        dblClickDeviceVideo:function(device){
+
+            var videochannelcount = device.videochannelcount;
+            var playerIns = this.$refs;
+            var deviceInfo = {
+                deviceid:device.deviceid,
+                devicename:device.devicename,
+                channel:null,
+            }
+           
+    
+            for(var i = 1 ; i <= videochannelcount ;i++){
+                var isPlaying = this.isExistInPlayerList(device.deviceid,i);
+
+                if(!isPlaying){
+                    var playingIndex = this.getPlayingIndex();
+                    var playerIn = playerIns['player'+ playingIndex ][0];
+                    deviceInfo.channel = i;
+                    playerIn.setDevicedInfoAndPlay(deviceInfo);
+                 
+                }
+            }
+
+        },
+        handlePlayDeviceToChannel:function(device,channel){
+            var devInfo = {
+                deviceid:device.deviceid,
+                devicename:device.devicename,
+                channel:channel+1
+            }
+            var playerIns = this.$refs;
+            var isPlaying = this.isExistInPlayerList(device.deviceid,devInfo.channel);
+            if(!isPlaying){
+                var playingIndex = this.getPlayingIndex();
+                var playerIn = playerIns['player'+ playingIndex ][0];
+                playerIn.setDevicedInfoAndPlay(devInfo);
+            }
+        },
+        getPlayingIndex:function(){
+            var playingIndex = 1;
+            var totalVideoNumer = this.videoNumber+1;
+            var playingIndex = this.currentPlayingIndex + 1;
+            if(playingIndex >= totalVideoNumer)
+            {
+                playingIndex = 1;
+            }
+            this.currentPlayingIndex = playingIndex;
+            return playingIndex;
+        },
+        isExistInPlayerList:function(deviceid,channel){
+            var result = false;
+            var playerIns = this.$refs;
+            for(var i = 1 ; i <= this.videoNumber ; i ++){
+                var player = playerIns['player' + i][0];
+                if(player.deviceId == deviceid && player.channel == channel){
+                    result = true;
+                    break;
+                }
+            }
+            return result;
         },
         echartsMapPage: function() {
             window.open('datav.html?token=' + token);
@@ -3117,34 +2763,30 @@ var monitor = {
             var result6 = false;
             var result7 = false;
 
-            for (var i = 0; i < deviceTypes.length; i++) {
-                if (this.currentDeviceType == deviceTypes[i].devicetypeid) {
-                    var functions = deviceTypes[i].functions;
-                    if (functions) {
-                        if (functions.indexOf("audio") != -1) {
-                            result1 = true;
-                        };
-                        if (functions.indexOf("bms") != -1) {
-                            result2 = true;
-                        };
-                        if (functions.indexOf("obd") != -1) {
-                            result3 = true;
-                        };
-                        if (functions.indexOf("weight") != -1) {
-                            result4 = true;
-                        };
-                        if (functions.indexOf("watermeter") != -1) {
-                            result5 = true;
-                        };
-                        if (functions.indexOf("video") != -1) {
-                            result6 = true;
-                        };
-                        if (functions.indexOf("activesafety") != -1) {
-                            result7 = true;
-                        };
-                    }
-                }
-            };
+            var functions = deviceTypes[this.currentDeviceType].functions;
+            if (functions) {
+                if (functions.indexOf("audio") != -1) {
+                    result1 = true;
+                };
+                if (functions.indexOf("bms") != -1) {
+                    result2 = true;
+                };
+                if (functions.indexOf("obd") != -1) {
+                    result3 = true;
+                };
+                if (functions.indexOf("weight") != -1) {
+                    result4 = true;
+                };
+                if (functions.indexOf("watermeter") != -1) {
+                    result5 = true;
+                };
+                if (functions.indexOf("video") != -1) {
+                    result6 = true;
+                };
+                if (functions.indexOf("activesafety") != -1) {
+                    result7 = true;
+                };
+            }
             this.isShowRecordBtn = result1;
             this.isShowBmsBtn = result2;
             this.isShowObdBtn = result3;
@@ -3156,20 +2798,17 @@ var monitor = {
         getDeviceTypeName: function(deviceTypeId) {
             var typeName = "",
                 deviceTypes = this.deviceTypes;
-            for (var index = 0; index < deviceTypes.length; index++) {
-                var element = deviceTypes[index];
-                if (element.devicetypeid === deviceTypeId) {
-                    typeName = element.typename;
-                    break
-                }
-            }
+            var element = deviceTypes[deviceTypeId];
+            typeName = element.typename;
             return typeName;
         },
         getMonitorList: function() {
             var me = this;
             this.getMonitorListByUser({ username: userName }, function(resp) {
-                communicate.$emit("monitorlist", resp.groups);
-                me.groups = me.filterGroups(resp.groups)
+                var groups = resp.groups;
+                communicate.$emit("monitorlist", groups);
+                me.groups = me.filterGroups(groups);
+                // me.videoGroup = me.getVideoGroup(groups);
                 me.groups.sort(function(a, b) {
                     return a.groupname.localeCompare(b.groupname);
                 });
@@ -3238,7 +2877,7 @@ var monitor = {
         changeIsFullMapIcon: function() {
             var isFullscreen = document.fullscreenElement || document.mozFullScreenElement || document.webkitFullscreenElement || document.fullScreen || document.mozFullScreen || document.webkitIsFullScreen
             isFullscreen = !!isFullscreen;
-            this.isFullMap = isFullscreen;
+            return isFullscreen;
         },
         copyToClipboard:function () {
             var text = this.currentVideoDeviceInfo.deviceName;
@@ -3273,7 +2912,23 @@ var monitor = {
             setTimeout(function() {
                 document.body.removeChild(textArea);
             }, 2000)
-        }
+        },
+        getDirectiveList:function(type){
+            var allCmdList = this.$store.state.allCmdList;
+            var directiveList = [];
+            allCmdList.forEach(function(cmd) {
+                if (cmd.devicetype == type) {
+                    directiveList.push(cmd);
+                } else if (cmd.common == 1) {
+                    directiveList.push(cmd);
+                };
+            });
+    
+            directiveList.sort(function(a, b) {
+                return a.cmdlevel - b.cmdlevel;
+            });
+            return directiveList;
+        },
     },
     computed: {
         username: function() {
@@ -3366,23 +3021,8 @@ var monitor = {
             }
         },
         currentDeviceType: function() {
-            var allCmdList = this.$store.state.allCmdList;
-            var directiveList = [];
-            var type = this.currentDeviceType;
-            allCmdList.forEach(function(cmd) {
-                if (cmd.devicetype == type) {
-                    directiveList.push(cmd);
-                } else if (cmd.common == 1) {
-                    directiveList.push(cmd);
-                };
-            });
-
-            directiveList.sort(function(a, b) {
-                return a.cmdlevel - b.cmdlevel;
-            });
-            this.currentDevDirectiveList = directiveList;
+            this.currentDevDirectiveList = this.getDirectiveList(this.currentDeviceType);
             this.isShowRecordBtnByDeviceType();
-
         },
         selectedState: function() {
             this.onSelectState();
@@ -3396,28 +3036,25 @@ var monitor = {
         this.intervalTime = Number(this.stateIntervalTime);
         this.placeholder = this.$t("monitor.placeholder");
         this.initMap();
-        this.initVideos();
-        if (this.deviceTypes.length) {
+
+        if (!$.isEmptyObject(this.deviceTypes)) {
             this.getMonitorList();
         }
         document.addEventListener('fullscreenchange', function() {
-            me.changeIsFullMapIcon();
+            me.isFullMap =  me.changeIsFullMapIcon();
         })
         document.addEventListener('mozfullscreenchange', function() {
-            var isFullscreen = document.fullscreenElement || document.mozFullScreenElement || document.webkitFullscreenElement || document.fullScreen || document.mozFullScreen || document.webkitIsFullScreen
-            isFullscreen = !!isFullscreen;
-            me.isFullMap = isFullscreen;
+            me.isFullMap =  me.changeIsFullMapIcon();
         })
         document.addEventListener('webkitfullscreenchange', function() {
-            var isFullscreen = document.fullscreenElement || document.mozFullScreenElement || document.webkitFullscreenElement || document.fullScreen || document.mozFullScreen || document.webkitIsFullScreen
-            isFullscreen = !!isFullscreen;
-            me.isFullMap = isFullscreen;
+            me.isFullMap =  me.changeIsFullMapIcon();
         })
         document.addEventListener('msfullscreenchange', function() {
-
+            me.isFullMap =  me.changeIsFullMapIcon();
         })
     },
     created: function() {
+        this.currentPlayingIndex = 0;
         this.positionLastrecords = {}; // 全部设备最后一次位置记录
     },
     activated: function() {
@@ -3434,7 +3071,6 @@ var monitor = {
                 isNeedRefresh = false;
             });
         };
-
     },
     beforeDestroy: function() {
         this.$store.commit('currentDeviceRecord', {});
