@@ -2428,14 +2428,20 @@ var monitor = {
            
     
             for(var i = 1 ; i <= videochannelcount ;i++){
-                var isPlaying = this.isExistInPlayerList(device.deviceid,i);
+                var playedIndex = this.getPlayerIndexInPlayerList(device.deviceid,i);
 
-                if(!isPlaying){
+                if(playedIndex <= 0){
                     var playingIndex = this.getPlayingIndex();
                     var playerIn = playerIns['player'+ playingIndex ][0];
                     deviceInfo.channel = i;
                     playerIn.setDevicedInfoAndPlay(deviceInfo);
                  
+                }
+                else
+                {
+                	var playerIn = playerIns['player'+ playedIndex ][0];
+                	deviceInfo.channel = i;
+                	playerIn.setDevicedInfoAndPlay(deviceInfo);
                 }
             }
 
@@ -2447,11 +2453,16 @@ var monitor = {
                 channel:channel+1
             }
             var playerIns = this.$refs;
-            var isPlaying = this.isExistInPlayerList(device.deviceid,devInfo.channel);
-            if(!isPlaying){
+            var playedIndex = this.getPlayerIndexInPlayerList(device.deviceid,devInfo.channel);
+            if(playedIndex <= 0){
                 var playingIndex = this.getPlayingIndex();
                 var playerIn = playerIns['player'+ playingIndex ][0];
                 playerIn.setDevicedInfoAndPlay(devInfo);
+            }
+            else
+            {
+            	var playerIn = playerIns['player'+ playedIndex ][0];
+            	playerIn.setDevicedInfoAndPlay(devInfo);
             }
         },
         getPlayingIndex:function(){
@@ -2465,17 +2476,17 @@ var monitor = {
             this.currentPlayingIndex = playingIndex;
             return playingIndex;
         },
-        isExistInPlayerList:function(deviceid,channel){
-            var result = false;
+        getPlayerIndexInPlayerList:function(deviceid,channel){
+            var resultIndex = 0;
             var playerIns = this.$refs;
             for(var i = 1 ; i <= this.videoNumber ; i ++){
                 var player = playerIns['player' + i][0];
                 if(player.deviceId == deviceid && player.channel == channel){
-                    result = true;
+                	resultIndex = i;
                     break;
                 }
             }
-            return result;
+            return resultIndex;
         },
         echartsMapPage: function() {
             window.open('datav.html?token=' + token);
