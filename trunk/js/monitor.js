@@ -283,7 +283,7 @@ var monitor = {
             videotimestamptype: '0',
             videochannelcount:4,
             
-            isMapMode: false, //是否地图模式
+            isMapMode: true, //是否地图模式
             videoNumber: 4,
             arealoading: false,
             isFullMap: false,
