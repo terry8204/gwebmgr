@@ -9,7 +9,6 @@
     overflow: hidden;
 }
 
-
 /* 头部 */
 
 div.header-wraper {
@@ -639,11 +638,10 @@ ul.ul-manager-wraper li.maps .ivu-select-item {
 ul.ul-manager-wraper li.gongju {
     line-height: 35px;
 }
-#windowInfo{
-    font-size: 12px;
-}
+
 #windowInfo p.operation span {
-    margin-right: 1px;
+    margin-right: 3px;
+    font-size: 12px;
 }
 
 

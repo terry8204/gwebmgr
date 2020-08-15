@@ -326,7 +326,9 @@
                 },
                 getDeviceType: function() {
                     var me = this;
-                    vstore.state.deviceTypes.forEach(function(item) {
+                    var deviceTypes = vstore.state.deviceTypes;
+                    for(var key in deviceTypes){
+                        var item = deviceTypes[key];
                         var label = item.typename;
                         if (item.remark) {
                             label += "(" + item.remark + ")";
@@ -335,7 +337,8 @@
                             value: item.devicetypeid,
                             label: label
                         });
-                    })
+                    }
+
                     me.devicetype = 1;
                 },
                 queryGroupsByUserName: utils.debounce(function(userName) {
