@@ -1332,9 +1332,12 @@ var monitor = {
             var isTips = true;
             for(var i = 1; i <= this.videoNumber ; i++){
                 var player = playerIns['player' + i][0];
-                if(player.deviceId!='' && !player.isPlaying){
+                if(player.deviceId!=''){
+                
                     isTips = false;
+                    
                     player.handleStartVideos();
+            
                 }
             }
             if(isTips){
@@ -1349,6 +1352,17 @@ var monitor = {
                     player.handleStopVideos();
                 }
             }
+        },
+        handleCleanAllVideos:function(){
+            var playerIns = this.$refs;
+            for(var i = 1; i <= this.videoNumber ; i++){
+                var player = playerIns['player' + i][0];
+                if(player.deviceId){
+                    player.handleStopVideos();
+                    player.cleanDevicedInfo();
+                }
+            }
+            this.currentPlayingIndex = 0;
         },
         stopVideoPlayer: function() {
             var videoIns = this.$refs;
@@ -2029,9 +2043,6 @@ var monitor = {
             if (this.isMapMode) {
                 this.isMapMode = false;
             }
-            this.currentVideoDeviceInfo.deviceId = deviceInfo.currentDeviceId;
-            this.currentVideoDeviceInfo.deviceName = deviceInfo.devicename;
-            this.currentVideoDeviceInfo.videochannelcount = deviceInfo.videochannelcount;
             this.dblClickDeviceVideo(deviceInfo);
             setTimeout(function(){
                 var record = that.getSingleDeviceInfo(that.currentDeviceId);
@@ -2902,7 +2913,7 @@ var monitor = {
             return isFullscreen;
         },
         copyToClipboard:function () {
-            var text = this.currentVideoDeviceInfo.deviceName;
+            var text = this.currentDeviceId;
             if (text.indexOf('-') !== -1) {
                 let arr = text.split('-');
                 text = arr[0] + arr[1];

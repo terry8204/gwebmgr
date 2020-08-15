@@ -639,10 +639,11 @@ ul.ul-manager-wraper li.maps .ivu-select-item {
 ul.ul-manager-wraper li.gongju {
     line-height: 35px;
 }
-
+#windowInfo{
+    font-size: 12px;
+}
 #windowInfo p.operation span {
     margin-right: 1px;
-    font-size: 12px;
 }
 
 

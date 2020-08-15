@@ -205,6 +205,12 @@ Vue.component('my-video', {
             this.channel = device.channel;
             this.handleStartVideos();
         },
+        cleanDevicedInfo:function(){
+            this.deviceId = '';
+            this.deviceName = '';
+            this.channel = '';
+            this.playerStateTips = '';
+        },
         switchVideoPlayState:function(){
             if(this.deviceId==''){
                 this.$Message.error('请选择播放设备');

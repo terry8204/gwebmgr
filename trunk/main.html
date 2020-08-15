@@ -858,6 +858,8 @@
                     <div id="video_wrap" :style="videoWrapStyle">
                         <div class="video_header">
                             <div class="video_function">
+                                <i class="" style="cursor: pointer;"></i>
+                                <span title="清除所有视频" @click="handleCleanAllVideos" style="color:#ffffff;"><i class="icon iconfont icon-custom-clear"></i></span>
                                 <span title="静音" @click="handlePlayerMute" style="color:#ffffff;"><i class="icon iconfont" :class="{'icon-yinliang':!isMute,'icon-guanbiyinliang':isMute}"></i></span>
                             </div>
                             <div style="height: 100%;float:right;" class="tv_box">
@@ -872,10 +874,6 @@
                             </div>
                             <div style="float:right;height: 100%;line-height:35px">
                               
-                            </div>
-                            <div style="float:left;height: 100%;line-height:35px;color:#FFFFFF;padding-left:10px;" v-text="currentVideoDeviceInfo.deviceName"></div>
-                            <div style="float:left;height: 100%;line-height:35px;color:#FFFFFF;padding-left:5px;" v-show="currentVideoDeviceInfo.deviceName!=''">
-                                <i class="ivu-icon ivu-icon-ios-copy-outline" style="font-size: 21px;cursor: pointer;" @click="copyToClipboard"></i>
                             </div>
                         </div>
                         <div class="video_body">
