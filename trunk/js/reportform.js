@@ -4081,12 +4081,8 @@ function reportOnlineSummary(groupslist) {
                     render: function(h, params) {
                         var devicetype = params.row.devicetype;
                         var deviceTypes = vstore.state.deviceTypes;
-                        for (var i = 0; i < deviceTypes.length; i++) {
-                            var item = deviceTypes[i];
-                            if (item.devicetypeid == devicetype) {
-                                return h('span', {}, item.typename);
-                            }
-                        }
+                        var item = deviceTypes[devicetype];
+                        return h('span', {}, item.typename);
                     }
                 },
                 {
@@ -4374,12 +4370,8 @@ function dropLineReport(groupslist) {
                     render: function(h, params) {
                         var devicetype = params.row.devicetype;
                         var deviceTypes = vstore.state.deviceTypes;
-                        for (var i = 0; i < deviceTypes.length; i++) {
-                            var item = deviceTypes[i];
-                            if (item.devicetypeid == devicetype) {
-                                return h('span', {}, item.typename);
-                            }
-                        }
+                        var item = deviceTypes[devicetype];
+                        return h('span', {}, item.typename);
                     }
                 },
                 {

@@ -814,15 +814,10 @@ var utils = {
         return groupslist;
     },
     getDeviceTypeName: function(deviceTypeId) {
-        var typeName = "",
-            deviceTypes = vstore.state.deviceTypes;
-        for (var index = 0; index < deviceTypes.length; index++) {
-            var element = deviceTypes[index];
-            if (element.devicetypeid === deviceTypeId) {
-                typeName = element.typename;
-                break
-            }
-        }
+        var typeName = "";
+        var deviceTypes = vstore.state.deviceTypes;
+        var item = deviceTypes[deviceTypeId];
+            typeName = item.typename;
         return typeName;
     },
     getUserInfoList: function() {
