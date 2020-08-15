@@ -2417,7 +2417,14 @@ var monitor = {
             return groups.filter(function(group) { return group.devices.length });
         },
         dblClickDeviceVideo:function(device){
-
+            if(!this.isShowVideoBtn){
+                this.$Message.error('该设备不是视频机');
+                return
+            }
+            if(device.isOffline){
+                this.$Message.error('设备离线');
+                return
+            }
             var videochannelcount = device.videochannelcount;
             var playerIns = this.$refs;
             var deviceInfo = {
@@ -2447,6 +2454,10 @@ var monitor = {
 
         },
         handlePlayDeviceToChannel:function(device,channel){
+            if(device.isOffline){
+                this.$Message.error('设备离线');
+                return;
+            }
             var devInfo = {
                 deviceid:device.deviceid,
                 devicename:device.devicename,

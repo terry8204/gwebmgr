@@ -640,8 +640,8 @@ ul.ul-manager-wraper li.gongju {
     line-height: 35px;
 }
 
-p.operation span {
-    margin-right: 5px;
+#windowInfo p.operation span {
+    margin-right: 1px;
 }
 
 
