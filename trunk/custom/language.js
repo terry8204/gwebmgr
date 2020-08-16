@@ -353,7 +353,7 @@
                 selectCorrectAccount: "请选择正确的账号!",
             },
             login: {
-                title: "位置视频服务平台",
+                title: "车载视频安全预警平台",
                 chinese: "中文",
                 english: "English",
                 companyLogin: "用户登录",

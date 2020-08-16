@@ -20,7 +20,7 @@ var timeDifference = DateFormat.getOffset();
 var voiceQueue = []; //语音报警队列
 var isPlayAlarmVoice = false;
 
-document.title = isZh ? "位置视频服务平台" : "Location video service platform";
+document.title = isZh ? "车载视频安全预警平台" : "Location video service platform";
 
 
 // vuex store
