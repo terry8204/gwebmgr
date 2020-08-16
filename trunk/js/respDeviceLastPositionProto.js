@@ -16,10 +16,14 @@ var deviceLastPositionProto = {
                             "type": "string",
                             "id": 2
                         },
+			            "lastquerypositiontime": {
+			              "type": "sint64",
+			              "id": 3
+			            },
                         "records": {
                             "rule": "repeated",
                             "type": "PositionLastProto",
-                            "id": 3
+                            "id": 4
                         }
                     }
                 },

@@ -2205,6 +2205,7 @@ var monitor = {
                         var respDeviceLastPositionProto = protobufRoot.lookupType("proto.RespDeviceLastPositionProto");
                         var resp = respDeviceLastPositionProto.decode(responseArray);
                         if (resp.status == 0) {
+                        	me.lastquerypositiontime = resp.lastquerypositiontime;
                             if (resp.records && resp.records.length > 0) {
                                 resp.records.forEach(function(item) {
                                     if (item) {
@@ -2240,7 +2241,7 @@ var monitor = {
                                 window.location.href = 'index.html'
                             }, 2000)
                         }
-                        me.lastquerypositiontime = DateFormat.getCurrentUTC();
+                        
                         isLoadLastPositon = true;
                     } else {
                         errorCall();
@@ -2846,8 +2847,8 @@ var monitor = {
                     return a.groupname.localeCompare(b.groupname);
                 });
                 me.$store.dispatch('setdeviceInfos', me.groups);
-                me.getLastPosition([], function(resp) {
-                    me.lastquerypositiontime = DateFormat.getCurrentUTC();
+                me.getLastPosition([], function() {
+                    
                     // me.caclOnlineCount();
                     // me.updateTreeOnlineState();
                     communicate.$on("positionlast", me.handleWebSocket);

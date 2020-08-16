@@ -555,7 +555,7 @@
                         };
                         utils.sendAjax(url, data, function(resp) {
                             if (resp.status == 0) {
-                                me.lastquerypositiontime = Date.now();
+                                me.lastquerypositiontime = resp.lastquerypositiontime;
                                 callback(resp.records[0]);
                             } else {
                                 me.$Message.error("轨迹查询失败!");
