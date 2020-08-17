@@ -320,6 +320,9 @@ Vue.component('my-video', {
         handlePlayerMute: function() {
             this.isMute = !this.isMute;
         }, 
+        onDbClick:function(){
+            this.handleFullScreen();
+        },
         handleFullScreen:function(){
             if (!this.isPlaying) {
                 return;

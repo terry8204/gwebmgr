@@ -2527,7 +2527,7 @@
 
     <script type="text/x-template" id="video-template">
         <div class='my-video-wrapper'>
-            <div class='player-wraper'>
+            <div class='player-wraper' @dblclick="onDbClick">
                 <video ref='player' :muted="isMute"></video>
                 <div class="resolving-power" v-show="isPlaying">
                     <span v-text='resolvingPower.width'></span>   
