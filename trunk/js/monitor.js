@@ -124,8 +124,8 @@
     };
     //抛出异常
     HZRecorder.throwError = function(message) {
-            // alert(message);
-            new Vue().$Message.error(message);
+            isRecordingRights = false;
+            // new Vue().$Message.error(message);
             // throw new function () { this.toString = function () { return message; } }
         }
         //是否支持录音
@@ -144,7 +144,7 @@
                         callback(rec);
                     },
                     function(error) {
-                        isRecordingRights = false;
+
                         switch (error.code || error.name) {
                             case 'PERMISSION_DENIED':
                             case 'PermissionDeniedError':
@@ -167,7 +167,8 @@
                         }
                     });
             } else {
-                HZRecorder.throwError('当前浏览器不支持录音功能。');
+                isRecordingRights = false
+                    // HZRecorder.throwError('当前浏览器不支持录音功能。');
                 return;
             }
         }
@@ -485,7 +486,7 @@ var monitor = {
         onMousedown: function() {
             var that = this;
             if (!that.isOpenJianting) {
-                that.$Message.success("请先开启监听");
+                that.$Message.error("请先开启监听");
                 return;
             }
             try {
@@ -534,7 +535,7 @@ var monitor = {
                 return;
             }
             if (isRecordingRights == false) {
-                me.$Message.error("浏览器不支持录音功能或者没有检测到录音设备");
+                this.$Message.error("浏览器不支持录音功能或者没有检测到录音设备");
                 return;
             };
             var me = this;
