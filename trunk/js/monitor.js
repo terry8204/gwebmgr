@@ -1144,13 +1144,19 @@ var monitor = {
                     } catch (error) {
                         me.isSpin = true;
                         asyncLoadJs('baidu', function() {
+                            (function pollMap() {
+                                if (isLoadBMap) {
+                                    me.isSpin = false;
+                                    me.map = new BMapClass();
+                                } else {
+                                    setTimeout(pollMap, 4);
+                                }
+                            }());
                             (function poll2() {
                                 if (isLoadBMap && isLoadLastPositon) {
                                     asyncLoadJs('distancetool', function() {
                                         asyncLoadJs('textIconoverlay', function() {
                                             asyncLoadJs('bmarkerclusterer', function() {
-                                                me.isSpin = false;
-                                                me.map = new BMapClass();
                                                 me.map.setMarkerClusterer(me.positionLastrecords);
                                             });
                                         });
@@ -1159,8 +1165,8 @@ var monitor = {
                                     setTimeout(poll2, 4);
                                 }
                             }());
-                        });
 
+                        });
                     }
                     break;
                 case 'gMap':
@@ -2133,7 +2139,6 @@ var monitor = {
                         var protobufRoot = protobuf.Root.fromJSON(monitorListProtoJson);
                         var respDeviceLastPositionProto = protobufRoot.lookupType("proto.RespMonitorDeviceListProto");
                         var resp = respDeviceLastPositionProto.decode(responseArray);
-                        console.log('monitorListProtoJson', resp)
                         if (resp.status == 0) {
                             callback ? callback(resp) : '';
                         } else if (resp.status > 9000) {
