@@ -1130,6 +1130,11 @@ var monitor = {
         },
         handlePlayerMute: function() {
             this.isMute = !this.isMute;
+            var playerIns = this.$refs;
+            for (var i = 1; i <= 16; i++) {
+                var player = playerIns['player' + i][0];
+                player.changePlayerMute(this.isMute);
+            }
         },
         initMap: function() {
             var me = this;

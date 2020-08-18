@@ -16,7 +16,7 @@ var isNeedRefresh = false;
 var isToAlarmListRecords = false;
 var isToPhoneAlarmRecords = false;
 var isNeedRefreshMapUI = false;
-var timeDifference = DateFormat.getOffset(); 
+var timeDifference = DateFormat.getOffset();
 var voiceQueue = []; //语音报警队列
 var isPlayAlarmVoice = false;
 
@@ -136,7 +136,7 @@ vstore = new Vuex.Store({
         },
         setDeviceTypes: function(state, devicetypes) {
             var obj = {};
-            devicetypes.forEach(function(item){
+            devicetypes.forEach(function(item) {
                 obj[item.devicetypeid] = item;
             });
             state.deviceTypes = obj;
@@ -175,29 +175,29 @@ Vue.component('table-dropdown', {
 
 
 Vue.component('my-video', {
-    props:[],
-    data: function () {
+    props: [],
+    data: function() {
         return {
-            isPlaying:false,
-            isMute:false,
-            playerStateTips:'',
-            resolvingPower:{width:0,height:0},
-            deviceName:'',
-            deviceId:'',
-            isFullScreen:false,
-            networkSpeed:'0KB/S',
-            channel:1,
+            isPlaying: false,
+            isMute: false,
+            playerStateTips: '',
+            resolvingPower: { width: 0, height: 0 },
+            deviceName: '',
+            deviceId: '',
+            isFullScreen: false,
+            networkSpeed: '0KB/S',
+            channel: 1,
         }
     },
-    methods:{
-        init:function(){
+    methods: {
+        init: function() {
             this.startTimes = 0;
             this.flvPlayer = null;
             this.isSendAjaxState = false;
             this.addEventListenerToPlayer();
-        }, 
-        setDevicedInfoAndPlay:function(device){
-            if(this.deviceId && this.deviceId!=device.deviceid) {
+        },
+        setDevicedInfoAndPlay: function(device) {
+            if (this.deviceId && this.deviceId != device.deviceid) {
                 this.handleStopVideos();
             }
             this.deviceId = device.deviceid;
@@ -205,24 +205,24 @@ Vue.component('my-video', {
             this.channel = device.channel;
             this.handleStartVideos();
         },
-        cleanDevicedInfo:function(){
+        cleanDevicedInfo: function() {
             this.deviceId = '';
             this.deviceName = '';
             this.channel = '';
             this.playerStateTips = '';
         },
-        switchVideoPlayState:function(){
-            if(this.deviceId==''){
+        switchVideoPlayState: function() {
+            if (this.deviceId == '') {
                 this.$Message.error('请选择播放设备');
                 return;
             }
-            if(this.isPlaying){
+            if (this.isPlaying) {
                 this.handleStopVideos();
-            }else{
+            } else {
                 this.handleStartVideos();
             }
         },
-        initVideo: function( url, hasaudio) {
+        initVideo: function(url, hasaudio) {
             var flvPlayer = flvjs.createPlayer({
                 type: 'flv',
                 url: url,
@@ -246,7 +246,7 @@ Vue.component('my-video', {
             })
             this.flvPlayer = flvPlayer;
         },
-        switchflvPlayer: function( url, hasaudio) {
+        switchflvPlayer: function(url, hasaudio) {
             try {
                 var flvPlayer = this.flvPlayer;
                 if (flvPlayer != null) {
@@ -260,15 +260,15 @@ Vue.component('my-video', {
             }
             this.initVideo(url, hasaudio);
         },
-        addEventListenerToPlayer:function(){
+        addEventListenerToPlayer: function() {
             var player = this.$refs.player,
                 me = this;
-                player.addEventListener('loadedmetadata', function(e) {
-                    me.resolvingPower = {
-                        width: e.target.videoWidth,
-                        height: e.target.videoHeight,
-                    }
-                })
+            player.addEventListener('loadedmetadata', function(e) {
+                me.resolvingPower = {
+                    width: e.target.videoWidth,
+                    height: e.target.videoHeight,
+                }
+            })
             player.addEventListener('error', function() {
                 me.isSendAjaxState = false;
                 me.playerStateTips = "请求数据时遇到错误";
@@ -294,7 +294,7 @@ Vue.component('my-video', {
             //         //console.log("----")
             //     };
             // }, false);
-        },  
+        },
         flv_photograph: function(playerIndex) {
             if (!this.isPlaying) {
                 return;
@@ -316,35 +316,35 @@ Vue.component('my-video', {
                 context.drawImage(this.$refs.player, 0, 0, this.resolvingPower.width, this.resolvingPower.height);
                 return canvas.toDataURL("image/png");
             }
-        }, 
+        },
         handlePlayerMute: function() {
             this.isMute = !this.isMute;
-        }, 
-        onDbClick:function(){
+        },
+        changePlayerMute: function(isMute) {
+            this.isMute = isMute;
+        },
+        onDbClick: function() {
             this.handleFullScreen();
         },
-        handleFullScreen:function(){
+        handleFullScreen: function() {
             if (!this.isPlaying) {
                 return;
             };
             var video = this.$refs.player;
             if (video.webkitRequestFullScreen) {
                 video.webkitRequestFullScreen();
-            }
-            else if (video.mozRequestFullScreen) {
+            } else if (video.mozRequestFullScreen) {
                 video.mozRequestFullScreen();
-            }
-            else if (video.msRequestFullScreen) {
+            } else if (video.msRequestFullScreen) {
                 video.msRequestFullScreen();
-            }
-            else if (video.RequestFullScreen) {
+            } else if (video.RequestFullScreen) {
                 video.RequestFullScreen();
             }
         },
         handleStartVideos: function() {
             var url = myUrls.startVideos(),
                 me = this;
-            this.playerStateTips= "正在请求播放";
+            this.playerStateTips = "正在请求播放";
             utils.sendAjax(url, {
                 deviceid: this.deviceId,
                 channels: [Number(this.channel)],
@@ -389,7 +389,7 @@ Vue.component('my-video', {
                         accState = 'ACC关,'
                     }
                     me.$Message.error(accState + "请求播放超时");
-                    me.switchflvPlayer( records[0].playurl, records[0].hasaudio);
+                    me.switchflvPlayer(records[0].playurl, records[0].hasaudio);
                     me.isPlaying = true;
                     me.startTimes = Date.now();
                 }
@@ -411,7 +411,7 @@ Vue.component('my-video', {
             this.isPlaying = false;
             this.playerStateTips = '暂停播放';
             this.isSendAjaxState = false;
-            this.networkSpeed ='0KB/S';
+            this.networkSpeed = '0KB/S';
 
             var url = myUrls.stopVideos();
             utils.sendAjax(url, {
@@ -419,25 +419,25 @@ Vue.component('my-video', {
                 channels: [Number(this.channel)]
             }, function(resp) {})
 
-   
-        },
-        timeout:function(){
 
-                if(this.isPlaying){
-                    var nowTime = Date.now();
-                    if ((nowTime - this.startTimes) > 1000 * 60 * 3) {
-                           this.handleStopVideos(); 
-                           this.playerStateTips = '已播放三分钟时间,暂停播放';
-                    }
+        },
+        timeout: function() {
+
+            if (this.isPlaying) {
+                var nowTime = Date.now();
+                if ((nowTime - this.startTimes) > 1000 * 60 * 3) {
+                    this.handleStopVideos();
+                    this.playerStateTips = '已播放三分钟时间,暂停播放';
                 }
+            }
         }
     },
-    computed:{
-        channelStr:function(){
+    computed: {
+        channelStr: function() {
             return this.channel ? 'CH' + this.channel + ' -' : '';
         }
     },
-    mounted:function(){
+    mounted: function() {
         this.init();
     },
     template: document.getElementById('video-template').innerHTML
