@@ -165,6 +165,9 @@ var myUrls = {
     monitorListByUser: function() {
         return this.apihost + 'webapi?action=querymonitorlist&token=' + token
     },
+    monitorListByUserProto: function() {
+        return this.apihost + 'webapi?action=querymonitorlist&streamtype=proto&token=' + token
+    },
     queryCompanyTree: function() {
         return this.apihost + 'webapi?action=querycompanys&token=' + token
     },
