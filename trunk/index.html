@@ -55,13 +55,13 @@
                         <Card>
                             <p slot="title">
                                 <i-row>
-                                    <i-col span="12" style="text-align:center;border-right: 1px solid #9190F3" :class="{active:account == 0}">
-                                        <span @click="selectdAccount(0)" class="cursor">
+                                    <i-col span="12" style="text-align:center;border-right: 1px solid #9190F3">
+                                        <span @click="selectdAccount(0)" class="cursor" :class="{active:account == 0}">
                                             <Icon type="md-person"></Icon>{{$t("login.companyLogin")}}
                                         </span>
                                     </i-col>
-                                    <i-col span="12" style="text-align:center;" :class="{active:account == 1}">
-                                        <span @click="selectdAccount(1)" class="cursor">
+                                    <i-col span="12" style="text-align:center;">
+                                        <span @click="selectdAccount(1)" class="cursor" :class="{active:account == 1}">
                                             <Icon type="md-phone-portrait"></Icon>{{$t("login.deviceLogin")}}
                                         </span>
                                     </i-col>

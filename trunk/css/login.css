@@ -19,8 +19,8 @@
     color: #ffffff;
 }
 
-.active {
-    color: #2D8CF0;
+#login-wraper .active {
+    color: #3ABBDD;
 }
 
 
