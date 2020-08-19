@@ -51,9 +51,9 @@
             </Row>
 
             <Row style="margin: 10px 0">
-                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;转发地址 : &nbsp;</i-col>
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;监护账号 : &nbsp;</i-col>
                 <i-col span="8">
-                    <i-input v-model.trim="forwardurl"></i-input>
+                    <i-input v-model.trim="monitor"></i-input>
                 </i-col>
                 <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;{{$t("alarm.overdueTime")}} : &nbsp;</i-col>
                 <i-col span="8">
@@ -107,10 +107,7 @@
             </Row>
 
             <Row style="margin: 10px 0">
-                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;监护账号 : &nbsp;</i-col>
-                <i-col span="8">
-                    <i-input v-model.trim="monitor"></i-input>
-                </i-col>
+
 
                 <i-col span="4" style="height: 100%;text-align:right;line-height:32px;"><i style="color: red;display: inline-block;"></i>&nbsp;{{$t("device.loginPwd")}} : &nbsp;</i-col>
                 <i-col span="8">
@@ -156,7 +153,6 @@
                 reportedpoint: 0,
                 totalpoint: 1500,
                 checkboxObj: {},
-                forwardurl: "",
                 createrToUser: "",
                 userlists: [],
                 userType: null,
@@ -264,7 +260,7 @@
                         data.totalpoint = Number(this.totalpoint);
                     }
 
-                    this.forwardurl && (data.forwardurl = this.forwardurl);
+
 
                     if (userlists.indexOf(this.createrToUser) == -1) {
                         me.$Message.error(me.$t("message.selectCorrectAccount"));
@@ -327,7 +323,7 @@
                 getDeviceType: function() {
                     var me = this;
                     var deviceTypes = vstore.state.deviceTypes;
-                    for(var key in deviceTypes){
+                    for (var key in deviceTypes) {
                         var item = deviceTypes[key];
                         var label = item.typename;
                         if (item.remark) {

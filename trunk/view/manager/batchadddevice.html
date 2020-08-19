@@ -45,9 +45,13 @@
                         <i-option v-for="item in groupsList" :value="item.value" :key="item.value">{{ item.label }}</i-option>
                     </i-select>
                 </i-col>
-                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;转发地址 : &nbsp;</i-col>
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;网络类型 : &nbsp;</i-col>
                 <i-col span="8">
-                    <i-input v-model.trim="forwardurl"></i-input>
+                    <i-select v-model="teltype">
+                        <i-option value="1">2G</i-option>
+                        <i-option value="2">3G</i-option>
+                        <i-option value="3">4G</i-option>
+                    </i-select>
                 </i-col>
             </Row>
 
@@ -59,15 +63,11 @@
                         <i-option v-for="item in deviceTypeList" :value="item.value" :key="item.value">{{ item.label }}</i-option>
                     </i-select>
                 </i-col>
-                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;网络类型 : &nbsp;</i-col>
-                <i-col span="8">
-                    <i-select v-model="teltype">
-                        <i-option value="1">2G</i-option>
-                        <i-option value="2">3G</i-option>
-                        <i-option value="3">4G</i-option>
-                    </i-select>
-                </i-col>
 
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;{{$t("alarm.overdueTime")}} : &nbsp;</i-col>
+                <i-col span="8">
+                    <date-picker type="date" v-model="overduetime" :options="dateOptions" style="width: 100%"></date-picker>
+                </i-col>
 
             </Row>
 
@@ -76,9 +76,9 @@
                 <i-col span="8">
                     <input-number v-model.number="idLength" :max="15" :min="8" :editable="false" style="width: 100%;"></input-number>
                 </i-col>
-                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;{{$t("alarm.overdueTime")}} : &nbsp;</i-col>
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">{{$t("device.allReportCount")}} : &nbsp;</i-col>
                 <i-col span="8">
-                    <date-picker type="date" v-model="overduetime" :options="dateOptions" style="width: 100%"></date-picker>
+                    <i-input v-model.trim="totalpoint"></i-input>
                 </i-col>
             </Row>
 
@@ -88,9 +88,12 @@
                 <i-col span="8">
                     <i-input v-model.trim="reportedpoint"></i-input>
                 </i-col>
-                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">{{$t("device.allReportCount")}} : &nbsp;</i-col>
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">{{$t("device.isUse")}} : &nbsp;</i-col>
                 <i-col span="8">
-                    <i-input v-model.trim="totalpoint"></i-input>
+                    <i-select v-model="deviceenable">
+                        <i-option value="0">{{$t("user.ban")}}</i-option>
+                        <i-option value="1">{{$t("user.allow")}}</i-option>
+                    </i-select>
                 </i-col>
             </Row>
 
@@ -102,13 +105,7 @@
                         <i-option value="1">{{$t("user.allow")}}</i-option>
                     </i-select>
                 </i-col>
-                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">{{$t("device.isUse")}} : &nbsp;</i-col>
-                <i-col span="8">
-                    <i-select v-model="deviceenable">
-                        <i-option value="0">{{$t("user.ban")}}</i-option>
-                        <i-option value="1">{{$t("user.allow")}}</i-option>
-                    </i-select>
-                </i-col>
+
             </Row>
 
             <Row style="margin: 10px 0">
@@ -123,14 +120,11 @@
             </Row>
 
             <Row style="margin: 10px 0">
-                <i-col span="6" :offset="2">
+                <i-col span="6" :offset="3">
                     <i-button style="width: 100%" @click="handleSubmit">{{$t("bgMgr.submit")}}</i-button>
                 </i-col>
                 <i-col span="6" :offset="1">
                     <i-button style="width: 100%" @click="resetInfo">{{$t("bgMgr.reset")}}</i-button>
-                </i-col>
-                <i-col span="6" :offset="1">
-                    <i-button style="width: 100%" @click="batchUpdateUrl">批量修改转发地址</i-button>
                 </i-col>
             </Row>
         </div>
@@ -166,7 +160,6 @@
                 reportedpoint: 0,
                 totalpoint: 1500,
                 checkboxObj: {},
-                forwardurl: "",
                 createrToUser: "",
                 userlists: [],
                 userType: null,
@@ -175,49 +168,7 @@
                 isOk: false
             },
             methods: {
-                batchUpdateUrl: function() {
-                    if (!this.isOk) {
-                        this.$Message.error("请添加正确的imeis");
-                        return;
-                    };
 
-                    var pattern = /[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]/g;
-                    var deviceids = this.deviceid.split('\n').filter(function(item) {
-                            if (item) {
-                                return item
-                            }
-                        }),
-                        me = this;
-                    var url = myUrls.editDevicesForwardUrl();
-                    if (pattern.test(this.forwardurl)) {
-                        this.loading = true;
-                        utils.sendAjax(url, {
-                            deviceids: deviceids,
-                            forwardurl: this.forwardurl
-                        }, function(resp) {
-                            me.loading = false;
-                            if (resp.status === 0) {
-                                if (resp.success === resp.total) {
-                                    me.$Message.success("修改成功");
-                                } else {
-                                    me.$Message.error("成功 : " + resp.success + "个,失败 : " + resp.fail + "个");
-                                    if (resp.errorrecords.length) {
-                                        var errorTips = "修改失败的设备号:" + "\n";
-                                        resp.errorrecords.forEach(function(item) {
-                                            errorTips += item.deviceid + " : " + item.cause + "\n";
-                                        });
-                                        me.errorTips = errorTips;
-                                        me.isOk = false;
-                                    };
-                                }
-                            } else {
-                                me.$Message.error("修改失败");
-                            }
-                        });
-                    } else {
-                        this.$Message.error("请输入正确的网址");
-                    }
-                },
                 selectedCmd: function(item) {
                     var me = this;
                     setTimeout(function() {
@@ -318,7 +269,6 @@
                         return;
                     }
 
-                    this.forwardurl && (data.forwardurl = this.forwardurl);
 
                     if (this.userType < 3) {
                         data.creater = this.createrToUser;
@@ -373,7 +323,7 @@
                 getDeviceType: function() {
                     var me = this;
                     var deviceTypes = vstore.state.deviceTypes;
-                    for(var key in deviceTypes){
+                    for (var key in deviceTypes) {
                         var item = deviceTypes[key];
                         var label = item.typename;
                         if (item.remark) {

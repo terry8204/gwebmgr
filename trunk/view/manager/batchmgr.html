@@ -70,14 +70,27 @@
             </div>
         </Modal>
         <Modal v-model="batchModal" width="400" title="批量修改">
-            <Row v-if="showBatchModalType == 1">
-                <i-col span="4" style="line-height: 32px;">
-                    转发地址:
-                </i-col>
-                <i-col span="20">
-                    <i-input v-model.trim="pathAddress" style="width: 100%;"></i-input>
-                </i-col>
-            </Row>
+            <div v-if="showBatchModalType == 1">
+                <Row>
+                    <i-col span="4" style="padding-top: 6px;">
+                        &nbsp;转发类型 : &nbsp;
+                    </i-col>
+                    <i-col span="20">
+                        <i-select v-model="forwardtype">
+                            <i-option value="0">解析后HTTP</i-option>
+                            <i-option value="1">原数据TCP</i-option>
+                        </i-select>
+                    </i-col>
+                </Row>
+                <Row v-if="forwardtype == '1'">
+                    <i-col span="4" style="padding-top: 6px;">
+                        转发地址:
+                    </i-col>
+                    <i-col span="20">
+                        <i-input v-model.trim="forwardurl"></i-input>
+                    </i-col>
+                </Row>
+            </div>
             <Row v-if="showBatchModalType == 2">
                 <i-col span="4" offset="4" style="line-height: 32px;">
                     到期时间:
@@ -157,8 +170,9 @@
             batchModal: false,
             idLength: 11,
             isOk: false,
-            pathAddress: "",
+            forwardurl: "",
             newPassword: '',
+            forwardtype: '1',
             cmdContent: '',
             cmdPassword: '',
             expirationDate: new Date(),
@@ -268,7 +282,7 @@
             showBatchModal: function(type) {
                 this.showBatchModalType = type;
                 this.batchModal = true;
-                this.pathAddress = '';
+                this.forwardurl = '';
                 this.newPassword = '';
             },
             handleBatchEdit: function() {
@@ -281,12 +295,9 @@
                     },
                     me = this;
                 if (this.showBatchModalType == 1) {
-                    if (this.pathAddress.length < 10) {
-                        this.$Message.error('地址路径必须大于10');
-                        return;
-                    }
                     data.action = 'modifyforwardurl';
-                    data.forwardurl = this.pathAddress;
+                    data.forwardtype = Number(this.forwardtype);
+                    data.forwardurl = this.forwardurl;
                 } else if (this.showBatchModalType == 2) {
                     data.action = 'modifyexpiretime';
                     data.expiretime = new Date(this.expirationDate).getTime();
