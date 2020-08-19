@@ -230,9 +230,9 @@
                             <i-option value="3">4G</i-option>
                         </i-select>
                     </i-col>
-                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;监护账号 : &nbsp;</i-col>
+                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;转发地址 : &nbsp;</i-col>
                     <i-col span="8">
-                        <i-input v-model.trim="monitor"></i-input>
+                        <i-input v-model.trim="forwardurl" disabled></i-input>
                     </i-col>
                 </Row>
 
@@ -255,12 +255,9 @@
                             <i-option value="1">{{$t("user.allow")}}</i-option>
                         </i-select>
                     </i-col>
-                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">{{$t("device.allowLogin")}} : &nbsp;</i-col>
+                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;监护账号 : &nbsp;</i-col>
                     <i-col span="8">
-                        <i-select v-model="loginenable">
-                            <i-option value="0">{{$t("user.ban")}}</i-option>
-                            <i-option value="1">{{$t("user.allow")}}</i-option>
-                        </i-select>
+                        <i-input v-model.trim="monitor"></i-input>
                     </i-col>
                 </Row>
 
@@ -273,7 +270,13 @@
                             <i-option value="1">{{$t("user.allow")}}</i-option>
                         </i-select>
                     </i-col>
-
+                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">{{$t("device.allowLogin")}} : &nbsp;</i-col>
+                    <i-col span="8">
+                        <i-select v-model="loginenable">
+                            <i-option value="0">{{$t("user.ban")}}</i-option>
+                            <i-option value="1">{{$t("user.allow")}}</i-option>
+                        </i-select>
+                    </i-col>
                 </Row>
 
                 <Row style="margin: 10px 0">
@@ -1043,6 +1046,7 @@
                 reportedpoint: 0,
                 totalpoint: 1500,
                 groupid: '',
+                forwardurl: "",
                 allowedit: '0',
                 createrToUser: "",
                 userlists: [],
@@ -1724,6 +1728,7 @@
 
                     data.monitor = this.monitor;
 
+                    this.forwardurl && (data.forwardurl = this.forwardurl);
 
                     if (userlists.indexOf(this.createrToUser) == -1) {
                         me.$Message.error(me.$t("message.selectCorrectAccount"));
@@ -1765,6 +1770,7 @@
                     this.groupid = "";
                     this.reportedpoint = 0;
                     this.totalpoint = 1500;
+                    this.forwardurl = "";
                     this.monitor = "";
                 },
                 setDeviceData: function() {
@@ -1778,6 +1784,7 @@
                     me.deviceenable = "" + editObject.deviceenable;
                     me.reportedpoint = editObject.reportedpoint;
                     me.totalpoint = editObject.totalpoint;
+                    me.forwardurl = editObject.forwardurl;
                     // me.createrToUser = editObject.creater;
                     me.monitor = editObject.monitor;
                     me.teltype = String(editObject.teltype);
