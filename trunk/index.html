@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="dist/styles/iview.css">
     <link rel="stylesheet" href="css/common.css">
     <link rel="stylesheet" href="css/login.css">
+    <link rel="stylesheet" href="css/icon/iconfont.css">
     <script src="js/config.js"></script>
 </head>
 
@@ -30,29 +31,31 @@
                     <span class="version">v2.1</span>
                 </div>
                 <div class="language">
-                    <span :class="{active:language == 'zh'}" @click="changeLang('zh')"> 
-                        <img src="./images/chinaflag72x72.png" style="width:16px;height:16px;vertical-align: middle">
-                        {{$t("login.chinese")}}
-                    </span>
+                    <div :class="{active:language == 'zh'}" @click="changeLang('zh')">
+                        <i class="icon iconfont icon-fuhao-zhongwen" style="width:16px;height:16px;vertical-align: middle"></i> {{$t("login.chinese")}}
+                    </div>
                     <b>/</b>
-                    <span :class="{active:language == 'en'}" @click="changeLang('en')">
-                        <img src="./images/usflag72x72.png" style="width:16px;height:16px;vertical-align: middle">
-                        {{$t("login.english")}}
-                    </span>
+                    <div :class="{active:language == 'en'}" @click="changeLang('en')">
+                        <i class="icon iconfont icon-fuhao-yingwen" style="width:16px;height:16px;vertical-align: middle"></i> {{$t("login.english")}}
+                    </div>
                 </div>
             </div>
         </div>
         <div class="main" class="noselect">
             <div class="center">
                 <div class="left-wraper">
-                    <div></div>
+
                 </div>
                 <div class="right-wraper">
                     <div class="login-form-box">
+                        <div class="login-form-left-top"></div>
+                        <div class="login-form-right-top"></div>
+                        <div class="login-form-left-bottom"></div>
+                        <div class="login-form-right-bottom"></div>
                         <Card>
                             <p slot="title">
                                 <i-row>
-                                    <i-col span="12" style="text-align:center;border-right: 1px solid #2D8CF0" :class="{active:account == 0}">
+                                    <i-col span="12" style="text-align:center;border-right: 1px solid #9190F3" :class="{active:account == 0}">
                                         <span @click="selectdAccount(0)" class="cursor">
                                             <Icon type="md-person"></Icon>{{$t("login.companyLogin")}}
                                         </span>
@@ -77,8 +80,8 @@
                                     </i-input>
                                 </p>
                                 <p style="line-height:21px;">
-                                    <Checkbox v-model="keepPass">{{$t("login.pememberPwd")}}</Checkbox>
-                                    <a style="font-size:12px;float: right;text-decoration:underline;" @click="experienced">我要体验</a>
+                                    <Checkbox v-model="keepPass"><span style="color:#ffffff;">{{$t("login.pememberPwd")}}</span></Checkbox>
+                                    <a style="font-size:12px;float: right;text-decoration:underline;color:#ffffff;" @click="experienced">我要体验</a>
                                 </p>
                                 <p>
                                     <i-button type="primary" @click="handleSubmit" style="width: 100%" :loading="loading">{{$t("login.logining")}}</i-button>
@@ -88,36 +91,38 @@
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="footer">
-            <div class="footer-wrap">
-                <div>
-                    <div class="img-wrap">
-                        <img src="./images/gps51wx.jpg" alt="" srcset="" width="128px" height="128px">
+            <div class="qr-code-wrap">
+                <div class="qr-code-inner-wrap">
+                    <div>
+                        <div class="img-wrap">
+                            <img src="./images/gps51wx.jpg" alt="" srcset="" width="100px" height="100px" style="border: 1px solid #ffffff;">
+                        </div>
+                        <div class="desc">
+                            <h3>{{$t("login.wechatApplet")}}</h3>
+                            <ul>
+                                <li>{{$t("login.step1")}}</li>
+                                <li>{{$t("login.step2")}}</li>
+                                <li>{{$t("login.step3")}}</li>
+                            </ul>
+                        </div>
                     </div>
-                    <div class="desc">
-                        <h3>{{$t("login.wechatApplet")}}</h3>
-                        <ul>
-                            <li>{{$t("login.step1")}}</li>
-                            <li>{{$t("login.step2")}}</li>
-                            <li>{{$t("login.step3")}}</li>
-                        </ul>
-                    </div>
-                </div>
-                <div>
-                    <div class="img-wrap">
-                        <img src="./images/gps51app.png" alt="" srcset="" width="128px" height="128px">
-                    </div>
-                    <div class="desc">
-                        <h3>{{$t("login.appdownload")}}</h3>
-                        <ul>
-                            <li>{{$t("login.appstep1")}}</li>
-                            <li>{{$t("login.appstep2")}}</li>
-                            <li>{{$t("login.appstep3")}}</li>
-                        </ul>
+                    <div>
+                        <div class="img-wrap">
+                            <img src="./images/gps51app.png" alt="" srcset="" width="100px" height="100px" style="border: 1px solid #ffffff;">
+                        </div>
+                        <div class="desc">
+                            <h3>{{$t("login.appdownload")}}</h3>
+                            <ul>
+                                <li>{{$t("login.appstep1")}}</li>
+                                <li>{{$t("login.appstep2")}}</li>
+                                <li>{{$t("login.appstep3")}}</li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </div>
+        </div>
+        <div class="footer">
             <div class="beian">
                 {{$t("login.beiAn1")}} <a href="http://www.beian.miit.gov.cn/">{{$t("login.beiAn2")}}</a>
             </div>

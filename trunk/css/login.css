@@ -4,17 +4,19 @@
     width: 100%;
     min-width: 1300px;
     min-height: 580px;
+    background-image: url('../images/login_bg.jpg');
+    background-size: cover;
 }
 
 .center {
     margin: 0 auto;
-    width: 1200px;
+    width: 1280px;
     position: relative;
-    overflow: hidden;
 }
 
 .cursor {
     cursor: pointer;
+    color: #ffffff;
 }
 
 .active {
@@ -30,7 +32,7 @@ div.header {
     top: 0;
     height: 80px;
     width: 100%;
-    background: #E8F0F7;
+    color: #ffffff;
 }
 
 div.logo-wrap {
@@ -45,10 +47,11 @@ div.language {
     float: right;
 }
 
-div.language>span {
+div.language>div {
     display: inline-block;
     padding: 0 10px;
     cursor: pointer;
+    color: #ffffff;
 }
 
 span.logo {
@@ -83,11 +86,10 @@ div.main {
     position: absolute;
     left: 0;
     top: 80px;
-    bottom: 160px;
+    bottom: 45px;
     width: 100%;
-    border-top: 1px solid #C3CEDE;
-    border-bottom: 1px solid #C3CEDE;
-    background: #FFFFFF;
+    border-top: 1px solid #433CCA;
+    border-bottom: 1px solid #433CCA;
     min-height: 352px;
 }
 
@@ -113,14 +115,83 @@ div.left-wraper>div {
     background-size: cover;
 }
 
+#login-wraper .ivu-input-group-prepend,
+#login-wraper .ivu-input {
+    background-color: #6363DB;
+    color: #ffffff;
+}
+
+#login-wraper .ivu-checkbox-inner {
+    background-color: transparent;
+}
+
 div.login-form-box {
     position: absolute;
-    left: 50%;
-    top: 50%;
+    right: 0px;
+    top: 45%;
     width: 350px;
     height: 277px;
-    margin-left: -175px;
     margin-top: -138.5px;
+}
+
+div.login-form-left-top {
+    position: absolute;
+    left: -5px;
+    top: -5px;
+    width: 50px;
+    height: 50px;
+    border-radius: 5px 0 0 0;
+    border-top: 1px solid #9190F3;
+    border-left: 1px solid #9190F3;
+    z-index: 999;
+}
+
+div.login-form-right-top {
+    position: absolute;
+    right: -5px;
+    top: -5px;
+    width: 50px;
+    height: 50px;
+    border-radius: 0 5px 0 0;
+    border-top: 1px solid #9190F3;
+    border-right: 1px solid #9190F3;
+    z-index: 999;
+}
+
+div.login-form-left-bottom {
+    position: absolute;
+    left: -5px;
+    bottom: -5px;
+    width: 50px;
+    height: 50px;
+    border-radius: 0 0 0 5px;
+    border-bottom: 1px solid #9190F3;
+    border-left: 1px solid #9190F3;
+    z-index: 999;
+}
+
+div.login-form-right-bottom {
+    position: absolute;
+    right: -5px;
+    bottom: -5px;
+    width: 50px;
+    height: 50px;
+    border-radius: 0 0 5px 0;
+    border-bottom: 1px solid #9190F3;
+    border-right: 1px solid #9190F3;
+    z-index: 999;
+}
+
+div.login-form-box .ivu-card {
+    background-color: rgba(255, 255, 255, .2);
+}
+
+div.login-form-box .ivu-card-head {
+    border-bottom: 1px solid #9190F3;
+}
+
+div.login-form-box .ivu-card-bordered {
+    border: 1px solid #9190F3;
 }
 
 .ivu-card-head .ivu-icon {
@@ -131,8 +202,51 @@ div.inputs p {
     margin: 15px;
 }
 
+.qr-code-wrap {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 140px;
+    bottom: 0px;
+}
 
-/* main结束 */
+.qr-code-inner-wrap {
+    width: 900px;
+    height: 140px;
+    margin: 0 auto;
+}
+
+.qr-code-inner-wrap>div {
+    float: left;
+    width: 50%;
+    height: 140px;
+    padding: 10px 10px 0 10px;
+    text-align: center;
+}
+
+.qr-code-inner-wrap>div>div {
+    /* float: left; */
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.desc {
+    color: #ffffff;
+    height: 100%;
+    margin-left: 10px;
+}
+
+.desc h3 {
+    margin-top: 15px;
+    margin-bottom: 5px;
+    text-align: left;
+}
+
+.desc ul li {
+    list-style-type: disc;
+    margin-left: 15px;
+    text-align: left;
+}
 
 
 /* 底部开始 */
@@ -141,52 +255,18 @@ div.footer {
     position: absolute;
     left: 0;
     bottom: 0px;
-    height: 160px;
+    height: 45px;
     width: 100%;
-}
-
-.footer-wrap {
-    width: 1000px;
-    margin: 0 auto;
-    height: 140px;
-}
-
-.footer-wrap>div {
-    float: left;
-    width: 50%;
-    height: 140px;
-    padding: 10px 10px 0 10px;
-}
-
-.footer-wrap>div>div {
-    float: left;
-}
-
-.img-wrap {
-    border: 1px solid #BFC4C9;
-    height: 130px;
-}
-
-.desc {
-    height: 100%;
-    margin-left: 10px;
-}
-
-.desc h3 {
-    margin-top: 15px;
-    margin-bottom: 5px;
-}
-
-.desc ul li {
-    list-style-type: disc;
-    margin-left: 15px;
+    line-height: 45px;
 }
 
 .beian {
-    font-size: 12px;
-    height: 20px;
-    line-height: 20px;
+    font-size: 13px;
+    color: #ffffff;
     text-align: center;
+    height: 45px;
+    width: 100%;
+    line-height: 45px;
 }
 
 .beian a {

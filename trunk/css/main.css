@@ -9,6 +9,7 @@
     overflow: hidden;
 }
 
+
 /* 头部 */
 
 div.header-wraper {
@@ -73,8 +74,18 @@ div.app-header {
     width: 100%;
     height: 60px;
     position: relative;
-    background: #495060;
+    /* background: #495060; */
+    background-image: url('../images/header_bg.jpg');
+    background-size: cover;
     color: #fff;
+}
+
+#app div.app-header .ivu-menu-dark {
+    background-color: transparent;
+}
+
+#app div.app-header .ivu-menu {
+    color: #ffffff;
 }
 
 .logo,
@@ -187,17 +198,18 @@ div.group-spin-wraper {
     overflow-y: auto;
 }
 
-div.video-tree span{
-    -webkit-user-select:none;
-   -moz-user-select:none;
-   -ms-user-select:none;
-   user-select:none;
+div.video-tree span {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
-.no_selected{
-    -webkit-user-select:none;
-    -moz-user-select:none;
-    -ms-user-select:none;
-    user-select:none;
+
+.no_selected {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
 div.group-spin-wraper {
@@ -205,29 +217,27 @@ div.group-spin-wraper {
 }
 
 
-
 /* 设备控制 tree 开始 */
 
-.video-device-cls{
+.video-device-cls {
     display: flex;
     flex-direction: row;
     cursor: pointer;
 }
-.video-device-cls span{
+
+.video-device-cls span {
     height: 27px;
     line-height: 27px;
     vertical-align: bottom;
     font-size: 12px;
 }
-.video-device-cls span.video-device-title-cls{
+
+.video-device-cls span.video-device-title-cls {
     flex: 1;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
-
-
-
 
 .active-dev-offline {
     border-radius: 5px;
@@ -348,12 +358,13 @@ li.full-map-wraper {
     background-size: cover;
 }
 
-.my-video-wrapper{
+.my-video-wrapper {
     width: 100%;
     height: 100%;
     position: relative;
 }
-.player-wraper{
+
+.player-wraper {
     position: absolute;
     left: 0;
     right: 0;
@@ -361,12 +372,14 @@ li.full-map-wraper {
     top: 0;
     overflow: hidden;
 }
-.player-wraper>video{
+
+.player-wraper>video {
     width: 100%;
     height: 100%;
     object-fit: fill;
 }
-.my-video-control{
+
+.my-video-control {
     position: absolute;
     left: 0;
     right: 0;
@@ -376,17 +389,17 @@ li.full-map-wraper {
     color: #FFFFFF;
 }
 
-.my-video-control .device-states{
+.my-video-control .device-states {
     float: left;
     height: 35px;
     line-height: 35px;
     padding-left: 5px;
     position: absolute;
-    left:0;
+    left: 0;
     top: 0;
 }
 
-.my-video-control .video-controls{
+.my-video-control .video-controls {
     height: 35px;
     line-height: 35px;
     font-size: 20px;
@@ -396,18 +409,21 @@ li.full-map-wraper {
     width: 115px;
     padding-left: 5px;
     background-color: #000000;
-    -moz-user-select:none; /*火狐*/
-    -webkit-user-select:none; /*webkit浏览器*/
-    -ms-user-select:none; /*IE10*/
-    -khtml-user-select:none; /*早期浏览器*/
-    user-select:none;
+    -moz-user-select: none;
+    /*火狐*/
+    -webkit-user-select: none;
+    /*webkit浏览器*/
+    -ms-user-select: none;
+    /*IE10*/
+    -khtml-user-select: none;
+    /*早期浏览器*/
+    user-select: none;
 }
 
-.my-video-control .video-controls > span{
+.my-video-control .video-controls>span {
     cursor: pointer;
     margin: 0 3px;
 }
-
 
 div.state-event-tip {
     position: absolute;
@@ -436,7 +452,7 @@ div.resolving-power {
 }
 
 .videoContent-6>div:first-child {
-    width:66.66%; 
+    width: 66.66%;
     height: 66.65%;
 }
 
@@ -465,9 +481,10 @@ div.resolving-power {
     height: 25%;
 }
 
+
 /* 云台 */
 
-#yuntai-tab-wrapper{
+#yuntai-tab-wrapper {
     position: absolute;
     right: 10px;
     bottom: 10px;
@@ -476,7 +493,6 @@ div.resolving-power {
     height: 289px;
     border: 1px solid #e3e3e3;
 }
-
 
 .el-zoom-in-bottom-enter-active,
 .el-zoom-in-bottom-leave-active {
@@ -530,7 +546,6 @@ div.resolving-power {
     padding: 10px;
 }
 
-
 .img-box>div:last-child {
     padding: 10px 20px;
     box-sizing: border-box;
@@ -559,7 +574,6 @@ div.resolving-power {
     color: #ffffff;
     margin-top: 10px;
 }
-
 
 
 /* popup css  start */
@@ -1223,9 +1237,6 @@ div.msg_content {
 
 
 /* 报警css结束 */
-
-
-
 
 #system-view {
     overflow-y: auto;
