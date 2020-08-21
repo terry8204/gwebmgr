@@ -172,7 +172,6 @@
                     </Tab-Pane>
                     <date-picker type="date" v-model="date" slot="extra" size="small" style="margin-top:5px;margin-right:8px;"></date-picker>
                     <i-button size="small" slot="extra" type="primary" style="margin-top:1px;margin-right:5px;" @click="queryActiveSafety">查询</i-button>
-                    <i-button size="small" slot="extra" type="primary" style="margin-top:1px;margin-right:35px;">证据中心</i-button>
                     <i-button size="small" slot="extra" type="success" style="margin-top:1px;margin-right:5px;" @click="prevArticle">上一条</i-button>
                     <i-button size="small" v-if="detailTableData.length" slot="extra" style="margin-top:1px;margin-right:5px;width:100px;">{{detailIndex+1}}/{{detailTableData.length}}条</i-button>
                     <i-button size="small" v-else="detailTableData.length" slot="extra" style="margin-top:1px;margin-right:5px;width:100px;">0/0条</i-button>
