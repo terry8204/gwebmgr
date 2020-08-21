@@ -182,7 +182,6 @@
             errorTips: '',
             deviceid: '',
             searchDeviceVal: '',
-            treeDeviceList: [], //    expand: true,
             searchDeviceList: [],
             treeGroupList: [],
             tableData: [],
@@ -912,6 +911,7 @@
             var me = this;
             utils.deviceInfos = {};
             this.calcTableHeight();
+            this.treeDeviceList = [];
             window.onresize = function() {
                 me.calcTableHeight();
             }

@@ -454,9 +454,58 @@ var monitor = {
                 }
             }, ],
             videoChannelsTableData: [],
+            playerItems: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16],
+            option: {
+                sort: false,
+            }
         }
     },
     methods: {
+        insertNodeAt: function(fatherNode, node, position) {
+            var refNode = position === 0 ? fatherNode.children[0] : fatherNode.children[position - 1].nextSibling;
+            fatherNode.insertBefore(node, refNode);
+        },
+        computeVmIndex: function(vnodes, element) {
+            var liList = Array.prototype.slice.call(vnodes)
+            return liList.map(function(elt) {
+                return elt;
+            }).indexOf(element);
+        },
+        onDragstart(event) {
+            // event.target 都返回源元素
+            this.startExchangeIndex = event.target.getAttribute('data-id')
+            var parentElement = this.$refs.videoContent;
+            var startElement = document.getElementsByClassName('vpw' + this.startExchangeIndex)[0];
+            this.kaishiIndex = this.computeVmIndex(parentElement.children, startElement)
+
+        },
+        onDragend(event) {
+
+            // event.target 都返回源元素
+            console.log('下标' + this.kaishiIndex + ' 和 ' + this.jieshuIndex + '进行替换')
+            var startElement = document.getElementsByClassName('vpw' + this.startExchangeIndex)[0];
+            var endElement = document.getElementsByClassName('vpw' + this.endExchangeIndex)[0];
+            var parentElement = this.$refs.videoContent;
+            if (this.kaishiIndex > this.jieshuIndex) {
+                this.insertNodeAt(parentElement, startElement, this.jieshuIndex);
+                this.insertNodeAt(parentElement, endElement, this.kaishiIndex + 1);
+            } else {
+                this.insertNodeAt(parentElement, startElement, this.jieshuIndex);
+                this.insertNodeAt(parentElement, endElement, this.kaishiIndex);
+            }
+            console.log('拖拽结束')
+        },
+        onDrop(event) {
+            // event.target 都返回目标元素
+            this.endExchangeIndex = event.target.parentElement.parentElement.parentElement.getAttribute('data-id')
+            var parentElement = this.$refs.videoContent;
+            var endElement = document.getElementsByClassName('vpw' + this.endExchangeIndex)[0];
+            this.jieshuIndex = this.computeVmIndex(parentElement.children, endElement)
+        },
+        onDragover(event) {
+            // 阻止元素的默认行为，不然ondrop不管用
+            event.preventDefault();
+        },
         initAudioPlayer: function(url) {
             if (audioPlayer != null) {
                 audioPlayer.pause();

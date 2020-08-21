@@ -190,6 +190,7 @@ Vue.component('my-video', {
         }
     },
     methods: {
+
         init: function() {
             this.startTimes = 0;
             this.flvPlayer = null;
@@ -286,14 +287,6 @@ Vue.component('my-video', {
             player.addEventListener('waiting', function() {
                 me.playerStateTips = "等待数据"
             });
-            // player.addEventListener("fullscreenchange",function(e){
-            //     if(!doc.webkitIsFullScreen){//退出全屏暂停视频
-            //         this.pause();
-            //         // this.pause();
-            //     }else{
-            //         //console.log("----")
-            //     };
-            // }, false);
         },
         flv_photograph: function(playerIndex) {
             if (!this.isPlaying) {
@@ -323,7 +316,9 @@ Vue.component('my-video', {
         changePlayerMute: function(isMute) {
             this.isMute = isMute;
         },
-        onDbClick: function() {
+        onDbClick: function(e) {
+            e.stopPropagation();
+            e.preventDefault();
             this.handleFullScreen();
         },
         handleFullScreen: function() {
@@ -439,6 +434,7 @@ Vue.component('my-video', {
     },
     mounted: function() {
         this.init();
+        console.log(this.move);
     },
     template: document.getElementById('video-template').innerHTML
 })
