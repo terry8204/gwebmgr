@@ -226,6 +226,7 @@ var monitor = {
     data: function() {
         var vm = this;
         return {
+            isMouseoverTop35: false,
             isLuyin: false,
             isShowYunTai: false,
             isOpenJianting: false,
@@ -2792,6 +2793,18 @@ var monitor = {
                 me.intervalTime % 5 == 0 && me.stopVideoPlayer();
             }, 1000);
         },
+        onMouseoverMap: function(e) {
+            if (!this.isFullMap) return;
+            var clientY = e.clientY;
+            if (clientY >= 35) {
+                this.isMouseoverTop35 = true;
+                document.getElementsByClassName('map_manager')[0].style.overflow = 'hidden';
+            } else {
+                this.isMouseoverTop35 = false;
+                document.getElementsByClassName('map_manager')[0].style.overflow = 'visible';
+            }
+            console.log('clientY', clientY);
+        },
         handleMousemove: function(e) {
             var pageY = event.pageY;
             var height = 8 * 38;
@@ -2955,6 +2968,7 @@ var monitor = {
         changeIsFullMapIcon: function() {
             var isFullscreen = document.fullscreenElement || document.mozFullScreenElement || document.webkitFullscreenElement || document.fullScreen || document.mozFullScreen || document.webkitIsFullScreen
             isFullscreen = !!isFullscreen;
+            !isFullscreen && (this.isMouseoverTop35 = false);
             return isFullscreen;
         },
         copyToClipboard: function() {
@@ -3035,40 +3049,6 @@ var monitor = {
         },
         userType: function() {
             return this.$store.state.userType;
-        },
-        myMapStyle: function() {
-            if (this.isMapMode) {
-                return {
-                    position: 'absolute',
-                    left: '10px',
-                    top: '35px',
-                    right: '10px',
-                    bottom: '10px',
-                }
-            } else {
-                return {
-                    position: 'absolute',
-                    width: '400px',
-                    top: '35px',
-                    right: '10px',
-                    bottom: '10px',
-                }
-            }
-        },
-        videoWrapStyle: function() {
-            if (this.isMapMode) {
-                return {
-                    display: 'none',
-                }
-            } else {
-                return {
-                    position: 'absolute',
-                    left: '10px',
-                    top: '35px',
-                    bottom: '10px',
-                    right: '410px',
-                }
-            }
         },
         videoContentCls: function() {
             return {

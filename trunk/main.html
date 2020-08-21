@@ -803,8 +803,8 @@
                         <Spin fix size="large"></Spin>
                     </div>
                     </div>
-                    <div class="map-wraper" ref="mapWraper">
-                        <div class="map_manager">
+                    <div class="map-wraper" ref="mapWraper" @mouseover="onMouseoverMap">
+                        <div class="map_manager" :style='{height:isMouseoverTop35?"0px":"35px"}'>
                             <div style="float:left;height:33px; line-height:33px;padding-left:2px;">
                                 <ButtonGroup size="small" shape="circle">
                                     <i-button @click="switchMapMode(1)" :type="isMapMode?'primary':''">地图模式</i-button>
@@ -853,7 +853,7 @@
                                     <Icon @click.native="handleMapSizeChange" :type="isFullMap ?'md-contract':'md-expand'" size="23"></Icon>
                                 </li>
                                 <li class="gongju">
-                                    <Dropdown transfer @on-click="handleClickTools">
+                                    <Dropdown transfer='click' @on-click="handleClickTools">
                                         <i-button type="primary" size="small">
                                             {{$t("monitor.tools")}}
                                             <Icon type="ios-arrow-down"></Icon>
@@ -873,8 +873,8 @@
                                 </li>
                             </ul>
                         </div>
-                        <div id="my-map" :style="myMapStyle"></div>
-                        <div id="video_wrap" :style="videoWrapStyle">
+                        <div id="my-map" :class="{ 'map-mode-cls': isMapMode, 'video-mode-cls': !isMapMode }" :style='{top:isMouseoverTop35?"10px":"35px"}'></div>
+                        <div id="video_wrap" :class="{ 'videos-wrapper-hide': isMapMode, 'videos-wrapper-show': !isMapMode }" :style='{top:isMouseoverTop35?"10px":"35px"}'>
                             <div class="video_header">
                                 <div class="video_function">
                                     <i class="" style="cursor: pointer;"></i>

@@ -274,8 +274,37 @@ div.map_manager {
     top: 0px;
     left: 10px;
     right: 10px;
-    height: 35px;
     background: #fff;
+    transition: height .3s;
+}
+
+#my-map {
+    transition: top .3s;
+}
+
+#app .monitor-wraper .map-mode-cls {
+    position: absolute;
+    left: 10px;
+    right: 10px;
+    bottom: 10px;
+}
+
+#app .monitor-wraper .video-mode-cls {
+    position: absolute;
+    width: 400px;
+    right: 10px;
+    bottom: 10px;
+}
+
+#app .monitor-wraper .videos-wrapper-hide {
+    display: none;
+}
+
+#app .monitor-wraper .videos-wrapper-show {
+    position: absolute;
+    left: 10px;
+    bottom: 10px;
+    right: 410px;
 }
 
 li.full-map-wraper {
@@ -300,6 +329,7 @@ li.full-map-wraper {
 
 #video_wrap {
     z-index: 10;
+    transition: top .3s;
 }
 
 #video_wrap .tv_box span {
