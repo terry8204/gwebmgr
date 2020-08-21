@@ -853,14 +853,20 @@
                                     <Icon @click.native="handleMapSizeChange" :type="isFullMap ?'md-contract':'md-expand'" size="23"></Icon>
                                 </li>
                                 <li class="gongju">
-                                    <Dropdown transfer>
+                                    <Dropdown transfer @on-click="handleClickTools">
                                         <i-button type="primary" size="small">
                                             {{$t("monitor.tools")}}
                                             <Icon type="ios-arrow-down"></Icon>
                                         </i-button>
                                         <i-dropdown-menu slot="list">
-                                            <DropdownItem name="name1">
-                                                <i-button type="primary" @click.stop="openDistance" size="small">{{$t("monitor.ranging")}}</i-button>
+                                            <DropdownItem name="openDistance">
+                                                <i class='icon iconfont icon-chizi' style='display:inline-block;width:16px:height:16px;margin-right:5px'></i>{{$t("monitor.ranging")}}
+                                            </DropdownItem>
+                                            <DropdownItem name="normal">
+                                                <i class='icon iconfont icon-moren' style='display:inline-block;width:15px:height:15px;margin-right:5px;font-size:14px'></i>默认样式
+                                            </DropdownItem>
+                                            <DropdownItem name="midnight">
+                                                <i class='icon iconfont icon-wuye' style='display:inline-block;width:16px:height:16px;margin-right:5px;font-size:14px'></i>午夜蓝
                                             </DropdownItem>
                                         </i-dropdown-menu>
                                     </Dropdown>

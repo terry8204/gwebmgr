@@ -6,6 +6,27 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "1183015",
+      "name": "午夜",
+      "font_class": "wuye",
+      "unicode": "e652",
+      "unicode_decimal": 58962
+    },
+    {
+      "icon_id": "5308118",
+      "name": "尺子",
+      "font_class": "chizi",
+      "unicode": "e629",
+      "unicode_decimal": 58921
+    },
+    {
+      "icon_id": "10199177",
+      "name": "默认",
+      "font_class": "moren",
+      "unicode": "e614",
+      "unicode_decimal": 58900
+    },
+    {
       "icon_id": "2967035",
       "name": "符号-英文",
       "font_class": "fuhao-yingwen",

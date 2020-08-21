@@ -461,6 +461,20 @@ var monitor = {
         }
     },
     methods: {
+
+        handleClickTools: function(name) {
+            switch (name) {
+                case 'openDistance':
+                    this.openDistance();
+                    break;
+                case 'normal':
+                    this.map.changeMapStyle('normal');
+                    break;
+                case 'midnight':
+                    this.map.changeMapStyle('midnight');
+                    break;
+            }
+        },
         insertNodeAt: function(fatherNode, node, position) {
             var refNode = position === 0 ? fatherNode.children[0] : fatherNode.children[position - 1].nextSibling;
             fatherNode.insertBefore(node, refNode);

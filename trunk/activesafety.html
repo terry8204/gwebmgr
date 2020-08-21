@@ -937,11 +937,11 @@
                     //        })
                     //    }
                     //});
-                    
-                        utils.getJiuHuAddressSyn(callon, callat, function(resp) {
-                                var j_address = resp.address;
-                                callback(j_address);
-                            });
+
+                    utils.getJiuHuAddressSyn(callon, callat, function(resp) {
+                        var j_address = resp.address;
+                        callback(j_address);
+                    });
                 },
                 getTableHeight: function() {
                     var wHeight = document.documentElement.clientHeight || document.body.clientHeight;
