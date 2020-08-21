@@ -2803,7 +2803,6 @@ var monitor = {
                 this.isMouseoverTop35 = false;
                 document.getElementsByClassName('map_manager')[0].style.overflow = 'visible';
             }
-            console.log('clientY', clientY);
         },
         handleMousemove: function(e) {
             var pageY = event.pageY;
