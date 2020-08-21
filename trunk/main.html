@@ -803,8 +803,8 @@
                         <Spin fix size="large"></Spin>
                     </div>
                     </div>
-                    <div class="map-wraper" ref="mapWraper" @mouseover="onMouseoverMap">
-                        <div class="map_manager" :style='{height:isMouseoverTop35?"0px":"35px"}'>
+                    <div class="map-wraper" ref="mapWraper" @mousemove="onMousemoveMap">
+                        <div class="map_manager" :style='{height:isMouseoverTop35?"0px":"35px",overflow:isMouseoverTop35?"hidden":"visible"}'>
                             <div style="float:left;height:33px; line-height:33px;padding-left:2px;">
                                 <ButtonGroup size="small" shape="circle">
                                     <i-button @click="switchMapMode(1)" :type="isMapMode?'primary':''">地图模式</i-button>

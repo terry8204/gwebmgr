@@ -2793,16 +2793,23 @@ var monitor = {
                 me.intervalTime % 5 == 0 && me.stopVideoPlayer();
             }, 1000);
         },
-        onMouseoverMap: function(e) {
+        onMousemoveMap: function(e) {
             if (!this.isFullMap) return;
+            this.isMouseoverTop35 = false;
             var clientY = e.clientY;
-            if (clientY >= 35) {
-                this.isMouseoverTop35 = true;
-                document.getElementsByClassName('map_manager')[0].style.overflow = 'hidden';
+            if (clientY >= 140) {
+                if (this.isMouseoverTop35 == false) {
+                    this.isMouseoverTop35 = true;
+                }
             } else {
-                this.isMouseoverTop35 = false;
-                document.getElementsByClassName('map_manager')[0].style.overflow = 'visible';
+                if (this.isMouseoverTop35 == true) {
+                    this.isMouseoverTop35 = false;
+                }
             }
+        },
+        onMouseenter: function() {
+            if (!this.isFullMap) return;
+            this.isMouseoverTop35 = true;
         },
         handleMousemove: function(e) {
             var pageY = event.pageY;
