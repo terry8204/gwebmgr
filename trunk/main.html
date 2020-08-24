@@ -896,7 +896,7 @@
                                 </div>
                             </div>
                             <div class="video_body">
-                                <div :class="videoContentCls" id="videoContent" ref="videoContent">
+                                <div :class="videoContentCls" id="videoContent" ref="videoContent" v-if="isDestory">
                                     <div v-for="index in 16" :key="index" :data-id="index" :class="'vpw'+index" draggable="true" @dragstart="onDragstart($event)" @dragend="onDragend($event)" @dragover="onDragover($event)" @drop="onDrop($event)">
                                         <my-video :ref="'player' + index"></my-video>
                                     </div>

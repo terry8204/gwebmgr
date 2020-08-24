@@ -226,6 +226,7 @@ var monitor = {
     data: function() {
         var vm = this;
         return {
+            isDestory: true,
             isMouseoverTop35: false,
             isLuyin: false,
             isShowYunTai: false,
@@ -1430,6 +1431,7 @@ var monitor = {
             }
         },
         handleCleanAllVideos: function() {
+            var me = this;
             var playerIns = this.$refs;
             for (var i = 1; i <= this.videoNumber; i++) {
                 var player = playerIns['player' + i][0];
@@ -1438,6 +1440,12 @@ var monitor = {
                     player.cleanDevicedInfo();
                 }
             }
+
+            this.isDestory = false;
+            setTimeout(function() {
+                me.isDestory = true;
+            }, 30)
+
             this.currentPlayingIndex = 0;
         },
         stopVideoPlayer: function() {

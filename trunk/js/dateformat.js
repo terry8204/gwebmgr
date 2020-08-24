@@ -38,7 +38,7 @@
                     'q+': Math.floor((date.getMonth() + 3) / 3), //季度
                     'S': date.getMilliseconds() //毫秒
                 };
-                if (!this.isNotEmpty(fmt)) {
+                if (!fmt) {
                     fmt = 'yyyy-MM-dd hh:mm:ss';
                 }
                 if (/(y+)/.test(fmt)) {
