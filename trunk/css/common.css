@@ -34,15 +34,6 @@ img {
     user-select: none;
 }
 
-th span .ivu-icon {
-    margin-top: 0px;
-}
-
-#insure-records .search-wrapper .ivu-icon,
-#insure-records .ivu-date-picker-rel .ivu-icon {
-    margin-top: 0px;
-}
-
 ul,
 ol,
 li {
@@ -67,10 +58,6 @@ li {
     width: 4px;
     height: 20px;
     background: #2D8CF0;
-}
-
-.ivu-poptip-inner .ivu-poptip-body .ivu-icon {
-    margin-top: 0px;
 }
 
 .demo-spin-icon-load {
@@ -101,23 +88,11 @@ li {
 
 /* 解决系统参数下所有icon margin 上移3px的问题 */
 
-.system .ivu-icon {
-    margin: 0;
-}
-
 
 /* padding */
 
 .pd-10 {
     padding: 10px;
-}
-
-#app div.map_manager .ivu-poptip-content .ivu-icon {
-    margin-top: -7px;
-}
-
-#app div.map_manager .ivu-poptip-content .ivu-btn .ivu-icon {
-    margin-top: 0px;
 }
 
 
@@ -236,10 +211,6 @@ li {
     overflow-y: auto;
 }
 
-.ivu-select-selection .ivu-icon {
-    margin-top: -7px;
-}
-
 p.last-address,
 p.last-strstatus {
     min-height: 21px;
@@ -248,27 +219,6 @@ p.last-strstatus {
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 2;
     overflow: hidden;
-}
-
-#cmd-report .ivu-table-sort .ivu-icon,
-#posi-report .ivu-table-sort .ivu-icon,
-#mileage-detail .ivu-table-sort .ivu-icon,
-#park-details .ivu-table-sort .ivu-icon,
-#reportonlinesummary .ivu-table-sort .ivu-icon,
-#droplinereport .ivu-table-sort .ivu-icon,
-#deviceonlinedaily .ivu-table-sort .ivu-icon,
-#groupsonlinedaily .ivu-table-sort .ivu-icon,
-#devicemonthonlinedaily .ivu-table-sort .ivu-icon,
-#sales-record .ivu-icon,
-#time-oil-consumption .ivu-icon,
-#day-oil .ivu-icon,
-#insure-records .ivu-table-sort .ivu-icon,
-#temperature .ivu-table-sort .ivu-icon,
-#group-mileage .ivu-table-sort .ivu-icon,
-#querydev .ivu-icon,
-#driver-work-details .ivu-icon,
-#repair-record .ivu-icon {
-    margin-top: 0px;
 }
 
 

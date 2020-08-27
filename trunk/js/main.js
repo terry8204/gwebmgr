@@ -22,7 +22,7 @@ var isPlayAlarmVoice = false;
 
 document.title = isZh ? "车载视频安全预警平台" : "Location video service platform";
 
-
+Vue.use(VTree.VTree);
 // vuex store
 vstore = new Vuex.Store({
     state: {
@@ -434,13 +434,196 @@ Vue.component('my-video', {
     },
     mounted: function() {
         this.init();
-        console.log(this.move);
     },
     template: document.getElementById('video-template').innerHTML
 })
 
 
 
+Vue.component('rule-allocation', {
+    template: document.getElementById('rule-allocation-template').innerHTML,
+    props: {
+        modal: {
+            defaul: false,
+            type: Boolean
+        }
+    },
+    data: function() {
+        return {
+            allocationType: '1',
+            sosoValue1: '',
+            sosoValue2: '',
+            ruleLists1: [],
+            ruleLists2: [],
+            groupLists1: [],
+            groupLists2: [],
+        }
+    },
+    methods: {
+        onVisibleChange: function(e) {
+            if (e == false) {
+                this.$emit('close-model', false);
+            }
+        },
+        onClose: function() {
+            this.$emit('close-model', false);
+        },
+        getGroupLists: function(groups) {
+            var groupLists = [{
+                title: '全部设备',
+                children: [],
+                expanded: true,
+            }];
+            groups.forEach(function(group) {
+                var groupObj = {
+                    title: group.groupname,
+                    children: [],
+                    firstLetter: group.firstLetter,
+                    pinyin: group.pinyin,
+                    groupid: group.groupid,
+                };
+                group.children.forEach(function(device) {
+                    groupObj.children.push({
+                        title: device.devicename,
+                        deviceid: device.deviceid,
+                        firstLetter: device.firstLetter,
+                        pinyin: device.pinyin,
+                    })
+                });
+                if (groupObj.children.length) {
+                    groupLists[0].children.push(groupObj);
+                }
+            })
+            return groupLists;
+        },
+        onSelectRule: function(node) {
+            if (node.children && node.children.length) {
+                this.selectedRule = null;
+                this.$Message.error('请选择具体规则');
+            } else {
+                this.selectedRule = node;
+                this.queryDeviceRulesByRuleid(this.selectedRule.ruledefineid, function(resp) {
+                    console.log(resp);
+                });
+            }
+        },
+        queryDeviceRulesByRuleid: function(ruledefineid, callback) {
+            var url = myUrls.queryDeviceRulesByRuleid();
+            var data = { ruledefineid: ruledefineid };
+            utils.sendAjax(url, data, callback)
+        },
+        onSelectDevice: function(node) {
+            if (node.children && node.children.length) {
+                this.selectedDevice = null;
+                this.$Message.error('请选择具体设备');
+            } else {
+                this.selectedDevice = node;
+                console.log(node)
+            }
+        },
+        settingRuleToDevice: function() {
+            var me = this;
+            if (this.allocationType == '1') {
+                var url = myUrls.saveDeviceRulesByRuleid();
+                var deviceids = [];
+                this.$refs.checkTree1.getCheckedNodes(true, false).forEach(function(item) {
+                    if (!item.children && item.deviceid) {
+                        deviceids.push(item.deviceid)
+                    }
+                })
+                if (this.selectedRule == null) {
+                    this.$Message.error('请选择规则');
+                    return;
+                }
+                if (deviceids.length == 0) {
+                    this.$Message.error('请选择设备');
+                    return;
+                }
+                var data = {
+                    ruledefineid: this.selectedRule.ruledefineid,
+                    deviceids: deviceids
+                };
+                utils.sendAjax(url, data, function(resp) {
+                    if (resp.status == 0) {
+                        me.$Message.success('设置成功');
+                    } else {
+                        me.$Message.error('设置失败');
+                    }
+                });
+            } else if (this.allocationType == '2') {
+                var url = myUrls.saveDeviceRulesByDeviceid();
+                var ruleids = [];
+                this.$refs.checkTree2.getCheckedNodes(true, false).forEach(function(item) {
+                    if (!item.children && item.ruledefineid) {
+                        ruleids.push(item.ruledefineid)
+                    }
+                })
+                if (this.selectedDevice == null) {
+                    this.$Message.error('请选择设备');
+                    return;
+                }
+                if (ruleids.length == 0) {
+                    this.$Message.error('请选择规则');
+                    return;
+                }
+                var data = {
+                    deviceid: this.selectedDevice.deviceid,
+                    ruleids: ruleids
+                };
+                utils.sendAjax(url, data, function(resp) {
+                    if (resp.status == 0) {
+                        me.$Message.success('设置成功');
+                    } else {
+                        me.$Message.error('设置失败');
+                    }
+                });
+            }
+
+        },
+        setRuleLists: function() {
+            var me = this;
+            var url = myUrls.queryRuleDefines();
+            utils.sendAjax(url, {}, function(resp) {
+                if (resp.status === 0) {
+                    var ruleLists = [{
+                        title: "全部规则",
+                        children: [],
+                        expanded: true,
+                    }];
+                    var ruleObj = {};
+                    resp.records.forEach(function(record) {
+                        var ruletype = record.ruletype;
+                        record.title = record.rulename;
+
+                        if (ruleObj[ruletype] == undefined) {
+                            ruleObj[ruletype] = [];
+                        }
+
+                        ruleObj[ruletype].push(record);
+                    });
+                    for (var key in ruleObj) {
+                        ruleLists[0].children.push({
+                            title: ruleTypeNames[key],
+                            children: ruleObj[key],
+                        })
+                    }
+                    me.ruleLists = ruleLists;
+                    me.ruleLists1 = deepClone(ruleLists);
+                    me.ruleLists2 = ruleLists;
+                }
+            });
+        },
+    },
+    mounted: function() {
+        this.ruleLists = null;
+        this.selectedRule = null;
+        this.selectedDevice = null;
+        this.groupLists = this.getGroupLists(vRoot.$children[1].groups);
+        this.groupLists1 = this.groupLists;
+        this.groupLists2 = deepClone(this.groupLists);
+        this.setRuleLists();
+    }
+})
 
 
 
@@ -463,6 +646,7 @@ var appHeader = {
                 { name: "monitor", icon: "md-contacts", title: me.$t("header.monitor"), isShow: true },
                 { name: "reportForm", icon: "ios-paper-outline", title: me.$t("header.reportForm"), isShow: true },
                 { name: "bgManager", icon: "md-settings", title: me.$t("header.bgManager"), isShow: true },
+                { name: "ruleManager", icon: "md-settings", title: '规则管理', isShow: true },
                 { name: "systemParam", icon: "ios-options", title: me.$t("header.systemParam"), isShow: true },
                 { name: "trackDebug", icon: "ios-bug", title: "轨迹调试", isShow: true }
             ],
@@ -584,17 +768,18 @@ var appHeader = {
                 this.headMenuList[2].isShow = false;
                 this.headMenuList[3].isShow = false;
                 this.headMenuList[4].isShow = false;
+                this.headMenuList[5].isShow = false;
                 // this.$emit('change-nav', 'monitor');
             } else if (userType == 0) {
                 // this.headMenuList[0].isShow = false;
                 // this.$emit('change-nav', 'reportForm')
             } else if (userType == 1 || userType == 2) {
-                this.headMenuList[3].isShow = false;
                 this.headMenuList[4].isShow = false;
+                this.headMenuList[5].isShow = false;
                 // this.$emit('change-nav', 'monitor')
             } else {
-                this.headMenuList[3].isShow = false;
                 this.headMenuList[4].isShow = false;
+                this.headMenuList[5].isShow = false;
 
             }
             // console.log(this.headMenuList);
@@ -1009,7 +1194,8 @@ var vRoot = new Vue({
         reportForm: reportForm,
         waringComponent: waringComponent,
         systemParam: systemParam,
-        trackDebug: trackDebug
+        trackDebug: trackDebug,
+        ruleManager: ruleManager
     },
     mounted: function() {
         // this.isShowAlarm = this.userType == 0 ? false : true;

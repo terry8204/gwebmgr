@@ -38,25 +38,8 @@ div.view-wraper {
 
 /* icon位置 */
 
-.ivu-input-number-handler-wrap .ivu-icon,
-.full .ivu-input-number-handler-wrap .ivu-icon,
-.full .ivu-tag .ivu-icon,
-.ivu-input-type .ivu-icon,
-div.ivu-tree .ivu-icon,
-.full .ivu-btn-default .ivu-icon {
-    margin-top: 0px;
-}
-
-#add-directive-wraper .ivu-select-selection .ivu-icon {
-    margin-top: -6px;
-}
-
 .ivu-tree ul {
     font-size: 14px;
-}
-
-div.ivu-steps-head-inner .ivu-icon {
-    margin-top: -1px;
 }
 
 #adddevice div.ivu-steps-title,
@@ -126,18 +109,6 @@ div.site_links ul li span {
 
 
 /* 监控开始 */
-
-span .ivu-icon {
-    margin-top: -2px;
-}
-
-.ivu-row .ivu-input-wrapper .ivu-icon {
-    margin-top: 0px;
-}
-
-div.full .ivu-page .ivu-icon {
-    margin-top: 0px;
-}
 
 div.monitor-wraper {
     width: 100%;
@@ -694,10 +665,6 @@ ul.ul-manager-wraper li.gongju {
 
 /* 报表css开始 */
 
-div.report-left-wrap .ivu-icon {
-    margin-top: -3px;
-}
-
 div.report-wraper {
     position: relative;
 }
@@ -754,16 +721,68 @@ div.mar-view {
     overflow-y: auto;
 }
 
-.ivu-icon {
-    margin-top: -3px;
-}
-
-.full .ivu-icon {
-    margin-top: -7px;
-}
-
 
 /* 后台管理结束 */
+
+
+/* 规则管理  开始*/
+
+div.rule-wrapper {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+div.rule-nav {
+    left: 0;
+    width: 240px;
+    bottom: 0;
+    top: 0;
+    background: #FFFFFF;
+    overflow-y: auto;
+    overflow-x: hidden;
+    position: absolute;
+}
+
+div.rule-view {
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 240px;
+    position: absolute;
+}
+
+div.rule-view>div {
+    width: 100%;
+    height: 100%;
+}
+
+div.rule-view>div>div.rule-header {
+    height: 50px;
+    border: 1px solid transparent;
+    padding: 8px 0;
+}
+
+div.rule-view>div>div.rule-header>ul {
+    height: 32px;
+    padding: 0 0 0 8px;
+}
+
+div.rule-view>div>div.rule-header>ul li {
+    margin-right: 10px;
+    line-height: 32px;
+}
+
+div.rule-view>div>div.rule-table {
+    position: absolute;
+    top: 50px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+
+/* 规则管理 结束 */
 
 
 /* 轨迹debug */

@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="css/ol.css">
     <link rel="stylesheet" href="css/icon/iconfont.css">
     <link rel="stylesheet" href="./videojs/bin.css">
+    <link rel="stylesheet" href="./css/halower-tree.min.css">
     <script src="js/js.cookie.min.js"></script>
     <script src="js/polyfill.min.js"></script>
     <script>
@@ -2440,6 +2441,23 @@
         </div>
     </script>
 
+    <!-- 规则 -->
+    <script type="text/x-template" id="rule-template">
+        <div class='rule-wrapper'>
+            <div class='rule-nav'>
+                <i-menu :theme="theme" @on-select="selectditem" :active-name="activeName">
+                    <template v-for="(item,idx) in navList">
+                        <MenuItem :name="item.name" :key="idx">
+                            <Icon :type="item.icon"></Icon>
+                            {{item.title}}
+                        </MenuItem>
+                    </template>
+                </i-menu>
+            </div>
+            <div class='rule-view' id="rule-view"></div>
+        </div>
+    </script>
+
     <!-- 报警 -->
     <script type="text/x-template" id="waring-template">
         <div class="waring-wraper" :style="waringWraperStyle" v-if="activeComponent !== 'trackDebug'">
@@ -2542,6 +2560,61 @@
         </Dropdown>
     </script>
 
+    <script type="text/x-template" id="rule-allocation-template">
+        <Modal v-model="modal" width="700" @on-visible-change="onVisibleChange">
+            <p slot="header" style="color:#f60;text-align:center;height:32px;">
+                <RadioGroup v-model="allocationType" type="button">
+                    <Radio label="1">
+                        <Icon type="md-settings"></Icon>
+                        <span>按规则分配</span>
+                    </Radio>
+                    <Radio label="2">
+                        <Icon type="md-tablet-portrait"></Icon>
+                        <span>按设备分配</span>
+                    </Radio>
+                </RadioGroup>
+            </p>
+            <Row>
+                <i-Col span="12" style="padding-left:15px">
+                    <i-input v-model.trim="sosoValue1" style="width:240px">
+                        <Icon type="ios-search-outline" slot="prepend"></Icon>
+                    </i-input>
+                </i-Col>
+                <i-Col span="12" style="padding-left:15px">
+                    <i-input v-model.trim="sosoValue2" style="width:240px">
+                        <Icon type="ios-search-outline" slot="prepend"></Icon>
+                    </i-input>
+                </i-Col>
+            </Row>
+            <div v-if="allocationType=='1'">
+                <Row>
+                    <i-Col span="12" style="height:420px;overflow-y: auto;">
+                        <v-tree :data="ruleLists1" radio @node-select="onSelectRule"></v-tree>
+                    </i-Col>
+                    <i-Col span="12" style="height:420px;overflow-y: auto;">
+                        <v-tree :data="groupLists1" multiple ref="checkTree1"></v-tree>
+                    </i-Col>
+                </Row>
+            </div>
+            <div v-if="allocationType=='2'">
+                <Row>
+                    <i-Col span="12" style="height:420px;overflow-y: auto;">
+                        <v-tree :data="groupLists2" radio @node-select="onSelectDevice"></v-tree>
+                    </i-Col>
+                    <i-Col span="12" style="height:420px;overflow-y: auto;">
+                        <v-tree :data="ruleLists2" multiple ref="checkTree2"></v-tree>
+                    </i-Col>
+                </Row>
+            </div>
+            <div slot="footer" style="text-align:center">
+                <i-button type="error" @click="onClose" style="width: 160px">关闭</i-button>
+                <i-button type="primary" @click="settingRuleToDevice" style="width: 160px">确定</i-button>
+            </div>
+        </Modal>
+    </script>
+
+
+
 
 
     <script type="text/x-template" id="video-template">
@@ -2603,10 +2676,12 @@
     <script src="js/monitor.js"></script>
     <script src="js/reportform.js"></script>
     <script src="js/bgmanager.js"></script>
+    <script src="js/rulemgr.js"></script>
     <script src="js/alarmcomponent.js"></script>
     <script src="js/xlsx.full.min.js"></script>
     <script src="js/echarts.min.js"></script>
     <script src="./js/flv.min.js"></script>
+    <script src="./js/v2-tree.js"></script>
     <script src="js/main.js"></script>
 </body>
 

@@ -693,6 +693,36 @@ var myUrls = {
         return this.apihosts + 'webapi?action=' + action + '&token=' + token;
     },
 
+    // 规则
+    addRuleDefine: function() {
+        // String ruletype;//规则分类' ,
+        // String rulename;//规则名字' ,
+        // String ruleparamjson;//规则设置参数' json对象的字符串
+        return this.apihosts + 'webapi?action=addruledefine&token=' + token;
+    },
+    queryRuleDefines: function() {
+        return this.apihosts + 'webapi?action=queryruledefines&token=' + token;
+    },
+    deleteRuleDefine: function() {
+        return this.apihosts + 'webapi?action=deleteruledefine&token=' + token;
+    },
+    editRuleDefine: function() {
+        return this.apihosts + 'webapi?action=editruledefine&token=' + token;
+    },
+    saveDeviceRulesByRuleid: function() {
+        return this.apihosts + 'webapi?action=savedevicerulesbyruleid&token=' + token;
+    },
+    saveDeviceRulesByDeviceid: function() {
+        return this.apihosts + 'webapi?action=savedevicerulesbydeviceid&token=' + token;
+    },
+    queryDeviceRulesByDeviceId: function() {
+        return this.apihosts + 'webapi?action=querydevicerulesbydeviceid&token=' + token;
+    },
+    queryDeviceRulesByRuleid: function() {
+        return this.apihosts + 'webapi?action=querydevicerulesbyruleid&token=' + token;
+    },
+
+
 }
 
 

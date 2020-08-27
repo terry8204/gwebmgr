@@ -17862,3 +17862,13 @@ provinceList.forEach(function(province) {
         city.children = areaList[city.value]
     })
 })
+
+// provinceList.forEach(function(province) {
+//     province.title = province.label;
+//     province.children.forEach(function(city) {
+//         city.title = city.label;
+//         city.children.forEach(function(area) {
+//             area.title = area.label;
+//         })
+//     })
+// })
