@@ -460,6 +460,109 @@ Vue.component('rule-allocation', {
         }
     },
     methods: {
+        onSearchChange1: function() {
+            var me = this;
+            var sosoValue1 = this.sosoValue1.trim();
+            if (this.timeoutIns1 != null) {
+                clearTimeout(this.timeoutIns1);
+            }
+
+            this.timeoutIns1 = setTimeout(function() {
+                if (me.allocationType == '1') {
+                    me.ruleLists1 = me.getFilterRules(sosoValue1);
+                } else {
+                    me.groupLists2 = me.getFilterGroupLists(sosoValue1);
+                }
+
+            }, 300);
+        },
+        onSearchChange2: function() {
+            var me = this;
+            var sosoValue2 = this.sosoValue2.trim();
+
+            if (this.timeoutIns2 != null) {
+                clearTimeout(this.timeoutIns2);
+            }
+
+            this.timeoutIns2 = setTimeout(function() {
+                if (me.allocationType == '1') {
+                    me.groupLists1 = me.getFilterGroupLists(sosoValue2);
+                } else {
+                    me.ruleLists2 = me.getFilterRules(sosoValue2);
+                }
+            }, 300);
+        },
+        getFilterRules: function(value) {
+            if (value != '') {
+                var ruleLists = [{
+                    title: "全部规则",
+                    children: [],
+                    expanded: true,
+                }];
+                this.ruleLists[0].children.forEach(function(ruleGroup) {
+                    var newRuleGroup = deepClone(ruleGroup);
+                    if (ruleGroup.firstLetter.indexOf(value) > -1 || ruleGroup.pinyin.indexOf(value) > -1 || ruleGroup.title.indexOf(value) > -1) {
+                        ruleGroup.expanded = true;
+                        ruleLists[0].children.push(newRuleGroup);
+                    } else {
+                        newRuleGroup.children = [];
+                        ruleGroup.children.forEach(function(rule) {
+                            if (rule.firstLetter.indexOf(value) > -1 || rule.pinyin.indexOf(value) > -1 || rule.title.indexOf(value) > 0) {
+                                newRuleGroup.children.push(deepClone(rule))
+                            }
+                        });
+                        if (newRuleGroup.children.length) {
+                            newRuleGroup.expanded = true;
+                            ruleLists[0].children.push(newRuleGroup);
+                        }
+                    }
+                })
+            } else {
+                ruleLists = deepClone(this.ruleLists)
+            }
+            return ruleLists;
+        },
+        getFilterGroupLists: function(value) {
+            if (value != '') {
+                var groupLists = [{
+                    title: '全部设备',
+                    children: [],
+                    expanded: true,
+                }];
+                this.groupLists[0].children.forEach(function(group) {
+                    if (group.title.indexOf(value) > -1 || group.pinyin.indexOf(value) > -1 || group.firstLetter.indexOf(value) > -1) {
+                        var newGroup = deepClone(group);
+                        newGroup.expanded = true;
+                        groupLists[0].children.push(newGroup);
+                    } else {
+                        var groupObj = {
+                            title: group.title,
+                            children: [],
+                            firstLetter: group.firstLetter,
+                            pinyin: group.pinyin,
+                            groupid: group.groupid,
+                            expanded: true,
+                        };
+                        group.children.forEach(function(device) {
+                            if (device.title.indexOf(value) > -1 || device.pinyin.indexOf(value) > -1 || device.firstLetter.indexOf(value) > -1) {
+                                groupObj.children.push({
+                                    title: device.title,
+                                    deviceid: device.deviceid,
+                                    firstLetter: device.firstLetter,
+                                    pinyin: device.pinyin,
+                                })
+                            }
+                        });
+                        if (groupObj.children.length) {
+                            groupLists[0].children.push(groupObj);
+                        }
+                    }
+                })
+                return groupLists;
+            } else {
+                return deepClone(this.groupLists);
+            }
+        },
         onVisibleChange: function(e) {
             if (e == false) {
                 this.$emit('close-model', false);
@@ -496,29 +599,72 @@ Vue.component('rule-allocation', {
             })
             return groupLists;
         },
+        queryDeviceRulesByRuleid: function(ruledefineid, callback) {
+            var url = myUrls.queryDeviceRulesByRuleid();
+            var data = { ruledefineid: ruledefineid };
+            utils.sendAjax(url, data, callback)
+        },
+        queryDeviceRulesByDeviceId: function(deviceid, callback) {
+            var url = myUrls.queryDeviceRulesByDeviceId();
+            var data = { deviceid: deviceid };
+            utils.sendAjax(url, data, callback)
+        },
         onSelectRule: function(node) {
+            var me = this;
             if (node.children && node.children.length) {
                 this.selectedRule = null;
                 this.$Message.error('请选择具体规则');
             } else {
                 this.selectedRule = node;
                 this.queryDeviceRulesByRuleid(this.selectedRule.ruledefineid, function(resp) {
-                    console.log(resp);
+                    var devices = resp.devices;
+                    if (resp.status == 0 && devices) {
+                        var groupLists = deepClone(me.groupLists);
+                        devices.forEach(function(device) {
+                            var deviceid = device.deviceid;
+                            groupLists[0].children.forEach(function(group) {
+                                var isFound = false;
+                                group.children.forEach(function(item) {
+                                    if (item.deviceid == deviceid) {
+                                        item.checked = true;
+                                        isFound = true;
+                                    }
+                                })
+                                isFound && (group.expanded = true);
+                            })
+                        })
+                        me.groupLists1 = groupLists;
+                    }
                 });
             }
         },
-        queryDeviceRulesByRuleid: function(ruledefineid, callback) {
-            var url = myUrls.queryDeviceRulesByRuleid();
-            var data = { ruledefineid: ruledefineid };
-            utils.sendAjax(url, data, callback)
-        },
         onSelectDevice: function(node) {
+            var me = this;
             if (node.children && node.children.length) {
                 this.selectedDevice = null;
                 this.$Message.error('请选择具体设备');
             } else {
                 this.selectedDevice = node;
-                console.log(node)
+                this.queryDeviceRulesByDeviceId(this.selectedDevice.deviceid, function(resp) {
+                    var rules = resp.rules;
+                    if (resp.status == 0 && rules) {
+                        var ruleLists = deepClone(me.ruleLists);
+                        rules.forEach(function(rule) {
+                            var ruledefineid = rule.ruledefineid;
+                            ruleLists[0].children.forEach(function(ruleGroup) {
+                                var isFound = false;
+                                ruleGroup.children.forEach(function(rule) {
+                                    if (rule.ruledefineid == ruledefineid) {
+                                        rule.checked = true;
+                                        isFound = true;
+                                    }
+                                })
+                                isFound && (ruleGroup.expanded = true);
+                            })
+                        })
+                        me.ruleLists2 = ruleLists;
+                    }
+                });
             }
         },
         settingRuleToDevice: function() {
@@ -592,9 +738,12 @@ Vue.component('rule-allocation', {
                     }];
                     var ruleObj = {};
                     resp.records.forEach(function(record) {
+                        var firstLetter = __pinyin.getFirstLetter(record.rulename);
+                        var pinyin = __pinyin.getPinyin(record.rulename);
                         var ruletype = record.ruletype;
                         record.title = record.rulename;
-
+                        record.firstLetter = firstLetter;
+                        record.pinyin = pinyin;
                         if (ruleObj[ruletype] == undefined) {
                             ruleObj[ruletype] = [];
                         }
@@ -602,9 +751,12 @@ Vue.component('rule-allocation', {
                         ruleObj[ruletype].push(record);
                     });
                     for (var key in ruleObj) {
+                        var title = ruleTypeNames[key];
                         ruleLists[0].children.push({
-                            title: ruleTypeNames[key],
+                            title: title,
                             children: ruleObj[key],
+                            firstLetter: __pinyin.getFirstLetter(title),
+                            pinyin: __pinyin.getPinyin(title),
                         })
                     }
                     me.ruleLists = ruleLists;
@@ -613,15 +765,21 @@ Vue.component('rule-allocation', {
                 }
             });
         },
+        init: function() {
+            this.allocationType = '1';
+            this.timeoutIns1 = null;
+            this.timeoutIns2 = null;
+            this.ruleLists = null;
+            this.selectedRule = null;
+            this.selectedDevice = null;
+            this.groupLists = this.getGroupLists(vRoot.$children[1].groups);
+            this.groupLists1 = this.groupLists;
+            this.groupLists2 = deepClone(this.groupLists);
+            this.setRuleLists();
+        }
     },
     mounted: function() {
-        this.ruleLists = null;
-        this.selectedRule = null;
-        this.selectedDevice = null;
-        this.groupLists = this.getGroupLists(vRoot.$children[1].groups);
-        this.groupLists1 = this.groupLists;
-        this.groupLists2 = deepClone(this.groupLists);
-        this.setRuleLists();
+        this.init();
     }
 })
 

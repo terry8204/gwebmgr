@@ -2576,12 +2576,12 @@
             </p>
             <Row>
                 <i-Col span="12" style="padding-left:15px">
-                    <i-input v-model.trim="sosoValue1" style="width:240px">
+                    <i-input v-model.trim="sosoValue1" style="width:240px" @on-change="onSearchChange1">
                         <Icon type="ios-search-outline" slot="prepend"></Icon>
                     </i-input>
                 </i-Col>
                 <i-Col span="12" style="padding-left:15px">
-                    <i-input v-model.trim="sosoValue2" style="width:240px">
+                    <i-input v-model.trim="sosoValue2" style="width:240px" @on-change="onSearchChange2">
                         <Icon type="ios-search-outline" slot="prepend"></Icon>
                     </i-input>
                 </i-Col>
@@ -2592,7 +2592,7 @@
                         <v-tree :data="ruleLists1" radio @node-select="onSelectRule"></v-tree>
                     </i-Col>
                     <i-Col span="12" style="height:420px;overflow-y: auto;">
-                        <v-tree :data="groupLists1" multiple ref="checkTree1"></v-tree>
+                        <v-tree :data="groupLists1" multiple ref="checkTree1" :halfcheck='true'></v-tree>
                     </i-Col>
                 </Row>
             </div>

@@ -5,14 +5,14 @@
         </p>
         <Row style="margin: 5px 0">
             <i-col span="3" :offset="1" style="height: 100%;text-align:right;line-height:32px;">规则名称 :</i-col>
-            <i-col span="16" :offset="1">
-                <i-input v-model.trim="ruleName"></i-input>
+            <i-col span="19" :offset="1">
+                <i-input v-model.trim="ruleName" style="width: 345px;"></i-input>
             </i-col>
         </Row>
         <Row style="margin: 5px 0">
             <i-col span="3" :offset="1" style="height: 100%;text-align:right;line-height:32px;">最高时速 :</i-col>
             <i-col span="6" :offset="1">
-                <Input-Number :max="180" v-model="maxspeed" :formatter="value => `${value}km/h`" :parser="value => value.replace('km/h', '')"></Input-Number>
+                <Input-Number :max="180" v-model="maxspeed" :formatter="value => `${value}km/h`" :parser="value => value.replace('km/h', '')" style="width: 100%;"></Input-Number>
             </i-col>
             <i-col span="3" :offset="1" style="height: 100%;text-align:right;line-height:32px;">开始时间 :</i-col>
             <i-col span="6" :offset="1">
@@ -42,11 +42,11 @@
         <Row style="margin: 5px 0" v-if="isCapture">
             <i-col span="3" :offset="1" style="height: 100%;text-align:right;line-height:32px;">拍照张数 :</i-col>
             <i-col span="6" :offset="1">
-                <Input-Number :max="100"></Input-Number>
+                <Input-Number :max="100" style="width: 100%;"></Input-Number>
             </i-col>
             <i-col span="3" :offset="1" style="height: 100%;text-align:right;line-height:32px;">拍照间隔 :</i-col>
             <i-col span="6" :offset="1">
-                <Input-Number :max="100" v-model="takeinterval" :formatter="value => `${value}分`" :parser="value => value.replace('分', '')"></Input-Number>
+                <Input-Number :max="100" v-model="takeinterval" :formatter="value => `${value}分`" :parser="value => value.replace('分', '')" style="width: 100%;"></Input-Number>
             </i-col>
         </Row>
 
@@ -80,7 +80,7 @@
         <Row style="margin: 5px 0">
             <i-col span="3" :offset="1" style="height: 100%;text-align:right;line-height:32px;">语音提示 :</i-col>
             <i-col span="16" :offset="1">
-                <i-input v-model.trim="ttscontent"></i-input>
+                <i-input v-model.trim="ttscontent" style="width: 345px;"></i-input>
             </i-col>
         </Row>
         <Row style="margin: 5px 0">
@@ -96,7 +96,7 @@
             <i-button type="primary" @click="onSettingRule" style="width:100%;">确定</i-button>
         </p>
     </Modal>
-    <rule-allocation :modal="allocationModal" @close-model="onClose"></rule-allocation>
+    <rule-allocation :modal="allocationModal" @close-model="onClose" ref="ruleAllocation"></rule-allocation>
     <div class="rule-header">
         <ul>
             <li style="float: left;">规则名称 :</li>
@@ -121,7 +121,7 @@
         </ul>
     </div>
     <div class="rule-table">
-        <i-table :columns="columnsList" highlight-row :data="tableData" :height="taleHeight" @on-current-change="onCurrentChange" :loading="loading"></i-table>
+        <i-table :columns="columnsList" highlight-row :data="tableData" :height="taleHeight" @on-current-change="onCurrentChange" @on-row-dblclick="onDblclickCurrentChange" :loading="loading"></i-table>
     </div>
 
     <script>
@@ -141,7 +141,7 @@
                 ttscontent: '',
                 caramers: [],
                 ruleModal: false,
-                allocationModal: true,
+                allocationModal: false,
                 loading: false,
                 sosoValue: '',
                 columnsList: [{
@@ -205,7 +205,6 @@
                     this.ruleModal = true;
                 },
                 deleteRule: function() {
-
                     if (this.selectedRow) {
                         var me = this;
                         this.$Modal.confirm({
@@ -227,6 +226,7 @@
                                         });
                                         me.tableData.splice(index, 1);
                                         me.selectedRow = null;
+                                        me.$refs.ruleAllocation.init();
                                     } else {
                                         me.$Message.error('删除失败');
                                     }
@@ -236,6 +236,10 @@
                     } else {
                         this.$Message.error('请选择一行规则')
                     }
+                },
+                onDblclickCurrentChange: function(row) {
+                    this.selectedRow = row;
+                    this.exitRule();
                 },
                 exitRule: function() {
                     if (this.selectedRow) {
@@ -251,15 +255,9 @@
                         this.ttscontent = row.ttscontent;
 
                         var ttstypes = [];
-                        utils.longToBits(Number(row.ttstypes), 4).reverse().forEach(function(item, index) {
-                            if (item && index == 0) {
-                                ttstypes.push('0');
-                            } else if (item && index == 1) {
-                                ttstypes.push('2');
-                            } else if (item && index == 2) {
-                                ttstypes.push('3');
-                            } else if (item && index == 3) {
-                                ttstypes.push('4');
+                        utils.longToBits(Number(row.ttstypes), 8).reverse().forEach(function(item, index) {
+                            if (item) {
+                                ttstypes.push(String(index));
                             }
                         });
                         this.ttstypes = ttstypes;
@@ -290,7 +288,6 @@
                     return utils.bitsToULong(arrBits.reverse());
                 },
                 getTtstypes: function(ttstypes) {
-                    console.log(ttstypes);
                     var arrBits = new Array(8).fill(false);
                     ttstypes.forEach(function(item) {
                         var index = Number(item);
@@ -338,6 +335,7 @@
                                 me.$Message.success('添加成功');
                                 me.ruleModal = false;
                                 me.queryRuleDefines();
+                                me.$refs.ruleAllocation.init();
                             } else {
                                 me.$Message.error('添加失败');
                             }
@@ -391,16 +389,12 @@
                 getTtstypesStr: function(ttstypes) {
                     var str = '';
                     if (ttstypes) {
-                        var ttstypes = utils.longToBits(Number(ttstypes), 4).reverse();
+                        var ttstypes = utils.longToBits(Number(ttstypes), 8).reverse();
+                        console.log('ttstypes', ttstypes);
+                        var ttsShowStr = ["紧急", "", "显示器显示", "TTS播读", "广告屏显示", "", "", ""];
                         ttstypes.forEach(function(type, index) {
-                            if (type && index == 0) {
-                                str += '紧急';
-                            } else if (type && index == 1) {
-                                str += ',显示器显示';
-                            } else if (type && index == 2) {
-                                str += ',TTS播读';
-                            } else if (type && index == 3) {
-                                str += ',广告屏显示';
+                            if (type) {
+                                str += ttsShowStr[index] + " ";
                             }
                         });
                     }
