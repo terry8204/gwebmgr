@@ -274,7 +274,6 @@ var waringComponent = {
                     emergencyAlarmList.push(item);
                 }
             });
-            console.log('alarmList',alarmList)
             me.waringRecords = alarmList;
             me.emergencyAlarmList = emergencyAlarmList;
         },
