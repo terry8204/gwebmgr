@@ -474,14 +474,15 @@ var waringComponent = {
             // result = alarm & gForcealarm;
             if(alarmBitsStr  && gForcealarm)
             {
+               
                 var alarmLength = alarmBitsStr.length;
                 var gForcealarmLength = gForcealarm.length;
                 var minLength = Math.min(alarmLength, gForcealarmLength);
                 for(var i = 0; i < minLength; ++i)
                 {
-                    var alarmBit = alarmBitsStr.charAt[i];
-                    var forceAlarmBit = gForcealarm.charAt[i];
-                    if(forceAlarmBit == 1 && alarmBit == 1)
+                    var alarmBit = alarmBitsStr.charAt(i);
+                    var forceAlarmBit = gForcealarm.charAt(i);
+                    if(forceAlarmBit == '1' && alarmBit == '1')
                     {
                         result = true;
                         break;
