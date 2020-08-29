@@ -2755,6 +2755,9 @@ var monitor = {
             oldPositionLast.status = newPositionLast.status;
             oldPositionLast.strstatus = newPositionLast.strstatus;
             oldPositionLast.strstatusen = newPositionLast.strstatusen;
+            
+            oldPositionLast.strvideoalarm = newPositionLast.strvideoalarm;
+            oldPositionLast.strvideoalarmen = newPositionLast.strvideoalarmen;
 
             oldPositionLast.alarm = newPositionLast.alarm;
             oldPositionLast.stralarm = newPositionLast.stralarm;
