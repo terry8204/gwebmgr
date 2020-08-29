@@ -2,7 +2,7 @@
 var isShowCompany = Cookies.get('isShowCompany');
 var communicate = new Vue({}); // 组件之间通信的vue实例
 var userName = Cookies.get('name');
-var gForcealarm = Cookies.get("forcealarm");
+var gForcealarm = Cookies.get("forcealarm") == undefined ? '0000000000000000000000000000' : Cookies.get("forcealarm") ;
 var isZh = utils.locale === 'zh';
 var mapType = utils.getMapType();
 var isLoadBMap = false;
@@ -18,6 +18,7 @@ var isToPhoneAlarmRecords = false;
 var isNeedRefreshMapUI = false;
 var timeDifference = DateFormat.getOffset();
 var voiceQueue = []; //语音报警队列
+var alarmTypeList = []; //全部报警类型
 var isPlayAlarmVoice = false;
 
 document.title = isZh ? "车载视频安全预警平台" : "Location video service platform";

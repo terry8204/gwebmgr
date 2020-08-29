@@ -784,6 +784,10 @@ div.rule-view>div>div.rule-table {
 
 /* 规则管理 结束 */
 
+.ivu-menu-item>i {
+    margin-top: -3px;
+}
+
 
 /* 轨迹debug */
 

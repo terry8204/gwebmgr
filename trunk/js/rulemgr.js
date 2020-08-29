@@ -1,8 +1,10 @@
 var ruleTypes = {
     chaosu: "overspeed",
+    liandong: "linkalarm",
 }
 var ruleTypeNames = {
     overspeed: "超速规则",
+    linkalarm: "联动报警",
 }
 
 var ruleMixIn = {
@@ -34,6 +36,10 @@ var ruleManager = {
                 title: '超速规则',
                 name: 'chaosuRule',
                 icon: 'ios-speedometer',
+            }, {
+                title: '联动报警',
+                name: 'linkageAlarm',
+                icon: 'ios-analytics',
             }]
         };
     },
@@ -44,6 +50,9 @@ var ruleManager = {
             switch (name) {
                 case 'chaosuRule':
                     page = 'exceedspeed.html'
+                    break
+                case 'linkageAlarm':
+                    page = 'linkagealarm.html'
                     break
             };
             this.currentPage = name;

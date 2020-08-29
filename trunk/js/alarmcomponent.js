@@ -65,9 +65,8 @@ var waringComponent = {
         },
         settingModal: function(newVal) {
             if (newVal) {
-                var arr = utils.longToBits(Number(gForcealarm), 63).reverse();
-                for (var key in this.checkboxObj) {
-                    this.checkboxObj[key] = arr[key];
+                for(var i = 0 ; i < 63;i++){
+                    this.checkboxObj[i] = gForcealarm.charAt(i) == '1'? true : false;
                 }
             }
         },
@@ -127,16 +126,16 @@ var waringComponent = {
             }
         },
         getForceAlarmData: function() {
-            var arr = [];
+            var str = "";
             for (var i = 0; i < 64; i++) {
                 var val = this.checkboxObj[i];
-                if (val !== null && val !== undefined) {
-                    arr.push(val)
+                if (val) {
+                    str += "1";
                 } else {
-                    arr.push(false)
+                    str += "0";
                 }
             }
-            return utils.bitsToULong(arr.reverse());
+            return str;
         },
         setAlarmAction: function() {
             var alarmaction = Number(Cookies.get("alarmaction"));
@@ -225,7 +224,7 @@ var waringComponent = {
             if (records && records.length) {
                 for (var i = 0; i < records.length; i++) {
                     var item = records[i];
-                    if (me.isNeedForceAlarm(item.alarm)) {
+                    if (me.isNeedForceAlarm(item.alarmbitsstr)) {
                         if (me.isMute) {
                             audio.play().then(function() {
                                 console.log('可以自动播放')
@@ -270,10 +269,12 @@ var waringComponent = {
                         item.isdispose = item.disposestatus === 0 ? "Untreated" : "Handled";
                     }
                 };
-                if (item.alarm & gForcealarm) {
+                if (me.isNeedForceAlarm(item.alarmbitsstr)) {
+                
                     emergencyAlarmList.push(item);
                 }
             });
+            console.log('alarmList',alarmList)
             me.waringRecords = alarmList;
             me.emergencyAlarmList = emergencyAlarmList;
         },
@@ -430,7 +431,8 @@ var waringComponent = {
             var url = myUrls.queryAlarmDescr()
             utils.sendAjax(url, {}, function(resp) {
                 if (resp.status == 0) {
-                    var records = resp.records
+                    var records = resp.records;
+                    alarmTypeList = resp.records;
                     records.forEach(function(item, index) {
                         if (index % 3 == 0) {
                             var newArr = [];
@@ -468,9 +470,25 @@ var waringComponent = {
             });
             return list;
         },
-        isNeedForceAlarm: function(alarm) {
+        isNeedForceAlarm: function(alarmBitsStr) {
             var result = false;
-            result = alarm & gForcealarm;
+            // result = alarm & gForcealarm;
+            if(alarmBitsStr  && gForcealarm)
+            {
+                var alarmLength = alarmBitsStr.length;
+                var gForcealarmLength = gForcealarm.length;
+                var minLength = Math.min(alarmLength, gForcealarmLength);
+                for(var i = 0; i < minLength; ++i)
+                {
+                    var alarmBit = alarmBitsStr.charAt[i];
+                    var forceAlarmBit = gForcealarm.charAt[i];
+                    if(forceAlarmBit == 1 && alarmBit == 1)
+                    {
+                        result = true;
+                        break;
+                    }
+                }
+            }
             return result;
         }
     },
@@ -786,7 +804,6 @@ var waringComponent = {
     },
     mounted: function() {
         var me = this;
-        // if (this.userType) {
         this.alarmMgr = new AlarmMgr();
         this.queryDeviceMsgList();
         this.timingRequestMsg();
@@ -796,16 +813,8 @@ var waringComponent = {
         communicate.$on("remindmsg", function(data) {
             me.alarmMgr.addRecord(data);
             me.refreshAlarmToUi();
-            if (me.isNeedForceAlarm(data.alarm)) {
+            if (me.isNeedForceAlarm(data.alarmbitsstr)) {
                 if (me.isMute) {
-                    // for (var i = 0; i < data.actionloopcount; i++) {
-                    //     voiceQueue.push(data.devicename + data.stralarm);
-                    // }
-                    // if (voiceQueue.length > 0) {
-                    //     if (isPlayAlarmVoice == false) {
-                    //         // utils.playTextVoice(voiceQueue.shift());
-                    //     }
-                    // }
                     audio.play().then(function() {
                         console.log('可以自动播放')
                     }).catch(function(err) {

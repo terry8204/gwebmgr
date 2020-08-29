@@ -322,7 +322,8 @@ var utils = {
         for (var i = 0; i < len; i++) {
             result[len - 1 - i] = (temp % 2 == 1);
             // result[i] = (temp % 2 == 1);
-            temp = temp >> 1;
+            //temp = temp >> 1;
+            temp = parseInt(temp / 2);
         }
         return result;
     },

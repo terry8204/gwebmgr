@@ -1,95 +1,78 @@
-<div class="chaosu-wrap" id="chaosu">
+<div class="chaosu-wrap" id="linkage-alarm">
     <Modal v-model="ruleModal" style="width:600px">
         <p slot="header" style="color:#f60;text-align: center;">
-            <span>超速规则维护</span>
+            <span>报警联动规则</span>
         </p>
         <Row style="margin: 5px 0">
-            <i-col span="3" :offset="1" style="height: 100%;text-align:right;line-height:32px;">规则名称 :</i-col>
-            <i-col span="19" :offset="1">
-                <i-input v-model.trim="ruleName" style="width: 345px;"></i-input>
+            <i-col span="9" style="height: 320px;overflow-y: auto;">
+                <div v-for="(item,index) in alarmTypeList" :key="index">
+                    <Checkbox v-model="checkboxObj[index]">{{item.alarmname}}</Checkbox>
+                </div>
             </i-col>
-        </Row>
-        <Row style="margin: 5px 0">
-            <i-col span="3" :offset="1" style="height: 100%;text-align:right;line-height:32px;">最高时速 :</i-col>
-            <i-col span="6" :offset="1">
-                <Input-Number :max="180" :min="0" v-model="maxspeed" :formatter="value => `${value}km/h`" :parser="value => value.replace('km/h', '')" style="width: 100%;"></Input-Number>
-            </i-col>
-            <i-col span="3" :offset="1" style="height: 100%;text-align:right;line-height:32px;">开始时间 :</i-col>
-            <i-col span="6" :offset="1">
-                <Time-Picker format="HH:mm" v-model="starttime"></Time-Picker>
-            </i-col>
-        </Row>
-        <Row style="margin: 5px 0">
-            <i-col span="3" :offset="1" style="height: 100%;text-align:right;line-height:32px;">持续时间 :</i-col>
-            <i-col span="6" :offset="1">
-                <Time-Picker type="time" v-model="durationtime"></Time-Picker>
-            </i-col>
-            <i-col span="3" :offset="1" style="height: 100%;text-align:right;line-height:32px;">结束时间 :</i-col>
-            <i-col span="6" :offset="1">
-                <Time-Picker format="HH:mm" v-model="endtime"></Time-Picker>
-            </i-col>
-        </Row>
-        <Row style="margin: 5px 0">
-            <i-col span="3" :offset="1" style="height: 100%;text-align:right;line-height:32px;">是否拍照 :</i-col>
-            <i-col span="6" :offset="1" style="height: 100%;line-height:32px;">
-                <Checkbox v-model='isCapture'></Checkbox>
-            </i-col>
-            <i-col span="3" :offset="1" style="height: 100%;text-align:right;line-height:32px;">是否报警 :</i-col>
-            <i-col span="6" :offset="1" style="height: 100%;line-height:32px;">
-                <Checkbox v-model='isReportalarm'></Checkbox>
-            </i-col>
-        </Row>
-        <Row style="margin: 5px 0" v-if="isCapture">
-            <i-col span="3" :offset="1" style="height: 100%;text-align:right;line-height:32px;">拍照张数 :</i-col>
-            <i-col span="6" :offset="1">
-                <Input-Number :max="100" :min="0" style="width: 100%;" v-model="piccount"></Input-Number>
-            </i-col>
-            <i-col span="3" :offset="1" style="height: 100%;text-align:right;line-height:32px;">拍照间隔 :</i-col>
-            <i-col span="6" :offset="1">
-                <Input-Number :max="100" :min="0" v-model="takeinterval" :formatter="value => `${value}分`" :parser="value => value.replace('分', '')" style="width: 100%;"></Input-Number>
-            </i-col>
-        </Row>
-
-        <Row style="margin: 5px 0" v-if="isCapture">
-            <i-col span="3" :offset="1" style="height: 100%;text-align:right;line-height:32px;">摄像头数 :</i-col>
-            <i-col span="16" :offset="1">
-                <Checkbox-Group v-model="caramers">
-                    <Checkbox label="0"><span>1号</span></Checkbox>
-                    <Checkbox label="1"><span>2号</span></Checkbox>
-                    <Checkbox label="2"><span>3号</span></Checkbox>
-                    <Checkbox label="3"><span>4号</span></Checkbox>
-                    <Checkbox label="4"><span>5号</span></Checkbox>
-                    <Checkbox label="5"><span>6号</span></Checkbox>
-                    <Checkbox label="6"><span>7号</span></Checkbox>
-                    <Checkbox label="7"><span>8号</span></Checkbox>
-                </Checkbox-Group>
-            </i-col>
-        </Row>
-
-        <Row style="margin: 5px 0">
-            <i-col span="3" :offset="1" style="height: 100%;text-align:right;line-height:32px;">语音设置 :</i-col>
-            <i-col span="19" :offset="1" style="height: 100%;line-height:32px;">
-                <Checkbox-Group v-model="ttstypes">
-                    <Checkbox label="0"><span>紧急</span></Checkbox>
-                    <Checkbox label="2"><span>显示器显示</span></Checkbox>
-                    <Checkbox label="3"><span>TTS播读</span></Checkbox>
-                    <Checkbox label="4"><span>广告屏显示</span></Checkbox>
-                </Checkbox-Group>
-            </i-col>
-        </Row>
-        <Row style="margin: 5px 0">
-            <i-col span="3" :offset="1" style="height: 100%;text-align:right;line-height:32px;">语音提示 :</i-col>
-            <i-col span="16" :offset="1">
-                <i-input v-model.trim="ttscontent" style="width: 345px;"></i-input>
-            </i-col>
-        </Row>
-        <Row style="margin: 5px 0">
-            <i-col span="22" :offset="1">
-                <div>① 车辆在指定时间范围内;</div>
-                <div>② 行驶速度持续超过《最高速度》;</div>
-                <div>③ 超速时间持续超过《持续时长》;</div>
-                <div>④ 如果指定区域，只在该区域内才会产生超速报警;</div>
-                <div>● 当满足以上所有条件，系统将产生超速报警，并自动对驾驶员进行《语音提示》。</div>
+            <i-col span="15" style="height: 320px;">
+                <Row style="margin: 5px 0">
+                    <i-col span="5" :offset="1" style="height: 100%;text-align:right;line-height:32px;">规则名称 :</i-col>
+                    <i-col span="17" :offset="1">
+                        <i-input v-model.trim="ruleName"></i-input>
+                    </i-col>
+                </Row>
+                <Row style="margin: 5px 0">
+                    <i-col span="5" :offset="1" style="height: 100%;text-align:right;line-height:32px;">是否拍照 :</i-col>
+                    <i-col span="5" :offset="1" style="height: 100%;line-height:32px;">
+                        <Checkbox v-model='isCapture'></Checkbox>
+                    </i-col>
+                    <i-col span="5" :offset="1" style="height: 100%;text-align:right;line-height:32px;">是否报警 :</i-col>
+                    <i-col span="5" :offset="1" style="height: 100%;line-height:32px;">
+                        <Checkbox v-model='isReportalarm'></Checkbox>
+                    </i-col>
+                </Row>
+                <Row style="margin: 5px 0" v-if="isCapture">
+                    <i-col span="5" :offset="1" style="height: 100%;text-align:right;line-height:32px;">拍照张数 :</i-col>
+                    <i-col span="5" :offset="1">
+                        <Input-Number :max="100" :min="0" style="width: 100%;" v-model="piccount"></Input-Number>
+                    </i-col>
+                    <i-col span="5" :offset="1" style="height: 100%;text-align:right;line-height:32px;">拍照间隔 :</i-col>
+                    <i-col span="5" :offset="1">
+                        <Input-Number :max="100" :min="0" v-model="takeinterval" :formatter="value => `${value}分`" :parser="value => value.replace('分', '')" style="width: 100%;"></Input-Number>
+                    </i-col>
+                </Row>
+                <Row style="margin: 5px 0" v-if="isCapture">
+                    <i-col span="5" :offset="1" style="height: 100%;text-align:right;line-height:32px;">摄像头数 :</i-col>
+                    <i-col span="17" :offset="1">
+                        <Checkbox-Group v-model="caramers">
+                            <Checkbox label="0"><span>1号</span></Checkbox>
+                            <Checkbox label="1"><span>2号</span></Checkbox>
+                            <Checkbox label="2"><span>3号</span></Checkbox>
+                            <Checkbox label="3"><span>4号</span></Checkbox>
+                            <Checkbox label="4"><span>5号</span></Checkbox>
+                            <Checkbox label="5"><span>6号</span></Checkbox>
+                            <Checkbox label="6"><span>7号</span></Checkbox>
+                            <Checkbox label="7"><span>8号</span></Checkbox>
+                        </Checkbox-Group>
+                    </i-col>
+                </Row>
+                <Row style="margin: 5px 0">
+                    <i-col span="5" :offset="1" style="height: 100%;text-align:right;line-height:32px;">语音设置 :</i-col>
+                    <i-col span="17" :offset="1" style="height: 100%;line-height:32px;">
+                        <Checkbox-Group v-model="ttstypes">
+                            <Checkbox label="0"><span>紧急</span></Checkbox>
+                            <Checkbox label="2"><span>显示器显示</span></Checkbox>
+                            <Checkbox label="3"><span>TTS播读</span></Checkbox>
+                            <Checkbox label="4"><span>广告屏显示</span></Checkbox>
+                        </Checkbox-Group>
+                    </i-col>
+                </Row>
+                <Row style="margin: 5px 0">
+                    <i-col span="5" :offset="1" style="height: 100%;text-align:right;line-height:32px;">语音提示 :</i-col>
+                    <i-col span="17" :offset="1">
+                        <i-input v-model.trim="ttscontent"></i-input>
+                    </i-col>
+                </Row>
+                <Row style="margin: 5px 0">
+                    <i-col span="23" :offset="1">
+                        <div>● 当满足以上所有条件，系统将产生联动报警，并自动对驾驶员进行《语音提示》。</div>
+                    </i-col>
+                </Row>
             </i-col>
         </Row>
         <p slot="footer">
@@ -126,42 +109,29 @@
 
     <script>
         new Vue({
-            el: "#chaosu",
+            el: "#linkage-alarm",
             data: {
                 ruleName: '',
-                maxspeed: 80,
-                starttime: '',
-                endtime: '',
-                durationtime: '',
-                ttstypes: [],
-                takeinterval: 8,
+                piccount: 1,
                 isReportalarm: false,
                 isCapture: false, // 是否拍照
-                piccount: 10, //拍多少张
+                takeinterval: 8,
                 ttscontent: '',
+                ttstypes: [],
                 caramers: [],
                 ruleModal: false,
                 allocationModal: false,
                 loading: false,
                 sosoValue: '',
+
+                alarmTypeList: deepClone(alarmTypeList),
+                checkboxObj: {},
                 columnsList: [{
                     width: 60,
                     type: 'index'
                 }, {
                     title: '规则名称',
                     key: 'rulename'
-                }, {
-                    title: '速度阀值',
-                    key: 'maxspeed'
-                }, {
-                    title: '持续时长',
-                    key: 'durationtime'
-                }, {
-                    title: '开始时间',
-                    key: 'starttime'
-                }, {
-                    title: '结束时间',
-                    key: 'endtime'
                 }, {
                     title: '拍照次数',
                     key: 'piccount'
@@ -207,15 +177,12 @@
                 addRule: function() {
                     this.isAddRule = true;
                     this.ruleName = '';
-                    this.maxspeed = 80;
-                    this.starttime = '00:00';
-                    this.endtime = '23:59';
-                    this.durationtime = '01:00:00';
-                    this.takeinterval = 10;
-                    this.piccount = 10;
                     this.ttscontent = '';
-                    this.ttstypes = [];
+                    for (var key in this.checkboxObj) {
+                        this.checkboxObj[key] = false;
+                    }
                     this.caramers = [];
+                    this.ttstypes = [];
                     this.isReportalarm = false;
                     this.isCapture = false;
                     this.ruleModal = true;
@@ -228,6 +195,7 @@
                             content: '确定要删除这个规则吗',
                             onOk: function() {
                                 var ruledefineid = me.selectedRow.ruledefineid;
+                                console.log('ruledefineid', ruledefineid)
                                 var url = myUrls.deleteRuleDefine();
                                 utils.sendAjax(url, {
                                     ruledefineid: ruledefineid
@@ -262,10 +230,6 @@
                         this.isAddRule = false;
                         var row = this.selectedRow;
                         this.ruleName = row.rulename;
-                        this.maxspeed = row.maxspeed;
-                        this.starttime = row.starttime;
-                        this.endtime = row.endtime;
-                        this.durationtime = row.durationtime;
                         this.takeinterval = row.takeinterval;
                         this.piccount = row.piccount;
                         this.ttscontent = row.ttscontent;
@@ -286,6 +250,13 @@
                         this.caramers = caramers;
                         this.isReportalarm = row.reportalarm == 1;
                         this.isCapture = row.takepic == 1;
+                        var checkboxObj = {};
+                        var needAlarm = row.needalarmstr;
+                        console.log('row.needalarmstr', row.needalarmstr);
+                        for (var i = 0; i < 63; i++) {
+                            checkboxObj[i] = needAlarm.charAt(i) == '1' ? true : false;
+                        }
+                        this.checkboxObj = checkboxObj;
 
                         this.ruleModal = true;
                     } else {
@@ -311,7 +282,22 @@
                     })
                     return utils.bitsToULong(arrBits.reverse());
                 },
+                getNeedAlarm: function(checkboxObj) {
+                    var arrBits = '';
+                    var checkboxObj = this.checkboxObj;
+                    for (var i = 0; i < 63; i++) {
+                        var val = checkboxObj[i];
+                        if (val) {
+                            arrBits += '1'
+                        } else {
+                            arrBits += '0';
+                        }
+                    }
+                    console.log('arrBits', arrBits);
+                    return arrBits;
+                },
                 onSettingRule: function() {
+
 
                     if (this.ruleName.trim() == '') {
                         this.$Message.error('规则名称是必填的');
@@ -325,24 +311,19 @@
                     }
                     var me = this;
                     var ruleparam = {};
-                    ruleparam.maxspeed = this.maxspeed;
                     ruleparam.caramers = this.getCaramers(this.caramers);
                     ruleparam.ttstypes = this.getTtstypes(this.ttstypes);
-                    ruleparam.starttime = this.starttime;
-                    ruleparam.endtime = this.endtime;
-                    ruleparam.durationtime = this.durationtime;
                     ruleparam.takepic = this.isCapture ? 1 : 0;
                     ruleparam.reportalarm = this.isReportalarm ? 1 : 0;
                     ruleparam.piccount = this.piccount;
                     ruleparam.takeinterval = this.takeinterval;
                     ruleparam.ttscontent = this.ttscontent;
-
+                    ruleparam.needalarmstr = this.getNeedAlarm();
                     var ruleparamjson = JSON.stringify(ruleparam);
 
                     if (this.isAddRule) {
                         var data = {
-                            offset: timeDifference,
-                            ruletype: ruleTypes.chaosu,
+                            ruletype: ruleTypes.liandong,
                             rulename: this.ruleName,
                             ruleparamjson: ruleparamjson,
                         }
@@ -359,7 +340,7 @@
                     } else {
                         var data = {
                             offset: timeDifference,
-                            ruletype: ruleTypes.chaosu,
+                            ruletype: ruleTypes.liandong,
                             rulename: this.ruleName,
                             ruleparamjson: ruleparamjson,
                             ruledefineid: me.selectedRow.ruledefineid
@@ -381,11 +362,12 @@
                     var me = this;
                     var url = myUrls.queryRuleDefines();
                     var data = {
-                        ruletype: ruleTypes.chaosu,
+                        ruletype: ruleTypes.liandong,
                     }
                     me.loading = true;
                     utils.sendAjax(url, data, function(resp) {
                         me.loading = false;
+                        console.log(resp);
                         if (resp.status == 0 && resp.records) {
                             var tableData = [];
                             resp.records.forEach(function(item, index) {
@@ -418,6 +400,13 @@
             mounted: function() {
                 this.isAddRule = true;
                 this.queryRuleDefines();
+            },
+            created: function() {
+                var checkboxObj = {};
+                new Array(64).fill(false).forEach(function(item, index) {
+                    checkboxObj[index] = item;
+                });
+                this.checkboxObj = checkboxObj;
             },
             mixins: [ruleMixIn],
         })
