@@ -1,0 +1,49 @@
+<div id="set-mileage">
+    <div style="margin:10px">
+        <Row style="margin: 10px 0;">
+            <i-Col span="24">
+                <i-input v-model="deviceid" placeholder="输入设备ID" style="width: 200px;"></i-input>
+            </i-Col>
+        </Row>
+        <Row style="margin: 10px 0;">
+            <i-Col span="24">
+                <i-input v-model.trim="mileage" placeholder="输入里程" style="width: 200px;"></i-input>
+            </i-Col>
+        </Row>
+        <Row style="margin: 10px 0;">
+            <i-Col span="24">
+                <i-button @click="handleClear" type="primary" style="width: 200px;">确定</i-button>
+            </i-Col>
+        </Row>
+       
+    </div>
+   <script>
+        new Vue({
+            el:'#set-mileage',
+            data:{
+                deviceid:'',
+                mileage:'',
+            },
+            methods:{
+                handleClear:function(){
+                    if(this.deviceid.trim() == ''){
+                        this.$Message.error('输入设备id');
+                        return;
+                    };
+                    var me = this,url = myUrls.fixTotalDistance() ,mileage = Number(this.mileage);
+                    if( mileage == '' ||  isNaN(mileage)  ){
+                        this.$Message.error('里程输入数字');
+                        return ;
+                    }
+                    utils.sendAjax(url, { deviceid: this.deviceId, totaldistance: mileage  }, function(resp) {
+                        if (resp.status === 0) {
+                            me.$Message.success("设置成功");
+                        } else {
+                            me.$Message.error("设置失败");
+                        }
+                    });
+                }
+            }
+        })
+   </script>
+</div>

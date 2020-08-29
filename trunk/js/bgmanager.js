@@ -190,20 +190,39 @@ var systemParam = {
                     title: '设备类型',
                     name: 'deviceType',
                     icon: 'ios-albums'
-                        // children:[
-                        //     {title:"新增设备类型",name:"addDeviceType",icon:"md-add"},
-                        //     {title:"查询设备类型",name:"queryDeviceType",icon:"md-search"}
-                        // ]
                 },
                 {
                     title: '车辆类型',
                     name: 'carType',
                     icon: 'ios-car'
-                        // children:[
-                        //     {title:"新增车辆类型",name:"addCarType",icon:"md-add"},
-                        //     {title:"查询车辆类型",name:"queryCarType",icon:"md-search"}
-                        // ]
-                }
+                },
+                { 
+                    name: "systemManager", 
+                    icon: "ios-bug", 
+                    title: "系统管理",  
+                    children:[
+                        {
+                            title:"系统参数",
+                            name:"serverSetting",
+                            icon:"ios-bug"
+                        },
+                        {
+                            title:"清除记录",
+                            name:"clearRecord",
+                            icon:"ios-bug"
+                        },
+                        {
+                            title:"设置里程",
+                            name:"setMileage",
+                            icon:"ios-bug"
+                        },
+                        {
+                            title:"登录记录",
+                            name:"loginRecords",
+                            icon:"ios-bug"
+                        },
+                    ]
+                } 
             ]
         }
     },
@@ -230,9 +249,21 @@ var systemParam = {
                 case 'carType':
                     page = 'cartype.html'
                     break
+                case 'clearRecord':
+                    page = 'clearrecord.html'
+                    break
+                case 'setMileage':
+                    page = 'setmileage.html'
+                    break
+                case 'serverSetting':
+                    window.open('serversetting.html?token=' + token);
+                    break
+                case 'loginRecords':
+                    window.open("loginrecords.html?token=" + token);
+                    break
             }
 
-            this.loadPage(page)
+            page && (this.loadPage(page)) ;
         },
         loadPage: function(page) {
             var me = this
