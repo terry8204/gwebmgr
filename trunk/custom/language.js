@@ -111,7 +111,9 @@
                 expirationInfo: 'ExpirationInfo',
             },
             monitor: {
+                stock:'Stock',
                 devGroup: "Devices",
+                ownerInfo:'ownerInfo',
                 defaultGroup: "Default group",
                 defaultCustomer: "Default customer",
                 all: "All",
@@ -434,6 +436,8 @@
                 expirationInfo: '过期信息',
             },
             monitor: {
+                stock:'Stock',
+                ownerInfo:'车主信息',
                 devGroup: "设备组",
                 defaultGroup: "默认组",
                 defaultCustomer: "默认客户",

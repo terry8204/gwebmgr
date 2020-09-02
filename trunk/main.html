@@ -248,7 +248,7 @@
                             <p class="p-icon">
                                 <Icon :size="24" type="ios-cube" />
                             </p>
-                            <p class="dev-count">库存({{stockDevCount}})</p>
+                            <p class="dev-count">{{$t("monitor.stock")}}({{stockDevCount}})</p>
                         </li>
                     </ul>
                     <div class="device-soso">
@@ -323,7 +323,7 @@
                         <DropdownItem name="alarmList">{{$t("monitor.alarmRecords")}}</DropdownItem>
                         <DropdownItem name="phoneAlarm">{{$t("reportForm.phoneAlarm")}}</DropdownItem>
                         <DropdownItem name="devbaseinfo">{{$t("monitor.devBaseInfo")}}</DropdownItem>
-                        <DropdownItem name="ownerInfo">车主信息</DropdownItem>
+                        <DropdownItem name="ownerInfo">{{$t("monitor.ownerInfo")}}</DropdownItem>
                         </i-dropdown-menu>
                         </Dropdown>
                         <span>
@@ -387,7 +387,7 @@
                                             <DropdownItem name="alarmList">{{$t("monitor.alarmRecords")}}</DropdownItem>
                                             <DropdownItem name="phoneAlarm">{{$t("reportForm.phoneAlarm")}}</DropdownItem>
                                             <DropdownItem name="devbaseinfo">{{$t("monitor.devBaseInfo")}}</DropdownItem>
-                                            <DropdownItem name="ownerInfo">车主信息</DropdownItem>
+                                            <DropdownItem name="ownerInfo">{{$t("monitor.ownerInfo")}}</DropdownItem>
                                             </i-dropdown-menu>
                                             </Dropdown>
                                             <span>
@@ -450,7 +450,7 @@
                                                     <DropdownItem name="alarmList">{{$t("monitor.alarmRecords")}}</DropdownItem>
                                                     <DropdownItem name="phoneAlarm">{{$t("reportForm.phoneAlarm")}}</DropdownItem>
                                                     <DropdownItem name="devbaseinfo">{{$t("monitor.devBaseInfo")}}</DropdownItem>
-                                                    <DropdownItem name="ownerInfo">车主信息</DropdownItem>
+                                                    <DropdownItem name="ownerInfo">{{$t("monitor.ownerInfo")}}</DropdownItem>
                                                     </i-dropdown-menu>
                                                     </Dropdown>
                                                     <span>
@@ -515,7 +515,7 @@
                                         <DropdownItem name="alarmList">{{$t("monitor.alarmRecords")}}</DropdownItem>
                                         <DropdownItem name="phoneAlarm">{{$t("reportForm.phoneAlarm")}}</DropdownItem>
                                         <DropdownItem name="devbaseinfo">{{$t("monitor.devBaseInfo")}}</DropdownItem>
-                                        <DropdownItem name="ownerInfo">车主信息</DropdownItem>
+                                        <DropdownItem name="ownerInfo">{{$t("monitor.ownerInfo")}}</DropdownItem>
                                         </i-dropdown-menu>
                                         </Dropdown>
                                         <span>
@@ -599,7 +599,7 @@
                                                                 <DropdownItem name="alarmList">{{$t("monitor.alarmRecords")}}</DropdownItem>
                                                                 <DropdownItem name="phoneAlarm">{{$t("reportForm.phoneAlarm")}}</DropdownItem>
                                                                 <DropdownItem name="devbaseinfo">{{$t("monitor.devBaseInfo")}}</DropdownItem>
-                                                                <DropdownItem name="ownerInfo">车主信息</DropdownItem>
+                                                                <DropdownItem name="ownerInfo">{{$t("monitor.ownerInfo")}}</DropdownItem>
                                                             </i-dropdown-menu>
                                                         </Dropdown>
                                                         <li>
@@ -662,7 +662,7 @@
         <DropdownItem name="alarmList">{{$t("monitor.alarmRecords")}}</DropdownItem>
         <DropdownItem name="phoneAlarm">{{$t("reportForm.phoneAlarm")}}</DropdownItem>
         <DropdownItem name="devbaseinfo">{{$t("monitor.devBaseInfo")}}</DropdownItem>
-        <DropdownItem name="ownerInfo">车主信息</DropdownItem>
+        <DropdownItem name="ownerInfo">{{$t("monitor.ownerInfo")}}</DropdownItem>
         </i-dropdown-menu>
         </Dropdown>
         <li>
@@ -725,7 +725,7 @@
             <DropdownItem name="alarmList">{{$t("monitor.alarmRecords")}}</DropdownItem>
             <DropdownItem name="phoneAlarm">{{$t("reportForm.phoneAlarm")}}</DropdownItem>
             <DropdownItem name="devbaseinfo">{{$t("monitor.devBaseInfo")}}</DropdownItem>
-            <DropdownItem name="ownerInfo">车主信息</DropdownItem>
+            <DropdownItem name="ownerInfo">{{$t("monitor.ownerInfo")}}</DropdownItem>
             </i-dropdown-menu>
             </Dropdown>
             <li>
@@ -788,7 +788,7 @@
                 <DropdownItem name="alarmList">{{$t("monitor.alarmRecords")}}</DropdownItem>
                 <DropdownItem name="phoneAlarm">{{$t("reportForm.phoneAlarm")}}</DropdownItem>
                 <DropdownItem name="devbaseinfo">{{$t("monitor.devBaseInfo")}}</DropdownItem>
-                <DropdownItem name="ownerInfo">车主信息</DropdownItem>
+                <DropdownItem name="ownerInfo">{{$t("monitor.ownerInfo")}}</DropdownItem> 
                 </i-dropdown-menu>
                 </Dropdown>
                 <li>
@@ -2174,7 +2174,7 @@
                     <Modal v-model="ownerInfoModal" width="500">
                         <p slot="header" style="color:#f60;text-align:center">
                             <Icon type="ios-create-outline"></Icon>
-                            <span>车主信息</span>
+                            <span>{{$t("monitor.ownerInfo")}}</span>
                         </p>
                         <div style="text-align:center">
                             <Row style="margin:10px 0;">
@@ -2451,7 +2451,7 @@
             <i-dropdown-menu slot="list">
                 <DropdownItem name="oil">油液标注</DropdownItem>
                 <DropdownItem name="io">IO配置</DropdownItem>
-                <DropdownItem name="carMaster">车主信息</DropdownItem>
+                <DropdownItem name="carMaster">{{$t("monitor.ownerInfo")}}</DropdownItem>
                 <DropdownItem name="insure">保险信息</DropdownItem>
                 <DropdownItem name="resetPass">重置密码</DropdownItem>
                 <DropdownItem name="exceededSpeed">超速设置</DropdownItem>
