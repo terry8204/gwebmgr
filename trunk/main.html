@@ -2410,7 +2410,7 @@
                 <div>
                     <Row style="margin: 10px 0" v-for="(item,index) in alarmTypeList" :key="index">
                         <i-col span="8" v-for="(type , index) in item" :key="type.alarmcode">
-                            <Checkbox v-model="checkboxObj[type.index]">{{ isZh ? type.alarmname : type.index}}</Checkbox>
+                            <Checkbox v-model="checkboxObj[type.index]">{{ isZh ? type.alarmname : type.alarmname}}</Checkbox>
                         </i-col>
                     </Row>
                 </div>

@@ -36,7 +36,7 @@
             <i-button @click="onClickQuery" icon="ios-search">{{$t("reportForm.query")}}</i-button>
         </div>
         <div style="margin-left:20px;float: left;">
-            <i-button @click="exportData" icon="md-arrow-down">下载</i-button>
+            <i-button @click="exportData" icon="md-arrow-down">{{$t("reportForm.download")}}</i-button>
         </div>
     </Row>
     <div style="width:100%;height: 300px;position: relative;">
@@ -44,10 +44,10 @@
     </div>
     <div style="margin:10px;">
         <Tabs :value="activeTab" @on-click="onClickTab">
-            <Tab-pane label="正反转统计" name="tabTotal">
+            <Tab-pane :label="$t('reportForm.rotationStatistics')" name="tabTotal">
                 <i-table ref="totalTable" :columns="allAccColumns" :data="allRotateTableData" :height="lastTableHeight" :loading="loading"></i-table>
             </Tab-pane>
-            <Tab-pane label="正反转明细" name="tabDetail">
+            <Tab-pane :label="$t('reportForm.rotationDetails')" name="tabDetail">
                 <i-table ref="detailTable" :columns="columns" :height="lastTableHeight" :data="tableData" :loading="loading"></i-table>
             </Tab-pane>
         </Tabs>

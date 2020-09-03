@@ -39,27 +39,27 @@
             </div>
         </div>
         <div style="margin-left:20px;float: left;">
-            <i-button @click="cleanSelectedDev" icon="ios-nuclear-outline">清除</i-button>
+            <i-button @click="cleanSelectedDev" icon="ios-nuclear-outline">{{$t("reportForm.clean")}}</i-button> 
         </div>
         <div style="margin-left:20px;float: left;">
             <date-picker type="date" style="width: 150px;" v-model="startDate" :clearable="false" :editable="false"></date-picker>
         </div>
         <div style="margin-left:20px;float: left;">
-            <i-button @click="prevDay">上一天</i-button>
+            <i-button @click="prevDay">{{$t("reportForm.beforeDay")}}</i-button> 
         </div>
         <div style="margin-left:20px;float: left;">
-            <i-button @click="nextDay">下一天</i-button>
+            <i-button @click="nextDay">{{$t("reportForm.beforeDay")}}</i-button>
         </div>
         <div style="margin-left:20px;float: left;">
-            <i-button @click="onClickQuery">{{$t("reportForm.query")}}</i-button>
+            <i-button @click="onClickQuery">{{$t("reportForm.afterDay")}}</i-button>
         </div>
         <div style="margin-left:20px;float: left;">
-            <i-input style="width:150px;" v-model.trim="filterStr" placeholder="过滤">
+            <i-input style="width:150px;" v-model.trim="filterStr" :placeholder="$t('reportForm.filter')">
                 <Icon type="ios-search" slot="suffix" />
             </i-input>
         </div>
         <div style="margin-left:20px;float: left;">
-            <i-button @click="filterTypeDesc">过滤</i-button>
+            <i-button @click="filterTypeDesc">{{$t("reportForm.filter")}}</i-button>
         </div>
     </div>
     <div style="margin:10px;">

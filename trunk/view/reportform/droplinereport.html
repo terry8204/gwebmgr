@@ -17,19 +17,19 @@
             </div>
         </div>
         <div style="float: left;">
-            <div style="height: 32px; line-height: 32px;padding: 0 10px;">离线时长大于:&nbsp;</div>
+            <div style="height: 32px; line-height: 32px;padding: 0 10px;">{{$t("reportForm.offlineDuration")}}:&nbsp;</div>
         </div>
         <div style="float: left;width: 150px;position: relative;">
             <i-select v-model="days">
-                <i-option value="1">1小时</i-option>
-                <i-option value="6">6小时</i-option>
-                <i-option value="12">12小时</i-option>
-                <i-option value="24">1天</i-option>
-                <i-option value="168">7天</i-option>
-                <i-option value="360">15天</i-option>
-                <i-option value="720">1个月</i-option>
-                <i-option value="4320">6个月</i-option>
-                <i-option value="8760">1年</i-option>
+                <i-option value="1">{{$t("reportForm.h1")}}</i-option>
+                <i-option value="6">{{$t("reportForm.h6")}}</i-option>
+                <i-option value="12">{{$t("reportForm.h12")}}</i-option>
+                <i-option value="24">{{$t("reportForm.d1")}}</i-option>
+                <i-option value="168">{{$t("reportForm.d7")}}</i-option>
+                <i-option value="360">{{$t("reportForm.d15")}}</i-option>
+                <i-option value="720">{{$t("reportForm.d30")}}</i-option>
+                <i-option value="4320">{{$t("reportForm.d180")}}</i-option>
+                <i-option value="8760">{{$t("reportForm.d365")}}</i-option>
             </i-select>
         </div>
         <div style="margin-left:20px;float: left;">

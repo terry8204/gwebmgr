@@ -1338,10 +1338,9 @@ function rotateReport(groupslist) {
             groupslist: [],
             timeoutIns: null,
             allAccColumns: [
-                { title: vRoot.$t("reportForm.index"), width: 60, key: 'index' },
+                { title: vRoot.$t("reportForm.index"), width: 70, key: 'index' },
                 {
-                    title: "操作",
-                    width: 110,
+                    title: vRoot.$t("alarm.action"),
                     render: function(h, params) {
 
                         return h('span', {
@@ -1355,45 +1354,45 @@ function rotateReport(groupslist) {
                                 color: '#e4393c',
                                 cursor: 'pointer'
                             }
-                        }, "[正反转明细]")
+                        }, "[" + vRoot.$t("reportForm.rotationDetails") + "]") 
                     }
                 },
                 {
-                    title: '设备名称',
+                    title:  vRoot.$t("alarm.devName") ,
                     key: 'devicename'
                 },
                 {
-                    title: '设备序号',
+                    title: vRoot.$t("alarm.devNum") ,
                     key: 'deviceid',
                     width: 160,
                 },
                 {
-                    title: '正转时长',
+                    title:  vRoot.$t("reportForm.zzTimes"),
                     key: 'zzTimes'
                 },
                 {
-                    title: '反转时长',
+                    title:vRoot.$t("reportForm.fzTimes"),
                     key: 'fzTimes'
                 },
                 {
-                    title: '停转时长',
+                    title: vRoot.$t("reportForm.tzTimes"),
                     key: 'tzTimes'
                 },
                 {
-                    title: '次数',
-                    key: 'count'
+                    title: vRoot.$t("reportForm.count"),
+                    key: 'count'  
                 },
             ],
             allRotateTableData: [],
             columns: [
-                { title: '序号', width: 60, key: 'index' },
+                { title: vRoot.$t("reportForm.index"), width: 70, key: 'index' },
                 { title: vRoot.$t("alarm.devName"), key: 'deviceName', width: 160 },
                 { title: vRoot.$t("alarm.devNum"), key: 'deviceid', width: 160 },
-                { title: '状态', key: 'accStatus', width: 100 },
+                { title: vRoot.$t("reportForm.status"), key: 'accStatus', width: 100 },  
                 { title: vRoot.$t("reportForm.startDate"), key: 'startDate', width: 180 },
                 { title: vRoot.$t("reportForm.endDate"), key: 'endDate', width: 180 },
                 {
-                    title: '地址',
+                    title: vRoot.$t("reportForm.address"), 
                     width: 145,
                     render: function(h, params) {
                         var row = params.row;
@@ -1420,7 +1419,6 @@ function rotateReport(groupslist) {
                                 }, lon + "," + lat)
 
                             } else {
-                                // return h('span', {}, row.saddress);
                                 return h('Tooltip', {
                                     props: {
                                         content: row.address,
@@ -1454,7 +1452,7 @@ function rotateReport(groupslist) {
                 var startday = this.dateVal[0];
                 var endday = this.dateVal[1];
                 this.$refs.totalTable.exportCsv({
-                    filename: '正反转统计' + startday + '-' + endday,
+                    filename: vRoot.$t("reportForm.rotationStatistics") + startday + '-' + endday,
                     original: false,
                     columns: this.allAccColumns.filter(function(col, index) { return index != 1; }),
                     data: this.allRotateTableData
@@ -1520,7 +1518,7 @@ function rotateReport(groupslist) {
                                 me.zzTimesArr = [];
                                 me.fzTimesArr = [];
                                 me.tzTimesArr = [];
-                                me.$Message.error("没有数据");
+                                me.$Message.error(me.$t("reportForm.noRecord"));
                             }
                         } else {
                             me.tableData = [];
@@ -1574,9 +1572,9 @@ function rotateReport(groupslist) {
                     Obj.tzTimes = utils.timeStamp(tzTimes);
                     Obj.count = count;
                     deviceNamesArr.push(Obj.devicename);
-                    zzTimesArr.push(parseInt(zzTimes / 1000 / 60));
-                    fzTimesArr.push(parseInt(fzTimes / 1000 / 60));
-                    tzTimesArr.push(parseInt(tzTimes / 1000 / 60));
+                    zzTimesArr.push((zzTimes / 1000 / 60).toFixed(2));
+                    fzTimesArr.push((fzTimes / 1000 / 60).toFixed(2));
+                    tzTimesArr.push((tzTimes / 1000 / 60).toFixed(2));
                     allRotateTableData.push(Obj);
                 });
                 if (deviceNamesArr.length) {
@@ -1605,14 +1603,14 @@ function rotateReport(groupslist) {
                     var slat = item.slat.toFixed(5);
                     var address = LocalCacheMgr.getAddress(slon, slat);
                     if (item.rotatestate == 1) {
-                        status = '正转';
+                        status = me.$t("reportForm.zz");
                         zzTimes += duration;
                     } else if (item.rotatestate == 2) {
-                        status = '反转';
+                        status = me.$t("reportForm.fz");
                         fzTimes += duration;
                     } else if (item.rotatestate == 3) {
                         tzTimes += duration;
-                        status = '停转';
+                        status = me.$t("reportForm.tz");
                     }
                     newRecords.push({
                         index: index + 1,
@@ -1628,7 +1626,7 @@ function rotateReport(groupslist) {
                     });
                 });
                 newRecords.push({
-                    duration: '正转:' + utils.timeStamp(zzTimes) + ',反转:' + utils.timeStamp(fzTimes) + ',停转:' + utils.timeStamp(tzTimes)
+                    duration:  me.$t("reportForm.zz")+':' + utils.timeStamp(zzTimes) + ','+me.$t("reportForm.fz")+':' + utils.timeStamp(fzTimes) + ','+me.$t("reportForm.tz")+':' + utils.timeStamp(tzTimes)
                 })
                 me.tableData = newRecords;
             },
@@ -1637,12 +1635,12 @@ function rotateReport(groupslist) {
                 this.barChartJourney.setOption(barChartOtion);
             },
             getChartOption: function() {
-                var dw_hour = '小时';
-                var dw_min = '分钟';
-                var car = '车辆';
-                var zz = '正转';
-                var fz = '反转';
-                var tz = '停转';
+                var dw_hour = this.$t("reportForm.h");
+                var dw_min = this.$t("reportForm.m");
+                var car = this.$t("alarm.devName");
+                var zz = this.$t("reportForm.zz");
+                var fz = this.$t("reportForm.fz");
+                var tz = this.$t("reportForm.tz");
                 //加载
                 option = {
                     tooltip: {
@@ -1656,32 +1654,32 @@ function rotateReport(groupslist) {
                                 var item1 = v[0];
                                 if (item1.seriesIndex == 0) {
                                     if (v[0].value > 60) {
-                                        zStr = parseInt(v[0].value / 60) + dw_hour + (v[0].value % 60) + dw_min;
+                                        zStr = parseInt(v[0].value / 60) + dw_hour + (v[0].value % 60).toFixed(2)  + dw_min;
                                     } else if (v[0] && v[0].value % 60 == 0 && v[0].value != 0) {
                                         zStr = parseInt(v[0].value / 60) + dw_hour;
                                     } else {
-                                        zStr = 0 + dw_min;
+                                        zStr = v[0].value + dw_min;
                                     }
                                     return car + ': ' + v[0].name + '</br>' +
                                         zz + ': ' + zStr + '</br>';
                                 } else if (item1.seriesIndex == 1) {
                                     if (v[0].value > 60) {
-                                        fStr = parseInt(v[0].value / 60) + dw_hour + (v[0].value % 60) + dw_min;
+                                        fStr = parseInt(v[0].value / 60) + dw_hour + (v[0].value % 60).toFixed(2)  + dw_min;
                                     } else if (v[0] && v[0].value % 60 == 0 && v[0].value != 0) {
                                         fStr = parseInt(v[0].value / 60) + dw_hour;
                                     } else {
-                                        fStr = 0 + dw_min;
+                                        fStr = v[0].value + dw_min;
                                     }
                                     return car + ': ' + v[0].name + '</br>' +
                                         fz + ': ' + fStr + '</br>';
 
                                 } else if (item1.seriesIndex == 2) {
                                     if (v[0].value > 60) {
-                                        tStr = parseInt(v[0].value / 60) + dw_hour + (v[0].value % 60) + dw_min;
+                                        tStr = parseInt(v[0].value / 60) + dw_hour + (v[0].value % 60).toFixed(2)  + dw_min;
                                     } else if (v[0] && v[0].value % 60 == 0 && v[0].value != 0) {
                                         tStr = parseInt(v[0].value / 60) + dw_hour;
                                     } else {
-                                        tStr = 0 + dw_min;
+                                        tStr = v[0].value + dw_min;
                                     }
                                     return car + ': ' + v[0].name + '</br>' +
                                         tz + ': ' + tStr;
@@ -1691,52 +1689,52 @@ function rotateReport(groupslist) {
                                 var item2 = v[1];
                                 if (item1.seriesIndex == 0) {
                                     if (item1.value > 60) {
-                                        zStr = parseInt(item1.value / 60) + dw_hour + (item1.value % 60) + dw_min;
+                                        zStr = parseInt(item1.value / 60) + dw_hour + (item1.value % 60).toFixed(2)  + dw_min;
                                     } else if (item1 && item1.value % 60 == 0 && item1.value != 0) {
                                         zStr = parseInt(item1.value / 60) + dw_hour;
                                     } else {
-                                        zStr = 0 + dw_min;
+                                        zStr = item1.value + dw_min;
                                     }
                                 } else if (item1.seriesIndex == 1) {
                                     if (item1.value > 60) {
-                                        fStr = parseInt(item1.value / 60) + dw_hour + (item1.value % 60) + dw_min;
+                                        fStr = parseInt(item1.value / 60) + dw_hour + (item1.value % 60).toFixed(2)  + dw_min;
                                     } else if (item1 && item1.value % 60 == 0 && item1.value != 0) {
                                         fStr = parseInt(item1.value / 60) + dw_hour;
                                     } else {
-                                        fStr = 0 + dw_min;
+                                        fStr = item1.value + dw_min;
                                     }
                                 } else if (item1.seriesIndex == 2) {
                                     if (item1.value > 60) {
-                                        tStr = parseInt(item1.value / 60) + dw_hour + (item1.value % 60) + dw_min;
+                                        tStr = parseInt(item1.value / 60) + dw_hour + (item1.value % 60).toFixed(2)  + dw_min;
                                     } else if (item1 && item1.value % 60 == 0 && item1.value != 0) {
                                         tStr = parseInt(item1.value / 60) + dw_hour;
                                     } else {
-                                        tStr = 0 + dw_min;
+                                        tStr = item1.value + dw_min;
                                     }
                                 }
                                 if (item2.seriesIndex == 0) {
                                     if (item2.value > 60) {
-                                        zStr = parseInt(item2.value / 60) + dw_hour + (item2.value % 60) + dw_min;
+                                        zStr = parseInt(item2.value / 60) + dw_hour + (item2.value % 60).toFixed(2)  + dw_min;
                                     } else if (item2 && item2.value % 60 == 0 && item2.value != 0) {
                                         zStr = parseInt(item2.value / 60) + dw_hour;
                                     } else {
-                                        zStr = 0 + dw_min;
+                                        zStr = item2.value + dw_min;
                                     }
                                 } else if (item2.seriesIndex == 1) {
                                     if (item2.value > 60) {
-                                        fStr = parseInt(item2.value / 60) + dw_hour + (item2.value % 60) + dw_min;
+                                        fStr = parseInt(item2.value / 60) + dw_hour + (item2.value % 60).toFixed(2)  + dw_min;
                                     } else if (item2 && item2.value % 60 == 0 && item2.value != 0) {
                                         fStr = parseInt(item2.value / 60) + dw_hour;
                                     } else {
-                                        fStr = 0 + dw_min;
+                                        fStr = item2.value + dw_min;
                                     }
                                 } else if (item2.seriesIndex == 2) {
                                     if (item2.value > 60) {
-                                        tStr = parseInt(item2.value / 60) + dw_hour + (item2.value % 60) + dw_min;
+                                        tStr = parseInt(item2.value / 60) + dw_hour + (item2.value % 60).toFixed(2)  + dw_min;
                                     } else if (item2 && item2.value % 60 == 0 && item2.value != 0) {
                                         tStr = parseInt(item2.value / 60) + dw_hour;
                                     } else {
-                                        tStr = 0 + dw_min;
+                                        tStr = item2.value + dw_min;
                                     }
                                 }
 
@@ -1757,25 +1755,25 @@ function rotateReport(groupslist) {
                                 }
                             } else if (v.length == 3) {
                                 if (v[0].value > 60) {
-                                    zStr = parseInt(v[0].value / 60) + dw_hour + (v[0].value % 60) + dw_min;
+                                    zStr = parseInt(v[0].value / 60) + dw_hour + (v[0].value % 60).toFixed(2)  + dw_min;
                                 } else if (v[0] && v[0].value % 60 == 0 && v[0].value != 0) {
                                     zStr = parseInt(v[0].value / 60) + dw_hour;
                                 } else {
-                                    zStr = 0 + dw_min;
+                                    zStr = v[0].value  + dw_min;
                                 }
                                 if (v[1] && v[1].value > 60) {
-                                    fStr = parseInt(v[1].value / 60) + dw_hour + (v[1].value % 60) + dw_min;
+                                    fStr = parseInt(v[1].value / 60) + dw_hour + (v[1].value % 60).toFixed(2)  + dw_min;
                                 } else if (v[1] && v[1].value % 60 == 0 && v[1].value != 0) {
                                     fStr = parseInt(v[1].value / 60) + dw_hour;
                                 } else {
-                                    fStr = 0 + dw_min;
+                                    fStr = v[1].value + dw_min;
                                 }
                                 if (v[2] && v[2].value > 60) {
-                                    tStr = parseInt(v[2].value / 60) + dw_hour + (v[2].value % 60) + dw_min;
+                                    tStr = parseInt(v[2].value / 60) + dw_hour + (v[2].value % 60).toFixed(2) + dw_min;
                                 } else if (v[2] && v[2].value % 60 == 0 && v[2].value != 0) {
                                     tStr = parseInt(v[2].value / 60) + dw_hour;
                                 } else {
-                                    tStr = 0 + dw_min;
+                                    tStr =  v[2].value + dw_min;
                                 }
                                 return car + ': ' + v[0].name + '</br>' +
                                     zz + ': ' + zStr + '</br>' +
@@ -1937,10 +1935,10 @@ function speedingReport(groupslist) {
             groupslist: [],
             timeoutIns: null,
             allAccColumns: [
-                { title: '序号', width: 60, key: 'index' },
+                { title: vRoot.$t("reportForm.index"), width: 70, key: 'index' },
                 {
-                    title: "操作",
-                    width: 110,
+                    title: vRoot.$t("alarm.action"),
+                    width: 160,
                     render: function(h, params) {
                         var records = params.row.records;
                         return h('span', {
@@ -1949,8 +1947,9 @@ function speedingReport(groupslist) {
 
                                     vueInstanse.activeTab = "tabDetail";
                                     vueInstanse.getRotateDetailTableData(records);
-                                    vueInstanse.isSpin = true;
+                                   
                                     if (records.length) {
+                                        vueInstanse.isSpin = true;
                                         var row = deepClone(records[0]);
                                         row.startDate = DateFormat.longToDateTimeStr(row.begintime, timeDifference);
                                         row.endDate = DateFormat.longToDateTimeStr(row.endtime, timeDifference);
@@ -1963,48 +1962,48 @@ function speedingReport(groupslist) {
                                 color: '#e4393c',
                                 cursor: 'pointer'
                             }
-                        }, "[超速明细]")
+                        }, "[" + vRoot.$t("reportForm.speedingDetails") + "]")
                     }
                 },
                 {
-                    title: '设备名称',
+                    title: vRoot.$t("alarm.devName"),
                     key: 'devicename'
                 },
                 {
-                    title: '设备序号',
+                    title: vRoot.$t("alarm.devNum"),
                     key: 'deviceid',
                     width: 160,
                 },
                 {
-                    title: '超速时长',
+                    title: vRoot.$t("reportForm.speedingDuration"),
                     key: 'duration'
                 },
                 {
-                    title: '超速里程',
+                    title: vRoot.$t("reportForm.speedingMileage"),
                     key: 'distance'
                 },
                 {
-                    title: '超速次数',
+                    title: vRoot.$t("reportForm.speedingCount"),
                     key: 'count'
                 },
                 {
-                    title: '最大速度(km/h)',
+                    title: vRoot.$t("reportForm.maxSpeed") + '(km/h)',
                     key: 'maxSpeed'
                 },
                 {
-                    title: '最小速度(km/h)',
+                    title: vRoot.$t("reportForm.minSpeed") + '(km/h)',
                     key: 'minSpeed'
                 }
             ],
             allRotateTableData: [],
             columns: [
-                { title: '序号', width: 60, key: 'index' },
+                { title: vRoot.$t("reportForm.index"), width: 70, key: 'index' },
                 { title: vRoot.$t("alarm.devName"), key: 'deviceName' },
                 { title: vRoot.$t("alarm.devNum"), key: 'deviceid' },
                 { title: vRoot.$t("reportForm.startDate"), key: 'startDate' },
                 { title: vRoot.$t("reportForm.endDate"), key: 'endDate' },
                 {
-                    title: '地址',
+                    title: vRoot.$t("reportForm.address"),
                     width: 145,
                     render: function(h, params) {
                         var row = params.row;
@@ -2031,7 +2030,6 @@ function speedingReport(groupslist) {
                                 }, lon + "," + lat)
 
                             } else {
-                                // return h('span', {}, row.saddress);
                                 return h('Tooltip', {
                                     props: {
                                         content: row.address,
@@ -2054,7 +2052,7 @@ function speedingReport(groupslist) {
                 },
                 { title: vRoot.$t("reportForm.duration"), key: 'duration' },
                 {
-                    title: '操作',
+                    title: vRoot.$t("alarm.action"),
                     render: function(h, params) {
                         return h(
                             'div', {}, [
@@ -2071,7 +2069,7 @@ function speedingReport(groupslist) {
                                             vueInstanse.querySingleDevTracks('map', params.row);
                                         }
                                     }
-                                }, "显示轨迹"),
+                                }, isZh ? "显示轨迹" : "Show track"),
                             ]
                         )
                     },
@@ -2200,7 +2198,7 @@ function speedingReport(groupslist) {
                 var startday = this.dateVal[0];
                 var endday = this.dateVal[1];
                 this.$refs.totalTable.exportCsv({
-                    filename: '超速统计' + startday + '-' + endday,
+                    filename: vRoot.$t('reportForm.speedingStatistics') + startday + '-' + endday,
                     original: false,
                     columns: this.allAccColumns.filter(function(col, index) { return index != 1; }),
                     data: this.allRotateTableData
@@ -2265,7 +2263,7 @@ function speedingReport(groupslist) {
                                 me.allRotateTableData = [];
                                 me.deviceNamesArr = [];
                                 me.countArr = [];
-                                me.$Message.error("没有数据");
+                                me.$Message.error(vRoot.$t('reportForm.noRecord'));
                             }
                         } else {
                             me.tableData = [];
@@ -2362,8 +2360,8 @@ function speedingReport(groupslist) {
                 this.barChartJourney.setOption(barChartOtion);
             },
             getChartOption: function() {
-                var car = '车辆';
-                var cs = '超速次数';
+                var car = isZh ? '车辆' :'vehicle';
+                var cs = this.$t('reportForm.speedingCount');
                 //加载
                 option = {
                     tooltip: {
@@ -2440,12 +2438,12 @@ function speedingReport(groupslist) {
                 return option;
             },
             getSpeedChartsOption: function() {
-                var speed = "速度";
-                var dis = "里程";
-                var time = "时间";
+                var speed =  this.$t('reportForm.speed');
+                var dis = this.$t('reportForm.mileage');  
+                var time =  this.$t('reportForm.date');  
                 var option = {
                     title: {
-                        text: time + '/超速',
+                        text: time + (isZh? '/超速' : '/speeding'),
                         x: 'center',
                         textStyle: {
                             fontSize: 12,
@@ -2462,9 +2460,9 @@ function speedingReport(groupslist) {
                     tooltip: {
                         trigger: 'axis',
                         formatter: function(v) {
-                            var data = '时间 : ' + v[0].name + '<br/>';
+                            var data =  vRoot.$t('reportForm.date') + ' : ' + v[0].name + '<br/>';
                             for (i in v) {
-                                if (v[i].seriesName != '时间') data += v[i].seriesName + ' : ' + v[i].value + '<br/>';
+                                if (v[i].seriesName != vRoot.$t('reportForm.date')) data += v[i].seriesName + ' : ' + v[i].value + '<br/>';
                             }
                             return data;
                         }
@@ -2748,7 +2746,7 @@ function messageRecords(groupslist) {
                     if (resp.track) {
                         me.contentString = JSON.stringify(resp.track);
                     } else {
-                        vm.$Message.error("没有查询到数据");
+                        vm.$Message.error(me.$t("reportForm.noRecord"));
                     }
                 });
             },
@@ -3006,7 +3004,7 @@ function phoneAlarm(groupslist) {
             },
             onClickQuery: function() {
                 if (this.queryDeviceId == "") {
-                    this.$Message.error("请选择设备");
+                    this.$Message.error(this.$t('reportForm.selectDevTip'));
                     return
                 };
                 var me = this;
@@ -3079,7 +3077,7 @@ function wechatAlarm(groupslist) {
             },
             onClickQuery: function() {
                 if (this.queryDeviceId == "") {
-                    this.$Message.error("请选择设备");
+                    this.$Message.error(this.$t('reportForm.selectDevTip'));
                     return
                 };
                 var me = this;
@@ -4045,18 +4043,18 @@ function reportOnlineSummary(groupslist) {
             iconState: 'ios-arrow-down',
             columns: [
                 { type: 'index', width: 60 },
-                { title: '设备序号', key: 'deviceid', },
-                { title: '设备名称', key: 'devicename', sortable: true, },
-                { title: '卡号', key: 'simnum', sortable: true },
+                { title: vRoot.$t('alarm.devNum'), key: 'deviceid', },
+                { title: vRoot.$t('alarm.devName'), key: 'devicename', sortable: true, },
+                { title: 'SIM', key: 'simnum', sortable: true },
                 {
-                    title: '分组',
+                    title: vRoot.$t('monitor.groupName'),
                     key: 'groupid',
                     render: function(h, params) {
                         var groupid = params.row.groupid;
                         var deviceid = params.row.deviceid;
                         var groupName = '';
                         if (groupid == 0) {
-                            groupName = '默认组';
+                            groupName = vRoot.$t('monitor.defaultGroup');  
                         } else {
                             for (var i = 0; i < groupslist.length; i++) {
                                 var group = groupslist[i];
@@ -4074,10 +4072,10 @@ function reportOnlineSummary(groupslist) {
                     }
                 },
                 {
-                    title: '设备类型',
-                    key: 'devicetype',
+                    title: vRoot.$t('user.devType'),  
+                    key: 'devicetype',  
                     sortable: true,
-                    width: 120,
+                    width: 140,
                     render: function(h, params) {
                         var devicetype = params.row.devicetype;
                         var deviceTypes = vstore.state.deviceTypes;
@@ -4086,24 +4084,24 @@ function reportOnlineSummary(groupslist) {
                     }
                 },
                 {
-                    title: '运营状态',
+                    title: vRoot.$t('reportForm.operationStatus'),
                     width: 85,
                     render: function(h, params) {
-                        var status = '离线';
+                        var status = vRoot.$t('monitor.offline');   
                         var updatetime = params.row.updatetime;
 
                         if (updatetime > 0 && (Date.now() - updatetime) < 60 * 10 * 1000) {
-                            status = "在线";
+                            status = vRoot.$t('monitor.online'); 
                         }
                         return h('span', {}, status)
                     }
                 },
                 {
-                    title: '更新时间',
+                    title: vRoot.$t('reportForm.updateTime'),
                     width: 150,
                     render: function(h, params) {
                         var updatetime = params.row.updatetime;
-                        var updatetimeStr = '未上报';
+                        var updatetimeStr = isZh ? '未上报' : 'null';
                         if (updatetime > 0) {
                             updatetimeStr = DateFormat.longToDateTimeStr(updatetime, timeDifference);
                         }
@@ -4111,21 +4109,21 @@ function reportOnlineSummary(groupslist) {
                     }
                 },
                 {
-                    title: '最后位置',
+                    title: vRoot.$t('reportForm.lastAddress'),
                     render: function(h, params) {
                         var callat = params.row.callat;
                         var callon = params.row.callon;
                         if (callat == 0 && callon == 0) {
-                            return h('span', {}, '未定位')
+                            return h('span', {}, vRoot.$t('reportForm.notLocated'))  
                         } else {
-                            return h('span', {}, '已定位')
+                            return h('span', {}, vRoot.$t('reportForm.located'))
                         }
 
                     }
                 },
-                { title: '最后状态', key: 'strstatus', },
+                { title: vRoot.$t('reportForm.lastState'), key: 'strstatus', },
                 {
-                    title: '备注',
+                    title: vRoot.$t('customer.remark'),  
                     key: 'remark',
                     render: function(h, params) {
                         var remark = params.row.remark;
@@ -4329,19 +4327,19 @@ function dropLineReport(groupslist) {
             days: '1',
             groupslist: [],
             columns: [
-                { type: 'index', width: 60 },
-                { title: '设备序号', key: 'deviceid', },
-                { title: '设备名称', key: 'devicename', },
-                { title: '卡号', key: 'simnum', },
+                { type: vRoot.$t("reportForm.index"), width: 70 },
+                { title: vRoot.$t("alarm.devNum"), key: 'deviceid', },
+                { title: vRoot.$t("alarm.devName"), key: 'devicename', },
+                { title: 'SIM', key: 'simnum', },
                 {
-                    title: '分组',
+                    title: vRoot.$t("monitor.groupName"),
                     key: 'groupid',
                     render: function(h, params) {
                         var groupid = params.row.groupid;
                         var deviceid = params.row.deviceid;
                         var groupName = '';
                         if (groupid == 0) {
-                            groupName = '默认组';
+                            groupName = vRoot.$t("monitor.defaultGroup");
                         } else {
                             for (var i = 0; i < groupslist.length; i++) {
                                 var group = groupslist[i];
@@ -4364,7 +4362,7 @@ function dropLineReport(groupslist) {
                     }
                 },
                 {
-                    title: '设备类型',
+                    title: vRoot.$t("user.devType"),
                     key: 'devicetype',
                     width: 85,
                     render: function(h, params) {
@@ -4375,11 +4373,11 @@ function dropLineReport(groupslist) {
                     }
                 },
                 {
-                    title: '掉线时间',
+                    title: vRoot.$t('reportForm.offlineTime'),  
                     width: 150,
                     render: function(h, params) {
                         var updatetime = params.row.updatetime;
-                        var updatetimeStr = '未上报';
+                        var updatetimeStr = isZh ? '未上报' : 'null';
                         if (updatetime > 0) {
                             updatetimeStr = DateFormat.longToDateTimeStr(updatetime, timeDifference);
                         }
@@ -4387,7 +4385,7 @@ function dropLineReport(groupslist) {
                     }
                 },
                 {
-                    title: '掉线时长',
+                    title: vRoot.$t('reportForm.downOfflineDuration'),
                     width: 150,
                     render: function(h, params) {
                         var updatetime = params.row.updatetime;
@@ -4395,7 +4393,7 @@ function dropLineReport(groupslist) {
                     }
                 },
                 {
-                    title: '备注',
+                    title: vRoot.$t('monitor.remarks'),
                     key: 'remark',
                     render: function(h, params) {
                         var remark = params.row.remark;
@@ -4414,7 +4412,7 @@ function dropLineReport(groupslist) {
         methods: {
             onClickQuery: function() {
                 if (this.checkedDevice.length == 0) {
-                    this.$Message.error("请选择设备");
+                    this.$Message.error(this.$t('reportForm.selectDevTip'));
                     return;
                 }
                 this.loading = true;
@@ -4438,7 +4436,7 @@ function dropLineReport(groupslist) {
                     if (respData.status == 0) {
                         me.tableData = respData.records;
                     } else {
-                        me.$Message.error("查询失败");
+                        me.$Message.error(me.$t('monitor.queryFail'));
                     }
                 });
             },
@@ -4507,17 +4505,17 @@ function deviceOnlineDaily(groupslist) {
             yearMonth: new Date(),
             daycount: 0,
             columns: [
-                { type: 'index' },
+                { type: 'index' ,width:120},
                 { title: '所属账号', key: 'username' },
-                { title: '设备序号', key: 'deviceid' },
-                { title: '设备名称', key: 'devicename' },
+                { title: vRoot.$t('alarm.devNum'), key: 'deviceid' },
+                { title: vRoot.$t('alarm.devName'), key: 'devicename' },   
             ],
             tableData: [],
         },
         methods: {
             onClickQuery: function() {
                 if (this.checkedDevice.length == 0) {
-                    this.$Message.error("请选择设备");
+                    this.$Message.error(this.$t('reportForm.selectDevTip'));
                     return;
                 }
                 this.loading = true;
@@ -4538,7 +4536,6 @@ function deviceOnlineDaily(groupslist) {
                         }
                     }
                 });
-                console.log(this.checkedDevice);
                 if (data.deviceids.length === 0) {
                     this.$Message.error("选择组没有设备!");
                     return;
@@ -4897,7 +4894,7 @@ function deviceMonthOnlineDaily(groupslist) {
         methods: {
             onClickQuery: function() {
                 if (this.checkedDevice.length == 0) {
-                    this.$Message.error("请选择设备");
+                    this.$Message.error(this.$t('reportForm.selectDevTip'));
                     return;
                 }
                 this.loading = true;
@@ -5134,6 +5131,7 @@ function timeOilConsumption(groupslist) {
                 var usoil1 = "油液1";
                 var usoil2 = "油液2";
                 var cotgasus = "油液";
+                var status = '状态';
                 var option = {
                     title: {
                         text: time + '/' + cotgasus,
@@ -5271,6 +5269,15 @@ function timeOilConsumption(groupslist) {
                             color: '#FF4500',
                             data: this.oil2
                         },
+
+                        {
+                            //show:'false',
+                            name: status,
+                            type: 'line',
+                            symbol: 'none',
+                            color: '#000',
+                            data:  this.devStates
+                        },
                     ]
                 };
 
@@ -5305,7 +5312,8 @@ function timeOilConsumption(groupslist) {
                                 distance = [],
                                 recvtime = [],
                                 oil1 = [],
-                                oil2 = [];
+                                oil2 = [],
+                                devStates = [];
                             resp.records.forEach(function(item, index) {
                                 records = item.records;
                                 var independent = item.independent === 0;
@@ -5342,6 +5350,7 @@ function timeOilConsumption(groupslist) {
                                     recvtime.push(record.updatetimeStr);
                                     oil1.push(record.ad0);
                                     oil2.push(record.ad1);
+                                    devStates.push(record.strstatus);
                                 });
                             });
 
@@ -5352,6 +5361,7 @@ function timeOilConsumption(groupslist) {
                             self.oil1 = oil1;
                             self.oil2 = oil2;
                             self.records = records;
+                            self.devStates = devStates;
                             self.total = records.length;
                             records.sort(function(a, b) {
                                 return b.updatetime - a.updatetime;
@@ -5542,7 +5552,7 @@ function dayOil(groupslist) {
                                     record.oil = record.oil/100;
                                     record.addoil = record.addoil/100;
                                     record.leakoil = record.leakoil/100;
-                                    
+
                                     record.distance = (record.distance / 1000).toFixed(2);
                                     if (record.distance != 0) {
                                         record.oilPercent = ((record.oil  / (record.distance )) * 100).toFixed(2);
@@ -5760,6 +5770,7 @@ function refuelingReport(groupslist) {
                         type: 'bar',
                         itemStyle: {
                             //默认样式
+                            backgroundColor:'#000',
                             normal: {
                                 label: {
                                     show: true,
@@ -5769,8 +5780,9 @@ function refuelingReport(groupslist) {
                                         fontWeight: 'bold'
                                     }
                                 }
-                            }
+                            },
                         },
+                        color: 'blue',
                         data: this.oil
                     }]
                 };
@@ -7025,10 +7037,10 @@ var reportForm = {
                         { title: me.$t("reportForm.reportmileagesummary"), name: 'groupMileage', icon: 'md-globe' },
                         { title: me.$t("reportForm.parkDetails"), name: 'parkDetails', icon: 'md-analytics' },
                         { title: me.$t("reportForm.acc"), name: 'accDetails', icon: 'md-bulb' },
-                        { title: isZh ? '语音报表' : 'Voice report', name: 'records', icon: 'md-volume-up' },
-                        { title: isZh ? '报文报表' : 'Message report', name: 'messageRecords', icon: 'ios-book' },
-                        { title: '正反转统计', name: 'rotateReport', icon: 'ios-aperture' },
-                    ]
+                        { title: me.$t("reportForm.voiceReport"), name: 'records', icon: 'md-volume-up' },
+                        { title: me.$t("reportForm.messageReport"), name: 'messageRecords', icon: 'ios-book' },
+                        { title: me.$t("reportForm.rotationStatistics"), name: 'rotateReport', icon: 'ios-aperture' },   
+                    ]  
                 },
                 {
                     title: me.$t("reportForm.warningReport"),
@@ -7037,21 +7049,21 @@ var reportForm = {
                     children: [
                         { title: me.$t("reportForm.allAlarm"), name: 'allAlarm', icon: 'md-warning' },
                         { title: me.$t("reportForm.phoneAlarm"), name: 'phoneAlarm', icon: 'ios-call' },
-                        { title: "微信报警", name: 'wechatAlarm', icon: 'md-ionitron' },
+                        { title: me.$t("reportForm.wechatAlarm"), name: 'wechatAlarm', icon: 'md-ionitron' },
                         { title: me.$t("reportForm.rechargeRecords"), name: 'rechargeRecords', icon: 'ios-list-box-outline' },
-                        { title: '超速报表', name: 'speedingReport', icon: 'md-remove-circle' },
+                        { title: me.$t("reportForm.speedingReport"), name: 'speedingReport', icon: 'md-remove-circle' },
                     ]
                 },
                 {
-                    title: '上线统计',
+                    title: me.$t("reportForm.onlineStatistics"),
                     name: 'operateReport',
                     icon: 'md-stats',
                     children: [
-                        { title: '综合统计', name: 'reportOnlineSummary', icon: 'md-sunny' },
-                        { title: '掉线报表', name: 'dropLineReport', icon: 'ios-git-pull-request' },
-                        { title: '车辆日在线率', name: 'deviceOnlineDaily', icon: 'md-bulb' },
-                        { title: '车队日在线率', name: 'groupsOnlineDaily', icon: 'md-contacts' },
-                        { title: '车辆月在线率', name: 'deviceMonthOnlineDaily', icon: 'md-contrast' },
+                        { title: me.$t("reportForm.comprehensiveStatistics"), name: 'reportOnlineSummary', icon: 'md-sunny' },
+                        { title: me.$t("reportForm.offlineReport"), name: 'dropLineReport', icon: 'ios-git-pull-request' },
+                        { title: me.$t("reportForm.dailyVehicleOnlineRate"), name: 'deviceOnlineDaily', icon: 'md-bulb' },
+                        { title: me.$t("reportForm.dailyFleetOnlineRate"), name: 'groupsOnlineDaily', icon: 'md-contacts' },
+                        { title: me.$t("reportForm.monthlyVehicleOnlineRate"), name: 'deviceMonthOnlineDaily', icon: 'md-contrast' },
                     ]
                 },
                 {
