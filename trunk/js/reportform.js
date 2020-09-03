@@ -4506,7 +4506,7 @@ function deviceOnlineDaily(groupslist) {
             daycount: 0,
             columns: [
                 { type: 'index' ,width:120},
-                { title: '所属账号', key: 'username' },
+                { title: vRoot.$t("reportForm.ascriptionUser"), key: 'username' },
                 { title: vRoot.$t('alarm.devNum'), key: 'deviceid' },
                 { title: vRoot.$t('alarm.devName'), key: 'devicename' },   
             ],
@@ -4599,7 +4599,7 @@ function deviceOnlineDaily(groupslist) {
                 var columns = [
                     { type: 'index', width: 60, fixed: 'left' },
                     {
-                        title: '所属账号',
+                        title: vRoot.$t("reportForm.ascriptionUser"),
                         key: 'username',
                         fixed: 'left',
                         width: 120,
@@ -4695,10 +4695,10 @@ function groupsOnlineDaily(groupslist) {
             yearMonth: new Date(),
             columns: [
                 { type: 'index', width: 60 },
-                { title: '所属账号', key: 'username' },
-                { title: '分组名称', key: 'groupname' },
+                { title: vRoot.$t("reportForm.ascriptionUser"), key: 'username' },
+                { title: vRoot.$t("monitor.groupName") , key: 'groupname' },
                 {
-                    title: '总数量/在线数量',
+                    title: vRoot.$t("reportForm.onlinequantityAndTotalquantity"),
                     key: 'onlinecount',
                     render: function(h, params) {
                         var onlinecount = params.row.onlinecount;
@@ -4707,7 +4707,7 @@ function groupsOnlineDaily(groupslist) {
                     }
                 },
                 {
-                    title: '日在线率',
+                    title: vRoot.$t("reportForm.dailyOnlineRate"),
                     sortable: true,
                     render: function(h, params) {
                         var onlinecount = params.row.onlinecount;
@@ -4815,7 +4815,7 @@ function deviceMonthOnlineDaily(groupslist) {
         data: {
             isSpin: false,
             modal: false,
-            textTop: ["日", "一", "二", "三", "四", "五", "六"],
+            textTop: isZh ? ["日", "一", "二", "三", "四", "五", "六"] : ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'] ,
             datesArr: [],
             year: 1970,
             month: 1,
@@ -4827,7 +4827,7 @@ function deviceMonthOnlineDaily(groupslist) {
             columns: [
                 { type: 'index', width: 60 },
                 {
-                    title: '所属账号',
+                    title: vRoot.$t("reportForm.ascriptionUser"),
                     key: 'username',
                     width: 120,
                     render: function(h, parmas) {
@@ -4843,9 +4843,9 @@ function deviceMonthOnlineDaily(groupslist) {
                         return h('span', {}, userName);
                     }
                 },
-                { title: '设备序号', key: 'deviceid' },
+                { title: vRoot.$t("alarm.devNum") , key: 'deviceid' },
                 {
-                    title: '设备名称',
+                    title: vRoot.$t("alarm.devName"),
                     key: 'devicename',
                     render: function(h, params) {
                         var deviceid = params.row.deviceid;
@@ -4862,15 +4862,15 @@ function deviceMonthOnlineDaily(groupslist) {
                     }
                 },
                 {
-                    title: '在线天数/总天数',
+                    title:  vRoot.$t("reportForm.onlineDaysAndTotalDays"),
                     render: function(h, params) {
                         var onlinecount = params.row.onlinecount;
                         return h('span', {}, onlinecount + "/" + params.row.daysstatus.length);
                     }
                 },
-                { title: '在线率', key: 'onlineRate', sortable: true },
+                { title: vRoot.$t("reportForm.onlineRate"), key: 'onlineRate', sortable: true },
                 {
-                    title: "在线日期",
+                    title: vRoot.$t("reportForm.onlineDate"),
                     render: function(h, params) {
                         var row = params.row;
                         return h(
@@ -4884,7 +4884,7 @@ function deviceMonthOnlineDaily(groupslist) {
                                     }
                                 }
                             },
-                            '在线日期'
+                            vRoot.$t("reportForm.onlineDate"),
                         )
                     }
                 }
@@ -4916,7 +4916,7 @@ function deviceMonthOnlineDaily(groupslist) {
                     }
                 });
                 if (data.deviceids.length === 0) {
-                    this.$Message.error("选择组没有设备!");
+                    this.$Message.error(this.$t('reportForm.selectDevTip'));
                     return;
                 }
                 utils.sendAjax(url, data, function(respData) {
@@ -5048,7 +5048,7 @@ function timeOilConsumption(groupslist) {
             loading: false,
             groupslist: [],
             columns: [
-                { title: '编号', type: 'index', width: 60 },
+                { title: '编号', type: 'index', width: 70 },
                 { title: '设备名称', key: 'devicename', width: 100 },
                 { title: '时间', key: 'updatetimeStr', sortable: true, width: 160 },
                 { title: '总里程(公里)', key: 'totaldistance', width: 110 },
@@ -5782,8 +5782,8 @@ function refuelingReport(groupslist) {
                                 }
                             },
                         },
-                        color: 'blue',
-                        data: this.oil
+                        color: '#135DB4',
+                        data: this.oil 
                     }]
                 };
                 this.chartsIns.setOption(option);

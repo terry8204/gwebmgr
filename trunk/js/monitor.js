@@ -673,10 +673,10 @@ var monitor = {
             this.loading = true;
             utils.sendAjax(url, data, function(resp) {
                 if (resp.status === 0) {
-                    that.$Message.success(this.$t('monitor.setupSucc'));
+                    that.$Message.success(that.$t('monitor.setupSucc'));
                     that.deviceInfos[that.currentDeviceId].videochannelcount = data.videochannelcount;
                 } else {
-                    that.$Message.error(this.$t('monitor.setupFail'));
+                    that.$Message.error(that.$t('monitor.setupFail'));
                 }
                 that.loading = false;
             }, function() {

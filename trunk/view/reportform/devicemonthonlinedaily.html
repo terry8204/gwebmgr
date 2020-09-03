@@ -17,7 +17,7 @@
             </div>
         </div>
         <div style="float: left;">
-            <div style="height: 32px; line-height: 32px;padding: 0 10px;">选择月份:&nbsp;</div>
+            <div style="height: 32px; line-height: 32px;padding: 0 10px;">{{$t("reportForm.selectMonth")}}:&nbsp;</div>
         </div>
         <div style="float: left;position: relative;">
             <Date-Picker v-model="yearMonth" type="month" style="width: 150px"></Date-Picker>
@@ -32,7 +32,7 @@
     <div style="margin:10px;">
         <i-table ref="totalTable" :columns="columns" :data="tableData" border :height="tableHeight" :loading="loading"></i-table>
     </div>
-    <Modal v-model="modal" title="在线日期" width="332">
+    <Modal v-model="modal" :title="$t('reportForm.onlineDate')" width="332"> 
         <div class="calendar-wrap">
             <div class="calendar-top">
                 <div class="date-wrap">
