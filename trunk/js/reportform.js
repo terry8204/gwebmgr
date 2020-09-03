@@ -3206,51 +3206,47 @@ function insureRecords(groupslist) {
             total: 0,
             modal: false,
             columns: [{
-                    title: "序号",
+                    title: vRoot.$t("reportForm.index"),
                     key: 'index',
                     width: 70,
                     fixed: 'left',
                 },
                 {
-                    title: '是否审核',
+                    title: vRoot.$t("reportForm.examine"),
                     key: 'isPay',
                     width: 100,
                     fixed: 'left',
                 },
-                { title: '姓名', key: 'name', width: 100, fixed: 'left', },
-                { title: '身份证号', key: 'cardid', width: 160, fixed: 'left', },
+                { title: vRoot.$t("reportForm.name"), key: 'name', width: 100, fixed: 'left', },
+                { title: vRoot.$t("reportForm.idNumber"), key: 'cardid', width: 160, fixed: 'left', },
                 {
-                    title: '保单号',
+                    title: vRoot.$t("reportForm.policyNumber"),
                     width: 100,
                     fixed: 'left',
                     key: 'policyno',
                     "sortable": true,
-                    // render: function(h, parmas) {
-                    //     return h('span', {}, parmas.row.policyno == null ? '保单审核中' : parmas.row.policyno);
-                    // }
                 },
-                { title: '添加时间', key: 'createtimeStr', width: 150, "sortable": true },
+                { title: vRoot.$t("reportForm.addDate"), key: 'createtimeStr', width: 150, "sortable": true },
                 {
-                    title: '购买方式',
+                    title: vRoot.$t("reportForm.purchaseMethod"),
                     key: 'buytype',
                     width: 100,
                     render: function(h, parmas) {
                         var buytype = parmas.row.buytype,
-                            reslut = '未知';
+                            reslut = isZh ? '未知' :'unknown';
                         if (buytype === 1) {
-                            reslut = '自行购买';
+                            reslut = isZh ? '自行购买' : 'Self purchase';
                         } else if (buytype === 2) {
-                            reslut = '厂家购买';
+                            reslut = isZh ? '厂家购买' : 'manufactor';
                         }
                         return h('span', {}, reslut);
                     }
                 },
-                { title: '经销商', key: 'username', width: 150 },
-                { title: '经销商地址', key: 'useraddress', width: 150 },
-                { title: '经销商手机号', key: 'usernamephonenum', width: 120 },
+                { title: vRoot.$t("reportForm.distributor"), key: 'username', width: 150 },
+                { title: vRoot.$t("reportForm.distributorAddress"), key: 'useraddress', width: 150 },
+                { title: vRoot.$t("reportForm.distributorPhone"), key: 'usernamephonenum', width: 120 },
                 { title: '用户手机号', key: 'phonenum', width: 120 },
                 { title: '用户地址', key: 'usingaddress', width: 150 },
-                // { title: '电动车类型', key: 'phonenum', width: 150 },
                 { title: '品牌型号', key: 'brandtype', width: 100 },
                 { title: '车架号', key: 'vinno', width: 150 },
                 { title: 'GPS序列号', key: 'deviceid', width: 150 },
@@ -3456,7 +3452,7 @@ function insureRecords(groupslist) {
                 this.editObjectRow.insurestate = me.editObjectRow.isRecharge ? 1 : 0;
                 var d = deepClone(this.editObjectRow);
                 if (d.createtime == "" || d.createtime == null) {
-                    this.$Message.error('请选择时间');
+                    this.$Message.error(this.$t('message.plSelectTime'));
                     return;
                 };
                 d.createtime = new Date(d.createtime).getTime();
@@ -3471,7 +3467,7 @@ function insureRecords(groupslist) {
                         data.vinno = me.editObjectRow.vinno;
                         data.usernamephonenum = me.editObjectRow.usernamephonenum;
                         data.insurestate = me.editObjectRow.isRecharge ? 1 : 0;
-                        data.isPay = data.insurestate == 1 ? '已审核' : '未审核';
+                        data.isPay = data.insurestate == 1 ? me.$t('reportForm.aeviewed') : me.$t('reportForm.notReviewed');  
                         data.createtimeStr = DateFormat.longToDateStr(d.createtime, timeDifference);
                         data.createtime = data.createtime;
 
@@ -3481,14 +3477,14 @@ function insureRecords(groupslist) {
                         cdata.vinno = me.editObjectRow.vinno;
                         cdata.usernamephonenum = me.editObjectRow.usernamephonenum;
                         cdata.insurestate = me.editObjectRow.isRecharge ? 1 : 0;
-                        cdata.isPay = data.insurestate == 1 ? '已审核' : '未审核';
+                        cdata.isPay = data.insurestate == 1 ?  me.$t('reportForm.aeviewed') : me.$t('reportForm.notReviewed'); 
                         cdata.createtimeStr = DateFormat.longToDateStr(d.createtime, timeDifference);
                         cdata.createtime = data.createtime;
 
                         me.modal = false;
-                        me.$Message.success('编辑成功');
+                        me.$Message.success(me.$t('message.changeSucc'));   
                     } else {
-                        me.$Message.error('编辑失败');
+                        me.$Message.error(me.$t('message.changeFail'));
                     }
                 })
             },
@@ -3496,18 +3492,18 @@ function insureRecords(groupslist) {
                 var index = this.editDeviceIndex,
                     me = this;
                 this.$Modal.confirm({
-                    title: "提示",
-                    content: "是否删除这个保单信息!",
+                    title: me.$t('reportForm.tips'),
+                    content: me.$t('reportForm.tipsContent'),
                     onOk: function() {
                         var url = myUrls.deleteInsure();
                         utils.sendAjax(url, { insureid: row.insureid }, function(respData) {
                             if (respData.status == 0) {
-                                me.$Message.success('删除成功');
+                                me.$Message.success(me.$t('message.deleteSucc'));
                                 me.tableData.splice(index, 1);
                                 me.insureRecords.splice(row.index - 1, 1);
                                 me.total = me.insureRecords.length;
                             } else {
-                                me.$Message.error('删除失败');
+                                me.$Message.error(me.$t('message.deleteFail'));
                             }
                         });
                     },
@@ -3522,7 +3518,7 @@ function insureRecords(groupslist) {
                     if (respData.status == 0) {
                         callback([me.castUsersTreeToDevicesTree(respData.rootuser)]);
                     } else {
-                        me.$Message.error('查询失败')
+                        me.$Message.error(me.$t('monitor.queryFail'))  
                     }
                 });
             },
@@ -3650,11 +3646,11 @@ function insureRecords(groupslist) {
                                     item.index = index + 1;
                                     item.createtimeStr = DateFormat.longToDateStr(item.createtime, timeDifference)
                                     if (item.policyno == null) {
-                                        item.policyno = '保单审核中';
+                                        item.policyno = vRoot.$t('reportForm.underReview');  
                                     };
                                     if (item.insurestate !== 1) {
                                         item.index = tableData.length + 1;
-                                        item.isPay = item.insurestate == 1 ? '已审核' : '未审核'
+                                        item.isPay = item.insurestate == 1 ? vRoot.$t('reportForm.aeviewed')  : vRoot.$t('reportForm.notReviewed');
                                         tableData.push(item);
                                     };
                                 })
@@ -3669,11 +3665,11 @@ function insureRecords(groupslist) {
                                     item.index = index + 1;
                                     item.createtimeStr = DateFormat.format(new Date(item.createtime), 'yyyy-MM-dd')
                                     if (item.policyno == null) {
-                                        item.policyno = '保单审核中';
+                                        item.policyno = vRoot.$t('reportForm.underReview');  
                                     };
                                     if (item.insurestate === 1) {
                                         item.index = tableData.length + 1;
-                                        item.isPay = item.insurestate == 1 ? '已审核' : '未审核'
+                                        item.isPay = item.insurestate == 1 ? vRoot.$t('reportForm.aeviewed')  : vRoot.$t('reportForm.notReviewed');
                                         tableData.push(item);
                                     };
                                 })
@@ -3684,9 +3680,9 @@ function insureRecords(groupslist) {
                             resp.insures.forEach(function(item, index) {
                                 item.index = index + 1;
                                 if (item.policyno == null) {
-                                    item.policyno = '保单审核中';
+                                    item.policyno =  vRoot.$t('reportForm.underReview');  
                                 };
-                                item.isPay = item.insurestate == 1 ? '已审核' : '未审核'
+                                item.isPay = item.insurestate == 1 ? vRoot.$t('reportForm.aeviewed')  : vRoot.$t('reportForm.notReviewed');
                                 item.createtimeStr = DateFormat.format(new Date(item.createtime), 'yyyy-MM-dd')
                             })
                             me.insureRecords = resp.insures;
@@ -3707,7 +3703,7 @@ function insureRecords(groupslist) {
             },
             exactQueryInsures: function() {
                 if (this.exactValue == '') {
-                    this.$Message.error('请输入要查询的姓名|身份证号|手机号')
+                    this.$Message.error(vRoot.$t('reportForm.insurePlaceholder'));
                     return;
                 };
                 var url = myUrls.queryInsureByKeyWord(),
@@ -3718,9 +3714,9 @@ function insureRecords(groupslist) {
                         resp.insures.forEach(function(item, index) {
                             item.index = index + 1;
                             if (item.policyno == null) {
-                                item.policyno = '保单审核中';
+                                item.policyno = vRoot.$t('reportForm.underReview'); 
                             };
-                            item.isPay = item.insurestate == 1 ? '已审核' : '未审核'
+                            item.isPay = item.insurestate == 1 ? vRoot.$t('reportForm.aeviewed')  : vRoot.$t('reportForm.notReviewed');
                             item.createtimeStr = DateFormat.format(new Date(item.createtime), 'yyyy-MM-dd')
                         })
                         me.insureRecords = resp.insures;
@@ -3728,7 +3724,7 @@ function insureRecords(groupslist) {
                         me.currentIndex = 1;
                         me.tableData = me.insureRecords.slice(0, 20);
                     } else {
-                        me.$Message.error('查询失败')
+                        me.$Message.error( vRoot.$t('monitor.queryFail'));
                     }
                 }, function() {
                     me.loading = false;
@@ -3744,7 +3740,7 @@ function insureRecords(groupslist) {
                     item.vinno = "\t" + item.vinno;
                 });
                 this.$refs.table.exportCsv({
-                    filename: '保险数据',
+                    filename: vRoot.$t('reportForm.insureData') ,
                     original: false,
                     columns: this.columns,
                     data: tableData
@@ -3780,40 +3776,40 @@ function salesRecord(groupslist) {
             currentIndex: 1,
             total: 0,
             columns: [{
-                    title: "序号",
+                    title: vRoot.$t("reportForm.index"),
                     key: 'index',
                     width: 70,
                 },
                 {
-                    title: '门店编号',
+                    title: vRoot.$t("reportForm.storeNumber"),
                     key: 'username',
                 },
                 {
-                    title: '门店名称',
+                    title: vRoot.$t("reportForm.storeName"),
                     key: 'companyname'
                 }, {
-                    title: '姓名',
+                    title: vRoot.$t("reportForm.name"),
                     key: 'cardname'
                 }, {
-                    title: '电话',
+                    title: vRoot.$t("customer.contactNumber"),
                     key: 'phone'
                 }, {
-                    title: '地址',
+                    title: vRoot.$t("reportForm.address"),
                     key: 'companyaddr'
                 }, {
-                    title: '累计保险充值记录',
+                    title: vRoot.$t("reportForm.cumulativeRecords"),
                     key: 'totalinsurecount'
                 },
                 {
-                    title: '剩余保单数',
+                    title: vRoot.$t("reportForm.surplus"),
                     key: 'remaininsurecount',
                 },
                 {
-                    title: '出厂已购保单销售数',
+                    title: vRoot.$t("reportForm.exFactory"),
                     key: 'agentinsurecount',
                 },
                 {
-                    title: '自行购买保单销售数',
+                    title: vRoot.$t("reportForm.buyOneself"),
                     key: 'individualinsurecount',
                 },
             ],
@@ -3845,7 +3841,7 @@ function salesRecord(groupslist) {
                     if (respData.status == 0) {
                         callback([me.castUsersTreeToDevicesTree(respData.rootuser)]);
                     } else {
-                        me.$Message.error('查询失败')
+                        me.$Message.error(me.$t('monitor.queryFail'));
                     }
                 });
             },
@@ -4004,7 +4000,7 @@ function salesRecord(groupslist) {
                     item.phonenum = "\t" + item.phonenum;
                 });
                 this.$refs.table.exportCsv({
-                    filename: '保险数据',
+                    filename: vRoot.$t('reportForm.insureData') ,
                     original: false,
                     columns: this.columns,
                     data: tableData
@@ -4829,7 +4825,7 @@ function deviceMonthOnlineDaily(groupslist) {
                 {
                     title: vRoot.$t("reportForm.ascriptionUser"),
                     key: 'username',
-                    width: 120,
+                    width: 130,
                     render: function(h, parmas) {
                         var deviceid = parmas.row.deviceid;
                         var userName = "";
@@ -4862,7 +4858,7 @@ function deviceMonthOnlineDaily(groupslist) {
                     }
                 },
                 {
-                    title:  vRoot.$t("reportForm.onlineDaysAndTotalDays"),
+                    title: vRoot.$t("reportForm.onlineDaysAndTotalDays"),
                     render: function(h, params) {
                         var onlinecount = params.row.onlinecount;
                         return h('span', {}, onlinecount + "/" + params.row.daysstatus.length);
@@ -7067,12 +7063,12 @@ var reportForm = {
                     ]
                 },
                 {
-                    title: '保险管理',
+                    title: me.$t("reportForm.insurMgr"),   
                     name: 'insure',
                     icon: 'md-medkit',
                     children: [
-                        { title: "保险记录", name: 'insureRecords', icon: 'ios-list-box-outline' },
-                        { title: "销售记录", name: 'salesRecord', icon: 'ios-book-outline' },
+                        { title: me.$t("reportForm.insurRecord"), name: 'insureRecords', icon: 'ios-list-box-outline' },
+                        { title: me.$t("reportForm.salesRecord"), name: 'salesRecord', icon: 'ios-book-outline' },
                     ]
                 },
                 {

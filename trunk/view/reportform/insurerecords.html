@@ -12,9 +12,9 @@
         </div>
         <div style="margin-left:10px;float: left;line-height: 30px;position: relative;width: 70px;">
             <i-select v-model="isFilter">
-                <i-option value="2">全部</i-option>
-                <i-option value="1">已审核</i-option>
-                <i-option value="0">未审核</i-option>
+                <i-option value="2">{{$t("reportForm.all")}}</i-option>
+                <i-option value="1">{{$t("reportForm.aeviewed")}}</i-option>
+                <i-option value="0">{{$t("reportForm.notReviewed")}}</i-option>
             </i-select>
         </div>
         <div style="margin-left:10px;float: left;">
@@ -29,13 +29,13 @@
             <i-button @click="queryInsures" :loading="loading">{{$t("reportForm.query")}}</i-button>
         </div>
         <div style="margin-left:20px;float: left;">
-            <i-input v-model.trim="exactValue" placeholder="姓名|手机号|身份证号"></i-input>
+            <i-input v-model.trim="exactValue" :placeholder="$t('reportForm.insurePlaceholder')"></i-input>  
         </div>
         <div style="margin-left:10px;float: left;">
-            <i-button @click="exactQueryInsures" :loading="loading">精确查找</i-button>
+            <i-button @click="exactQueryInsures" :loading="loading">{{$t("reportForm.exactSearch")}}</i-button>
         </div>
         <div style="float: right;">
-            <i-button @click="exportData" type="primary">导出数据</i-button>
+            <i-button @click="exportData" type="primary">{{$t("reportForm.exportData")}}</i-button>
         </div>
     </div>
     <div style="margin:10px;">
