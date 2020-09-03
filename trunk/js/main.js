@@ -215,7 +215,7 @@ Vue.component('my-video', {
         },
         switchVideoPlayState: function() {
             if (this.deviceId == '') {
-                this.$Message.error('请选择播放设备');
+                this.$Message.error(this.$t('monitor.deviceOffline'));
                 return;
             }
             if (this.isPlaying) {
@@ -273,20 +273,20 @@ Vue.component('my-video', {
             })
             player.addEventListener('error', function() {
                 me.isSendAjaxState = false;
-                me.playerStateTips = "请求数据时遇到错误";
+                me.playerStateTips = me.$t('video.error');
             });
             player.addEventListener('play', function() {
-                me.playerStateTips = "开始播放";
+                me.playerStateTips = me.$t('video.play');
             });
             player.addEventListener('playing', function() {
-                me.playerStateTips = "正在播放";
+                me.playerStateTips = me.$t('video.playing');
                 me.isSendAjaxState = false;
             });
             player.addEventListener('pause', function() {
-                me.playerStateTips = "暂停"
+                me.playerStateTips = me.$t('video.pause');
             });
             player.addEventListener('waiting', function() {
-                me.playerStateTips = "等待数据"
+                me.playerStateTips = me.$t('video.waiting');
             });
         },
         flv_photograph: function(playerIndex) {
@@ -303,7 +303,7 @@ Vue.component('my-video', {
         htmlToImage: function(index) {
             var canvas = document.getElementById('V2I_canvas');
             if (!canvas.getContext) {
-                alert("您的浏览器暂不支持canvas");
+                me.$Message.error(me.$t('video.notSupportCanvas'));
                 return false;
             } else {
                 var context = canvas.getContext("2d");
@@ -340,7 +340,7 @@ Vue.component('my-video', {
         handleStartVideos: function() {
             var url = myUrls.startVideos(),
                 me = this;
-            this.playerStateTips = "正在请求播放";
+            this.playerStateTips = me.$t('video.requestPlay');  
             utils.sendAjax(url, {
                 deviceid: this.deviceId,
                 channels: [Number(this.channel)],
@@ -351,47 +351,47 @@ Vue.component('my-video', {
                 var status = resp.status;
 
                 if (status == CMD_SEND_RESULT_UNCONFIRM) {
-                    me.$Message.error('发送成功，未收到确认');
+                    me.$Message.error(me.$t('monitor.CMD_SEND_RESULT_UNCONFIRM'));
                 } else if (status === CMD_SEND_RESULT_PASSWORD_ERROR) {
-                    me.$Message.error('密码错误');
+                    me.$Message.error(me.$t('monitor.CMD_SEND_RESULT_PASSWORD_ERROR'));
                 } else if (status === CMD_SEND_RESULT_OFFLINE_NOT_CACHE) {
-                    me.$Message.error("设备离线，未缓存");
+                    me.$Message.error(me.$t('monitor.CMD_SEND_RESULT_OFFLINE_NOT_CACHE'));
                 } else if (status === CMD_SEND_RESULT_OFFLINE_CACHED) {
-                    me.$Message.error("设备离线，已缓存");
+                    me.$Message.error(me.$t('monitor.CMD_SEND_RESULT_OFFLINE_CACHED'));
                 } else if (status === CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD) {
-                    me.$Message.error("需要修改默认密码");
+                    me.$Message.error(me.$t('monitor.CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD'));
                 } else if (status === CMD_SEND_RESULT_DETAIL_ERROR) {
-                    me.$Message.error("错误:" + resp.cause);
+                    me.$Message.error(me.$t('monitor.CMD_SEND_RESULT_DETAIL_ERROR') + resp.cause);
                 } else if (status === CMD_SEND_CONFIRMED) {
                     var acc = resp.acc
                     var accState = '';
                     if (acc === 3) {
-                        accState = 'ACC开,'
+                        accState = me.$t('video.accOpen');
                     } else if (acc === 2) {
-                        accState = 'ACC关,'
+                        accState = me.$t('video.accClose');
                     }
-                    me.$Message.success(accState + "请求播放成功,请稍后...");
+                    me.$Message.success(accState + me.$t('video.requestPlaySucc'));
                     me.switchflvPlayer(records[0].playurl, records[0].hasaudio);
                     me.isPlaying = true;
                     me.startTimes = Date.now();
                 } else if (status === CMD_SEND_OVER_RETRY_TIMES) {
-                    me.$Message.error("尝试发送3次失败");
+                    me.$Message.error(me.$t('monitor.CMD_SEND_OVER_RETRY_TIMES'));
                 } else if (status === CMD_SEND_SYNC_TIMEOUT) {
 
                     var accState = '';
                     if (acc === 3) {
-                        accState = 'ACC开,'
+                        accState = me.$t('video.accOpen');
                     } else if (acc === 2) {
-                        accState = 'ACC关,'
+                        accState = me.$t('video.accClose');
                     }
-                    me.$Message.error(accState + "请求播放超时");
+                    me.$Message.error(accState + me.$t('video.requestPlayTimeout'));
                     me.switchflvPlayer(records[0].playurl, records[0].hasaudio);
                     me.isPlaying = true;
                     me.startTimes = Date.now();
                 }
 
             }, function() {
-                me.$Message.error("请求超时");
+                me.$Message.error(me.$t('video.requestTimeout'));
                 me.isSendAjaxState = false;
             })
         },
@@ -405,7 +405,7 @@ Vue.component('my-video', {
                 this.flvPlayer = null;
             } catch (error) {};
             this.isPlaying = false;
-            this.playerStateTips = '暂停播放';
+            this.playerStateTips = this.$t('video.pausePlay');
             this.isSendAjaxState = false;
             this.networkSpeed = '0KB/S';
 
@@ -423,7 +423,7 @@ Vue.component('my-video', {
                 var nowTime = Date.now();
                 if ((nowTime - this.startTimes) > 1000 * 60 * 3) {
                     this.handleStopVideos();
-                    this.playerStateTips = '已播放三分钟时间,暂停播放';
+                    this.playerStateTips = this.$t('video.threeMinutes');
                 }
             }
         }
@@ -805,7 +805,7 @@ var appHeader = {
                 { name: "monitor", icon: "md-contacts", title: me.$t("header.monitor"), isShow: true },
                 { name: "reportForm", icon: "ios-paper-outline", title: me.$t("header.reportForm"), isShow: true },
                 { name: "bgManager", icon: "md-settings", title: me.$t("header.bgManager"), isShow: true },
-                { name: "ruleManager", icon: "ios-book-outline", title: '规则管理', isShow: true },
+                { name: "ruleManager", icon: "ios-book-outline", title: me.$t("header.ruleManagr"), isShow: true },
                 { name: "systemParam", icon: "ios-options", title: me.$t("header.systemParam"), isShow: true },
             ],
             modalPass: false,

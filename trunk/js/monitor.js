@@ -237,7 +237,7 @@ var monitor = {
             hue: 0, //         色度                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
             saturate: 128, // 4       饱和度                                                                                  
             exposure: 128, // 5 
-            audioPlayerTip: '对讲请先点击以下按钮',
+            audioPlayerTip: '',
             isLuyin: false,
             speechTimer: null,
             imgSrc: './images/luyin/ic_record_ripple@2x-9.png',
@@ -496,9 +496,7 @@ var monitor = {
 
         },
         onDragend(event) {
-
             // event.target 都返回源元素
-            console.log('下标' + this.kaishiIndex + ' 和 ' + this.jieshuIndex + '进行替换')
             var startElement = document.getElementsByClassName('vpw' + this.startExchangeIndex)[0];
             var endElement = document.getElementsByClassName('vpw' + this.endExchangeIndex)[0];
             var parentElement = this.$refs.videoContent;
@@ -509,7 +507,6 @@ var monitor = {
                 this.insertNodeAt(parentElement, startElement, this.jieshuIndex);
                 this.insertNodeAt(parentElement, endElement, this.kaishiIndex);
             }
-            console.log('拖拽结束')
         },
         onDrop(event) {
             // event.target 都返回目标元素
@@ -551,9 +548,9 @@ var monitor = {
         onMousedown: function() {
             var that = this;
             if (!that.isOpenJianting) {
-                that.$Message.error("请先开启监听");
+                that.$Message.error(this.$t('monitor.openJianTingTip'));
                 return;
-            }
+            };
             try {
                 that.isLuyin = true;
                 that.setSpeechTimer();
@@ -569,7 +566,7 @@ var monitor = {
                     }, 1000);
                 };
             } catch (error) {
-                vRoot.$Message.error('浏览器不支持录音功能')
+                vRoot.$Message.error(this.$t('monitor.browserDoesNotSupportRecording'));
             }
             return false;
         },
@@ -600,7 +597,7 @@ var monitor = {
                 return;
             }
             if (isRecordingRights == false) {
-                this.$Message.error("浏览器不支持录音功能或者没有检测到录音设备");
+                this.$Message.error(this.$t('monitor.browserDoesNotSupportRecording'));
                 return;
             };
             var me = this;
@@ -608,8 +605,8 @@ var monitor = {
                 this.isOpenJianting = false;
                 audioPlayer.pause();
                 audioPlayerTime = 0;
-                me.$Message.success("关闭成功");
-                me.audioPlayerTip = '监听已关闭';
+                me.$Message.success(me.$t('monitor.closeSucc')); 
+                me.audioPlayerTip = me.$t('monitor.jiantingYiclose');
                 var url = myUrls.stopAudio();
                 utils.sendAjax(url, {
                     deviceid: this.currentVideoDeviceInfo.deviceId,
@@ -629,26 +626,28 @@ var monitor = {
                     me.loading = false;
                     if (resp.status === 6) {
                         me.isOpenJianting = true;
-                        me.$Message.success("开启成功");
+                        me.$Message.success(me.$t('monitor.openSucc')); 
                         audioPlayerTime = Date.now();
                         me.initAudioPlayer(resp.record.playurl);
-                        me.audioPlayerTip = '监听已打开，请按住说话'
+                        me.audioPlayerTip = me.$t('monitor.openJianTingTip1');
                     } else {
-                        me.$Message.success("开启失败,超时或者设备不在线");
+                        me.$Message.error(me.$t('monitor.openFail')); 
                     }
                 });
             }
 
         },
         handleSetPlayParamter: function() {
+
             if (this.currentVideoDeviceInfo.deviceId == null) {
-                this.$Message.error('请选择视频设备');
+                this.$Message.error(this.$t('monitor.selectVideoDevice')); 
                 return;
             }
+
             var url = myUrls.setVideoPlayParameters(),
                 that = this;
             if (!(typeof Number(this.audiochannel) === 'number' && !isNaN(this.audiochannel))) {
-                that.$Message.error('通道号必须是1到99的数字')
+                that.$Message.error(that.$t('monitor.channelIsNumber'));
                 return;
             }
 
@@ -674,10 +673,10 @@ var monitor = {
             this.loading = true;
             utils.sendAjax(url, data, function(resp) {
                 if (resp.status === 0) {
-                    that.$Message.success('设置成功')
+                    that.$Message.success(this.$t('monitor.setupSucc'));
                     that.deviceInfos[that.currentDeviceId].videochannelcount = data.videochannelcount;
                 } else {
-                    that.$Message.error('设置失败')
+                    that.$Message.error(this.$t('monitor.setupFail'));
                 }
                 that.loading = false;
             }, function() {
@@ -686,7 +685,7 @@ var monitor = {
         },
         queryVideoPlayParameters: function() {
             if (this.currentVideoDeviceInfo.deviceId == null) {
-                this.$Message.error('请选择视频设备');
+                this.$Message.error(this.$t('monitor.selectVideoDevice'));
                 return;
             }
             var url = myUrls.queryVideoPlayParameters(),
@@ -712,9 +711,9 @@ var monitor = {
                             me.physicalchannel4 = String(item.channeltype);
                         }
                     });
-                    me.$Message.success("查询成功");
+                    me.$Message.success(me.$t('monitor.querySucc'));  
                 } else {
-                    me.$Message.error("查询失败");
+                    me.$Message.error(me.$t('monitor.queryFail'));
                 }
                 me.loading = false;
             }, function() {
@@ -737,7 +736,7 @@ var monitor = {
         },
         setSingleAudioVideoParameters: function(index) {
             if (this.currentVideoDeviceInfo.deviceId == null) {
-                this.$Message.error('请选择视频设备');
+                this.$Message.error(this.$t('monitor.selectVideoDevice'));
                 return;
             }
             var originalData = this.channelsData[index];
@@ -784,30 +783,30 @@ var monitor = {
                 }, function(data) {
                     var status = data.status;
                     if (status == CMD_SEND_RESULT_UNCONFIRM) {
-                        me.$Message.error('发送成功，未收到确认');
+                        me.$Message.error(me.$t('monitor.CMD_SEND_RESULT_UNCONFIRM'));
                     } else if (status === CMD_SEND_RESULT_PASSWORD_ERROR) {
-                        me.$Message.error('密码错误');
+                        me.$Message.error(me.$t('monitor.CMD_SEND_RESULT_PASSWORD_ERROR'));
                     } else if (status === CMD_SEND_RESULT_OFFLINE_NOT_CACHE) {
-                        me.$Message.error("设备离线，未缓存");
+                        me.$Message.error(me.$t('monitor.CMD_SEND_RESULT_OFFLINE_NOT_CACHE'));
                     } else if (status === CMD_SEND_RESULT_OFFLINE_CACHED) {
-                        me.$Message.error("设备离线，已缓存");
+                        me.$Message.error(me.$t('monitor.CMD_SEND_RESULT_OFFLINE_CACHED'));
                     } else if (status === CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD) {
-                        me.$Message.error("需要修改默认密码");
+                        me.$Message.error(me.$t('monitor.CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD'));
                     } else if (status === CMD_SEND_RESULT_DETAIL_ERROR) {
-                        me.$Message.error("错误:" + resp.cause);
+                        me.$Message.error(me.$t('monitor.CMD_SEND_RESULT_DETAIL_ERROR') + resp.cause);
                     } else if (status === CMD_SEND_CONFIRMED) {
-                        me.$Message.success("发送成功");
+                        me.$Message.success(me.$t('monitor.CMD_SEND_CONFIRMED')); 
                     } else if (status === CMD_SEND_OVER_RETRY_TIMES) {
-                        me.$Message.error("尝试发送3次失败");
+                        me.$Message.error(me.$t('monitor.CMD_SEND_OVER_RETRY_TIMES'));
                     } else if (status === CMD_SEND_SYNC_TIMEOUT) {
-                        me.$Message.error("发送超时");
+                        me.$Message.error(me.$t('monitor.CMD_SEND_SYNC_TIMEOUT'));
                     }
                 })
             }
         },
         queryVideoProperty: function() {
             if (this.currentVideoDeviceInfo.deviceId == null) {
-                this.$Message.error('请选择视频设备');
+                this.$Message.error(this.$t('monitor.selectVideoDevice'));
                 return;
             }
             this.loading = true;
@@ -818,19 +817,19 @@ var monitor = {
             }, function(data) {
                 var status = data.status;
                 if (status == CMD_SEND_RESULT_UNCONFIRM) {
-                    that.$Message.error('发送成功，未收到确认');
+                    that.$Message.error(that.$t('monitor.CMD_SEND_RESULT_UNCONFIRM'));
                 } else if (status === CMD_SEND_RESULT_PASSWORD_ERROR) {
-                    that.$Message.error('密码错误');
+                    that.$Message.error(that.$t('monitor.CMD_SEND_RESULT_PASSWORD_ERROR'));
                 } else if (status === CMD_SEND_RESULT_OFFLINE_NOT_CACHE) {
-                    that.$Message.error("设备离线，未缓存");
+                    that.$Message.error(that.$t('monitor.CMD_SEND_RESULT_OFFLINE_NOT_CACHE'));
                 } else if (status === CMD_SEND_RESULT_OFFLINE_CACHED) {
-                    that.$Message.error("设备离线，已缓存");
+                    that.$Message.error(that.$t('monitor.CMD_SEND_RESULT_OFFLINE_CACHED'));
                 } else if (status === CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD) {
-                    that.$Message.error("需要修改默认密码");
+                    that.$Message.error(that.$t('monitor.CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD'));
                 } else if (status === CMD_SEND_RESULT_DETAIL_ERROR) {
-                    that.$Message.error("错误:" + resp.cause);
+                    that.$Message.error(that.$t('monitor.CMD_SEND_RESULT_DETAIL_ERROR') + resp.cause);
                 } else if (status === CMD_SEND_CONFIRMED) {
-                    that.$Message.success("查询成功");
+                    that.$Message.success(that.$t('monitor.CMD_SEND_CONFIRMED'));
                     var audiosamplerate = data.audiosamplerate;
                     switch (audiosamplerate) {
                         case 0:
@@ -861,9 +860,9 @@ var monitor = {
                     that.videoProperty = data;
                     that.videoPropertyModal = true;
                 } else if (status === CMD_SEND_OVER_RETRY_TIMES) {
-                    that.$Message.error("尝试发送3次失败");
+                    that.$Message.error(that.$t('monitor.CMD_SEND_OVER_RETRY_TIMES'));
                 } else if (status === CMD_SEND_SYNC_TIMEOUT) {
-                    that.$Message.error("发送超时");
+                    that.$Message.error(that.$t('monitor.CMD_SEND_SYNC_TIMEOUT'));
                 }
                 that.loading = false;
             }, function() {
@@ -879,7 +878,7 @@ var monitor = {
         },
         queryVideoChannels: function() {
             if (this.currentVideoDeviceInfo.deviceId == null) {
-                this.$Message.error('请选择视频设备');
+                this.$Message.error(this.$t('monitor.selectVideoDevice'));
                 return;
             }
             var url = myUrls.queryAudioVideoChannels(),
@@ -891,32 +890,32 @@ var monitor = {
                 me.loading = false;
                 var status = resp.status;
                 if (status == CMD_SEND_RESULT_UNCONFIRM) {
-                    me.$Message.error('发送成功，未收到确认');
+                    me.$Message.error(me.$t('monitor.CMD_SEND_RESULT_UNCONFIRM'));
                 } else if (status === CMD_SEND_RESULT_PASSWORD_ERROR) {
-                    me.$Message.error('密码错误');
+                    me.$Message.error(me.$t('monitor.CMD_SEND_RESULT_PASSWORD_ERROR'));
                 } else if (status === CMD_SEND_RESULT_OFFLINE_NOT_CACHE) {
-                    me.$Message.error("设备离线，未缓存");
+                    me.$Message.error(me.$t('monitor.CMD_SEND_RESULT_OFFLINE_NOT_CACHE'));
                 } else if (status === CMD_SEND_RESULT_OFFLINE_CACHED) {
-                    me.$Message.error("设备离线，已缓存");
+                    me.$Message.error(me.$t('monitor.CMD_SEND_RESULT_OFFLINE_CACHED'));
                 } else if (status === CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD) {
-                    me.$Message.error("需要修改默认密码");
+                    me.$Message.error(me.$t('monitor.CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD'));
                 } else if (status === CMD_SEND_RESULT_DETAIL_ERROR) {
-                    me.$Message.error("错误:" + resp.cause);
+                    me.$Message.error(me.$t('monitor.CMD_SEND_RESULT_DETAIL_ERROR') + resp.cause);
                 } else if (status === CMD_SEND_CONFIRMED) {
                     me.videoChannelsTableData = resp.uniaudiovideochannels.channels;
                 } else if (status === CMD_SEND_OVER_RETRY_TIMES) {
-                    me.$Message.error("尝试发送3次失败");
+                    me.$Message.error(me.$t('monitor.CMD_SEND_OVER_RETRY_TIMES'));
                 } else if (status === CMD_SEND_SYNC_TIMEOUT) {
-                    me.$Message.error("发送超时");
+                    me.$Message.error(me.$t('monitor.CMD_SEND_SYNC_TIMEOUT'));
                 }
             }, function() {
                 me.loading = false;
-                me.$Message.error("查询失败");
+                me.$Message.error(me.$t('monitor.queryFail'));
             });
         },
         queryActiveSafetyDeviceInfo: function(exdevicename) {
             if (this.currentVideoDeviceInfo.deviceId == null) {
-                this.$Message.error('请选择视频设备');
+                this.$Message.error(me.$t('monitor.selectVideoDevice'));
                 return;
             }
             var url = myUrls.queryActiveSafetyDeviceInfo(),
@@ -931,17 +930,17 @@ var monitor = {
                 me.loading = false;
                 var status = resp.status;
                 if (status == CMD_SEND_RESULT_UNCONFIRM) {
-                    me.$Message.error('发送成功，未收到确认');
+                    me.$Message.error(me.$t('monitor.CMD_SEND_RESULT_UNCONFIRM'));
                 } else if (status === CMD_SEND_RESULT_PASSWORD_ERROR) {
-                    me.$Message.error('密码错误');
+                    me.$Message.error(me.$t('monitor.CMD_SEND_RESULT_PASSWORD_ERROR'));
                 } else if (status === CMD_SEND_RESULT_OFFLINE_NOT_CACHE) {
-                    me.$Message.error("设备离线，未缓存");
+                    me.$Message.error(me.$t('monitor.CMD_SEND_RESULT_OFFLINE_NOT_CACHE'));
                 } else if (status === CMD_SEND_RESULT_OFFLINE_CACHED) {
-                    me.$Message.error("设备离线，已缓存");
+                    me.$Message.error(me.$t('monitor.CMD_SEND_RESULT_OFFLINE_CACHED'));
                 } else if (status === CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD) {
-                    me.$Message.error("需要修改默认密码");
+                    me.$Message.error(me.$t('monitor.CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD'));
                 } else if (status === CMD_SEND_RESULT_DETAIL_ERROR) {
-                    me.$Message.error("错误:" + resp.cause);
+                    me.$Message.error(me.$t('monitor.CMD_SEND_RESULT_DETAIL_ERROR') + resp.cause);
                 } else if (status === CMD_SEND_CONFIRMED) {
                     switch (exdevicename) {
                         case 'adas':
@@ -957,16 +956,16 @@ var monitor = {
                             me.safetyDeviceBsd = resp;
                             break;
                         default:
-                            console.log('tag', '');
+
                     }
                 } else if (status === CMD_SEND_OVER_RETRY_TIMES) {
-                    me.$Message.error("尝试发送3次失败");
+                    me.$Message.error(me.$t('monitor.CMD_SEND_OVER_RETRY_TIMES'));
                 } else if (status === CMD_SEND_SYNC_TIMEOUT) {
-                    me.$Message.error("发送超时");
+                    me.$Message.error(me.$t('monitor.CMD_SEND_SYNC_TIMEOUT'));
                 }
             }, function() {
                 me.loading = false;
-                me.$Message.error("查询超时");
+                me.$Message.error(me.$t('monitor.queryFail'));
             })
         },
         defaultClientParameters: function() {
@@ -1026,19 +1025,19 @@ var monitor = {
                 var audiovideoparameters = data.audiovideoparameters;
                 if (audiovideoparameters != null) {
                     if (status == CMD_SEND_RESULT_UNCONFIRM) {
-                        me.$Message.error('发送成功，未收到确认');
+                        me.$Message.error(me.$t('monitor.CMD_SEND_RESULT_UNCONFIRM'));
                     } else if (status === CMD_SEND_RESULT_PASSWORD_ERROR) {
-                        me.$Message.error('密码错误');
+                        me.$Message.error(me.$t('monitor.CMD_SEND_RESULT_PASSWORD_ERROR'));
                     } else if (status === CMD_SEND_RESULT_OFFLINE_NOT_CACHE) {
-                        me.$Message.error("设备离线，未缓存");
+                        me.$Message.error(me.$t('monitor.CMD_SEND_RESULT_OFFLINE_NOT_CACHE'));
                     } else if (status === CMD_SEND_RESULT_OFFLINE_CACHED) {
-                        me.$Message.error("设备离线，已缓存");
+                        me.$Message.error(me.$t('monitor.CMD_SEND_RESULT_OFFLINE_CACHED'));
                     } else if (status === CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD) {
-                        me.$Message.error("需要修改默认密码");
+                        me.$Message.error(me.$t('monitor.CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD'));
                     } else if (status === CMD_SEND_RESULT_DETAIL_ERROR) {
-                        me.$Message.error("错误:" + resp.cause);
+                        me.$Message.error(me.$t('monitor.CMD_SEND_RESULT_DETAIL_ERROR') + resp.cause);
                     } else if (status === CMD_SEND_CONFIRMED) {
-                        me.$Message.success("查询成功!");
+                        me.$Message.success(me.$t('monitor.CMD_SEND_CONFIRMED'));
                         var videoCheckboxGroup = [];
                         me.realtimebitratemode = audiovideoparameters.realtimebitratemode + '';
                         me.storebitratemode = audiovideoparameters.storebitratemode + '';
@@ -1061,12 +1060,12 @@ var monitor = {
                         me.videoCheckboxGroup = videoCheckboxGroup;
 
                     } else if (status === CMD_SEND_OVER_RETRY_TIMES) {
-                        me.$Message.error("尝试发送3次失败");
+                        me.$Message.error(me.$t('monitor.CMD_SEND_OVER_RETRY_TIMES'));
                     } else if (status === CMD_SEND_SYNC_TIMEOUT) {
-                        me.$Message.error("发送超时");
+                        me.$Message.error(me.$t('monitor.CMD_SEND_SYNC_TIMEOUT'));
                     }
                 } else {
-                    me.$Message.error("设备没有返回数据");
+                    me.$Message.error(me.$t('monitor.theDeviceDidNotReturnData'));
                 }
 
             }, function() {
@@ -1116,36 +1115,36 @@ var monitor = {
                     var status = resp.status;
                     me.Spin = false;
                     if (status == CMD_SEND_RESULT_UNCONFIRM) {
-                        me.$Message.error('发送成功，未收到确认');
+                        me.$Message.error(me.$t('monitor.CMD_SEND_RESULT_UNCONFIRM'));
                     } else if (status === CMD_SEND_RESULT_PASSWORD_ERROR) {
-                        me.$Message.error('密码错误');
+                        me.$Message.error(me.$t('monitor.CMD_SEND_RESULT_PASSWORD_ERROR'));
                     } else if (status === CMD_SEND_RESULT_OFFLINE_NOT_CACHE) {
-                        me.$Message.error("设备离线，未缓存");
+                        me.$Message.error(me.$t('monitor.CMD_SEND_RESULT_OFFLINE_NOT_CACHE'));
                     } else if (status === CMD_SEND_RESULT_OFFLINE_CACHED) {
-                        me.$Message.error("设备离线，已缓存");
+                        me.$Message.error(me.$t('monitor.CMD_SEND_RESULT_OFFLINE_CACHED'));
                     } else if (status === CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD) {
-                        me.$Message.error("需要修改默认密码");
+                        me.$Message.error(me.$t('monitor.CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD'));
                     } else if (status === CMD_SEND_RESULT_DETAIL_ERROR) {
-                        me.$Message.error("错误:" + resp.cause);
+                        me.$Message.error(me.$t('monitor.CMD_SEND_RESULT_DETAIL_ERROR') + resp.cause);
                     } else if (status === CMD_SEND_CONFIRMED) {
-                        me.$Message.success("发送成功");
+                        me.$Message.success(me.$t('monitor.CMD_SEND_CONFIRMED'));
                     } else if (status === CMD_SEND_OVER_RETRY_TIMES) {
-                        me.$Message.error("尝试发送3次失败");
+                        me.$Message.error(me.$t('monitor.CMD_SEND_OVER_RETRY_TIMES'));
                     } else if (status === CMD_SEND_SYNC_TIMEOUT) {
-                        me.$Message.error("发送超时");
+                        me.$Message.error(me.$t('monitor.CMD_SEND_SYNC_TIMEOUT'));
                     }
                 })
             } else {
-                this.$Message.error("请填写全部参数")
+                this.$Message.error(me.$t('monitor.fillParameters')) 
             }
 
         },
         querySingleAudioVideoParameters: function() {
             if (this.currentVideoDeviceInfo.deviceId == null) {
-                this.$Message.error('请选择视频设备');
+                this.$Message.error(this.$t('monitor.selectVideoDevice'));
                 return;
             }
-            this.loading = true;
+            this.loading = true; 
             var url = myUrls.querySingleAudioVideoParameters(),
                 me = this;
             utils.sendAjax(url, {
@@ -1159,7 +1158,7 @@ var monitor = {
                         var channelsData = [];
                         audiovideoparameters.forEach(function(item, index) {
                             var dataInfo = {
-                                channelnum: '通道' + (++index),
+                                channelnum: me.$t('monitor.channel') + (++index),
                             };
                             var videoCheckboxGroup = [];
                             dataInfo.realtimebitratemode = item.realtimebitratemode + '';
@@ -1186,11 +1185,11 @@ var monitor = {
                         me.channelsData = channelsData;
                     }
                 } else {
-                    me.$Message.error("查询失败");
+                    me.$Message.error(me.$t('monitor.queryFail'));
                 }
             }, function() {
                 me.loading = false;
-                me.$Message.error("查询失败");
+                me.$Message.error(me.$t('monitor.queryFail'));
             });
         },
         handlePlayerMute: function() {
@@ -1281,25 +1280,6 @@ var monitor = {
             };
 
         },
-
-
-        queryVideosPlayUrl: function(callback) {
-            var url = myUrls.queryVideosPlayUrl(),
-                me = this;
-            utils.sendAjax(url, {
-                deviceid: this.currentDeviceId,
-                playtype: ishttps ? 'flvs' : 'flv',
-            }, function(data) {
-                if (data.status === 0) {
-                    // me.allPlayUrls.forEach(function(item, index) {
-                    //     me.initVideo(index + 1, item.playurl, item.hasaudio);
-                    // })
-                    callback ? callback(data.records) : null;
-                } else if (data.status === 3) {
-
-                }
-            });
-        },
         handleQueryArea: function() {
             if (this.areaAddress.length == 0) {
                 this.$Message.error('请选择区域');
@@ -1312,9 +1292,9 @@ var monitor = {
                     this.map.qeuryBMapAreaPoint(this.areaName, this.calcAreaBaiduMarkerStatus);
                     break;
                 case 'gMap':
-                    this.$Message.error('该地图暂时不支持该功能');
+                    this.$Message.error(this.$t('monitor.mapNotSupported'));
                 case 'oMap':
-                    this.$Message.error('该地图暂时不支持该功能');
+                    this.$Message.error(this.$t('monitor.mapNotSupported'));
                     break;
             };
         },
@@ -1355,16 +1335,9 @@ var monitor = {
         handleWebSocket: function(data) {
             var me = this;
             var deviceid = data.deviceid;
-            // console.log("handleWebSocket deviceid=", deviceid, DateFormat.longToDateTimeStr(data.updatetime, timeDifference));
             data.devicename = this.deviceInfos[deviceid] ? this.deviceInfos[deviceid].devicename : "";
             me.updateDevLastPosition(data);
             isNeedRefreshMapUI = true;
-            // me.updateTreeOnlineState();
-
-            // // console.log('轨迹push', deviceid, DateFormat.longToDateTimeStr(data.updatetime, 0));
-            // if (me.currentDeviceId == deviceid) {
-            //     me.map && me.map.updateSingleMarkerState(deviceid);
-            // };
         },
         openDistance: function() {
             if (this.myDis != null) {
@@ -1410,15 +1383,13 @@ var monitor = {
             for (var i = 1; i <= this.videoNumber; i++) {
                 var player = playerIns['player' + i][0];
                 if (player.deviceId != '') {
-
                     isTips = false;
-
                     player.handleStartVideos();
 
                 }
             }
             if (isTips) {
-                this.$Message.error('请选择播放设备');
+                this.$Message.error(this.$t('monitor.selectVideoDevice'));
             }
         },
         handleStopAllVideos: function() {
@@ -1558,10 +1529,10 @@ var monitor = {
             var me = this;
             utils.editDeviceex('owner', me.ownerInfoData, function(resp) {
                 if (resp.status === 0) {
-                    me.$Message.success("编辑成功");
+                    me.$Message.success(me.$t('message.changeSucc'));
                     me.ownerInfoModal = false;
                 } else {
-                    me.$Message.error("编辑失败");
+                    me.$Message.error(me.$t('message.changeFail'));
                 }
             });
         },
@@ -1580,29 +1551,29 @@ var monitor = {
             utils.sendAjax(url, data, function(resp) {
                 var status = resp.status;
                 if (status == CMD_SEND_RESULT_UNCONFIRM) {
-                    that.$Message.error('发送成功，未收到确认');
+                    that.$Message.error(that.$t('monitor.CMD_SEND_RESULT_UNCONFIRM'));
                 } else if (status === CMD_SEND_RESULT_PASSWORD_ERROR) {
-                    that.$Message.error('密码错误');
+                    that.$Message.error(that.$t('monitor.CMD_SEND_RESULT_PASSWORD_ERROR'));
                 } else if (status === CMD_SEND_RESULT_OFFLINE_NOT_CACHE) {
-                    that.$Message.error("设备离线，未缓存");
+                    that.$Message.error(that.$t('monitor.CMD_SEND_RESULT_OFFLINE_NOT_CACHE'));
                 } else if (status === CMD_SEND_RESULT_OFFLINE_CACHED) {
-                    that.$Message.error("设备离线，已缓存");
+                    that.$Message.error(that.$t('monitor.CMD_SEND_RESULT_OFFLINE_CACHED'));
                 } else if (status === CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD) {
-                    that.$Message.error("需要修改默认密码");
+                    that.$Message.error(that.$t('monitor.CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD'));
                 } else if (status === CMD_SEND_RESULT_DETAIL_ERROR) {
-                    that.$Message.error("错误:" + resp.cause);
+                    that.$Message.error(that.$t('monitor.CMD_SEND_RESULT_DETAIL_ERROR') + resp.cause);
                 } else if (status === CMD_SEND_CONFIRMED) {
                     resp.overdueDateStr = DateFormat.longToDateStr(resp.overduetime, timeDifference);
                     that.deviceBaseInfo = resp;
                 } else if (status === CMD_SEND_OVER_RETRY_TIMES) {
-                    that.$Message.error("尝试发送3次失败");
+                    that.$Message.error(that.$t('monitor.CMD_SEND_OVER_RETRY_TIMES'));
                 } else if (status === CMD_SEND_SYNC_TIMEOUT) {
-                    that.$Message.error("发送超时");
+                    that.$Message.error(that.$t('monitor.CMD_SEND_SYNC_TIMEOUT'));
                 }
                 that.loading = false;
             }, function() {
                 that.loading = false;
-                that.$Message.error("查询失败");
+                that.$Message.error(that.$t('monitor.queryFail'));
             })
         },
         handleClickTransferDeviceGroup: function(groupid) {
@@ -1627,22 +1598,21 @@ var monitor = {
                                 break;
                             }
                         }
-                    }
-                    console.log('deviceSpliceList', deviceSpliceList);
+                    };
                     for (var k = 0; k < me.groups.length; k++) {
                         var group = me.groups[k];
                         if (group.groupid == groupid) {
                             if (deviceSpliceList && deviceSpliceList.length) {
-                                console.log('找到组了');
+  
                                 group.devices.push(deviceSpliceList[0]);
                                 me.transferAfterChangeGroupTitle(group);
                             }
                             break;
                         }
-                    }
-                    me.$Message.success('转移成功');
+                    };
+                    me.$Message.success(me.$t('monitor.transferSucc'));
                 } else {
-                    me.$Message.error('转移成功');
+                    me.$Message.error(me.$t('monitor.transferFail'));
                 }
             });
         },
@@ -2488,11 +2458,11 @@ var monitor = {
         },
         dblClickDeviceVideo: function(device) {
             if (!this.isShowVideoBtn) {
-                this.$Message.error('该设备不是视频机');
+                this.$Message.error(this.$t('monitor.deviceNotVideo'));
                 return
             }
             if (device.isOffline) {
-                this.$Message.error('设备离线');
+                this.$Message.error(this.$t('monitor.deviceOffline'));
                 return
             }
             var videochannelcount = device.videochannelcount;
@@ -2523,7 +2493,7 @@ var monitor = {
         },
         handlePlayDeviceToChannel: function(device, channel) {
             if (device.isOffline) {
-                this.$Message.error('设备离线');
+                this.$Message.error(this.$t('monitor.deviceOffline'));
                 return;
             }
             var devInfo = {
@@ -2586,7 +2556,7 @@ var monitor = {
 
                         device.isMoving = null;
                         if (device.lastactivetime <= 0 && track == undefined) {
-                            device.devicetitle = device.deviceTypeName + '-' + device.devicename + " [未启用] ";
+                            device.devicetitle = device.deviceTypeName + '-' + device.devicename + me.$t("monitor.notEnabled"); 
                         } else {
 
                             var offlineTime = DateFormat.getCurrentUTC() - device.lastactivetime;
@@ -3110,6 +3080,7 @@ var monitor = {
         var me = this;
         this.intervalTime = Number(this.stateIntervalTime);
         this.placeholder = this.$t("monitor.placeholder");
+        this.audioPlayerTip = this.$t("monitor.audioPlayerTip");
         this.initMap();
 
         if (!$.isEmptyObject(this.deviceTypes)) {

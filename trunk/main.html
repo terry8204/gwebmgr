@@ -93,9 +93,9 @@
                         </i-col>
                     </Row>
                     <Row style="margin: 10px 0">
-                        <i-col span="8" style="height: 100%;text-align:right;line-height:32px;">修改密码 : &nbsp;</i-col>
+                        <i-col span="8" style="height: 100%;text-align:right;line-height:32px;">{{$t("header.changePwd")}} : &nbsp;</i-col> 
                         <i-col span="16" style="height: 100%;line-height:32px;">
-                            <i-button type="primary" style="width:80px;" @click="changePassword">修改密码</i-button>
+                            <i-button type="primary" style="width:160px;" @click="changePassword">{{$t("header.changePwd")}}</i-button>
                         </i-col>
                     </Row>
                 </div>
@@ -132,11 +132,11 @@
                             </i-col>
                         </Row>
                         <Row style="margin: 10px 0">
-                            <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">多点登陆 : &nbsp;</i-col>
+                            <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t("header.multiSiteLanding")}} : &nbsp;</i-col>
                             <i-col span="16">
                                 <i-select v-model="multilogin" style="text-align:center;">
-                                    <i-option value="1" style="text-align:center;">是</i-option>
-                                    <i-option value="0" style="text-align:center;">否</i-option>
+                                    <i-option value="1" style="text-align:center;">{{$t("header.yes")}}</i-option>
+                                    <i-option value="0" style="text-align:center;">{{$t("header.no")}}</i-option> 
                                 </i-select>
                             </i-col>
                         </Row>
@@ -301,7 +301,7 @@
                         </DropdownItem>
                         <DropdownItem name="transferDeviceGroup">
                             <Dropdown transfer placement="right-start" @on-click="handleClickTransferDeviceGroup" style="width:100%;">
-                                转至分组
+                                {{$t("monitor.gotogroup")}}
                                 <Icon type="ios-arrow-forward"></Icon>
                                 <i-dropdown-menu slot="list">
                                     <template v-for="(item, index) in currentDevCreateUserGroupList" :key="item.groupid"> 
@@ -311,14 +311,14 @@
                             </Dropdown>
                         </DropdownItem>
                         <DropdownItem name="luyin" v-show="isShowRecordBtn">{{$t("monitor.media")}}</DropdownItem>
-                        <DropdownItem name="bms" v-show="isShowBmsBtn">电池管理</DropdownItem>
+                        <DropdownItem name="bms" v-show="isShowBmsBtn">{{$t("monitor.batteryMgr")}}</DropdownItem>  
                         <DropdownItem name="obd" v-show="isShowObdBtn">OBD</DropdownItem>
-                        <DropdownItem name="weight" v-show="isShowWeightBtn">称重</DropdownItem>
-                        <DropdownItem name="watermeter" v-show="isShowWatermeterBtn">水表</DropdownItem>
-                        <DropdownItem name="videosetting" v-if="isShowVideoBtn">视频设置</DropdownItem>
-                        <DropdownItem name="talk" v-if="isShowVideoBtn">对讲</DropdownItem>
-                        <DropdownItem name="videoback" v-if="isShowVideoBtn">视频回放</DropdownItem>
-                        <DropdownItem name="activesafety" v-if="isShowActiveSafetyBtn">主动安全</DropdownItem>
+                        <DropdownItem name="weight" v-show="isShowWeightBtn">{{$t("monitor.weigh")}}</DropdownItem>
+                        <DropdownItem name="watermeter" v-show="isShowWatermeterBtn">{{$t("monitor.watermeter")}}</DropdownItem>
+                        <DropdownItem name="videosetting" v-if="isShowVideoBtn">{{$t("monitor.videoSettings")}}</DropdownItem>
+                        <DropdownItem name="talk" v-if="isShowVideoBtn">{{$t("monitor.intercom")}}</DropdownItem>
+                        <DropdownItem name="videoback" v-if="isShowVideoBtn">{{$t("monitor.videoPlayback")}}</DropdownItem>
+                        <DropdownItem name="activesafety" v-if="isShowActiveSafetyBtn">{{$t("monitor.activeSafety")}}</DropdownItem>  
                         <DropdownItem name="cmdrecord">{{$t("monitor.cmdRecord")}}</DropdownItem>
                         <DropdownItem name="alarmList">{{$t("monitor.alarmRecords")}}</DropdownItem>
                         <DropdownItem name="phoneAlarm">{{$t("reportForm.phoneAlarm")}}</DropdownItem>
@@ -365,7 +365,7 @@
                                             </DropdownItem>
                                             <DropdownItem name="transferDeviceGroup">
                                                 <Dropdown transfer placement="right-start" @on-click="handleClickTransferDeviceGroup" style="width:100%;">
-                                                    转至分组
+                                                    {{$t("monitor.gotogroup")}}
                                                     <Icon type="ios-arrow-forward"></Icon>
                                                     <i-dropdown-menu slot="list">
                                                         <template v-for="(item, index) in currentDevCreateUserGroupList" :key="item.groupid"> 
@@ -375,14 +375,14 @@
                                                 </Dropdown>
                                             </DropdownItem>
                                             <DropdownItem name="luyin" v-show="isShowRecordBtn">{{$t("monitor.media")}}</DropdownItem>
-                                            <DropdownItem name="bms" v-show="isShowBmsBtn">电池管理</DropdownItem>
+                                            <DropdownItem name="bms" v-show="isShowBmsBtn">{{$t("monitor.batteryMgr")}}</DropdownItem>
                                             <DropdownItem name="obd" v-show="isShowObdBtn">OBD</DropdownItem>
-                                            <DropdownItem name="weight" v-show="isShowWeightBtn">称重</DropdownItem>
-                                            <DropdownItem name="watermeter" v-show="isShowWatermeterBtn">水表</DropdownItem>
-                                            <DropdownItem name="videosetting" v-if="isShowVideoBtn">视频设置</DropdownItem>
-                                            <DropdownItem name="talk" v-if="isShowVideoBtn">对讲</DropdownItem>
-                                            <DropdownItem name="videoback" v-if="isShowVideoBtn">视频回放</DropdownItem>
-                                            <DropdownItem name="activesafety" v-if="isShowActiveSafetyBtn">主动安全</DropdownItem>
+                                            <DropdownItem name="weight" v-show="isShowWeightBtn">{{$t("monitor.weigh")}}</DropdownItem>  
+                                            <DropdownItem name="watermeter" v-show="isShowWatermeterBtn">{{$t("monitor.watermeter")}}</DropdownItem>
+                                            <DropdownItem name="videosetting" v-if="isShowVideoBtn">{{$t("monitor.videoSettings")}}</DropdownItem>
+                                            <DropdownItem name="talk" v-if="isShowVideoBtn">{{$t("monitor.intercom")}}</DropdownItem>
+                                            <DropdownItem name="videoback" v-if="isShowVideoBtn">{{$t("monitor.videoPlayback")}}</DropdownItem>
+                                            <DropdownItem name="activesafety" v-if="isShowActiveSafetyBtn">{{$t("monitor.activeSafety")}}</DropdownItem>
                                             <DropdownItem name="cmdrecord">{{$t("monitor.cmdRecord")}}</DropdownItem>
                                             <DropdownItem name="alarmList">{{$t("monitor.alarmRecords")}}</DropdownItem>
                                             <DropdownItem name="phoneAlarm">{{$t("reportForm.phoneAlarm")}}</DropdownItem>
@@ -428,7 +428,7 @@
                                                     </DropdownItem>
                                                     <DropdownItem name="transferDeviceGroup">
                                                         <Dropdown transfer placement="right-start" @on-click="handleClickTransferDeviceGroup" style="width:100%;">
-                                                            转至分组
+                                                            {{$t("monitor.gotogroup")}}
                                                             <Icon type="ios-arrow-forward"></Icon>
                                                             <i-dropdown-menu slot="list">
                                                                 <template v-for="(item, index) in currentDevCreateUserGroupList" :key="item.groupid"> 
@@ -438,14 +438,14 @@
                                                         </Dropdown>
                                                     </DropdownItem>
                                                     <DropdownItem name="luyin" v-show="isShowRecordBtn">{{$t("monitor.media")}}</DropdownItem>
-                                                    <DropdownItem name="bms" v-show="isShowBmsBtn">电池管理</DropdownItem>
+                                                    <DropdownItem name="bms" v-show="isShowBmsBtn">{{$t("monitor.batteryMgr")}}</DropdownItem>
                                                     <DropdownItem name="obd" v-show="isShowObdBtn">OBD</DropdownItem>
-                                                    <DropdownItem name="weight" v-show="isShowWeightBtn">称重</DropdownItem>
-                                                    <DropdownItem name="watermeter" v-show="isShowWatermeterBtn">水表</DropdownItem>
-                                                    <DropdownItem name="videosetting" v-if="isShowVideoBtn">视频设置</DropdownItem>
-                                                    <DropdownItem name="talk" v-if="isShowVideoBtn">对讲</DropdownItem>
-                                                    <DropdownItem name="videoback" v-if="isShowVideoBtn">视频回放</DropdownItem>
-                                                    <DropdownItem name="activesafety" v-if="isShowActiveSafetyBtn">主动安全</DropdownItem>
+                                                    <DropdownItem name="weight" v-show="isShowWeightBtn">{{$t("monitor.weigh")}}</DropdownItem>
+                                                    <DropdownItem name="watermeter" v-show="isShowWatermeterBtn">{{$t("monitor.watermeter")}}</DropdownItem>
+                                                    <DropdownItem name="videosetting" v-if="isShowVideoBtn">{{$t("monitor.videoSettings")}}</DropdownItem>
+                                                    <DropdownItem name="talk" v-if="isShowVideoBtn">{{$t("monitor.intercom")}}</DropdownItem>
+                                                    <DropdownItem name="videoback" v-if="isShowVideoBtn">{{$t("monitor.videoPlayback")}}</DropdownItem>
+                                                    <DropdownItem name="activesafety" v-if="isShowActiveSafetyBtn">{{$t("monitor.activeSafety")}}</DropdownItem>
                                                     <DropdownItem name="cmdrecord">{{$t("monitor.cmdRecord")}}</DropdownItem>
                                                     <DropdownItem name="alarmList">{{$t("monitor.alarmRecords")}}</DropdownItem>
                                                     <DropdownItem name="phoneAlarm">{{$t("reportForm.phoneAlarm")}}</DropdownItem>
@@ -493,7 +493,7 @@
                                         </DropdownItem>
                                         <DropdownItem name="transferDeviceGroup">
                                             <Dropdown transfer placement="right-start" @on-click="handleClickTransferDeviceGroup" style="width:100%;">
-                                                转至分组
+                                                {{$t("monitor.gotogroup")}}
                                                 <Icon type="ios-arrow-forward"></Icon>
                                                 <i-dropdown-menu slot="list">
                                                     <template v-for="(item, index) in currentDevCreateUserGroupList" :key="item.groupid"> 
@@ -503,14 +503,14 @@
                                             </Dropdown>
                                         </DropdownItem>
                                         <DropdownItem name="luyin" v-show="isShowRecordBtn">{{$t("monitor.media")}}</DropdownItem>
-                                        <DropdownItem name="bms" v-show="isShowBmsBtn">电池管理</DropdownItem>
+                                        <DropdownItem name="bms" v-show="isShowBmsBtn">{{$t("monitor.batteryMgr")}}</DropdownItem>
                                         <DropdownItem name="obd" v-show="isShowObdBtn">OBD</DropdownItem>
-                                        <DropdownItem name="weight" v-show="isShowWeightBtn">称重</DropdownItem>
-                                        <DropdownItem name="watermeter" v-show="isShowWatermeterBtn">水表</DropdownItem>
-                                        <DropdownItem name="videosetting" v-if="isShowVideoBtn">视频设置</DropdownItem>
-                                        <DropdownItem name="talk" v-if="isShowVideoBtn">对讲</DropdownItem>
-                                        <DropdownItem name="videoback" v-if="isShowVideoBtn">视频回放</DropdownItem>
-                                        <DropdownItem name="activesafety" v-if="isShowActiveSafetyBtn">主动安全</DropdownItem>
+                                        <DropdownItem name="weight" v-show="isShowWeightBtn">{{$t("monitor.weigh")}}</DropdownItem>
+                                        <DropdownItem name="watermeter" v-show="isShowWatermeterBtn">{{$t("monitor.watermeter")}}</DropdownItem>
+                                        <DropdownItem name="videosetting" v-if="isShowVideoBtn">{{$t("monitor.videoSettings")}}</DropdownItem>
+                                        <DropdownItem name="talk" v-if="isShowVideoBtn">{{$t("monitor.intercom")}}</DropdownItem>
+                                        <DropdownItem name="videoback" v-if="isShowVideoBtn">{{$t("monitor.videoPlayback")}}</DropdownItem>
+                                        <DropdownItem name="activesafety" v-if="isShowActiveSafetyBtn">{{$t("monitor.activeSafety")}}</DropdownItem>
                                         <DropdownItem name="cmdrecord">{{$t("monitor.cmdRecord")}}</DropdownItem>
                                         <DropdownItem name="alarmList">{{$t("monitor.alarmRecords")}}</DropdownItem>
                                         <DropdownItem name="phoneAlarm">{{$t("reportForm.phoneAlarm")}}</DropdownItem>
@@ -557,7 +557,7 @@
                                 <li>
                                     <li v-if="isShowVideoBtn" @click="playerVideos">
                                         <Icon type="ios-play" />
-                                        <p>播放</p>
+                                        <p>{{$t("monitor.play")}}</p>
                                         <li>
                                             <li v-if="!isShowVideoBtn" @click="trackMap(device.deviceid)">
                                                 <Icon type="md-person" />
@@ -581,7 +581,7 @@
                                                                 </DropdownItem>
                                                                 <DropdownItem name="transferDeviceGroup">
                                                                     <Dropdown transfer placement="right-start" @on-click="handleClickTransferDeviceGroup" style="width:100%;">
-                                                                        转至分组
+                                                                        {{$t("monitor.gotogroup")}}
                                                                         <Icon type="ios-arrow-forward"></Icon>
                                                                         <i-dropdown-menu slot="list">
                                                                             <template v-for="(item, index) in currentDevCreateUserGroupList" :key="item.groupid"> 
@@ -591,10 +591,10 @@
                                                                     </Dropdown>
                                                                 </DropdownItem>
                                                                 <DropdownItem name="luyin" v-show="isShowRecordBtn">{{$t("monitor.media")}}</DropdownItem>
-                                                                <DropdownItem name="bms" v-show="isShowBmsBtn">电池管理</DropdownItem>
+                                                                <DropdownItem name="bms" v-show="isShowBmsBtn">{{$t("monitor.batteryMgr")}}</DropdownItem>
                                                                 <DropdownItem name="obd" v-show="isShowObdBtn">OBD</DropdownItem>
-                                                                <DropdownItem name="weight" v-show="isShowWeightBtn">称重</DropdownItem>
-                                                                <DropdownItem name="watermeter" v-show="isShowWatermeterBtn">水表</DropdownItem>
+                                                                <DropdownItem name="weight" v-show="isShowWeightBtn">{{$t("monitor.weigh")}}</DropdownItem>
+                                                                <DropdownItem name="watermeter" v-show="isShowWatermeterBtn">{{$t("monitor.watermeter")}}</DropdownItem>
                                                                 <DropdownItem name="cmdrecord">{{$t("monitor.cmdRecord")}}</DropdownItem>
                                                                 <DropdownItem name="alarmList">{{$t("monitor.alarmRecords")}}</DropdownItem>
                                                                 <DropdownItem name="phoneAlarm">{{$t("reportForm.phoneAlarm")}}</DropdownItem>
@@ -625,7 +625,7 @@
                                             <ul class="device-controller" v-if="device.isSelected">
                                                 <li @click="editDevice(device.deviceid)"><Icon type="ios-create"/><p>{{$t("monitor.edit")}}</p><li>
                                                 <li @click="playBack(device.deviceid)"><Icon type="md-planet"/><p>{{$t("monitor.track")}}</p><li>
-                                                <li v-if="isShowVideoBtn" @click="playerVideos"><Icon type="ios-play"/><p>播放</p><li> 
+                                                <li v-if="isShowVideoBtn" @click="playerVideos"><Icon type="ios-play"/><p>{{$t("monitor.play")}}</p><li>  
                                                 <li v-if="!isShowVideoBtn" @click="trackMap(device.deviceid)"><Icon type="md-person"/><p>{{$t("monitor.following")}}</p><li> 
                                                 <li  @mouseover="handleMousemove($event)">
                                                     <Dropdown trigger="click" transfer :placement="placement" @on-click="handleClickMore" style="width:100%;">
@@ -644,7 +644,7 @@
         </DropdownItem>
         <DropdownItem name="transferDeviceGroup">
             <Dropdown transfer placement="right-start" @on-click="handleClickTransferDeviceGroup" style="width:100%;">
-                转至分组
+                {{$t("monitor.gotogroup")}}
                 <Icon type="ios-arrow-forward"></Icon>
                 <i-dropdown-menu slot="list">
                     <template v-for="(item, index) in currentDevCreateUserGroupList" :key="item.groupid"> 
@@ -654,10 +654,10 @@
             </Dropdown>
         </DropdownItem>
         <DropdownItem name="luyin" v-show="isShowRecordBtn">{{$t("monitor.media")}}</DropdownItem>
-        <DropdownItem name="bms" v-show="isShowBmsBtn">电池管理</DropdownItem>
+        <DropdownItem name="bms" v-show="isShowBmsBtn">{{$t("monitor.batteryMgr")}}</DropdownItem>
         <DropdownItem name="obd" v-show="isShowObdBtn">OBD</DropdownItem>
-        <DropdownItem name="weight" v-show="isShowWeightBtn">称重</DropdownItem>
-        <DropdownItem name="watermeter" v-show="isShowWatermeterBtn">水表</DropdownItem>
+        <DropdownItem name="weight" v-show="isShowWeightBtn">{{$t("monitor.weigh")}}</DropdownItem>
+        <DropdownItem name="watermeter" v-show="isShowWatermeterBtn">{{$t("monitor.watermeter")}}</DropdownItem>
         <DropdownItem name="cmdrecord">{{$t("monitor.cmdRecord")}}</DropdownItem>
         <DropdownItem name="alarmList">{{$t("monitor.alarmRecords")}}</DropdownItem>
         <DropdownItem name="phoneAlarm">{{$t("reportForm.phoneAlarm")}}</DropdownItem>
@@ -688,7 +688,7 @@
                                             <ul class="device-controller" v-if="device.isSelected">
                                                 <li @click="editDevice(device.deviceid)"><Icon type="ios-create"/><p>{{$t("monitor.edit")}}</p><li>
                                                 <li @click="playBack(device.deviceid)"><Icon type="md-planet"/><p>{{$t("monitor.track")}}</p><li>
-                                                <li v-if="isShowVideoBtn" @click="playerVideos"><Icon type="ios-play"/><p>播放</p><li> 
+                                                <li v-if="isShowVideoBtn" @click="playerVideos"><Icon type="ios-play"/><p>{{$t("monitor.play")}}</p><li> 
                                                 <li v-if="!isShowVideoBtn" @click="trackMap(device.deviceid)"><Icon type="md-person"/><p>{{$t("monitor.following")}}</p><li> 
                                                 <li  @mouseover="handleMousemove($event)">
                                                     <Dropdown trigger="click" transfer :placement="placement" @on-click="handleClickMore" style="width:100%;">
@@ -707,7 +707,7 @@
             </DropdownItem>
             <DropdownItem name="transferDeviceGroup">
                 <Dropdown transfer placement="right-start" @on-click="handleClickTransferDeviceGroup" style="width:100%;">
-                    转至分组
+                    {{$t("monitor.gotogroup")}}
                     <Icon type="ios-arrow-forward"></Icon>
                     <i-dropdown-menu slot="list">
                         <template v-for="(item, index) in currentDevCreateUserGroupList" :key="item.groupid"> 
@@ -717,10 +717,10 @@
                 </Dropdown>
             </DropdownItem>
             <DropdownItem name="luyin" v-show="isShowRecordBtn">{{$t("monitor.media")}}</DropdownItem>
-            <DropdownItem name="bms" v-show="isShowBmsBtn">电池管理</DropdownItem>
+            <DropdownItem name="bms" v-show="isShowBmsBtn">{{$t("monitor.batteryMgr")}}</DropdownItem>
             <DropdownItem name="obd" v-show="isShowObdBtn">OBD</DropdownItem>
-            <DropdownItem name="weight" v-show="isShowWeightBtn">称重</DropdownItem>
-            <DropdownItem name="watermeter" v-show="isShowWatermeterBtn">水表</DropdownItem>
+            <DropdownItem name="weight" v-show="isShowWeightBtn">{{$t("monitor.weigh")}}</DropdownItem>
+            <DropdownItem name="watermeter" v-show="isShowWatermeterBtn">{{$t("monitor.watermeter")}}</DropdownItem>
             <DropdownItem name="cmdrecord">{{$t("monitor.cmdRecord")}}</DropdownItem>
             <DropdownItem name="alarmList">{{$t("monitor.alarmRecords")}}</DropdownItem>
             <DropdownItem name="phoneAlarm">{{$t("reportForm.phoneAlarm")}}</DropdownItem>
@@ -751,7 +751,7 @@
                         <ul class="device-controller" v-if="device.isSelected">
                             <li @click="editDevice(device.deviceid)"><Icon type="ios-create"/><p>{{$t("monitor.edit")}}</p><li>
                             <li @click="playBack(device.deviceid)"><Icon type="md-planet"/><p>{{$t("monitor.track")}}</p><li>
-                            <li v-if="isShowVideoBtn" @click="playerVideos"><Icon type="ios-play"/><p>播放</p><li> 
+                            <li v-if="isShowVideoBtn" @click="playerVideos"><Icon type="ios-play"/><p>{{$t("monitor.play")}}</p><li> 
                             <li v-if="!isShowVideoBtn" @click="trackMap(device.deviceid)"><Icon type="md-person"/><p>{{$t("monitor.following")}}</p><li> 
                             <li  @mouseover="handleMousemove($event)">
                                 <Dropdown trigger="click" transfer :placement="placement" @on-click="handleClickMore" style="width:100%;">
@@ -770,7 +770,7 @@
                 </DropdownItem>
                 <DropdownItem name="transferDeviceGroup">
                     <Dropdown transfer placement="right-start" @on-click="handleClickTransferDeviceGroup" style="width:100%;">
-                        转至分组
+                        {{$t("monitor.gotogroup")}}
                         <Icon type="ios-arrow-forward"></Icon>
                         <i-dropdown-menu slot="list">
                             <template v-for="(item, index) in currentDevCreateUserGroupList" :key="item.groupid"> 
@@ -780,10 +780,10 @@
                     </Dropdown>
                 </DropdownItem>
                 <DropdownItem name="luyin" v-show="isShowRecordBtn">{{$t("monitor.media")}}</DropdownItem>
-                <DropdownItem name="bms" v-show="isShowBmsBtn">电池管理</DropdownItem>
+                <DropdownItem name="bms" v-show="isShowBmsBtn">{{$t("monitor.batteryMgr")}}</DropdownItem>
                 <DropdownItem name="obd" v-show="isShowObdBtn">OBD</DropdownItem>
-                <DropdownItem name="weight" v-show="isShowWeightBtn">称重</DropdownItem>
-                <DropdownItem name="watermeter" v-show="isShowWatermeterBtn">水表</DropdownItem>
+                <DropdownItem name="weight" v-show="isShowWeightBtn">{{$t("monitor.weigh")}}</DropdownItem>
+                <DropdownItem name="watermeter" v-show="isShowWatermeterBtn">{{$t("monitor.watermeter")}}</DropdownItem>
                 <DropdownItem name="cmdrecord">{{$t("monitor.cmdRecord")}}</DropdownItem>
                 <DropdownItem name="alarmList">{{$t("monitor.alarmRecords")}}</DropdownItem>
                 <DropdownItem name="phoneAlarm">{{$t("reportForm.phoneAlarm")}}</DropdownItem>
@@ -808,8 +808,8 @@
                         <div class="map_manager" :style='{height:isMouseoverTop35?"0px":"35px",overflow:isMouseoverTop35?"hidden":"visible"}'>
                             <div style="float:left;height:33px; line-height:33px;padding-left:2px;">
                                 <ButtonGroup size="small" shape="circle">
-                                    <i-button @click="switchMapMode(1)" :type="isMapMode?'primary':''">地图模式</i-button>
-                                    <i-button @click="switchMapMode(2)" :type="isMapMode?'':'primary'">视频模式</i-button>
+                                    <i-button @click="switchMapMode(1)" :type="isMapMode?'primary':''">{{$t("monitor.mapMode")}}</i-button> 
+                                    <i-button @click="switchMapMode(2)" :type="isMapMode?'':'primary'">{{$t("monitor.videoMode")}}</i-button>
                                 </ButtonGroup>
                             </div>
                             <div style="float:left;height:35px; line-height:35px;padding-left:15px;color:red;font-size:12px;">{{intervalTime}}{{$t("monitor.refreshAfter")}}</div>
@@ -821,8 +821,8 @@
                                     <span>离线:{{areaOfflineCount}}</span>
                                 </li>
                                 <li style="padding-top:6px;margin:0 0 0 10px;">
-                                    <Poptip trigger="click" title="区域选择">
-                                        <i-button size="small"> 区域选择 </i-button>
+                                    <Poptip trigger="click" :title="$t('monitor.regionSelection')">
+                                        <i-button size="small"> {{$t("monitor.regionSelection")}} </i-button> 
                                         <div slot="content" style="width:300px;padding:5px 0;">
                                             <div>
                                                 <div>
@@ -830,11 +830,11 @@
                                                 </div>
                                                 <div style="padding-top:10px;">
                                                     <Row>
-                                                        <i-Col span="12" style="padding-right:6.5px;">
-                                                            <i-button type="primary" style="width:100%;" :loading="arealoading" @click="handleQueryArea"> 查询 </i-button>
+                                                        <i-Col span="12" style="padding-right:6.5px;"> : 
+                                                            <i-button type="primary" style="width:100%;" :loading="arealoading" @click="handleQueryArea"> {{$t("reportForm.query")}} </i-button>
                                                         </i-Col>
                                                         <i-Col span="12" style="padding-left:6.5px;">
-                                                            <i-button type="error" style="width:100%;" @click="handleRemoveAreaOverlay"> 清除 </i-button>
+                                                            <i-button type="error" style="width:100%;" @click="handleRemoveAreaOverlay"> {{$t("reportForm.clean")}} </i-button>
                                                         </i-Col>
                                                     </Row>
                                                 </div>
@@ -843,7 +843,7 @@
                                     </Poptip>
                                 </li>
                                 <li style="padding-top:6px;">
-                                    <i-button size="small" @click="echartsMapPage"> 大屏展示 </i-button>
+                                    <i-button size="small" @click="echartsMapPage"> {{$t("monitor.screenDisplay")}} </i-button> 
                                 </li>
                                 <li class="maps">
                                     <i-select v-model="mapType" size="small" style="width:100px">
@@ -864,10 +864,10 @@
                                                 <i class='icon iconfont icon-chizi' style='display:inline-block;width:16px:height:16px;margin-right:5px'></i>{{$t("monitor.ranging")}}
                                             </DropdownItem>
                                             <DropdownItem name="normal">
-                                                <i class='icon iconfont icon-moren' style='display:inline-block;width:15px:height:15px;margin-right:5px;font-size:14px'></i>默认样式
+                                                <i class='icon iconfont icon-moren' style='display:inline-block;width:15px:height:15px;margin-right:5px;font-size:14px'></i>{{$t("monitor.defaultStyle")}} 
                                             </DropdownItem>
                                             <DropdownItem name="midnight">
-                                                <i class='icon iconfont icon-wuye' style='display:inline-block;width:16px:height:16px;margin-right:5px;font-size:14px'></i>午夜蓝
+                                                <i class='icon iconfont icon-wuye' style='display:inline-block;width:16px:height:16px;margin-right:5px;font-size:14px'></i>{{$t("monitor.midnightBlue")}} 
                                             </DropdownItem>
                                         </i-dropdown-menu>
                                     </Dropdown>
@@ -877,20 +877,19 @@
                         <div id="my-map" :class="{ 'map-mode-cls': isMapMode, 'video-mode-cls': !isMapMode }" :style='{top:isMouseoverTop35?"10px":"35px"}'></div>
                         <div id="video_wrap" :class="{ 'videos-wrapper-hide': isMapMode, 'videos-wrapper-show': !isMapMode }" :style='{top:isMouseoverTop35?"10px":"35px"}'>
                             <div class="video_header">
-                                <div class="video_function">
-                                    <i class="" style="cursor: pointer;"></i>
-                                    <span title="清除所有视频" @click="handleCleanAllVideos" style="color:#ffffff;"><i class="icon iconfont icon-custom-clear"></i></span>
-                                    <span title="静音" @click="handlePlayerMute" style="color:#ffffff;"><i class="icon iconfont" :class="{'icon-yinliang':!isMute,'icon-guanbiyinliang':isMute}"></i></span>
-                                </div>
+                                <div class="video_function">  
+                                    <span :title="$t('monitor.clearAllVideos')" @click="handleCleanAllVideos" style="color:#ffffff;"><i class="icon iconfont icon-custom-clear"></i></span>
+                                    <span :title="$t('monitor.mute')" @click="handlePlayerMute" style="color:#ffffff;"><i class="icon iconfont" :class="{'icon-yinliang':!isMute,'icon-guanbiyinliang':isMute}"></i></span>
+                                </div>  
                                 <div style="height: 100%;float:right;" class="tv_box">
-                                    <span title="显示一个通道"><i class="icon icon_num1" @click="openAndCloseVideoWindows(1)"></i></span>
-                                    <span title="显示四个通道"><i class="icon icon_num2" @click="openAndCloseVideoWindows(4)"></i></span>
-                                    <span title="显示六个通道"><i class="icon icon_num3" @click="openAndCloseVideoWindows(6)"></i></span>
-                                    <span title="显示八个通道"><i class="icon icon_num4" @click="openAndCloseVideoWindows(8)"></i></span>
-                                    <span title="显示九个通道"><i class="icon icon_num5" @click="openAndCloseVideoWindows(9)"></i></span>
-                                    <span title="显示十六个通道"><i class="icon icon_num6" @click="openAndCloseVideoWindows(16)"></i></span>
-                                    <span @click="handlePlayAllVideos" title="播放所有视频"><i class="icon icon_play_all"></i></span>
-                                    <span id="box_stop" @click="handleStopAllVideos" title="停止所有视频"><i class="icon icon_close_show"></i></span>
+                                    <span :title="$t('monitor.showAChannel')"><i class="icon icon_num1" @click="openAndCloseVideoWindows(1)"></i></span>
+                                    <span :title="$t('monitor.showFourChannel')"><i class="icon icon_num2" @click="openAndCloseVideoWindows(4)"></i></span>
+                                    <span :title="$t('monitor.showSixChannel')"><i class="icon icon_num3" @click="openAndCloseVideoWindows(6)"></i></span>
+                                    <span :title="$t('monitor.showEightChannel')"><i class="icon icon_num4" @click="openAndCloseVideoWindows(8)"></i></span>
+                                    <span :title="$t('monitor.showNineChannel')"><i class="icon icon_num5" @click="openAndCloseVideoWindows(9)"></i></span>
+                                    <span :title="$t('monitor.showSixteenChannel')"><i class="icon icon_num6" @click="openAndCloseVideoWindows(16)"></i></span>
+                                    <span @click="handlePlayAllVideos" :title="$t('monitor.playAllVideos')"><i class="icon icon_play_all"></i></span>
+                                    <span id="box_stop" @click="handleStopAllVideos" :title="$t('monitor.stopAllVideos')"><i class="icon icon_close_show"></i></span>
                                 </div>
                                 <div style="float:right;height: 100%;line-height:35px">
 
@@ -914,13 +913,13 @@
                                     <img :src='imgSrc' style='width:100%;height:100%'>
                                 </div>
                             </div>
-                            <div class="blackBoxSpeakConent">正在录音，请说话</div>
+                            <div class="blackBoxSpeakConent">{{$t('monitor.recordingTips')}}</div>
                         </div>
 
                         <transition name="el-zoom-in-bottom">
                             <div id="yuntai-tab-wrapper" v-show="isShowYunTai">
                                 <Tabs :animated="false">
-                                    <Tab-Pane label="云台">
+                                    <Tab-Pane :label="$t('monitor.yuntai')">
                                         <div id="tab_state_1" class="tab_state_pane">
                                             <div class="state_1_yt" style="margin-left:15px">
                                                 <div class="fl icon_yt_box">
@@ -963,22 +962,22 @@
                                                         <Input-Number :max="1000" :min="1" style="width:60px;"></Input-Number>
                                                     </i-Col>
                                                     <i-Col span="6" style="padding: 0 5px;">
-                                                        <i-button style="width:100%;">调用</i-button>
+                                                        <i-button style="width:100%;">{{$t('monitor.call')}}</i-button>
                                                     </i-Col>
                                                     <i-Col span="6" style="padding: 0 5px;">
-                                                        <i-button style="width:100%;">设置</i-button>
+                                                        <i-button style="width:100%;">{{$t('monitor.setup')}}</i-button>
                                                     </i-Col>
                                                     <i-Col span="6" style="padding: 0 5px;">
-                                                        <i-button style="width:100%;">删除</i-button>
+                                                        <i-button style="width:100%;">{{$t('monitor.delete')}}</i-button>
                                                     </i-Col>
                                                 </Row>
                                             </div>
                                         </div>
                                     </Tab-Pane>
-                                    <Tab-Pane label="色彩">
+                                    <Tab-Pane :label="$t('monitor.color')">
                                         <Row class="state_color">
                                             <i-Col span="6" style="line-height:35px;">
-                                                <i class="state_co_0" title="亮度"></i>
+                                                <i class="state_co_0" :title="$t('monitor.luminance')"></i>
                                             </i-Col>
                                             <i-Col span="12">
                                                 <Slider v-model="brightness" :min="0" :max="255"></Slider>
@@ -989,7 +988,7 @@
                                         </Row>
                                         <Row class="state_color">
                                             <i-Col span="6" style="line-height:35px;">
-                                                <i class="state_co_1" title="对比度"></i>
+                                                <i class="state_co_1" :title="$t('monitor.contrastRatio')"></i>
                                             </i-Col>
                                             <i-Col span="12">
                                                 <Slider v-model="constract" :min="-127" :max="127"></Slider>
@@ -1000,7 +999,7 @@
                                         </Row>
                                         <Row class="state_color">
                                             <i-Col span="6" style="line-height:35px;">
-                                                <i class="state_co_2" title="色度"></i>
+                                                <i class="state_co_2" :title="$t('monitor.chroma')"></i>
                                             </i-Col>
                                             <i-Col span="12">
                                                 <Slider v-model="hue" :min="-127" :max="127"></Slider>
@@ -1011,7 +1010,7 @@
                                         </Row>
                                         <Row class="state_color">
                                             <i-Col span="6" style="line-height:35px;">
-                                                <i class="state_co_3" title="饱和度"></i>
+                                                <i class="state_co_3" :title="$t('monitor.saturation')"></i>
                                             </i-Col>
                                             <i-Col span="12">
                                                 <Slider v-model="saturate" :min="0" :max="255"></Slider>
@@ -1022,7 +1021,7 @@
                                         </Row>
                                         <Row class="state_color">
                                             <i-Col span="6" style="line-height:35px;">
-                                                <i class="state_co_4" title="曝光"></i>
+                                                <i class="state_co_4" :title="$t('monitor.exposure')"></i>
                                             </i-Col>
                                             <i-Col span="12">
                                                 <Slider v-model="exposure" :min="0" :max="255"></Slider>
@@ -1032,14 +1031,14 @@
                                             </i-Col>
                                         </Row>
                                         <div class="yt_footer">
-                                            <i-button style="width:120px;" @click="defaultQualityParams">默认</i-button>
+                                            <i-button style="width:120px;" @click="defaultQualityParams">{{$t('monitor.default')}}</i-button>
                                         </div>
                                     </Tab-Pane>
-                                    <Tab-Pane label="语音">
+                                    <Tab-Pane :label="$t('monitor.voice')">
                                         <div class="listing_choice">
                                             <Radio-Group v-model="listingChoice">
-                                                <Radio label="duijiang"><span>对讲</span></Radio>
-                                                <Radio label="jianting"><span>监听</span></Radio>
+                                                <Radio label="duijiang"><span>{{$t("monitor.intercom")}}</span></Radio>
+                                                <Radio label="jianting"><span>{{$t("monitor.monitor")}}</span></Radio>
                                             </Radio-Group>
                                         </div>
                                         <div class="listing_box" v-if="listingChoice == 'duijiang'">
@@ -1047,10 +1046,10 @@
                                             <div class="audioPlayerTip">{{audioPlayerTip}}</div>
                                             <div class="yt_footer">
                                                 <div>
-                                                    <i-button style="width:120px;" @click="openDuijiang" :loading="loading">{{isOpenJianting?'关闭':'开启'}}</i-button>
+                                                    <i-button style="width:120px;" @click="openDuijiang" :loading="loading">{{isOpenJianting?$t("monitor.close"):$t("monitor.open")}}</i-button>
                                                 </div>
                                                 <div @mousedown="onMousedown" style="margin-top:10px;">
-                                                    <i-button style="width:120px;">按住通话</i-button>
+                                                    <i-button style="width:120px;">{{$t("monitor.repressSpeak")}}</i-button>
                                                 </div>
                                             </div>
                                         </div>
@@ -1059,12 +1058,12 @@
                                             <div class="audioPlayerTip">{{audioPlayerTip}}</div>
                                             <div class="yt_footer">
                                                 <div>
-                                                    <i-button style="width:120px;" @click="openDuijiang" :loading="loading">{{isOpenJianting?'关闭':'开启'}}</i-button>
+                                                    <i-button style="width:120px;" @click="openDuijiang" :loading="loading">{{isOpenJianting?$t("monitor.close"):$t("monitor.open")}}</i-button>
                                                 </div>
                                             </div>
                                         </div>
                                     </Tab-Pane>
-                                    <i-button @click="isShowYunTai=false" size="small" slot="extra" style="margin:5px 5px 0 0;">关闭</i-button>
+                                    <i-button @click="isShowYunTai=false" size="small" slot="extra" style="margin:5px 5px 0 0;">{{$t("monitor.close")}}</i-button>
                                 </Tabs>
                                 <div style="visibility: hidden;">
                                     <div id="audio-wrap">
@@ -1292,7 +1291,7 @@
                                 <Row style="height:32px;margin: 10px 0;">
                                     <i-Col span="18" style="height: 100%;line-height:32px;text-align: center;">
                                         <i-button type='primary' @click='handleSetPlayParamter' :disabled="userType > 2" :loading="loading">设置播放视频参数</i-button>
-                                        <i-button type="info" @click="queryVideoPlayParameters" style="width:130px;" :loading="loading">查询</i-button>
+                                        <i-button type="info" @click="queryVideoPlayParameters" style="width:130px;" :loading="loading">{{$t("reportForm.query")}}</i-button>
                                     </i-Col>
                                 </Row>
                             </Tab-Pane>
@@ -1300,7 +1299,7 @@
                                 <Row style="height:32px;margin: 10px 0;">
                                     <i-Col span="24" style="height: 100%;line-height:32px;text-align: right;">
                                         <i-button type="success" @click="defaultClientParameters">默认参数</i-button>
-                                        <i-button type="info" @click="queryClientParameters" :loading="loading">查询</i-button>
+                                        <i-button type="info" @click="queryClientParameters" :loading="loading">{{$t("reportForm.query")}}</i-button>
                                         <i-button type="primary" @click="setClientParameters" :disabled="userType > 2">发送</i-button>
                                     </i-Col>
                                 </Row>
@@ -1481,7 +1480,7 @@
                                 </Row>
                             </Tab-Pane>
                             <Tab-Pane label="单独通道视频参数" name="aloneVideoSetup">
-                                <i-button type="info" @click="querySingleAudioVideoParameters" style="width:180px;margin-bottom:10px;" :loading="loading">查询</i-button>
+                                <i-button type="info" @click="querySingleAudioVideoParameters" style="width:180px;margin-bottom:10px;" :loading="loading">{{$t("reportForm.query")}}</i-button>
                                 <Tabs value="" :animated="false" type="card">
                                     <Tab-Pane :label="item.channelnum" v-for="(item,index) in channelsData" :key="index">
                                         <Row style="height:32px;margin: 10px 0;">
@@ -1626,7 +1625,7 @@
                             <Tab-Pane label="音视频终端属性" name="videoProperty">
                                 <Row style="height:32px;margin: 10px 0;">
                                     <i-Col span="7" offset="7" style="height: 100%;line-height:32px;">
-                                        <i-button @click="queryVideoProperty" style="width:120px;" type="primary" :loading="loading">查询</i-button>
+                                        <i-button @click="queryVideoProperty" style="width:120px;" type="primary" :loading="loading">{{$t("reportForm.query")}}</i-button>
                                     </i-Col>
                                 </Row>
                                 <Row style="height:32px;">
@@ -1699,7 +1698,7 @@
                             <Tab-Pane label="音视频通道列表" name="videoChannelsList">
                                 <Row style="height:32px;margin: 10px 0;">
                                     <i-Col span="7" offset="7" style="height: 100%;line-height:32px;">
-                                        <i-button @click="queryVideoChannels" style="width:120px;" type="primary" :loading="loading">查询</i-button>
+                                        <i-button @click="queryVideoChannels" style="width:120px;" type="primary" :loading="loading">{{$t("reportForm.query")}}</i-button>
                                     </i-Col>
                                 </Row>
                                 <i-table border :columns="videoChannelsColumns" :data="videoChannelsTableData" height="234"></i-table>
@@ -1709,7 +1708,7 @@
                                     <Tab-Pane label="高级驾驶辅助" name="activeSecurityPeripheral1">
                                         <Row>
                                             <i-col span="6">
-                                                <i-button type="primary" @click="queryActiveSafetyDeviceInfo('adas')" :loading="loading">查询</i-button>
+                                                <i-button type="primary" @click="queryActiveSafetyDeviceInfo('adas')" :loading="loading">{{$t("reportForm.query")}}</i-button>
                                             </i-col>
                                         </Row>
                                         <Row style="line-height:32px">
@@ -1758,7 +1757,7 @@
                                     <Tab-Pane label="驾驶员状态监测" name="activeSecurityPeripheral2">
                                         <row>
                                             <i-col span="6">
-                                                <i-button type="primary" @click="queryActiveSafetyDeviceInfo('dsm')" :loading="loading">查询</i-button>
+                                                <i-button type="primary" @click="queryActiveSafetyDeviceInfo('dsm')" :loading="loading">{{$t("reportForm.query")}}</i-button>
                                             </i-col>
                                         </row>
                                         <Row style="line-height:32px">
@@ -1807,7 +1806,7 @@
                                     <Tab-Pane label="轮胎气压监测" name="activeSecurityPeripheral3">
                                         <row>
                                             <i-col span="6">
-                                                <i-button type="primary" @click="queryActiveSafetyDeviceInfo('tpms')" :loading="loading">查询</i-button>
+                                                <i-button type="primary" @click="queryActiveSafetyDeviceInfo('tpms')" :loading="loading">{{$t("reportForm.query")}}</i-button>
                                             </i-col>
                                         </row>
                                         <Row style="line-height:32px">
@@ -1856,7 +1855,7 @@
                                     <Tab-Pane label="盲点监测" name="activeSecurityPeripheral4">
                                         <row>
                                             <i-col span="6">
-                                                <i-button type="primary" @click="queryActiveSafetyDeviceInfo('bsd')" :loading="loading">查询</i-button>
+                                                <i-button type="primary" @click="queryActiveSafetyDeviceInfo('bsd')" :loading="loading">{{$t("reportForm.query")}}</i-button>
                                             </i-col>
                                         </row>
                                         <Row style="line-height:32px;">
@@ -2165,7 +2164,7 @@
                             </Row>
                         </div>
                         <div slot="footer" style="text-align:center;">
-                            <i-button type="primary" @click="queryDeviceBaseInfo(1)" :loading="loading" style="width: 200px">查询</i-button>
+                            <i-button type="primary" @click="queryDeviceBaseInfo(1)" :loading="loading" style="width: 200px">{{$t("reportForm.query")}}</i-button>
                             <i-button type="primary" @click="deviceInfoModal=false" style="width: 200px">{{$t("monitor.close")}}</i-button>
                         </div>
                     </Modal>
@@ -2374,15 +2373,15 @@
                         <li :class="{selected:index == 1}" @click="changeComponent(1)">{{$t("alarm.alarmMsg")}}</li>
                         <li :class="{selected:index == 2}" @click="changeComponent(2)">{{$t("alarm.devMsg")}}</li>
                         <li :class="{selected:index == 3}" @click="changeComponent(3)">{{$t("alarm.expirationInfo")}}({{overdueinfolist.length}})</li>
-                        <li :class="{selected:index == 4}" @click="changeComponent(4)">紧急报警</li>
+                        <li :class="{selected:index == 4}" @click="changeComponent(4)">{{$t("alarm.emergencyAlarm")}}</li>
                         <li>
-                            <Checkbox v-model="isMute">声音</Checkbox>
+                            <Checkbox v-model="isMute">{{$t("alarm.voice")}}</Checkbox>
                         </li>
                         <li>
-                            <Checkbox v-model="isPopup">弹窗</Checkbox>
+                            <Checkbox v-model="isPopup">{{$t("alarm.popup")}}</Checkbox>
                         </li>
                         <li @click="settingModal=true">
-                            [紧急报警设置]
+                            [{{$t("alarm.emergencyAlarmSetting")}}]
                         </li>
                     </ul>
                     <div class="shrink-btn">

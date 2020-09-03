@@ -759,11 +759,11 @@ function groupMileage(groupslist) {
             groupslist: [],
             timeoutIns: null,
             columns: [
-                { key: 'index', width: 60, title: '编号' },
+                { key: 'index', width: 70, title: vRoot.$t("reportForm.index") },
                 { title: vRoot.$t("alarm.devName"), key: 'devicename' },
-                { title: '设备序号', key: 'deviceid' },
+                { title: vRoot.$t("alarm.devNum"), key: 'deviceid' },
                 {
-                    title: '分组',
+                    title: vRoot.$t("monitor.groupName"),
                     key: 'groupid',
                     render: function(h, params) {
                         var deviceid = params.row.deviceid;
@@ -789,11 +789,11 @@ function groupMileage(groupslist) {
                         return h('span', {}, groupName)
                     }
                 },
-                { title: '总里程(km)', key: 'totaldistance', sortable: true },
-                { title: '开始时间', key: 'starttimeStr' },
-                { title: '结束时间', key: 'endtimeStr' },
-                { title: '开始里程(km)', key: 'startdistance' },
-                { title: '结束里程(km)', key: 'enddistance' },
+                { title: vRoot.$t("reportForm.totalMileage") + '(km)', key: 'totaldistance', sortable: true },
+                { title: vRoot.$t("reportForm.startDate"), key: 'starttimeStr' },
+                { title: vRoot.$t("reportForm.endDate"), key: 'endtimeStr' },
+                { title: vRoot.$t("reportForm.minMileage") + '(km)', key: 'startdistance' }, 
+                { title: vRoot.$t("reportForm.maxMileage") + '(km)', key: 'enddistance' },
 
             ],
             tableData: [],
@@ -855,12 +855,12 @@ function groupMileage(groupslist) {
                                 resp.records.forEach(function(item, index) {
                                     item.index = index + 1;
                                     if (item.starttime == 0) {
-                                        item.starttimeStr = '无';
+                                        item.starttimeStr = me.$t("reportForm.empty");
                                     } else {
                                         item.starttimeStr = DateFormat.longToDateTimeStr(item.starttime, timeDifference);
                                     }
                                     if (item.endtime == 0) {
-                                        item.endtimeStr = '无';
+                                        item.endtimeStr = me.$t("reportForm.empty");;
                                     } else {
                                         item.endtimeStr = DateFormat.longToDateTimeStr(item.endtime, timeDifference);
                                     }
@@ -1103,12 +1103,11 @@ function accDetails(groupslist) {
             groupslist: [],
             timeoutIns: null,
             allAccColumns: [
-                { title: '序号', width: 60, key: 'index' },
+                { title:  vRoot.$t("reportForm.index"), width: 70, key: 'index' },
                 {
-                    title: "操作",
-                    width: 100,
+                    title: vRoot.$t("alarm.action"),  
+                    width: 160,
                     render: function(h, params) {
-
                         return h('span', {
                             on: {
                                 click: function() {
@@ -1120,31 +1119,29 @@ function accDetails(groupslist) {
                                 color: '#e4393c',
                                 cursor: 'pointer'
                             }
-                        }, "[点火明细]")
+                        }, "["+vRoot.$t("reportForm.accDetailed")+"]")
                     }
                 },
                 {
-                    title: '设备名称',
+                    title: vRoot.$t("alarm.devName"),
                     key: 'devicename'
                 },
                 {
-                    title: '设备序号',
+                    title: vRoot.$t("alarm.devNum"),
                     key: 'deviceid',
-                    width: 160,
                 },
                 {
-                    title: '点火次数',
-                    key: 'opennumber',
-                    width: 100,
+                    title: vRoot.$t("reportForm.accCount"),
+                    key: 'opennumber', 
                 },
                 {
-                    title: '点火时长',
+                    title:vRoot.$t("reportForm.accDuration"),
                     key: 'duration'
                 }
             ],
             allAccTableData: [],
             columns: [
-                { title: '序号', width: 60, key: 'index' },
+                { title:  vRoot.$t("reportForm.index"), width: 70, key: 'index' },
                 { title: vRoot.$t("alarm.devName"), key: 'deviceName', width: 160 },
                 { title: vRoot.$t("alarm.devNum"), key: 'deviceid', width: 160 },
                 { title: vRoot.$t("reportForm.accstatus"), key: 'accStatus', width: 100 },
@@ -1159,7 +1156,7 @@ function accDetails(groupslist) {
                 var startday = this.dateVal[0];
                 var endday = this.dateVal[1];
                 this.$refs.totalTable.exportCsv({
-                    filename: '点火统计数据' + startday + '-' + endday,
+                    filename: vRoot.$t("reportForm.ignitionStatistics") + startday + '-' + endday,  
                     original: false,
                     columns: this.allAccColumns.filter(function(col, index) { return index != 1; }),
                     data: this.allRotateTableData
@@ -1221,7 +1218,7 @@ function accDetails(groupslist) {
                             } else {
                                 me.tableData = [];
                                 me.allAccTableData = [];
-                                me.$Message.error("没有数据");
+                                me.$Message.error(me.$t("reportForm.noRecord"));  
                             }
                         } else {
                             me.tableData = [];
@@ -1341,7 +1338,7 @@ function rotateReport(groupslist) {
             groupslist: [],
             timeoutIns: null,
             allAccColumns: [
-                { title: '序号', width: 60, key: 'index' },
+                { title: vRoot.$t("reportForm.index"), width: 60, key: 'index' },
                 {
                     title: "操作",
                     width: 110,
@@ -2621,9 +2618,9 @@ function devRecords(groupslist) {
                 { type: 'index', width: 60, align: 'center' },
                 { title: vRoot.$t("alarm.devName"), key: 'devicename', width: 200 },
                 { title: vRoot.$t("alarm.devNum"), key: 'deviceid', width: 200 },
-                { title: isZh ? '时间' : 'date', key: 'updatetimeStr', width: 200 },
+                { title: vRoot.$t("reportForm.date"), key: 'updatetimeStr', width: 200 },
                 {
-                    title: isZh ? '下载' : 'download',
+                    title: vRoot.$t("reportForm.download"),
                     render: function(h, data) {
                         return h(
                             "a", {
@@ -2633,12 +2630,12 @@ function devRecords(groupslist) {
                                     href: data.row.url
                                 }
                             },
-                            isZh ? '下载' : 'download')
+                            vRoot.$t("reportForm.download"))
                     },
-                    width: 80,
+                    width: 160,
                 },
                 {
-                    title: isZh ? '录音' : 'record',
+                    title: vRoot.$t("monitor.media"),  
                     render: function(h, data) {
                         return h(
                             "audio", {
@@ -2681,6 +2678,9 @@ function devRecords(groupslist) {
                             })
                         });
                         me.tableData = tableData;
+                        if(tableData.length === 0){
+                            vRoot.$t("reportForm.noRecord");
+                        }
                     }
                 })
             },
@@ -5537,8 +5537,12 @@ function dayOil(groupslist) {
                                 records.forEach(function(record) {
                                     record.devicename = vstore.state.deviceInfos[self.queryDeviceId].devicename;
                                     record.distance = record.enddis - record.begindis;
+                                  
                                     record.oil = record.beginoil - record.endoil - record.addoil + record.leakoil;
                                     record.oil = record.oil/100;
+                                    record.addoil = record.addoil/100;
+                                    record.leakoil = record.leakoil/100;
+                                    
                                     record.distance = (record.distance / 1000).toFixed(2);
                                     if (record.distance != 0) {
                                         record.oilPercent = ((record.oil  / (record.distance )) * 100).toFixed(2);
@@ -7014,11 +7018,11 @@ var reportForm = {
                     title: me.$t("reportForm.drivingReport"),
                     name: 'drivingReport',
                     icon: 'ios-photos',
-                    children: [
+                    children: [  
                         { title: me.$t("reportForm.cmdReport"), name: 'cmdReport', icon: 'ios-pricetag-outline' },
                         { title: me.$t("reportForm.posiReport"), name: 'posiReport', icon: 'ios-pin' },
                         { title: me.$t("reportForm.reportmileagedetail"), name: 'mileageDetail', icon: 'ios-color-wand' },
-                        { title: "里程总览", name: 'groupMileage', icon: 'md-globe' },
+                        { title: me.$t("reportForm.reportmileagesummary"), name: 'groupMileage', icon: 'md-globe' },
                         { title: me.$t("reportForm.parkDetails"), name: 'parkDetails', icon: 'md-analytics' },
                         { title: me.$t("reportForm.acc"), name: 'accDetails', icon: 'md-bulb' },
                         { title: isZh ? '语音报表' : 'Voice report', name: 'records', icon: 'md-volume-up' },

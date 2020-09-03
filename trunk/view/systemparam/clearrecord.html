@@ -4,7 +4,7 @@
             <i-Col span="24">
                 <i-input v-model="deviceid" placeholder="输入设备ID" style="width: 200px;"></i-input>
 
-                <i-button @click="handleClear" type="primary">清除</i-button>
+                <i-button @click="handleClear" type="primary">{{$t("reportForm.clean")}}</i-button>
             </i-Col>
         </Row>
             <Modal v-model="deleteRecordsModal">
