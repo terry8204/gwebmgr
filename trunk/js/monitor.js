@@ -1894,7 +1894,7 @@ var monitor = {
             }, 300)
         },
         filterMethod: function(value) {
-            this.filterData = []
+            var filterData = []
             var me = this;
             value = value.toLowerCase();
             for (var i = 0; i < this.groups.length; i++) {
@@ -1904,38 +1904,42 @@ var monitor = {
                     group.firstLetter.indexOf(value) !== -1 ||
                     group.pinyin.indexOf(value) !== -1
                 ) {
-
+                    var cloneGroup = deepClone(group);
                     if (me.selectedState == "all") {
                         group.devices.forEach(function(device) {
                             var isOnline = me.getIsOnline(device.deviceid);
                             device.isOnline = isOnline;
                         })
-                        this.filterData.push(group);
+                        if(cloneGroup.devices.length > 10){
+                            cloneGroup.devices = cloneGroup.devices.slice(0,10);
+                        }
+                        
+                        filterData.push(cloneGroup);
                     } else if (me.selectedState == "online") {
-                        var cloneGroup = deepClone(group);
+                   
                         cloneGroup.devices = [];
-                        group.devices.forEach(function(device) {
+                        group.devices.forEach(function(device,index) {
                             var isOnline = me.getIsOnline(device.deviceid);
                             device.isOnline = isOnline;
-                            if (isOnline) {
+                            if (isOnline && index < 10) {
                                 cloneGroup.devices.push(device);
                             }
                         })
                         if (cloneGroup.devices.length > 0) {
-                            this.filterData.push(group);
+                            filterData.push(group);
                         }
                     } else if (me.selectedState == "offline") {
-                        var cloneGroup = deepClone(group);
+
                         cloneGroup.devices = [];
-                        group.devices.forEach(function(device) {
+                        group.devices.forEach(function(device,index) {
                             var isOnline = me.getIsOnline(device.deviceid);
                             device.isOnline = isOnline;
-                            if (!isOnline) {
+                            if (!isOnline && index < 10) {
                                 cloneGroup.devices.push(device);
                             }
                         })
                         if (cloneGroup.devices.length > 0) {
-                            this.filterData.push(group);
+                            filterData.push(group);
                         }
                     };
                 } else {
@@ -1984,12 +1988,21 @@ var monitor = {
                                 };
                             };
                         };
+
+                        if(obj.devices.length >= 10){
+                            break;
+                        }
                     }
                     if (obj.devices.length) {
-                        this.filterData.push(obj);
+                        filterData.push(obj);
+                        if(filterData.length >= 10){
+                            break;
+                        }
                     };
                 };
+              
             };
+            this.filterData = filterData;
         },
         handleMapSizeChange: function() {
             var mapWraper = this.$refs.mapWraper;

@@ -3245,57 +3245,57 @@ function insureRecords(groupslist) {
                 { title: vRoot.$t("reportForm.distributor"), key: 'username', width: 150 },
                 { title: vRoot.$t("reportForm.distributorAddress"), key: 'useraddress', width: 150 },
                 { title: vRoot.$t("reportForm.distributorPhone"), key: 'usernamephonenum', width: 120 },
-                { title: '用户手机号', key: 'phonenum', width: 120 },
-                { title: '用户地址', key: 'usingaddress', width: 150 },
-                { title: '品牌型号', key: 'brandtype', width: 100 },
-                { title: '车架号', key: 'vinno', width: 150 },
-                { title: 'GPS序列号', key: 'deviceid', width: 150 },
-                { title: '购车日期', key: 'buycarday', width: 100 },
-                { title: '销售价格', key: 'carvalue', width: 100 },
-                { title: '保险金额', key: 'insureprice', width: 100 },
-                { title: '保费', key: 'insurefee', width: 80 },
+                { title: vRoot.$t("reportForm.phonenum"), key: 'phonenum', width: 120 },   
+                { title: vRoot.$t("reportForm.usingaddress"), key: 'usingaddress', width: 150 },
+                { title: vRoot.$t("reportForm.brandtype"), key: 'brandtype', width: 100 },
+                { title: vRoot.$t("reportForm.vinno"), key: 'vinno', width: 150 },
+                { title: vRoot.$t("reportForm.gpsid"), key: 'deviceid', width: 150 },
+                { title: vRoot.$t("reportForm.buycarday"), key: 'buycarday', width: 100 },
+                { title: vRoot.$t("reportForm.carvalue"), key: 'carvalue', width: 100 },
+                { title: vRoot.$t("reportForm.insureprice"), key: 'insureprice', width: 100 },
+                { title: vRoot.$t("reportForm.insurefee"), key: 'insurefee', width: 80 },
                 {
-                    title: '合格证',
+                    title: vRoot.$t("reportForm.qualitycert"),
                     key: 'qualitycerturl',
                     width: 100,
                     render: function(h, parmas) {
-                        if (parmas.row.qualitycerturl == null) {
-                            return h('span', {}, '无');
+                        if (parmas.row.qualitycerturl == null) {  
+                            return h('span', {}, vRoot.$t("reportForm.empty"));
                         }
-                        return h('a', { attrs: { href: parmas.row.qualitycerturl, target: '_blank' } }, '点击预览');
+                        return h('a', { attrs: { href: parmas.row.qualitycerturl, target: '_blank' } }, vRoot.$t("reportForm.clickPreview"));
                     }
                 },
                 {
-                    title: '整车照',
-                    key: 'carpicurl',
+                    title: vRoot.$t("reportForm.carpic"),
+                    key: 'carpicurl',  
                     width: 100,
                     render: function(h, parmas) {
                         if (parmas.row.carpicurl == null) {
-                            return h('span', {}, '无');
+                            return h('span', {}, vRoot.$t("reportForm.empty"));
                         }
-                        return h('a', { attrs: { href: parmas.row.carpicurl, target: '_blank' } }, '点击预览');
+                        return h('a', { attrs: { href: parmas.row.carpicurl, target: '_blank' } }, vRoot.$t("reportForm.clickPreview"));
                     }
                 },
                 {
-                    title: '身份证正面',
+                    title: vRoot.$t("reportForm.positivecardid"),
                     key: 'positivecardidurl',
                     width: 100,
                     render: function(h, parmas) {
                         if (parmas.row.positivecardidurl == null) {
-                            return h('span', {}, '无');
+                            return h('span', {}, vRoot.$t("reportForm.empty"));
                         }
-                        return h('a', { attrs: { href: parmas.row.positivecardidurl, target: '_blank' } }, '点击预览');
+                        return h('a', { attrs: { href: parmas.row.positivecardidurl, target: '_blank' } }, vRoot.$t("reportForm.clickPreview"));
                     }
                 },
                 {
-                    title: '身份证反面',
+                    title: vRoot.$t("reportForm.negativecardid"),
                     key: 'negativecardidurl',
                     width: 100,
                     render: function(h, parmas) {
                         if (parmas.row.negativecardidurl == null) {
-                            return h('span', {}, '无');
+                            return h('span', {},vRoot.$t("reportForm.empty"));
                         }
-                        return h('a', { attrs: { href: parmas.row.negativecardidurl, target: '_blank' } }, '点击预览');
+                        return h('a', { attrs: { href: parmas.row.negativecardidurl, target: '_blank' } }, vRoot.$t("reportForm.clickPreview"));
                     }
                 },
                 {
@@ -3304,9 +3304,9 @@ function insureRecords(groupslist) {
                     width: 100,
                     render: function(h, parmas) {
                         if (parmas.row.invoiceurl == null) {
-                            return h('span', {}, '无');
+                            return h('span', {}, vRoot.$t("reportForm.empty"));
                         }
-                        return h('a', { attrs: { href: parmas.row.invoiceurl, target: '_blank' } }, '点击预览');
+                        return h('a', { attrs: { href: parmas.row.invoiceurl, target: '_blank' } }, vRoot.$t("reportForm.clickPreview"));
                     }
                 },
                 {
@@ -3315,9 +3315,9 @@ function insureRecords(groupslist) {
                     width: 120,
                     render: function(h, parmas) {
                         if (parmas.row.groupphotourl == null) {
-                            return h('span', {}, '无');
+                            return h('span', {}, vRoot.$t("reportForm.empty"));
                         }
-                        return h('a', { attrs: { href: parmas.row.groupphotourl, target: '_blank' } }, '点击预览');
+                        return h('a', { attrs: { href: parmas.row.groupphotourl, target: '_blank' } }, vRoot.$t("reportForm.clickPreview"));
                     }
                 },
                 {
@@ -3326,9 +3326,9 @@ function insureRecords(groupslist) {
                     width: 120,
                     render: function(h, parmas) {
                         if (parmas.row.carkeypicurl == null) {
-                            return h('span', {}, '无');
+                            return h('span', {}, vRoot.$t("reportForm.empty"));
                         }
-                        return h('a', { attrs: { href: parmas.row.carkeypicurl, target: '_blank' } }, '点击预览');
+                        return h('a', { attrs: { href: parmas.row.carkeypicurl, target: '_blank' } }, vRoot.$t("reportForm.clickPreview"));
                     }
                 },
                 {
@@ -3337,9 +3337,9 @@ function insureRecords(groupslist) {
                     width: 120,
                     render: function(h, parmas) {
                         if (parmas.row.insurenoticeurl == null) {
-                            return h('span', {}, '无');
+                            return h('span', {}, vRoot.$t("reportForm.empty"));
                         }
-                        return h('a', { attrs: { href: parmas.row.insurenoticeurl, target: '_blank' } }, '点击预览');
+                        return h('a', { attrs: { href: parmas.row.insurenoticeurl, target: '_blank' } }, vRoot.$t("reportForm.clickPreview"));
                     }
                 },
                 {
