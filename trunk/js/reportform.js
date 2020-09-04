@@ -3299,7 +3299,7 @@ function insureRecords(groupslist) {
                     }
                 },
                 {
-                    title: '购车发票',
+                    title: vRoot.$t("reportForm.invoice"),
                     key: 'invoiceurl',
                     width: 100,
                     render: function(h, parmas) {
@@ -3310,7 +3310,7 @@ function insureRecords(groupslist) {
                     }
                 },
                 {
-                    title: '车主与车合影',
+                    title:  vRoot.$t("reportForm.groupphoto"),
                     key: 'groupphotourl',
                     width: 120,
                     render: function(h, parmas) {
@@ -3320,8 +3320,8 @@ function insureRecords(groupslist) {
                         return h('a', { attrs: { href: parmas.row.groupphotourl, target: '_blank' } }, vRoot.$t("reportForm.clickPreview"));
                     }
                 },
-                {
-                    title: '车钥匙/遥控器',
+                { 
+                    title: vRoot.$t("reportForm.carkeypic"),   
                     key: 'carkeypicurl',
                     width: 120,
                     render: function(h, parmas) {
@@ -3332,7 +3332,7 @@ function insureRecords(groupslist) {
                     }
                 },
                 {
-                    title: '保险告知书',
+                    title:  vRoot.$t("reportForm.insurenotice"),   
                     key: 'insurenoticeurl',
                     width: 120,
                     render: function(h, parmas) {
@@ -3371,7 +3371,7 @@ function insureRecords(groupslist) {
                                         vueInstanse.handleEditInsure();
                                     }
                                 }
-                            }, isPay ? "取消审核" : "确认审核"),
+                            }, isPay ?  vRoot.$t("reportForm.cancelAudit") : vRoot.$t("reportForm.confirmAudit")),
                             h('Button', {
                                 props: {
                                     type: 'primary',
