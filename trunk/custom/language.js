@@ -454,6 +454,14 @@
                 year:'year',
                 month:'month',
                 insurePlaceholder:'input_user|phone|identity',
+                oilReport:'Oil report',
+                dayOilConsumption:'Day oil consumption',
+                dateOilConsumption:'Date oil consumption',
+                addOil:'Add oil',
+                reduceOil:'Reduce oil',
+                tempReport:'Temp report',
+                logisticsReport:'Logistics report',
+                driverWorkDetails:'Driver work details',
             },
             bgMgr: {
                 bindpwd: "Bind pwd",
@@ -812,7 +820,7 @@
                 threeMinutes:'已播放三分钟时间,暂停播放',
                 notSupportCanvas:"您的浏览器暂不支持canvas",
             },
-            reportForm: {   
+            reportForm: {    
                 empty:'空', 
                 clean:'清除',
                 total: "合计 : ",
@@ -990,7 +998,7 @@
                 insureData: '保险数据',
                 tips:'提示',
                 tipsContent: "是否删除这个保单信息!",
-                
+
                 storeNumber:'门店编号',
                 storeName:'门店名称',
                 cumulativeRecords:'累计保险充值记录',
@@ -1000,6 +1008,15 @@
                 year:'年',
                 month:'月',
                 insurePlaceholder:'输入_姓名|手机号|身份证号',
+                oilReport:'油液报表',
+                dayOilConsumption:'日行油液报表',
+                dateOilConsumption:'时间油液报表',
+                addOil:'加油液报表',
+                reduceOil:'漏油液报表',
+                tempReport:'温湿度报表',
+                logisticsReport:'物流报表',
+                driverWorkDetails:'司机工作明细',
+
                 
             },
             bgMgr: {

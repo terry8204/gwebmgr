@@ -3345,7 +3345,7 @@ function insureRecords(groupslist) {
                 {
                     title: vRoot.$t("bgMgr.action"),
                     key: 'action',
-                    width: 210,
+                    width: 240,
                     fixed: 'right',
                     render: function(h, params) {
                         var isPay = params.row.insurestate == 1 ? true : false;
@@ -4868,6 +4868,7 @@ function deviceMonthOnlineDaily(groupslist) {
                 {
                     title: vRoot.$t("reportForm.onlineDate"),
                     render: function(h, params) {
+                        var onlineDate = vRoot.$t("reportForm.onlineDate");
                         var row = params.row;
                         return h(
                             'Button', {
@@ -4880,8 +4881,8 @@ function deviceMonthOnlineDaily(groupslist) {
                                     }
                                 }
                             },
-                            vRoot.$t("reportForm.onlineDate"),
-                        )
+                            onlineDate
+                        );
                     }
                 }
             ],
@@ -5398,8 +5399,8 @@ function dayOil(groupslist) {
             loading: false,
             groupslist: [],
             columns: [
-                { title: '编号', type: 'index', width: 60 },
-                { title: '设备名称', key: 'devicename' },
+                { title: vRoot.$t('reportForm.index') , type: 'index', width: 70 },
+                { title: vRoot.$t('alarm.devName') , key: 'devicename' },
                 { title: '日期', key: 'statisticsday', sortable: true },
                 { title: '行驶里程(公里)', key: 'distance', },
                 { title: '油耗', key: 'oil', },
@@ -7072,30 +7073,30 @@ var reportForm = {
                     ]
                 },
                 {
-                    title: '油液报表',
-                    name: 'oilConsumption',
+                    title: me.$t("reportForm.oilReport"),
+                    name: 'oilConsumption',   
                     icon: 'ios-speedometer-outline',
                     children: [
-                        { title: "日行油液报表", name: 'dayOil', icon: 'ios-stopwatch-outline' },
-                        { title: "时间油液报表", name: 'timeOilConsumption', icon: 'ios-timer-outline' },
-                        { title: "加油液报表", name: 'refuelingReport', icon: 'ios-trending-up' },
-                        { title: "漏油液报表", name: 'oilLeakageReport', icon: 'ios-trending-down' },
+                        { title: me.$t("reportForm.dayOilConsumption"), name: 'dayOil', icon: 'ios-stopwatch-outline' },
+                        { title: me.$t("reportForm.dateOilConsumption"), name: 'timeOilConsumption', icon: 'ios-timer-outline' },
+                        { title: me.$t("reportForm.addOil"), name: 'refuelingReport', icon: 'ios-trending-up' },
+                        { title: me.$t("reportForm.reduceOil"), name: 'oilLeakageReport', icon: 'ios-trending-down' },
                     ]
                 },
                 {
-                    title: '温湿度报表',
+                    title: me.$t("reportForm.tempReport"),
                     name: 'temperatureConsumption',
                     icon: 'ios-color-wand-outline',
                     children: [
-                        { title: "温湿度报表", name: 'temperature', icon: 'ios-stopwatch-outline' },
+                        { title: me.$t("reportForm.tempReport"), name: 'temperature', icon: 'ios-stopwatch-outline' },
                     ]
                 },
                 {
-                    title: '物流报表',
+                    title: me.$t("reportForm.logisticsReport"),
                     name: 'logisticsReport',
                     icon: 'ios-bicycle',
                     children: [
-                        { title: "司机工作明细", name: 'driverWorkDetails', icon: 'md-car' },
+                        { title: me.$t("reportForm.driverWorkDetails"), name: 'driverWorkDetails', icon: 'md-car' },
                     ]
                 },
             ]
@@ -7205,8 +7206,8 @@ var reportForm = {
             });
         },
         getMonitorListByUser: function(callback) {
-            var me = this
-            var url = myUrls.monitorListByUser()
+            var me = this;
+            var url = myUrls.monitorListByUser();
             utils.sendAjax(url, { username: userName }, function(resp) {
                 if (resp.status == 0) {
                     if (resp.groups && resp.groups.length) {

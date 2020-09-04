@@ -51,50 +51,50 @@
         </p>
         <div style="text-align:center">
             <Row style="margin:10px 0;">
-                <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">车主名称 : &nbsp;</i-col>
+                <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t("reportForm.name")}} : &nbsp;</i-col> 
                 <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
                     <i-input v-model.trim="editObjectRow.name" style="width: 100%;"></i-input>
                 </i-col>
             </Row>
             <Row style="margin:10px 0;">
-                <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">身份证号码 : &nbsp;</i-col>
+                <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t("reportForm.idNumber")}} : &nbsp;</i-col>
                 <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
                     <i-input v-model.trim="editObjectRow.cardid" style="width: 100%;"></i-input>
                 </i-col>
             </Row>
             <Row style="margin:10px 0;">
-                <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">车主号码 : &nbsp;</i-col>
+                <i-col span="5" style="height: 100%;text-align:right;line-height:32px;"> {{$t("monitor.phoneNumber")}} : &nbsp;</i-col>
                 <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
                     <i-input v-model.trim="editObjectRow.phonenum" style="width: 100%;"></i-input>
                 </i-col>
             </Row>
             <Row style="margin:10px 0;">
-                <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">车架号 : &nbsp;</i-col>
+                <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t("reportForm.vinno")}} : &nbsp;</i-col>
                 <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
                     <i-input v-model.trim="editObjectRow.vinno" style="width: 100%;"></i-input>
                 </i-col>
             </Row>
             <Row style="margin:10px 0;">
-                <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">经销商号码 : &nbsp;</i-col>
+                <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t("reportForm.distributorPhone")}} : &nbsp;</i-col>
                 <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
                     <i-input v-model.trim="editObjectRow.usernamephonenum" style="width: 100%;"></i-input>
                 </i-col>
             </Row>
             <Row style="margin:10px 0;">
-                <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">是否审核 : &nbsp;</i-col>
+                <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t("reportForm.examine")}} : &nbsp;</i-col>
                 <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
                     <Checkbox v-model="editObjectRow.isRecharge"></Checkbox>
                 </i-col>
             </Row>
             <Row style="margin:10px 0;">
-                <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">添加时间 : &nbsp;</i-col>
+                <i-col span="5" style="height: 100%;text-align:right;line-height:32px;"> {{$t("reportForm.addDate")}} : &nbsp;</i-col>
                 <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
                     <date-picker type="date" v-model="editObjectRow.createtime" :clearable="clearable"></date-picker>
                 </i-col>
             </Row>
         </div>
         <div slot="footer">
-            <i-button type="primary" style="width: 100%" @click="handleEditInsure">提交</i-button>
+            <i-button type="primary" style="width: 100%" @click="handleEditInsure">{{$t("header.submit")}}</i-button>
         </div>
     </Modal>
 </div>
