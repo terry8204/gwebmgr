@@ -22,7 +22,7 @@
         <h3 class="h3-title">{{$t("bgMgr.addDev")}}</h3>
         <div>
             <Row style="margin: 10px 0" v-if="userType < 3">
-                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;"><i style="color: red;display: inline-block;">*</i>&nbsp;选择账号 : &nbsp;</i-col>
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;"><i style="color: red;display: inline-block;">*</i>&nbsp;{{$t("reportForm.selectAccount")}} : &nbsp;</i-col>
                 <i-col span="8">
                     <div class="search-wrapper">
                         <i-input v-model.trim="createrToUser" :icon="iconState" @on-change="sosoValueChange" @on-blur="blur" @on-focus="focus" @on-click="focus"></i-input>
@@ -45,7 +45,7 @@
                         <i-option v-for="item in groupsList" :value="item.value" :key="item.value">{{ item.label }}</i-option>
                     </i-select>
                 </i-col>
-                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;网络类型 : &nbsp;</i-col>
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;{{$t("device.networkType")}} : &nbsp;</i-col>
                 <i-col span="8">
                     <i-select v-model="teltype">
                         <i-option value="1">2G</i-option>
@@ -72,7 +72,7 @@
             </Row>
 
             <Row style="margin: 10px 0">
-                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">序号长度: &nbsp;</i-col>
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">{{$t("device.idLength")}}: &nbsp;</i-col> 
                 <i-col span="8">
                     <input-number v-model.number="idLength" :max="15" :min="8" :editable="false" style="width: 100%;"></input-number>
                 </i-col>
@@ -109,11 +109,11 @@
             </Row>
 
             <Row style="margin: 10px 0">
-                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;设备序号 : &nbsp;</i-col>
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;{{$t('alarm.devNum')}} : &nbsp;</i-col>
                 <i-col span="6">
-                    <i-input v-model.trim="deviceid" type="textarea" placeholder="复制批量序号" :autosize="{minRows: 2,maxRows: 15}"></i-input>
-                </i-col>
-
+                    <i-input v-model.trim="deviceid" type="textarea" :placeholder="$t('device.copyBatchNumber')" :autosize="{minRows: 2,maxRows: 15}"></i-input>
+                </i-col>    
+   
                 <i-col span="13" :offset="1">
                     <i-input v-model.trim="errorTips" :class="fontColor" type="textarea" disabled :autosize="{minRows: 2,maxRows: 15}"></i-input>
                 </i-col>
@@ -216,8 +216,7 @@
                     var url = myUrls.addDevices();
 
                     if (!this.isOk) {
-                        me.$Message.error("请添加正确的imeis");
-                        // me.$Message.error(me.$t("device.devIdTips"));
+                        me.$Message.error(me.$t("device.devIdTips"));
                         return;
                     };
                     var deviceids = this.deviceid.split('\n').filter(function(item) {
@@ -226,7 +225,7 @@
                         }
                     });
                     if (deviceids.length > 500) {
-                        me.$Message.error("一次添加设备不得超过500");
+                        me.$Message.error(me.$t("message.addDevice500Tips"));  
                         return;
                     }
 
@@ -236,7 +235,7 @@
                     };
 
                     if (this.devicetype === "") {
-                        me.$Message.error('请选择设备类型');
+                        me.$Message.error(me.$t("message.selectDeviceTtypeTips"));   
                         return;
                     }
 
@@ -501,7 +500,7 @@
                         this.matchingDeviceIds(this, newText);
                     } else {
                         this.isOk = false;
-                        this.errorTips = "序列号必须是数字或者字母";
+                        this.errorTips = me.$t('message.deviceIdTips') ;
                     }
                 }
             },

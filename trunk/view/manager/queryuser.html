@@ -54,39 +54,39 @@
 
                 <Row style="margin: 10px 0">
                     <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">
-                        &nbsp;公司名称 : &nbsp;</i-col>
+                        &nbsp;  {{$t("user.corporateName")}}: &nbsp;</i-col>
                     <i-col span="12">
                         <i-input v-model.trim="companyname"></i-input>
                     </i-col>
                 </Row>
                 <Row style="margin: 10px 0">
                     <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">
-                        &nbsp;真实姓名 : &nbsp;</i-col>
+                        &nbsp;{{$t("user.name")}} : &nbsp;</i-col>
                     <i-col span="12">
                         <i-input v-model.trim="cardname"></i-input>
                     </i-col>
                 </Row>
                 <Row style="margin: 10px 0">
                     <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">
-                        &nbsp;电话 : &nbsp;</i-col>
+                        &nbsp;{{$t("user.phone")}} : &nbsp;</i-col>
                     <i-col span="12">
                         <i-input v-model.trim="phone"></i-input>
                     </i-col>
                 </Row>
                 <Row style="margin: 10px 0">
                     <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">
-                        &nbsp;地址 : &nbsp;</i-col>
+                        &nbsp;{{$t("user.address")}} : &nbsp;</i-col>
                     <i-col span="12">
                         <i-input v-model.trim="companyaddr"></i-input>
                     </i-col>
                 </Row>
 
                 <Row style="margin: 10px 0">
-                    <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">多点登陆 : &nbsp;</i-col>
+                    <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t("user.moreLanding")}} : &nbsp;</i-col>
                     <i-col span="12">
                         <i-select v-model="multilogin">
-                            <i-option value="1">是</i-option>
-                            <i-option value="0">否</i-option>
+                            <i-option value="1">{{$t("header.yes")}}</i-option>
+                            <i-option value="0">{{$t("header.no")}}</i-option>
                         </i-select>
                     </i-col>
                 </Row>
@@ -100,14 +100,14 @@
                 </Row>
                 <Row style="margin: 10px 0">
                     <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">
-                        &nbsp;微信 : &nbsp;</i-col>
+                        &nbsp;{{$t("user.weChat")}} : &nbsp;</i-col>
                     <i-col span="12">
                         <i-input v-model.trim="wechat"></i-input>
                     </i-col>
                 </Row>
                 <Row style="margin: 10px 0">
                     <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">
-                        &nbsp;邮箱 : &nbsp;</i-col>
+                        &nbsp;{{$t("header.email")}} : &nbsp;</i-col>
                     <i-col span="12">
                         <i-input v-model.trim="email"></i-input>
                     </i-col>
@@ -158,10 +158,6 @@
                 total: 0,
                 currentIndex: 1,
                 columns: [
-                    //     {
-                    //     title: vRoot.$t("user.client"),
-                    //     key: 'company'
-                    // },
                     {
                         title: vRoot.$t("user.username"),
                         key: 'username',
@@ -169,19 +165,19 @@
                         title: vRoot.$t("user.userType"),
                         key: 'userTypeStr'
                     }, {
-                        title: '公司名称',
+                        title: vRoot.$t("user.companyName"),
                         key: 'companyname'
                     }, {
-                        title: '真实姓名',
+                        title: vRoot.$t("user.name"),
                         key: 'cardname'
                     }, {
-                        title: '电话',
+                        title: vRoot.$t("user.phone"),
                         key: 'phone'
                     }, {
-                        title: '地址',
+                        title: vRoot.$t("user.addres"),
                         key: 'companyaddr'
                     }, {
-                        title: '创建者',
+                        title: vRoot.$t("user.creater"),
                         key: 'creater'
                     }, {
                         title: vRoot.$t("user.createTime"),

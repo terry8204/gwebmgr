@@ -37,10 +37,10 @@
         </div>
 
         <div style="float: right;margin-left:10px;">
-            <i-button @click="exportTableData" icon="md-exit" type="primary">导出</i-button>
+            <i-button @click="exportTableData" icon="md-exit" type="primary">{{$t("reportForm.exportData")}}</i-button>
         </div>
         <div style="float: right;">
-            <i-button @click="queryAllAddress" icon="ios-search" type="primary">一键查询地址</i-button>
+            <i-button @click="queryAllAddress" icon="ios-search" type="primary">{{$t("reportForm.queryAllAddress")}}</i-button> 
         </div>
     </Row>
     <div style="margin:10px;">
@@ -54,7 +54,7 @@
             <div class="map-modal" @click="trackDetailModal=false"></div>
             <div class="work-inner-map-wraper">
                 <div class="posi-map-title">
-                    工作轨迹
+                    {{$t("monitor.track")}}
                     <div class="map-close"></div>
                 </div>
                 <div class="work-details-map"></div>

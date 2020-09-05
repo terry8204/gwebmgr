@@ -6,10 +6,10 @@
 </style>
 <div id="adddevice">
     <div class="full">
-        <h3 class="h3-title">{{$t("bgMgr.addDev")}}</h3>
+        <h3 class="h3-title">{{$t("bgMgr.addDev")}}</h3>  
         <div>
             <Row style="margin: 10px 0" v-if="userType < 3">
-                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;"><i style="color: red;display: inline-block;">*</i>&nbsp;选择账号 : &nbsp;</i-col>
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;"><i style="color: red;display: inline-block;">*</i>&nbsp;{{$t("reportForm.selectAccount")}} : &nbsp;</i-col>
                 <i-col span="8">
                     <div class="search-wrapper">
                         <i-input v-model.trim="createrToUser" :icon="iconState" @on-change="sosoValueChange" @on-blur="blur" @on-focus="focus" @on-click="focus"></i-input>
@@ -21,7 +21,7 @@
                                     </div>
                                 </li>
                             </ul>
-                        </transition>
+                        </transition>   
                     </div>
                 </i-col>
             </Row>
@@ -51,7 +51,7 @@
             </Row>
 
             <Row style="margin: 10px 0">
-                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;监护账号 : &nbsp;</i-col>
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;{{$t("device.tutelageUser")}} : &nbsp;</i-col>
                 <i-col span="8">
                     <i-input v-model.trim="monitor"></i-input>
                 </i-col>
@@ -68,7 +68,7 @@
                         <i-option v-for="item in groupsList" :value="item.value" :key="item.value">{{ item.label }}</i-option>
                     </i-select>
                 </i-col>
-                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;网络类型 : &nbsp;</i-col>
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;{{$t("device.networkType")}} : &nbsp;</i-col>
                 <i-col span="8">
                     <i-select v-model="teltype">
                         <i-option value="1">2G</i-option>
@@ -218,7 +218,7 @@
                     };
 
                     if (this.devicetype === "") {
-                        me.$Message.error('请选择设备类型');
+                        me.$Message.error(me.$t("message.selectDeviceTtypeTips"));  
                         return;
                     }
 

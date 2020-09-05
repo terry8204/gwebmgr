@@ -185,7 +185,6 @@ var reportMixin = {
         focus: function() {
             this.readonly = false;
             var me = this;
-            console.log('this.sosoValue', this.sosoValue)
             if (this.sosoValue && this.sosoValue.trim()) {
                 me.sosoValueChange()
             } else {
@@ -225,7 +224,9 @@ var reportMixin = {
                     group.devices.forEach(function(device) {
                         device.isOnline = vstore.state.deviceInfos[device.deviceid] ? vstore.state.deviceInfos[device.deviceid].isOnline : false;
                     })
-                    filterData.push(group)
+                    var copyGroup = deepClone(group);
+                    copyGroup.devices = copyGroup.devices.slice(0,9);
+                    filterData.push(copyGroup)
                 } else {
                     var devices = group.devices
                     var obj = {
@@ -249,9 +250,15 @@ var reportMixin = {
                                 };
                             };
                         };
+                        if(obj.devices.length >= 10){
+                            break;
+                        }
                     }
                     if (obj.devices.length) {
                         filterData.push(obj);
+                        if(filterData.length >= 10){
+                            break;
+                        }
                     };
                 };
             };
@@ -5045,17 +5052,17 @@ function timeOilConsumption(groupslist) {
             loading: false,
             groupslist: [],
             columns: [
-                { title: '编号', type: 'index', width: 70 },
-                { title: '设备名称', key: 'devicename', width: 100 },
-                { title: '时间', key: 'updatetimeStr', sortable: true, width: 160 },
-                { title: '总里程(公里)', key: 'totaldistance', width: 110 },
-                { title: '总油液(升)', key: 'oil', width: 100 },
-                { title: '油液1(升)', key: 'ad0', width: 90 },
-                { title: '油液2(升)', key: 'ad1', width: 90 },
-                { title: '速度', key: 'speed', width: 80 },
-                { title: '状态', key: 'strstatus' },
+                { title:  vRoot.$t('reportForm.index'), type: 'index', width: 70 },
+                { title: vRoot.$t('alarm.devName'), key: 'devicename', width: 100 },
+                { title: vRoot.$t('reportForm.date'), key: 'updatetimeStr', sortable: true, width: 160 },
+                { title: vRoot.$t('reportForm.totalMileage') + '(km)', key: 'totaldistance', width: 150 },  
+                { title: vRoot.$t('reportForm.totalOil'), key: 'oil', width: 100 }, 
+                { title: vRoot.$t('reportForm.oil1'), key: 'ad0', width: 90 },
+                { title: vRoot.$t('reportForm.oil2'), key: 'ad1', width: 90 },
+                { title:  vRoot.$t('reportForm.speed'), key: 'speed', width: 80 },
+                { title: vRoot.$t('reportForm.status'), key: 'strstatus' },
                 {
-                    title: '经度,纬度',
+                    title: vRoot.$t('reportForm.lon') + ',' + vRoot.$t('reportForm.lat') , 
                     render: function(h, params) {
                         var row = params.row;
                         var callat = row.callat.toFixed(5);
@@ -5121,14 +5128,14 @@ function timeOilConsumption(groupslist) {
                 this.tableData = this.records.slice(start, offset);
             },
             charts: function() {
-                var totoil = "总油液";
-                var speed = "速度";
-                var dis = "里程";
-                var time = "时间";
-                var usoil1 = "油液1";
-                var usoil2 = "油液2";
-                var cotgasus = "油液";
-                var status = '状态';
+                var totoil = vRoot.$t('reportForm.totalOil');
+                var speed = vRoot.$t('reportForm.speed');
+                var dis = vRoot.$t('reportForm.mileage');
+                var time = vRoot.$t('reportForm.time');
+                var usoil1 = vRoot.$t('reportForm.oil1');
+                var usoil2 = vRoot.$t('reportForm.oil2');
+                var cotgasus = vRoot.$t('reportForm.oil');
+                var status = vRoot.$t('reportForm.status');
                 var option = {
                     title: {
                         text: time + '/' + cotgasus,
@@ -5148,9 +5155,9 @@ function timeOilConsumption(groupslist) {
                     tooltip: {
                         trigger: 'axis',
                         formatter: function(v) {
-                            var data = '时间 : ' + v[0].name + '<br/>';
+                            var data = time + ' : ' + v[0].name + '<br/>';
                             for (i in v) {
-                                if (v[i].seriesName != '时间') data += v[i].seriesName + ' : ' + v[i].value + '<br/>';
+                                if (v[i].seriesName != time) data += v[i].seriesName + ' : ' + v[i].value + '<br/>';
                             }
                             return data;
                         }
@@ -5401,12 +5408,12 @@ function dayOil(groupslist) {
             columns: [
                 { title: vRoot.$t('reportForm.index') , type: 'index', width: 70 },
                 { title: vRoot.$t('alarm.devName') , key: 'devicename' },
-                { title: '日期', key: 'statisticsday', sortable: true },
-                { title: '行驶里程(公里)', key: 'distance', },
-                { title: '油耗', key: 'oil', },
-                { title: '加油液量', key: 'addoil' },
-                { title: '漏油液量', key: 'leakoil' },
-                { title: '百公里油耗', key: 'oilPercent' },
+                { title: vRoot.$t('reportForm.date'), key: 'statisticsday', sortable: true },
+                { title: vRoot.$t('reportForm.mileage') + '(km)', key: 'distance', }, 
+                { title: vRoot.$t('reportForm.oilConsumption'), key: 'oil', },  
+                { title: vRoot.$t('reportForm.fuelVolume'), key: 'addoil' },
+                { title: vRoot.$t('reportForm.oilLeakage'), key: 'leakoil' },
+                { title: vRoot.$t('reportForm.fuelConsumption100km'), key: 'oilPercent' },
             ],
             tableData: [],
             recvtime: [],
@@ -5423,9 +5430,9 @@ function dayOil(groupslist) {
                 this.tableData = this.records.slice(start, offset);
             },
             charts: function() {
-                var dis = "里程";
-                var cotgas = "油耗";
-                var no_data = "无数据";
+                var dis = vRoot.$t('reportForm.mileage'); 
+                var cotgas = vRoot.$t('reportForm.oilConsumption');
+                var no_data = vRoot.$t('reportForm.empty');
                 var option = {
                     tooltip: {
                         show: true,
@@ -5603,18 +5610,18 @@ function refuelingReport(groupslist) {
             tank: '0',
             groupslist: [],
             columns: [
-                { title: '编号', type: 'index', width: 60 },
-                { title: '设备名称', key: 'devicename' },
-                { title: '加油液前油液量(L)', key: 'soil' },
-                { title: '加油液后油液量(L)', key: 'eoil' },
+                { title:  vRoot.$t('reportForm.index') , type: 'index', width: 70 },
+                { title:  vRoot.$t('alarm.devName'), key: 'devicename' },
+                { title:  vRoot.$t('reportForm.soil') , key: 'soil' }, 
+                { title:  vRoot.$t('reportForm.eoil'), key: 'eoil' },
                 {
-                    title: '加油液量(L)',
+                    title: vRoot.$t('reportForm.fuelVolume') + '(L)',  
                     key: 'addoil',
                 },
-                { title: '开始时间', key: 'begintimeStr' },
-                { title: '结束时间', key: 'endtimeStr' },
+                { title: vRoot.$t('reportForm.startDate'), key: 'begintimeStr' },  
+                { title: vRoot.$t('reportForm.endDate'), key: 'endtimeStr' },
                 {
-                    title: '开始位置(点击获取位置)',
+                    title:  vRoot.$t('reportForm.saddress'), 
                     render: function(h, params) {
                         var row = params.row;
                         var lat = row.slat ? row.slat.toFixed(5) : null;
@@ -5662,7 +5669,7 @@ function refuelingReport(groupslist) {
                     },
                 },
                 {
-                    title: '结束位置(点击获取位置)',
+                    title: vRoot.$t('reportForm.eaddress'), 
                     render: function(h, params) {
                         var row = params.row;
                         var lat = row.elat ? row.elat.toFixed(5) : null;
@@ -5717,8 +5724,8 @@ function refuelingReport(groupslist) {
         mixins: [reportMixin],
         methods: {
             charts: function() {
-                var cotgas = "油耗";
-                var no_data = "无数据";
+                var cotgas =  vRoot.$t('reportForm.oilConsumption');
+                var no_data =  vRoot.$t('reportForm.empty');
                 var option = {
                     tooltip: {
                         show: true,
@@ -5853,7 +5860,7 @@ function refuelingReport(groupslist) {
                                 });
                             });
                             records.push({
-                                addoil: '合计:' + totalOil
+                                addoil: (isZh ?  '合计:' : 'Total:' )+ totalOil
                             });
                             self.oil = oilArr;
                             self.distance = distance;
@@ -5895,19 +5902,19 @@ function oilLeakageReport(groupslist) {
             groupslist: [],
             tank: '0',
             columns: [
-                { title: '编号', type: 'index', width: 60 },
-                { title: '设备名称', key: 'devicename' },
+                { title: vRoot.$t("reportForm.index"), type: 'index', width: 70 },
+                { title: vRoot.$t("alarm.devName"), key: 'devicename' },
                 {
-                    title: '漏油液量(L)',
+                    title: vRoot.$t("reportForm.oilLeakage") + '(L)', 
                     key: 'addoil',
                 },
-                { title: '漏油液前油液量(L)', key: 'soil' },
-                { title: '漏油液后油液量(L)', key: 'eoil' },
+                { title: vRoot.$t("reportForm.lsoil"), key: 'soil' },  
+                { title: vRoot.$t("reportForm.leoil"), key: 'eoil' },
 
-                { title: '开始时间', key: 'begintimeStr' },
-                { title: '结束时间', key: 'endtimeStr' },
+                { title: vRoot.$t("reportForm.startDate"), key: 'begintimeStr' }, 
+                { title: vRoot.$t("reportForm.endDate"), key: 'endtimeStr' },
                 {
-                    title: '开始位置(点击获取位置)',
+                    title: vRoot.$t("reportForm.saddress"),   
                     render: function(h, params) {
                         var row = params.row;
                         var lat = row.slat ? row.slat.toFixed(5) : null;
@@ -5954,7 +5961,7 @@ function oilLeakageReport(groupslist) {
                     },
                 },
                 {
-                    title: '结束位置(点击获取位置)',
+                    title: vRoot.$t("reportForm.eaddress"),   
                     render: function(h, params) {
                         var row = params.row;
                         var lat = row.elat ? row.elat.toFixed(5) : null;
@@ -6010,8 +6017,8 @@ function oilLeakageReport(groupslist) {
         methods: {
             charts: function() {
 
-                var cotgas = "油耗";
-                var no_data = "无数据";
+                var cotgas = vRoot.$t("reportForm.oilConsumption");
+                var no_data = vRoot.$t("reportForm.empty");
                 var option = {
                     tooltip: {
                         show: true,
@@ -6143,7 +6150,7 @@ function oilLeakageReport(groupslist) {
                                 });
                             });
                             records.push({
-                                addoil: '合计:' + totalOil
+                                addoil: (isZh ? '合计:' :'Total') + totalOil
                             });
                             self.oil = oilArr;
                             self.distance = distance;
@@ -6186,19 +6193,19 @@ function temperature(groupslist) {
             loading: false,
             groupslist: [],
             columns: [
-                { title: '编号', type: 'index', width: 60 },
-                { title: '设备名称', key: 'devicename', width: 110 },
-                { title: '时间', key: 'updatetimeStr', sortable: true, width: 150 },
-                { title: '速度', key: 'speed', width: 65 },
-                { title: '温度1', key: 'temp1', width: 70 },
-                { title: '温度2', key: 'temp2', width: 70 },
-                { title: '温度3', key: 'temp3', width: 70 },
-                { title: '温度4', key: 'temp4', width: 70 },
-                { title: '平均温度', key: 'averageTemp', width: 90 },
-                { title: '湿度', key: 'humi1', width: 90 },
-                { title: '状态', key: 'strstatus' },
+                { title: vRoot.$t("reportForm.index"), type: 'index', width: 70 },
+                { title: vRoot.$t("alarm.devName"), key: 'devicename', width: 110 },
+                { title:  vRoot.$t("reportForm.time"), key: 'updatetimeStr', sortable: true, width: 150 },
+                { title: vRoot.$t("reportForm.speed"), key: 'speed', width: 80 },
+                { title: vRoot.$t("reportForm.temp1"), key: 'temp1', width: 80 },
+                { title: vRoot.$t("reportForm.temp2"), key: 'temp2', width: 80 },
+                { title: vRoot.$t("reportForm.temp3"), key: 'temp3', width: 80 },
+                { title: vRoot.$t("reportForm.temp4"), key: 'temp4', width: 80 },
+                { title: vRoot.$t("reportForm.averageTemp"), key: 'averageTemp', width: 90 },
+                { title: vRoot.$t("reportForm.humi"), key: 'humi1', width: 90 },
+                { title: vRoot.$t("reportForm.status"), key: 'strstatus' },
                 {
-                    title: '经度,纬度',
+                    title: vRoot.$t("reportForm.lon") + ',' + vRoot.$t("reportForm.lat"),  
                     render: function(h, params) {
                         var row = params.row;
                         var callat = row.callat.toFixed(5);
@@ -6266,15 +6273,15 @@ function temperature(groupslist) {
                 this.tableData = this.records.slice(start, offset);
             },
             charts: function() {
-                var speed = "速度";
-                var time = "时间";
-                var temp = "温度";
-                var temp1 = "温度1";
-                var temp2 = "温度2";
-                var temp3 = "温度3";
-                var temp4 = "温度4";
-                var averageTemp = "平均温度";
-                var humi1 = '湿度';
+                var speed = vRoot.$t("reportForm.speed");
+                var time = vRoot.$t("reportForm.time");
+                var temp = vRoot.$t("reportForm.temp");
+                var temp1 = vRoot.$t("reportForm.temp1");
+                var temp2 = vRoot.$t("reportForm.temp2");
+                var temp3 = vRoot.$t("reportForm.temp3");
+                var temp4 = vRoot.$t("reportForm.temp4");
+                var averageTemp = vRoot.$t("reportForm.averageTemp");
+                var humi1 = vRoot.$t("reportForm.humi");
                 var option = {
                     title: {
                         text: speed + '/' + temp,
@@ -6294,9 +6301,9 @@ function temperature(groupslist) {
                     tooltip: {
                         trigger: 'axis',
                         formatter: function(v) {
-                            var data = '时间 : ' + v[0].name + '<br/>';
+                            var data = time + ' : ' + v[0].name + '<br/>';
                             for (i in v) {
-                                if (v[i].seriesName != '时间') data += v[i].seriesName + ' : ' + v[i].value + '<br/>';
+                                if (v[i].seriesName != time) data += v[i].seriesName + ' : ' + v[i].value + '<br/>';
                             }
                             return data;
                         }
@@ -6342,7 +6349,7 @@ function temperature(groupslist) {
                         data: this.recvtime
                     }],
                     yAxis: [{
-                        name: '温度',
+                        name: temp,
                         type: 'value',
                         nameTextStyle: 10,
                         nameGap: 5,
@@ -6596,13 +6603,13 @@ function driverWorkDetails() {
             groupslist: [],
             timeoutIns: null,
             columns: [
-                { key: 'index', width: 60, title: '编号' },
+                { key: 'index', width: 70, title: vRoot.$t("reportForm.index") },
                 { title: vRoot.$t("alarm.devName"), key: 'devicename' },
-                { title: '设备序号', key: 'deviceid' },
-                { title: '司机名称', key: 'drivername' },
-                { title: '装点时间(插卡)', key: 'uptimeStr', width: 150, },
+                { title: vRoot.$t("alarm.devNum") , key: 'deviceid' },
+                { title: vRoot.$t("reportForm.drivername"), key: 'drivername' },
+                { title: vRoot.$t("reportForm.cardinsertTime"), key: 'uptimeStr', width: 150, },
                 {
-                    title: '装点地点(插卡)',
+                    title: vRoot.$t("reportForm.cardinsertAddress"),
                     width: 145,
                     render: function(h, params) {
                         var row = params.row;
@@ -6645,17 +6652,17 @@ function driverWorkDetails() {
                                 ]);
                             }
                         } else {
-                            return h('span', {}, '无');
+                            return h('span', {},  vRoot.$t("reportForm.empty"));
                         }
                     },
                 },
                 {
-                    title: '卸点时间(拔卡)',
+                    title: vRoot.$t("reportForm.cardPullTime"),
                     width: 150,
                     key: 'downtimeStr',
                 },
                 {
-                    title: '卸点地点(拔卡)',
+                    title:vRoot.$t("reportForm.cardPullAddress"),
                     width: 145,
                     render: function(h, params) {
                         var row = params.row;
@@ -6697,22 +6704,23 @@ function driverWorkDetails() {
                                 ]);
                             }
                         } else {
-                            return h('span', {}, '无');
+                            return h('span', {}, vRoot.$t("reportForm.empty"));
                         }
                     },
                 },
                 {
-                    title: '工作时长',
+                    title: vRoot.$t("reportForm.workingHours") ,
                     key: 'workingHours',
                 },
                 {
-                    title: '行驶里程(km)',
+                    title: vRoot.$t("reportForm.mileage") + '(km)',
                     key: 'mileage',
                 },
-                { title: '驾驶证号', key: 'certificationcode' },
+                { title: vRoot.$t("reportForm.certificationcode"), key: 'certificationcode' },
                 {
-                    title: '操作',
+                    title: vRoot.$t("alarm.action"),
                     render: function(h, parmas) {
+                        var viewTrack = vRoot.$t("reportForm.viewTrack");
                         return h(
                             'Button', {
                                 on: {
@@ -6725,7 +6733,7 @@ function driverWorkDetails() {
                                     type: 'info'
                                 }
                             },
-                            '查看轨迹'
+                            viewTrack
                         )
                     },
                 },
@@ -6765,20 +6773,20 @@ function driverWorkDetails() {
                     }
                 });
 
-                this.$Message.success('查询成功');
-            },
+                this.$Message.success(this.$t('monitor.querySucc'));   
+            }, 
             exportTableData: function() {
                 var columns = deepClone(this.columns);
                 var records = deepClone(this.records);
-                columns.splice(5, 1, { title: '装点地点(插卡)', key: 'saddress' });
-                columns.splice(7, 1, { title: '装点地点(插卡)', key: 'eaddress' });
+                columns.splice(5, 1, { title: vRoot.$t("reportForm.cardinsertAddress"), key: 'saddress' });
+                columns.splice(7, 1, { title: vRoot.$t("reportForm.cardPullAddress"), key: 'eaddress' });
                 columns.pop();
                 records.forEach(function(item) {
                     if (item.saddress == null) {
                         item.saddress = item.uplat + "," + item.uplon;
                     }
                     if (item.eaddress == null) {
-                        item.eaddress = '无';
+                        item.eaddress = '';
                     }
                     item.deviceid = "\t" + item.deviceid;
                     item.devicename = "\t" + item.devicename;
@@ -6786,8 +6794,8 @@ function driverWorkDetails() {
                     item.downtimeStr = "\t" + item.downtimeStr;
                     item.uptimeStr = "\t" + item.uptimeStr;
                 });
-                this.$refs.table.exportCsv({
-                    filename: '工作明细',
+                this.$refs.table.exportCsv({  
+                    filename: vRoot.$t("reportForm.driverWorkDetails"),
                     columns: columns,
                     data: records,
                     original: false,
@@ -6874,10 +6882,10 @@ function driverWorkDetails() {
                             }
                             me.setViewPortCenter(poinsts);
                         } else {
-                            me.$Message.error('没有轨迹');
+                            me.$Message.error(vRoot.$t("reportForm.noRecord"));
                         }
                     } else {
-                        me.$Message.error('轨迹查询失败');
+                        me.$Message.error(vRoot.$t("reportForm.queryFail"));
                     }
 
                 });

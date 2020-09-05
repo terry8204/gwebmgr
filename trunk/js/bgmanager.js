@@ -33,32 +33,32 @@ var bgManager = {
                     children: [
                         { title: me.$t("bgMgr.queryDev"), name: 'queryDevice', icon: 'md-search' },
                         { title: me.$t("bgMgr.addDev"), name: 'addDevice', icon: 'md-add' },
-                        { title: "批量添加", name: 'batchAddDevice', icon: 'md-add' },
-                        { title: "批量管理", name: 'batchMgrDevice', icon: 'ios-folder-outline' },
-                        { title: "续费管理", name: 'chargeMgr', icon: 'ios-apps-outline' }
+                        { title: me.$t("bgMgr.batchAdd"), name: 'batchAddDevice', icon: 'md-add' },  
+                        { title: me.$t("bgMgr.batchMgr"), name: 'batchMgrDevice', icon: 'ios-folder-outline' },
+                        { title: me.$t("bgMgr.renewMgr"), name: 'chargeMgr', icon: 'ios-apps-outline' }
                     ]
                 },
                 {
-                    title: '运营管理',
+                    title: me.$t("bgMgr.operateMgr"),
                     name: 'operateMar',
                     icon: 'ios-analytics',
                     children: [
-                        { title: "导入车主信息", name: 'ImportOwner', icon: 'md-add' },
-                        { title: "导入保险信息", name: 'ImportInsure', icon: 'md-add' },
-                        { title: "导入保单信息", name: 'ImportInsure2', icon: 'md-add' },
-                        { title: "导入车架号", name: 'ImportVehicleNumber', icon: 'md-add' },
-                        { title: "导入线下保单信息", name: 'ImportOfflineInsure', icon: 'md-add' },
-                        { title: "导入SIM卡信息", name: 'ImportSim', icon: 'md-add' },
-                        { title: "导入设备名称", name: 'ImportDeviceName', icon: 'md-add' },
+                        { title: me.$t("bgMgr.importOwnerInfo"), name: 'ImportOwner', icon: 'md-add' },
+                        { title: me.$t("bgMgr.importInsureInfo"), name: 'ImportInsure', icon: 'md-add' },
+                        { title: me.$t("bgMgr.importPolicyInfo"), name: 'ImportInsure2', icon: 'md-add' },
+                        { title: me.$t("bgMgr.importVin"), name: 'ImportVehicleNumber', icon: 'md-add' },
+                        { title: me.$t("bgMgr.importOfflineInsurePolicyInfo"), name: 'ImportOfflineInsure', icon: 'md-add' },
+                        { title: me.$t("bgMgr.importSimInfo"), name: 'ImportSim', icon: 'md-add' },
+                        { title: me.$t("bgMgr.importDeviceName"), name: 'ImportDeviceName', icon: 'md-add' },
                     ]
                 },
                 {
-                    title: '维修管理',
+                    title: me.$t("bgMgr.repairMgr"),
                     name: 'repairMar',
                     icon: 'md-build',
                     children: [
-                        { title: "添加记录", name: 'addRepair', icon: 'ios-add' },
-                        { title: "维修记录", name: 'repairRecord', icon: 'ios-document' },
+                        { title: me.$t("bgMgr.addRepair"), name: 'addRepair', icon: 'ios-add' },
+                        { title: me.$t("bgMgr.repairRecord"), name: 'repairRecord', icon: 'ios-document' },
                     ]
                 },
             ]

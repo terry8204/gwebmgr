@@ -2444,16 +2444,16 @@
     <script type="text/x-template" id="table-dropdown-template">
         <Dropdown transfer @on-click="onClickItem">
             <i-button type="info" size="small">
-                更多
+                {{$t("monitor.more")}}
                 <Icon type="ios-arrow-down"></Icon>
             </i-button>
             <i-dropdown-menu slot="list">
-                <DropdownItem name="oil">油液标注</DropdownItem>
-                <DropdownItem name="io">IO配置</DropdownItem>
+                <DropdownItem name="oil">{{$t("device.oilMarking")}}</DropdownItem>
+                <DropdownItem name="io">{{$t("device.ioConfig")}}</DropdownItem>
                 <DropdownItem name="carMaster">{{$t("monitor.ownerInfo")}}</DropdownItem>
-                <DropdownItem name="insure">保险信息</DropdownItem>
-                <DropdownItem name="resetPass">重置密码</DropdownItem>
-                <DropdownItem name="exceededSpeed">超速设置</DropdownItem>
+                <DropdownItem name="insure">{{$t("device.insureInfo")}}</DropdownItem>
+                <DropdownItem name="resetPass">{{$t("user.resetPwd")}}</DropdownItem> 
+                <DropdownItem name="exceededSpeed">{{$t("device.speedingSetting")}}</DropdownItem>
             </i-dropdown-menu>
         </Dropdown>
     </script>

@@ -12,24 +12,24 @@
                 <i-button type="primary" icon="ios-search" @click="handlerClickQuery">{{$t("reportForm.query")}}</i-button>
             </li>
             <li style="float:right;width:auto;">
-                <i-button @click="exportAllDevice">导出全部设备</i-button>
+                <i-button @click="exportAllDevice">{{$t("device.exportAllDevice")}}</i-button>
             </li>
             <li style="float:right;width:auto;">
-                <i-button @click="exportDevice">导出当前设备</i-button>
+                <i-button @click="exportDevice">{{$t("device.exportCurrentDevice")}}</i-button>
             </li>
             <li style="float:right;width:auto;">
-                <i-button @click="expireNotifyTime(-1)" :type="queryType=='ot' ? 'info':'default'" icon="ios-close-circle">已过期 <span v-if="queryType=='ot'">({{total}})</span></i-button>
+                <i-button @click="expireNotifyTime(-1)" :type="queryType=='ot' ? 'info':'default'" icon="ios-close-circle">{{$t("device.expired")}}<span v-if="queryType=='ot'">({{total}})</span></i-button>
             </li>
             <li style="float:right;width:auto;">
-                <i-button @click="expireNotifyTime(60)" :type="queryType=='60ot' ? 'info':'md-checkbox'" icon="ios-search">60天内过期<span v-if="queryType=='60ot'">({{total}})</span></i-button>
+                <i-button @click="expireNotifyTime(60)" :type="queryType=='60ot' ? 'info':'md-checkbox'" icon="ios-search">{{$t("device.daysOverdue60")}}<span v-if="queryType=='60ot'">({{total}})</span></i-button>
             </li>
             <li style="float:right;width:auto;">
-                <i-button @click="expireNotifyTime(7)" :type="queryType=='7ot' ? 'info':'default'" icon="ios-checkmark-circle">7天内过期<span v-if="queryType=='7ot'">({{total}})</span></i-button>
+                <i-button @click="expireNotifyTime(7)" :type="queryType=='7ot' ? 'info':'default'" icon="ios-checkmark-circle">{{$t("device.daysOverdue7")}}<span v-if="queryType=='7ot'">({{total}})</span></i-button>
             </li>
             <li style="float:right;width:auto;">
-                <i-button @click="expireNotifyTime(0)" :type="queryType=='all' ? 'info':'default'" icon="ios-tablet-portrait">所有设备<span v-if="queryType=='all'">({{total}})</span></i-button>
+                <i-button @click="expireNotifyTime(0)" :type="queryType=='all' ? 'info':'default'" icon="ios-tablet-portrait">{{$t("user.allDev")}}<span v-if="queryType=='all'">({{total}})</span></i-button>
             </li>
-            <!-- all 7ot 60ot ot  -->
+            <!-- all 7ot 60ot ot  -->  
         </ul>
 
         <div class="table-wraper">
@@ -42,130 +42,130 @@
         <Modal v-model="ownerInfoModal" width="500">
             <p slot="header" style="color:#f60;text-align:center">
                 <Icon type="ios-create-outline"></Icon>
-                <span>编辑车主信息</span>
+                <span>{{$t('monitor.ownerInfo')}}</span>   
             </p>
             <div style="text-align:center">
                 <Row style="margin:10px 0;">
-                    <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">设备序号 : &nbsp;</i-col>
+                    <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t('alarm.devNum')}} : &nbsp;</i-col>
                     <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
                         {{ownerInfoData.deviceid}}
                     </i-col>
                 </Row>
                 <Row style="margin:10px 0;">
-                    <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">车主名称 : &nbsp;</i-col>
+                    <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t('reportForm.name')}} : &nbsp;</i-col>
                     <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
                         <i-input v-model.trim="ownerInfoData.ownername" style="width: 100%;"></i-input>
                     </i-col>
                 </Row>
                 <Row style="margin:10px 0;">
-                    <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">联系方式1 : &nbsp;</i-col>
+                    <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t('device.contact1')}} : &nbsp;</i-col>
                     <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
                         <i-input v-model.trim="ownerInfoData.phonenum1" style="width: 100%;"></i-input>
                     </i-col>
                 </Row>
                 <Row style="margin:10px 0;">
-                    <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">联系方式2 : &nbsp;</i-col>
+                    <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t('device.contact2')}} : &nbsp;</i-col>
                     <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
                         <i-input v-model.trim="ownerInfoData.phonenum2" style="width: 100%;"></i-input>
                     </i-col>
                 </Row>
                 <Row style="margin:10px 0;">
-                    <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">身份证号 : &nbsp;</i-col>
+                    <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t('device.reportForm.idNumber')}} : &nbsp;</i-col>
                     <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
                         <i-input v-model.trim="ownerInfoData.idnum" style="width: 100%;"></i-input>
                     </i-col>
                 </Row>
                 <Row style="margin:10px 0;">
-                    <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">性别 : &nbsp;</i-col>
+                    <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t('device.reportForm.gender')}} : &nbsp;</i-col> 
                     <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
                         <i-select v-model="ownerInfoData.gender">
-                            <i-option value="1">男</i-option>
-                            <i-option value="0">女</i-option>
+                            <i-option value="1">{{$t('device.reportForm.man')}}</i-option>
+                            <i-option value="0">{{$t('device.reportForm.girl')}}</i-option>
                         </i-select>
                     </i-col>
                 </Row>
                 <Row style="margin:10px 0;">
-                    <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">地址 : &nbsp;</i-col>
+                    <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t('reportForm.address')}} : &nbsp;</i-col>
                     <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
                         <i-input v-model.trim="ownerInfoData.address" style="width: 100%;"></i-input>
                     </i-col>
                 </Row>
                 <Row style="margin:10px 0;">
-                    <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">备注 : &nbsp;</i-col>
+                    <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t('monitor.remarks')}} : &nbsp;</i-col>
                     <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
                         <i-input v-model.trim="ownerInfoData.ownerremark" style="width: 100%;"></i-input>
                     </i-col>
                 </Row>
             </div>
             <div slot="footer">
-                <i-button type="primary" style="width: 100%" @click="handleEditDeviceex">提交</i-button>
+                <i-button type="primary" style="width: 100%" @click="handleEditDeviceex">{{$t('header.submit')}}</i-button>
             </div>
         </Modal>
 
         <Modal v-model="insureInfoModal" width="500">
             <p slot="header" style="color:#f60;text-align:center">
                 <Icon type="ios-create-outline"></Icon>
-                <span>保险信息</span>
+                <span>{{$t('device.insureInfo')}}</span>
             </p>
             <div style="text-align:center">
                 <Row style="margin:10px 0;">
-                    <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">设备序号 : &nbsp;</i-col>
+                    <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t('alarm.devNum')}} : &nbsp;</i-col>
                     <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
                         {{insureInfoData.deviceid}}
                     </i-col>
                 </Row>
                 <Row style="margin:10px 0;">
-                    <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">防盗号 : &nbsp;</i-col>
+                    <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t('device.securityNumber')}} : &nbsp;</i-col>
                     <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
                         <i-input v-model.trim="insureInfoData.securitynum" style="width: 100%;"></i-input>
                     </i-col>
                 </Row>
                 <Row style="margin:10px 0;">
-                    <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">车架号 : &nbsp;</i-col>
+                    <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t('reportForm.vinno')}} : &nbsp;</i-col>
                     <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
                         <i-input v-model.trim="insureInfoData.vin" style="width: 100%;"></i-input>
                     </i-col>
                 </Row>
                 <Row style="margin:10px 0;">
-                    <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">保险公司 : &nbsp;</i-col>
+                    <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t('device.insureCompany')}} : &nbsp;</i-col> 
                     <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
                         <i-input v-model.trim="insureInfoData.insurecompany" style="width: 100%;"></i-input>
                     </i-col>
                 </Row>
                 <Row style="margin:10px 0;">
-                    <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">保单号 : &nbsp;</i-col>
+                    <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">: &nbsp;</i-col>
                     <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
                         <i-input v-model.trim="insureInfoData.insurenum" style="width: 100%;"></i-input>
                     </i-col>
                 </Row>
                 <Row style="margin:10px 0;">
-                    <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">投保日期 : &nbsp;</i-col>
+                    <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t('device.insuranceDate')}} : &nbsp;</i-col>
                     <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
                         <i-input v-model.trim="insureInfoData.subinsuretime" style="width: 100%;"></i-input>
                     </i-col>
                 </Row>
                 <Row style="margin:10px 0;">
-                    <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">生效日期 : &nbsp;</i-col>
+                    <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t('device.effectiveDate')}} : &nbsp;</i-col> 
                     <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
                         <i-input v-model.trim="insureInfoData.effecttime" style="width: 100%;"></i-input>
                     </i-col>
                 </Row>
                 <Row style="margin:10px 0;">
-                    <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">保险备注 : &nbsp;</i-col>
+                    <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t('device.insureRemarks')}} : &nbsp;</i-col>
                     <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
                         <i-input v-model.trim="insureInfoData.insuremark" style="width: 100%;"></i-input>
                     </i-col>
                 </Row>
             </div>
             <div slot="footer">
-                <i-button type="primary" style="width: 100%" @click="handleEditInsure">提交</i-button>
+                <i-button type="primary" style="width: 100%" @click="handleEditInsure">{{$t('header.submit')}}</i-button>
             </div>
         </Modal>
 
-        <Modal v-model="modal" width="900" title="编辑设备">
+        <Modal v-model="modal" width="900" :title="$t('device.editDev')">
             <div style="width:700px;margin:10px auto">
-                <Row style="margin: 10px 0" v-if="userType < 3">
-                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;"><i style="color: red;display: inline-block;">*</i>&nbsp;选择账号 : &nbsp;</i-col>
+                <Row style="margin: 10px 0" v-if="userType < 3"> 
+                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;"><i style="color: red;display: inline-block;">*</i>&nbsp;{{$t("reportForm.selectAccount")}} : &nbsp;</i-col>
                     <i-col span="8">
                         <div class="search-wrapper">
                             <i-input v-model.trim="createrToUser" :icon="iconState" @on-change="sosoValueChange" @on-blur="blur" @on-focus="focus" @on-click="focus"></i-input>
@@ -222,7 +222,7 @@
                 </Row>
 
                 <Row style="margin: 10px 0">
-                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;网络类型 : &nbsp;</i-col>
+                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;{{$t("device.networkType")}} : &nbsp;</i-col> 
                     <i-col span="8">
                         <i-select v-model="teltype">
                             <i-option value="1">2G</i-option>
@@ -230,7 +230,7 @@
                             <i-option value="3">4G</i-option>
                         </i-select>
                     </i-col>
-                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;转发地址 : &nbsp;</i-col>
+                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;{{$t("device.forwardAddress")}} : &nbsp;</i-col>
                     <i-col span="8">
                         <i-input v-model.trim="forwardurl" disabled></i-input>
                     </i-col>
@@ -255,7 +255,7 @@
                             <i-option value="1">{{$t("user.allow")}}</i-option>
                         </i-select>
                     </i-col>
-                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;监护账号 : &nbsp;</i-col>
+                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;{{$t("device.tutelageUser")}} : &nbsp;</i-col>   
                     <i-col span="8">
                         <i-input v-model.trim="monitor"></i-input>
                     </i-col>
@@ -263,7 +263,7 @@
 
 
                 <Row style="margin: 10px 0">
-                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;下级编辑 : &nbsp;</i-col>
+                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;{{$t("device.subEeditor")}} : &nbsp;</i-col>
                     <i-col span="8">
                         <i-select v-model="allowedit" :disabled="isAlloweditDisabled">
                             <i-option value="0">{{$t("user.ban")}}</i-option>
@@ -293,12 +293,12 @@
         <Modal v-model="ioModal" width="650">
             <p slot="header" style="color:#f60;text-align:center">
                 <Icon type="ios-create-outline"></Icon>
-                <span>IO配置</span>
+                <span>{{$t("device.ioConfig")}}</span>
             </p>
             <div>
                 <Row style="height:32px;margin: 10px 0;">
                     <i-Col span="4" style="height: 100%;line-height:32px;text-align: right;">
-                        IO个数:
+                        {{$t("device.ioNumber")}}: 
                     </i-Col>
                     <i-Col span="8" style="height: 100%;line-height:32px;padding-left: 3px;">
                         <Input-Number :max="4" :min="0" v-model="ioCount" style="width: 100%;"></Input-Number>
@@ -306,13 +306,13 @@
                 </Row>
                 <Row style="height:32px;margin: 10px 0;" style="height:32px;margin: 10px 0;" v-show="ioCount > 0">
                     <i-Col span="4" style="height: 100%;line-height:32px;text-align: right;">
-                        io1开：
+                        {{$t("device.io1Open")}}：
                     </i-Col>
                     <i-Col span="8" style="height: 100%;padding-left: 3px;">
                         <i-input v-model.trim="ioObject.io1k" style="width: 100%;"></i-input>
                     </i-Col>
                     <i-Col span="2" style="height: 100%;line-height:32px;text-align: right;">
-                        io1关：
+                        {{$t("device.io1Close")}}:
                     </i-Col>
                     <i-Col span="8" style="height: 100%;padding-left: 3px;">
                         <i-input v-model.trim="ioObject.io1g" style="width: 100%;"></i-input>
@@ -320,13 +320,13 @@
                 </Row>
                 <Row style="height:32px;margin: 10px 0;" v-show="ioCount > 1">
                     <i-Col span="4" style="height: 100%;line-height:32px;text-align: right;">
-                        io2开：
+                        {{$t("device.io2Open")}}:
                     </i-Col>
                     <i-Col span="8" style="height: 100%;padding-left: 3px;">
                         <i-input v-model.trim="ioObject.io2k" style="width: 100%;"></i-input>
                     </i-Col>
                     <i-Col span="2" style="height: 100%;line-height:32px;text-align: right;">
-                        io2关：
+                        {{$t("device.io2Close")}}:
                     </i-Col>
                     <i-Col span="8" style="height: 100%;padding-left: 3px;">
                         <i-input v-model.trim="ioObject.io2g" style="width: 100%;"></i-input>
@@ -334,13 +334,13 @@
                 </Row>
                 <Row style="height:32px;margin: 10px 0;" v-show="ioCount > 2">
                     <i-Col span="4" style="height: 100%;line-height:32px;text-align: right;">
-                        io3开：
+                        {{$t("device.io3Open")}}：
                     </i-Col>
                     <i-Col span="8" style="height: 100%;padding-left: 3px;">
                         <i-input v-model.trim="ioObject.io3k" style="width: 100%;"></i-input>
                     </i-Col>
                     <i-Col span="2" style="height: 100%;line-height:32px;text-align: right;">
-                        io3关：
+                        {{$t("device.io3Close")}}：
                     </i-Col>
                     <i-Col span="8" style="height: 100%;padding-left: 3px;">
                         <i-input v-model.trim="ioObject.io3g" style="width: 100%;"></i-input>
@@ -348,13 +348,13 @@
                 </Row>
                 <Row style="height:32px;margin: 10px 0;" v-show="ioCount > 3">
                     <i-Col span="4" style="height: 100%;line-height:32px;text-align: right;">
-                        io4开：
+                        {{$t("device.io4Open")}}：
                     </i-Col>
                     <i-Col span="8" style="height: 100%;padding-left: 3px;">
                         <i-input v-model.trim="ioObject.io4k" style="width: 100%;"></i-input>
                     </i-Col>
                     <i-Col span="2" style="height: 100%;line-height:32px;text-align: right;">
-                        io4关：
+                        {{$t("device.io4Close")}}：
                     </i-Col>
                     <i-Col span="8" style="height: 100%;padding-left: 3px;">
                         <i-input v-model.trim="ioObject.io4g" style="width: 100%;"></i-input>
@@ -362,23 +362,23 @@
                 </Row>
             </div>
             <div slot="footer" style="text-align: center;">
-                <i-input v-model.trim="referenceResourcesDeviceid" style="width:160px;" placeholder="要导入的设备序号"></i-input>
-                <i-button type="primary" style="width: 75px;" @click="referenceResources">参考</i-button>
-                <i-button style="width: 75px;" type="primary" @click="setIoConfig">设置</i-button>
+                <i-input v-model.trim="referenceResourcesDeviceid" style="width:160px;" placeholder="$t('device.importDeviceidsTips')"></i-input>
+                <i-button type="primary" style="width: 75px;" @click="referenceResources">{{$t("device.copy")}}</i-button>
+                <i-button style="width: 75px;" type="primary" @click="setIoConfig">{{$t("header.setting")}}</i-button>
             </div>
         </Modal>
 
         <Modal v-model="oilModal" width="650">
             <p slot="header" style="color:#f60;text-align:center">
                 <Icon type="ios-create-outline"></Icon>
-                <span>油液标注</span>
+                <span>{{$t("device.oilMarking")}}</span>
             </p>
             <div>
                 <Tabs type="card" v-model="tabsActive">
-                    <tab-pane label="油液1" style="min-height: 210px;" name="oil1">
+                    <tab-pane :label="$t('device.oil1')" style="min-height: 210px;" name="oil1">
                         <Row style="margin: 10px 0;">
                             <i-col span="4" style="line-height: 32px;text-align: center;">
-                                阀值:
+                                {{$t("device.threshold")}}:
                             </i-col>
                             <i-col span="5">
                                 <input-number :max="10000" :min="1" v-model.trim.number="threshold1" style="width:100%"></input-number>
@@ -387,24 +387,24 @@
                                 L
                             </i-col>
                             <i-col span="14" style="line-height: 18px;">
-                                通过阀值来判定车辆加油/漏油状态，根据车辆的油箱大小设置合适的阀值
+                                {{$t("device.thresholdDesc")}}
                             </i-col>
                         </Row>
                         <Row style="margin: 10px 0;">
                             <i-col span="4" style="line-height: 32px;text-align: center;">
-                                油箱的形状:
+                                {{$t("device.tankShape")}}:
                             </i-col>
                             <i-col span="6">
                                 <i-select v-model="tankShape1" style="width:128.75px">
-                                    <i-option value="0">无油箱</i-option>
-                                    <i-option value="1">长方体</i-option>
-                                    <i-option value="2">竖圆柱体</i-option>
-                                    <i-option value="3">横圆柱体</i-option>
-                                    <i-option value="4">不规则</i-option>
+                                    <i-option value="0">{{$t("device.noTank")}}</i-option>
+                                    <i-option value="1">{{$t("device.cuboid")}}</i-option>
+                                    <i-option value="2">{{$t("device.verticalCylinder")}}</i-option>  
+                                    <i-option value="3">{{$t("device.transverseCylinder")}}</i-option>
+                                    <i-option value="4">{{$t("device.irregular")}}</i-option>
                                 </i-select>
                             </i-col>
                             <i-col span="4" style="line-height: 32px;text-align: center;">
-                                油箱的容积:
+                                {{$t("device.tankVolume")}}:
                             </i-col>
                             <i-col span="5">
                                 <input-number :max="1500" :min="1" v-model.trim.number="tankVolume1" style="width:100%"></input-number>
@@ -415,7 +415,7 @@
                         </Row>
                         <Row style="margin: 10px 0;">
                             <i-col span="4" style="line-height: 32px;text-align: center;">
-                                传感器长度:
+                                {{$t("device.sensorLength")}}:
                             </i-col>
                             <i-col span="5">
                                 <input-number :max="1500" :min="1" v-model.trim.number="sensorLength1" style="width:100%"></input-number>
@@ -424,7 +424,7 @@
                                 cm
                             </i-col>
                             <i-col span="4" style="line-height: 32px;text-align: center;">
-                                最大模拟量:
+                                {{$t("device.maxAnalogQuantity")}}:
                             </i-col>
                             <i-col span="5">
                                 <input-number :max="100000" :min="1" v-model.trim.number="maxAdValue1" style="width:100%"></input-number>
@@ -433,7 +433,7 @@
                         <div v-if="tankShape1 == 1">
                             <Row style="margin: 10px 0;">
                                 <i-col span="4" style="line-height: 32px;text-align: center;">
-                                    油箱的长度:
+                                    {{$t("device.tankLength")}}:
                                 </i-col>
                                 <i-col span="5">
                                     <input-number :max="1500" :min="1" v-model.trim.number="length1" style="width:100%"></input-number>
@@ -442,7 +442,7 @@
                                     cm
                                 </i-col>
                                 <i-col span="4" style="line-height: 32px;text-align: center;">
-                                    油箱的宽度:
+                                    {{$t("device.tankWidth")}}:
                                 </i-col>
                                 <i-col span="5">
                                     <input-number :max="1500" :min="1" v-model.trim.number="width1" style="width:100%"></input-number>
@@ -453,7 +453,7 @@
                             </Row>
                             <Row style="margin: 10px 0;">
                                 <i-col span="4" style="line-height: 32px;text-align: center;">
-                                    油箱的高度:
+                                    {{$t("device.tankHeight")}}:
                                 </i-col>
                                 <i-col span="5">
                                     <input-number :max="1500" :min="1" v-model.trim.number="height1" style="width:100%"></input-number>
@@ -466,7 +466,7 @@
                         <div v-if="tankShape1 == 2">
                             <Row style="margin: 10px 0;">
                                 <i-col span="4" style="line-height: 32px;text-align: center;">
-                                    油箱的高度:
+                                    {{$t("device.tankHeight")}}:
                                 </i-col>
                                 <i-col span="5">
                                     <input-number :max="1500" :min="1" v-model.trim.number="height1" style="width:100%"></input-number>
@@ -475,7 +475,7 @@
                                     cm
                                 </i-col>
                                 <i-col span="4" style="line-height: 32px;text-align: center;">
-                                    油箱的直径:
+                                    {{$t("device.tankDiameter")}}:
                                 </i-col>
                                 <i-col span="5">
                                     <input-number :max="1500" :min="1" v-model.trim.number="diameter1" style="width:100%"></input-number>
@@ -488,7 +488,7 @@
                         <div v-if="tankShape1 == 3">
                             <Row style="margin: 10px 0;">
                                 <i-col span="4" style="line-height: 32px;text-align: center;">
-                                    油箱的长度:
+                                    {{$t("device.tankWidth")}}:
                                 </i-col>
                                 <i-col span="5">
                                     <input-number :max="1500" :min="1" v-model.trim.number="width1" style="width:100%"></input-number>
@@ -497,7 +497,7 @@
                                     cm
                                 </i-col>
                                 <i-col span="4" style="line-height: 32px;text-align: center;">
-                                    油箱的直径:
+                                    {{$t("device.tankDiameter")}}:
                                 </i-col>
                                 <i-col span="5">
                                     <input-number :max="1500" :min="1" v-model.trim.number="diameter1" style="width:100%"></input-number>
@@ -510,13 +510,13 @@
                         <div v-if="tankShape1 == 4">
                             <Row style="margin: 10px 0;">
                                 <i-col span="4" style="line-height: 32px;text-align: center;">
-                                    标定的刻度:
+                                    {{$t("device.scale")}}:
                                 </i-col>
                                 <i-col span="5">
                                     <input-number :max="1500" :min="0" v-model.trim.number="tagging1" style="width:100%"></input-number>
                                 </i-col>
                                 <i-col span="4" offset="1" style="line-height: 32px;text-align: center;">
-                                    标定的油液:
+                                    {{$t("device.calibratedFluid")}}:
                                 </i-col>
                                 <i-col span="5">
                                     <input-number :max="1500" :min="0" v-model.trim.number="taggingOil1" style="width:100%"></input-number>
@@ -525,20 +525,20 @@
                                     L
                                 </i-col>
                                 <i-col span="2">
-                                    <i-button type="primary" @click="addTaggingRowData1">添加</i-button>
+                                    <i-button type="primary" @click="addTaggingRowData1">{{$t("user.add")}}</i-button>
                                 </i-col>
                             </Row>
                             <i-table border :columns="taggingColumns1" ref="taggingTab1" :data="taggingData1" height="200"></i-table>
                             <div style="margin: 10px 0 0 0;text-align: right;">
-                                <i-button type="primary" style="width:80px;" @click="importTownerInfo1">导入</i-button>
-                                <i-button type="info" style="width:80px;" @click="exportDevice1">导出</i-button>
+                                <i-button type="primary" style="width:80px;" @click="importTownerInfo1">{{$t("device.import")}}</i-button> 
+                                <i-button type="info" style="width:80px;" @click="exportDevice1">{{$t("reportForm.exportData")}}</i-button>
                             </div>
                         </div>
                     </tab-pane>
-                    <tab-pane label="油液2" style="min-height: 210px;" name="oil2">
+                    <tab-pane :label="$t('device.oil2')" style="min-height: 210px;" name="oil2">
                         <Row style="margin: 10px 0;">
                             <i-col span="4" style="line-height: 32px;text-align: center;">
-                                阀值:
+                                {{$t("device.threshold")}}:
                             </i-col>
                             <i-col span="5">
                                 <input-number :max="10000" :min="1" v-model.trim.number="threshold2" style="width:100%"></input-number>
@@ -547,24 +547,24 @@
                                 L
                             </i-col>
                             <i-col span="14" style="line-height: 18px;">
-                                通过阀值来判定车辆加油/漏油状态，根据车辆的油箱大小设置合适的阀值
+                                {{$t("device.thresholdDesc")}}
                             </i-col>
                         </Row>
                         <Row style="margin: 10px 0;">
                             <i-col span="4" style="line-height: 32px;text-align: center;">
-                                油箱的形状:
+                                {{$t("device.tankShape")}}:
                             </i-col>
                             <i-col span="6">
                                 <i-select v-model="tankShape2" style="width:128.75px">
-                                    <i-option value="0">无油箱</i-option>
-                                    <i-option value="1">长方体</i-option>
-                                    <i-option value="2">竖圆柱体</i-option>
-                                    <i-option value="3">横圆柱体</i-option>
-                                    <i-option value="4">不规则</i-option>
+                                    <i-option value="0">{{$t("device.noTank")}}</i-option>
+                                    <i-option value="1">{{$t("device.cuboid")}}</i-option>
+                                    <i-option value="2">{{$t("device.verticalCylinder")}}</i-option>  
+                                    <i-option value="3">{{$t("device.transverseCylinder")}}</i-option>
+                                    <i-option value="4">{{$t("device.irregular")}}</i-option>
                                 </i-select>
                             </i-col>
                             <i-col span="4" style="line-height: 32px;text-align: center;">
-                                油箱的容积:
+                                {{$t("device.tankVolume")}}:
                             </i-col>
                             <i-col span="5">
                                 <input-number :max="1500" :min="1" v-model.trim.number="tankVolume2" style="width:100%"></input-number>
@@ -575,7 +575,7 @@
                         </Row>
                         <Row style="margin: 10px 0;">
                             <i-col span="4" style="line-height: 32px;text-align: center;">
-                                传感器长度:
+                                {{$t("device.sensorLength")}}:
                             </i-col>
                             <i-col span="5">
                                 <input-number :max="1500" :min="1" v-model.trim.number="sensorLength2" style="width:100%"></input-number>
@@ -584,7 +584,7 @@
                                 cm
                             </i-col>
                             <i-col span="4" style="line-height: 32px;text-align: center;">
-                                最大模拟量:
+                                {{$t("device.maxAnalogQuantity")}} :
                             </i-col>
                             <i-col span="5">
                                 <input-number :max="100000" :min="1" v-model.trim.number="maxAdValue2" style="width:100%"></input-number>
@@ -593,7 +593,7 @@
                         <div v-if="tankShape2 == 1">
                             <Row style="margin: 10px 0;">
                                 <i-col span="4" style="line-height: 32px;text-align: center;">
-                                    油箱的长度:
+                                    {{$t("device.tankLength")}}:
                                 </i-col>
                                 <i-col span="5">
                                     <input-number :max="1500" :min="1" v-model.trim.number="length2" style="width:100%"></input-number>
@@ -602,7 +602,7 @@
                                     cm
                                 </i-col>
                                 <i-col span="4" style="line-height: 32px;text-align: center;">
-                                    油箱的宽度:
+                                    {{$t("device.tankWidth")}}:
                                 </i-col>
                                 <i-col span="5">
                                     <input-number :max="1500" :min="1" v-model.trim.number="width2" style="width:100%"></input-number>
@@ -613,7 +613,7 @@
                             </Row>
                             <Row style="margin: 10px 0;">
                                 <i-col span="4" style="line-height: 32px;text-align: center;">
-                                    油箱的高度:
+                                    {{$t("device.tankHeight")}}:
                                 </i-col>
                                 <i-col span="5">
                                     <input-number :max="1500" :min="1" v-model.trim.number="height2" style="width:100%"></input-number>
@@ -626,7 +626,7 @@
                         <div v-if="tankShape2 == 2">
                             <Row style="margin: 10px 0;">
                                 <i-col span="4" style="line-height: 32px;text-align: center;">
-                                    油箱的高度:
+                                    {{$t("device.tankHeight")}}:
                                 </i-col>
                                 <i-col span="5">
                                     <input-number :max="1500" :min="1" v-model.trim.number="height2" style="width:100%"></input-number>
@@ -635,7 +635,7 @@
                                     cm
                                 </i-col>
                                 <i-col span="4" style="line-height: 32px;text-align: center;">
-                                    油箱的直径:
+                                    {{$t("device.tankDiameter")}}:
                                 </i-col>
                                 <i-col span="5">
                                     <input-number :max="1500" :min="1" v-model.trim.number="diameter2" style="width:100%"></input-number>
@@ -648,7 +648,7 @@
                         <div v-if="tankShape2 == 3">
                             <Row style="margin: 10px 0;">
                                 <i-col span="4" style="line-height: 32px;text-align: center;">
-                                    油箱的长度:
+                                    {{$t("device.tankLength")}}:
                                 </i-col>
                                 <i-col span="5">
                                     <input-number :max="1500" :min="1" v-model.trim.number="width2" style="width:100%"></input-number>
@@ -657,7 +657,7 @@
                                     cm
                                 </i-col>
                                 <i-col span="4" style="line-height: 32px;text-align: center;">
-                                    油箱的直径:
+                                    {{$t("device.tankDiameter")}}:
                                 </i-col>
                                 <i-col span="5">
                                     <input-number :max="1500" :min="1" v-model.trim.number="diameter2" style="width:100%"></input-number>
@@ -670,13 +670,13 @@
                         <div v-if="tankShape2 == 4">
                             <Row style="margin: 10px 0;">
                                 <i-col span="4" style="line-height: 32px;text-align: center;">
-                                    标定的刻度:
+                                    {{$t("device.scale")}}:
                                 </i-col>
                                 <i-col span="5">
                                     <input-number :max="1500" :min="0" v-model.trim.number="tagging2" style="width:100%"></input-number>
                                 </i-col>
                                 <i-col offset="1" span="4" style="line-height: 32px;text-align: center;">
-                                    标定的油液:
+                                    {{$t("device.calibratedFluid")}}:
                                 </i-col>
                                 <i-col span="5">
                                     <input-number :max="1500" :min="0" v-model.trim.number="taggingOil2" style="width:100%"></input-number>
@@ -685,31 +685,31 @@
                                     L
                                 </i-col>
                                 <i-col span="2">
-                                    <i-button type="primary" @click="addTaggingRowData2">添加</i-button>
+                                    <i-button type="primary" @click="addTaggingRowData2">{{$t("user.add")}}</i-button>
                                 </i-col>
                             </Row>
                             <i-table border :columns="taggingColumns2" ref="taggingTab2" :data="taggingData2" height="200"></i-table>
                             <div style="margin: 10px 0 0 0;text-align: right;">
-                                <i-button type="primary" style="width:80px;" @click="importTownerInfo2">导入</i-button>
-                                <i-button type="info" style="width:80px;" @click="exportDevice2">导出</i-button>
+                                <i-button type="primary" style="width:80px;" @click="importTownerInfo2">{{$t("device.import")}}</i-button> 
+                                <i-button type="info" style="width:80px;" @click="exportDevice2">{{$t("reportForm.exportData")}}</i-button>
                             </div>
                         </div>
                     </tab-pane>
-                    <tab-pane label="添加模版信息" style="min-height: 210px;" name="templateInfo">
+                    <tab-pane :label="$t('device.addTempInfo')" style="min-height: 210px;" name="templateInfo"> 
                         <Row style="margin: 10px 0;">
                             <i-col span="4" style="line-height: 32px;text-align: center;">
-                                模版名称:
+                                {{$t("device.templateName")}}: 
                             </i-col>
                             <i-col span="12">
                                 <i-input v-model.trim="templatename" style="width:100%"></i-input>
                             </i-col>
                             <i-col span="2" style="line-height: 32px;text-align: center;color: red;">
-                                (必填)
+                                {{$t("device.required")}}
                             </i-col>
                         </Row>
                         <Row style="margin: 10px 0;">
                             <i-col span="4" style="line-height: 32px;text-align: center;">
-                                油杆品牌:
+                                {{$t("device.oilRodBrand")}}:
                             </i-col>
                             <i-col span="12">
                                 <i-input v-model.trim="brand" style="width:100%"></i-input>
@@ -717,25 +717,25 @@
                         </Row>
                         <Row style="margin: 10px 0;">
                             <i-col span="4" style="line-height: 32px;text-align: center;">
-                                油杆型号:
+                                {{$t("device.OilRodModel")}}:  
                             </i-col>
                             <i-col span="12">
                                 <i-input v-model.trim="model" style="width:100%"></i-input>
                             </i-col>
                         </Row>
                     </tab-pane>
-                    <tab-pane label="模版列表" style="min-height: 210px;" name="template">
+                    <tab-pane :label="$t('device.templateList')" style="min-height: 210px;" name="template">
                         <i-table border :columns="templateColumns" :data="templateData" height="380"></i-table>
                     </tab-pane>
                 </Tabs>
             </div>
             <div slot="footer" style="text-align: center;">
-                <Checkbox v-show="tabsActive !== 'template'" v-model="isIndependent">油箱合并统计</Checkbox>
+                <Checkbox v-show="tabsActive !== 'template'" v-model="isIndependent">{{$t("device.mergeStatistical")}}</Checkbox>
                 <i-button v-show="tabsActive !== 'template'" style="width: 100px" type="primary" @click="saveOilDetectors">{{$t("bgMgr.submit")}}</i-button>
-                <i-button v-show="tabsActive !== 'template'" style="width: 100px" type="primary" @click="saveTemplateInfo">添加模版</i-button>
-                <Checkbox v-show="tabsActive == 'template'" v-model="allTemp">全部模版</Checkbox>
-                <i-input v-show="tabsActive == 'template'" v-model.trim="matchingTemp" style="width:100px" placeholder="过滤模版"></i-input>
-                <i-button v-show="tabsActive == 'template'" style="width: 100px" type="primary" @click="queryTemplateInfo">查询模版</i-button>
+                <i-button v-show="tabsActive !== 'template'" style="width: 100px" type="primary" @click="saveTemplateInfo">{{$t("device.addTemplate")}}</i-button>
+                <Checkbox v-show="tabsActive == 'template'" v-model="allTemp">{{$t("device.allTemplate")}}</Checkbox>
+                <i-input v-show="tabsActive == 'template'" v-model.trim="matchingTemp" style="width:100px" placeholder="$t('device.filterTemplate')"></i-input>
+                <i-button v-show="tabsActive == 'template'" style="width: 100px" type="primary" @click="queryTemplateInfo">{{$t("device.queryTemplate")}}</i-button>
             </div>
         </Modal>
     </div>
@@ -889,7 +889,7 @@
                     }, {
                         title: vRoot.$t("bgMgr.action"),
                         key: 'action',
-                        width: 190,
+                        width: 210,
                         render: function(h, params) {
                             return h('div', [
                                 h('Poptip', {
@@ -945,18 +945,18 @@
                     }
                 ],
                 templateColumns: [{
-                    title: "模版名称",
+                    title: vRoot.$t('device.templateName'),  
                     key: 'templatename',
                 }, {
-                    title: "品牌",
+                    title: vRoot.$t('device.brand') ,
                     key: 'brand',
                     width: 80,
                 }, {
-                    title: "型号",
+                    title: vRoot.$t('device.model') ,
                     key: 'model',
                     width: 80,
                 }, {
-                    title: "油箱参数",
+                    title: vRoot.$t('device.tankParameters'),  
                     render: function(h, params) {
                         var row = params.row;
                         return h(
@@ -968,7 +968,7 @@
                     },
                 }, {
                     width: 130,
-                    title: '操作',
+                    title: vRoot.$t('alarm.action'),
                     render: function(h, params) {
                         var row = params.row;
                         return h(
@@ -1006,10 +1006,10 @@
                                                     vueInstanse.threshold2 = item.threshold;
                                                 }
                                             });
-                                            vueInstanse.$Message.success('导入成功');
+                                            vueInstanse.$Message.success(vRoot.$t('device.importSucc')); 
                                         }
                                     }
-                                }, '导入'),
+                                }, vRoot.$t('device.import')),
                                 h('Button', {
                                     props: {
                                         type: 'error',
@@ -1023,7 +1023,7 @@
                                             vueInstanse.deleteOilDetectorTemplate(row.oildetectortemplateid, params.index);
                                         }
                                     }
-                                }, '删除')
+                                },vRoot.$t('monitor.delete'))
                             ]
                         )
                     },
@@ -1116,7 +1116,7 @@
                 },
                 referenceResources: function() {
                     if (this.referenceResourcesDeviceid == '') {
-                        this.$Message.error('请填写参考设备序号');
+                        this.$Message.error(this.$t('device.inputDeviceId'));
                         return;
                     }
                     this.queryIoConfig(this.referenceResourcesDeviceid);
@@ -1171,11 +1171,11 @@
                                     me.ioObject['io' + (i + 1) + 'g'] = '';
                                 }
                                 me.ioCount = 0;
-                                me.$Message.error('没有查询到数据');
+                                me.$Message.error(vRoot.$t('monitor.dataEmptyTips'));
                             }
 
                         } else {
-                            me.$Message.error('查询失败');
+                            me.$Message.error(vRoot.$t('monitor.queryFail'));
                         }
                     });
                 },
@@ -1199,9 +1199,9 @@
                         console.log(resp);
                         if (resp.status === 0) {
                             me.ioModal = false;
-                            me.$Message.success('设置成功');
+                            me.$Message.success(vRoot.$t('monitor.setupSucc'));
                         } else {
-                            me.$Message.error('设置失败');
+                            me.$Message.error(vRoot.$t('monitor.setupFail'));
                         }
                     })
 
@@ -1216,12 +1216,12 @@
                         oildetectortemplateid: id
                     }, function(resp) {
                         if (resp.status == 0) {
-                            me.$Message.success('删除成功');
+                            me.$Message.success(vRoot.$t('message.deleteSucc')); 
                             me.templateData.splice(index, 1);
                         } else if (resp.status == 1) {
-                            me.$Message.error('没有删除权限');
+                            me.$Message.error(vRoot.$t('message.noAuthority'));  
                         } else {
-                            me.$Message.error('删除失败');
+                            me.$Message.error(vRoot.$t('message.deleteFail'));  
                         }
                     })
                 },
@@ -1231,7 +1231,7 @@
                         isall: this.allTemp
                     }, function(resp) {
                         if (resp.status === 0) {
-                            me.$Message.success('查询成功');
+                            me.$Message.success(vRoot.$t('monitor.querySucc'));
                             var records = resp.records;
                             if (me.matchingTemp === '') {
                                 records.forEach(function(item) {
@@ -1257,7 +1257,7 @@
                                 me.templateData = filters;
                             }
                         } else {
-                            me.$Message.error('查询失败');
+                            me.$Message.error(vRoot.$t('monitor.queryFail'));
                         }
                     })
                 },
@@ -1265,19 +1265,19 @@
                     var tankShape = '';
                     switch (type) {
                         case 0:
-                            tankShape = '无油箱';
+                            tankShape = vRoot.$t('device.noTank') ; 
                             break;
                         case 1:
-                            tankShape = '长方体';
+                            tankShape = vRoot.$t('device.cuboid') ;
                             break;
                         case 2:
-                            tankShape = '竖圆柱体';
+                            tankShape = vRoot.$t('device.verticalCylinder');
                             break;
                         case 3:
-                            tankShape = '横圆柱体';
+                            tankShape = vRoot.$t('device.transverseCylinder');
                             break;
                         case 4:
-                            tankShape = '不规则';
+                            tankShape = vRoot.$t('device.irregular');
                             break;
                     }
                     return tankShape
@@ -1285,7 +1285,7 @@
                 saveTemplateInfo: function() {
                     if (this.tabsActive == 'templateInfo') {
                         if (this.templatename.length === 0) {
-                            this.$Message.error('模版名称是必填的');
+                            this.$Message.error(vRoot.$t('device.requiredTempName'));  
                             return;
                         }
                         var oilDetector1 = {
@@ -1325,9 +1325,9 @@
                         me.model ? data.model = me.model : null;
                         utils.sendAjax(myUrls.saveOilDetectorTemplate(), data, function(resp) {
                             if (resp.status == 0) {
-                                me.$Message.success('模版保存成功');
+                                me.$Message.success(vRoot.$t('device.tempSaveSucc'));  
                             } else {
-                                me.$Message.error('模版保存失败');
+                                me.$Message.error(vRoot.$t('device.tempSaveFail'));
                             }
                         });
                     } else {
@@ -1345,7 +1345,7 @@
                         }
                     }
                     if (isHas) {
-                        this.$Message.error('该刻度已存在');
+                        this.$Message.error(vRoot.$t('device.scaleAlreadyExists'));
                     } else {
                         taggingData.push({
                             height: this.tagging1,
@@ -1369,7 +1369,7 @@
                         }
                     }
                     if (isHas) {
-                        this.$Message.error('该刻度已存在');
+                        this.$Message.error(vRoot.$t('device.scaleAlreadyExists'));
                     } else {
                         taggingData.push({
                             height: this.tagging2,
@@ -1385,10 +1385,10 @@
                     var me = this;
                     utils.editDeviceex('insure', me.ownerInfoData, function(resp) {
                         if (resp.status === 0) {
-                            me.$Message.success("编辑成功");
+                            me.$Message.success(vRoot.$t('message.changeSucc')); 
                             me.ownerInfoModal = false;
                         } else {
-                            me.$Message.error("编辑失败");
+                            me.$Message.error(vRoot.$t('message.changeFail'));
                         }
                     });
                 },
@@ -1397,10 +1397,10 @@
                     utils.editDeviceex('owner', me.ownerInfoData, function(resp) {
                         console.log(resp);
                         if (resp.status === 0) {
-                            me.$Message.success("编辑成功");
+                            me.$Message.success(vRoot.$t('message.changeSucc'));
                             me.ownerInfoModal = false;
                         } else {
-                            me.$Message.error("编辑失败");
+                            me.$Message.error(vRoot.$t('message.changeFail'));
                         }
                     });
                 },
@@ -1525,7 +1525,6 @@
                         }
                     }, function() {
                         me.loading = false;
-                        me.$Message.error('网络错误');
                     });
                 },
                 handleDelete: function(deviceid) {
@@ -1577,8 +1576,7 @@
                     }, function(resp) {
                         me.isIndependent = resp.independent == 0 ? true : false;
                         if (resp.oildetectors != null) {
-                            me.$Message.success('查询油液标注成功');
-                            console.log(resp.oildetectors);
+                            me.$Message.success(vRoot.$t('monitor.querySucc')); 
                             var oildetectors = resp.oildetectors;
                             oildetectors.forEach(function(item, index) {
                                 if (index == 0) {
@@ -1606,7 +1604,7 @@
                                 }
                             })
                         } else {
-                            me.$Message.success('没有查询到油液标注信息');
+                            me.$Message.success(vRoot.$t('device.dataEmptyTips'));
                         }
                     });
                 },
@@ -1645,9 +1643,9 @@
                     };
                     utils.sendAjax(url, data, function(resp) {
                         if (resp.status == 0) {
-                            me.$Message.success('保存成功');
+                            me.$Message.success(vRoot.$t('message.saveSucc'));    
                         } else {
-                            me.$Message.error('保存失败:' + resp.cause);
+                            me.$Message.error(resp.cause);
                         }
                     });
                 },
@@ -1668,7 +1666,7 @@
                         all: true,
                     }, function(resp) {
                         if (resp.status == 0 && resp.devices != null) {
-                            me.$Message.success('导出成功');
+                            me.$Message.success(vRoot.$t('message.exportSucceeded'));    
                             me.$refs.table.exportCsv({
                                 filename: 'deviceids',
                                 columns: me.columns.filter(function(col, index) {
@@ -1678,11 +1676,11 @@
                                 quoted: true,
                             });
                         } else {
-                            me.$Message.error('导出失败');
+                            me.$Message.error(vRoot.$t('message.exportFailed'));
                         }
                     }, function() {
                         me.loading = false;
-                        me.$Message.error('网络错误');
+                        me.$Message.error(vRoot.$t('message.networkError'));
                     });
                 },
                 handleSubmit: function() {
@@ -1932,7 +1930,7 @@
                         }
                         this.taggingData1 = tableData;
                     } catch (error) {
-                        this.$Message.error('请使用我们提供的模版填写');
+                        this.$Message.error(vRoot.$t('message.useTemplateTips'));   
                     }
                 },
                 readWorkbookFromLocalFile2: function(file, callback) {
@@ -1968,7 +1966,7 @@
                         }
                         this.taggingData2 = tableData;
                     } catch (error) {
-                        this.$Message.error('请使用我们提供的模版填写');
+                        this.$Message.error(vRoot.$t('message.useTemplateTips'));
                     }
                 },
                 importTownerInfo1: function() {
@@ -1986,7 +1984,7 @@
                     taggingColumns1.pop();
                     taggingColumns1.shift();
                     this.$refs.taggingTab1.exportCsv({
-                        filename: '测量标定',
+                        filename: vRoot.$t('device.calibration'),  
                         columns: taggingColumns1,
                         data: this.taggingData1,
                         quoted: true,
@@ -1997,7 +1995,7 @@
                     taggingColumns2.pop();
                     taggingColumns2.shift();
                     this.$refs.taggingTab2.exportCsv({
-                        filename: '测量标定',
+                        filename: vRoot.$t('device.calibration'),
                         columns: taggingColumns2,
                         data: this.taggingData2,
                         quoted: true,
@@ -2061,10 +2059,7 @@
                 this.fileEl2.onchange = function(e) {
                     var idx = e.srcElement.value.lastIndexOf('.');
                     var houzhui = e.srcElement.value.slice(idx);
-                    // if (houzhui.indexOf('xls') == -1) {
-                    //     me.$Message.error("请选择我们提供的模版提交");
-                    //     return;
-                    // }
+
                     var file = e.target.files[0]
                     me.readWorkbookFromLocalFile2(file, function(workbook) {
                         me.parserExcelData2(workbook.Sheets['测量标定']);

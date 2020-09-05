@@ -18,7 +18,7 @@
             <Page :total="total" :page-size="10" :current="currentIndex" @on-change="changePage"></Page>
         </div>
 
-        <Modal v-model="modal" width="900" title="编辑分组">
+        <Modal v-model="modal" width="900" :title="$t('group.editGroup')">
             <div style="width:850px;margin:10px auto">
                 <Row style="margin: 10px 0">
                     <i-col span="4" style="height: 100%;text-align:right;line-height:32px;" :offset="2"><i style="color: red;display: inline-block;">*</i>&nbsp;{{$t("group.groupName")}} : &nbsp;</i-col>
