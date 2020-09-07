@@ -745,6 +745,11 @@
                 importExcelTips:'Please use the template provided by us to import the data',
                 importExcelFailTips:'Table data import failed',
                 factory:'Factory',
+                pay:'Pay',
+                cardMerchants:'Card merchants',
+                flowPackage:'Flow package',
+                activationTime:'Activation time',
+                dueDate:'Due date',
             }
         },
         //简体中文
@@ -1018,7 +1023,7 @@
                 threeMinutes:'已播放三分钟时间,暂停播放',
                 notSupportCanvas:"您的浏览器暂不支持canvas",
             },
-            reportForm: {           
+            reportForm: {             
                 empty:'空', 
                 clean:'清除',
                 total: "合计 : ",
@@ -1244,7 +1249,7 @@
                 viewTrack: '查看轨迹',
                 queryAllAddress: '一键查询地址',
             },
-            bgMgr: {    
+            bgMgr: {      
                 bindpwd: "绑定密码",
                 customerMgr: "客户管理",
                 addCustomer: "添加客户",
@@ -1488,6 +1493,11 @@
                 importExcelTips:'请使用我们提供的模版导入数据',
                 importExcelFailTips:'表格数据导入失败',
                 factory:'厂商',
+                pay:'付费',
+                cardMerchants:'卡商',
+                flowPackage:'流量套餐',
+                activationTime:'激活时间',
+                dueDate:'到期日期',
             }
         }
     }

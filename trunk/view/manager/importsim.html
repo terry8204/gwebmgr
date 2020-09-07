@@ -2,14 +2,14 @@
 <div id="importsim">
     <input type="file" id="file" style="display: none;" />
     <div class="full" style="padding: 10px;">
-        <h3 class="h3-title">导入SIM卡信息</h3>
+        <h3 class="h3-title">{{$t('bgMgr.importSimInfo')}}</h3>
         <div style="padding: 10px 0;">
             <i-table border ref="table" :columns="columns" :loading="loading" :data="tableData" :height="taleHeight"></i-table>
         </div>
         <div style="padding: 5px; text-align: center;border: 1px solid #DCDEE2;">
-            <i-button @click="importTownerInfo">导入文件</i-button>
-            <i-button @click="handleSubmit" :loading="loading" style="margin: 0 10px;">提交</i-button>
-            <i-button @click="downloadTemplate">模版下载</i-button>
+            <i-button @click="importTownerInfo">{{$t('insure.importFile')}}</i-button>
+            <i-button @click="handleSubmit" :loading="loading" style="margin: 0 10px;">{{$t('header.submit')}}</i-button>
+            <i-button @click="downloadTemplate">{{$t('insure.templateDownload')}}</i-button>
         </div>
     </div>
     <script>
@@ -23,7 +23,7 @@
                     type: 'index',
                     width: 60
                 }, {
-                    title: '手机号码',
+                    title: vRoot.$t('header.phone'),
                     key: "phonenum",
                     width: 140,
                 }, {
@@ -33,23 +33,23 @@
                     title: 'imsi',
                     key: "imsi"
                 }, {
-                    title: '卡商',
+                    title: vRoot.$t('insure.cardMerchants'),  
                     key: "provider",
                     width: 100,
                 }, {
-                    title: '流量套餐',
+                    title: vRoot.$t('insure.flowPackage'),  
                     key: "flowpackage",
                     width: 120,
                 }, {
-                    title: '激活时间',
+                    title: vRoot.$t('insure.activationTime'),  
                     key: "starttime",
                     width: 120,
                 }, {
-                    title: '到期日期',
+                    title: vRoot.$t('insure.dueDate'),
                     key: "endtime",
                     width: 120,
                 }, {
-                    'title': "添加状态",
+                    'title': vRoot.$t('insure.addStatus'),
                     width: 120,
                     render: function(h, params) {
                         var status = params.row.status;
@@ -57,7 +57,7 @@
                         var color = '';
                         switch (status) {
                             case -1:
-                                statusStr = '未提交';
+                                statusStr =  vRoot.$t('insure.notSubmitted');
                                 color = '#000';
                                 break;
                             case 0:
@@ -65,7 +65,7 @@
                                 color = '#e4393c';
                                 break;
                             case 1:
-                                statusStr = '提交成功';
+                                statusStr =  vRoot.$t('insure.submitSucc');
                                 color = '#007ACC';
                                 break;
                         }
@@ -76,7 +76,7 @@
                         }, statusStr)
                     },
                 }, {
-                    'title': "操作",
+                    'title': vRoot.$t('alarm.action'),
                     width: 85,
                     render: function(h, params) {
                         return h('Button', {
@@ -93,7 +93,7 @@
                                     }
                                 }
                             },
-                            '移除')
+                            vRoot.$t('insure.remove'))
                     }
                 }],
 
@@ -114,7 +114,7 @@
                 },
                 handleSubmit: function() {
                     if (this.tableData.length == 0) {
-                        this.$Message.error("请导入车主信息");
+                        this.$Message.error(vRoot.$t('insure.importOwnerNameTips'));
                         return;
                     }
                     this.loading = true;
@@ -129,12 +129,12 @@
                         me.loading = false;
                         if (respData.status == 0) {
                             if (respData.total === respData.success) {
-                                me.$Message.success("导入成功");
+                                me.$Message.success(vRoot.$t('insure.importSucceeded'));
                                 me.tableData.forEach(function(item) {
                                     item.status = 1;
                                 });
                             } else {
-                                me.$Message.error("总共:" + respData.total + ",失败:" + respData.fail);
+                                me.$Message.error(vRoot.$t('insure.total') + ":" + respData.total + "," + vRoot.$t('insure.fail') +  ":" + respData.fail);
                                 var errorrecords = respData.errorrecords;
                                 var tableData = me.tableData;
                                 errorrecords.forEach(function(failItem) {
@@ -153,11 +153,11 @@
                                 me.tableData = tableData;
                             }
                         } else {
-                            me.$Message.error("导入失败");
+                            me.$Message.error(vRoot.$t('insure.importFailed'));
                         }
                     }, function() {
                         me.loading = false;
-                        me.$Message.error("导入超时");
+                        me.$Message.error(vRoot.$t('insure.importTimeout'));
                     });
                 },
                 importTownerInfo: function() {
@@ -209,7 +209,7 @@
                         }
                         this.tableData = tableData;
                     } catch (error) {
-                        this.$Message.error('请使用我们提供的模版填写');
+                        this.$Message.error(vRoot.$t('insure.importExcelFailTips'));
                     }
 
                 }
@@ -221,7 +221,7 @@
                     var idx = e.srcElement.value.lastIndexOf('.');
                     var houzhui = e.srcElement.value.slice(idx);
                     if (houzhui.indexOf('xlsx') == -1) {
-                        me.$Message.error("请选择我们提供的模版提交");
+                        me.$Message.error(vRoot.$t('insure.importExcelTips'));
                         return;
                     }
                     var file = e.target.files[0]
