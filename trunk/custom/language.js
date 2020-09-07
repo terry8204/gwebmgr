@@ -726,6 +726,7 @@
                 pwdLengthTips:'Password must be greater than or equal to 4 digits',
                 exportErrorTips:'The imported device does not exist in this account, please confirm',
                 selectedTransferGroup:'Please select the group you want to transfer into',
+                scale:'Scale',
             },
             insure:{
                 templateDownload:'Template download',
@@ -743,6 +744,7 @@
                 fail:'fail',
                 importExcelTips:'Please use the template provided by us to import the data',
                 importExcelFailTips:'Table data import failed',
+                factory:'Factory',
             }
         },
         //简体中文
@@ -869,7 +871,7 @@
                 popup: '弹窗',
                 emergencyAlarmSetting: '紧急报警设置',
             },
-            monitor: {       
+            monitor: {        
                 mapMode:'地图模式',
                 videoMode:'视频模式',
                 screenDisplay:'大屏展示',
@@ -1016,7 +1018,7 @@
                 threeMinutes:'已播放三分钟时间,暂停播放',
                 notSupportCanvas:"您的浏览器暂不支持canvas",
             },
-            reportForm: {         
+            reportForm: {           
                 empty:'空', 
                 clean:'清除',
                 total: "合计 : ",
@@ -1242,7 +1244,7 @@
                 viewTrack: '查看轨迹',
                 queryAllAddress: '一键查询地址',
             },
-            bgMgr: {  
+            bgMgr: {    
                 bindpwd: "绑定密码",
                 customerMgr: "客户管理",
                 addCustomer: "添加客户",
@@ -1371,7 +1373,7 @@
                 moreLanding:"多点登录",
                 creater:'创建者',
             },
-            device: { 
+            device: {   
                 editDev: "编辑设备",
                 loginPwd: "登录密码",
                 pwdTips: "默认设备序号后四位",
@@ -1467,6 +1469,7 @@
                 pwdLengthTips:'密码必须大于或等于4位数',
                 exportErrorTips:'导入的设备不存在该账户下，请确认',
                 selectedTransferGroup:'请选择要转入的组',
+                scale:'刻度',
             },
             insure:{
                 templateDownload:'模版下载',
@@ -1475,7 +1478,7 @@
                 addStatus:'添加状态',
                 notSubmitted:'未提交',
                 submitSucc:'提交成功',
-                importOwnerNameTips:'请导入车主信息',
+                importOwnerNameTips:'请导入信息',
                 remove:'移除',
                 importSucceeded:'导入成功',
                 importFailed:'导入失败',
@@ -1484,6 +1487,7 @@
                 fail:'失败',
                 importExcelTips:'请使用我们提供的模版导入数据',
                 importExcelFailTips:'表格数据导入失败',
+                factory:'厂商',
             }
         }
     }

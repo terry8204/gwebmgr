@@ -531,9 +531,9 @@
                             <i-table border :columns="taggingColumns1" ref="taggingTab1" :data="taggingData1" height="200"></i-table>
                             <div style="margin: 10px 0 0 0;text-align: right;">
 
-                                <i-button type="primary" style="width:80px;" @click="importTownerInfo1">{{$t("device.import")}}</i-button> 
-                                <i-button type="info" style="width:80px;" @click="exportDevice1">{{$t("reportForm.exportData")}}</i-button>
-                                <i-button @click="downloadTemplate">{{$t('insure.templateDownload')}}</i-button>
+                                <i-button type="primary" @click="importTownerInfo1">{{$t("device.import")}}</i-button> 
+                                <i-button type="info"  @click="exportDevice1">{{$t("reportForm.exportData")}}</i-button>
+                                <i-button type="info" @click="downloadTemplate">{{$t('insure.templateDownload')}}</i-button>
                             </div>
                         </div>
                     </tab-pane>
@@ -694,7 +694,7 @@
                             <div style="margin: 10px 0 0 0;text-align: right;">
                                 <i-button type="primary" style="width:80px;" @click="importTownerInfo2">{{$t("device.import")}}</i-button> 
                                 <i-button type="info" style="width:80px;" @click="exportDevice2">{{$t("reportForm.exportData")}}</i-button>
-                                <i-button @click="downloadTemplate">{{$t('insure.templateDownload')}}</i-button>
+                                <i-button type="info" @click="downloadTemplate">{{$t('insure.templateDownload')}}</i-button>
                             </div>
                         </div>
                     </tab-pane>
@@ -810,13 +810,13 @@
                     width: 50
                 }, {
                     key: 'height',
-                    title: "刻度",
+                    title: vRoot.$t('device.scale'), 
                 }, {
                     key: 'volume',
-                    title: "油液",
+                    title: vRoot.$t('reportForm.oil'),
                 }, {
-                    title: "操作",
-                    width: 80,
+                    title: vRoot.$t('alarm.action'),
+                    width: 100,
                     render: function(h, params) {
                         var index = params.index;
                         return h('Button', {
@@ -829,7 +829,7 @@
                                     vueInstanse.taggingData1.splice(index, 1);
                                 }
                             }
-                        }, '删除')
+                        }, vRoot.$t('monitor.delete')) 
                     },
                 }],
                 taggingColumns2: [{
@@ -837,13 +837,13 @@
                     width: 50
                 }, {
                     key: 'height',
-                    title: "刻度",
+                    title: vRoot.$t('device.scale'),
                 }, {
                     key: 'volume',
-                    title: "油液",
+                    title: vRoot.$t('reportForm.oil'),
                 }, {
-                    title: "操作",
-                    width: 80,
+                    title: vRoot.$t('alarm.action'),
+                    width: 100,
                     render: function(h, params) {
                         var index = params.index;
                         return h('Button', {
@@ -856,7 +856,7 @@
                                     vueInstanse.taggingData2.splice(index, 1);
                                 }
                             }
-                        }, '删除')
+                        }, vRoot.$t('monitor.delete'))
                     },
                 }],
                 columns: [{
