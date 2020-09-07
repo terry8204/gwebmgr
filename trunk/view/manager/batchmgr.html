@@ -51,7 +51,7 @@
         <Modal v-model="importModal" width="700" :title="$t('device.import')">
             <Row>
                 <i-col span="12" style="padding: 10px;">
-                    <i-input v-model.trim="deviceid" type="textarea" placeholder="复制批量序号" :autosize="{minRows: 15,maxRows: 15}"></i-input>
+                    <i-input v-model.trim="deviceid" type="textarea" :placeholder="$('device.copyBatchNumber')" :autosize="{minRows: 15,maxRows: 15}"></i-input>
                 </i-col>
                 <i-col span="12" style="padding: 10px;">
                     <i-input v-model.trim="errorTips" :class="fontColor" type="textarea" disabled :autosize="{minRows: 15,maxRows: 15}"></i-input>
@@ -59,7 +59,7 @@
             </Row>
             <div slot="footer" style="height:40px;">
                 <Row>
-                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">序号长度: &nbsp;</i-col>
+                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">{{$t('device.idLength')}}: &nbsp;</i-col>  
                     <i-col span="5">
                         <input-number v-model.number="idLength" :max="15" :min="8" :editable="false" style="width: 100%;"></input-number>
                     </i-col>
@@ -69,22 +69,22 @@
                 </Row>
             </div>
         </Modal>
-        <Modal v-model="batchModal" width="400" title="批量修改">
+        <Modal v-model="batchModal" width="400" :title="$('bgMgr.batchModification')"> 
             <div v-if="showBatchModalType == 1">
                 <Row>
                     <i-col span="4" style="padding-top: 6px;">
-                        &nbsp;转发类型 : &nbsp;
+                        &nbsp;{{$t('bgMgr.forwardingType')}} : &nbsp;
                     </i-col>
                     <i-col span="20">
                         <i-select v-model="forwardtype">
-                            <i-option value="0">解析后HTTP</i-option>
-                            <i-option value="1">原数据TCP</i-option>
+                            <i-option value="0">{{$t('bgMgr.parseHttp')}}</i-option>  
+                            <i-option value="1">{{$t('bgMgr.tcp')}}</i-option>
                         </i-select>
                     </i-col>
                 </Row>
                 <Row>
                     <i-col span="4" style="padding-top: 6px;">
-                        转发地址:
+                        {{$t('device.forwardAddress')}}:
                     </i-col>
                     <i-col span="20">
                         <i-input v-model.trim="forwardurl"></i-input>
@@ -93,7 +93,7 @@
             </div>
             <Row v-if="showBatchModalType == 2">
                 <i-col span="4" offset="4" style="line-height: 32px;">
-                    到期时间:
+                    {{$t('monitor.expireTime')}}:
                 </i-col>
                 <i-col span="12">
                     <date-picker type="date" v-model="expirationDate"></date-picker>
@@ -101,18 +101,18 @@
             </Row>
             <Row v-if="showBatchModalType == 3">
                 <i-col span="4" offset="4" style="line-height: 32px;">
-                    密码模式:
+                    {{$t('bgMgr.passModel')}}:
                 </i-col>
                 <i-col span="12">
                     <i-select v-model="resetpasswordtype">
-                        <i-option value="1">设备序号后四位</i-option>
-                        <i-option value="2">固定密码</i-option>
-                    </i-select>
+                        <i-option value="1">{{$t('bgMgr.deviceIDlastFour')}}</i-option>
+                        <i-option value="2">{{$t('bgMgr.fixedPassword')}}</i-option>  
+                    </i-select> 
                 </i-col>
             </Row>
             <Row v-if="showBatchModalType == 3 && resetpasswordtype == '2'" style="margin-top: 10px;">
                 <i-col span="4" offset="4" style="line-height: 32px;">
-                    新密码:
+                    {{$t('header.newPwd')}}:
                 </i-col>
                 <i-col span="12">
                     <i-input v-model.trim="newPassword"></i-input>
@@ -120,7 +120,7 @@
             </Row>
             <Row v-if="showBatchModalType == 4">
                 <i-col span="4" offset="4" style="line-height: 32px;">
-                    设备类型:
+                    {{$t('user.devType')}}: 
                 </i-col>
                 <i-col span="12">
                     <i-select v-model="deviceType">
@@ -129,10 +129,10 @@
                 </i-col>
             </Row>
             <div v-if="showBatchModalType == 5">
-                <div style="text-align: center;padding:0 0 10px 0;font-weight: 600;font-size: 18px;">下发指令</div>
+                <div style="text-align: center;padding:0 0 10px 0;font-weight: 600;font-size: 18px;">{{$t('bgMgr.issueCmd')}}</div> 
                 <Row>
                     <i-col span="4" offset="4" style="line-height: 32px;">
-                        指令内容:
+                        {{$t('bgMgr.cmdContent')}}:
                     </i-col>
                     <i-col span="12">
                         <i-input v-model.trim="cmdContent"></i-input>
@@ -140,7 +140,7 @@
                 </Row>
                 <Row style="margin-top: 10px;">
                     <i-col span="4" offset="4" style="line-height: 32px;">
-                        密码:
+                        {{$t('bgMgr.pwd')}}:
                     </i-col>
                     <i-col span="12">
                         <i-input v-model.trim="cmdPassword"></i-input>
@@ -189,19 +189,19 @@
                 type: 'index',
                 width: 60,
             }, {
-                title: '设备名称',
+                title: vRoot.$t('alarm.devName'),  
                 key: 'devicename'
             }, {
-                title: '设备序号',
+                title: vRoot.$t('alarm.devNum'),
                 key: 'deviceid',
             }, {
                 title: vRoot.$t("reportForm.ascriptionUser"),
                 key: 'username'
             }, {
-                title: '所属分组',
+                title: vRoot.$t("user.grouping"),
                 key: 'groupname'
             }, {
-                title: '操作',
+                title: vRoot.$t('alarm.action'),
                 width: 85,
                 render: function(h, params) {
                     return h('Button', {
@@ -217,11 +217,10 @@
                                     vueInstanse.tableData.splice(params.index, 1);
                                 }
                             }
-                        },
-                        '移除')
+                        },vRoot.$t('monitor.delete')) 
                 }
             }, {
-                title: '操作结果',
+                title: vRoot.$t('bgMgr.result'), 
                 width: 90,
                 render: function(h, params) {
                     var result = '',
@@ -229,40 +228,40 @@
                         resultType = params.row.resultType;
                     switch (resultType) {
                         case 0:
-                            color = "#2D8CF0";
-                            result = "操作成功";
+                            color = "#2D8CF0"; 
+                            result = vRoot.$t('device.actionSucc');  
                             break;
                         case 1:
                             color = "#E4393C";
-                            result = "操作失败";
+                            result = vRoot.$t('device.actionFail');
                             break;
                         case 2:
                             color = "#000";
-                            result = "未操作";
+                            result = vRoot.$t('device.notOperated');
                             break;
                         case 3:
                             color = "red";
-                            result = "没有该设备";
+                            result = vRoot.$t('device.noDevice');
                             break;
                         case 4:
                             color = "red";
-                            result = "密码错误";
+                            result = vRoot.$t('device.passwordError');
                             break;
                         case 5:
                             color = "red";
-                            result = "下发指令异常";
+                            result = vRoot.$t('device.abnormalInstructionIssued');
                             break;
                         case 6:
                             color = "red";
-                            result = "设备离线,指令没有缓存";
+                            result = vRoot.$t('monitor.sendCmdNoCache');
                             break;
                         case 7:
                             color = "red";
-                            result = "设备离线,指令已经缓存";
+                            result = vRoot.$t('monitor.sendCmdAlreadyCache');   
                             break;
                         case 8:
                             color = "red";
-                            result = "请修改默认密码后再发送指令";
+                            result = vRoot.$t('monitor.changePwdSendCmd');   
                             break;
                     }
                     return h('span', {
@@ -286,7 +285,7 @@
             },
             handleBatchEdit: function() {
                 if (this.tableData.length == 0) {
-                    this.$Message.error('请选择设备');
+                    this.$Message.error(vRoot.$t('reportForm.selectDevTip'));  
                     return
                 }
                 var data = {
@@ -307,7 +306,7 @@
                             data.resetpasswordtype = 2;
                             data.passwordnotmd5 = this.newPassword;
                         } else {
-                            this.$Message.error('密码必须大于或等于4位数');
+                            this.$Message.error(vRoot.$t('device.pwdLengthTips')); 
                             return;
                         }
                     } else {
@@ -381,16 +380,15 @@
                     data.deviceids.push(item.deviceid);
                 });
                 if (!lock) {
-                    me.$Message.error('导入的设备不存在该账户下，请确认');
+                    me.$Message.error(vRoot.$t('device.exportErrorTips')); 
                     return;
                 }
                 var url = myUrls.batchOperate();
                 utils.sendAjax(url, data, function(respData) {
                     if (respData.total == respData.success) {
-                        me.$Message.success('全部修改成功');
+                        me.$Message.success(vRoot.$t('device.actionSucc')); 
                     } else {
-                        var successArr = [];
-                        me.$Message.error('修改失败' + respData.fail + '个');
+                        me.$Message.error(vRoot.$t('message.changeFail') + ' : ' + respData.fail );  
                     }
                     me.updatedActionState(respData.errorrecords);
                     me.batchModal = false;
@@ -398,11 +396,11 @@
             },
             handleBatchTransfer: function() {
                 if (this.tableData.length == 0) {
-                    this.$Message.error('请选择设备');
+                    this.$Message.error(vRoot.$t('reportForm.selectDevTip')); 
                     return;
                 }
                 if (this.selectedGroupName === null) {
-                    this.$Message.error('请选择要转入的组');
+                    this.$Message.error(vRoot.$t('device.selectedTransferGroup'));  
                     return;
                 }
                 var url = myUrls.batchOperate(),
@@ -421,16 +419,16 @@
                     data.deviceids.push(item.deviceid);
                 });
                 if (!lock) {
-                    me.$Message.error('导入的设备不存在该账户下，请确认');
+                    me.$Message.error(vRoot.$t('device.exportErrorTips'));
                     return;
                 }
                 utils.sendAjax(url, data, function(respData) {
                     if (respData.status === 0) {
                         if (respData.total == respData.success) {
-                            me.$Message.success('全部转移成功');
+                            me.$Message.success(vRoot.$t('device.actionSucc'));
                         } else {
                             var successArr = [];
-                            me.$Message.error('转移失败' + respData.fail + '个');
+                            me.$Message.error(vRoot.$t('message.changeFail') + ' : '  + respData.fail);
                         }
                         me.updatedActionState(respData.errorrecords);
                         me.queryDevicesTree();
@@ -451,7 +449,6 @@
             handleBatchImport: function() {
                 if (!this.isOk) {
                     this.$Message.error("请添加正确的imeis");
-                    // me.$Message.error(me.$t("device.devIdTips"));
                     return;
                 };
                 var deviceids = this.deviceid.split('\n').filter(function(item) {
@@ -893,7 +890,7 @@
                     this.matchingDeviceIds(this, newText);
                 } else {
                     this.isOk = false;
-                    this.errorTips = "序列号必须是数字或者字母";
+                    this.errorTips = vRoot.$t('message.deviceIdTips');
                 }
             },
             searchDeviceVal: function(newVal) {

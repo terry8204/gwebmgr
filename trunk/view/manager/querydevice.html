@@ -530,8 +530,10 @@
                             </Row>
                             <i-table border :columns="taggingColumns1" ref="taggingTab1" :data="taggingData1" height="200"></i-table>
                             <div style="margin: 10px 0 0 0;text-align: right;">
+
                                 <i-button type="primary" style="width:80px;" @click="importTownerInfo1">{{$t("device.import")}}</i-button> 
                                 <i-button type="info" style="width:80px;" @click="exportDevice1">{{$t("reportForm.exportData")}}</i-button>
+                                <i-button @click="downloadTemplate">{{$t('insure.templateDownload')}}</i-button>
                             </div>
                         </div>
                     </tab-pane>
@@ -692,6 +694,7 @@
                             <div style="margin: 10px 0 0 0;text-align: right;">
                                 <i-button type="primary" style="width:80px;" @click="importTownerInfo2">{{$t("device.import")}}</i-button> 
                                 <i-button type="info" style="width:80px;" @click="exportDevice2">{{$t("reportForm.exportData")}}</i-button>
+                                <i-button @click="downloadTemplate">{{$t('insure.templateDownload')}}</i-button>
                             </div>
                         </div>
                     </tab-pane>
@@ -1076,6 +1079,12 @@
                 },
             },
             methods: {
+                downloadTemplate: function() {
+                    var a = document.createElement('a');
+                    a.href = myUrls.apihost + 'oiladtemplate.xlsx';
+                    a.download = 'oiladtemplate.xlsx';
+                    a.click();
+                },
                 querySpeedSetting: function(params) {
                     this.speedSettingModal = true;
 
@@ -1910,7 +1919,6 @@
                     reader.readAsBinaryString(file);
                 },
                 parserExcelData1: function(excelData) {
-
                     try {
                         var indexY = 2;
                         var tableData = [];
@@ -1930,6 +1938,7 @@
                         }
                         this.taggingData1 = tableData;
                     } catch (error) {
+                        console.log('error',error);
                         this.$Message.error(vRoot.$t('message.useTemplateTips'));   
                     }
                 },
