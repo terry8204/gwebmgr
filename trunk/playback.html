@@ -368,7 +368,7 @@
                 <Icon type="ios-hammer-outline"></Icon>
                 <span>{{$t("main.posiDetail")}}</span>
             </p>
-            <div style="">
+            <div>
                 <p style="margin: 10px">{{$t("main.trackId")}} : {{trackid}}</p>
                 <p style="margin: 10px">{{$t("main.jizhanList")}} : {{xList}}</p>
                 <p style="margin: 10px">{{$t("main.WIFIList")}} : {{wList}}</p>
@@ -482,7 +482,14 @@
                     jizhanList: "Base station",
                     WIFIList: "WiFi",
                     originalData: "Original Data",
-                    result: "Position result"
+                    result: "Position result",
+                    totalOil:'Total oil',
+                    oil1:"oil1",
+                    oil2:"oil2",
+                    oil:"oil",
+                    speed:'Speed',
+                    mileage:'Mileage',
+                    time:'Time',
                 }
 
             },
@@ -508,7 +515,14 @@
                     jizhanList: "基站列表",
                     WIFIList: "WiFi列表",
                     originalData: "原始数据",
-                    result: "定位结果"
+                    result: "定位结果",
+                    totalOil:'总油液',
+                    oil1:"油液1",
+                    oil2:"油液2",
+                    oil:"油液",
+                    speed:'速度',
+                    mileage:'里程',
+                    time:'时间',
                 }
             }
         };
@@ -1496,13 +1510,21 @@
                         this.charts.setOption(this.getChartsOption());
                     },
                     getChartsOption: function() {
-                        var totoil = "总油液";
-                        var speed = "速度";
-                        var dis = "里程";
-                        var time = "时间";
-                        var usoil1 = "油液1";
-                        var usoil2 = "油液2";
-                        var cotgasus = "油液";
+                        // totalOil:'总油液',
+                        // oil1:"油液1",
+                        // oil2:"油液2",
+                        // oil:"油液",
+                        // speed:'速度',
+                        // mileage:'里程',
+                        // time:'时间',
+
+                        var totoil = this.$t('main.totalOil');
+                        var speed = this.$t('main.speed');
+                        var dis = this.$t('main.mileage');
+                        var time = this.$t('main.time');
+                        var usoil1 = this.$t('main.oil1');
+                        var usoil2 = this.$t('main.oil2');
+                        var cotgasus = this.$t('main.oil');
                         var option = {
                             title: {
                                 text: time + '/' + cotgasus,

@@ -652,17 +652,17 @@ var utils = {
             var devicename = "'" + track.devicename + "'";
             var activeSafety = extendsBtns.activesafety ? 1 : 0;
             // devicename = encodeURIComponent(devicename);
-            extendsStr += '<span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="openVdeio(' + deviceid + ',' + devicename + ',' + activeSafety + ')">视频</span>'
+            extendsStr += '<span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="openVdeio(' + deviceid + ',' + devicename + ',' + activeSafety + ')">' + vRoot.$t('monitor.video') + '</span>'
         };
 
         if (extendsBtns.activesafety) {
             var devicename = "'" + track.devicename + "'";
-            devicename = encodeURIComponent(devicename);
-            extendsStr += '<span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="openActiveSafety(' + deviceid + ',' + devicename + ')">主动安全</span>'
+            devicename = encodeURIComponent(devicename);                 
+            extendsStr += '<span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="openActiveSafety(' + deviceid + ',' + devicename + ')">' + vRoot.$t('monitor.activeSafety') +  '</span>'
         };
 
         if (extendsBtns.audio) {
-            extendsStr += '<span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="openAudio(' + deviceid + ')">录音</span>'
+            extendsStr += '<span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="openAudio(' + deviceid + ')">' + vRoot.$t('monitor.media') +  '</span>'
         };
         if (extendsBtns.bms) {
             extendsStr += '<span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="openBms(' + deviceid + ')">BMS</span>'
@@ -671,10 +671,10 @@ var utils = {
             extendsStr += '<span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="openObd(' + deviceid + ')">OBD</span>'
         };
         if (extendsBtns.weight) {
-            extendsStr += '<span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="openWeight(' + deviceid + ')">称重</span>'
+            extendsStr += '<span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="openWeight(' + deviceid + ')">' + vRoot.$t('monitor.weigh') +  '</span>'    
         };
         if (extendsBtns.watermeter) {
-            extendsStr += '<span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="openWatermeter(' + deviceid + ')">水表</span>'
+            extendsStr += '<span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="openWatermeter(' + deviceid + ')">' + vRoot.$t('monitor.watermeter') +  '</span>'   
         };
         if (extendsStr.length) {
             content += '<p class="operation" style="margin-top:3px;">' + extendsStr + '</p>';
@@ -743,17 +743,6 @@ var utils = {
     },
     queryAddress: function(info, callback) {
         if (this.getMapType() == 'bMap') {
-            //            var b_lon_lat = wgs84tobd09(Number(info.callon), Number(info.callat));
-            //            utils.getBaiduAddressFromBaidu(b_lon_lat[0], b_lon_lat[1], function(b_address) {
-            //                if (b_address.length) {
-            //                    callback(b_address);
-            //                } else {
-            //                    utils.getJiuHuAddressSyn(info.callon, info.callat, function(resp) {
-            //                        var j_address = resp.address;
-            //                        j_address && callback(j_address);
-            //                    })
-            //                }
-            //            });
             utils.getJiuHuAddressSyn(info.callon, info.callat, function(resp) {
                 var j_address = resp.address;
                 j_address && callback(j_address);

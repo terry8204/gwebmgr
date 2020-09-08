@@ -35,7 +35,9 @@ var bgManager = {
                         { title: me.$t("bgMgr.addDev"), name: 'addDevice', icon: 'md-add' },
                         { title: me.$t("bgMgr.batchAdd"), name: 'batchAddDevice', icon: 'md-add' },  
                         { title: me.$t("bgMgr.batchMgr"), name: 'batchMgrDevice', icon: 'ios-folder-outline' },
-                        { title: me.$t("bgMgr.renewMgr"), name: 'chargeMgr', icon: 'ios-apps-outline' }
+                        { title: me.$t("bgMgr.renewMgr"), name: 'chargeMgr', icon: 'ios-apps-outline' },
+                        { title:me.$t("bgMgr.clearRecord"), name:"clearRecord", icon:"ios-paw" },
+                        { title:me.$t("bgMgr.setMileage"),name:"setMileage",icon:"md-paper" },
                     ]
                 },
                 {
@@ -133,6 +135,12 @@ var bgManager = {
                 case 'addRepair':
                     page = 'addrepair.html'
                     break
+                case 'clearRecord':
+                    page = 'clearrecord.html'
+                    break
+                case 'setMileage':
+                    page = 'setmileage.html'
+                    break
             }
             this.currentPage = name
             this.loadPage(page)
@@ -207,16 +215,6 @@ var systemParam = {
                             icon:"ios-bug"
                         },
                         {
-                            title:"清除记录",
-                            name:"clearRecord",
-                            icon:"ios-bug"
-                        },
-                        {
-                            title:"设置里程",
-                            name:"setMileage",
-                            icon:"ios-bug"
-                        },
-                        {
                             title:"登录记录",
                             name:"loginRecords",
                             icon:"ios-bug"
@@ -248,12 +246,6 @@ var systemParam = {
                     break
                 case 'carType':
                     page = 'cartype.html'
-                    break
-                case 'clearRecord':
-                    page = 'clearrecord.html'
-                    break
-                case 'setMileage':
-                    page = 'setmileage.html'
                     break
                 case 'serverSetting':
                     window.open('serversetting.html?token=' + token);

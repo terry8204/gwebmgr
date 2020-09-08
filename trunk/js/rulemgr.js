@@ -2,10 +2,8 @@ var ruleTypes = {
     chaosu: "overspeed",
     liandong: "linkalarm",
 }
-var ruleTypeNames = {
-    overspeed: "超速规则",
-    linkalarm: "联动报警",
-}
+
+
 
 var ruleMixIn = {
     data: {
@@ -29,15 +27,16 @@ var ruleMixIn = {
 var ruleManager = {
     template: document.getElementById('rule-template').innerHTML,
     data: function() {
+        var me = this;
         return {
             theme: 'light',
             activeName: 'chaosuRule',
             navList: [{
-                title: '超速规则',
+                title: me.$t('rule.overSpeed'),
                 name: 'chaosuRule',
                 icon: 'ios-speedometer',
             }, {
-                title: '联动报警',
+                title: me.$t('rule.linkAlarm'),
                 name: 'linkageAlarm',
                 icon: 'ios-analytics',
             }]

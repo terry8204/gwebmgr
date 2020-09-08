@@ -2,7 +2,7 @@
     <div style="margin:10px">
         <Row>
             <i-Col span="24">
-                <i-input v-model="deviceid" placeholder="输入设备ID" style="width: 200px;"></i-input>
+                <i-input v-model="deviceid" :placeholder="$t('login.inputDeviceNumber')" style="width: 200px;"></i-input>
 
                 <i-button @click="handleClear" type="primary">{{$t("reportForm.clean")}}</i-button>
             </i-Col>
@@ -10,12 +10,12 @@
             <Modal v-model="deleteRecordsModal">
                 <p slot="header" style="color:#f60;text-align:center">
                     <Icon type="ios-information-circle"></Icon>
-                    <span>删除记录</span>
+                    <span>{{$t("bgMgr.delectRecord")}}</span>  
                 </p>
-                <p style="text-align:center;">已删除语音条数 : {{deleteRecordsObject.removedmediacount}}</p>
-                <p style="text-align:center;">已删除消息条数 : {{deleteRecordsObject.removedmsgcount}}</p>
-                <p style="text-align:center;">已删除报警条数 : {{deleteRecordsObject.removedalarmcount}}</p>
-                <p style="text-align:center;">已删除轨迹条数 : {{deleteRecordsObject.removedtrackcount}}</p>
+                <p style="text-align:center;">{{$t("bgMgr.deletedVoice")}} : {{deleteRecordsObject.removedmediacount}}</p>
+                <p style="text-align:center;">{{$t("bgMgr.deletedMessages")}} : {{deleteRecordsObject.removedmsgcount}}</p>
+                <p style="text-align:center;">{{$t("bgMgr.deletedAlarms")}} : {{deleteRecordsObject.removedalarmcount}}</p>
+                <p style="text-align:center;">{{$t("bgMgr.deletedTracks")}} : {{deleteRecordsObject.removedtrackcount}}</p>
             </Modal>
     </div>
    <script>
@@ -30,7 +30,7 @@
             methods:{
                 handleClear:function(){
                     if(this.deviceid.trim() == ''){
-                        this.$Message.error('输入设备id');
+                        this.$Message.error(this.$t('login.inputDeviceNumber'));
                         return;
                     };
                     var url = myUrls.cleanHistoryData(),

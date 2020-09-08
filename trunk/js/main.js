@@ -496,7 +496,7 @@ Vue.component('rule-allocation', {
         getFilterRules: function(value) {
             if (value != '') {
                 var ruleLists = [{
-                    title: "全部规则",
+                    title: vRoot.$t('rule,allRule'),
                     children: [],
                     expanded: true,
                 }];
@@ -526,7 +526,7 @@ Vue.component('rule-allocation', {
         getFilterGroupLists: function(value) {
             if (value != '') {
                 var groupLists = [{
-                    title: '全部设备',
+                    title: vRoot.$t('rule.allDevice'),
                     children: [],
                     expanded: true,
                 }];
@@ -574,7 +574,7 @@ Vue.component('rule-allocation', {
         },
         getGroupLists: function(groups) {
             var groupLists = [{
-                title: '全部设备',
+                title: vRoot.$t('rule.allDevice'),
                 children: [],
                 expanded: true,
             }];
@@ -614,7 +614,7 @@ Vue.component('rule-allocation', {
             var me = this;
             if (node.children && node.children.length) {
                 this.selectedRule = null;
-                this.$Message.error('请选择具体规则');
+                this.$Message.error(this.$t('rule.selectedRule'));
             } else {
                 this.selectedRule = node;
                 this.queryDeviceRulesByRuleid(this.selectedRule.ruledefineid, function(resp) {
@@ -643,7 +643,7 @@ Vue.component('rule-allocation', {
             var me = this;
             if (node.children && node.children.length) {
                 this.selectedDevice = null;
-                this.$Message.error('请选择具体设备');
+                this.$Message.error(this.$t('reportForm.selectDevTip'));
             } else {
                 this.selectedDevice = node;
                 this.queryDeviceRulesByDeviceId(this.selectedDevice.deviceid, function(resp) {
@@ -679,11 +679,11 @@ Vue.component('rule-allocation', {
                     }
                 })
                 if (this.selectedRule == null) {
-                    this.$Message.error('请选择规则');
+                    this.$Message.error(me.$t('rule.selectedRule')); 
                     return;
                 }
                 if (deviceids.length == 0) {
-                    this.$Message.error('请选择设备');
+                    this.$Message.error(me.$t('reportForm.selectDevTip'));
                     return;
                 }
                 var data = {
@@ -692,9 +692,9 @@ Vue.component('rule-allocation', {
                 };
                 utils.sendAjax(url, data, function(resp) {
                     if (resp.status == 0) {
-                        me.$Message.success('设置成功');
+                        me.$Message.success(me.$t('monitor.setupSucc'));
                     } else {
-                        me.$Message.error('设置失败');
+                        me.$Message.error(me.$t('monitor.setupFail'));
                     }
                 });
             } else if (this.allocationType == '2') {
@@ -706,11 +706,11 @@ Vue.component('rule-allocation', {
                     }
                 })
                 if (this.selectedDevice == null) {
-                    this.$Message.error('请选择设备');
+                    this.$Message.error(me.$t('reportForm.selectDevTip'));
                     return;
                 }
                 if (ruleids.length == 0) {
-                    this.$Message.error('请选择规则');
+                    this.$Message.error(me.$t('rule.selectedRule'));
                     return;
                 }
                 var data = {
@@ -719,9 +719,9 @@ Vue.component('rule-allocation', {
                 };
                 utils.sendAjax(url, data, function(resp) {
                     if (resp.status == 0) {
-                        me.$Message.success('设置成功');
+                        me.$Message.success(me.$t('monitor.setupSucc'));
                     } else {
-                        me.$Message.error('设置失败');
+                        me.$Message.error(me.$t('monitor.setupFail'));
                     }
                 });
             }
@@ -733,7 +733,7 @@ Vue.component('rule-allocation', {
             utils.sendAjax(url, {}, function(resp) {
                 if (resp.status === 0) {
                     var ruleLists = [{
-                        title: "全部规则",
+                        title: vRoot.$t('rule.allRule'),
                         children: [],
                         expanded: true,
                     }];
@@ -752,7 +752,7 @@ Vue.component('rule-allocation', {
                         ruleObj[ruletype].push(record);
                     });
                     for (var key in ruleObj) {
-                        var title = ruleTypeNames[key];
+                        var title = me.ruleTypeNames[key];
                         ruleLists[0].children.push({
                             title: title,
                             children: ruleObj[key],
@@ -776,11 +776,16 @@ Vue.component('rule-allocation', {
             this.groupLists = this.getGroupLists(vRoot.$children[1].groups);
             this.groupLists1 = this.groupLists;
             this.groupLists2 = deepClone(this.groupLists);
+            this.ruleTypeNames = {
+                overspeed: this.$t('rule.overSpeed'), 
+                linkalarm: this.$t('rule.linkAlarm'),
+            }
             this.setRuleLists();
         }
     },
     mounted: function() {
         this.init();
+
     }
 })
 

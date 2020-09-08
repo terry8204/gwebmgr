@@ -1305,7 +1305,7 @@
                                 </Row>
                                 <Row style="height:32px;margin: 10px 0;">
                                     <i-Col span="4" style="height: 100%;line-height:32px;text-align: right;">
-                                        实时流编码模式 :
+                                        实时流编码模式 
                                     </i-Col>
                                     <i-Col span="1" style="height: 100%;line-height:32px;text-align: center;">
                                         :
@@ -1369,7 +1369,7 @@
                                 </Row>
                                 <Row style="height:32px;margin: 10px 0;">
                                     <i-Col span="4" style="height: 100%;line-height:32px;text-align: right;">
-                                        实时流关键帧间隔 :
+                                        实时流关键帧间隔 
                                     </i-Col>
                                     <i-Col span="1" style="height: 100%;line-height:32px;text-align: center;">
                                         :
@@ -2464,11 +2464,11 @@
                 <RadioGroup v-model="allocationType" type="button">
                     <Radio label="1">
                         <Icon type="md-settings"></Icon>
-                        <span>按规则分配</span>
+                        <span>{{$t('rule.distributionByRule')}}</span>
                     </Radio>
                     <Radio label="2">
                         <Icon type="md-tablet-portrait"></Icon>
-                        <span>按设备分配</span>
+                        <span>{{$t('rule.distributionByDevice')}}</span>
                     </Radio>
                 </RadioGroup>
             </p>
@@ -2505,8 +2505,8 @@
                 </Row>
             </div>
             <div slot="footer" style="text-align:center">
-                <i-button type="error" @click="onClose" style="width: 160px">关闭</i-button>
-                <i-button type="primary" @click="settingRuleToDevice" style="width: 160px">确定</i-button>
+                <i-button type="error" @click="onClose" style="width: 160px">{{$t('rule.close')}}</i-button>
+                <i-button type="primary" @click="settingRuleToDevice" style="width: 160px">{{$t('rule.confirm')}}</i-button>
             </div>
         </Modal>
     </script>

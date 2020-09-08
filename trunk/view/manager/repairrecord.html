@@ -36,7 +36,7 @@
             <i-button @click="onClickQuery" icon="ios-search">{{$t("reportForm.query")}}</i-button>
         </div>
         <div style="float: right;">
-            <i-button @click="exportTableData" icon="ios-search" type="primary">导出</i-button>
+            <i-button @click="exportTableData" icon="ios-search" type="primary">{{$t("reportForm.exportData")}}</i-button> 
         </div>
     </Row>
     <div style="margin:10px;">
@@ -48,77 +48,77 @@
     <Modal v-model="repairModal" width="500">
         <p slot="header" style="color:#f60;text-align:center">
             <Icon type="ios-create-outline"></Icon>
-            <span>编辑维修信息</span>
+            <span>{{$t("insure.editRepairInfo")}}</span>  
         </p>
         <div style="text-align:center">
             <Row style="margin:10px 0;">
-                <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">设备序号 : &nbsp;</i-col>
+                <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t("alarm.devNum")}} : &nbsp;</i-col>
                 <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
                     {{repairEdit.deviceid}}
                 </i-col>
             </Row>
 
             <Row style="margin:10px 0;">
-                <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">维修项目 : &nbsp;</i-col>
+                <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t("insure.repairItem")}} : &nbsp;</i-col>
                 <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
                     <i-input v-model.trim="repairEdit.repairitem"></i-input>
                 </i-col>
             </Row>
 
             <Row style="margin:10px 0;">
-                <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">维修金额 : &nbsp;</i-col>
+                <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t("insure.repairFee")}} : &nbsp;</i-col>
                 <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
                     <i-input v-model.trim="repairEdit.fee"></i-input>
                 </i-col>
             </Row>
 
             <Row style="margin:10px 0;">
-                <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">维修店名 : &nbsp;</i-col>
+                <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t("insure.repairShop")}} : &nbsp;</i-col>
                 <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
                     <i-input v-model.trim="repairEdit.repairagent"></i-input>
                 </i-col>
             </Row>
 
             <Row style="margin:10px 0;">
-                <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">维修店地址 : &nbsp;</i-col>
+                <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t("insure.repairAddress")}} : &nbsp;</i-col>
                 <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
                     <i-input v-model.trim="repairEdit.repairaddress"></i-input>
                 </i-col>
             </Row>
 
             <Row style="margin:10px 0;">
-                <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">维修店联系电话 : &nbsp;</i-col>
+                <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t("insure.repairShopPhone")}} : &nbsp;</i-col>
                 <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
                     <i-input v-model.trim="repairEdit.repairphone"></i-input>
                 </i-col>
             </Row>
             <Row style="margin:10px 0;">
-                <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">维修店人姓名 : &nbsp;</i-col>
+                <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t("insure.repairShopName")}} : &nbsp;</i-col>
                 <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
                     <i-input v-model.trim="repairEdit.repairname"></i-input>
                 </i-col>
             </Row>
             <Row style="margin:10px 0;">
-                <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">送修人姓名 : &nbsp;</i-col>
+                <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t("insure.submitRepairName")}} : &nbsp;</i-col>
                 <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
                     <i-input v-model.trim="repairEdit.submitrepairname"></i-input>
                 </i-col>
             </Row>
             <Row style="margin:10px 0;">
-                <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">送修人电话 : &nbsp;</i-col>
+                <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t("insure.submitRepairPhone")}} : &nbsp;</i-col>
                 <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
                     <i-input v-model.trim="repairEdit.submitrepairphone"></i-input>
                 </i-col>
             </Row>
             <Row style="margin:10px 0;">
-                <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">备注 : &nbsp;</i-col>
+                <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t("monitor.remarks")}} : &nbsp;</i-col>
                 <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
                     <i-input v-model.trim="repairEdit.remark" style="width: 100%;"></i-input>
                 </i-col>
             </Row>
         </div>
         <div slot="footer">
-            <i-button type="primary" style="width: 100%" @click="editRepair">提交</i-button>
+            <i-button type="primary" style="width: 100%" @click="editRepair">{{$t("header.submit")}}</i-button>
         </div>
     </Modal>
     <script>
@@ -148,47 +148,46 @@
                 groupslist: [],
                 timeoutIns: null,
                 columns: [{
-                    key: 'index',
+                    type: 'index',
                     width: 60,
-                    title: '编号'
                 }, {
                     title: vRoot.$t("alarm.devName"),
                     key: 'devicename'
                 }, {
-                    title: '设备序号',
+                    title: vRoot.$t("alarm.devNum"),
                     key: 'deviceid'
                 }, {
-                    title: '维修项目',
+                    title: vRoot.$t("insure.repairItem"),
                     key: 'repairitem'
                 }, {
-                    title: '价格(元)',
+                    title: vRoot.$t("insure.repairFee"),  
                     key: 'fee',
                 }, {
-                    title: '维修店名',
+                    title:vRoot.$t("insure.repairShop"),  
                     key: 'repairagent'
                 }, {
-                    title: '维修店地址',
+                    title: vRoot.$t("insure.repairAddress"),  
                     key: 'repairaddress'
                 }, {
-                    title: '维修店电话',
+                    title: vRoot.$t("insure.repairShopPhone"),  
                     key: 'repairphone'
                 }, {
-                    title: '维修店联系人',
+                    title: vRoot.$t("insure.repairShopName"),  
                     key: 'repairname'
                 }, {
-                    title: '送修时间',
+                    title: vRoot.$t("insure.deliveryTime"),   
                     key: 'createtimeStr'
                 }, {
-                    title: '送修人',
+                    title: vRoot.$t("insure.submitRepairName"),  
                     key: 'submitrepairname'
                 }, {
-                    title: '送修人电话',
+                    title: vRoot.$t("insure.submitRepairPhone"),  
                     key: 'submitrepairphone'
                 }, {
-                    title: '备注',
+                    title: vRoot.$t("monitor.remarks"),  
                     key: 'remark'
                 }, {
-                    title: '操作',
+                    title:  vRoot.$t("alarm.action"),  
                     width: 150,
                     render: function(h, parmas) {
                         return h(
@@ -218,7 +217,7 @@
                                             type: 'info'
                                         }
                                     },
-                                    '编辑'
+                                     vRoot.$t("monitor.edit")
                                 ),
                                 h(
                                     'Button', {
@@ -234,8 +233,7 @@
                                         style: {
                                             marginLeft: '5px'
                                         }
-                                    },
-                                    '删除'
+                                    },vRoot.$t("monitor.delete")
                                 ),
                             ]
                         )

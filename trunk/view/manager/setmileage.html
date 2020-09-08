@@ -2,17 +2,17 @@
     <div style="margin:10px">
         <Row style="margin: 10px 0;">
             <i-Col span="24">
-                <i-input v-model="deviceid" placeholder="输入设备ID" style="width: 200px;"></i-input>
+                <i-input v-model="deviceid" :placeholder="$t('login.inputDeviceNumber')" style="width: 200px;"></i-input>
             </i-Col>
         </Row>
         <Row style="margin: 10px 0;">
             <i-Col span="24">
-                <i-input v-model.trim="mileage" placeholder="输入里程" style="width: 200px;"></i-input>
+                <i-input v-model.trim="mileage" :placeholder="$t('bgMgr.inputMileage')" style="width: 200px;"></i-input>
             </i-Col>
         </Row>
         <Row style="margin: 10px 0;">
             <i-Col span="24">
-                <i-button @click="handleClear" type="primary" style="width: 200px;">确定</i-button>
+                <i-button @click="handleClear" type="primary" style="width: 200px;">{{$t('monitor.confirm')}}</i-button>
             </i-Col>
         </Row>
        
@@ -20,6 +20,7 @@
    <script>
         new Vue({
             el:'#set-mileage',
+            i18n: utils.getI18n(),
             data:{
                 deviceid:'',
                 mileage:'',
@@ -27,19 +28,19 @@
             methods:{
                 handleClear:function(){
                     if(this.deviceid.trim() == ''){
-                        this.$Message.error('输入设备id');
+                        this.$Message.error(this.$t('login.inputDeviceNumber'));
                         return;
                     };
                     var me = this,url = myUrls.fixTotalDistance() ,mileage = Number(this.mileage);
-                    if( mileage === '' ||  isNaN(mileage)  ){
-                        this.$Message.error('里程输入数字');
+                    if( mileage == '' ||  isNaN(mileage)  ){
+                        this.$Message.error(me.$t('bgMgr.pleaseInputNumber')); 
                         return ;
                     }
                     utils.sendAjax(url, { deviceid: this.deviceId, totaldistance: mileage  }, function(resp) {
                         if (resp.status === 0) {
-                            me.$Message.success("设置成功");
+                            me.$Message.success( me.$t('monitor.setupSucc'));
                         } else {
-                            me.$Message.error("设置失败 ：" + resp.cause);
+                            me.$Message.error(me.$t('monitor.setupFail') + " ：" + resp.cause);
                         }
                     });
                 }
