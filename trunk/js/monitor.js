@@ -3117,6 +3117,7 @@ var monitor = {
         this.positionLastrecords = {}; // 全部设备最后一次位置记录
     },
     activated: function() {
+        this.lastquerypositiontime = 0;
         if (isNeedRefresh) {
             var me = this;
             this.getMonitorListByUser({ username: userName }, function(resp) {

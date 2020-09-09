@@ -32,7 +32,7 @@
                         return;
                     };
                     var me = this,url = myUrls.fixTotalDistance() ,mileage = Number(this.mileage);
-                    if( mileage == '' ||  isNaN(mileage)  ){
+                    if( isNaN(mileage)  ){
                         this.$Message.error(me.$t('bgMgr.pleaseInputNumber')); 
                         return ;
                     }

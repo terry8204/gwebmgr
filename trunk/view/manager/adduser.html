@@ -22,14 +22,6 @@
 
             <Row style="margin: 10px 0">
                 <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">
-                    <i style="color: red;display: inline-block;">*</i>&nbsp;{{$t("user.checkPwd")}} : &nbsp;</i-col>
-                <i-col span="12">
-                    <i-input v-model.trim="confirmPassword" type="password"></i-input>
-                </i-col>
-            </Row>
-
-            <Row style="margin: 10px 0">
-                <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">
                     <i style="color: red;display: inline-block;">*</i>&nbsp;{{$t("user.userType")}} : &nbsp;</i-col>
                 <i-col span="12">
                     <i-select v-model="usertype">
@@ -149,7 +141,6 @@
             data: {
                 username: "",
                 password: "",
-                confirmPassword: "",
                 usertype: "",
                 singleLogin: "0",
                 phoneLogin: "0",
@@ -184,22 +175,23 @@
 
 
                 handleSubmit: function() {
+
+                    if (this.password == '') {
+                        this.$Message.error(this.$t("header.error_2"));
+                        return;
+                    }
+
                     var url = myUrls.addUser();
                     var userType = this.usertype;
 
                     var reg = /^[a-zA-Z0-9_-]{4,32}$/;
                     var data = {
                         username: this.username,
-                        password: "",
+                        password: $.md5(this.password),
                         usertype: userType,
                     };
 
-                    if (this.password !== this.confirmPassword) {
-                        this.$Message.error(this.$t("header.error_3"));
-                        return;
-                    } else {
-                        data.password = $.md5(this.password);
-                    }
+                 
 
 
                     if (!reg.test(this.username)) {
