@@ -864,6 +864,7 @@
                 enable:'启用',
                 disabled:'不启用',
                 singleChannelVideoParameters:'单独通道视频参数',
+                audioAndVideoTerminalProperties:'音视频终端属性',
                 audioCodingMode:'音频编码方式',
                 audioCodingModeCharacter:'音频编码方式字符',
                 audioChannels:'音频声道数',
@@ -889,6 +890,12 @@
                 driverConditionMonitoring:'驾驶员状态监测',
                 tpms:'轮胎气压监测',
                 blindspotMonitoring:'盲点监测',
+                audioAndVideoChannelList:'音视频通道列表',
+                CBR:'CBR(Fixed)',
+                VBR:'VBR(Variable)',
+                ABR:'ABR(Average)',
+                range:'Range',
+                frames_sec:'frame/s',
             }
         },
         //简体中文
@@ -1750,6 +1757,7 @@
                 enable:'启用',
                 disabled:'不启用',
                 singleChannelVideoParameters:'单独通道视频参数',
+                audioAndVideoTerminalProperties:'音视频终端属性',
                 audioCodingMode:'音频编码方式',
                 audioCodingModeCharacter:'音频编码方式字符',
                 audioChannels:'音频声道数',
@@ -1775,6 +1783,12 @@
                 driverConditionMonitoring:'驾驶员状态监测',
                 tpms:'轮胎气压监测',
                 blindspotMonitoring:'盲点监测',
+                audioAndVideoChannelList:'音视频通道列表',
+                CBR:'CBR(固定码率)',
+                VBR:'VBR(可变码率)',
+                ABR:'ABR(平均码率)',
+                range:'范围',
+                frames_sec:'帧/秒',
             }
         }
     }

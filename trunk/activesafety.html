@@ -1044,12 +1044,13 @@
                     this.abnormalDrivingList = abnormalDrivingList.sort(function(a, b) {
                         return b.endalarmtime - a.endalarmtime;
                     });
-                    setTimeout(() => {
-                        if (that.forwardAlarmList.length) {
-                            that.$refs.forwardTable.$refs.tbody.clickCurrentRow(0);
-                            that.selectedDetailFirstRow();
-                        }
-                    }, 500)
+                    // setTimeout(() => {
+                    //     if (that.forwardAlarmList.length) {
+                    //         that.$refs.forwardTable.$refs.tbody.clickCurrentRow(0);
+                    //         that.selectedDetailFirstRow();
+                    //     }
+                    // }, 500)
+                    this.showRightDetail(this.tabsKey);
                 },
                 queryActiveSafety: function() {
                     var url = myUrls.queryActiveSafetyTrack(),
@@ -1091,19 +1092,8 @@
                     window.onresize = function() {
                         me.tableHeight = me.getTableHeight();
                     };
-                }
-            },
-            computed: {
-                videoStyle: function() {
-                    var videoWrapper = this.$refs.videoWrapper;
-                    return {
-                        width: (getComputedStyle(videoWrapper).width / 2) + 'px',
-                        height: (getComputedStyle(videoWrapper).height / 2) + 'px',
-                    }
-                }
-            },
-            watch: {
-                tabsKey: function(newVal) {
+                },
+                showRightDetail:function(newVal){
                     var that = this;
                     this.detailIndex = 0;
                     that.detailTableData = [];
@@ -1124,6 +1114,20 @@
                         }
 
                     }, 500)
+                }
+            },
+            computed: {
+                videoStyle: function() {
+                    var videoWrapper = this.$refs.videoWrapper;
+                    return {
+                        width: (getComputedStyle(videoWrapper).width / 2) + 'px',
+                        height: (getComputedStyle(videoWrapper).height / 2) + 'px',
+                    }
+                }
+            },
+            watch: {
+                tabsKey: function(newVal) {
+                    this.showRightDetail(newVal);
                 }
             },
             mounted: function() {

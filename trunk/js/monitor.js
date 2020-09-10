@@ -254,7 +254,6 @@ var monitor = {
                 deviceName: '',
                 videochannelcount: 4,
             },
-            modalHader: '视频参数',
             physicalchannel1: '0',
             physicalchannel2: '0',
             physicalchannel3: '0',

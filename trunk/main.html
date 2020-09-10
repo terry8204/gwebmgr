@@ -1079,14 +1079,14 @@
 
                     <Modal v-model="setupVideoModal" width="800">
                         <p slot="header" style="color:#f60;text-align:center">
-                            <Icon type="ios-search-outline"></Icon>
-                            <span v-text="modalHader"></span>
+                            <Icon type="ios-settings"></Icon>
+                            <span>{{$t('monitor.videoSettings')}}</span> 
                         </p>
                         <Tabs value="" :animated="false">
-                            <Tab-Pane label="视频播放参数" name="videoPlay">
+                            <Tab-Pane :label="$t('videoSettings.videoPlayParameter')" name="videoPlay">
                                 <Row style="height:32px;margin: 10px 0;">
                                     <i-Col span="5" style="height: 100%;line-height:32px;text-align: right;">
-                                        传输模式
+                                        {{$t('videoSettings.transmissionMode')}}
                                     </i-Col>
                                     <i-Col span="1" style="height: 100%;line-height:32px;text-align: center;">:</i-Col>
                                     <i-Col span="12" style="height: 100%;line-height:32px;padding-left: 3px;">
@@ -1098,19 +1098,19 @@
                                 </Row>
                                 <Row style="height:32px;margin: 10px 0;">
                                     <i-Col span="5" style="height: 100%;line-height:32px;text-align: right;">
-                                        实时性
+                                        {{$t('videoSettings.realTime')}}
                                     </i-Col>
                                     <i-Col span="1" style="height: 100%;line-height:32px;text-align: center;">:</i-Col>
                                     <i-Col span="12" style="height: 100%;line-height:32px;padding-left: 3px;">
                                         <i-select placement="top" v-model="videostreamtype" style="width:300px">
-                                            <i-option value="0">主码流(清晰)</i-option>
-                                            <i-option value="1">子码流(流畅)</i-option>
+                                            <i-option value="0">{{$t('videoSettings.mainStream')}}</i-option>
+                                            <i-option value="1">{{$t('videoSettings.subStream')}}</i-option>
                                         </i-select>
                                     </i-Col>
                                 </Row>
                                 <Row style="height:32px;margin: 10px 0;">
                                     <i-Col span="5" style="height: 100%;line-height:32px;text-align: right;">
-                                        对讲通道
+                                        {{$t('videoSettings.intercomChannel')}}
                                     </i-Col>
                                     <i-Col span="1" style="height: 100%;line-height:32px;text-align: center;">:</i-Col>
                                     <i-Col span="12" style="height: 100%;line-height:32px;padding-left: 3px;">
@@ -1119,7 +1119,7 @@
                                 </Row>
                                 <Row style="height:32px;margin: 10px 0;">
                                     <i-Col span="5" style="height: 100%;line-height:32px;text-align: right;">
-                                        回放音频格式
+                                        {{$t('videoSettings.playbackAudioFormat')}}
                                     </i-Col>
                                     <i-Col span="1" style="height: 100%;line-height:32px;text-align: center;">:</i-Col>
                                     <i-Col span="12" style="height: 100%;line-height:32px;padding-left: 3px;">
@@ -1164,7 +1164,7 @@
                                 </Row>
                                 <Row style="height:32px;margin: 10px 0;">
                                     <i-Col span="5" style="height: 100%;line-height:32px;text-align: right;">
-                                        指定上传文件名
+                                        {{$t('videoSettings.specifyUploadFileName')}}
                                     </i-Col>
                                     <i-Col span="1" style="height: 100%;line-height:32px;text-align: center;">:</i-Col>
                                     <i-Col span="12" style="height: 100%;line-height:32px;padding-left: 3px;">
@@ -1173,19 +1173,19 @@
                                 </Row>
                                 <Row style="height:32px;margin: 10px 0;">
                                     <i-Col span="5" style="height: 100%;line-height:32px;text-align: right;">
-                                        视频时间戳
+                                        {{$t('videoSettings.videoTimestamp')}}
                                     </i-Col>
                                     <i-Col span="1" style="height: 100%;line-height:32px;text-align: center;">:</i-Col>
                                     <i-Col span="12" style="height: 100%;line-height:32px;padding-left: 3px;">
                                         <i-select placement="top" v-model="videotimestamptype" style="width:300px">
-                                            <i-option value="0">设备计算</i-option>
-                                            <i-option value="1">服务器计算</i-option>
+                                            <i-option value="0">{{$t('videoSettings.deviceCalc')}}</i-option>
+                                            <i-option value="1">{{$t('videoSettings.serverCalc')}}</i-option>
                                         </i-select>
                                     </i-Col>
                                 </Row>
                                 <Row style="height:32px;margin: 10px 0;">
                                     <i-Col span="5" style="height: 100%;line-height:32px;text-align: right;">
-                                        视频播放个数
+                                        {{$t('videoSettings.videoPlayNumber')}}
                                     </i-Col>
                                     <i-Col span="1" style="height: 100%;line-height:32px;text-align: center;">:</i-Col>
                                     <i-Col span="12" style="height: 100%;line-height:32px;padding-left: 3px;">
@@ -1194,146 +1194,146 @@
                                 </Row>
                                 <Row style="height:32px;margin: 10px 0;">
                                     <i-Col span="5" style="height: 100%;line-height:32px;text-align: right;">
-                                        通道1
+                                        {{$t('videoSettings.channel1')}}
                                     </i-Col>
                                     <i-Col span="1" style="height: 100%;line-height:32px;text-align: center;">:</i-Col>
                                     <i-Col span="4" style="height: 100%;line-height:32px;padding-left: 3px;">
                                         <i-select placement="top" v-model="physicalchannel1" style="width:100px">
-                                            <i-option value="0">音视频</i-option>
-                                            <i-option value="1">音频 </i-option>
-                                            <i-option value="2">视频</i-option>
+                                            <i-option value="0">{{$t('videoSettings.audioAndVideo')}}</i-option>
+                                            <i-option value="1">{{$t('videoSettings.audio')}}</i-option>
+                                            <i-option value="2">{{$t('videoSettings.video')}}</i-option>
                                         </i-select>
                                     </i-Col>
                                     <i-Col span="2" style="height: 100%;line-height:32px;text-align: right;" v-show="videochannelcount > 1">
-                                        通道2
+                                        {{$t('videoSettings.channel2')}}
                                     </i-Col>
                                     <i-Col span="1" style="height: 100%;line-height:32px;text-align: center;" v-show="videochannelcount > 1">:</i-Col>
                                     <i-Col span="5" style="height: 100%;line-height:32px;padding-left: 3px;" v-show="videochannelcount > 1">
                                         <i-select placement="top" v-model="physicalchannel2" style="width:100px" v-show="videochannelcount > 1">
-                                            <i-option value="0">音视频</i-option>
-                                            <i-option value="1">音频 </i-option>
-                                            <i-option value="2">视频</i-option>
+                                            <i-option value="0">{{$t('videoSettings.audioAndVideo')}}</i-option>
+                                            <i-option value="1">{{$t('videoSettings.audio')}}</i-option>
+                                            <i-option value="2">{{$t('videoSettings.video')}}</i-option>
                                         </i-select>
                                     </i-Col>
                                 </Row>
                                 <Row style="height:32px;margin: 10px 0;" v-show="videochannelcount > 2">
                                     <i-Col span="5" style="height: 100%;line-height:32px;text-align: right;">
-                                        通道3
+                                        {{$t('videoSettings.channel3')}}
                                     </i-Col>
                                     <i-Col span="1" style="height: 100%;line-height:32px;text-align: center;">:</i-Col>
                                     <i-Col span="4" style="height: 100%;line-height:32px;padding-left: 3px;">
                                         <i-select placement="top" v-model="physicalchannel3" style="width:100px">
-                                            <i-option value="0">音视频</i-option>
-                                            <i-option value="1">音频 </i-option>
-                                            <i-option value="2">视频</i-option>
+                                            <i-option value="0">{{$t('videoSettings.audioAndVideo')}}</i-option>
+                                            <i-option value="1">{{$t('videoSettings.audio')}}</i-option>
+                                            <i-option value="2">{{$t('videoSettings.video')}}</i-option>
                                         </i-select>
                                     </i-Col>
                                     <i-Col span="2" style="height: 100%;line-height:32px;text-align: right;" v-show="videochannelcount > 3">
-                                        通道4
+                                        {{$t('videoSettings.channel4')}}
                                     </i-Col>
                                     <i-Col span="1" style="height: 100%;line-height:32px;text-align: center;" v-show="videochannelcount > 3">:</i-Col>
                                     <i-Col span="5" style="height: 100%;line-height:32px;padding-left: 3px;" v-show="videochannelcount > 3">
                                         <i-select placement="top" v-model="physicalchannel4" style="width:100px">
-                                            <i-option value="0">音视频</i-option>
-                                            <i-option value="1">音频 </i-option>
-                                            <i-option value="2">视频</i-option>
+                                            <i-option value="0">{{$t('videoSettings.audioAndVideo')}}</i-option>
+                                            <i-option value="1">{{$t('videoSettings.audio')}}</i-option>
+                                            <i-option value="2">{{$t('videoSettings.video')}}</i-option>
                                         </i-select>
                                     </i-Col>
                                 </Row>
                                 <Row style="height:32px;margin: 10px 0;" v-show="videochannelcount > 4">
                                     <i-Col span="5" style="height: 100%;line-height:32px;text-align: right;">
-                                        通道5
+                                        {{$t('videoSettings.channel5')}}
                                     </i-Col>
                                     <i-Col span="1" style="height: 100%;line-height:32px;text-align: center;">:</i-Col>
                                     <i-Col span="4" style="height: 100%;line-height:32px;padding-left: 3px;">
                                         <i-select placement="top" v-model="physicalchannel5" style="width:100px">
-                                            <i-option value="0">音视频</i-option>
-                                            <i-option value="1">音频 </i-option>
-                                            <i-option value="2">视频</i-option>
+                                            <i-option value="0">{{$t('videoSettings.audioAndVideo')}}</i-option>
+                                            <i-option value="1">{{$t('videoSettings.audio')}}</i-option>
+                                            <i-option value="2">{{$t('videoSettings.video')}}</i-option>
                                         </i-select>
                                     </i-Col>
                                     <i-Col span="2" style="height: 100%;line-height:32px;text-align: right;" v-show="videochannelcount > 5">
-                                        通道6
+                                        {{$t('videoSettings.channel6')}}
                                     </i-Col>
                                     <i-Col span="1" style="height: 100%;line-height:32px;text-align: center;" v-show="videochannelcount > 5">:</i-Col>
                                     <i-Col span="5" style="height: 100%;line-height:32px;padding-left: 3px;" v-show="videochannelcount > 5">
                                         <i-select placement="top" v-model="physicalchannel6" style="width:100px">
-                                            <i-option value="0">音视频</i-option>
-                                            <i-option value="1">音频 </i-option>
-                                            <i-option value="2">视频</i-option>
+                                            <i-option value="0">{{$t('videoSettings.audioAndVideo')}}</i-option>
+                                            <i-option value="1">{{$t('videoSettings.audio')}}</i-option>
+                                            <i-option value="2">{{$t('videoSettings.video')}}</i-option>
                                         </i-select>
                                     </i-Col>
                                 </Row>
                                 <Row style="height:32px;margin: 10px 0;" v-show="videochannelcount > 6">
                                     <i-Col span="5" style="height: 100%;line-height:32px;text-align: right;">
-                                        通道7
+                                        {{$t('videoSettings.channel7')}}
                                     </i-Col>
                                     <i-Col span="1" style="height: 100%;line-height:32px;text-align: center;">:</i-Col>
                                     <i-Col span="4" style="height: 100%;line-height:32px;padding-left: 3px;">
                                         <i-select placement="top" v-model="physicalchannel7" style="width:100px">
-                                            <i-option value="0">音视频</i-option>
-                                            <i-option value="1">音频 </i-option>
-                                            <i-option value="2">视频</i-option>
+                                            <i-option value="0">{{$t('videoSettings.audioAndVideo')}}</i-option>
+                                            <i-option value="1">{{$t('videoSettings.audio')}}</i-option>
+                                            <i-option value="2">{{$t('videoSettings.video')}}</i-option>
                                         </i-select>
                                     </i-Col>
                                     <i-Col span="2" style="height: 100%;line-height:32px;text-align: right;" v-show="videochannelcount > 7">
-                                        通道8
+                                        {{$t('videoSettings.channel8')}}
                                     </i-Col>
                                     <i-Col span="1" style="height: 100%;line-height:32px;text-align: center;" v-show="videochannelcount > 7">:</i-Col>
                                     <i-Col span="5" style="height: 100%;line-height:32px;padding-left: 3px;" v-show="videochannelcount > 7">
                                         <i-select placement="top" v-model="physicalchannel8" style="width:100px">
-                                            <i-option value="0">音视频</i-option>
-                                            <i-option value="1">音频 </i-option>
-                                            <i-option value="2">视频</i-option>
+                                            <i-option value="0">{{$t('videoSettings.audioAndVideo')}}</i-option>
+                                            <i-option value="1">{{$t('videoSettings.audio')}}</i-option>
+                                            <i-option value="2">{{$t('videoSettings.video')}}</i-option>
                                         </i-select>
                                     </i-Col>
                                 </Row>
                                 <Row style="height:32px;margin: 10px 0;">
                                     <i-Col span="18" style="height: 100%;line-height:32px;text-align: center;">
-                                        <i-button type='primary' @click='handleSetPlayParamter' :disabled="userType > 2" :loading="loading">设置播放视频参数</i-button>
+                                        <i-button type='primary' @click='handleSetPlayParamter' :disabled="userType > 2" :loading="loading">{{$t('videoSettings.setVideoPlayParameter')}}</i-button>
                                         <i-button type="info" @click="queryVideoPlayParameters" style="width:130px;" :loading="loading">{{$t("reportForm.query")}}</i-button>
                                     </i-Col>
                                 </Row>
                             </Tab-Pane>
-                            <Tab-Pane label="音视频参数" name="videoSetup">
+                            <Tab-Pane :label="$t('videoSettings.audioAndVideoParameter')" name="videoSetup">
                                 <Row style="height:32px;margin: 10px 0;">
                                     <i-Col span="24" style="height: 100%;line-height:32px;text-align: right;">
-                                        <i-button type="success" @click="defaultClientParameters">默认参数</i-button>
+                                        <i-button type="success" @click="defaultClientParameters">{{$t('videoSettings.defaultParameters')}}</i-button>
                                         <i-button type="info" @click="queryClientParameters" :loading="loading">{{$t("reportForm.query")}}</i-button>
-                                        <i-button type="primary" @click="setClientParameters" :disabled="userType > 2">发送</i-button>
+                                        <i-button type="primary" @click="setClientParameters" :disabled="userType > 2">{{$t('videoSettings.send')}}</i-button>
                                     </i-Col>
                                 </Row>
                                 <Row style="height:32px;margin: 10px 0;">
-                                    <i-Col span="4" style="height: 100%;line-height:32px;text-align: right;">
-                                        实时流编码模式 
+                                    <i-Col span="4" style="height: 100%;line-height:32px;text-align:right;">
+                                        {{$t('videoSettings.realTimeStreamCodingMode')}}
                                     </i-Col>
                                     <i-Col span="1" style="height: 100%;line-height:32px;text-align: center;">
                                         :
                                     </i-Col>
                                     <i-Col span="7" style="height: 100%;line-height:32px;">
                                         <i-select v-model="realtimebitratemode">
-                                            <i-option value="0">CBR(固定码率)</i-option>
-                                            <i-option value="1">VBR(可变码率)</i-option>
-                                            <i-option value="2">ABR(平均码率)</i-option>
+                                            <i-option value="0">{{$t('videoSettings.CBR')}}</i-option>
+                                            <i-option value="1">{{$t('videoSettings.VBR')}}</i-option>
+                                            <i-option value="2">{{$t('videoSettings.ABR')}}</i-option>
                                         </i-select>
                                     </i-Col>
                                     <i-Col span="4" style="height: 100%;line-height:32px;text-align: right;">
-                                        存储流编码模式
+                                        {{$t('videoSettings.storageStreamEncodingMode')}}
                                     </i-Col>
                                     <i-Col span="1" style="height: 100%;line-height:32px;text-align: center;">
                                         :
                                     </i-Col>
                                     <i-Col span="7" style="height: 100%;line-height:32px;">
                                         <i-select v-model="storebitratemode">
-                                            <i-option value="0">CBR(固定码率)</i-option>
-                                            <i-option value="1">VBR(可变码率)</i-option>
-                                            <i-option value="2">ABR(平均码率)</i-option>
+                                            <i-option value="0">{{$t('videoSettings.CBR')}}</i-option>
+                                            <i-option value="1">{{$t('videoSettings.VBR')}}</i-option>
+                                            <i-option value="2">{{$t('videoSettings.ABR')}}</i-option>
                                         </i-select>
                                     </i-Col>
                                 </Row>
                                 <Row style="height:32px;margin: 10px 0;">
                                     <i-Col span="4" style="height: 100%;line-height:32px;text-align: right;">
-                                        实时流分辨率
+                                        {{$t('videoSettings.realTimeStreamResolution')}}
                                     </i-Col>
                                     <i-Col span="1" style="height: 100%;line-height:32px;text-align: center;">
                                         :
@@ -1350,7 +1350,7 @@
                                         </i-select>
                                     </i-Col>
                                     <i-Col span="4" style="height: 100%;line-height:32px;text-align: right;">
-                                        存储流分辨率
+                                        {{$t('videoSettings.storageStreamResolution')}}
                                     </i-Col>
                                     <i-Col span="1" style="height: 100%;line-height:32px;text-align: center;">
                                         :
@@ -1369,51 +1369,51 @@
                                 </Row>
                                 <Row style="height:32px;margin: 10px 0;">
                                     <i-Col span="4" style="height: 100%;line-height:32px;text-align: right;">
-                                        实时流关键帧间隔 
+                                        {{$t('videoSettings.realTimeStreamKeyframeInterval')}} 
                                     </i-Col>
                                     <i-Col span="1" style="height: 100%;line-height:32px;text-align: center;">
                                         :
                                     </i-Col>
                                     <i-Col span="7" style="height: 100%;line-height:32px;">
                                         <Input-Number :max="1000" :min="1" v-model="realtimekeyframeinterval"></Input-Number>
-                                        范围1~1000
+                                        {{$t('videoSettings.range')}}1~1000
                                     </i-Col>
                                     <i-Col span="4" style="height: 100%;line-height:32px;text-align: right;">
-                                        存储流关键帧间隔
+                                        {{$t('videoSettings.saveStreamKeyframeInterval')}}
                                     </i-Col>
                                     <i-Col span="1" style="height: 100%;line-height:32px;text-align: center;">
                                         :
                                     </i-Col>
                                     <i-Col span="7" style="height: 100%;line-height:32px;">
                                         <Input-Number :max="1000" :min="1" v-model="storekeyframeinterval"></Input-Number>
-                                        范围1~1000
+                                        {{$t('videoSettings.range')}}1~1000
                                     </i-Col>
                                 </Row>
                                 <Row style="height:32px;margin: 10px 0;">
                                     <i-Col span="4" style="height: 100%;line-height:32px;text-align: right;">
-                                        实时流目标帧率
+                                        {{$t('videoSettings.realTimeStreamTargetFrameRate')}}
                                     </i-Col>
                                     <i-Col span="1" style="height: 100%;line-height:32px;text-align: center;">
                                         :
                                     </i-Col>
                                     <i-Col span="7" style="height: 100%;line-height:32px;">
                                         <Input-Number :max="120" :min="1" v-model="realtimeframerate"></Input-Number>
-                                        范围1~120 帧/秒
+                                        {{$t('videoSettings.range')}}1~120 {{$t('videoSettings.frames_sec')}}
                                     </i-Col>
                                     <i-Col span="4" style="height: 100%;line-height:32px;text-align: right;">
-                                        存储流目标帧率
+                                        {{$t('videoSettings.storageStreamTargetFrameRate')}}
                                     </i-Col>
                                     <i-Col span="1" style="height: 100%;line-height:32px;text-align: center;">
                                         :
                                     </i-Col>
                                     <i-Col span="7" style="height: 100%;line-height:32px;">
                                         <Input-Number :max="120" :min="1" v-model="storeframerate"></Input-Number>
-                                        范围1~120 帧/秒
+                                        {{$t('videoSettings.range')}}1~120 {{$t('videoSettings.frames_sec')}}
                                     </i-Col>
                                 </Row>
                                 <Row style="height:32px;margin: 10px 0;">
                                     <i-Col span="4" style="height: 100%;line-height:32px;text-align: right;">
-                                        实时流目标码率
+                                        {{$t('videoSettings.realTimeStreamTargetBitRate')}}
                                     </i-Col>
                                     <i-Col span="1" style="height: 100%;line-height:32px;text-align: center;">
                                         :
@@ -1423,7 +1423,7 @@
                                         kbps
                                     </i-Col>
                                     <i-Col span="4" style="height: 100%;line-height:32px;text-align: right;">
-                                        存储流目标码率
+                                        {{$t('videoSettings.targetBitRateOfMemoryStream')}}
                                     </i-Col>
                                     <i-Col span="1" style="height: 100%;line-height:32px;text-align: center;">
                                         :
@@ -1435,30 +1435,30 @@
                                 </Row>
                                 <hr/>
                                 <fieldset class="layui-elem-field fieldset" style="margin-top:5px;padding-left: 10px;">
-                                    <legend style="margin-left:20px;">OSD 字幕叠加设置</legend>
+                                    <legend style="margin-left:20px;">{{$t('videoSettings.osd')}}</legend>
                                     <Row style="height:32px;margin: 10px 0;">
                                         <i-Col span="24" style="height: 100%;line-height:32px;">
                                             <checkbox-group v-model="videoCheckboxGroup">
                                                 <Checkbox label="dateandtime">
-                                                    <span>日期和时间</span>
+                                                    <span>{{$t('videoSettings.dateAndTime')}}</span>
                                                 </Checkbox>
                                                 <Checkbox label="carnum">
-                                                    <span>车牌号码</span>
+                                                    <span>{{$t('videoSettings.licensePlate')}}</span>
                                                 </Checkbox>
                                                 <Checkbox label="channel">
-                                                    <span>逻辑通道号</span>
+                                                    <span>{{$t('videoSettings.logicalChannel')}}</span>
                                                 </Checkbox>
                                                 <Checkbox label="latlon">
-                                                    <span>经纬度</span>
+                                                    <span>{{$t('videoSettings.longitudeAndLatitude')}}</span>
                                                 </Checkbox>
                                                 <Checkbox label="recorderspeed">
-                                                    <span>行驶记录速度</span>
+                                                    <span>{{$t('videoSettings.drivingRecordSpeed')}}</span>
                                                 </Checkbox>
                                                 <Checkbox label="gpsspeed">
-                                                    <span>卫星定位速度</span>
+                                                    <span>{{$t('videoSettings.satellitePositioningSpeed')}}</span>
                                                 </Checkbox>
                                                 <Checkbox label="drivingtime">
-                                                    <span>连续驾驶时间</span>
+                                                    <span>{{$t('videoSettings.continuousDrivingTime')}}</span>
                                                 </Checkbox>
                                             </checkbox-group>
                                         </i-Col>
@@ -1466,48 +1466,48 @@
                                 </fieldset>
                                 <Row style="height:32px;margin: 10px 0;">
                                     <i-Col span="4" style="height: 100%;line-height:32px;text-align: right;">
-                                        是否启用音频输出
+                                        {{$t('videoSettings.enableAudioOutput')}}
                                     </i-Col>
                                     <i-Col span="1" style="height: 100%;line-height:32px;text-align: center;">
                                         :
                                     </i-Col>
                                     <i-Col span="7" style="height: 100%;line-height:32px;">
                                         <i-select placement="top" v-model="usingaudio">
-                                            <i-option value="1">启用</i-option>
-                                            <i-option value="0">不启用</i-option>
+                                            <i-option value="1">{{$t('videoSettings.enable')}}</i-option>
+                                            <i-option value="0">{{$t('videoSettings.disabled')}}</i-option>
                                         </i-select>
                                     </i-Col>
                                 </Row>
-                            </Tab-Pane>
-                            <Tab-Pane label="单独通道视频参数" name="aloneVideoSetup">
+                            </Tab-Pane> 
+                            <Tab-Pane :label="$t('videoSettings.singleChannelVideoParameters')" name="aloneVideoSetup">
                                 <i-button type="info" @click="querySingleAudioVideoParameters" style="width:180px;margin-bottom:10px;" :loading="loading">{{$t("reportForm.query")}}</i-button>
                                 <Tabs value="" :animated="false" type="card">
                                     <Tab-Pane :label="item.channelnum" v-for="(item,index) in channelsData" :key="index">
                                         <Row style="height:32px;margin: 10px 0;">
                                             <i-Col span="5" style="height: 100%;line-height:32px;text-align: center;">
-                                                实时流编码模式 :
+                                                {{$t('videoSettings.realTimeStreamCodingMode')}} :
                                             </i-Col>
                                             <i-Col span="7" style="height: 100%;line-height:32px;">
                                                 <i-select v-model="item.realtimebitratemode">
-                                                    <i-option value="0">CBR(固定码率)</i-option>
-                                                    <i-option value="1">VBR(可变码率)</i-option>
-                                                    <i-option value="2">ABR(平均码率)</i-option>
+                                                    <i-option value="0">{{$t('videoSettings.CBR')}}</i-option>
+                                                    <i-option value="1">{{$t('videoSettings.VBR')}}</i-option>
+                                                    <i-option value="2">{{$t('videoSettings.ABR')}}</i-option>
                                                 </i-select>
                                             </i-Col>
                                             <i-Col span="5" style="height: 100%;line-height:32px;text-align: center;">
-                                                存储流编码模式 :
+                                                {{$t('videoSettings.storageStreamEncodingMode')}} :
                                             </i-Col>
                                             <i-Col span="7" style="height: 100%;line-height:32px;">
                                                 <i-select v-model="item.storebitratemode">
-                                                    <i-option value="0">CBR(固定码率)</i-option>
-                                                    <i-option value="1">VBR(可变码率)</i-option>
-                                                    <i-option value="2">ABR(平均码率)</i-option>
+                                                    <i-option value="0">{{$t('videoSettings.CBR')}}</i-option>
+                                                    <i-option value="1">{{$t('videoSettings.VBR')}}</i-option>
+                                                    <i-option value="2">{{$t('videoSettings.ABR')}}</i-option>
                                                 </i-select>
                                             </i-Col>
                                         </Row>
                                         <Row style="height:32px;margin: 10px 0;">
                                             <i-Col span="5" style="height: 100%;line-height:32px;text-align: center;">
-                                                实时流分辨率 :
+                                                {{$t('videoSettings.realTimeStreamResolution')}} :
                                             </i-Col>
                                             <i-Col span="7" style="height: 100%;line-height:32px;">
                                                 <i-select v-model="item.realtimeresolution">
@@ -1521,7 +1521,7 @@
                                                 </i-select>
                                             </i-Col>
                                             <i-Col span="5" style="height: 100%;line-height:32px;text-align: center;">
-                                                存储流分辨率 :
+                                                {{$t('videoSettings.storageStreamResolution')}} :
                                             </i-Col>
                                             <i-Col span="7" style="height: 100%;line-height:32px;">
                                                 <i-select v-model="item.storeresolution">
@@ -1537,46 +1537,46 @@
                                         </Row>
                                         <Row style="height:32px;margin: 10px 0;">
                                             <i-Col span="5" style="height: 100%;line-height:32px;text-align: center;">
-                                                实时流关键帧间隔 :
+                                                {{$t('videoSettings.realTimeStreamKeyframeInterval')}} :
                                             </i-Col>
                                             <i-Col span="7" style="height: 100%;line-height:32px;">
                                                 <Input-Number :max="1000" :min="1" v-model="item.realtimekeyframeinterval"></Input-Number>
-                                                范围1~1000
+                                                {{$t('videoSettings.range')}}1~1000
                                             </i-Col>
                                             <i-Col span="5" style="height: 100%;line-height:32px;text-align: center;">
-                                                存储流关键帧间隔 :
+                                                {{$t('videoSettings.saveStreamKeyframeInterval')}} :
                                             </i-Col>
                                             <i-Col span="7" style="height: 100%;line-height:32px;">
                                                 <Input-Number :max="1000" :min="1" v-model="item.storekeyframeinterval"></Input-Number>
-                                                范围1~1000
+                                                {{$t('videoSettings.range')}}1~1000
                                             </i-Col>
                                         </Row>
                                         <Row style="height:32px;margin: 10px 0;">
                                             <i-Col span="5" style="height: 100%;line-height:32px;text-align: center;">
-                                                实时流目标帧率 :
+                                                {{$t('videoSettings.realTimeStreamTargetFrameRate')}} :
                                             </i-Col>
                                             <i-Col span="7" style="height: 100%;line-height:32px;">
                                                 <Input-Number :max="120" :min="1" v-model="item.realtimeframerate"></Input-Number>
-                                                范围1~120 帧/秒
+                                                {{$t('videoSettings.range')}}1~120 {{$t('videoSettings.frames_sec')}}
                                             </i-Col>
                                             <i-Col span="5" style="height: 100%;line-height:32px;text-align: center;">
-                                                存储流目标帧率 :
+                                                {{$t('videoSettings.storageStreamTargetFrameRate')}} :
                                             </i-Col>
                                             <i-Col span="7" style="height: 100%;line-height:32px;">
                                                 <Input-Number :max="120" :min="1" v-model="item.storeframerate"></Input-Number>
-                                                范围1~120 帧/秒
+                                                {{$t('videoSettings.range')}}1~120 {{$t('videoSettings.frames_sec')}}
                                             </i-Col>
                                         </Row>
                                         <Row style="height:32px;margin: 10px 0;">
                                             <i-Col span="5" style="height: 100%;line-height:32px;text-align: center;">
-                                                实时流目标码率 :
+                                                {{$t('videoSettings.realTimeStreamTargetBitRate')}} :
                                             </i-Col>
                                             <i-Col span="7" style="height: 100%;line-height:32px;">
                                                 <Input-Number :max="2000" :min="1" v-model="item.realtimeframebitrate"></Input-Number>
                                                 kbps
                                             </i-Col>
                                             <i-Col span="5" style="height: 100%;line-height:32px;text-align: center;">
-                                                存储流目标码率 :
+                                                {{$t('videoSettings.targetBitRateOfMemoryStream')}} :
                                             </i-Col>
                                             <i-Col span="7" style="height: 100%;line-height:32px;">
                                                 <Input-Number :max="2000" :min="1" v-model="item.storeframebitrate"></Input-Number>
@@ -1585,30 +1585,30 @@
                                         </Row>
                                         <hr/>
                                         <fieldset class="layui-elem-field fieldset" style="margin-top:5px;padding-left: 10px;">
-                                            <legend style="margin-left:20px;">OSD 字幕叠加设置</legend>
+                                            <legend style="margin-left:20px;">{{$t('videoSettings.osd')}}</legend>
                                             <Row style="height:32px;margin: 10px 0;">
                                                 <i-Col span="24" style="height: 100%;line-height:32px;">
                                                     <checkbox-group v-model="item.videoCheckboxGroup">
                                                         <Checkbox label="dateandtime">
-                                                            <span>日期和时间</span>
+                                                            <span>{{$t('videoSettings.dateAndTime')}}</span>
                                                         </Checkbox>
                                                         <Checkbox label="carnum">
-                                                            <span>车牌号码</span>
+                                                            <span>{{$t('videoSettings.licensePlate')}}</span>
                                                         </Checkbox>
                                                         <Checkbox label="channel">
-                                                            <span>逻辑通道号</span>
+                                                            <span>{{$t('videoSettings.logicalChannel')}}</span>
                                                         </Checkbox>
                                                         <Checkbox label="latlon">
-                                                            <span>经纬度</span>
+                                                            <span>{{$t('videoSettings.longitudeAndLatitude')}}</span>
                                                         </Checkbox>
                                                         <Checkbox label="recorderspeed">
-                                                            <span>行驶记录速度</span>
+                                                            <span>{{$t('videoSettings.drivingRecordSpeed')}}</span>
                                                         </Checkbox>
                                                         <Checkbox label="gpsspeed">
-                                                            <span>卫星定位速度</span>
+                                                            <span>{{$t('videoSettings.satellitePositioningSpeed')}}</span>
                                                         </Checkbox>
                                                         <Checkbox label="drivingtime">
-                                                            <span>连续驾驶时间</span>
+                                                            <span>{{$t('videoSettings.continuousDrivingTime')}}</span>
                                                         </Checkbox>
                                                     </checkbox-group>
                                                 </i-Col>
@@ -1616,86 +1616,86 @@
                                         </fieldset>
                                         <Row style="height:32px;margin: 10px 0;">
                                             <i-Col span="24" style="height:100%;line-height:32px;text-align:center;">
-                                                <i-button style="width:200px;" type="primary" @click="setSingleAudioVideoParameters(index)">发送</i-button>
+                                                <i-button style="width:200px;" type="primary" @click="setSingleAudioVideoParameters(index)">{{$t('videoSettings.send')}}</i-button>
                                             </i-Col>
                                         </Row>
                                     </Tab-Pane>
                                 </Tabs>
                             </Tab-Pane>
-                            <Tab-Pane label="音视频终端属性" name="videoProperty">
+                            <Tab-Pane :label="$t('videoSettings.audioAndVideoTerminalProperties')" name="videoProperty"> 
                                 <Row style="height:32px;margin: 10px 0;">
                                     <i-Col span="7" offset="7" style="height: 100%;line-height:32px;">
                                         <i-button @click="queryVideoProperty" style="width:120px;" type="primary" :loading="loading">{{$t("reportForm.query")}}</i-button>
                                     </i-Col>
                                 </Row>
                                 <Row style="height:32px;">
-                                    <i-Col span="8" style="height: 100%;text-align:right;line-height:32px;">音频编码方式 : &nbsp;</i-Col>
+                                    <i-Col span="8" style="height: 100%;text-align:right;line-height:32px;">{{$t('videoSettings.audioCodingMode')}} : &nbsp;</i-Col>
                                     <i-Col span="16" style="height: 100%;line-height:32px;">
                                         {{videoProperty.audiocodec}}
                                     </i-Col>
                                 </Row>
                                 <Row style="height:32px;">
-                                    <i-Col span="8" style="height: 100%;text-align:right;line-height:32px;">音频编码方式字符 : &nbsp;</i-Col>
+                                    <i-Col span="8" style="height: 100%;text-align:right;line-height:32px;">{{$t('videoSettings.audioCodingModeCharacter')}} : &nbsp;</i-Col>
                                     <i-Col span="16" style="height: 100%;line-height:32px;">
                                         {{videoProperty.audiocodecstr}}
                                     </i-Col>
                                 </Row>
                                 <Row style="height:32px;">
-                                    <i-Col span="8" style="height: 100%;text-align:right;line-height:32px;">音频声道数 : &nbsp;</i-Col>
+                                    <i-Col span="8" style="height: 100%;text-align:right;line-height:32px;">{{$t('videoSettings.audioChannels')}} : &nbsp;</i-Col>
                                     <i-Col span="16" style="height: 100%;line-height:32px;">
                                         {{videoProperty.audiochannelcount}}
                                     </i-Col>
                                 </Row>
                                 <Row style="height:32px;">
-                                    <i-Col span="8" style="height: 100%;text-align:right;line-height:32px;">音频采样率 : &nbsp;</i-Col>
+                                    <i-Col span="8" style="height: 100%;text-align:right;line-height:32px;">{{$t('videoSettings.audioSamplingRate')}} : &nbsp;</i-Col>
                                     <i-Col span="16" style="height: 100%;line-height:32px;">
                                         {{videoProperty.audiosamplerate}}
                                     </i-Col>
                                 </Row>
                                 <Row style="height:32px;">
-                                    <i-Col span="8" style="height: 100%;text-align:right;line-height:32px;">音频采样位数 : &nbsp;</i-Col>
+                                    <i-Col span="8" style="height: 100%;text-align:right;line-height:32px;">{{$t('videoSettings.audioSamplingBits')}} : &nbsp;</i-Col>
                                     <i-Col span="16" style="height: 100%;line-height:32px;">
                                         {{videoProperty.audiosamplebits}}
                                     </i-Col>
                                 </Row>
                                 <Row style="height:32px;">
-                                    <i-Col span="8" style="height: 100%;text-align:right;line-height:32px;">音频帧长度 : &nbsp;</i-Col>
+                                    <i-Col span="8" style="height: 100%;text-align:right;line-height:32px;">{{$t('videoSettings.audioFrameLength')}} : &nbsp;</i-Col>
                                     <i-Col span="16" style="height: 100%;line-height:32px;">
                                         {{videoProperty.audioframelength}}
                                     </i-Col>
                                 </Row>
                                 <Row style="height:32px;">
-                                    <i-Col span="8" style="height: 100%;text-align:right;line-height:32px;">是否支持音频输出 : &nbsp;</i-Col>
+                                    <i-Col span="8" style="height: 100%;text-align:right;line-height:32px;">{{$t('videoSettings.audioOutputSupported')}} : &nbsp;</i-Col>
                                     <i-Col span="16" style="height: 100%;line-height:32px;">
                                         {{videoProperty.audiooutputsupport}}
                                     </i-Col>
                                 </Row>
                                 <Row style="height:32px;">
-                                    <i-Col span="8" style="height: 100%;text-align:right;line-height:32px;">视频编码方式 : &nbsp;</i-Col>
+                                    <i-Col span="8" style="height: 100%;text-align:right;line-height:32px;">{{$t('videoSettings.videoCoding')}} : &nbsp;</i-Col>
                                     <i-Col span="16" style="height: 100%;line-height:32px;">
                                         {{videoProperty.videocodec}}
                                     </i-Col>
                                 </Row>
                                 <Row style="height:32px;">
-                                    <i-Col span="8" style="height: 100%;text-align:right;line-height:32px;">视频编码方式字符 : &nbsp;</i-Col>
+                                    <i-Col span="8" style="height: 100%;text-align:right;line-height:32px;">{{$t('videoSettings.videoCodingModeCharacter')}} : &nbsp;</i-Col>
                                     <i-Col span="16" style="height: 100%;line-height:32px;">
                                         {{videoProperty.videocodecstr}}
                                     </i-Col>
                                 </Row>
                                 <Row style="height:32px;">
-                                    <i-Col span="8" style="height: 100%;text-align:right;line-height:32px;">终端支持最大音频物理通道数 : &nbsp;</i-Col>
+                                    <i-Col span="8" style="height: 100%;text-align:right;line-height:32px;">{{$t('videoSettings.maxAudioChannels')}}  : &nbsp;</i-Col>
                                     <i-Col span="16" style="height: 100%;line-height:32px;">
                                         {{videoProperty.audiomaxsupport}}
                                     </i-Col>
                                 </Row>
                                 <Row style="height:32px;">
-                                    <i-Col span="8" style="height: 100%;text-align:right;line-height:32px;">终端支持最大视频物理通道数 : &nbsp;</i-Col>
+                                    <i-Col span="8" style="height: 100%;text-align:right;line-height:32px;">{{$t('videoSettings.maxVideoChannels')}} : &nbsp;</i-Col>
                                     <i-Col span="16" style="height: 100%;line-height:32px;">
                                         {{videoProperty.videomaxsupport}}
                                     </i-Col>
                                 </Row>
                             </Tab-Pane>
-                            <Tab-Pane label="音视频通道列表" name="videoChannelsList">
+                            <Tab-Pane :label="$t('videoSettings.audioAndVideoChannelList')" name="videoChannelsList">
                                 <Row style="height:32px;margin: 10px 0;">
                                     <i-Col span="7" offset="7" style="height: 100%;line-height:32px;">
                                         <i-button @click="queryVideoChannels" style="width:120px;" type="primary" :loading="loading">{{$t("reportForm.query")}}</i-button>
@@ -1703,9 +1703,9 @@
                                 </Row>
                                 <i-table border :columns="videoChannelsColumns" :data="videoChannelsTableData" height="234"></i-table>
                             </Tab-Pane>
-                            <Tab-Pane label="主动安全外设" name="activeSecurityPeripheral">
+                            <Tab-Pane :label="$t('videoSettings.activeSafetyPeripheral')" name="activeSecurityPeripheral">
                                 <Tabs type="card" :animated="false">
-                                    <Tab-Pane label="高级驾驶辅助" name="activeSecurityPeripheral1">
+                                    <Tab-Pane :label="$t('videoSettings.advancedDrivingAIDS')" name="activeSecurityPeripheral1">
                                         <Row>
                                             <i-col span="6">
                                                 <i-button type="primary" @click="queryActiveSafetyDeviceInfo('adas')" :loading="loading">{{$t("reportForm.query")}}</i-button>
@@ -1713,13 +1713,13 @@
                                         </Row>
                                         <Row style="line-height:32px">
                                             <i-col :span="3">
-                                                公司名称:
+                                                {{$t('videoSettings.corporateName')}}:
                                             </i-col>
                                             <i-col :span="8">
                                                 <i-input v-model.trim="safetyDeviceAdas.companyname" disabled style="color:#000"></i-input>
                                             </i-col>
                                             <i-col span="3" offset="2">
-                                                产品型号:
+                                                {{$t('videoSettings.productModel')}}:
                                             </i-col>
                                             <i-col :span="8">
                                                 <i-input v-model.trim="safetyDeviceAdas.modelname" disabled style="color:#000"></i-input>
@@ -1727,13 +1727,13 @@
                                         </Row>
                                         <Row style="line-height:32px">
                                             <i-col span="3">
-                                                设备版本号:
+                                                {{$t('videoSettings.deviceVersion')}}:
                                             </i-col>
                                             <i-col span="8">
                                                 <i-input v-model.trim="safetyDeviceAdas.hardwareversion" disabled></i-input>
                                             </i-col>
                                             <i-col span="3" offset="2">
-                                                软件版本号:
+                                                {{$t('videoSettings.softwareVersion')}}:
                                             </i-col>
                                             <i-col span="8">
                                                 <i-input v-model.trim="safetyDeviceAdas.softwareversion" disabled></i-input>
@@ -1741,20 +1741,20 @@
                                         </Row>
                                         <Row style="line-height:32px">
                                             <i-col span="3">
-                                                设备ID:
+                                                {{$t('videoSettings.deviceID')}}:
                                             </i-col>
                                             <i-col span="8">
                                                 <i-input v-model.trim="safetyDeviceAdas.exdeviceid" disabled></i-input>
                                             </i-col>
                                             <i-col span="3" offset="2">
-                                                客户代码:
+                                                {{$t('videoSettings.customerCode')}}:
                                             </i-col>
                                             <i-col span="8">
                                                 <i-input v-model.trim="safetyDeviceAdas.customcode" disabled></i-input>
                                             </i-col>
                                         </Row>
                                     </Tab-Pane>
-                                    <Tab-Pane label="驾驶员状态监测" name="activeSecurityPeripheral2">
+                                    <Tab-Pane :label="$t('videoSettings.driverConditionMonitoring')" name="activeSecurityPeripheral2">
                                         <row>
                                             <i-col span="6">
                                                 <i-button type="primary" @click="queryActiveSafetyDeviceInfo('dsm')" :loading="loading">{{$t("reportForm.query")}}</i-button>
@@ -1762,13 +1762,13 @@
                                         </row>
                                         <Row style="line-height:32px">
                                             <i-col span="3">
-                                                公司名称:
+                                                {{$t('videoSettings.corporateName')}}:
                                             </i-col>
                                             <i-col span="8">
                                                 <i-input v-model.trim="safetyDeviceDsm.companyname" disabled></i-input>
                                             </i-col>
                                             <i-col span="3" offset="2">
-                                                产品型号:
+                                                {{$t('videoSettings.productModel')}}:
                                             </i-col>
                                             <i-col span="8">
                                                 <i-input v-model.trim="safetyDeviceDsm.modelname" disabled></i-input>
@@ -1776,13 +1776,13 @@
                                         </Row>
                                         <Row style="line-height:32px">
                                             <i-col span="3">
-                                                设备版本号:
+                                                {{$t('videoSettings.deviceVersion')}}:
                                             </i-col>
                                             <i-col span="8">
                                                 <i-input v-model.trim="safetyDeviceDsm.hardwareversion" disabled></i-input>
                                             </i-col>
                                             <i-col span="3" offset="2">
-                                                软件版本号:
+                                                {{$t('videoSettings.softwareVersion')}}:
                                             </i-col>
                                             <i-col span="8">
                                                 <i-input v-model.trim="safetyDeviceDsm.softwareversion" disabled></i-input>
@@ -1790,20 +1790,20 @@
                                         </Row>
                                         <Row style="line-height:32px">
                                             <i-col span="3">
-                                                设备ID:
+                                                {{$t('videoSettings.deviceID')}}:
                                             </i-col>
                                             <i-col span="8">
                                                 <i-input v-model.trim="safetyDeviceDsm.exdeviceid" disabled></i-input>
                                             </i-col>
                                             <i-col span="3" offset="2">
-                                                客户代码:
+                                                {{$t('videoSettings.customerCode')}}:
                                             </i-col>
                                             <i-col span="8">
                                                 <i-input v-model.trim="safetyDeviceDsm.customcode" disabled></i-input>
                                             </i-col>
                                         </Row>
                                     </Tab-Pane>
-                                    <Tab-Pane label="轮胎气压监测" name="activeSecurityPeripheral3">
+                                    <Tab-Pane :label="$t('videoSettings.tpms')" name="activeSecurityPeripheral3">
                                         <row>
                                             <i-col span="6">
                                                 <i-button type="primary" @click="queryActiveSafetyDeviceInfo('tpms')" :loading="loading">{{$t("reportForm.query")}}</i-button>
@@ -1811,13 +1811,13 @@
                                         </row>
                                         <Row style="line-height:32px">
                                             <i-col span="3">
-                                                公司名称:
+                                                {{$t('videoSettings.corporateName')}}:
                                             </i-col>
                                             <i-col span="8">
                                                 <i-input v-model.trim="safetyDeviceTpms.companyname" disabled></i-input>
                                             </i-col>
                                             <i-col span="3" offset="2">
-                                                产品型号:
+                                                {{$t('videoSettings.productModel')}}:
                                             </i-col>
                                             <i-col span="8">
                                                 <i-input v-model.trim="safetyDeviceTpms.modelname" disabled></i-input>
@@ -1825,13 +1825,13 @@
                                         </Row>
                                         <Row style="line-height:32px">
                                             <i-col span="3">
-                                                设备版本号:
+                                                {{$t('videoSettings.deviceVersion')}}:
                                             </i-col>
                                             <i-col span="8">
                                                 <i-input v-model.trim="safetyDeviceTpms.hardwareversion" disabled></i-input>
                                             </i-col>
                                             <i-col span="3" offset="2">
-                                                软件版本号:
+                                                {{$t('videoSettings.softwareVersion')}}:
                                             </i-col>
                                             <i-col span="8">
                                                 <i-input v-model.trim="safetyDeviceTpms.softwareversion" disabled></i-input>
@@ -1839,20 +1839,20 @@
                                         </Row>
                                         <Row style="line-height:32px">
                                             <i-col span="3">
-                                                设备ID:
+                                                {{$t('videoSettings.deviceID')}}:
                                             </i-col>
                                             <i-col span="8">
                                                 <i-input v-model.trim="safetyDeviceTpms.exdeviceid" disabled></i-input>
                                             </i-col>
                                             <i-col span="3" offset="2">
-                                                客户代码:
+                                                {{$t('videoSettings.customerCode')}}:
                                             </i-col>
                                             <i-col span="8">
                                                 <i-input v-model.trim="safetyDeviceTpms.customcode" disabled></i-input>
                                             </i-col>
                                         </Row>
                                     </Tab-Pane>
-                                    <Tab-Pane label="盲点监测" name="activeSecurityPeripheral4">
+                                    <Tab-Pane :label="$t('videoSettings.blindspotMonitoring')" name="activeSecurityPeripheral4">
                                         <row>
                                             <i-col span="6">
                                                 <i-button type="primary" @click="queryActiveSafetyDeviceInfo('bsd')" :loading="loading">{{$t("reportForm.query")}}</i-button>
@@ -1860,13 +1860,13 @@
                                         </row>
                                         <Row style="line-height:32px;">
                                             <i-col span="3">
-                                                公司名称:
+                                                {{$t('videoSettings.corporateName')}}:
                                             </i-col>
                                             <i-col span="8">
                                                 <i-input v-model.trim="safetyDeviceBsd.companyname" disabled></i-input>
                                             </i-col>
                                             <i-col span="3" offset="2">
-                                                产品型号:
+                                                {{$t('videoSettings.productModel')}}:
                                             </i-col>
                                             <i-col span="8">
                                                 <i-input v-model.trim="safetyDeviceBsd.modelname" disabled></i-input>
@@ -1874,13 +1874,13 @@
                                         </Row>
                                         <Row style="line-height:32px">
                                             <i-col span="3">
-                                                设备版本号:
+                                                {{$t('videoSettings.deviceVersion')}}:
                                             </i-col>
                                             <i-col span="8">
                                                 <i-input v-model.trim="safetyDeviceBsd.hardwareversion" disabled></i-input>
                                             </i-col>
                                             <i-col span="3" offset="2">
-                                                软件版本号:
+                                                {{$t('videoSettings.softwareVersion')}}:
                                             </i-col>
                                             <i-col span="8">
                                                 <i-input v-model.trim="safetyDeviceBsd.softwareversion" disabled></i-input>
@@ -1888,13 +1888,13 @@
                                         </Row>
                                         <Row style="line-height:32px">
                                             <i-col span="3">
-                                                设备ID:
+                                                {{$t('videoSettings.deviceID')}}:
                                             </i-col>
                                             <i-col span="8">
                                                 <i-input v-model.trim="safetyDeviceBsd.exdeviceid" disabled></i-input>
                                             </i-col>
                                             <i-col span="3" offset="2">
-                                                客户代码:
+                                                {{$t('videoSettings.customerCode')}}:
                                             </i-col>
                                             <i-col span="8">
                                                 <i-input v-model.trim="safetyDeviceBsd.customcode" disabled></i-input>

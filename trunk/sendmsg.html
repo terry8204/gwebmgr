@@ -36,23 +36,25 @@
             <i-Header>
                 <Row style="height: 100%;">   
                     <i-col :span="24">
-                        <h1 style="color:#ffffff;">发送消息</h1>
+                        <h1 style="color:#ffffff;">{{isZh ? '发送消息' :'Send message'}}</h1>
                     </i-col>
                 </Row> 
             </i-Header>
             <Layout>
-                <Sider hide-trigger style="background:#eee;padding:10px;overflow-y: auto;">
-                    <Tree :data="treeData" show-checkbox ref="treeIns"></Tree>
+                <Sider hide-trigger style="background:#eee;padding:10px;box-sizing: border-box;">
+                    <div style="overflow-y: auto;height: 515px;">
+                        <Tree :data="treeData" show-checkbox ref="treeIns"></Tree>
+                    </div>
                 </Sider>
                 <i-Content>
                     <Row style="padding: 10px">   
                         <i-col :span="24">
-                            <i-input v-model="msgValue" type="textarea" :rows="14" placeholder="请输入消息" />
+                            <i-input v-model="msgValue" type="textarea" :rows="14"  />
                         </i-col>
                     </Row> 
                     <Row style="padding:0 10px;">   
                         <i-col :span="8" offset="8">
-                            <i-button @click="submitMsg" style="width:100%;" type="primary">提交</i-button>
+                            <i-button @click="submitMsg" style="width:100%;" type="primary">{{isZh ? '提交' :'Submit'}}</i-button>
                         </i-col>
                     </Row>
 
@@ -63,21 +65,27 @@
     <script src="js/polyfill.min.js"></script>
     <script src="dist/vue.min.js"></script>
     <script src="dist/iview.min.js"></script>
+    <script src="js/zh-CN.js"></script>
+    <script src="js/en-US.js"></script>
     <script src="js/gps51-jquery.js"></script>
     <script src="js/config.js"></script>
     <script src="js/dateformat.js"></script>
     <script src="js/js.cookie.min.js"></script>
+
     <script src="js/util.js"></script>
     <script>
         var token = utils.getParameterByName("token");
         var userName = Cookies.get('name');
+        var isZh = utils.locale === 'zh';
+        iview.lang(isZh ? 'zh-CN' : 'en-US');
         new Vue({
             el:'#container',
             data:{
                 msgValue:'',
+                isZh : isZh,
                 treeData:[
                     {
-                        title: '全部',
+                        title: isZh ? '全部' :'all',
                         expand: true,
                         children:[],
                     },
@@ -88,11 +96,11 @@
                     var url = myUrls.sendSystemMsg() , me = this;
                     var checkedData = this.$refs.treeIns.getCheckedNodes();
                     if(me.treeData[0].children.length === 0){
-                        this.$Message.error("没有用户列表");
+                        this.$Message.error(isZh ? "没有用户列表" :'There is no user list');
                         return 
                     }
                     if(!this.msgValue){
-                        this.$Message.error("请填写消息");
+                        this.$Message.error(isZh ? "请填写消息" : 'Please fill in the message');
                         return;
                     }
                     if(checkedData.length){
@@ -111,14 +119,14 @@
                         };
                         utils.sendAjax(url,data,function (resp) { 
                             if(resp.status === 0){
-                                me.$Message.success("发送成功");
+                            me.$Message.success(isZh ? "发送成功" : "Send success");
                                 me.msgValue = '';
                             }else{
-                                me.$Message.error("发送失败");
+                                me.$Message.error(isZh ? "发送失败" : "Send failing");
                             }
                         });
                     }else{
-                        this.$Message.error("请选择用户");
+                        this.$Message.error(isZh ? "请选择用户" : "Please select user");
                     }
                 },
                 queryUser:function(){
@@ -135,7 +143,7 @@
                                 });
                                 me.treeData[0].children = children;
                             }else{
-                                me.$Message.error("没有用户列表");
+                                me.$Message.error(isZh ? "没有用户列表" : "There is no user list");
                             }
                         }
                     });

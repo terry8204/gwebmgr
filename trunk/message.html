@@ -30,10 +30,10 @@
             <i-Header>
                 <Row style="height: 100%;">
                     <i-col :span="12" style="color:#ffffff;">
-                        <h1>消息列表</h1>
+                        <h1>{{isZh ? '消息列表' :'Message list'}}</h1>
                     </i-col>
                     <i-col :span="12" style="text-align:right;">
-                        <i-button @click="jumpSendMsg" type="primary">发送消息</i-button>
+                        <i-button @click="jumpSendMsg" type="primary">{{isZh ? '发送消息' :'Send message'}}</i-button>
                     </i-col>
                 </Row>
             </i-Header>
@@ -45,6 +45,8 @@
     <script src="js/polyfill.min.js"></script>
     <script src="dist/vue.min.js"></script>
     <script src="dist/iview.min.js"></script>
+    <script src="js/zh-CN.js"></script>
+    <script src="js/en-US.js"></script>
     <script src="js/gps51-jquery.js"></script>
     <script src="js/config.js"></script>
     <script src="js/dateformat.js"></script>
@@ -54,26 +56,29 @@
         var token = utils.getParameterByName("token");
         var timeDifference = DateFormat.getOffset();
         var userName = Cookies.get('name');
+        var isZh = utils.locale === 'zh';
+        iview.lang(isZh ? 'zh-CN' : 'en-US');
         var vRoot = new Vue({
             el: '#container',
             data: {
+                isZh:isZh,
                 columns: [{
-                    title: '用户名',
+                    title: isZh?'用户名':'User name',
                     key: 'createraccount',
                     width: 200,
                 }, {
-                    title: '发送者名称',
+                    title: isZh?'发送者名称':'Creater name',
                     key: 'creatername',
                     width: 200,
                 }, {
-                    title: '发送时间',
+                    title: isZh?'发送时间':'Create time',
                     key: 'createtimeStr',
                     width: 160,
                 }, {
-                    title: '内容',
+                    title: isZh?'内容':'Content',
                     key: 'content'
                 }, {
-                    title: '操作',
+                    title: isZh?'操作':'Action',
                     type: 'action',
                     width: 170,
                     render: function(h, params) {
@@ -83,7 +88,7 @@
                             h('Poptip', {
                                 props: {
                                     confirm: true,
-                                    title: '确定删除吗?'
+                                    title: isZh?'确定删除吗?':'Are you sure you want to delete it'
                                 },
                                 style: {
                                     marginRight: '10px'
@@ -99,12 +104,12 @@
                                         type: 'error',
                                         size: 'small'
                                     }
-                                }, "删除")
+                                }, isZh?"删除":"delete")
                             ]),
                             h('Poptip', {
                                 props: {
                                     confirm: true,
-                                    title: '确定撤回吗?'
+                                    title: isZh?'确定撤回吗?':'Are you sure you want to withdraw'
                                 },
                                 style: {
 
@@ -121,7 +126,7 @@
                                         size: 'small',
                                         disabled: disabled
                                     }
-                                }, "撤回")
+                                }, isZh?"撤回":"withdraw")
                             ]),
                         ])
                     }
@@ -154,9 +159,9 @@
                     }, function(resp) {
                         if (resp.status == 0) {
                             me.data.splice(index, 1);
-                            me.$Message.success("删除成功");
+                            me.$Message.success( isZh?"删除成功":"Deletion succeeded");
                         } else {
-                            me.$Message.error("删除失败");
+                            me.$Message.error( isZh?"删除失败":"Deletion failed");
                         }
                     });
                 },
@@ -169,9 +174,9 @@
                     }, function(resp) {
                         if (resp.status == 0) {
                             me.data.splice(index, 1);
-                            me.$Message.success("撤回成功");
+                            me.$Message.success(isZh?"撤回成功":"Withdrawal successful");
                         } else {
-                            me.$Message.error("撤回失败");
+                            me.$Message.error(isZh?"撤回失败":"Withdrawal failed");
                         }
                     })
                 }
