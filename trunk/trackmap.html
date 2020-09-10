@@ -451,27 +451,24 @@
                             callback(address);
                             return;
                         }
-                        if (this.mapType === 'bMap') {
+                        if (this.mapType === 'bMap' || this.mapType === 'oMap') {
                              utils.getJiuHuAddressSyn(callon, callat, function(resp) {
-                                        address = resp.address
-                                        LocalCacheMgr.setAddress(lng, lat, address);
-                                        callback(address);
-                                    });
+                                if(resp.status > 9900){
+                                    console.log('getJiuHuAddressSyn token失效,请重新登录')
+                                }else if(resp.status == 0){
+                                    address = resp.address
+                                    LocalCacheMgr.setAddress(lng, lat, address);
+                                    callback(address);
+                                }else{
+                                    console.log('getJiuHuAddressSyn 查询地址失败')
+                                }   
+                             });
                         } else if (this.mapType === 'gMap') {
                             var google_lng_lat = wgs84togcj02(callon, callat);
                             utils.getGoogleAddressSyn(google_lng_lat[1], google_lng_lat[0], function(address) {
                                 callback(address);
                             })
-                        } else if (this.mapType === 'oMap') {
-                            utils.getJiuHuAddressSyn(callon, callat, function(respAddress) {
-                                if (respAddress.address) {
-                                    LocalCacheMgr.setAddress(lng, lat, respAddress.address);
-                                    callback(respAddress.address);
-                                } else {
-                                    callback('地址正在解析中...');
-                                }
-                            })
-                        }
+                        } 
 
                         return isZh ? "地址正在解析..." : "Address is being resolved...";
                     },

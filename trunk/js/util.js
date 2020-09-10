@@ -1221,29 +1221,17 @@ function refreshPostion(deviceid) {
     var lat = track.callat.toFixed(5);
 
     try {
-        //        var b_lon_lat = wgs84tobd09(track.callon, track.callat);
-        //        utils.getBaiduAddressFromBaidu(b_lon_lat[0], b_lon_lat[1], function(b_address) {
-        //            if (b_address) {
-        //
-        //                $("p.last-address").html((isZh ? "详细地址: " : "Address: ") + b_address);
-        //                LocalCacheMgr.setAddress(lon, lat, b_address);
-        //            };
-        //        })
-        //        var b_lon_lat = wgs84tobd09(track.callon, track.callat);
         utils.getJiuHuAddressSyn(track.callon, track.callat, function(resp) {
             var j_address = resp.address;
             if (j_address) {
-
                 $("p.last-address").html((isZh ? "地址: " : "Address: ") + j_address);
                 LocalCacheMgr.setAddress(lon, lat, j_address);
             };
         });
-
     } catch (error) {
         var g_lon_lat = wgs84togcj02(track.callon, track.callat);
         utils.getGoogleAddressSyn(g_lon_lat[1], g_lon_lat[0], function(g_address) {
             if (g_address) {
-
                 $("p.last-address").html((isZh ? "详细地址: " : "Address: ") + g_address);
                 LocalCacheMgr.setAddress(lon, lat, g_address);
             }

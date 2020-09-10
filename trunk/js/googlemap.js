@@ -141,9 +141,11 @@ GoogleMap.pt.getDevAddress = function(track) {
         } else {
             utils.getJiuHuAddressSyn(callon, callat, function(resp) {
                 var j_address = resp.address
-                var content = utils.getWindowContent(track, j_address);
-                self.mapInfoWindow && self.mapInfoWindow.setContent(content);
-                LocalCacheMgr.setAddress(callon, callat, j_address);
+                if(j_address){
+                    var content = utils.getWindowContent(track, j_address);
+                    self.mapInfoWindow && self.mapInfoWindow.setContent(content);
+                    LocalCacheMgr.setAddress(callon, callat, j_address);
+                }
             });
         }
     });

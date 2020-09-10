@@ -147,7 +147,7 @@ OpenStreeMapCls.pt.getDevAddress = function(track) {
     if (address) {
         return address;
     } else {
-        if (isZh) {
+        // if (isZh) {
             utils.getJiuHuAddressSyn(callon, callat, function(respAddress) {
                 var jh_address = respAddress && respAddress.address;
                 if (jh_address) {
@@ -156,15 +156,15 @@ OpenStreeMapCls.pt.getDevAddress = function(track) {
                     LocalCacheMgr.setAddress(callon, callat, jh_address);
                 }
             })
-        } else {
-            utils.getAbroadAddressSyn(callon, callat, function(abroad_address) {
-                if (abroad_address) {
-                    var wContent = utils.getWindowContent(track, abroad_address);
-                    document.getElementById('popup-content').innerHTML = wContent;
-                    LocalCacheMgr.setAddress(callon, callat, abroad_address);
-                }
-            });
-        }
+        // } else {
+        //     utils.getAbroadAddressSyn(callon, callat, function(abroad_address) {
+        //         if (abroad_address) {
+        //             var wContent = utils.getWindowContent(track, abroad_address);
+        //             document.getElementById('popup-content').innerHTML = wContent;
+        //             LocalCacheMgr.setAddress(callon, callat, abroad_address);
+        //         }
+        //     });
+        // }
         return '正在解析地址...';
     }
 }

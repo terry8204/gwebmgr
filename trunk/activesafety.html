@@ -139,7 +139,6 @@
     <div class="mask-wrapper" id="mask-wrapper">
         <div class="box" style="position:relative;">
             <div class="loader-05"></div>
-            <div class="text-tip">正在载入播放器</div>
         </div>
     </div>
     <div id="dsm-wraper">
@@ -164,18 +163,18 @@
         <div class="table-wrapper">
             <keep-alive>
                 <Tabs :animated="true" @on-click="onClickTabs">
-                    <Tab-Pane label="前向报警" name="forwardAlarm">
+                    <Tab-Pane :label="$t('activeSafety.forwardAlarm')" name="forwardAlarm">
                         <i-table border highlight-row :loading="loading" ref="forwardTable" @on-current-change="onForwardAlarmChange" :columns="forwardAlarmColumns" :data="forwardAlarmList" height="283"></i-table>
                     </Tab-Pane>
-                    <Tab-Pane label="驾驶异常" name="abnormalDriving">
+                    <Tab-Pane :label="$t('activeSafety.abnormalDriving')" name="abnormalDriving">
                         <i-table border :loading="loading" highlight-row ref="abnormalTable" @on-current-change="onAbnormalDrivingChange" :columns="abnormalDrivingColumns" :data="abnormalDrivingList" height="283"></i-table>
                     </Tab-Pane>
                     <date-picker type="date" v-model="date" slot="extra" size="small" style="margin-top:5px;margin-right:8px;"></date-picker>
-                    <i-button size="small" slot="extra" type="primary" style="margin-top:1px;margin-right:5px;" @click="queryActiveSafety">查询</i-button>
-                    <i-button size="small" slot="extra" type="success" style="margin-top:1px;margin-right:5px;" @click="prevArticle">上一条</i-button>
-                    <i-button size="small" v-if="detailTableData.length" slot="extra" style="margin-top:1px;margin-right:5px;width:100px;">{{detailIndex+1}}/{{detailTableData.length}}条</i-button>
-                    <i-button size="small" v-else="detailTableData.length" slot="extra" style="margin-top:1px;margin-right:5px;width:100px;">0/0条</i-button>
-                    <i-button size="small" slot="extra" type="success" style="margin-top:1px;margin-right:5px;" @click="nextArticle">下一条</i-button>
+                    <i-button size="small" slot="extra" type="primary" style="margin-top:1px;margin-right:5px;" @click="queryActiveSafety">{{$t('reportForm.query')}}</i-button>
+                    <i-button size="small" slot="extra" type="success" style="margin-top:1px;margin-right:5px;" @click="prevArticle">{{$t('activeSafety.previous')}}</i-button>  
+                    <i-button size="small" v-if="detailTableData.length" slot="extra" style="margin-top:1px;margin-right:5px;width:100px;">{{detailIndex+1}}/{{detailTableData.length}}</i-button>
+                    <i-button size="small" v-else="detailTableData.length" slot="extra" style="margin-top:1px;margin-right:5px;width:100px;">0/0</i-button>
+                    <i-button size="small" slot="extra" type="success" style="margin-top:1px;margin-right:5px;" @click="nextArticle">{{$t('activeSafety.next')}}</i-button>
                 </Tabs>
             </keep-alive>
         </div>
@@ -183,6 +182,10 @@
     <script src="dist/vue.min.js"></script>
     <script src="js/js.cookie.min.js"></script>
     <script src="dist/iview.min.js"></script>
+    <script src="js/vue-i18n.min.js"></script>
+    <script src="custom/language.js"></script>
+    <script src="js/zh-CN.js"></script>
+    <script src="js/en-US.js"></script>
     <script src="js/gps51-jquery.js"></script>
     <script src="js/config.js"></script>
     <script src="js/dateformat.js"></script>
@@ -193,14 +196,18 @@
     <script src="js/ol.js"></script>
     <!-- <script src="https://api.map.baidu.com/api?v=3.0&ak=e7SC5rvmn2FsRNE4R1ygg44n"></script> -->
     <script type="text/javascript">
+        var isZh = utils.locale === 'zh';
         var timeDifference = DateFormat.getOffset();
         var deviceid = utils.getParameterByName("deviceid");
         var token = utils.getParameterByName("token");
         var mapType = utils.getParameterByName("maptype");
         var isZh = utils.locale === 'zh';
         var isLoadingMap = false;
+        iview.lang(isZh ? 'zh-CN' : 'en-US');
+        var lang = new Vue({i18n: utils.getI18n()});
         var vRoot = new Vue({
             el: '#dsm-wraper',
+            i18n: utils.getI18n(),
             data: {
                 loading: false,
                 date: new Date(),
@@ -213,7 +220,7 @@
                     width: 60,
                     align: 'center'
                 }, {
-                    title: '报警事件',
+                    title: lang.$t('activeSafety.alarmEvent'),
                     key: 'alarmevent',
                     width: 120,
                     render: function(h, params) {
@@ -221,25 +228,25 @@
                         if (vRoot.tabsKey == 'forwardAlarm') {
                             switch (params.row.alarmevent) {
                                 case 1:
-                                    alarmevent = '前向碰撞报警';
+                                    alarmevent =  lang.$t('activeSafety.forwardCollision'); 
                                     break;
                                 case 2:
-                                    alarmevent = '车道偏离报警';
+                                    alarmevent =   lang.$t('activeSafety.laneDeparture'); 
                                     break;
                                 case 3:
-                                    alarmevent = '车距过近报警';
+                                    alarmevent = lang.$t('activeSafety.tooClose');  
                                     break;
                                 case 4:
-                                    alarmevent = '行人碰撞报警';
+                                    alarmevent = lang.$t('activeSafety.pedestrianCollision');  
                                     break;
                                 case 5:
-                                    alarmevent = '频繁变道报警';
+                                    alarmevent = lang.$t('activeSafety.frequentLaneChange');
                                     break;
                                 case 6:
-                                    alarmevent = '道路标识超限报警';
+                                    alarmevent = lang.$t('activeSafety.logoOverrun'); 
                                     break;
                                 case 7:
-                                    alarmevent = '障碍物报警';
+                                    alarmevent = lang.$t('activeSafety.obstacleAlarm'); 
                                     break;
                                 case 8:
                                 case 9:
@@ -249,13 +256,13 @@
                                 case 0xD:
                                 case 0xE:
                                 case 0xF:
-                                    alarmevent = '用户自定义';
+                                    alarmevent = lang.$t('activeSafety.userDefined'); 
                                     break;
                                 case 0x10:
-                                    alarmevent = '道路标志识别事件';
+                                    alarmevent = lang.$t('activeSafety.signRecognition'); 
                                     break;
                                 case 0x11:
-                                    alarmevent = '主动抓拍事件';
+                                    alarmevent = lang.$t('activeSafety.activeCapture'); 
                                     break;
                                 case 0x12:
                                 case 0x13:
@@ -271,25 +278,25 @@
                                 case 0x1D:
                                 case 0x1E:
                                 case 0x1F:
-                                    alarmevent = '用户自定义';
+                                    alarmevent = lang.$t('activeSafety.userDefined');  
                                     break;
                             }
                         } else {
                             switch (params.row.alarmevent) {
                                 case 1:
-                                    alarmevent = '疲劳驾驶报警';
+                                    alarmevent = lang.$t('activeSafety.fatigueDriving');  
                                     break;
                                 case 2:
-                                    alarmevent = '接打电话报警';
+                                    alarmevent = lang.$t('activeSafety.answerPhone'); 
                                     break;
                                 case 3:
-                                    alarmevent = '抽烟报警';
+                                    alarmevent = lang.$t('activeSafety.smokingAlarm'); 
                                     break;
                                 case 4:
-                                    alarmevent = '分神驾驶报警';
+                                    alarmevent = lang.$t('activeSafety.distractedDriving');  
                                     break;
                                 case 5:
-                                    alarmevent = '驾驶员异常报警';
+                                    alarmevent = lang.$t('activeSafety.abnormalDriver'); 
                                     break;
                                 case 0x06:
                                 case 0x07:
@@ -301,16 +308,16 @@
                                 case 0x0D:
                                 case 0x0E:
                                 case 0x0F:
-                                    alarmevent = '用户自定义';
+                                    alarmevent = lang.$t('activeSafety.userDefined'); 
                                     break;
                                 case 0x10:
-                                    alarmevent = '自动抓拍事件';
+                                    alarmevent = lang.$t('activeSafety.autoCapture');
                                     break;
                                 case 0x11:
-                                    alarmevent = '驾驶员变更事件';
+                                    alarmevent = lang.$t('activeSafety.driverChange');
                                     break;
                                 case 0x12:
-                                    alarmevent = '自定义事件';
+                                    alarmevent = lang.$t('activeSafety.customEvents');
                                     break;
                             }
                         }
@@ -319,11 +326,11 @@
                         return h('span', {}, alarmevent);
                     }
                 }, {
-                    title: '报警等级',
+                    title: lang.$t('activeSafety.alarmLevel'),
                     key: 'alarmlevel',
                     width: 90,
                 }, {
-                    title: "报警时间",
+                    title: lang.$t('activeSafety.alarmTime'),
                     key: "alarmtime",
                     render: function(h, params) {
                         return h('span', {}, DateFormat.longToDateTimeStr(params.row.updatetime, timeDifference));
@@ -334,32 +341,32 @@
                     width: 60,
                     align: 'center'
                 }, {
-                    title: '报警事件',
+                    title: lang.$t('activeSafety.alarmEvent'),
                     key: 'alarmevent',
                     width: 120,
                     render: function(h, params) {
                         var alarmevent = '';
                         switch (params.row.alarmevent) {
                             case 1:
-                                alarmevent = '前向碰撞报警';
+                                alarmevent = lang.$t('activeSafety.forwardCollision');
                                 break;
                             case 2:
-                                alarmevent = '车道偏离报警';
+                                alarmevent =   lang.$t('activeSafety.laneDeparture');
                                 break;
                             case 3:
-                                alarmevent = '车距过近报警';
+                                alarmevent = lang.$t('activeSafety.tooClose');
                                 break;
                             case 4:
-                                alarmevent = '行人碰撞报警';
+                                alarmevent = lang.$t('activeSafety.pedestrianCollision');
                                 break;
                             case 5:
-                                alarmevent = '频繁变道报警';
+                                alarmevent = lang.$t('activeSafety.frequentLaneChange');
                                 break;
                             case 6:
-                                alarmevent = '道路标识超限报警';
+                                alarmevent =  lang.$t('activeSafety.logoOverrun');
                                 break;
                             case 7:
-                                alarmevent = '障碍物报警';
+                                alarmevent = lang.$t('activeSafety.obstacleAlarm'); 
                                 break;
                             case 8:
                             case 9:
@@ -369,13 +376,13 @@
                             case 0xD:
                             case 0xE:
                             case 0xF:
-                                alarmevent = '用户自定义';
+                                alarmevent = lang.$t('activeSafety.userDefined'); 
                                 break;
                             case 0x10:
-                                alarmevent = '道路标志识别事件';
+                                alarmevent = lang.$t('activeSafety.signRecognition'); 
                                 break;
                             case 0x11:
-                                alarmevent = '主动抓拍事件';
+                                alarmevent = lang.$t('activeSafety.activeCapture');
                                 break;
                             case 0x12:
                             case 0x13:
@@ -391,35 +398,35 @@
                             case 0x1D:
                             case 0x1E:
                             case 0x1F:
-                                alarmevent = '用户自定义';
+                                alarmevent = lang.$t('activeSafety.userDefined');
                                 break;
                         }
                         return h('span', {}, alarmevent);
                     }
                 }, {
-                    title: '报警等级',
+                    title: lang.$t('activeSafety.alarmLevel'),
                     key: 'alarmlevel',
                     width: 90,
                 }, {
-                    title: '报警次数',
+                    title: lang.$t('activeSafety.alarmCount'),
                     key: 'alarmcount',
                     width: 90,
                 }, {
-                    title: '最初报警时间',
+                    title: lang.$t('activeSafety.firstAlarmTime'),
                     key: 'startalarmtime',
                     width: 160,
                     render: function(h, params) {
                         return h('span', {}, DateFormat.longToDateTimeStr(params.row.startalarmtime, timeDifference));
                     }
                 }, {
-                    title: '最后报警时间',
+                    title: lang.$t('activeSafety.lastAlarmTime'),
                     key: 'endalarmtime',
                     width: 160,
                     render: function(h, params) {
                         return h('span', {}, DateFormat.longToDateTimeStr(params.row.endalarmtime, timeDifference));
                     }
                 }, {
-                    title: '最初报警速度',
+                    title: lang.$t('activeSafety.firstAlarmSpeed'),
                     key: 'startspeed',
                     width: 110,
                     render: function(h, params) {
@@ -427,7 +434,7 @@
                         return h('span', {}, startspeed + 'km/h');
                     }
                 }, {
-                    title: '最后报警速度',
+                    title: lang.$t('activeSafety.lastAlarmSpeed'),
                     key: 'endspeed',
                     width: 110,
                     render: function(h, params) {
@@ -435,12 +442,13 @@
                         return h('span', {}, endspeed + 'km/h');
                     }
                 }, {
-                    title: '开始报警位置',
+                    title: lang.$t('activeSafety.firstAlarmAddress'),
                     key: 'startposition',
                     render: function(h, params) {
                         var callat = params.row.startlat.toFixed(5);
                         var callon = params.row.startlon.toFixed(5);
                         var address = LocalCacheMgr.getAddress(callon, callat);
+                        
                         if (address) {
                             return h('span', {}, address);
                         } else {
@@ -453,7 +461,7 @@
                                     click: function(e) {
                                         e.preventDefault();
                                         vRoot.queryAddress(callon, callat, function(address) {
-
+                                            console.log('address',address);
                                             if (vRoot.tabsKey === 'abnormalDriving') {
                                                 vRoot.abnormalDrivingList[params.index].address = address;
                                             } else {
@@ -463,16 +471,17 @@
                                         })
                                     }
                                 }
-                            }, "获取地址");
+                            }, lang.$t('reportForm.getAddress'));
                         }
                     }
                 }, {
-                    title: '最后报警位置',
+                    title: lang.$t('activeSafety.lastAlarmAddress'),
                     key: 'endposition',
                     render: function(h, params) {
                         var callat = params.row.endlat.toFixed(5);
                         var callon = params.row.endlon.toFixed(5);
                         var address = LocalCacheMgr.getAddress(callon, callat);
+                        
                         if (address) {
                             return h('span', {}, address);
                         } else {
@@ -495,7 +504,7 @@
                                         });
                                     }
                                 }
-                            }, "获取地址");
+                            }, lang.$t('reportForm.getAddress'));
                         }
                     }
                 }, ],
@@ -504,26 +513,26 @@
                     width: 60,
                     align: 'center'
                 }, {
-                    title: '报警事件',
+                    title: lang.$t('reportForm.alarmEvent') ,
                     key: 'alarmevent',
                     width: 120,
                     render: function(h, params) {
                         var alarmevent = '';
                         switch (params.row.alarmevent) {
                             case 1:
-                                alarmevent = '疲劳驾驶报警';
+                                alarmevent = lang.$t('reportForm.fatigueDriving');
                                 break;
                             case 2:
-                                alarmevent = '接打电话报警';
+                                alarmevent = lang.$t('reportForm.answerPhone');
                                 break;
                             case 3:
-                                alarmevent = '抽烟报警';
+                                alarmevent = lang.$t('reportForm.smokingAlarm');
                                 break;
                             case 4:
-                                alarmevent = '分神驾驶报警';
+                                alarmevent = lang.$t('reportForm.distractedDriving');
                                 break;
                             case 5:
-                                alarmevent = '驾驶员异常报警';
+                                alarmevent = lang.$t('reportForm.abnormalDriver');
                                 break;
                             case 0x06:
                             case 0x07:
@@ -535,44 +544,44 @@
                             case 0x0D:
                             case 0x0E:
                             case 0x0F:
-                                alarmevent = '用户自定义';
+                                alarmevent = lang.$t('reportForm.userDefined');
                                 break;
                             case 0x10:
-                                alarmevent = '自动抓拍事件';
+                                alarmevent = lang.$t('reportForm.autoCapture');
                                 break;
                             case 0x11:
-                                alarmevent = '驾驶员变更事件';
+                                alarmevent =  lang.$t('reportForm.driverChange');
                                 break;
                             case 0x12:
-                                alarmevent = '自定义事件';
+                                alarmevent =  lang.$t('reportForm.customEvents');
                                 break;
                         }
                         return h('span', {}, alarmevent);
                     }
                 }, {
-                    title: '报警等级',
+                    title:  lang.$t('reportForm.alarmLevel'),
                     key: 'alarmlevel',
                     width: 90,
                 }, {
-                    title: '报警次数',
+                    title: lang.$t('reportForm.alarmCount'),
                     key: 'alarmcount',
                     width: 90,
                 }, {
-                    title: '最初报警时间',
+                    title: lang.$t('reportForm.firstAlarmTime'),
                     key: 'startalarmtime',
                     width: 160,
                     render: function(h, params) {
                         return h('span', {}, DateFormat.longToDateTimeStr(params.row.startalarmtime, timeDifference));
                     }
                 }, {
-                    title: '最后报警时间',
+                    title: lang.$t('reportForm.lastAlarmTime'),
                     key: 'endalarmtime',
                     width: 160,
                     render: function(h, params) {
                         return h('span', {}, DateFormat.longToDateTimeStr(params.row.endalarmtime, timeDifference));
                     }
                 }, {
-                    title: '最初报警速度',
+                    title:  lang.$t('reportForm.firstAlarmSpeed'),
                     key: 'startspeed',
                     width: 110,
                     render: function(h, params) {
@@ -580,7 +589,7 @@
                         return h('span', {}, startspeed + 'km/h');
                     }
                 }, {
-                    title: '最后报警速度',
+                    title: lang.$t('reportForm.lastAlarmSpeed'),
                     key: 'endspeed',
                     width: 110,
                     render: function(h, params) {
@@ -588,7 +597,7 @@
                         return h('span', {}, endspeed + 'km/h');
                     }
                 }, {
-                    title: '开始报警位置',
+                    title: lang.$t('reportForm.firstAlarmAddress'),
                     key: 'startposition',
                     render: function(h, params) {
                         var callat = params.row.startlat.toFixed(5);
@@ -617,11 +626,11 @@
                                         })
                                     }
                                 }
-                            }, "获取地址");
+                            }, lang.$t('reportForm.getAddress'));  
                         }
                     }
                 }, {
-                    title: '最后报警位置',
+                    title: lang.$t('reportForm.lastAlarmAddress'),
                     key: 'endposition',
                     render: function(h, params) {
                         var callat = params.row.endlat.toFixed(5);
@@ -650,7 +659,7 @@
                                         });
                                     }
                                 }
-                            }, "获取地址");
+                            }, lang.$t('reportForm.getAddress'));
                         }
                     }
                 }, ],
@@ -925,21 +934,16 @@
                     return imageAndVideoList;
                 },
                 queryAddress: function(callon, callat, callback) {
-                    //var b_lon_lat = wgs84tobd09(Number(callon), Number(callat));
-                    //utils.getBaiduAddressFromBaidu(b_lon_lat[0], b_lon_lat[1], function(b_address) {
-                    //    if (b_address.length) {
-                    //        callback(b_address);
-                    //    } else {
-                    //        utils.getJiuHuAddressSyn(callon, callat, function(resp) {
-                    //            var j_address = resp.address;
-                    //            callback(j_address);
-                    //        })
-                    //    }
-                    //});
-
+                    var that = this;
                     utils.getJiuHuAddressSyn(callon, callat, function(resp) {
-                        var j_address = resp.address;
-                        callback(j_address);
+                        if(resp.status > 9900){
+                            console.log('getJiuHuAddressSyn token失效,请重新登录')
+                        }else if(resp.status == 0){
+                            var j_address = resp.address;
+                            callback(j_address);
+                        }else{
+                            console.log('getJiuHuAddressSyn 查询地址失败')
+                        }
                     });
                 },
                 getTableHeight: function() {
@@ -1073,13 +1077,13 @@
                                 that.playRootPath = resp.playrootpath;
                                 that.handleAlarmTypeClassify(records);
                             } else {
-                                that.$Message.error('没有数据');
+                                that.$Message.error(that.$t('activeSafety.noData'));
                                 that.forwardAlarmList = [];
                                 that.abnormalDrivingList = [];
                                 that.detailTableData = [];
                             }
                         } else {
-                            that.$Message.error('查询失败');
+                            that.$Message.error(that.$t('monitor.queryFail'));
                         }
                         document.getElementById('mask-wrapper').style.display = 'none';
                     })

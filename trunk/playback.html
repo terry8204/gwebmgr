@@ -832,7 +832,7 @@
                                 }
                             } else {
                                 me.totalMileage = '0km';
-                                me.$Message.error("没有当天轨迹");
+                                me.$Message.error(me.$t('message.noCurruntDayTrack'));
                                 if (me.mapType === 'oMap') {
                                     layerVector.setSource(new ol.source.Vector({
                                         features: []
@@ -1135,7 +1135,7 @@
                             this.openInfoWindow(this.carMarker, records[0]);
                             // this.runAnimeate(records);
                         } else {
-                            this.$Message.error("没有当天轨迹");
+                            this.$Message.error(this.$t('message.noCurruntDayTrack'));
                         };
                     },
                     getFeatureMarkr: function(track) {
@@ -1383,6 +1383,7 @@
                         return sContent;
                     },
                     getAddress: function(info) {
+                        var that = this;
                         var callon = info.callon;
                         var callat = info.callat;
                         var bd09 = wgs84tobd09(callon, callat)
@@ -1392,40 +1393,25 @@
                         if (address !== null) {
                             return address;
                         }
-                        if (this.mapType === 'bMap') {
-                            //utils.getBaiduAddressFromBaidu(lng, lat, function(resp) {
-                            //    if (resp.length) {
-                            //        address = resp;
-                            //        $("p.last-address").html(" 详细地址: " + address);
-                            //        LocalCacheMgr.setAddress(lng, lat, address);
-                            //    } else {
-                            //        utils.getJiuHuAddressSyn(callon, callat, function(resp) {
-                            //            address = resp.address
-                            //            $("p.last-address").html(" 详细地址: " + address);
-                            //            LocalCacheMgr.setAddress(lng, lat, address);
-                            //        });
-                            //    }
-                            //});
-                            
+                        if (this.mapType === 'bMap' || this.mapType === 'oMap') {
+
                             utils.getJiuHuAddressSyn(callon, callat, function(resp) {
-                                        address = resp.address
-                                        $("p.last-address").html(" 详细地址: " + address);
-                                        LocalCacheMgr.setAddress(lng, lat, address);
-                                    });
+                                if(resp.status > 9900){
+                                    console.log('getJiuHuAddressSyn token失效,请重新登录')
+                                }else if(resp.status == 0){
+                                    address = resp.address
+                                    $("p.last-address").html(" 详细地址: " + address);
+                                    LocalCacheMgr.setAddress(lng, lat, address);
+                                }else{
+                                    console.log('getJiuHuAddressSyn 查询地址失败')
+                                }    
+                            });
                         } else if (this.mapType === 'gMap') {
                             var google_lng_lat = wgs84togcj02(callon, callat);
                             utils.getGoogleAddressSyn(google_lng_lat[1], google_lng_lat[0], function(address) {
                                 $("p.last-address").html(" 详细地址: " + address);
                                 LocalCacheMgr.setAddress(lng, lat, address);
                             })
-                        } else if (this.mapType === 'oMap') {
-                            utils.getJiuHuAddressSyn(callon, callat, function(resp) {
-                                address = resp.address;
-                                if (address) {
-                                    $("p.last-address").html(" 详细地址: " + address)
-                                };
-                                LocalCacheMgr.setAddress(lng, lat, address);
-                            });
                         }
 
                         return "地址正在解析..."
@@ -1796,7 +1782,7 @@
                                     me.$Message.error(resp.cause);
                                 } else {
                                     me.totalMileage = '0km';
-                                    me.$Message.error("没有当天轨迹");
+                                    me.$Message.error(me.$t('message.noCurruntDayTrack'));
                                 }
                             });
                         });
