@@ -36,7 +36,7 @@
                         this.$Message.error(me.$t('bgMgr.pleaseInputNumber')); 
                         return ;
                     }
-                    utils.sendAjax(url, { deviceid: this.deviceId, totaldistance: mileage  }, function(resp) {
+                    utils.sendAjax(url, { deviceid: this.deviceid, totaldistance: mileage  }, function(resp) {
                         if (resp.status === 0) {
                             me.$Message.success( me.$t('monitor.setupSucc'));
                         } else {
