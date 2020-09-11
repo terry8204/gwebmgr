@@ -427,7 +427,7 @@
                                 {{$t("device.maxAnalogQuantity")}}:
                             </i-col>
                             <i-col span="5">
-                                <input-number :max="100000" :min="1" v-model.trim.number="maxAdValue1" style="width:100%"></input-number>
+                                <input-number :max="65535" :min="1" v-model.trim.number="maxAdValue1" style="width:100%"></input-number>
                             </i-col>
                         </Row>
                         <div v-if="tankShape1 == 1">
@@ -589,7 +589,7 @@
                                 {{$t("device.maxAnalogQuantity")}} :
                             </i-col>
                             <i-col span="5">
-                                <input-number :max="100000" :min="1" v-model.trim.number="maxAdValue2" style="width:100%"></input-number>
+                                <input-number :max="65535" :min="1" v-model.trim.number="maxAdValue2" style="width:100%"></input-number>
                             </i-col>
                         </Row>
                         <div v-if="tankShape2 == 1">
@@ -785,7 +785,7 @@
                 tankShape1: '0', //油箱形状
                 tankVolume1: 0, //油箱容积
                 sensorLength1: 0, //传感器长度
-                maxAdValue1: 0,
+                maxAdValue1: 65535,
                 length1: 0,
                 width1: 0,
                 height1: 0,
@@ -797,7 +797,7 @@
                 tankShape2: '0', //油箱形状
                 tankVolume2: 0, //油箱容积
                 sensorLength2: 0, //传感器长度
-                maxAdValue2: 0,
+                maxAdValue2: 65535,
                 length2: 0,
                 width2: 0,
                 height2: 0,

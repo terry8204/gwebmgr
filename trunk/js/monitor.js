@@ -980,15 +980,15 @@ var monitor = {
                 realtimeframebitrate: 2000,
                 realtimeframerate: 12,
                 realtimekeyframeinterval: 25,
-                realtimeresolution: 1,
+                realtimeresolution: 3,
                 recorderspeed: false,
-                storebitratemode: 1,
+                storebitratemode: 0,
                 storeframebitrate: 2000,
                 storeframerate: 12,
                 storekeyframeinterval: 25,
                 storeresolution: 3,
                 usingaudio: 1,
-            };
+            }; 
             var videoCheckboxGroup = [],
                 me = this;
             me.realtimebitratemode = audiovideoparameters.realtimebitratemode + '';

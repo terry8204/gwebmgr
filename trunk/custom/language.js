@@ -929,9 +929,9 @@
                 driverChange:"驾驶员变更事件",
                 customEvents:"自定义事件",
                 smokingAlarm:"抽烟报警",
-                previous:"上一条",
-                next:"下一条",
-                noData:"没有数据",
+                previous:"Prev",
+                next:"Next",
+                noData:"No data",
             }
         },
         //简体中文
