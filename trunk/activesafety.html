@@ -222,7 +222,7 @@
                 }, {
                     title: lang.$t('activeSafety.alarmEvent'),
                     key: 'alarmevent',
-                    width: 120,
+                    width: 150,
                     render: function(h, params) {
                         var alarmevent = '';
                         if (vRoot.tabsKey == 'forwardAlarm') {
@@ -328,7 +328,7 @@
                 }, {
                     title: lang.$t('activeSafety.alarmLevel'),
                     key: 'alarmlevel',
-                    width: 90,
+                    width: 120,
                 }, {
                     title: lang.$t('activeSafety.alarmTime'),
                     key: "alarmtime",
@@ -343,7 +343,7 @@
                 }, {
                     title: lang.$t('activeSafety.alarmEvent'),
                     key: 'alarmevent',
-                    width: 120,
+                    width: 150,
                     render: function(h, params) {
                         var alarmevent = '';
                         switch (params.row.alarmevent) {
@@ -406,11 +406,11 @@
                 }, {
                     title: lang.$t('activeSafety.alarmLevel'),
                     key: 'alarmlevel',
-                    width: 90,
+                    width: 120,
                 }, {
                     title: lang.$t('activeSafety.alarmCount'),
                     key: 'alarmcount',
-                    width: 90,
+                    width: 120,
                 }, {
                     title: lang.$t('activeSafety.firstAlarmTime'),
                     key: 'startalarmtime',
@@ -428,7 +428,7 @@
                 }, {
                     title: lang.$t('activeSafety.firstAlarmSpeed'),
                     key: 'startspeed',
-                    width: 110,
+                    width: 150,
                     render: function(h, params) {
                         var startspeed = params.row.startspeed / 1000
                         return h('span', {}, startspeed + 'km/h');
@@ -436,7 +436,7 @@
                 }, {
                     title: lang.$t('activeSafety.lastAlarmSpeed'),
                     key: 'endspeed',
-                    width: 110,
+                    width: 150,
                     render: function(h, params) {
                         var endspeed = params.row.endspeed / 1000
                         return h('span', {}, endspeed + 'km/h');
@@ -513,26 +513,26 @@
                     width: 60,
                     align: 'center'
                 }, {
-                    title: lang.$t('reportForm.alarmEvent') ,
+                    title: lang.$t('activeSafety.alarmEvent') ,
                     key: 'alarmevent',
-                    width: 120,
+                    width: 150,
                     render: function(h, params) {
                         var alarmevent = '';
                         switch (params.row.alarmevent) {
                             case 1:
-                                alarmevent = lang.$t('reportForm.fatigueDriving');
+                                alarmevent = lang.$t('activeSafety.fatigueDriving');
                                 break;
                             case 2:
-                                alarmevent = lang.$t('reportForm.answerPhone');
+                                alarmevent = lang.$t('activeSafety.answerPhone');
                                 break;
                             case 3:
-                                alarmevent = lang.$t('reportForm.smokingAlarm');
+                                alarmevent = lang.$t('activeSafety.smokingAlarm');
                                 break;
                             case 4:
-                                alarmevent = lang.$t('reportForm.distractedDriving');
+                                alarmevent = lang.$t('activeSafety.distractedDriving');
                                 break;
                             case 5:
-                                alarmevent = lang.$t('reportForm.abnormalDriver');
+                                alarmevent = lang.$t('activeSafety.abnormalDriver');
                                 break;
                             case 0x06:
                             case 0x07:
@@ -544,60 +544,60 @@
                             case 0x0D:
                             case 0x0E:
                             case 0x0F:
-                                alarmevent = lang.$t('reportForm.userDefined');
+                                alarmevent = lang.$t('activeSafety.userDefined');
                                 break;
                             case 0x10:
-                                alarmevent = lang.$t('reportForm.autoCapture');
+                                alarmevent = lang.$t('activeSafety.autoCapture');
                                 break;
                             case 0x11:
-                                alarmevent =  lang.$t('reportForm.driverChange');
+                                alarmevent =  lang.$t('activeSafety.driverChange');
                                 break;
                             case 0x12:
-                                alarmevent =  lang.$t('reportForm.customEvents');
+                                alarmevent =  lang.$t('activeSafety.customEvents');
                                 break;
                         }
                         return h('span', {}, alarmevent);
                     }
                 }, {
-                    title:  lang.$t('reportForm.alarmLevel'),
+                    title:  lang.$t('activeSafety.alarmLevel'),
                     key: 'alarmlevel',
-                    width: 90,
+                    width: 120,
                 }, {
-                    title: lang.$t('reportForm.alarmCount'),
+                    title: lang.$t('activeSafety.alarmCount'),
                     key: 'alarmcount',
-                    width: 90,
+                    width: 120,
                 }, {
-                    title: lang.$t('reportForm.firstAlarmTime'),
+                    title: lang.$t('activeSafety.firstAlarmTime'),
                     key: 'startalarmtime',
                     width: 160,
                     render: function(h, params) {
                         return h('span', {}, DateFormat.longToDateTimeStr(params.row.startalarmtime, timeDifference));
                     }
                 }, {
-                    title: lang.$t('reportForm.lastAlarmTime'),
+                    title: lang.$t('activeSafety.lastAlarmTime'),
                     key: 'endalarmtime',
                     width: 160,
                     render: function(h, params) {
                         return h('span', {}, DateFormat.longToDateTimeStr(params.row.endalarmtime, timeDifference));
                     }
                 }, {
-                    title:  lang.$t('reportForm.firstAlarmSpeed'),
+                    title:  lang.$t('activeSafety.firstAlarmSpeed'),
                     key: 'startspeed',
-                    width: 110,
+                    width: 150,
                     render: function(h, params) {
                         var startspeed = params.row.startspeed / 1000
                         return h('span', {}, startspeed + 'km/h');
                     }
                 }, {
-                    title: lang.$t('reportForm.lastAlarmSpeed'),
+                    title: lang.$t('activeSafety.lastAlarmSpeed'),
                     key: 'endspeed',
-                    width: 110,
+                    width: 150,
                     render: function(h, params) {
                         var endspeed = params.row.endspeed / 1000
                         return h('span', {}, endspeed + 'km/h');
                     }
                 }, {
-                    title: lang.$t('reportForm.firstAlarmAddress'),
+                    title: lang.$t('activeSafety.firstAlarmAddress'),
                     key: 'startposition',
                     render: function(h, params) {
                         var callat = params.row.startlat.toFixed(5);
@@ -630,7 +630,7 @@
                         }
                     }
                 }, {
-                    title: lang.$t('reportForm.lastAlarmAddress'),
+                    title: lang.$t('activeSafety.lastAlarmAddress'),
                     key: 'endposition',
                     render: function(h, params) {
                         var callat = params.row.endlat.toFixed(5);
