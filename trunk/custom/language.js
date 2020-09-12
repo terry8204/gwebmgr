@@ -7,7 +7,7 @@
     Vue.use(VueI18n);
     var messages = {
         en: {
-            message: {
+            message: {  
                 changeSucc: "Modified success",
                 changeFail: "Modification failed",
                 deleteSucc: "Deleted success",

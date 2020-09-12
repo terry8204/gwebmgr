@@ -490,6 +490,7 @@
                     speed:'Speed',
                     mileage:'Mileage',
                     time:'Time',
+                    noCurruntDayTrack:"There is no track of the day"
                 }
 
             },
@@ -523,6 +524,7 @@
                     speed:'速度',
                     mileage:'里程',
                     time:'时间',
+                    noCurruntDayTrack:"没有当天轨迹"
                 }
             }
         };
@@ -832,7 +834,7 @@
                                 }
                             } else {
                                 me.totalMileage = '0km';
-                                me.$Message.error(me.$t('message.noCurruntDayTrack'));
+                                me.$Message.error(me.$t('main.noCurruntDayTrack'));
                                 if (me.mapType === 'oMap') {
                                     layerVector.setSource(new ol.source.Vector({
                                         features: []
@@ -1135,7 +1137,7 @@
                             this.openInfoWindow(this.carMarker, records[0]);
                             // this.runAnimeate(records);
                         } else {
-                            this.$Message.error(this.$t('message.noCurruntDayTrack'));
+                            this.$Message.error(this.$t('main.noCurruntDayTrack'));
                         };
                     },
                     getFeatureMarkr: function(track) {
@@ -1530,9 +1532,10 @@
                             tooltip: {
                                 trigger: 'axis',
                                 formatter: function(v) {
-                                    var data = '时间 : ' + v[0].name + '<br/>';
+
+                                    var data = vRoot.$t('main.time') +  ': ' + v[0].name + '<br/>';
                                     for (i in v) {
-                                        if (v[i].seriesName != '时间') data += v[i].seriesName + ' : ' + v[i].value + '<br/>';
+                                        if (v[i].seriesName != vRoot.$t('main.time') ) data += v[i].seriesName + ' : ' + v[i].value + '<br/>';
                                     }
                                     return data;
                                 }
@@ -1782,7 +1785,7 @@
                                     me.$Message.error(resp.cause);
                                 } else {
                                     me.totalMileage = '0km';
-                                    me.$Message.error(me.$t('message.noCurruntDayTrack'));
+                                    me.$Message.error(me.$t('main.noCurruntDayTrack'));
                                 }
                             });
                         });
