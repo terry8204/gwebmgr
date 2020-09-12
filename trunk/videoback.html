@@ -175,7 +175,6 @@
     <div class="mask-wrapper" id="mask-wrapper">
         <div class="box" style="position:relative;">
             <div class="loader-05"></div>
-            <div class="text-tip">正在载入播放器</div>
         </div>
     </div>
     <div id="container">
@@ -188,7 +187,7 @@
                     <div class="full">
                         <Row class="row-cls">
                             <i-Col span="6" class="col-cls">
-                                通道编号:
+                                {{$t('videoback.channelNumber')}}:
                             </i-Col>
                             <i-Col span="18">
                                 <i-select v-model="selectType">
@@ -201,34 +200,34 @@
                         </Row>
                         <Row class="row-cls">
                             <i-Col span="6" class="col-cls">
-                                选择日期:
+                                {{$t('videoback.selectDate')}}:
                             </i-Col>
                             <i-Col span="18">
-                                <Date-Picker type="date" placeholder="选择日期" style="width:100%" v-model="date"></Date-Picker>
+                                <Date-Picker type="date" :placeholder="$t('videoback.selectDate')" style="width:100%" v-model="date"></Date-Picker>
                             </i-Col>
                         </Row>
                         <Row class="row-cls">
                             <i-Col span="6" class="col-cls">
-                                时间范围:
+                                {{$t('videoback.timeFrame')}}:
                             </i-Col>
                             <i-Col span="18">
-                                <Time-Picker confirm type="timerange" placement="bottom-end" placeholder="选择时间范围" style="width:100%;" v-model="timeRange"></Time-Picker>
+                                <Time-Picker confirm type="timerange" placement="bottom-end" style="width:100%;" v-model="timeRange"></Time-Picker>
                             </i-Col>
                         </Row>
                         <div>
                             <Row>
-                                <i-Col span="6" class="col-cls">存储类型</i-Col>
+                                <i-Col span="16" style="line-height:32px;height:32px;">{{$t('videoback.storageType')}}</i-Col>
                             </Row>
                             <div style="padding-left:30px;">
                                 <Radio-Group v-model="storageType" vertical>
                                     <Radio label="mainAndBackupStore">
-                                        <span>主存储器或灾备存储器</span>
+                                        <span>{{$t('videoback.mainAndspare')}}</span>
                                     </Radio>
                                     <Radio label="mainstore">
-                                        <span>主存储器</span>
+                                        <span>{{$t('videoback.mainMemory')}}</span>
                                     </Radio>
                                     <Radio label="backupstore">
-                                        <span>灾备存储器</span>
+                                        <span>{{$t('videoback.spareMemory')}}</span>
                                     </Radio>
                                 </Radio-Group>
                             </div>
@@ -236,19 +235,19 @@
 
                         <div>
                             <Row>
-                                <i-Col span="6" class="col-cls">录像类型</i-Col>
+                                <i-Col span="6" class="col-cls">{{$t('videoback.videoType')}}</i-Col>
                             </Row>
                             <Row>
                                 <i-Col span="24" style="padding-left:30px;">
                                     <Radio-Group v-model="mediatype">
                                         <Radio label="all">
-                                            <span>所有</span>
+                                            <span>{{$t('videoback.all')}}</span>
                                         </Radio>
                                         <Radio label="video">
-                                            <span>视频</span>
+                                            <span>{{$t('videoSettings.video')}}</span>
                                         </Radio>
                                         <Radio label="audio">
-                                            <span>音频</span>
+                                            <span>{{$t('videoSettings.audio')}}</span>
                                         </Radio>
                                     </Radio-Group>
                                 </i-Col>
@@ -257,15 +256,15 @@
                         <div style="margin-top:30px;">
                             <Row>
                                 <i-col span="18" offset="3">
-                                    <i-button style="width:100%;" type="primry" @click="queryMedia" :loading="loading">搜索</i-button>
+                                    <i-button style="width:100%;" type="primry" @click="queryMedia" :loading="loading">{{$t('videoback.search')}}</i-button>
                                 </i-col>
                             </Row>
                         </div>
       
-                        <Modal v-model="modal" title="分段下载" width="460">
+                        <Modal v-model="modal" :title="$t('videoback.segmentDownload')" width="460">
                             <Row style="margin:10px 0;">
                                 <i-col span="4" style="height:35px;line-height:35px;">
-                                    开始日期 :
+                                    {{$t('videoback.startDate')}} :
                                 </i-col>
                                 <i-col span="8">
                                     <i-input :value='dateStr' disabled style="width: 100%;" />
@@ -273,7 +272,7 @@
                             </Row>
                             <Row style="margin:10px 0;">
                                 <i-col span="4" style="height:35px;line-height:35px;">
-                                    开始时间 :
+                                    {{$t('videoback.startTime')}} :
                                 </i-col>
                                 <i-col span="8">
                                     <Time-Picker type="time" v-model="startValue" style="width: 100%;" disabled></Time-Picker>
@@ -284,7 +283,7 @@
                             </Row>
                             <Row style="margin:10px 0;">
                                 <i-col span="4" style="height:35px;line-height:35px;">
-                                    结束时间 :
+                                    {{$t('videoback.endTime')}} :
                                 </i-col>
                                 <i-col span="8">
                                     <Time-Picker type="time" v-model="endValue" style="width: 100%;" disabled></Time-Picker>
@@ -295,7 +294,7 @@
                             </Row>
                             <Row style="margin:10px 0;">
                                 <i-col span="4" style="height:35px;line-height:35px;">
-                                    选中时长 :
+                                    {{$t('videoback.selectionDuration')}} :  
                                 </i-col>
                                 <i-col span="8" style="height:35px;line-height:35px;">
                                     {{timeStamp}}
@@ -303,7 +302,7 @@
                             </Row>
                             <Row style="margin:10px 0;">
                                 <i-col span="4" style="height:35px;line-height:35px;">
-                                    时间范围 :
+                                    {{$t('videoback.timeFrame')}} :
                                 </i-col>
                                 <i-col span="16">
                                     <Slider v-if="showSlider" v-model="sliderValue" ref="slider" range @on-change="onSliderChange" :tip-format="tipFormat"></Slider>
@@ -311,7 +310,7 @@
                             </Row>
                             <Row style="margin:10px 0;">
                                 <i-col span="4" style="height:35px;line-height:35px;">
-                                    标签 :
+                                    {{$t('videoback.label')}} : 
                                 </i-col>
                                 <i-col span="8">
                                     <i-input v-model="tag"></i-input>
@@ -319,7 +318,7 @@
                             </Row>
 
                             <div slot="footer">
-                                <i-button style="width: 100%" type="primary" @click='splitUploadFile'>下载</i-button>
+                                <i-button style="width: 100%" type="primary" @click='splitUploadFile'>{{$t('videoback.download')}}</i-button>
                             </div>
                         </Modal>
                     </div>
@@ -339,7 +338,7 @@
                         </div>
                         <div style="height:300px;position: absolute;bottom: 0;left: 0;right: 0;padding-top: 10px;">
                             <Tabs type="card" v-model="isTable">
-                                <tab-pane label="时间" name="time">
+                                <tab-pane :label="$t('videoback.time')" name="time">
                                     <div class="time-wrapper">
                                         <div id="videoTime" style="width:100%;height:250px;"></div>
                                         <div class="mask" @click="handleClickMask" ref="videoTimeMask" @mousemove="onMouseMove">
@@ -348,13 +347,13 @@
                                         </div>
                                     </div>
                                 </tab-pane>
-                                <tab-pane label="文件" name="file">
+                                <tab-pane :label="$t('videoback.file')" name="file">
                                     <i-table border ref="table" @on-row-dblclick="handleDblclick" :columns="columns" :data="tableData" height="250" :loading="loading"></i-table>
                                 </tab-pane>
-                                <tab-pane label="下载任务" name="downloadfile">
+                                <tab-pane :label="$t('videoback.downloadTask')" name="downloadfile">
                                     <i-table border :columns="downloadColumns" :data="downloadTableData" height="250" :loading="loading"></i-table>
                                 </tab-pane>
-                                <i-button @click="stopVideo" size="small" slot="extra">停止播放</i-button>
+                                <i-button @click="stopVideo" size="small" slot="extra">{{$t('videoback.stopPlay')}}</i-button>
                             </Tabs>
                         </div>
                     </div>
@@ -414,7 +413,8 @@
             }
             return num;
         }
-
+        var lang = new Vue({i18n: utils.getI18n()});
+        document.title = lang.$t('monitor.videoPlayback');
         var vRoot = new Vue({
             el: "#container",
             i18n: utils.getI18n(),
@@ -451,11 +451,10 @@
                     return startValue;
                 },
                 columns: [{
-                    title: '序号',
                     width: 60,
-                    key: 'index'
+                    type: 'index'
                 }, {
-                    title: '播放',
+                    title: lang.$t('monitor.play'),
                     key: 'action',
                     width: 70,
                     render: function(h, params) {
@@ -475,24 +474,24 @@
                         ])
                     }
                 }, {
-                    title: '通道号',
+                    title: lang.$t('videoback.channelNumber') ,
                     key: 'channel',
-                    width: 80,
+                    width: 120,
                 }, {
-                    title: '开始时间',
+                    title: lang.$t('videoback.startTime') ,
                     key: 'starttime',
                 }, {
-                    title: '结束时间',
+                    title: lang.$t('videoback.endTime') ,
                     key: 'endtime',
                 }, {
-                    title: '文件大小',
+                    title: lang.$t('videoback.fileSize') ,
                     key: 'filesize',
                     width: 100,
                     render: function(h, params) {
                         return h('span', {}, calcFileSizeM(params.row.filesize))
                     }
                 }, {
-                    title: '操作',
+                    title: lang.$t('alarm.action') ,
                     key: 'action',
                     width: 180,
                     render: function(h, params) {
@@ -504,7 +503,7 @@
                                     icon: "md-arrow-down"
                                 },
                                 attrs: {
-                                    title: '全部下载'
+                                    title: lang.$t('videoback.allDownload')
                                 },
                                 on: {
                                     click: function() {
@@ -521,7 +520,7 @@
                                     icon: "md-download"
                                 },
                                 attrs: {
-                                    title: '分段下载'
+                                    title: lang.$t('videoback.segmentDownload')
                                 },
                                 on: {
                                     click: function() {
@@ -547,7 +546,7 @@
                     }
                 }],
                 downloadColumns: [{
-                    title: '操作',
+                    title: lang.$t('alarm.action') ,
                     width: 325,
                     render: function(h, params) {
                         var row = params.row,
@@ -567,12 +566,12 @@
                                             downloadtaskid: row.downloadtaskid
                                         }
                                         vRoot.controlUploadFileFn(data, function(resp) {
-                                            vRoot.$Message.success('暂停成功');
+                                            vRoot.$Message.success(lang.$t('videoback.pauseSucc')); 
                                             vRoot.downloadTableData.splice(index, 1, resp.task);
                                         });
                                     }
                                 }
-                            }, '暂停'),
+                            }, lang.$t('videoback.pause')),
                             h('Button', {
                                 props: {
                                     size: "small",
@@ -590,12 +589,12 @@
                                             downloadtaskid: row.downloadtaskid
                                         }
                                         vRoot.controlUploadFileFn(data, function(resp) {
-                                            vRoot.$Message.success('继续成功');
+                                            vRoot.$Message.success(lang.$t('videoback.continueSucc'));
                                             vRoot.downloadTableData.splice(index, 1, resp.task);
                                         });
                                     }
                                 }
-                            }, '继续'),
+                            }, lang.$t('videoback.continue')),
                             h('Button', {
                                 props: {
                                     size: "small",
@@ -612,12 +611,12 @@
                                             downloadtaskid: row.downloadtaskid
                                         };
                                         vRoot.controlUploadFileFn(data, function(resp) {
-                                            vRoot.$Message.success('取消成功');
+                                            vRoot.$Message.success(lang.$t('videoback.cancel'));
                                             vRoot.downloadTableData.splice(index, 1);
                                         });
                                     }
                                 }
-                            }, '取消'),
+                            }, lang.$t('videoback.cancel')),
                             h('Button', {
                                 props: {
                                     size: "small",
@@ -629,47 +628,47 @@
                                 on: {
                                     click: function() {
                                         if (row.downloadstatus != 3) {
-                                            vRoot.$Message.error("文件还未上传完成不能下载");
+                                            vRoot.$Message.error(lang.$t('videoback.downloadTips1'));   
                                             return;
                                         };
-                                        vRoot.$Message.success("请求下载成功,开始下载");
+                                        vRoot.$Message.success(lang.$t('videoback.downloadTips2'));
                                         var ele = document.createElement('a');
                                         ele.setAttribute('href', row.downloadurl); //设置下载文件的url地址
                                         ele.setAttribute('download', 'download'); //用于设置下载文件的文件名
                                         ele.click();
                                     }
                                 }
-                            }, '下载到本地'),
+                            }, lang.$t('videoback.downloadToLocal')),
                         ])
                     }
                 }, {
-                    title: '下载状态',
-                    width: 90,
+                    title: lang.$t('videoback.downloadState'),
+                    width: 130,
                     key: 'downloadstatus',
                     render: function(h, params) {
                         var state = '',
                             downloadstatus = params.row.downloadstatus;
                         switch (downloadstatus) {
                             case 0:
-                                state = '未开始上传';
+                                state = lang.$t('videoback.uploadNotStarted');
                                 break;
                             case 1:
-                                state = '开始上传';
+                                state = lang.$t('videoback.startUploading');
                                 break;
                             case 2:
-                                state = '上传失败';
+                                state = lang.$t('videoback.uploadFailed');
                                 break;
                             case 3:
-                                state = '上传成功';
+                                state = lang.$t('videoback.uploadSucc');
                                 break;
                             case 4:
-                                state = '暂停';
+                                state = lang.$t('videoback.pause');
                                 break;
                         }
                         return h('span', {}, state);
                     }
                 }, {
-                    title: '进度',
+                    title: lang.$t('videoback.progress'),
                     width: 240,
                     render: function(h, params) {
                         if (params.row.lastupdatetime > 0) {
@@ -683,21 +682,21 @@
 
                     }
                 }, {
-                    title: '标签',
+                    title: lang.$t('videoback.label'),
                     key: 'tag',
                     width: 75
                 }, {
-                    title: '通道',
+                    title: lang.$t('videoback.channelNumber'),
                     key: 'channel',
-                    width: 65,
+                    width: 90,
                 }, {
-                    title: '文件开始时间',
+                    title: lang.$t('videoback.fileStartTime'),
                     key: 'needstarttime'
                 }, {
-                    title: '文件结束日期',
+                    title: lang.$t('videoback.fileEndTime'),
                     key: 'needendtime',
                 }, {
-                    title: '开始下载时间',
+                    title: lang.$t('videoback.startDownloadTime'),
                     key: 'downloadstarttime',
                     render: function(h, params) {
                         var row = params.row;
@@ -705,7 +704,7 @@
                     }
 
                 }, {
-                    title: '下载结束时间',
+                    title: lang.$t('videoback.endDownloadTime'),
                     key: 'downloadendtime',
                     render: function(h, params) {
                         var row = params.row;
@@ -740,7 +739,7 @@
                         this.flvPlayer.detachMediaElement();
                         this.flvPlayer.destroy();
                         this.flvPlayer = null;
-                        this.playerStateTip = "停止播放";
+                        this.playerStateTip = lang.$t('videoback.stopPlay');
                        
                     };
                     var url = myUrls.playRecordControl(),
@@ -754,23 +753,23 @@
                         }, function(resp) {
                             var status = resp.status;
                             if (status == CMD_SEND_RESULT_UNCONFIRM) {
-                                me.$Message.error('发送成功，未收到确认');
+                                me.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_UNCONFIRM')); 
                             } else if (status === CMD_SEND_RESULT_PASSWORD_ERROR) {
-                                me.$Message.error('密码错误');
+                                me.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_PASSWORD_ERROR'));
                             } else if (status === CMD_SEND_RESULT_OFFLINE_NOT_CACHE) {
-                                me.$Message.error("设备离线，未缓存");
+                                me.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_OFFLINE_NOT_CACHE'));
                             } else if (status === CMD_SEND_RESULT_OFFLINE_CACHED) {
-                                me.$Message.error("设备离线，已缓存");
+                                me.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_OFFLINE_CACHED'));
                             } else if (status === CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD) {
-                                me.$Message.error("需要修改默认密码");
+                                me.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD'));
                             } else if (status === CMD_SEND_RESULT_DETAIL_ERROR) {
-                                me.$Message.error("错误:" + resp.cause);
+                                me.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_DETAIL_ERROR') + resp.cause);
                             } else if (status === CMD_SEND_CONFIRMED) {
-                                me.$Message.success("停止成功");
+                                me.$Message.success(isZh ? "停止成功" : "Stopped successfully");
                             } else if (status === CMD_SEND_OVER_RETRY_TIMES) {
-                                me.$Message.error("尝试发送3次失败");
+                                me.$Message.error(lang.$t('monitor.CMD_SEND_OVER_RETRY_TIMES'));
                             } else if (status === CMD_SEND_SYNC_TIMEOUT) {
-                                me.$Message.error("发送超时");
+                                me.$Message.error(lang.$t('monitor.CMD_SEND_SYNC_TIMEOUT'));
                             }
                         })
                 },
@@ -780,24 +779,24 @@
                     utils.sendAjax(url, data, function(resp) {
                         var status = resp.status;
                         if (status == CMD_SEND_RESULT_UNCONFIRM) {
-                            me.$Message.error('发送成功，未收到确认');
-                        } else if (status === CMD_SEND_RESULT_PASSWORD_ERROR) {
-                            me.$Message.error('密码错误');
-                        } else if (status === CMD_SEND_RESULT_OFFLINE_NOT_CACHE) {
-                            me.$Message.error("设备离线，未缓存");
-                        } else if (status === CMD_SEND_RESULT_OFFLINE_CACHED) {
-                            me.$Message.error("设备离线，已缓存");
-                        } else if (status === CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD) {
-                            me.$Message.error("需要修改默认密码");
-                        } else if (status === CMD_SEND_RESULT_DETAIL_ERROR) {
-                            me.$Message.error("错误:" + resp.cause);
-                        } else if (status === CMD_SEND_CONFIRMED) {
-                            callback(resp);
-                        } else if (status === CMD_SEND_OVER_RETRY_TIMES) {
-                            me.$Message.error("尝试发送3次失败");
-                        } else if (status === CMD_SEND_SYNC_TIMEOUT) {
-                            me.$Message.error("发送超时");
-                        }
+                                me.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_UNCONFIRM')); 
+                            } else if (status === CMD_SEND_RESULT_PASSWORD_ERROR) {
+                                me.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_PASSWORD_ERROR'));
+                            } else if (status === CMD_SEND_RESULT_OFFLINE_NOT_CACHE) {
+                                me.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_OFFLINE_NOT_CACHE'));
+                            } else if (status === CMD_SEND_RESULT_OFFLINE_CACHED) {
+                                me.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_OFFLINE_CACHED'));
+                            } else if (status === CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD) {
+                                me.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD'));
+                            } else if (status === CMD_SEND_RESULT_DETAIL_ERROR) {
+                                me.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_DETAIL_ERROR') + resp.cause);
+                            } else if (status === CMD_SEND_CONFIRMED) {
+                                callback(resp);
+                            } else if (status === CMD_SEND_OVER_RETRY_TIMES) {
+                                me.$Message.error(lang.$t('monitor.CMD_SEND_OVER_RETRY_TIMES'));
+                            } else if (status === CMD_SEND_SYNC_TIMEOUT) {
+                                me.$Message.error(lang.$t('monitor.CMD_SEND_SYNC_TIMEOUT'));
+                            }
                     });
                 },
                 splitUploadFile: function() {
@@ -823,15 +822,15 @@
                     var needstarttime = this.dateStr + ' ' + this.startValue;
                     var needendtime = this.dateStr + ' ' + this.endValue;
                     if (new Date(needstarttime).getTime() > new Date(needendtime).getTime()) {
-                        me.$Message.error('开始时间不能大于结束时间');
+                        me.$Message.error( lang.$t('videoback.downloadTips3'));  
                         return;
                     }
                     if (new Date(this.row.starttime).getTime() > new Date(needstarttime).getTime()) {
-                        me.$Message.error('开始时间不能小于文件开始时间');
+                        me.$Message.error(lang.$t('videoback.downloadTips4'));
                         return;
                     }
                     if (new Date(needendtime).getTime() > new Date(this.row.endtime).getTime()) {
-                        me.$Message.error('结束时间不能大于文件结束时间');
+                        me.$Message.error(lang.$t('videoback.downloadTips5'));
                         return;
                     }
 
@@ -853,31 +852,27 @@
                     utils.sendAjax(url, data, function(resp) {
                         var status = resp.status;
                         if (status == CMD_SEND_RESULT_UNCONFIRM) {
-                            me.$Message.error('发送成功，未收到确认');
-                        } else if (status === CMD_SEND_RESULT_PASSWORD_ERROR) {
-                            me.$Message.error('密码错误');
-                        } else if (status === CMD_SEND_RESULT_OFFLINE_NOT_CACHE) {
-                            me.$Message.error("设备离线，未缓存");
-                        } else if (status === CMD_SEND_RESULT_OFFLINE_CACHED) {
-                            me.$Message.error("设备离线，已缓存");
-                        } else if (status === CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD) {
-                            me.$Message.error("需要修改默认密码");
-                        } else if (status === CMD_SEND_RESULT_DETAIL_ERROR) {
-                            me.$Message.error("错误:" + resp.cause);
-                        } else if (status === CMD_SEND_CONFIRMED) {
-                            me.$Message.success("请求下载成功");
-                            // var ele = document.createElement('a');
-                            // ele.setAttribute('href', resp.downloadurl); //设置下载文件的url地址
-                            // ele.setAttribute('download', resp.tag); //用于设置下载文件的文件名
-                            // ele.click();
-                            me.modal = false;
-                            me.tag = '';
-                            me.queryDownloadTasks();
-                        } else if (status === CMD_SEND_OVER_RETRY_TIMES) {
-                            me.$Message.error("尝试发送3次失败");
-                        } else if (status === CMD_SEND_SYNC_TIMEOUT) {
-                            me.$Message.error("发送超时");
-                        }
+                                me.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_UNCONFIRM')); 
+                            } else if (status === CMD_SEND_RESULT_PASSWORD_ERROR) {
+                                me.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_PASSWORD_ERROR'));
+                            } else if (status === CMD_SEND_RESULT_OFFLINE_NOT_CACHE) {
+                                me.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_OFFLINE_NOT_CACHE'));
+                            } else if (status === CMD_SEND_RESULT_OFFLINE_CACHED) {
+                                me.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_OFFLINE_CACHED'));
+                            } else if (status === CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD) {
+                                me.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD'));
+                            } else if (status === CMD_SEND_RESULT_DETAIL_ERROR) {
+                                me.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_DETAIL_ERROR') + resp.cause);
+                            } else if (status === CMD_SEND_CONFIRMED) {
+                                me.$Message.success(isZh ? "请求下载成功" : "Download request successful");
+                                me.modal = false;
+                                me.tag = '';
+                                me.queryDownloadTasks();
+                            } else if (status === CMD_SEND_OVER_RETRY_TIMES) {
+                                me.$Message.error(lang.$t('monitor.CMD_SEND_OVER_RETRY_TIMES'));
+                            } else if (status === CMD_SEND_SYNC_TIMEOUT) {
+                                me.$Message.error(lang.$t('monitor.CMD_SEND_SYNC_TIMEOUT'));
+                            }
                     });
                 },
                 reqUploadFile: function(row) {
@@ -916,29 +911,25 @@
                     utils.sendAjax(url, data, function(resp) {
                         var status = resp.status;
                         if (status == CMD_SEND_RESULT_UNCONFIRM) {
-                            me.$Message.error('发送成功，未收到确认');
-                        } else if (status === CMD_SEND_RESULT_PASSWORD_ERROR) {
-                            me.$Message.error('密码错误');
-                        } else if (status === CMD_SEND_RESULT_OFFLINE_NOT_CACHE) {
-                            me.$Message.error("设备离线，未缓存");
-                        } else if (status === CMD_SEND_RESULT_OFFLINE_CACHED) {
-                            me.$Message.error("设备离线，已缓存");
-                        } else if (status === CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD) {
-                            me.$Message.error("需要修改默认密码");
-                        } else if (status === CMD_SEND_RESULT_DETAIL_ERROR) {
-                            me.$Message.error("错误:" + resp.cause);
-                        } else if (status === CMD_SEND_CONFIRMED) {
-                            me.$Message.success("请求下载成功");
-                            // var ele = document.createElement('a');
-                            // ele.setAttribute('href', resp.downloadurl); //设置下载文件的url地址
-                            // ele.setAttribute('download', 'download'); //用于设置下载文件的文件名
-                            // ele.click();
-                            me.queryDownloadTasks();
-                        } else if (status === CMD_SEND_OVER_RETRY_TIMES) {
-                            me.$Message.error("尝试发送3次失败");
-                        } else if (status === CMD_SEND_SYNC_TIMEOUT) {
-                            me.$Message.error("发送超时");
-                        }
+                                me.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_UNCONFIRM')); 
+                            } else if (status === CMD_SEND_RESULT_PASSWORD_ERROR) {
+                                me.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_PASSWORD_ERROR'));
+                            } else if (status === CMD_SEND_RESULT_OFFLINE_NOT_CACHE) {
+                                me.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_OFFLINE_NOT_CACHE'));
+                            } else if (status === CMD_SEND_RESULT_OFFLINE_CACHED) {
+                                me.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_OFFLINE_CACHED'));
+                            } else if (status === CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD) {
+                                me.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD'));
+                            } else if (status === CMD_SEND_RESULT_DETAIL_ERROR) {
+                                me.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_DETAIL_ERROR') + resp.cause);
+                            } else if (status === CMD_SEND_CONFIRMED) {
+                                me.$Message.success(isZh ? "请求下载成功" : "Download request successful");
+                                me.queryDownloadTasks();
+                            } else if (status === CMD_SEND_OVER_RETRY_TIMES) {
+                                me.$Message.error(lang.$t('monitor.CMD_SEND_OVER_RETRY_TIMES'));
+                            } else if (status === CMD_SEND_SYNC_TIMEOUT) {
+                                me.$Message.error(lang.$t('monitor.CMD_SEND_SYNC_TIMEOUT'));
+                            }
                     });
                 },
                 onMouseMove: function(e) {
@@ -1014,15 +1005,12 @@
                     })
                     if (endTimeStr) {
                         isRequsetPlaying = true;
-                        this.playerStateTip = "正在请求播放";
+                        this.playerStateTip = lang.$t('video.requestPlay'); 
                         this.isSpin = true;
                         var url = myUrls.playRecordControl();
                         gendTimeStr = endTimeStr;
                         gstartTimeStr = startTimeStr;
                         gchannel = channel;
-                        console.log(gendTimeStr);
-                        console.log(gstartTimeStr);
-                        console.log(gchannel);
                         utils.sendAjax(url, {
                             deviceid: deviceid,
                             channel: channel,
@@ -1036,29 +1024,29 @@
                             isRequsetPlaying = false;
                             var record = resp.record,
                                 status = resp.status;
-                            if (status == CMD_SEND_RESULT_UNCONFIRM) {
-                                me.$Message.error('发送成功，未收到确认');
-                            } else if (status === CMD_SEND_RESULT_PASSWORD_ERROR) {
-                                me.$Message.error('密码错误');
-                            } else if (status === CMD_SEND_RESULT_OFFLINE_NOT_CACHE) {
-                                me.$Message.error("设备离线，未缓存");
-                            } else if (status === CMD_SEND_RESULT_OFFLINE_CACHED) {
-                                me.$Message.error("设备离线，已缓存");
-                            } else if (status === CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD) {
-                                me.$Message.error("需要修改默认密码");
-                            } else if (status === CMD_SEND_RESULT_DETAIL_ERROR) {
-                                me.$Message.error("错误:" + resp.cause);
-                            } else if (status === CMD_SEND_CONFIRMED) {
 
-                                me.$Message.success('请求播放成功，请稍后...');
+                            if (status == CMD_SEND_RESULT_UNCONFIRM) {
+                                me.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_UNCONFIRM')); 
+                            } else if (status === CMD_SEND_RESULT_PASSWORD_ERROR) {
+                                me.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_PASSWORD_ERROR'));
+                            } else if (status === CMD_SEND_RESULT_OFFLINE_NOT_CACHE) {
+                                me.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_OFFLINE_NOT_CACHE'));
+                            } else if (status === CMD_SEND_RESULT_OFFLINE_CACHED) {
+                                me.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_OFFLINE_CACHED'));
+                            } else if (status === CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD) {
+                                me.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD'));
+                            } else if (status === CMD_SEND_RESULT_DETAIL_ERROR) {
+                                me.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_DETAIL_ERROR') + resp.cause);
+                            } else if (status === CMD_SEND_CONFIRMED) {
+                                me.$Message.success(lang.$t('video.requestPlaySucc'));
                                 if (startPlayerTimer) {
                                     clearTimeout(startPlayerTimer);
                                 }
                                 me.switchflvPlayer(resp.record.playurl, resp.record.hasaudio);
                             } else if (status === CMD_SEND_OVER_RETRY_TIMES) {
-                                me.$Message.error("尝试发送3次失败");
+                                me.$Message.error(lang.$t('monitor.CMD_SEND_OVER_RETRY_TIMES'));
                             } else if (status === CMD_SEND_SYNC_TIMEOUT) {
-                                me.$Message.error("请求播放发送超时");
+                                me.$Message.error( lang.$t('video.requestPlayTimeout'));   
                                 if (startPlayerTimer) {
                                     clearTimeout(startPlayerTimer);
                                 }
@@ -1066,9 +1054,10 @@
                                     me.switchflvPlayer(resp.record.playurl, resp.record.hasaudio);
                                 }
                             }
+
                         }, function() {
                             me.isSpin = false;
-                            me.$Message.error("网络错误");
+                            me.$Message.error(lang.$t('message.networkError')); 
                         });
                     }
                 },
@@ -1094,7 +1083,7 @@
                     if (startPlayerTimer) {
                         clearTimeout(startPlayerTimer);
                     }
-                    this.playerStateTip = "正在请求播放";
+                    this.playerStateTip = lang.$t('video.requestPlay'); 
                     gendTimeStr = row.endtime;
                     gstartTimeStr = row.starttime;
                     gchannel = row.channel;
@@ -1113,42 +1102,42 @@
                         isRequsetPlaying = false;
                         var record = resp.record,
                             status = resp.status;
-                        if (status == CMD_SEND_RESULT_UNCONFIRM) {
-                            me.$Message.error('发送成功，未收到确认');
-                        } else if (status === CMD_SEND_RESULT_PASSWORD_ERROR) {
-                            me.$Message.error('密码错误');
-                        } else if (status === CMD_SEND_RESULT_OFFLINE_NOT_CACHE) {
-                            me.$Message.error("设备离线，未缓存");
-                        } else if (status === CMD_SEND_RESULT_OFFLINE_CACHED) {
-                            me.$Message.error("设备离线，已缓存");
-                        } else if (status === CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD) {
-                            me.$Message.error("需要修改默认密码");
-                        } else if (status === CMD_SEND_RESULT_DETAIL_ERROR) {
-                            me.$Message.error("错误:" + resp.cause);
-                        } else if (status === CMD_SEND_CONFIRMED) {
-                            me.$Message.success('请求播放成功，请稍后...');
-                            if (startPlayerTimer) {
-                                clearTimeout(startPlayerTimer);
+                            if (status == CMD_SEND_RESULT_UNCONFIRM) {
+                                me.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_UNCONFIRM')); 
+                            } else if (status === CMD_SEND_RESULT_PASSWORD_ERROR) {
+                                me.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_PASSWORD_ERROR'));
+                            } else if (status === CMD_SEND_RESULT_OFFLINE_NOT_CACHE) {
+                                me.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_OFFLINE_NOT_CACHE'));
+                            } else if (status === CMD_SEND_RESULT_OFFLINE_CACHED) {
+                                me.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_OFFLINE_CACHED'));
+                            } else if (status === CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD) {
+                                me.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD'));
+                            } else if (status === CMD_SEND_RESULT_DETAIL_ERROR) {
+                                me.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_DETAIL_ERROR') + resp.cause);
+                            } else if (status === CMD_SEND_CONFIRMED) {
+                                me.$Message.success(lang.$t('video.requestPlaySucc'));
+                                if (startPlayerTimer) {
+                                    clearTimeout(startPlayerTimer);
+                                }
+                                me.switchflvPlayer(resp.record.playurl, resp.record.hasaudio);
+                            } else if (status === CMD_SEND_OVER_RETRY_TIMES) {
+                                me.$Message.error(lang.$t('monitor.CMD_SEND_OVER_RETRY_TIMES'));
+                            } else if (status === CMD_SEND_SYNC_TIMEOUT) {
+                                me.$Message.error(lang.$t('video.requestPlayTimeout'));
+                                    if (startPlayerTimer) {
+                                    clearTimeout(startPlayerTimer);
+                                }
+                                me.switchflvPlayer(resp.record.playurl, resp.record.hasaudio);
                             }
-                            me.switchflvPlayer(resp.record.playurl, resp.record.hasaudio);
-                        } else if (status === CMD_SEND_OVER_RETRY_TIMES) {
-                            me.$Message.error("尝试发送3次失败");
-                        } else if (status === CMD_SEND_SYNC_TIMEOUT) {
-                            me.$Message.error("发送超时");
-                            if (startPlayerTimer) {
-                                clearTimeout(startPlayerTimer);
-                            }
-                            me.switchflvPlayer(resp.record.playurl, resp.record.hasaudio);
-                        }
                     }, function() {
-                        me.$Message.error("网络错误");
+                        me.$Message.error(lang.$t('message.networkError')); 
                         me.isSpin = false;
                     });
                 },
                 queryMedia: function() {
 
                     if (!(this.date && this.timeRange[0] && this.timeRange[1])) {
-                        this.$Message.error("请选择时间");
+                        this.$Message.error(lang.$t('message.plSelectTime')); 
                         return;
                     };
 
@@ -1189,32 +1178,31 @@
                         that.loading = false;
 
                         if (status == CMD_SEND_RESULT_UNCONFIRM) {
-                            that.$Message.error('发送成功，未收到确认');
-                        } else if (status === CMD_SEND_RESULT_PASSWORD_ERROR) {
-                            that.$Message.error('密码错误');
-                        } else if (status === CMD_SEND_RESULT_OFFLINE_NOT_CACHE) {
-                            that.$Message.error("设备离线，未缓存");
-                        } else if (status === CMD_SEND_RESULT_OFFLINE_CACHED) {
-                            that.$Message.error("设备离线，已缓存");
-                        } else if (status === CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD) {
-                            that.$Message.error("需要修改默认密码");
-                        } else if (status === CMD_SEND_RESULT_DETAIL_ERROR) {
-                            that.$Message.error("错误:" + resp.cause);
-                        } else if (status === CMD_SEND_CONFIRMED) {
-                            if (records && records.length) {
-                                isSucc = true;
-                            } else {
-                                that.$Message.error("没有存储记录");
+                            that.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_UNCONFIRM')); 
+                            } else if (status === CMD_SEND_RESULT_PASSWORD_ERROR) {
+                                that.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_PASSWORD_ERROR'));
+                            } else if (status === CMD_SEND_RESULT_OFFLINE_NOT_CACHE) {
+                                that.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_OFFLINE_NOT_CACHE'));
+                            } else if (status === CMD_SEND_RESULT_OFFLINE_CACHED) {
+                                that.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_OFFLINE_CACHED'));
+                            } else if (status === CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD) {
+                                that.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD'));
+                            } else if (status === CMD_SEND_RESULT_DETAIL_ERROR) {
+                                that.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_DETAIL_ERROR') + resp.cause);
+                            } else if (status === CMD_SEND_CONFIRMED) {
+                                if (records && records.length) {
+                                    isSucc = true;
+                                } else {
+                                    that.$Message.error(lang.$t('activeSafety.noData'));  
+                                }
+                            } else if (status === CMD_SEND_OVER_RETRY_TIMES) {
+                                that.$Message.error(lang.$t('monitor.CMD_SEND_OVER_RETRY_TIMES'));
+                            } else if (status === CMD_SEND_SYNC_TIMEOUT) {
+                                that.$Message.error(lang.$t('monitor.CMD_SEND_SYNC_TIMEOUT'));   
                             }
-                        } else if (status === CMD_SEND_OVER_RETRY_TIMES) {
-                            that.$Message.error("尝试发送3次失败");
-                        } else if (status === CMD_SEND_SYNC_TIMEOUT) {
-                            that.$Message.error("发送超时");
-                        }
 
                         if (isSucc) {
-                            that.$Message.success("查询成功");
-
+                            that.$Message.success(lang.$t('monitor.querySucc'));
                             records.sort(function(a, b) {
                                 return DateFormat.dateStrToLong(b.starttime, timeDifference) - DateFormat.dateStrToLong(a.starttime, timeDifference);
                             });
@@ -1259,7 +1247,7 @@
                 getEchartOption: function(dateStr, data) {
 
                     var colors = ['#e4393c']; //三种状态的颜色
-                    var state = ['视频']; //三种状态
+                    var state = [lang.$t('monitor.video')]; //三种状态  
                     dateStr = dateStr.replace('-', '/').replace('-', '/');
 
                     // echart配置
@@ -1465,22 +1453,22 @@
                 that.$nextTick(function() {
                     player = document.getElementById('videoElement');
                     player.addEventListener('error', function() {
-                        that.playerStateTip = "请求数据时遇到错误";
+                        that.playerStateTip = lang.$t('video.error');
                     });
                     player.addEventListener('loadedmetadata', function(e) {
                         console.log(e.target.videoWidth, e.target.videoHeight);
                     });
                     player.addEventListener('play', function() {
-                        that.playerStateTip = "开始播放";
+                        that.playerStateTip = lang.$t('video.play');
                     });
                     player.addEventListener('playing', function() {
-                        that.playerStateTip = "正在播放";
+                        that.playerStateTip =  lang.$t('video.playing');
                     });
                     player.addEventListener('pause', function() {
-                        that.playerStateTip = "暂停";
+                        that.playerStateTip = lang.$t('video.pause');
                     });
                     player.addEventListener('waiting', function() {
-                        that.playerStateTip = "等待数据";
+                        that.playerStateTip =  lang.$t('video.waiting');
                     });
                     // that.initVideo();
                     that.initChart();

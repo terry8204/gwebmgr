@@ -205,6 +205,7 @@
         var isLoadingMap = false;
         iview.lang(isZh ? 'zh-CN' : 'en-US');
         var lang = new Vue({i18n: utils.getI18n()});
+        document.title = lang.$t('monitor.activeSafety');
         var vRoot = new Vue({
             el: '#dsm-wraper',
             i18n: utils.getI18n(),

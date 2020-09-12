@@ -427,31 +427,31 @@ var monitor = {
             lastquerypositiontime: 0,
             videoChannelsColumns: [{
                 key: 'physicalchannel',
-                title: '物理通道号',
+                title: vm.$t('videoSettings.physicalChannel'), 
             }, {
                 key: 'logicalchannel',
-                title: '逻辑通道号',
+                title:  vm.$t('videoSettings.logicalChannel'), 
             }, {
                 key: 'channeltype',
-                title: '通道类型',
+                title: vm.$t('videoSettings.channelType'), 
                 render: function(h, params) {
                     var channeltype = params.row.channeltype,
                         type;
                     if (channeltype === 0) {
-                        type = '音视频'
+                        type = vm.$t('videoSettings.audioAndVideo');
                     } else if (channeltype === 1) {
-                        type = '音频'
+                        type = vm.$t('videoSettings.audio');
                     } else if (channeltype === 2) {
-                        type = '视频'
+                        type = vm.$t('videoSettings.video');
                     }
                     return h('span', {}, type);
                 }
             }, {
                 key: 'connectptz',
-                title: '是否连接云台',
+                title: vm.$t('videoSettings.connectPTZ'),    
                 render: function(h, params) {
-                    var connectptz = params.row.connectptz;
-                    return h('span', {}, connectptz === 0 ? '未连接' : '已连接');
+                    var connectptz = params.row.connectptz;  
+                    return h('span', {}, connectptz === 0 ? vm.$t('videoSettings.notConnected') : vm.$t('videoSettings.connected'));
                 }
             }, ],
             videoChannelsTableData: [],
