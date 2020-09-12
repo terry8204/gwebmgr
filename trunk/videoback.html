@@ -369,6 +369,8 @@
     <script src="dist/iview.min.js"></script>
     <script src="js/vue-i18n.min.js"></script>
     <script src="custom/language.js"></script>
+    <script src="js/zh-CN.js"></script>
+    <script src="js/en-US.js"></script>
     <script src="js/gps51-jquery.js"></script>
     <script src="js/config.js"></script>
     <script src="js/dateformat.js"></script>
@@ -377,6 +379,8 @@
     <script src="js/websocketmgr.js"></script>
     <script src="js/echarts.min.js"></script>
     <script>
+        var isZh = utils.locale === 'zh';
+        iview.lang(isZh ? 'zh-CN' : 'en-US');
         var totalInterval = 0;
         var startTimes = 0;
         var player = null;
@@ -625,7 +629,7 @@
                                 on: {
                                     click: function() {
                                         if (row.downloadstatus != 3) {
-                                            vRoot.$Message.error("文件还上传完成不能下载");
+                                            vRoot.$Message.error("文件还未上传完成不能下载");
                                             return;
                                         };
                                         vRoot.$Message.success("请求下载成功,开始下载");
