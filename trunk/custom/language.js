@@ -934,6 +934,7 @@
                 noData:"No data",
             },
             videoback:{
+                loading:'Loading',
                 channelNumber:'Channel',
                 selectDate:'Select date',
                 timeFrame:'Time frame',
@@ -1906,6 +1907,7 @@
                 noData:"没有数据",
             },
             videoback:{
+                loading:'正在载入播放器',
                 channelNumber:'通道编号',
                 selectDate:'选择日期',
                 timeFrame:'时间范围',
