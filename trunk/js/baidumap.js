@@ -175,7 +175,7 @@ BMapClass.pt.getDevAddress = function(track) {
 
 BMapClass.pt.getInfoWindow = function(track, address) {
     var option = {
-        width: 412,
+        width: 400,
     };
     var content = utils.getWindowContent(track, address);
     var infoWindow = new BMap.InfoWindow('<div id="windowInfo">' + content + '</div>', option);

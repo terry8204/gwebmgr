@@ -154,7 +154,7 @@ GoogleMap.pt.getDevAddress = function(track) {
 
 GoogleMap.pt.getInfoWindow = function(track, address) {
     var content = utils.getWindowContent(track, address);
-    var infoWindow = new google.maps.InfoWindow({ content: '<div id="windowInfo" style="width:412px;">' + content + '</div>' });
+    var infoWindow = new google.maps.InfoWindow({ content: '<div id="windowInfo" style="width:400px;">' + content + '</div>' });
     return infoWindow;
 }
 
