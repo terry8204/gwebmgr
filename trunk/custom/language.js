@@ -101,6 +101,7 @@
                 no:"No",
             },
             alarm: {
+                maturityDays:'Overdue days',
                 message: "Message",
                 alarmMsg: "Alarm message",
                 devMsg: "Device message",
@@ -1079,6 +1080,7 @@
                 no:"否",
             },
             alarm: {  
+                maturityDays:"到期天数",
                 message: "消息",
                 alarmMsg: "报警消息",
                 devMsg: "设备信息",

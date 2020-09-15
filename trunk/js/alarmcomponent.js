@@ -748,15 +748,25 @@ var waringComponent = {
                             }
                         },
                         {
-                            title: '到期天数',
+                            title: me.$t("alarm.maturityDays"),
                             render: function(h, params) {
                                 var mss = params.row.days;
                                 var days = parseInt(mss / (1000 * 60 * 60 * 24));
                                 var dayStr = "";
                                 if (mss > 0) {
-                                    dayStr += "剩" + days + "天过期";
+                                    if(isZh){
+                                        dayStr += "剩" + days + "天过期";
+                                    }else{
+                                        dayStr +=  days + " days to expire";
+                                    }
+                                    
                                 } else if (mss < 0) {
-                                    dayStr += "已过期" + Math.abs(days) + "天";
+                                    if(isZh){
+                                        dayStr += "已过期" + Math.abs(days) + "天";
+                                    }else{
+                                        dayStr += Math.abs(days) +  " days overdue";
+                                    }
+                                   
                                 }
                                 return h('span', {}, dayStr);
                             }
