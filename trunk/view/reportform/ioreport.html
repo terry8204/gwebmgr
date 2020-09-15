@@ -1,0 +1,61 @@
+<meta charset="UTF-8">
+<div id="io-record">
+    <div class="demo-spin-container" v-if="isSpin">
+        <Spin size="large" fix></Spin>
+    </div>
+    <Row style="margin:10px;height: 35px;">
+        <div style="float: left;">
+            <span>{{$t("reportForm.selectTime")}}:</span>
+            <date-picker type="daterange" :value="dateVal" :editable="false" :clearable="false" @on-change="onChange" show-week-numbers style="width:300px" placement="bottom-start"></date-picker>
+        </div>
+        <div style="float: left;height: 35px; line-height: 35px;margin-left: 20px;" class="spans-wrap">
+            <span class="cursor-pointer" @click="handleSelectdDate(0)" :style="{color: dayNumberType == 0 ? '#2D8CF0' : '#515A6E'}">{{$t("reportForm.toDay")}}</span> <b>｜</b>
+            <span class="cursor-pointer" @click="handleSelectdDate(1)" :style="{color: dayNumberType == 1 ? '#2D8CF0' : '#515A6E'}">{{$t("reportForm.yesterDay")}}</span> <b>｜</b>
+            <span class="cursor-pointer" @click="handleSelectdDate(3)" :style="{color: dayNumberType == 3 ? '#2D8CF0' : '#515A6E'}">{{$t("reportForm.threeDays")}}</span> <b>｜</b>
+            <span class="cursor-pointer" @click="handleSelectdDate(7)" :style="{color: dayNumberType == 7 ? '#2D8CF0' : '#515A6E'}">{{$t("reportForm.sevenDays")}}</span>
+        </div>
+    </Row>
+    <Row style="margin:10px;height: 35px;">
+        <div style="float: left;">
+            <div style="height: 35px; line-height: 35px;">{{$t("reportForm.selectDev")}}:&nbsp;</div>
+        </div>
+        <div style="float: left;position: relative;width: 300px;">
+            <div class="search-wrapper" v-click-outside.capture="onClickOutside">
+                <i-input v-model.trim="sosoValue" icon="ios-search-outline" @on-change="sosoValueChange" :readonly="readonly" @on-focus="focus" :placeholder="placeholder"></i-input>
+                <transition name="fade">
+                    <div class="search-item-wrapper" v-show="isShowMatchDev">
+                        <Tree :data="treeData" show-checkbox @on-check-change="onCheckedDevice"></Tree>
+                    </div>
+                </transition>
+            </div>
+        </div>
+        <div style="margin-left:20px;float: left;position: relative;">
+            <i-select v-model="ioType">
+                <i-option value="0">全部</i-option>
+                <i-option value="1">IO_1</i-option>
+                <i-option value="2">IO_2</i-option>
+                <i-option value="3">IO_3</i-option>
+                <i-option value="4">IO_4</i-option>
+            </i-select>
+        </div>
+        <div style="margin-left:20px;float: left;">
+            <i-button @click="clean" icon="ios-nuclear-outline">{{$t("reportForm.clean")}}</i-button>
+        </div>
+        <div style="margin-left:20px;float: left;">
+            <i-button @click="onClickQuery" icon="ios-search">{{$t("reportForm.query")}}</i-button>
+        </div>
+        <div style="margin-left:20px;float: left;">
+            <i-button @click="exportData" icon="md-arrow-down">{{$t("reportForm.download")}}</i-button> 
+        </div>
+    </Row>
+    <div style="margin:10px;">
+        <Tabs :value="activeTab" @on-click="onClickTab">
+            <Tab-pane :label="$t('reportForm.ioStatistics')" name="tabTotal">
+                <i-table ref="totalTable" :columns="allIoColumns" :data="allIoTableData" :height="lastTableHeight" :loading="loading"></i-table>
+            </Tab-pane>
+            <Tab-pane :label="$t('reportForm.ioDuration')" name="tabDetail">
+                <i-table ref="detailTable" :columns="columns" :height="lastTableHeight" :data="tableData" :loading="loading"></i-table>
+            </Tab-pane>
+        </Tabs>
+    </div>
+</div>

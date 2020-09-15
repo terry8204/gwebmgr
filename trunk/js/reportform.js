@@ -7021,6 +7021,245 @@ function driverWorkDetails() {
 }
 
 
+function ioReport(groupslist){
+    vueInstanse = new Vue({
+        el: '#io-record',
+        i18n: utils.getI18n(),
+        mixins: [treeMixin],
+        data: {
+            isSpin: false,
+            activeTab: 'tabTotal',
+            ioType:"0",
+            mapModal: false,
+            mapType: utils.getMapType(),
+            mapInstance: null,
+            markerIns: null,
+            loading: false,
+            dateVal: [DateFormat.longToDateStr(Date.now(), timeDifference), DateFormat.longToDateStr(Date.now(), timeDifference)],
+            lastTableHeight: 100,
+            groupslist: [],
+            timeoutIns: null,
+            allIoColumns: [
+                { title:  vRoot.$t("reportForm.index"), width: 70, key: 'index' },
+                {
+                    title: vRoot.$t("alarm.action"),  
+                    width: 160,
+                    render: function(h, params) {
+                        return h('span', {
+                            on: {
+                                click: function() {
+                                    vueInstanse.activeTab = "tabDetail";
+                                    vueInstanse.getAccDetailTableData(params.row.records);
+                                }
+                            },
+                            style: {
+                                color: '#e4393c',
+                                cursor: 'pointer'
+                            }
+                        }, "["+vRoot.$t("reportForm.accDetailed")+"]")
+                    }
+                },
+                {
+                    title: vRoot.$t("alarm.devName"),
+                    key: 'devicename'
+                },
+                {
+                    title: vRoot.$t("alarm.devNum"),
+                    key: 'deviceid',
+                },
+                {
+                    title: vRoot.$t("reportForm.accCount"),
+                    key: 'opennumber', 
+                },
+                {
+                    title:vRoot.$t("reportForm.accDuration"),
+                    key: 'duration'
+                }
+            ],
+            allIoTableData: [],
+            columns: [
+                { title:  vRoot.$t("reportForm.index"), width: 70, key: 'index' },
+                { title: vRoot.$t("alarm.devName"), key: 'deviceName', width: 160 },
+                { title: vRoot.$t("alarm.devNum"), key: 'deviceid', width: 160 },
+                { title: vRoot.$t("reportForm.accstatus"), key: 'accStatus', width: 100 },
+                { title: vRoot.$t("reportForm.startDate"), key: 'startDate', width: 180 },
+                { title: vRoot.$t("reportForm.endDate"), key: 'endDate', width: 180 },
+                { title: vRoot.$t("reportForm.duration"), key: 'duration' },
+            ],
+            tableData: [],
+        },
+        methods: {
+            exportData: function() {
+                var startday = this.dateVal[0];
+                var endday = this.dateVal[1];
+                this.$refs.totalTable.exportCsv({
+                    filename: vRoot.$t("reportForm.ignitionStatistics") + startday + '-' + endday,  
+                    original: false,
+                    columns: this.allAccColumns.filter(function(col, index) { return index != 1; }),
+                    data: this.allRotateTableData
+                });
+            },
+            clean: function() {
+                this.sosoValue = '';
+                this.checkedDevice = [];
+                this.cleanSelected(this.groupslist);
+                this.treeData = this.groupslist;
+            },
+            cleanSelected: function(treeDataFilter) {
+                var that = this;
+                for (var i = 0; i < treeDataFilter.length; i++) {
+                    var item = treeDataFilter[i];
+                    if (item != null) {
+                        item.checked = false;
+                        if (item.children && item.children.length > 0) {
+                            that.cleanSelected(item.children);
+                        }
+                    }
+                }
+            },
+            onClickTab: function(name) {
+                this.activeTab = name;
+            },
+            onChange: function(value) {
+                this.dateVal = value;
+            },
+            calcTableHeight: function() {
+                var wHeight = window.innerHeight;
+                this.lastTableHeight = wHeight - 215;
+            },
+            onClickQuery: function() {
+                var deviceids = [];
+                this.checkedDevice.forEach(function(group) {
+                    if (!group.children) {
+                        if (group.deviceid != null) {
+                            deviceids.push(group.deviceid);
+                        }
+                    }
+                });
+                if (deviceids.length) {
+                    var me = this;
+                    var url = myUrls.reportAccs();
+                    var data = {
+                        startday: this.dateVal[0],
+                        endday: this.dateVal[1],
+                        offset: timeDifference,
+                        deviceids: deviceids
+                    }
+                    me.loading = true;
+                    utils.sendAjax(url, data, function(resp) {
+                        me.loading = false;
+                        if (resp.status == 0) {
+                            if (resp.records && resp.records.length) {
+                                me.tableData = [];
+                                me.allAccTableData = me.getAllaccTableData(resp.records);
+                            } else {
+                                me.tableData = [];
+                                me.allAccTableData = [];
+                                me.$Message.error(me.$t("reportForm.noRecord"));  
+                            }
+                        } else {
+                            me.tableData = [];
+                            me.allAccTableData = [];
+                        }
+                        if (me.activeTab != "tabTotal") {
+                            me.onClickTab("tabTotal");
+                        }
+                    });
+                } else {
+                    this.$Message.error(this.$t("reportForm.selectDevTip"));
+                }
+            },
+            getAllaccTableData: function(records) {
+                var allAccTableData = [],
+                    me = this;
+                records.forEach(function(item, index) {
+                    var accObj = {
+                            index: index + 1,
+                            deviceid: "\t" + item.deviceid,
+                            opennumber: 0,
+                            duration: "",
+                            devicename: vstore.state.deviceInfos[item.deviceid].devicename,
+                            records: item.records
+                        },
+                        duration = 0;
+                    item.records.forEach(function(deviceAcc) {
+                        if (deviceAcc.accstate == 3) {
+                            duration += deviceAcc.endtime - deviceAcc.begintime;
+                            accObj.opennumber++;
+                        }
+                    });
+                    accObj.duration = utils.timeStamp(duration);
+                    allAccTableData.push(accObj);
+                });
+                return allAccTableData;
+            },
+            getAccDetailTableData: function(records) {
+                var newRecords = [],
+                    me = this;
+                var accOnTime = 0;
+                var accOffTime = 0;
+                records.sort(function(a, b) {
+                    return a.begintime - b.begintime;
+                });
+                records.forEach(function(item, index) {
+                    var deviceName = vstore.state.deviceInfos[item.deviceid].devicename;
+                    var duration = item.endtime - item.begintime;
+                    var durationStr = utils.timeStamp(duration);
+                    var accStatus = "";
+                    if (item.accstate == 0) {
+                        accStatus = me.$t("reportForm.notEnabled");
+                    } else if (item.accstate == 3) {
+                        accStatus = me.$t("reportForm.open");
+                        accOnTime += duration;
+                    } else if (item.accstate == 2) {
+                        accOffTime += duration;
+                        accStatus = me.$t("reportForm.stalling");
+                    }
+                    newRecords.push({
+                        index: index + 1,
+                        deviceid: item.deviceid,
+                        deviceName: deviceName,
+                        startDate: DateFormat.longToDateTimeStr(item.begintime, timeDifference),
+                        endDate: DateFormat.longToDateTimeStr(item.endtime, timeDifference),
+                        accStatus: accStatus,
+                        duration: durationStr
+                    });
+                });
+                newRecords.push({
+                    duration: this.$t("reportForm.accOnTime") + ':' + utils.timeStamp(accOnTime) + ',' + this.$t("reportForm.accOffTime") + ':' + utils.timeStamp(accOffTime)
+                })
+                me.tableData = newRecords;
+            },
+        },
+        mounted: function() {
+            var me = this;
+            if (rootuser == null) {
+                me.isSpin = true;
+                utils.queryDevicesTree(function(rootuserinfo) {
+                    me.isSpin = false;
+                    if (rootuserinfo) {
+                        rootuser = rootuserinfo;
+                        me.groupslist = [utils.castUsersTreeToDevicesTree(rootuserinfo, true)];
+                        me.treeData = me.groupslist;
+                    }
+                });
+            } else {
+                me.groupslist = [utils.castUsersTreeToDevicesTree(rootuser, true)];
+                me.treeData = me.groupslist;
+            }
+
+            this.calcTableHeight();
+            window.onresize = function() {
+                me.calcTableHeight();
+            }
+        }
+    })
+
+}
+
+
+
+
 // 统计报表
 var reportForm = {
     template: document.getElementById('report-template').innerHTML,
@@ -7045,6 +7284,7 @@ var reportForm = {
                         { title: me.$t("reportForm.voiceReport"), name: 'records', icon: 'md-volume-up' },
                         { title: me.$t("reportForm.messageReport"), name: 'messageRecords', icon: 'ios-book' },
                         { title: me.$t("reportForm.rotationStatistics"), name: 'rotateReport', icon: 'ios-aperture' },   
+                        { title: "IO报表", name: 'ioReport', icon: 'md-contrast' }, 
                     ]  
                 },
                 {
@@ -7209,6 +7449,9 @@ var reportForm = {
                         break;
                     case 'driverworkdetails.html':
                         driverWorkDetails(groupslist);
+                        break;
+                    case 'ioreport.html':
+                        ioReport(groupslist);
                         break;
                 }
             });
