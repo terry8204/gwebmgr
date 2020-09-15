@@ -1281,14 +1281,13 @@
 
                         this.openInfoWindow(this.firstMarker, firstRecord);
                     },
-                    getTypeRecords: function() {
+                    getTypeRecords: function(){
                         var records = null;
                         if (this.isExtract) {
                             records = this.extractRecords;
                         } else {
                             records = this.records;
                         };
-
                         return records;
                     },
                     action: function() {
@@ -1303,8 +1302,6 @@
                                 me.index++;
                                 if (me.index >= paths) {
                                     clearInterval(me.intervalInstanse);
-                                    // me.index = 0;
-                                    // me.openInfoWindow(me.firstMarker,records[me.index]);
                                 };
                                 var track = records[me.index];
                                 if (track) {
