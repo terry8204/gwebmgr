@@ -1,7 +1,7 @@
 /*
  * 所有的urls
  */
-var isNeedTalk = true;
+var isNeedTalk = document.location.protocol == "https:";
 var wsHost = null;
 var viewhost = null;
 var viewhosts = null;

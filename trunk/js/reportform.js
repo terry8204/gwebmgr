@@ -7049,14 +7049,14 @@ function ioReport(groupslist){
                             on: {
                                 click: function() {
                                     vueInstanse.activeTab = "tabDetail";
-                                    vueInstanse.getAccDetailTableData(params.row.records);
+                                    vueInstanse.getIoDetailTableData(params.row.records);
                                 }
                             },
                             style: {
                                 color: '#e4393c',
                                 cursor: 'pointer'
                             }
-                        }, "["+vRoot.$t("reportForm.accDetailed")+"]")
+                        }, "["+vRoot.$t("reportForm.ioDetailed")+"]")
                     }
                 },
                 {
@@ -7151,15 +7151,15 @@ function ioReport(groupslist){
                         if (resp.status == 0) {
                             if (resp.records && resp.records.length) {
                                 me.tableData = [];
-                                me.allAccTableData = me.getAllaccTableData(resp.records);
+                                me.allIoTableData = me.getAllaccTableData(resp.records);
                             } else {
                                 me.tableData = [];
-                                me.allAccTableData = [];
+                                me.allIoTableData = [];
                                 me.$Message.error(me.$t("reportForm.noRecord"));  
                             }
                         } else {
                             me.tableData = [];
-                            me.allAccTableData = [];
+                            me.allIoTableData = [];
                         }
                         if (me.activeTab != "tabTotal") {
                             me.onClickTab("tabTotal");
@@ -7170,7 +7170,7 @@ function ioReport(groupslist){
                 }
             },
             getAllaccTableData: function(records) {
-                var allAccTableData = [],
+                var allIoTableData = [],
                     me = this;
                 records.forEach(function(item, index) {
                     var accObj = {
@@ -7189,11 +7189,11 @@ function ioReport(groupslist){
                         }
                     });
                     accObj.duration = utils.timeStamp(duration);
-                    allAccTableData.push(accObj);
+                    allIoTableData.push(accObj);
                 });
-                return allAccTableData;
+                return allIoTableData;
             },
-            getAccDetailTableData: function(records) {
+            getIoDetailTableData: function(records) {
                 var newRecords = [],
                     me = this;
                 var accOnTime = 0;
