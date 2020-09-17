@@ -7165,7 +7165,7 @@ function ioReport(groupslist){
                                     enableMassClear: true,
                                     strokeWeight: '4', //折线的宽度，以像素为单位
                                     strokeOpacity: 0.8, //折线的透明度，取值范围0 - 1
-                                    strokeColor: row.iostate  ? "green" :"red" //折线颜色
+                                    strokeColor: row.iostate === 1  ? "green" :"red" //折线颜色
                                 });
                                 me.mapInstance.addOverlay(startMarker);
                                 me.mapInstance.addOverlay(endMarker);
@@ -7443,9 +7443,11 @@ function ioReport(groupslist){
                             ioindex:item.ioindex,
                         },
                         duration = 0;
-                    item.records.forEach(function(deviceAcc) {
-                         duration += (deviceAcc.endtime - deviceAcc.begintime);
-                         ioname = deviceAcc.ioname;
+                    item.records.forEach(function(device) {
+                        if(device.iostate == 1){
+                            duration += (device.endtime - device.begintime);
+                            ioname = device.ioname;
+                        }
                     });
                     accObj.ioname = ioname;
                     accObj.duration = utils.timeStamp(duration);
@@ -7456,7 +7458,11 @@ function ioReport(groupslist){
             getIoDetailTableData: function(records) {
                 var newRecords = [],
                     me = this;
-                var ioTime = 0;
+                    
+                var ioOpenTime = 0;
+                var ioCloseTime = 0;
+                var openName = '';
+                var closeName = '';
                 records.sort(function(a, b) {
                     return a.begintime - b.begintime;
                 });
@@ -7464,7 +7470,13 @@ function ioReport(groupslist){
                     var deviceName = vstore.state.deviceInfos[item.deviceid].devicename;
                     var duration = item.endtime - item.begintime;
                     var durationStr = utils.timeStamp(duration);
-                    ioTime += duration;
+                    if(item.iostate == 1){
+                        openName = item.ioname;
+                        ioOpenTime += duration;
+                    }else{
+                        closeName = item.ioname;
+                        ioCloseTime += duration;
+                    }
                     newRecords.push({
                         index: index + 1,
                         ioindex:item.ioindex,
@@ -7480,10 +7492,11 @@ function ioReport(groupslist){
                         slat:item.slat,
                         elon:item.elon,
                         elat:item.elat,
+                        iostate:item.iostate
                     });
                 });
                 newRecords.push({
-                    duration: this.$t("reportForm.totle") + ':' + utils.timeStamp(ioTime) 
+                    duration: openName + ':' + utils.timeStamp(ioOpenTime)  + "," + closeName +":"+ utils.timeStamp(ioCloseTime) 
                 })
                 me.tableData = newRecords;
             },

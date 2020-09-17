@@ -512,7 +512,7 @@
                 openCount: 'Open count',
                 openDuration: 'Open duration',
                 totle:"Totle",
-                ioname:'IO name'
+                ioname:'IO name',
             },
             bgMgr: {
                 bindpwd: "Bind pwd",
