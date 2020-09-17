@@ -7070,6 +7070,7 @@ function ioReport(groupslist){
                     title: vRoot.$t("reportForm.ioIndex"),
                     key: 'ioindex',
                 },
+                { title: vRoot.$t("reportForm.ioname"), key: 'ioname', width: 100 },
                 {
                     title: vRoot.$t("reportForm.openCount"),
                     key: 'opennumber', 
@@ -7082,6 +7083,15 @@ function ioReport(groupslist){
             allIoTableData: [],
             columns: [
                 { title:  vRoot.$t("reportForm.index"), width: 70, key: 'index' },
+                { title: vRoot.$t("alarm.devName"), key: 'deviceName', width: 160 },
+                { title: vRoot.$t("alarm.devNum"), key: 'deviceid', width: 160 },
+                { title: vRoot.$t("reportForm.ioIndex"),key: 'ioindex'},
+                { title: vRoot.$t("reportForm.ioname"), key: 'ioname', width: 100 },
+                { title: vRoot.$t("reportForm.startDate"), key: 'startDate', width: 180 },
+                { title: vRoot.$t("reportForm.endDate"), key: 'endDate', width: 180 },
+                { title: vRoot.$t("reportForm.minMileage") + "(km)", key: 'sdistance'},
+                { title: vRoot.$t("reportForm.maxMileage")+ "(km)", key: 'edistance'},
+                { title: vRoot.$t("reportForm.duration"), key: 'duration' },
                 { 
                     title: '地图', 
                     width: 125, 
@@ -7090,26 +7100,214 @@ function ioReport(groupslist){
                         if(row.elat){
                             return h(
                                 'Button',
-                                {},
+                                {
+                                    on:{
+                                        click:function(){
+                                            vueInstanse.queryTracks(row);
+                                        }
+                                    }
+                                },
                                 '查看地图');
                         }else{
                             return h('span',{},'');
                         }
                     }
                 },
-                { title: vRoot.$t("alarm.devName"), key: 'deviceName', width: 160 },
-                { title: vRoot.$t("alarm.devNum"), key: 'deviceid', width: 160 },
-                { title: vRoot.$t("reportForm.ioIndex"),key: 'ioindex'},
-                { title: vRoot.$t("reportForm.status"), key: 'ioname', width: 100 },
-                { title: vRoot.$t("reportForm.startDate"), key: 'startDate', width: 180 },
-                { title: vRoot.$t("reportForm.endDate"), key: 'endDate', width: 180 },
-                { title: vRoot.$t("reportForm.minMileage"), key: 'sdistance'},
-                { title: vRoot.$t("reportForm.maxMileage"), key: 'edistance'},
-                { title: vRoot.$t("reportForm.duration"), key: 'duration' },
             ],
             tableData: [],
+            mapModal:false,
         },
         methods: {
+            getBdPoints: function(records) {
+                var points = [];
+                records.forEach(function(item) {
+                    var lon_lat = wgs84tobd09(item.callon, item.callat);
+                    points.push(new BMap.Point(lon_lat[0], lon_lat[1]));
+                });
+                return points;
+            },
+            queryTracks: function(row) {
+                this.mapInstance.clearOverlays && this.mapInstance.clearOverlays();
+                var url = myUrls.queryTracks(),
+                    me = this,
+                    data = {
+                        deviceid: row.deviceid,
+                        begintime: row.startDate,
+                        endtime: row.endDate,
+                        interval: 5,
+                        timezone: timeDifference
+                    };
+                if (row.downtime <= 0) {
+                    data.endtime = DateFormat.longToDateTimeStr(row.uptime + 60000, timeDifference)
+                }
+                utils.sendAjax(url, data, function(respData) {
+                    if (respData.status === 0) {
+                        var records = respData.records;
+                        if (records) {
+                            me.mapModal = true;
+                           if(utils.getMapType() == 'bMap'){
+                            var poinsts = me.getBdPoints(records);
+                            if (poinsts.length === 1) {
+                                var startMarker = new BMap.Marker(poinsts[0], {
+                                    icon: new BMap.Icon("./images/map/marker_qidian.png", new BMap.Size(32, 32), { imageOffset: new BMap.Size(0, 0) })
+                                });
+                                me.mapInstance.addOverlay(startMarker);
+                            } else if (poinsts.length > 1) {
+                                var startMarker = new BMap.Marker(poinsts[0], {
+                                    icon: new BMap.Icon("./images/map/marker_qidian.png", new BMap.Size(32, 32), { imageOffset: new BMap.Size(0, 0) })
+                                });
+                                var endMarker = new BMap.Marker(poinsts[poinsts.length - 1], {
+                                    icon: new BMap.Icon("./images/map/marker_zhongdian.png", new BMap.Size(32, 32), { imageOffset: new BMap.Size(0, 0) })
+                                });
+                                var polyline = new BMap.Polyline(poinsts, {
+                                    enableEditing: false, //是否启用线编辑，默认为false
+                                    enableClicking: true, //是否响应点击事件，默认为true
+                                    enableMassClear: true,
+                                    strokeWeight: '4', //折线的宽度，以像素为单位
+                                    strokeOpacity: 0.8, //折线的透明度，取值范围0 - 1
+                                    strokeColor: row.iostate  ? "green" :"red" //折线颜色
+                                });
+                                me.mapInstance.addOverlay(startMarker);
+                                me.mapInstance.addOverlay(endMarker);
+                                me.mapInstance.addOverlay(polyline);
+                            }
+                            me.setViewPortCenter(poinsts);
+                           }else if(utils.getMapType() == 'gMap'){
+                                var maxLen = records.length - 1;
+                                var points = []
+                                for (var i = 0; i < records.length; i++) {
+                                    var record = records[i];
+                                    var g_lon_lat = wgs84togcj02(record.callon, record.callat);
+                                    var point = {
+                                        lat: g_lon_lat[1],
+                                        lng: g_lon_lat[0]
+                                    };
+                                    points.push(point);
+                                    if (i === 0) {
+                                        me.firstMarker = new google.maps.Marker({
+                                            position: point,
+                                            map: me.mapInstance,
+                                            icon: me.getFirstMarkerIcon(true)
+                                        })
+          
+                                    } else if (i === maxLen) {
+
+                                        me.lastMakrker = new google.maps.Marker({
+                                            position: point,
+                                            map: me.mapInstance,
+                                            icon: me.getFirstMarkerIcon(false)
+                                        })
+                                    } 
+                                }
+                                me.polyline = new google.maps.Polyline({
+                                    path: points,
+                                    geodesic: true,
+                                    strokeColor: 'red',
+                                    strokeOpacity: 1.5,
+                                    strokeWeight: 8
+                                });
+                                me.polyline.setMap(me.mapInstance);
+                                me.mapInstance.setZoom(16)
+                                me.mapInstance.setCenter(points[0]) 
+                           }else if(utils.getMapType() == 'oMap'){
+                                
+                           }
+                        } else {
+                            me.$Message.error(vRoot.$t("reportForm.noRecord"));
+                        }
+                    } else {
+                        me.$Message.error(vRoot.$t("reportForm.queryFail"));
+                    }
+
+                });
+            },
+            setViewPortCenter: function(lines) {
+                var me = this;
+                setTimeout(function() {
+                    var view = me.mapInstance.getViewport(eval(lines));
+                    var mapZoom = view.zoom;
+                    var centerPoint = view.center;
+                    me.mapInstance.centerAndZoom(centerPoint, mapZoom);
+                }, 300)
+            },
+            getFirstMarkerIcon: function(isStart) {
+                var iconName = isStart ? 'marker_qidian.png' : 'marker_zhongdian.png';
+                var pathname = location.pathname
+                var imgPath = '';
+                if (utils.isLocalhost()) {
+                    imgPath = myUrls.viewhost + 'images/map/' + iconName;
+                } else {
+                    imgPath = '../images/map/' + iconName;
+                };
+                if (this.mapType == 'bMap') {
+                    return new BMap.Icon("./images/map/" + iconName, new BMap.Size(32, 32), {
+                        imageOffset: new BMap.Size(0, 0)
+                    });
+                } else if (this.mapType == 'gMap') {
+                    return imgPath;
+                } else {
+                    return new ol.style.Style({
+                        image: new ol.style.Icon(({
+                            // anchor: [05, 0.5],
+                            crossOrigin: 'anonymous',
+                            src: imgPath,
+                            rotation: 0, //角度转化为弧度
+                            imgSize: [32, 32]
+                        }))
+                    });
+                }
+            },
+            initMap: function() {
+                var mapType = utils.getMapType();
+                if (mapType == 'bMap') {
+                    this.mapInstance = new BMap.Map('posi-map', { minZoom: 4, maxZoom: 18, enableMapClick: false });
+                    this.mapInstance.enableScrollWheelZoom();
+                    this.mapInstance.enableAutoResize();
+                    this.mapInstance.disableDoubleClickZoom();
+                    this.mapInstance.centerAndZoom(new BMap.Point(113.264435, 24.129163), 4);
+                } else if (mapType == 'gMap'){
+                    var center = new google.maps.LatLng(24.129163, 113.264435);
+                    this.mapInstance = new google.maps.Map(document.getElementById('posi-map'), {
+                        zoom: 4,
+                        center: center,
+                        mapTypeId: google.maps.MapTypeId.ROADMAP
+                    });
+                }else if (mapType == 'oMap'){
+                    this.layerVector = new ol.layer.Vector({
+                        source: new ol.source.Vector({
+                            features: []
+                        }),
+                        style: new ol.style.Style({
+                            stroke: new ol.style.Stroke({
+                                width: 3,
+                                color: [255, 0, 0, 1]
+                            }),
+                            fill: new ol.style.Fill({
+                                color: [0, 0, 255, 0.6]
+                            })
+                        })
+                    })
+
+                    var projection = ol.proj.get('EPSG:4326');
+
+                    this.mapInstance = new ol.Map({
+                        target: 'posi-map',
+                        projection: projection,
+                        layers: [
+                            new ol.layer.Tile({
+                                source: new ol.source.OSM()
+                            }),
+                            this.layerVector
+                        ],
+                        view: new ol.View({
+                            center: ol.proj.fromLonLat([108.0017245, 35.926895]),
+                            zoom: 4,
+                            minZoom: 3,
+                            maxZoom: 20
+                        }),
+                    });
+                }
+            },
             onIoChange:function(list){
                 this.ioType = list;
             },
@@ -7198,6 +7396,7 @@ function ioReport(groupslist){
                 var allIoTableData = [],
                     me = this;
                 records.forEach(function(item, index) {
+                    var ioname = '';
                     var accObj = {
                             index: index + 1,
                             deviceid: "\t" + item.deviceid,
@@ -7205,12 +7404,14 @@ function ioReport(groupslist){
                             duration: "",
                             devicename: vstore.state.deviceInfos[item.deviceid].devicename,
                             records: item.records,
-                            ioindex:item.ioindex
+                            ioindex:item.ioindex,
                         },
                         duration = 0;
                     item.records.forEach(function(deviceAcc) {
                          duration += (deviceAcc.endtime - deviceAcc.begintime);
+                         ioname = deviceAcc.ioname;
                     });
+                    accObj.ioname = ioname;
                     accObj.duration = utils.timeStamp(duration);
                     allIoTableData.push(accObj);
                 });
@@ -7269,6 +7470,7 @@ function ioReport(groupslist){
             }
 
             this.calcTableHeight();
+            this.initMap();
             window.onresize = function() {
                 me.calcTableHeight();
             }

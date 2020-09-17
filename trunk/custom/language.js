@@ -352,7 +352,7 @@
                 accStatistics: 'Acc statistics',
                 accDuration: 'Acc duration',
                 ioStatistics: 'IO statistics',
-                ioDuration: 'IO duration',
+                ioDuration: 'IO detailed',
                 ioDetailed: 'IO Detailed',
                 ignitionStatistics: 'ignition-statistics',
                 download:'Download',
@@ -512,6 +512,7 @@
                 openCount: 'Open count',
                 openDuration: 'Open duration',
                 totle:"Totle",
+                ioname:'IO name'
             },
             bgMgr: {
                 bindpwd: "Bind pwd",
@@ -1339,7 +1340,7 @@
                 accStatistics: '点火统计',
                 accDuration: '点火时长',
                 ioStatistics: 'IO统计',
-                ioDuration: 'IO时长',
+                ioDuration: 'IO明细',
                 ioDetailed: 'IO详情',
                 ignitionStatistics: '点火统计数据',
                 download:'下载',
@@ -1498,6 +1499,7 @@
                 openCount: '开启次数',
                 openDuration: '开启时长',
                 totle:"合计",
+                ioname:'IO名称'
             },
             bgMgr: {      
                 bindpwd: "绑定密码",

@@ -112,7 +112,7 @@ div.site_links ul li span {
     display: inline-block;
     width: 100%;
     height: 32px;
-    line-height: 1.5;
+    line-height: 24px;
     padding: 4px 7px;
     font-size: 12px;
     border: 1px solid #dcdee2;
@@ -123,6 +123,7 @@ div.site_links ul li span {
     position: relative;
     cursor: pointer;
 }
+
 
 /* 监控开始 */
 
