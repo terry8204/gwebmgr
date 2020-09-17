@@ -3522,7 +3522,7 @@ function insureRecords(groupslist) {
                 var url = myUrls.queryUsersTree(),
                     me = this;
                 utils.sendAjax(url, { username: userName }, function(respData) {
-                    if (respData.status == 0) {
+                    if (respData.status == 0 && respData.rootuser.user) {
                         callback([me.castUsersTreeToDevicesTree(respData.rootuser)]);
                     } else {
                         me.$Message.error(me.$t('monitor.queryFail'))  
@@ -3643,7 +3643,7 @@ function insureRecords(groupslist) {
                     endday = DateFormat.format(new Date(this.dateVal[1]), 'yyyy-MM-dd');
                 utils.sendAjax(url, { username: this.createrToUser, startday: startday, endday: endday, offset: timeDifference }, function(resp) {
                     me.loading = false;
-                    if (resp.status === 0) {
+                    if (resp.status === 0 &&  resp.insures) {
                         //全部
                         if (me.isFilter == '0') {
 
@@ -3845,7 +3845,7 @@ function salesRecord(groupslist) {
                 var url = myUrls.queryUsersTree(),
                     me = this;
                 utils.sendAjax(url, { username: userName }, function(respData) {
-                    if (respData.status == 0) {
+                    if (respData.status == 0 && respData.rootuser.user) {
                         callback([me.castUsersTreeToDevicesTree(respData.rootuser)]);
                     } else {
                         me.$Message.error(me.$t('monitor.queryFail'));
@@ -3892,7 +3892,6 @@ function salesRecord(groupslist) {
                     if (username != null && subusers != null && subusers.length > 0) {
                         var subDevicesTreeRecord = this.doCastUsersTreeToDevicesTree(subusers);
                         iViewTree.children = subDevicesTreeRecord;
-
                     }
                 }
                 return iViewTree;
@@ -7029,7 +7028,7 @@ function ioReport(groupslist){
         data: {
             isSpin: false,
             activeTab: 'tabTotal',
-            ioType:"0",
+            ioType:["1","2","3","4"],
             mapModal: false,
             mapType: utils.getMapType(),
             mapInstance: null,
@@ -7138,12 +7137,13 @@ function ioReport(groupslist){
                 });
                 if (deviceids.length) {
                     var me = this;
-                    var url = myUrls.reportAccs();
+                    var url = myUrls.reportIoStates();
                     var data = {
                         startday: this.dateVal[0],
                         endday: this.dateVal[1],
                         offset: timeDifference,
-                        deviceids: deviceids
+                        deviceids: deviceids,
+                        ioindexs:this.ioType.map(function(item){return Number(item)})
                     }
                     me.loading = true;
                     utils.sendAjax(url, data, function(resp) {
@@ -7151,7 +7151,7 @@ function ioReport(groupslist){
                         if (resp.status == 0) {
                             if (resp.records && resp.records.length) {
                                 me.tableData = [];
-                                me.allIoTableData = me.getAllaccTableData(resp.records);
+                                me.allIoTableData = me.getAllIoTableData(resp.records);
                             } else {
                                 me.tableData = [];
                                 me.allIoTableData = [];
@@ -7169,7 +7169,7 @@ function ioReport(groupslist){
                     this.$Message.error(this.$t("reportForm.selectDevTip"));
                 }
             },
-            getAllaccTableData: function(records) {
+            getAllIoTableData: function(records) {
                 var allIoTableData = [],
                     me = this;
                 records.forEach(function(item, index) {

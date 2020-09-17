@@ -721,6 +721,9 @@ var myUrls = {
     queryDeviceRulesByRuleid: function() {
         return this.apihosts + 'webapi?action=querydevicerulesbyruleid&token=' + token;
     },
+    reportIoStates: function() {
+        return this.apihosts + 'webapi?action=reportiostates&token=' + token;
+    },
 
 
 }

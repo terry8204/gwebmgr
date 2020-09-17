@@ -261,7 +261,6 @@ OpenStreeMapCls.pt.updateLastTracks = function(deviceid) {
                                 posi = this.fromLonLat(track.callon, track.callat);
                             wContainer.innerHTML = this.getInfoWindowContent(track);
                             this.popup.setPosition(posi);
-                            // this.mapInstance.getView().setCenter(posi);
                         }
                     }
                 }
