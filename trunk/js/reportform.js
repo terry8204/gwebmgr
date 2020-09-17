@@ -7084,7 +7084,7 @@ function ioReport(groupslist){
                 { title:  vRoot.$t("reportForm.index"), width: 70, key: 'index' },
                 { 
                     title: '地图', 
-                    width: 70, 
+                    width: 125, 
                     render:function(h,params){
                         var row = params.row;
                         if(row.elat){
