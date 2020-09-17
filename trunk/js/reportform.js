@@ -7082,12 +7082,29 @@ function ioReport(groupslist){
             allIoTableData: [],
             columns: [
                 { title:  vRoot.$t("reportForm.index"), width: 70, key: 'index' },
+                { 
+                    title: '地图', 
+                    width: 70, 
+                    render:function(h,params){
+                        var row = params.row;
+                        if(row.elat){
+                            return h(
+                                'Button',
+                                {},
+                                '查看地图');
+                        }else{
+                            return h('span',{},'');
+                        }
+                    }
+                },
                 { title: vRoot.$t("alarm.devName"), key: 'deviceName', width: 160 },
                 { title: vRoot.$t("alarm.devNum"), key: 'deviceid', width: 160 },
                 { title: vRoot.$t("reportForm.ioIndex"),key: 'ioindex'},
                 { title: vRoot.$t("reportForm.status"), key: 'ioname', width: 100 },
                 { title: vRoot.$t("reportForm.startDate"), key: 'startDate', width: 180 },
                 { title: vRoot.$t("reportForm.endDate"), key: 'endDate', width: 180 },
+                { title: vRoot.$t("reportForm.minMileage"), key: 'sdistance'},
+                { title: vRoot.$t("reportForm.maxMileage"), key: 'edistance'},
                 { title: vRoot.$t("reportForm.duration"), key: 'duration' },
             ],
             tableData: [],
@@ -7218,8 +7235,14 @@ function ioReport(groupslist){
                         deviceName: deviceName,
                         startDate: DateFormat.longToDateTimeStr(item.begintime, timeDifference),
                         endDate: DateFormat.longToDateTimeStr(item.endtime, timeDifference),
+                        sdistance:(item.sdistance/1000).toFixed(2),
+                        edistance:(item.edistance/1000).toFixed(2),
                         ioname: item.ioname,
-                        duration: durationStr
+                        duration: durationStr,
+                        slon:item.slon,
+                        slat:item.slat,
+                        elon:item.elon,
+                        elat:item.elat,
                     });
                 });
                 newRecords.push({
