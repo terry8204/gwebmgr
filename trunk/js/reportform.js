@@ -7210,7 +7210,37 @@ function ioReport(groupslist){
                                 me.mapInstance.setZoom(16)
                                 me.mapInstance.setCenter(points[0]) 
                            }else if(utils.getMapType() == 'oMap'){
-                                
+                            var lineFeature = me.getLineFeature(records);
+                            var maxLen = records.length - 1,
+                                features = [],
+                                firstMarker = null,
+                                lastMarker = null;
+    
+                            for (var i = 0; i < records.length; i++) {
+                                var record = records[i];
+                                var tempPoint = ol.proj.fromLonLat([record.callon, record.callat]);
+                                if (i === 0) {
+                                    firstMarker = new ol.Feature({
+                                        geometry: new ol.geom.Point(tempPoint),
+                                    });
+                                    firstMarker.setStyle(me.getFirstMarkerIcon(true));
+                                } else if (i === maxLen) {
+                                    lastMarker = new ol.Feature({
+                                        geometry: new ol.geom.Point(tempPoint),
+                                    });
+                                    lastMarker.setStyle(me.getFirstMarkerIcon(false));
+                                }
+                            }
+    
+                                var features =  [ lineFeature ];
+                                firstMarker && features.push(firstMarker);
+                                lastMarker && features.push(lastMarker);
+                                me.layerVector.setSource(new ol.source.Vector({
+                                    features: features
+                                })); 
+
+                                me.mapInstance.getView().setCenter(ol.proj.fromLonLat([records[0].callon, records[0].callat]));
+
                            }
                         } else {
                             me.$Message.error(vRoot.$t("reportForm.noRecord"));
@@ -7220,6 +7250,13 @@ function ioReport(groupslist){
                     }
 
                 });
+            },
+            getLineFeature: function(tracksList) {
+                var arrayList = [];
+                tracksList.forEach(function(track) {
+                    arrayList.push(ol.proj.fromLonLat([track.callon, track.callat]));
+                });
+                return new ol.Feature(new ol.geom.LineString(arrayList));
             },
             setViewPortCenter: function(lines) {
                 var me = this;
@@ -7239,16 +7276,15 @@ function ioReport(groupslist){
                 } else {
                     imgPath = '../images/map/' + iconName;
                 };
-                if (this.mapType == 'bMap') {
+                if (utils.getMapType() == 'bMap') {
                     return new BMap.Icon("./images/map/" + iconName, new BMap.Size(32, 32), {
                         imageOffset: new BMap.Size(0, 0)
                     });
-                } else if (this.mapType == 'gMap') {
+                } else if (utils.getMapType() == 'gMap') {
                     return imgPath;
                 } else {
                     return new ol.style.Style({
                         image: new ol.style.Icon(({
-                            // anchor: [05, 0.5],
                             crossOrigin: 'anonymous',
                             src: imgPath,
                             rotation: 0, //角度转化为弧度
