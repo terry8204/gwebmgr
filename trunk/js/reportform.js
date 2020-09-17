@@ -7433,10 +7433,11 @@ function ioReport(groupslist){
                     me = this;
                 records.forEach(function(item, index) {
                     var ioname = '';
+                    var opennumber = 0;
                     var accObj = {
                             index: index + 1,
                             deviceid: "\t" + item.deviceid,
-                            opennumber: item.records.length,
+                            opennumber: 0,
                             duration: "",
                             devicename: vstore.state.deviceInfos[item.deviceid].devicename,
                             records: item.records,
@@ -7447,9 +7448,11 @@ function ioReport(groupslist){
                         if(device.iostate == 1){
                             duration += (device.endtime - device.begintime);
                             ioname = device.ioname;
+                            opennumber++ ;
                         }
                     });
                     accObj.ioname = ioname;
+                    accObj.opennumber = opennumber;
                     accObj.duration = utils.timeStamp(duration);
                     allIoTableData.push(accObj);
                 });
