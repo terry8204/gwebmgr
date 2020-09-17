@@ -2512,6 +2512,23 @@
     </script>
 
 
+    <script type="text/x-template" id="select-checkbox-template">
+        <div class='search-wrapper' v-click-outside.capture="onClickOutside">
+            <div class="select-input" @click="isShowCheckbox=true" v-text="checkboxStr"></div>
+            <transition name="fade">
+                <div class="search-item-wrapper" v-show="isShowCheckbox">
+                    <div>
+                        <Checkbox v-model="isAll" @on-change="onChange"><span>全部</span></Checkbox>
+                    </div>
+                    <CheckboxGroup v-model="checkboxList">
+                        <div v-for="(item , index) in ioCount">
+                            <Checkbox :label="index+1"><span>IO_{{index + 1}}</span></Checkbox>
+                        </div>
+                    </CheckboxGroup>
+                </div>
+            </transition>
+        </div>
+    </script>
 
 
 

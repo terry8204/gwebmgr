@@ -7028,7 +7028,7 @@ function ioReport(groupslist){
         data: {
             isSpin: false,
             activeTab: 'tabTotal',
-            ioType:["1","2","3","4"],
+            ioType:[1,2,3,4],
             mapModal: false,
             mapType: utils.getMapType(),
             mapInstance: null,
@@ -7067,11 +7067,15 @@ function ioReport(groupslist){
                     key: 'deviceid',
                 },
                 {
-                    title: vRoot.$t("reportForm.accCount"),
+                    title: vRoot.$t("reportForm.ioIndex"),
+                    key: 'ioindex',
+                },
+                {
+                    title: vRoot.$t("reportForm.openCount"),
                     key: 'opennumber', 
                 },
                 {
-                    title:vRoot.$t("reportForm.accDuration"),
+                    title:vRoot.$t("reportForm.openDuration"),
                     key: 'duration'
                 }
             ],
@@ -7080,7 +7084,8 @@ function ioReport(groupslist){
                 { title:  vRoot.$t("reportForm.index"), width: 70, key: 'index' },
                 { title: vRoot.$t("alarm.devName"), key: 'deviceName', width: 160 },
                 { title: vRoot.$t("alarm.devNum"), key: 'deviceid', width: 160 },
-                { title: vRoot.$t("reportForm.accstatus"), key: 'accStatus', width: 100 },
+                { title: vRoot.$t("reportForm.ioIndex"),key: 'ioindex'},
+                { title: vRoot.$t("reportForm.status"), key: 'ioname', width: 100 },
                 { title: vRoot.$t("reportForm.startDate"), key: 'startDate', width: 180 },
                 { title: vRoot.$t("reportForm.endDate"), key: 'endDate', width: 180 },
                 { title: vRoot.$t("reportForm.duration"), key: 'duration' },
@@ -7088,6 +7093,9 @@ function ioReport(groupslist){
             tableData: [],
         },
         methods: {
+            onIoChange:function(list){
+                this.ioType = list;
+            },
             exportData: function() {
                 var startday = this.dateVal[0];
                 var endday = this.dateVal[1];
@@ -7176,17 +7184,15 @@ function ioReport(groupslist){
                     var accObj = {
                             index: index + 1,
                             deviceid: "\t" + item.deviceid,
-                            opennumber: 0,
+                            opennumber: item.records.length,
                             duration: "",
                             devicename: vstore.state.deviceInfos[item.deviceid].devicename,
-                            records: item.records
+                            records: item.records,
+                            ioindex:item.ioindex
                         },
                         duration = 0;
                     item.records.forEach(function(deviceAcc) {
-                        if (deviceAcc.accstate == 3) {
-                            duration += deviceAcc.endtime - deviceAcc.begintime;
-                            accObj.opennumber++;
-                        }
+                         duration += (deviceAcc.endtime - deviceAcc.begintime);
                     });
                     accObj.duration = utils.timeStamp(duration);
                     allIoTableData.push(accObj);
@@ -7196,8 +7202,7 @@ function ioReport(groupslist){
             getIoDetailTableData: function(records) {
                 var newRecords = [],
                     me = this;
-                var accOnTime = 0;
-                var accOffTime = 0;
+                var ioTime = 0;
                 records.sort(function(a, b) {
                     return a.begintime - b.begintime;
                 });
@@ -7205,28 +7210,20 @@ function ioReport(groupslist){
                     var deviceName = vstore.state.deviceInfos[item.deviceid].devicename;
                     var duration = item.endtime - item.begintime;
                     var durationStr = utils.timeStamp(duration);
-                    var accStatus = "";
-                    if (item.accstate == 0) {
-                        accStatus = me.$t("reportForm.notEnabled");
-                    } else if (item.accstate == 3) {
-                        accStatus = me.$t("reportForm.open");
-                        accOnTime += duration;
-                    } else if (item.accstate == 2) {
-                        accOffTime += duration;
-                        accStatus = me.$t("reportForm.stalling");
-                    }
+                    ioTime += duration;
                     newRecords.push({
                         index: index + 1,
+                        ioindex:item.ioindex,
                         deviceid: item.deviceid,
                         deviceName: deviceName,
                         startDate: DateFormat.longToDateTimeStr(item.begintime, timeDifference),
                         endDate: DateFormat.longToDateTimeStr(item.endtime, timeDifference),
-                        accStatus: accStatus,
+                        ioname: item.ioname,
                         duration: durationStr
                     });
                 });
                 newRecords.push({
-                    duration: this.$t("reportForm.accOnTime") + ':' + utils.timeStamp(accOnTime) + ',' + this.$t("reportForm.accOffTime") + ':' + utils.timeStamp(accOffTime)
+                    duration: this.$t("reportForm.totle") + ':' + utils.timeStamp(ioTime) 
                 })
                 me.tableData = newRecords;
             },

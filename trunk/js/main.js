@@ -790,6 +790,58 @@ Vue.component('rule-allocation', {
 })
 
 
+Vue.component('s-checkbox',{
+    props:{
+        ioCount:{
+            type:Number,
+            default:4,
+        }
+    },
+    data:function(){
+        return {
+            isAll:true,
+            isShowCheckbox:false,
+            checkboxList:[],
+        }
+    },
+    methods:{
+        onClickOutside:function(){
+            this.isShowCheckbox = false;
+        },
+        onChange:function(val){
+            if(val){
+                this.checkboxList = [1,2,3,4];
+            }else{
+                this.checkboxList = [];
+            }
+        }
+    },
+    computed:{
+        checkboxStr:function(){
+            var str = '';
+            this.checkboxList.forEach(function(item){
+                str += " io_" + item;
+            })
+            return str;
+        }
+    },
+    mounted:function(){
+        this.checkboxList = [1,2,3,4];
+    },
+    watch:{
+        checkboxList:function(list){
+            if(list.length == this.ioCount){
+                this.isAll = true;
+            }else{
+                this.isAll = false;
+            }
+            this.$emit('change-io',this.checkboxList);
+        }
+    },
+    template:document.getElementById("select-checkbox-template"),
+})
+
+
 
 // 头部组建
 var appHeader = {

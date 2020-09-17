@@ -508,6 +508,10 @@
                 certificationcode: 'drive code',
                 viewTrack: 'View track',
                 queryAllAddress: 'Query all address',
+                ioIndex: 'IO Index',
+                openCount: 'Open count',
+                openDuration: 'Open duration',
+                totle:"Totle",
             },
             bgMgr: {
                 bindpwd: "Bind pwd",
@@ -1490,6 +1494,10 @@
                 certificationcode: '驾驶证号',
                 viewTrack: '查看轨迹',
                 queryAllAddress: '一键查询地址',
+                ioIndex: 'IO序号',
+                openCount: '开启次数',
+                openDuration: '开启时长',
+                totle:"合计",
             },
             bgMgr: {      
                 bindpwd: "绑定密码",
