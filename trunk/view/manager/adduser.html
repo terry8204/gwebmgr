@@ -192,9 +192,7 @@
                     };
 
                  
-
-
-                    if (!reg.test(this.username)) {
+                    if (this.username.trim() == "") {
                         this.$Message.error(this.$t("message.usernameRule"));
                         return;
                     }

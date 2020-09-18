@@ -380,7 +380,15 @@
                             if (userlists.indexOf(username) != -1) {
                                 userlists.splice(userlists.indexOf(username), 1)
                             }
-                        } else {
+                        } else if (resp.status == 1) {
+                            me.$Message.error(resp.cause);
+                        }else if (resp.status == 2) {
+                            me.$Message.error(resp.cause);
+                        }else if (resp.status == 3) {
+                            me.$Message.error(resp.cause);
+                        }else if (resp.status == 4) {
+                            me.$Message.error(resp.cause);
+                        }else{
                             me.$Message.error(resp.cause);
                         }
                         me.modal = false;

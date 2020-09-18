@@ -7350,12 +7350,25 @@ function ioReport(groupslist){
             exportData: function() {
                 var startday = this.dateVal[0];
                 var endday = this.dateVal[1];
-                this.$refs.totalTable.exportCsv({
-                    filename: vRoot.$t("reportForm.ignitionStatistics") + startday + '-' + endday,  
-                    original: false,
-                    columns: this.allAccColumns.filter(function(col, index) { return index != 1; }),
-                    data: this.allRotateTableData
-                });
+                if (this.activeTab == "tabTotal") {
+                    if(this.allIoTableData.length){
+                        this.$refs.totalTable.exportCsv({
+                            filename: "io-total" + startday + '-' + endday,  
+                            original: false,
+                            columns: this.allIoColumns.filter(function(col, index) { return index != 1; }),
+                            data: this.allIoTableData
+                        });
+                    }
+                }else{
+                    if(this.tableData.length){
+                        this.$refs.detailTable.exportCsv({
+                            filename: "io-details" + startday + '-' + endday,  
+                            original: false,
+                            columns: this.columns.filter(function(col, index) { return index != 10; }),
+                            data: this.tableData
+                        });
+                    }
+                }
             },
             clean: function() {
                 this.sosoValue = '';
