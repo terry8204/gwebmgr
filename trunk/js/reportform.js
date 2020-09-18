@@ -7461,7 +7461,7 @@ function ioReport(groupslist){
                         if(device.iostate == 1){
                             duration += (device.endtime - device.begintime);
                             ioname = device.ioname;
-                            opennumber++ ;
+                            opennumber++;
                         }
                     });
                     accObj.ioname = ioname;
@@ -7474,7 +7474,6 @@ function ioReport(groupslist){
             getIoDetailTableData: function(records) {
                 var newRecords = [],
                     me = this;
-                    
                 var ioOpenTime = 0;
                 var ioCloseTime = 0;
                 var openName = '';

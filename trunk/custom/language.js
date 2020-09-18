@@ -133,6 +133,9 @@
                 emergencyAlarmSetting: 'EmergencyAlarmSetting',
             },
             monitor: {
+                camera:'camera',
+                resolvingPower:'Resolving power',       
+                cameraChannel:'Camera channel', 
                 video:'Video',  
                 mapMode:'map mode',
                 videoMode:'video mode',
@@ -1121,7 +1124,10 @@
                 popup: '弹窗',
                 emergencyAlarmSetting: '紧急报警设置',
             },
-            monitor: {         
+            monitor: {  
+                camera:'抓拍',       
+                resolvingPower:'分辨率',       
+                cameraChannel:'抓拍通道',       
                 video:'视频',  
                 mapMode:'地图模式',
                 videoMode:'视频模式',

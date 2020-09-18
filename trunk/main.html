@@ -2181,62 +2181,101 @@
                         </p>
                         <div style="text-align:center">
                             <Row style="margin:10px 0;">
-                                <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">设备序号 : &nbsp;</i-col>
+                                <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t("alarm.devNum")}} : &nbsp;</i-col>
                                 <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
                                     {{ownerInfoData.deviceid}}
                                 </i-col>
                             </Row>
                             <Row style="margin:10px 0;">
-                                <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">车主名称 : &nbsp;</i-col>
+                                <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t("insure.ownerName")}} : &nbsp;</i-col>
                                 <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
                                     <i-input v-model.trim="ownerInfoData.ownername" style="width: 100%;"></i-input>
                                 </i-col>
                             </Row>
                             <Row style="margin:10px 0;">
-                                <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">联系方式1 : &nbsp;</i-col>
+                                <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t("device.contact2")}} : &nbsp;</i-col>
                                 <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
                                     <i-input v-model.trim="ownerInfoData.phonenum1" style="width: 100%;"></i-input>
                                 </i-col>
                             </Row>
                             <Row style="margin:10px 0;">
-                                <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">联系方式2 : &nbsp;</i-col>
+                                <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t("device.contact2")}} : &nbsp;</i-col>
                                 <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
                                     <i-input v-model.trim="ownerInfoData.phonenum2" style="width: 100%;"></i-input>
                                 </i-col>
                             </Row>
                             <Row style="margin:10px 0;">
-                                <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">身份证号 : &nbsp;</i-col>
+                                <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t("reportForm.idNumber")}} : &nbsp;</i-col>
                                 <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
                                     <i-input v-model.trim="ownerInfoData.idnum" style="width: 100%;"></i-input>
                                 </i-col>
                             </Row>
                             <Row style="margin:10px 0;">
-                                <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">性别 : &nbsp;</i-col>
+                                <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t("device.gender")}} : &nbsp;</i-col>
                                 <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
                                     <i-select v-model="ownerInfoData.gender">
-                                        <i-option value="1">男</i-option>
-                                        <i-option value="0">女</i-option>
+                                        <i-option value="1">{{$t("device.man")}}</i-option>
+                                        <i-option value="0">{{$t("device.girl")}}</i-option>
                                     </i-select>
                                 </i-col>
                             </Row>
                             <Row style="margin:10px 0;">
-                                <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">地址 : &nbsp;</i-col>
+                                <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t("reportForm.address")}} : &nbsp;</i-col>
                                 <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
                                     <i-input v-model.trim="ownerInfoData.address" style="width: 100%;"></i-input>
                                 </i-col>
                             </Row>
                             <Row style="margin:10px 0;">
-                                <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">备注 : &nbsp;</i-col>
+                                <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t("monitor.remarks")}} : &nbsp;</i-col>
                                 <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
                                     <i-input v-model.trim="ownerInfoData.ownerremark" style="width: 100%;"></i-input>
                                 </i-col>
                             </Row>
                         </div>
                         <div slot="footer">
-                            <i-button type="primary" style="width: 100%" @click="handleEditDeviceex">提交</i-button>
+                            <i-button type="primary" style="width: 100%" @click="handleEditDeviceex">{{$t("header.submit")}}</i-button>
                         </div>
                     </Modal>
-
+                    <!-- 抓拍 -->
+                    <Modal v-model="cameraModal" width="500" :mask-closable="false">
+                        <p slot="header" style="color:#f60;text-align:center">
+                            <Icon type="ios-create-outline"></Icon>
+                            <span>{{$t("monitor.camera")}}</span>
+                        </p>
+                        <div style="text-align:center">
+                            <Row style="margin:10px 0;">
+                                <i-col span="6" style="height: 100%;text-align:right;line-height:32px;">
+                                    {{$t("monitor.cameraChannel")}}&nbsp;&nbsp;  
+                                </i-col>
+                                <i-col span="15" style="height: 100%;text-align:center;line-height:32px;">
+                                    <i-select v-model="cameraChannel">
+                                        <i-option :value="item" v-for="item in selectedDevObj.videochannelcount">{{$t("monitor.channel")}}{{item}}</i-option>
+                                    </i-select>
+                                </i-col>
+                            </Row>
+                            <Row style="margin:10px 0;">
+                                <i-col span="6" style="height: 100%;text-align:right;line-height:32px;">
+                                    {{$t("monitor.resolvingPower")}} &nbsp;&nbsp;
+                                </i-col>
+                                <i-col span="15" style="height: 100%;text-align:center;line-height:32px;">
+                                    <i-select v-model="resolution">
+                                        <i-option value="1">320*240</i-option>
+                                        <i-option value="2">640*480</i-option>
+                                        <i-option value="3">800*600</i-option>
+                                        <i-option value="4">1024*768</i-option>
+                                        <i-option value="5">176*144[Qcif]</i-option>
+                                        <i-option value="6">352*288[Cif]</i-option>
+                                        <i-option value="7">704*288[HALF D1]</i-option>
+                                        <i-option value="8">704*576[D1]</i-option>
+                                    </i-select>
+                                </i-col>
+                            </Row>
+                        </div>
+                        <div slot="footer" style="text-align:center;">
+                            <i-button type="primary" style="width: 150px" @click="onClickCamera">{{$t("header.submit")}}</i-button>
+                            <i-button type="error" style="width: 150px" @click="cameraModal=false">{{$t("monitor.close")}}</i-button>
+                        </div>
+                    </Modal>
                     <!-- 指令记录 -->
                     <Modal v-model="directiveReportModal" width="860">
                         <p slot="header" style="color:#f60;text-align:center">

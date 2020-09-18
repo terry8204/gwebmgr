@@ -724,6 +724,9 @@ var myUrls = {
     reportIoStates: function() {
         return this.apihosts + 'webapi?action=reportiostates&token=' + token;
     },
+    capturephoToSync: function() {
+        return this.apihosts + 'webapi?action=capturephoto_sync&token=' + token;
+    },
 
 
 }

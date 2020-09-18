@@ -226,6 +226,8 @@ var monitor = {
     data: function() {
         var vm = this;
         return {
+            resolution:"8",
+            cameraChannel:1,
             isDestory: true,
             isMouseoverTop35: false,
             isLuyin: false,
@@ -331,7 +333,9 @@ var monitor = {
             stockDevCount: 0, //库存
             isMoveTriggerEvent: true, // 地图移动是否触发事件
             intervalInstanse: null, // 定时器实例
-            selectedDevObj: {}, // 选中的设备信息
+            selectedDevObj: {
+                videochannelcount: 4,
+            }, // 选中的设备信息
             myDis: null, // 测距实例
             filterData: [],
             timeoutIns: null,
@@ -348,6 +352,7 @@ var monitor = {
                 remark: '',
             },
             ownerInfoModal: false,
+            cameraModal:false,
             ownerInfoData: { //编辑的设备信息
                 deviceid: '',
                 ownername: '',
@@ -2290,6 +2295,17 @@ var monitor = {
                 }
             }
         },
+        onClickCamera:function(){
+            var url = myUrls.capturephoToSync();
+            var data = {
+                deviceid:this.currentDeviceId,
+                channelid:this.cameraChannel,
+                resolution:Number(this.resolution),
+            };
+            utils.sendAjax(url,data,function(resp){
+                console.log(resp);
+            });
+        },
         openTreeDeviceNav: function(deviceid) {
             var me = this;
             utils.setCurrentDeviceid(deviceid);
@@ -2309,6 +2325,8 @@ var monitor = {
                     if (device.deviceid == deviceid) {
                         device.isSelected = true;
                         group.expand = true;
+                        me.selectedDevObj = device;
+                        console.log('me.selectedDevObj',me.selectedDevObj)
                     } else {
                         device.isSelected = false;
                     };
@@ -2469,6 +2487,7 @@ var monitor = {
             return groups.filter(function(group) { return group.devices.length });
         },
         dblClickDeviceVideo: function(device) {
+            this.selectedDevObj = device;
             if (!this.isShowVideoBtn) {
                 this.$Message.error(this.$t('monitor.deviceNotVideo'));
                 return
@@ -2845,18 +2864,19 @@ var monitor = {
         },
         isShowRecordBtnByDeviceType: function() {
             var deviceTypes = this.deviceTypes;
-            var result1 = false;
+            var isShowRecordBtn = false;
             var result2 = false;
             var result3 = false;
             var result4 = false;
             var result5 = false;
             var result6 = false;
             var result7 = false;
+            var result8 = false;
 
             var functions = deviceTypes[this.currentDeviceType].functions;
             if (functions) {
                 if (functions.indexOf("audio") != -1) {
-                    result1 = true;
+                    isShowRecordBtn = true;
                 };
                 if (functions.indexOf("bms") != -1) {
                     result2 = true;
@@ -2876,8 +2896,11 @@ var monitor = {
                 if (functions.indexOf("activesafety") != -1) {
                     result7 = true;
                 };
+                if (functions.indexOf("camera") != -1) {
+                    result8 = true;
+                };
             }
-            this.isShowRecordBtn = result1;
+            this.isShowRecordBtn = isShowRecordBtn;
             this.isShowBmsBtn = result2;
             this.isShowObdBtn = result3;
             this.isShowWeightBtn = result4;

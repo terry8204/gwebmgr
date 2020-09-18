@@ -591,7 +591,7 @@ var utils = {
         var speed = track.speed == 0 ? "0km/h" : (track.speed / 1000).toFixed(2) + "km/h";
         var rxlevel = track.rxlevel === 0 ? '' : ('(' + (isZh ? '信号' : 'Signal') + ':' + track.rxlevel + '%)');
         var deviceid = "'" + track.deviceid + "'";
-        var extendsBtns = this.getIsAddExtendBtns(),
+        var extendsBtns = this.getIsAddExtendBtns(),       
             extendsStr = '',
             videoState = isZh ? track.strvideoalarm : track.strvideoalarmen;
         this.videoState = videoState;
@@ -654,6 +654,14 @@ var utils = {
             // devicename = encodeURIComponent(devicename);
             extendsStr += '<span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="openVdeio(' + deviceid + ',' + devicename + ',' + activeSafety + ')">' + vRoot.$t('monitor.video') + '</span>'
         };
+        if (extendsBtns.camera) {
+
+            var devicename = "'" + track.devicename + "'";
+            // devicename = encodeURIComponent(devicename);
+            extendsStr += '<span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="openCamera(' + deviceid + ',' + devicename + ',' + activeSafety + ')">' + vRoot.$t('monitor.camera') + '</span>'
+        };
+      
+
 
         if (extendsBtns.activesafety) {
             var devicename = "'" + track.devicename + "'";
@@ -691,9 +699,11 @@ var utils = {
         var result5 = false;
         var result6 = false;
         var result7 = false;
+        var result8 = false;
 
 
         var functions = deviceTypes[currentDeviceType].functions;
+
         if (functions) {
             if (functions.indexOf("audio") != -1) {
                 result1 = true;
@@ -716,6 +726,9 @@ var utils = {
             if (functions.indexOf("activesafety") != -1) {
                 result7 = true;
             };
+            if (functions.indexOf("camera") != -1) {
+                result8 = true;
+            };
         };
 
 
@@ -727,6 +740,7 @@ var utils = {
             watermeter: result5,
             video: result6,
             activesafety: result7,
+            camera: result8,
         }
     },
     getMileage: function(totaldistance) {
@@ -1252,13 +1266,15 @@ function openAudio(deviceid) {
 }
 
 function openVdeio(deviceid, name, activesafety) {
-    // var mapType = utils.getMapType();
-    // mapType = mapType ? mapType : 'bMap';
-    // var url = myUrls.viewhosts + 'video.html?deviceid=' + deviceid + "&maptype=" + mapType + '&token=' + token + '&name=' + name + "&activesafety=" + activesafety +
-    //     "&state=" + encodeURIComponent(utils.videoState);
-    // window.open(url);
     vRoot.$children[1].playerVideos();
 }
+
+function openCamera() {
+    vRoot.$children[1].cameraModal = true;
+}
+
+
+
 
 function openActiveSafety(deviceid, name) {
     console.log(deviceid, name);
