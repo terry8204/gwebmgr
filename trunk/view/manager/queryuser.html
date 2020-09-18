@@ -381,13 +381,7 @@
                                 userlists.splice(userlists.indexOf(username), 1)
                             }
                         } else if (resp.status == 1) {
-                            me.$Message.error(resp.cause);
-                        }else if (resp.status == 2) {
-                            me.$Message.error(resp.cause);
-                        }else if (resp.status == 3) {
-                            me.$Message.error(resp.cause);
-                        }else if (resp.status == 4) {
-                            me.$Message.error(resp.cause);
+                            me.$Message.error( me.$t("message.deleteUserTips") + resp.count);
                         }else{
                             me.$Message.error(resp.cause);
                         }

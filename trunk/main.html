@@ -918,7 +918,39 @@
 
                         <transition name="el-zoom-in-bottom">
                             <div id="yuntai-tab-wrapper" v-show="isShowYunTai">
+                                <div class='yuntai-title'>
+                                    {{currentVideoDeviceInfo.deviceName}} - {{currentVideoDeviceInfo.deviceId}}
+                                </div>
                                 <Tabs :animated="false">
+                                    <Tab-Pane :label="$t('monitor.voice')">
+                                        <div class="listing_choice">
+                                            <Radio-Group v-model="listingChoice">
+                                                <Radio label="duijiang"><span>{{$t("monitor.intercom")}}</span></Radio>
+                                                <Radio label="jianting"><span>{{$t("monitor.monitor")}}</span></Radio>
+                                            </Radio-Group>
+                                        </div>
+                                        <div class="listing_box" v-if="listingChoice == 'duijiang'">
+                                            <i class="icon_dj"></i>
+                                            <div class="audioPlayerTip">{{audioPlayerTip}}</div>
+                                            <div class="yt_footer">
+                                                <div>
+                                                    <i-button style="width:120px;" @click="openDuijiang" :loading="loading">{{isOpenJianting?$t("monitor.close"):$t("monitor.open")}}</i-button>
+                                                </div>
+                                                <div @mousedown="onMousedown" style="margin-top:10px;">
+                                                    <i-button style="width:120px;">{{$t("monitor.repressSpeak")}}</i-button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="listing_box" v-else>
+                                            <i class="icon_jt"></i>
+                                            <div class="audioPlayerTip">{{audioPlayerTip}}</div>
+                                            <div class="yt_footer">
+                                                <div>
+                                                    <i-button style="width:120px;" @click="openDuijiang" :loading="loading">{{isOpenJianting?$t("monitor.close"):$t("monitor.open")}}</i-button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </Tab-Pane>
                                     <Tab-Pane :label="$t('monitor.yuntai')">
                                         <div id="tab_state_1" class="tab_state_pane">
                                             <div class="state_1_yt" style="margin-left:15px">
@@ -1034,35 +1066,7 @@
                                             <i-button style="width:120px;" @click="defaultQualityParams">{{$t('monitor.default')}}</i-button>
                                         </div>
                                     </Tab-Pane>
-                                    <Tab-Pane :label="$t('monitor.voice')">
-                                        <div class="listing_choice">
-                                            <Radio-Group v-model="listingChoice">
-                                                <Radio label="duijiang"><span>{{$t("monitor.intercom")}}</span></Radio>
-                                                <Radio label="jianting"><span>{{$t("monitor.monitor")}}</span></Radio>
-                                            </Radio-Group>
-                                        </div>
-                                        <div class="listing_box" v-if="listingChoice == 'duijiang'">
-                                            <i class="icon_dj"></i>
-                                            <div class="audioPlayerTip">{{audioPlayerTip}}</div>
-                                            <div class="yt_footer">
-                                                <div>
-                                                    <i-button style="width:120px;" @click="openDuijiang" :loading="loading">{{isOpenJianting?$t("monitor.close"):$t("monitor.open")}}</i-button>
-                                                </div>
-                                                <div @mousedown="onMousedown" style="margin-top:10px;">
-                                                    <i-button style="width:120px;">{{$t("monitor.repressSpeak")}}</i-button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="listing_box" v-else>
-                                            <i class="icon_jt"></i>
-                                            <div class="audioPlayerTip">{{audioPlayerTip}}</div>
-                                            <div class="yt_footer">
-                                                <div>
-                                                    <i-button style="width:120px;" @click="openDuijiang" :loading="loading">{{isOpenJianting?$t("monitor.close"):$t("monitor.open")}}</i-button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </Tab-Pane>
+                                   
                                     <i-button @click="isShowYunTai=false" size="small" slot="extra" style="margin:5px 5px 0 0;">{{$t("monitor.close")}}</i-button>
                                 </Tabs>
                                 <div style="visibility: hidden;">

@@ -452,6 +452,7 @@ div.state-event-tip {
     font-size: 10px;
 }
 
+
 div.resolving-power {
     position: absolute;
     top: 2px;
@@ -508,8 +509,15 @@ div.resolving-power {
     bottom: 10px;
     width: 350px;
     background-color: #FFFFFF;
-    height: 289px;
+    height: 322px;
     border: 1px solid #e3e3e3;
+}
+div.yuntai-title{
+    line-height: 35px;
+    height: 36px;
+    padding-left: 10px;
+    font-size: 12px;
+    border-bottom: 1px solid #DCDEE2;
 }
 
 .el-zoom-in-bottom-enter-active,
