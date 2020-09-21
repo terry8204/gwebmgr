@@ -8,6 +8,7 @@
     var messages = {
         en: {
             message: {  
+                captureFail:"Capture failed. Please check if the device is online",
                 deleteUserTips: "Deletion failed. The user still has a device",
                 changeSucc: "Modified success",
                 changeFail: "Modification failed",
@@ -1001,6 +1002,7 @@
         zh: {
             message: {    
                 deleteUserTips: "删除失败,该用户还有设备",
+                captureFail:"抓拍失败,请检查设备是否在线",
                 changeSucc: "修改成功",
                 changeFail: "修改失败", 
                 addSucc: "添加成功",

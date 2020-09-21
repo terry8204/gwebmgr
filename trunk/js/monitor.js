@@ -353,6 +353,9 @@ var monitor = {
             },
             ownerInfoModal: false,
             cameraModal:false,
+            cameraImgUrl:'',
+            // cameraImgUrl:'http://localhost:8080/gpsserver/mediapath/audiorecord/13555000004/f6878cb_1600653383172.JPEG',
+            cameraImgModal:false,
             ownerInfoData: { //编辑的设备信息
                 deviceid: '',
                 ownername: '',
@@ -2296,6 +2299,8 @@ var monitor = {
             }
         },
         onClickCamera:function(){
+            this.loading = true;
+            var me = this;
             var url = myUrls.capturephoToSync();
             var data = {
                 deviceid:this.currentDeviceId,
@@ -2303,8 +2308,29 @@ var monitor = {
                 resolution:Number(this.resolution),
             };
             utils.sendAjax(url,data,function(resp){
-                console.log(resp);
+                me.loading = false;
+                if(resp.status == 0){
+                    var devicemedia = resp.devicemedia;
+                    if(resp.devicemedia != null){
+                        me.cameraImgUrl = devicemedia.url
+                        me.cameraImgModal = true;
+                        me.cameraImgDeviceTime = devicemedia.devicetime;
+                    }
+                }else{
+                    me.$Message.error(me.$t('message.captureFail')); 
+                }
+            },function(){
+                me.loading = false;
+                me.$Message.error(me.$t('message.networkError'));  
             });
+        },
+        onClickCameraDownload:function(){
+           if(this.cameraImgUrl && this.cameraImgDeviceTime){
+                var ele = document.createElement('a');
+                ele.setAttribute('href', this.cameraImgUrl); //设置下载文件的url地址
+                ele.setAttribute('download', this.currentDeviceId + "_" + this.cameraChannel +  "_" + DateFormat.longToDateTimeStr(this.cameraImgDeviceTime,timeDifference));  //用于设置下载文件的文件名
+                ele.click();
+           }
         },
         openTreeDeviceNav: function(deviceid) {
             var me = this;

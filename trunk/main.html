@@ -2272,8 +2272,25 @@
                             </Row>
                         </div>
                         <div slot="footer" style="text-align:center;">
-                            <i-button type="primary" style="width: 150px" @click="onClickCamera">{{$t("header.submit")}}</i-button>
+                            <i-button type="primary" style="width: 150px" @click="onClickCamera" :loading="loading">{{$t("header.submit")}}</i-button>
                             <i-button type="error" style="width: 150px" @click="cameraModal=false">{{$t("monitor.close")}}</i-button>
+                        </div>
+                    </Modal>
+                    <Modal v-model="cameraImgModal" width="500" :mask-closable="false">
+                        <p slot="header" style="color:#f60;text-align:center">
+                            <Icon type="ios-create-outline"></Icon>
+                            <span>{{$t("monitor.camera")}}</span>
+                        </p>
+                        <div style="text-align:center">
+                            <Row style="margin:10px 0;">
+                                <i-col span="24">
+                                    <img v-show="cameraImgUrl" :src="cameraImgUrl" style="width:100%;">
+                                </i-col>
+                            </Row>
+                        </div>
+                        <div slot="footer" style="text-align:center;">
+                            <i-button type="primary" style="width: 150px" @click="onClickCameraDownload">下载图片</i-button>
+                            <i-button type="error" style="width: 150px" @click="cameraImgModal=false">{{$t("monitor.close")}}</i-button>
                         </div>
                     </Modal>
                     <!-- 指令记录 -->
