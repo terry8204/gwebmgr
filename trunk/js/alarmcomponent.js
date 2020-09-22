@@ -230,7 +230,11 @@ var waringComponent = {
                                 item.callon = callon;
                                 item.callat = callat;
                            });
-                          me.mediaFileLists =  mediaFileLists.concat(records);
+                           var newMediaFileLists = mediaFileLists.concat(records);
+                           newMediaFileLists.sort(function(a,b){
+                                return b.endtime - a.endtime;
+                           });
+                          me.mediaFileLists =  newMediaFileLists;
                         }
                         me.lastquerydevicemediastime = resp.lastquerydevicemediastime;
                     }
