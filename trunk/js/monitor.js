@@ -2309,7 +2309,7 @@ var monitor = {
             };
             utils.sendAjax(url,data,function(resp){
                 me.loading = false;
-                if(resp.status == 0){
+
                     var devicemedia = resp.devicemedia;
                     var status = resp.status;
                     if (status == CMD_SEND_RESULT_UNCONFIRM) {
@@ -2335,11 +2335,9 @@ var monitor = {
                     } else if (status === CMD_SEND_OVER_RETRY_TIMES) {
                         me.$Message.error(me.$t('monitor.CMD_SEND_OVER_RETRY_TIMES'));
                     } else if (status === CMD_SEND_SYNC_TIMEOUT) {  
-                        me.$Message.error(me.$t('monitor.deviceOffline'));
+                        me.$Message.error(me.$t('message.captureFail')); 
                     } 
-                }else{
-                    me.$Message.error(me.$t('message.captureFail')); 
-                }
+
             },function(){
                 me.loading = false;
                 me.$Message.error(me.$t('message.networkError'));  
