@@ -2311,11 +2311,32 @@ var monitor = {
                 me.loading = false;
                 if(resp.status == 0){
                     var devicemedia = resp.devicemedia;
-                    if(resp.devicemedia != null){
-                        me.cameraImgUrl = devicemedia.url
-                        me.cameraImgModal = true;
-                        me.cameraImgDeviceTime = devicemedia.devicetime;
-                    }
+                    var status = resp.status;
+                    if (status == CMD_SEND_RESULT_UNCONFIRM) {
+                        me.$Message.error(me.$t('monitor.CMD_SEND_RESULT_UNCONFIRM'));
+                    } else if (status === CMD_SEND_RESULT_PASSWORD_ERROR) {
+                        me.$Message.error(me.$t('monitor.CMD_SEND_RESULT_PASSWORD_ERROR'));
+                    } else if (status === CMD_SEND_RESULT_OFFLINE_NOT_CACHE) {
+                        me.$Message.error(me.$t('monitor.CMD_SEND_RESULT_OFFLINE_NOT_CACHE'));
+                    } else if (status === CMD_SEND_RESULT_OFFLINE_CACHED) {
+                        me.$Message.error(me.$t('monitor.CMD_SEND_RESULT_OFFLINE_CACHED'));
+                    } else if (status === CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD) {
+                        me.$Message.error(me.$t('monitor.CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD'));
+                    } else if (status === CMD_SEND_RESULT_DETAIL_ERROR) {
+                        me.$Message.error(me.$t('monitor.CMD_SEND_RESULT_DETAIL_ERROR') + resp.cause);
+                    } else if (status === CMD_SEND_CONFIRMED) {
+                        if(resp.devicemedia != null){
+                            me.cameraImgUrl = devicemedia.url
+                            me.cameraImgModal = true;
+                            me.cameraImgDeviceTime = devicemedia.devicetime;
+                        }else{
+                            me.$Message.error('devicemedia is null');
+                        }
+                    } else if (status === CMD_SEND_OVER_RETRY_TIMES) {
+                        me.$Message.error(me.$t('monitor.CMD_SEND_OVER_RETRY_TIMES'));
+                    } else if (status === CMD_SEND_SYNC_TIMEOUT) {  
+                        me.$Message.error(me.$t('monitor.deviceOffline'));
+                    } 
                 }else{
                     me.$Message.error(me.$t('message.captureFail')); 
                 }
@@ -2382,10 +2403,10 @@ var monitor = {
             var url = myUrls.editDeviceSimple();
             if (data.devicename.length == 0 || data.devicename == '') {
                 me.$Message.error(me.$t("monitor.devNameMust"))
-                return
+                return;
             }
             if (data.simnum) {
-                sendData.simnum = data.simnum
+                sendData.simnum = data.simnum;
             }
 
             utils.sendAjax(url, sendData, function(resp) {
