@@ -2309,7 +2309,6 @@ var monitor = {
             };
             utils.sendAjax(url,data,function(resp){
                 me.loading = false;
-
                     var devicemedia = resp.devicemedia;
                     var status = resp.status;
                     if (status == CMD_SEND_RESULT_UNCONFIRM) {

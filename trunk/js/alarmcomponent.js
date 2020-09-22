@@ -18,6 +18,7 @@ var waringComponent = {
             alarmTypeList: [],
             emergencyAlarmList: [],
             overdueinfolist: [],
+            mediaFileLists:[{deviceid:112121,}],
             // alarmCmdList: [[]],
             isWaring: false,
             interval: 10000,
@@ -69,16 +70,7 @@ var waringComponent = {
                     this.checkboxObj[i] = gForcealarm.charAt(i) == '1'? true : false;
                 }
             }
-        },
-        // disposeAlarm: function() {
-        //     // var me = this
-        //     // this.currentDevTypeCmdList.forEach(function (item) {
-        //     //     if (me.disposeAlarm == item.cmdcode) {
-        //     //         me.params = item.params;
-        //     //     }
-        //     // })
-        //     console.log('this.disposeAlarm', this.disposeAlarm);
-        // }
+        }
     },
     methods: {
         changeWrapperCls: function() {
@@ -89,8 +81,8 @@ var waringComponent = {
                 this.wrapperHeight = 22;
 
             } else if (type === 1) {
-
-                this.wrapperWidth = 900;
+                var clientWidth = document.documentElement.clientWidth || document.body.clientWidth;
+                this.wrapperWidth = clientWidth - 320;
                 this.wrapperHeight = 400;
 
             } else if (type === 2) {
@@ -198,6 +190,9 @@ var waringComponent = {
                 case 4:
                     this.componentName = 'emergencyAlarm'
                     break;
+                case 5:
+                    this.componentName = 'mediaFiles'
+                    break;
             }
         },
         queryWaringMsg: function() {
@@ -214,7 +209,25 @@ var waringComponent = {
                             me.queryAlarmAudioTip(resp.records);
                             me.refreshAlarmToUi();
                         }
-                        me.lastQueryAllAlarmTime = DateFormat.getCurrentUTC();
+                        me.lastQueryAllAlarmTime = resp.lastqueryallalarmtime;
+                    }
+                })
+            }
+        },
+        queryLastDeviceMedias: function() {
+            if (!$.isEmptyObject(this.deviceInfos)) {
+                var me = this;
+                var url = myUrls.queryLastDeviceMedias();
+                // this.checkboxObj.lastqueryallalarmtime = me.lastQueryAllAlarmTime;
+                utils.sendAjax(url, { lastquerydevicemediastime: me.lastquerydevicemediastime }, function(resp) {
+                    console.log('queryLastDeviceMedias',resp);
+                    if (resp.status == 0) {
+                        if (resp.records) {
+                            // resp.records.forEach(function(item) {
+                            //     me.alarmMgr.addRecord(item);
+                            // });
+                        }
+                        me.lastquerydevicemediastime = resp.lastquerydevicemediastime;
                     }
                 })
             }
@@ -318,6 +331,8 @@ var waringComponent = {
             setInterval(function() {
                 me.queryWaringMsg();
                 me.queryDeviceMsgList();
+                me.queryLastDeviceMedias();
+                console.log("hahah")
             }, this.interval);
         },
         disposeMsg: function(data) {
@@ -722,6 +737,79 @@ var waringComponent = {
                 }
             },
         },
+        mediaFiles:{
+            template: '<Table :height="tabheight" border :columns="columns" @on-row-click="onRowClick" :data="mediaFileList"></Table>',
+            props: ['mediaFileList', 'tabletype', 'wrapperheight'],
+            data: function() {
+                var me = this;
+                return {
+                    columns: [{
+                            type: 'index',
+                            width: 60,
+                        },
+                        {
+                            title: me.$t("alarm.devName"),
+                            key: 'devicename',
+                            width: 120,
+                        },
+                        {
+                            title: me.$t("alarm.devNum"),
+                            key: 'deviceid',
+                            width: 130,
+                        },
+                        {
+                            title: '文件类型',
+                            key: 'lastalarmtimeStr',
+                        },
+                        {
+                            title: '通道',
+                            key: isZh ? 'stralarm' : 'stralarmen',
+                        },
+                        {
+                            title:  '报警类型',
+                            key: 'isdispose',
+                        },
+                        {
+                            title: '接收时间',
+                            key: 'alarmcount',
+                        },
+                        {
+                            title: me.$t("alarm.action"),
+                            key: 'action',
+                            width: 120,
+                            render: function(h, params, a) {
+                                return h('div', [
+                                    h(
+                                        'Button', {
+                                            props: {
+                                                type: 'primary',
+                                                size: 'small'
+                                            },
+                                            on: {
+                                                click: function() {
+                                                   
+                                                }
+                                            }
+                                        },
+                                        me.$t("alarm.alarmDispose")
+                                    )
+                                ])
+                            }
+                        },
+                    ],
+                }
+            },
+            computed: {
+                tabheight: function() {
+                    return this.wrapperheight - 24;
+                }
+            },
+            methods: {
+                onRowClick: function(row) {
+                   
+                }
+            },    
+        },
         overdueInfo: {
             template: '<Table :height="tabheight" border :columns="columns" @on-row-click="onRowClick" :data="overdueinfolist"></Table>',
             props: ['overdueinfolist', 'tabletype', 'wrapperheight'],
@@ -820,6 +908,7 @@ var waringComponent = {
         this.queryAlarmDescr();
         this.changeWrapperCls();
         this.setAlarmAction();
+        this.lastquerydevicemediastime = 0;
         communicate.$on("remindmsg", function(data) {
             me.alarmMgr.addRecord(data);
             me.refreshAlarmToUi();

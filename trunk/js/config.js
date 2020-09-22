@@ -727,7 +727,9 @@ var myUrls = {
     capturephoToSync: function() {
         return this.apihosts + 'webapi?action=capturephoto_sync&token=' + token;
     },
-
+    queryLastDeviceMedias: function() {
+        return this.apihosts + 'webapi?action=querylastdevicemedias&token=' + token;
+    },
 
 }
 
