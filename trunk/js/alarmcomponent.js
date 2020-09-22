@@ -18,7 +18,7 @@ var waringComponent = {
             alarmTypeList: [],
             emergencyAlarmList: [],
             overdueinfolist: [],
-            mediaFileLists:[{deviceid:112121,}],
+            mediaFileLists:[],
             // alarmCmdList: [[]],
             isWaring: false,
             interval: 10000,
@@ -199,7 +199,6 @@ var waringComponent = {
             if (!$.isEmptyObject(this.deviceInfos)) {
                 var me = this;
                 var url = myUrls.queryAlarm();
-                // this.checkboxObj.lastqueryallalarmtime = me.lastQueryAllAlarmTime;
                 utils.sendAjax(url, { lastqueryallalarmtime: me.lastQueryAllAlarmTime }, function(resp) {
                     if (resp.status == 0) {
                         if (resp.records) {
@@ -218,14 +217,16 @@ var waringComponent = {
             if (!$.isEmptyObject(this.deviceInfos)) {
                 var me = this;
                 var url = myUrls.queryLastDeviceMedias();
-                // this.checkboxObj.lastqueryallalarmtime = me.lastQueryAllAlarmTime;
                 utils.sendAjax(url, { lastquerydevicemediastime: me.lastquerydevicemediastime }, function(resp) {
                     console.log('queryLastDeviceMedias',resp);
                     if (resp.status == 0) {
-                        if (resp.records) {
-                            // resp.records.forEach(function(item) {
-                            //     me.alarmMgr.addRecord(item);
-                            // });
+                        var records = resp.records;
+                        if (records) {
+                           var mediaFileLists = deepClone(me.mediaFileLists);
+                           records.forEach(function(item){
+                            item.devicename = me.deviceInfos[item.deviceid].devicename;
+                           });
+                          me.mediaFileLists =  mediaFileLists.concat(records);
                         }
                         me.lastquerydevicemediastime = resp.lastquerydevicemediastime;
                     }
@@ -332,7 +333,6 @@ var waringComponent = {
                 me.queryWaringMsg();
                 me.queryDeviceMsgList();
                 me.queryLastDeviceMedias();
-                console.log("hahah")
             }, this.interval);
         },
         disposeMsg: function(data) {
@@ -738,7 +738,7 @@ var waringComponent = {
             },
         },
         mediaFiles:{
-            template: '<Table :height="tabheight" border :columns="columns" @on-row-click="onRowClick" :data="mediaFileList"></Table>',
+            template: '<Table :height="tabheight" border :columns="columns" highlight-row @on-row-click="onRowClick" :data="mediaFileList"></Table>',
             props: ['mediaFileList', 'tabletype', 'wrapperheight'],
             data: function() {
                 var me = this;
@@ -759,25 +759,52 @@ var waringComponent = {
                         },
                         {
                             title: '文件类型',
-                            key: 'lastalarmtimeStr',
+                            key: 'fileext',
                         },
                         {
                             title: '通道',
-                            key: isZh ? 'stralarm' : 'stralarmen',
+                            key:  'channelid',
+                            width:80,
                         },
                         {
                             title:  '报警类型',
-                            key: 'isdispose',
+                            key: 'eventcode',
+                            render:function(h,params){
+                                var eventcode = params.row.eventcode;
+                                var str = '';
+                                switch(eventcode){
+                                    case 0 :
+                                        str = '平台下发指令';
+                                        break;
+                                    case 1 :
+                                        str = '定时动作';
+                                        break;
+                                    case 2 :
+                                        str = '抢劫报警触发';
+                                        break;
+                                    case 3 :
+                                        str = '碰撞侧翻报警触发';
+                                        break;
+                                    default :
+                                    str = '保留';
+                                }
+                                return h('span',{},str);
+                            }
                         },
                         {
                             title: '接收时间',
-                            key: 'alarmcount',
+                            key: 'endtime',
+                            render:function(h,params){
+                                var endtime = params.row.endtime;
+                                return h('span',{},DateFormat.longToDateTimeStr(endtime,timeDifference))
+                            }
                         },
                         {
                             title: me.$t("alarm.action"),
                             key: 'action',
                             width: 120,
                             render: function(h, params, a) {
+                                var row = params.row;
                                 return h('div', [
                                     h(
                                         'Button', {
@@ -786,12 +813,17 @@ var waringComponent = {
                                                 size: 'small'
                                             },
                                             on: {
-                                                click: function() {
-                                                   
+                                                click: function(e) {
+                                                    e.preventDefault();
+                                                    e.stopPropagation();
+                                                    var ele = document.createElement('a');
+                                                    ele.setAttribute('href', row.url); //设置下载文件的url地址
+                                                    ele.setAttribute('download', this.deviceid + "_" + row.channelid +  "_" + DateFormat.longToDateTimeStr(row.endtime,timeDifference));  //用于设置下载文件的文件名
+                                                    ele.click();
                                                 }
                                             }
                                         },
-                                        me.$t("alarm.alarmDispose")
+                                        '下载'
                                     )
                                 ])
                             }
@@ -806,7 +838,10 @@ var waringComponent = {
             },
             methods: {
                 onRowClick: function(row) {
-                   
+                    console.log(row);
+                   vRoot.$children[1].cameraImgUrl = row.url
+                   vRoot.$children[1].cameraImgDeviceTime = row.endtime;
+                   vRoot.$children[1].cameraImgModal = true;
                 }
             },    
         },
