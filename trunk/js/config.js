@@ -730,6 +730,9 @@ var myUrls = {
     queryLastDeviceMedias: function() {
         return this.apihosts + 'webapi?action=querylastdevicemedias&token=' + token;
     },
+    reportMultiMedias: function() {
+        return this.apihosts + 'webapi?action=reportmultimedias&token=' + token;
+    },
 
 }
 

@@ -1,0 +1,81 @@
+<meta charset="UTF-8">
+<div id="multi-media">
+    <div class="demo-spin-container" v-if="isSpin">
+        <Spin size="large" fix></Spin>
+    </div>
+    <Row style="margin:10px;height: 35px;">
+        <div style="float: left;">
+            <span>{{$t("reportForm.selectTime")}}:</span>
+            <date-picker type="daterange" :value="dateVal" :editable="false" :clearable="false" @on-change="onChange" show-week-numbers style="width:300px" placement="bottom-start"></date-picker>
+        </div>
+        <div style="float: left;height: 35px; line-height: 35px;margin-left: 20px;" class="spans-wrap">
+            <span class="cursor-pointer" @click="handleSelectdDate(0)" :style="{color: dayNumberType == 0 ? '#2D8CF0' : '#515A6E'}">{{$t("reportForm.toDay")}}</span> <b>｜</b>
+            <span class="cursor-pointer" @click="handleSelectdDate(1)" :style="{color: dayNumberType == 1 ? '#2D8CF0' : '#515A6E'}">{{$t("reportForm.yesterDay")}}</span> <b>｜</b>
+            <span class="cursor-pointer" @click="handleSelectdDate(3)" :style="{color: dayNumberType == 3 ? '#2D8CF0' : '#515A6E'}">{{$t("reportForm.threeDays")}}</span> <b>｜</b>
+            <span class="cursor-pointer" @click="handleSelectdDate(7)" :style="{color: dayNumberType == 7 ? '#2D8CF0' : '#515A6E'}">{{$t("reportForm.sevenDays")}}</span>
+        </div>
+    </Row>
+    <Row style="margin:10px;height: 35px;">
+        <div style="float: left;">
+            <div style="height: 35px; line-height: 35px;">{{$t("reportForm.selectDev")}}:&nbsp;</div>
+        </div>
+        <div style="float: left;position: relative;width: 300px;">
+            <div class="search-wrapper" v-click-outside.capture="onClickOutside">
+                <i-input v-model.trim="sosoValue" icon="ios-search-outline" @on-change="sosoValueChange" :readonly="readonly" @on-focus="focus" :placeholder="placeholder"></i-input>
+                <transition name="fade">
+                    <div class="search-item-wrapper" v-show="isShowMatchDev">
+                        <Tree :data="treeData" show-checkbox @on-check-change="onCheckedDevice"></Tree>
+                    </div>
+                </transition>
+            </div>
+        </div>
+        <div style="margin-left:20px;float: left;">
+            <i-button @click="clean" icon="ios-nuclear-outline">{{$t("reportForm.clean")}}</i-button>
+        </div>
+        <div style="margin-left:20px;float: left;">
+            <i-button @click="onClickQuery" icon="ios-search">{{$t("reportForm.query")}}</i-button>
+        </div>
+
+        <div style="float: right;margin-left:10px;">
+            <i-button @click="exportTableData" icon="md-exit" type="primary">{{$t("reportForm.exportData")}}</i-button>
+        </div>
+        <div style="float: right;">
+            <i-button @click="queryAllAddress" icon="ios-search" type="primary">{{$t("reportForm.queryAllAddress")}}</i-button> 
+        </div>
+    </Row>
+    <div style="margin:10px;">
+        <i-table :columns="columns" ref="table" :height="lastTableHeight" :data="tableData" :loading="loading" @on-row-click="onRowClick" highlight-row></i-table>
+    </div>
+    <div style="padding-left:10px;">
+        <Page :total="total" show-total @on-change="changePage" :page-size="20" :current="currentIndex" />
+    </div>
+    <transition name="fade">
+        <div v-show="trackDetailModal" class="posi-map-wraper">
+            <div class="map-modal" @click="trackDetailModal=false"></div>
+            <div class="work-inner-map-wraper">
+                <div class="posi-map-title">
+                    {{$t("monitor.track")}}
+                    <div class="map-close"></div>
+                </div>
+                <div class="work-details-map"></div>
+            </div>
+        </div>
+    </transition>
+    <Modal v-model="cameraImgModal" width="500">
+        <p slot="header" style="color:#f60;text-align:center">
+            <Icon type="ios-create-outline"></Icon>
+            <span>{{$t("monitor.camera")}}</span>
+        </p>
+        <div style="text-align:center">
+            <Row style="margin:10px 0;">
+                <i-col span="24">
+                    <img v-show="cameraImgUrl" :src="cameraImgUrl" style="width:100%;">
+                </i-col>
+            </Row>
+        </div>
+        <div slot="footer" style="text-align:center;">
+            <i-button type="primary" style="width: 150px" @click="onClickCameraDownload">{{$t("reportForm.download")}}</i-button>
+            <i-button type="error" style="width: 150px" @click="cameraImgModal=false">{{$t("monitor.close")}}</i-button>
+        </div>
+    </Modal>
+</div>

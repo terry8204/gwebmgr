@@ -7544,6 +7544,384 @@ function ioReport(groupslist){
 }
 
 
+function multiMedia(){
+    vueInstanse = new Vue({
+        el: '#multi-media',
+        i18n: utils.getI18n(),
+        mixins: [treeMixin],
+        data: {
+            loading: false,
+            isSpin: false,
+            dateVal: [DateFormat.longToDateStr(Date.now(), timeDifference), DateFormat.longToDateStr(Date.now(), timeDifference)],
+            lastTableHeight: 100,
+            groupslist: [],
+            timeoutIns: null,
+            columns: [
+                { key: 'index', width: 70, title: vRoot.$t("reportForm.index") },
+                { title: vRoot.$t("alarm.devName"), key: 'devicename' },
+                { title: vRoot.$t("alarm.devNum") , key: 'deviceid' },
+                {
+                    title: vRoot.$t("alarm.fileType"),  
+                    key: 'fileext',
+                    width: 100,
+                },
+                {
+                    title: vRoot.$t("monitor.channel"), 
+                    key:  'channelid',
+                    width:80,
+                },
+                {
+                    title: vRoot.$t("alarm.alarmType"),   
+                    key: 'eventcodeStr',
+                    width: 150,
+                },
+                {
+                    title:  vRoot.$t("alarm.receivingTime"),
+                    key: 'endtimeStr',
+                    width:150,
+                },
+                {
+                    title: vRoot.$t("reportForm.address"),
+                    render: function(h, params) {
+                        var row = params.row;
+                        var lat = Number(row.callat);
+                        var lon = Number(row.callon);
+                        if (lat && lon) {
+                            if (row.address == null) {
+                                return h('Button', {
+                                    props: {
+                                        type: 'error',
+                                        size: 'small'
+                                    },
+                                    on: {
+                                        click: function(e) {
+                                            e.stopPropagation();
+                                            e.preventDefault();
+                                            utils.getJiuHuAddressSyn(lon, lat, function(resp) {
+                                                if (resp && resp.address) {
+                                                    vRoot.$children[2].mediaFileLists[params.index].address
+                                                    LocalCacheMgr.setAddress(lon, lat, resp.address);
+                                                }
+                                            })
+                                        }
+                                    }
+                                }, lon + "," + lat)
+
+                            } else {
+                                return h('span', {},  row.address);
+                            }
+                        } else {
+                            return h('span', {},  vRoot.$t("reportForm.empty"));
+                        }
+                    },
+                },
+                {
+                    title: vRoot.$t("alarm.action"),
+                    render: function(h, parmas) {
+                        return h(
+                            'Button', {
+                                on: {
+                                    click: function(e) {
+                                        e.stopPropagation();
+                                        e.preventDefault();
+                                        vueInstanse.viewMap(parmas.row);
+                                    }
+                                },
+                                props: {
+                                    size: 'small',
+                                    type: 'info'
+                                }
+                            },
+                            isZh ? '查看地图' : "View map"
+                        )
+                    },
+                },
+            ],
+            tableData: [],
+            currentIndex: 1,
+            trackDetailModal: false,
+            deviceName: '',
+            cameraImgModal:false,
+            cameraImgUrl:'',
+        },
+        methods: {
+            onClickCameraDownload:function(){
+                this.cameraImgUrl && window.open(this.cameraImgUrl);
+            },
+            queryAllAddress: function() {
+                var records = this.records;
+                records.forEach(function(item) {
+                    if (item.address == null) {
+                        var uplat = Number(item.callat);
+                        var uplon = Number(item.callon);
+                        if (uplat && uplon) {
+                            utils.getJiuHuAddressSyn(uplon, uplat, function(resp) {
+                                if (resp && resp.address) {
+                                    item.address = resp.address;
+                                    LocalCacheMgr.setAddress(uplon, uplat, resp.address);
+                                }
+                            })
+                        }
+                    }
+                });
+
+                this.$Message.success(this.$t('monitor.querySucc'));   
+            }, 
+            exportTableData: function() {
+                var columns = deepClone(this.columns);
+                var records = deepClone(this.records);
+                columns.pop();
+                this.$refs.table.exportCsv({  
+                    filename: vRoot.$t('reportForm.multiMedia'),   
+                    columns: columns,
+                    data: records,
+                    original: false,
+                    quoted: true,
+                });
+            },
+            initMap: function() {
+                if (utils.getMapType() == 'bMap') {
+                    this.mapInstance = new BMap.Map(document.getElementsByClassName('work-details-map')[0], { minZoom: 4, maxZoom: 18, enableMapClick: false });
+                    this.mapInstance.enableScrollWheelZoom();
+                    this.mapInstance.enableAutoResize();
+                    this.mapInstance.disableDoubleClickZoom();
+                    this.mapInstance.centerAndZoom(new BMap.Point(108.0017245, 35.926895), 17);
+                } else if (utils.getMapType() == 'gMap'){
+                    var center = new google.maps.LatLng(24.129163, 113.264435);
+                    this.mapInstance = new google.maps.Map(document.getElementsByClassName('work-details-map')[0], {
+                        zoom: 4,
+                        center: center,
+                        mapTypeId: google.maps.MapTypeId.ROADMAP
+                    });
+                }else if (utils.getMapType() == 'oMap') {
+                    var me = this;
+                    setTimeout(function(){
+                        
+                        me.layerVector = new ol.layer.Vector({
+                            source: new ol.source.Vector({
+                                features: features
+                            }),
+                            style: function(feature) {
+                                return feature.get('style');
+                            },
+                            updateWhileInteracting: true
+                        });
+                        var projection = ol.proj.get('EPSG:4326');
+                        me.mapInstance = new ol.Map({
+                            target: 'work-details-map',
+                            projection: projection,
+                            layers: [
+                                new ol.layer.Tile({
+                                    source: new ol.source.OSM()
+                                }),
+                                me.layerVector
+                            ],
+                            view: new ol.View({
+                                center: ol.proj.fromLonLat([108.0017245, 35.926895]),
+                                zoom: 4,
+                                minZoom: 3,
+                                maxZoom: 20
+                            }),
+                        });
+                    },300);
+                };
+            },
+            clean: function() {
+                this.sosoValue = '';
+                this.checkedDevice = [];
+                this.cleanSelected(this.groupslist);
+                this.treeData = this.groupslist;
+            },
+            cleanSelected: function(treeDataFilter) {
+                var that = this;
+                for (var i = 0; i < treeDataFilter.length; i++) {
+                    var item = treeDataFilter[i];
+                    if (item != null) {
+                        item.checked = false;
+                        if (item.children && item.children.length > 0) {
+                            that.cleanSelected(item.children);
+                        }
+                    }
+                }
+            },
+            viewMap: function(row) {
+                var me = this;
+                this.trackDetailModal = true;
+                if (utils.getMapType() == 'bMap') {
+                    this.mapInstance.clearOverlays();
+                    var lon_lat = wgs84tobd09(row.callon, row.callat);
+                    var point = new BMap.Point(lon_lat[0], lon_lat[1])
+                    this.mapInstance.addOverlay(new BMap.Marker(point,{}));
+                    setTimeout(function(){
+                        me.mapInstance.panTo(point);
+                    },300)
+                 
+                } else if (utils.getMapType() == 'gMap') {
+                    
+                }else if (utils.getMapType() == 'oMap') {
+                        var tempPoint = ol.proj.fromLonLat([row.callon, row.callat]);
+                        var firstMarker = new ol.Feature({
+                                geometry: new ol.geom.Point(tempPoint),
+                            });
+
+                            firstMarker.setStyle(me.getFirstMarkerIcon(true));
+
+                        var features =  [ firstMarker ];
+                        this.layerVector.setSource(new ol.source.Vector({
+                            features: features
+                        })); 
+                        setTimeout(function(){
+                            me.mapInstance.getView().setCenter(tempPoint);
+                        },300)
+                    
+                };
+              
+            },
+            getFirstMarkerIcon: function(isStart) {
+                var iconName = isStart ? 'marker_qidian.png' : 'marker_zhongdian.png';
+                var imgPath = '';
+                if (utils.isLocalhost()) {
+                    imgPath = myUrls.viewhost + 'images/map/' + iconName;
+                } else {
+                    imgPath = '../images/map/' + iconName;
+                };
+                if (utils.getMapType() == 'bMap') {
+                    return new BMap.Icon("./images/map/" + iconName, new BMap.Size(32, 32), {
+                        imageOffset: new BMap.Size(0, 0)
+                    });
+                } else if (utils.getMapType() == 'gMap') {
+                    return imgPath;
+                } else {
+                    return new ol.style.Style({
+                        image: new ol.style.Icon(({
+                            crossOrigin: 'anonymous',
+                            src: imgPath,
+                            rotation: 0, //角度转化为弧度
+                            imgSize: [32, 32]
+                        }))
+                    });
+                }
+            },
+            changePage: function(index) {
+                var offset = index * 20;
+                var start = (index - 1) * 20;
+                this.currentIndex = index;
+                this.tableData = this.records.slice(start, offset);
+            },
+            calcTableHeight: function() {
+                var wHeight = window.innerHeight;
+                this.lastTableHeight = wHeight - 210;
+            },
+            onClickQuery: function() {
+                var deviceids = [];
+                this.checkedDevice.forEach(function(group) {
+                    if (!group.children) {
+                        if (group.deviceid != null) {
+                            deviceids.push(group.deviceid);
+                        }
+                    }
+                });
+                if (deviceids.length > 0) {
+                    var me = this;
+                    var url = myUrls.reportMultiMedias();
+                    var data = {
+                        startday: this.dateVal[0],
+                        endday: this.dateVal[1],
+                        offset: timeDifference,
+                        deviceids: deviceids
+                    }
+                    me.loading = true;
+                    utils.sendAjax(url, data, function(resp) {
+                        console.log(resp);
+                        me.loading = false;
+                        if (resp.status === 0) {
+                            if (resp.records.length) {
+                                var records = [],
+                                    index = 1;
+                                resp.records.forEach(function(item) {
+                                    item.records.forEach(function(item) {
+                                        item.index = index;
+                                        item.callat = Number(item.callat.toFixed(5));
+                                        item.callon = Number(item.callon.toFixed(5));
+                                        item.address = LocalCacheMgr.getAddress(item.callon,item.callat);
+                                        item.devicename = vstore.state.deviceInfos[item.deviceid] ? vstore.state.deviceInfos[item.deviceid].devicename : item.deviceid;
+                                        item.endtimeStr = DateFormat.longToDateTimeStr(item.endtime,timeDifference);
+                                        item.eventcodeStr = me.getEventcodeStr(item);
+                                        records.push(item);
+                                        index++;
+                                    })
+                                });
+                                me.records = records;
+                                me.tableData = records.slice(0, 20);
+                                me.total = me.records.length;
+
+                            } else {
+                                me.tableData = [];
+                                me.total = 1;
+                                me.records = [];
+                            };
+                            me.currentIndex = 1;
+                        } else {
+                            me.tableData = [];
+                        }
+                    })
+                } else {
+                    this.$Message.error(this.$t("reportForm.selectDevTip"));
+                }
+            },
+            getEventcodeStr:function(row){
+                var eventcode = row.eventcode;
+                var str = '';
+                switch(eventcode){
+                    case 0 :
+                        str = vRoot.$t("alarm.terraceIssued");
+                        break;
+                    case 1 :
+                        str = vRoot.$t("alarm.timingAction");
+                        break;
+                    case 2 :
+                        str = vRoot.$t("alarm.robberyReport");
+                        break;
+                    case 3 :
+                        str = vRoot.$t("alarm.impactRollover");
+                        break;
+                    default :
+                    str =  vRoot.$t("alarm.retain");
+                }
+                return str;
+            },
+            onRowClick:function(row){
+                this.cameraImgModal = true;
+                this.cameraImgUrl = row.url;
+            }
+        },
+        mounted: function() {
+            var me = this;
+            me.records = [];
+            me.initMap();
+            if (rootuser == null) {
+                me.isSpin = true;
+                utils.queryDevicesTree(function(rootuserinfo) {
+                    me.isSpin = false;
+                    if (rootuserinfo) {
+                        rootuser = rootuserinfo;
+                        me.groupslist = [utils.castUsersTreeToDevicesTree(rootuserinfo, true)];
+                        me.treeData = me.groupslist;
+                    }
+                });
+            } else {
+                me.groupslist = [utils.castUsersTreeToDevicesTree(rootuser, true)];
+                me.treeData = me.groupslist;
+            }
+            this.calcTableHeight();
+            window.onresize = function() {
+                me.calcTableHeight();
+            }
+        }
+    })
+}
+
+
 
 
 // 统计报表
@@ -7583,6 +7961,7 @@ var reportForm = {
                         { title: me.$t("reportForm.wechatAlarm"), name: 'wechatAlarm', icon: 'md-ionitron' },
                         { title: me.$t("reportForm.rechargeRecords"), name: 'rechargeRecords', icon: 'ios-list-box-outline' },
                         { title: me.$t("reportForm.speedingReport"), name: 'speedingReport', icon: 'md-remove-circle' },
+                        { title: me.$t('reportForm.multiMedia'), name: 'multiMedia', icon: 'ios-ionitron-outline' },
                     ]
                 },
                 {
@@ -7684,6 +8063,9 @@ var reportForm = {
                         break;
                     case 'speedingreport.html':
                         speedingReport(groupslist);
+                        break;
+                    case 'multimedia.html':
+                        multiMedia(groupslist);
                         break;
                     case 'records.html':
                         devRecords(groupslist);

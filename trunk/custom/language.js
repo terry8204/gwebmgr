@@ -292,8 +292,9 @@
                 threeMinutes:'It has been playing for three minutes. It will be suspended',
                 notSupportCanvas:"Your browser does not support canvas at this time",
             },
-            reportForm: {
+            reportForm: {  
                 empty:'Empty', 
+                multiMedia:'Multi-Media', 
                 clean:'Clean',
                 total: "Total : ",
                 maxMileage: "End Mileage",
@@ -1293,8 +1294,9 @@
                 threeMinutes:'已播放三分钟时间,暂停播放',
                 notSupportCanvas:"您的浏览器暂不支持canvas",
             },
-            reportForm: {                      
+            reportForm: {                        
                 empty:'空', 
+                multiMedia:'多媒体', 
                 clean:'清除',
                 total: "合计 : ",
                 maxMileage: "结束里程",

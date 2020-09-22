@@ -218,7 +218,6 @@ var waringComponent = {
                 var me = this;
                 var url = myUrls.queryLastDeviceMedias();
                 utils.sendAjax(url, { lastquerydevicemediastime: me.lastquerydevicemediastime }, function(resp) {
-                    console.log('queryLastDeviceMedias',resp.records);
                     if (resp.status == 0) {
                         var records = resp.records;
                         if (records) {
@@ -852,7 +851,6 @@ var waringComponent = {
             },
             methods: {
                 onRowClick: function(row) {
-                    console.log(row);
                    vRoot.$children[1].cameraImgUrl = row.url
                    vRoot.$children[1].cameraImgDeviceTime = row.endtime;
                    vRoot.$children[1].cameraImgModal = true;
