@@ -2344,10 +2344,7 @@ var monitor = {
         },
         onClickCameraDownload:function(){
            if(this.cameraImgUrl && this.cameraImgDeviceTime){
-                var ele = document.createElement('a');
-                ele.setAttribute('href', this.cameraImgUrl); //设置下载文件的url地址
-                ele.setAttribute('download', this.currentDeviceId + "_" + this.cameraChannel +  "_" + DateFormat.longToDateTimeStr(this.cameraImgDeviceTime,timeDifference));  //用于设置下载文件的文件名
-                ele.click();
+                window.open(this.cameraImgUrl);
            }
         },
         openTreeDeviceNav: function(deviceid) {

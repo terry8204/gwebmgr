@@ -218,13 +218,18 @@ var waringComponent = {
                 var me = this;
                 var url = myUrls.queryLastDeviceMedias();
                 utils.sendAjax(url, { lastquerydevicemediastime: me.lastquerydevicemediastime }, function(resp) {
-                    console.log('queryLastDeviceMedias',resp);
+                    console.log('queryLastDeviceMedias',resp.records);
                     if (resp.status == 0) {
                         var records = resp.records;
                         if (records) {
                            var mediaFileLists = deepClone(me.mediaFileLists);
                            records.forEach(function(item){
-                            item.devicename = me.deviceInfos[item.deviceid].devicename;
+                                var callon = item.callon.toFixed(5);
+                                var callat = item.callat.toFixed(5);
+                                item.devicename = me.deviceInfos[item.deviceid].devicename;
+                                item.address = LocalCacheMgr.getAddress(callon, callat);
+                                item.callon = callon;
+                                item.callat = callat;
                            });
                           me.mediaFileLists =  mediaFileLists.concat(records);
                         }
@@ -256,7 +261,7 @@ var waringComponent = {
                                 desc = DateFormat.longToDateTimeStr(item.lastalarmtime, timeDifference) + "<br/>" + item.deviceid + " : " + item.stralarm;
                             }
                             me.$Notice.warning({
-                                title: '设备报警提醒',
+                                title: isZh ? '设备报警提醒' : 'Device alarm',
                                 duration: 6,
                                 desc: desc
                             });
@@ -750,7 +755,7 @@ var waringComponent = {
                         {
                             title: me.$t("alarm.devName"),
                             key: 'devicename',
-                            width: 120,
+                            width: 160,
                         },
                         {
                             title: me.$t("alarm.devNum"),
@@ -758,76 +763,85 @@ var waringComponent = {
                             width: 130,
                         },
                         {
-                            title: '文件类型',
+                            title: me.$t("alarm.fileType"),  
                             key: 'fileext',
+                            width: 100,
                         },
                         {
-                            title: '通道',
+                            title: me.$t("monitor.channel"), 
                             key:  'channelid',
                             width:80,
                         },
                         {
-                            title:  '报警类型',
+                            title: me.$t("alarm.alarmType"),   
                             key: 'eventcode',
+                            width: 150,
                             render:function(h,params){
                                 var eventcode = params.row.eventcode;
                                 var str = '';
                                 switch(eventcode){
                                     case 0 :
-                                        str = '平台下发指令';
+                                        str = me.$t("alarm.terraceIssued");
                                         break;
                                     case 1 :
-                                        str = '定时动作';
+                                        str = me.$t("alarm.timingAction");
                                         break;
                                     case 2 :
-                                        str = '抢劫报警触发';
+                                        str = me.$t("alarm.robberyReport");
                                         break;
                                     case 3 :
-                                        str = '碰撞侧翻报警触发';
+                                        str = me.$t("alarm.impactRollover");
                                         break;
                                     default :
-                                    str = '保留';
+                                    str =  me.$t("alarm.retain");
                                 }
                                 return h('span',{},str);
                             }
                         },
                         {
-                            title: '接收时间',
+                            title:  me.$t("alarm.receivingTime"),
                             key: 'endtime',
+                            width:150,
                             render:function(h,params){
                                 var endtime = params.row.endtime;
                                 return h('span',{},DateFormat.longToDateTimeStr(endtime,timeDifference))
                             }
                         },
                         {
-                            title: me.$t("alarm.action"),
-                            key: 'action',
-                            width: 120,
-                            render: function(h, params, a) {
+                            title: vRoot.$t("reportForm.address"),
+                            render: function(h, params) {
                                 var row = params.row;
-                                return h('div', [
-                                    h(
-                                        'Button', {
+                                var lat = Number(row.callat);
+                                var lon = Number(row.callon);
+                                if (lat && lon) {
+                                    if (row.address == null) {
+                                        return h('Button', {
                                             props: {
-                                                type: 'primary',
+                                                type: 'error',
                                                 size: 'small'
                                             },
                                             on: {
                                                 click: function(e) {
-                                                    e.preventDefault();
                                                     e.stopPropagation();
-                                                    var ele = document.createElement('a');
-                                                    ele.setAttribute('href', row.url); //设置下载文件的url地址
-                                                    ele.setAttribute('download', this.deviceid + "_" + row.channelid +  "_" + DateFormat.longToDateTimeStr(row.endtime,timeDifference));  //用于设置下载文件的文件名
-                                                    ele.click();
+                                                    e.preventDefault();
+                                                    utils.getJiuHuAddressSyn(lon, lat, function(resp) {
+                                                        if (resp && resp.address) {
+                                                            vRoot.$children[2].mediaFileLists[params.index].address
+                                                            LocalCacheMgr.setAddress(lon, lat, resp.address);
+                                                        }
+                                                    })
                                                 }
                                             }
-                                        },
-                                        '下载'
-                                    )
-                                ])
-                            }
-                        },
+                                        }, lon + "," + lat)
+        
+                                    } else {
+                                        return h('span', {},  row.address);
+                                    }
+                                } else {
+                                    return h('span', {},  vRoot.$t("reportForm.empty"));
+                                }
+                            },
+                        }
                     ],
                 }
             },
