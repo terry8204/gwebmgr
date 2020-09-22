@@ -234,7 +234,7 @@ var waringComponent = {
                            newMediaFileLists.sort(function(a,b){
                                 return b.endtime - a.endtime;
                            });
-                          me.mediaFileLists =  newMediaFileLists;
+                          me.mediaFileLists =  newMediaFileLists.delRepeat('endtime');
                         }
                         me.lastquerydevicemediastime = resp.lastquerydevicemediastime;
                     }

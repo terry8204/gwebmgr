@@ -1502,3 +1502,17 @@ var asyncLoadJs = function(jsName, callback) {
     };
 
 };
+
+Array.prototype.delRepeat=function(property){
+    var newArray=new Array();
+    var len=this.length;
+    for (var i=0;i<len ;i++){
+        for(var j=i+1;j<len;j++){
+            if(this[i][property]===this[j][property]){
+                j=++i;
+            }
+        }
+        newArray.push(this[i]);
+    }
+    return newArray;
+}
