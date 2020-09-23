@@ -66,9 +66,10 @@ var waringComponent = {
         },
         settingModal: function(newVal) {
             if (newVal) {
-                var checkboxObjLength = this.checkboxObjLength -1;
-                for(var i = 0 ; i <= checkboxObjLength ;i++){
-                    this.checkboxObj[i] = gForcealarm.charAt(this.checkboxObjLength-i) == '1'? true : false;
+                var checkboxObjLength = this.checkboxObjLength;
+                var revertForceAlarm = gForcealarm.split('').reverse().join('');
+                for(var i = 0 ; i < checkboxObjLength ;i++){
+                    this.checkboxObj[i] = revertForceAlarm.charAt(i) == '1'? true : false;
                 }
             }
         }
@@ -120,8 +121,8 @@ var waringComponent = {
         },
         getForceAlarmData: function() {
             var str = "";
-            var checkboxObjLength = this.checkboxObjLength -1;
-            for (var i = checkboxObjLength ; i >=0; i--) {
+            var checkboxObjLength = this.checkboxObjLength;
+            for (var i = 0;  i < checkboxObjLength; i++) {
                 var val = this.checkboxObj[i];
                 if (val) {
                     str += "1";
@@ -129,7 +130,9 @@ var waringComponent = {
                     str += "0";
                 }
             }
-            return str;
+            
+            var revertstr = str.split('').reverse().join('');
+            return revertstr;
         },
         setAlarmAction: function() {
             var alarmaction = Number(Cookies.get("alarmaction"));
