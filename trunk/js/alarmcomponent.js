@@ -66,8 +66,9 @@ var waringComponent = {
         },
         settingModal: function(newVal) {
             if (newVal) {
-                for(var i = 0 ; i < 63;i++){
-                    this.checkboxObj[i] = gForcealarm.charAt(62-i) == '1'? true : false;
+                var checkboxObjLength = this.checkboxObjLength -1;
+                for(var i = 0 ; i <= checkboxObjLength ;i++){
+                    this.checkboxObj[i] = gForcealarm.charAt(this.checkboxObjLength-i) == '1'? true : false;
                 }
             }
         }
@@ -119,7 +120,8 @@ var waringComponent = {
         },
         getForceAlarmData: function() {
             var str = "";
-            for (var i = 62; i >=0; i--) {
+            var checkboxObjLength = this.checkboxObjLength -1;
+            for (var i = checkboxObjLength ; i >=0; i--) {
                 var val = this.checkboxObj[i];
                 if (val) {
                     str += "1";
@@ -464,6 +466,8 @@ var waringComponent = {
                         };
                         me.checkboxObj[item.index] = false;
                     });
+                    me.checkboxObjLength = records.length;
+                    console.log(me.checkboxObj);
                     me.queryWaringMsg();
                 }
             })
@@ -495,9 +499,6 @@ var waringComponent = {
             var result = false;
             if(alarmBitsStr  && gForcealarm)
             {
-                // if(alarmBitsStr){
-                //     alarmBitsStr = alarmBitsStr.split('').reverse().join('');
-                // }
                 var alarmLength = alarmBitsStr.length;
                 var gForcealarmLength = gForcealarm.length;
                 var minLength = Math.min(alarmLength, gForcealarmLength);
@@ -508,10 +509,6 @@ var waringComponent = {
        
                     if(forceAlarmBit == '1' && alarmBit == '1')
                     {
-                        console.log('alarmBit',alarmBit,i);
-                        console.log('forceAlarmBit',forceAlarmBit);
-                        console.log(alarmBitsStr);
-                        console.log(gForcealarm);
                         result = true;
                         break;
                     }
