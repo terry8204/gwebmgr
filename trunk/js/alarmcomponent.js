@@ -119,8 +119,9 @@ var waringComponent = {
         },
         getForceAlarmData: function() {
             var str = "";
-            for (var i = 0; i < 64; i++) {
+            for (var i = 0; i < 63; i++) {
                 var val = this.checkboxObj[i];
+                console.log(this.checkboxObj[i]);
                 if (val) {
                     str += "1";
                 } else {
@@ -292,7 +293,6 @@ var waringComponent = {
                     }
                 };
                 if (me.isNeedForceAlarm(item.alarmbitsstr)) {
-                
                     emergencyAlarmList.push(item);
                 }
             });
@@ -463,7 +463,7 @@ var waringComponent = {
                         } else {
                             me.alarmTypeList[me.alarmTypeList.length - 1].push(item);
                         };
-                        me.checkboxObj[item.index] = true;
+                        me.checkboxObj[item.index] = false;
                     });
                     me.queryWaringMsg();
                 }
@@ -493,8 +493,10 @@ var waringComponent = {
             return list;
         },
         isNeedForceAlarm: function(alarmBitsStr) {
+
             var result = false;
-            // result = alarm & gForcealarm;
+            console.log('alarmBitsStr',alarmBitsStr);
+            console.log(gForcealarm);
             if(alarmBitsStr  && gForcealarm)
             {
                

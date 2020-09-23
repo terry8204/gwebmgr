@@ -107,6 +107,7 @@ new Vue({
                         Cookies.set("token", resp.token);
                         Cookies.set("userType", resp.usertype);
                         Cookies.set("name", "minigps");
+                        alert(resp.forcealarm);
                         Cookies.set("forcealarm", resp.forcealarm);
                         Cookies.set("alarmaction", resp.alarmaction);
                         Cookies.set("minigps" + "-multilogin", resp.multilogin);
@@ -172,6 +173,7 @@ new Vue({
                     Cookies.set("token", resp.token);
                     Cookies.set("userType", resp.usertype);
                     Cookies.set("name", me.username);
+                    alert(resp.forcealarm);
                     Cookies.set("forcealarm", resp.forcealarm);
                     Cookies.set("alarmaction", resp.alarmaction);
                     Cookies.set(me.username + "-multilogin", resp.multilogin);
