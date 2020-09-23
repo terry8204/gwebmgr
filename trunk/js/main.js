@@ -39,7 +39,7 @@ vstore = new Vuex.Store({
             { "name": isZh ? "设备" : 'Device', "type": 99 }
         ], // 用户类型描述
         allCmdList: [], // 所有的指令
-        deviceTypes: [],
+        deviceTypes: {},
         headerActiveName: 'monitor', // 选中的header 
         intervalTime: 10, // 定位发送请求的timer
         editDeviceInfo: {}, // 备份监控页面要编辑的设备对象

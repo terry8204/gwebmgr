@@ -746,7 +746,7 @@ var waringComponent = {
             },
         },
         mediaFiles:{
-            template: '<Table :height="tabheight" border :columns="columns" highlight-row @on-row-click="onRowClick" :data="mediaFileList"></Table>',
+            template: '<Table :height="tabheight" border :columns="columns" highlight-row  :data="mediaFileList"></Table>',
             props: ['mediaFileList', 'tabletype', 'wrapperheight'],
             data: function() {
                 var me = this;
@@ -843,6 +843,28 @@ var waringComponent = {
                                 } else {
                                     return h('span', {},  vRoot.$t("reportForm.empty"));
                                 }
+                            },
+                        },
+                        {
+                            title: vRoot.$t("alarm.action"),
+                            width:105,
+                            render: function(h, params) {
+                                var row = params.row;
+                                return h(
+                                    "Button",
+                                    {
+                                        props:{
+                                            type:"primary",
+                                            size:'small',
+                                        },
+                                        on:{
+                                            click:function(){
+                                                me.onRowClick(row);
+                                            }
+                                        }
+                                    },
+                                    me.$t('reportForm.viewPicture')
+                                    )
                             },
                         }
                     ],

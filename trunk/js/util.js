@@ -1508,7 +1508,7 @@ Array.prototype.delRepeat=function(property){
     var len=this.length;
     for (var i=0;i<len ;i++){
         for(var j=i+1;j<len;j++){
-            if(this[i][property]===this[j][property]){
+            if(this[i][property]===this[j][property] && this[i].channelid===this[j].channelid){
                 j=++i;
             }
         }

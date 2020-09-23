@@ -2033,7 +2033,6 @@ var monitor = {
             }
         },
         requestFullscreen: function(mapWraper) {
-            console.log('mapWraper', mapWraper);
             if (mapWraper.requestFullscreen) {
                 mapWraper.requestFullscreen()
             } else if (mapWraper.mozRequestFullScreen) {
@@ -2367,7 +2366,6 @@ var monitor = {
                         device.isSelected = true;
                         group.expand = true;
                         me.selectedDevObj = device;
-                        console.log('me.selectedDevObj',me.selectedDevObj)
                     } else {
                         device.isSelected = false;
                     };

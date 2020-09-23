@@ -7617,23 +7617,46 @@ function multiMedia(){
                 },
                 {
                     title: vRoot.$t("alarm.action"),
+                    width:175,
                     render: function(h, parmas) {
-                        return h(
-                            'Button', {
-                                on: {
-                                    click: function(e) {
-                                        e.stopPropagation();
-                                        e.preventDefault();
-                                        vueInstanse.viewMap(parmas.row);
-                                    }
-                                },
-                                props: {
-                                    size: 'small',
-                                    type: 'info'
-                                }
-                            },
-                            isZh ? '查看地图' : "View map"
-                        )
+                      return h(
+                            'div',{},
+                            [
+                                h(
+                                    'Button', {
+                                        on: {
+                                            click: function(e) {
+                                                e.stopPropagation();
+                                                e.preventDefault();
+                                                vueInstanse.viewMap(parmas.row);
+                                            }
+                                        },
+                                        props: {
+                                            size: 'small',
+                                            type: 'info'
+                                        }
+                                    },
+                                    isZh ? '查看地图' : "View map"
+                                ),
+                                h(
+                                    'Button', {
+                                        style:{
+                                            marginLeft:'5px'
+                                        },
+                                        on: {
+                                            click: function(e) {
+                                                vueInstanse.onRowClick(parmas.row);
+                                            }
+                                        },
+                                        props: {
+                                            type:"primary",
+                                            size:'small',
+                                        }
+                                    },
+                                    vRoot.$t('reportForm.viewPicture')
+                                ),
+                            ]
+                        );
                     },
                 },
             ],
