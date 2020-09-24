@@ -720,6 +720,14 @@ var monitor = {
                             me.physicalchannel3 = String(item.channeltype);
                         } else if (item.physicalchannel == 4) {
                             me.physicalchannel4 = String(item.channeltype);
+                        } else if (item.physicalchannel == 5) {
+                            me.physicalchannel5 = String(item.channeltype);
+                        } else if (item.physicalchannel == 6) {
+                            me.physicalchannel6 = String(item.channeltype);
+                        } else if (item.physicalchannel == 7) {
+                            me.physicalchannel7 = String(item.channeltype);
+                        } else if (item.physicalchannel == 8) {
+                            me.physicalchannel8 = String(item.channeltype);
                         }
                     });
                     me.$Message.success(me.$t('monitor.querySucc'));  
