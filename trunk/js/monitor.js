@@ -329,7 +329,7 @@ var monitor = {
             allDevCount: 0, // 全部设备的个数
             onlineDevCount: 0, // 在线设备个数
             offlineDevCount: 0, // 离线设备个数
-            stockDevCount: 0, //库存
+            staredDevCount: 0, //库存
             isMoveTriggerEvent: true, // 地图移动是否触发事件
             intervalInstanse: null, // 定时器实例
             selectedDevObj: {
@@ -2465,7 +2465,7 @@ var monitor = {
 
                 this.getOfflineHideCompanyTreeData();
 
-            } else if (state === 'stock') {
+            } else if (state === 'stared') {
                 this.getStockHideCompanyTreeData();
             };
         },
@@ -2710,26 +2710,31 @@ var monitor = {
             });
         },
         getStockHideCompanyTreeData: function() {
-            var me = this;
             this.groups.forEach(function(group) {
-                var stock = 0;
+                var stared = 0;
                 var count = 0;
                 group.devices.forEach(function(device, index) {
                     count++;
-                    var track = me.positionLastrecords[device.deviceid];
-                    if (device.lastactivetime <= 0 && track == undefined) {
-                        stock++;
-                        device.isStock = true;
-                    } else {
-                        device.isStock = false;
-                    };
+                    // var track = me.positionLastrecords[device.deviceid];
+                    // if (device.lastactivetime <= 0 && track == undefined) {
+                    //     stock++;
+                    //     device.isStock = true;
+                    // } else {
+                    //     device.isStock = false;
+                    // };
+                    if(device.stared == 1){
+                        stared++;
+                        device.isStared = true;
+                    }else{
+                        device.isStared = false;
+                    }
                 });
-                if (stock != 0) {
+                if (stared != 0) {
                     group.isShow = true;
                 } else {
                     group.isShow = false;
                 }
-                group.title = group.groupname + "(" + stock + "/" + count + ")";
+                group.title = group.groupname + "(" + stared + "/" + count + ")";
             });
         },
         getIsOnline: function(deviceid) {
@@ -2875,7 +2880,7 @@ var monitor = {
         caclOnlineCount: function() {
             var me = this;
             var online = 0;
-            var stockDevCount = 0;
+            var staredDevCount = 0;
             var offlineDevCount = 0;
             var deviceIds = Object.keys(me.deviceInfos);
 
@@ -2884,11 +2889,15 @@ var monitor = {
                     if (me.getIsOnline(device.deviceid)) {
                         online++;
                     } else {
-                        if (device.lastactivetime <= 0) {
-                            stockDevCount++;
-                        } else {
-                            offlineDevCount++;
-                        }
+                        offlineDevCount++;
+                        // if (device.lastactivetime <= 0) {
+                        //     staredDevCount++;
+                        // } else {
+                           
+                        // }
+                    }
+                    if(device.stared == 1){
+                        staredDevCount++;
                     }
                 });
             })
@@ -2896,7 +2905,7 @@ var monitor = {
             this.allDevCount = deviceIds.length;
             this.onlineDevCount = online;
             this.offlineDevCount = offlineDevCount;
-            this.stockDevCount = stockDevCount;
+            this.staredDevCount = staredDevCount;
         },
         onSelectState: function() {
 

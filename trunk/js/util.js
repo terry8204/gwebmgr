@@ -617,9 +617,9 @@ var utils = {
         };
 
         var temp = this.getTemperature(isZh, track);
-        // console.log('Update time : ', DateFormat.longToDateTimeStr(track.updatetime, timeDifference));
+        var decice = findTheDevice(track.deviceid)
         var content =
-            '<p> ' + (isZh ? '设备名称' : 'Device Name') + ': ' + track.devicename + '<i onclick="copyToClipboardText()" class="ivu-icon ivu-icon-ios-copy-outline" style="font-size: 24px;cursor: pointer;"></i></p>' +
+            '<p> ' + (isZh ? '设备名称' : 'Device Name') + ': ' + track.devicename + '<i onclick="copyToClipboardText()" class="ivu-icon ivu-icon-ios-copy-outline" style="font-size: 24px;cursor: pointer;"></i><i id="stared" onclick="onStarDevice(' + track.deviceid  + ')" class="ivu-icon ivu-icon-md-heart" style="font-size: 16px;cursor: pointer;float:right;margin-right:22px;color:'+(decice.stared == 1?'#e4393c':'#c1c1c1') +';"></i></p>' +
             '<p> ' + (isZh ? '设备序号' : 'Device Number') + ': ' + track.deviceid + '<i onclick="copyToClipboard()" class="ivu-icon ivu-icon-ios-copy-outline" style="font-size: 24px;cursor: pointer;"></i></p>' +
             '<p> ' + (isZh ? '定位类型' : 'Position Type') + ': ' + posiType + '</p>' +
             '<p> ' + (isZh ? '经纬度' : 'Longitude and latitude') + ': ' + track.callon.toFixed(6) + ',' + track.callat.toFixed(6) + '</p>' +
@@ -1089,6 +1089,47 @@ try {
 } catch (error) {
 
 }
+
+function findTheDevice(deviceid){
+    var deviceObj = null;
+    vRoot.$children[1].groups.forEach(function(group) {
+        group.devices.forEach(function(device) {
+            if(device.deviceid == deviceid){
+                deviceObj = device;
+            }
+        });
+    });
+    return deviceObj;
+}
+
+
+function onStarDevice(deviceid){
+  var deviceObj = findTheDevice(deviceid);
+  if(deviceObj){
+    var url = myUrls.starDevice();
+    var data = {
+        deviceid:deviceid,
+        stared:deviceObj.stared == 0 ? 1 : 0,
+    }
+    utils.sendAjax(url,data,function(resp){
+        console.log(resp);
+        if(resp.status == 0){
+            deviceObj.stared = data.stared;
+            var staredDevCount = vRoot.$children[1].staredDevCount;
+            if(data.stared == 0){
+                $('#stared').css({color:'#C1C1C1'});
+                vRoot.$children[1].staredDevCount = staredDevCount - 1;
+            }else{
+                $('#stared').css({color:'#e4393c'})
+                vRoot.$children[1].staredDevCount = staredDevCount + 1;
+            }
+        }else{
+            vRoot.$t(isZh ? '关注失败' : 'Focus on failure');
+        }
+    })
+  }
+}
+
 
 function copyToClipboardText() {
     var text = globalDeviceName;

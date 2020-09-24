@@ -467,7 +467,6 @@ var waringComponent = {
                         me.checkboxObj[item.index] = false;
                     });
                     me.checkboxObjLength = records.length;
-                    console.log(me.checkboxObj);
                     me.queryWaringMsg();
                 }
             })

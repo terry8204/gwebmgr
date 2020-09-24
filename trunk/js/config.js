@@ -733,6 +733,9 @@ var myUrls = {
     reportMultiMedias: function() {
         return this.apihosts + 'webapi?action=reportmultimedias&token=' + token;
     },
+    starDevice: function() {
+        return this.apihosts + 'webapi?action=stardevice&token=' + token;
+    },
 
 }
 

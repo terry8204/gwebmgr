@@ -244,11 +244,11 @@
                             </p>
                             <p class="dev-count">{{$t("monitor.offline")}}({{offlineDevCount}})</p>
                         </li>
-                        <li :class="{active:selectedState=='stock'}" @click="selectedStateNav('stock')">
+                        <li :class="{active:selectedState=='stared'}" @click="selectedStateNav('stared')">
                             <p class="p-icon">
-                                <Icon :size="24" type="ios-cube" />
+                                <Icon :size="24" type="md-heart" /> 
                             </p>
-                            <p class="dev-count">{{$t("monitor.stock")}}({{stockDevCount}})</p>
+                            <p class="dev-count">{{$t("monitor.stared")}}({{staredDevCount}})</p>
                         </li>
                     </ul>
                     <div class="device-soso">
@@ -464,14 +464,14 @@
                             </template>
                         
 
-        <template v-for="(group , index) in groups" :key="index" v-if="selectedState==='stock'">
+        <template v-for="(group , index) in groups" :key="index" v-if="selectedState==='stared'">
             <dt style="padding:5px;border-bottom:1px solid #ddd;cursor: pointer;" @click="openGroupItem(group)" v-if="group.isShow">
                 <Icon type="ios-arrow-down" v-if="group.expand"/>
                 <Icon type="ios-arrow-forward" v-else/>
                 <b v-text="group.title"></b>
             </dt>
             <dd style="padding:5px;border-bottom:1px solid #ddd" v-if="group.expand && group.isShow">
-                <div v-for="(device , index) in group.devices" :key="device.deviceid" :id="device.deviceid" style="padding-left:15px" v-if="device.isStock">
+                <div v-for="(device , index) in group.devices" :key="device.deviceid" :id="device.deviceid" style="padding-left:15px" v-if="device.isStared">
                     <div :class="{'active-dev-offline':device.isSelected}" style="margin:3px 0;" :ref="device.deviceid">
                         <div class="video-device-cls" :style="{color: device.isOnline ? (device.isMoving ? '#33DAD0' :'#F69679') : '#B1BBC2'}" @click="selectedDev(device)" @dblclick="dblClickDeviceVideo(device)">
                             <span><i class='icon iconfont icon-car'></i></span>
@@ -672,16 +672,16 @@
             </dd>
             </template>
             <!-- 库存开头 -->
-            <template v-for="(group , index) in groups" :key="index" v-if="selectedState==='stock'">
+            <template v-for="(group , index) in groups" :key="index" v-if="selectedState==='stared'">
                                 <dt style="padding:5px;border-bottom:1px solid #ddd;cursor: pointer;" @click="openGroupItem(group)" v-if="group.isShow">
                                     <Icon type="ios-arrow-down" v-if="group.expand"/>
                                     <Icon type="ios-arrow-forward" v-else/>
                                     <b v-text="group.title"></b>
                                 </dt>
                                 <dd style="padding:5px;border-bottom:1px solid #ddd" v-if="group.expand && group.isShow">
-                                    <div v-for="(device , index) in group.devices" :key="device.deviceid" :id="device.deviceid" style="padding-left:15px" v-if="device.isStock">
+                                    <div v-for="(device , index) in group.devices" :key="device.deviceid" :id="device.deviceid" style="padding-left:15px" v-if="device.isStared">
                                         <div :class="{'active-dev-offline':device.isSelected}" style="margin:3px 0;" :ref="device.deviceid">
-                                            <div style="padding:3px 5px;cursor: pointer;" :style="{color:'#B1BBC2'}" @click="selectedDev(device)">
+                                            <div style="padding:3px 5px;cursor: pointer;" :style="{color: device.isOnline ? (device.isMoving ? '#33DAD0' :'#F69679') : '#B1BBC2'}" @click="selectedDev(device)">
                                                 <Icon type="md-person"/> 
                                                 <span v-text="device.devicetitle" style="font-size:12px;"></span> 
                                             </div>
@@ -2119,19 +2119,19 @@
                                 </i-col>
                             </Row>
                             <Row>
-                                <i-col span="5" style="height: 100%;text-align:right;line-height:25px;">终端编号 : &nbsp;</i-col>
+                                <i-col span="5" style="height: 100%;text-align:right;line-height:25px;">{{$t("monitor.terminalNumber")}} : &nbsp;</i-col> 
                                 <i-col span="16" style="height: 100%;line-height:25px;text-align:left;">
                                     {{deviceBaseInfo.terminalid}}
                                 </i-col>
                             </Row>
                             <Row>
-                                <i-col span="5" style="height: 100%;text-align:right;line-height:25px;">硬件版本 : &nbsp;</i-col>
+                                <i-col span="5" style="height: 100%;text-align:right;line-height:25px;">{{$t("monitor.hardwareVersion")}} : &nbsp;</i-col>
                                 <i-col span="16" style="height: 100%;line-height:25px;text-align:left;">
                                     {{deviceBaseInfo.hardwareversion}}
                                 </i-col>
                             </Row>
                             <Row>
-                                <i-col span="5" style="height: 100%;text-align:right;line-height:25px;">固件版本 : &nbsp;</i-col>
+                                <i-col span="5" style="height: 100%;text-align:right;line-height:25px;">{{$t("monitor.firmwareVersion")}} : &nbsp;</i-col>
                                 <i-col span="16" style="height: 100%;line-height:25px;text-align:left;">
                                     {{deviceBaseInfo.firmwareversion}}
                                 </i-col>
@@ -2140,6 +2140,12 @@
                                 <i-col span="5" style="height: 100%;text-align:right;line-height:25px;">{{$t("monitor.expireTime")}} : &nbsp;</i-col>
                                 <i-col span="16" style="height: 100%;line-height:25px;text-align:left;">
                                     {{deviceBaseInfo.isfree === 1 ? '终身免费' : deviceBaseInfo.overdueDateStr}}
+                                </i-col>
+                            </Row>
+                            <Row>
+                                <i-col span="5" style="height: 100%;text-align:right;line-height:25px;">{{$t("monitor.plateno")}} : &nbsp;</i-col>
+                                <i-col span="16" style="height: 100%;line-height:25px;text-align:left;">
+                                    {{deviceBaseInfo.plateno}}
                                 </i-col>
                             </Row>
                             <Row>

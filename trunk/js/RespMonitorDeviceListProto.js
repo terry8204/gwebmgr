@@ -89,6 +89,10 @@ var monitorListProtoJson = {
                         "allowedit": {
                             "type": "sint32",
                             "id": 11
+                        },
+                        "stared": {
+                            "type": "sint32",
+                            "id": 12
                         }
                     }
                 }
