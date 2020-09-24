@@ -2,7 +2,7 @@
 var isShowCompany = Cookies.get('isShowCompany');
 var communicate = new Vue({}); // 组件之间通信的vue实例
 var userName = Cookies.get('name');
-var gForcealarm = Cookies.get("forcealarm") == undefined ? '0000000000000000000000000000' : Cookies.get("forcealarm") ;
+var gForcealarm = Cookies.get("forcealarm") == "" ? '000000000000000000000000000000000000000000000000000000000000000' : Cookies.get("forcealarm") ;
 var isZh = utils.locale === 'zh';
 var mapType = utils.getMapType();
 var isLoadBMap = false;
