@@ -240,7 +240,6 @@ var monitor = {
             saturate: 128, // 4       饱和度                                                                                  
             exposure: 128, // 5 
             audioPlayerTip: '',
-            isLuyin: false,
             speechTimer: null,
             imgSrc: './images/luyin/ic_record_ripple@2x-9.png',
             isMute: false,
@@ -621,12 +620,17 @@ var monitor = {
                 }, function() {});
             } else {
                 this.loading = true;
-
+                var datatype = 3;
+                if(this.listingChoice == "duijiang")
+                	{
+                	datatype = 2;
+                	}
+                
                 var url = myUrls.startAudio();
                 var data = {
                     deviceid: this.currentVideoDeviceInfo.deviceId,
                     channel: Number(this.audiochannel),
-                    datatype: 2,
+                    datatype: datatype,
                     playtype: ishttps ? 'flvs' : 'flv',
                 }
                 utils.sendAjax(url, data, function(resp) {
