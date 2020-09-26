@@ -2897,12 +2897,10 @@ var monitor = {
                     if (me.getIsOnline(device.deviceid)) {
                         online++;
                     } else {
-                        offlineDevCount++;
-                        // if (device.lastactivetime <= 0) {
-                        //     staredDevCount++;
-                        // } else {
-                           
-                        // }
+                        if (device.lastactivetime <= 0) {
+                        } else {
+                            offlineDevCount++;
+                        }
                     }
                     if(device.stared == 1){
                         staredDevCount++;
