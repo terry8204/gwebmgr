@@ -2684,7 +2684,7 @@ function devRecords(groupslist) {
                         });
                         me.tableData = tableData;
                         if(tableData.length === 0){
-                            vRoot.$t("reportForm.noRecord");
+                            vRoot.$t("reportForm.noRecord");  
                         }
                     }
                 })
@@ -2716,27 +2716,25 @@ function messageRecords(groupslist) {
             isShowMatchDev: true,
             startDate: new Date(),
             columns: [
-                { title: 'trackid', key: 'trackid', fixed: 'left', width: 80 },
-                { title: 'sn', key: 'sn', width: 80, "sortable": true },
-                { title: 'messagetype', key: 'messagetype', width: 80 },
-                { title: 'typedescr', key: 'typedescr', width: 120 },
-                { title: 'status', key: 'status', width: 80 },
-                { title: 'strstatus', key: 'strstatus', width: 220 },
-                { title: 'stralarm', key: 'stralarm', width: 120 },
-                { title: 'updatetime', key: 'updatetimeStr', width: 160 },
-                { title: 'reportmode', key: 'reportmodeStr', width: 120 },
-                { title: 're', key: 'reissue', width: 80 },
-                { title: 'callat', key: 'callat', width: 120 },
-                { title: 'callon', key: 'callon', width: 120 },
-                { title: 'radius', key: 'radius', width: 80 },
-                { title: 'speed', key: 'speed', width: 80 },
-                { title: 'totaldistance', key: 'totaldistance', width: 120 },
-                { title: 'altitude', key: 'altitude', width: 80 },
-                { title: 'course', key: 'course', width: 80 },
-                { title: 'gotsrc', key: 'gotsrc', width: 80 },
-                { title: 'rxlevel', key: 'rxlevel', width: 80 },
-                { title: 'servicealive', key: 'servicealive', width: 80 },
-                { title: 'connectalive', key: 'connectalive', width: 80 },
+                { title: vRoot.$t("reportForm.trackid"), key: 'trackid', fixed: 'left', width: 80 },
+                { title:  vRoot.$t("reportForm.sn"), key: 'sn', width: 80, "sortable": true },
+                { title: vRoot.$t("reportForm.messagetype"), key: '', width: 110 },
+                { title: vRoot.$t("reportForm.typedescr"), key: 'typedescr', width: 120 },
+                { title: vRoot.$t("reportForm.status"), key: 'status', width: 80 },
+                { title: vRoot.$t("reportForm.strstatus"), key: isZh ? 'strstatus' : 'strstatusen', width: 220 },
+                { title: vRoot.$t("reportForm.stralarm"), key: 'stralarm', width: 120 },
+                { title: vRoot.$t("reportForm.updatetimeStr"), key: 'updatetimeStr', width: 160 },
+                { title: vRoot.$t("reportForm.reportmodeStr"), key: 'reportmodeStr', width: 120 },
+                { title: vRoot.$t("reportForm.reissue"), key: 'reissue', width: 80 },
+                { title: vRoot.$t("reportForm.callat"), key: 'callat', width: 120 },
+                { title: vRoot.$t("reportForm.callon"), key: 'callon', width: 120 },
+                { title: vRoot.$t("reportForm.radius"), key: 'radius', width: 80 },
+                { title: vRoot.$t("reportForm.speed"), key: 'speed', width: 80 },
+                { title: vRoot.$t("reportForm.totaldistance"), key: 'totaldistance', width: 120 },
+                { title: vRoot.$t("reportForm.altitude"), key: 'altitude', width: 100 },
+                { title: vRoot.$t("reportForm.course"), key: 'course', width: 100 },
+                { title: vRoot.$t("reportForm.gotsrc"), key: 'gotsrc', width: 100 },
+                { title: vRoot.$t("reportForm.rxlevel"), key: 'rxlevel', width: 100 },
             ],
             tableData: [],
             data: [],
