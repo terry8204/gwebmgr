@@ -1857,16 +1857,6 @@
                 queryGroupsByUserName: function(userName) {
                     me = this;
                     groupsList = [];
-
-                    // utils.sendAjax(url,data,function(resp){
-                    //     var groupsList = [];
-                    //     if(resp.status === 0 && resp.grouplist){
-                    //         resp.grouplist.forEach(function (group) { 
-                    //             groupsList.push({label:group.groupname,value:group.groupid});
-                    //         })
-                    //     }
-                    //     me.groupsList = groupsList;
-                    // });
                     var groupid = editObject.groupid;
                     var foundGroupId = false;
                     for (var key in me.allGroups) {
@@ -2021,6 +2011,7 @@
                 },
                 createrToUser: function(newVal) {
                     if (userlists.indexOf(newVal) != -1) {
+                        console.log('jin lai l ')
                         this.queryGroupsByUserName(newVal);
                     } else {
                         this.groupsList = [];
