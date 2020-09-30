@@ -21,7 +21,8 @@
     };
 
     AlarmMgr.prototype.updateDisposeStatus = function (deviceId, alarm) {
-        if (alarm) {
+        
+        if (alarm !== null ) {
             var key = this.getKey(deviceId, alarm);
             this.records[key].disposestatus = 1;
         } else {

@@ -57,13 +57,18 @@ var waringComponent = {
         isLargen: function() {
             this.changeWrapperCls();
         },
-        waringRecords: function() {
-            if (this.waringRecords.length) {
-                this.isWaring = true;
-            } else {
-                this.isWaring = false;
-            }
-        },
+        // waringRecords: function() {
+        //     // if (this.waringRecords.length) {
+        //     //     this.isWaring = true;
+        //     // } else {
+        //     //     this.isWaring = false;
+        //     // }
+           
+        //     // if(this.isWaring == false){
+        //     //     this.isWaring = this.getIsWaring();
+        //     //     console.log('isWaring', this.isWaring);
+        //     // }
+        // },
         settingModal: function(newVal) {
             if (newVal) {
                 var checkboxObjLength = this.checkboxObjLength;
@@ -74,6 +79,18 @@ var waringComponent = {
         }
     },
     methods: {
+        getIsWaring:function(){
+            var isWaring = false;
+            var waringRecords = this.waringRecords;
+            for (var index = 0; index < waringRecords.length; index++) {
+                var item = waringRecords[index];
+                if(item.disposestatus == 0){
+                    isWaring = true;
+                    break;
+                }
+            }
+            return isWaring;
+        },
         changeWrapperCls: function() {
             var type = this.isLargen;
             if (type === 0) {
@@ -109,7 +126,7 @@ var waringComponent = {
         },
         changeLargen: function(type) {
             this.isLargen = type;
-            this.isWaring = false;
+            // this.isWaring = false;
         },
         changeLargen2: function() {
             if (this.isLargen == 1) {
@@ -188,7 +205,7 @@ var waringComponent = {
                     break;
                 case 3:
                     this.componentName = 'overdueInfo'
-                    break;
+                    break;   
                 case 4:
                     this.componentName = 'emergencyAlarm'
                     break;
@@ -299,6 +316,7 @@ var waringComponent = {
             });
             me.waringRecords = alarmList;
             me.emergencyAlarmList = emergencyAlarmList;
+            me.isWaring = me.getIsWaring();
         },
         queryDeviceMsgList: function() {
             var me = this;
@@ -388,6 +406,7 @@ var waringComponent = {
             }
         },
         showDisposeModalFrame: function(param) {
+            console.log('showDisposeModalFrame', param);
             this.waringRowIndex = param.index;
             var deviceInfos = this.$store.state.deviceInfos;
 
@@ -399,7 +418,8 @@ var waringComponent = {
                 deviceid: deviceid,
                 devicetype: devicetype,
                 params: null,
-                state: row.state
+                state: row.state,
+                alarm:row.alarm
             };
 
             this.disposeModal = true;

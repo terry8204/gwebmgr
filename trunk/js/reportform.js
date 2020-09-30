@@ -2718,7 +2718,7 @@ function messageRecords(groupslist) {
             columns: [
                 { title: vRoot.$t("reportForm.trackid"), key: 'trackid', fixed: 'left', width: 80 },
                 { title:  vRoot.$t("reportForm.sn"), key: 'sn', width: 80, "sortable": true },
-                { title: vRoot.$t("reportForm.messagetype"), key: '', width: 110 },
+                { title: vRoot.$t("reportForm.messagetype"), key: 'messagetype', width: 110 },
                 { title: vRoot.$t("reportForm.typedescr"), key: 'typedescr', width: 120 },
                 { title: vRoot.$t("reportForm.status"), key: 'status', width: 80 },
                 { title: vRoot.$t("reportForm.strstatus"), key: isZh ? 'strstatus' : 'strstatusen', width: 220 },
