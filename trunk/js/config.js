@@ -736,6 +736,9 @@ var myUrls = {
     starDevice: function() {
         return this.apihosts + 'webapi?action=stardevice&token=' + token;
     },
+    queryStoreDevices: function() {
+        return this.apihosts + 'webapi?action=querystoredevices&token=' + token;
+    },
 
 }
 

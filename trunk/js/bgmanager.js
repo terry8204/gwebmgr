@@ -35,6 +35,7 @@ var bgManager = {
                         { title: me.$t("bgMgr.addDev"), name: 'addDevice', icon: 'md-add' },
                         { title: me.$t("bgMgr.batchAdd"), name: 'batchAddDevice', icon: 'md-add' },  
                         { title: me.$t("bgMgr.batchMgr"), name: 'batchMgrDevice', icon: 'ios-folder-outline' },
+                        { title: me.$t("bgMgr.stockDev"), name: 'stockDev', icon: 'md-cube' },
                         { title: me.$t("bgMgr.renewMgr"), name: 'chargeMgr', icon: 'ios-apps-outline' },
                         { title:me.$t("bgMgr.clearRecord"), name:"clearRecord", icon:"ios-paw" },
                         { title:me.$t("bgMgr.setMileage"),name:"setMileage",icon:"md-paper" },
@@ -107,6 +108,9 @@ var bgManager = {
                     break
                 case 'batchMgrDevice':
                     page = 'batchmgr.html'
+                    break
+                case 'stockDev':
+                    page = 'stockdev.html'
                     break
                 case 'ImportOwner':
                     page = 'importowner.html'

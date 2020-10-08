@@ -986,7 +986,7 @@ div.rule-view>div>div.rule-table {
 
 /* 查询分组开始 */
 
-#querygroup {
+#querygroup ,#stock-device{
     padding: 10px;
     height: 100%;
     width: 100%;
@@ -994,7 +994,7 @@ div.rule-view>div>div.rule-table {
     position: relative;
 }
 
-#querygroup>div.full {
+#querygroup>div.full ,#stock-device>div.full {
     overflow-y: auto;
 }
 
@@ -1002,13 +1002,12 @@ div.rule-view>div>div.rule-table {
     width: 100%;
 }
 
-#querygroup>div>ul {
+#querygroup>div>ul ,#stock-device>div>ul{
     height: 42px;
 }
 
-#querygroup>div>ul>li {
+#querygroup>div>ul>li  ,#stock-device>div>ul>li{
     float: left;
-    width: 150px;
     margin-right: 10px;
     padding: 5px 0;
     position: relative;

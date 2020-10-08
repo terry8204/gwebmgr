@@ -1,0 +1,418 @@
+<meta charset="UTF-8">
+
+<div id="stock-device">
+    <div class="full">
+        <h3 class="h3-title">{{$t("bgMgr.stockDev")}}</h3>
+        <ul>
+            <li>
+                <i-input v-model.trim="queryParameter"></i-input>
+            </li>
+            <li>
+                <i-button type="primary" @click="handlerClickQuery">{{$t("reportForm.query")}}</i-button>
+            </li>
+            <li style="float:right;width:auto;">
+                <i-button @click="exportAllDevice">{{$t("device.exportAllDevice")}}</i-button>
+            </li>
+            <li style="float:right;width:auto;">
+                <i-button @click="exportDevice">{{$t("device.exportCurrentDevice")}}</i-button>  
+            </li>
+            <li style="float:right;width:auto;">
+                <i-button @click="expireNotifyTime(365)" :type="queryType=='365day' ? 'info':'default'">{{$t("bgMgr.stock12yue")}}<span v-if="queryType=='365day'">({{total}})</span></i-button>
+            </li>
+            <li style="float:right;width:auto;">
+                <i-button @click="expireNotifyTime(180)" :type="queryType=='180day' ? 'info':'md-checkbox'">{{$t("bgMgr.stock6yue")}}<span v-if="queryType=='180day'">({{total}})</span></i-button>
+            </li>
+            <li style="float:right;width:auto;">
+                <i-button @click="expireNotifyTime(60)" :type="queryType=='60day' ? 'info':'md-checkbox'">{{$t("bgMgr.stock2yue")}}<span v-if="queryType=='60day'">({{total}})</span></i-button>
+            </li>
+            <li style="float:right;width:auto;">
+                <i-button @click="expireNotifyTime(30)" :type="queryType=='30day' ? 'info':'default'">{{$t("bgMgr.stock1yue")}}<span v-if="queryType=='30day'">({{total}})</span></i-button>
+            </li>
+            <li style="float:right;width:auto;">
+                <i-button @click="expireNotifyTime(0)" :type="queryType=='all' ? 'info':'default'">{{$t("bgMgr.allStockDev")}}<span v-if="queryType=='all'">({{total}})</span></i-button>
+            </li>
+        </ul>
+        <div>
+            <i-table ref="table" :columns="columnsList" :data="tableData" :height="taleHeight" :loading="loading"></i-table>
+        </div>
+        <div class="my-page" style="margin: 5px 0;">
+            <Page :total="total" :page-size="pageSize" :current="currentIndex" @on-change="changeDevicePage"></Page>
+        </div>
+    </div>
+    <script>
+        vueInstanse = new Vue({
+            el: "#stock-device",
+            i18n: utils.getI18n(),
+            data: {
+                total:0,
+                pageSize:10,
+                queryType:'all',
+                queryTableData: [],
+                loading: true,
+                delGroupObj: {},
+                monitorPerson: [],
+                monitorPersonList: [],
+                total: 0,
+                currentIndex: 1,
+                queryParameter: "",
+                recordsList: [],
+                tableData: [],
+                columnsList: [{
+                        title: vRoot.$t("alarm.devName"),
+                        key: 'devicenamekey',
+                    }, {
+                        title: vRoot.$t("alarm.devNum"),
+                        key: 'deviceidkey'
+                    }, {
+                        title: vRoot.$t("user.devType"),
+                        key: 'devtype'
+                    }, 
+                    {
+                        title: vRoot.$t("monitor.phoneNumber"),
+                        key: 'simnumkey'
+                    }, {
+                        width: 100,
+                        title: vRoot.$t("bgMgr.bindpwd"),
+                        key: 'bindpwd',
+                    },
+                    {
+                        title: vRoot.$t("bgMgr.addTime"),
+                        key: 'createtimestr'
+                    }, {
+                        title: vRoot.$t("monitor.expireTime"),
+                        key: 'expirenotifytimestr'
+                    }, {
+                        title: vRoot.$t("bgMgr.creater"),
+                        key: 'creater',
+                    },{
+                        title: vRoot.$t("user.grouping"),
+                        key: 'groupname'
+                    },{
+                    title: vRoot.$t("bgMgr.action"),
+                    key: 'action',
+                    width: 130,
+                    render: function(h, params) {
+                        return h('div', [
+                            h('Poptip', {
+                                props: {
+                                    confirm: true,
+                                    title: vRoot.$t("message.confirmDel")
+                                },
+                                style: {
+                                    marginRight: '5px'
+                                },
+                                on: {
+                                    'on-ok': function() {
+                                        vueInstanse.handleDelete(params.row.deviceid);
+                                    }
+                                }
+                            }, [
+                                h('Button', {
+                                    props: {
+                                        type: 'error',
+                                        size: 'small'
+                                    }
+                                }, vRoot.$t("bgMgr.delete"))
+                            ])
+                        ]);
+                    }
+                }],
+                groupname: "",
+                mintime: 30,
+                maxtime: 3600,
+                taleHeight: 300,
+            },
+            methods: {
+                handleDelete: function(deviceid) {
+                    var me = this;
+                    var url = myUrls.deleteDevice();
+                    var data = {
+                        deviceid: deviceid
+                    };
+                    utils.sendAjax(url, data, function(resp) {
+                        if (resp.status == 0) {
+                            rootuser = null;
+                            isNeedRefresh = true;
+                            if (deviceid == globalDeviceId) {
+                                globalDeviceId = "";
+                                vRoot.$store.commit('currentDeviceId', "");
+                            }
+
+                            me.$Message.success(me.$t("message.deleteSucc"));
+
+                            me.tableData.forEach(function(itme, index) {
+                                if (itme.deviceid == deviceid) {
+                                    me.$delete(me.tableData, index);
+                                }
+                            });
+                            me.total = me.total - 1;
+                        } else {
+                            me.$Message.error(me.$t("message.deleteFail"));
+                        }
+                    });
+                },
+                exportAllDevice:function(){
+                    var me = this;
+                    var day = 0;
+                    var url = myUrls.queryStoreDevices();
+                    if(this.queryType == 'all'){
+
+                    }else if(this.queryType == '365day'){
+                        day = 365;
+                    }else if(this.queryType == '180day'){
+                        day = 180;
+                    }else if(this.queryType == '60day'){
+                        day = 60;
+                    }else if(this.queryType == '30day'){
+                        day = 30;
+                    };
+                    var data = {
+                        offset: this.currentIndex - 1,
+                        count: this.pageSize,
+                        all:true,
+                        expiredays:day,
+                        keyword:this.queryParameter,
+                    }
+                    utils.sendAjax(url,data,function(resp){
+                        if(resp.status == 0){
+                            me.$refs.table.exportCsv({
+                                filename: 'deviceids',
+                                columns: me.columnsList.filter(function(col, index) {
+                                    return index < 8
+                                }),
+                                data: me.filterDataInfo(resp.devices),
+                                quoted: true,
+                            });
+                        }
+                    });
+                },
+                exportDevice: function() {
+                    this.$refs.table.exportCsv({
+                        filename: 'devices-' + this.currentIndex,
+                        columns: this.columnsList.filter(function(col, index) {
+                            return index < 8
+                        }),
+                        data: this.tableData,
+                        quoted: true,
+                    });
+                },
+                changeDevicePage:function(index){
+                    var day = 0;
+                    if(this.queryType == 'all'){
+
+                    }else if(this.queryType == '365day'){
+                        day = 365;
+                    }else if(this.queryType == '180day'){
+                        day = 180;
+                    }else if(this.queryType == '60day'){
+                        day = 60;
+                    }else if(this.queryType == '30day'){
+                        day = 30;
+                    };
+                    this.loading = true;
+                    this.currentIndex = index;
+                    this.queryStockDevice(day);
+                },
+                expireNotifyTime:function(day){
+                    switch(day){
+                        case  0 :
+                            this.queryType = 'all';
+                            break; 
+                        case  30 :
+                            this.queryType = '30day';
+                            break; 
+                        case  60 :
+                            this.queryType = '60day';
+                            break; 
+                        case  180 :
+                            this.queryType = '180day';
+                            break; 
+                        case  365 :
+                            this.queryType = '365day';
+                            break; 
+                    }
+                    this.queryStockDevice(day);
+                },
+                queryStockDevice:function(day){
+                    var me = this;
+                    var url = myUrls.queryStoreDevices();
+                    var data = {
+                        offset: this.currentIndex - 1,
+                        count: this.pageSize,
+                        all:false,
+                        expiredays:day,
+                        keyword:this.queryParameter,
+                    }
+                    utils.sendAjax(url,data,function(resp){
+                        if(resp.status == 0){
+                            me.tableData = me.filterDataInfo(resp.devices);
+                            me.total = resp.totalcount;
+                        }
+                        me.loading = false;
+                    });
+                },
+                getDevType: function(row) {
+                    var devType = "";
+                    var item = vstore.state.deviceTypes[row.devicetype];
+                    var label = item.typename;
+                    if (item.remark) {
+                        label += "(" + item.remark + ")";
+                    }
+                    devType = label;
+                    return devType;
+                },
+                getGroupName: function(groupId) {
+                    var groupName = "";
+                    if (this.allGroups[groupId] !== undefined) {
+                        groupName = this.allGroups[groupId].groupname;
+                    }
+                    return groupName;
+                },
+                queryGroupInfos: function(callback) {
+                    var me = this;
+                    me.allGroups = {};
+                    utils.sendAjax(myUrls.queryGroupInfos(), {}, function(resp) {
+                        if (resp.status === 0) {
+                            resp.groups.forEach(function(item) {
+                                me.allGroups[item.groupid] = item;
+                            });
+                        }
+                        callback();
+                    })
+                },
+                filterDataInfo: function(devList) {
+                    var me = this;
+                    var data = [];
+                    devList.forEach(function(dev) {
+                        dev.devtype = me.getDevType(dev);
+                        dev.deviceidkey = "\t" + dev.deviceid;
+                        dev.devicenamekey = "\t" + dev.devicename;
+                        dev.simnum ? (dev.simnumkey = "\t" + dev.simnum) : (dev.simnumkey = "");
+                        dev.bindpwd = dev.bindpwd != null ? dev.bindpwd : '';
+                        dev.createtimestr = DateFormat.longToDateTimeStr(dev.createtime, timeDifference);
+                        dev.expirenotifytimestr = DateFormat.longToDateTimeStr(dev.expirenotifytime, timeDifference);
+                        dev.groupname = me.getGroupName(dev.groupid);
+                        dev.pinYin = __pinyin.getPinyin(dev.devicename);
+                        dev.firstLetter = __pinyin.getFirstLetter(dev.devicename);
+                        data.push(dev);
+                    });
+                    return data;
+                },
+                handlerClickQuery() {
+                    var day = 0;
+                    if(this.queryType == 'all'){
+
+                    }else if(this.queryType == '365day'){
+                        day = 365;
+                    }else if(this.queryType == '180day'){
+                        day = 180;
+                    }else if(this.queryType == '60day'){
+                        day = 60;
+                    }else if(this.queryType == '30day'){
+                        day = 30;
+                    };
+                    this.currentIndex = 1;
+                    this.loading = true;
+                    this.queryStockDevice(day);
+                },
+                del: function(groupid) {
+                    var me = this;
+                    var url = myUrls.deleteGroup();
+                    var data = {
+                        groupid: groupid
+                    };
+                    utils.sendAjax(url, data, function(resp) {
+                        if (resp.status == 0) {
+                            rootuser = null;
+                            me.tableData.forEach(function(item, index) {
+                                if (item.groupid == groupid) {
+                                    me.$delete(me.tableData, index)
+                                }
+                            });
+
+                            me.recordsList.forEach(function(item, index) {
+                                if (item.groupid == groupid) {
+                                    me.$delete(me.recordsList, index)
+                                }
+                            });
+
+                            me.total = me.recordsList.length;
+                            me.tableData = me.recordsList.slice(me.currentIndex - 1, 10);
+
+                            me.$Message.success(me.$t("message.deleteSucc"));
+                        } else {
+                            me.$Message.error(resp.cause);
+                        }
+                    });
+                },
+                calcTableHeight: function() {
+                    var wHeight = window.innerHeight;
+                    this.taleHeight = wHeight - 188;
+                },
+                handleSubmit: function() {
+
+                    if (this.groupname == "") {
+                        this.$Message.error(this.$t("message.fillGroupNameTip"));
+                        return;
+                    };
+                    var url = myUrls.editGroup(),
+                        me = this;
+                    var data = {
+                        groupid: editObject.groupid,
+                        groupname: this.groupname,
+                        mintime: this.mintime,
+                        maxtime: this.maxtime,
+                        groupname: this.groupname,
+                    };
+                    if (this.usercount == "") {
+                        data.usercount = 0;
+                    } else {
+                        data.usercount = this.usercount;
+                    }
+                    if (this.devicecount == "") {
+                        data.devicecount = 0;
+                    } else {
+                        data.devicecount = this.devicecount;
+                    }
+                    utils.sendAjax(url, data, function(resp) {
+                        if (resp.status == 0) {
+                            var newData = Object.assign(editObject, data);
+                            me.tableData[me.editDeviceIndex] = newData;
+                            utils.changeSingleItemData(me.recordsList, newData, 'groupid');
+                            me.$Message.success(me.$t("message.changeSucc"));
+                        } else {
+                            me.$Message.error(resp.cause);
+                        }
+                    });
+                },
+                resetInfo: function() {
+                    this.groupname = "";
+                    this.mintime = 30;
+                    this.maxtime = 3600;
+                    this.usercount = "";
+                    this.devicecount = "";
+                    this.groupname = "";
+                },
+                setGroupInfo: function() {
+                    this.groupname = editObject.groupname;
+                    this.mintime = editObject.mintime;
+                    this.maxtime = editObject.maxtime;
+                    this.usercount = editObject.usercount;
+                    this.devicecount = editObject.devicecount;
+                    this.groupname = editObject.groupname;
+                }
+            },
+            mixins: [mixIn],
+            mounted: function() {
+                var me = this;
+                this.queryGroupInfos(function() {
+                    me.queryStockDevice(0);
+                });
+                this.calcTableHeight();
+                window.onresize = function() {
+                    me.calcTableHeight();
+                }
+            }
+        })
+    </script>
+</div>
