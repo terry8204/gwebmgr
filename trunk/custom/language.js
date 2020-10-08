@@ -628,6 +628,7 @@
                 stock6yue:'6',
                 stock12yue:'12',
                 allStockDev:'All stock',
+                addDays:'Add days',
             },
             customer: {
                 kehuName: "Customer name",
@@ -1659,6 +1660,7 @@
                 stock6yue:'半年未使用',
                 stock12yue:'一年未使用',
                 allStockDev:'所有库存设备',
+                addDays:'添加天数',
             },
             customer: {
                 kehuName: "客户名称",

@@ -79,8 +79,8 @@
                         title: vRoot.$t("bgMgr.addTime"),
                         key: 'createtimestr'
                     }, {
-                        title: vRoot.$t("monitor.expireTime"),
-                        key: 'expirenotifytimestr'
+                        title: vRoot.$t("bgMgr.addDays"), 
+                        key: 'adddays'
                     }, {
                         title: vRoot.$t("bgMgr.creater"),
                         key: 'creater',
@@ -290,12 +290,13 @@
                         dev.simnum ? (dev.simnumkey = "\t" + dev.simnum) : (dev.simnumkey = "");
                         dev.bindpwd = dev.bindpwd != null ? dev.bindpwd : '';
                         dev.createtimestr = DateFormat.longToDateTimeStr(dev.createtime, timeDifference);
-                        dev.expirenotifytimestr = DateFormat.longToDateTimeStr(dev.expirenotifytime, timeDifference);
+                        dev.adddays =  utils.timeStampNoSecond(DateFormat.getCurrentUTC() - dev.createtime);
                         dev.groupname = me.getGroupName(dev.groupid);
                         dev.pinYin = __pinyin.getPinyin(dev.devicename);
                         dev.firstLetter = __pinyin.getFirstLetter(dev.devicename);
                         data.push(dev);
                     });
+                    data.sort(function(a,b){ return b.createtime - a.createtime});
                     return data;
                 },
                 handlerClickQuery() {
