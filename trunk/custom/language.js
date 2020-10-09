@@ -7,11 +7,13 @@
     Vue.use(VueI18n);
     var messages = {
         en: {
-            message: {  
+            message: {   
                 captureFail:"Capture failed. Please check if the device is online",
                 deleteUserTips: "Deletion failed. The user still has a device",
                 changeSucc: "Modified success",
                 changeFail: "Modification failed",
+                clearSucc: "Clear success",
+                clearFail: "Clear failed",
                 deleteSucc: "Deleted success",
                 deleteFail: "Deleted fail",
                 noAuthority: "No authority",
@@ -629,6 +631,7 @@
                 stock12yue:'12',
                 allStockDev:'All stock',
                 addDays:'Add days',
+                notPutIntoStorage:"notPutIntoStorage",
             },
             customer: {
                 kehuName: "Customer name",
@@ -1045,6 +1048,8 @@
                 captureFail:"抓拍失败,请检查设备是否在线",
                 changeSucc: "修改成功",
                 changeFail: "修改失败", 
+                clearSucc: "清除成功",
+                clearFail: "清除失败",
                 addSucc: "添加成功",
                 addFail: "添加失败",
                 saveSucc: "保存成功",
@@ -1330,7 +1335,7 @@
                 threeMinutes:'已播放三分钟时间,暂停播放',
                 notSupportCanvas:"您的浏览器暂不支持canvas",
             },
-            reportForm: {     
+            reportForm: {       
                 viewPicture:'查看图片',                   
                 empty:'空', 
                 multiMedia:'多媒体', 
@@ -1596,7 +1601,7 @@
                 addUser: "添加用户",
                 queryUser: "查询用户",
                 devMgr: "设备管理",
-                addDev: "添加设备",
+                addDev: "添加设备", 
                 queryDev: "查询设备",
                 submit: "提交",
                 reset: "重置",
@@ -1661,6 +1666,7 @@
                 stock12yue:'一年未使用',
                 allStockDev:'所有库存设备',
                 addDays:'添加天数',
+                notPutIntoStorage:"未入库设备",
             },
             customer: {
                 kehuName: "客户名称",

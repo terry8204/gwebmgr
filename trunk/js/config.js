@@ -739,7 +739,12 @@ var myUrls = {
     queryStoreDevices: function() {
         return this.apihosts + 'webapi?action=querystoredevices&token=' + token;
     },
-
+    listNoFoundDeviceids: function() {
+        return this.apihosts + 'webapi?action=listnofounddeviceids&token=' + token;
+    },
+    clearNoFoundDeviceids: function() {
+        return this.apihosts + 'webapi?action=clearnofounddeviceids&token=' + token;
+    },
 }
 
 

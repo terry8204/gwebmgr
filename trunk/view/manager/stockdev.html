@@ -231,6 +231,7 @@
                             this.queryType = '365day';
                             break; 
                     }
+                    this.currentIndex = 1;
                     this.queryStockDevice(day);
                 },
                 queryStockDevice:function(day){
@@ -296,7 +297,6 @@
                         dev.firstLetter = __pinyin.getFirstLetter(dev.devicename);
                         data.push(dev);
                     });
-                    data.sort(function(a,b){ return b.createtime - a.createtime});
                     return data;
                 },
                 handlerClickQuery() {
