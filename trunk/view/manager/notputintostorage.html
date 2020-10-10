@@ -51,6 +51,19 @@
                 <i-button style="width:500px" @click="handleSubmit">{{$t("bgMgr.submit")}}</i-button>
             </div>
         </Modal>
+
+        <transition name="fade">
+            <div v-show="mapModal" class="posi-map-wraper">
+                <div class="map-modal" @click="mapModal=false"></div>
+                <div class="inner-map-wraper">
+                    <div class="posi-map-title">
+                        {{$t("reportForm.seePosi")}}
+                        <div class="map-close"></div>
+                    </div>
+                    <div id="posi-map"></div>
+                </div>
+            </div>
+        </transition>
     </div>
     <script>
         vueInstanse = new Vue({
@@ -58,6 +71,7 @@
             i18n: utils.getI18n(),
             data: {
                 modal:false,
+                mapModal:false,
                 queryParameter:'',
                 createrToUser:'' ,  
                 devicename:'',
@@ -97,13 +111,15 @@
                                     },
                                     on: {
                                         click: function() {
-                                            utils.getJiuHuAddressSyn(lon, lat, function(resp) {
-                                                if (resp && resp.address) {
-                                                    vueInstanse.records[params.index].address = resp.address;
-                                                    vueInstanse.tableData[params.index].address = resp.address;
-                                                    LocalCacheMgr.setAddress(lon, lat, resp.address);
-                                                }
-                                            })
+                                            // utils.getJiuHuAddressSyn(lon, lat, function(resp) {
+                                            //     if (resp && resp.address) {
+                                            //         vueInstanse.records[params.index].address = resp.address;
+                                            //         vueInstanse.tableData[params.index].address = resp.address;
+                                            //         LocalCacheMgr.setAddress(lon, lat, resp.address);
+                                            //     }
+                                            // })
+                                            vueInstanse.mapModal = true;
+                                            vueInstanse.addMarkerToMap(positionlast);
                                         }
                                     }
                                 }, lon + "," + lat)
@@ -147,6 +163,125 @@
                 },
             },
             methods: {
+                addMarkerToMap:function(positionlast){
+                    var me = this;
+                    var mapType = utils.getMapType();
+                    if (mapType == 'bMap') {
+                        var b_lon_and_b_lat = wgs84tobd09(Number(positionlast.callon), Number(positionlast.callat))
+                        this.mapInstance.clearOverlays();
+                        var point = new BMap.Point(b_lon_and_b_lat[0],b_lon_and_b_lat[1]);
+                        var marker = new BMap.Marker(point);
+                        this.mapInstance.addOverlay(marker);
+                        setTimeout(function(){
+                            me.mapInstance.setCenter(point);
+                        },800)
+                    }else if(mapType == 'gMap'){
+                        var g_lon_and_g_lat = wgs84togcj02(Number(positionlast.callon),Number(positionlast.callat));
+                        if(me.gMakrker){
+                            me.gMakrker.setMap(null);
+                        }
+                        me.gMakrker = new google.maps.Marker({
+                                            position: {
+                                                lat: g_lon_and_g_lat[1],
+                                                lng: g_lon_and_g_lat[0]
+                                            },
+                                            map: me.mapInstance,
+                                     })
+                    }else if(mapType == 'oMap'){
+                        var tempPoint = ol.proj.fromLonLat([positionlast.callon, positionlast.callat]);
+                        var firstMarker = new ol.Feature({
+                                geometry: new ol.geom.Point(tempPoint),
+                            });
+
+                            firstMarker.setStyle(me.getFirstMarkerIcon(true));
+
+                        var features =  [ firstMarker ];
+                        this.layerVector.setSource(new ol.source.Vector({
+                            features: features
+                        })); 
+                        setTimeout(function(){
+                            me.mapInstance.getView().setCenter(tempPoint);
+                        },300)
+                    }
+                },
+                getFirstMarkerIcon: function(isStart) {
+                    var iconName = isStart ? 'marker_qidian.png' : 'marker_zhongdian.png';
+                    var pathname = location.pathname
+                    var imgPath = '';
+                    if (utils.isLocalhost()) {
+                        imgPath = myUrls.viewhost + 'images/map/' + iconName;
+                    } else {
+                        imgPath = '../images/map/' + iconName;
+                    };
+                    if (utils.getMapType() == 'bMap') {
+                        return new BMap.Icon("./images/map/" + iconName, new BMap.Size(32, 32), {
+                            imageOffset: new BMap.Size(0, 0)
+                        });
+                    } else if (utils.getMapType() == 'gMap') {
+                        return imgPath;
+                    } else {
+                        return new ol.style.Style({
+                            image: new ol.style.Icon(({
+                                crossOrigin: 'anonymous',
+                                src: imgPath,
+                                rotation: 0, //角度转化为弧度
+                                imgSize: [32, 32]
+                            }))
+                        });
+                    }
+                },
+                initMap: function() {
+                    var mapType = utils.getMapType();
+                    if (mapType == 'bMap') {
+                        this.mapInstance = new BMap.Map('posi-map', { minZoom: 4, maxZoom: 18, enableMapClick: false });
+                        this.mapInstance.enableScrollWheelZoom();
+                        this.mapInstance.enableAutoResize();
+                        this.mapInstance.disableDoubleClickZoom();
+                        this.mapInstance.centerAndZoom(new BMap.Point(113.264435, 24.129163), 4);
+                    } else if (mapType == 'gMap'){
+                        var center = new google.maps.LatLng(24.129163, 113.264435);
+                        this.mapInstance = new google.maps.Map(document.getElementById('posi-map'), {
+                            zoom: 4,
+                            center: center,
+                            mapTypeId: google.maps.MapTypeId.ROADMAP
+                        });
+                    }else if (mapType == 'oMap'){
+                        this.layerVector = new ol.layer.Vector({
+                            source: new ol.source.Vector({
+                                features: []
+                            }),
+                            style: new ol.style.Style({
+                                stroke: new ol.style.Stroke({
+                                    width: 3,
+                                    color: [255, 0, 0, 1]
+                                }),
+                                fill: new ol.style.Fill({
+                                    color: [0, 0, 255, 0.6]
+                                })
+                            })
+                        })
+
+                        var projection = ol.proj.get('EPSG:4326');
+
+                        this.mapInstance = new ol.Map({
+                            target: 'posi-map',
+                            projection: projection,
+                            layers: [
+                                new ol.layer.Tile({
+                                    source: new ol.source.OSM()
+                                }),
+                                this.layerVector
+                            ],
+                            view: new ol.View({
+                                center: ol.proj.fromLonLat([108.0017245, 35.926895]),
+                                zoom: 4,
+                                minZoom: 3,
+                                maxZoom: 20
+                            }),
+                        });
+                    }
+                },
+
                 handleSubmit:function(){
                     var me = this;
                     var url = myUrls.addDevice();
@@ -316,6 +451,7 @@
                 this.records = [];
                 this.createrToUser = userName;
                 this.userlists = userlists;
+                this.initMap();
                 this.calcTableHeight();
                 this.qeuryNoFoundDeviceids();
                 this.getDeviceType();

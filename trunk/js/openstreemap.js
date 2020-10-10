@@ -95,7 +95,7 @@ OpenStreeMapCls.pt.setMarkerClusterer = function(lastTracks) {
             },
             updateWhileInteracting: true
         });
-        console.log('layerVector', this.layerVector);
+
         this.mapInstance.addLayer(this.layerVector);
         this.addMarkerClickEvent();
     }
@@ -108,7 +108,6 @@ OpenStreeMapCls.pt.addMarkerClickEvent = function() {
         var feature = map.forEachFeatureAtPixel(evt.pixel, function(feature, layer) {
             return feature;
         });
-
         if (feature && feature.deviceid) {
             document.getElementById('popup').style.display = 'block';
             var deviceid = feature.deviceid,
