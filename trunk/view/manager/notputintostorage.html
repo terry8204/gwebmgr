@@ -428,7 +428,7 @@
                             if(positionlast.callat !==null && positionlast.callon !== null){
                                 positionlast.callat = positionlast.callat.toFixed(5);
                                 positionlast.callon = positionlast.callon.toFixed(5);
-                                device.address = LocalCacheMgr.getAddress(positionlast.callon, positionlast.callat);
+                                // device.address = LocalCacheMgr.getAddress(positionlast.callon, positionlast.callat);
                             }
                             device.time = DateFormat.longToDateTimeStr(device.updatetime,timeDifference)
                            })
