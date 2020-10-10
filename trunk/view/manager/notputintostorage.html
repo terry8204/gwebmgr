@@ -78,7 +78,7 @@
                     key: "time"
                 },{
                     'title': vRoot.$t('alarm.action'),
-                    width: 105,
+                    width: 115,
                     render: function(h, params) {
                         return h('Button', {
                                 props: {
@@ -243,11 +243,11 @@
                     var url = myUrls.listNoFoundDeviceids();
                     this.loading = true;
                     utils.sendAjax(url,{},function(resp){
-                        console.log(resp);
                         if(resp.status == 0){
                            resp.devices.forEach(function(device){
                             device.time = DateFormat.longToDateTimeStr(device.updatetime,timeDifference)
                            })
+                           resp.devices.sort(function(a,b){return a.updatetime - b.updatetime});
                            me.records = resp.devices;
                            me.tableData = deepClone(resp.devices);
                         }

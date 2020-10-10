@@ -156,7 +156,6 @@ var waringComponent = {
             if ((alarmaction & 0x02) == 2) {
                 this.isPopup = true;
             }
-
         },
         setForceAlarm: function() {
             var me = this;
@@ -175,10 +174,6 @@ var waringComponent = {
                 alarmaction = alarmaction | 0x03;
             }
 
-            // if(alarmaction & 1 == 1 )
-            // {
-            //     soundaction.setcheck
-            // }
             var data = {
                 forcealarm: forcealarm,
                 alarmaction: alarmaction,
@@ -767,7 +762,7 @@ var waringComponent = {
             },
         },
         mediaFiles:{
-            template: '<Table :height="tabheight" border :columns="columns" highlight-row  :data="mediaFileList"></Table>',
+            template: '<Table :height="tabheight" border :columns="columns" highlight-row  :data="mediaFileList" @on-row-click="onRowClick"></Table>',
             props: ['mediaFileList', 'tabletype', 'wrapperheight'],
             data: function() {
                 var me = this;
@@ -879,8 +874,10 @@ var waringComponent = {
                                             size:'small',
                                         },
                                         on:{
-                                            click:function(){
-                                                me.onRowClick(row);
+                                            click:function(e){
+                                                e.preventDefault();
+                                                e.stopPropagation();
+                                                me.clickImage(row);
                                             }
                                         }
                                     },
@@ -898,10 +895,17 @@ var waringComponent = {
             },
             methods: {
                 onRowClick: function(row) {
-                   vRoot.$children[1].cameraImgUrl = row.url
-                   vRoot.$children[1].cameraImgDeviceTime = row.endtime;
-                   vRoot.$children[1].cameraImgModal = true;
+                    vRoot.$children[1].selectedDev(row);
+                    communicate.$emit("on-click-marker", row.deviceid);
+          
+                 },
+                 clickImage:function(row){
+                    vRoot.$children[1].cameraImgUrl = row.url
+                    vRoot.$children[1].cameraImgDeviceTime = row.endtime;
+                    vRoot.$children[1].cameraImgModal = true;
+          
                 }
+                
             },    
         },
         overdueInfo: {
