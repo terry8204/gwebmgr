@@ -87,14 +87,22 @@
                 }, {
                     title: vRoot.$t('alarm.devNum'),
                     key: "deviceid",
+                    width:150,
                 }, {
                     title: vRoot.$t('reportForm.time'),
+                    width:150,
                     key: "time"
-                },
-                {
+                },{
+                    title: vRoot.$t('bgMgr.protocolType'),  
+                    key: "protocolType"
+                },{
+                    title: vRoot.$t('bgMgr.packetDescr'),  
+                    key: "packetDescr"
+                },{
+                    width:170,
                     title: vRoot.$t('user.address'),
                     render: function(h, params) {
-                        var positionlast = params.row.positionlast;
+                        var positionlast = params.row;
                         if(positionlast == null){
                             return h('span',{},vRoot.$t('reportForm.empty')); 
                         }else{
@@ -174,7 +182,7 @@
                         this.mapInstance.addOverlay(marker);
                         setTimeout(function(){
                             me.mapInstance.setCenter(point);
-                        },800)
+                        },300)
                     }else if(mapType == 'gMap'){
                         var g_lon_and_g_lat = wgs84togcj02(Number(positionlast.callon),Number(positionlast.callat));
                         if(me.gMakrker){
@@ -415,9 +423,9 @@
                     utils.sendAjax(url,{},function(resp){
                         if(resp.status == 0){
                            resp.devices.forEach(function(device){
-                            var positionlast = device.positionlast;
+                            var positionlast = device;
                             device.address = null;
-                            if(positionlast){
+                            if(positionlast.callat !==null && positionlast.callon !== null){
                                 positionlast.callat = positionlast.callat.toFixed(5);
                                 positionlast.callon = positionlast.callon.toFixed(5);
                                 device.address = LocalCacheMgr.getAddress(positionlast.callon, positionlast.callat);

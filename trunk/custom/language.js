@@ -632,6 +632,8 @@
                 allStockDev:'All stock',
                 addDays:'Add days',
                 notPutIntoStorage:"notPutIntoStorage",
+                protocolType:"Protocol type",
+                packetDescr:"packet",
             },
             customer: {
                 kehuName: "Customer name",
@@ -1667,6 +1669,8 @@
                 allStockDev:'所有库存设备',
                 addDays:'添加天数',
                 notPutIntoStorage:"未入库设备",
+                protocolType:"协议类型",
+                packetDescr:"最后报文",
             },
             customer: {
                 kehuName: "客户名称",
