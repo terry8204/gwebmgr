@@ -76,7 +76,42 @@
                 }, {
                     title: vRoot.$t('reportForm.time'),
                     key: "time"
-                },{
+                },
+                {
+                    title: vRoot.$t('user.address'),
+                    render: function(h, params) {
+                        var positionlast = params.row.positionlast;
+                        if(positionlast == null){
+                            return h('span',{},vRoot.$t('reportForm.empty')); 
+                        }else{
+                            var address = params.row.address;
+                            if(address != null){
+                                return h('span',{},address);
+                            }else{
+                                var lat = positionlast.callat;
+                                var lon = positionlast.callon;
+                                return h('Button', {
+                                    props: {
+                                        type: 'error',
+                                        size: 'small'
+                                    },
+                                    on: {
+                                        click: function() {
+                                            utils.getJiuHuAddressSyn(lon, lat, function(resp) {
+                                                if (resp && resp.address) {
+                                                    vueInstanse.records[params.index].address = resp.address;
+                                                    vueInstanse.tableData[params.index].address = resp.address;
+                                                    LocalCacheMgr.setAddress(lon, lat, resp.address);
+                                                }
+                                            })
+                                        }
+                                    }
+                                }, lon + "," + lat)
+                            }
+                        }
+                    }
+                },
+                {
                     'title': vRoot.$t('alarm.action'),
                     width: 115,
                     render: function(h, params) {
@@ -245,6 +280,13 @@
                     utils.sendAjax(url,{},function(resp){
                         if(resp.status == 0){
                            resp.devices.forEach(function(device){
+                            var positionlast = device.positionlast;
+                            device.address = null;
+                            if(positionlast){
+                                positionlast.callat = positionlast.callat.toFixed(5);
+                                positionlast.callon = positionlast.callon.toFixed(5);
+                                device.address = LocalCacheMgr.getAddress(positionlast.callon, positionlast.callat);
+                            }
                             device.time = DateFormat.longToDateTimeStr(device.updatetime,timeDifference)
                            })
                            resp.devices.sort(function(a,b){return a.updatetime - b.updatetime});

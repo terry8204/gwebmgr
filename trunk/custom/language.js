@@ -1335,7 +1335,7 @@
                 threeMinutes:'已播放三分钟时间,暂停播放',
                 notSupportCanvas:"您的浏览器暂不支持canvas",
             },
-            reportForm: {       
+            reportForm: {        
                 viewPicture:'查看图片',                   
                 empty:'空', 
                 multiMedia:'多媒体', 
