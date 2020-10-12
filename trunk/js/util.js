@@ -691,7 +691,6 @@ var utils = {
     },
     getIsAddExtendBtns: function() {
         var deviceTypes = vRoot.$children[1].deviceTypes;
-        // debugger;
         var currentDeviceType = vRoot.$children[1].currentDeviceType;
 
         var result1 = false;

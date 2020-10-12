@@ -109,6 +109,15 @@ OpenStreeMapCls.pt.addMarkerClickEvent = function() {
             return feature;
         });
         if (feature && feature.deviceid) {
+            var monitor = vRoot.$children[1];
+            monitor.groups.forEach(function(group) {
+                group.devices.forEach(function(dev) {
+                    if (dev.deviceid == feature.deviceid) {
+                        monitor.currentDeviceType = dev.devicetype;
+                    } 
+                });
+            });
+        
             document.getElementById('popup').style.display = 'block';
             var deviceid = feature.deviceid,
                 track = me.lastTracks[deviceid];
@@ -170,15 +179,6 @@ OpenStreeMapCls.pt.getDevAddress = function(track) {
 
 
 OpenStreeMapCls.pt.onClickDevice = function(deviceid) {
-
-    var monitor = vRoot.$children[1];
-    monitor.groups.forEach(function(group) {
-        group.devices.forEach(function(dev) {
-            if (dev.deviceid == deviceid) {
-                monitor.currentDeviceType = dev.devicetype;
-            } 
-        });
-    });
 
     document.getElementById('popup').style.display = 'block';
     var track = this.lastTracks[deviceid],
