@@ -321,10 +321,17 @@
 
                     <Row>
                         <i-col :span="4" style="line-height:60px;text-align:center;"> {{$t("main.playSpeed")}} : &nbsp;</i-col>
-                        <i-col :span="18" style="height:60px; padding-top: 12px;">
+                        <!-- <i-col :span="18" style="height:60px; padding-top: 12px;">
                             <Slider v-model="velocity" :min="100" :max="5000" show-input :step="100"></Slider>
+                        </i-col> -->
+                        <i-col :span="18"> 
+                            <Button-Group>
+                                <i-button :type="velocity == 1500?'primary':''" @click="velocity=1500">{{$t("main.slow")}}</i-button> 
+                                <i-button :type="velocity == 1000?'primary':''" @click="velocity=1000">{{$t("main.middle")}}</i-button>
+                                <i-button :type="velocity == 500?'primary':''" @click="velocity=500">{{$t("main.fast")}}</i-button>
+                            </Button-Group>
                         </i-col>
-                        <i-col :span="2" style="line-height:60px;text-align:center;"> {{$t("main.msec")}} </i-col>
+                        <!-- <i-col :span="2" style="line-height:60px;text-align:center;"> {{$t("main.msec")}} </i-col> -->
                     </Row>
                     <Row>
                         <i-col :span="21" style="padding:0 10px;height:35px;line-height: 35px;">
@@ -490,7 +497,10 @@
                     speed:'Speed',
                     mileage:'Mileage',
                     time:'Time',
-                    noCurruntDayTrack:"There is no track of the day"
+                    noCurruntDayTrack:"There is no track of the day",
+                    slow:'slow',
+                    middle:'middle',
+                    fast:'fast',
                 }
 
             },
@@ -524,7 +534,10 @@
                     speed:'速度',
                     mileage:'里程',
                     time:'时间',
-                    noCurruntDayTrack:"没有当天轨迹"
+                    noCurruntDayTrack:"没有当天轨迹",
+                    slow:'慢',
+                    middle:'中',
+                    fast:'快',
                 }
             }
         };
@@ -1532,7 +1545,7 @@
 
                                     var data = vRoot.$t('main.time') +  ': ' + v[0].name + '<br/>';
                                     for (i in v) {
-                                        if (v[i].seriesName != vRoot.$t('main.time') ) data += v[i].seriesName + ' : ' + v[i].value + '<br/>';
+                                        if (v[i].seriesName && v[i].seriesName != vRoot.$t('main.time') ) data += v[i].seriesName + ' : ' + v[i].value + '<br/>';
                                     }
                                     return data;
                                 }

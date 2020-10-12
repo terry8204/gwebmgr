@@ -1337,7 +1337,7 @@
                 threeMinutes:'已播放三分钟时间,暂停播放',
                 notSupportCanvas:"您的浏览器暂不支持canvas",
             },
-            reportForm: {        
+            reportForm: {         
                 viewPicture:'查看图片',                   
                 empty:'空', 
                 multiMedia:'多媒体', 
@@ -1844,7 +1844,7 @@
                 notSubmitted:'未提交',
                 submitSucc:'提交成功',
                 importOwnerNameTips:'请导入信息',
-                remove:'移除',
+                remove:'移除', 
                 importSucceeded:'导入成功',
                 importFailed:'导入失败',
                 importTimeout:'导入超时',
@@ -1912,7 +1912,7 @@
                 selectedRule:'请选择规则',
                 addRuleTips:'规则名称是必填的',
             },
-            videoSettings:{   
+            videoSettings:{    
                 send:'发送',
                 videoPlayParameter:'视频播放参数',
                 transmissionMode:'传输模式',

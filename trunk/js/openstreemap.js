@@ -170,6 +170,16 @@ OpenStreeMapCls.pt.getDevAddress = function(track) {
 
 
 OpenStreeMapCls.pt.onClickDevice = function(deviceid) {
+
+    var monitor = vRoot.$children[1];
+    monitor.groups.forEach(function(group) {
+        group.devices.forEach(function(dev) {
+            if (dev.deviceid == deviceid) {
+                monitor.currentDeviceType = dev.devicetype;
+            } 
+        });
+    });
+
     document.getElementById('popup').style.display = 'block';
     var track = this.lastTracks[deviceid],
         posi = this.fromLonLat(track.callon, track.callat);
@@ -253,7 +263,7 @@ OpenStreeMapCls.pt.updateLastTracks = function(deviceid) {
                 marker.setGeometry(new ol.geom.Point(this.fromLonLat(track.callon, track.callat)));
                 if (deviceid && key === deviceid) {
                     var popup = document.getElementById('popup');
-                    if (popup.style.display === 'block') {
+                    if (popup && popup.style.display === 'block') {
                         var track = this.lastTracks[deviceid];
                         if (track) {
                             var wContainer = document.getElementById('popup-content'),

@@ -94,13 +94,14 @@
                     key: "time"
                 },{
                     title: vRoot.$t('bgMgr.protocolType'),  
+                    width:120,
                     key: "protocolType"
                 },{
                     title: vRoot.$t('bgMgr.packetDescr'),  
                     key: "packetDescr"
                 },{
+                    title: vRoot.$t('user.address'),  
                     width:170,
-                    title: vRoot.$t('user.address'),
                     render: function(h, params) {
                         var positionlast = params.row;
                         if(positionlast == null){
@@ -119,19 +120,45 @@
                                     },
                                     on: {
                                         click: function() {
-                                            // utils.getJiuHuAddressSyn(lon, lat, function(resp) {
-                                            //     if (resp && resp.address) {
-                                            //         vueInstanse.records[params.index].address = resp.address;
-                                            //         vueInstanse.tableData[params.index].address = resp.address;
-                                            //         LocalCacheMgr.setAddress(lon, lat, resp.address);
-                                            //     }
-                                            // })
+                                            utils.getJiuHuAddressSyn(lon, lat, function(resp) {
+                                                if (resp && resp.address) {
+                                                    vueInstanse.records[params.index].address = resp.address;
+                                                    vueInstanse.tableData[params.index].address = resp.address;
+                                                    LocalCacheMgr.setAddress(lon, lat, resp.address);
+                                                }
+                                            })
+                                        }
+                                    }
+                                }, vRoot.$t('reportForm.getAddress'))
+                            }
+                        }
+                    }
+                },
+                {
+                    width:170,
+                    title: vRoot.$t('videoSettings.longitudeAndLatitude'),
+                    render: function(h, params) {
+                        var positionlast = params.row;
+                        if(positionlast == null){
+                            return h('span',{},vRoot.$t('reportForm.empty')); 
+                        }else{
+                            var address = params.row.address;
+                         
+                                var lat = positionlast.callat;
+                                var lon = positionlast.callon;
+                                return h('Button', {
+                                    props: {
+                                        type: 'error',
+                                        size: 'small'
+                                    },
+                                    on: {
+                                        click: function() {
                                             vueInstanse.mapModal = true;
                                             vueInstanse.addMarkerToMap(positionlast);
                                         }
                                     }
-                                }, lon + "," + lat)
-                            }
+                                }, lat + "," + lon) 
+                            
                         }
                     }
                 },
@@ -178,7 +205,16 @@
                         var b_lon_and_b_lat = wgs84tobd09(Number(positionlast.callon), Number(positionlast.callat))
                         this.mapInstance.clearOverlays();
                         var point = new BMap.Point(b_lon_and_b_lat[0],b_lon_and_b_lat[1]);
+                        var imgPath = '';
+                        if (utils.isLocalhost()) {
+                            imgPath = myUrls.viewhost + 'images/carstate/a_green_0.png'
+                        } else {
+                            imgPath = '../images/carstate/a_green_0.png'
+                        }
+                        var myIcon = new BMap.Icon(imgPath, new BMap.Size(32, 32));
                         var marker = new BMap.Marker(point);
+                        marker.setIcon(myIcon);
+                        marker.setRotation(positionlast.course);
                         this.mapInstance.addOverlay(marker);
                         setTimeout(function(){
                             me.mapInstance.setCenter(point);
@@ -195,48 +231,95 @@
                                             },
                                             map: me.mapInstance,
                                      })
+
+                        var imgPath = ''
+                        if (utils.isLocalhost()) {
+                            imgPath = myUrls.viewhost + 'images/carstate';
+                        } else {
+                            imgPath = '../images/carstate';
+                        }
+                
+                        imgPath += '/a_green_' + utils.getAngle(positionlast.course) + '.png';
+                            
+
+                        var myIcon = {
+                            url: imgPath,
+                            size: { width: 32, height: 32 },
+                            anchor: new google.maps.Point(16, 16)
+                        };   
+                        me.gMakrker.setIcon(myIcon);          
                     }else if(mapType == 'oMap'){
                         var tempPoint = ol.proj.fromLonLat([positionlast.callon, positionlast.callat]);
                         var firstMarker = new ol.Feature({
                                 geometry: new ol.geom.Point(tempPoint),
                             });
+                            firstMarker.setStyle(me.getOpenMapMarkerIcon(positionlast.course));
+                        // var features =  [ firstMarker ];
+                        // // this.layerVector.setSource(new ol.source.Vector({
+                        // //     features: features
+                        // // }));
+                        // this.layerVector = new ol.layer.Vector({
+                        //     source: new ol.source.Vector({
+                        //         features: features
+                        //     }),
+                        //     style: function(feature) {
+                        //         return feature.get('style');
+                        //     },
+                        //     updateWhileInteracting: true
+                        // })
+                        // me.mapInstance.addLayer(this.layerVector);
+                        // setTimeout(function(){
+                        //     me.mapInstance.getView().setCenter(tempPoint);
+                        // },300)
 
-                            firstMarker.setStyle(me.getFirstMarkerIcon(true));
 
-                        var features =  [ firstMarker ];
-                        this.layerVector.setSource(new ol.source.Vector({
-                            features: features
-                        })); 
-                        setTimeout(function(){
-                            me.mapInstance.getView().setCenter(tempPoint);
-                        },300)
+                        this.layerVector = new ol.layer.Vector({
+                            source: new ol.source.Vector({
+                                features: [firstMarker]
+                            }),
+                            style: function(feature) {
+                                return feature.get('style');
+                            },
+                            updateWhileInteracting: true
+                        })
+
+                        var projection = ol.proj.get('EPSG:4326');
+
+                        this.mapInstance = new ol.Map({
+                            target: 'posi-map',
+                            projection: projection,
+                            layers: [
+                                new ol.layer.Tile({
+                                    source: new ol.source.OSM()
+                                }),
+                            ],
+                            view: new ol.View({
+                                center: ol.proj.fromLonLat([108.0017245, 35.926895]),
+                                zoom: 4,
+                                minZoom: 3,
+                                maxZoom: 20
+                            }),
+                        });
+                        this.mapInstance.addLayer(this.layerVector);
+                                            
+
                     }
                 },
-                getFirstMarkerIcon: function(isStart) {
-                    var iconName = isStart ? 'marker_qidian.png' : 'marker_zhongdian.png';
-                    var pathname = location.pathname
+                getOpenMapMarkerIcon: function(course) {
                     var imgPath = '';
                     if (utils.isLocalhost()) {
-                        imgPath = myUrls.viewhost + 'images/map/' + iconName;
+                        imgPath = myUrls.viewhost + 'images/carstate/a_green_0.png';
                     } else {
-                        imgPath = '../images/map/' + iconName;
+                        imgPath = '../images/carstate/a_green_0.png';
                     };
-                    if (utils.getMapType() == 'bMap') {
-                        return new BMap.Icon("./images/map/" + iconName, new BMap.Size(32, 32), {
-                            imageOffset: new BMap.Size(0, 0)
-                        });
-                    } else if (utils.getMapType() == 'gMap') {
-                        return imgPath;
-                    } else {
-                        return new ol.style.Style({
-                            image: new ol.style.Icon(({
-                                crossOrigin: 'anonymous',
-                                src: imgPath,
-                                rotation: 0, //角度转化为弧度
-                                imgSize: [32, 32]
-                            }))
-                        });
-                    }
+                    return new ol.style.Style({
+                        image: new ol.style.Icon( /** @type {module:ol/style/Icon~Options} */ ({
+                            crossOrigin: 'anonymous',
+                            src: imgPath,
+                            rotation: course * Math.PI / 180, //角度转化为弧度
+                            imgSize: [32, 32]
+                        })),
+                    });
                 },
                 initMap: function() {
                     var mapType = utils.getMapType();
@@ -254,39 +337,7 @@
                             mapTypeId: google.maps.MapTypeId.ROADMAP
                         });
                     }else if (mapType == 'oMap'){
-                        this.layerVector = new ol.layer.Vector({
-                            source: new ol.source.Vector({
-                                features: []
-                            }),
-                            style: new ol.style.Style({
-                                stroke: new ol.style.Stroke({
-                                    width: 3,
-                                    color: [255, 0, 0, 1]
-                                }),
-                                fill: new ol.style.Fill({
-                                    color: [0, 0, 255, 0.6]
-                                })
-                            })
-                        })
-
-                        var projection = ol.proj.get('EPSG:4326');
-
-                        this.mapInstance = new ol.Map({
-                            target: 'posi-map',
-                            projection: projection,
-                            layers: [
-                                new ol.layer.Tile({
-                                    source: new ol.source.OSM()
-                                }),
-                                this.layerVector
-                            ],
-                            view: new ol.View({
-                                center: ol.proj.fromLonLat([108.0017245, 35.926895]),
-                                zoom: 4,
-                                minZoom: 3,
-                                maxZoom: 20
-                            }),
-                        });
+                       
                     }
                 },
 
@@ -428,7 +479,7 @@
                             if(positionlast.callat !==null && positionlast.callon !== null){
                                 positionlast.callat = positionlast.callat.toFixed(5);
                                 positionlast.callon = positionlast.callon.toFixed(5);
-                                // device.address = LocalCacheMgr.getAddress(positionlast.callon, positionlast.callat);
+                                device.address = LocalCacheMgr.getAddress(positionlast.callon, positionlast.callat);
                             }
                             device.time = DateFormat.longToDateTimeStr(device.updatetime,timeDifference)
                            })

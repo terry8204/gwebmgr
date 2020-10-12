@@ -69,7 +69,7 @@
                 </Row>
             </div>
         </Modal>
-        <Modal v-model="batchModal" width="400" :title="$('bgMgr.batchModification')"> 
+        <Modal v-model="batchModal" width="400" :title="$t('bgMgr.batchModification')"> 
             <div v-if="showBatchModalType == 1">
                 <Row>
                     <i-col span="4" style="padding-top: 6px;">
@@ -217,7 +217,7 @@
                                     vueInstanse.tableData.splice(params.index, 1);
                                 }
                             }
-                        },vRoot.$t('monitor.delete')) 
+                        },vRoot.$t('insure.remove')) 
                 }
             }, {
                 title: vRoot.$t('bgMgr.result'), 
@@ -473,15 +473,27 @@
                 this.importModal = false;
             },
             onCheckChange: function(selectArr) {
+                var me = this;
                 var tableData = [];
                 selectArr.forEach(function(item) {
                     var deviceid = item.deviceid;
-                    if (deviceid) {
+                    if (deviceid && !me.isRepeatAddDevice(deviceid)) {
                         utils.deviceInfos[deviceid].resultType = 2;
                         tableData.push(utils.deviceInfos[deviceid]);
                     }
                 })
-                this.tableData = tableData;
+                this.tableData = this.tableData.concat(tableData);
+            },
+            isRepeatAddDevice:function(deviceid){
+                var relsut = false;
+                for(var i = 0 ; i < this.tableData.length; i++){
+                    var item = this.tableData[i];
+                    if(item.deviceid == deviceid){
+                        relsut = true;
+                        break;
+                    }
+                }
+                return relsut;
             },
             queryDevicesTree: function() {
                 this.loading = true;
@@ -825,7 +837,6 @@
                     if (item != null) {
 
                         var isFound = false;
-
                         if (item.title.indexOf(searchWord) != -1 || (item.deviceid && item.deviceid.indexOf(searchWord) != -1)) {
                             copyItem = item;
                             copyItem.expand = false;
@@ -845,7 +856,6 @@
 
                         if (isFound == true) {
                             limitcount++;
-
                             childTemp.push(copyItem);
                             if (limitcount > 10) {
                                 break;
@@ -896,10 +906,10 @@
             searchDeviceVal: function(newVal) {
 
                 if (newVal === '') {
-                    this.searchDeviceList = this.treeDeviceList;
+                    this.searchDeviceList = deepClone(this.treeDeviceList);
                 } else {
                     var limitcount = 0;
-                    this.searchDeviceList = this.variableDeepSearch(this.treeDeviceList, newVal, limitcount);
+                    this.searchDeviceList = this.variableDeepSearch(deepClone(this.treeDeviceList), newVal, limitcount);
                 }
 
             }
