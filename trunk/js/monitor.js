@@ -1114,7 +1114,8 @@ var monitor = {
                 parameters.storekeyframeinterval = this.storekeyframeinterval;
                 parameters.realtimeframerate = this.realtimeframerate;
                 parameters.realtimeframebitrate = this.realtimeframebitrate;
-                parameters.storeframebitrate = this.storeframebitrate;
+                parameters.storeframerate = this.storeframerate; 
+                parameters.storeframebitrate = this.storeframebitrate; 
                 parameters.usingaudio = Number(this.usingaudio);
 
                 var options = ['dateandtime', 'carnum', 'channel', 'latlon', 'recorderspeed', 'gpsspeed', 'drivingtime'];
