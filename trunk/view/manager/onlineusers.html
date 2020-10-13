@@ -105,11 +105,11 @@
                     var me = this;
                     var url = myUrls.onlineUsers();
                     utils.sendAjax(url,{},function(resp){
-                        console.log(resp);
                         me.loading = false;
                         if(resp.status == 0){
                             var users = resp.users;
                             if(users){
+                                users.sort(function(a,b){return b.logintime-a.logintime});
                                 users.forEach(function(item){
                                     item.userTypeStr = me.getUserTypeStr(item.usertype);
                                     item.multiloginStr = item.multilogin == 1 ? vRoot.$t('header.yes'):vRoot.$t('header.no');
