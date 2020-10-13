@@ -36,24 +36,23 @@
                         title: vRoot.$t("user.userType"),
                         key: 'userTypeStr'
                     }, {
-                        title: vRoot.$t("user.corporateName"),
-                        key: 'companyname'
-                    }, {
-                        title: vRoot.$t("user.name"),
-                        key: 'cardname'
-                    }, {
-                        title: vRoot.$t("user.phone"),
-                        key: 'phone'
-                    }, {
-                        title: vRoot.$t("user.address"),
-                        key: 'companyaddr'
-                    }, {
-                        title: vRoot.$t("user.creater"),
-                        key: 'creater'
-                    }, {
                         title: vRoot.$t("user.createTime"),
-                        key: 'createtime'
-                    }
+                        width:150,
+                        key: 'logintimeStr'
+                    }, {
+                        title: vRoot.$t("header.loginSource"),    
+                        width:120,
+                        key: 'from'
+                    }, {
+                        title: vRoot.$t("header.loginTime"),
+                        key: 'logintimeStr'
+                    }, {
+                        title: 'ip',
+                        key: 'loginip'
+                    }, {
+                        title: vRoot.$t("header.multiSiteLanding"),  
+                        key: 'multiloginStr'
+                    }, 
                 ],
                 tableData: [],
                 recordsList: [],
@@ -65,31 +64,24 @@
                     var self = this;
                     var queryTableData = [];
                     var queryParameterLowerCase = this.queryParameter.toLowerCase();
-                    if (!self.queryParameter) return;
-                    this.recordsList.forEach(function(record) {
-
-                        var username = record.username,
-                            // companynamePinyin = record.companynamePinyin,
-                            // companynameFirstLetter = record.companynameFirstLetter,
-                            userTypeStrPinyin = record.userTypeStrPinyin,
-                            userTypeStrFirstLetter = record.userTypeStrFirstLetter;
-
+                    if (self.queryParameter == ''){
+                        this.queryOnlineUsers();
+                    }else{
+                        this.recordsList.forEach(function(record) {
+                        var username = record.username;
                         if (
-                            record.userTypeStr.indexOf(self.queryParameter) != -1 ||
-                            username.toLowerCase().indexOf(queryParameterLowerCase) != -1 ||
-                            // companynamePinyin.indexOf(queryParameterLowerCase) != -1 ||
-                            // companynameFirstLetter.indexOf(queryParameterLowerCase) != -1 ||
-                            userTypeStrPinyin.indexOf(queryParameterLowerCase) != -1 ||
-                            userTypeStrFirstLetter.indexOf(queryParameterLowerCase) != -1
+                            record.username.indexOf(self.queryParameter) != -1 
                         ) {
                             queryTableData.push(record);
                         }
-                    })
+                        })
 
-                    this.currentIndex = 1;
-                    this.queryTableData = queryTableData;
-                    this.tableData = this.queryTableData.slice(0, 10);
-                    this.total = this.queryTableData.length;
+                        this.currentIndex = 1;
+                        this.queryTableData = queryTableData;
+                        this.tableData = this.queryTableData.slice(0, 10);
+                        this.total = this.queryTableData.length;
+                    }
+       
                 },
 
                 getUserTypeStr: function(type) {
@@ -114,8 +106,20 @@
                     var url = myUrls.onlineUsers();
                     utils.sendAjax(url,{},function(resp){
                         console.log(resp);
+                        me.loading = false;
                         if(resp.status == 0){
-                            
+                            var users = resp.users;
+                            if(users){
+                                users.forEach(function(item){
+                                    item.userTypeStr = me.getUserTypeStr(item.usertype);
+                                    item.multiloginStr = item.multilogin == 1 ? vRoot.$t('header.yes'):vRoot.$t('header.no');
+                                    item.logintimeStr = DateFormat.longToDateTimeStr(item.logintime,8);
+                                });
+                                me.tableData = users;
+                                me.recordsList = users;
+                                me.total = users.length;
+                                me.currentIndex = 1;
+                            }
                         }
                     });
                 }

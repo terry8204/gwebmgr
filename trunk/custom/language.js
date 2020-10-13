@@ -73,7 +73,7 @@
                 beiAn1: "Copyright © 2015-2017 gps51.com All Rights Reserved",
                 beiAn2: "粤ICP备17068924号",
             },
-            header: {
+            header: {  
                 monitor: "Monitor",
                 reportForm: "Report",
                 bgManager: "Management",
@@ -103,6 +103,8 @@
                 email: "Email",
                 yes:"Yes",
                 no:"No",
+                loginSource:"Login source",
+                loginTime:"Login time",
             },
             alarm: {
                 maturityDays:'Overdue days',
@@ -1112,7 +1114,7 @@
                 beiAn1: "Copyright © 2015-2017 gps51.com All Rights Reserved",
                 beiAn2: "粤ICP备17068924号",
             },
-            header: {
+            header: { 
                 monitor: "实时监控",
                 reportForm: "统计报表",
                 bgManager: "后台管理",
@@ -1142,6 +1144,8 @@
                 email: "邮箱",
                 yes:"是",
                 no:"否",
+                loginSource:"登录来源",
+                loginTime:"登录时间",
             },
             alarm: {  
                 maturityDays:"到期天数",

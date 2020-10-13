@@ -15,7 +15,7 @@ var bgManager = {
                     children: [
                         { title: me.$t("bgMgr.addUser"), name: 'addUser', icon: 'ios-person-add' },
                         { title: me.$t("bgMgr.queryUser"), name: 'queryUser', icon: 'md-search' },
-                        { title: me.$t("bgMgr.onlineUsers"), name: 'onlineUsers', icon: 'md-search' },
+                        { title: me.$t("bgMgr.onlineUsers"), name: 'onlineUsers', icon: 'ios-analytics' },
                     ]
                 },
                 {
