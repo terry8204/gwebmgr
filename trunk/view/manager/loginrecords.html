@@ -1,0 +1,254 @@
+<meta charset="UTF-8">
+<div id="login-records">
+    <div class="full">
+        <h3 class="h3-title">{{$t("header.loginRecords")}}</h3>
+        <div style="margin:10px 0;height: 32px;">
+            <div style="float: left;position: relative;width:250px;line-height:32px;">
+                <div class="search-wrapper" v-click-outside.capture="onClickOutside">
+                    <i-input v-model.trim="sosoValue" icon="ios-search-outline" @on-change="sosoValueChange" @on-blur="blur" @on-focus="focus" :readonly="readonly" @on-click="focus" :placeholder="placeholder"></i-input>
+                    <transition name="fade">
+                        <div class="search-item-wrapper" v-show="isShowMatchDev">
+                            <Tree :data="treeData" @on-check-change="onCheckedDevice"></Tree>
+                        </div>
+                    </transition>
+                </div>
+            </div>
+            <div style="float: left;padding-left: 10px;">
+                <i-button type="primary" @click="handlerClickQuery">{{$t("reportForm.query")}}</i-button>
+            </div>
+        </div>
+        <div class="table-wraper">
+            <i-table border :columns="columns" :height="taleHeight" :data="tableData" :loading="loading"></i-table>
+        </div>
+        <div class="my-page" style="margin: 5px 0;">
+            <Page :total="total" :page-size="20" :current="currentIndex" @on-change="changePage"></Page>
+        </div>
+
+    </div>
+    <script>
+        vueInstanse = new Vue({
+            el: "#login-records",
+            i18n: utils.getI18n(),
+            data: {
+                isShowMatchDev:false,
+                treeData:[],
+                queryTableData: [],
+                createrToUser: userName,
+                queryParameter: "",
+                loading: false,
+                total: 0,
+                currentIndex: 1,
+                columns: [{
+                    title: vRoot.$t("header.loginTime"),
+                    key: 'logintimeStr',
+                    width: 160
+                }, {
+                    title: vRoot.$t("user.username"),
+                    key: 'userid',
+                    width: 120
+                }, {
+                    title: vRoot.$t("header.loginSource"),
+                    key: 'fromstr',
+                    width: 120
+                }, {
+                    title: vRoot.$t("header.logintype"),  
+                    key: 'logintype',
+                    width: 100
+                }, {
+                    title: vRoot.$t("header.pcbrowser"),
+                    key: 'pcbrowser'
+                }, {
+                    title: vRoot.$t("header.phonebrand"),
+                    key: 'phonebrand'
+                }, {
+                    title:  vRoot.$t("header.phonemodel"),
+                    key: 'phonemodel'
+                }, {
+                    title: vRoot.$t("header.phonesdkversion"),
+                    key: 'phonesdkversion'
+                }, {
+                    title: vRoot.$t("header.phonesystem"),
+                    key: 'phonesystem'
+                }, {
+                    title: vRoot.$t("header.wxversion"),
+                    key: 'wxversion'
+                }, {
+                    title: "ip",
+                    key: 'ip'
+                }],
+                tableData: [],
+                recordsList: [],
+                taleHeight: 300,
+
+            },
+            methods: {
+                handlerClickQuery() {
+
+                    var queryTableData = [];
+                    var url = myUrls.reportLoginLog(),
+                        me = this;
+                    me.loading = true;
+                    $.ajax({
+                        url: url,
+                        data: JSON.stringify({
+                            userid: this.createrToUser
+                        }),
+                        method: "post",
+                        success: function(resp) {
+                            if (resp.status == 0 && resp.logs) {
+                                resp.logs.forEach(function(item) {
+                                    item.logintimeStr = DateFormat.longToDateTimeStr(item.logintime, timeDifference);
+                                });
+                                me.tableData = resp.logs.slice(0, 20);
+                                me.cmdRecords = resp.logs;
+                                me.total = resp.logs.length;
+                            } else {
+                                me.tableData = [];
+                                me.cmdRecords = [];
+                            }
+                        },
+                        complete: function() {
+                            me.loading = false;
+                        }
+                    })
+                },
+
+                getUserTypeStr: function(type) {
+                    var name = "";
+                    for (var i = 0; i < this.userTypeDescrList.length; i++) {
+                        var item = this.userTypeDescrList[i];
+                        if (item.type == type) {
+                            name = item.name;
+                            break;
+                        }
+                    };
+                    return name;
+                },
+                
+                calcTableHeight: function() {
+                    var wHeight = window.innerHeight;
+                    this.taleHeight = wHeight - 195;
+                },
+                queryUsersTree: function(callback) {
+                    var url = myUrls.queryUsersTree(),
+                        me = this;
+                    utils.sendAjax(url, { username: userName }, function(respData) {
+                        if (respData.status == 0 && respData.rootuser.user) {
+                            callback([me.castUsersTreeToDevicesTree(respData.rootuser)]);
+                        } else {
+                            me.$Message.error(me.$t('monitor.queryFail'))  
+                        }
+                    });
+                },
+                castUsersTreeToDevicesTree: function(devicesTreeRecord) {
+                    var me = this;
+                    var iViewTree = {
+                        render: function(h, params) {
+                            var username = params.data.title;
+                            return h('span', {
+                                on: {
+                                    'click': function() {
+                                        me.createrToUser = username;
+                                        me.sosoValue = username;
+                                    }
+                                },
+                                style: {
+                                    cursor: 'pointer',
+                                    color: (me.createrToUser == username) ? '#2D8CF0' : '#000'
+                                }
+                            }, [
+                                h('span', [
+                                    h('Radio', {
+                                        props: {
+                                            value: username == me.createrToUser
+                                        },
+                                        style: {
+                                            marginRight: '4px',
+                                            marginLeft: '4px'
+                                        }
+                                    }),
+                                    h('span', params.data.title)
+                                ]),
+                            ])
+                        },
+                        expand: true,
+                    };
+                    if (devicesTreeRecord != null) {
+                        var username = devicesTreeRecord.user.username;
+                        var subusers = devicesTreeRecord.subusers;
+                        iViewTree.title = username;
+                        if (username != null && subusers != null && subusers.length > 0) {
+                            var subDevicesTreeRecord = this.doCastUsersTreeToDevicesTree(subusers);
+                            iViewTree.children = subDevicesTreeRecord;
+
+                        }
+                    }
+                    return iViewTree;
+                },
+                doCastUsersTreeToDevicesTree: function(usersTrees) {
+                    var devicesTreeRecord = [],
+                        me = this;
+                    if (usersTrees != null && usersTrees.length > 0) {
+                        for (var i = 0; i < usersTrees.length; ++i) {
+                            var usersTree = usersTrees[i];
+                            var username = usersTree.user.username;
+                            var subusers = usersTree.subusers;
+                            var currentsubDevicesTreeRecord = {
+                                render: function(h, params) {
+                                    var username = params.data.title;
+                                    return h('span', {
+                                        on: {
+                                            'click': function() {
+                                                me.createrToUser = username;
+                                                me.sosoValue = username;
+                                            }
+                                        },
+                                        style: {
+                                            cursor: 'pointer',
+                                            color: (me.createrToUser == username) ? '#2D8CF0' : '#000'
+                                        }
+                                    }, [
+                                        h('span', [
+                                            h('Radio', {
+                                                props: {
+                                                    value: username == me.createrToUser
+                                                },
+                                                style: {
+                                                    marginRight: '4px',
+                                                    marginLeft: '4px'
+                                                }
+                                            }),
+                                            h('span', params.data.title)
+                                        ]),
+                                    ])
+                                },
+                            };
+                            currentsubDevicesTreeRecord.title = username;
+                            if (username != null && subusers != null && subusers.length > 0) {
+                                var subDevicesTreeRecord = this.doCastUsersTreeToDevicesTree(subusers);
+                                currentsubDevicesTreeRecord.children = subDevicesTreeRecord;
+                            }
+                            devicesTreeRecord.push(currentsubDevicesTreeRecord);
+                        }
+                    }
+                    return devicesTreeRecord;
+                },
+            },
+            mixins: [treeMixin],
+            mounted: function() {
+                var me = this;
+                this.userTypeDescrList = vstore.state.userTypeDescrList;
+                me.cmdRecords = [];
+                me.queryUsersTree(function(usersTree) {
+                    me.groupslist = usersTree;
+                    me.treeData = usersTree;
+                });
+                this.sosoValue = userName;
+                this.calcTableHeight();
+                window.onresize = function() {
+                    me.calcTableHeight();
+                }
+            }
+        })
+    </script>
+</div>

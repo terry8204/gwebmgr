@@ -1038,7 +1038,7 @@ div.rule-view>div>div.rule-table {
 
 /* c查询用户 */
 
-#queryuser,#onlineuser {
+#queryuser,#onlineuser ,#login-records{
     padding: 10px;
     height: 100%;
     width: 100%;

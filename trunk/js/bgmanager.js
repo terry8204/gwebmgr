@@ -16,7 +16,8 @@ var bgManager = {
                         { title: me.$t("bgMgr.addUser"), name: 'addUser', icon: 'ios-person-add' },
                         { title: me.$t("bgMgr.queryUser"), name: 'queryUser', icon: 'md-search' },
                         { title: me.$t("bgMgr.onlineUsers"), name: 'onlineUsers', icon: 'ios-analytics' },
-                    ]
+                        { title: me.$t("header.loginRecords"), name: 'loginRecords', icon: 'ios-clipboard-outline' },
+                    ]    
                 },
                 {
                     title: me.$t("bgMgr.groupMgr"),
@@ -107,6 +108,9 @@ var bgManager = {
                     break
                 case 'onlineUsers':
                     page = 'onlineusers.html'
+                    break
+                case 'loginRecords':
+                    page = 'loginrecords.html'
                     break
                 case 'chargeMgr':
                     page = 'chargemgr.html'
