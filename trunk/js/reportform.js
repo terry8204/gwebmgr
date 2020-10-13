@@ -5154,7 +5154,7 @@ function timeOilConsumption(groupslist) {
                         formatter: function(v) {
                             var data = time + ' : ' + v[0].name + '<br/>';
                             for (i in v) {
-                                if (v[i].seriesName != time) data += v[i].seriesName + ' : ' + v[i].value + '<br/>';
+                                if (v[i].seriesName && v[i].seriesName != time) data += v[i].seriesName + ' : ' + v[i].value + '<br/>';
                             }
                             return data;
                         }
