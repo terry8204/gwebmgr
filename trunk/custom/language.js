@@ -634,6 +634,7 @@
                 notPutIntoStorage:"notPutIntoStorage",
                 protocolType:"Protocol type",
                 packetDescr:"packet",
+                onlineUsers:"Online users",
             },
             customer: {
                 kehuName: "Customer name",
@@ -1671,6 +1672,7 @@
                 notPutIntoStorage:"未入库设备",
                 protocolType:"协议类型",
                 packetDescr:"最后报文",
+                onlineUsers:"在线用户",
             },
             customer: {
                 kehuName: "客户名称",

@@ -1,0 +1,135 @@
+<meta charset="UTF-8">
+<div id="onlineuser">
+    <div class="full">
+        <h3 class="h3-title">{{$t("bgMgr.onlineUsers")}}</h3>
+        <ul>
+            <li>
+                <i-input v-model.trim="queryParameter"></i-input>
+            </li>
+            <li>
+                <i-button type="primary" @click="handlerClickQuery">{{$t("reportForm.query")}}</i-button>
+            </li>
+        </ul>
+        <div class="table-wraper">
+            <i-table border :columns="columns" :height="taleHeight" :data="tableData" :loading="loading"></i-table>
+        </div>
+        <div class="my-page" style="margin: 5px 0;">
+            <Page :total="total" :page-size="10" :current="currentIndex" @on-change="changePage"></Page>
+        </div>
+
+    </div>
+    <script>
+        vueInstanse = new Vue({
+            el: "#onlineuser",
+            i18n: utils.getI18n(),
+            data: {
+                queryTableData: [],
+                queryParameter: "",
+                loading: true,
+                total: 0,
+                currentIndex: 1,
+                columns: [
+                    {
+                        title: vRoot.$t("user.username"),
+                        key: 'username',
+                    }, {
+                        title: vRoot.$t("user.userType"),
+                        key: 'userTypeStr'
+                    }, {
+                        title: vRoot.$t("user.corporateName"),
+                        key: 'companyname'
+                    }, {
+                        title: vRoot.$t("user.name"),
+                        key: 'cardname'
+                    }, {
+                        title: vRoot.$t("user.phone"),
+                        key: 'phone'
+                    }, {
+                        title: vRoot.$t("user.address"),
+                        key: 'companyaddr'
+                    }, {
+                        title: vRoot.$t("user.creater"),
+                        key: 'creater'
+                    }, {
+                        title: vRoot.$t("user.createTime"),
+                        key: 'createtime'
+                    }
+                ],
+                tableData: [],
+                recordsList: [],
+                taleHeight: 300,
+
+            },
+            methods: {
+                handlerClickQuery() {
+                    var self = this;
+                    var queryTableData = [];
+                    var queryParameterLowerCase = this.queryParameter.toLowerCase();
+                    if (!self.queryParameter) return;
+                    this.recordsList.forEach(function(record) {
+
+                        var username = record.username,
+                            // companynamePinyin = record.companynamePinyin,
+                            // companynameFirstLetter = record.companynameFirstLetter,
+                            userTypeStrPinyin = record.userTypeStrPinyin,
+                            userTypeStrFirstLetter = record.userTypeStrFirstLetter;
+
+                        if (
+                            record.userTypeStr.indexOf(self.queryParameter) != -1 ||
+                            username.toLowerCase().indexOf(queryParameterLowerCase) != -1 ||
+                            // companynamePinyin.indexOf(queryParameterLowerCase) != -1 ||
+                            // companynameFirstLetter.indexOf(queryParameterLowerCase) != -1 ||
+                            userTypeStrPinyin.indexOf(queryParameterLowerCase) != -1 ||
+                            userTypeStrFirstLetter.indexOf(queryParameterLowerCase) != -1
+                        ) {
+                            queryTableData.push(record);
+                        }
+                    })
+
+                    this.currentIndex = 1;
+                    this.queryTableData = queryTableData;
+                    this.tableData = this.queryTableData.slice(0, 10);
+                    this.total = this.queryTableData.length;
+                },
+
+                getUserTypeStr: function(type) {
+                    var name = "";
+                    for (var i = 0; i < this.userTypeDescrList.length; i++) {
+                        var item = this.userTypeDescrList[i];
+                        if (item.type == type) {
+                            name = item.name;
+                            break;
+                        }
+                    };
+                    return name;
+                },
+                
+
+                calcTableHeight: function() {
+                    var wHeight = window.innerHeight;
+                    this.taleHeight = wHeight - 185;
+                },
+                queryOnlineUsers:function(){
+                    var me = this;
+                    var url = myUrls.onlineUsers();
+                    utils.sendAjax(url,{},function(resp){
+                        console.log(resp);
+                        if(resp.status == 0){
+                            
+                        }
+                    });
+                }
+            },
+            mixins: [mixIn],
+            mounted: function() {
+                var me = this;
+                this.userTypeDescrList = vstore.state.userTypeDescrList;
+                this.queryOnlineUsers();
+                this.calcTableHeight();
+                window.onresize = function() {
+                    me.calcTableHeight();
+                }
+            }
+        })
+    </script>
+</div>

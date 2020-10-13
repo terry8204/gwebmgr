@@ -745,6 +745,9 @@ var myUrls = {
     clearNoFoundDeviceids: function() {
         return this.apihosts + 'webapi?action=clearnofounddeviceids&token=' + token;
     },
+    onlineUsers: function() {
+        return this.apihosts + 'webapi?action=onlineusers&token=' + token;
+    },
 }
 
 
