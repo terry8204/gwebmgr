@@ -1503,10 +1503,13 @@
                         this.oil = [];
                         this.oil1 = [];
                         this.oil2 = [];
-                        // 19930114
                         this.charts = echarts.init(document.getElementById('charts'));
                         this.charts.setOption(this.getChartsOption());
+                        // this.charts.on('click', 'series.' + this.$t('main.time'), function (params) {
+                        //     console.log('series.line',params);
+                        // });
                     },
+
                     getChartsOption: function() {
                         // totalOil:'总油液',
                         // oil1:"油液1",
