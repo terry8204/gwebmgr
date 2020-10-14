@@ -84,32 +84,11 @@
                 </div>
             </i-col>
         </Row>
-
-        <Row style="margin: 10px 0">
-            <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">指令名称 : &nbsp;</i-col>
-            <i-col span="20">
-                <i-input v-model.trim="cmdname"></i-input>
-            </i-col>
-        </Row>
        
         <Row style="margin: 10px 0">
             <i-col span="4" style="height: 100%;text-align:right;line-height:32px;"><i style="color: red;display: inline-block;">*</i>&nbsp;是否同步 : &nbsp;</i-col>
             <i-col span="20" style="height: 100%;line-height:32px;">
                 <Checkbox v-model="isSync">(选中为同步)</Checkbox>
-            </i-col>
-        </Row>
-
-        <Row style="margin: 10px 0">
-            <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">指令描述 : &nbsp;</i-col>
-            <i-col span="20">
-                <i-input v-model.trim="cmddescr"></i-input>
-            </i-col>
-        </Row>
-
-        <Row style="margin:10px 0">
-            <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">指令密码 : &nbsp;</i-col>
-            <i-col span="20">
-                <i-input v-model.trim="cmdpwd"></i-input>
             </i-col>
         </Row>
 
@@ -127,15 +106,58 @@
             </i-col>
         </Row>
 
-        <Row style="margin: 10px 0">
-            <i-col span="4" style="height: 100%;text-align:right;line-height:100%;">
-                参数 : &nbsp;</i-col>
+        <Row style="margin:10px 0">
+            <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">指令密码 : &nbsp;</i-col>
             <i-col span="20">
-                <i-input v-model.trim="params" type="textarea" :rows="8" />
+                <i-input v-model.trim="cmdpwd"></i-input>
             </i-col>
         </Row>
 
-        <Row style="margin: 10px 0">
+        <Tabs :value="activeTab" :animated="true" @on-click="onClickTabs">
+            <Tab-Pane label="中文" name="zh">
+                <Row style="margin: 10px 0">
+                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">指令名称 : &nbsp;</i-col>
+                    <i-col span="20">
+                        <i-input v-model.trim="cmdname"></i-input>
+                    </i-col>
+                </Row>
+                <Row style="margin: 10px 0">
+                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">指令描述 : &nbsp;</i-col>
+                    <i-col span="20">
+                        <i-input v-model.trim="cmddescr"></i-input>
+                    </i-col>
+                </Row>
+                <Row style="margin: 10px 0">
+                    <i-col span="4" style="height: 100%;text-align:right;line-height:100%;">
+                        参数 : &nbsp;</i-col>
+                    <i-col span="20">
+                        <i-input v-model.trim="params" type="textarea" :rows="8" />
+                    </i-col>
+                </Row>
+            </Tab-Pane>
+            <Tab-Pane label="英文" name="en">
+                <Row style="margin: 10px 0">
+                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">指令名称 : &nbsp;</i-col>
+                    <i-col span="20">
+                        <i-input v-model.trim="cmdnameen"></i-input>
+                    </i-col>
+                </Row>
+                <Row style="margin: 10px 0">
+                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">指令描述 : &nbsp;</i-col>
+                    <i-col span="20">
+                        <i-input v-model.trim="cmddescren"></i-input>
+                    </i-col>
+                </Row>
+                <Row style="margin: 10px 0">
+                    <i-col span="4" style="height: 100%;text-align:right;line-height:100%;">
+                        参数 : &nbsp;</i-col>
+                    <i-col span="20">
+                        <i-input v-model.trim="paramsen" type="textarea" :rows="8" />
+                    </i-col>
+                </Row>
+            </Tab-Pane>
+        </Tabs>
+        <Row style="margin: 10px 0;padding:10px 0;border: 1px solid #e3e3e3;">
             <i-col span="4" style="height: 100%;text-align:right;line-height:100%;">预览 : &nbsp;</i-col>
             <i-col span="20" v-if="selectParamType==='text'">
                 <Row style="margin: 5px 0" v-for="item in previewObjList" :key="item.text">
@@ -237,13 +259,9 @@
                     </Row>
             </i-col>
         </Row>
-       
-        <Row style="margin: 10px 0">
-            <i-col span="10" :offset="8">
-                    <i-button icon="md-add" @click="handleEditDirective" style="width: 100%">提交</i-button>
-            </i-col>
-        </Row>
-        <div slot="footer" style="padding:15px 0;"></div>
+        <div slot="footer" style="text-align: center;">
+            <i-button icon="md-add" @click="handleEditDirective" style="width: 260px;">提交</i-button>
+        </div>
     </Modal>
     <script>
         new Vue({
@@ -251,6 +269,7 @@
             data: function () {
                 var me = this;
                 return {
+                    activeTab:'zh',
                     editDirectiveModal:false,
                     theme:"light",
                     sortNumber:"",
@@ -362,14 +381,16 @@
                     cmdCode: null,
                     deviceType:null,
                     cmdname: "",
+                    cmdnameen: "",
+                    cmdnametw: "",
                     cmdpwd:"",
                     cmddescr: null,
                     cmddescren: "",
                     cmddescrtw: "",
                     common:0,
                     params: null,
-                    paramsen: "",
-                    paramstw: "",
+                    paramsen: null,
+                    paramstw: null,
                     previewObjList:[],
                     isShowMatchDev:false,
                     isPublic:false,
@@ -385,6 +406,10 @@
                 }
             },
             methods: {
+                onClickTabs:function(lang){
+                    this.activeTab = lang;
+                    this.previewParams(editObject);
+                },
                 onCopyDirective:function(){
                     var directiveInfo =  null , me = this;
                     this.copySelectedData.forEach(function (item) { 
@@ -585,6 +610,8 @@
                     var url = myUrls.editCmd();
                     var data = {
                         cmdname: this.cmdname,
+                        cmdnameen:this.cmdnameen,
+                        cmdnametw:this.cmdnametw,
                         cmdcode: this.cmdCode,
                         paramsen: "",
                         paramstw: "",
@@ -599,6 +626,9 @@
                     if(this.cmddescr){
                         data.cmddescr = this.cmddescr;
                     };
+                    if(this.cmddescren){
+                        data.cmddescren = this.cmddescren;
+                    };
                     
                     if(this.params){
                         if(this.checkFormatCorrect(this.params.trim())){
@@ -608,6 +638,16 @@
                             return;
                         }
                     };
+
+                    if(this.paramsen){
+                        if(this.checkFormatCorrect(this.paramsen.trim())){
+                            data.paramsen = this.paramsen;
+                        }else{
+                            this.$Message.error("参数格式错误");
+                            return;
+                        }
+                    };
+
                     if(this.selectParamType){
                         data.cmdtype = this.selectParamType;
                     };
@@ -708,34 +748,72 @@
                     this.cmddescren=data.cmddescren;
                     this.cmddescrtw=data.cmddescrtw;
 
-                  
-                    this.paramsen=data.paramsen;
-                    this.paramstw=data.paramstw;
                     this.common = data.common;
                     this.isSync = data.sync == 1 ? true :false
                     
                     this.cmdpwd = data.cmdpwd;
-                    
-                    if(data.params){
-                        var paramsArr = data.params.split('\n');
-                        if(
-                            data.cmdtype !== 'text' 
-                            && data.cmdtype !== 'list' 
-                            && data.cmdtype !== 'timeperiod' 
-                            && data.cmdtype !== 'remind'
-                            && data.cmdtype !== 'time'
-                            && data.cmdtype !== 'weektime'  
-                        ){
-                            this.params = data.params;
-                        }else{
-                            this.params=paramsArr.join("\n");
-                            this.selectParamType = data.cmdtype;
-                        }
-                    }else{
-                        this.params = ""; 
-                    };   
-                },
 
+                    this.selectParamType = data.cmdtype; 
+
+                    this.previewParams(data);
+
+                },
+                previewParams:function(data){
+                    if(this.activeTab == 'zh'){
+                        this.params = "";
+                        if(data.params){
+                            var paramsArr = data.params.split('\n');
+                            if(
+                                data.cmdtype !== 'text' 
+                                && data.cmdtype !== 'list' 
+                                && data.cmdtype !== 'timeperiod' 
+                                && data.cmdtype !== 'remind'
+                                && data.cmdtype !== 'time'
+                                && data.cmdtype !== 'weektime'  
+                            ){
+                                this.params = data.params;
+                            }else{
+                                this.params=paramsArr.join("\n");
+                            }
+                        } 
+                    }else if(this.activeTab == 'en'){
+                        this.paramsen = "";
+                        if(data.paramsen){
+                            var paramsArr = data.paramsen.split('\n');
+                            if(
+                                data.cmdtype !== 'text' 
+                                && data.cmdtype !== 'list' 
+                                && data.cmdtype !== 'timeperiod' 
+                                && data.cmdtype !== 'remind'
+                                && data.cmdtype !== 'time'
+                                && data.cmdtype !== 'weektime'  
+                            ){
+                                this.paramsen = data.paramsen;
+                            }else{
+                                this.paramsen=paramsArr.join("\n");
+                    
+                            }
+                        } 
+                    }else if(this.activeTab == 'tw'){
+                        if(data.paramstw){
+                            var paramsArr = data.paramstw.split('\n');
+                            if(
+                                data.cmdtype !== 'text' 
+                                && data.cmdtype !== 'list' 
+                                && data.cmdtype !== 'timeperiod' 
+                                && data.cmdtype !== 'remind'
+                                && data.cmdtype !== 'time'
+                                && data.cmdtype !== 'weektime'  
+                            ){
+                                this.paramstw = data.paramstw;
+                            }else{
+                                this.paramstw=paramsArr.join("\n");
+                            }
+                        }else{
+                            this.paramstw = ""; 
+                        };  
+                    }
+                },
                 getListCmdAction:function(){
                     var me = this;
                     var url = myUrls.listCmdAction();
@@ -765,9 +843,20 @@
                 params:function (params) { 
                     this.previewObjList = [];
                     if( params.trim() && this.checkFormatCorrect(this.params.trim())){
-                        var params = "<params>"+ this.params +"</params>";
+                        var paramszh = "<params>"+ this.params +"</params>";
                         var parser=new DOMParser(); 
-                        var xmlDoc=parser.parseFromString(params,"text/xml"); 
+                        var xmlDoc=parser.parseFromString(paramszh,"text/xml"); 
+                        this.parseXML(xmlDoc);
+                    }else{
+                        console.log('没有解析params - :', params);
+                    }
+                },
+                paramsen:function (params) { 
+                    this.previewObjList = [];
+                    if( params.trim() && this.checkFormatCorrect(this.paramsen.trim())){
+                        var paramsen = "<params>"+ this.paramsen +"</params>";
+                        var parser=new DOMParser(); 
+                        var xmlDoc=parser.parseFromString(paramsen,"text/xml"); 
                         this.parseXML(xmlDoc);
                     }else{
                         console.log('没有解析params - :', params);

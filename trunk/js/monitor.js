@@ -1676,15 +1676,21 @@ var monitor = {
                     cmdInfo = cmd;
                 }
             });
-            this.selectedCmdInfo.cmdName = cmdInfo.cmdname;
+
+            if(isZh){
+                this.selectedCmdInfo.cmdName = cmdInfo.cmdname;
+                this.selectedCmdInfo.cmddescr = cmdInfo.cmddescr;
+            }else{
+                this.selectedCmdInfo.cmdName = cmdInfo.cmdnameen;
+                this.selectedCmdInfo.cmddescr = cmdInfo.cmddescren;
+            }
             this.selectedCmdInfo.cmdcode = cmdInfo.cmdcode;
-            this.selectedCmdInfo.cmddescr = cmdInfo.cmddescr;
             this.selectedCmdInfo.cmdpwd = cmdInfo.cmdpwd;
             this.selectedCmdInfo.type = cmdInfo.cmdtype;
 
             if (cmdInfo.params) {
 
-                var paramsXMLObj = utils.parseXML(cmdInfo.params);
+                var paramsXMLObj = utils.parseXML(isZh?cmdInfo.params:cmdInfo.paramsen);
                 // this.selectedCmdInfo.type = paramsXMLObj.type;
                 this.selectedCmdInfo.params = paramsXMLObj.paramsListObj;
 
@@ -3102,10 +3108,15 @@ var monitor = {
             var allCmdList = this.$store.state.allCmdList;
             var directiveList = [];
             allCmdList.forEach(function(cmd) {
-                if (cmd.devicetype == type) {
-                    directiveList.push(cmd);
-                } else if (cmd.common == 1) {
-                    directiveList.push(cmd);
+                var copyCmd = cmd;
+                if(!isZh){
+                    copyCmd = deepClone(cmd)
+                    copyCmd.cmdname = cmd.cmdnameen;
+                }
+                if (copyCmd.devicetype == type) {
+                    directiveList.push(copyCmd);
+                } else if (copyCmd.common == 1) {
+                    directiveList.push(copyCmd);
                 };
             });
 
