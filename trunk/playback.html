@@ -894,6 +894,7 @@
                         var newRecords = [];
                         for (var i = 0; i < records.length; i++) {
                             var track = records[i];
+                            track.totaldistance = (track.totaldistance / 1000).toFixed(3)
                             var g_lon_lat = wgs84togcj02(track.callon, track.callat);
                             track.gpoint = {
                                 lat: g_lon_lat[1],
@@ -1375,6 +1376,7 @@
                         if (info.gotsrc === 'gps' && info.gpsvalidnum) {
                             posiType += "(" + info.gpsvalidnum + ")";
                         };
+      
                         var deviceid = "'" + this.deviceid + "'";
                         var speed = info.speed == 0 ? "0km/h" : (info.speed / 1000).toFixed(2) + "km/h";
                         var sContent = '<div style="max-width:296px;">' +
@@ -1383,7 +1385,7 @@
                             '<p> ' + (isZh ? '定位类型' : 'Position Type') + ': ' + posiType + '</p>' +
                             '<p> ' + (isZh ? '方向' : 'Direction') + ': ' + utils.getCarDirection(info.course) + '</p>' +
                             '<p> ' + (isZh ? '速度' : 'Speed') + ': ' + speed + '(' + (isZh ? '信号:' : 'Signal:') + info.rxlevel + '%)</p>' +
-                            '<p> ' + (isZh ? '总里程' : 'Mileage') + ': ' + utils.getMileage(info.totaldistance) + '</p>' +
+                            '<p> ' + (isZh ? '总里程' : 'Mileage') + ': ' + (info.totaldistance==0?0:info.totaldistance) + 'km</p>' +
                             '<p> ' + (isZh ? '最后时间' : 'Last time') + ': ' + DateFormat.longToDateTimeStr(info.updatetime, timeDifference) + '</p>' +
                             '<p> ' + (isZh ? '状态' : 'Status') + ': ' + strstatus + '</p>' +
                             '<p class="last-address"> ' + (isZh ? '详细地址' : 'Address') + ': ' + address + '</p>' +
@@ -1705,7 +1707,7 @@
                         this.disMin = 0;
 
                         records.forEach(function(item, index) {
-                            item.totaldistance = (item.totaldistance).toFixed(3)
+                     
                             if (index == 0) {
                                 me.disMin = item.totaldistance
                             }
@@ -1724,7 +1726,7 @@
                             oil.push(item.ad0 + item.ad1);
                             recvtime.push(DateFormat.longToDateTimeStr(item.updatetime, timeDifference));
                             veo.push((item.speed / 1000).toFixed(2));
-                            distance.push((item.totaldistance / 1000).toFixed(3));
+                            distance.push(item.totaldistance);
                         });
                         this.distance = distance;
                         this.recvtime = recvtime;
