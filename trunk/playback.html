@@ -1497,6 +1497,7 @@
                         this.isShowMarker = !this.isShowMarker;
                     },
                     initCharts: function() {
+                        var me = this;
                         this.distance = [];
                         this.veo = [];
                         this.recvtime = [];
@@ -1505,9 +1506,28 @@
                         this.oil2 = [];
                         this.charts = echarts.init(document.getElementById('charts'));
                         this.charts.setOption(this.getChartsOption());
-                        // this.charts.on('click', 'series.' + this.$t('main.time'), function (params) {
-                        //     console.log('series.line',params);
-                        // });
+                        this.charts.getZr().on('click', function (params) {
+                            var pointInPixel= [params.offsetX, params.offsetY];
+                            if (me.charts.containPixel('grid',pointInPixel)) {
+                                var xIndex=me.charts.convertFromPixel({seriesIndex:0},[params.offsetX, params.offsetY])[0];
+                                
+                                me.index = xIndex;
+                                if (me.isExtract) {
+                                    if (me.index > me.extractRecords.length - 1) {
+                                        me.index = 0;
+                                    }
+                                    var track = me.extractRecords[me.index];
+                                } else {
+                                    if (me.index > me.records.length - 1) {
+                                        me.index = 0;
+                                    }
+                                    var track = me.records[me.index];
+                                }
+                                // var marker = this.getPointMarker();
+                                me.openInfoWindow(me.carMarker, track);
+
+                            }
+                        });
                     },
 
                     getChartsOption: function() {

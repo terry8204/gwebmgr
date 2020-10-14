@@ -15,7 +15,7 @@ BMapClass.pt.initMap = function() {
     this.mapInstance = new BMap.Map('my-map', { minZoom: 4, maxZoom: 20, enableMapClick: false })
     this.mapInstance.enableScrollWheelZoom()
     this.mapInstance.enableAutoResize()
-    this.mapInstance.disableDoubleClickZoom()
+    this.mapInstance.enableDoubleClickZoom() 
     this.mapInstance.centerAndZoom(new BMap.Point(108.0017245, 35.926895), 5)
 
     // var top_left_control = new BMap.ScaleControl({anchor: BMAP_ANCHOR_BOTTOM_LEFT});

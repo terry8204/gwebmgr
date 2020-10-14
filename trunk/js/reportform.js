@@ -630,7 +630,7 @@ function posiReport(groupslist) {
                     this.mapInstance = new BMap.Map('posi-map', { minZoom: 4, maxZoom: 18, enableMapClick: false });
                     this.mapInstance.enableScrollWheelZoom();
                     this.mapInstance.enableAutoResize();
-                    this.mapInstance.disableDoubleClickZoom();
+                    this.mapInstance.enableDoubleClickZoom();
                     this.mapInstance.centerAndZoom(new BMap.Point(113.264435, 24.129163), 18);
                 } else {
                     var center = new google.maps.LatLng(24.129163, 113.264435);
@@ -1067,7 +1067,7 @@ function parkDetails(groupslist) {
                     this.mapInstance = new BMap.Map('posi-map', { minZoom: 4, maxZoom: 18, enableMapClick: false });
                     this.mapInstance.enableScrollWheelZoom();
                     this.mapInstance.enableAutoResize();
-                    this.mapInstance.disableDoubleClickZoom();
+                    this.mapInstance.enableDoubleClickZoom();
                     this.mapInstance.centerAndZoom(new BMap.Point(113.264435, 24.129163), 18);
                 } else {
                     var center = new google.maps.LatLng(24.129163, 113.264435);
@@ -2190,7 +2190,7 @@ function speedingReport(groupslist) {
                     this.mapInstance = new BMap.Map('spedding-map', { minZoom: 4, maxZoom: 18, enableMapClick: false });
                     this.mapInstance.enableScrollWheelZoom();
                     this.mapInstance.enableAutoResize();
-                    this.mapInstance.disableDoubleClickZoom();
+                    this.mapInstance.enableDoubleClickZoom();
                     this.mapInstance.centerAndZoom(new BMap.Point(113.264435, 24.129163), 4);
                 } else {
                     var center = new google.maps.LatLng(24.129163, 113.264435);
@@ -6804,7 +6804,7 @@ function driverWorkDetails() {
                     this.mapInstance = new BMap.Map(document.getElementsByClassName('work-details-map')[0], { minZoom: 4, maxZoom: 18, enableMapClick: false });
                     this.mapInstance.enableScrollWheelZoom();
                     this.mapInstance.enableAutoResize();
-                    this.mapInstance.disableDoubleClickZoom();
+                    this.mapInstance.enableDoubleClickZoom();
                     this.mapInstance.centerAndZoom(new BMap.Point(108.0017245, 35.926895), 5);
                 } else {
                     var center = new google.maps.LatLng(24.129163, 113.264435);
@@ -7297,7 +7297,7 @@ function ioReport(groupslist){
                     this.mapInstance = new BMap.Map('posi-map', { minZoom: 4, maxZoom: 18, enableMapClick: false });
                     this.mapInstance.enableScrollWheelZoom();
                     this.mapInstance.enableAutoResize();
-                    this.mapInstance.disableDoubleClickZoom();
+                    this.mapInstance.enableDoubleClickZoom();
                     this.mapInstance.centerAndZoom(new BMap.Point(113.264435, 24.129163), 4);
                 } else if (mapType == 'gMap'){
                     var center = new google.maps.LatLng(24.129163, 113.264435);
@@ -7705,7 +7705,7 @@ function multiMedia(){
                     this.mapInstance = new BMap.Map(document.getElementsByClassName('work-details-map')[0], { minZoom: 4, maxZoom: 18, enableMapClick: false });
                     this.mapInstance.enableScrollWheelZoom();
                     this.mapInstance.enableAutoResize();
-                    this.mapInstance.disableDoubleClickZoom();
+                    this.mapInstance.enableDoubleClickZoom();
                     this.mapInstance.centerAndZoom(new BMap.Point(108.0017245, 35.926895), 17);
                 } else if (utils.getMapType() == 'gMap'){
                     var center = new google.maps.LatLng(24.129163, 113.264435);

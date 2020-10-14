@@ -327,7 +327,7 @@
                         this.mapInstance = new BMap.Map('posi-map', { minZoom: 4, maxZoom: 18, enableMapClick: false });
                         this.mapInstance.enableScrollWheelZoom();
                         this.mapInstance.enableAutoResize();
-                        this.mapInstance.disableDoubleClickZoom();
+                        this.mapInstance.enableDoubleClickZoom();
                         this.mapInstance.centerAndZoom(new BMap.Point(113.264435, 24.129163), 4);
                     } else if (mapType == 'gMap'){
                         var center = new google.maps.LatLng(24.129163, 113.264435);
