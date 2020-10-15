@@ -295,7 +295,10 @@
                         },
                         {
                             title:'是否同步',
-                            key:'isSync'
+                            render:function(h,params){
+                                var item = params.row;
+                                return h('span',{},item.sync==0?"异步":"同步")
+                            }
                         },
                         {
                             title: '操作',
@@ -522,13 +525,9 @@
                     };
                     utils.sendAjax(url, data, function (resp) {
                         if (resp.status === 0) {
-                            resp.records.forEach(function (item) { 
-                                if(item.sync==0){
-                                    item.isSync = "异步";
-                                }else{
-                                    item.isSync = "同步";
-                                }
-                            })
+                            // resp.records.forEach(function (item) { 
+                            
+                            // })
                             me.allDirectiveList = resp.records;
                             me.getDeviceType();
                         }
@@ -659,13 +658,11 @@
                         if (resp.status == 0) {
                             me.allDirectiveList.forEach(function (item) { 
                                 if(item.devicetype == data.devicetype &&item.predictcmdid === data.predictcmdid){
-                                    data.isSync = data.sync == 1 ? '同步':'异步';
                                     Object.assign(item,data)
                                 }
                             }); 
                             me.tableData.forEach(function (item) { 
                                 if(item.devicetype == data.devicetype &&item.predictcmdid === data.predictcmdid){
-                                    data.isSync = data.sync == 1 ? '同步':'异步';
                                     Object.assign(item,data);
                                 }
                             });

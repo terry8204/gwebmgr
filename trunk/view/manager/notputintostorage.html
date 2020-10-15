@@ -353,6 +353,7 @@
                     var data = {
                         deviceid: this.deviceid,
                         devicetype: this.devicetype,
+                        expirenotifytime: Date.now() + 24*3600*1000*365
                     };
 
                     if (this.devicename.trim()) data.devicename = this.devicename.trim();
