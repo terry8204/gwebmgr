@@ -1584,6 +1584,7 @@ var monitor = {
                     that.$Message.error(that.$t('monitor.CMD_SEND_RESULT_DETAIL_ERROR') + resp.cause);
                 } else if (status === CMD_SEND_CONFIRMED) {
                     resp.overdueDateStr = DateFormat.longToDateStr(resp.overduetime, timeDifference);
+                    resp.freeStr = isZh ? '终身免费':'Free for life'
                     that.deviceBaseInfo = resp;
                 } else if (status === CMD_SEND_OVER_RETRY_TIMES) {
                     that.$Message.error(that.$t('monitor.CMD_SEND_OVER_RETRY_TIMES'));
@@ -3095,10 +3096,14 @@ var monitor = {
 
             try {
                 var successful = document.execCommand('copy');
-                var msg = successful ? '成功复制到剪贴板' : '该浏览器不支持点击复制到剪贴板';
+                if(isZh){
+                    var msg = successful ? '成功复制到剪贴板' : '该浏览器不支持点击复制到剪贴板';
+                }else{
+                    var msg = successful ? 'Successfully copied to the clipboard' : 'This browser does not support Click to copy to the clipboard';
+                }
                 new Vue().$Message.success(msg);
             } catch (err) {
-                new Vue().$Message.error('该浏览器不支持点击复制到剪贴板');
+                new Vue().$Message.error(isZh?'该浏览器不支持点击复制到剪贴板':'This browser does not support Click to copy to the clipboard');
             }
             setTimeout(function() {
                 document.body.removeChild(textArea);

@@ -1113,7 +1113,6 @@ function onStarDevice(deviceid){
         stared:deviceObj.stared == 0 ? 1 : 0,
     }
     utils.sendAjax(url,data,function(resp){
-        console.log(resp);
         if(resp.status == 0){
             deviceObj.stared = data.stared;
             var staredDevCount = vRoot.$children[1].staredDevCount;
@@ -1157,10 +1156,14 @@ function copyToClipboardText() {
 
     try {
         var successful = document.execCommand('copy');
-        var msg = successful ? '成功复制到剪贴板' : '该浏览器不支持点击复制到剪贴板';
+        if(isZh){
+            var msg = successful ? '成功复制到剪贴板' : '该浏览器不支持点击复制到剪贴板';
+        }else{
+            var msg = successful ? 'Successfully copied to the clipboard' : 'This browser does not support Click to copy to the clipboard';
+        }
         new Vue().$Message.success(msg);
     } catch (err) {
-        new Vue().$Message.error('该浏览器不支持点击复制到剪贴板');
+        new Vue().$Message.error(isZh?'该浏览器不支持点击复制到剪贴板':'This browser does not support Click to copy to the clipboard');
     }
     setTimeout(function() {
         document.body.removeChild(textArea);
@@ -1192,10 +1195,14 @@ function copyToClipboard() {
 
     try {
         var successful = document.execCommand('copy');
-        var msg = successful ? '成功复制到剪贴板' : '该浏览器不支持点击复制到剪贴板';
+        if(isZh){
+            var msg = successful ? '成功复制到剪贴板' : '该浏览器不支持点击复制到剪贴板';
+        }else{
+            var msg = successful ? 'Successfully copied to the clipboard' : 'This browser does not support Click to copy to the clipboard';
+        }
         new Vue().$Message.success(msg);
     } catch (err) {
-        new Vue().$Message.error('该浏览器不支持点击复制到剪贴板');
+        new Vue().$Message.error(isZh?'该浏览器不支持点击复制到剪贴板':'This browser does not support Click to copy to the clipboard');
     }
     setTimeout(function() {
         document.body.removeChild(textArea);
