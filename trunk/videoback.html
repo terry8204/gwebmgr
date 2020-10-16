@@ -563,7 +563,8 @@
                                         var data = {
                                             deviceid: row.deviceid,
                                             action: 0,
-                                            downloadtaskid: row.downloadtaskid
+                                            downloadtaskid: row.downloadtaskid,
+                                            offset:DateFormat.getOffset()
                                         }
                                         vRoot.controlUploadFileFn(data, function(resp) {
                                             vRoot.$Message.success(lang.$t('videoback.pauseSucc')); 
@@ -750,6 +751,7 @@
                             starttime: gstartTimeStr,
                             endtime: gendTimeStr,
                             playcontrol: 2,
+                            offset: DateFormat.getOffset()
                         }, function(resp) {
                             var status = resp.status;
                             if (status == CMD_SEND_RESULT_UNCONFIRM) {
@@ -846,6 +848,7 @@
                         mediatype: mediatype,
                         streamtype: 0,
                         storetype: storetype,
+                        offset: DateFormat.getOffset()
                     };
                     this.tag && (data.tag = this.tag);
 
@@ -906,7 +909,7 @@
                         mediatype: mediatype,
                         streamtype: 0,
                         storetype: storetype,
-
+                        offset: DateFormat.getOffset()
                     };
                     utils.sendAjax(url, data, function(resp) {
                         var status = resp.status;
@@ -976,7 +979,8 @@
                     var url = myUrls.queryDownloadTasks(),
                         me = this;
                     utils.sendAjax(url, {
-                        deviceid: deviceid
+                        deviceid: deviceid,
+                        offset: DateFormat.getOffset()
                     }, function(resp) {
                         if (resp.status == 0) {
                             resp.tasks.sort(function(a, b) {
@@ -1019,6 +1023,7 @@
                             starttime: startTimeStr,
                             endtime: endTimeStr,
                             playtype: ishttps ? 'flvs' : 'flv',
+                            offset: DateFormat.getOffset()
                         }, function(resp) {
                             me.isSpin = false;
                             isRequsetPlaying = false;
@@ -1095,6 +1100,7 @@
                             starttime: row.starttime,
                             endtime: row.endtime,
                             playtype: ishttps ? 'flvs' : 'flv',
+                            offset: DateFormat.getOffset()
                         };
 
                     utils.sendAjax(url, data, function(resp) {
@@ -1169,6 +1175,7 @@
                             endtime: (dateStr + ' ' + this.timeRange[1]), //结束时间YY-MM-DD-HH-MM-SS
                             mediatype: mediatype, //资源类型     0：音视频 1音频 2视频 3视频或者音视频
                             storetype: storetype,
+                            offset: DateFormat.getOffset()
                         };
                     that.loading = true;
                     utils.sendAjax(url, data, function(data) {
