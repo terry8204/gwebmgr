@@ -353,7 +353,10 @@
                     var data = {
                         deviceid: this.deviceid,
                         devicetype: this.devicetype,
-                        expirenotifytime: Date.now() + 24*3600*1000*365
+                        expirenotifytime: Date.now() + 24*3600*1000*365,
+                        loginenable: 1,
+                        deviceenable: 1,
+                        reportedpoint:0,
                     };
 
                     if (this.devicename.trim()) data.devicename = this.devicename.trim();
