@@ -149,7 +149,7 @@ GoogleMap.pt.getDevAddress = function(track) {
             });
         }
     });
-    return '正在解析地址...';
+    return isZh ? '正在解析地址...' : 'Resolving address...';
 }
 
 GoogleMap.pt.getInfoWindow = function(track, address) {

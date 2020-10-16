@@ -173,7 +173,7 @@ OpenStreeMapCls.pt.getDevAddress = function(track) {
         //         }
         //     });
         // }
-        return '正在解析地址...';
+        return isZh ? '正在解析地址...' : 'Resolving address...';
     }
 }
 
