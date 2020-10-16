@@ -77,7 +77,7 @@
                 monitor: "Monitor",
                 reportForm: "Report",
                 bgManager: "Management",
-                systemParam: "System Params",
+                systemParam: "System",
                 hello: "Hello",
                 changePwd: "Change Password",
                 multiSiteLanding: "many login",

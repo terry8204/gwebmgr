@@ -412,6 +412,28 @@
                 onClickTabs:function(lang){
                     this.activeTab = lang;
                     // this.previewParams(editObject);
+                    this.previewObjList = [];
+                    if(this.activeTab == 'zh'){
+                        var params = editObject.params;
+                        if( params.trim() && this.checkFormatCorrect(params.trim())){
+                            var paramszh = "<params>"+ params +"</params>";
+                            var parser=new DOMParser(); 
+                            var xmlDoc=parser.parseFromString(paramszh,"text/xml"); 
+                            this.parseXML(xmlDoc);
+                        }else{
+                            console.log('没有解析params - :', params);
+                        }
+                    }else if(this.activeTab == 'en'){
+                        var params = editObject.paramsen;
+                        if( params.trim() && this.checkFormatCorrect(params.trim())){
+                            var paramsen = "<params>"+ this.paramsen +"</params>";
+                            var parser=new DOMParser(); 
+                            var xmlDoc=parser.parseFromString(paramsen,"text/xml"); 
+                            this.parseXML(xmlDoc);
+                        }else{
+                            console.log('没有解析params - :', params);
+                        }
+                    }
                 },
                 onCopyDirective:function(){
                     var directiveInfo =  null , me = this;
@@ -752,8 +774,10 @@
 
                     this.selectParamType = data.cmdtype; 
 
-                    this.previewParams(data);
+                    // this.previewParams(data);
 
+                    this.params = data.params;
+                    this.paramsen = data.paramsen;
                 },
                 previewParams:function(data){
                     if(this.activeTab == 'zh'){
