@@ -155,7 +155,7 @@
                 retain:'Retain',
             },
             monitor: {
-                camera:'camera',
+                camera:'Capture',
                 resolvingPower:'Resolving power',       
                 cameraChannel:'Camera channel', 
                 video:'Video',  
