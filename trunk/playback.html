@@ -274,9 +274,9 @@
         </div>
         <div class="right-ctrl" :class="rightTopCtrl">
             <div class="right-button-wrap" @click="changePosiType">
-                <img v-if="isExtract" src="./images/ic_fine_network_off.png">
-                <img v-else src="./images/ic_fine_network_on.png">
-                <div class="btn-label">{{isZh ? '精 / 粗' : 'Fine / Coarse'}} </div>
+                <img v-if="isExtract" :src="isZh?'./images/ic_fine_network_off.png':'./images/ic_fine_network_off_en.png'">
+                <img v-else :src="isZh?'./images/ic_fine_network_on.png':'./images/ic_fine_network_on_en.png'">
+                <div class="btn-label">{{isZh ? '精 / 粗' : 'F / N'}} </div>
             </div>
             <div class="right-button-wrap-marker" @click="onShowMarker">
                 <img v-if="isShowMarker" src="./images/ic_on.png">
@@ -1206,7 +1206,7 @@
                     },
                     getTotalMileage: function(records) {
                         var totaldistance = records[records.length - 1].totaldistance - records[0].totaldistance;
-                        this.totalMileage = utils.getMileage(totaldistance);
+                        this.totalMileage = totaldistance.toFixed(2) + 'km';
                     },
                     addEventListenerToMarker: function(marker) {
                         var me = this;
