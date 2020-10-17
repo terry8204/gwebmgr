@@ -642,7 +642,7 @@
                 stock12yue:'12',
                 allStockDev:'All stock',
                 addDays:'Add days',
-                notPutIntoStorage:"notPutIntoStorage",
+                notPutIntoStorage:"Unregistered",
                 protocolType:"Protocol type",
                 packetDescr:"packet",
                 onlineUsers:"Online users",
