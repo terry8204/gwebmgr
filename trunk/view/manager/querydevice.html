@@ -892,8 +892,10 @@
                     }, 
                     {
                         title: vRoot.$t('bgMgr.mileageRatio'),
-                        key: 'distanceratio',
-                        width:100,
+                        width:90,
+                        render:function(h,params){
+                            return h('span',{},params.row.distanceratio+'%')
+                        }
                     }, {
                         title: vRoot.$t("bgMgr.action"),
                         key: 'action',
