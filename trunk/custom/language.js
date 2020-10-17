@@ -646,6 +646,8 @@
                 protocolType:"Protocol type",
                 packetDescr:"packet",
                 onlineUsers:"Online users",
+                mileageRatio:"Ratio",
+                batchEditDevMileageRatio:"Batch reset ratio",
             },
             customer: {
                 kehuName: "Customer name",
@@ -1696,6 +1698,8 @@
                 protocolType:"协议类型",
                 packetDescr:"最后报文",
                 onlineUsers:"在线用户",
+                mileageRatio:"里程系数",
+                batchEditDevMileageRatio:"批量修改里程系数",
             },
             customer: {
                 kehuName: "客户名称",

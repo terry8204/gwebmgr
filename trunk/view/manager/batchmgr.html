@@ -46,6 +46,7 @@
                 <i-button @click="showBatchModal(3)" style="margin: 0 10px;">{{$t("bgMgr.batchResetPwd")}}</i-button>
                 <i-button @click="showBatchModal(4)" style="margin: 0 10px;" v-if="userName == 'admin'">{{$t("bgMgr.batchEditDevType")}}</i-button>
                 <i-button @click="showBatchModal(5)" style="margin: 0 10px;">{{$t("bgMgr.batchIssueCmd")}}</i-button>
+                <i-button v-if="userType<2" @click="showBatchModal(6)" style="margin: 0 10px;">{{$t('bgMgr.batchEditDevMileageRatio')}}</i-button>
             </i-col>
         </Row>
         <Modal v-model="importModal" width="700" :title="$t('device.import')">
@@ -147,6 +148,19 @@
                     </i-col>
                 </Row>
             </div>
+            <div v-if="showBatchModalType == 6">
+                <Row>
+                    <i-col span="4" offset="4" style="line-height: 32px;">
+                        {{$t('bgMgr.mileageRatio')}}:  
+                    </i-col>
+                    <i-col span="12">
+                        <input-number v-model.number="mileageRatio" :max="200" :min="1" style="width: 100%;"></input-number>
+                    </i-col>
+                    <i-col span="1" style="line-height: 32px;">
+                        %
+                    </i-col>
+                </Row>
+            </div>
             <div slot="footer" style="height:40px;">
                 <Row style="margin: 5px 0">
                     <i-col span="24" style="text-align: center;">
@@ -163,6 +177,7 @@
         i18n: utils.getI18n(),
         data: {
             loading: false,
+            userType: Cookies.get('userType'),
             batchSendCmdLoading: false,
             idx: 0,
             showBatchModalType: 1, // 1批量地址  2
@@ -185,6 +200,7 @@
             searchDeviceList: [],
             treeGroupList: [],
             tableData: [],
+            mileageRatio:100,
             columns: [{
                 type: 'index',
                 width: 60,
@@ -313,7 +329,7 @@
                         data.resetpasswordtype = 1;
                     }
                 } else if (this.showBatchModalType == 4) {
-                    data.action = 'changedevicetype';
+                    data.action = 'changedevicetype'; 
                     data.devicetype = this.deviceType;
                 } else if (this.showBatchModalType == 5) {
                     this.batchSendCmdLoading = true;
@@ -370,6 +386,9 @@
                     });
                     me.batchModal = false;
                     return;
+                }else if(this.showBatchModalType == 6){
+                    data.action = 'setdistanceratio'; 
+                    data.distanceratio = this.mileageRatio;
                 }
 
                 var lock = true;
@@ -385,13 +404,17 @@
                 }
                 var url = myUrls.batchOperate();
                 utils.sendAjax(url, data, function(respData) {
-                    if (respData.total == respData.success) {
-                        me.$Message.success(vRoot.$t('device.actionSucc')); 
-                    } else {
-                        me.$Message.error(vRoot.$t('message.changeFail') + ' : ' + respData.fail );  
+                    if(respData.status === 0){
+                        if (respData.total == respData.success) {
+                            me.$Message.success(vRoot.$t('device.actionSucc')); 
+                        } else {
+                            me.$Message.error(vRoot.$t('message.changeFail') + ' : ' + respData.fail );  
+                        }
+                        me.updatedActionState(respData.errorrecords);
+                        me.batchModal = false;
+                    }else{
+                        me.$Message.error(respData.cause);  
                     }
-                    me.updatedActionState(respData.errorrecords);
-                    me.batchModal = false;
                 });
             },
             handleBatchTransfer: function() {

@@ -889,6 +889,11 @@
                     }, {
                         title: vRoot.$t("user.grouping"),
                         key: 'groupname'
+                    }, 
+                    {
+                        title: vRoot.$t('bgMgr.mileageRatio'),
+                        key: 'mileageRatio',
+                        width:100,
                     }, {
                         title: vRoot.$t("bgMgr.action"),
                         key: 'action',
@@ -2035,6 +2040,9 @@
                 this.userlists = userlists;
                 this.userType = vstore.state.userType;
                 this.allGroups = {};
+                if(this.userType > 1){
+                    this.columns.splice(9,1);
+                }
                 this.queryGroupInfos(function() {
                     me.getDeviceList(false, 0);
                 });
