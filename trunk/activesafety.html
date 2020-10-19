@@ -169,7 +169,9 @@
                     <Tab-Pane :label="$t('activeSafety.abnormalDriving')" name="abnormalDriving">
                         <i-table border :loading="loading" highlight-row ref="abnormalTable" @on-current-change="onAbnormalDrivingChange" :columns="abnormalDrivingColumns" :data="abnormalDrivingList" height="283"></i-table>
                     </Tab-Pane>
+                    <i-button size="small" slot="extra" type="primary" style="margin-top:1px;margin-right:5px;" @click="prevDay">{{$t('reportForm.beforeDay')}}</i-button>
                     <date-picker type="date" v-model="date" slot="extra" size="small" style="margin-top:5px;margin-right:8px;"></date-picker>
+                    <i-button size="small" slot="extra" type="primary" style="margin-top:1px;margin-right:5px;" @click="nextDay">{{$t('reportForm.afterDay')}}</i-button>
                     <i-button size="small" slot="extra" type="primary" style="margin-top:1px;margin-right:5px;" @click="queryActiveSafety">{{$t('reportForm.query')}}</i-button>
                     <i-button size="small" slot="extra" type="success" style="margin-top:1px;margin-right:5px;" @click="prevArticle">{{$t('activeSafety.previous')}}</i-button>  
                     <i-button size="small" v-if="detailTableData.length" slot="extra" style="margin-top:1px;margin-right:5px;width:100px;">{{detailIndex+1}}/{{detailTableData.length}}</i-button>
@@ -753,6 +755,12 @@
                             }),
                         });
                     }
+                },
+                nextDay: function() {
+                    this.date = new Date(this.date.getTime() + 60 * 60 * 24 * 1000);
+                },
+                prevDay: function() {
+                    this.date = new Date(this.date.getTime() - 60 * 60 * 24 * 1000);
                 },
                 createMarker: function(track) {
                     var tempPoint = ol.proj.fromLonLat([track.callon, track.callat]),
