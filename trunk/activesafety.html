@@ -283,6 +283,9 @@
                                 case 0x1F:
                                     alarmevent = lang.$t('activeSafety.userDefined');  
                                     break;
+                                default :
+                                    alarmevent = lang.$t('activeSafety.userDefined');
+                                 break;
                             }
                         } else {
                             switch (params.row.alarmevent) {
@@ -324,6 +327,9 @@
                                 case 0x12:
                                     alarmevent = lang.$t('activeSafety.customEvents');
                                     break;
+                                default :
+                                    alarmevent = lang.$t('activeSafety.customEvents');
+                                 break;
                             }
                         }
 
@@ -403,6 +409,9 @@
                             case 0x1D:
                             case 0x1E:
                             case 0x1F:
+                                alarmevent = lang.$t('activeSafety.userDefined');
+                                break;
+                            default :
                                 alarmevent = lang.$t('activeSafety.userDefined');
                                 break;
                         }
@@ -562,6 +571,9 @@
                             case 0x12:
                                 alarmevent =  lang.$t('activeSafety.customEvents');
                                 break;
+                            default :
+                                    alarmevent = lang.$t('activeSafety.userDefined');
+                                 break;
                         }
                         return h('span', {}, alarmevent);
                     }
