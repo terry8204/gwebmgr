@@ -638,7 +638,7 @@ var utils = {
             ')">' + (isZh ? '轨迹' : 'Track') + '</span>' +
             '<span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="trackMap(' +
             deviceid +
-            ')">' + (isZh ? '跟踪' : 'Stalker') + '</span><span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="refreshPostion(' +
+            ')">' + (isZh ? '跟踪' : 'Follow') + '</span><span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="refreshPostion(' +
             deviceid +
             ')">' + (isZh ? '刷新位置' : 'RefreshPosi') + '</span><span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="openSim(' +
             deviceid +
