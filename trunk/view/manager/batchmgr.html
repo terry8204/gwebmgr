@@ -534,9 +534,9 @@
                 });
             },
             setTreeDataList: function(rootuser) {
-                this.searchDeviceList = [this.castUsersTreeToDevicesTree(rootuser, true)];
+                this.searchDeviceList = [this.castUsersTreeToDevicesTree(rootuser, true,false)];
                 this.treeDeviceList = deepClone(this.searchDeviceList);
-                this.treeGroupList = [this.castUsersTreeToDevicesTree(rootuser, false)];
+                this.treeGroupList = [this.castUsersTreeToDevicesTree(rootuser, false,true)];
             },
             filtered: function(textStr) {
                 function uniq(array) {
@@ -556,7 +556,7 @@
                 })
                 return uniq(newArr);
             },
-            getDeviceListGroups: function(groups, isNeedDevice, username) {
+            getDeviceListGroups: function(groups, isNeedDevice, username,isNeedRadio) {
                 var groupsList = [],
                     me = this;
                 if (groups != null) {
@@ -573,6 +573,46 @@
                             groupObj.render = (function(group, username) {
                                 return function(h, params) {
                                     var data = params.data;
+                                    var children = null;
+
+                                    if(isNeedRadio){
+                                        children = [
+                                            h('span', [
+                                                h('Radio', {
+                                                    props: {
+                                                        value: (me.selectedUserName == username && me.selectedGroupId == group.groupid)
+                                                    },
+                                                    style: {
+                                                        marginRight: '4px'
+                                                    }
+                                                }),
+                                                h('Icon', {
+                                                    props: {
+                                                        type: 'ios-folder-open'
+                                                    },
+                                                    style: {
+                                                        marginRight: '8px'
+                                                    }
+                                                }),
+                                                h('span', data.title)
+                                            ])
+                                        ]
+                                    }else{
+                                        children = [
+                                            h('span', [
+                                                h('Icon', {
+                                                    props: {
+                                                        type: 'ios-folder-open'
+                                                    },
+                                                    style: {
+                                                        marginRight: '8px'
+                                                    }
+                                                }),
+                                                h('span', data.title)
+                                            ])
+                                        ]
+                                    }
+
                                     return h('span', {
                                         on: {
                                             'click': function() {
@@ -585,20 +625,7 @@
                                             cursor: 'pointer',
                                             color: (me.selectedUserName == username && me.selectedGroupId == group.groupid) ? '#2D8CF0' : '#000'
                                         }
-                                    }, [
-
-                                        h('span', [
-                                            h('Icon', {
-                                                props: {
-                                                    type: 'ios-folder-open'
-                                                },
-                                                style: {
-                                                    marginRight: '8px'
-                                                }
-                                            }),
-                                            h('span', data.title)
-                                        ]),
-                                    ])
+                                    }, children)
                                 }
                             })(group, username);
                         }
@@ -629,6 +656,44 @@
                         groupid: 0,
                         render: function(h, params) {
                             var data = params.data;
+                            var children = [];
+                            if(isNeedRadio){
+                                        children = [
+                                            h('span', [
+                                                h('Radio', {
+                                                    props: {
+                                                        value: (me.selectedUserName == username && me.selectedGroupId == group.groupid)
+                                                    },
+                                                    style: {
+                                                        marginRight: '4px'
+                                                    }
+                                                }),
+                                                h('Icon', {
+                                                    props: {
+                                                        type: 'ios-folder-open'
+                                                    },
+                                                    style: {
+                                                        marginRight: '8px'
+                                                    }
+                                                }),
+                                                h('span', data.title)
+                                            ])
+                                        ]
+                                    }else{
+                                        children = [
+                                            h('span', [
+                                                h('Icon', {
+                                                    props: {
+                                                        type: 'ios-folder-open'
+                                                    },
+                                                    style: {
+                                                        marginRight: '8px'
+                                                    }
+                                                }),
+                                                h('span', data.title)
+                                            ])
+                                        ]
+                                    }
                             return h('span', {
                                 on: {
                                     'click': function() {
@@ -641,26 +706,14 @@
                                     cursor: 'pointer',
                                     color: (me.selectedUserName == username && me.selectedGroupId == 0) ? '#2D8CF0' : '#000'
                                 }
-                            }, [
-                                h('span', [
-                                    h('Icon', {
-                                        props: {
-                                            type: 'ios-folder-open'
-                                        },
-                                        style: {
-                                            marginRight: '8px'
-                                        }
-                                    }),
-                                    h('span', data.title)
-                                ]),
-                            ])
+                            }, children)
                         }
                     });
                 }
                 return groupsList;
 
             },
-            doCastUsersTreeToDevicesTree: function(usersTrees, isNeedDevice) {
+            doCastUsersTreeToDevicesTree: function(usersTrees, isNeedDevice,isNeedRadio) {
 
                 var devicesTreeRecord = [];
                 if (usersTrees != null && usersTrees.length > 0) {
@@ -672,9 +725,9 @@
                             render: utils.renderPerson
                         };
                         currentsubDevicesTreeRecord.title = username;
-                        var deviceListGroups = this.getDeviceListGroups(usersTree.groups, isNeedDevice, username);
+                        var deviceListGroups = this.getDeviceListGroups(usersTree.groups, isNeedDevice, username ,isNeedRadio);
                         if (username != null && subusers != null && subusers.length > 0) {
-                            var subDevicesTreeRecord = this.doCastUsersTreeToDevicesTree(subusers, isNeedDevice);
+                            var subDevicesTreeRecord = this.doCastUsersTreeToDevicesTree(subusers, isNeedDevice,isNeedRadio);
                             subDevicesTreeRecord = deviceListGroups.concat(subDevicesTreeRecord);
                             currentsubDevicesTreeRecord.children = subDevicesTreeRecord;
 
@@ -687,7 +740,7 @@
                 }
                 return devicesTreeRecord;
             },
-            castUsersTreeToDevicesTree: function(devicesTreeRecord, isNeedDevice) {
+            castUsersTreeToDevicesTree: function(devicesTreeRecord, isNeedDevice,isNeedRadio) {
                 var iViewTree = {
                     render: utils.renderPerson,
                     expand: true,
@@ -696,10 +749,10 @@
                     var username = devicesTreeRecord.username;
                     var subusers = devicesTreeRecord.subusers;
                     iViewTree.title = username;
-                    var deviceListGroups = this.getDeviceListGroups(devicesTreeRecord.groups, isNeedDevice, username);
+                    var deviceListGroups = this.getDeviceListGroups(devicesTreeRecord.groups, isNeedDevice, username,isNeedRadio);
                     if (username != null && subusers != null && subusers.length > 0) {
 
-                        var subDevicesTreeRecord = this.doCastUsersTreeToDevicesTree(subusers, isNeedDevice);
+                        var subDevicesTreeRecord = this.doCastUsersTreeToDevicesTree(subusers, isNeedDevice,isNeedRadio);
 
                         iViewTree.children = deviceListGroups.concat(subDevicesTreeRecord);
 
