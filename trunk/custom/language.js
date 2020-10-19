@@ -1345,7 +1345,7 @@
                 mapNotSupported:'该地图暂时不支持该功能',
                 deviceOffline:'设备离线',
                 deviceNotVideo:'该设备不是视频机',
-                notEnabled:" [未启用] ",
+                notEnabled:" [库存] ",
             },
             video:{  
                 accOpen:'ACC开,',
@@ -1430,7 +1430,7 @@
                 duration: '时长',
                 open: '开启',
                 stalling: '熄火',
-                notEnabled: '未启用',
+                notEnabled: '库存',
                 accOffTime: '熄火时长',
                 accOnTime: '开启时长',
                 accDetailed: '点火明细',
