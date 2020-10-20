@@ -53,16 +53,10 @@ https://www.apiview.com/doc/12232#/doc/dashbord
 2. 在目录下找到custom目录, 替换logo.png文件
 3. 在目录下找到custom目录，打开language.js搜索beiAn1 beiAn2，替换beiAn1 beiAn2的文字
 4. 在目录下找到custom目录，打开language.js搜索title，替换title的文字
-3. 修改是否启用对讲，对讲需要域名认证ssl,如果用ip或者域名没认证，在 config.js 文件把 
-    var isNeedTalk = true; 
-   改为: 
-    var isNeedTalk = false;
+
 
 #### 参与贡献
 
-1.  Fork 本仓库
-2.  新建 Feat_xxx 分支
-3.  提交代码
-4.  新建 Pull Request
+急需编写Windows 自动升级工具，随着越来越多的用户安装网页服务器，直接解压覆盖会丢失掉用户已经配置好了的logo，需要编写工具实现自动化配置和升级。 
 
 
