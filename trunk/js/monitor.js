@@ -226,8 +226,8 @@ var monitor = {
     data: function() {
         var vm = this;
         return {
-            resolution:"8",
-            cameraChannel:1,
+            resolution: "8",
+            cameraChannel: 1,
             isDestory: true,
             isMouseoverTop35: false,
             isLuyin: false,
@@ -282,6 +282,7 @@ var monitor = {
             videostreamtype: '',
             audiochannel: '',
             historyaudiocodec: '0',
+            realtimeaudiocodec: '0',
             needuploadfilename: false,
             videotimestamptype: '0',
             videochannelcount: 4,
@@ -351,10 +352,10 @@ var monitor = {
                 remark: '',
             },
             ownerInfoModal: false,
-            cameraModal:false,
-            cameraImgUrl:'',
+            cameraModal: false,
+            cameraImgUrl: '',
             // cameraImgUrl:'http://localhost:8080/gpsserver/mediapath/audiorecord/13555000004/f6878cb_1600653383172.JPEG',
-            cameraImgModal:false,
+            cameraImgModal: false,
             ownerInfoData: { //编辑的设备信息
                 deviceid: '',
                 ownername: '',
@@ -434,13 +435,13 @@ var monitor = {
             lastquerypositiontime: 0,
             videoChannelsColumns: [{
                 key: 'physicalchannel',
-                title: vm.$t('videoSettings.physicalChannel'), 
+                title: vm.$t('videoSettings.physicalChannel'),
             }, {
                 key: 'logicalchannel',
-                title:  vm.$t('videoSettings.logicalChannel'), 
+                title: vm.$t('videoSettings.logicalChannel'),
             }, {
                 key: 'channeltype',
-                title: vm.$t('videoSettings.channelType'), 
+                title: vm.$t('videoSettings.channelType'),
                 render: function(h, params) {
                     var channeltype = params.row.channeltype,
                         type;
@@ -455,9 +456,9 @@ var monitor = {
                 }
             }, {
                 key: 'connectptz',
-                title: vm.$t('videoSettings.connectPTZ'),    
+                title: vm.$t('videoSettings.connectPTZ'),
                 render: function(h, params) {
-                    var connectptz = params.row.connectptz;  
+                    var connectptz = params.row.connectptz;
                     return h('span', {}, connectptz === 0 ? vm.$t('videoSettings.notConnected') : vm.$t('videoSettings.connected'));
                 }
             }, ],
@@ -611,7 +612,7 @@ var monitor = {
                 this.isOpenJianting = false;
                 audioPlayer.pause();
                 audioPlayerTime = 0;
-                me.$Message.success(me.$t('monitor.closeSucc')); 
+                me.$Message.success(me.$t('monitor.closeSucc'));
                 me.audioPlayerTip = me.$t('monitor.jiantingYiclose');
                 var url = myUrls.stopAudio();
                 utils.sendAjax(url, {
@@ -621,11 +622,10 @@ var monitor = {
             } else {
                 this.loading = true;
                 var datatype = 3;
-                if(this.listingChoice == "duijiang")
-                	{
-                	datatype = 2;
-                	}
-                
+                if (this.listingChoice == "duijiang") {
+                    datatype = 2;
+                }
+
                 var url = myUrls.startAudio();
                 var data = {
                     deviceid: this.currentVideoDeviceInfo.deviceId,
@@ -637,12 +637,12 @@ var monitor = {
                     me.loading = false;
                     if (resp.status === 6) {
                         me.isOpenJianting = true;
-                        me.$Message.success(me.$t('monitor.openSucc')); 
+                        me.$Message.success(me.$t('monitor.openSucc'));
                         audioPlayerTime = Date.now();
                         me.initAudioPlayer(resp.record.playurl);
                         me.audioPlayerTip = me.$t('monitor.openJianTingTip1');
                     } else {
-                        me.$Message.error(me.$t('monitor.openFail')); 
+                        me.$Message.error(me.$t('monitor.openFail'));
                     }
                 });
             }
@@ -651,7 +651,7 @@ var monitor = {
         handleSetPlayParamter: function() {
 
             if (this.currentVideoDeviceInfo.deviceId == null) {
-                this.$Message.error(this.$t('monitor.selectVideoDevice')); 
+                this.$Message.error(this.$t('monitor.selectVideoDevice'));
                 return;
             }
 
@@ -668,6 +668,7 @@ var monitor = {
                 videotranstype: Number(this.videotranstype),
                 videostreamtype: Number(this.videostreamtype),
                 historyaudiocodec: Number(this.historyaudiocodec),
+                realtimeaudiocodec: Number(this.realtimeaudiocodec),
                 needuploadfilename: this.needuploadfilename ? 1 : 0,
                 videotimestamptype: Number(this.videotimestamptype),
                 videochannelcount: this.videochannelcount,
@@ -707,6 +708,7 @@ var monitor = {
             }, function(respData) {
                 if (respData.status == 0) {
                     me.historyaudiocodec = String(respData.historyaudiocodec);
+                    me.realtimeaudiocodec = String(respData.realtimeaudiocodec);
                     me.needuploadfilename = respData.needuploadfilename == 1 ? true : false;
                     me.videotimestamptype = String(respData.videotimestamptype);
                     me.videochannelcount = Number(respData.videochannelcount);
@@ -730,7 +732,7 @@ var monitor = {
                             me.physicalchannel8 = String(item.channeltype);
                         }
                     });
-                    me.$Message.success(me.$t('monitor.querySucc'));  
+                    me.$Message.success(me.$t('monitor.querySucc'));
                 } else {
                     me.$Message.error(me.$t('monitor.queryFail'));
                 }
@@ -814,7 +816,7 @@ var monitor = {
                     } else if (status === CMD_SEND_RESULT_DETAIL_ERROR) {
                         me.$Message.error(me.$t('monitor.CMD_SEND_RESULT_DETAIL_ERROR') + resp.cause);
                     } else if (status === CMD_SEND_CONFIRMED) {
-                        me.$Message.success(me.$t('monitor.CMD_SEND_CONFIRMED')); 
+                        me.$Message.success(me.$t('monitor.CMD_SEND_CONFIRMED'));
                     } else if (status === CMD_SEND_OVER_RETRY_TIMES) {
                         me.$Message.error(me.$t('monitor.CMD_SEND_OVER_RETRY_TIMES'));
                     } else if (status === CMD_SEND_SYNC_TIMEOUT) {
@@ -1008,7 +1010,7 @@ var monitor = {
                 storekeyframeinterval: 25,
                 storeresolution: 3,
                 usingaudio: 1,
-            }; 
+            };
             var videoCheckboxGroup = [],
                 me = this;
             me.realtimebitratemode = audiovideoparameters.realtimebitratemode + '';
@@ -1114,8 +1116,8 @@ var monitor = {
                 parameters.storekeyframeinterval = this.storekeyframeinterval;
                 parameters.realtimeframerate = this.realtimeframerate;
                 parameters.realtimeframebitrate = this.realtimeframebitrate;
-                parameters.storeframerate = this.storeframerate; 
-                parameters.storeframebitrate = this.storeframebitrate; 
+                parameters.storeframerate = this.storeframerate;
+                parameters.storeframebitrate = this.storeframebitrate;
                 parameters.usingaudio = Number(this.usingaudio);
 
                 var options = ['dateandtime', 'carnum', 'channel', 'latlon', 'recorderspeed', 'gpsspeed', 'drivingtime'];
@@ -1155,7 +1157,7 @@ var monitor = {
                     }
                 })
             } else {
-                this.$Message.error(me.$t('monitor.fillParameters')) 
+                this.$Message.error(me.$t('monitor.fillParameters'))
             }
 
         },
@@ -1164,7 +1166,7 @@ var monitor = {
                 this.$Message.error(this.$t('monitor.selectVideoDevice'));
                 return;
             }
-            this.loading = true; 
+            this.loading = true;
             var url = myUrls.querySingleAudioVideoParameters(),
                 me = this;
             utils.sendAjax(url, {
@@ -1584,7 +1586,7 @@ var monitor = {
                     that.$Message.error(that.$t('monitor.CMD_SEND_RESULT_DETAIL_ERROR') + resp.cause);
                 } else if (status === CMD_SEND_CONFIRMED) {
                     resp.overdueDateStr = DateFormat.longToDateStr(resp.overduetime, timeDifference);
-                    resp.freeStr = isZh ? '终身免费':'Free for life'
+                    resp.freeStr = isZh ? '终身免费' : 'Free for life'
                     that.deviceBaseInfo = resp;
                 } else if (status === CMD_SEND_OVER_RETRY_TIMES) {
                     that.$Message.error(that.$t('monitor.CMD_SEND_OVER_RETRY_TIMES'));
@@ -1624,7 +1626,7 @@ var monitor = {
                         var group = me.groups[k];
                         if (group.groupid == groupid) {
                             if (deviceSpliceList && deviceSpliceList.length) {
-  
+
                                 group.devices.push(deviceSpliceList[0]);
                                 me.transferAfterChangeGroupTitle(group);
                             }
@@ -1678,10 +1680,10 @@ var monitor = {
                 }
             });
 
-            if(isZh){
+            if (isZh) {
                 this.selectedCmdInfo.cmdName = cmdInfo.cmdname;
                 this.selectedCmdInfo.cmddescr = cmdInfo.cmddescr;
-            }else{
+            } else {
                 this.selectedCmdInfo.cmdName = cmdInfo.cmdnameen;
                 this.selectedCmdInfo.cmddescr = cmdInfo.cmddescren;
             }
@@ -1691,7 +1693,7 @@ var monitor = {
 
             if (cmdInfo.params) {
 
-                var paramsXMLObj = utils.parseXML(isZh?cmdInfo.params:cmdInfo.paramsen);
+                var paramsXMLObj = utils.parseXML(isZh ? cmdInfo.params : cmdInfo.paramsen);
                 // this.selectedCmdInfo.type = paramsXMLObj.type;
                 this.selectedCmdInfo.params = paramsXMLObj.paramsListObj;
 
@@ -1937,15 +1939,15 @@ var monitor = {
                             var isOnline = me.getIsOnline(device.deviceid);
                             device.isOnline = isOnline;
                         })
-                        if(cloneGroup.devices.length > 10){
-                            cloneGroup.devices = cloneGroup.devices.slice(0,10);
+                        if (cloneGroup.devices.length > 10) {
+                            cloneGroup.devices = cloneGroup.devices.slice(0, 10);
                         }
-                        
+
                         filterData.push(cloneGroup);
                     } else if (me.selectedState == "online") {
-                   
+
                         cloneGroup.devices = [];
-                        group.devices.forEach(function(device,index) {
+                        group.devices.forEach(function(device, index) {
                             var isOnline = me.getIsOnline(device.deviceid);
                             device.isOnline = isOnline;
                             if (isOnline && index < 10) {
@@ -1958,7 +1960,7 @@ var monitor = {
                     } else if (me.selectedState == "offline") {
 
                         cloneGroup.devices = [];
-                        group.devices.forEach(function(device,index) {
+                        group.devices.forEach(function(device, index) {
                             var isOnline = me.getIsOnline(device.deviceid);
                             device.isOnline = isOnline;
                             if (!isOnline && index < 10) {
@@ -2016,18 +2018,18 @@ var monitor = {
                             };
                         };
 
-                        if(obj.devices.length >= 10){
+                        if (obj.devices.length >= 10) {
                             break;
                         }
                     }
                     if (obj.devices.length) {
                         filterData.push(obj);
-                        if(filterData.length >= 10){
+                        if (filterData.length >= 10) {
                             break;
                         }
                     };
                 };
-              
+
             };
             this.filterData = filterData;
         },
@@ -2317,54 +2319,54 @@ var monitor = {
                 }
             }
         },
-        onClickCamera:function(){
+        onClickCamera: function() {
             this.loading = true;
             var me = this;
             var url = myUrls.capturephoToSync();
             var data = {
-                deviceid:this.currentDeviceId,
-                channelid:this.cameraChannel,
-                resolution:Number(this.resolution),
+                deviceid: this.currentDeviceId,
+                channelid: this.cameraChannel,
+                resolution: Number(this.resolution),
             };
-            utils.sendAjax(url,data,function(resp){
+            utils.sendAjax(url, data, function(resp) {
                 me.loading = false;
-                    var devicemedia = resp.devicemedia;
-                    var status = resp.status;
-                    if (status == CMD_SEND_RESULT_UNCONFIRM) {
-                        me.$Message.error(me.$t('monitor.CMD_SEND_RESULT_UNCONFIRM'));
-                    } else if (status === CMD_SEND_RESULT_PASSWORD_ERROR) {
-                        me.$Message.error(me.$t('monitor.CMD_SEND_RESULT_PASSWORD_ERROR'));
-                    } else if (status === CMD_SEND_RESULT_OFFLINE_NOT_CACHE) {
-                        me.$Message.error(me.$t('monitor.CMD_SEND_RESULT_OFFLINE_NOT_CACHE'));
-                    } else if (status === CMD_SEND_RESULT_OFFLINE_CACHED) {
-                        me.$Message.error(me.$t('monitor.CMD_SEND_RESULT_OFFLINE_CACHED'));
-                    } else if (status === CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD) {
-                        me.$Message.error(me.$t('monitor.CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD'));
-                    } else if (status === CMD_SEND_RESULT_DETAIL_ERROR) {
-                        me.$Message.error(me.$t('monitor.CMD_SEND_RESULT_DETAIL_ERROR') + resp.cause);
-                    } else if (status === CMD_SEND_CONFIRMED) {
-                        if(resp.devicemedia != null){
-                            me.cameraImgUrl = devicemedia.url
-                            me.cameraImgModal = true;
-                            me.cameraImgDeviceTime = devicemedia.devicetime;
-                        }else{
-                            me.$Message.error('devicemedia is null');
-                        }
-                    } else if (status === CMD_SEND_OVER_RETRY_TIMES) {
-                        me.$Message.error(me.$t('monitor.CMD_SEND_OVER_RETRY_TIMES'));
-                    } else if (status === CMD_SEND_SYNC_TIMEOUT) {  
-                        me.$Message.error(me.$t('message.captureFail')); 
-                    } 
+                var devicemedia = resp.devicemedia;
+                var status = resp.status;
+                if (status == CMD_SEND_RESULT_UNCONFIRM) {
+                    me.$Message.error(me.$t('monitor.CMD_SEND_RESULT_UNCONFIRM'));
+                } else if (status === CMD_SEND_RESULT_PASSWORD_ERROR) {
+                    me.$Message.error(me.$t('monitor.CMD_SEND_RESULT_PASSWORD_ERROR'));
+                } else if (status === CMD_SEND_RESULT_OFFLINE_NOT_CACHE) {
+                    me.$Message.error(me.$t('monitor.CMD_SEND_RESULT_OFFLINE_NOT_CACHE'));
+                } else if (status === CMD_SEND_RESULT_OFFLINE_CACHED) {
+                    me.$Message.error(me.$t('monitor.CMD_SEND_RESULT_OFFLINE_CACHED'));
+                } else if (status === CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD) {
+                    me.$Message.error(me.$t('monitor.CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD'));
+                } else if (status === CMD_SEND_RESULT_DETAIL_ERROR) {
+                    me.$Message.error(me.$t('monitor.CMD_SEND_RESULT_DETAIL_ERROR') + resp.cause);
+                } else if (status === CMD_SEND_CONFIRMED) {
+                    if (resp.devicemedia != null) {
+                        me.cameraImgUrl = devicemedia.url
+                        me.cameraImgModal = true;
+                        me.cameraImgDeviceTime = devicemedia.devicetime;
+                    } else {
+                        me.$Message.error('devicemedia is null');
+                    }
+                } else if (status === CMD_SEND_OVER_RETRY_TIMES) {
+                    me.$Message.error(me.$t('monitor.CMD_SEND_OVER_RETRY_TIMES'));
+                } else if (status === CMD_SEND_SYNC_TIMEOUT) {
+                    me.$Message.error(me.$t('message.captureFail'));
+                }
 
-            },function(){
+            }, function() {
                 me.loading = false;
-                me.$Message.error(me.$t('message.networkError'));  
+                me.$Message.error(me.$t('message.networkError'));
             });
         },
-        onClickCameraDownload:function(){
-           if(this.cameraImgUrl && this.cameraImgDeviceTime){
+        onClickCameraDownload: function() {
+            if (this.cameraImgUrl && this.cameraImgDeviceTime) {
                 window.open(this.cameraImgUrl);
-           }
+            }
         },
         openTreeDeviceNav: function(deviceid) {
             var me = this;
@@ -2646,7 +2648,7 @@ var monitor = {
 
                         device.isMoving = null;
                         if (device.lastactivetime <= 0 && track == undefined) {
-                            device.devicetitle = device.deviceTypeName + '-' + device.devicename + me.$t("monitor.notEnabled"); 
+                            device.devicetitle = device.deviceTypeName + '-' + device.devicename + me.$t("monitor.notEnabled");
                         } else {
 
                             var offlineTime = DateFormat.getCurrentUTC() - device.lastactivetime;
@@ -2738,10 +2740,10 @@ var monitor = {
                     // } else {
                     //     device.isStock = false;
                     // };
-                    if(device.stared == 1){
+                    if (device.stared == 1) {
                         stared++;
                         device.isStared = true;
-                    }else{
+                    } else {
                         device.isStared = false;
                     }
                 });
@@ -2832,7 +2834,7 @@ var monitor = {
             oldPositionLast.status = newPositionLast.status;
             oldPositionLast.strstatus = newPositionLast.strstatus;
             oldPositionLast.strstatusen = newPositionLast.strstatusen;
-            
+
             oldPositionLast.strvideoalarm = newPositionLast.strvideoalarm;
             oldPositionLast.strvideoalarmen = newPositionLast.strvideoalarmen;
 
@@ -2917,12 +2919,11 @@ var monitor = {
                     if (me.getIsOnline(device.deviceid)) {
                         online++;
                     } else {
-                        if (device.lastactivetime <= 0) {
-                        } else {
+                        if (device.lastactivetime <= 0) {} else {
                             offlineDevCount++;
                         }
                     }
-                    if(device.stared == 1){
+                    if (device.stared == 1) {
                         staredDevCount++;
                     }
                 });
@@ -3096,14 +3097,14 @@ var monitor = {
 
             try {
                 var successful = document.execCommand('copy');
-                if(isZh){
+                if (isZh) {
                     var msg = successful ? '成功复制到剪贴板' : '该浏览器不支持点击复制到剪贴板';
-                }else{
+                } else {
                     var msg = successful ? 'Successfully copied to the clipboard' : 'This browser does not support Click to copy to the clipboard';
                 }
                 new Vue().$Message.success(msg);
             } catch (err) {
-                new Vue().$Message.error(isZh?'该浏览器不支持点击复制到剪贴板':'This browser does not support Click to copy to the clipboard');
+                new Vue().$Message.error(isZh ? '该浏览器不支持点击复制到剪贴板' : 'This browser does not support Click to copy to the clipboard');
             }
             setTimeout(function() {
                 document.body.removeChild(textArea);
@@ -3114,7 +3115,7 @@ var monitor = {
             var directiveList = [];
             allCmdList.forEach(function(cmd) {
                 var copyCmd = cmd;
-                if(!isZh){
+                if (!isZh) {
                     copyCmd = deepClone(cmd)
                     copyCmd.cmdname = cmd.cmdnameen;
                 }

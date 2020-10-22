@@ -1123,6 +1123,52 @@
                                 </Row>
                                 <Row style="height:32px;margin: 10px 0;">
                                     <i-Col span="5" style="height: 100%;line-height:32px;text-align: right;">
+                                        {{$t('videoSettings.liveplayAudioFormat')}}
+                                    </i-Col>
+                                    <i-Col span="1" style="height: 100%;line-height:32px;text-align: center;">:</i-Col>
+                                    <i-Col span="12" style="height: 100%;line-height:32px;padding-left: 3px;">
+                                        <i-select v-model="realtimeaudiocodec" style="width:300px">
+                                            <i-option value="0">0-reserve</i-option>
+                                            <i-option value="1">1-Audio_G721</i-option>
+                                            <i-option value="2">2-Audio_G722</i-option>
+                                            <i-option value="3">3-Audio_G723</i-option>
+                                            <i-option value="4">4-Audio_G728</i-option>
+                                            <i-option value="5">5-Audio_G729</i-option>
+                                            <i-option value="6">6-Audio_G711A</i-option>
+                                            <i-option value="7">7-Audio_G711U</i-option>
+                                            <i-option value="8">8-Audio_G726</i-option>
+                                            <i-option value="9">9-Audio_G729A</i-option>
+                                            <i-option value="10">10-Audio_DVI4_3</i-option>
+                                            <i-option value="11">11-Audio_DVI4_4</i-option>
+                                            <i-option value="12">12-Audio_DVI4_8K</i-option>
+                                            <i-option value="13">13-Audio_DVI4_16K</i-option>
+                                            <i-option value="14">14-Audio_LPC</i-option>
+                                            <i-option value="15">15-Audio_S16BE_STEREO</i-option>
+                                            <i-option value="16">16-Audio_S16BE_MONO</i-option>
+                                            <i-option value="17">17-Audio_MPEGAUDIO</i-option>
+                                            <i-option value="18">18-Audio_LPCM</i-option>
+                                            <i-option value="19">19-Audio_AAC</i-option>
+                                            <i-option value="20">20-Audio_WMA9STD</i-option>
+                                            <i-option value="21">21-Audio_HEAAC</i-option>
+                                            <i-option value="22">22-Audio_PCM_VOICE</i-option>
+                                            <i-option value="23">23-Audio_PCM_AUDIO</i-option>
+                                            <i-option value="24">24-Audio_AACLC</i-option>
+                                            <i-option value="25">25-Audio_MP3</i-option>
+                                            <i-option value="26">26-Audio_ADPCMA</i-option>
+                                            <i-option value="27">27-Audio_MP4AUDIO</i-option>
+                                            <i-option value="28">28-Audio_AMR</i-option>
+                                            <i-option value="91">91-transport</i-option>
+                                            <i-option value="98">98-Video_H264</i-option>
+                                            <i-option value="99">99-Video_H265</i-option>
+                                            <i-option value="100">100-Video_AVS</i-option>
+                                            <i-option value="101">101-Video_SVAC</i-option>
+                                            <i-option value="110">110-Audio_G726_32K</i-option>
+                                            <i-option value="111">111-Audio_G726_40K</i-option>
+                                        </i-select>
+                                    </i-Col>
+                                </Row>
+                                <Row style="height:32px;margin: 10px 0;">
+                                    <i-Col span="5" style="height: 100%;line-height:32px;text-align: right;">
                                         {{$t('videoSettings.playbackAudioFormat')}}
                                     </i-Col>
                                     <i-Col span="1" style="height: 100%;line-height:32px;text-align: center;">:</i-Col>
