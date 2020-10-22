@@ -93,7 +93,7 @@
                         </i-col>
                     </Row>
                     <Row style="margin: 10px 0">
-                        <i-col span="8" style="height: 100%;text-align:right;line-height:32px;">{{$t("header.changePwd")}} : &nbsp;</i-col> 
+                        <i-col span="8" style="height: 100%;text-align:right;line-height:32px;">{{$t("header.changePwd")}} : &nbsp;</i-col>
                         <i-col span="16" style="height: 100%;line-height:32px;">
                             <i-button type="primary" style="width:160px;" @click="changePassword">{{$t("header.changePwd")}}</i-button>
                         </i-col>
@@ -136,7 +136,7 @@
                             <i-col span="16">
                                 <i-select v-model="multilogin" style="text-align:center;">
                                     <i-option value="1" style="text-align:center;">{{$t("header.yes")}}</i-option>
-                                    <i-option value="0" style="text-align:center;">{{$t("header.no")}}</i-option> 
+                                    <i-option value="0" style="text-align:center;">{{$t("header.no")}}</i-option>
                                 </i-select>
                             </i-col>
                         </Row>
@@ -246,7 +246,7 @@
                         </li>
                         <li :class="{active:selectedState=='stared'}" @click="selectedStateNav('stared')">
                             <p class="p-icon">
-                                <Icon :size="24" type="md-heart" /> 
+                                <Icon :size="24" type="md-heart" />
                             </p>
                             <p class="dev-count">{{$t("monitor.stared")}}({{staredDevCount}})</p>
                         </li>
@@ -311,14 +311,14 @@
                             </Dropdown>
                         </DropdownItem>
                         <DropdownItem name="luyin" v-show="isShowRecordBtn">{{$t("monitor.media")}}</DropdownItem>
-                        <DropdownItem name="bms" v-show="isShowBmsBtn">{{$t("monitor.batteryMgr")}}</DropdownItem>  
+                        <DropdownItem name="bms" v-show="isShowBmsBtn">{{$t("monitor.batteryMgr")}}</DropdownItem>
                         <DropdownItem name="obd" v-show="isShowObdBtn">OBD</DropdownItem>
                         <DropdownItem name="weight" v-show="isShowWeightBtn">{{$t("monitor.weight")}}</DropdownItem>
                         <DropdownItem name="watermeter" v-show="isShowWatermeterBtn">{{$t("monitor.watermeter")}}</DropdownItem>
                         <DropdownItem name="videosetting" v-if="isShowVideoBtn">{{$t("monitor.videoSettings")}}</DropdownItem>
                         <DropdownItem name="talk" v-if="isShowVideoBtn">{{$t("monitor.intercom")}}</DropdownItem>
                         <DropdownItem name="videoback" v-if="isShowVideoBtn">{{$t("monitor.videoPlayback")}}</DropdownItem>
-                        <DropdownItem name="activesafety" v-if="isShowActiveSafetyBtn">{{$t("monitor.activeSafety")}}</DropdownItem>  
+                        <DropdownItem name="activesafety" v-if="isShowActiveSafetyBtn">{{$t("monitor.activeSafety")}}</DropdownItem>
                         <DropdownItem name="cmdrecord">{{$t("monitor.cmdRecord")}}</DropdownItem>
                         <DropdownItem name="alarmList">{{$t("monitor.alarmRecords")}}</DropdownItem>
                         <DropdownItem name="phoneAlarm">{{$t("reportForm.phoneAlarm")}}</DropdownItem>
@@ -788,7 +788,7 @@
                 <DropdownItem name="alarmList">{{$t("monitor.alarmRecords")}}</DropdownItem>
                 <DropdownItem name="phoneAlarm">{{$t("reportForm.phoneAlarm")}}</DropdownItem>
                 <DropdownItem name="devbaseinfo">{{$t("monitor.devBaseInfo")}}</DropdownItem>
-                <DropdownItem name="ownerInfo">{{$t("monitor.ownerInfo")}}</DropdownItem> 
+                <DropdownItem name="ownerInfo">{{$t("monitor.ownerInfo")}}</DropdownItem>
                 </i-dropdown-menu>
                 </Dropdown>
                 <li>
@@ -808,7 +808,7 @@
                         <div class="map_manager" :style='{height:isMouseoverTop35?"0px":"35px",overflow:isMouseoverTop35?"hidden":"visible"}'>
                             <div style="float:left;height:33px; line-height:33px;padding-left:2px;">
                                 <ButtonGroup size="small" shape="circle">
-                                    <i-button @click="switchMapMode(1)" :type="isMapMode?'primary':''">{{$t("monitor.mapMode")}}</i-button> 
+                                    <i-button @click="switchMapMode(1)" :type="isMapMode?'primary':''">{{$t("monitor.mapMode")}}</i-button>
                                     <i-button @click="switchMapMode(2)" :type="isMapMode?'':'primary'">{{$t("monitor.videoMode")}}</i-button>
                                 </ButtonGroup>
                             </div>
@@ -822,7 +822,7 @@
                                 </li>
                                 <li style="padding-top:6px;margin:0 0 0 10px;">
                                     <Poptip trigger="click" :title="$t('monitor.regionSelection')">
-                                        <i-button size="small"> {{$t("monitor.regionSelection")}} </i-button> 
+                                        <i-button size="small"> {{$t("monitor.regionSelection")}} </i-button>
                                         <div slot="content" style="width:300px;padding:5px 0;">
                                             <div>
                                                 <div>
@@ -830,7 +830,7 @@
                                                 </div>
                                                 <div style="padding-top:10px;">
                                                     <Row>
-                                                        <i-Col span="12" style="padding-right:6.5px;"> : 
+                                                        <i-Col span="12" style="padding-right:6.5px;"> :
                                                             <i-button type="primary" style="width:100%;" :loading="arealoading" @click="handleQueryArea"> {{$t("reportForm.query")}} </i-button>
                                                         </i-Col>
                                                         <i-Col span="12" style="padding-left:6.5px;">
@@ -843,7 +843,7 @@
                                     </Poptip>
                                 </li>
                                 <li style="padding-top:6px;">
-                                    <i-button size="small" @click="echartsMapPage"> {{$t("monitor.screenDisplay")}} </i-button> 
+                                    <i-button size="small" @click="echartsMapPage"> {{$t("monitor.screenDisplay")}} </i-button>
                                 </li>
                                 <li class="maps">
                                     <i-select v-model="mapType" size="small" style="width:100px">
@@ -864,10 +864,10 @@
                                                 <i class='icon iconfont icon-chizi' style='display:inline-block;width:16px:height:16px;margin-right:5px'></i>{{$t("monitor.ranging")}}
                                             </DropdownItem>
                                             <DropdownItem name="normal">
-                                                <i class='icon iconfont icon-moren' style='display:inline-block;width:15px:height:15px;margin-right:5px;font-size:14px'></i>{{$t("monitor.defaultStyle")}} 
+                                                <i class='icon iconfont icon-moren' style='display:inline-block;width:15px:height:15px;margin-right:5px;font-size:14px'></i>{{$t("monitor.defaultStyle")}}
                                             </DropdownItem>
                                             <DropdownItem name="midnight">
-                                                <i class='icon iconfont icon-wuye' style='display:inline-block;width:16px:height:16px;margin-right:5px;font-size:14px'></i>{{$t("monitor.midnightBlue")}} 
+                                                <i class='icon iconfont icon-wuye' style='display:inline-block;width:16px:height:16px;margin-right:5px;font-size:14px'></i>{{$t("monitor.midnightBlue")}}
                                             </DropdownItem>
                                         </i-dropdown-menu>
                                     </Dropdown>
@@ -877,10 +877,10 @@
                         <div id="my-map" :class="{ 'map-mode-cls': isMapMode, 'video-mode-cls': !isMapMode }" :style='{top:isMouseoverTop35?"10px":"35px"}'></div>
                         <div id="video_wrap" :class="{ 'videos-wrapper-hide': isMapMode, 'videos-wrapper-show': !isMapMode }" :style='{top:isMouseoverTop35?"10px":"35px"}'>
                             <div class="video_header">
-                                <div class="video_function">  
+                                <div class="video_function">
                                     <span :title="$t('monitor.clearAllVideos')" @click="handleCleanAllVideos" style="color:#ffffff;"><i class="icon iconfont icon-custom-clear"></i></span>
                                     <span :title="$t('monitor.mute')" @click="handlePlayerMute" style="color:#ffffff;"><i class="icon iconfont" :class="{'icon-yinliang':!isMute,'icon-guanbiyinliang':isMute}"></i></span>
-                                </div>  
+                                </div>
                                 <div style="height: 100%;float:right;" class="tv_box">
                                     <span :title="$t('monitor.showAChannel')"><i class="icon icon_num1" @click="openAndCloseVideoWindows(1)"></i></span>
                                     <span :title="$t('monitor.showFourChannel')"><i class="icon icon_num2" @click="openAndCloseVideoWindows(4)"></i></span>
@@ -1066,7 +1066,7 @@
                                             <i-button style="width:120px;" @click="defaultQualityParams">{{$t('monitor.default')}}</i-button>
                                         </div>
                                     </Tab-Pane>
-                                   
+
                                     <i-button @click="isShowYunTai=false" size="small" slot="extra" style="margin:5px 5px 0 0;">{{$t("monitor.close")}}</i-button>
                                 </Tabs>
                                 <div style="visibility: hidden;">
@@ -1084,7 +1084,7 @@
                     <Modal v-model="setupVideoModal" width="800">
                         <p slot="header" style="color:#f60;text-align:center">
                             <Icon type="ios-settings"></Icon>
-                            <span>{{$t('monitor.videoSettings')}}</span> 
+                            <span>{{$t('monitor.videoSettings')}}</span>
                         </p>
                         <Tabs value="" :animated="false">
                             <Tab-Pane :label="$t('videoSettings.videoPlayParameter')" name="videoPlay">
@@ -1374,7 +1374,7 @@
                                 </Row>
                                 <Row style="height:32px;margin: 10px 0;">
                                     <i-Col span="4" style="height: 100%;line-height:32px;text-align: right;">
-                                        {{$t('videoSettings.realTimeStreamKeyframeInterval')}} 
+                                        {{$t('videoSettings.realTimeStreamKeyframeInterval')}}
                                     </i-Col>
                                     <i-Col span="1" style="height: 100%;line-height:32px;text-align: center;">
                                         :
@@ -1483,7 +1483,7 @@
                                         </i-select>
                                     </i-Col>
                                 </Row>
-                            </Tab-Pane> 
+                            </Tab-Pane>
                             <Tab-Pane :label="$t('videoSettings.singleChannelVideoParameters')" name="aloneVideoSetup">
                                 <i-button type="info" @click="querySingleAudioVideoParameters" style="width:180px;margin-bottom:10px;" :loading="loading">{{$t("reportForm.query")}}</i-button>
                                 <Tabs value="" :animated="false" type="card">
@@ -1627,7 +1627,7 @@
                                     </Tab-Pane>
                                 </Tabs>
                             </Tab-Pane>
-                            <Tab-Pane :label="$t('videoSettings.audioAndVideoTerminalProperties')" name="videoProperty"> 
+                            <Tab-Pane :label="$t('videoSettings.audioAndVideoTerminalProperties')" name="videoProperty">
                                 <Row style="height:32px;margin: 10px 0;">
                                     <i-Col span="7" offset="7" style="height: 100%;line-height:32px;">
                                         <i-button @click="queryVideoProperty" style="width:120px;" type="primary" :loading="loading">{{$t("reportForm.query")}}</i-button>
@@ -1688,7 +1688,7 @@
                                     </i-Col>
                                 </Row>
                                 <Row style="height:32px;">
-                                    <i-Col span="8" style="height: 100%;text-align:right;line-height:32px;">{{$t('videoSettings.maxAudioChannels')}}  : &nbsp;</i-Col>
+                                    <i-Col span="8" style="height: 100%;text-align:right;line-height:32px;">{{$t('videoSettings.maxAudioChannels')}} : &nbsp;</i-Col>
                                     <i-Col span="16" style="height: 100%;line-height:32px;">
                                         {{videoProperty.audiomaxsupport}}
                                     </i-Col>
@@ -2120,7 +2120,7 @@
                                 </i-col>
                             </Row>
                             <Row>
-                                <i-col span="5" style="height: 100%;text-align:right;line-height:25px;">{{$t("monitor.terminalNumber")}} : &nbsp;</i-col> 
+                                <i-col span="5" style="height: 100%;text-align:right;line-height:25px;">{{$t("monitor.terminalNumber")}} : &nbsp;</i-col>
                                 <i-col span="16" style="height: 100%;line-height:25px;text-align:left;">
                                     {{deviceBaseInfo.terminalid}}
                                 </i-col>
@@ -2255,7 +2255,7 @@
                         <div style="text-align:center">
                             <Row style="margin:10px 0;">
                                 <i-col span="6" style="height: 100%;text-align:right;line-height:32px;">
-                                    {{$t("monitor.cameraChannel")}}&nbsp;&nbsp;  
+                                    {{$t("monitor.cameraChannel")}}&nbsp;&nbsp;
                                 </i-col>
                                 <i-col span="15" style="height: 100%;text-align:center;line-height:32px;">
                                     <i-select v-model="cameraChannel">
@@ -2408,7 +2408,7 @@
         </div>
     </script>
 
-    
+
     <!-- 规则 -->
     <script type="text/x-template" id="rule-template">
         <div class='rule-wrapper'>
@@ -2442,7 +2442,7 @@
                     <ul>
                         <li :class="{selected:index == 1}" @click="changeComponent(1)">{{$t("alarm.alarmMsg")}}</li>
                         <li :class="{selected:index == 2}" @click="changeComponent(2)">{{$t("alarm.devMsg")}}</li>
-                        <li :class="{selected:index == 5}" @click="changeComponent(5)">{{$t("alarm.mediaFiles")}}</li> 
+                        <li :class="{selected:index == 5}" @click="changeComponent(5)">{{$t("alarm.mediaFiles")}}</li>
                         <li :class="{selected:index == 3}" @click="changeComponent(3)">{{$t("alarm.expirationInfo")}}({{overdueinfolist.length}})</li>
                         <li :class="{selected:index == 4}" @click="changeComponent(4)">{{$t("alarm.emergencyAlarm")}}</li>
                         <li>
@@ -2466,17 +2466,8 @@
                 </div>
                 <div class="msg_content">
                     <keep-alive>
-                        <component 
-                            :is="componentName" 
-                            :tabletype="isLargen"
-                            :waringrecords="waringRecords" 
-                            :wrapperheight="wrapperHeight" 
-                            :deviceinfolist="overdueDevice" 
-                            :emergencyAlarmList="emergencyAlarmList" 
-                            :overdueinfolist="overdueinfolist" 
-                            :mediaFileList="mediaFileLists" 
-                            @deletemsg="deleteMsg" 
-                            @showdisposemodal="showDisposeModalFrame">
+                        <component :is="componentName" :tabletype="isLargen" :waringrecords="waringRecords" :wrapperheight="wrapperHeight" :deviceinfolist="overdueDevice" :emergencyAlarmList="emergencyAlarmList" :overdueinfolist="overdueinfolist" :mediaFileList="mediaFileLists"
+                            @deletemsg="deleteMsg" @showdisposemodal="showDisposeModalFrame">
                         </component>
                     </keep-alive>
                 </div>
@@ -2533,7 +2524,7 @@
                 <DropdownItem name="io">{{$t("device.ioConfig")}}</DropdownItem>
                 <DropdownItem name="carMaster">{{$t("monitor.ownerInfo")}}</DropdownItem>
                 <DropdownItem name="insure">{{$t("device.insureInfo")}}</DropdownItem>
-                <DropdownItem name="resetPass">{{$t("user.resetPwd")}}</DropdownItem> 
+                <DropdownItem name="resetPass">{{$t("user.resetPwd")}}</DropdownItem>
                 <DropdownItem name="exceededSpeed">{{$t("device.speedingSetting")}}</DropdownItem>
             </i-dropdown-menu>
         </Dropdown>
