@@ -6,7 +6,7 @@
 </style>
 <div id="adddevice">
     <div class="full">
-        <h3 class="h3-title">{{$t("bgMgr.addDev")}}</h3>  
+        <h3 class="h3-title">{{$t("bgMgr.addDev")}}</h3>
         <div>
             <Row style="margin: 10px 0" v-if="userType < 3">
                 <i-col span="4" style="height: 100%;text-align:right;line-height:32px;"><i style="color: red;display: inline-block;">*</i>&nbsp;{{$t("reportForm.selectAccount")}} : &nbsp;</i-col>
@@ -21,7 +21,7 @@
                                     </div>
                                 </li>
                             </ul>
-                        </transition>   
+                        </transition>
                     </div>
                 </i-col>
             </Row>
@@ -107,11 +107,42 @@
             </Row>
 
             <Row style="margin: 10px 0">
-
-
                 <i-col span="4" style="height: 100%;text-align:right;line-height:32px;"><i style="color: red;display: inline-block;"></i>&nbsp;{{$t("device.loginPwd")}} : &nbsp;</i-col>
                 <i-col span="8">
                     <i-input v-model.trim="loginpwd" :placeholder="$t('device.pwdTips')"></i-input>
+                </i-col>
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;{{$t("device.timeZone")}} : &nbsp;</i-col>
+                <i-col span="8">
+                    <i-select v-model="timezone">
+                        <i-option value="99">{{$t("device.automatic")}}</i-option>
+                        <i-option value="-12">-12</i-option>
+                        <i-option value="-11">-11</i-option>
+                        <i-option value="-10">-10</i-option>
+                        <i-option value="-9">-9</i-option>
+                        <i-option value="-8">-8</i-option>
+                        <i-option value="-7">-7</i-option>
+                        <i-option value="-6">-6</i-option>
+                        <i-option value="-5">-5</i-option>
+                        <i-option value="-4">-4</i-option>
+                        <i-option value="-3">-3</i-option>
+                        <i-option value="-2">-2</i-option>
+                        <i-option value="-1">-1</i-option>
+                        <i-option value="0">0</i-option>
+                        <i-option value="1">1</i-option>
+                        <i-option value="2">2</i-option>
+                        <i-option value="3">3</i-option>
+                        <i-option value="4">4</i-option>
+                        <i-option value="5">5</i-option>
+                        <i-option value="6">6</i-option>
+                        <i-option value="7">7</i-option>
+                        <i-option value="8">8</i-option>
+                        <i-option value="9">9</i-option>
+                        <i-option value="10">10</i-option>
+                        <i-option value="11">11</i-option>
+                        <i-option value="12">12</i-option>
+                        <i-option value="13">13</i-option>
+                        <i-option value="14">14</i-option>
+                    </i-select>
                 </i-col>
             </Row>
 
@@ -138,6 +169,7 @@
                     }
                 },
                 teltype: '',
+                timezone: '99',
                 iconState: "ios-arrow-down",
                 deviceid: "",
                 devicename: "",
@@ -218,7 +250,7 @@
                     };
 
                     if (this.devicetype === "") {
-                        me.$Message.error(me.$t("message.selectDeviceTtypeTips"));  
+                        me.$Message.error(me.$t("message.selectDeviceTtypeTips"));
                         return;
                     }
 
@@ -228,6 +260,7 @@
                         expirenotifytime: new Date(this.overduetime).getTime(),
                         loginenable: Number(this.loginenable),
                         deviceenable: Number(this.deviceenable),
+                        timezone: Number(this.timezone),
                     };
 
                     if (this.devicename) data.devicename = this.devicename;

@@ -811,6 +811,8 @@
                 exportErrorTips: 'The imported device does not exist in this account, please confirm',
                 selectedTransferGroup: 'Please select the group you want to transfer into',
                 scale: 'Scale',
+                timeZone: 'Time zone',
+                automatic: 'Auto',
             },
             insure: {
                 templateDownload: 'Template download',
@@ -1865,6 +1867,8 @@
                 exportErrorTips: '导入的设备不存在该账户下，请确认',
                 selectedTransferGroup: '请选择要转入的组',
                 scale: '刻度',
+                timeZone: '时区',
+                automatic: '自动',
             },
             insure: {
                 templateDownload: '模版下载',

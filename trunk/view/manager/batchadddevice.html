@@ -72,7 +72,7 @@
             </Row>
 
             <Row style="margin: 10px 0">
-                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">{{$t("device.idLength")}}: &nbsp;</i-col> 
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">{{$t("device.idLength")}}: &nbsp;</i-col>
                 <i-col span="8">
                     <input-number v-model.number="idLength" :max="15" :min="8" :editable="false" style="width: 100%;"></input-number>
                 </i-col>
@@ -105,15 +105,47 @@
                         <i-option value="1">{{$t("user.allow")}}</i-option>
                     </i-select>
                 </i-col>
-
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;{{$t("device.timeZone")}} : &nbsp;</i-col>
+                <i-col span="8">
+                    <i-select v-model="timezone">
+                        <i-option value="99">{{$t("device.automatic")}}</i-option>
+                        <i-option value="-12">-12</i-option>
+                        <i-option value="-11">-11</i-option>
+                        <i-option value="-10">-10</i-option>
+                        <i-option value="-9">-9</i-option>
+                        <i-option value="-8">-8</i-option>
+                        <i-option value="-7">-7</i-option>
+                        <i-option value="-6">-6</i-option>
+                        <i-option value="-5">-5</i-option>
+                        <i-option value="-4">-4</i-option>
+                        <i-option value="-3">-3</i-option>
+                        <i-option value="-2">-2</i-option>
+                        <i-option value="-1">-1</i-option>
+                        <i-option value="0">0</i-option>
+                        <i-option value="1">1</i-option>
+                        <i-option value="2">2</i-option>
+                        <i-option value="3">3</i-option>
+                        <i-option value="4">4</i-option>
+                        <i-option value="5">5</i-option>
+                        <i-option value="6">6</i-option>
+                        <i-option value="7">7</i-option>
+                        <i-option value="8">8</i-option>
+                        <i-option value="9">9</i-option>
+                        <i-option value="10">10</i-option>
+                        <i-option value="11">11</i-option>
+                        <i-option value="12">12</i-option>
+                        <i-option value="13">13</i-option>
+                        <i-option value="14">14</i-option>
+                    </i-select>
+                </i-col>
             </Row>
 
             <Row style="margin: 10px 0">
                 <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;{{$t('alarm.devNum')}} : &nbsp;</i-col>
                 <i-col span="6">
                     <i-input v-model.trim="deviceid" type="textarea" :placeholder="$t('device.copyBatchNumber')" :autosize="{minRows: 2,maxRows: 15}"></i-input>
-                </i-col>    
-   
+                </i-col>
+
                 <i-col span="13" :offset="1">
                     <i-input v-model.trim="errorTips" :class="fontColor" type="textarea" disabled :autosize="{minRows: 2,maxRows: 15}"></i-input>
                 </i-col>
@@ -143,6 +175,7 @@
                         return date && date.valueOf() < Date.now() - 86400000;
                     }
                 },
+                timezone: '99',
                 teltype: '1',
                 loading: false,
                 idLength: 15,
@@ -225,7 +258,7 @@
                         }
                     });
                     if (deviceids.length > 500) {
-                        me.$Message.error(me.$t("message.addDevice500Tips"));  
+                        me.$Message.error(me.$t("message.addDevice500Tips"));
                         return;
                     }
 
@@ -235,7 +268,7 @@
                     };
 
                     if (this.devicetype === "") {
-                        me.$Message.error(me.$t("message.selectDeviceTtypeTips"));   
+                        me.$Message.error(me.$t("message.selectDeviceTtypeTips"));
                         return;
                     }
 
@@ -245,6 +278,7 @@
                         expirenotifytime: new Date(this.overduetime).getTime(),
                         loginenable: Number(this.loginenable),
                         deviceenable: Number(this.deviceenable),
+                        timezone: Number(this.timezone),
                     };
 
                     if (this.teltype) {
@@ -500,7 +534,7 @@
                         this.matchingDeviceIds(this, newText);
                     } else {
                         this.isOk = false;
-                        this.errorTips = me.$t('message.deviceIdTips') ;
+                        this.errorTips = me.$t('message.deviceIdTips');
                     }
                 }
             },
