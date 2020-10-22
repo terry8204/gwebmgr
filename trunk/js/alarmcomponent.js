@@ -18,7 +18,7 @@ var waringComponent = {
             alarmTypeList: [],
             emergencyAlarmList: [],
             overdueinfolist: [],
-            mediaFileLists:[],
+            mediaFileLists: [],
             // alarmCmdList: [[]],
             isWaring: false,
             interval: 10000,
@@ -63,7 +63,7 @@ var waringComponent = {
         //     // } else {
         //     //     this.isWaring = false;
         //     // }
-           
+
         //     // if(this.isWaring == false){
         //     //     this.isWaring = this.getIsWaring();
         //     //     console.log('isWaring', this.isWaring);
@@ -72,19 +72,19 @@ var waringComponent = {
         settingModal: function(newVal) {
             if (newVal) {
                 var checkboxObjLength = this.checkboxObjLength;
-                for(var i = 0 ; i < checkboxObjLength ;i++){
-                    this.checkboxObj[i] = gForcealarm.charAt(i) == '1'? true : false;
+                for (var i = 0; i < checkboxObjLength; i++) {
+                    this.checkboxObj[i] = gForcealarm.charAt(i) == '1' ? true : false;
                 }
             }
         }
     },
     methods: {
-        getIsWaring:function(){
+        getIsWaring: function() {
             var isWaring = false;
             var waringRecords = this.waringRecords;
             for (var index = 0; index < waringRecords.length; index++) {
                 var item = waringRecords[index];
-                if(item.disposestatus == 0){
+                if (item.disposestatus == 0) {
                     isWaring = true;
                     break;
                 }
@@ -138,7 +138,7 @@ var waringComponent = {
         getForceAlarmData: function() {
             var str = "";
             var checkboxObjLength = this.checkboxObjLength;
-            for (var i = 0;  i < checkboxObjLength; i++) {
+            for (var i = 0; i < checkboxObjLength; i++) {
                 var val = this.checkboxObj[i];
                 if (val) {
                     str += "1";
@@ -149,7 +149,7 @@ var waringComponent = {
             return str;
         },
         setAlarmAction: function() {
-            var alarmaction = Number(Cookies.get("alarmaction"));
+            var alarmaction = Number(localStorage.getItem("alarmaction"));
             if ((alarmaction & 0x01) == 1) {
                 this.isMute = true;
             }
@@ -181,8 +181,8 @@ var waringComponent = {
             utils.sendAjax(url, data, function(resp) {
                 if (resp.status === 0) {
                     gForcealarm = data.forcealarm;
-                    Cookies.set("forcealarm", data.forcealarm);
-                    Cookies.set("alarmaction", data.alarmaction);
+                    localStorage.setItem("forcealarm", data.forcealarm);
+                    localStorage.setItem("alarmaction", data.alarmaction);
                     me.$Message.success('设置成功');
                 } else {
                     me.$Message.error('设置失败');
@@ -200,7 +200,7 @@ var waringComponent = {
                     break;
                 case 3:
                     this.componentName = 'overdueInfo'
-                    break;   
+                    break;
                 case 4:
                     this.componentName = 'emergencyAlarm'
                     break;
@@ -235,20 +235,20 @@ var waringComponent = {
                     if (resp.status == 0) {
                         var records = resp.records;
                         if (records) {
-                           var mediaFileLists = deepClone(me.mediaFileLists);
-                           records.forEach(function(item){
+                            var mediaFileLists = deepClone(me.mediaFileLists);
+                            records.forEach(function(item) {
                                 var callon = item.callon.toFixed(5);
                                 var callat = item.callat.toFixed(5);
                                 item.devicename = me.deviceInfos[item.deviceid].devicename;
                                 item.address = LocalCacheMgr.getAddress(callon, callat);
                                 item.callon = callon;
                                 item.callat = callat;
-                           });
-                           var newMediaFileLists = mediaFileLists.concat(records);
-                           newMediaFileLists.sort(function(a,b){
+                            });
+                            var newMediaFileLists = mediaFileLists.concat(records);
+                            newMediaFileLists.sort(function(a, b) {
                                 return b.endtime - a.endtime;
-                           });
-                          me.mediaFileLists =  newMediaFileLists.delRepeat('endtime');
+                            });
+                            me.mediaFileLists = newMediaFileLists.delRepeat('endtime');
                         }
                         me.lastquerydevicemediastime = resp.lastquerydevicemediastime;
                     }
@@ -414,7 +414,7 @@ var waringComponent = {
                 devicetype: devicetype,
                 params: null,
                 state: row.state,
-                alarm:row.alarm
+                alarm: row.alarm
             };
 
             this.disposeModal = true;
@@ -511,18 +511,15 @@ var waringComponent = {
         },
         isNeedForceAlarm: function(alarmBitsStr) {
             var result = false;
-            if(alarmBitsStr  && gForcealarm)
-            {
+            if (alarmBitsStr && gForcealarm) {
                 var alarmLength = alarmBitsStr.length;
                 var gForcealarmLength = gForcealarm.length;
                 var minLength = Math.min(alarmLength, gForcealarmLength);
-                for(var i = 0; i < minLength; ++i)
-                {
+                for (var i = 0; i < minLength; ++i) {
                     var alarmBit = alarmBitsStr.charAt(i);
                     var forceAlarmBit = gForcealarm.charAt(i);
-       
-                    if(forceAlarmBit == '1' && alarmBit == '1')
-                    {
+
+                    if (forceAlarmBit == '1' && alarmBit == '1') {
                         result = true;
                         break;
                     }
@@ -761,7 +758,7 @@ var waringComponent = {
                 }
             },
         },
-        mediaFiles:{
+        mediaFiles: {
             template: '<Table :height="tabheight" border :columns="columns" highlight-row  :data="mediaFileList" @on-row-click="onRowClick"></Table>',
             props: ['mediaFileList', 'tabletype', 'wrapperheight'],
             data: function() {
@@ -782,48 +779,48 @@ var waringComponent = {
                             width: 130,
                         },
                         {
-                            title: me.$t("alarm.fileType"),  
+                            title: me.$t("alarm.fileType"),
                             key: 'fileext',
                             width: 100,
                         },
                         {
-                            title: me.$t("monitor.channel"), 
-                            key:  'channelid',
-                            width:80,
+                            title: me.$t("monitor.channel"),
+                            key: 'channelid',
+                            width: 80,
                         },
                         {
-                            title: me.$t("alarm.alarmType"),   
+                            title: me.$t("alarm.alarmType"),
                             key: 'eventcode',
                             width: 150,
-                            render:function(h,params){
+                            render: function(h, params) {
                                 var eventcode = params.row.eventcode;
                                 var str = '';
-                                switch(eventcode){
-                                    case 0 :
+                                switch (eventcode) {
+                                    case 0:
                                         str = me.$t("alarm.terraceIssued");
                                         break;
-                                    case 1 :
+                                    case 1:
                                         str = me.$t("alarm.timingAction");
                                         break;
-                                    case 2 :
+                                    case 2:
                                         str = me.$t("alarm.robberyReport");
                                         break;
-                                    case 3 :
+                                    case 3:
                                         str = me.$t("alarm.impactRollover");
                                         break;
-                                    default :
-                                    str =  me.$t("alarm.retain");
+                                    default:
+                                        str = me.$t("alarm.retain");
                                 }
-                                return h('span',{},str);
+                                return h('span', {}, str);
                             }
                         },
                         {
-                            title:  me.$t("alarm.receivingTime"),
+                            title: me.$t("alarm.receivingTime"),
                             key: 'endtime',
-                            width:150,
-                            render:function(h,params){
+                            width: 150,
+                            render: function(h, params) {
                                 var endtime = params.row.endtime;
-                                return h('span',{},DateFormat.longToDateTimeStr(endtime,timeDifference))
+                                return h('span', {}, DateFormat.longToDateTimeStr(endtime, timeDifference))
                             }
                         },
                         {
@@ -852,29 +849,28 @@ var waringComponent = {
                                                 }
                                             }
                                         }, lon + "," + lat)
-        
+
                                     } else {
-                                        return h('span', {},  row.address);
+                                        return h('span', {}, row.address);
                                     }
                                 } else {
-                                    return h('span', {},  vRoot.$t("reportForm.empty"));
+                                    return h('span', {}, vRoot.$t("reportForm.empty"));
                                 }
                             },
                         },
                         {
                             title: vRoot.$t("alarm.action"),
-                            width:105,
+                            width: 105,
                             render: function(h, params) {
                                 var row = params.row;
                                 return h(
-                                    "Button",
-                                    {
-                                        props:{
-                                            type:"primary",
-                                            size:'small',
+                                    "Button", {
+                                        props: {
+                                            type: "primary",
+                                            size: 'small',
                                         },
-                                        on:{
-                                            click:function(e){
+                                        on: {
+                                            click: function(e) {
                                                 e.preventDefault();
                                                 e.stopPropagation();
                                                 me.clickImage(row);
@@ -882,7 +878,7 @@ var waringComponent = {
                                         }
                                     },
                                     me.$t('reportForm.viewPicture')
-                                    )
+                                )
                             },
                         }
                     ],
@@ -897,16 +893,16 @@ var waringComponent = {
                 onRowClick: function(row) {
                     vRoot.$children[1].selectedDev(row);
                     communicate.$emit("on-click-marker", row.deviceid);
-          
-                 },
-                 clickImage:function(row){
+
+                },
+                clickImage: function(row) {
                     vRoot.$children[1].cameraImgUrl = row.url
                     vRoot.$children[1].cameraImgDeviceTime = row.endtime;
                     vRoot.$children[1].cameraImgModal = true;
-          
+
                 }
-                
-            },    
+
+            },
         },
         overdueInfo: {
             template: '<Table :height="tabheight" border :columns="columns" @on-row-click="onRowClick" :data="overdueinfolist"></Table>',
@@ -940,19 +936,19 @@ var waringComponent = {
                                 var days = parseInt(mss / (1000 * 60 * 60 * 24));
                                 var dayStr = "";
                                 if (mss > 0) {
-                                    if(isZh){
+                                    if (isZh) {
                                         dayStr += "剩" + days + "天过期";
-                                    }else{
-                                        dayStr +=  days + " days to expire";
+                                    } else {
+                                        dayStr += days + " days to expire";
                                     }
-                                    
+
                                 } else if (mss < 0) {
-                                    if(isZh){
+                                    if (isZh) {
                                         dayStr += "已过期" + Math.abs(days) + "天";
-                                    }else{
-                                        dayStr += Math.abs(days) +  " days overdue";
+                                    } else {
+                                        dayStr += Math.abs(days) + " days overdue";
                                     }
-                                   
+
                                 }
                                 return h('span', {}, dayStr);
                             }

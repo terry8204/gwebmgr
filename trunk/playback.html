@@ -312,9 +312,9 @@
                     <Row>
                         <i-col :span="4" style="text-align: center;height:45px;">{{$t("main.selectTime")}} : &nbsp;</i-col>
                         <i-col :span="14" style="text-align: left;height:45px;">
-                             <Time-Picker type="timerange" v-model="timeValue" style="width: 100%"></Time-Picker>
-                        </i-col> 
-                        <i-col :span="5" style="text-align: center;height:45px;"> 
+                            <Time-Picker type="timerange" v-model="timeValue" style="width: 100%"></Time-Picker>
+                        </i-col>
+                        <i-col :span="5" style="text-align: center;height:45px;">
                             <i-button @click="sosoTracks">{{$t("main.queryBtn")}}</i-button>
                         </i-col>
                         <i-col :span="1" style="height:45px;">&nbsp;</i-col>
@@ -326,9 +326,9 @@
                         <!-- <i-col :span="18" style="height:60px; padding-top: 12px;">
                             <Slider v-model="velocity" :min="100" :max="5000" show-input :step="100"></Slider>
                         </i-col> -->
-                        <i-col :span="18"> 
+                        <i-col :span="18">
                             <Button-Group>
-                                <i-button :type="velocity == 1500?'primary':''" @click="velocity=1500">{{$t("main.slow")}}</i-button> 
+                                <i-button :type="velocity == 1500?'primary':''" @click="velocity=1500">{{$t("main.slow")}}</i-button>
                                 <i-button :type="velocity == 1000?'primary':''" @click="velocity=1000">{{$t("main.middle")}}</i-button>
                                 <i-button :type="velocity == 500?'primary':''" @click="velocity=500">{{$t("main.fast")}}</i-button>
                             </Button-Group>
@@ -460,12 +460,11 @@
             utils.sendAjax(url, data, function(resp) {
                 if (resp.status === 0) {
                     vRoot.$Message.success(isZh ? "刷新成功" : "Refresh success");
-                    Cookies.set(deviceid + '-' + trackid, true);
+                    localStorage.setItem(deviceid + '-' + trackid, true);
                 } else {
                     vRoot.modal1 = true;
                     vRoot.cause = resp.cause;
                 }
-                //Cookies.set(deviceid + '-' + trackid , true);
             });
         };
         var messages = {
@@ -493,17 +492,17 @@
                     WIFIList: "WiFi",
                     originalData: "Original Data",
                     result: "Position result",
-                    totalOil:'Total oil',
-                    oil1:"oil1",
-                    oil2:"oil2",
-                    oil:"oil",
-                    speed:'Speed',
-                    mileage:'Mileage',
-                    time:'Time',
-                    noCurruntDayTrack:"There is no track of the day",
-                    slow:'slow',
-                    middle:'middle',
-                    fast:'fast',
+                    totalOil: 'Total oil',
+                    oil1: "oil1",
+                    oil2: "oil2",
+                    oil: "oil",
+                    speed: 'Speed',
+                    mileage: 'Mileage',
+                    time: 'Time',
+                    noCurruntDayTrack: "There is no track of the day",
+                    slow: 'slow',
+                    middle: 'middle',
+                    fast: 'fast',
                 }
 
             },
@@ -531,17 +530,17 @@
                     WIFIList: "WiFi列表",
                     originalData: "原始数据",
                     result: "定位结果",
-                    totalOil:'总油液',
-                    oil1:"油液1",
-                    oil2:"油液2",
-                    oil:"油液",
-                    speed:'速度',
-                    mileage:'里程',
-                    time:'时间',
-                    noCurruntDayTrack:"没有当天轨迹",
-                    slow:'慢',
-                    middle:'中',
-                    fast:'快',
+                    totalOil: '总油液',
+                    oil1: "油液1",
+                    oil2: "油液2",
+                    oil: "油液",
+                    speed: '速度',
+                    mileage: '里程',
+                    time: '时间',
+                    noCurruntDayTrack: "没有当天轨迹",
+                    slow: '慢',
+                    middle: '中',
+                    fast: '快',
                 }
             }
         };
@@ -560,13 +559,13 @@
                     isShowMarker: false,
                     map: null,
                     myDis: null,
-                    trackMileage : '0km',
+                    trackMileage: '0km',
                     selectDate: null,
                     dayTime: 60 * 60 * 24 * 1000,
                     lock: false,
                     deviceid: null,
                     startTime: null,
-                    timeValue:['00:00:00', '23:59:59'],
+                    timeValue: ['00:00:00', '23:59:59'],
                     len: null,
                     spinShow: false,
                     isExtract: true,
@@ -829,9 +828,9 @@
                     },
                     sosoTracks: function() {
                         var me = this;
-                        var dateStr = DateFormat.format(this.startTime,'yyyy-MM-dd');
+                        var dateStr = DateFormat.format(this.startTime, 'yyyy-MM-dd');
                         me.resetMapState();
-                        me.requestTracks( dateStr + " " + this.timeValue[0], dateStr + " " +  this.timeValue[1], function(resp) {
+                        me.requestTracks(dateStr + " " + this.timeValue[0], dateStr + " " + this.timeValue[1], function(resp) {
                             var records = resp.records;
                             me.spinShow = false;
                             if (resp.status == 0 && records) {
@@ -842,7 +841,7 @@
                                 me.drawingLine();
                                 me.redrawCharts();
                             } else if (resp.status == 3) {
-                                me.trackMileage  = '0km';
+                                me.trackMileage = '0km';
                                 me.$Message.error(resp.cause);
                                 if (me.mapType === 'oMap') {
                                     layerVector.setSource(new ol.source.Vector({
@@ -850,7 +849,7 @@
                                     }));
                                 }
                             } else {
-                                me.trackMileage  = '0km';
+                                me.trackMileage = '0km';
                                 me.$Message.error(me.$t('main.noCurruntDayTrack'));
                                 if (me.mapType === 'oMap') {
                                     layerVector.setSource(new ol.source.Vector({
@@ -1111,7 +1110,7 @@
 
                         } else if (records.length == 1) {
                             var lastRecord = records[records.length - 1];
-                            this.trackMileage  = '0km';
+                            this.trackMileage = '0km';
 
                             if (this.mapType === 'bMap') {
                                 this.firstMarker = new BMap.Marker(lastRecord.point, {
@@ -1210,7 +1209,7 @@
                     },
                     getTotalMileage: function(records) {
                         var totaldistance = records[records.length - 1].totaldistance - records[0].totaldistance;
-                        this.trackMileage  = totaldistance.toFixed(2) + 'km';
+                        this.trackMileage = totaldistance.toFixed(2) + 'km';
                     },
                     addEventListenerToMarker: function(marker) {
                         var me = this;
@@ -1299,7 +1298,7 @@
 
                         this.openInfoWindow(this.firstMarker, firstRecord);
                     },
-                    getTypeRecords: function(){
+                    getTypeRecords: function() {
                         var records = null;
                         if (this.isExtract) {
                             records = this.extractRecords;
@@ -1374,13 +1373,13 @@
                         } else {
                             strstatus = info.strstatusen ? info.strstatusen : '';
                         }
-                        if (Cookies.get(this.deviceid + '-' + info.trackid)) {
+                        if (localStorage.getItem(this.deviceid + '-' + info.trackid)) {
                             color = 'red';
                         };
                         if (info.gotsrc === 'gps' && info.gpsvalidnum) {
                             posiType += "(" + info.gpsvalidnum + ")";
                         };
-      
+
                         var deviceid = "'" + this.deviceid + "'";
                         var speed = info.speed == 0 ? "0km/h" : (info.speed / 1000).toFixed(2) + "km/h";
                         var sContent = '<div style="max-width:296px;">' +
@@ -1389,7 +1388,7 @@
                             '<p> ' + (isZh ? '定位类型' : 'Position Type') + ': ' + posiType + '</p>' +
                             '<p> ' + (isZh ? '方向' : 'Direction') + ': ' + utils.getCarDirection(info.course) + '</p>' +
                             '<p> ' + (isZh ? '速度' : 'Speed') + ': ' + speed + '(' + (isZh ? '信号:' : 'Signal:') + info.rxlevel + '%)</p>' +
-                            '<p> ' + (isZh ? '总里程' : 'Mileage') + ': ' + (info.totaldistance==0?0:info.totaldistance) + 'km</p>' +
+                            '<p> ' + (isZh ? '总里程' : 'Mileage') + ': ' + (info.totaldistance == 0 ? 0 : info.totaldistance) + 'km</p>' +
                             '<p> ' + (isZh ? '最后时间' : 'Last time') + ': ' + DateFormat.longToDateTimeStr(info.updatetime, timeDifference) + '</p>' +
                             '<p> ' + (isZh ? '状态' : 'Status') + ': ' + strstatus + '</p>' +
                             '<p class="last-address"> ' + (isZh ? '详细地址' : 'Address') + ': ' + address + '</p>' +
@@ -1414,15 +1413,15 @@
                         if (this.mapType === 'bMap' || this.mapType === 'oMap') {
 
                             utils.getJiuHuAddressSyn(callon, callat, function(resp) {
-                                if(resp.status > 9900){
+                                if (resp.status > 9900) {
                                     console.log('getJiuHuAddressSyn token失效,请重新登录')
-                                }else if(resp.status == 0){
+                                } else if (resp.status == 0) {
                                     address = resp.address
                                     $("p.last-address").html(" 详细地址: " + address);
                                     LocalCacheMgr.setAddress(lng, lat, address);
-                                }else{
+                                } else {
                                     console.log('getJiuHuAddressSyn 查询地址失败')
-                                }    
+                                }
                             });
                         } else if (this.mapType === 'gMap') {
                             var google_lng_lat = wgs84togcj02(callon, callat);
@@ -1512,11 +1511,13 @@
                         this.oil2 = [];
                         this.charts = echarts.init(document.getElementById('charts'));
                         this.charts.setOption(this.getChartsOption());
-                        this.charts.getZr().on('click', function (params) {
-                            var pointInPixel= [params.offsetX, params.offsetY];
-                            if (me.charts.containPixel('grid',pointInPixel)) {
-                                var xIndex=me.charts.convertFromPixel({seriesIndex:0},[params.offsetX, params.offsetY])[0];
-                                
+                        this.charts.getZr().on('click', function(params) {
+                            var pointInPixel = [params.offsetX, params.offsetY];
+                            if (me.charts.containPixel('grid', pointInPixel)) {
+                                var xIndex = me.charts.convertFromPixel({
+                                    seriesIndex: 0
+                                }, [params.offsetX, params.offsetY])[0];
+
                                 me.index = xIndex;
                                 if (me.isExtract) {
                                     if (me.index > me.extractRecords.length - 1) {
@@ -1572,9 +1573,9 @@
                                 trigger: 'axis',
                                 formatter: function(v) {
 
-                                    var data = vRoot.$t('main.time') +  ': ' + v[0].name + '<br/>';
+                                    var data = vRoot.$t('main.time') + ': ' + v[0].name + '<br/>';
                                     for (i in v) {
-                                        if (v[i].seriesName && v[i].seriesName != vRoot.$t('main.time') ) data += v[i].seriesName + ' : ' + v[i].value + '<br/>';
+                                        if (v[i].seriesName && v[i].seriesName != vRoot.$t('main.time')) data += v[i].seriesName + ' : ' + v[i].value + '<br/>';
                                     }
                                     return data;
                                 }
@@ -1711,7 +1712,7 @@
                         this.disMin = 0;
 
                         records.forEach(function(item, index) {
-                     
+
                             if (index == 0) {
                                 me.disMin = item.totaldistance
                             }
@@ -1746,7 +1747,7 @@
                 },
                 computed: {
                     token: function() {
-                        return Cookies.get("token");
+                        return localStorage.getItem("token");
                     },
                     rightTopCtrl: function() {
                         return [(this.mapType === 'bMap' || this.mapType === 'oMap') ? 'top-10' : 'top-65'];
@@ -1800,7 +1801,7 @@
                         var me = this;
                         this.markers = [];
                         this.initMap(function() {
-                            var dateStr = DateFormat.format(me.startTime,'yyyy-MM-dd');
+                            var dateStr = DateFormat.format(me.startTime, 'yyyy-MM-dd');
                             me.requestTracks(dateStr + " " + me.timeValue[0], dateStr + " " + me.timeValue[1], function(resp) {
                                 var records = resp.records;
                                 me.spinShow = false;
@@ -1812,10 +1813,10 @@
                                     me.drawingLine();
                                     me.redrawCharts();
                                 } else if (resp.status == 3) {
-                                    me.trackMileage  = '0km';
+                                    me.trackMileage = '0km';
                                     me.$Message.error(resp.cause);
                                 } else {
-                                    me.trackMileage  = '0km';
+                                    me.trackMileage = '0km';
                                     me.$Message.error(me.$t('main.noCurruntDayTrack'));
                                 }
                             });

@@ -1,8 +1,8 @@
 // 是否显示公司名字
-var isShowCompany = Cookies.get('isShowCompany');
+var isShowCompany = localStorage.getItem('isShowCompany');
 var communicate = new Vue({}); // 组件之间通信的vue实例
-var userName = Cookies.get('name');
-var gForcealarm = Cookies.get("forcealarm") == "" ? '000000000000000000000000000000000000000000000000000000000000000' : Cookies.get("forcealarm") ;
+var userName = localStorage.getItem('name');
+var gForcealarm = localStorage.getItem("forcealarm") == "" ? '000000000000000000000000000000000000000000000000000000000000000' : localStorage.getItem("forcealarm");
 var isZh = utils.locale === 'zh';
 var mapType = utils.getMapType();
 var isLoadBMap = false;
@@ -28,7 +28,7 @@ Vue.use(VTree.VTree);
 vstore = new Vuex.Store({
     state: {
         isShowCompany: isShowCompany === 'true' ? true : false,
-        userType: Cookies.get('userType'),
+        userType: localStorage.getItem('userType'),
         deviceInfos: {},
         userTypeDescrList: [
             { "name": isZh ? "系统管理员" : 'Admin', "type": 0 },
@@ -82,7 +82,7 @@ vstore = new Vuex.Store({
         setAllCmdList: function(context) {
             var hadDeviceUrl = myUrls.queryHadDeviceCmdByUser();
             utils.sendAjax(
-                hadDeviceUrl, { username: Cookies.get('name') },
+                hadDeviceUrl, { username: localStorage.getItem('name') },
                 function(resp) {
                     if (resp.status == 0) {
                         var cmdList = resp.records;
@@ -340,7 +340,7 @@ Vue.component('my-video', {
         handleStartVideos: function() {
             var url = myUrls.startVideos(),
                 me = this;
-            this.playerStateTips = me.$t('video.requestPlay');  
+            this.playerStateTips = me.$t('video.requestPlay');
             utils.sendAjax(url, {
                 deviceid: this.deviceId,
                 channels: [Number(this.channel)],
@@ -679,7 +679,7 @@ Vue.component('rule-allocation', {
                     }
                 })
                 if (this.selectedRule == null) {
-                    this.$Message.error(me.$t('rule.selectedRule')); 
+                    this.$Message.error(me.$t('rule.selectedRule'));
                     return;
                 }
                 if (deviceids.length == 0) {
@@ -777,7 +777,7 @@ Vue.component('rule-allocation', {
             this.groupLists1 = this.groupLists;
             this.groupLists2 = deepClone(this.groupLists);
             this.ruleTypeNames = {
-                overspeed: this.$t('rule.overSpeed'), 
+                overspeed: this.$t('rule.overSpeed'),
                 linkalarm: this.$t('rule.linkAlarm'),
             }
             this.setRuleLists();
@@ -790,55 +790,55 @@ Vue.component('rule-allocation', {
 })
 
 
-Vue.component('s-checkbox',{
-    props:{
-        ioCount:{
-            type:Number,
-            default:4,
+Vue.component('s-checkbox', {
+    props: {
+        ioCount: {
+            type: Number,
+            default: 4,
         }
     },
-    data:function(){
+    data: function() {
         return {
-            isAll:true,
-            isShowCheckbox:false,
-            checkboxList:[],
+            isAll: true,
+            isShowCheckbox: false,
+            checkboxList: [],
         }
     },
-    methods:{
-        onClickOutside:function(){
+    methods: {
+        onClickOutside: function() {
             this.isShowCheckbox = false;
         },
-        onChange:function(val){
-            if(val){
-                this.checkboxList = [1,2,3,4];
-            }else{
+        onChange: function(val) {
+            if (val) {
+                this.checkboxList = [1, 2, 3, 4];
+            } else {
                 this.checkboxList = [];
             }
         }
     },
-    computed:{
-        checkboxStr:function(){
+    computed: {
+        checkboxStr: function() {
             var str = '';
-            this.checkboxList.forEach(function(item){
+            this.checkboxList.forEach(function(item) {
                 str += " io_" + item;
             })
             return str;
         }
     },
-    mounted:function(){
-        this.checkboxList = [1,2,3,4];
+    mounted: function() {
+        this.checkboxList = [1, 2, 3, 4];
     },
-    watch:{
-        checkboxList:function(list){
-            if(list.length == this.ioCount){
+    watch: {
+        checkboxList: function(list) {
+            if (list.length == this.ioCount) {
                 this.isAll = true;
-            }else{
+            } else {
                 this.isAll = false;
             }
-            this.$emit('change-io',this.checkboxList);
+            this.$emit('change-io', this.checkboxList);
         }
     },
-    template:document.getElementById("select-checkbox-template"),
+    template: document.getElementById("select-checkbox-template"),
 })
 
 
@@ -855,7 +855,7 @@ var appHeader = {
             isManager: true,
             modal: false,
             intervalTime: null,
-            multilogin: Cookies.get(userName + "-multilogin"),
+            multilogin: localStorage.getItem(userName + "-multilogin"),
             isShowCompany: false,
             serviceModal: false,
             headMenuList: [
@@ -910,7 +910,7 @@ var appHeader = {
             var me = this
             var url = myUrls.changeUserPass()
             var data = {
-                username: Cookies.get('name'),
+                username: localStorage.getItem('name'),
                 newpass: $.md5(this.newPass),
                 oldpass: $.md5(this.oldPass)
             }
@@ -935,9 +935,9 @@ var appHeader = {
                 if (resp.status == 0) {
                     me.$Message.success(me.$t("header.changePwdSucc"))
                     if (me.userType != 99) {
-                        Cookies.set('accountpass', me.newPass, { expires: 7 })
+                        localStorage.setItem('accountpass', me.newPass, { expires: 7 })
                     } else {
-                        Cookies.set('devicepass', me.newPass, { expires: 7 })
+                        localStorage.setItem('devicepass', me.newPass, { expires: 7 })
                     }
 
                     me.modalPass = false;
@@ -951,7 +951,7 @@ var appHeader = {
             var url = myUrls.logout()
             utils.sendAjax(url, {}, function(resp) {
                 if (resp.status == 0) {
-                    Cookies.remove('token');
+                    localStorage.setItem('token', "");
                     window.location.href = 'index.html';
                 } else {
                     me.$Message.error(resp.cause)
@@ -970,7 +970,7 @@ var appHeader = {
         },
         changeShowCompany: function(state) {
             this.$store.commit('isShowCompany', state);
-            Cookies.set('isShowCompany', state, { expires: 7 });
+            localStorage.setItem('isShowCompany', state, { expires: 7 });
         },
         reqUserType: function() {
             var url = myUrls.queryUserType()
@@ -1013,7 +1013,7 @@ var appHeader = {
                 if (resp.status === 0) {
                     delete data.username;
                     me.selfConcatInfo = data;
-                    Cookies.set(userName + "-multilogin", me.multilogin);
+                    localStorage.setItem(userName + "-multilogin", me.multilogin);
                     me.$Message.success(me.$t("message.changeSucc"));
                 } else {
                     me.$Message.error(me.$t("message.changeFail"));
@@ -1039,10 +1039,10 @@ var appHeader = {
         var me = this;
         this.$nextTick(function() {
             var mgrType = me.getManagerType(me.userType)
-            me.name = Cookies.get('name') + mgrType;
+            me.name = localStorage.getItem('name') + mgrType;
             me.intervalTime = me.stateIntervalTime;
             me.navJurisdiction(me.userType)
-            var isShowCompany = Cookies.get('isShowCompany')
+            var isShowCompany = localStorage.getItem('isShowCompany')
             if (isShowCompany == 'true') {
                 me.isShowCompany = true;
             } else if (isShowCompany == 'false') {
@@ -1062,7 +1062,7 @@ var appHeader = {
                 this.phone = this.selfConcatInfo.phone;
                 this.qq = this.selfConcatInfo.qq;
                 this.wechat = this.selfConcatInfo.wechat;
-                this.multilogin = Cookies.get(userName + "-multilogin");
+                this.multilogin = localStorage.getItem(userName + "-multilogin");
             }
         }
     }

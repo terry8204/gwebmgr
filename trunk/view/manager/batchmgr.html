@@ -7,17 +7,18 @@
     <div class="demo-spin-container" v-if="batchSendCmdLoading">
         <Spin fix>
             <Icon type="ios-loading" size=18 class="demo-spin-icon-load"></Icon>
-            <div>{{$t("bgMgr.sending")}}:{{idx}}/{{tableData.length}}</div>  
+            <div>{{$t("bgMgr.sending")}}:{{idx}}/{{tableData.length}}</div>
         </Spin>
     </div>
     <div class="full">
         <h3 class="h3-title">{{$t("bgMgr.batchMgr")}}</h3>
         <Row>
             <i-col span="6" style="padding: 10px;">
-                {{$t("bgMgr.allAevcieList")}} 
+                {{$t("bgMgr.allAevcieList")}}
             </i-col>
             <i-col span="14" style="padding: 10px;">
-                {{$t("bgMgr.selectedDeviceList")}} {{tableData.length}} <i-button type="error" size="small" @click="tableData=[]" style="float: right;">{{$t("insure.removeAll")}}</i-button>
+                {{$t("bgMgr.selectedDeviceList")}} {{tableData.length}}
+                <i-button type="error" size="small" @click="tableData=[]" style="float: right;">{{$t("insure.removeAll")}}</i-button>
             </i-col>
             <i-col span="4" style="padding: 10px;">
                 {{$t("bgMgr.transferGroupList")}}
@@ -60,7 +61,7 @@
             </Row>
             <div slot="footer" style="height:40px;">
                 <Row>
-                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">{{$t('device.idLength')}}: &nbsp;</i-col>  
+                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">{{$t('device.idLength')}}: &nbsp;</i-col>
                     <i-col span="5">
                         <input-number v-model.number="idLength" :max="15" :min="8" :editable="false" style="width: 100%;"></input-number>
                     </i-col>
@@ -70,7 +71,7 @@
                 </Row>
             </div>
         </Modal>
-        <Modal v-model="batchModal" width="400" :title="$t('bgMgr.batchModification')"> 
+        <Modal v-model="batchModal" width="400" :title="$t('bgMgr.batchModification')">
             <div v-if="showBatchModalType == 1">
                 <Row>
                     <i-col span="4" style="padding-top: 6px;">
@@ -78,7 +79,7 @@
                     </i-col>
                     <i-col span="20">
                         <i-select v-model="forwardtype">
-                            <i-option value="0">{{$t('bgMgr.parseHttp')}}</i-option>  
+                            <i-option value="0">{{$t('bgMgr.parseHttp')}}</i-option>
                             <i-option value="1">{{$t('bgMgr.tcp')}}</i-option>
                         </i-select>
                     </i-col>
@@ -107,8 +108,8 @@
                 <i-col span="12">
                     <i-select v-model="resetpasswordtype">
                         <i-option value="1">{{$t('bgMgr.deviceIDlastFour')}}</i-option>
-                        <i-option value="2">{{$t('bgMgr.fixedPassword')}}</i-option>  
-                    </i-select> 
+                        <i-option value="2">{{$t('bgMgr.fixedPassword')}}</i-option>
+                    </i-select>
                 </i-col>
             </Row>
             <Row v-if="showBatchModalType == 3 && resetpasswordtype == '2'" style="margin-top: 10px;">
@@ -121,7 +122,7 @@
             </Row>
             <Row v-if="showBatchModalType == 4">
                 <i-col span="4" offset="4" style="line-height: 32px;">
-                    {{$t('user.devType')}}: 
+                    {{$t('user.devType')}}:
                 </i-col>
                 <i-col span="12">
                     <i-select v-model="deviceType">
@@ -130,7 +131,7 @@
                 </i-col>
             </Row>
             <div v-if="showBatchModalType == 5">
-                <div style="text-align: center;padding:0 0 10px 0;font-weight: 600;font-size: 18px;">{{$t('bgMgr.issueCmd')}}</div> 
+                <div style="text-align: center;padding:0 0 10px 0;font-weight: 600;font-size: 18px;">{{$t('bgMgr.issueCmd')}}</div>
                 <Row>
                     <i-col span="4" offset="4" style="line-height: 32px;">
                         {{$t('bgMgr.cmdContent')}}:
@@ -151,7 +152,7 @@
             <div v-if="showBatchModalType == 6">
                 <Row>
                     <i-col span="4" offset="4" style="line-height: 32px;">
-                        {{$t('bgMgr.mileageRatio')}}:  
+                        {{$t('bgMgr.mileageRatio')}}:
                     </i-col>
                     <i-col span="12">
                         <input-number v-model.number="mileageRatio" :max="200" :min="1" style="width: 100%;"></input-number>
@@ -177,7 +178,7 @@
         i18n: utils.getI18n(),
         data: {
             loading: false,
-            userType: Cookies.get('userType'),
+            userType: localStorage.getItem('userType'),
             batchSendCmdLoading: false,
             idx: 0,
             showBatchModalType: 1, // 1批量地址  2
@@ -200,12 +201,12 @@
             searchDeviceList: [],
             treeGroupList: [],
             tableData: [],
-            mileageRatio:100,
+            mileageRatio: 100,
             columns: [{
                 type: 'index',
                 width: 60,
             }, {
-                title: vRoot.$t('alarm.devName'),  
+                title: vRoot.$t('alarm.devName'),
                 key: 'devicename'
             }, {
                 title: vRoot.$t('alarm.devNum'),
@@ -221,22 +222,22 @@
                 width: 85,
                 render: function(h, params) {
                     return h('Button', {
-                            props: {
-                                type: 'error',
-                                size: 'small'
-                            },
-                            style: {
-                                marginRight: '5px'
-                            },
-                            on: {
-                                click: function() {
-                                    vueInstanse.tableData.splice(params.index, 1);
-                                }
+                        props: {
+                            type: 'error',
+                            size: 'small'
+                        },
+                        style: {
+                            marginRight: '5px'
+                        },
+                        on: {
+                            click: function() {
+                                vueInstanse.tableData.splice(params.index, 1);
                             }
-                        },vRoot.$t('insure.remove')) 
+                        }
+                    }, vRoot.$t('insure.remove'))
                 }
             }, {
-                title: vRoot.$t('bgMgr.result'), 
+                title: vRoot.$t('bgMgr.result'),
                 width: 90,
                 render: function(h, params) {
                     var result = '',
@@ -244,8 +245,8 @@
                         resultType = params.row.resultType;
                     switch (resultType) {
                         case 0:
-                            color = "#2D8CF0"; 
-                            result = vRoot.$t('device.actionSucc');  
+                            color = "#2D8CF0";
+                            result = vRoot.$t('device.actionSucc');
                             break;
                         case 1:
                             color = "#E4393C";
@@ -273,11 +274,11 @@
                             break;
                         case 7:
                             color = "red";
-                            result = vRoot.$t('monitor.sendCmdAlreadyCache');   
+                            result = vRoot.$t('monitor.sendCmdAlreadyCache');
                             break;
                         case 8:
                             color = "red";
-                            result = vRoot.$t('monitor.changePwdSendCmd');   
+                            result = vRoot.$t('monitor.changePwdSendCmd');
                             break;
                     }
                     return h('span', {
@@ -301,7 +302,7 @@
             },
             handleBatchEdit: function() {
                 if (this.tableData.length == 0) {
-                    this.$Message.error(vRoot.$t('reportForm.selectDevTip'));  
+                    this.$Message.error(vRoot.$t('reportForm.selectDevTip'));
                     return
                 }
                 var data = {
@@ -322,14 +323,14 @@
                             data.resetpasswordtype = 2;
                             data.passwordnotmd5 = this.newPassword;
                         } else {
-                            this.$Message.error(vRoot.$t('device.pwdLengthTips')); 
+                            this.$Message.error(vRoot.$t('device.pwdLengthTips'));
                             return;
                         }
                     } else {
                         data.resetpasswordtype = 1;
                     }
                 } else if (this.showBatchModalType == 4) {
-                    data.action = 'changedevicetype'; 
+                    data.action = 'changedevicetype';
                     data.devicetype = this.deviceType;
                 } else if (this.showBatchModalType == 5) {
                     this.batchSendCmdLoading = true;
@@ -386,8 +387,8 @@
                     });
                     me.batchModal = false;
                     return;
-                }else if(this.showBatchModalType == 6){
-                    data.action = 'setdistanceratio'; 
+                } else if (this.showBatchModalType == 6) {
+                    data.action = 'setdistanceratio';
                     data.distanceratio = this.mileageRatio;
                 }
 
@@ -399,31 +400,31 @@
                     data.deviceids.push(item.deviceid);
                 });
                 if (!lock) {
-                    me.$Message.error(vRoot.$t('device.exportErrorTips')); 
+                    me.$Message.error(vRoot.$t('device.exportErrorTips'));
                     return;
                 }
                 var url = myUrls.batchOperate();
                 utils.sendAjax(url, data, function(respData) {
-                    if(respData.status === 0){
+                    if (respData.status === 0) {
                         if (respData.total == respData.success) {
-                            me.$Message.success(vRoot.$t('device.actionSucc')); 
+                            me.$Message.success(vRoot.$t('device.actionSucc'));
                         } else {
-                            me.$Message.error(vRoot.$t('message.changeFail') + ' : ' + respData.fail );  
+                            me.$Message.error(vRoot.$t('message.changeFail') + ' : ' + respData.fail);
                         }
                         me.updatedActionState(respData.errorrecords);
                         me.batchModal = false;
-                    }else{
-                        me.$Message.error(respData.cause);  
+                    } else {
+                        me.$Message.error(respData.cause);
                     }
                 });
             },
             handleBatchTransfer: function() {
                 if (this.tableData.length == 0) {
-                    this.$Message.error(vRoot.$t('reportForm.selectDevTip')); 
+                    this.$Message.error(vRoot.$t('reportForm.selectDevTip'));
                     return;
                 }
                 if (this.selectedGroupName === null) {
-                    this.$Message.error(vRoot.$t('device.selectedTransferGroup'));  
+                    this.$Message.error(vRoot.$t('device.selectedTransferGroup'));
                     return;
                 }
                 var url = myUrls.batchOperate(),
@@ -451,7 +452,7 @@
                             me.$Message.success(vRoot.$t('device.actionSucc'));
                         } else {
                             var successArr = [];
-                            me.$Message.error(vRoot.$t('message.changeFail') + ' : '  + respData.fail);
+                            me.$Message.error(vRoot.$t('message.changeFail') + ' : ' + respData.fail);
                         }
                         me.updatedActionState(respData.errorrecords);
                         me.queryDevicesTree();
@@ -507,11 +508,11 @@
                 })
                 this.tableData = this.tableData.concat(tableData);
             },
-            isRepeatAddDevice:function(deviceid){
+            isRepeatAddDevice: function(deviceid) {
                 var relsut = false;
-                for(var i = 0 ; i < this.tableData.length; i++){
+                for (var i = 0; i < this.tableData.length; i++) {
                     var item = this.tableData[i];
-                    if(item.deviceid == deviceid){
+                    if (item.deviceid == deviceid) {
                         relsut = true;
                         break;
                     }
@@ -534,9 +535,9 @@
                 });
             },
             setTreeDataList: function(rootuser) {
-                this.searchDeviceList = [this.castUsersTreeToDevicesTree(rootuser, true,false)];
+                this.searchDeviceList = [this.castUsersTreeToDevicesTree(rootuser, true, false)];
                 this.treeDeviceList = deepClone(this.searchDeviceList);
-                this.treeGroupList = [this.castUsersTreeToDevicesTree(rootuser, false,true)];
+                this.treeGroupList = [this.castUsersTreeToDevicesTree(rootuser, false, true)];
             },
             filtered: function(textStr) {
                 function uniq(array) {
@@ -556,7 +557,7 @@
                 })
                 return uniq(newArr);
             },
-            getDeviceListGroups: function(groups, isNeedDevice, username,isNeedRadio) {
+            getDeviceListGroups: function(groups, isNeedDevice, username, isNeedRadio) {
                 var groupsList = [],
                     me = this;
                 if (groups != null) {
@@ -575,7 +576,7 @@
                                     var data = params.data;
                                     var children = null;
 
-                                    if(isNeedRadio){
+                                    if (isNeedRadio) {
                                         children = [
                                             h('span', [
                                                 h('Radio', {
@@ -597,7 +598,7 @@
                                                 h('span', data.title)
                                             ])
                                         ]
-                                    }else{
+                                    } else {
                                         children = [
                                             h('span', [
                                                 h('Icon', {
@@ -657,43 +658,43 @@
                         render: function(h, params) {
                             var data = params.data;
                             var children = [];
-                            if(isNeedRadio){
-                                        children = [
-                                            h('span', [
-                                                h('Radio', {
-                                                    props: {
-                                                        value: (me.selectedUserName == username && me.selectedGroupId == group.groupid)
-                                                    },
-                                                    style: {
-                                                        marginRight: '4px'
-                                                    }
-                                                }),
-                                                h('Icon', {
-                                                    props: {
-                                                        type: 'ios-folder-open'
-                                                    },
-                                                    style: {
-                                                        marginRight: '8px'
-                                                    }
-                                                }),
-                                                h('span', data.title)
-                                            ])
-                                        ]
-                                    }else{
-                                        children = [
-                                            h('span', [
-                                                h('Icon', {
-                                                    props: {
-                                                        type: 'ios-folder-open'
-                                                    },
-                                                    style: {
-                                                        marginRight: '8px'
-                                                    }
-                                                }),
-                                                h('span', data.title)
-                                            ])
-                                        ]
-                                    }
+                            if (isNeedRadio) {
+                                children = [
+                                    h('span', [
+                                        h('Radio', {
+                                            props: {
+                                                value: (me.selectedUserName == username && me.selectedGroupId == group.groupid)
+                                            },
+                                            style: {
+                                                marginRight: '4px'
+                                            }
+                                        }),
+                                        h('Icon', {
+                                            props: {
+                                                type: 'ios-folder-open'
+                                            },
+                                            style: {
+                                                marginRight: '8px'
+                                            }
+                                        }),
+                                        h('span', data.title)
+                                    ])
+                                ]
+                            } else {
+                                children = [
+                                    h('span', [
+                                        h('Icon', {
+                                            props: {
+                                                type: 'ios-folder-open'
+                                            },
+                                            style: {
+                                                marginRight: '8px'
+                                            }
+                                        }),
+                                        h('span', data.title)
+                                    ])
+                                ]
+                            }
                             return h('span', {
                                 on: {
                                     'click': function() {
@@ -713,7 +714,7 @@
                 return groupsList;
 
             },
-            doCastUsersTreeToDevicesTree: function(usersTrees, isNeedDevice,isNeedRadio) {
+            doCastUsersTreeToDevicesTree: function(usersTrees, isNeedDevice, isNeedRadio) {
 
                 var devicesTreeRecord = [];
                 if (usersTrees != null && usersTrees.length > 0) {
@@ -725,9 +726,9 @@
                             render: utils.renderPerson
                         };
                         currentsubDevicesTreeRecord.title = username;
-                        var deviceListGroups = this.getDeviceListGroups(usersTree.groups, isNeedDevice, username ,isNeedRadio);
+                        var deviceListGroups = this.getDeviceListGroups(usersTree.groups, isNeedDevice, username, isNeedRadio);
                         if (username != null && subusers != null && subusers.length > 0) {
-                            var subDevicesTreeRecord = this.doCastUsersTreeToDevicesTree(subusers, isNeedDevice,isNeedRadio);
+                            var subDevicesTreeRecord = this.doCastUsersTreeToDevicesTree(subusers, isNeedDevice, isNeedRadio);
                             subDevicesTreeRecord = deviceListGroups.concat(subDevicesTreeRecord);
                             currentsubDevicesTreeRecord.children = subDevicesTreeRecord;
 
@@ -740,7 +741,7 @@
                 }
                 return devicesTreeRecord;
             },
-            castUsersTreeToDevicesTree: function(devicesTreeRecord, isNeedDevice,isNeedRadio) {
+            castUsersTreeToDevicesTree: function(devicesTreeRecord, isNeedDevice, isNeedRadio) {
                 var iViewTree = {
                     render: utils.renderPerson,
                     expand: true,
@@ -749,10 +750,10 @@
                     var username = devicesTreeRecord.username;
                     var subusers = devicesTreeRecord.subusers;
                     iViewTree.title = username;
-                    var deviceListGroups = this.getDeviceListGroups(devicesTreeRecord.groups, isNeedDevice, username,isNeedRadio);
+                    var deviceListGroups = this.getDeviceListGroups(devicesTreeRecord.groups, isNeedDevice, username, isNeedRadio);
                     if (username != null && subusers != null && subusers.length > 0) {
 
-                        var subDevicesTreeRecord = this.doCastUsersTreeToDevicesTree(subusers, isNeedDevice,isNeedRadio);
+                        var subDevicesTreeRecord = this.doCastUsersTreeToDevicesTree(subusers, isNeedDevice, isNeedRadio);
 
                         iViewTree.children = deviceListGroups.concat(subDevicesTreeRecord);
 

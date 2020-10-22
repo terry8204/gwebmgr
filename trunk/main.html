@@ -17,7 +17,7 @@
     <script src="js/js.cookie.min.js"></script>
     <script src="js/polyfill.min.js"></script>
     <script>
-        var token = Cookies.get("token");
+        var token = localStorage.getItem("token");
         if (token == undefined) {
             window.location.href = "index.html";
         };

@@ -172,9 +172,9 @@ var utils = {
             }
         }
     },
-    locale: Cookies.get("PATH_LANG") || 'zh',
+    locale: localStorage.getItem("PATH_LANG") || 'zh',
     getMapType: function() {
-        var mapType = Cookies.get('app-map-type');
+        var mapType = localStorage.getItem('app-map-type');
         if (!mapType) {
             if (this.locale === 'zh') {
                 mapType = "bMap";
@@ -237,7 +237,7 @@ var utils = {
                         } else {
                             vRoot.$Message.error('token失效请从新登陆');
                         }
-                        Cookies.remove('token')
+                        localStorage.setItem('token', "")
                         setTimeout(function() {
                             window.location.href = 'index.html'
                         }, 2000);
@@ -249,7 +249,6 @@ var utils = {
                 }
             },
             error: function(e) {
-                // Cookies.remove('token');
                 try {
                     vRoot.loading = false;
                     isRequsetPlaying && (isRequsetPlaying = false);
@@ -591,7 +590,7 @@ var utils = {
         var speed = track.speed == 0 ? "0km/h" : (track.speed / 1000).toFixed(2) + "km/h";
         var rxlevel = track.rxlevel === 0 ? '' : ('(' + (isZh ? '信号' : 'Signal') + ':' + track.rxlevel + '%)');
         var deviceid = "'" + track.deviceid + "'";
-        var extendsBtns = this.getIsAddExtendBtns(),       
+        var extendsBtns = this.getIsAddExtendBtns(),
             extendsStr = '',
             videoState = isZh ? track.strvideoalarm : track.strvideoalarmen;
         this.videoState = videoState;
@@ -619,7 +618,7 @@ var utils = {
         var temp = this.getTemperature(isZh, track);
         var decice = findTheDevice(track.deviceid)
         var content =
-            '<p> ' + (isZh ? '设备名称' : 'Device Name') + ': ' + track.devicename + '<i onclick="copyToClipboardText()" class="ivu-icon ivu-icon-ios-copy-outline" style="font-size: 24px;cursor: pointer;"></i><i id="stared" onclick="onStarDevice(' + track.deviceid  + ')" class="ivu-icon ivu-icon-md-heart" style="font-size: 16px;cursor: pointer;float:right;margin-right:22px;color:'+(decice.stared == 1?'#e4393c':'#c1c1c1') +';"></i></p>' +
+            '<p> ' + (isZh ? '设备名称' : 'Device Name') + ': ' + track.devicename + '<i onclick="copyToClipboardText()" class="ivu-icon ivu-icon-ios-copy-outline" style="font-size: 24px;cursor: pointer;"></i><i id="stared" onclick="onStarDevice(' + track.deviceid + ')" class="ivu-icon ivu-icon-md-heart" style="font-size: 16px;cursor: pointer;float:right;margin-right:22px;color:' + (decice.stared == 1 ? '#e4393c' : '#c1c1c1') + ';"></i></p>' +
             '<p> ' + (isZh ? '设备序号' : 'Device Number') + ': ' + track.deviceid + '<i onclick="copyToClipboard()" class="ivu-icon ivu-icon-ios-copy-outline" style="font-size: 24px;cursor: pointer;"></i></p>' +
             '<p> ' + (isZh ? '定位类型' : 'Position Type') + ': ' + posiType + '</p>' +
             '<p> ' + (isZh ? '经纬度' : 'Longitude and latitude') + ': ' + track.callon.toFixed(6) + ',' + track.callat.toFixed(6) + '</p>' +
@@ -660,17 +659,17 @@ var utils = {
             // devicename = encodeURIComponent(devicename);
             extendsStr += '<span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="openCamera(' + deviceid + ',' + devicename + ',' + activeSafety + ')">' + vRoot.$t('monitor.camera') + '</span>'
         };
-      
+
 
 
         if (extendsBtns.activesafety) {
             var devicename = "'" + track.devicename + "'";
-            devicename = encodeURIComponent(devicename);                 
-            extendsStr += '<span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="openActiveSafety(' + deviceid + ',' + devicename + ')">' + vRoot.$t('monitor.activeSafety') +  '</span>'
+            devicename = encodeURIComponent(devicename);
+            extendsStr += '<span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="openActiveSafety(' + deviceid + ',' + devicename + ')">' + vRoot.$t('monitor.activeSafety') + '</span>'
         };
 
         if (extendsBtns.audio) {
-            extendsStr += '<span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="openAudio(' + deviceid + ')">' + vRoot.$t('monitor.media') +  '</span>'
+            extendsStr += '<span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="openAudio(' + deviceid + ')">' + vRoot.$t('monitor.media') + '</span>'
         };
         if (extendsBtns.bms) {
             extendsStr += '<span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="openBms(' + deviceid + ')">BMS</span>'
@@ -679,10 +678,10 @@ var utils = {
             extendsStr += '<span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="openObd(' + deviceid + ')">OBD</span>'
         };
         if (extendsBtns.weight) {
-            extendsStr += '<span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="openWeight(' + deviceid + ')">' + vRoot.$t('monitor.weigh') +  '</span>'    
+            extendsStr += '<span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="openWeight(' + deviceid + ')">' + vRoot.$t('monitor.weigh') + '</span>'
         };
         if (extendsBtns.watermeter) {
-            extendsStr += '<span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="openWatermeter(' + deviceid + ')">' + vRoot.$t('monitor.watermeter') +  '</span>'   
+            extendsStr += '<span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="openWatermeter(' + deviceid + ')">' + vRoot.$t('monitor.watermeter') + '</span>'
         };
         if (extendsStr.length) {
             content += '<p class="operation" style="margin-top:3px;">' + extendsStr + '</p>';
@@ -752,7 +751,7 @@ var utils = {
     },
     getI18n: function() {
         return new VueI18n({
-            locale: Cookies.get("PATH_LANG") || 'zh',
+            locale: localStorage.getItem("PATH_LANG") || 'zh',
             messages: messages
         });
     },
@@ -1091,11 +1090,11 @@ try {
 
 }
 
-function findTheDevice(deviceid){
+function findTheDevice(deviceid) {
     var deviceObj = null;
     vRoot.$children[1].groups.forEach(function(group) {
         group.devices.forEach(function(device) {
-            if(device.deviceid == deviceid){
+            if (device.deviceid == deviceid) {
                 deviceObj = device;
             }
         });
@@ -1104,30 +1103,30 @@ function findTheDevice(deviceid){
 }
 
 
-function onStarDevice(deviceid){
-  var deviceObj = findTheDevice(deviceid);
-  if(deviceObj){
-    var url = myUrls.starDevice();
-    var data = {
-        deviceid:deviceid,
-        stared:deviceObj.stared == 0 ? 1 : 0,
-    }
-    utils.sendAjax(url,data,function(resp){
-        if(resp.status == 0){
-            deviceObj.stared = data.stared;
-            var staredDevCount = vRoot.$children[1].staredDevCount;
-            if(data.stared == 0){
-                $('#stared').css({color:'#C1C1C1'});
-                vRoot.$children[1].staredDevCount = staredDevCount - 1;
-            }else{
-                $('#stared').css({color:'#e4393c'})
-                vRoot.$children[1].staredDevCount = staredDevCount + 1;
-            }
-        }else{
-            vRoot.$t(isZh ? '关注失败' : 'Focus on failure');
+function onStarDevice(deviceid) {
+    var deviceObj = findTheDevice(deviceid);
+    if (deviceObj) {
+        var url = myUrls.starDevice();
+        var data = {
+            deviceid: deviceid,
+            stared: deviceObj.stared == 0 ? 1 : 0,
         }
-    })
-  }
+        utils.sendAjax(url, data, function(resp) {
+            if (resp.status == 0) {
+                deviceObj.stared = data.stared;
+                var staredDevCount = vRoot.$children[1].staredDevCount;
+                if (data.stared == 0) {
+                    $('#stared').css({ color: '#C1C1C1' });
+                    vRoot.$children[1].staredDevCount = staredDevCount - 1;
+                } else {
+                    $('#stared').css({ color: '#e4393c' })
+                    vRoot.$children[1].staredDevCount = staredDevCount + 1;
+                }
+            } else {
+                vRoot.$t(isZh ? '关注失败' : 'Focus on failure');
+            }
+        })
+    }
 }
 
 
@@ -1156,14 +1155,14 @@ function copyToClipboardText() {
 
     try {
         var successful = document.execCommand('copy');
-        if(isZh){
+        if (isZh) {
             var msg = successful ? '成功复制到剪贴板' : '该浏览器不支持点击复制到剪贴板';
-        }else{
+        } else {
             var msg = successful ? 'Successfully copied to the clipboard' : 'This browser does not support Click to copy to the clipboard';
         }
         new Vue().$Message.success(msg);
     } catch (err) {
-        new Vue().$Message.error(isZh?'该浏览器不支持点击复制到剪贴板':'This browser does not support Click to copy to the clipboard');
+        new Vue().$Message.error(isZh ? '该浏览器不支持点击复制到剪贴板' : 'This browser does not support Click to copy to the clipboard');
     }
     setTimeout(function() {
         document.body.removeChild(textArea);
@@ -1195,14 +1194,14 @@ function copyToClipboard() {
 
     try {
         var successful = document.execCommand('copy');
-        if(isZh){
+        if (isZh) {
             var msg = successful ? '成功复制到剪贴板' : '该浏览器不支持点击复制到剪贴板';
-        }else{
+        } else {
             var msg = successful ? 'Successfully copied to the clipboard' : 'This browser does not support Click to copy to the clipboard';
         }
         new Vue().$Message.success(msg);
     } catch (err) {
-        new Vue().$Message.error(isZh?'该浏览器不支持点击复制到剪贴板':'This browser does not support Click to copy to the clipboard');
+        new Vue().$Message.error(isZh ? '该浏览器不支持点击复制到剪贴板' : 'This browser does not support Click to copy to the clipboard');
     }
     setTimeout(function() {
         document.body.removeChild(textArea);
@@ -1552,13 +1551,13 @@ var asyncLoadJs = function(jsName, callback) {
 
 };
 
-Array.prototype.delRepeat=function(property){
-    var newArray=new Array();
-    var len=this.length;
-    for (var i=0;i<len ;i++){
-        for(var j=i+1;j<len;j++){
-            if(this[i][property]===this[j][property] && this[i].channelid===this[j].channelid){
-                j=++i;
+Array.prototype.delRepeat = function(property) {
+    var newArray = new Array();
+    var len = this.length;
+    for (var i = 0; i < len; i++) {
+        for (var j = i + 1; j < len; j++) {
+            if (this[i][property] === this[j][property] && this[i].channelid === this[j].channelid) {
+                j = ++i;
             }
         }
         newArray.push(this[i]);

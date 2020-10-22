@@ -2231,7 +2231,7 @@ var monitor = {
                             callback ? callback(resp) : '';
                         } else if (resp.status > 9000) {
                             me.$Message.error(me.$t("monitor.reLogin"))
-                            Cookies.remove('token')
+                            localStorage.setItem('token', "")
                             setTimeout(function() {
                                 window.location.href = 'index.html'
                             }, 2000)
@@ -2305,7 +2305,7 @@ var monitor = {
                             callback ? callback() : '';
                         } else if (resp.status > 9000) {
                             me.$Message.error(me.$t("monitor.reLogin"))
-                            Cookies.remove('token')
+                            localStorage.setItem('token', "");
                             setTimeout(function() {
                                 window.location.href = 'index.html'
                             }, 2000)
@@ -3134,7 +3134,7 @@ var monitor = {
     },
     computed: {
         username: function() {
-            return Cookies.get('name');
+            return localStorage.getItem('name');
         },
         isShowCompanyName: function() {
             return this.$store.state.isShowCompany;
@@ -3179,7 +3179,7 @@ var monitor = {
                 this.isSpin = false;
             }
 
-            Cookies.set('app-map-type', this.mapType);
+            localStorage.setItem('app-map-type', this.mapType);
         },
         filterData: function() {
             if (this.filterData.length) {

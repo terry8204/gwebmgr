@@ -29,7 +29,7 @@
             <li style="float:right;width:auto;">
                 <i-button @click="expireNotifyTime(0)" :type="queryType=='all' ? 'info':'default'" icon="ios-tablet-portrait">{{$t("user.allDev")}}<span v-if="queryType=='all'">({{total}})</span></i-button>
             </li>
-            <!-- all 7ot 60ot ot  -->  
+            <!-- all 7ot 60ot ot  -->
         </ul>
 
         <div class="table-wraper">
@@ -42,7 +42,7 @@
         <Modal v-model="ownerInfoModal" width="500">
             <p slot="header" style="color:#f60;text-align:center">
                 <Icon type="ios-create-outline"></Icon>
-                <span>{{$t('monitor.ownerInfo')}}</span>   
+                <span>{{$t('monitor.ownerInfo')}}</span>
             </p>
             <div style="text-align:center">
                 <Row style="margin:10px 0;">
@@ -76,7 +76,7 @@
                     </i-col>
                 </Row>
                 <Row style="margin:10px 0;">
-                    <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t('device.reportForm.gender')}} : &nbsp;</i-col> 
+                    <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t('device.reportForm.gender')}} : &nbsp;</i-col>
                     <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
                         <i-select v-model="ownerInfoData.gender">
                             <i-option value="1">{{$t('device.reportForm.man')}}</i-option>
@@ -127,7 +127,7 @@
                     </i-col>
                 </Row>
                 <Row style="margin:10px 0;">
-                    <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t('device.insureCompany')}} : &nbsp;</i-col> 
+                    <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t('device.insureCompany')}} : &nbsp;</i-col>
                     <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
                         <i-input v-model.trim="insureInfoData.insurecompany" style="width: 100%;"></i-input>
                     </i-col>
@@ -145,7 +145,7 @@
                     </i-col>
                 </Row>
                 <Row style="margin:10px 0;">
-                    <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t('device.effectiveDate')}} : &nbsp;</i-col> 
+                    <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t('device.effectiveDate')}} : &nbsp;</i-col>
                     <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
                         <i-input v-model.trim="insureInfoData.effecttime" style="width: 100%;"></i-input>
                     </i-col>
@@ -164,7 +164,7 @@
 
         <Modal v-model="modal" width="900" :title="$t('device.editDev')">
             <div style="width:700px;margin:10px auto">
-                <Row style="margin: 10px 0" v-if="userType < 3"> 
+                <Row style="margin: 10px 0" v-if="userType < 3">
                     <i-col span="4" style="height: 100%;text-align:right;line-height:32px;"><i style="color: red;display: inline-block;">*</i>&nbsp;{{$t("reportForm.selectAccount")}} : &nbsp;</i-col>
                     <i-col span="8">
                         <div class="search-wrapper">
@@ -222,7 +222,7 @@
                 </Row>
 
                 <Row style="margin: 10px 0">
-                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;{{$t("device.networkType")}} : &nbsp;</i-col> 
+                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;{{$t("device.networkType")}} : &nbsp;</i-col>
                     <i-col span="8">
                         <i-select v-model="teltype">
                             <i-option value="1">2G</i-option>
@@ -255,7 +255,7 @@
                             <i-option value="1">{{$t("user.allow")}}</i-option>
                         </i-select>
                     </i-col>
-                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;{{$t("device.tutelageUser")}} : &nbsp;</i-col>   
+                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;{{$t("device.tutelageUser")}} : &nbsp;</i-col>
                     <i-col span="8">
                         <i-input v-model.trim="monitor"></i-input>
                     </i-col>
@@ -298,7 +298,7 @@
             <div>
                 <Row style="height:32px;margin: 10px 0;">
                     <i-Col span="4" style="height: 100%;line-height:32px;text-align: right;">
-                        {{$t("device.ioNumber")}}: 
+                        {{$t("device.ioNumber")}}:
                     </i-Col>
                     <i-Col span="8" style="height: 100%;line-height:32px;padding-left: 3px;">
                         <Input-Number :max="4" :min="0" v-model="ioCount" style="width: 100%;"></Input-Number>
@@ -398,7 +398,7 @@
                                 <i-select v-model="tankShape1" style="width:128.75px">
                                     <i-option value="0">{{$t("device.noTank")}}</i-option>
                                     <i-option value="1">{{$t("device.cuboid")}}</i-option>
-                                    <i-option value="2">{{$t("device.verticalCylinder")}}</i-option>  
+                                    <i-option value="2">{{$t("device.verticalCylinder")}}</i-option>
                                     <i-option value="3">{{$t("device.transverseCylinder")}}</i-option>
                                     <i-option value="4">{{$t("device.irregular")}}</i-option>
                                 </i-select>
@@ -531,8 +531,8 @@
                             <i-table border :columns="taggingColumns1" ref="taggingTab1" :data="taggingData1" height="200"></i-table>
                             <div style="margin: 10px 0 0 0;text-align: right;">
 
-                                <i-button type="primary" @click="importTownerInfo1">{{$t("device.import")}}</i-button> 
-                                <i-button type="info"  @click="exportDevice1">{{$t("reportForm.exportData")}}</i-button>
+                                <i-button type="primary" @click="importTownerInfo1">{{$t("device.import")}}</i-button>
+                                <i-button type="info" @click="exportDevice1">{{$t("reportForm.exportData")}}</i-button>
                                 <i-button type="info" @click="downloadTemplate">{{$t('insure.templateDownload')}}</i-button>
                             </div>
                         </div>
@@ -560,7 +560,7 @@
                                 <i-select v-model="tankShape2" style="width:128.75px">
                                     <i-option value="0">{{$t("device.noTank")}}</i-option>
                                     <i-option value="1">{{$t("device.cuboid")}}</i-option>
-                                    <i-option value="2">{{$t("device.verticalCylinder")}}</i-option>  
+                                    <i-option value="2">{{$t("device.verticalCylinder")}}</i-option>
                                     <i-option value="3">{{$t("device.transverseCylinder")}}</i-option>
                                     <i-option value="4">{{$t("device.irregular")}}</i-option>
                                 </i-select>
@@ -692,16 +692,16 @@
                             </Row>
                             <i-table border :columns="taggingColumns2" ref="taggingTab2" :data="taggingData2" height="200"></i-table>
                             <div style="margin: 10px 0 0 0;text-align: right;">
-                                <i-button type="primary" style="width:80px;" @click="importTownerInfo2">{{$t("device.import")}}</i-button> 
+                                <i-button type="primary" style="width:80px;" @click="importTownerInfo2">{{$t("device.import")}}</i-button>
                                 <i-button type="info" style="width:80px;" @click="exportDevice2">{{$t("reportForm.exportData")}}</i-button>
                                 <i-button type="info" @click="downloadTemplate">{{$t('insure.templateDownload')}}</i-button>
                             </div>
                         </div>
                     </tab-pane>
-                    <tab-pane :label="$t('device.addTempInfo')" style="min-height: 210px;" name="templateInfo"> 
+                    <tab-pane :label="$t('device.addTempInfo')" style="min-height: 210px;" name="templateInfo">
                         <Row style="margin: 10px 0;">
                             <i-col span="4" style="line-height: 32px;text-align: center;">
-                                {{$t("device.templateName")}}: 
+                                {{$t("device.templateName")}}:
                             </i-col>
                             <i-col span="12">
                                 <i-input v-model.trim="templatename" style="width:100%"></i-input>
@@ -720,7 +720,7 @@
                         </Row>
                         <Row style="margin: 10px 0;">
                             <i-col span="4" style="line-height: 32px;text-align: center;">
-                                {{$t("device.OilRodModel")}}:  
+                                {{$t("device.OilRodModel")}}:
                             </i-col>
                             <i-col span="12">
                                 <i-input v-model.trim="model" style="width:100%"></i-input>
@@ -770,7 +770,7 @@
                 allTemp: false,
                 taleHeight: 300,
                 isQuery: false,
-                userType: Cookies.get('userType'),
+                userType: localStorage.getItem('userType'),
                 modal: false,
                 queryString: "",
                 loading: true,
@@ -810,7 +810,7 @@
                     width: 50
                 }, {
                     key: 'height',
-                    title: vRoot.$t('device.scale'), 
+                    title: vRoot.$t('device.scale'),
                 }, {
                     key: 'volume',
                     title: vRoot.$t('reportForm.oil'),
@@ -829,7 +829,7 @@
                                     vueInstanse.taggingData1.splice(index, 1);
                                 }
                             }
-                        }, vRoot.$t('monitor.delete')) 
+                        }, vRoot.$t('monitor.delete'))
                     },
                 }],
                 taggingColumns2: [{
@@ -889,12 +889,11 @@
                     }, {
                         title: vRoot.$t("user.grouping"),
                         key: 'groupname'
-                    }, 
-                    {
+                    }, {
                         title: vRoot.$t('bgMgr.mileageRatio'),
-                        width:90,
-                        render:function(h,params){
-                            return h('span',{},params.row.distanceratio+'%')
+                        width: 90,
+                        render: function(h, params) {
+                            return h('span', {}, params.row.distanceratio + '%')
                         }
                     }, {
                         title: vRoot.$t("bgMgr.action"),
@@ -920,7 +919,7 @@
                                         props: {
                                             type: 'error',
                                             size: 'small',
-                                            disabled: Cookies.get('userType') !== '0'
+                                            disabled: localStorage.getItem('userType') !== '0'
 
                                         }
                                     }, vRoot.$t("bgMgr.delete"))
@@ -955,18 +954,18 @@
                     }
                 ],
                 templateColumns: [{
-                    title: vRoot.$t('device.templateName'),  
+                    title: vRoot.$t('device.templateName'),
                     key: 'templatename',
                 }, {
-                    title: vRoot.$t('device.brand') ,
+                    title: vRoot.$t('device.brand'),
                     key: 'brand',
                     width: 80,
                 }, {
-                    title: vRoot.$t('device.model') ,
+                    title: vRoot.$t('device.model'),
                     key: 'model',
                     width: 80,
                 }, {
-                    title: vRoot.$t('device.tankParameters'),  
+                    title: vRoot.$t('device.tankParameters'),
                     render: function(h, params) {
                         var row = params.row;
                         return h(
@@ -1016,7 +1015,7 @@
                                                     vueInstanse.threshold2 = item.threshold;
                                                 }
                                             });
-                                            vueInstanse.$Message.success(vRoot.$t('device.importSucc')); 
+                                            vueInstanse.$Message.success(vRoot.$t('device.importSucc'));
                                         }
                                     }
                                 }, vRoot.$t('device.import')),
@@ -1033,7 +1032,7 @@
                                             vueInstanse.deleteOilDetectorTemplate(row.oildetectortemplateid, params.index);
                                         }
                                     }
-                                },vRoot.$t('monitor.delete'))
+                                }, vRoot.$t('monitor.delete'))
                             ]
                         )
                     },
@@ -1232,12 +1231,12 @@
                         oildetectortemplateid: id
                     }, function(resp) {
                         if (resp.status == 0) {
-                            me.$Message.success(vRoot.$t('message.deleteSucc')); 
+                            me.$Message.success(vRoot.$t('message.deleteSucc'));
                             me.templateData.splice(index, 1);
                         } else if (resp.status == 1) {
-                            me.$Message.error(vRoot.$t('message.noAuthority'));  
+                            me.$Message.error(vRoot.$t('message.noAuthority'));
                         } else {
-                            me.$Message.error(vRoot.$t('message.deleteFail'));  
+                            me.$Message.error(vRoot.$t('message.deleteFail'));
                         }
                     })
                 },
@@ -1281,10 +1280,10 @@
                     var tankShape = '';
                     switch (type) {
                         case 0:
-                            tankShape = vRoot.$t('device.noTank') ; 
+                            tankShape = vRoot.$t('device.noTank');
                             break;
                         case 1:
-                            tankShape = vRoot.$t('device.cuboid') ;
+                            tankShape = vRoot.$t('device.cuboid');
                             break;
                         case 2:
                             tankShape = vRoot.$t('device.verticalCylinder');
@@ -1301,7 +1300,7 @@
                 saveTemplateInfo: function() {
                     if (this.tabsActive == 'templateInfo') {
                         if (this.templatename.length === 0) {
-                            this.$Message.error(vRoot.$t('device.requiredTempName'));  
+                            this.$Message.error(vRoot.$t('device.requiredTempName'));
                             return;
                         }
                         var oilDetector1 = {
@@ -1341,7 +1340,7 @@
                         me.model ? data.model = me.model : null;
                         utils.sendAjax(myUrls.saveOilDetectorTemplate(), data, function(resp) {
                             if (resp.status == 0) {
-                                me.$Message.success(vRoot.$t('device.tempSaveSucc'));  
+                                me.$Message.success(vRoot.$t('device.tempSaveSucc'));
                             } else {
                                 me.$Message.error(vRoot.$t('device.tempSaveFail'));
                             }
@@ -1401,7 +1400,7 @@
                     var me = this;
                     utils.editDeviceex('insure', me.ownerInfoData, function(resp) {
                         if (resp.status === 0) {
-                            me.$Message.success(vRoot.$t('message.changeSucc')); 
+                            me.$Message.success(vRoot.$t('message.changeSucc'));
                             me.ownerInfoModal = false;
                         } else {
                             me.$Message.error(vRoot.$t('message.changeFail'));
@@ -1591,7 +1590,7 @@
                     }, function(resp) {
                         me.isIndependent = resp.independent == 0 ? true : false;
                         if (resp.oildetectors != null) {
-                            me.$Message.success(vRoot.$t('monitor.querySucc')); 
+                            me.$Message.success(vRoot.$t('monitor.querySucc'));
                             var oildetectors = resp.oildetectors;
                             oildetectors.forEach(function(item, index) {
                                 if (index == 0) {
@@ -1658,7 +1657,7 @@
                     };
                     utils.sendAjax(url, data, function(resp) {
                         if (resp.status == 0) {
-                            me.$Message.success(vRoot.$t('message.saveSucc'));    
+                            me.$Message.success(vRoot.$t('message.saveSucc'));
                         } else {
                             me.$Message.error(resp.cause);
                         }
@@ -1681,7 +1680,7 @@
                         all: true,
                     }, function(resp) {
                         if (resp.status == 0 && resp.devices != null) {
-                            me.$Message.success(vRoot.$t('message.exportSucceeded'));    
+                            me.$Message.success(vRoot.$t('message.exportSucceeded'));
                             me.$refs.table.exportCsv({
                                 filename: 'deviceids',
                                 columns: me.columns.filter(function(col, index) {
@@ -1934,8 +1933,8 @@
                         }
                         this.taggingData1 = tableData;
                     } catch (error) {
-                        console.log('error',error);
-                        this.$Message.error(vRoot.$t('message.useTemplateTips'));   
+                        console.log('error', error);
+                        this.$Message.error(vRoot.$t('message.useTemplateTips'));
                     }
                 },
                 readWorkbookFromLocalFile2: function(file, callback) {
@@ -1989,7 +1988,7 @@
                     taggingColumns1.pop();
                     taggingColumns1.shift();
                     this.$refs.taggingTab1.exportCsv({
-                        filename: vRoot.$t('device.calibration'),  
+                        filename: vRoot.$t('device.calibration'),
                         columns: taggingColumns1,
                         data: this.taggingData1,
                         quoted: true,
@@ -2042,8 +2041,8 @@
                 this.userlists = userlists;
                 this.userType = vstore.state.userType;
                 this.allGroups = {};
-                if(this.userType > 1){
-                    this.columns.splice(9,1);
+                if (this.userType > 1) {
+                    this.columns.splice(9, 1);
                 }
                 this.queryGroupInfos(function() {
                     me.getDeviceList(false, 0);

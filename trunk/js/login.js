@@ -12,7 +12,7 @@ new Vue({
         loading: false,
         placeholder: "",
         pwdPlaceholder: "",
-        language: Cookies.get("PATH_LANG") || 'zh',
+        language: localStorage.getItem("PATH_LANG") || 'zh',
     },
     methods: {
         getBrowserInfo: function() {
@@ -104,12 +104,12 @@ new Vue({
                         sessionStorage.setItem("qq", resp.qq ? resp.qq : "");
                         sessionStorage.setItem("wechat", resp.wechat ? resp.wechat : "");
 
-                        Cookies.set("token", resp.token);
-                        Cookies.set("userType", resp.usertype);
-                        Cookies.set("name", "minigps");
-                        Cookies.set("forcealarm", resp.forcealarm);
-                        Cookies.set("alarmaction", resp.alarmaction);
-                        Cookies.set("minigps" + "-multilogin", resp.multilogin);
+                        localStorage.setItem("token", resp.token);
+                        localStorage.setItem("userType", resp.usertype);
+                        localStorage.setItem("name", "minigps");
+                        localStorage.setItem("forcealarm", resp.forcealarm);
+                        localStorage.setItem("alarmaction", resp.alarmaction);
+                        localStorage.setItem("minigps" + "-multilogin", resp.multilogin);
                         // window.location.href = "main.html?token=" + resp.token + "&usertype=" + resp.usertype;
                         window.location.href = "main.html";
                     } else {
@@ -157,24 +157,24 @@ new Vue({
                     sessionStorage.setItem("wechat", resp.wechat ? resp.wechat : "");
                     if (me.keepPass) {
                         if (me.account == 0) {
-                            Cookies.set("accountuser", me.username, { expires: 7 });
-                            Cookies.set("accountpass", me.password, { expires: 7 });
+                            localStorage.setItem("accountuser", me.username);
+                            localStorage.setItem("accountpass", me.password);
                         } else {
-                            Cookies.set("deviceuser", me.username, { expires: 7 });
-                            Cookies.set("devicepass", me.password, { expires: 7 });
+                            localStorage.setItem("deviceuser", me.username);
+                            localStorage.setItem("devicepass", me.password);
                         }
-                        Cookies.set("keepPass", true, { expires: 7 });
+                        localStorage.setItem("keepPass", true);
                     } else {
-                        Cookies.remove("accountuser");
-                        Cookies.remove("accountpass");
-                        Cookies.set("keepPass", false, { expires: 7 });
+                        localStorage.setItem("accountuser", "");
+                        localStorage.setItem("accountpass", "");
+                        localStorage.setItem("keepPass", false);
                     }
-                    Cookies.set("token", resp.token);
-                    Cookies.set("userType", resp.usertype);
-                    Cookies.set("name", me.username);
-                    Cookies.set("forcealarm", resp.forcealarm);
-                    Cookies.set("alarmaction", resp.alarmaction);
-                    Cookies.set(me.username + "-multilogin", resp.multilogin);
+                    localStorage.setItem("token", resp.token);
+                    localStorage.setItem("userType", resp.usertype);
+                    localStorage.setItem("name", me.username);
+                    localStorage.setItem("forcealarm", resp.forcealarm);
+                    localStorage.setItem("alarmaction", resp.alarmaction);
+                    localStorage.setItem(me.username + "-multilogin", resp.multilogin);
                     // window.location.href = "main.html?token=" + resp.token + "&usertype=" + resp.usertype;
                     window.location.href = "main.html";
                 } else if (resp.status == -1) {
@@ -219,15 +219,15 @@ new Vue({
         selectdAccount: function(account) {
             this.account = account;
             var type = this.account == 0 ? "USER" : "DEVICE";
-            Cookies.set("logintype", type, { expires: 7 });
+            localStorage.setItem("logintype", type);
 
         },
         changeLang: function(lang) {
             this.language = lang;
             this.$i18n.locale = lang;
-            Cookies.set("PATH_LANG", lang, { expires: 31 });
+            localStorage.setItem("PATH_LANG", lang);
             this.pwdPlaceholder = this.$t("login.inputPassword");
-            var type = Cookies.get("logintype");
+            var type = localStorage.getItem("logintype");
             if (type == "USER") {
                 this.placeholder = this.$t("login.inputUsername");
             } else if (type == "DEVICE") {
@@ -239,23 +239,23 @@ new Vue({
     mounted: function() {
         var me = this;
         this.$nextTick(function() {
-            var keepPass = Cookies.get("keepPass");
-            var type = Cookies.get("logintype");
+            var keepPass = localStorage.getItem("keepPass");
+            var type = localStorage.getItem("logintype");
             if (type) {
                 if (type == "USER") {
                     me.account = 0;
                     me.placeholder = this.$t("login.inputUsername");
-                    var user = Cookies.get("accountuser");
-                    var pass = Cookies.get("accountpass");
+                    var user = localStorage.getItem("accountuser");
+                    var pass = localStorage.getItem("accountpass");
                 } else if (type == "DEVICE") {
                     me.placeholder = this.$t("login.inputDeviceNumber");
                     me.account = 1;
-                    var user = Cookies.get("deviceuser");
-                    var pass = Cookies.get("devicepass");
+                    var user = localStorage.getItem("deviceuser");
+                    var pass = localStorage.getItem("devicepass");
                 }
             } else {
                 var type = this.account == 0 ? "USER" : "DEVICE";
-                Cookies.set("logintype", type, { expires: 7 });
+                localStorage.setItem("logintype", type);
             };
 
             if (keepPass == 'true' && user != undefined && pass != undefined) {
@@ -283,12 +283,12 @@ new Vue({
         account: function() {
             if (this.account == 0) {
                 this.placeholder = this.$t("login.inputUsername");
-                var user = Cookies.get("accountuser");
-                var pass = Cookies.get("accountpass");
+                var user = localStorage.getItem("accountuser");
+                var pass = localStorage.getItem("accountpass");
             } else {
                 this.placeholder = this.$t("login.inputDeviceNumber");
-                var user = Cookies.get("deviceuser");
-                var pass = Cookies.get("devicepass");
+                var user = localStorage.getItem("deviceuser");
+                var pass = localStorage.getItem("devicepass");
             }
             if (this.keepPass) {
                 if (user && pass) {

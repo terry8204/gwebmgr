@@ -3120,7 +3120,7 @@
                     }
                 },
                 userType: function() {
-                    return Number(Cookies.get('userType'));
+                    return Number(localStorage.getItem('userType'));
                 }
             },
             watch: {

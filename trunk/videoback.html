@@ -260,7 +260,7 @@
                                 </i-col>
                             </Row>
                         </div>
-      
+
                         <Modal v-model="modal" :title="$t('videoback.segmentDownload')" width="460">
                             <Row style="margin:10px 0;">
                                 <i-col span="4" style="height:35px;line-height:35px;">
@@ -294,7 +294,7 @@
                             </Row>
                             <Row style="margin:10px 0;">
                                 <i-col span="4" style="height:35px;line-height:35px;">
-                                    {{$t('videoback.selectionDuration')}} :  
+                                    {{$t('videoback.selectionDuration')}} :
                                 </i-col>
                                 <i-col span="8" style="height:35px;line-height:35px;">
                                     {{timeStamp}}
@@ -310,7 +310,7 @@
                             </Row>
                             <Row style="margin:10px 0;">
                                 <i-col span="4" style="height:35px;line-height:35px;">
-                                    {{$t('videoback.label')}} : 
+                                    {{$t('videoback.label')}} :
                                 </i-col>
                                 <i-col span="8">
                                     <i-input v-model="tag"></i-input>
@@ -413,7 +413,9 @@
             }
             return num;
         }
-        var lang = new Vue({i18n: utils.getI18n()});
+        var lang = new Vue({
+            i18n: utils.getI18n()
+        });
         document.title = lang.$t('monitor.videoPlayback');
         var vRoot = new Vue({
             el: "#container",
@@ -439,14 +441,14 @@
                 videotppe: true,
                 tableData: [],
                 downloadTableData: [],
-                sliderValue:[0,100],
-                showSlider:false,
-                tipFormat:function(value){
+                sliderValue: [0, 100],
+                showSlider: false,
+                tipFormat: function(value) {
                     var startValue = null;
-                    if(totalInterval > 0){
+                    if (totalInterval > 0) {
                         startValue = value;
-                        var startInterval = startValue /100 * totalInterval;
-                        var startValue = DateFormat.longToDateTimeStr(startTimes + startInterval,DateFormat.getOffset()).split(' ')[1];
+                        var startInterval = startValue / 100 * totalInterval;
+                        var startValue = DateFormat.longToDateTimeStr(startTimes + startInterval, DateFormat.getOffset()).split(' ')[1];
                     }
                     return startValue;
                 },
@@ -474,24 +476,24 @@
                         ])
                     }
                 }, {
-                    title: lang.$t('videoback.channelNumber') ,
+                    title: lang.$t('videoback.channelNumber'),
                     key: 'channel',
                     width: 120,
                 }, {
-                    title: lang.$t('videoback.startTime') ,
+                    title: lang.$t('videoback.startTime'),
                     key: 'starttime',
                 }, {
-                    title: lang.$t('videoback.endTime') ,
+                    title: lang.$t('videoback.endTime'),
                     key: 'endtime',
                 }, {
-                    title: lang.$t('videoback.fileSize') ,
+                    title: lang.$t('videoback.fileSize'),
                     key: 'filesize',
                     width: 100,
                     render: function(h, params) {
                         return h('span', {}, calcFileSizeM(params.row.filesize))
                     }
                 }, {
-                    title: lang.$t('alarm.action') ,
+                    title: lang.$t('alarm.action'),
                     key: 'action',
                     width: 180,
                     render: function(h, params) {
@@ -530,13 +532,13 @@
                                         vRoot.startVideoTime = row.starttime;
                                         vRoot.endVideoTime = row.endtime;
                                         vRoot.row = row;
-                
 
-                                        startTimes = DateFormat.dateTimeStrToLong(row.starttime,0);
-                                        var endTimes = DateFormat.dateTimeStrToLong(row.endtime,0);
+
+                                        startTimes = DateFormat.dateTimeStrToLong(row.starttime, 0);
+                                        var endTimes = DateFormat.dateTimeStrToLong(row.endtime, 0);
                                         totalInterval = endTimes - startTimes;
                                         vRoot.showSlider = true;
-                                        vRoot.sliderValue = [0,100];
+                                        vRoot.sliderValue = [0, 100];
                                         vRoot.timeStamp = utils.timeStamp(totalInterval);
                                         vRoot.modal = true;
                                     }
@@ -546,7 +548,7 @@
                     }
                 }],
                 downloadColumns: [{
-                    title: lang.$t('alarm.action') ,
+                    title: lang.$t('alarm.action'),
                     width: 325,
                     render: function(h, params) {
                         var row = params.row,
@@ -564,10 +566,10 @@
                                             deviceid: row.deviceid,
                                             action: 0,
                                             downloadtaskid: row.downloadtaskid,
-                                            offset:DateFormat.getOffset()
+                                            offset: DateFormat.getOffset()
                                         }
                                         vRoot.controlUploadFileFn(data, function(resp) {
-                                            vRoot.$Message.success(lang.$t('videoback.pauseSucc')); 
+                                            vRoot.$Message.success(lang.$t('videoback.pauseSucc'));
                                             vRoot.downloadTableData.splice(index, 1, resp.task);
                                         });
                                     }
@@ -629,7 +631,7 @@
                                 on: {
                                     click: function() {
                                         if (row.downloadstatus != 3) {
-                                            vRoot.$Message.error(lang.$t('videoback.downloadTips1'));   
+                                            vRoot.$Message.error(lang.$t('videoback.downloadTips1'));
                                             return;
                                         };
                                         vRoot.$Message.success(lang.$t('videoback.downloadTips2'));
@@ -718,20 +720,20 @@
                 tag: '',
                 row: {},
                 playerStateTip: '',
-                timeStamp:'',
+                timeStamp: '',
             },
             methods: {
-                onSliderChange:function(value){
-                 
+                onSliderChange: function(value) {
+
                     var startValue = value[0];
                     var endValue = value[1];
 
-                    var startInterval = startValue /100 * totalInterval;
-                    var endInterval = endValue /100 * totalInterval;
+                    var startInterval = startValue / 100 * totalInterval;
+                    var endInterval = endValue / 100 * totalInterval;
 
-                    vRoot.timeStamp = utils.timeStamp(endInterval-startInterval);
-                    this.startValue = DateFormat.longToDateTimeStr(startTimes + startInterval,DateFormat.getOffset()).split(' ')[1];
-                    this.endValue = DateFormat.longToDateTimeStr(startTimes + endInterval,DateFormat.getOffset()).split(' ')[1];
+                    vRoot.timeStamp = utils.timeStamp(endInterval - startInterval);
+                    this.startValue = DateFormat.longToDateTimeStr(startTimes + startInterval, DateFormat.getOffset()).split(' ')[1];
+                    this.endValue = DateFormat.longToDateTimeStr(startTimes + endInterval, DateFormat.getOffset()).split(' ')[1];
                 },
                 stopVideo: function() {
                     if (this.flvPlayer != null) {
@@ -741,39 +743,39 @@
                         this.flvPlayer.destroy();
                         this.flvPlayer = null;
                         this.playerStateTip = lang.$t('videoback.stopPlay');
-                       
+
                     };
                     var url = myUrls.playRecordControl(),
-                            me = this;
+                        me = this;
                     utils.sendAjax(url, {
-                            deviceid: deviceid,
-                            channel: Number(this.selectType),
-                            starttime: gstartTimeStr,
-                            endtime: gendTimeStr,
-                            playcontrol: 2,
-                            offset: DateFormat.getOffset()
-                        }, function(resp) {
-                            var status = resp.status;
-                            if (status == CMD_SEND_RESULT_UNCONFIRM) {
-                                me.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_UNCONFIRM')); 
-                            } else if (status === CMD_SEND_RESULT_PASSWORD_ERROR) {
-                                me.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_PASSWORD_ERROR'));
-                            } else if (status === CMD_SEND_RESULT_OFFLINE_NOT_CACHE) {
-                                me.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_OFFLINE_NOT_CACHE'));
-                            } else if (status === CMD_SEND_RESULT_OFFLINE_CACHED) {
-                                me.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_OFFLINE_CACHED'));
-                            } else if (status === CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD) {
-                                me.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD'));
-                            } else if (status === CMD_SEND_RESULT_DETAIL_ERROR) {
-                                me.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_DETAIL_ERROR') + resp.cause);
-                            } else if (status === CMD_SEND_CONFIRMED) {
-                                me.$Message.success(isZh ? "停止成功" : "Stopped successfully");
-                            } else if (status === CMD_SEND_OVER_RETRY_TIMES) {
-                                me.$Message.error(lang.$t('monitor.CMD_SEND_OVER_RETRY_TIMES'));
-                            } else if (status === CMD_SEND_SYNC_TIMEOUT) {
-                                me.$Message.error(lang.$t('monitor.CMD_SEND_SYNC_TIMEOUT'));
-                            }
-                        })
+                        deviceid: deviceid,
+                        channel: Number(this.selectType),
+                        starttime: gstartTimeStr,
+                        endtime: gendTimeStr,
+                        playcontrol: 2,
+                        offset: DateFormat.getOffset()
+                    }, function(resp) {
+                        var status = resp.status;
+                        if (status == CMD_SEND_RESULT_UNCONFIRM) {
+                            me.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_UNCONFIRM'));
+                        } else if (status === CMD_SEND_RESULT_PASSWORD_ERROR) {
+                            me.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_PASSWORD_ERROR'));
+                        } else if (status === CMD_SEND_RESULT_OFFLINE_NOT_CACHE) {
+                            me.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_OFFLINE_NOT_CACHE'));
+                        } else if (status === CMD_SEND_RESULT_OFFLINE_CACHED) {
+                            me.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_OFFLINE_CACHED'));
+                        } else if (status === CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD) {
+                            me.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD'));
+                        } else if (status === CMD_SEND_RESULT_DETAIL_ERROR) {
+                            me.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_DETAIL_ERROR') + resp.cause);
+                        } else if (status === CMD_SEND_CONFIRMED) {
+                            me.$Message.success(isZh ? "停止成功" : "Stopped successfully");
+                        } else if (status === CMD_SEND_OVER_RETRY_TIMES) {
+                            me.$Message.error(lang.$t('monitor.CMD_SEND_OVER_RETRY_TIMES'));
+                        } else if (status === CMD_SEND_SYNC_TIMEOUT) {
+                            me.$Message.error(lang.$t('monitor.CMD_SEND_SYNC_TIMEOUT'));
+                        }
+                    })
                 },
                 controlUploadFileFn: function(data, callback) {
                     var url = myUrls.controlUploadFile(),
@@ -781,24 +783,24 @@
                     utils.sendAjax(url, data, function(resp) {
                         var status = resp.status;
                         if (status == CMD_SEND_RESULT_UNCONFIRM) {
-                                me.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_UNCONFIRM')); 
-                            } else if (status === CMD_SEND_RESULT_PASSWORD_ERROR) {
-                                me.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_PASSWORD_ERROR'));
-                            } else if (status === CMD_SEND_RESULT_OFFLINE_NOT_CACHE) {
-                                me.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_OFFLINE_NOT_CACHE'));
-                            } else if (status === CMD_SEND_RESULT_OFFLINE_CACHED) {
-                                me.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_OFFLINE_CACHED'));
-                            } else if (status === CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD) {
-                                me.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD'));
-                            } else if (status === CMD_SEND_RESULT_DETAIL_ERROR) {
-                                me.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_DETAIL_ERROR') + resp.cause);
-                            } else if (status === CMD_SEND_CONFIRMED) {
-                                callback(resp);
-                            } else if (status === CMD_SEND_OVER_RETRY_TIMES) {
-                                me.$Message.error(lang.$t('monitor.CMD_SEND_OVER_RETRY_TIMES'));
-                            } else if (status === CMD_SEND_SYNC_TIMEOUT) {
-                                me.$Message.error(lang.$t('monitor.CMD_SEND_SYNC_TIMEOUT'));
-                            }
+                            me.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_UNCONFIRM'));
+                        } else if (status === CMD_SEND_RESULT_PASSWORD_ERROR) {
+                            me.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_PASSWORD_ERROR'));
+                        } else if (status === CMD_SEND_RESULT_OFFLINE_NOT_CACHE) {
+                            me.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_OFFLINE_NOT_CACHE'));
+                        } else if (status === CMD_SEND_RESULT_OFFLINE_CACHED) {
+                            me.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_OFFLINE_CACHED'));
+                        } else if (status === CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD) {
+                            me.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD'));
+                        } else if (status === CMD_SEND_RESULT_DETAIL_ERROR) {
+                            me.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_DETAIL_ERROR') + resp.cause);
+                        } else if (status === CMD_SEND_CONFIRMED) {
+                            callback(resp);
+                        } else if (status === CMD_SEND_OVER_RETRY_TIMES) {
+                            me.$Message.error(lang.$t('monitor.CMD_SEND_OVER_RETRY_TIMES'));
+                        } else if (status === CMD_SEND_SYNC_TIMEOUT) {
+                            me.$Message.error(lang.$t('monitor.CMD_SEND_SYNC_TIMEOUT'));
+                        }
                     });
                 },
                 splitUploadFile: function() {
@@ -824,7 +826,7 @@
                     var needstarttime = this.dateStr + ' ' + this.startValue;
                     var needendtime = this.dateStr + ' ' + this.endValue;
                     if (new Date(needstarttime).getTime() > new Date(needendtime).getTime()) {
-                        me.$Message.error( lang.$t('videoback.downloadTips3'));  
+                        me.$Message.error(lang.$t('videoback.downloadTips3'));
                         return;
                     }
                     if (new Date(this.row.starttime).getTime() > new Date(needstarttime).getTime()) {
@@ -855,27 +857,27 @@
                     utils.sendAjax(url, data, function(resp) {
                         var status = resp.status;
                         if (status == CMD_SEND_RESULT_UNCONFIRM) {
-                                me.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_UNCONFIRM')); 
-                            } else if (status === CMD_SEND_RESULT_PASSWORD_ERROR) {
-                                me.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_PASSWORD_ERROR'));
-                            } else if (status === CMD_SEND_RESULT_OFFLINE_NOT_CACHE) {
-                                me.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_OFFLINE_NOT_CACHE'));
-                            } else if (status === CMD_SEND_RESULT_OFFLINE_CACHED) {
-                                me.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_OFFLINE_CACHED'));
-                            } else if (status === CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD) {
-                                me.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD'));
-                            } else if (status === CMD_SEND_RESULT_DETAIL_ERROR) {
-                                me.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_DETAIL_ERROR') + resp.cause);
-                            } else if (status === CMD_SEND_CONFIRMED) {
-                                me.$Message.success(isZh ? "请求下载成功" : "Download request successful");
-                                me.modal = false;
-                                me.tag = '';
-                                me.queryDownloadTasks();
-                            } else if (status === CMD_SEND_OVER_RETRY_TIMES) {
-                                me.$Message.error(lang.$t('monitor.CMD_SEND_OVER_RETRY_TIMES'));
-                            } else if (status === CMD_SEND_SYNC_TIMEOUT) {
-                                me.$Message.error(lang.$t('monitor.CMD_SEND_SYNC_TIMEOUT'));
-                            }
+                            me.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_UNCONFIRM'));
+                        } else if (status === CMD_SEND_RESULT_PASSWORD_ERROR) {
+                            me.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_PASSWORD_ERROR'));
+                        } else if (status === CMD_SEND_RESULT_OFFLINE_NOT_CACHE) {
+                            me.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_OFFLINE_NOT_CACHE'));
+                        } else if (status === CMD_SEND_RESULT_OFFLINE_CACHED) {
+                            me.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_OFFLINE_CACHED'));
+                        } else if (status === CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD) {
+                            me.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD'));
+                        } else if (status === CMD_SEND_RESULT_DETAIL_ERROR) {
+                            me.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_DETAIL_ERROR') + resp.cause);
+                        } else if (status === CMD_SEND_CONFIRMED) {
+                            me.$Message.success(isZh ? "请求下载成功" : "Download request successful");
+                            me.modal = false;
+                            me.tag = '';
+                            me.queryDownloadTasks();
+                        } else if (status === CMD_SEND_OVER_RETRY_TIMES) {
+                            me.$Message.error(lang.$t('monitor.CMD_SEND_OVER_RETRY_TIMES'));
+                        } else if (status === CMD_SEND_SYNC_TIMEOUT) {
+                            me.$Message.error(lang.$t('monitor.CMD_SEND_SYNC_TIMEOUT'));
+                        }
                     });
                 },
                 reqUploadFile: function(row) {
@@ -914,25 +916,25 @@
                     utils.sendAjax(url, data, function(resp) {
                         var status = resp.status;
                         if (status == CMD_SEND_RESULT_UNCONFIRM) {
-                                me.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_UNCONFIRM')); 
-                            } else if (status === CMD_SEND_RESULT_PASSWORD_ERROR) {
-                                me.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_PASSWORD_ERROR'));
-                            } else if (status === CMD_SEND_RESULT_OFFLINE_NOT_CACHE) {
-                                me.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_OFFLINE_NOT_CACHE'));
-                            } else if (status === CMD_SEND_RESULT_OFFLINE_CACHED) {
-                                me.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_OFFLINE_CACHED'));
-                            } else if (status === CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD) {
-                                me.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD'));
-                            } else if (status === CMD_SEND_RESULT_DETAIL_ERROR) {
-                                me.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_DETAIL_ERROR') + resp.cause);
-                            } else if (status === CMD_SEND_CONFIRMED) {
-                                me.$Message.success(isZh ? "请求下载成功" : "Download request successful");
-                                me.queryDownloadTasks();
-                            } else if (status === CMD_SEND_OVER_RETRY_TIMES) {
-                                me.$Message.error(lang.$t('monitor.CMD_SEND_OVER_RETRY_TIMES'));
-                            } else if (status === CMD_SEND_SYNC_TIMEOUT) {
-                                me.$Message.error(lang.$t('monitor.CMD_SEND_SYNC_TIMEOUT'));
-                            }
+                            me.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_UNCONFIRM'));
+                        } else if (status === CMD_SEND_RESULT_PASSWORD_ERROR) {
+                            me.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_PASSWORD_ERROR'));
+                        } else if (status === CMD_SEND_RESULT_OFFLINE_NOT_CACHE) {
+                            me.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_OFFLINE_NOT_CACHE'));
+                        } else if (status === CMD_SEND_RESULT_OFFLINE_CACHED) {
+                            me.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_OFFLINE_CACHED'));
+                        } else if (status === CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD) {
+                            me.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD'));
+                        } else if (status === CMD_SEND_RESULT_DETAIL_ERROR) {
+                            me.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_DETAIL_ERROR') + resp.cause);
+                        } else if (status === CMD_SEND_CONFIRMED) {
+                            me.$Message.success(isZh ? "请求下载成功" : "Download request successful");
+                            me.queryDownloadTasks();
+                        } else if (status === CMD_SEND_OVER_RETRY_TIMES) {
+                            me.$Message.error(lang.$t('monitor.CMD_SEND_OVER_RETRY_TIMES'));
+                        } else if (status === CMD_SEND_SYNC_TIMEOUT) {
+                            me.$Message.error(lang.$t('monitor.CMD_SEND_SYNC_TIMEOUT'));
+                        }
                     });
                 },
                 onMouseMove: function(e) {
@@ -1009,7 +1011,7 @@
                     })
                     if (endTimeStr) {
                         isRequsetPlaying = true;
-                        this.playerStateTip = lang.$t('video.requestPlay'); 
+                        this.playerStateTip = lang.$t('video.requestPlay');
                         this.isSpin = true;
                         var url = myUrls.playRecordControl();
                         gendTimeStr = endTimeStr;
@@ -1031,7 +1033,7 @@
                                 status = resp.status;
 
                             if (status == CMD_SEND_RESULT_UNCONFIRM) {
-                                me.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_UNCONFIRM')); 
+                                me.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_UNCONFIRM'));
                             } else if (status === CMD_SEND_RESULT_PASSWORD_ERROR) {
                                 me.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_PASSWORD_ERROR'));
                             } else if (status === CMD_SEND_RESULT_OFFLINE_NOT_CACHE) {
@@ -1051,7 +1053,7 @@
                             } else if (status === CMD_SEND_OVER_RETRY_TIMES) {
                                 me.$Message.error(lang.$t('monitor.CMD_SEND_OVER_RETRY_TIMES'));
                             } else if (status === CMD_SEND_SYNC_TIMEOUT) {
-                                me.$Message.error( lang.$t('video.requestPlayTimeout'));   
+                                me.$Message.error(lang.$t('video.requestPlayTimeout'));
                                 if (startPlayerTimer) {
                                     clearTimeout(startPlayerTimer);
                                 }
@@ -1062,7 +1064,7 @@
 
                         }, function() {
                             me.isSpin = false;
-                            me.$Message.error(lang.$t('message.networkError')); 
+                            me.$Message.error(lang.$t('message.networkError'));
                         });
                     }
                 },
@@ -1088,7 +1090,7 @@
                     if (startPlayerTimer) {
                         clearTimeout(startPlayerTimer);
                     }
-                    this.playerStateTip = lang.$t('video.requestPlay'); 
+                    this.playerStateTip = lang.$t('video.requestPlay');
                     gendTimeStr = row.endtime;
                     gstartTimeStr = row.starttime;
                     gchannel = row.channel;
@@ -1108,42 +1110,42 @@
                         isRequsetPlaying = false;
                         var record = resp.record,
                             status = resp.status;
-                            if (status == CMD_SEND_RESULT_UNCONFIRM) {
-                                me.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_UNCONFIRM')); 
-                            } else if (status === CMD_SEND_RESULT_PASSWORD_ERROR) {
-                                me.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_PASSWORD_ERROR'));
-                            } else if (status === CMD_SEND_RESULT_OFFLINE_NOT_CACHE) {
-                                me.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_OFFLINE_NOT_CACHE'));
-                            } else if (status === CMD_SEND_RESULT_OFFLINE_CACHED) {
-                                me.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_OFFLINE_CACHED'));
-                            } else if (status === CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD) {
-                                me.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD'));
-                            } else if (status === CMD_SEND_RESULT_DETAIL_ERROR) {
-                                me.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_DETAIL_ERROR') + resp.cause);
-                            } else if (status === CMD_SEND_CONFIRMED) {
-                                me.$Message.success(lang.$t('video.requestPlaySucc'));
-                                if (startPlayerTimer) {
-                                    clearTimeout(startPlayerTimer);
-                                }
-                                me.switchflvPlayer(resp.record.playurl, resp.record.hasaudio);
-                            } else if (status === CMD_SEND_OVER_RETRY_TIMES) {
-                                me.$Message.error(lang.$t('monitor.CMD_SEND_OVER_RETRY_TIMES'));
-                            } else if (status === CMD_SEND_SYNC_TIMEOUT) {
-                                me.$Message.error(lang.$t('video.requestPlayTimeout'));
-                                    if (startPlayerTimer) {
-                                    clearTimeout(startPlayerTimer);
-                                }
-                                me.switchflvPlayer(resp.record.playurl, resp.record.hasaudio);
+                        if (status == CMD_SEND_RESULT_UNCONFIRM) {
+                            me.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_UNCONFIRM'));
+                        } else if (status === CMD_SEND_RESULT_PASSWORD_ERROR) {
+                            me.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_PASSWORD_ERROR'));
+                        } else if (status === CMD_SEND_RESULT_OFFLINE_NOT_CACHE) {
+                            me.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_OFFLINE_NOT_CACHE'));
+                        } else if (status === CMD_SEND_RESULT_OFFLINE_CACHED) {
+                            me.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_OFFLINE_CACHED'));
+                        } else if (status === CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD) {
+                            me.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD'));
+                        } else if (status === CMD_SEND_RESULT_DETAIL_ERROR) {
+                            me.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_DETAIL_ERROR') + resp.cause);
+                        } else if (status === CMD_SEND_CONFIRMED) {
+                            me.$Message.success(lang.$t('video.requestPlaySucc'));
+                            if (startPlayerTimer) {
+                                clearTimeout(startPlayerTimer);
                             }
+                            me.switchflvPlayer(resp.record.playurl, resp.record.hasaudio);
+                        } else if (status === CMD_SEND_OVER_RETRY_TIMES) {
+                            me.$Message.error(lang.$t('monitor.CMD_SEND_OVER_RETRY_TIMES'));
+                        } else if (status === CMD_SEND_SYNC_TIMEOUT) {
+                            me.$Message.error(lang.$t('video.requestPlayTimeout'));
+                            if (startPlayerTimer) {
+                                clearTimeout(startPlayerTimer);
+                            }
+                            me.switchflvPlayer(resp.record.playurl, resp.record.hasaudio);
+                        }
                     }, function() {
-                        me.$Message.error(lang.$t('message.networkError')); 
+                        me.$Message.error(lang.$t('message.networkError'));
                         me.isSpin = false;
                     });
                 },
                 queryMedia: function() {
 
                     if (!(this.date && this.timeRange[0] && this.timeRange[1])) {
-                        this.$Message.error(lang.$t('message.plSelectTime')); 
+                        this.$Message.error(lang.$t('message.plSelectTime'));
                         return;
                     };
 
@@ -1185,28 +1187,28 @@
                         that.loading = false;
 
                         if (status == CMD_SEND_RESULT_UNCONFIRM) {
-                            that.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_UNCONFIRM')); 
-                            } else if (status === CMD_SEND_RESULT_PASSWORD_ERROR) {
-                                that.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_PASSWORD_ERROR'));
-                            } else if (status === CMD_SEND_RESULT_OFFLINE_NOT_CACHE) {
-                                that.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_OFFLINE_NOT_CACHE'));
-                            } else if (status === CMD_SEND_RESULT_OFFLINE_CACHED) {
-                                that.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_OFFLINE_CACHED'));
-                            } else if (status === CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD) {
-                                that.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD'));
-                            } else if (status === CMD_SEND_RESULT_DETAIL_ERROR) {
-                                that.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_DETAIL_ERROR') + resp.cause);
-                            } else if (status === CMD_SEND_CONFIRMED) {
-                                if (records && records.length) {
-                                    isSucc = true;
-                                } else {
-                                    that.$Message.error(lang.$t('activeSafety.noData'));  
-                                }
-                            } else if (status === CMD_SEND_OVER_RETRY_TIMES) {
-                                that.$Message.error(lang.$t('monitor.CMD_SEND_OVER_RETRY_TIMES'));
-                            } else if (status === CMD_SEND_SYNC_TIMEOUT) {
-                                that.$Message.error(lang.$t('monitor.CMD_SEND_SYNC_TIMEOUT'));   
+                            that.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_UNCONFIRM'));
+                        } else if (status === CMD_SEND_RESULT_PASSWORD_ERROR) {
+                            that.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_PASSWORD_ERROR'));
+                        } else if (status === CMD_SEND_RESULT_OFFLINE_NOT_CACHE) {
+                            that.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_OFFLINE_NOT_CACHE'));
+                        } else if (status === CMD_SEND_RESULT_OFFLINE_CACHED) {
+                            that.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_OFFLINE_CACHED'));
+                        } else if (status === CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD) {
+                            that.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD'));
+                        } else if (status === CMD_SEND_RESULT_DETAIL_ERROR) {
+                            that.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_DETAIL_ERROR') + resp.cause);
+                        } else if (status === CMD_SEND_CONFIRMED) {
+                            if (records && records.length) {
+                                isSucc = true;
+                            } else {
+                                that.$Message.error(lang.$t('activeSafety.noData'));
                             }
+                        } else if (status === CMD_SEND_OVER_RETRY_TIMES) {
+                            that.$Message.error(lang.$t('monitor.CMD_SEND_OVER_RETRY_TIMES'));
+                        } else if (status === CMD_SEND_SYNC_TIMEOUT) {
+                            that.$Message.error(lang.$t('monitor.CMD_SEND_SYNC_TIMEOUT'));
+                        }
 
                         if (isSucc) {
                             that.$Message.success(lang.$t('monitor.querySucc'));
@@ -1367,7 +1369,7 @@
                 },
                 initWebSocket: function() {
                     var me = this;
-                    initWebSocket(wsHost, Cookies.get('name') + "-download", function(data) {
+                    initWebSocket(wsHost, localStorage.getItem('name') + "-download", function(data) {
                         var action = data.action;
                         if (action === "downloadprogress") {
                             console.log('push downloadprogress - ', Date.now());
@@ -1423,8 +1425,8 @@
                     //     }, 300);
                     // }
                 },
-                modal:function(newVal){
-                    if(!newVal){
+                modal: function(newVal) {
+                    if (!newVal) {
                         this.showSlider = false;
                     }
                 },
@@ -1469,13 +1471,13 @@
                         that.playerStateTip = lang.$t('video.play');
                     });
                     player.addEventListener('playing', function() {
-                        that.playerStateTip =  lang.$t('video.playing');
+                        that.playerStateTip = lang.$t('video.playing');
                     });
                     player.addEventListener('pause', function() {
                         that.playerStateTip = lang.$t('video.pause');
                     });
                     player.addEventListener('waiting', function() {
-                        that.playerStateTip =  lang.$t('video.waiting');
+                        that.playerStateTip = lang.$t('video.waiting');
                     });
                     // that.initVideo();
                     that.initChart();

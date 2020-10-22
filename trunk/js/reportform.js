@@ -225,7 +225,7 @@ var reportMixin = {
                         device.isOnline = vstore.state.deviceInfos[device.deviceid] ? vstore.state.deviceInfos[device.deviceid].isOnline : false;
                     })
                     var copyGroup = deepClone(group);
-                    copyGroup.devices = copyGroup.devices.slice(0,9);
+                    copyGroup.devices = copyGroup.devices.slice(0, 9);
                     filterData.push(copyGroup)
                 } else {
                     var devices = group.devices
@@ -250,13 +250,13 @@ var reportMixin = {
                                 };
                             };
                         };
-                        if(obj.devices.length >= 10){
+                        if (obj.devices.length >= 10) {
                             break;
                         }
                     }
                     if (obj.devices.length) {
                         filterData.push(obj);
-                        if(filterData.length >= 10){
+                        if (filterData.length >= 10) {
                             break;
                         }
                     };
@@ -799,7 +799,7 @@ function groupMileage(groupslist) {
                 { title: vRoot.$t("reportForm.totalMileage") + '(km)', key: 'totaldistance', sortable: true },
                 { title: vRoot.$t("reportForm.startDate"), key: 'starttimeStr' },
                 { title: vRoot.$t("reportForm.endDate"), key: 'endtimeStr' },
-                { title: vRoot.$t("reportForm.minMileage") + '(km)', key: 'startdistance' }, 
+                { title: vRoot.$t("reportForm.minMileage") + '(km)', key: 'startdistance' },
                 { title: vRoot.$t("reportForm.maxMileage") + '(km)', key: 'enddistance' },
 
             ],
@@ -1110,9 +1110,9 @@ function accDetails(groupslist) {
             groupslist: [],
             timeoutIns: null,
             allAccColumns: [
-                { title:  vRoot.$t("reportForm.index"), width: 70, key: 'index' },
+                { title: vRoot.$t("reportForm.index"), width: 70, key: 'index' },
                 {
-                    title: vRoot.$t("alarm.action"),  
+                    title: vRoot.$t("alarm.action"),
                     width: 160,
                     render: function(h, params) {
                         return h('span', {
@@ -1126,7 +1126,7 @@ function accDetails(groupslist) {
                                 color: '#e4393c',
                                 cursor: 'pointer'
                             }
-                        }, "["+vRoot.$t("reportForm.accDetailed")+"]")
+                        }, "[" + vRoot.$t("reportForm.accDetailed") + "]")
                     }
                 },
                 {
@@ -1139,16 +1139,16 @@ function accDetails(groupslist) {
                 },
                 {
                     title: vRoot.$t("reportForm.accCount"),
-                    key: 'opennumber', 
+                    key: 'opennumber',
                 },
                 {
-                    title:vRoot.$t("reportForm.accDuration"),
+                    title: vRoot.$t("reportForm.accDuration"),
                     key: 'duration'
                 }
             ],
             allAccTableData: [],
             columns: [
-                { title:  vRoot.$t("reportForm.index"), width: 70, key: 'index' },
+                { title: vRoot.$t("reportForm.index"), width: 70, key: 'index' },
                 { title: vRoot.$t("alarm.devName"), key: 'deviceName', width: 160 },
                 { title: vRoot.$t("alarm.devNum"), key: 'deviceid', width: 160 },
                 { title: vRoot.$t("reportForm.accstatus"), key: 'accStatus', width: 100 },
@@ -1163,7 +1163,7 @@ function accDetails(groupslist) {
                 var startday = this.dateVal[0];
                 var endday = this.dateVal[1];
                 this.$refs.totalTable.exportCsv({
-                    filename: vRoot.$t("reportForm.ignitionStatistics") + startday + '-' + endday,  
+                    filename: vRoot.$t("reportForm.ignitionStatistics") + startday + '-' + endday,
                     original: false,
                     columns: this.allAccColumns.filter(function(col, index) { return index != 1; }),
                     data: this.allRotateTableData
@@ -1225,7 +1225,7 @@ function accDetails(groupslist) {
                             } else {
                                 me.tableData = [];
                                 me.allAccTableData = [];
-                                me.$Message.error(me.$t("reportForm.noRecord"));  
+                                me.$Message.error(me.$t("reportForm.noRecord"));
                             }
                         } else {
                             me.tableData = [];
@@ -1361,24 +1361,24 @@ function rotateReport(groupslist) {
                                 color: '#e4393c',
                                 cursor: 'pointer'
                             }
-                        }, "[" + vRoot.$t("reportForm.rotationDetails") + "]") 
+                        }, "[" + vRoot.$t("reportForm.rotationDetails") + "]")
                     }
                 },
                 {
-                    title:  vRoot.$t("alarm.devName") ,
+                    title: vRoot.$t("alarm.devName"),
                     key: 'devicename'
                 },
                 {
-                    title: vRoot.$t("alarm.devNum") ,
+                    title: vRoot.$t("alarm.devNum"),
                     key: 'deviceid',
                     width: 160,
                 },
                 {
-                    title:  vRoot.$t("reportForm.zzTimes"),
+                    title: vRoot.$t("reportForm.zzTimes"),
                     key: 'zzTimes'
                 },
                 {
-                    title:vRoot.$t("reportForm.fzTimes"),
+                    title: vRoot.$t("reportForm.fzTimes"),
                     key: 'fzTimes'
                 },
                 {
@@ -1387,7 +1387,7 @@ function rotateReport(groupslist) {
                 },
                 {
                     title: vRoot.$t("reportForm.count"),
-                    key: 'count'  
+                    key: 'count'
                 },
             ],
             allRotateTableData: [],
@@ -1395,11 +1395,11 @@ function rotateReport(groupslist) {
                 { title: vRoot.$t("reportForm.index"), width: 70, key: 'index' },
                 { title: vRoot.$t("alarm.devName"), key: 'deviceName', width: 160 },
                 { title: vRoot.$t("alarm.devNum"), key: 'deviceid', width: 160 },
-                { title: vRoot.$t("reportForm.status"), key: 'accStatus', width: 100 },  
+                { title: vRoot.$t("reportForm.status"), key: 'accStatus', width: 100 },
                 { title: vRoot.$t("reportForm.startDate"), key: 'startDate', width: 180 },
                 { title: vRoot.$t("reportForm.endDate"), key: 'endDate', width: 180 },
                 {
-                    title: vRoot.$t("reportForm.address"), 
+                    title: vRoot.$t("reportForm.address"),
                     width: 145,
                     render: function(h, params) {
                         var row = params.row;
@@ -1633,7 +1633,7 @@ function rotateReport(groupslist) {
                     });
                 });
                 newRecords.push({
-                    duration:  me.$t("reportForm.zz")+':' + utils.timeStamp(zzTimes) + ','+me.$t("reportForm.fz")+':' + utils.timeStamp(fzTimes) + ','+me.$t("reportForm.tz")+':' + utils.timeStamp(tzTimes)
+                    duration: me.$t("reportForm.zz") + ':' + utils.timeStamp(zzTimes) + ',' + me.$t("reportForm.fz") + ':' + utils.timeStamp(fzTimes) + ',' + me.$t("reportForm.tz") + ':' + utils.timeStamp(tzTimes)
                 })
                 me.tableData = newRecords;
             },
@@ -1661,7 +1661,7 @@ function rotateReport(groupslist) {
                                 var item1 = v[0];
                                 if (item1.seriesIndex == 0) {
                                     if (v[0].value > 60) {
-                                        zStr = parseInt(v[0].value / 60) + dw_hour + (v[0].value % 60).toFixed(2)  + dw_min;
+                                        zStr = parseInt(v[0].value / 60) + dw_hour + (v[0].value % 60).toFixed(2) + dw_min;
                                     } else if (v[0] && v[0].value % 60 == 0 && v[0].value != 0) {
                                         zStr = parseInt(v[0].value / 60) + dw_hour;
                                     } else {
@@ -1671,7 +1671,7 @@ function rotateReport(groupslist) {
                                         zz + ': ' + zStr + '</br>';
                                 } else if (item1.seriesIndex == 1) {
                                     if (v[0].value > 60) {
-                                        fStr = parseInt(v[0].value / 60) + dw_hour + (v[0].value % 60).toFixed(2)  + dw_min;
+                                        fStr = parseInt(v[0].value / 60) + dw_hour + (v[0].value % 60).toFixed(2) + dw_min;
                                     } else if (v[0] && v[0].value % 60 == 0 && v[0].value != 0) {
                                         fStr = parseInt(v[0].value / 60) + dw_hour;
                                     } else {
@@ -1682,7 +1682,7 @@ function rotateReport(groupslist) {
 
                                 } else if (item1.seriesIndex == 2) {
                                     if (v[0].value > 60) {
-                                        tStr = parseInt(v[0].value / 60) + dw_hour + (v[0].value % 60).toFixed(2)  + dw_min;
+                                        tStr = parseInt(v[0].value / 60) + dw_hour + (v[0].value % 60).toFixed(2) + dw_min;
                                     } else if (v[0] && v[0].value % 60 == 0 && v[0].value != 0) {
                                         tStr = parseInt(v[0].value / 60) + dw_hour;
                                     } else {
@@ -1696,7 +1696,7 @@ function rotateReport(groupslist) {
                                 var item2 = v[1];
                                 if (item1.seriesIndex == 0) {
                                     if (item1.value > 60) {
-                                        zStr = parseInt(item1.value / 60) + dw_hour + (item1.value % 60).toFixed(2)  + dw_min;
+                                        zStr = parseInt(item1.value / 60) + dw_hour + (item1.value % 60).toFixed(2) + dw_min;
                                     } else if (item1 && item1.value % 60 == 0 && item1.value != 0) {
                                         zStr = parseInt(item1.value / 60) + dw_hour;
                                     } else {
@@ -1704,7 +1704,7 @@ function rotateReport(groupslist) {
                                     }
                                 } else if (item1.seriesIndex == 1) {
                                     if (item1.value > 60) {
-                                        fStr = parseInt(item1.value / 60) + dw_hour + (item1.value % 60).toFixed(2)  + dw_min;
+                                        fStr = parseInt(item1.value / 60) + dw_hour + (item1.value % 60).toFixed(2) + dw_min;
                                     } else if (item1 && item1.value % 60 == 0 && item1.value != 0) {
                                         fStr = parseInt(item1.value / 60) + dw_hour;
                                     } else {
@@ -1712,7 +1712,7 @@ function rotateReport(groupslist) {
                                     }
                                 } else if (item1.seriesIndex == 2) {
                                     if (item1.value > 60) {
-                                        tStr = parseInt(item1.value / 60) + dw_hour + (item1.value % 60).toFixed(2)  + dw_min;
+                                        tStr = parseInt(item1.value / 60) + dw_hour + (item1.value % 60).toFixed(2) + dw_min;
                                     } else if (item1 && item1.value % 60 == 0 && item1.value != 0) {
                                         tStr = parseInt(item1.value / 60) + dw_hour;
                                     } else {
@@ -1721,7 +1721,7 @@ function rotateReport(groupslist) {
                                 }
                                 if (item2.seriesIndex == 0) {
                                     if (item2.value > 60) {
-                                        zStr = parseInt(item2.value / 60) + dw_hour + (item2.value % 60).toFixed(2)  + dw_min;
+                                        zStr = parseInt(item2.value / 60) + dw_hour + (item2.value % 60).toFixed(2) + dw_min;
                                     } else if (item2 && item2.value % 60 == 0 && item2.value != 0) {
                                         zStr = parseInt(item2.value / 60) + dw_hour;
                                     } else {
@@ -1729,7 +1729,7 @@ function rotateReport(groupslist) {
                                     }
                                 } else if (item2.seriesIndex == 1) {
                                     if (item2.value > 60) {
-                                        fStr = parseInt(item2.value / 60) + dw_hour + (item2.value % 60).toFixed(2)  + dw_min;
+                                        fStr = parseInt(item2.value / 60) + dw_hour + (item2.value % 60).toFixed(2) + dw_min;
                                     } else if (item2 && item2.value % 60 == 0 && item2.value != 0) {
                                         fStr = parseInt(item2.value / 60) + dw_hour;
                                     } else {
@@ -1737,7 +1737,7 @@ function rotateReport(groupslist) {
                                     }
                                 } else if (item2.seriesIndex == 2) {
                                     if (item2.value > 60) {
-                                        tStr = parseInt(item2.value / 60) + dw_hour + (item2.value % 60).toFixed(2)  + dw_min;
+                                        tStr = parseInt(item2.value / 60) + dw_hour + (item2.value % 60).toFixed(2) + dw_min;
                                     } else if (item2 && item2.value % 60 == 0 && item2.value != 0) {
                                         tStr = parseInt(item2.value / 60) + dw_hour;
                                     } else {
@@ -1762,14 +1762,14 @@ function rotateReport(groupslist) {
                                 }
                             } else if (v.length == 3) {
                                 if (v[0].value > 60) {
-                                    zStr = parseInt(v[0].value / 60) + dw_hour + (v[0].value % 60).toFixed(2)  + dw_min;
+                                    zStr = parseInt(v[0].value / 60) + dw_hour + (v[0].value % 60).toFixed(2) + dw_min;
                                 } else if (v[0] && v[0].value % 60 == 0 && v[0].value != 0) {
                                     zStr = parseInt(v[0].value / 60) + dw_hour;
                                 } else {
-                                    zStr = v[0].value  + dw_min;
+                                    zStr = v[0].value + dw_min;
                                 }
                                 if (v[1] && v[1].value > 60) {
-                                    fStr = parseInt(v[1].value / 60) + dw_hour + (v[1].value % 60).toFixed(2)  + dw_min;
+                                    fStr = parseInt(v[1].value / 60) + dw_hour + (v[1].value % 60).toFixed(2) + dw_min;
                                 } else if (v[1] && v[1].value % 60 == 0 && v[1].value != 0) {
                                     fStr = parseInt(v[1].value / 60) + dw_hour;
                                 } else {
@@ -1780,7 +1780,7 @@ function rotateReport(groupslist) {
                                 } else if (v[2] && v[2].value % 60 == 0 && v[2].value != 0) {
                                     tStr = parseInt(v[2].value / 60) + dw_hour;
                                 } else {
-                                    tStr =  v[2].value + dw_min;
+                                    tStr = v[2].value + dw_min;
                                 }
                                 return car + ': ' + v[0].name + '</br>' +
                                     zz + ': ' + zStr + '</br>' +
@@ -1954,7 +1954,7 @@ function speedingReport(groupslist) {
 
                                     vueInstanse.activeTab = "tabDetail";
                                     vueInstanse.getRotateDetailTableData(records);
-                                   
+
                                     if (records.length) {
                                         vueInstanse.isSpin = true;
                                         var row = deepClone(records[0]);
@@ -2367,7 +2367,7 @@ function speedingReport(groupslist) {
                 this.barChartJourney.setOption(barChartOtion);
             },
             getChartOption: function() {
-                var car = isZh ? '车辆' :'vehicle';
+                var car = isZh ? '车辆' : 'vehicle';
                 var cs = this.$t('reportForm.speedingCount');
                 //加载
                 option = {
@@ -2445,12 +2445,12 @@ function speedingReport(groupslist) {
                 return option;
             },
             getSpeedChartsOption: function() {
-                var speed =  this.$t('reportForm.speed');
-                var dis = this.$t('reportForm.mileage');  
-                var time =  this.$t('reportForm.date');  
+                var speed = this.$t('reportForm.speed');
+                var dis = this.$t('reportForm.mileage');
+                var time = this.$t('reportForm.date');
                 var option = {
                     title: {
-                        text: time + (isZh? '/超速' : '/speeding'),
+                        text: time + (isZh ? '/超速' : '/speeding'),
                         x: 'center',
                         textStyle: {
                             fontSize: 12,
@@ -2467,7 +2467,7 @@ function speedingReport(groupslist) {
                     tooltip: {
                         trigger: 'axis',
                         formatter: function(v) {
-                            var data =  vRoot.$t('reportForm.date') + ' : ' + v[0].name + '<br/>';
+                            var data = vRoot.$t('reportForm.date') + ' : ' + v[0].name + '<br/>';
                             for (i in v) {
                                 if (v[i].seriesName != vRoot.$t('reportForm.date')) data += v[i].seriesName + ' : ' + v[i].value + '<br/>';
                             }
@@ -2640,7 +2640,7 @@ function devRecords(groupslist) {
                     width: 160,
                 },
                 {
-                    title: vRoot.$t("monitor.media"),  
+                    title: vRoot.$t("monitor.media"),
                     render: function(h, data) {
                         return h(
                             "audio", {
@@ -2683,8 +2683,8 @@ function devRecords(groupslist) {
                             })
                         });
                         me.tableData = tableData;
-                        if(tableData.length === 0){
-                            vRoot.$t("reportForm.noRecord");  
+                        if (tableData.length === 0) {
+                            vRoot.$t("reportForm.noRecord");
                         }
                     }
                 })
@@ -2717,7 +2717,7 @@ function messageRecords(groupslist) {
             startDate: new Date(),
             columns: [
                 { title: vRoot.$t("reportForm.trackid"), key: 'trackid', fixed: 'left', width: 80 },
-                { title:  vRoot.$t("reportForm.sn"), key: 'sn', width: 80, "sortable": true },
+                { title: vRoot.$t("reportForm.sn"), key: 'sn', width: 80, "sortable": true },
                 { title: vRoot.$t("reportForm.messagetype"), key: 'messagetype', width: 110 },
                 { title: vRoot.$t("reportForm.typedescr"), key: 'typedescr', width: 120 },
                 { title: vRoot.$t("reportForm.status"), key: 'status', width: 80 },
@@ -3238,7 +3238,7 @@ function insureRecords(groupslist) {
                     width: 100,
                     render: function(h, parmas) {
                         var buytype = parmas.row.buytype,
-                            reslut = isZh ? '未知' :'unknown';
+                            reslut = isZh ? '未知' : 'unknown';
                         if (buytype === 1) {
                             reslut = isZh ? '自行购买' : 'Self purchase';
                         } else if (buytype === 2) {
@@ -3250,7 +3250,7 @@ function insureRecords(groupslist) {
                 { title: vRoot.$t("reportForm.distributor"), key: 'username', width: 150 },
                 { title: vRoot.$t("reportForm.distributorAddress"), key: 'useraddress', width: 150 },
                 { title: vRoot.$t("reportForm.distributorPhone"), key: 'usernamephonenum', width: 120 },
-                { title: vRoot.$t("reportForm.phonenum"), key: 'phonenum', width: 120 },   
+                { title: vRoot.$t("reportForm.phonenum"), key: 'phonenum', width: 120 },
                 { title: vRoot.$t("reportForm.usingaddress"), key: 'usingaddress', width: 150 },
                 { title: vRoot.$t("reportForm.brandtype"), key: 'brandtype', width: 100 },
                 { title: vRoot.$t("reportForm.vinno"), key: 'vinno', width: 150 },
@@ -3264,7 +3264,7 @@ function insureRecords(groupslist) {
                     key: 'qualitycerturl',
                     width: 100,
                     render: function(h, parmas) {
-                        if (parmas.row.qualitycerturl == null) {  
+                        if (parmas.row.qualitycerturl == null) {
                             return h('span', {}, vRoot.$t("reportForm.empty"));
                         }
                         return h('a', { attrs: { href: parmas.row.qualitycerturl, target: '_blank' } }, vRoot.$t("reportForm.clickPreview"));
@@ -3272,7 +3272,7 @@ function insureRecords(groupslist) {
                 },
                 {
                     title: vRoot.$t("reportForm.carpic"),
-                    key: 'carpicurl',  
+                    key: 'carpicurl',
                     width: 100,
                     render: function(h, parmas) {
                         if (parmas.row.carpicurl == null) {
@@ -3298,7 +3298,7 @@ function insureRecords(groupslist) {
                     width: 100,
                     render: function(h, parmas) {
                         if (parmas.row.negativecardidurl == null) {
-                            return h('span', {},vRoot.$t("reportForm.empty"));
+                            return h('span', {}, vRoot.$t("reportForm.empty"));
                         }
                         return h('a', { attrs: { href: parmas.row.negativecardidurl, target: '_blank' } }, vRoot.$t("reportForm.clickPreview"));
                     }
@@ -3315,7 +3315,7 @@ function insureRecords(groupslist) {
                     }
                 },
                 {
-                    title:  vRoot.$t("reportForm.groupphoto"),
+                    title: vRoot.$t("reportForm.groupphoto"),
                     key: 'groupphotourl',
                     width: 120,
                     render: function(h, parmas) {
@@ -3325,8 +3325,8 @@ function insureRecords(groupslist) {
                         return h('a', { attrs: { href: parmas.row.groupphotourl, target: '_blank' } }, vRoot.$t("reportForm.clickPreview"));
                     }
                 },
-                { 
-                    title: vRoot.$t("reportForm.carkeypic"),   
+                {
+                    title: vRoot.$t("reportForm.carkeypic"),
                     key: 'carkeypicurl',
                     width: 120,
                     render: function(h, parmas) {
@@ -3337,7 +3337,7 @@ function insureRecords(groupslist) {
                     }
                 },
                 {
-                    title:  vRoot.$t("reportForm.insurenotice"),   
+                    title: vRoot.$t("reportForm.insurenotice"),
                     key: 'insurenoticeurl',
                     width: 120,
                     render: function(h, parmas) {
@@ -3376,7 +3376,7 @@ function insureRecords(groupslist) {
                                         vueInstanse.handleEditInsure();
                                     }
                                 }
-                            }, isPay ?  vRoot.$t("reportForm.cancelAudit") : vRoot.$t("reportForm.confirmAudit")),
+                            }, isPay ? vRoot.$t("reportForm.cancelAudit") : vRoot.$t("reportForm.confirmAudit")),
                             h('Button', {
                                 props: {
                                     type: 'primary',
@@ -3472,7 +3472,7 @@ function insureRecords(groupslist) {
                         data.vinno = me.editObjectRow.vinno;
                         data.usernamephonenum = me.editObjectRow.usernamephonenum;
                         data.insurestate = me.editObjectRow.isRecharge ? 1 : 0;
-                        data.isPay = data.insurestate == 1 ? me.$t('reportForm.aeviewed') : me.$t('reportForm.notReviewed');  
+                        data.isPay = data.insurestate == 1 ? me.$t('reportForm.aeviewed') : me.$t('reportForm.notReviewed');
                         data.createtimeStr = DateFormat.longToDateStr(d.createtime, timeDifference);
                         data.createtime = data.createtime;
 
@@ -3482,12 +3482,12 @@ function insureRecords(groupslist) {
                         cdata.vinno = me.editObjectRow.vinno;
                         cdata.usernamephonenum = me.editObjectRow.usernamephonenum;
                         cdata.insurestate = me.editObjectRow.isRecharge ? 1 : 0;
-                        cdata.isPay = data.insurestate == 1 ?  me.$t('reportForm.aeviewed') : me.$t('reportForm.notReviewed'); 
+                        cdata.isPay = data.insurestate == 1 ? me.$t('reportForm.aeviewed') : me.$t('reportForm.notReviewed');
                         cdata.createtimeStr = DateFormat.longToDateStr(d.createtime, timeDifference);
                         cdata.createtime = data.createtime;
 
                         me.modal = false;
-                        me.$Message.success(me.$t('message.changeSucc'));   
+                        me.$Message.success(me.$t('message.changeSucc'));
                     } else {
                         me.$Message.error(me.$t('message.changeFail'));
                     }
@@ -3523,7 +3523,7 @@ function insureRecords(groupslist) {
                     if (respData.status == 0 && respData.rootuser.user) {
                         callback([me.castUsersTreeToDevicesTree(respData.rootuser)]);
                     } else {
-                        me.$Message.error(me.$t('monitor.queryFail'))  
+                        me.$Message.error(me.$t('monitor.queryFail'))
                     }
                 });
             },
@@ -3641,7 +3641,7 @@ function insureRecords(groupslist) {
                     endday = DateFormat.format(new Date(this.dateVal[1]), 'yyyy-MM-dd');
                 utils.sendAjax(url, { username: this.createrToUser, startday: startday, endday: endday, offset: timeDifference }, function(resp) {
                     me.loading = false;
-                    if (resp.status === 0 &&  resp.insures) {
+                    if (resp.status === 0 && resp.insures) {
                         //全部
                         if (me.isFilter == '0') {
 
@@ -3651,11 +3651,11 @@ function insureRecords(groupslist) {
                                     item.index = index + 1;
                                     item.createtimeStr = DateFormat.longToDateStr(item.createtime, timeDifference)
                                     if (item.policyno == null) {
-                                        item.policyno = vRoot.$t('reportForm.underReview');  
+                                        item.policyno = vRoot.$t('reportForm.underReview');
                                     };
                                     if (item.insurestate !== 1) {
                                         item.index = tableData.length + 1;
-                                        item.isPay = item.insurestate == 1 ? vRoot.$t('reportForm.aeviewed')  : vRoot.$t('reportForm.notReviewed');
+                                        item.isPay = item.insurestate == 1 ? vRoot.$t('reportForm.aeviewed') : vRoot.$t('reportForm.notReviewed');
                                         tableData.push(item);
                                     };
                                 })
@@ -3670,11 +3670,11 @@ function insureRecords(groupslist) {
                                     item.index = index + 1;
                                     item.createtimeStr = DateFormat.format(new Date(item.createtime), 'yyyy-MM-dd')
                                     if (item.policyno == null) {
-                                        item.policyno = vRoot.$t('reportForm.underReview');  
+                                        item.policyno = vRoot.$t('reportForm.underReview');
                                     };
                                     if (item.insurestate === 1) {
                                         item.index = tableData.length + 1;
-                                        item.isPay = item.insurestate == 1 ? vRoot.$t('reportForm.aeviewed')  : vRoot.$t('reportForm.notReviewed');
+                                        item.isPay = item.insurestate == 1 ? vRoot.$t('reportForm.aeviewed') : vRoot.$t('reportForm.notReviewed');
                                         tableData.push(item);
                                     };
                                 })
@@ -3685,9 +3685,9 @@ function insureRecords(groupslist) {
                             resp.insures.forEach(function(item, index) {
                                 item.index = index + 1;
                                 if (item.policyno == null) {
-                                    item.policyno =  vRoot.$t('reportForm.underReview');  
+                                    item.policyno = vRoot.$t('reportForm.underReview');
                                 };
-                                item.isPay = item.insurestate == 1 ? vRoot.$t('reportForm.aeviewed')  : vRoot.$t('reportForm.notReviewed');
+                                item.isPay = item.insurestate == 1 ? vRoot.$t('reportForm.aeviewed') : vRoot.$t('reportForm.notReviewed');
                                 item.createtimeStr = DateFormat.format(new Date(item.createtime), 'yyyy-MM-dd')
                             })
                             me.insureRecords = resp.insures;
@@ -3719,9 +3719,9 @@ function insureRecords(groupslist) {
                         resp.insures.forEach(function(item, index) {
                             item.index = index + 1;
                             if (item.policyno == null) {
-                                item.policyno = vRoot.$t('reportForm.underReview'); 
+                                item.policyno = vRoot.$t('reportForm.underReview');
                             };
-                            item.isPay = item.insurestate == 1 ? vRoot.$t('reportForm.aeviewed')  : vRoot.$t('reportForm.notReviewed');
+                            item.isPay = item.insurestate == 1 ? vRoot.$t('reportForm.aeviewed') : vRoot.$t('reportForm.notReviewed');
                             item.createtimeStr = DateFormat.format(new Date(item.createtime), 'yyyy-MM-dd')
                         })
                         me.insureRecords = resp.insures;
@@ -3729,7 +3729,7 @@ function insureRecords(groupslist) {
                         me.currentIndex = 1;
                         me.tableData = me.insureRecords.slice(0, 20);
                     } else {
-                        me.$Message.error( vRoot.$t('monitor.queryFail'));
+                        me.$Message.error(vRoot.$t('monitor.queryFail'));
                     }
                 }, function() {
                     me.loading = false;
@@ -3745,7 +3745,7 @@ function insureRecords(groupslist) {
                     item.vinno = "\t" + item.vinno;
                 });
                 this.$refs.table.exportCsv({
-                    filename: vRoot.$t('reportForm.insureData') ,
+                    filename: vRoot.$t('reportForm.insureData'),
                     original: false,
                     columns: this.columns,
                     data: tableData
@@ -4004,7 +4004,7 @@ function salesRecord(groupslist) {
                     item.phonenum = "\t" + item.phonenum;
                 });
                 this.$refs.table.exportCsv({
-                    filename: vRoot.$t('reportForm.insureData') ,
+                    filename: vRoot.$t('reportForm.insureData'),
                     original: false,
                     columns: this.columns,
                     data: tableData
@@ -4054,7 +4054,7 @@ function reportOnlineSummary(groupslist) {
                         var deviceid = params.row.deviceid;
                         var groupName = '';
                         if (groupid == 0) {
-                            groupName = vRoot.$t('monitor.defaultGroup');  
+                            groupName = vRoot.$t('monitor.defaultGroup');
                         } else {
                             for (var i = 0; i < groupslist.length; i++) {
                                 var group = groupslist[i];
@@ -4072,8 +4072,8 @@ function reportOnlineSummary(groupslist) {
                     }
                 },
                 {
-                    title: vRoot.$t('user.devType'),  
-                    key: 'devicetype',  
+                    title: vRoot.$t('user.devType'),
+                    key: 'devicetype',
                     sortable: true,
                     width: 140,
                     render: function(h, params) {
@@ -4087,11 +4087,11 @@ function reportOnlineSummary(groupslist) {
                     title: vRoot.$t('reportForm.operationStatus'),
                     width: 85,
                     render: function(h, params) {
-                        var status = vRoot.$t('monitor.offline');   
+                        var status = vRoot.$t('monitor.offline');
                         var updatetime = params.row.updatetime;
 
                         if (updatetime > 0 && (Date.now() - updatetime) < 60 * 10 * 1000) {
-                            status = vRoot.$t('monitor.online'); 
+                            status = vRoot.$t('monitor.online');
                         }
                         return h('span', {}, status)
                     }
@@ -4114,7 +4114,7 @@ function reportOnlineSummary(groupslist) {
                         var callat = params.row.callat;
                         var callon = params.row.callon;
                         if (callat == 0 && callon == 0) {
-                            return h('span', {}, vRoot.$t('reportForm.notLocated'))  
+                            return h('span', {}, vRoot.$t('reportForm.notLocated'))
                         } else {
                             return h('span', {}, vRoot.$t('reportForm.located'))
                         }
@@ -4123,7 +4123,7 @@ function reportOnlineSummary(groupslist) {
                 },
                 { title: vRoot.$t('reportForm.lastState'), key: 'strstatus', },
                 {
-                    title: vRoot.$t('customer.remark'),  
+                    title: vRoot.$t('customer.remark'),
                     key: 'remark',
                     render: function(h, params) {
                         var remark = params.row.remark;
@@ -4373,7 +4373,7 @@ function dropLineReport(groupslist) {
                     }
                 },
                 {
-                    title: vRoot.$t('reportForm.offlineTime'),  
+                    title: vRoot.$t('reportForm.offlineTime'),
                     width: 150,
                     render: function(h, params) {
                         var updatetime = params.row.updatetime;
@@ -4505,10 +4505,10 @@ function deviceOnlineDaily(groupslist) {
             yearMonth: new Date(),
             daycount: 0,
             columns: [
-                { type: 'index' ,width:120},
+                { type: 'index', width: 120 },
                 { title: vRoot.$t("reportForm.ascriptionUser"), key: 'username' },
                 { title: vRoot.$t('alarm.devNum'), key: 'deviceid' },
-                { title: vRoot.$t('alarm.devName'), key: 'devicename' },   
+                { title: vRoot.$t('alarm.devName'), key: 'devicename' },
             ],
             tableData: [],
         },
@@ -4696,7 +4696,7 @@ function groupsOnlineDaily(groupslist) {
             columns: [
                 { type: 'index', width: 60 },
                 { title: vRoot.$t("reportForm.ascriptionUser"), key: 'username' },
-                { title: vRoot.$t("monitor.groupName") , key: 'groupname' },
+                { title: vRoot.$t("monitor.groupName"), key: 'groupname' },
                 {
                     title: vRoot.$t("reportForm.onlinequantityAndTotalquantity"),
                     key: 'onlinecount',
@@ -4815,7 +4815,7 @@ function deviceMonthOnlineDaily(groupslist) {
         data: {
             isSpin: false,
             modal: false,
-            textTop: isZh ? ["日", "一", "二", "三", "四", "五", "六"] : ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'] ,
+            textTop: isZh ? ["日", "一", "二", "三", "四", "五", "六"] : ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
             datesArr: [],
             year: 1970,
             month: 1,
@@ -4843,7 +4843,7 @@ function deviceMonthOnlineDaily(groupslist) {
                         return h('span', {}, userName);
                     }
                 },
-                { title: vRoot.$t("alarm.devNum") , key: 'deviceid' },
+                { title: vRoot.$t("alarm.devNum"), key: 'deviceid' },
                 {
                     title: vRoot.$t("alarm.devName"),
                     key: 'devicename',
@@ -5049,17 +5049,17 @@ function timeOilConsumption(groupslist) {
             loading: false,
             groupslist: [],
             columns: [
-                { title:  vRoot.$t('reportForm.index'), type: 'index', width: 70 },
+                { title: vRoot.$t('reportForm.index'), type: 'index', width: 70 },
                 { title: vRoot.$t('alarm.devName'), key: 'devicename', width: 100 },
                 { title: vRoot.$t('reportForm.date'), key: 'updatetimeStr', sortable: true, width: 160 },
-                { title: vRoot.$t('reportForm.totalMileage') + '(km)', key: 'totaldistance', width: 150 },  
-                { title: vRoot.$t('reportForm.totalOil'), key: 'oil', width: 100 }, 
+                { title: vRoot.$t('reportForm.totalMileage') + '(km)', key: 'totaldistance', width: 150 },
+                { title: vRoot.$t('reportForm.totalOil'), key: 'oil', width: 100 },
                 { title: vRoot.$t('reportForm.oil1'), key: 'ad0', width: 90 },
                 { title: vRoot.$t('reportForm.oil2'), key: 'ad1', width: 90 },
-                { title:  vRoot.$t('reportForm.speed'), key: 'speed', width: 80 },
+                { title: vRoot.$t('reportForm.speed'), key: 'speed', width: 80 },
                 { title: vRoot.$t('reportForm.status'), key: 'strstatus' },
                 {
-                    title: vRoot.$t('reportForm.lon') + ',' + vRoot.$t('reportForm.lat') , 
+                    title: vRoot.$t('reportForm.lon') + ',' + vRoot.$t('reportForm.lat'),
                     render: function(h, params) {
                         var row = params.row;
                         var callat = row.callat.toFixed(5);
@@ -5277,7 +5277,7 @@ function timeOilConsumption(groupslist) {
                             type: 'line',
                             symbol: 'none',
                             color: '#000',
-                            data:  this.devStates
+                            data: this.devStates
                         },
                     ]
                 };
@@ -5403,11 +5403,11 @@ function dayOil(groupslist) {
             loading: false,
             groupslist: [],
             columns: [
-                { title: vRoot.$t('reportForm.index') , type: 'index', width: 70 },
-                { title: vRoot.$t('alarm.devName') , key: 'devicename' },
+                { title: vRoot.$t('reportForm.index'), type: 'index', width: 70 },
+                { title: vRoot.$t('alarm.devName'), key: 'devicename' },
                 { title: vRoot.$t('reportForm.date'), key: 'statisticsday', sortable: true },
-                { title: vRoot.$t('reportForm.mileage') + '(km)', key: 'distance', }, 
-                { title: vRoot.$t('reportForm.oilConsumption'), key: 'oil', },  
+                { title: vRoot.$t('reportForm.mileage') + '(km)', key: 'distance', },
+                { title: vRoot.$t('reportForm.oilConsumption'), key: 'oil', },
                 { title: vRoot.$t('reportForm.fuelVolume'), key: 'addoil' },
                 { title: vRoot.$t('reportForm.oilLeakage'), key: 'leakoil' },
                 { title: vRoot.$t('reportForm.fuelConsumption100km'), key: 'oilPercent' },
@@ -5427,7 +5427,7 @@ function dayOil(groupslist) {
                 this.tableData = this.records.slice(start, offset);
             },
             charts: function() {
-                var dis = vRoot.$t('reportForm.mileage'); 
+                var dis = vRoot.$t('reportForm.mileage');
                 var cotgas = vRoot.$t('reportForm.oilConsumption');
                 var no_data = vRoot.$t('reportForm.empty');
                 var option = {
@@ -5548,15 +5548,15 @@ function dayOil(groupslist) {
                                 records.forEach(function(record) {
                                     record.devicename = vstore.state.deviceInfos[self.queryDeviceId].devicename;
                                     record.distance = record.enddis - record.begindis;
-                                  
+
                                     record.oil = record.beginoil - record.endoil - record.addoil + record.leakoil;
-                                    record.oil = record.oil/100;
-                                    record.addoil = record.addoil/100;
-                                    record.leakoil = record.leakoil/100;
+                                    record.oil = record.oil / 100;
+                                    record.addoil = record.addoil / 100;
+                                    record.leakoil = record.leakoil / 100;
 
                                     record.distance = (record.distance / 1000).toFixed(2);
                                     if (record.distance != 0) {
-                                        record.oilPercent = ((record.oil  / (record.distance )) * 100).toFixed(2);
+                                        record.oilPercent = ((record.oil / (record.distance)) * 100).toFixed(2);
                                     } else {
                                         record.oilPercent = 0;
                                     }
@@ -5607,18 +5607,18 @@ function refuelingReport(groupslist) {
             tank: '0',
             groupslist: [],
             columns: [
-                { title:  vRoot.$t('reportForm.index') , type: 'index', width: 70 },
-                { title:  vRoot.$t('alarm.devName'), key: 'devicename' },
-                { title:  vRoot.$t('reportForm.soil') , key: 'soil' }, 
-                { title:  vRoot.$t('reportForm.eoil'), key: 'eoil' },
+                { title: vRoot.$t('reportForm.index'), type: 'index', width: 70 },
+                { title: vRoot.$t('alarm.devName'), key: 'devicename' },
+                { title: vRoot.$t('reportForm.soil'), key: 'soil' },
+                { title: vRoot.$t('reportForm.eoil'), key: 'eoil' },
                 {
-                    title: vRoot.$t('reportForm.fuelVolume') + '(L)',  
+                    title: vRoot.$t('reportForm.fuelVolume') + '(L)',
                     key: 'addoil',
                 },
-                { title: vRoot.$t('reportForm.startDate'), key: 'begintimeStr' },  
+                { title: vRoot.$t('reportForm.startDate'), key: 'begintimeStr' },
                 { title: vRoot.$t('reportForm.endDate'), key: 'endtimeStr' },
                 {
-                    title:  vRoot.$t('reportForm.saddress'), 
+                    title: vRoot.$t('reportForm.saddress'),
                     render: function(h, params) {
                         var row = params.row;
                         var lat = row.slat ? row.slat.toFixed(5) : null;
@@ -5666,7 +5666,7 @@ function refuelingReport(groupslist) {
                     },
                 },
                 {
-                    title: vRoot.$t('reportForm.eaddress'), 
+                    title: vRoot.$t('reportForm.eaddress'),
                     render: function(h, params) {
                         var row = params.row;
                         var lat = row.elat ? row.elat.toFixed(5) : null;
@@ -5721,8 +5721,8 @@ function refuelingReport(groupslist) {
         mixins: [reportMixin],
         methods: {
             charts: function() {
-                var cotgas =  vRoot.$t('reportForm.oilConsumption');
-                var no_data =  vRoot.$t('reportForm.empty');
+                var cotgas = vRoot.$t('reportForm.oilConsumption');
+                var no_data = vRoot.$t('reportForm.empty');
                 var option = {
                     tooltip: {
                         show: true,
@@ -5771,7 +5771,7 @@ function refuelingReport(groupslist) {
                         type: 'bar',
                         itemStyle: {
                             //默认样式
-                            backgroundColor:'#000',
+                            backgroundColor: '#000',
                             normal: {
                                 label: {
                                     show: true,
@@ -5784,7 +5784,7 @@ function refuelingReport(groupslist) {
                             },
                         },
                         color: '#135DB4',
-                        data: this.oil 
+                        data: this.oil
                     }]
                 };
                 this.chartsIns.setOption(option);
@@ -5857,7 +5857,7 @@ function refuelingReport(groupslist) {
                                 });
                             });
                             records.push({
-                                addoil: (isZh ?  '合计:' : 'Total:' )+ totalOil
+                                addoil: (isZh ? '合计:' : 'Total:') + totalOil
                             });
                             self.oil = oilArr;
                             self.distance = distance;
@@ -5902,16 +5902,16 @@ function oilLeakageReport(groupslist) {
                 { title: vRoot.$t("reportForm.index"), type: 'index', width: 70 },
                 { title: vRoot.$t("alarm.devName"), key: 'devicename' },
                 {
-                    title: vRoot.$t("reportForm.oilLeakage") + '(L)', 
+                    title: vRoot.$t("reportForm.oilLeakage") + '(L)',
                     key: 'addoil',
                 },
-                { title: vRoot.$t("reportForm.lsoil"), key: 'soil' },  
+                { title: vRoot.$t("reportForm.lsoil"), key: 'soil' },
                 { title: vRoot.$t("reportForm.leoil"), key: 'eoil' },
 
-                { title: vRoot.$t("reportForm.startDate"), key: 'begintimeStr' }, 
+                { title: vRoot.$t("reportForm.startDate"), key: 'begintimeStr' },
                 { title: vRoot.$t("reportForm.endDate"), key: 'endtimeStr' },
                 {
-                    title: vRoot.$t("reportForm.saddress"),   
+                    title: vRoot.$t("reportForm.saddress"),
                     render: function(h, params) {
                         var row = params.row;
                         var lat = row.slat ? row.slat.toFixed(5) : null;
@@ -5958,7 +5958,7 @@ function oilLeakageReport(groupslist) {
                     },
                 },
                 {
-                    title: vRoot.$t("reportForm.eaddress"),   
+                    title: vRoot.$t("reportForm.eaddress"),
                     render: function(h, params) {
                         var row = params.row;
                         var lat = row.elat ? row.elat.toFixed(5) : null;
@@ -6147,7 +6147,7 @@ function oilLeakageReport(groupslist) {
                                 });
                             });
                             records.push({
-                                addoil: (isZh ? '合计:' :'Total') + totalOil
+                                addoil: (isZh ? '合计:' : 'Total') + totalOil
                             });
                             self.oil = oilArr;
                             self.distance = distance;
@@ -6192,7 +6192,7 @@ function temperature(groupslist) {
             columns: [
                 { title: vRoot.$t("reportForm.index"), type: 'index', width: 70 },
                 { title: vRoot.$t("alarm.devName"), key: 'devicename', width: 110 },
-                { title:  vRoot.$t("reportForm.time"), key: 'updatetimeStr', sortable: true, width: 150 },
+                { title: vRoot.$t("reportForm.time"), key: 'updatetimeStr', sortable: true, width: 150 },
                 { title: vRoot.$t("reportForm.speed"), key: 'speed', width: 80 },
                 { title: vRoot.$t("reportForm.temp1"), key: 'temp1', width: 80 },
                 { title: vRoot.$t("reportForm.temp2"), key: 'temp2', width: 80 },
@@ -6202,7 +6202,7 @@ function temperature(groupslist) {
                 { title: vRoot.$t("reportForm.humi"), key: 'humi1', width: 90 },
                 { title: vRoot.$t("reportForm.status"), key: 'strstatus' },
                 {
-                    title: vRoot.$t("reportForm.lon") + ',' + vRoot.$t("reportForm.lat"),  
+                    title: vRoot.$t("reportForm.lon") + ',' + vRoot.$t("reportForm.lat"),
                     render: function(h, params) {
                         var row = params.row;
                         var callat = row.callat.toFixed(5);
@@ -6602,7 +6602,7 @@ function driverWorkDetails() {
             columns: [
                 { key: 'index', width: 70, title: vRoot.$t("reportForm.index") },
                 { title: vRoot.$t("alarm.devName"), key: 'devicename' },
-                { title: vRoot.$t("alarm.devNum") , key: 'deviceid' },
+                { title: vRoot.$t("alarm.devNum"), key: 'deviceid' },
                 { title: vRoot.$t("reportForm.drivername"), key: 'drivername' },
                 { title: vRoot.$t("reportForm.cardinsertTime"), key: 'uptimeStr', width: 150, },
                 {
@@ -6649,7 +6649,7 @@ function driverWorkDetails() {
                                 ]);
                             }
                         } else {
-                            return h('span', {},  vRoot.$t("reportForm.empty"));
+                            return h('span', {}, vRoot.$t("reportForm.empty"));
                         }
                     },
                 },
@@ -6659,7 +6659,7 @@ function driverWorkDetails() {
                     key: 'downtimeStr',
                 },
                 {
-                    title:vRoot.$t("reportForm.cardPullAddress"),
+                    title: vRoot.$t("reportForm.cardPullAddress"),
                     width: 145,
                     render: function(h, params) {
                         var row = params.row;
@@ -6706,7 +6706,7 @@ function driverWorkDetails() {
                     },
                 },
                 {
-                    title: vRoot.$t("reportForm.workingHours") ,
+                    title: vRoot.$t("reportForm.workingHours"),
                     key: 'workingHours',
                 },
                 {
@@ -6770,8 +6770,8 @@ function driverWorkDetails() {
                     }
                 });
 
-                this.$Message.success(this.$t('monitor.querySucc'));   
-            }, 
+                this.$Message.success(this.$t('monitor.querySucc'));
+            },
             exportTableData: function() {
                 var columns = deepClone(this.columns);
                 var records = deepClone(this.records);
@@ -6791,7 +6791,7 @@ function driverWorkDetails() {
                     item.downtimeStr = "\t" + item.downtimeStr;
                     item.uptimeStr = "\t" + item.uptimeStr;
                 });
-                this.$refs.table.exportCsv({  
+                this.$refs.table.exportCsv({
                     filename: vRoot.$t("reportForm.driverWorkDetails"),
                     columns: columns,
                     data: records,
@@ -7018,7 +7018,7 @@ function driverWorkDetails() {
 }
 
 
-function ioReport(groupslist){
+function ioReport(groupslist) {
     vueInstanse = new Vue({
         el: '#io-record',
         i18n: utils.getI18n(),
@@ -7026,7 +7026,7 @@ function ioReport(groupslist){
         data: {
             isSpin: false,
             activeTab: 'tabTotal',
-            ioType:[1,2,3,4],
+            ioType: [1, 2, 3, 4],
             mapModal: false,
             mapType: utils.getMapType(),
             mapInstance: null,
@@ -7037,9 +7037,9 @@ function ioReport(groupslist){
             groupslist: [],
             timeoutIns: null,
             allIoColumns: [
-                { title:  vRoot.$t("reportForm.index"), width: 70, key: 'index' },
+                { title: vRoot.$t("reportForm.index"), width: 70, key: 'index' },
                 {
-                    title: vRoot.$t("alarm.action"),  
+                    title: vRoot.$t("alarm.action"),
                     width: 160,
                     render: function(h, params) {
                         return h('span', {
@@ -7053,7 +7053,7 @@ function ioReport(groupslist){
                                 color: '#e4393c',
                                 cursor: 'pointer'
                             }
-                        }, "["+vRoot.$t("reportForm.ioDetailed")+"]")
+                        }, "[" + vRoot.$t("reportForm.ioDetailed") + "]")
                     }
                 },
                 {
@@ -7071,49 +7071,48 @@ function ioReport(groupslist){
                 { title: vRoot.$t("reportForm.ioname"), key: 'ioname', width: 100 },
                 {
                     title: vRoot.$t("reportForm.openCount"),
-                    key: 'opennumber', 
+                    key: 'opennumber',
                 },
                 {
-                    title:vRoot.$t("reportForm.openDuration"),
+                    title: vRoot.$t("reportForm.openDuration"),
                     key: 'duration'
                 }
             ],
             allIoTableData: [],
             columns: [
-                { title:  vRoot.$t("reportForm.index"), width: 70, key: 'index' },
+                { title: vRoot.$t("reportForm.index"), width: 70, key: 'index' },
                 { title: vRoot.$t("alarm.devName"), key: 'deviceName', width: 100 },
                 { title: vRoot.$t("alarm.devNum"), key: 'deviceid', width: 120 },
-                { title: vRoot.$t("reportForm.ioIndex"),key: 'ioindex', width: 100},
+                { title: vRoot.$t("reportForm.ioIndex"), key: 'ioindex', width: 100 },
                 { title: vRoot.$t("reportForm.ioname"), key: 'ioname', width: 100 },
                 { title: vRoot.$t("reportForm.startDate"), key: 'startDate', width: 150 },
                 { title: vRoot.$t("reportForm.endDate"), key: 'endDate', width: 150 },
-                { title: vRoot.$t("reportForm.minMileage") + "(km)", key: 'sdistance'},
-                { title: vRoot.$t("reportForm.maxMileage")+ "(km)", key: 'edistance'},
+                { title: vRoot.$t("reportForm.minMileage") + "(km)", key: 'sdistance' },
+                { title: vRoot.$t("reportForm.maxMileage") + "(km)", key: 'edistance' },
                 { title: vRoot.$t("reportForm.duration"), key: 'duration' },
-                { 
-                    title: '地图', 
-                    width: 125, 
-                    render:function(h,params){
+                {
+                    title: '地图',
+                    width: 125,
+                    render: function(h, params) {
                         var row = params.row;
-                        if(row.elat){
+                        if (row.elat) {
                             return h(
-                                'Button',
-                                {
-                                    on:{
-                                        click:function(){
+                                'Button', {
+                                    on: {
+                                        click: function() {
                                             vueInstanse.queryTracks(row);
                                         }
                                     }
                                 },
                                 '查看地图');
-                        }else{
-                            return h('span',{},'');
+                        } else {
+                            return h('span', {}, '');
                         }
                     }
                 },
             ],
             tableData: [],
-            mapModal:false,
+            mapModal: false,
         },
         methods: {
             getBdPoints: function(records) {
@@ -7143,34 +7142,34 @@ function ioReport(groupslist){
                         var records = respData.records;
                         if (records) {
                             me.mapModal = true;
-                           if(utils.getMapType() == 'bMap'){
-                            var poinsts = me.getBdPoints(records);
-                            if (poinsts.length === 1) {
-                                var startMarker = new BMap.Marker(poinsts[0], {
-                                    icon: new BMap.Icon("./images/map/marker_qidian.png", new BMap.Size(32, 32), { imageOffset: new BMap.Size(0, 0) })
-                                });
-                                me.mapInstance.addOverlay(startMarker);
-                            } else if (poinsts.length > 1) {
-                                var startMarker = new BMap.Marker(poinsts[0], {
-                                    icon: new BMap.Icon("./images/map/marker_qidian.png", new BMap.Size(32, 32), { imageOffset: new BMap.Size(0, 0) })
-                                });
-                                var endMarker = new BMap.Marker(poinsts[poinsts.length - 1], {
-                                    icon: new BMap.Icon("./images/map/marker_zhongdian.png", new BMap.Size(32, 32), { imageOffset: new BMap.Size(0, 0) })
-                                });
-                                var polyline = new BMap.Polyline(poinsts, {
-                                    enableEditing: false, //是否启用线编辑，默认为false
-                                    enableClicking: true, //是否响应点击事件，默认为true
-                                    enableMassClear: true,
-                                    strokeWeight: '4', //折线的宽度，以像素为单位
-                                    strokeOpacity: 0.8, //折线的透明度，取值范围0 - 1
-                                    strokeColor: row.iostate === 1  ? "green" :"red" //折线颜色
-                                });
-                                me.mapInstance.addOverlay(startMarker);
-                                me.mapInstance.addOverlay(endMarker);
-                                me.mapInstance.addOverlay(polyline);
-                            }
-                            me.setViewPortCenter(poinsts);
-                           }else if(utils.getMapType() == 'gMap'){
+                            if (utils.getMapType() == 'bMap') {
+                                var poinsts = me.getBdPoints(records);
+                                if (poinsts.length === 1) {
+                                    var startMarker = new BMap.Marker(poinsts[0], {
+                                        icon: new BMap.Icon("./images/map/marker_qidian.png", new BMap.Size(32, 32), { imageOffset: new BMap.Size(0, 0) })
+                                    });
+                                    me.mapInstance.addOverlay(startMarker);
+                                } else if (poinsts.length > 1) {
+                                    var startMarker = new BMap.Marker(poinsts[0], {
+                                        icon: new BMap.Icon("./images/map/marker_qidian.png", new BMap.Size(32, 32), { imageOffset: new BMap.Size(0, 0) })
+                                    });
+                                    var endMarker = new BMap.Marker(poinsts[poinsts.length - 1], {
+                                        icon: new BMap.Icon("./images/map/marker_zhongdian.png", new BMap.Size(32, 32), { imageOffset: new BMap.Size(0, 0) })
+                                    });
+                                    var polyline = new BMap.Polyline(poinsts, {
+                                        enableEditing: false, //是否启用线编辑，默认为false
+                                        enableClicking: true, //是否响应点击事件，默认为true
+                                        enableMassClear: true,
+                                        strokeWeight: '4', //折线的宽度，以像素为单位
+                                        strokeOpacity: 0.8, //折线的透明度，取值范围0 - 1
+                                        strokeColor: row.iostate === 1 ? "green" : "red" //折线颜色
+                                    });
+                                    me.mapInstance.addOverlay(startMarker);
+                                    me.mapInstance.addOverlay(endMarker);
+                                    me.mapInstance.addOverlay(polyline);
+                                }
+                                me.setViewPortCenter(poinsts);
+                            } else if (utils.getMapType() == 'gMap') {
                                 var maxLen = records.length - 1;
                                 var points = []
                                 for (var i = 0; i < records.length; i++) {
@@ -7187,7 +7186,7 @@ function ioReport(groupslist){
                                             map: me.mapInstance,
                                             icon: me.getFirstMarkerIcon(true)
                                         })
-          
+
                                     } else if (i === maxLen) {
 
                                         me.lastMakrker = new google.maps.Marker({
@@ -7195,7 +7194,7 @@ function ioReport(groupslist){
                                             map: me.mapInstance,
                                             icon: me.getFirstMarkerIcon(false)
                                         })
-                                    } 
+                                    }
                                 }
                                 me.polyline = new google.maps.Polyline({
                                     path: points,
@@ -7206,40 +7205,40 @@ function ioReport(groupslist){
                                 });
                                 me.polyline.setMap(me.mapInstance);
                                 me.mapInstance.setZoom(16)
-                                me.mapInstance.setCenter(points[0]) 
-                           }else if(utils.getMapType() == 'oMap'){
-                            var lineFeature = me.getLineFeature(records);
-                            var maxLen = records.length - 1,
-                                features = [],
-                                firstMarker = null,
-                                lastMarker = null;
-    
-                            for (var i = 0; i < records.length; i++) {
-                                var record = records[i];
-                                var tempPoint = ol.proj.fromLonLat([record.callon, record.callat]);
-                                if (i === 0) {
-                                    firstMarker = new ol.Feature({
-                                        geometry: new ol.geom.Point(tempPoint),
-                                    });
-                                    firstMarker.setStyle(me.getFirstMarkerIcon(true));
-                                } else if (i === maxLen) {
-                                    lastMarker = new ol.Feature({
-                                        geometry: new ol.geom.Point(tempPoint),
-                                    });
-                                    lastMarker.setStyle(me.getFirstMarkerIcon(false));
+                                me.mapInstance.setCenter(points[0])
+                            } else if (utils.getMapType() == 'oMap') {
+                                var lineFeature = me.getLineFeature(records);
+                                var maxLen = records.length - 1,
+                                    features = [],
+                                    firstMarker = null,
+                                    lastMarker = null;
+
+                                for (var i = 0; i < records.length; i++) {
+                                    var record = records[i];
+                                    var tempPoint = ol.proj.fromLonLat([record.callon, record.callat]);
+                                    if (i === 0) {
+                                        firstMarker = new ol.Feature({
+                                            geometry: new ol.geom.Point(tempPoint),
+                                        });
+                                        firstMarker.setStyle(me.getFirstMarkerIcon(true));
+                                    } else if (i === maxLen) {
+                                        lastMarker = new ol.Feature({
+                                            geometry: new ol.geom.Point(tempPoint),
+                                        });
+                                        lastMarker.setStyle(me.getFirstMarkerIcon(false));
+                                    }
                                 }
-                            }
-    
-                                var features =  [ lineFeature ];
+
+                                var features = [lineFeature];
                                 firstMarker && features.push(firstMarker);
                                 lastMarker && features.push(lastMarker);
                                 me.layerVector.setSource(new ol.source.Vector({
                                     features: features
-                                })); 
+                                }));
 
                                 me.mapInstance.getView().setCenter(ol.proj.fromLonLat([records[0].callon, records[0].callat]));
 
-                           }
+                            }
                         } else {
                             me.$Message.error(vRoot.$t("reportForm.noRecord"));
                         }
@@ -7299,14 +7298,14 @@ function ioReport(groupslist){
                     this.mapInstance.enableAutoResize();
                     this.mapInstance.enableDoubleClickZoom();
                     this.mapInstance.centerAndZoom(new BMap.Point(113.264435, 24.129163), 4);
-                } else if (mapType == 'gMap'){
+                } else if (mapType == 'gMap') {
                     var center = new google.maps.LatLng(24.129163, 113.264435);
                     this.mapInstance = new google.maps.Map(document.getElementById('posi-map'), {
                         zoom: 4,
                         center: center,
                         mapTypeId: google.maps.MapTypeId.ROADMAP
                     });
-                }else if (mapType == 'oMap'){
+                } else if (mapType == 'oMap') {
                     this.layerVector = new ol.layer.Vector({
                         source: new ol.source.Vector({
                             features: []
@@ -7342,25 +7341,25 @@ function ioReport(groupslist){
                     });
                 }
             },
-            onIoChange:function(list){
+            onIoChange: function(list) {
                 this.ioType = list;
             },
             exportData: function() {
                 var startday = this.dateVal[0];
                 var endday = this.dateVal[1];
                 if (this.activeTab == "tabTotal") {
-                    if(this.allIoTableData.length){
+                    if (this.allIoTableData.length) {
                         this.$refs.totalTable.exportCsv({
-                            filename: "io-total" + startday + '-' + endday,  
+                            filename: "io-total" + startday + '-' + endday,
                             original: false,
                             columns: this.allIoColumns.filter(function(col, index) { return index != 1; }),
                             data: this.allIoTableData
                         });
                     }
-                }else{
-                    if(this.tableData.length){
+                } else {
+                    if (this.tableData.length) {
                         this.$refs.detailTable.exportCsv({
-                            filename: "io-details" + startday + '-' + endday,  
+                            filename: "io-details" + startday + '-' + endday,
                             original: false,
                             columns: this.columns.filter(function(col, index) { return index != 10; }),
                             data: this.tableData
@@ -7413,7 +7412,7 @@ function ioReport(groupslist){
                         endday: this.dateVal[1],
                         offset: timeDifference,
                         deviceids: deviceids,
-                        ioindexs:this.ioType.map(function(item){return Number(item)})
+                        ioindexs: this.ioType.map(function(item) { return Number(item) })
                     }
                     me.loading = true;
                     utils.sendAjax(url, data, function(resp) {
@@ -7425,7 +7424,7 @@ function ioReport(groupslist){
                             } else {
                                 me.tableData = [];
                                 me.allIoTableData = [];
-                                me.$Message.error(me.$t("reportForm.noRecord"));  
+                                me.$Message.error(me.$t("reportForm.noRecord"));
                             }
                         } else {
                             me.tableData = [];
@@ -7452,11 +7451,11 @@ function ioReport(groupslist){
                             duration: "",
                             devicename: vstore.state.deviceInfos[item.deviceid].devicename,
                             records: item.records,
-                            ioindex:item.ioindex,
+                            ioindex: item.ioindex,
                         },
                         duration = 0;
                     item.records.forEach(function(device) {
-                        if(device.iostate == 1){
+                        if (device.iostate == 1) {
                             duration += (device.endtime - device.begintime);
                             ioname = device.ioname;
                             opennumber++;
@@ -7483,33 +7482,33 @@ function ioReport(groupslist){
                     var deviceName = vstore.state.deviceInfos[item.deviceid].devicename;
                     var duration = item.endtime - item.begintime;
                     var durationStr = utils.timeStamp(duration);
-                    if(item.iostate == 1){
+                    if (item.iostate == 1) {
                         openName = item.ioname;
                         ioOpenTime += duration;
-                    }else{
+                    } else {
                         closeName = item.ioname;
                         ioCloseTime += duration;
                     }
                     newRecords.push({
                         index: index + 1,
-                        ioindex:item.ioindex,
+                        ioindex: item.ioindex,
                         deviceid: item.deviceid,
                         deviceName: deviceName,
                         startDate: DateFormat.longToDateTimeStr(item.begintime, timeDifference),
                         endDate: DateFormat.longToDateTimeStr(item.endtime, timeDifference),
-                        sdistance:(item.sdistance/1000).toFixed(2),
-                        edistance:(item.edistance/1000).toFixed(2),
+                        sdistance: (item.sdistance / 1000).toFixed(2),
+                        edistance: (item.edistance / 1000).toFixed(2),
                         ioname: item.ioname,
                         duration: durationStr,
-                        slon:item.slon,
-                        slat:item.slat,
-                        elon:item.elon,
-                        elat:item.elat,
-                        iostate:item.iostate
+                        slon: item.slon,
+                        slat: item.slat,
+                        elon: item.elon,
+                        elat: item.elat,
+                        iostate: item.iostate
                     });
                 });
                 newRecords.push({
-                    duration: openName + ':' + utils.timeStamp(ioOpenTime)  + "," + closeName +":"+ utils.timeStamp(ioCloseTime) 
+                    duration: openName + ':' + utils.timeStamp(ioOpenTime) + "," + closeName + ":" + utils.timeStamp(ioCloseTime)
                 })
                 me.tableData = newRecords;
             },
@@ -7542,7 +7541,7 @@ function ioReport(groupslist){
 }
 
 
-function multiMedia(){
+function multiMedia() {
     vueInstanse = new Vue({
         el: '#multi-media',
         i18n: utils.getI18n(),
@@ -7557,26 +7556,26 @@ function multiMedia(){
             columns: [
                 { key: 'index', width: 70, title: vRoot.$t("reportForm.index") },
                 { title: vRoot.$t("alarm.devName"), key: 'devicename' },
-                { title: vRoot.$t("alarm.devNum") , key: 'deviceid' },
+                { title: vRoot.$t("alarm.devNum"), key: 'deviceid' },
                 {
-                    title: vRoot.$t("alarm.fileType"),  
+                    title: vRoot.$t("alarm.fileType"),
                     key: 'fileext',
                     width: 100,
                 },
                 {
-                    title: vRoot.$t("monitor.channel"), 
-                    key:  'channelid',
-                    width:80,
+                    title: vRoot.$t("monitor.channel"),
+                    key: 'channelid',
+                    width: 80,
                 },
                 {
-                    title: vRoot.$t("alarm.alarmType"),   
+                    title: vRoot.$t("alarm.alarmType"),
                     key: 'eventcodeStr',
                     width: 150,
                 },
                 {
-                    title:  vRoot.$t("alarm.receivingTime"),
+                    title: vRoot.$t("alarm.receivingTime"),
                     key: 'endtimeStr',
-                    width:150,
+                    width: 150,
                 },
                 {
                     title: vRoot.$t("reportForm.address"),
@@ -7606,20 +7605,19 @@ function multiMedia(){
                                 }, lon + "," + lat)
 
                             } else {
-                                return h('span', {},  row.address);
+                                return h('span', {}, row.address);
                             }
                         } else {
-                            return h('span', {},  vRoot.$t("reportForm.empty"));
+                            return h('span', {}, vRoot.$t("reportForm.empty"));
                         }
                     },
                 },
                 {
                     title: vRoot.$t("alarm.action"),
-                    width:175,
+                    width: 175,
                     render: function(h, parmas) {
-                      return h(
-                            'div',{},
-                            [
+                        return h(
+                            'div', {}, [
                                 h(
                                     'Button', {
                                         on: {
@@ -7638,8 +7636,8 @@ function multiMedia(){
                                 ),
                                 h(
                                     'Button', {
-                                        style:{
-                                            marginLeft:'5px'
+                                        style: {
+                                            marginLeft: '5px'
                                         },
                                         on: {
                                             click: function(e) {
@@ -7647,8 +7645,8 @@ function multiMedia(){
                                             }
                                         },
                                         props: {
-                                            type:"primary",
-                                            size:'small',
+                                            type: "primary",
+                                            size: 'small',
                                         }
                                     },
                                     vRoot.$t('reportForm.viewPicture')
@@ -7662,11 +7660,11 @@ function multiMedia(){
             currentIndex: 1,
             trackDetailModal: false,
             deviceName: '',
-            cameraImgModal:false,
-            cameraImgUrl:'',
+            cameraImgModal: false,
+            cameraImgUrl: '',
         },
         methods: {
-            onClickCameraDownload:function(){
+            onClickCameraDownload: function() {
                 this.cameraImgUrl && window.open(this.cameraImgUrl);
             },
             queryAllAddress: function() {
@@ -7686,14 +7684,14 @@ function multiMedia(){
                     }
                 });
 
-                this.$Message.success(this.$t('monitor.querySucc'));   
-            }, 
+                this.$Message.success(this.$t('monitor.querySucc'));
+            },
             exportTableData: function() {
                 var columns = deepClone(this.columns);
                 var records = deepClone(this.records);
                 columns.pop();
-                this.$refs.table.exportCsv({  
-                    filename: vRoot.$t('reportForm.multiMedia'),   
+                this.$refs.table.exportCsv({
+                    filename: vRoot.$t('reportForm.multiMedia'),
                     columns: columns,
                     data: records,
                     original: false,
@@ -7707,17 +7705,17 @@ function multiMedia(){
                     this.mapInstance.enableAutoResize();
                     this.mapInstance.enableDoubleClickZoom();
                     this.mapInstance.centerAndZoom(new BMap.Point(108.0017245, 35.926895), 17);
-                } else if (utils.getMapType() == 'gMap'){
+                } else if (utils.getMapType() == 'gMap') {
                     var center = new google.maps.LatLng(24.129163, 113.264435);
                     this.mapInstance = new google.maps.Map(document.getElementsByClassName('work-details-map')[0], {
                         zoom: 4,
                         center: center,
                         mapTypeId: google.maps.MapTypeId.ROADMAP
                     });
-                }else if (utils.getMapType() == 'oMap') {
+                } else if (utils.getMapType() == 'oMap') {
                     var me = this;
-                    setTimeout(function(){
-                        
+                    setTimeout(function() {
+
                         me.layerVector = new ol.layer.Vector({
                             source: new ol.source.Vector({
                                 features: features
@@ -7744,7 +7742,7 @@ function multiMedia(){
                                 maxZoom: 20
                             }),
                         });
-                    },300);
+                    }, 300);
                 };
             },
             clean: function() {
@@ -7772,31 +7770,31 @@ function multiMedia(){
                     this.mapInstance.clearOverlays();
                     var lon_lat = wgs84tobd09(row.callon, row.callat);
                     var point = new BMap.Point(lon_lat[0], lon_lat[1])
-                    this.mapInstance.addOverlay(new BMap.Marker(point,{}));
-                    setTimeout(function(){
+                    this.mapInstance.addOverlay(new BMap.Marker(point, {}));
+                    setTimeout(function() {
                         me.mapInstance.panTo(point);
-                    },300)
-                 
+                    }, 300)
+
                 } else if (utils.getMapType() == 'gMap') {
-                    
-                }else if (utils.getMapType() == 'oMap') {
-                        var tempPoint = ol.proj.fromLonLat([row.callon, row.callat]);
-                        var firstMarker = new ol.Feature({
-                                geometry: new ol.geom.Point(tempPoint),
-                            });
 
-                            firstMarker.setStyle(me.getFirstMarkerIcon(true));
+                } else if (utils.getMapType() == 'oMap') {
+                    var tempPoint = ol.proj.fromLonLat([row.callon, row.callat]);
+                    var firstMarker = new ol.Feature({
+                        geometry: new ol.geom.Point(tempPoint),
+                    });
 
-                        var features =  [ firstMarker ];
-                        this.layerVector.setSource(new ol.source.Vector({
-                            features: features
-                        })); 
-                        setTimeout(function(){
-                            me.mapInstance.getView().setCenter(tempPoint);
-                        },300)
-                    
+                    firstMarker.setStyle(me.getFirstMarkerIcon(true));
+
+                    var features = [firstMarker];
+                    this.layerVector.setSource(new ol.source.Vector({
+                        features: features
+                    }));
+                    setTimeout(function() {
+                        me.mapInstance.getView().setCenter(tempPoint);
+                    }, 300)
+
                 };
-              
+
             },
             getFirstMarkerIcon: function(isStart) {
                 var iconName = isStart ? 'marker_qidian.png' : 'marker_zhongdian.png';
@@ -7864,9 +7862,9 @@ function multiMedia(){
                                         item.index = index;
                                         item.callat = Number(item.callat.toFixed(5));
                                         item.callon = Number(item.callon.toFixed(5));
-                                        item.address = LocalCacheMgr.getAddress(item.callon,item.callat);
+                                        item.address = LocalCacheMgr.getAddress(item.callon, item.callat);
                                         item.devicename = vstore.state.deviceInfos[item.deviceid] ? vstore.state.deviceInfos[item.deviceid].devicename : item.deviceid;
-                                        item.endtimeStr = DateFormat.longToDateTimeStr(item.endtime,timeDifference);
+                                        item.endtimeStr = DateFormat.longToDateTimeStr(item.endtime, timeDifference);
                                         item.eventcodeStr = me.getEventcodeStr(item);
                                         records.push(item);
                                         index++;
@@ -7890,28 +7888,28 @@ function multiMedia(){
                     this.$Message.error(this.$t("reportForm.selectDevTip"));
                 }
             },
-            getEventcodeStr:function(row){
+            getEventcodeStr: function(row) {
                 var eventcode = row.eventcode;
                 var str = '';
-                switch(eventcode){
-                    case 0 :
+                switch (eventcode) {
+                    case 0:
                         str = vRoot.$t("alarm.terraceIssued");
                         break;
-                    case 1 :
+                    case 1:
                         str = vRoot.$t("alarm.timingAction");
                         break;
-                    case 2 :
+                    case 2:
                         str = vRoot.$t("alarm.robberyReport");
                         break;
-                    case 3 :
+                    case 3:
                         str = vRoot.$t("alarm.impactRollover");
                         break;
-                    default :
-                    str =  vRoot.$t("alarm.retain");
+                    default:
+                        str = vRoot.$t("alarm.retain");
                 }
                 return str;
             },
-            onRowClick:function(row){
+            onRowClick: function(row) {
                 this.cameraImgModal = true;
                 this.cameraImgUrl = row.url;
             }
@@ -7959,7 +7957,7 @@ var reportForm = {
                     title: me.$t("reportForm.drivingReport"),
                     name: 'drivingReport',
                     icon: 'ios-photos',
-                    children: [  
+                    children: [
                         { title: me.$t("reportForm.cmdReport"), name: 'cmdReport', icon: 'ios-pricetag-outline' },
                         { title: me.$t("reportForm.posiReport"), name: 'posiReport', icon: 'ios-pin' },
                         { title: me.$t("reportForm.reportmileagedetail"), name: 'mileageDetail', icon: 'ios-color-wand' },
@@ -7968,9 +7966,9 @@ var reportForm = {
                         { title: me.$t("reportForm.acc"), name: 'accDetails', icon: 'md-bulb' },
                         { title: me.$t("reportForm.voiceReport"), name: 'records', icon: 'md-volume-up' },
                         { title: me.$t("reportForm.messageReport"), name: 'messageRecords', icon: 'ios-book' },
-                        { title: me.$t("reportForm.rotationStatistics"), name: 'rotateReport', icon: 'ios-aperture' },   
-                        { title: "IO报表", name: 'ioReport', icon: 'md-contrast' }, 
-                    ]  
+                        { title: me.$t("reportForm.rotationStatistics"), name: 'rotateReport', icon: 'ios-aperture' },
+                        { title: "IO报表", name: 'ioReport', icon: 'md-contrast' },
+                    ]
                 },
                 {
                     title: me.$t("reportForm.warningReport"),
@@ -7998,7 +7996,7 @@ var reportForm = {
                     ]
                 },
                 {
-                    title: me.$t("reportForm.insurMgr"),   
+                    title: me.$t("reportForm.insurMgr"),
                     name: 'insure',
                     icon: 'md-medkit',
                     children: [
@@ -8008,7 +8006,7 @@ var reportForm = {
                 },
                 {
                     title: me.$t("reportForm.oilReport"),
-                    name: 'oilConsumption',   
+                    name: 'oilConsumption',
                     icon: 'ios-speedometer-outline',
                     children: [
                         { title: me.$t("reportForm.dayOilConsumption"), name: 'dayOil', icon: 'ios-stopwatch-outline' },
@@ -8157,9 +8155,9 @@ var reportForm = {
                     }
                 } else if (resp.status == 3) {
                     me.$Message.error(me.$t("monitor.reLogin"));
-                    Cookies.remove('token');
+                    localStorage.setItem('token', "");
                     setTimeout(function() {
-                        window.location.href = 'index.html'
+                        window.location.href = 'index.html';
                     }, 2000);
                 } else {
                     if (resp.cause) {

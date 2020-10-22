@@ -55,30 +55,30 @@
     <script>
         var token = utils.getParameterByName("token");
         var timeDifference = DateFormat.getOffset();
-        var userName = Cookies.get('name');
+        var userName = localStorage.getItem('name');
         var isZh = utils.locale === 'zh';
         iview.lang(isZh ? 'zh-CN' : 'en-US');
         var vRoot = new Vue({
             el: '#container',
             data: {
-                isZh:isZh,
+                isZh: isZh,
                 columns: [{
-                    title: isZh?'用户名':'User name',
+                    title: isZh ? '用户名' : 'User name',
                     key: 'createraccount',
                     width: 200,
                 }, {
-                    title: isZh?'发送者名称':'Creater name',
+                    title: isZh ? '发送者名称' : 'Creater name',
                     key: 'creatername',
                     width: 200,
                 }, {
-                    title: isZh?'发送时间':'Create time',
+                    title: isZh ? '发送时间' : 'Create time',
                     key: 'createtimeStr',
                     width: 160,
                 }, {
-                    title: isZh?'内容':'Content',
+                    title: isZh ? '内容' : 'Content',
                     key: 'content'
                 }, {
-                    title: isZh?'操作':'Action',
+                    title: isZh ? '操作' : 'Action',
                     type: 'action',
                     width: 170,
                     render: function(h, params) {
@@ -88,7 +88,7 @@
                             h('Poptip', {
                                 props: {
                                     confirm: true,
-                                    title: isZh?'确定删除吗?':'Are you sure you want to delete it'
+                                    title: isZh ? '确定删除吗?' : 'Are you sure you want to delete it'
                                 },
                                 style: {
                                     marginRight: '10px'
@@ -104,12 +104,12 @@
                                         type: 'error',
                                         size: 'small'
                                     }
-                                }, isZh?"删除":"delete")
+                                }, isZh ? "删除" : "delete")
                             ]),
                             h('Poptip', {
                                 props: {
                                     confirm: true,
-                                    title: isZh?'确定撤回吗?':'Are you sure you want to withdraw'
+                                    title: isZh ? '确定撤回吗?' : 'Are you sure you want to withdraw'
                                 },
                                 style: {
 
@@ -126,7 +126,7 @@
                                         size: 'small',
                                         disabled: disabled
                                     }
-                                }, isZh?"撤回":"withdraw")
+                                }, isZh ? "撤回" : "withdraw")
                             ]),
                         ])
                     }
@@ -159,9 +159,9 @@
                     }, function(resp) {
                         if (resp.status == 0) {
                             me.data.splice(index, 1);
-                            me.$Message.success( isZh?"删除成功":"Deletion succeeded");
+                            me.$Message.success(isZh ? "删除成功" : "Deletion succeeded");
                         } else {
-                            me.$Message.error( isZh?"删除失败":"Deletion failed");
+                            me.$Message.error(isZh ? "删除失败" : "Deletion failed");
                         }
                     });
                 },
@@ -174,9 +174,9 @@
                     }, function(resp) {
                         if (resp.status == 0) {
                             me.data.splice(index, 1);
-                            me.$Message.success(isZh?"撤回成功":"Withdrawal successful");
+                            me.$Message.success(isZh ? "撤回成功" : "Withdrawal successful");
                         } else {
-                            me.$Message.error(isZh?"撤回失败":"Withdrawal failed");
+                            me.$Message.error(isZh ? "撤回失败" : "Withdrawal failed");
                         }
                     })
                 }

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,12 +9,14 @@
     <title>发送消息</title>
     <link rel="stylesheet" href="dist/styles/iview.css">
     <style>
-        html,body{
+        html,
+        body {
             width: 100%;
-            height: 100%;  
+            height: 100%;
             position: relative;
         }
-        #container{
+        
+        #container {
             position: absolute;
             left: 0;
             top: 0;
@@ -23,22 +26,24 @@
             width: 800px;
             height: 600px;
         }
-        .content{
+        
+        .content {
             box-sizing: border-box;
             padding: 10px;
             overflow-y: auto;
         }
     </style>
 </head>
+
 <body>
     <div id="container">
         <Layout style="height:100%;">
             <i-Header>
-                <Row style="height: 100%;">   
+                <Row style="height: 100%;">
                     <i-col :span="24">
                         <h1 style="color:#ffffff;">{{isZh ? '发送消息' :'Send message'}}</h1>
                     </i-col>
-                </Row> 
+                </Row>
             </i-Header>
             <Layout>
                 <Sider hide-trigger style="background:#eee;padding:10px;box-sizing: border-box;">
@@ -47,12 +52,12 @@
                     </div>
                 </Sider>
                 <i-Content>
-                    <Row style="padding: 10px">   
+                    <Row style="padding: 10px">
                         <i-col :span="24">
-                            <i-input v-model="msgValue" type="textarea" :rows="14"  />
+                            <i-input v-model="msgValue" type="textarea" :rows="14" />
                         </i-col>
-                    </Row> 
-                    <Row style="padding:0 10px;">   
+                    </Row>
+                    <Row style="padding:0 10px;">
                         <i-col :span="8" offset="8">
                             <i-button @click="submitMsg" style="width:100%;" type="primary">{{isZh ? '提交' :'Submit'}}</i-button>
                         </i-col>
@@ -60,7 +65,7 @@
 
                 </i-Content>
             </Layout>
-        </Layout>      
+        </Layout>
     </div>
     <script src="js/polyfill.min.js"></script>
     <script src="dist/vue.min.js"></script>
@@ -75,84 +80,89 @@
     <script src="js/util.js"></script>
     <script>
         var token = utils.getParameterByName("token");
-        var userName = Cookies.get('name');
+        var userName = localStorage.getItem('name');
         var isZh = utils.locale === 'zh';
         iview.lang(isZh ? 'zh-CN' : 'en-US');
         new Vue({
-            el:'#container',
-            data:{
-                msgValue:'',
-                isZh : isZh,
-                treeData:[
-                    {
-                        title: isZh ? '全部' :'all',
-                        expand: true,
-                        children:[],
-                    },
-                ]
+            el: '#container',
+            data: {
+                msgValue: '',
+                isZh: isZh,
+                treeData: [{
+                    title: isZh ? '全部' : 'all',
+                    expand: true,
+                    children: [],
+                }, ]
             },
             methods: {
-                submitMsg:function(){
-                    var url = myUrls.sendSystemMsg() , me = this;
+                submitMsg: function() {
+                    var url = myUrls.sendSystemMsg(),
+                        me = this;
                     var checkedData = this.$refs.treeIns.getCheckedNodes();
-                    if(me.treeData[0].children.length === 0){
-                        this.$Message.error(isZh ? "没有用户列表" :'There is no user list');
-                        return 
+                    if (me.treeData[0].children.length === 0) {
+                        this.$Message.error(isZh ? "没有用户列表" : 'There is no user list');
+                        return
                     }
-                    if(!this.msgValue){
+                    if (!this.msgValue) {
                         this.$Message.error(isZh ? "请填写消息" : 'Please fill in the message');
                         return;
                     }
-                    if(checkedData.length){
-                        var toaccounts = [] , isAll = 0 , data = {};
-                        checkedData.forEach(function (item) { 
-                            if(item.children){
+                    if (checkedData.length) {
+                        var toaccounts = [],
+                            isAll = 0,
+                            data = {};
+                        checkedData.forEach(function(item) {
+                            if (item.children) {
                                 isAll = 1;
-                            }else{
+                            } else {
                                 toaccounts.push(item.title);
                             }
                         })
                         data.isAll = isAll;
                         data.content = this.msgValue;
-                        if(!isAll){
+                        if (!isAll) {
                             data.toaccounts = toaccounts;
                         };
-                        utils.sendAjax(url,data,function (resp) { 
-                            if(resp.status === 0){
-                            me.$Message.success(isZh ? "发送成功" : "Send success");
+                        utils.sendAjax(url, data, function(resp) {
+                            if (resp.status === 0) {
+                                me.$Message.success(isZh ? "发送成功" : "Send success");
                                 me.msgValue = '';
-                            }else{
+                            } else {
                                 me.$Message.error(isZh ? "发送失败" : "Send failing");
                             }
                         });
-                    }else{
+                    } else {
                         this.$Message.error(isZh ? "请选择用户" : "Please select user");
                     }
                 },
-                queryUser:function(){
-                    var url = myUrls.queryUser() , me = this;
-                    utils.sendAjax(url,{username: userName},function (resp) { 
-                        if(resp.status === 0){
+                queryUser: function() {
+                    var url = myUrls.queryUser(),
+                        me = this;
+                    utils.sendAjax(url, {
+                        username: userName
+                    }, function(resp) {
+                        if (resp.status === 0) {
                             var userlists = resp.userlists;
-                            if(userlists){
+                            if (userlists) {
                                 var children = [];
-                                userlists.forEach(function(item){
+                                userlists.forEach(function(item) {
                                     children.push({
-                                        title:item.username,
+                                        title: item.username,
                                     })
                                 });
                                 me.treeData[0].children = children;
-                            }else{
+                            } else {
                                 me.$Message.error(isZh ? "没有用户列表" : "There is no user list");
                             }
                         }
                     });
                 }
             },
-            mounted:function() {
+            mounted: function() {
                 this.queryUser();
             },
         })
     </script>
 </body>
+
 </html>

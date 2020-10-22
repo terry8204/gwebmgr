@@ -261,7 +261,7 @@
         }
         (function() {
             document.title = isZh ? "跟踪" : "Track";
-            var userName = Cookies.get('name');
+            var userName = localStorage.getItem('name');
             var startIcon = null;
             var vm = vRoot = new Vue({
                 el: "#container",
@@ -452,23 +452,23 @@
                             return;
                         }
                         if (this.mapType === 'bMap' || this.mapType === 'oMap') {
-                             utils.getJiuHuAddressSyn(callon, callat, function(resp) {
-                                if(resp.status > 9900){
+                            utils.getJiuHuAddressSyn(callon, callat, function(resp) {
+                                if (resp.status > 9900) {
                                     console.log('getJiuHuAddressSyn token失效,请重新登录')
-                                }else if(resp.status == 0){
+                                } else if (resp.status == 0) {
                                     address = resp.address
                                     LocalCacheMgr.setAddress(lng, lat, address);
                                     callback(address);
-                                }else{
+                                } else {
                                     console.log('getJiuHuAddressSyn 查询地址失败')
-                                }   
-                             });
+                                }
+                            });
                         } else if (this.mapType === 'gMap') {
                             var google_lng_lat = wgs84togcj02(callon, callat);
                             utils.getGoogleAddressSyn(google_lng_lat[1], google_lng_lat[0], function(address) {
                                 callback(address);
                             })
-                        } 
+                        }
 
                         return isZh ? "地址正在解析..." : "Address is being resolved...";
                     },
@@ -860,11 +860,11 @@
                 },
                 computed: {
                     token: function() {
-                        return Cookies.get("token");
+                        return localStorage.getItem("token");
                     },
 
                     username: function() {
-                        return Cookies.get("name");
+                        return localStorage.getItem("name");
                     },
                     intervalCls: function() {
                         return [(this.mapType === 'bMap' || this.mapType === 'oMap') ? 'left-65' : 'left-205'];
@@ -931,7 +931,6 @@
                         var me = this;
                         isLoadBMap = false;
                         this.initMap();
-                        // Cookies.set('app-map-type', newVal === 'baidu' ? 'bMap' :'GMap');
                         flightPathArrList = [];
                         firstMarker = null;
                         setTimeout(function() {

@@ -303,9 +303,10 @@
             animation-play-state: running
         }
         
-        [v-cloak]{
+        [v-cloak] {
             display: none
         }
+        
         .move-right-leave-active {
             -webkit-animation-name: ivuMoveRightOut;
             animation-name: ivuMoveRightOut;
@@ -474,13 +475,13 @@
                         <i-button style="width:100px;" @click="drawCircular" icon="md-add">{{ isZh ? '圆' : 'Circle'}}</i-button>
                     </i-col>
                     <i-col :span="6" style="text-align:center;">
-                        <i-button style="width:100px;" @click="drawPolygon" icon="md-add">{{isZh ?  '多边形' : 'Polygon'}}</i-button>
+                        <i-button style="width:100px;" @click="drawPolygon" icon="md-add">{{isZh ? '多边形' : 'Polygon'}}</i-button>
                     </i-col>
                     <i-col :span="6" style="text-align:center;">
                         <i-button @click="areaModal" style="width:100px;" icon="md-add">{{isZh ? '行政区域' : 'Area'}}</i-button>
                     </i-col>
                     <i-col :span="6" style="text-align:center;">
-                        <i-button style="width:100px;" icon="md-add" @click="openDrawer">{{isZh ?  '系统围栏' : 'sFence'}}</i-button>
+                        <i-button style="width:100px;" icon="md-add" @click="openDrawer">{{isZh ? '系统围栏' : 'sFence'}}</i-button>
                     </i-col>
                 </Row>
                 <i-table border stripe ref="selection" :columns="columns" :data="tableData" :loading="loading" @on-row-click="handleClickRow" @on-selection-change="handleSelectChange"></i-table>
@@ -645,6 +646,7 @@
     <script>
         var isZh = utils.locale === 'zh';
         iview.lang(isZh ? 'zh-CN' : 'en-US');
+
         function getTarget(node) {
             if (node === void 0) {
                 node = document.body
@@ -1154,7 +1156,7 @@
             vRoot = new Vue({
                 el: "#container",
                 data: {
-                    isZh:isZh,
+                    isZh: isZh,
                     tipTitle: isZh ? "多边形提示" : "Polygon tips",
                     tipContent: isZh ? '点击多边形按钮,单击画图,双击结束' : 'Click the polygon button, click draw, double-click to finish',
                     isEidt: false,
@@ -1172,7 +1174,7 @@
                         width: 60,
                         align: 'center',
                     }, {
-                        title: isZh ?  '类型' : 'Type',
+                        title: isZh ? '类型' : 'Type',
                         key: 'type',
                         width: 90,
                         render: function(h, params) {
@@ -1182,19 +1184,19 @@
                                     type = isZh ? '圆' : 'Circle'
                                     break;
                                 case 2:
-                                    type = isZh ?  '多边形' : 'Polygon'
+                                    type = isZh ? '多边形' : 'Polygon'
                                     break;
                                 case 3:
                                     type = isZh ? '行政区域' : 'Area'
                                     break;
                                 case 4:
-                                    type = isZh ?  '系统围栏' : 'System fence'
+                                    type = isZh ? '系统围栏' : 'System fence'
                                     break;
                             }
                             return h('div', [h('span', {}, type)]);
                         }
                     }, {
-                        title: isZh ?  '名称' : 'Geo name',
+                        title: isZh ? '名称' : 'Geo name',
                         key: 'geoname',
                         render: function(h, params) {
                             return h('div', [
@@ -1221,7 +1223,7 @@
                             ])
                         }
                     }, {
-                        title:isZh ?  '操作' : 'Action',
+                        title: isZh ? '操作' : 'Action',
                         key: 'action',
                         width: 80,
                         render: function(h, params) {
@@ -1239,8 +1241,8 @@
                                             e.preventDefault();
                                             e.stopPropagation();
                                             vRoot.$Modal.confirm({
-                                                title:isZh ?  "温馨提示" :'Reminder',
-                                                content: isZh ? "确定要删除围栏吗?" :'Are you sure you want to delete the fence?',
+                                                title: isZh ? "温馨提示" : 'Reminder',
+                                                content: isZh ? "确定要删除围栏吗?" : 'Are you sure you want to delete the fence?',
                                                 onOk: function() {
                                                     var url = myUrls.delGeoRecord(),
                                                         index = params.index,
@@ -1252,10 +1254,10 @@
                                                     utils.sendAjax(url, data, function(resp) {
                                                         if (resp.status === 0) {
                                                             vRoot.tableData.splice(index, 1);
-                                                            vRoot.$Message.success(isZh ?"删除成功" :'Deletion succeeded');
+                                                            vRoot.$Message.success(isZh ? "删除成功" : 'Deletion succeeded');
                                                             vRoot.map.clearOverlays();
                                                         } else {
-                                                            vRoot.$Message.success(isZh ?"删除失败":'Deletion failed');
+                                                            vRoot.$Message.success(isZh ? "删除失败" : 'Deletion failed');
                                                         }
                                                     })
                                                 }
@@ -1283,7 +1285,7 @@
                     areaAddress: [],
                     mapCenterPoint: null,
                     provinceList: provinceList,
-                    userType: Cookies.get('userType')
+                    userType: localStorage.getItem('userType')
                 },
                 methods: {
                     jumpSystemFence: function() {
@@ -1359,8 +1361,8 @@
                         var path = overlay.getPath(),
                             self = this;
                         self.$Modal.confirm({
-                            title:isZh ?  "温馨提示" :'Reminder',
-                            content: isZh ?  "是否提交多边形围栏?" :'Submit polygon fence ?',
+                            title: isZh ? "温馨提示" : 'Reminder',
+                            content: isZh ? "是否提交多边形围栏?" : 'Submit polygon fence ?',
                             onOk: function() {
                                 console.log('overlay', overlay);
                                 var mapPath = function(item) {
@@ -1381,10 +1383,10 @@
 
                                 utils.sendAjax(url, data, function(resp) {
                                     if (resp.status === 0) {
-                                        self.$Message.success( isZh ?  "添加成功" : "Added successfully")
+                                        self.$Message.success(isZh ? "添加成功" : "Added successfully")
                                         self.getFenceInfo();
                                     } else {
-                                        self.$Message.error( isZh ? "添加失败" : "Add failed")
+                                        self.$Message.error(isZh ? "添加失败" : "Add failed")
                                     };
                                     self.map.removeOverlay(overlay)
                                 })
@@ -1498,7 +1500,7 @@
                                     me.geoName = "";
                                     me.$Message.success(isZh ? "修改成功" : "Modification succeeded");
                                 } else {
-                                    me.$Message.error( isZh ? "修改失败" : "Modification failed");
+                                    me.$Message.error(isZh ? "修改失败" : "Modification failed");
                                 }
                             })
                         } else {
@@ -1676,15 +1678,15 @@
                                 me.getFenceInfo();
                                 me.isCircular = false;
                                 if (me.isEidt) {
-                                    me.$Message.success( isZh ?  "编辑围栏成功" : 'Edit fence succeeded');
+                                    me.$Message.success(isZh ? "编辑围栏成功" : 'Edit fence succeeded');
                                 } else {
-                                    me.$Message.success(isZh ?   "保存围栏成功" : 'Save fence succeeded');
+                                    me.$Message.success(isZh ? "保存围栏成功" : 'Save fence succeeded');
                                 };
                             } else {
                                 if (me.isEidt) {
-                                    me.$Message.success( isZh ?  "编辑围栏失败" : 'Edit fence fail');
+                                    me.$Message.success(isZh ? "编辑围栏失败" : 'Edit fence fail');
                                 } else {
-                                    me.$Message.success(isZh ?   "保存围栏失败" : 'Save fence fail');
+                                    me.$Message.success(isZh ? "保存围栏失败" : 'Save fence fail');
                                 };
                             };
                         });

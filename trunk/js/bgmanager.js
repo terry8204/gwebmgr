@@ -17,7 +17,7 @@ var bgManager = {
                         { title: me.$t("bgMgr.queryUser"), name: 'queryUser', icon: 'md-search' },
                         { title: me.$t("bgMgr.onlineUsers"), name: 'onlineUsers', icon: 'ios-analytics' },
                         { title: me.$t("header.loginRecords"), name: 'loginRecords', icon: 'ios-clipboard-outline' },
-                    ]    
+                    ]
                 },
                 {
                     title: me.$t("bgMgr.groupMgr"),
@@ -35,13 +35,13 @@ var bgManager = {
                     children: [
                         { title: me.$t("bgMgr.queryDev"), name: 'queryDevice', icon: 'md-search' },
                         { title: me.$t("bgMgr.addDev"), name: 'addDevice', icon: 'md-add' },
-                        { title: me.$t("bgMgr.batchAdd"), name: 'batchAddDevice', icon: 'md-add' },  
+                        { title: me.$t("bgMgr.batchAdd"), name: 'batchAddDevice', icon: 'md-add' },
                         { title: me.$t("bgMgr.batchMgr"), name: 'batchMgrDevice', icon: 'ios-folder-outline' },
                         { title: me.$t("bgMgr.stockDev"), name: 'stockDev', icon: 'md-cube' },
-                        { title: me.$t("bgMgr.notPutIntoStorage"), name: 'notPutIntoStorage', icon: 'md-basket' }, 
+                        { title: me.$t("bgMgr.notPutIntoStorage"), name: 'notPutIntoStorage', icon: 'md-basket' },
                         { title: me.$t("bgMgr.renewMgr"), name: 'chargeMgr', icon: 'ios-apps-outline' },
-                        { title:me.$t("bgMgr.clearRecord"), name:"clearRecord", icon:"ios-paw" },
-                        { title:me.$t("bgMgr.setMileage"),name:"setMileage",icon:"md-paper" },
+                        { title: me.$t("bgMgr.clearRecord"), name: "clearRecord", icon: "ios-paw" },
+                        { title: me.$t("bgMgr.setMileage"), name: "setMileage", icon: "md-paper" },
                     ]
                 },
                 {
@@ -186,7 +186,7 @@ var bgManager = {
         }
     },
     mounted: function() {
-        this.userType = Cookies.get('userType');
+        this.userType = localStorage.getItem('userType');
         if (this.userType == "3") {
             this.navList.splice(0, 1);
             // this.navList[0].children.splice(0, 1);
@@ -220,23 +220,22 @@ var systemParam = {
                     name: 'carType',
                     icon: 'ios-car'
                 },
-                { 
-                    name: "systemManager", 
-                    icon: "ios-bug", 
-                    title: "系统管理",  
-                    children:[
-                        {
-                            title:"系统参数",
-                            name:"serverSetting",
-                            icon:"ios-bug"
+                {
+                    name: "systemManager",
+                    icon: "ios-bug",
+                    title: "系统管理",
+                    children: [{
+                            title: "系统参数",
+                            name: "serverSetting",
+                            icon: "ios-bug"
                         },
                         {
-                            title:"登录记录",
-                            name:"loginRecords",
-                            icon:"ios-bug"
+                            title: "登录记录",
+                            name: "loginRecords",
+                            icon: "ios-bug"
                         },
                     ]
-                } 
+                }
             ]
         }
     },
@@ -271,7 +270,7 @@ var systemParam = {
                     break
             }
 
-            page && (this.loadPage(page)) ;
+            page && (this.loadPage(page));
         },
         loadPage: function(page) {
             var me = this
