@@ -715,6 +715,7 @@
                 creater: 'creater',
             },
             device: {
+                insurenum: 'Insure num',
                 editDev: "Edit Device",
                 loginPwd: "Login Pwd",
                 pwdTips: "Default device number after four digits",
@@ -732,6 +733,7 @@
                 ioConfig: "IO config",
                 insureInfo: "Insure info",
                 speedingSetting: "Speeding setting",
+                editCarIcon: "Modify Icon",
                 networkType: "Network type",
                 forwardAddress: "Forward",
                 tutelageUser: "Tutelage user",
@@ -1771,6 +1773,7 @@
                 creater: '创建者',
             },
             device: {
+                insurenum: '保险单号',
                 editDev: "编辑设备",
                 loginPwd: "登录密码",
                 pwdTips: "默认设备序号后四位",
@@ -1788,6 +1791,7 @@
                 ioConfig: "IO配置",
                 insureInfo: "保险信息",
                 speedingSetting: "超速设置",
+                editCarIcon: "修改图标",
                 networkType: "网络类型",
                 forwardAddress: "转发地址",
                 tutelageUser: "监护账号",

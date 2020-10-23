@@ -70,17 +70,17 @@
                     </i-col>
                 </Row>
                 <Row style="margin:10px 0;">
-                    <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t('device.reportForm.idNumber')}} : &nbsp;</i-col>
+                    <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t('reportForm.idNumber')}} : &nbsp;</i-col>
                     <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
                         <i-input v-model.trim="ownerInfoData.idnum" style="width: 100%;"></i-input>
                     </i-col>
                 </Row>
                 <Row style="margin:10px 0;">
-                    <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t('device.reportForm.gender')}} : &nbsp;</i-col>
+                    <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t('device.gender')}} : &nbsp;</i-col>
                     <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
                         <i-select v-model="ownerInfoData.gender">
-                            <i-option value="1">{{$t('device.reportForm.man')}}</i-option>
-                            <i-option value="0">{{$t('device.reportForm.girl')}}</i-option>
+                            <i-option value="1">{{$t('device.man')}}</i-option>
+                            <i-option value="0">{{$t('device.girl')}}</i-option>
                         </i-select>
                     </i-col>
                 </Row>
@@ -133,7 +133,7 @@
                     </i-col>
                 </Row>
                 <Row style="margin:10px 0;">
-                    <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">: &nbsp;</i-col>
+                    <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t('device.insurenum')}}: &nbsp;</i-col>
                     <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
                         <i-input v-model.trim="insureInfoData.insurenum" style="width: 100%;"></i-input>
                     </i-col>
@@ -161,7 +161,25 @@
                 <i-button type="primary" style="width: 100%" @click="handleEditInsure">{{$t('header.submit')}}</i-button>
             </div>
         </Modal>
-
+        <Modal v-model="editCarIconModal" width="400" :title="$t('device.editCarIcon')">
+            <Row>
+                <i-col span="6" style="height: 100%;text-align:right;line-height:32px;">&nbsp;当前图标 : &nbsp;</i-col>
+                <i-col span="16">
+                    <img src="./images/carstate/a_green_0.png" style="width: 30px;height: 30px;">
+                </i-col>
+            </Row>
+            <Row>
+                <i-col span="6" class="col-car-wrap">
+                    <img src="./images/carstate/a_green_0.png" style="width: 30px;height: 30px;">
+                </i-col>
+                <i-col span="6" class="col-car-wrap">
+                    <img src="./images/carstate/a_green_0.png" style="width: 30px;height: 30px;">
+                </i-col>
+            </Row>
+            <div slot="footer">
+                <i-button type="primary" style="width: 100%" @click="handleEditInsure">{{$t('header.submit')}}</i-button>
+            </div>
+        </Modal>
         <Modal v-model="modal" width="900" :title="$t('device.editDev')">
             <div style="width:700px;margin:10px auto">
                 <Row style="margin: 10px 0" v-if="userType < 3">
@@ -807,6 +825,7 @@
                 isQuery: false,
                 userType: localStorage.getItem('userType'),
                 modal: false,
+                editCarIconModal: false,
                 queryString: "",
                 loading: true,
                 total: vRoot.$children[1].allDevCount,

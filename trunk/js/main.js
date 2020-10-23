@@ -150,7 +150,6 @@ Vue.component('table-dropdown', {
     props: ['params'],
     methods: {
         onClickItem: function(name) {
-            console.log(this.params);
             switch (name) {
                 case 'oil':
                     vueInstanse.onClickCalibration(this.params);
@@ -166,6 +165,10 @@ Vue.component('table-dropdown', {
                     break;
                 case 'resetPass':
                     vueInstanse.resetDevicePwd(this.params.index);
+                    break;
+                case 'editCarIcon':
+                    editObject = this.params.row;
+                    vueInstanse.editCarIconModal = true;
                     break;
             }
 

@@ -333,3 +333,16 @@ div.work-inner-map-wraper {
 {
     opacity: 0;
 }
+
+.col-car-wrap {
+    height: 92px;
+    width: 92px;
+    line-height: 92px;
+    text-align: center;
+    border: 1px solid #ffffff;
+    cursor: pointer;
+}
+
+.col-car-wrap:hover {
+    border: 1px solid green;
+}
