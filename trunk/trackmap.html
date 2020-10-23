@@ -482,7 +482,7 @@
                             imgPath = '../images/carstate';
                         }
                         if (this.mapType === 'bMap') {
-                            return new BMap.Icon("images/carstate/a_green_0.png", new BMap.Size(32, 32), {
+                            return new BMap.Icon("images/carstate/0_green_0.png", new BMap.Size(32, 32), {
                                 imageOffset: new BMap.Size(0, 0)
                             });
                         } else if (this.mapType === 'gMap') {
@@ -499,7 +499,7 @@
                             return new ol.style.Style({
                                 image: new ol.style.Icon(({
                                     crossOrigin: 'anonymous',
-                                    src: imgPath + '/a_green_0.png',
+                                    src: imgPath + '/0_green_0.png',
                                     rotation: angle * Math.PI / 180, //角度转化为弧度
                                     imgSize: [32, 32]
                                 }))

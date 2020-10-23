@@ -630,7 +630,7 @@
                         }
                     },
                     initBMap: function() {
-                        carIcon = new BMap.Icon("images/carstate/a_green_0.png", new BMap.Size(32, 32), {
+                        carIcon = new BMap.Icon("images/carstate/0_green_0.png", new BMap.Size(32, 32), {
                             imageOffset: new BMap.Size(0, 0)
                         });
                         startIcon = new BMap.Icon("./images/map/marker_qidian.png", new BMap.Size(32, 32), {
@@ -879,9 +879,9 @@
                         var pathname = location.pathname
                         var imgPath = '';
                         if (utils.isLocalhost()) {
-                            imgPath = myUrls.viewhost + 'images/carstate/a_green_0.png';
+                            imgPath = myUrls.viewhost + 'images/carstate/0_green_0.png';
                         } else {
-                            imgPath = '../images/carstate/a_green_0.png';
+                            imgPath = '../images/carstate/0_green_0.png';
                         };
                         return new ol.style.Style({
                             image: new ol.style.Icon( /** @type {module:ol/style/Icon~Options} */ ({
@@ -1464,7 +1464,7 @@
                     },
                     getDirectionIcon: function(angle) {
                         if (this.mapType === 'bMap') {
-                            return new BMap.Icon("images/carstate/a_green_" + angle + ".png", new BMap.Size(32, 32), {
+                            return new BMap.Icon("images/carstate/0_green_" + angle + ".png", new BMap.Size(32, 32), {
                                 imageOffset: new BMap.Size(0, 0)
                             });
                         } else if (this.mapType === 'gMap') {
@@ -1477,7 +1477,7 @@
                             }
 
                             return {
-                                url: imgPath += '/a_green_' + angle + '.png',
+                                url: imgPath += '/0_green_' + angle + '.png',
                                 size: {
                                     width: 32,
                                     height: 32

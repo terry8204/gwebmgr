@@ -207,9 +207,9 @@
                         var point = new BMap.Point(b_lon_and_b_lat[0],b_lon_and_b_lat[1]);
                         var imgPath = '';
                         if (utils.isLocalhost()) {
-                            imgPath = myUrls.viewhost + 'images/carstate/a_green_0.png'
+                            imgPath = myUrls.viewhost + 'images/carstate/0_green_0.png'
                         } else {
-                            imgPath = '../images/carstate/a_green_0.png'
+                            imgPath = '../images/carstate/0_green_0.png'
                         }
                         var myIcon = new BMap.Icon(imgPath, new BMap.Size(32, 32));
                         var marker = new BMap.Marker(point);
@@ -308,9 +308,9 @@
                 getOpenMapMarkerIcon: function(course) {
                     var imgPath = '';
                     if (utils.isLocalhost()) {
-                        imgPath = myUrls.viewhost + 'images/carstate/a_green_0.png';
+                        imgPath = myUrls.viewhost + 'images/carstate/0_green_0.png';
                     } else {
-                        imgPath = '../images/carstate/a_green_0.png';
+                        imgPath = '../images/carstate/0_green_0.png';
                     };
                     return new ol.style.Style({
                         image: new ol.style.Icon( /** @type {module:ol/style/Icon~Options} */ ({
