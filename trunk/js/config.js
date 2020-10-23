@@ -748,6 +748,9 @@ var myUrls = {
     onlineUsers: function() {
         return this.apihosts + 'webapi?action=onlineusers&token=' + token;
     },
+    setDeviceIcon: function() {
+        return this.apihosts + 'webapi?action=setdeviceicon&token=' + token;
+    },
 }
 
 

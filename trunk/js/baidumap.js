@@ -15,7 +15,7 @@ BMapClass.pt.initMap = function() {
     this.mapInstance = new BMap.Map('my-map', { minZoom: 4, maxZoom: 20, enableMapClick: false })
     this.mapInstance.enableScrollWheelZoom()
     this.mapInstance.enableAutoResize()
-    this.mapInstance.enableDoubleClickZoom() 
+    this.mapInstance.enableDoubleClickZoom()
     this.mapInstance.centerAndZoom(new BMap.Point(108.0017245, 35.926895), 5)
 
     // var top_left_control = new BMap.ScaleControl({anchor: BMAP_ANCHOR_BOTTOM_LEFT});
@@ -127,7 +127,8 @@ BMapClass.pt.getCarLabel = function(track) {
 }
 
 BMapClass.pt.getIcon = function(track) {
-    var imgPath = ''
+    var imgPath = '',
+        deviceid = track.deviceid;
     if (utils.isLocalhost()) {
         imgPath = myUrls.viewhost + 'images/carstate'
     } else {
@@ -135,13 +136,13 @@ BMapClass.pt.getIcon = function(track) {
     }
     if (track.online) {
         if (track.moving == 0) {
-            imgPath += '/a_red_0.png'
+            imgPath += '/' + carIconTypes[deviceid] + '_red_0.png'
         } else {
-            imgPath += '/a_green_0.png'
+            imgPath += '/' + carIconTypes[deviceid] + '_green_0.png'
         }
 
     } else {
-        imgPath += '/a_gray_0.png'
+        imgPath += '/' + carIconTypes[deviceid] + '_gray_0.png'
     }
     return new BMap.Icon(imgPath, new BMap.Size(32, 32));
 }
@@ -159,15 +160,15 @@ BMapClass.pt.getDevAddress = function(track) {
     }
 
     utils.getJiuHuAddressSyn(callon, callat, function(resp) {
-            var j_address = resp.address;
-            if (j_address && j_address != undefined) {
-                if (self.mapInfoWindow.isOpen()) {
-                    var content = utils.getWindowContent(track, j_address);
-                    self.mapInfoWindow.setContent(content);
-                };
-                LocalCacheMgr.setAddress(callon, callat, j_address);
-            }
-        })
+        var j_address = resp.address;
+        if (j_address && j_address != undefined) {
+            if (self.mapInfoWindow.isOpen()) {
+                var content = utils.getWindowContent(track, j_address);
+                self.mapInfoWindow.setContent(content);
+            };
+            LocalCacheMgr.setAddress(callon, callat, j_address);
+        }
+    })
 
     return isZh ? '正在解析地址...' : 'Resolving address...';
 }

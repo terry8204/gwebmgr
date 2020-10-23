@@ -163,21 +163,25 @@
         </Modal>
         <Modal v-model="editCarIconModal" width="400" :title="$t('device.editCarIcon')">
             <Row>
-                <i-col span="6" style="height: 100%;text-align:right;line-height:32px;">&nbsp;当前图标 : &nbsp;</i-col>
+                <i-col span="6" style="height: 100%;text-align:right;line-height:32px;">&nbsp;{{$t('device.currentIcon')}} : &nbsp;</i-col>
                 <i-col span="16">
-                    <img src="./images/carstate/a_green_0.png" style="width: 30px;height: 30px;">
+                    <img :src="carIconSrc" style="width: 30px;height: 30px;">
                 </i-col>
             </Row>
             <Row>
                 <i-col span="6" class="col-car-wrap">
-                    <img src="./images/carstate/a_green_0.png" style="width: 30px;height: 30px;">
+                    <div @click="setCarIconType(0)">
+                        <img src="./images/carstate/0_green_0.png" style="width: 30px;height: 30px;">
+                    </div>
                 </i-col>
                 <i-col span="6" class="col-car-wrap">
-                    <img src="./images/carstate/a_green_0.png" style="width: 30px;height: 30px;">
+                    <div @click="setCarIconType(1)">
+                        <img src="./images/carstate/1_green_0.png" style="width: 30px;height: 30px;" @click="setCarIconType(1)">
+                    </div>
                 </i-col>
             </Row>
             <div slot="footer">
-                <i-button type="primary" style="width: 100%" @click="handleEditInsure">{{$t('header.submit')}}</i-button>
+                <i-button type="primary" style="width: 100%" @click="submitCarIconType">{{$t('header.submit')}}</i-button>
             </div>
         </Modal>
         <Modal v-model="modal" width="900" :title="$t('device.editDev')">
@@ -811,6 +815,7 @@
                     io4k: "",
                     io4g: "",
                 },
+                carIconType: 1,
                 referenceResourcesDeviceid: "",
                 isIndependent: false,
                 timezone: '99',
@@ -1478,6 +1483,25 @@
                     this.currentIndex = 1;
                     self.getDeviceList(false, this.getQueryTypeNumber());
                 },
+                setCarIconType: function(type) {
+                    this.carIconType = String(type);
+                },
+                submitCarIconType: function() {
+                    var url = myUrls.setDeviceIcon();
+                    var deviceid = editObject.deviceid;
+                    var data = {
+                        deviceid: deviceid,
+                        icon: this.carIconType,
+                    };
+                    utils.sendAjax(url, data, function(resp) {
+                        if (resp.status == 0) {
+                            carIconTypes[deviceid] = data.icon;
+                            vRoot.$Message.success(vRoot.$t('monitor.setupSucc'));
+                        } else {
+                            vRoot.$Message.error(vRoot.$t('monitor.setupFail'));
+                        }
+                    })
+                },
                 getQueryTypeNumber: function() {
                     var result = 0;
                     switch (this.queryType) {
@@ -2088,6 +2112,9 @@
                 },
                 isAlloweditDisabled: function() {
                     return !(Number(this.userType) <= 1);
+                },
+                carIconSrc: function() {
+                    return "./images/carstate/" + this.carIconType + "_green_0.png"
                 }
             },
             mixins: [mixIn],

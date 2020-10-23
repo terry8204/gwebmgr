@@ -18,20 +18,19 @@ OpenStreeMapCls.pt = OpenStreeMapCls.prototype;
 OpenStreeMapCls.pt.getIcon = function(track, zIndex) {
 
     var isOnline = utils.getIsOnline(track);
-
-    var pathname = location.pathname
+    var deviceid = track.deviceid;
     var imgPath = '';
     if (utils.isLocalhost()) {
         if (track.moving == 0) {
-            imgPath = myUrls.viewhost + 'images/carstate/' + (isOnline ? 'a_red' : 'a_gray') + '_0.png';
+            imgPath = myUrls.viewhost + 'images/carstate/' + carIconTypes[deviceid] + (isOnline ? +'_red' : '_gray') + '_0.png';
         } else {
-            imgPath = myUrls.viewhost + 'images/carstate/' + (isOnline ? 'a_green' : 'a_gray') + '_0.png';
+            imgPath = myUrls.viewhost + 'images/carstate/' + carIconTypes[deviceid] + (isOnline ? '_green' : '_gray') + '_0.png';
         }
     } else {
         if (track.moving == 0) {
-            imgPath = '../images/carstate/' + (isOnline ? 'a_red' : 'a_gray') + '_0.png';
+            imgPath = '../images/carstate/' + carIconTypes[deviceid] + (isOnline ? '_red' : '_gray') + '_0.png';
         } else {
-            imgPath = '../images/carstate/' + (isOnline ? 'a_green' : 'a_gray') + '_0.png';
+            imgPath = '../images/carstate/' + carIconTypes[deviceid] + (isOnline ? '_green' : '_gray') + '_0.png';
         }
     };
     return new ol.style.Style({
@@ -114,10 +113,10 @@ OpenStreeMapCls.pt.addMarkerClickEvent = function() {
                 group.devices.forEach(function(dev) {
                     if (dev.deviceid == feature.deviceid) {
                         monitor.currentDeviceType = dev.devicetype;
-                    } 
+                    }
                 });
             });
-        
+
             document.getElementById('popup').style.display = 'block';
             var deviceid = feature.deviceid,
                 track = me.lastTracks[deviceid];
@@ -156,7 +155,7 @@ OpenStreeMapCls.pt.getDevAddress = function(track) {
         return address;
     } else {
         // if (isZh) {
-            utils.getJiuHuAddressSyn(callon, callat, function(respAddress) {
+        utils.getJiuHuAddressSyn(callon, callat, function(respAddress) {
                 var jh_address = respAddress && respAddress.address;
                 if (jh_address) {
                     var wContent = utils.getWindowContent(track, jh_address);
@@ -164,15 +163,15 @@ OpenStreeMapCls.pt.getDevAddress = function(track) {
                     LocalCacheMgr.setAddress(callon, callat, jh_address);
                 }
             })
-        // } else {
-        //     utils.getAbroadAddressSyn(callon, callat, function(abroad_address) {
-        //         if (abroad_address) {
-        //             var wContent = utils.getWindowContent(track, abroad_address);
-        //             document.getElementById('popup-content').innerHTML = wContent;
-        //             LocalCacheMgr.setAddress(callon, callat, abroad_address);
-        //         }
-        //     });
-        // }
+            // } else {
+            //     utils.getAbroadAddressSyn(callon, callat, function(abroad_address) {
+            //         if (abroad_address) {
+            //             var wContent = utils.getWindowContent(track, abroad_address);
+            //             document.getElementById('popup-content').innerHTML = wContent;
+            //             LocalCacheMgr.setAddress(callon, callat, abroad_address);
+            //         }
+            //     });
+            // }
         return isZh ? '正在解析地址...' : 'Resolving address...';
     }
 }

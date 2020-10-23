@@ -11,6 +11,7 @@ var globalDeviceName = "";
 var reportDeviceId = null;
 var userlists = [];
 var globalGroups = [];
+var carIconTypes = {};
 var rootuser = null; // tree users
 var isNeedRefresh = false;
 var isToAlarmListRecords = false;
@@ -168,10 +169,10 @@ Vue.component('table-dropdown', {
                     break;
                 case 'editCarIcon':
                     editObject = this.params.row;
+                    vueInstanse.carIconType = carIconTypes[editObject.deviceid];
                     vueInstanse.editCarIconModal = true;
                     break;
             }
-
         }
     }
 });

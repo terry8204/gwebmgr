@@ -93,6 +93,10 @@ var monitorListProtoJson = {
                         "stared": {
                             "type": "sint32",
                             "id": 12
+                        },
+                        "icon": {
+                            "type": "sint32",
+                            "id": 13
                         }
                     }
                 }

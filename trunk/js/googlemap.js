@@ -98,8 +98,8 @@ GoogleMap.pt.openInfoWindow = function(marker, deviceid) {
 
 
 GoogleMap.pt.getIcon = function(track) {
-    var pathname = location.pathname;
-    var imgPath = ''
+    var imgPath = '',
+        deviceid = track.deviceid;
     if (utils.isLocalhost()) {
         imgPath = myUrls.viewhost + 'images/carstate';
     } else {
@@ -107,13 +107,13 @@ GoogleMap.pt.getIcon = function(track) {
     }
     if (track.online) {
         if (track.moving == 0) {
-            imgPath += '/a_red_' + utils.getAngle(track.course) + '.png';
+            imgPath += '/' + carIconTypes[deviceid] + '_red_' + utils.getAngle(track.course) + '.png';
         } else {
-            imgPath += '/a_green_' + utils.getAngle(track.course) + '.png';
+            imgPath += '/' + carIconTypes[deviceid] + '_green_' + utils.getAngle(track.course) + '.png';
         }
 
     } else {
-        imgPath += '/a_gray_' + utils.getAngle(track.course) + '.png';
+        imgPath += '/' + carIconTypes[deviceid] + '_gray_' + utils.getAngle(track.course) + '.png';
     }
     return {
         url: imgPath,
@@ -141,7 +141,7 @@ GoogleMap.pt.getDevAddress = function(track) {
         } else {
             utils.getJiuHuAddressSyn(callon, callat, function(resp) {
                 var j_address = resp.address
-                if(j_address){
+                if (j_address) {
                     var content = utils.getWindowContent(track, j_address);
                     self.mapInfoWindow && self.mapInfoWindow.setContent(content);
                     LocalCacheMgr.setAddress(callon, callat, j_address);

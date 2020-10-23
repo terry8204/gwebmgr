@@ -2509,9 +2509,11 @@ var monitor = {
                 group.devices.forEach(function(device) {
                     all++;
                     devCount++;
+
                     var devicename = device.devicename;
                     var devicetype = device.devicetype;
                     var deviceid = device.deviceid;
+                    carIconTypes[deviceid] = device.icon;
                     device.isSelected = false;
                     device.firstLetter = __pinyin.getFirstLetter(devicename);
                     device.pinyin = __pinyin.getPinyin(devicename);
