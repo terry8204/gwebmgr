@@ -67,6 +67,14 @@ var bgManager = {
                         { title: me.$t("bgMgr.repairRecord"), name: 'repairRecord', icon: 'ios-document' },
                     ]
                 },
+                {
+                    title: "续费管理",
+                    name: 'priceMar',
+                    icon: 'logo-windows',
+                    children: [
+                        { title: "价格表", name: 'priceList', icon: 'logo-apple' },
+                    ]
+                },
             ]
         }
     },
@@ -156,6 +164,9 @@ var bgManager = {
                     break
                 case 'setMileage':
                     page = 'setmileage.html'
+                    break
+                case 'priceList':
+                    page = 'pricelist.html'
                     break
             }
             this.currentPage = name

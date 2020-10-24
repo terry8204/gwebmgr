@@ -417,6 +417,7 @@
     <script>
         var timeDifference = DateFormat.getOffset();
         var token = utils.getParameterByName("token");
+        var icon = utils.getParameterByName("icon");
         Vue.use(iview);
         Vue.use(VueI18n);
         var isZh = utils.locale === 'zh';
@@ -630,7 +631,7 @@
                         }
                     },
                     initBMap: function() {
-                        carIcon = new BMap.Icon("images/carstate/0_green_0.png", new BMap.Size(32, 32), {
+                        carIcon = new BMap.Icon("images/carstate/" + icon + "_green_0.png", new BMap.Size(32, 32), {
                             imageOffset: new BMap.Size(0, 0)
                         });
                         startIcon = new BMap.Icon("./images/map/marker_qidian.png", new BMap.Size(32, 32), {
@@ -789,6 +790,7 @@
                             }
                             var track = this.records[this.index];
                         }
+
                         this.openInfoWindow(this.carMarker, track);
                     },
                     nextStep: function() {
@@ -810,7 +812,6 @@
                             }
                             var track = this.records[this.index];
                         }
-                        // var marker = this.getPointMarker();
                         this.openInfoWindow(this.carMarker, track);
                     },
                     getPointMarker: function() {
@@ -879,9 +880,9 @@
                         var pathname = location.pathname
                         var imgPath = '';
                         if (utils.isLocalhost()) {
-                            imgPath = myUrls.viewhost + 'images/carstate/0_green_0.png';
+                            imgPath = myUrls.viewhost + 'images/carstate/' + icon + '_green_0.png';
                         } else {
-                            imgPath = '../images/carstate/0_green_0.png';
+                            imgPath = '../images/carstate/' + icon + '_green_0.png';
                         };
                         return new ol.style.Style({
                             image: new ol.style.Icon( /** @type {module:ol/style/Icon~Options} */ ({
@@ -1034,6 +1035,7 @@
                                 this.carMarker = new BMap.Marker(lines[0], {
                                     icon: icon
                                 });
+                                this.carMarker.setRotation(records[0].direction);
                                 this.map.addOverlay(this.carMarker);
                                 this.setViewPortCenter(lines);
                             } else if (this.mapType == 'gMap') {
@@ -1258,7 +1260,6 @@
                                 this.carMarker.setIcon && this.carMarker.setIcon(this.getDirectionIcon(0));
                                 this.carMarker.setRotation && this.carMarker.setRotation(track.course);
                             }
-                            this.carMarker && this.carMarker.setIcon(this.getDirectionIcon(track.direction));
                         } else if (this.mapType === 'gMap') {
                             if (googleInfoWindow) {
                                 googleInfoWindow.close();
@@ -1269,9 +1270,9 @@
                             });
                             this.isShowMarker && googleInfoWindow.open(this.map, marker);
                             this.carMarker.setPosition(track.gpoint);
-                            var icon = this.getDirectionIcon(track.direction);
+                            var icon = this.getDirectionIcon(track.course);
                             this.carMarker.setIcon(icon);
-                            this.carMarker && this.carMarker.setIcon(this.getDirectionIcon(track.direction));
+                            this.carMarker && this.carMarker.setIcon(this.getDirectionIcon(track.course));
                         } else if (this.mapType === 'oMap') {
                             var posi = ol.proj.fromLonLat([track.callon, track.callat]);
                             this.carMarker.setStyle(this.getFeatureIcon(track));
@@ -1464,7 +1465,7 @@
                     },
                     getDirectionIcon: function(angle) {
                         if (this.mapType === 'bMap') {
-                            return new BMap.Icon("images/carstate/0_green_" + angle + ".png", new BMap.Size(32, 32), {
+                            return new BMap.Icon("images/carstate/" + icon + "_green_0.png", new BMap.Size(32, 32), {
                                 imageOffset: new BMap.Size(0, 0)
                             });
                         } else if (this.mapType === 'gMap') {
@@ -1477,7 +1478,7 @@
                             }
 
                             return {
-                                url: imgPath += '/0_green_' + angle + '.png',
+                                url: imgPath += '/' + icon + '_green_' + angle + '.png',
                                 size: {
                                     width: 32,
                                     height: 32

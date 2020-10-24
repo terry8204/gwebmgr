@@ -1267,7 +1267,7 @@ var mixIn = {
 
 // 轨迹回放
 function playBack(deviceid) {
-    window.open('playback.html?deviceid=' + deviceid + '&token=' + token);
+    window.open('playback.html?deviceid=' + deviceid + '&icon=' + carIconTypes[deviceid] + '&token=' + token);
 }
 
 // 跟踪

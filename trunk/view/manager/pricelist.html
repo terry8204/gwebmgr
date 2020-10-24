@@ -1,0 +1,80 @@
+<div id="price-list">
+    <div class="full">
+        <h3 class="h3-title" style="margin: 10px;">价格表</h3>
+        <div style="padding: 0 10px;">
+            <i-table border :columns="columns" :data="tableData" :height="taleHeight"></i-table>
+        </div>
+        <Modal v-model="modal" width="500">
+            <p slot="header" style="color:#f60;text-align:center">
+                <Icon type="ios-create-outline"></Icon>
+                <span>{{$t('monitor.edit')}}</span>
+            </p>
+            <div slot="footer">
+                <i-button type="primary" style="width: 100%" @click="handleEdit">{{$t('header.submit')}}</i-button>
+            </div>
+        </Modal>
+    </div>
+    <script>
+        vueInstanse = new Vue({
+            el: "#price-list",
+            i18n: utils.getI18n(),
+            data: {
+                modal: false,
+                taleHeight: 300,
+                columns: [{
+                    title: '设备类型',
+                    key: 'deviceType',
+                }, {
+                    title: '说明',
+                    key: 'remark',
+                }, {
+                    title: '上级报价',
+                    key: 'aaa',
+                }, {
+                    title: '3❤',
+                    key: '21asd',
+                }, {
+                    title: '2❤',
+                    key: 'deviceType',
+                }, {
+                    title: '1❤',
+                    key: 'deviceType',
+                }, {
+                    title: '操作',
+                    width: 100,
+                    render: function(h, params) {
+                        var index = params.index;
+                        return h('Button', {
+                            props: {
+                                type: 'error',
+                                size: 'small'
+                            },
+                            on: {
+                                click: function() {
+                                    vueInstanse.modal = true;
+                                }
+                            }
+                        }, vRoot.$t('monitor.edit'))
+                    },
+                }],
+                tableData: [{}],
+            },
+            methods: {
+                handleEdit: function() {
+
+                },
+                calcTableHeight: function() {
+                    var wHeight = window.innerHeight;
+                    this.taleHeight = wHeight - 115;
+                },
+            },
+            mounted: function() {
+                var me = this;
+                this.calcTableHeight();
+                window.onresize = function() {
+                    me.calcTableHeight();
+                }
+            }
+        })
+    </script>
+</div>
