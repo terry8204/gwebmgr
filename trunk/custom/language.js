@@ -648,6 +648,8 @@
                 onlineUsers: "Online users",
                 mileageRatio: "Ratio",
                 batchEditDevMileageRatio: "Batch reset ratio",
+                priceList: "Price list",
+                superQuotation: "Super price",
             },
             customer: {
                 kehuName: "Customer name",
@@ -1706,6 +1708,8 @@
                 onlineUsers: "在线用户",
                 mileageRatio: "里程系数",
                 batchEditDevMileageRatio: "批量修改里程系数",
+                priceList: "价格表",
+                superQuotation: "上级报价",
             },
             customer: {
                 kehuName: "客户名称",

@@ -1,6 +1,6 @@
 <div id="price-list">
     <div class="full">
-        <h3 class="h3-title" style="margin: 10px;">价格表</h3>
+        <h3 class="h3-title" style="margin: 10px;">{{$t('bgMgr.priceList')}}</h3>
         <div style="padding: 0 10px;">
             <i-table border :columns="columns" :data="tableData" :height="taleHeight" :loading="loading"></i-table>
         </div>
@@ -47,25 +47,25 @@
                 modal: false,
                 taleHeight: 300,
                 columns: [{
-                    title: '设备类型',
+                    title: vRoot.$t('user.devType'),
                     key: 'typename',
                 }, {
-                    title: '说明',
+                    title: vRoot.$t('customer.remark'),
                     key: 'remark',
                 }, {
-                    title: '上级报价',
+                    title: vRoot.$t('bgMgr.superQuotation'),
                     key: 'createbonus',
                 }, {
-                    title: '3❤',
+                    title: '❤❤❤',
                     key: 'bonuslevel3',
                 }, {
-                    title: '2❤',
+                    title: '❤❤',
                     key: 'bonuslevel2',
                 }, {
-                    title: '1❤',
+                    title: '❤',
                     key: 'bonuslevel1',
                 }, {
-                    title: '操作',
+                    title: vRoot.$t('alarm.action'),
                     width: 100,
                     render: function(h, params) {
                         var row = params.row;
@@ -86,14 +86,39 @@
                         }, vRoot.$t('monitor.edit'))
                     },
                 }],
-                bonuslevel1: '',
-                bonuslevel2: '',
-                bonuslevel3: '',
+                bonuslevel1: 0,
+                bonuslevel2: 0,
+                bonuslevel3: 0,
                 tableData: [],
             },
             methods: {
                 handleEdit: function() {
+                    var me = this;
+                    var url = myUrls.setBonusQuotation();
+                    var data = {
+                        devicetypeid: editObject.devicetypeid,
+                        bonuslevel1: this.bonuslevel1,
+                        bonuslevel2: this.bonuslevel2,
+                        bonuslevel3: this.bonuslevel3,
 
+                    };
+                    utils.sendAjax(url, data, function(resp) {
+                        if (resp.status === 0) {
+                            editObject.bonuslevel1 = me.bonuslevel1;
+                            editObject.bonuslevel2 = me.bonuslevel2;
+                            editObject.bonuslevel3 = me.bonuslevel3;
+                            me.modal = false;
+                            me.$Message.success(me.$t('monitor.setupSucc'));
+                        } else if (resp.status === 11) {
+                            me.$Message.error('1星价格低于上级授权价格');
+                        } else if (resp.status === 12) {
+                            me.$Message.error('2星价格低于上级授权价格');
+                        } else if (resp.status === 13) {
+                            me.$Message.error('3星价格低于上级授权价格');
+                        } else {
+                            me.$Message.error(me.$t('monitor.setupFail'));
+                        }
+                    });
                 },
                 calcTableHeight: function() {
                     var wHeight = window.innerHeight;

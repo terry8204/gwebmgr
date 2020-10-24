@@ -68,11 +68,11 @@ var bgManager = {
                     ]
                 },
                 {
-                    title: "续费管理",
+                    title: me.$t("bgMgr.renewMgr"),
                     name: 'priceMar',
                     icon: 'logo-windows',
                     children: [
-                        { title: "价格表", name: 'priceList', icon: 'logo-apple' },
+                        { title: me.$t("bgMgr.priceList"), name: 'priceList', icon: 'logo-apple' },
                     ]
                 },
             ]
