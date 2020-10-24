@@ -751,6 +751,9 @@ var myUrls = {
     setDeviceIcon: function() {
         return this.apihosts + 'webapi?action=setdeviceicon&token=' + token;
     },
+    queryBonusQuotation: function() {
+        return this.apihosts + 'webapi?action=querybonusquotation&token=' + token;
+    },
 }
 
 
