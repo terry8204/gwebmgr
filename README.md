@@ -58,4 +58,8 @@ gps51.com 前端网页完整代码，主要功能：定位、管理设备、在�
 急需编写Windows 自动升级工具，随着越来越多的用户安装网页服务器，直接解压覆盖会丢失掉用户已经配置好了的logo，需要编写工具实现自动化配置和升级。 
 
 #### UI预览
-![输入图片说明](https://images.gitee.com/uploads/images/2020/1025/120704_cc82349e_1763104.jpeg "playing.jpeg")
+![输入图片说明](https://images.gitee.com/uploads/images/2020/1025/115221_5ed6a9d7_1763104.jpeg "login.jpg")
+![输入图片说明](https://images.gitee.com/uploads/images/2020/1025/115252_b64d6a5e_1763104.jpeg "main.jpg")
+![输入图片说明](https://images.gitee.com/uploads/images/2020/1025/115316_d59ef52b_1763104.jpeg "playing.jpeg")
+![输入图片说明](https://images.gitee.com/uploads/images/2020/1025/115351_5d500877_1763104.jpeg "capture.jpg")
+![输入图片说明](https://images.gitee.com/uploads/images/2020/1025/115804_2a70e4ba_1763104.jpeg "track.jpg")
