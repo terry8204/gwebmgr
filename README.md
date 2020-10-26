@@ -13,6 +13,7 @@ gps51.com 前端网页完整代码，主要功能：定位、管理设备、在�
 4. 网页：采用接口分离式开发（单独项目，目前已开源计划）
 5. 应用程序：包括ios和安卓（单独项目，后续有开源计划）
 6. 微信小程序：微信搜索 gps51（单独项目，后续有开源计划）
+7. pc安装版本，已经打包在release里面提供下载
 
 目前支持的设备接入的通讯协议：
 
@@ -29,10 +30,7 @@ gps51.com 前端网页完整代码，主要功能：定位、管理设备、在�
 
 
 #### Api文档
-托管在：
-https://www.apiview.com/doc/12232#/doc/dashbord
-需要注册一个账号，然后把注册账号的邮箱发给 微信：15814449222 授权查看Api.
-后面我们个可以完全开放的托管网站。
+请参考wiki部分，有疑问请添加 微信：15814449222 
 
 #### 安装教程
 
@@ -59,4 +57,9 @@ https://www.apiview.com/doc/12232#/doc/dashbord
 
 急需编写Windows 自动升级工具，随着越来越多的用户安装网页服务器，直接解压覆盖会丢失掉用户已经配置好了的logo，需要编写工具实现自动化配置和升级。 
 
-
+#### UI预览
+![输入图片说明](https://images.gitee.com/uploads/images/2020/1025/115221_5ed6a9d7_1763104.jpeg "login.jpg")
+![输入图片说明](https://images.gitee.com/uploads/images/2020/1025/115252_b64d6a5e_1763104.jpeg "main.jpg")
+![输入图片说明](https://images.gitee.com/uploads/images/2020/1025/115316_d59ef52b_1763104.jpeg "playing.jpeg")
+![输入图片说明](https://images.gitee.com/uploads/images/2020/1025/115351_5d500877_1763104.jpeg "capture.jpg")
+![输入图片说明](https://images.gitee.com/uploads/images/2020/1025/115804_2a70e4ba_1763104.jpeg "track.jpg")
