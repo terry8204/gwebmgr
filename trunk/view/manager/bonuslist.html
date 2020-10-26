@@ -9,30 +9,46 @@
                 <Icon type="ios-create-outline"></Icon>
                 <span>{{$t('monitor.edit')}}</span>
             </p>
-            <Row style="margin: 10px 0">
-                <i-col span="6" style="height: 100%;text-align:right;line-height:32px;">
-                    1❤ :
-                </i-col>
-                <i-col span="16">
-                    <input-number :max="10000" :min="0" v-model.trim.number="bonuslevel1" style="width: 100%;"></input-number>
-                </i-col>
-            </Row>
-            <Row style="margin: 10px 0">
-                <i-col span="6" style="height: 100%;text-align:right;line-height:32px;">
-                    2❤ :
-                </i-col>
-                <i-col span="16">
-                    <input-number :max="10000" :min="0" v-model.trim.number="bonuslevel2" style="width: 100%;"></input-number>
-                </i-col>
-            </Row>
-            <Row style="margin: 10px 0">
-                <i-col span="6" style="height: 100%;text-align:right;line-height:32px;">
-                    3❤ :
-                </i-col>
-                <i-col span="16">
-                    <input-number :max="10000" :min="0" v-model.trim.number="bonuslevel3" style="width: 100%;"></input-number>
-                </i-col>
-            </Row>
+            <div v-if="type=='level'">
+                <Row style="margin: 10px 0">
+                    <i-col span="6" style="height: 100%;text-align:right;line-height:32px;">
+                        会员账号:
+                    </i-col>
+                    <i-col span="16" style="height: 100%;line-height:32px;">
+                        {{userName}}
+                    </i-col>
+                </Row>
+                <Row style="margin: 10px 0">
+                    <i-col span="6" style="height: 100%;text-align:right;line-height:32px;">
+                        会员等级 :
+                    </i-col>
+                    <i-col span="16">
+                        <i-select v-model="level">
+                            <i-option value="1">❤</i-option>
+                            <i-option value="2">❤❤</i-option>
+                            <i-option value="3">❤❤❤</i-option>
+                        </i-select>
+                    </i-col>
+                </Row>
+            </div>
+            <div v-if="type=='point'">
+                <Row style="margin: 10px 0">
+                    <i-col span="6" style="height: 100%;text-align:right;line-height:32px;">
+                        会员账号:
+                    </i-col>
+                    <i-col span="16" style="height: 100%;line-height:32px;">
+                        {{userName}}
+                    </i-col>
+                </Row>
+                <Row style="margin: 10px 0">
+                    <i-col span="6" style="height: 100%;text-align:right;line-height:32px;">
+                        金豆数 :
+                    </i-col>
+                    <i-col span="16">
+                        <input-number :max="10000" :min="0" v-model.trim.number="bonuspoint" style="width: 100%;"></input-number>
+                    </i-col>
+                </Row>
+            </div>
             <div slot="footer">
                 <i-button type="primary" style="width: 100%" @click="handleEdit">{{$t('header.submit')}}</i-button>
             </div>
@@ -57,59 +73,97 @@
                     key: 'bonuspoints',
                 }, {
                     title: vRoot.$t('alarm.action'),
-                    width: 100,
+                    width: 240,
                     render: function(h, params) {
                         var row = params.row;
-                        return h('Button', {
-                            props: {
-                                type: 'error',
-                                size: 'small'
-                            },
-                            on: {
-                                click: function() {
-                                    editObject = row;
-                                    vueInstanse.bonuslevel1 = row.bonuslevel1;
-                                    vueInstanse.bonuslevel2 = row.bonuslevel2;
-                                    vueInstanse.bonuslevel3 = row.bonuslevel3;
-                                    vueInstanse.modal = true;
-                                }
-                            }
-                        }, vRoot.$t('monitor.edit'))
+                        return h(
+                            'div', {}, [
+                                h('Button', {
+                                    props: {
+                                        type: 'error',
+                                        size: 'small'
+                                    },
+                                    style: {
+                                        marginRight: '5px',
+                                    },
+                                    on: {
+                                        click: function() {
+                                            editObject = row;
+                                            vueInstanse.type = 'level';
+                                            vueInstanse.userName = row.username;
+                                            vueInstanse.level = String(editObject.bonuslevel);
+                                            vueInstanse.modal = true;
+                                        }
+                                    }
+                                }, '编辑会员等级'),
+                                h('Button', {
+                                    props: {
+                                        type: 'error',
+                                        size: 'small'
+                                    },
+                                    on: {
+                                        click: function() {
+                                            editObject = row;
+                                            vueInstanse.type = 'point';
+                                            vueInstanse.userName = row.username;
+                                            vueInstanse.bonuspoint = String(editObject.bonuspoints);
+                                            vueInstanse.modal = true;
+                                        }
+                                    }
+                                }, '编辑金豆数'),
+                            ]
+                        )
                     },
                 }],
-                bonuslevel1: 0,
-                bonuslevel2: 0,
-                bonuslevel3: 0,
+                userName: '',
+                level: '1',
+                bonuspoint: 0,
+                type: 'level',
                 tableData: [],
             },
             methods: {
                 handleEdit: function() {
                     var me = this;
-                    var url = myUrls.setBonusQuotation();
-                    var data = {
-                        devicetypeid: editObject.devicetypeid,
-                        bonuslevel1: this.bonuslevel1,
-                        bonuslevel2: this.bonuslevel2,
-                        bonuslevel3: this.bonuslevel3,
+                    if (this.type == 'level') {
+                        var url = myUrls.setBonusLevel();
+                        var data = {
+                            username: editObject.username,
+                            bonuslevel: this.level,
+                        };
+                        utils.sendAjax(url, data, function(resp) {
+                            if (resp.status === 0) {
+                                editObject.bonuslevel = me.level;
+                                me.modal = false;
+                                me.$Message.success(me.$t('monitor.setupSucc'));
+                            } else if (resp.status === 11) {
+                                me.$Message.error('1星价格低于上级授权价格');
+                            } else if (resp.status === 12) {
+                                me.$Message.error('2星价格低于上级授权价格');
+                            } else if (resp.status === 13) {
+                                me.$Message.error('3星价格低于上级授权价格');
+                            } else {
+                                me.$Message.error(me.$t('monitor.setupFail'));
+                            }
+                        });
+                    } else {
+                        var url = myUrls.assignPoints();
+                        var data = {
+                            targetusername: editObject.username,
+                            points: this.bonuspoint,
+                        };
+                        utils.sendAjax(url, data, function(resp) {
+                            if (resp.status === 0) {
+                                editObject.bonuspoints = me.bonuspoint;
+                                me.modal = false;
+                                me.$Message.success(me.$t('monitor.setupSucc'));
+                            } else if (resp.status === -1) {
+                                me.$Message.error('剩余金豆不足，划拨失败');
+                            } else {
+                                me.$Message.error(me.$t('monitor.setupFail'));
+                            }
+                        });
+                    }
 
-                    };
-                    utils.sendAjax(url, data, function(resp) {
-                        if (resp.status === 0) {
-                            editObject.bonuslevel1 = me.bonuslevel1;
-                            editObject.bonuslevel2 = me.bonuslevel2;
-                            editObject.bonuslevel3 = me.bonuslevel3;
-                            me.modal = false;
-                            me.$Message.success(me.$t('monitor.setupSucc'));
-                        } else if (resp.status === 11) {
-                            me.$Message.error('1星价格低于上级授权价格');
-                        } else if (resp.status === 12) {
-                            me.$Message.error('2星价格低于上级授权价格');
-                        } else if (resp.status === 13) {
-                            me.$Message.error('3星价格低于上级授权价格');
-                        } else {
-                            me.$Message.error(me.$t('monitor.setupFail'));
-                        }
-                    });
                 },
                 calcTableHeight: function() {
                     var wHeight = window.innerHeight;

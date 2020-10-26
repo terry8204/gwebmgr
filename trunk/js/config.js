@@ -760,6 +760,12 @@ var myUrls = {
     queryBonusList: function() {
         return this.apihosts + 'webapi?action=querybonuslist&token=' + token;
     },
+    setBonusLevel: function() {
+        return this.apihosts + 'webapi?action=setbonuslevel&token=' + token;
+    },
+    assignPoints: function() {
+        return this.apihosts + 'webapi?action=assignpoints&token=' + token;
+    },
 }
 
 

@@ -124,9 +124,9 @@
                     var wHeight = window.innerHeight;
                     this.taleHeight = wHeight - 115;
                 },
-                queryBonusList: function() {
+                queryBonusQuotation: function() {
                     var me = this;
-                    var url = myUrls.queryBonusList();
+                    var url = myUrls.queryBonusQuotation();
                     utils.sendAjax(url, {}, function(resp) {
                         me.loading = false;
                         if (resp.records) {
@@ -140,7 +140,7 @@
             mounted: function() {
                 var me = this;
                 this.calcTableHeight();
-                this.queryBonusList();
+                this.queryBonusQuotation();
                 window.onresize = function() {
                     me.calcTableHeight();
                 }
