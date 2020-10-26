@@ -297,6 +297,13 @@
                 </div>
                 <div class="ctrl-wrap">
                     <Row>
+                        <i-col :span="10" style="padding:0px 10px 0 10px;height:40px;">
+                            {{(isZh ? '设备名称' : 'Device name')}} : {{deviceName}}
+                        </i-col>
+                        <i-col :span="12" style="text-align:center;padding-top:0px;height:40px;"> {{(isZh ? '设备序号' : 'Device ID')}} : {{deviceid}}</i-col>
+
+                    </Row>
+                    <Row>
                         <i-col :span="4" style="text-align: center;height:45px;">{{$t("main.selectDate")}} : &nbsp;</i-col>
                         <i-col :span="11" style="height:45px;">
                             <date-picker type="date" style="width: 100%;height:45px;" v-model="startTime" :clearable="false" :editable="false"></date-picker>
@@ -322,25 +329,19 @@
 
 
                     <Row>
+                        <i-col :span="8" style="padding:0 10px;height:60px;line-height: 60px;">
+                            {{(isZh ? '轨迹里程' : 'Mileage')}} : {{trackMileage}}
+                        </i-col>
+
                         <i-col :span="4" style="line-height:60px;text-align:center;"> {{$t("main.playSpeed")}} : &nbsp;</i-col>
-                        <!-- <i-col :span="18" style="height:60px; padding-top: 12px;">
-                            <Slider v-model="velocity" :min="100" :max="5000" show-input :step="100"></Slider>
-                        </i-col> -->
-                        <i-col :span="18">
+                        <i-col :span="10">
                             <Button-Group>
                                 <i-button :type="velocity == 1500?'primary':''" @click="velocity=1500">{{$t("main.slow")}}</i-button>
                                 <i-button :type="velocity == 1000?'primary':''" @click="velocity=1000">{{$t("main.middle")}}</i-button>
                                 <i-button :type="velocity == 500?'primary':''" @click="velocity=500">{{$t("main.fast")}}</i-button>
                             </Button-Group>
                         </i-col>
-                        <!-- <i-col :span="2" style="line-height:60px;text-align:center;"> {{$t("main.msec")}} </i-col> -->
                     </Row>
-                    <Row>
-                        <i-col :span="21" style="padding:0 10px;height:35px;line-height: 35px;">
-                            {{(isZh ? '轨迹里程' : 'Mileage')}} : {{trackMileage}}
-                        </i-col>
-                    </Row>
-
                     <Row>
                         <i-col :span="6" :offset="3" style="padding:0 5px;height:45px;">
                             <i-button style="width: 100%" @click="beginPlay">{{$t("main.play")}}</i-button>
@@ -558,6 +559,7 @@
                     isZh: isZh,
                     isShowCtrl: true,
                     isShowMarker: false,
+                    deviceName: utils.getParameterByName("devicename"),
                     map: null,
                     myDis: null,
                     trackMileage: '0km',

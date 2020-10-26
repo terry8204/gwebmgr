@@ -91,7 +91,7 @@
         .down-wrapper {
             position: absolute;
             bottom: 10px;
-            width: 280px;
+            width: 300px;
             background: red;
             border: 1px solid #e6e6e6;
         }
@@ -226,6 +226,7 @@
         var timeDifference = DateFormat.getOffset();
         var isOverdue = false;
         var token = utils.getParameterByName("token");
+        var icon = utils.getParameterByName("icon");
         // 百度地图是否加载完成 改变全局变量
         var isLoadBMap = false;
         var firstMarker = null;
@@ -270,6 +271,7 @@
                     isExact: true, //是否精确
                     map: null,
                     deviceid: "",
+                    deviceName: utils.getParameterByName("devicename"),
                     tracks: [],
                     exactTracks: [],
                     interval: 10,
@@ -427,7 +429,7 @@
                         var speed = track.speed == 0 ? "0km/h" : (track.speed / 1000).toFixed(2) + "km/h";
                         var rxlevel = track.rxlevel === 0 ? '' : ('(' + (isZh ? '信号' : 'Signal') + ':' + track.rxlevel + '%)');
                         var content =
-                            '<p> ' + (isZh ? '设备序号' : 'Device Number') + ': ' + track.deviceid + '</p>' +
+                            '<p> ' + (isZh ? '设备序号' : 'Device Number') + ': ' + track.deviceid + "  " + (isZh ? '设备名称' : 'Device Name') + ': ' + this.deviceName + '</p>' +
                             '<p> ' + (isZh ? '定位类型' : 'Position Type') + ': ' + posiType + '</p>' +
                             '<p> ' + (isZh ? '经纬度' : 'Longitude and latitude') + ': ' + track.callon.toFixed(6) + ',' + track.callat.toFixed(6) + '</p>' +
                             '<p> ' + (isZh ? '更新时间' : 'Update time') + ': ' + DateFormat.longToDateTimeStr(track.updatetime, timeDifference) + '(' + isOnineStr + ')</p>' +
@@ -482,13 +484,13 @@
                             imgPath = '../images/carstate';
                         }
                         if (this.mapType === 'bMap') {
-                            return new BMap.Icon("images/carstate/0_green_0.png", new BMap.Size(32, 32), {
+                            return new BMap.Icon("images/carstate/" + icon + "_green_0.png", new BMap.Size(32, 32), {
                                 imageOffset: new BMap.Size(0, 0)
                             });
                         } else if (this.mapType === 'gMap') {
 
                             return {
-                                url: imgPath += '/a_green_' + angle + '.png',
+                                url: imgPath += '/' + icon + '_green_' + angle + '.png',
                                 size: {
                                     width: 32,
                                     height: 32
@@ -499,7 +501,7 @@
                             return new ol.style.Style({
                                 image: new ol.style.Icon(({
                                     crossOrigin: 'anonymous',
-                                    src: imgPath + '/0_green_0.png',
+                                    src: imgPath + '/' + icon + '_green_0.png',
                                     rotation: angle * Math.PI / 180, //角度转化为弧度
                                     imgSize: [32, 32]
                                 }))
@@ -577,7 +579,6 @@
                                     };
                                     var carIcon = this.getDirectionIcon(0);
                                     this.carMarker.setIcon(carIcon);
-                                    console.log(record.course);
                                     this.carMarker.setRotation(record.course);
                                 } else if (this.mapType === 'gMap') {
                                     this.carMarker.setMap(this.map);
@@ -876,10 +877,18 @@
                         return [((this.mapType === 'bMap' || this.mapType === 'oMap') && !isMobile) ? 'right-10' : 'right-60'];
                     },
                     imgSrcBg: function() {
-                        return {
-                            backgroundImage: this.isExact ? "url('./images/ic_fine_network_off.png')" : "url('./images/ic_fine_network_on.png')",
-                            backgroundSize: 'cover'
+                        if (isZh) {
+                            return {
+                                backgroundImage: this.isExact ? "url('./images/ic_fine_network_off.png')" : "url('./images/ic_fine_network_on.png')",
+                                backgroundSize: 'cover'
+                            }
+                        } else {
+                            return {
+                                backgroundImage: this.isExact ? "url('./images/ic_fine_network_off_en.png')" : "url('./images/ic_fine_network_on_en.png')",
+                                backgroundSize: 'cover'
+                            }
                         }
+
                     }
                 },
                 watch: {

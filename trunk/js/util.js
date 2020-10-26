@@ -1267,13 +1267,36 @@ var mixIn = {
 
 // 轨迹回放
 function playBack(deviceid) {
-    window.open('playback.html?deviceid=' + deviceid + '&icon=' + carIconTypes[deviceid] + '&token=' + token);
+    var devicename = getDeviceNameByDeviceid(deviceid);
+    window.open('playback.html?deviceid=' + deviceid + '&icon=' + carIconTypes[deviceid] + '&devicename=' + devicename + '&token=' + token);
 }
 
 // 跟踪
 function trackMap(deviceid) {
-    window.open('trackmap.html?deviceid=' + deviceid + '&token=' + token);
+    var devicename = getDeviceNameByDeviceid(deviceid);
+    window.open('trackmap.html?deviceid=' + deviceid + '&devicename=' + devicename + '&icon=' + carIconTypes[deviceid] + '&token=' + token);
 }
+
+function getDeviceNameByDeviceid(deviceid) {
+    var devicename = '';
+    var groups = vRoot.$children[1].groups;
+    for (var i = 0; i < groups.length; i++) {
+        var isFound = false;
+        var devices = groups[i].devices;
+        for (var j = 0; j < devices.length; j++) {
+            var device = devices[j];
+            if (deviceid === device.deviceid) {
+                devicename = device.devicename;
+                isFound = true;
+                break;
+            }
+
+        }
+        if (isFound) break;
+    }
+    return devicename;
+}
+
 
 //刷新位置信息
 function refreshPostion(deviceid) {
