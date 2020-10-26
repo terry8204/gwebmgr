@@ -73,6 +73,7 @@ var bgManager = {
                     icon: 'logo-windows',
                     children: [
                         { title: me.$t("bgMgr.priceList"), name: 'priceList', icon: 'logo-apple' },
+                        { title: me.$t("bgMgr.bonusList"), name: 'bonusList', icon: 'logo-apple' },
                     ]
                 },
             ]
@@ -167,6 +168,9 @@ var bgManager = {
                     break
                 case 'priceList':
                     page = 'pricelist.html'
+                    break
+                case 'bonusList':
+                    page = 'bonuslist.html'
                     break
             }
             this.currentPage = name

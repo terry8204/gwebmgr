@@ -1,6 +1,6 @@
-<div id="price-list">
+<div id="bonus-list">
     <div class="full">
-        <h3 class="h3-title" style="margin: 10px;">{{$t('bgMgr.priceList')}}</h3>
+        <h3 class="h3-title" style="margin: 10px;">{{$t('bgMgr.bonusList')}}</h3>
         <div style="padding: 0 10px;">
             <i-table border :columns="columns" :data="tableData" :height="taleHeight" :loading="loading"></i-table>
         </div>
@@ -40,7 +40,7 @@
     </div>
     <script>
         vueInstanse = new Vue({
-            el: "#price-list",
+            el: "#bonus-list",
             i18n: utils.getI18n(),
             data: {
                 loading: true,
@@ -48,22 +48,13 @@
                 taleHeight: 300,
                 columns: [{
                     title: vRoot.$t('user.devType'),
-                    key: 'typename',
+                    key: 'username',
                 }, {
-                    title: vRoot.$t('customer.remark'),
-                    key: 'remark',
+                    title: '会员等级',
+                    key: 'bonuslevel',
                 }, {
-                    title: vRoot.$t('bgMgr.superQuotation'),
-                    key: 'createbonus',
-                }, {
-                    title: '❤❤❤',
-                    key: 'bonuslevel3',
-                }, {
-                    title: '❤❤',
-                    key: 'bonuslevel2',
-                }, {
-                    title: '❤',
-                    key: 'bonuslevel1',
+                    title: '金豆数',
+                    key: 'bonuspoints',
                 }, {
                     title: vRoot.$t('alarm.action'),
                     width: 100,

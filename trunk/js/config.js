@@ -757,6 +757,9 @@ var myUrls = {
     setBonusQuotation: function() {
         return this.apihosts + 'webapi?action=setbonusquotation&token=' + token;
     },
+    queryBonusList: function() {
+        return this.apihosts + 'webapi?action=querybonuslist&token=' + token;
+    },
 }
 
 

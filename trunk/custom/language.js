@@ -649,6 +649,7 @@
                 mileageRatio: "Ratio",
                 batchEditDevMileageRatio: "Batch reset ratio",
                 priceList: "Price list",
+                bonusList: "Bonus list",
                 superQuotation: "Super price",
             },
             customer: {
@@ -1709,6 +1710,7 @@
                 mileageRatio: "里程系数",
                 batchEditDevMileageRatio: "批量修改里程系数",
                 priceList: "价格表",
+                bonusList: "会员管理",
                 superQuotation: "上级报价",
             },
             customer: {
