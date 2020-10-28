@@ -73,8 +73,8 @@ var bgManager = {
                     icon: 'logo-windows',
                     children: [
                         { title: me.$t("bgMgr.priceList"), name: 'priceList', icon: 'logo-apple' },
-                        { title: me.$t("bgMgr.bonusList"), name: 'bonusList', icon: 'logo-apple' },
-                        { title: me.$t("bgMgr.transferRecords"), name: 'transferRecord', icon: 'logo-apple' },
+                        { title: me.$t("bgMgr.bonusList"), name: 'bonusList', icon: 'ios-barcode' },
+                        { title: me.$t("bgMgr.transferRecords"), name: 'transferRecord', icon: 'ios-paper-outline' },
                     ]
                 },
             ]
