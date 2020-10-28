@@ -107,8 +107,7 @@ div.site_links ul li span {
 
 /* 头部结束 */
 
-
-.select-input{
+.select-input {
     display: inline-block;
     width: 100%;
     height: 32px;
@@ -452,7 +451,6 @@ div.state-event-tip {
     font-size: 10px;
 }
 
-
 div.resolving-power {
     position: absolute;
     top: 2px;
@@ -512,7 +510,8 @@ div.resolving-power {
     height: 322px;
     border: 1px solid #e3e3e3;
 }
-div.yuntai-title{
+
+div.yuntai-title {
     line-height: 35px;
     height: 36px;
     padding-left: 10px;
@@ -986,7 +985,8 @@ div.rule-view>div>div.rule-table {
 
 /* 查询分组开始 */
 
-#querygroup ,#stock-device{
+#querygroup,
+#stock-device {
     padding: 10px;
     height: 100%;
     width: 100%;
@@ -994,7 +994,8 @@ div.rule-view>div>div.rule-table {
     position: relative;
 }
 
-#querygroup>div.full ,#stock-device>div.full {
+#querygroup>div.full,
+#stock-device>div.full {
     overflow-y: auto;
 }
 
@@ -1002,11 +1003,13 @@ div.rule-view>div>div.rule-table {
     width: 100%;
 }
 
-#querygroup>div>ul ,#stock-device>div>ul{
+#querygroup>div>ul,
+#stock-device>div>ul {
     height: 42px;
 }
 
-#querygroup>div>ul>li  ,#stock-device>div>ul>li{
+#querygroup>div>ul>li,
+#stock-device>div>ul>li {
     float: left;
     margin-right: 10px;
     padding: 5px 0;
@@ -1038,7 +1041,9 @@ div.rule-view>div>div.rule-table {
 
 /* c查询用户 */
 
-#queryuser,#onlineuser ,#login-records{
+#queryuser,
+#onlineuser,
+#login-records {
     padding: 10px;
     height: 100%;
     width: 100%;
@@ -1046,15 +1051,20 @@ div.rule-view>div>div.rule-table {
     position: relative;
 }
 
-#queryuser>div>div ,#onlineuser>div>div {
+#queryuser>div>div,
+#onlineuser>div>div {
     width: 100%;
 }
 
-#queryuser>div>ul,#onlineuser>div>ul {
+#queryuser>div>ul,
+#onlineuser>div>ul,
+#bonus-list>div>ul {
     height: 42px;
 }
 
-#queryuser>div>ul>li ,#onlineuser>div>ul>li{
+#queryuser>div>ul>li,
+#onlineuser>div>ul>li,
+#bonus-list>div>ul>li {
     float: left;
     width: 150px;
     margin-right: 10px;

@@ -766,6 +766,9 @@ var myUrls = {
     assignPoints: function() {
         return this.apihosts + 'webapi?action=assignpoints&token=' + token;
     },
+    queryPointsRecord: function() {
+        return this.apihosts + 'webapi?action=querypointsrecord&token=' + token;
+    },
 }
 
 

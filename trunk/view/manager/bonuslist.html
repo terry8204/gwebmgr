@@ -1,6 +1,18 @@
 <div id="bonus-list">
     <div class="full">
         <h3 class="h3-title" style="margin: 10px;">{{$t('bgMgr.bonusList')}}</h3>
+        <ul style="padding-left: 10px;">
+            <li>
+                <i-input v-model.trim="queryParameter"></i-input>
+            </li>
+            <li>
+                <i-button type="primary" @click="handlerClickQuery">{{$t("reportForm.query")}}</i-button>
+            </li>
+        </ul>
+        <div class="my-total" style="padding-left: 10px;">
+            <span>{{$t("bgMgr.userTotal")}} : {{tableData.length}}</span>
+            <span>{{$t("bgMgr.totalGoldenBeans")}} : {{bonuspoints}}</span>
+        </div>
         <div style="padding: 0 10px;">
             <i-table border :columns="columns" :data="tableData" :height="taleHeight" :loading="loading"></i-table>
         </div>
@@ -9,18 +21,18 @@
                 <Icon type="ios-create-outline"></Icon>
                 <span>{{$t('monitor.edit')}}</span>
             </p>
+            <Row style="margin: 10px 0">
+                <i-col span="6" style="height: 100%;text-align:right;line-height:32px;">
+                    {{$t("bgMgr.memberUser")}} :
+                </i-col>
+                <i-col span="16" style="height: 100%;line-height:32px;">
+                    {{userName}}
+                </i-col>
+            </Row>
             <div v-if="type=='level'">
                 <Row style="margin: 10px 0">
                     <i-col span="6" style="height: 100%;text-align:right;line-height:32px;">
-                        会员账号:
-                    </i-col>
-                    <i-col span="16" style="height: 100%;line-height:32px;">
-                        {{userName}}
-                    </i-col>
-                </Row>
-                <Row style="margin: 10px 0">
-                    <i-col span="6" style="height: 100%;text-align:right;line-height:32px;">
-                        会员等级 :
+                        {{$t("bgMgr.memberLevel")}} :
                     </i-col>
                     <i-col span="16">
                         <i-select v-model="level">
@@ -34,18 +46,18 @@
             <div v-if="type=='point'">
                 <Row style="margin: 10px 0">
                     <i-col span="6" style="height: 100%;text-align:right;line-height:32px;">
-                        会员账号:
+                        {{$t("bgMgr.transferGoldenBeans")}} :
                     </i-col>
-                    <i-col span="16" style="height: 100%;line-height:32px;">
-                        {{userName}}
+                    <i-col span="16">
+                        <input-number :max="10000" :min="0" v-model.trim.number="bonuspoint" style="width: 100%;"></input-number>
                     </i-col>
                 </Row>
                 <Row style="margin: 10px 0">
                     <i-col span="6" style="height: 100%;text-align:right;line-height:32px;">
-                        金豆数 :
+                        {{$t("customer.remark")}} :
                     </i-col>
                     <i-col span="16">
-                        <input-number :max="10000" :min="0" v-model.trim.number="bonuspoint" style="width: 100%;"></input-number>
+                        <i-input v-model.trim="remark" style="width: 100%;"></i-input>
                     </i-col>
                 </Row>
             </div>
@@ -62,14 +74,16 @@
                 loading: true,
                 modal: false,
                 taleHeight: 300,
+                queryParameter: '',
+                remark: '',
                 columns: [{
-                    title: vRoot.$t('user.devType'),
+                    title: vRoot.$t('user.username'),
                     key: 'username',
                 }, {
-                    title: '会员等级',
+                    title: vRoot.$t('bgMgr.memberLevel'),
                     key: 'bonuslevel',
                 }, {
-                    title: '金豆数',
+                    title: vRoot.$t('bgMgr.goldenBeanNumber'),
                     key: 'bonuspoints',
                 }, {
                     title: vRoot.$t('alarm.action'),
@@ -80,7 +94,7 @@
                             'div', {}, [
                                 h('Button', {
                                     props: {
-                                        type: 'error',
+                                        type: 'primary',
                                         size: 'small'
                                     },
                                     style: {
@@ -95,10 +109,10 @@
                                             vueInstanse.modal = true;
                                         }
                                     }
-                                }, '编辑会员等级'),
+                                }, vRoot.$t('bgMgr.adjustMembershipLevel')),
                                 h('Button', {
                                     props: {
-                                        type: 'error',
+                                        type: 'primary',
                                         size: 'small'
                                     },
                                     on: {
@@ -110,7 +124,7 @@
                                             vueInstanse.modal = true;
                                         }
                                     }
-                                }, '编辑金豆数'),
+                                }, vRoot.$t('bgMgr.transferGoldenBeans')),
                             ]
                         )
                     },
@@ -118,10 +132,24 @@
                 userName: '',
                 level: '1',
                 bonuspoint: 0,
+                bonuspoints: 0,
                 type: 'level',
                 tableData: [],
             },
             methods: {
+                handlerClickQuery: function() {
+                    if (this.queryParameter) {
+                        var me = this;
+                        var tableData = [];
+                        this.records.forEach(function(item) {
+                            if (item.username.indexOf(me.queryParameter) != -1) {
+                                tableData.push(item);
+                            }
+                        });
+                        me.tableData = tableData;
+                    }
+
+                },
                 handleEdit: function() {
                     var me = this;
                     if (this.type == 'level') {
@@ -135,29 +163,31 @@
                                 editObject.bonuslevel = me.level;
                                 me.modal = false;
                                 me.$Message.success(me.$t('monitor.setupSucc'));
-                            } else if (resp.status === 11) {
-                                me.$Message.error('1星价格低于上级授权价格');
-                            } else if (resp.status === 12) {
-                                me.$Message.error('2星价格低于上级授权价格');
-                            } else if (resp.status === 13) {
-                                me.$Message.error('3星价格低于上级授权价格');
                             } else {
                                 me.$Message.error(me.$t('monitor.setupFail'));
                             }
                         });
                     } else {
+                        if (!(this.bonuspoint > 0)) {
+                            me.$Message.error(me.$t('bgMgr.transferGoldenBeansTips3'));
+                            return;
+                        }
                         var url = myUrls.assignPoints();
                         var data = {
                             targetusername: editObject.username,
                             points: this.bonuspoint,
+                            remark: this.remark,
                         };
                         utils.sendAjax(url, data, function(resp) {
                             if (resp.status === 0) {
-                                editObject.bonuspoints = me.bonuspoint;
                                 me.modal = false;
+                                editObject.bonuspoints = resp.topoints;
+                                me.bonuspoints = resp.frompoints;
                                 me.$Message.success(me.$t('monitor.setupSucc'));
+                            } else if (resp.status === 1) {
+                                me.$Message.error(vRoot.$t('bgMgr.transferGoldenBeansTips1'));
                             } else if (resp.status === -1) {
-                                me.$Message.error('剩余金豆不足，划拨失败');
+                                me.$Message.error(vRoot.$t('bgMgr.transferGoldenBeansTips2'));
                             } else {
                                 me.$Message.error(me.$t('monitor.setupFail'));
                             }
@@ -167,7 +197,7 @@
                 },
                 calcTableHeight: function() {
                     var wHeight = window.innerHeight;
-                    this.taleHeight = wHeight - 115;
+                    this.taleHeight = wHeight - 200;
                 },
                 queryBonusList: function() {
                     var me = this;
@@ -176,14 +206,24 @@
                         me.loading = false;
                         if (resp.records) {
                             me.tableData = resp.records;
+                            me.records = resp.records;
                         }
+                        me.bonuspoints = resp.selfrecord.bonuspoints;
                     }, function() {
                         me.loading = false;
                     })
                 }
             },
+            watch: {
+                queryParameter: function(newVal) {
+                    if (newVal == "") {
+                        this.tableData = this.records;
+                    }
+                }
+            },
             mounted: function() {
                 var me = this;
+                me.records = [];
                 this.calcTableHeight();
                 this.queryBonusList();
                 window.onresize = function() {

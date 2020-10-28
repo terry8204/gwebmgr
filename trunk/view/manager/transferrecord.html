@@ -1,0 +1,182 @@
+<style>
+    #transfer-records .table-info-row {
+        color: seagreen;
+    }
+    
+    #transfer-records .table-error-row {
+        color: #e4393c;
+    }
+</style>
+<div id="transfer-records">
+    <div style="margin:10px;height: 32px;">
+        <div style="margin-left:10px;float: left;">
+            <date-picker type="daterange" :value="dateVal" :editable="false" :clearable="false" @on-change="onChange" show-week-numbers style="width:200px" placement="bottom-start"></date-picker>
+        </div>
+        <div style="float: left;height: 30px; line-height: 30px;margin-left: 10px;" class="spans-wrap">
+            <span class="cursor-pointer" @click="handleSelectdDate(0)" :style="{color: dayNumberType == 0 ? '#2D8CF0' : '#515A6E'}">{{$t("reportForm.toDay")}}</span> <b>｜</b>
+            <span class="cursor-pointer" @click="handleSelectdDate(1)" :style="{color: dayNumberType == 1 ? '#2D8CF0' : '#515A6E'}">{{$t("reportForm.yesterDay")}}</span> <b>｜</b>
+
+            <span class="cursor-pointer" @click="handleSelectdDate(7)" :style="{color: dayNumberType == 7 ? '#2D8CF0' : '#515A6E'}">{{$t("reportForm.sevenDays")}}</span> <b>｜</b>
+            <span class="cursor-pointer" @click="handleSelectdDate(30)" :style="{color: dayNumberType == 30 ? '#2D8CF0' : '#515A6E'}">{{$t("reportForm.lastMonth")}}</span> <b>｜</b>
+            <span class="cursor-pointer" @click="handleSelectdDate(180)" :style="{color: dayNumberType == 180 ? '#2D8CF0' : '#515A6E'}">{{$t("reportForm.lastHalfYear")}}</span>
+
+        </div>
+        <div style="margin-left:10px;float: left;">
+            <i-button @click="queryTransferRecords" :loading="loading">{{$t("reportForm.query")}}</i-button>
+        </div>
+        <div style="margin-left:20px;float: left;">
+            <i-input v-model.trim="exactValue"></i-input>
+        </div>
+        <div style="margin-left:10px;float: left;">
+            <i-button @click="exactQueryInsures" :loading="loading">{{$t("reportForm.exactSearch")}}</i-button>
+        </div>
+        <div style="float: right;">
+            <i-button @click="exportData" type="primary">{{$t("reportForm.exportData")}}</i-button>
+        </div>
+    </div>
+    <div style="margin:10px;">
+        <i-table :columns="columns" :row-class-name="rowClassName" border ref="table" :height="tableHeight" :data="tableData" :loading="loading"></i-table>
+    </div>
+    <div style="padding: 0 10px 10px 10px;">
+        {{$t("reportForm.total")}} <span v-text="total"></span>
+    </div>
+    <script>
+        vueInstanse = new Vue({
+            el: '#transfer-records',
+            i18n: utils.getI18n(),
+            data: {
+                total: 0,
+                exactValue: '',
+                dayNumberType: 0,
+                clearable: false,
+                dateVal: [DateFormat.longToDateStr(Date.now(), timeDifference), DateFormat.longToDateStr(Date.now(), timeDifference)],
+                columns: [{
+                    type: 'index',
+                    width: 60,
+                }, {
+                    title: vRoot.$t("bgMgr.event"),
+                    key: 'eventtypeStr',
+                    width: 70,
+                }, {
+                    title: vRoot.$t("bgMgr.type"),
+                    key: 'assigntypeStr',
+                    width: 70,
+                }, {
+                    title: vRoot.$t("bgMgr.operationTime"),
+                    key: 'createtimeStr',
+                    width: 150,
+                }, {
+                    title: vRoot.$t("bgMgr.operationAccount"),
+                    key: 'tousername',
+                }, {
+                    title: vRoot.$t("bgMgr.operatingGoldenBeans"),
+                    key: 'points',
+                }, {
+                    title: vRoot.$t("bgMgr.beforeJindou"),
+                    key: 'fromsrcpoints',
+                }, {
+                    title: vRoot.$t("bgMgr.afterJindou"),
+                    key: 'fromdestpoints',
+                }, {
+                    title: vRoot.$t("customer.remark"),
+                    key: 'remark',
+                }],
+                tableHeight: 300,
+                tableData: [],
+                loading: false,
+            },
+            methods: {
+                rowClassName(row, index) {
+                    if (row.assigntype === 0) {
+                        return 'table-info-row';
+                    } else if (row.assigntype === 1) {
+                        return 'table-error-row';
+                    }
+                    return '';
+                },
+                handleSelectdDate: function(dayNumber) {
+                    this.dayNumberType = dayNumber;
+                    var dayTime = 24 * 60 * 60 * 1000;
+                    if (dayNumber == 0) {
+                        this.dateVal = [DateFormat.longToDateStr(Date.now(), timeDifference), DateFormat.longToDateStr(Date.now(), timeDifference)];
+                    } else if (dayNumber == 1) {
+                        this.dateVal = [DateFormat.longToDateStr(Date.now() - dayTime, timeDifference), DateFormat.longToDateStr(Date.now() - dayTime, timeDifference)];
+                    } else {
+                        this.dateVal = [DateFormat.longToDateStr(Date.now() - dayTime * (dayNumber - 1), timeDifference), DateFormat.longToDateStr(Date.now(), timeDifference)];
+                    }
+                },
+                onChange: function(value) {
+                    this.dateVal = value;
+                },
+                queryTransferRecords: function() {
+                    var me = this;
+                    var url = myUrls.queryPointsRecord();
+                    var data = {
+                        startday: DateFormat.format(new Date(this.dateVal[0]), 'yyyy-MM-dd'),
+                        endday: DateFormat.format(new Date(this.dateVal[1]), 'yyyy-MM-dd'),
+                        offset: timeDifference
+                    };
+                    utils.sendAjax(url, data, function(resp) {
+                        console.log(resp);
+                        if (resp.status == 0) {
+                            var total = 0;
+                            var records = resp.records;
+                            records.sort(function(a, b) {
+                                return b.createtime - a.createtime;
+                            });
+                            records.forEach(function(item) {
+                                total += item.points;
+                                item.assigntypeStr = item.assigntype === 0 ? vRoot.$t("bgMgr.switchIn") : vRoot.$t("bgMgr.switchOut");
+                                item.eventtypeStr = item.eventtype === 0 ? vRoot.$t("bgMgr.transfer") : vRoot.$t("bgMgr.renew");
+                                item.createtimeStr = DateFormat.longToDateTimeStr(item.createtime, timeDifference);
+                            });
+                            me.total = total;
+                            me.records = records;
+                            me.tableData = records;
+                        }
+                    });
+                },
+                exactQueryInsures: function() {
+                    var exactValue = this.exactValue;
+                    if (exactValue) {
+                        var tableData = [];
+                        this.records.forEach(function(item) {
+                            if (item.tousername.indexOf(exactValue) != -1) {
+                                tableData.push(item);
+                            }
+                        });
+                        this.tableData = tableData;
+                    }
+                },
+                exportData: function() {
+                    this.$refs.table.exportCsv({
+                        filename: vRoot.$t('reportForm.insureData'),
+                        original: false,
+                        columns: deepClone(this.columns).shift(),
+                        data: this.records
+                    });
+                },
+                calcTableHeight: function() {
+                    var wHeight = window.innerHeight;
+                    this.tableHeight = wHeight - 155;
+                },
+            },
+            watch: {
+                exactValue: function(newVal) {
+                    if (newVal == "") {
+                        this.tableData = this.records;
+                    }
+                }
+            },
+            mounted: function() {
+                var me = this;
+                this.calcTableHeight();
+                this.queryTransferRecords();
+                this.records = [];
+                window.onresize = function() {
+                    me.calcTableHeight();
+                }
+            },
+        })
+    </script>
+</div>
