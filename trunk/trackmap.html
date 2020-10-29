@@ -550,6 +550,7 @@
                     },
                     doLastPosition: function(record) {
                         if (record) {
+
                             var prveTrack = this.tracks[this.tracks.length - 1];
                             if (prveTrack) {
                                 if (prveTrack.updatetime >= record.updatetime) {
@@ -572,11 +573,11 @@
                                 }
 
                                 if (this.mapType === 'bMap') {
-                                    var rice = this.map.getDistance(this.getPoint(prveTrack), point);
-                                    if (rice > 10) {
-                                        this.carMarker.setPosition(point);
-                                        this.map.setCenter(point);
-                                    };
+                                    // var rice = this.map.getDistance(this.getPoint(prveTrack), point);
+                                    // if (rice > 10) {
+                                    this.carMarker.setPosition(point);
+                                    this.map.setCenter(point);
+                                    // };
                                     var carIcon = this.getDirectionIcon(0);
                                     this.carMarker.setIcon(carIcon);
                                     this.carMarker.setRotation(record.course);
@@ -614,7 +615,6 @@
 
                             } else if (this.tracks.length === 0) {
                                 this.tracks.push(record);
-
                                 if (record.gotsrc === 'gps') {
                                     this.exactTracks.push(record);
                                 } else {
@@ -623,7 +623,6 @@
                                         return;
                                     }
                                 }
-
 
 
                                 if (this.mapType === 'bMap') {
@@ -638,7 +637,9 @@
                                     this.map.addOverlay(this.carMarker);
                                     this.map.addOverlay(firstMarker);
                                     this.map.centerAndZoom(point, 19);
+
                                 } else if (this.mapType === 'gMap') {
+
 
                                     new google.maps.Marker({
                                         position: point,

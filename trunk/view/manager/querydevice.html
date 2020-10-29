@@ -184,6 +184,27 @@
                 <i-button type="primary" style="width: 100%" @click="submitCarIconType">{{$t('header.submit')}}</i-button>
             </div>
         </Modal>
+        <Modal v-model="chargeModal" width="400" :title="$t('bgMgr.renew')">
+            <Row>
+                <i-col span="6" offset="2" style="height: 100%;text-align:right;line-height:32px;">&nbsp;续费金豆(1年) : &nbsp;</i-col>
+                <i-col span="2" style="height: 100%;line-height:32px;">
+                    {{devicePrice}}
+                </i-col>
+                <i-col span="6" style="height: 100%;text-align:right;line-height:32px;">&nbsp;续费年数 : &nbsp;</i-col>
+                <i-col span="6">
+                    <i-select v-model="renewalYears">
+                        <i-option value="1">1年</i-option>
+                        <i-option value="2">2年</i-option>
+                        <i-option value="3">3年</i-option>
+                        <i-option value="4">4年</i-option>
+                        <i-option value="5">5年</i-option>
+                    </i-select>
+                </i-col>
+            </Row>
+            <div slot="footer">
+                <i-button type="primary" style="width: 100%" @click="submitCarIconType">{{$t('header.submit')}}</i-button>
+            </div>
+        </Modal>
         <Modal v-model="modal" width="900" :title="$t('device.editDev')">
             <div style="width:700px;margin:10px auto">
                 <Row style="margin: 10px 0" v-if="userType < 3">
@@ -1096,6 +1117,7 @@
                         )
                     },
                 }],
+                chargeModal: false,
                 templateData: [],
                 editDeviceIndex: null,
                 tableData: [],
@@ -1142,6 +1164,8 @@
                     effecttime: '', //生效日期
                     insuremark: '', //保险备注
                 },
+                devicePrice: 0,
+                renewalYears: '1',
             },
             methods: {
                 downloadTemplate: function() {
@@ -2085,6 +2109,19 @@
                         quoted: true,
                     });
                 },
+                queryBonusQuotation: function() {
+                    this.devicePriceObj = {};
+                    var me = this;
+                    var url = myUrls.queryBonusQuotation();
+                    utils.sendAjax(url, {}, function(resp) {
+                        me.loading = false;
+                        if (resp.records) {
+                            resp.records.forEach(function(item) {
+                                me.devicePriceObj[item.devicetypeid] = item.createbonus
+                            });
+                        }
+                    }, function() {});
+                }
             },
             watch: {
                 isShowMatchDev: function() {
@@ -2129,6 +2166,7 @@
                 this.queryGroupInfos(function() {
                     me.getDeviceList(false, 0);
                 });
+                this.queryBonusQuotation();
                 this.getDeviceType();
                 this.calcTableHeight();
                 this.fileEl1 = document.getElementById('file1');

@@ -45,7 +45,7 @@ vstore = new Vuex.Store({
         intervalTime: 10, // 定位发送请求的timer
         editDeviceInfo: {}, // 备份监控页面要编辑的设备对象
         currentDeviceRecord: null, // 点击设备的记录
-        currentDeviceId: null, // 点击设备的id
+        currentDeviceId: null, // 点击设备的id 
 
         userName: userName
     },
@@ -171,6 +171,11 @@ Vue.component('table-dropdown', {
                     editObject = this.params.row;
                     vueInstanse.carIconType = carIconTypes[editObject.deviceid];
                     vueInstanse.editCarIconModal = true;
+                    break;
+                case 'charge':
+                    editObject = this.params.row;
+                    vueInstanse.devicePrice = vueInstanse.devicePriceObj[editObject.devicetype];
+                    vueInstanse.chargeModal = true;
                     break;
             }
         }

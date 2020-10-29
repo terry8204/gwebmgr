@@ -572,8 +572,10 @@
                             groupObj.render = utils.renderGroup;
                         } else {
                             groupObj.render = (function(group, username) {
+
                                 return function(h, params) {
                                     var data = params.data;
+                                    console.log('data', data);
                                     var children = null;
 
                                     if (isNeedRadio) {
@@ -581,7 +583,7 @@
                                             h('span', [
                                                 h('Radio', {
                                                     props: {
-                                                        value: (me.selectedUserName == username && me.selectedGroupId == group.groupid)
+                                                        value: (me.selectedUserName == username && me.selectedGroupId == data.groupid)
                                                     },
                                                     style: {
                                                         marginRight: '4px'
@@ -618,13 +620,13 @@
                                         on: {
                                             'click': function() {
                                                 me.selectedUserName = username;
-                                                me.selectedGroupId = group.groupid;
-                                                me.selectedGroupName = group.groupname;
+                                                me.selectedGroupId = data.groupid;
+                                                me.selectedGroupName = data.groupname;
                                             }
                                         },
                                         style: {
                                             cursor: 'pointer',
-                                            color: (me.selectedUserName == username && me.selectedGroupId == group.groupid) ? '#2D8CF0' : '#000'
+                                            color: (me.selectedUserName == username && me.selectedGroupId == data.groupid) ? '#2D8CF0' : '#000'
                                         }
                                     }, children)
                                 }
@@ -642,8 +644,8 @@
                                     deviceid: device.deviceid,
                                     devicename: device.devicename,
                                     username: username,
-                                    groupid: group.groupid,
-                                    groupname: group.groupname,
+                                    groupid: groupObj.groupid,
+                                    groupname: groupObj.groupname,
                                 }
                             });
                         }
@@ -723,7 +725,7 @@
                         var username = usersTree.username;
                         var subusers = usersTree.subusers;
                         var currentsubDevicesTreeRecord = {
-                            render: utils.renderPerson
+                            render: utils.renderPerson,
                         };
                         currentsubDevicesTreeRecord.title = username;
                         var deviceListGroups = this.getDeviceListGroups(usersTree.groups, isNeedDevice, username, isNeedRadio);

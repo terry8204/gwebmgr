@@ -69,6 +69,12 @@ var waringComponent = {
         //     //     console.log('isWaring', this.isWaring);
         //     // }
         // },
+        isMute: function() {
+            this.setForceAlarm(true, true);
+        },
+        isPopup: function() {
+            this.setForceAlarm(true, true);
+        },
         settingModal: function(newVal) {
             if (newVal) {
                 var checkboxObjLength = this.checkboxObjLength;
@@ -157,7 +163,7 @@ var waringComponent = {
                 this.isPopup = true;
             }
         },
-        setForceAlarm: function() {
+        setForceAlarm: function(e, tip) {
             var me = this;
             var url = myUrls.setForceAlarm();
             var forcealarm = this.getForceAlarmData();
@@ -183,9 +189,9 @@ var waringComponent = {
                     gForcealarm = data.forcealarm;
                     localStorage.setItem("forcealarm", data.forcealarm);
                     localStorage.setItem("alarmaction", data.alarmaction);
-                    me.$Message.success('设置成功');
+                    !tip && me.$Message.success('设置成功');
                 } else {
-                    me.$Message.error('设置失败');
+                    !tip && me.$Message.error('设置失败');
                 }
             });
         },
