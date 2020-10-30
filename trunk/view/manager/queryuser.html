@@ -512,7 +512,7 @@
 
                     this.userTypeList = newArray;
                     this.usertype = editObject.usertype;
-                    this.usertypeDisabled = editObject.usertype === 20;
+                    this.usertypeDisabled = editObject.usertype === 20 || editObject.creater !== userName;
                 },
                 setUserInfo: function() {
                     this.username = editObject.username;
