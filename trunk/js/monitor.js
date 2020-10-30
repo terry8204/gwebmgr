@@ -255,14 +255,14 @@ var monitor = {
                 deviceName: '',
                 videochannelcount: 4,
             },
-            physicalchannel1: '0',
-            physicalchannel2: '0',
-            physicalchannel3: '0',
-            physicalchannel4: '0',
-            physicalchannel5: '0',
-            physicalchannel6: '0',
-            physicalchannel7: '0',
-            physicalchannel8: '0',
+            physicalchannel1: '2',
+            physicalchannel2: '2',
+            physicalchannel3: '2',
+            physicalchannel4: '2',
+            physicalchannel5: '2',
+            physicalchannel6: '2',
+            physicalchannel7: '2',
+            physicalchannel8: '2',
             // 音视频参数设置
             realtimebitratemode: '',
             storebitratemode: '',
@@ -2228,6 +2228,7 @@ var monitor = {
                         var respDeviceLastPositionProto = protobufRoot.lookupType("proto.RespMonitorDeviceListProto");
                         var resp = respDeviceLastPositionProto.decode(responseArray);
                         if (resp.status == 0) {
+                            console.log('groups', resp.groups);
                             callback ? callback(resp) : '';
                         } else if (resp.status > 9000) {
                             me.$Message.error(me.$t("monitor.reLogin"))
