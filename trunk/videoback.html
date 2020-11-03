@@ -51,6 +51,13 @@
             font-size: 10px;
         }
         
+        div.resolving-power {
+            position: absolute;
+            right: 2px;
+            top: 2px;
+            color: red;
+        }
+        
         div.time-wrapper {
             position: absolute;
             left: 0;
@@ -335,6 +342,10 @@
                                     <span v-text="networkSpeed"></span>
                                 </div>
                             </div>
+                            <div class="resolving-power">
+                                <span v-text='resolvingPower.width'></span> *
+                                <span v-text='resolvingPower.height'></span>
+                            </div>
                         </div>
                         <div style="height:300px;position: absolute;bottom: 0;left: 0;right: 0;padding-top: 10px;">
                             <Tabs type="card" v-model="isTable">
@@ -432,6 +443,10 @@
                 date: new Date(),
                 dateStr: "",
                 startValue: '',
+                resolvingPower: {
+                    width: 0,
+                    height: 0,
+                },
                 endValue: '',
                 startVideoTime: '',
                 endVideoTime: '',
@@ -1461,6 +1476,12 @@
                 this.flvPlayer = null;
                 that.$nextTick(function() {
                     player = document.getElementById('videoElement');
+                    player.addEventListener('loadedmetadata', function(e) {
+                        that.resolvingPower = {
+                            width: e.target.videoWidth,
+                            height: e.target.videoHeight,
+                        }
+                    })
                     player.addEventListener('error', function() {
                         that.playerStateTip = lang.$t('video.error');
                     });
