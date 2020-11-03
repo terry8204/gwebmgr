@@ -36,9 +36,9 @@
                     </i-col>
                     <i-col span="16">
                         <i-select v-model="level">
-                            <i-option value="1">❤</i-option>
-                            <i-option value="2">❤❤</i-option>
-                            <i-option value="3">❤❤❤</i-option>
+                            <i-option value="1">{{$t("bgMgr.level1")}}</i-option>
+                            <i-option value="2">{{$t("bgMgr.level2")}}</i-option>
+                            <i-option value="3">{{$t("bgMgr.level3")}}</i-option>
                         </i-select>
                     </i-col>
                 </Row>
@@ -81,7 +81,22 @@
                     key: 'username',
                 }, {
                     title: vRoot.$t('bgMgr.memberLevel'),
-                    key: 'bonuslevel',
+                    render: function(h, params) {
+                        var str = '';
+                        var level = params.row.bonuslevel;
+                        switch (level) {
+                            case 1:
+                                str = vRoot.$t('bgMgr.level1');
+                                break;
+                            case 2:
+                                str = vRoot.$t('bgMgr.level2');
+                                break;
+                            case 3:
+                                str = vRoot.$t('bgMgr.level3');
+                                break;
+                        };
+                        return h('sapn', {}, str);
+                    }
                 }, {
                     title: vRoot.$t('bgMgr.goldenBeanNumber'),
                     key: 'bonuspoints',
@@ -160,7 +175,7 @@
                         };
                         utils.sendAjax(url, data, function(resp) {
                             if (resp.status === 0) {
-                                editObject.bonuslevel = me.level;
+                                editObject.bonuslevel = Number(me.level);
                                 me.modal = false;
                                 me.$Message.success(me.$t('monitor.setupSucc'));
                             } else {
