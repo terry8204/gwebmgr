@@ -143,6 +143,7 @@ var waringComponent = {
         },
         getForceAlarmData: function() {
             var str = "";
+
             var checkboxObjLength = this.checkboxObjLength;
             for (var i = 0; i < checkboxObjLength; i++) {
                 var val = this.checkboxObj[i];
@@ -163,10 +164,14 @@ var waringComponent = {
                 this.isPopup = true;
             }
         },
+        setForceAlarmClick: function() {
+            gForcealarm = this.getForceAlarmData();
+            this.setForceAlarm(true, false);
+        },
         setForceAlarm: function(e, tip) {
             var me = this;
             var url = myUrls.setForceAlarm();
-            var forcealarm = this.getForceAlarmData();
+            var forcealarm = gForcealarm; //this.getForceAlarmData();
             var alarmaction = 0x0;
             if (this.isMute) {
                 alarmaction = alarmaction | 0x01;
