@@ -230,6 +230,7 @@
                     if (resp.status == 0) {
                         this.$Message.success(this.$t("message.addSucc"));
                         userlists.push(this.username);
+
                     } else {
                         var cause = resp.cause;
                         if (cause.indexOf("exists") != -1) {

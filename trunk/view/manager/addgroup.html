@@ -35,7 +35,7 @@
                 </i-col>
             </Row>
 
-            <Row style="margin: 10px 0">
+            <!-- <Row style="margin: 10px 0">
                 <i-col span="4" style="height: 100%;text-align:right;line-height:32px;" :offset="2"><i style="color: red;display: inline-block;">*</i>&nbsp;{{$t("group.mintime")}} : &nbsp;</i-col>
                 <i-col span="8">
                     <input-number :max="3600" :min="30" :step="30" v-model="mintime" style="width: 210px;"></input-number>&nbsp;s
@@ -57,7 +57,7 @@
                             <Icon type="star"></Icon> {{$t("group.maxtimeTip")}}  
                         </span>
                 </i-col>
-            </Row>
+            </Row> -->
 
 
             <Row style="margin: 10px 0">
@@ -230,34 +230,6 @@
                         })
                         me.list = list;
                         me.userlists = list;
-                        console.log(resp);
-                    }
-                },
-                getUserInfoList: function() {
-                    var url = myUrls.queryUser();
-                    utils.sendAjax(url, {
-                        username: userName
-                    }, this.doUserInfoList);
-                },
-                doUserInfoList: function(resp) {
-                    if (resp.status == 0 && resp.userlists != null) {
-                        var me = this;
-                        var list = [];
-                        resp.userlists.forEach(function(item) {
-                            if (item.usertype < 3) {
-                                list.push({
-                                    username: item.username,
-                                    usertype: item.usertype
-                                })
-                            }
-                        });
-                        list.push({
-                            username: userName,
-                            usertype: vstore.state.userType
-                        })
-                        me.list = list;
-                        me.userlists = list;
-                        console.log(resp);
                     }
                 },
             },
