@@ -50,6 +50,7 @@ var treeMixin = {
         },
         filterMethod: function(value) {
             value = value.toLowerCase();
+            this.treeData = [];
             this.treeData = this.variableDeepSearch(this.groupslist, value, 5);
             this.checkedDevice = [];
             if (this.isShowMatchDev == false) {
@@ -65,7 +66,7 @@ var treeMixin = {
                 if (item != null) {
                     var isFound = false;
                     if (item.title.indexOf(searchWord) != -1 || (item.deviceid && item.deviceid.indexOf(searchWord) != -1)) {
-                        copyItem = item;
+                        copyItem = deepClone(item);
                         copyItem.expand = false;
                         isFound = true;
                     }

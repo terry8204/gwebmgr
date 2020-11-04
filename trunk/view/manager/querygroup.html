@@ -123,6 +123,9 @@
                     title: vRoot.$t("group.groupName"),
                     key: 'groupname'
                 }, {
+                    title: vRoot.$t("bgMgr.creater"),
+                    key: 'creater'
+                }, {
                     title: vRoot.$t("group.userCount"),
                     key: 'usercount'
                 }, {
@@ -291,6 +294,7 @@
                     return devicesTreeRecord;
                 },
                 queryAllgroupsInfo: function() {
+                    this.sosoValue = this.createrToUser;
                     var url = myUrls.queryGroupByUser();
                     utils.sendAjax(url, {
                         creater: this.createrToUser,
