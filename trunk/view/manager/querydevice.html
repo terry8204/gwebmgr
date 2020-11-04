@@ -198,11 +198,21 @@
                         <i-option value="3">3年</i-option>
                         <i-option value="4">4年</i-option>
                         <i-option value="5">5年</i-option>
+                        <i-option value="6">6年</i-option>
+                        <i-option value="7">7年</i-option>
+                        <i-option value="8">8年</i-option>
+                        <i-option value="9">9年</i-option>
+                        <i-option value="10">10年</i-option>
                     </i-select>
                 </i-col>
             </Row>
+            <Row>
+                <i-col span="20" offset="2" style="text-align:center;line-height:32px;height:32px;color: red;font-size: 20px;font-weight: 700;">
+                    消耗金豆 : {{ devicePrice * Number(renewalYears)}}
+                </i-col>
+            </Row>
             <div slot="footer">
-                <i-button type="primary" style="width: 100%" @click="submitCarIconType">{{$t('header.submit')}}</i-button>
+                <i-button type="primary" style="width: 100%" @click="handleChargeDevices">{{$t('header.submit')}}</i-button>
             </div>
         </Modal>
         <Modal v-model="modal" width="900" :title="$t('device.editDev')">
@@ -1294,7 +1304,6 @@
                     }
 
                     utils.sendAjax(url, data, function(resp) {
-                        console.log(resp);
                         if (resp.status === 0) {
                             me.ioModal = false;
                             me.$Message.success(vRoot.$t('monitor.setupSucc'));
@@ -1576,6 +1585,23 @@
 
                     return devType;
 
+                },
+                handleChargeDevices: function() {
+                    var me = this;
+                    var url = myUrls.batchOperate();
+                    var data = {
+                        action: 'chargedevices',
+                        chargeyears: Number(this.renewalYears),
+                        deviceids: [editObject.deviceid]
+                    };
+                    utils.sendAjax(url, data, function(resp) {
+                        if (resp.success === 1) {
+                            me.$Message.success('充值成功');
+                            me.chargeModal = false;
+                        } else {
+                            me.$Message.success('充值失败 : ' + resp.cause);
+                        }
+                    });
                 },
                 filterDataInfo: function(devList) {
                     var me = this;
