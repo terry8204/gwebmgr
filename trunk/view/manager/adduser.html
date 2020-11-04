@@ -6,6 +6,25 @@
         <div>
             <Row style="margin: 10px 0">
                 <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">
+                    <i style="color: red;display: inline-block;">*</i>&nbsp;{{$t("reportForm.selectAccount")}} : &nbsp;</i-col>
+                <i-col span="12">
+                    <div class="search-wrapper">
+                        <i-input v-model.trim="createrToUser" :icon="iconState" @on-change="sosoValueChange" @on-blur="blur" @on-focus="focus" @on-click="focus"></i-input>
+                        <transition name="fade">
+                            <ul class="search-item-wrapper" v-show="isShowMatchDev" style="cursor: pointer;">
+                                <li v-for="item in userlists" style="padding:5px 10px;" @click="selectedUser(item)" :class="{'ivu-select-item-focus':item.username == createrToUser}">
+                                    <div :value="item.username" :key="item.username">
+                                        <span style="cursor: pointer;">{{ item.username }}</span>
+                                    </div>
+                                </li>
+                            </ul>
+                        </transition>
+                    </div>
+                </i-col>
+            </Row>
+
+            <Row style="margin: 10px 0">
+                <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">
                     <i style="color: red;display: inline-block;">*</i>&nbsp;{{$t("user.username")}} : &nbsp;</i-col>
                 <i-col span="12">
                     <i-input v-model.trim="username" :disabled="!isDisabled"></i-input>
@@ -16,7 +35,7 @@
                 <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">
                     <i style="color: red;display: inline-block;">*</i>&nbsp;{{$t("user.password")}} : &nbsp;</i-col>
                 <i-col span="12">
-                    <i-input v-model.trim="password" type="password"></i-input>
+                    <i-input v-model.trim="password"></i-input>
                 </i-col>
             </Row>
 
@@ -26,16 +45,6 @@
                 <i-col span="12">
                     <i-select v-model="usertype">
                         <i-option v-for="item in userTypeList" :value="item.type" :key="item.type">{{ item.name }}</i-option>
-                    </i-select>
-                </i-col>
-            </Row>
-
-
-            <Row style="margin: 10px 0" v-show="isShowGroup">
-                <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t("user.grouping")}} : &nbsp;</i-col>
-                <i-col span="12">
-                    <i-select v-model="groupids" multiple>
-                        <i-option v-for="item in groupList" :value="item.value" :key="item.value">{{ item.label }}</i-option>
                     </i-select>
                 </i-col>
             </Row>
@@ -99,7 +108,7 @@
             </Row>
 
             <Row style="margin: 10px 0">
-                <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t("user.moreLanding")}}  : &nbsp;</i-col>
+                <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t("user.moreLanding")}} : &nbsp;</i-col>
                 <i-col span="12">
                     <i-select v-model="multilogin">
                         <i-option value="1">{{$t("header.yes")}}</i-option>
@@ -108,25 +117,6 @@
                 </i-col>
             </Row>
 
-            <Row style="margin: 10px 0" v-show="!isShowGroup">
-                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">
-                    <i style="color: red;display: inline-block;">*</i>&nbsp;{{$t("user.groupCount")}} : &nbsp;</i-col>
-                <i-col span="3">
-                    <input-number :max="20" :min="1" v-model.trim.number="groupcount"></input-number>
-                </i-col>
-
-                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">
-                    <i style="color: red;display: inline-block;">*</i>&nbsp;{{$t("group.userCount")}} : &nbsp;</i-col>
-                <i-col span="3">
-                    <input-number :max="100" :min="10" v-model.trim.number="usercount"></input-number>
-                </i-col>
-
-                <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">
-                    <i style="color: red;display: inline-block;">*</i>&nbsp;{{$t("group.devCount")}} : &nbsp;</i-col>
-                <i-col span="3">
-                    <input-number :max="500" :min="10" v-model.trim.number="devicecount"></input-number>
-                </i-col>
-            </Row>
             <Row style="margin: 10px 0">
                 <i-col span="12" :offset="4">
                     <i-button style="width:100%" @click="handleSubmit">{{$t("user.add")}}</i-button>
@@ -152,16 +142,16 @@
                 companyname: '',
                 cardname: '',
                 companyaddr: '',
-                groupids: [],
-                groupList: [],
+                iconState: "ios-arrow-down",
+                isShowMatchDev: false,
+                userlists: [],
+                createrToUser: userName,
                 dateOptions: {
                     disabledDate: function(date) {
                         return date && date.valueOf() < Date.now() - 86400000;
                     }
                 },
                 isDisabled: true,
-                isShowGroup: false,
-                devicetypes: [],
                 directiveList: [],
                 userTypeList: [],
                 hadDeviceCmd: [],
@@ -172,14 +162,33 @@
                 wechat: ""
             },
             methods: {
-
-
+                selectedUser: function(item) {
+                    var me = this;
+                    setTimeout(function() {
+                        me.isShowMatchDev = false;
+                        me.createrToUser = item.username;
+                    }, 100)
+                },
                 handleSubmit: function() {
+                    var me = this;
+                    var isExist = false;
+                    this.list.forEach(function(item) {
+                        if (item.username === me.createrToUser) {
+                            isExist = true;
+                        }
+                    })
+
+                    if (!isExist) {
+                        this.$Message.error(this.$t("message.selectCorrectAccount"));
+                        return;
+                    }
 
                     if (this.password == '') {
                         this.$Message.error(this.$t("header.error_2"));
                         return;
                     }
+
+
 
                     var url = myUrls.addUser();
                     var userType = this.usertype;
@@ -189,9 +198,10 @@
                         username: this.username,
                         password: $.md5(this.password),
                         usertype: userType,
+                        creater: this.createrToUser
                     };
 
-                 
+
                     if (this.username.trim() == "") {
                         this.$Message.error(this.$t("message.usernameRule"));
                         return;
@@ -213,17 +223,6 @@
                     this.companyname ? data.companyname = this.companyname : null;
                     this.cardname ? data.cardname = this.cardname : null;
                     this.companyaddr ? data.companyaddr = this.companyaddr : null;
-                    //     companyname: '',
-                    // cardname: '',
-                    // companyaddr: '',
-
-                    if (this.isShowGroup) {
-                        data.groupids = this.groupids;
-                    } else {
-                        data.groupcount = this.groupcount;
-                        data.devicecount = this.devicecount;
-                        data.usercount = this.usercount;
-                    }
 
                     utils.sendAjax(url, data, this.doAddUserCalback);
                 },
@@ -240,23 +239,8 @@
                         }
                     }
                 },
-                queryAllgroupsInfo: function() {
-                    var url = myUrls.queryGroupByUser();
-                    utils.sendAjax(url, {}, this.doQueryAllGroupsInfo);
-                },
-                doQueryAllGroupsInfo: function(resp) {
-                    var me = this;
-                    if (resp.status === 0 && resp.grouplist) {
-                        resp.grouplist.forEach(function(group) {
-                            me.groupList.push({
-                                label: group.groupname,
-                                value: group.groupid
-                            });
-                        });
-                    };
-                },
-                setUserTypeByUser: function() {
-                    var userType = vstore.state.userType;
+                setUserTypeByUser: function(userType) {
+                    // var userType = vstore.state.userType;
                     var newArray = [{
                         "name": isZh ? "一级管理员" : 'Supervisor',
                         "type": 1
@@ -272,59 +256,107 @@
                     } else if (userType == 2) {
                         newArray.shift();
                         newArray.shift();
+                    } else if (userType == 3) {
+                        newArray.shift();
+                        newArray.shift();
+                        newArray.shift();
                     } else if (userType > 10) {
                         newArray = [];
                     }
                     this.userTypeList = newArray;
 
-                }
-            },
-            computed: {
-
-            },
-            watch: {
-                usertype: function() {
-                    if (this.usertype >= 10) {
-                        this.isShowGroup = true;
-                    } else {
-                        this.isShowGroup = false;
-                    }
                 },
-                devicetypes: function() {
-                    var devicetypes = this.devicetypes;
-                    var directiveList = this.directiveList;
-                    var datas = [];
+                focus: function() {
+                    this.isShowMatchDev = true;
+                },
+                blur: function() {
+                    var me = this
+                    setTimeout(function() {
+                        me.isShowMatchDev = false;
+                    }, 300)
+                },
+                sosoValueChange: function() {
+                    var me = this;
+                    var value = this.createrToUser.toLowerCase();
 
-                    devicetypes.forEach(function(type) {
-                        var children = [];
-                        var typeObj = {
-                            title: type.typename,
-                            typecode: type.typecode,
-                            devicetype: type.devicetypeid,
-                            expand: true,
-                            children: children
-                        };
-                        directiveList.forEach(function(directive) {
-                            if (type.devicetypeid == directive.devicetype) {
-                                var directiveObj = {
-                                    title: directive.cmdname,
-                                    checked: false,
-                                    cmdcode: directive.cmdcode,
-                                    params: directive.params,
-                                    typename: type.typename,
-                                    devicetype: type.devicetypeid,
-                                }
-                                children.push(directiveObj)
+                    if (this.timeoutIns != null) {
+                        clearTimeout(this.timeoutIns);
+                    }
+
+                    if (!value.trim()) {
+                        this.userlists = me.list;
+                        return;
+                    }
+
+                    this.timeoutIns = setTimeout(function() {
+                        me.filterMethod(value);
+                    }, 100);
+                },
+                filterMethod: function(value) {
+                    var list = [];
+                    this.list.forEach(function(itme) {
+                        if (itme.username.toLowerCase().indexOf(value) != -1) {
+                            list.push(itme);
+                        }
+                    })
+                    this.userlists = list;
+                },
+                getUserInfoList: function() {
+                    var url = myUrls.queryUser();
+                    utils.sendAjax(url, {
+                        username: userName
+                    }, this.doUserInfoList);
+                },
+                doUserInfoList: function(resp) {
+                    if (resp.status == 0 && resp.userlists != null) {
+                        var me = this;
+                        var list = [];
+                        resp.userlists.forEach(function(item) {
+                            if (item.usertype < 3) {
+                                list.push({
+                                    username: item.username,
+                                    usertype: item.usertype
+                                })
                             }
                         });
-                        datas.push(typeObj);
-                    })
-                    this.treeData[0].children = datas;
-                }
+                        list.push({
+                            username: userName,
+                            usertype: vstore.state.userType
+                        })
+                        me.list = list;
+                        me.userlists = list;
+                        console.log(resp);
+                    }
+                },
+            },
+            watch: {
+                isShowMatchDev: function() {
+                    if (!this.isShowMatchDev) {
+                        this.iconState = "ios-arrow-down";
+                    } else {
+                        this.iconState = "ios-arrow-up";
+                    }
+                },
+                createrToUser: function(newVal) {
+                    var index = -1;
+                    this.list.forEach(function(item, idx) {
+                        if (item.username === newVal) {
+                            index = idx;
+                        }
+                    });
+                    this.usertype = "";
+                    if (index != -1) {
+                        this.setUserTypeByUser(this.list[index].usertype);
+                    } else {
+                        this.userTypeList = [];
+                    }
+                },
+
             },
             mounted: function() {
-                this.queryAllgroupsInfo();
-                this.setUserTypeByUser();
+                this.list = [];
+                this.getUserInfoList();
+                this.setUserTypeByUser(vstore.state.userType);
                 // this.queryAllDeviceCmdByUser();
             }
         })

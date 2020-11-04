@@ -2228,7 +2228,6 @@ var monitor = {
                         var respDeviceLastPositionProto = protobufRoot.lookupType("proto.RespMonitorDeviceListProto");
                         var resp = respDeviceLastPositionProto.decode(responseArray);
                         if (resp.status == 0) {
-                            console.log('groups', resp.groups);
                             callback ? callback(resp) : '';
                         } else if (resp.status > 9000) {
                             me.$Message.error(me.$t("monitor.reLogin"))
