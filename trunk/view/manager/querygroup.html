@@ -300,6 +300,8 @@
                 doQueryAllgroupsInfo: function(resp) {
                     if (resp.status === 0 && resp.grouplist !== null) {
                         this.tableData = resp.grouplist;
+                    } else {
+                        this.tableData = [];
                     }
                     this.loading = false;
                 },
