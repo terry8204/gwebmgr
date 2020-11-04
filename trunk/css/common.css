@@ -346,3 +346,7 @@ div.work-inner-map-wraper {
 .col-car-wrap:hover {
     border: 1px solid green;
 }
+
+#querydev .ivu-select-dropdown {
+    overflow-x: hidden;
+}
