@@ -3,20 +3,33 @@
 <div id="querygroup">
     <div class="full">
         <h3 class="h3-title">{{$t("bgMgr.queryGroup")}}</h3>
-        <ul>
-            <li>
+        <div style="height: 42px;padding-top: 3px;">
+            <div style="float: left;position: relative;line-height:32px;">
+                &nbsp;{{$t("reportForm.selectAccount")}} : &nbsp;
+            </div>
+            <div style="float: left;position: relative;width: 200px;line-height:32px;">
+                <div class="search-wrapper" v-click-outside.capture="onClickOutside">
+                    <i-input v-model.trim="sosoValue" icon="ios-search-outline" @on-change="sosoValueChange" @on-blur="blur" @on-focus="focus" @on-click="focus" :placeholder="placeholder"></i-input>
+                    <transition name="fade">
+                        <div class="search-item-wrapper" v-show="isShowMatchDev">
+                            <Tree :data="treeData" @on-check-change="onCheckedDevice"></Tree>
+                        </div>
+                    </transition>
+                </div>
+            </div>
+            <div style="float: left;padding-left: 10px;">
                 <i-input v-model.trim="queryParameter"></i-input>
-            </li>
-            <li>
-                <i-button type="primary" @click="handlerClickQuery">{{$t("reportForm.query")}}</i-button>
-            </li>
-        </ul>
+            </div>
+            <div style="float: left;padding-left: 10px;">
+                <i-button type="primary" @click="queryAllgroupsInfo">{{$t("reportForm.query")}}</i-button>
+            </div>
+        </div>
         <div>
             <i-table :columns="columnsList" :data="tableData" :height="taleHeight" :loading="loading"></i-table>
         </div>
-        <div class="my-page" style="margin: 5px 0;">
+        <!-- <div class="my-page" style="margin: 5px 0;">
             <Page :total="total" :page-size="10" :current="currentIndex" @on-change="changePage"></Page>
-        </div>
+        </div> -->
 
         <Modal v-model="modal" width="900" :title="$t('group.editGroup')">
             <div style="width:850px;margin:10px auto">
@@ -32,7 +45,7 @@
                     </i-col>
                 </Row>
 
-                <Row style="margin: 10px 0">
+                <!-- <Row style="margin: 10px 0">
                     <i-col span="4" style="height: 100%;text-align:right;line-height:32px;" :offset="2"><i style="color: red;display: inline-block;">*</i>&nbsp;{{$t("group.mintime")}} : &nbsp;</i-col>
                     <i-col span="8">
                         <input-number :max="3600" :min="30" :step="30" v-model="mintime" style="width: 210px;"></input-number>&nbsp;s
@@ -54,7 +67,7 @@
                                 <Icon type="star"></Icon> {{$t("group.maxtimeTip")}}
                             </span>
                     </i-col>
-                </Row>
+                </Row> -->
 
 
                 <Row style="margin: 10px 0">
@@ -103,12 +116,8 @@
                 queryTableData: [],
                 loading: true,
                 delGroupObj: {},
-                monitorPerson: [],
-                monitorPersonList: [],
-                total: 0,
-                currentIndex: 1,
+                createrToUser: userName,
                 queryParameter: "",
-                recordsList: [],
                 tableData: [],
                 columnsList: [{
                     title: vRoot.$t("group.groupName"),
@@ -176,39 +185,121 @@
                 taleHeight: 300,
             },
             methods: {
-                handlerClickQuery() {
-                    var self = this;
-                    var queryTableData = [];
-                    var queryParameterLowerCase = this.queryParameter.toLowerCase();
-                    if (!self.queryParameter) return;
-                    this.recordsList.forEach(function(record) {
-                        var groupname = record.groupname;
-                        if (
-                            groupname.indexOf(self.queryParameter) != -1 ||
-                            record.pinYin.indexOf(queryParameterLowerCase) != -1 ||
-                            record.firstLetter.indexOf(queryParameterLowerCase) != -1
-                        ) {
-                            queryTableData.push(record);
+                queryUsersTree: function(callback) {
+                    var url = myUrls.queryUsersTree(),
+                        me = this;
+                    utils.sendAjax(url, {
+                        username: userName
+                    }, function(respData) {
+                        if (respData.status == 0 && respData.rootuser.user) {
+                            callback([me.castUsersTreeToDevicesTree(respData.rootuser)]);
+                        } else {
+                            me.$Message.error(me.$t('monitor.queryFail'));
                         }
-                    })
-                    this.currentIndex = 1;
-                    this.queryTableData = queryTableData;
-                    this.tableData = this.queryTableData.slice(0, 10);
-                    this.total = this.queryTableData.length;
+                    });
+                },
+                castUsersTreeToDevicesTree: function(devicesTreeRecord) {
+                    var me = this;
+                    var iViewTree = {
+                        render: function(h, params) {
+                            var username = params.data.title;
+                            return h('span', {
+                                on: {
+                                    'click': function() {
+                                        me.createrToUser = username;
+                                        me.sosoValue = username;
+                                    }
+                                },
+                                style: {
+                                    cursor: 'pointer',
+                                    color: (me.createrToUser == username) ? '#2D8CF0' : '#000'
+                                }
+                            }, [
+                                h('span', [
+                                    h('Radio', {
+                                        props: {
+                                            value: username == me.createrToUser
+                                        },
+                                        style: {
+                                            marginRight: '4px',
+                                            marginLeft: '4px'
+                                        }
+                                    }),
+                                    h('span', params.data.title)
+                                ]),
+                            ])
+                        },
+                        expand: true,
+                    };
+                    if (devicesTreeRecord != null) {
+                        var username = devicesTreeRecord.user.username;
+                        var subusers = devicesTreeRecord.subusers;
+                        iViewTree.title = username;
+                        if (username != null && subusers != null && subusers.length > 0) {
+                            var subDevicesTreeRecord = this.doCastUsersTreeToDevicesTree(subusers);
+                            iViewTree.children = subDevicesTreeRecord;
+                        }
+                    }
+                    return iViewTree;
+                },
+                doCastUsersTreeToDevicesTree: function(usersTrees) {
+                    var devicesTreeRecord = [],
+                        me = this;
+                    if (usersTrees != null && usersTrees.length > 0) {
+                        for (var i = 0; i < usersTrees.length; ++i) {
+                            var usersTree = usersTrees[i];
+                            var username = usersTree.user.username;
+                            var subusers = usersTree.subusers;
+                            var currentsubDevicesTreeRecord = {
+                                render: function(h, params) {
+                                    var username = params.data.title;
+                                    return h('span', {
+                                        on: {
+                                            'click': function() {
+                                                me.createrToUser = username;
+                                                me.sosoValue = username;
+                                            }
+                                        },
+                                        style: {
+                                            cursor: 'pointer',
+                                            color: (me.createrToUser == username) ? '#2D8CF0' : '#000'
+                                        }
+                                    }, [
+                                        h('span', [
+                                            h('Radio', {
+                                                props: {
+                                                    value: username == me.createrToUser
+                                                },
+                                                style: {
+                                                    marginRight: '4px',
+                                                    marginLeft: '4px'
+                                                }
+                                            }),
+                                            h('span', params.data.title)
+                                        ]),
+                                    ])
+                                },
+                            };
+                            currentsubDevicesTreeRecord.title = username;
+                            if (username != null && subusers != null && subusers.length > 0) {
+                                var subDevicesTreeRecord = this.doCastUsersTreeToDevicesTree(subusers);
+                                currentsubDevicesTreeRecord.children = subDevicesTreeRecord;
+                            }
+                            devicesTreeRecord.push(currentsubDevicesTreeRecord);
+                        }
+                    }
+                    return devicesTreeRecord;
                 },
                 queryAllgroupsInfo: function() {
                     var url = myUrls.queryGroupByUser();
-                    utils.sendAjax(url, {}, this.doQueryAllgroupsInfo);
+                    utils.sendAjax(url, {
+                        creater: this.createrToUser,
+                        keyword: this.queryParameter
+                    }, this.doQueryAllgroupsInfo);
                 },
                 doQueryAllgroupsInfo: function(resp) {
-                    if (resp.status === 0) {
-                        this.recordsList = resp.grouplist !== null ? resp.grouplist : [];
-                        this.recordsList.forEach(function(group) {
-                            group.pinYin = __pinyin.getPinyin(group.groupname);
-                            group.firstLetter = __pinyin.getFirstLetter(group.groupname);
-                        });
-                        this.total = this.recordsList.length;
-                        this.tableData = this.recordsList.slice(0, 10);
+                    if (resp.status === 0 && resp.grouplist !== null) {
+                        this.tableData = resp.grouplist;
                     }
                     this.loading = false;
                 },
@@ -226,42 +317,15 @@
                                     me.$delete(me.tableData, index)
                                 }
                             });
-
-                            me.recordsList.forEach(function(item, index) {
-                                if (item.groupid == groupid) {
-                                    me.$delete(me.recordsList, index)
-                                }
-                            });
-
-                            me.total = me.recordsList.length;
-                            me.tableData = me.recordsList.slice(me.currentIndex - 1, 10);
-
                             me.$Message.success(me.$t("message.deleteSucc"));
                         } else {
                             me.$Message.error(resp.cause);
                         }
                     });
                 },
-                getUserInfoList: function() {
-                    var url = myUrls.queryUser();
-                    utils.sendAjax(url, {}, this.doUserInfoList);
-                },
-                doUserInfoList: function(resp) {
-                    var me = this;
-                    if (resp.status == 0 && resp.userlists != null) {
-                        resp.userlists.forEach(function(item) {
-                            if (item.usertype >= 10) {
-                                me.monitorPersonList.push({
-                                    label: item.username,
-                                    value: item.username
-                                })
-                            }
-                        });
-                    }
-                },
                 calcTableHeight: function() {
                     var wHeight = window.innerHeight;
-                    this.taleHeight = wHeight - 188;
+                    this.taleHeight = wHeight - 148;
                 },
                 handleSubmit: function() {
 
@@ -292,7 +356,6 @@
                         if (resp.status == 0) {
                             var newData = Object.assign(editObject, data);
                             me.tableData[me.editDeviceIndex] = newData;
-                            utils.changeSingleItemData(me.recordsList, newData, 'groupid');
                             me.$Message.success(me.$t("message.changeSucc"));
                         } else {
                             me.$Message.error(resp.cause);
@@ -314,13 +377,19 @@
                     this.usercount = editObject.usercount;
                     this.devicecount = editObject.devicecount;
                     this.groupname = editObject.groupname;
-                }
+                },
+
             },
-            mixins: [mixIn],
+            mixins: [treeMixin],
             mounted: function() {
                 var me = this;
+                me.queryUsersTree(function(usersTree) {
+                    me.groupslist = usersTree;
+                    me.treeData = usersTree;
+                });
+                this.sosoValue = userName;
                 this.queryAllgroupsInfo();
-                this.getUserInfoList();
+
                 this.calcTableHeight();
                 window.onresize = function() {
                     me.calcTableHeight();
