@@ -835,7 +835,7 @@ var utils = {
                     userlists = resp.usernames;
                 }
             }
-
+            userlists.push(userName);
         });
     },
     debounce: function(func, wait, immediate) {
