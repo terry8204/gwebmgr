@@ -229,7 +229,7 @@
                 doAddUserCalback: function(resp) {
                     if (resp.status == 0) {
                         this.$Message.success(this.$t("message.addSucc"));
-                        userlists.push(data.username);
+                        userlists.push(resp.username);
                     } else {
                         var cause = resp.cause;
                         if (cause.indexOf("exists") != -1) {
