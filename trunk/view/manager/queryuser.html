@@ -81,15 +81,6 @@
                     </i-col>
                 </Row>
 
-                <Row style="margin: 10px 0">
-                    <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t("user.moreLanding")}} : &nbsp;</i-col>
-                    <i-col span="12">
-                        <i-select v-model="multilogin">
-                            <i-option value="1">{{$t("header.yes")}}</i-option>
-                            <i-option value="0">{{$t("header.no")}}</i-option>
-                        </i-select>
-                    </i-col>
-                </Row>
 
                 <Row style="margin: 10px 0">
                     <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">
@@ -113,6 +104,16 @@
                     </i-col>
                 </Row>
 
+                <Row style="margin: 10px 0">
+                    <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t("user.moreLanding")}} : &nbsp;</i-col>
+                    <i-col span="12">
+                        <i-select v-model="multilogin">
+                            <i-option value="1">{{$t("header.yes")}}</i-option>
+                            <i-option value="0">{{$t("header.no")}}</i-option>
+                        </i-select>
+                    </i-col>
+                </Row>
+
                 <Row style="margin: 10px 0" v-show="!isShowGroup">
                     <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">
                         <i style="color: red;display: inline-block;">*</i>&nbsp;{{$t("user.groupCount")}} : &nbsp;</i-col>
@@ -132,7 +133,6 @@
                         <input-number :max="500" :min="10" v-model="devicecount"></input-number>
                     </i-col>
                 </Row>
-
 
                 <Row style="margin: 10px 0">
                     <i-col span="12" :offset="4">
