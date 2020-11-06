@@ -519,7 +519,11 @@
                     this.userTypeList = newArray;
                     this.usertype = editObject.usertype;
                     if (vRoot.$store.state.userType == 0) {
-                        this.usertypeDisabled = false;
+                        if (editObject.usertype === 20) {
+                            this.usertypeDisabled = true;
+                        } else {
+                            this.usertypeDisabled = false;
+                        }
                     } else {
                         this.usertypeDisabled = editObject.usertype === 20 || editObject.creater !== userName;
                     }
