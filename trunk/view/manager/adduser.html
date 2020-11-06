@@ -229,8 +229,7 @@
                 doAddUserCalback: function(resp) {
                     if (resp.status == 0) {
                         this.$Message.success(this.$t("message.addSucc"));
-                        userlists.push(this.username);
-
+                        userlists.push(data.username);
                     } else {
                         var cause = resp.cause;
                         if (cause.indexOf("exists") != -1) {
@@ -251,6 +250,9 @@
                     }, {
                         "name": isZh ? "三级管理员" : 'Manager3',
                         "type": 3
+                    }, {
+                        "name": isZh ? "四级管理员" : 'Manager4',
+                        "type": 4
                     }, ];
                     if (userType == 1) {
                         newArray.shift();
@@ -261,6 +263,8 @@
                         newArray.shift();
                         newArray.shift();
                         newArray.shift();
+                    } else if (userType == 4) {
+                        newArray = [];
                     } else if (userType > 10) {
                         newArray = [];
                     }
@@ -309,9 +313,10 @@
                     }, this.doUserInfoList);
                 },
                 doUserInfoList: function(resp) {
+                    var me = this;
+                    var list = [];
                     if (resp.status == 0 && resp.userlists != null) {
-                        var me = this;
-                        var list = [];
+
                         resp.userlists.forEach(function(item) {
                             if (item.usertype < 3) {
                                 list.push({
@@ -320,14 +325,13 @@
                                 })
                             }
                         });
-                        list.push({
-                            username: userName,
-                            usertype: vstore.state.userType
-                        })
-                        me.list = list;
-                        me.userlists = list;
-                        console.log(resp);
                     }
+                    list.push({
+                        username: userName,
+                        usertype: vstore.state.userType
+                    })
+                    me.list = list;
+                    me.userlists = list;
                 },
             },
             watch: {

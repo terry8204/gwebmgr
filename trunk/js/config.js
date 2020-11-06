@@ -784,6 +784,8 @@ var ws = null; // webSocket
  * 系统管理员 admin       123456
  * 一级管理员 yijimgr     123456
  * 二级管理员 erjimgr     123456
+ * 三级管理员 minigps13   123456
+ * 四级管理员 minigps14   123456
  * 普通监控员 xiaoxu      123456
  * 设备账号   13128804768 123456  
  */

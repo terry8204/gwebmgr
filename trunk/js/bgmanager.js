@@ -205,8 +205,8 @@ var bgManager = {
         }
     },
     mounted: function() {
-        this.userType = localStorage.getItem('userType');
-        if (this.userType == "3") {
+        this.userType = vstore.state.userType;
+        if (this.userType == 4) {
             this.navList.splice(0, 1);
             // this.navList[0].children.splice(0, 1);
         };

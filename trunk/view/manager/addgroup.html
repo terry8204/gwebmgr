@@ -215,22 +215,22 @@
                     }, this.doUserInfoList);
                 },
                 doUserInfoList: function(resp) {
+                    var me = this;
+                    var list = [];
                     if (resp.status == 0 && resp.userlists != null) {
-                        var me = this;
-                        var list = [];
                         resp.userlists.forEach(function(item) {
                             list.push({
                                 username: item.username,
                                 usertype: item.usertype
                             })
                         });
-                        list.push({
-                            username: userName,
-                            usertype: vstore.state.userType
-                        })
-                        me.list = list;
-                        me.userlists = list;
                     }
+                    list.push({
+                        username: userName,
+                        usertype: vstore.state.userType
+                    })
+                    me.list = list;
+                    me.userlists = list;
                 },
             },
             watch: {

@@ -487,28 +487,32 @@
                         "name": isZh ? "三级管理员" : 'Manager3',
                         "type": 3
                     }, {
+                        "name": isZh ? "四级管理员" : 'Manager4',
+                        "type": 4
+                    }, {
                         "name": isZh ? "普通监控员" : 'Monitor',
                         "type": 20
                     }];
-                    if (editObject.usertype == 20) {
-                        newArray.shift();
-                        newArray.shift();
-                        newArray.shift();
-                    } else {
-                        if (userType == 1) {
-                            newArray.shift();
-                            newArray.pop();
-                        } else if (userType == 2) {
-                            newArray.shift();
-                            newArray.shift();
-                            newArray.pop();
-                        } else if (userType == 3) {
-                            newArray.shift();
-                            newArray.shift();
-                            newArray.pop();
-                        }
-                    }
 
+                    if (userType == 1) {
+                        newArray.shift();
+                        newArray.pop();
+                    } else if (userType == 2) {
+                        newArray.shift();
+                        newArray.shift();
+                        newArray.pop();
+                    } else if (userType == 3) {
+                        newArray.shift();
+                        newArray.shift();
+                        newArray.pop();
+                    } else if (userType == 4) {
+                        newArray.shift();
+                        newArray.shift();
+                        newArray.shift();
+                        newArray.pop();
+                    } else {
+                        newArray = [];
+                    }
 
                     this.userTypeList = newArray;
                     this.usertype = editObject.usertype;
