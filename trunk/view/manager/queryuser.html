@@ -494,7 +494,9 @@
                         "type": 20
                     }];
 
-                    if (userType == 1) {
+                    if (userType == 0) {
+
+                    } else if (userType == 1) {
                         newArray.shift();
                         newArray.pop();
                     } else if (userType == 2) {
@@ -516,7 +518,12 @@
 
                     this.userTypeList = newArray;
                     this.usertype = editObject.usertype;
-                    this.usertypeDisabled = editObject.usertype === 20 || editObject.creater !== userName;
+                    if (vRoot.$store.state.userType == 0) {
+                        this.usertypeDisabled = false;
+                    } else {
+                        this.usertypeDisabled = editObject.usertype === 20 || editObject.creater !== userName;
+                    }
+
                 },
                 setUserInfo: function() {
                     this.username = editObject.username;
