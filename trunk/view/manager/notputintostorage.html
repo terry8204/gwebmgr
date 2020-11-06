@@ -12,12 +12,12 @@
         </div>
         <Modal v-model="modal" width="800" :title="$t('device.editDev')">
             <div style="width:700px;margin:10px auto">
-                <Row style="margin: 10px 0"> 
+                <Row style="margin: 10px 0">
                     <i-col span="4" style="height: 100%;text-align:right;line-height:32px;"><i style="color: red;display: inline-block;">*</i>&nbsp;{{$t("reportForm.selectAccount")}} : &nbsp;</i-col>
                     <i-col span="8">
                         <div class="search-wrapper">
                             <i-input v-model.trim="createrToUser" :icon="iconState" @on-change="sosoValueChange" @on-blur="blur" @on-focus="focus" @on-click="focus"></i-input>
-                            <transition name="fade">  
+                            <transition name="fade">
                                 <ul class="search-item-wrapper" v-show="isShowMatchDev" style="cursor: pointer;">
                                     <li v-for="item in userlists" style="padding:5px 10px;" @click="selectedCmd(item)" :class="{'ivu-select-item-focus':item == createrToUser}">
                                         <div :value="item" :key="item">
@@ -70,15 +70,15 @@
             el: "#notStorage",
             i18n: utils.getI18n(),
             data: {
-                modal:false,
-                mapModal:false,
-                queryParameter:'',
-                createrToUser:'' ,  
-                devicename:'',
-                deviceid:'',
-                devicetype:'',
+                modal: false,
+                mapModal: false,
+                queryParameter: '',
+                createrToUser: '',
+                devicename: '',
+                deviceid: '',
+                devicetype: '',
                 iconState: "ios-arrow-down",
-                isShowMatchDev:false,
+                isShowMatchDev: false,
                 taleHeight: 300,
                 loading: false,
                 columns: [{
@@ -87,30 +87,30 @@
                 }, {
                     title: vRoot.$t('alarm.devNum'),
                     key: "deviceid",
-                    width:150,
+                    width: 150,
                 }, {
                     title: vRoot.$t('reportForm.time'),
-                    width:150,
+                    width: 150,
                     key: "time"
-                },{
-                    title: vRoot.$t('bgMgr.protocolType'),  
-                    width:120,
+                }, {
+                    title: vRoot.$t('bgMgr.protocolType'),
+                    width: 120,
                     key: "protocolType"
-                },{
-                    title: vRoot.$t('bgMgr.packetDescr'),  
+                }, {
+                    title: vRoot.$t('bgMgr.packetDescr'),
                     key: "packetDescr"
-                },{
-                    title: vRoot.$t('user.address'),  
-                    width:170,
+                }, {
+                    title: vRoot.$t('user.address'),
+                    width: 170,
                     render: function(h, params) {
                         var positionlast = params.row;
-                        if(positionlast == null){
-                            return h('span',{},vRoot.$t('reportForm.empty')); 
-                        }else{
+                        if (positionlast == null) {
+                            return h('span', {}, vRoot.$t('reportForm.empty'));
+                        } else {
                             var address = params.row.address;
-                            if(address != null){
-                                return h('span',{},address);
-                            }else{
+                            if (address != null) {
+                                return h('span', {}, address);
+                            } else {
                                 var lat = positionlast.callat;
                                 var lon = positionlast.callon;
                                 return h('Button', {
@@ -133,60 +133,58 @@
                             }
                         }
                     }
-                },
-                {
-                    width:170,
+                }, {
+                    width: 170,
                     title: vRoot.$t('videoSettings.longitudeAndLatitude'),
                     render: function(h, params) {
                         var positionlast = params.row;
-                        if(positionlast == null){
-                            return h('span',{},vRoot.$t('reportForm.empty')); 
-                        }else{
+                        if (positionlast == null) {
+                            return h('span', {}, vRoot.$t('reportForm.empty'));
+                        } else {
                             var address = params.row.address;
-                         
-                                var lat = positionlast.callat;
-                                var lon = positionlast.callon;
-                                return h('Button', {
-                                    props: {
-                                        type: 'error',
-                                        size: 'small'
-                                    },
-                                    on: {
-                                        click: function() {
-                                            vueInstanse.mapModal = true;
-                                            vueInstanse.addMarkerToMap(positionlast);
-                                        }
+
+                            var lat = positionlast.callat;
+                            var lon = positionlast.callon;
+                            return h('Button', {
+                                props: {
+                                    type: 'error',
+                                    size: 'small'
+                                },
+                                on: {
+                                    click: function() {
+                                        vueInstanse.mapModal = true;
+                                        vueInstanse.addMarkerToMap(positionlast);
                                     }
-                                }, lat + "," + lon) 
-                            
+                                }
+                            }, lat + "," + lon)
+
                         }
                     }
-                },
-                {
+                }, {
                     'title': vRoot.$t('alarm.action'),
                     width: 115,
                     render: function(h, params) {
                         return h('Button', {
-                                props: {
-                                    type: 'primary',
-                                    size: 'small'
-                                },
-                                style: {
-                                    marginRight: '5px'
-                                },
-                                on: {
-                                    click: function() {
-                                        vueInstanse.modal = true;
-                                        vueInstanse.deviceid = params.row.deviceid;
-                                        vueInstanse.index = params.index;
-                                    }
+                            props: {
+                                type: 'primary',
+                                size: 'small'
+                            },
+                            style: {
+                                marginRight: '5px'
+                            },
+                            on: {
+                                click: function() {
+                                    vueInstanse.modal = true;
+                                    vueInstanse.deviceid = params.row.deviceid;
+                                    vueInstanse.index = params.index;
                                 }
-                            },vRoot.$t('bgMgr.addDev'))
+                            }
+                        }, vRoot.$t('bgMgr.addDev'))
                     }
                 }],
                 tableData: [],
-                deviceTypeList:[],
-                userlists:[],
+                deviceTypeList: [],
+                userlists: [],
             },
             watch: {
                 isShowMatchDev: function() {
@@ -198,13 +196,13 @@
                 },
             },
             methods: {
-                addMarkerToMap:function(positionlast){
+                addMarkerToMap: function(positionlast) {
                     var me = this;
                     var mapType = utils.getMapType();
                     if (mapType == 'bMap') {
                         var b_lon_and_b_lat = wgs84tobd09(Number(positionlast.callon), Number(positionlast.callat))
                         this.mapInstance.clearOverlays();
-                        var point = new BMap.Point(b_lon_and_b_lat[0],b_lon_and_b_lat[1]);
+                        var point = new BMap.Point(b_lon_and_b_lat[0], b_lon_and_b_lat[1]);
                         var imgPath = '';
                         if (utils.isLocalhost()) {
                             imgPath = myUrls.viewhost + 'images/carstate/0_green_0.png'
@@ -216,21 +214,21 @@
                         marker.setIcon(myIcon);
                         marker.setRotation(positionlast.course);
                         this.mapInstance.addOverlay(marker);
-                        setTimeout(function(){
+                        setTimeout(function() {
                             me.mapInstance.setCenter(point);
-                        },300)
-                    }else if(mapType == 'gMap'){
-                        var g_lon_and_g_lat = wgs84togcj02(Number(positionlast.callon),Number(positionlast.callat));
-                        if(me.gMakrker){
+                        }, 300)
+                    } else if (mapType == 'gMap') {
+                        var g_lon_and_g_lat = wgs84togcj02(Number(positionlast.callon), Number(positionlast.callat));
+                        if (me.gMakrker) {
                             me.gMakrker.setMap(null);
                         }
                         me.gMakrker = new google.maps.Marker({
-                                            position: {
-                                                lat: g_lon_and_g_lat[1],
-                                                lng: g_lon_and_g_lat[0]
-                                            },
-                                            map: me.mapInstance,
-                                     })
+                            position: {
+                                lat: g_lon_and_g_lat[1],
+                                lng: g_lon_and_g_lat[0]
+                            },
+                            map: me.mapInstance,
+                        })
 
                         var imgPath = ''
                         if (utils.isLocalhost()) {
@@ -238,22 +236,25 @@
                         } else {
                             imgPath = '../images/carstate';
                         }
-                
+
                         imgPath += '/a_green_' + utils.getAngle(positionlast.course) + '.png';
-                            
+
 
                         var myIcon = {
                             url: imgPath,
-                            size: { width: 32, height: 32 },
+                            size: {
+                                width: 32,
+                                height: 32
+                            },
                             anchor: new google.maps.Point(16, 16)
-                        };   
-                        me.gMakrker.setIcon(myIcon);          
-                    }else if(mapType == 'oMap'){
+                        };
+                        me.gMakrker.setIcon(myIcon);
+                    } else if (mapType == 'oMap') {
                         var tempPoint = ol.proj.fromLonLat([positionlast.callon, positionlast.callat]);
                         var firstMarker = new ol.Feature({
-                                geometry: new ol.geom.Point(tempPoint),
-                            });
-                            firstMarker.setStyle(me.getOpenMapMarkerIcon(positionlast.course));
+                            geometry: new ol.geom.Point(tempPoint),
+                        });
+                        firstMarker.setStyle(me.getOpenMapMarkerIcon(positionlast.course));
                         // var features =  [ firstMarker ];
                         // // this.layerVector.setSource(new ol.source.Vector({
                         // //     features: features
@@ -301,7 +302,7 @@
                             }),
                         });
                         this.mapInstance.addLayer(this.layerVector);
-                                            
+
 
                     }
                 },
@@ -324,39 +325,43 @@
                 initMap: function() {
                     var mapType = utils.getMapType();
                     if (mapType == 'bMap') {
-                        this.mapInstance = new BMap.Map('posi-map', { minZoom: 4, maxZoom: 18, enableMapClick: false });
+                        this.mapInstance = new BMap.Map('posi-map', {
+                            minZoom: 4,
+                            maxZoom: 18,
+                            enableMapClick: false
+                        });
                         this.mapInstance.enableScrollWheelZoom();
                         this.mapInstance.enableAutoResize();
                         this.mapInstance.enableDoubleClickZoom();
                         this.mapInstance.centerAndZoom(new BMap.Point(113.264435, 24.129163), 4);
-                    } else if (mapType == 'gMap'){
+                    } else if (mapType == 'gMap') {
                         var center = new google.maps.LatLng(24.129163, 113.264435);
                         this.mapInstance = new google.maps.Map(document.getElementById('posi-map'), {
                             zoom: 4,
                             center: center,
                             mapTypeId: google.maps.MapTypeId.ROADMAP
                         });
-                    }else if (mapType == 'oMap'){
-                       
+                    } else if (mapType == 'oMap') {
+
                     }
                 },
 
-                handleSubmit:function(){
+                handleSubmit: function() {
                     var me = this;
                     var url = myUrls.addDevice();
 
                     if (this.devicetype === "") {
-                        me.$Message.error(me.$t("message.selectDeviceTtypeTips"));  
+                        me.$Message.error(me.$t("message.selectDeviceTtypeTips"));
                         return;
                     }
 
                     var data = {
                         deviceid: this.deviceid,
                         devicetype: this.devicetype,
-                        expirenotifytime: Date.now() + 24*3600*1000*365,
+                        expirenotifytime: Date.now() + 24 * 3600 * 1000 * 365,
                         loginenable: 1,
                         deviceenable: 1,
-                        reportedpoint:0,
+                        reportedpoint: 0,
                     };
 
                     if (this.devicename.trim()) data.devicename = this.devicename.trim();
@@ -367,7 +372,7 @@
                         return;
                     }
 
-                    if (this.userType < 3) {
+                    if (this.userType < 4) {
                         data.creater = this.createrToUser;
                     } else {
                         data.creater = userName;
@@ -378,8 +383,8 @@
                             rootuser = null;
                             isNeedRefresh = true;
                             me.modal = false;
-                            me.records.splice(me.index,1);
-                            me.tableData.splice(me.index,1);
+                            me.records.splice(me.index, 1);
+                            me.tableData.splice(me.index, 1);
                             me.$Message.success(me.$t("message.addSucc"));
                         } else if (resp.status == -1) {
                             if (resp.cause !== null && resp.cause.indexOf("token") != -1) {
@@ -457,52 +462,54 @@
                     var wHeight = window.innerHeight;
                     this.taleHeight = wHeight - 160;
                 },
-                queryNoFoundDeviceids:function(){
-                    if(this.queryParameter == ""){
+                queryNoFoundDeviceids: function() {
+                    if (this.queryParameter == "") {
                         this.qeuryNoFoundDeviceids();
-                    }else{
+                    } else {
                         var me = this;
                         var tableData = [];
-                        this.records.forEach(function(item){
-                            if(item.deviceid.indexOf(me.queryParameter) != -1){
+                        this.records.forEach(function(item) {
+                            if (item.deviceid.indexOf(me.queryParameter) != -1) {
                                 tableData.push(item);
                             }
                         })
                         this.tableData = tableData;
                     };
                 },
-                qeuryNoFoundDeviceids:function(){
+                qeuryNoFoundDeviceids: function() {
                     var me = this;
                     var url = myUrls.listNoFoundDeviceids();
                     this.loading = true;
-                    utils.sendAjax(url,{},function(resp){
-                        if(resp.status == 0){
-                           resp.devices.forEach(function(device){
-                            var positionlast = device;
-                            device.address = null;
-                            if(positionlast.callat !==null && positionlast.callon !== null){
-                                positionlast.callat = positionlast.callat.toFixed(5);
-                                positionlast.callon = positionlast.callon.toFixed(5);
-                                device.address = LocalCacheMgr.getAddress(positionlast.callon, positionlast.callat);
-                            }
-                            device.time = DateFormat.longToDateTimeStr(device.updatetime,timeDifference)
-                           })
-                           resp.devices.sort(function(a,b){return a.updatetime - b.updatetime});
-                           me.records = resp.devices;
-                           me.tableData = deepClone(resp.devices);
+                    utils.sendAjax(url, {}, function(resp) {
+                        if (resp.status == 0) {
+                            resp.devices.forEach(function(device) {
+                                var positionlast = device;
+                                device.address = null;
+                                if (positionlast.callat !== null && positionlast.callon !== null) {
+                                    positionlast.callat = positionlast.callat.toFixed(5);
+                                    positionlast.callon = positionlast.callon.toFixed(5);
+                                    device.address = LocalCacheMgr.getAddress(positionlast.callon, positionlast.callat);
+                                }
+                                device.time = DateFormat.longToDateTimeStr(device.updatetime, timeDifference)
+                            })
+                            resp.devices.sort(function(a, b) {
+                                return a.updatetime - b.updatetime
+                            });
+                            me.records = resp.devices;
+                            me.tableData = deepClone(resp.devices);
                         }
                         me.loading = false;
                     })
                 },
-                clearNoFoundDeviceids:function(){
+                clearNoFoundDeviceids: function() {
                     var me = this;
                     var url = myUrls.clearNoFoundDeviceids();
-                    utils.sendAjax(url,{},function(resp){
-                        if(resp.status == 0){
+                    utils.sendAjax(url, {}, function(resp) {
+                        if (resp.status == 0) {
                             me.$Message.success(me.$t('message.clearSucc'));
                             me.records = [];
                             me.tableData = [];
-                        }else{
+                        } else {
                             me.$Message.error(me.$t('message.clearFail'));
                         }
                     });

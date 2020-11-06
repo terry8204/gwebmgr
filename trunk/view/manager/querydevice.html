@@ -217,7 +217,7 @@
         </Modal>
         <Modal v-model="modal" width="900" :title="$t('device.editDev')">
             <div style="width:700px;margin:10px auto">
-                <Row style="margin: 10px 0" v-if="userType < 3">
+                <Row style="margin: 10px 0" v-if="userType < 4">
                     <i-col span="4" style="height: 100%;text-align:right;line-height:32px;"><i style="color: red;display: inline-block;">*</i>&nbsp;{{$t("reportForm.selectAccount")}} : &nbsp;</i-col>
                     <i-col span="8">
                         <div class="search-wrapper">
@@ -1876,7 +1876,7 @@
                         return;
                     }
 
-                    if (this.userType < 3) {
+                    if (this.userType < 4) {
                         data.creater = this.createrToUser;
                     } else {
                         data.creater = userName;
