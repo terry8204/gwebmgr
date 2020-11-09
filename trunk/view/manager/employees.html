@@ -1,0 +1,514 @@
+<div id="employees">
+    <div class="tree-wrap">
+        <div class="tree-title">组织架构</div>
+        <div class="tree-search">
+            <i-input v-model.trim="sosoValue"></i-input>
+        </div>
+        <div class="employees-tree-box">
+            <Tree :data="treeData"></Tree>
+        </div>
+    </div>
+    <div class="table-wrap">
+        <div class="table-title">从业人员列表</div>
+        <div class="table-action">
+            <div style="width: 180px;">
+                <i-input></i-input>
+            </div>
+            <div>
+                <i-button>搜索</i-button>
+            </div>
+            <div>
+                <i-button type='primary' @click="showAddModal">添加</i-button>
+            </div>
+        </div>
+        <div class="employees-table-box">
+            <i-table :data="tableData" border :loading="loading" :columns="columns" :height="taleHeight"></i-table>
+        </div>
+    </div>
+    <Modal v-model="modal" width="900" :title="modalTitle">
+        <div style="width:700px;margin:10px auto">
+            <Row style="margin: 10px 0">
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">姓名 : &nbsp;</i-col>
+                <i-col span="8">
+                    <i-input v-model.trim="name"></i-input>
+                </i-col>
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">性别 : &nbsp;</i-col>
+                <i-col span="8">
+                    <i-select v-model.sync="sex">
+                        <i-option value="1">男</i-option>
+                        <i-option value="0">女</i-option>
+                    </i-select>
+                </i-col>
+            </Row>
+            <Row style="margin: 10px 0">
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">电话1 : &nbsp;</i-col>
+                <i-col span="8">
+                    <i-input v-model.trim="phone1"></i-input>
+                </i-col>
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">电话2 : &nbsp;</i-col>
+                <i-col span="8">
+                    <i-input v-model.trim="phone2"></i-input>
+                </i-col>
+            </Row>
+            <Row style="margin: 10px 0">
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">紧急电话1 : &nbsp;</i-col>
+                <i-col span="8">
+                    <i-input v-model.trim="sosphone1"></i-input>
+                </i-col>
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">紧急电话2 : &nbsp;</i-col>
+                <i-col span="8">
+                    <i-input v-model.trim="sosphone2"></i-input>
+                </i-col>
+            </Row>
+            <Row style="margin: 10px 0">
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">身份证号 : &nbsp;</i-col>
+                <i-col span="8">
+                    <i-input v-model.trim="cardid"></i-input>
+                </i-col>
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">从业资格证编码 : &nbsp;</i-col>
+                <i-col span="8">
+                    <i-input v-model.trim="certificationcode"></i-input>
+                </i-col>
+            </Row>
+            <Row style="margin: 10px 0">
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">发证机关 : &nbsp;</i-col>
+                <i-col span="8">
+                    <i-input v-model.trim="agencyname"></i-input>
+                </i-col>
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">证件有效期 : &nbsp;</i-col>
+                <i-col span="8">
+                    <date-picker type="date" v-model="certificationvalidatedate" style="width: 100%"></date-picker>
+                </i-col>
+            </Row>
+            <Row style="margin: 10px 0">
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">驾驶证id : &nbsp;</i-col>
+                <i-col span="8">
+                    <i-input v-model.trim="drivercardid"></i-input>
+                </i-col>
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">驾驶证发证机关 : &nbsp;</i-col>
+                <i-col span="8">
+                    <i-input v-model.trim="driveragencyname"></i-input>
+                </i-col>
+            </Row>
+            <Row style="margin: 10px 0">
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">准驾车型 : &nbsp;</i-col>
+                <i-col span="8">
+                    <i-input v-model.trim="drivercardtype"></i-input>
+                </i-col>
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">地址 : &nbsp;</i-col>
+                <i-col span="8">
+                    <i-input v-model.trim="address"></i-input>
+                </i-col>
+            </Row>
+            <Row style="margin: 10px 0">
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">准驾证开始日期 : &nbsp;</i-col>
+                <i-col span="8">
+                    <date-picker type="date" v-model="drivercardstartday" style="width: 100%"></date-picker>
+                </i-col>
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">准驾证到期日期 : &nbsp;</i-col>
+                <i-col span="8">
+                    <date-picker type="date" v-model="drivercardendday" style="width: 100%"></date-picker>
+                </i-col>
+            </Row>
+            <Row style="margin: 10px 0">
+                <i-col span="6" :offset="7">
+                    <i-button style="width: 100%" @click="handleSubmit">{{$t("bgMgr.submit")}}</i-button>
+                </i-col>
+                <i-col span="6" :offset="1">
+                    <i-button style="width: 100%" @click="resetInfo">{{$t("bgMgr.reset")}}</i-button>
+                </i-col>
+            </Row>
+        </div>
+        <div slot="footer" style="height:20px;"></div>
+    </Modal>
+    <script>
+        vueInstanse = new Vue({
+            el: "#employees",
+            i18n: utils.getI18n(),
+            data: {
+                modal: false,
+                loading: false,
+                isEdit: false,
+                columns: [{
+                    title: vRoot.$t("bgMgr.action"),
+                    key: 'action',
+                    width: 130,
+                    render: function(h, params) {
+                        return h('div', [
+                            h('Button', {
+                                props: {
+                                    type: 'primary',
+                                    size: 'small'
+                                },
+                                style: {
+                                    marginRight: '5px'
+                                },
+                                on: {
+                                    click: function() {
+                                        editObject = params.row;
+                                        vueInstanse.isEdit = true;
+                                        vueInstanse.modal = true;
+                                    }
+                                }
+                            }, vRoot.$t("bgMgr.edit")),
+
+                            h('Poptip', {
+                                props: {
+                                    confirm: true,
+                                    title: vRoot.$t("message.confirmDel")
+                                },
+                                style: {
+                                    marginRight: '5px',
+                                    zIndex: 9999,
+                                },
+                                on: {
+                                    'on-ok': function() {
+                                        vueInstanse.handleDelete(params.row.username);
+                                    }
+                                }
+                            }, [
+                                h('Button', {
+                                    props: {
+                                        type: 'error',
+                                        size: 'small'
+                                    }
+                                }, vRoot.$t("bgMgr.delete"))
+                            ]),
+                        ]);
+                    }
+                }, {
+                    title: '创建者',
+                    key: 'creater',
+                    width: 150,
+                }, {
+                    title: '姓名',
+                    key: 'name',
+                    width: 120,
+                }, {
+                    title: '创建时间',
+                    key: 'createtime',
+                    width: 150,
+                }, {
+                    title: '身份证号',
+                    key: 'cardid',
+                    width: 150,
+                }, {
+                    title: '性别',
+                    key: 'sex',
+                    width: 100,
+                }, {
+                    title: '电话1',
+                    key: 'phone1',
+                    width: 150,
+                }, {
+                    title: '电话2',
+                    key: 'phone2',
+                    width: 150,
+                }, {
+                    title: '紧急电话2',
+                    key: 'sosphone1',
+                    width: 150,
+                }, {
+                    title: '紧急电话2',
+                    key: 'sosphone2',
+                    width: 150,
+                }, {
+                    title: '从业资格证编码',
+                    key: 'certificationcode',
+                    width: 150,
+                }, {
+                    title: '发证机关',
+                    key: 'agencyname',
+                    width: 150,
+                }, {
+                    title: '证件有效期',
+                    key: ' certificationvalidatedate',
+                    width: 150,
+                }, {
+                    title: '地址',
+                    key: 'address',
+                    width: 150,
+                }, {
+                    title: '驾驶证id',
+                    key: 'drivercardid',
+                    width: 150,
+                }, {
+                    title: '驾驶证发证机关',
+                    key: 'driveragencyname',
+                    width: 150,
+                }, {
+                    title: '准驾车型',
+                    key: 'drivercardtype',
+                    width: 150,
+                }, {
+                    title: '准驾证开始日期',
+                    key: 'drivercardstartday',
+                    width: 150,
+                }, {
+                    title: '准驾证到期日期',
+                    key: 'drivercardendday',
+                    width: 150,
+                }],
+                treeData: [],
+                tableData: [{}],
+                taleHeight: 300,
+                createrToUser: userName,
+                sosoValue: '',
+                name: '',
+                cardid: '',
+                sex: '1',
+                phone1: '',
+                phone2: '',
+                sosphone1: '',
+                sosphone2: '',
+                certificationcode: '',
+                agencyname: '',
+                certificationvalidatedate: new Date(), //证件有效期
+                address: '',
+                drivercardid: '',
+                driveragencyname: '',
+                drivercardtype: '',
+                drivercardstartday: '',
+                drivercardendday: '',
+            },
+            methods: {
+                showAddModal: function() {
+                    this.isEdit = false;
+                    this.modal = true;
+                },
+                calcTableHeight: function() {
+                    var wHeight = window.innerHeight;
+                    this.taleHeight = wHeight - 150;
+                },
+                handleSubmit: function() {
+                    var me = this;
+                    var url = '';
+                    if (this.isEdit) {
+                        url = myUrls.createEmployee();
+                    } else {
+                        url = myUrls.createEmployee();
+                    }
+                    var data = {
+                        creater: this.createrToUser,
+                        name: this.name,
+                        cardid: this.cardid,
+                        sex: Number(this.sex),
+                        phone1: this.phone1,
+                        phone2: this.phone2,
+                        sosphone1: this.sosphone1,
+                        sosphone2: this.sosphone2,
+                        certificationcode: this.certificationcode,
+                        agencyname: this.agencyname,
+                        certificationvalidatedate: DateFormat.format(new Date(this.certificationvalidatedate), 'yyyy-MM-dd'),
+                        address: this.address,
+                        drivercardid: this.drivercardid,
+                        driveragencyname: this.driveragencyname,
+                        drivercardtype: this.drivercardtype,
+                    };
+                    this.drivercardstartday && (data.drivercardstartday = DateFormat.format(new Date(this.drivercardstartday), 'yyyy-MM-dd'));
+                    this.drivercardendday && (data.drivercardendday = DateFormat.format(new Date(this.drivercardendday), 'yyyy-MM-dd'));
+                    utils.sendAjax(url, data, function(respData) {
+                        if (me.isEdit) {
+                            console.log("编辑", respData);
+                        } else {
+                            console.log("新增", respData);
+                        }
+                    });
+                },
+                resetInfo: function() {},
+                queryUsersTree: function(callback) {
+                    var url = myUrls.queryUsersTree(),
+                        me = this;
+                    utils.sendAjax(url, {
+                        username: userName
+                    }, function(respData) {
+                        if (respData.status == 0 && respData.rootuser.user) {
+                            callback([me.castUsersTreeToDevicesTree(respData.rootuser)]);
+                        } else {
+                            me.$Message.error(me.$t('monitor.queryFail'))
+                        }
+                    });
+                },
+                castUsersTreeToDevicesTree: function(devicesTreeRecord) {
+                    var me = this;
+                    var iViewTree = {
+                        render: function(h, params) {
+                            var username = params.data.title;
+                            return h('span', {
+                                on: {
+                                    'click': function() {
+                                        me.createrToUser = username;
+                                        me.queryEmployees(username);
+                                    }
+                                },
+                                style: {
+                                    cursor: 'pointer',
+                                    color: (me.createrToUser == username) ? '#2D8CF0' : '#000'
+                                }
+                            }, [
+                                h('span', [
+                                    h('Radio', {
+                                        props: {
+                                            value: username == me.createrToUser
+                                        },
+                                        style: {
+                                            marginRight: '4px',
+                                            marginLeft: '4px'
+                                        }
+                                    }),
+                                    h('span', params.data.title)
+                                ]),
+                            ])
+                        },
+                        expand: true,
+                    };
+                    if (devicesTreeRecord != null) {
+                        var username = devicesTreeRecord.user.username;
+                        var subusers = devicesTreeRecord.subusers;
+                        iViewTree.title = username;
+                        if (username != null && subusers != null && subusers.length > 0) {
+                            var subDevicesTreeRecord = this.doCastUsersTreeToDevicesTree(subusers);
+                            iViewTree.children = subDevicesTreeRecord;
+
+                        }
+                    }
+                    return iViewTree;
+                },
+                doCastUsersTreeToDevicesTree: function(usersTrees) {
+                    var devicesTreeRecord = [],
+                        me = this;
+                    if (usersTrees != null && usersTrees.length > 0) {
+                        for (var i = 0; i < usersTrees.length; ++i) {
+                            var usersTree = usersTrees[i];
+                            var username = usersTree.user.username;
+                            var subusers = usersTree.subusers;
+                            var currentsubDevicesTreeRecord = {
+                                render: function(h, params) {
+                                    var username = params.data.title;
+                                    return h('span', {
+                                        on: {
+                                            'click': function() {
+                                                me.createrToUser = username;
+                                                me.queryEmployees(username);
+                                            }
+                                        },
+                                        style: {
+                                            cursor: 'pointer',
+                                            color: (me.createrToUser == username) ? '#2D8CF0' : '#000'
+                                        }
+                                    }, [
+                                        h('span', [
+                                            h('Radio', {
+                                                props: {
+                                                    value: username == me.createrToUser
+                                                },
+                                                style: {
+                                                    marginRight: '4px',
+                                                    marginLeft: '4px'
+                                                }
+                                            }),
+                                            h('span', params.data.title)
+                                        ]),
+                                    ])
+                                },
+                            };
+                            currentsubDevicesTreeRecord.title = username;
+                            if (username != null && subusers != null && subusers.length > 0) {
+                                var subDevicesTreeRecord = this.doCastUsersTreeToDevicesTree(subusers);
+                                currentsubDevicesTreeRecord.children = subDevicesTreeRecord;
+                            }
+                            devicesTreeRecord.push(currentsubDevicesTreeRecord);
+                        }
+                    }
+                    return devicesTreeRecord;
+                },
+
+                filterMethod: function(value) {
+                    if (value == '') {
+                        this.treeData = this.groupslist;
+                    } else {
+                        value = value.toLowerCase();
+                        this.treeData = [];
+                        this.treeData = this.variableDeepSearch(this.groupslist, value, 5);
+                    }
+                },
+                variableDeepSearch: function(treeDataFilter, searchWord, limitcount) {
+                    var childTemp = [];
+                    var that = this;
+                    for (var i = 0; i < treeDataFilter.length; i++) {
+                        var copyItem = null;
+                        var item = treeDataFilter[i];
+                        if (item != null) {
+                            var isFound = false;
+                            if (item.title.indexOf(searchWord) != -1 || (item.deviceid && item.deviceid.indexOf(searchWord) != -1)) {
+                                copyItem = deepClone(item);
+                                copyItem.expand = false;
+                                isFound = true;
+                            }
+                            if (isFound == false && item.children && item.children.length > 0) {
+                                // item.expand = true;
+                                // childTemp.push(item);
+                                var rs = that.variableDeepSearch(item.children, searchWord, limitcount);
+                                if (rs && rs.length > 0) {
+                                    copyItem = deepClone(item);
+                                    copyItem.children = rs;
+                                    copyItem.expand = true;
+                                    isFound = true;
+                                }
+                            }
+
+                            if (isFound == true) {
+                                limitcount++;
+
+                                childTemp.push(copyItem);
+                                if (limitcount > 10) {
+                                    break;
+                                }
+                            }
+                        }
+                    }
+
+                    return childTemp;
+                },
+                queryEmployees: function(userName) {
+                    var url = myUrls.queryEmployees();
+                    utils.sendAjax(url, {
+                        creater: userName
+                    }, function(resp) {
+                        console.log(resp);
+                    });
+                }
+            },
+            watch: {
+                sosoValue: function(value) {
+                    var me = this;
+                    if (this.timeoutIns != null) {
+                        clearTimeout(this.timeoutIns);
+                    };
+
+                    this.timeoutIns = setTimeout(function() {
+                        me.filterMethod(value);
+                    }, 300);
+                }
+            },
+            computed: {
+                modalTitle: function() {
+                    return this.isEdit ? '编辑' : '添加';
+                }
+            },
+            mounted: function() {
+                var me = this;
+                me.timeoutIns = null;
+                me.queryUsersTree(function(usersTree) {
+                    me.groupslist = usersTree;
+                    me.treeData = usersTree;
+                });
+                me.queryEmployees(userName);
+                me.calcTableHeight();
+                window.onresize = function() {
+                    me.calcTableHeight();
+                }
+            }
+        })
+    </script>
+</div>

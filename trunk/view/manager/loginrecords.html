@@ -30,8 +30,8 @@
             el: "#login-records",
             i18n: utils.getI18n(),
             data: {
-                isShowMatchDev:false,
-                treeData:[],
+                isShowMatchDev: false,
+                treeData: [],
                 queryTableData: [],
                 createrToUser: userName,
                 queryParameter: "",
@@ -51,7 +51,7 @@
                     key: 'fromstr',
                     width: 120
                 }, {
-                    title: vRoot.$t("header.logintype"),  
+                    title: vRoot.$t("header.logintype"),
                     key: 'logintype',
                     width: 100
                 }, {
@@ -61,7 +61,7 @@
                     title: vRoot.$t("header.phonebrand"),
                     key: 'phonebrand'
                 }, {
-                    title:  vRoot.$t("header.phonemodel"),
+                    title: vRoot.$t("header.phonemodel"),
                     key: 'phonemodel'
                 }, {
                     title: vRoot.$t("header.phonesdkversion"),
@@ -124,7 +124,7 @@
                     };
                     return name;
                 },
-                
+
                 calcTableHeight: function() {
                     var wHeight = window.innerHeight;
                     this.taleHeight = wHeight - 195;
@@ -132,11 +132,13 @@
                 queryUsersTree: function(callback) {
                     var url = myUrls.queryUsersTree(),
                         me = this;
-                    utils.sendAjax(url, { username: userName }, function(respData) {
+                    utils.sendAjax(url, {
+                        username: userName
+                    }, function(respData) {
                         if (respData.status == 0 && respData.rootuser.user) {
                             callback([me.castUsersTreeToDevicesTree(respData.rootuser)]);
                         } else {
-                            me.$Message.error(me.$t('monitor.queryFail'))  
+                            me.$Message.error(me.$t('monitor.queryFail'))
                         }
                     });
                 },

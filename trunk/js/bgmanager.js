@@ -15,6 +15,7 @@ var bgManager = {
                     children: [
                         { title: me.$t("bgMgr.addUser"), name: 'addUser', icon: 'ios-person-add' },
                         { title: me.$t("bgMgr.queryUser"), name: 'queryUser', icon: 'md-search' },
+                        { title: '从业人员', name: 'employees', icon: 'md-search' },
                         { title: me.$t("bgMgr.onlineUsers"), name: 'onlineUsers', icon: 'ios-analytics' },
                         { title: me.$t("header.loginRecords"), name: 'loginRecords', icon: 'ios-clipboard-outline' },
                     ]
@@ -115,6 +116,9 @@ var bgManager = {
                     break
                 case 'queryUser':
                     page = 'queryuser.html'
+                    break
+                case 'employees':
+                    page = 'employees.html'
                     break
                 case 'onlineUsers':
                     page = 'onlineusers.html'
@@ -292,6 +296,7 @@ var systemParam = {
             page && (this.loadPage(page));
         },
         loadPage: function(page) {
+            vueInstanse && vueInstanse.$destroy && vueInstanse.$destroy();
             var me = this
             var pagePath = null
             if (utils.isLocalhost()) {

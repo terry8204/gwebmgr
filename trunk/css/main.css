@@ -1412,3 +1412,76 @@ div.msg_content {
 .noTheMonth {
     opacity: 0.5;
 }
+
+
+/* 从业人员 */
+
+#employees {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+#employees .tree-wrap {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 270px;
+    bottom: 0;
+}
+
+#employees .tree-wrap .tree-title {
+    height: 35px;
+    line-height: 35px;
+    font-weight: 500;
+    font-size: 16px;
+    padding-left: 10px;
+}
+
+#employees .tree-wrap .tree-search {
+    height: 35px;
+    padding: 1.5px 10px 0 10px;
+}
+
+#employees .tree-wrap .employees-tree-box {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    right: 10px;
+    top: 80px;
+}
+
+#employees .table-wrap {
+    position: absolute;
+    left: 270px;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    overflow-y: auto;
+}
+
+#employees .table-wrap .table-title {
+    height: 35px;
+    line-height: 35px;
+    font-weight: 500;
+    font-size: 16px;
+}
+
+#employees .table-wrap .table-action {
+    height: 35px;
+    line-height: 35px;
+}
+
+#employees .table-wrap .table-action>div {
+    float: left;
+    height: 35px;
+    margin-right: 10px;
+}
+
+#employees .table-wrap .employees-table-box {
+    position: absolute;
+    left: 0;
+    top: 80px;
+    bottom: 10px;
+    right: 10px;
+}

@@ -769,6 +769,12 @@ var myUrls = {
     queryPointsRecord: function() {
         return this.apihosts + 'webapi?action=querypointsrecord&token=' + token;
     },
+    createEmployee: function() {
+        return this.apihosts + 'webapi?action=createemployee&token=' + token;
+    },
+    queryEmployees: function() {
+        return this.apihosts + 'webapi?action=queryemployees&token=' + token;
+    },
 }
 
 
