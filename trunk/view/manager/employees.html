@@ -1,6 +1,6 @@
 <div id="employees">
     <div class="tree-wrap">
-        <div class="tree-title">组织架构</div>
+        <div class="tree-title">{{$t('user.organization')}}</div>
         <div class="tree-search">
             <i-input v-model.trim="sosoValue"></i-input>
         </div>
@@ -9,16 +9,16 @@
         </div>
     </div>
     <div class="table-wrap">
-        <div class="table-title">从业人员列表</div>
+        <div class="table-title">{{$t('user.listEmployees')}}</div>
         <div class="table-action">
             <div style="width: 180px;">
                 <i-input v-model.trim="sosoTableValue"></i-input>
             </div>
             <div>
-                <i-button @click="searchLocalData">搜索</i-button>
+                <i-button @click="searchLocalData">{{$t('videoback.search')}}</i-button>
             </div>
             <div>
-                <i-button type='primary' @click="showAddModal">添加</i-button>
+                <i-button type='primary' @click="showAddModal">{{$t('user.add')}}</i-button>
             </div>
         </div>
         <div class="employees-table-box">
@@ -27,85 +27,102 @@
     </div>
     <Modal v-model="modal" width="900" :title="modalTitle">
         <div style="width:700px;margin:10px auto">
+            <Row style="margin: 10px 0" v-if="isEdit">
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;"><i style="color: red;display: inline-block;">*</i>&nbsp;{{$t("reportForm.selectAccount")}} : &nbsp;</i-col>
+                <i-col span="8">
+                    <div class="search-wrapper">
+                        <i-input v-model.trim="creater" :icon="iconState" @on-change="sosoValueChange" @on-blur="blur" @on-focus="focus" @on-click="focus"></i-input>
+                        <transition name="fade">
+                            <ul class="search-item-wrapper" v-show="isShowMatchDev" style="cursor: pointer;">
+                                <li v-for="item in userlists" style="padding:5px 10px;" @click="selectedCmd(item)" :class="{'ivu-select-item-focus':item == creater}">
+                                    <div :value="item" :key="item">
+                                        <span style="cursor: pointer;">{{ item }}</span>
+                                    </div>
+                                </li>
+                            </ul>
+                        </transition>
+                    </div>
+                </i-col>
+            </Row>
             <Row style="margin: 10px 0">
-                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">姓名 : &nbsp;</i-col>
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">{{$t('reportForm.name')}} : &nbsp;</i-col>
                 <i-col span="8">
                     <i-input v-model.trim="name"></i-input>
                 </i-col>
-                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">性别 : &nbsp;</i-col>
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">{{$t('device.gender')}} : &nbsp;</i-col>
                 <i-col span="8">
                     <i-select v-model.sync="sex">
-                        <i-option value="1">男</i-option>
-                        <i-option value="0">女</i-option>
+                        <i-option value="1">{{$t('device.man')}}</i-option>
+                        <i-option value="0">{{$t('device.girl')}}</i-option>
                     </i-select>
                 </i-col>
             </Row>
             <Row style="margin: 10px 0">
-                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">电话1 : &nbsp;</i-col>
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">{{$t('user.phone1')}} : &nbsp;</i-col>
                 <i-col span="8">
                     <i-input v-model.trim="phone1"></i-input>
                 </i-col>
-                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">电话2 : &nbsp;</i-col>
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">{{$t('user.phone2')}} : &nbsp;</i-col>
                 <i-col span="8">
                     <i-input v-model.trim="phone2"></i-input>
                 </i-col>
             </Row>
             <Row style="margin: 10px 0">
-                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">紧急电话1 : &nbsp;</i-col>
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">{{$t('user.sosphone1')}} : &nbsp;</i-col>
                 <i-col span="8">
                     <i-input v-model.trim="sosphone1"></i-input>
                 </i-col>
-                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">紧急电话2 : &nbsp;</i-col>
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">{{$t('user.sosphone2')}} : &nbsp;</i-col>
                 <i-col span="8">
                     <i-input v-model.trim="sosphone2"></i-input>
                 </i-col>
             </Row>
             <Row style="margin: 10px 0">
-                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">身份证号 : &nbsp;</i-col>
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">{{$t('reportForm.idNumber')}} : &nbsp;</i-col>
                 <i-col span="8">
                     <i-input v-model.trim="cardid"></i-input>
                 </i-col>
-                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">从业资格证编码 : &nbsp;</i-col>
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">{{$t('user.certificationcode')}} : &nbsp;</i-col>
                 <i-col span="8">
                     <i-input v-model.trim="certificationcode"></i-input>
                 </i-col>
             </Row>
             <Row style="margin: 10px 0">
-                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">发证机关 : &nbsp;</i-col>
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">{{$t('user.agencyname')}} : &nbsp;</i-col>
                 <i-col span="8">
                     <i-input v-model.trim="agencyname"></i-input>
                 </i-col>
-                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">证件有效期 : &nbsp;</i-col>
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">{{$t('user.certificationvalidatedate')}} : &nbsp;</i-col>
                 <i-col span="8">
                     <date-picker type="date" v-model="certificationvalidatedate" style="width: 100%"></date-picker>
                 </i-col>
             </Row>
             <Row style="margin: 10px 0">
-                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">驾驶证id : &nbsp;</i-col>
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">{{$t('user.drivercardid')}} : &nbsp;</i-col>
                 <i-col span="8">
                     <i-input v-model.trim="drivercardid"></i-input>
                 </i-col>
-                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">驾驶证发证机关 : &nbsp;</i-col>
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">{{$t('user.driveragencyname')}} : &nbsp;</i-col>
                 <i-col span="8">
                     <i-input v-model.trim="driveragencyname"></i-input>
                 </i-col>
             </Row>
             <Row style="margin: 10px 0">
-                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">准驾车型 : &nbsp;</i-col>
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">{{$t('user.drivercardtype')}} : &nbsp;</i-col>
                 <i-col span="8">
                     <i-input v-model.trim="drivercardtype"></i-input>
                 </i-col>
-                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">地址 : &nbsp;</i-col>
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">{{$t('reportForm.address')}} : &nbsp;</i-col>
                 <i-col span="8">
                     <i-input v-model.trim="address"></i-input>
                 </i-col>
             </Row>
             <Row style="margin: 10px 0">
-                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">准驾证开始日期 : &nbsp;</i-col>
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">{{$t('user.drivercardstartday')}} : &nbsp;</i-col>
                 <i-col span="8">
                     <date-picker type="date" v-model="drivercardstartday" style="width: 100%"></date-picker>
                 </i-col>
-                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">准驾证到期日期 : &nbsp;</i-col>
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">{{$t('user.drivercardendday')}} : &nbsp;</i-col>
                 <i-col span="8">
                     <date-picker type="date" v-model="drivercardendday" style="width: 100%"></date-picker>
                 </i-col>
@@ -129,6 +146,9 @@
                 modal: false,
                 loading: false,
                 isEdit: false,
+                userlists: userlists,
+                isShowMatchDev: false,
+                iconState: "ios-arrow-down",
                 columns: [{
                     title: vRoot.$t("bgMgr.action"),
                     key: 'action',
@@ -148,6 +168,7 @@
                                         editObject = params.row;
                                         vueInstanse.isEdit = true;
                                         vueInstanse.modal = true;
+                                        vueInstanse.creater = editObject.creater;
                                         vueInstanse.setEditRowValue(editObject);
                                     }
                                 }
@@ -178,79 +199,79 @@
                         ]);
                     }
                 }, {
-                    title: '创建者',
+                    title: vRoot.$t('user.creater'),
                     key: 'creater',
                     width: 150,
                 }, {
-                    title: '姓名',
+                    title: vRoot.$t('reportForm.name'),
                     key: 'name',
                     width: 120,
                 }, {
-                    title: '创建时间',
-                    width: 150,
+                    title: vRoot.$t('reportForm.updateTime'),
+                    width: 110,
                     render: function(h, params) {
-                        return h('span', {}, DateFormat.format(new Date(params.row.createtime), 'yyyy-MM-dd'))
+                        return h('span', {}, DateFormat.format(new Date(params.row.updatetime), 'yyyy-MM-dd'))
                     },
                 }, {
-                    title: '身份证号',
+                    title: vRoot.$t('reportForm.idNumber'),
                     key: 'cardid',
                     width: 150,
                 }, {
-                    title: '性别',
+                    title: vRoot.$t("device.gender"),
                     width: 100,
                     render: function(h, params) {
-                        return h('span', {}, params.row.sex == 1 ? '男' : '女');
+                        return h('span', {}, params.row.sex == 1 ? vRoot.$t("device.man") : vRoot.$t("device.girl"));
                     },
                 }, {
-                    title: '电话1',
+                    title: vRoot.$t("user.phone1"),
                     key: 'phone1',
                     width: 150,
                 }, {
-                    title: '电话2',
+                    title: vRoot.$t("user.phone2"),
                     key: 'phone2',
                     width: 150,
                 }, {
-                    title: '紧急电话2',
+                    title: vRoot.$t("user.sosphone1"),
                     key: 'sosphone1',
                     width: 150,
                 }, {
-                    title: '紧急电话2',
+                    title: vRoot.$t("user.sosphone2"),
                     key: 'sosphone2',
                     width: 150,
                 }, {
-                    title: '从业资格证编码',
+                    title: vRoot.$t("user.certificationcode"),
                     key: 'certificationcode',
                     width: 150,
                 }, {
-                    title: '发证机关',
+                    title: vRoot.$t("user.agencyname"),
                     key: 'agencyname',
                     width: 150,
                 }, {
-                    title: '证件有效期',
+                    title: vRoot.$t("user.certificationvalidatedate"),
                     key: ' certificationvalidatedate',
                     width: 150,
                 }, {
-                    title: '地址',
+                    title: vRoot.$t("reportForm.address"),
                     key: 'address',
                     width: 150,
                 }, {
-                    title: '驾驶证id',
+                    title: vRoot.$t("reportForm.drivercardid"),
                     key: 'drivercardid',
                     width: 150,
                 }, {
-                    title: '驾驶证发证机关',
+                    title: vRoot.$t("reportForm.driveragencyname"),
                     key: 'driveragencyname',
                     width: 150,
                 }, {
-                    title: '准驾车型',
+                    title: vRoot.$t("reportForm.drivercardtype"),
                     key: 'drivercardtype',
                     width: 150,
                 }, {
-                    title: '准驾证开始日期',
+                    title: vRoot.$t("reportForm.drivercardstartday"),
                     key: 'drivercardstartday',
                     width: 150,
                 }, {
-                    title: '准驾证到期日期',
+                    title: vRoot.$t("reportForm.drivercardendday"),
                     key: 'drivercardendday',
                     width: 150,
                 }],
@@ -259,6 +280,7 @@
                 taleHeight: 300,
                 sosoTableValue: '',
                 createrToUser: userName,
+                creater: '',
                 sosoValue: '',
                 name: '',
                 cardid: '',
@@ -278,6 +300,45 @@
                 drivercardendday: new Date(),
             },
             methods: {
+                selectedCmd: function(item) {
+                    var me = this;
+                    setTimeout(function() {
+                        me.isShowMatchDev = false;
+                        me.creater = item;
+                    }, 100)
+                },
+                sosoValueChange: function() {
+                    var me = this;
+                    var value = this.creater.toLowerCase();
+
+                    if (this.timeoutIns != null) {
+                        clearTimeout(this.timeoutIns);
+                    }
+
+                    if (!value.trim()) {
+                        this.userlists = userlists;
+                        return;
+                    }
+
+                    this.timeoutIns = setTimeout(function() {
+                        var list = [];
+                        me.list.forEach(function(itme) {
+                            if (itme.toLowerCase().indexOf(value) != -1) {
+                                list.push(itme);
+                            }
+                        })
+                        me.userlists = list;
+                    }, 100);
+                },
+                focus: function() {
+                    this.isShowMatchDev = true;
+                },
+                blur: function() {
+                    var me = this
+                    setTimeout(function() {
+                        me.isShowMatchDev = false;
+                    }, 300)
+                },
                 searchLocalData: function() {
                     var me = this;
                     var tableData = [];
@@ -299,9 +360,9 @@
                     utils.sendAjax(url, data, function(resp) {
                         if (resp.status === 0) {
                             me.$delete(me.tableData, index);
-                            me.$Message.success('删除成功');
+                            me.$Message.success(vRoot.$t("message.deleteSucc"));
                         } else {
-                            me.$Message.error('删除成功');
+                            me.$Message.error(vRoot.$t("message.deleteFail"));
                         }
                     });
                 },
@@ -323,8 +384,27 @@
                     this.drivercardstartday = new Date(row.drivercardstartday);
                     this.drivercardendday = new Date(row.drivercardendday);
                 },
+
                 showAddModal: function() {
                     this.isEdit = false;
+                    this.setEditRowValue({
+                        name: '',
+                        cardid: '',
+                        sex: '1',
+                        phone1: '',
+                        phone2: '',
+                        sosphone1: '',
+                        sosphone2: '',
+                        certificationcode: '',
+                        agencyname: '',
+                        certificationvalidatedate: new Date(), //证件有效期
+                        address: '',
+                        drivercardid: '',
+                        driveragencyname: '',
+                        drivercardtype: '',
+                        drivercardstartday: new Date(),
+                        drivercardendday: new Date(),
+                    })
                     this.modal = true;
                 },
                 calcTableHeight: function() {
@@ -352,8 +432,13 @@
                         drivercardtype: this.drivercardtype,
                     };
                     if (this.isEdit) {
+                        if (userlists.indexOf(this.creater) == -1) {
+                            me.$Message.error(me.$t("message.selectCorrectAccount"));
+                            return;
+                        }
                         url = myUrls.editEmployee();
                         data.employeeid = editObject.employeeid;
+                        data.creater = this.creater;
                     } else {
                         url = myUrls.createEmployee();
                     }
@@ -363,25 +448,55 @@
                     this.drivercardendday && (data.drivercardendday = DateFormat.format(new Date(this.drivercardendday), 'yyyy-MM-dd'));
                     utils.sendAjax(url, data, function(respData) {
                         if (me.isEdit) {
-                            console.log("编辑", respData);
                             if (respData.status == 0) {
-                                Object.assign(editObject, respData);
-                                me.$Message.success('编辑成功');
+                                if (editObject.creater != respData.creater) {
+                                    var index = 0;
+                                    me.tableData.forEach(function(item, idx) {
+                                        if (item.employeeid == editObject.employeeid) {
+                                            index = idx;
+                                        }
+                                    });
+                                    me.$delete(me.tableData, index);
+                                } else {
+                                    Object.assign(editObject, respData);
+                                };
+                                me.$Message.success(vRoot.$t("message.changeSucc"));
+                                me.modal = false;
                             } else {
-                                me.$Message.error('编辑失败');
+                                me.$Message.error(vRoot.$t("message.changeFail"));
                             }
                         } else {
                             if (respData.status == 0) {
                                 me.tableData.push(respData);
-                                me.$Message.success('添加成功');
+                                me.$Message.success(vRoot.$t("message.addSucc"));
+                                me.modal = false;
                             } else {
-                                me.$Message.error('添加失败');
+                                me.$Message.error(vRoot.$t("message.addFail"));
                             }
 
                         }
                     });
                 },
-                resetInfo: function() {},
+                resetInfo: function() {
+                    this.setEditRowValue({
+                        name: '',
+                        cardid: '',
+                        sex: '1',
+                        phone1: '',
+                        phone2: '',
+                        sosphone1: '',
+                        sosphone2: '',
+                        certificationcode: '',
+                        agencyname: '',
+                        certificationvalidatedate: new Date(), //证件有效期
+                        address: '',
+                        drivercardid: '',
+                        driveragencyname: '',
+                        drivercardtype: '',
+                        drivercardstartday: new Date(),
+                        drivercardendday: new Date(),
+                    })
+                },
                 queryUsersTree: function(callback) {
                     var url = myUrls.queryUsersTree(),
                         me = this;
@@ -543,14 +658,41 @@
                     utils.sendAjax(url, {
                         creater: userName
                     }, function(resp) {
-                        console.log(resp);
                         me.records = deepClone(resp.employees)
                         me.tableData = resp.employees;
                         me.loading = false;
                     });
-                }
+                },
+                getUserInfoList: function() {
+                    var url = myUrls.queryUser();
+                    utils.sendAjax(url, {
+                        username: userName
+                    }, this.doUserInfoList);
+                },
+                doUserInfoList: function(resp) {
+                    var me = this;
+                    var list = [];
+                    if (resp.status == 0 && resp.userlists != null) {
+
+                        resp.userlists.forEach(function(item) {
+                            if (item.usertype < 4) {
+                                list.push(item.username)
+                            }
+                        });
+                    }
+                    list.unshift(userName)
+                    me.list = list;
+                    me.userlists = list;
+                },
             },
             watch: {
+                isShowMatchDev: function() {
+                    if (!this.isShowMatchDev) {
+                        this.iconState = "ios-arrow-down";
+                    } else {
+                        this.iconState = "ios-arrow-up";
+                    }
+                },
                 sosoValue: function(value) {
                     var me = this;
                     if (this.timeoutIns != null) {
@@ -561,21 +703,23 @@
                         me.filterMethod(value);
                     }, 300);
                 },
-                searchLocalData: function(newVal) {
+                sosoTableValue: function(newVal) {
                     if (newVal == "") {
+
                         this.tableData = this.records;
                     }
                 }
             },
             computed: {
                 modalTitle: function() {
-                    return this.isEdit ? '编辑' : '添加';
+                    return this.isEdit ? vRoot.$t('monitor.edit') : vRoot.$t('user.add');
                 }
             },
             mounted: function() {
                 var me = this;
                 me.timeoutIns = null;
                 me.records = [];
+                me.getUserInfoList();
                 me.queryUsersTree(function(usersTree) {
                     me.groupslist = usersTree;
                     me.treeData = usersTree;

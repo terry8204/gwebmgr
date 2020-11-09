@@ -223,7 +223,7 @@
                             me.tableData = resp.records;
                             me.records = resp.records;
                         }
-                        me.bonuspoints = resp.selfrecord.bonuspoints;
+                        me.bonuspoints = resp.selfrecord ? resp.selfrecord.bonuspoints : '';
                     }, function() {
                         me.loading = false;
                     })
