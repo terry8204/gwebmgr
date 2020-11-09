@@ -775,6 +775,12 @@ var myUrls = {
     queryEmployees: function() {
         return this.apihosts + 'webapi?action=queryemployees&token=' + token;
     },
+    deleteEmployees: function() {
+        return this.apihosts + 'webapi?action=deleteemployees&token=' + token;
+    },
+    editEmployee: function() {
+        return this.apihosts + 'webapi?action=editemployee&token=' + token;
+    },
 }
 
 

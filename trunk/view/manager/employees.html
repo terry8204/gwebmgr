@@ -12,10 +12,10 @@
         <div class="table-title">从业人员列表</div>
         <div class="table-action">
             <div style="width: 180px;">
-                <i-input></i-input>
+                <i-input v-model.trim="sosoTableValue"></i-input>
             </div>
             <div>
-                <i-button>搜索</i-button>
+                <i-button @click="searchLocalData">搜索</i-button>
             </div>
             <div>
                 <i-button type='primary' @click="showAddModal">添加</i-button>
@@ -148,6 +148,7 @@
                                         editObject = params.row;
                                         vueInstanse.isEdit = true;
                                         vueInstanse.modal = true;
+                                        vueInstanse.setEditRowValue(editObject);
                                     }
                                 }
                             }, vRoot.$t("bgMgr.edit")),
@@ -163,7 +164,7 @@
                                 },
                                 on: {
                                     'on-ok': function() {
-                                        vueInstanse.handleDelete(params.row.username);
+                                        vueInstanse.handleDelete(params);
                                     }
                                 }
                             }, [
@@ -186,16 +187,20 @@
                     width: 120,
                 }, {
                     title: '创建时间',
-                    key: 'createtime',
                     width: 150,
+                    render: function(h, params) {
+                        return h('span', {}, DateFormat.format(new Date(params.row.createtime), 'yyyy-MM-dd'))
+                    },
                 }, {
                     title: '身份证号',
                     key: 'cardid',
                     width: 150,
                 }, {
                     title: '性别',
-                    key: 'sex',
                     width: 100,
+                    render: function(h, params) {
+                        return h('span', {}, params.row.sex == 1 ? '男' : '女');
+                    },
                 }, {
                     title: '电话1',
                     key: 'phone1',
@@ -250,8 +255,9 @@
                     width: 150,
                 }],
                 treeData: [],
-                tableData: [{}],
+                tableData: [],
                 taleHeight: 300,
+                sosoTableValue: '',
                 createrToUser: userName,
                 sosoValue: '',
                 name: '',
@@ -268,10 +274,55 @@
                 drivercardid: '',
                 driveragencyname: '',
                 drivercardtype: '',
-                drivercardstartday: '',
-                drivercardendday: '',
+                drivercardstartday: new Date(),
+                drivercardendday: new Date(),
             },
             methods: {
+                searchLocalData: function() {
+                    var me = this;
+                    var tableData = [];
+                    this.records.forEach(function(item) {
+                        if (item.name.indexOf(me.sosoTableValue) > -1 || item.address.indexOf(me.sosoTableValue) > -1) {
+                            tableData.push(item);
+                        }
+                    });
+                    this.tableData = tableData;
+                },
+                handleDelete: function(params) {
+                    var me = this;
+                    var index = params.index;
+                    var row = params.row;
+                    var url = myUrls.deleteEmployees();
+                    var data = {
+                        employees: [row.employeeid],
+                    }
+                    utils.sendAjax(url, data, function(resp) {
+                        if (resp.status === 0) {
+                            me.$delete(me.tableData, index);
+                            me.$Message.success('删除成功');
+                        } else {
+                            me.$Message.error('删除成功');
+                        }
+                    });
+                },
+                setEditRowValue: function(row) {
+                    this.name = row.name;
+                    this.cardid = row.cardid;
+                    this.sex = String(row.sex);
+                    this.phone1 = row.phone1;
+                    this.phone2 = row.phone2;
+                    this.sosphone1 = row.sosphone1;
+                    this.sosphone2 = row.sosphone2;
+                    this.certificationcode = row.certificationcode;
+                    this.agencyname = row.agencyname;
+                    this.certificationvalidatedate = new Date(row.certificationvalidatedate); //证件有效期
+                    this.address = row.address;
+                    this.drivercardid = row.drivercardid;
+                    this.driveragencyname = row.driveragencyname;
+                    this.drivercardtype = row.drivercardtype;
+                    this.drivercardstartday = new Date(row.drivercardstartday);
+                    this.drivercardendday = new Date(row.drivercardendday);
+                },
                 showAddModal: function() {
                     this.isEdit = false;
                     this.modal = true;
@@ -283,11 +334,6 @@
                 handleSubmit: function() {
                     var me = this;
                     var url = '';
-                    if (this.isEdit) {
-                        url = myUrls.createEmployee();
-                    } else {
-                        url = myUrls.createEmployee();
-                    }
                     var data = {
                         creater: this.createrToUser,
                         name: this.name,
@@ -305,13 +351,33 @@
                         driveragencyname: this.driveragencyname,
                         drivercardtype: this.drivercardtype,
                     };
+                    if (this.isEdit) {
+                        url = myUrls.editEmployee();
+                        data.employeeid = editObject.employeeid;
+                    } else {
+                        url = myUrls.createEmployee();
+                    }
+
+
                     this.drivercardstartday && (data.drivercardstartday = DateFormat.format(new Date(this.drivercardstartday), 'yyyy-MM-dd'));
                     this.drivercardendday && (data.drivercardendday = DateFormat.format(new Date(this.drivercardendday), 'yyyy-MM-dd'));
                     utils.sendAjax(url, data, function(respData) {
                         if (me.isEdit) {
                             console.log("编辑", respData);
+                            if (respData.status == 0) {
+                                Object.assign(editObject, respData);
+                                me.$Message.success('编辑成功');
+                            } else {
+                                me.$Message.error('编辑失败');
+                            }
                         } else {
-                            console.log("新增", respData);
+                            if (respData.status == 0) {
+                                me.tableData.push(respData);
+                                me.$Message.success('添加成功');
+                            } else {
+                                me.$Message.error('添加失败');
+                            }
+
                         }
                     });
                 },
@@ -471,11 +537,16 @@
                     return childTemp;
                 },
                 queryEmployees: function(userName) {
+                    var me = this;
                     var url = myUrls.queryEmployees();
+                    me.loading = true;
                     utils.sendAjax(url, {
                         creater: userName
                     }, function(resp) {
                         console.log(resp);
+                        me.records = deepClone(resp.employees)
+                        me.tableData = resp.employees;
+                        me.loading = false;
                     });
                 }
             },
@@ -489,6 +560,11 @@
                     this.timeoutIns = setTimeout(function() {
                         me.filterMethod(value);
                     }, 300);
+                },
+                searchLocalData: function(newVal) {
+                    if (newVal == "") {
+                        this.tableData = this.records;
+                    }
                 }
             },
             computed: {
@@ -499,6 +575,7 @@
             mounted: function() {
                 var me = this;
                 me.timeoutIns = null;
+                me.records = [];
                 me.queryUsersTree(function(usersTree) {
                     me.groupslist = usersTree;
                     me.treeData = usersTree;
