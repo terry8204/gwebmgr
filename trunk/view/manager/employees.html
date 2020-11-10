@@ -15,7 +15,7 @@
                 <i-input v-model.trim="sosoTableValue"></i-input>
             </div>
             <div>
-                <i-button @click="searchLocalData">{{$t('videoback.search')}}</i-button>
+                <i-button @click="queryEmployees">{{$t('videoback.search')}}</i-button>
             </div>
             <div>
                 <i-button type='primary' @click="showAddModal">{{$t('user.add')}}</i-button>
@@ -339,16 +339,6 @@
                         me.isShowMatchDev = false;
                     }, 300)
                 },
-                searchLocalData: function() {
-                    var me = this;
-                    var tableData = [];
-                    this.records.forEach(function(item) {
-                        if (item.name.indexOf(me.sosoTableValue) > -1 || item.address.indexOf(me.sosoTableValue) > -1) {
-                            tableData.push(item);
-                        }
-                    });
-                    this.tableData = tableData;
-                },
                 handleDelete: function(params) {
                     var me = this;
                     var index = params.index;
@@ -519,7 +509,7 @@
                                 on: {
                                     'click': function() {
                                         me.createrToUser = username;
-                                        me.queryEmployees(username);
+                                        me.queryEmployees();
                                     }
                                 },
                                 style: {
@@ -570,7 +560,7 @@
                                         on: {
                                             'click': function() {
                                                 me.createrToUser = username;
-                                                me.queryEmployees(username);
+                                                me.queryEmployees();
                                             }
                                         },
                                         style: {
@@ -656,9 +646,9 @@
                     var url = myUrls.queryEmployees();
                     me.loading = true;
                     utils.sendAjax(url, {
-                        creater: userName
+                        creater: this.createrToUser,
+                        keyword: this.sosoTableValue,
                     }, function(resp) {
-                        me.records = deepClone(resp.employees)
                         me.tableData = resp.employees;
                         me.loading = false;
                     });
@@ -703,12 +693,6 @@
                         me.filterMethod(value);
                     }, 300);
                 },
-                sosoTableValue: function(newVal) {
-                    if (newVal == "") {
-
-                        this.tableData = this.records;
-                    }
-                }
             },
             computed: {
                 modalTitle: function() {
@@ -718,13 +702,12 @@
             mounted: function() {
                 var me = this;
                 me.timeoutIns = null;
-                me.records = [];
                 me.getUserInfoList();
                 me.queryUsersTree(function(usersTree) {
                     me.groupslist = usersTree;
                     me.treeData = usersTree;
                 });
-                me.queryEmployees(userName);
+                me.queryEmployees();
                 me.calcTableHeight();
                 window.onresize = function() {
                     me.calcTableHeight();

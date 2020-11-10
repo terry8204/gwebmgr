@@ -8,7 +8,7 @@
                 <i-input v-model.trim="queryParameter"></i-input>
             </div>
             <div style="float: left;padding-right: 10px;">
-                <i-button type="info" @click="queryLocalData">{{$t("reportForm.query")}}</i-button>
+                <i-button type="info" @click="queryupLoad809s">{{$t("reportForm.query")}}</i-button>
             </div>
             <div style="float: left;padding-right: 10px;">
                 <i-button type="primary" @click="handleAdd">{{$t("user.add")}}</i-button>
@@ -369,6 +369,21 @@
                         url = myUrls.createupLoad809();
                     }
 
+                    if (
+                        this.servername == "" ||
+                        this.gnsscenterid == "" ||
+                        this.userid == "" ||
+                        this.password == "" ||
+                        this.m1 == "" ||
+                        this.ia1 == "" ||
+                        this.ic1 == "" ||
+                        this.uplinkip == "" ||
+                        this.uplinkport == "") {
+                        this.$Message.error('红点的参数是必填的');
+                        return;
+                    }
+
+
                     utils.sendAjax(url, data, function(resp) {
                         console.log(resp);
                         if (resp.status == 0) {
@@ -408,17 +423,6 @@
                     this.videokey = row.videokey; //视频key' ,
                     this.remark = row.remark; //备注' ,
                 },
-                queryLocalData: function() {
-                    var tableData = [];
-                    for (var i = 0; i < this.records.length; i++) {
-                        var item = this.records[i];
-                        console.log(item);
-                        if (item.servername.indexOf(this.queryParameter) != -1) {
-                            tableData.push(item);
-                        }
-                    };
-                    this.tableData = tableData;
-                },
                 handleAdd: function() {
                     this.setRowInfo({
                         protocoltype: '1',
@@ -450,10 +454,10 @@
                     var me = this;
                     var url = myUrls.queryupLoad809s();
                     utils.sendAjax(url, {
-                        creater: userName
+                        creater: userName,
+                        keyword: this.queryParameter,
                     }, function(resp) {
                         me.tableData = resp.uploads;
-                        me.records = deepClone(resp.uploads);
                     });
                 },
                 query809Protocols: function() {
@@ -500,16 +504,8 @@
                     return this.isEdit ? '编辑接入平台' : '新增接入平台';
                 }
             },
-            watch: {
-                queryParameter: function(newVal) {
-                    if (newVal == "") {
-                        this.tableData = this.records;
-                    }
-                }
-            },
             mounted: function() {
                 var me = this;
-                this.records = [];
                 this.calcTableHeight();
                 this.queryupLoad809s();
                 this.query809Protocols();
