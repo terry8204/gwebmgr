@@ -1,0 +1,285 @@
+<meta charset="UTF-8">
+
+<div id="accessplatformlist" style="padding: 10px;">
+    <div class="full">
+        <h3 class="h3-title">接入平台列表</h3>
+        <div style="height: 42px;padding-top: 3px;">
+            <div style="float: left;padding-right: 10px;">
+                <i-input v-model.trim="queryParameter"></i-input>
+            </div>
+            <div style="float: left;padding-right: 10px;">
+                <i-button type="info" @click="queryLocalData">{{$t("reportForm.query")}}</i-button>
+            </div>
+            <div style="float: left;padding-right: 10px;">
+                <i-button type="primary" @click="handleAdd">{{$t("user.add")}}</i-button>
+            </div>
+        </div>
+        <div>
+            <i-table :columns="columnsList" :data="tableData" :height="taleHeight" :loading="loading"></i-table>
+        </div>
+        <Drawer :title="drawerTitle" width="800" v-model="drawerModal">
+            <Row style="height: 35px;line-height: 35px;">
+                <i-col :span="4" style="text-align: right;">
+                    平台名称&nbsp;
+                </i-col>
+                <i-col :span="20">
+                    <i-input v-model.trim="servername"></i-input>
+                </i-col>
+            </Row>
+            <Row style="height: 35px;line-height: 35px;">
+                <i-col :span="4" style="text-align: right;">
+                    协议类型&nbsp;
+                </i-col>
+                <i-col :span="8">
+                    <i-select v-model="protocoltype">
+                        <i-option value="809">809协议</i-option>
+                    </i-select>
+                </i-col>
+                <i-col :span="4" style="text-align: right;">
+                    协议版本号&nbsp;
+                </i-col>
+                <i-col :span="8">
+                    <i-input v-model.trim="uplinkversion"></i-input>
+                </i-col>
+            </Row>
+            <Row style="height: 35px;line-height: 35px;">
+                <i-col :span="4" style="text-align: right;">
+                    用户名&nbsp;
+                </i-col>
+                <i-col :span="8">
+                    <i-input v-model.trim="userid"></i-input>
+                </i-col>
+                <i-col :span="4" style="text-align: right;">
+                    密码&nbsp;
+                </i-col>
+                <i-col :span="8">
+                    <i-input v-model.trim="password"></i-input>
+                </i-col>
+            </Row>
+            <Row style="height: 35px;line-height: 35px;">
+                <i-col :span="4" style="text-align: right;">
+                    下级平台接入码&nbsp;
+                </i-col>
+                <i-col :span="8">
+                    <i-input v-model.trim="gnsscenterid"></i-input>
+                </i-col>
+                <i-col :span="4" style="text-align: right;">
+                    视频key&nbsp;
+                </i-col>
+                <i-col :span="8">
+                    <i-input v-model.trim="videokey"></i-input>
+                </i-col>
+            </Row>
+            <Row style="height: 35px;line-height: 35px;">
+                <i-col :span="4" style="text-align: right;">
+                    主链路ip&nbsp;
+                </i-col>
+                <i-col :span="8">
+                    <i-input v-model.trim="uplinkip"></i-input>
+                </i-col>
+                <i-col :span="4" style="text-align: right;">
+                    主链路端口&nbsp;
+                </i-col>
+                <i-col :span="8">
+                    <i-input v-model.trim="uplinkport"></i-input>
+                </i-col>
+            </Row>
+            <Row style="height: 35px;line-height: 35px;">
+                <i-col :span="4" style="text-align: right;">
+                    从链ip&nbsp;
+                </i-col>
+                <i-col :span="8">
+                    <i-input v-model.trim="downlinkip"></i-input>
+                </i-col>
+                <i-col :span="4" style="text-align: right;">
+                    从链端口&nbsp;
+                </i-col>
+                <i-col :span="8">
+                    <i-input v-model.trim="downlinkport"></i-input>
+                </i-col>
+            </Row>
+            <Row style="height: 35px;line-height: 35px;">
+                <i-col :span="4" style="text-align: right;">
+                    密匙M1&nbsp;
+                </i-col>
+                <i-col :span="8">
+                    <i-input v-model.trim="m1"></i-input>
+                </i-col>
+                <i-col :span="4" style="text-align: right;">
+                    密匙IA1&nbsp;
+                </i-col>
+                <i-col :span="8">
+                    <i-input v-model.trim="ia1"></i-input>
+                </i-col>
+            </Row>
+            <Row style="height: 35px;line-height: 35px;">
+                <i-col :span="4" style="text-align: right;">
+                    密匙IC1&nbsp;
+                </i-col>
+                <i-col :span="8">
+                    <i-input v-model.trim="ic1"></i-input>
+                </i-col>
+                <i-col :span="4" style="text-align: right;">
+                    视频回放URL&nbsp;
+                </i-col>
+                <i-col :span="8">
+                    <i-input v-model.trim="historyvideourl"></i-input>
+                </i-col>
+            </Row>
+            <Row style="height: 35px;line-height: 35px;">
+                <i-col :span="4" style="text-align: right;">
+                    实时视频URL&nbsp;
+                </i-col>
+                <i-col :span="8">
+                    <i-input v-model.trim="realtimevideourl"></i-input>
+                </i-col>
+                <i-col :span="4" style="text-align: right;">
+                    备注&nbsp;
+                </i-col>
+                <i-col :span="8">
+                    <i-input v-model.trim="remark"></i-input>
+                </i-col>
+            </Row>
+            <div style="width: 100%;position: absolute;bottom: 0;left: 0;border-top: 1px solid #e8e8e8;padding: 10px 16px;text-align: right;background: #fff;">
+                <i-button style="margin-right: 8px" @click="drawerModal = false">取消</i-button>
+                <i-button type="primary" @click="handleSubmit">确定</i-button>
+            </div>
+        </Drawer>
+    </div>
+    <script>
+        vueInstanse = new Vue({
+            el: "#accessplatformlist",
+            i18n: utils.getI18n(),
+            data: {
+                loading: false,
+                drawerModal: false,
+                isEdit: false,
+                queryParameter: '',
+                taleHeight: 300,
+                tableData: [],
+                protocoltype: '809',
+                servername: '救护科',
+                uplinkversion: '1.0',
+                userid: 'admin', //用户名' ,
+                password: '123456', //密码，限制8位长度' ,
+                gnsscenterid: '1', //下级平台接入码，上级平台给下级平台分配唯一标识码' ,
+                uplinkip: '2', //主链路ip' ,
+                uplinkport: '3', //主链路端口' ,
+                downlinkip: '4', //从链ip' ,
+                downlinkport: '5', //从链端口' ,
+                m1: '6', //密匙' ,
+                ia1: '7', //密匙' ,
+                ic1: '7', //密匙' ,
+                realtimevideourl: '1', //实时视频URL' ,
+                historyvideourl: '2', //视频回放URL' ,
+                videokey: '3', //视频key' ,
+                remark: '4', //备注' ,
+                columnsList: [{
+                    title: vRoot.$t("group.groupName"),
+                    key: 'groupname'
+                }, {
+                    title: vRoot.$t("bgMgr.action"),
+                    key: 'action',
+                    width: 220,
+                    render: function(h, params) {
+                        return h('div', [
+                            h('Button', {
+                                props: {
+                                    type: 'primary',
+                                    size: 'small'
+                                },
+                                style: {
+                                    marginRight: '5px'
+                                },
+                                on: {
+                                    click: function() {
+                                        vueInstanse.editDeviceIndex = params.index;
+                                        editObject = params.row;
+                                        vueInstanse.setGroupInfo();
+                                        vueInstanse.modal = true;
+                                    }
+                                }
+                            }, vRoot.$t("bgMgr.edit")),
+
+                            h('Poptip', {
+                                props: {
+                                    confirm: true,
+                                    title: vRoot.$t("message.confirmDel")
+                                },
+                                style: {
+                                    marginRight: '5px'
+                                },
+                                on: {
+                                    'on-ok': function() {
+                                        vueInstanse.del(params.row.groupid);
+                                    }
+                                }
+                            }, [
+                                h('Button', {
+                                    props: {
+                                        type: 'error',
+                                        size: 'small'
+                                    }
+                                }, vRoot.$t("bgMgr.delete"))
+                            ])
+                        ]);
+                    }
+                }],
+
+            },
+            methods: {
+                handleSubmit: function() {
+                    var url = ''
+                    if (this.isEdit) {
+
+                    } else {
+                        url = myUrls.createupLoad809();
+                    }
+                    var data = {
+                        protocoltype: Number(this.protocoltype),
+                        servername: this.servername,
+                        uplinkversion: this.uplinkversion,
+                        userid: this.userid, //用户名' ,
+                        password: this.password, //密码，限制8位长度' ,
+                        gnsscenterid: this.gnsscenterid, //下级平台接入码，上级平台给下级平台分配唯一标识码' ,
+                        uplinkip: this.uplinkip, //主链路ip' ,
+                        uplinkport: this.uplinkport, //主链路端口' ,
+                        downlinkip: this.downlinkip, //从链ip' ,
+                        downlinkport: this.downlinkport, //从链端口' ,
+                        m1: this.m1, //密匙' ,
+                        ia1: this.ia1, //密匙' ,
+                        ic1: this.ic1, //密匙' ,
+                        realtimevideourl: this.realtimevideourl, //实时视频URL' ,
+                        historyvideourl: this.historyvideourl, //视频回放URL' ,
+                        videokey: this.videokey, //视频key' ,
+                        remark: this.remark, //备注' ,
+                    }
+                    utils.sendAjax(url, data, function(resp) {
+                        console.log(resp);
+                    })
+                },
+                queryLocalData: function() {},
+                handleAdd: function() {
+                    this.drawerModal = true;
+                    this.isEdit = false;
+                },
+                calcTableHeight: function() {
+                    var wHeight = window.innerHeight;
+                    this.taleHeight = wHeight - 148;
+                },
+            },
+            computed: {
+                drawerTitle: function() {
+                    return this.isEdit ? '编辑接入平台' : '新增接入平台';
+                }
+            },
+            mounted: function() {
+                var me = this;
+                this.calcTableHeight();
+                window.onresize = function() {
+                    me.calcTableHeight();
+                }
+            }
+        })
+    </script>
+</div>

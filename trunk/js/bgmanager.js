@@ -78,6 +78,14 @@ var bgManager = {
                         { title: me.$t("bgMgr.transferRecords"), name: 'transferRecord', icon: 'ios-paper-outline' },
                     ]
                 },
+                {
+                    title: '809转发',
+                    name: 'forward809',
+                    icon: 'ios-laptop',
+                    children: [
+                        { title: "接入平台列表", name: 'accessPlatformList', icon: 'logo-foursquare' },
+                    ]
+                },
             ]
         }
     },
@@ -179,6 +187,9 @@ var bgManager = {
                     break
                 case 'transferRecord':
                     page = 'transferrecord.html'
+                    break
+                case 'accessPlatformList':
+                    page = 'accessplatformlist.html'
                     break
             }
             this.currentPage = name

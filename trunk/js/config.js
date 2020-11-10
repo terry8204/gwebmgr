@@ -781,6 +781,9 @@ var myUrls = {
     editEmployee: function() {
         return this.apihosts + 'webapi?action=editemployee&token=' + token;
     },
+    createupLoad809: function() {
+        return this.apihosts + 'webapi?action=createupload809&token=' + token;
+    },
 }
 
 
