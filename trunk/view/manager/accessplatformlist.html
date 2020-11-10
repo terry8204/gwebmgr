@@ -408,7 +408,17 @@
                     this.videokey = row.videokey; //视频key' ,
                     this.remark = row.remark; //备注' ,
                 },
-                queryLocalData: function() {},
+                queryLocalData: function() {
+                    var tableData = [];
+                    for (var i = 0; i < this.records.length; i++) {
+                        var item = this.records[i];
+                        console.log(item);
+                        if (item.servername.indexOf(this.queryParameter) != -1) {
+                            tableData.push(item);
+                        }
+                    };
+                    this.tableData = tableData;
+                },
                 handleAdd: function() {
                     this.setRowInfo({
                         protocoltype: '1',
@@ -443,7 +453,7 @@
                         creater: userName
                     }, function(resp) {
                         me.tableData = resp.uploads;
-                        console.log(resp.uploads);
+                        me.records = deepClone(resp.uploads);
                     });
                 },
                 query809Protocols: function() {
@@ -491,8 +501,16 @@
                     return this.isEdit ? '编辑接入平台' : '新增接入平台';
                 }
             },
+            watch: {
+                queryParameter: function(newVal) {
+                    if (newVal == "") {
+                        this.tableData = this.records;
+                    }
+                }
+            },
             mounted: function() {
                 var me = this;
+                this.records = [];
                 this.calcTableHeight();
                 this.queryupLoad809s();
                 this.query809Protocols();
