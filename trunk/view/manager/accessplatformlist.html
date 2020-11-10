@@ -32,7 +32,7 @@
                 </i-col>
                 <i-col :span="8">
                     <i-select v-model="protocoltype">
-                        <i-option value="809">809协议</i-option>
+                        <i-option value="1">809协议</i-option>
                     </i-select>
                 </i-col>
                 <i-col :span="4" style="text-align: right;">
@@ -157,10 +157,10 @@
                 queryParameter: '',
                 taleHeight: 300,
                 tableData: [],
-                protocoltype: '809',
+                protocoltype: '1',
                 servername: '救护科',
                 uplinkversion: '1.0',
-                userid: 'admin', //用户名' ,
+                userid: '00000', //用户名' ,
                 password: '123456', //密码，限制8位长度' ,
                 gnsscenterid: '1', //下级平台接入码，上级平台给下级平台分配唯一标识码' ,
                 uplinkip: '2', //主链路ip' ,
@@ -175,9 +175,6 @@
                 videokey: '3', //视频key' ,
                 remark: '4', //备注' ,
                 columnsList: [{
-                    title: vRoot.$t("group.groupName"),
-                    key: 'groupname'
-                }, {
                     title: vRoot.$t("bgMgr.action"),
                     key: 'action',
                     width: 220,
@@ -223,13 +220,37 @@
                                 }, vRoot.$t("bgMgr.delete"))
                             ])
                         ]);
-                    }
+                    },
+                }, {
+                    title: '平台名称',
+                    key: 'servername',
+                }, {
+                    title: '用户名',
+                    key: 'userid',
+                }, {
+                    title: '密码',
+                    key: 'password',
+                }, {
+                    title: '下级平台接入',
+                    key: 'gnsscenterid',
+                }, {
+                    title: '主链路ip',
+                    key: 'uplinkip',
+                }, {
+                    title: '主链路端口',
+                    key: 'uplinkport',
+                }, {
+                    title: '从链ip',
+                    key: 'downlinkip',
+                }, {
+                    title: '从链端口',
+                    key: 'downlinkport',
                 }],
-
             },
             methods: {
                 handleSubmit: function() {
-                    var url = ''
+                    var url = '';
+                    var me = this;
                     if (this.isEdit) {
 
                     } else {
@@ -239,22 +260,36 @@
                         protocoltype: Number(this.protocoltype),
                         servername: this.servername,
                         uplinkversion: this.uplinkversion,
-                        userid: this.userid, //用户名' ,
+                        userid: Number(this.userid), //用户名' ,
                         password: this.password, //密码，限制8位长度' ,
-                        gnsscenterid: this.gnsscenterid, //下级平台接入码，上级平台给下级平台分配唯一标识码' ,
+                        gnsscenterid: Number(this.gnsscenterid), //下级平台接入码，上级平台给下级平台分配唯一标识码' ,
                         uplinkip: this.uplinkip, //主链路ip' ,
-                        uplinkport: this.uplinkport, //主链路端口' ,
+                        uplinkport: Number(this.uplinkport), //主链路端口' ,
                         downlinkip: this.downlinkip, //从链ip' ,
-                        downlinkport: this.downlinkport, //从链端口' ,
-                        m1: this.m1, //密匙' ,
-                        ia1: this.ia1, //密匙' ,
-                        ic1: this.ic1, //密匙' ,
+                        downlinkport: Number(this.downlinkport), //从链端口' ,
+                        m1: Number(this.m1), //密匙' ,
+                        ia1: Number(this.ia1), //密匙' ,
+                        ic1: Number(this.ic1), //密匙' ,
                         realtimevideourl: this.realtimevideourl, //实时视频URL' ,
                         historyvideourl: this.historyvideourl, //视频回放URL' ,
                         videokey: this.videokey, //视频key' ,
                         remark: this.remark, //备注' ,
                     }
                     utils.sendAjax(url, data, function(resp) {
+                        console.log(resp);
+                        if (resp.status == 0) {
+                            if (me.isEdit) {
+
+                            } else {
+
+                            }
+                        } else {
+                            if (me.isEdit) {
+                                me.$Message.error('编辑失败')
+                            } else {
+                                me.$Message.error('添加失败')
+                            }
+                        }
                         console.log(resp);
                     })
                 },
