@@ -32,7 +32,7 @@
                 </i-col>
                 <i-col :span="8">
                     <i-select v-model="protocoltype">
-                        <i-option value="1">809协议</i-option>
+                        <i-option :value="item.index" :key="item.index" v-for="item in protocols">{{item.name}}</i-option>
                     </i-select>
                 </i-col>
                 <i-col :span="4" style="text-align: right;">
@@ -157,32 +157,33 @@
                 queryParameter: '',
                 taleHeight: 300,
                 tableData: [],
-                protocoltype: '1',
-                servername: '救护科',
-                uplinkversion: '1.0',
-                userid: '00000', //用户名' ,
-                password: '123456', //密码，限制8位长度' ,
-                gnsscenterid: '1', //下级平台接入码，上级平台给下级平台分配唯一标识码' ,
-                uplinkip: '2', //主链路ip' ,
-                uplinkport: '3', //主链路端口' ,
-                downlinkip: '4', //从链ip' ,
-                downlinkport: '5', //从链端口' ,
-                m1: '6', //密匙' ,
-                ia1: '7', //密匙' ,
-                ic1: '7', //密匙' ,
-                realtimevideourl: '1', //实时视频URL' ,
-                historyvideourl: '2', //视频回放URL' ,
-                videokey: '3', //视频key' ,
-                remark: '4', //备注' ,
+                protocoltype: 1,
+                servername: '',
+                uplinkversion: '',
+                userid: '', //用户名' ,
+                password: '', //密码，限制8位长度' ,
+                gnsscenterid: '', //下级平台接入码，上级平台给下级平台分配唯一标识码' ,
+                uplinkip: '', //主链路ip' ,
+                uplinkport: '', //主链路端口' ,
+                downlinkip: '', //从链ip' ,
+                downlinkport: '', //从链端口' ,
+                m1: '', //密匙' ,
+                ia1: '', //密匙' ,
+                ic1: '', //密匙' ,
+                realtimevideourl: '', //实时视频URL' ,
+                historyvideourl: '', //视频回放URL' ,
+                videokey: '', //视频key' ,
+                remark: '', //备注' ,
                 columnsList: [{
                     title: vRoot.$t("bgMgr.action"),
                     key: 'action',
-                    width: 220,
+                    width: 200,
                     render: function(h, params) {
+                        var status = params.row.status;
                         return h('div', [
                             h('Button', {
                                 props: {
-                                    type: 'primary',
+                                    type: 'info',
                                     size: 'small'
                                 },
                                 style: {
@@ -190,10 +191,11 @@
                                 },
                                 on: {
                                     click: function() {
-                                        vueInstanse.editDeviceIndex = params.index;
+                                        vueInstanse.upload809Index = params.index;
                                         editObject = params.row;
-                                        vueInstanse.setGroupInfo();
-                                        vueInstanse.modal = true;
+                                        vueInstanse.setRowInfo(editObject);
+                                        vueInstanse.isEdit = true;
+                                        vueInstanse.drawerModal = true;
                                     }
                                 }
                             }, vRoot.$t("bgMgr.edit")),
@@ -208,7 +210,8 @@
                                 },
                                 on: {
                                     'on-ok': function() {
-                                        vueInstanse.del(params.row.groupid);
+                                        vueInstanse.upload809Index = params.index;
+                                        vueInstanse.deleteUpload809s(params.row.upload809id);
                                     }
                                 }
                             }, [
@@ -218,44 +221,128 @@
                                         size: 'small'
                                     }
                                 }, vRoot.$t("bgMgr.delete"))
-                            ])
+                            ]),
+                            h('Button', {
+                                props: {
+                                    type: status == 0 ? 'primary' : 'error',
+                                    size: 'small'
+                                },
+                                style: {
+                                    marginRight: '5px'
+                                },
+                                on: {
+                                    click: function() {
+                                        vueInstanse.setUpload809sStatus(params.row);
+                                    }
+                                }
+                            }, status == 0 ? "开启服务" : '关闭服务'),
                         ]);
                     },
                 }, {
+                    title: '主链路状态',
+                    width: 120,
+                    render: function(h, params) {
+                        var upstatus = params.row.upstatus;
+                        if (upstatus === 0) {
+                            return h('span', {
+                                style: {
+                                    color: 'red'
+                                }
+                            }, '已断开')
+                        } else {
+                            return h('span', {
+                                style: {
+                                    color: 'green'
+                                }
+                            }, '已连接')
+                        }
+                    }
+                }, {
+                    title: '从链路状态',
+                    width: 120,
+                    render: function(h, params) {
+                        var downstatus = params.row.downstatus;
+                        if (downstatus === 0) {
+                            return h('span', {
+                                style: {
+                                    color: 'red'
+                                }
+                            }, '已断开')
+                        } else {
+                            return h('span', {
+                                style: {
+                                    color: 'green'
+                                }
+                            }, '已连接')
+                        }
+                    }
+                }, {
                     title: '平台名称',
                     key: 'servername',
+                    width: 120,
                 }, {
                     title: '用户名',
                     key: 'userid',
+                    width: 120,
                 }, {
                     title: '密码',
                     key: 'password',
+                    width: 120,
                 }, {
                     title: '下级平台接入',
                     key: 'gnsscenterid',
+                    width: 120,
                 }, {
                     title: '主链路ip',
                     key: 'uplinkip',
+                    width: 140,
                 }, {
                     title: '主链路端口',
                     key: 'uplinkport',
+                    width: 120,
                 }, {
                     title: '从链ip',
                     key: 'downlinkip',
+                    width: 120,
                 }, {
                     title: '从链端口',
                     key: 'downlinkport',
+                    width: 120,
+                }, {
+                    title: 'M1密匙',
+                    key: 'm1',
+                    width: 120,
+                }, {
+                    title: 'IA1密匙',
+                    key: 'ia1',
+                    width: 120,
+                }, {
+                    title: 'IC1密匙',
+                    key: 'ic1',
+                    width: 120,
+                }, {
+                    title: '视频key',
+                    key: 'videokey',
+                    width: 120,
+                }, {
+                    title: '实时视频URL',
+                    key: 'realtimevideourl',
+                    width: 120,
+                }, {
+                    title: '视频回放URL',
+                    key: 'historyvideourl',
+                    width: 120,
+                }, {
+                    title: '备注',
+                    key: 'remark',
+                    width: 120,
                 }],
+                protocols: [],
             },
             methods: {
                 handleSubmit: function() {
                     var url = '';
                     var me = this;
-                    if (this.isEdit) {
-
-                    } else {
-                        url = myUrls.createupLoad809();
-                    }
                     var data = {
                         protocoltype: Number(this.protocoltype),
                         servername: this.servername,
@@ -275,26 +362,73 @@
                         videokey: this.videokey, //视频key' ,
                         remark: this.remark, //备注' ,
                     }
+                    if (this.isEdit) {
+                        data.upload809id = editObject.upload809id;
+                        url = myUrls.editUpload809();
+                    } else {
+                        url = myUrls.createupLoad809();
+                    }
+
                     utils.sendAjax(url, data, function(resp) {
                         console.log(resp);
                         if (resp.status == 0) {
                             if (me.isEdit) {
-
+                                me.$Message.success('编辑成功');
+                                Object.assign(editObject, resp);
                             } else {
-
+                                me.tableData.push(resp);
+                                me.$Message.success('添加成功');
                             }
+                            me.drawerModal = false;
                         } else {
                             if (me.isEdit) {
-                                me.$Message.error('编辑失败')
+                                me.$Message.error('编辑失败');
                             } else {
-                                me.$Message.error('添加失败')
+                                me.$Message.error('添加失败');
                             }
                         }
-                        console.log(resp);
                     })
+                },
+                setRowInfo: function(row) {
+                    this.protocoltype = Number(row.protocoltype);
+                    this.servername = row.servername;
+                    this.uplinkversion = row.uplinkversion;
+                    this.userid = row.userid; //用户名' ,
+                    this.password = row.password; //密码，限制8位长度' ,
+                    this.gnsscenterid = row.gnsscenterid; //下级平台接入码，上级平台给下级平台分配唯一标识码' ,
+                    this.uplinkip = row.uplinkip; //主链路ip' ,
+                    this.uplinkport = row.uplinkport; //主链路端口' ,
+                    this.downlinkip = row.downlinkip; //从链ip' ,
+                    this.downlinkport = row.downlinkport; //从链端口' ,
+                    this.m1 = row.m1; //密匙' ,
+                    this.ia1 = row.ia1; //密匙' ,
+                    this.ic1 = row.ic1; //密匙' ,
+                    this.realtimevideourl = row.realtimevideourl; //实时视频URL' ,
+                    this.historyvideourl = row.historyvideourl; //视频回放URL' ,
+                    this.videokey = row.videokey; //视频key' ,
+                    this.remark = row.remark; //备注' ,
                 },
                 queryLocalData: function() {},
                 handleAdd: function() {
+                    this.setRowInfo({
+                        protocoltype: '1',
+                        servername: '',
+                        uplinkversion: '',
+                        userid: '', //用户名' ,
+                        password: '', //密码，限制8位长度' ,
+                        gnsscenterid: '', //下级平台接入码，上级平台给下级平台分配唯一标识码' ,
+                        uplinkip: '', //主链路ip' ,
+                        uplinkport: '', //主链路端口' ,
+                        downlinkip: '', //从链ip' ,
+                        downlinkport: '', //从链端口' ,
+                        m1: '', //密匙' ,
+                        ia1: '', //密匙' ,
+                        ic1: '', //密匙' ,
+                        realtimevideourl: '', //实时视频URL' ,
+                        historyvideourl: '', //视频回放URL' ,
+                        videokey: '', //视频key' ,
+                        remark: '', //备注' ,
+                    })
                     this.drawerModal = true;
                     this.isEdit = false;
                 },
@@ -302,6 +436,55 @@
                     var wHeight = window.innerHeight;
                     this.taleHeight = wHeight - 148;
                 },
+                queryupLoad809s: function() {
+                    var me = this;
+                    var url = myUrls.queryupLoad809s();
+                    utils.sendAjax(url, {
+                        creater: userName
+                    }, function(resp) {
+                        me.tableData = resp.uploads;
+                        console.log(resp.uploads);
+                    });
+                },
+                query809Protocols: function() {
+                    var me = this;
+                    var url = myUrls.query809Protocols();
+                    utils.sendAjax(url, {}, function(resp) {
+                        me.protocols = resp.protocols;
+                    });
+                },
+                setUpload809sStatus: function(row) {
+                    var me = this;
+                    var url = myUrls.setUpload809sStatus();
+                    var data = {
+                        status: row.status == 0 ? 1 : 0,
+                        uploads: [row.upload809id]
+                    };
+                    utils.sendAjax(url, data, function(resp) {
+                        console.log(resp);
+                        if (resp.status === 0) {
+                            editObject.status = data.status;
+                        } else {
+                            me.$Message.error("操作失败");
+                        }
+                    });
+                },
+                deleteUpload809s: function(uploadid) {
+                    var me = this;
+                    var url = myUrls.deleteUpload809s();
+                    var data = {
+                        uploads: [uploadid]
+                    };
+                    utils.sendAjax(url, data, function(resp) {
+                        console.log(resp);
+                        if (resp.status == 0) {
+                            me.$delete(me.tableData, me.upload809Index);
+                            me.$Message.success('删除成功');
+                        } else {
+                            me.$Message.error('删除失败');
+                        }
+                    })
+                }
             },
             computed: {
                 drawerTitle: function() {
@@ -311,6 +494,8 @@
             mounted: function() {
                 var me = this;
                 this.calcTableHeight();
+                this.queryupLoad809s();
+                this.query809Protocols();
                 window.onresize = function() {
                     me.calcTableHeight();
                 }

@@ -784,6 +784,21 @@ var myUrls = {
     createupLoad809: function() {
         return this.apihosts + 'webapi?action=createupload809&token=' + token;
     },
+    queryupLoad809s: function() {
+        return this.apihosts + 'webapi?action=queryupload809s&token=' + token;
+    },
+    editUpload809: function() {
+        return this.apihosts + 'webapi?action=editupload809&token=' + token;
+    },
+    query809Protocols: function() {
+        return this.apihosts + 'webapi?action=query809protocols&token=' + token;
+    },
+    deleteUpload809s: function() {
+        return this.apihosts + 'webapi?action=deleteupload809s&token=' + token;
+    },
+    setUpload809sStatus: function() {
+        return this.apihosts + 'webapi?action=setupload809sstatus&token=' + token;
+    },
 }
 
 
