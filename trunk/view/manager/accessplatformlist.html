@@ -20,15 +20,21 @@
         <Drawer :title="drawerTitle" width="800" v-model="drawerModal">
             <Row style="height: 35px;line-height: 35px;">
                 <i-col :span="4" style="text-align: right;">
-                    平台名称&nbsp;
+                    <span style="color: red;">*</span>&nbsp;平台名称&nbsp;
                 </i-col>
-                <i-col :span="20">
+                <i-col :span="8">
                     <i-input v-model.trim="servername"></i-input>
+                </i-col>
+                <i-col :span="4" style="text-align: right;">
+                    <span style="color: red;">*</span>&nbsp;下级平台接入码&nbsp;
+                </i-col>
+                <i-col :span="8">
+                    <i-input v-model.trim="gnsscenterid"></i-input>
                 </i-col>
             </Row>
             <Row style="height: 35px;line-height: 35px;">
                 <i-col :span="4" style="text-align: right;">
-                    协议类型&nbsp;
+                    <span style="color: red;">*</span>&nbsp;协议类型&nbsp;
                 </i-col>
                 <i-col :span="8">
                     <i-select v-model="protocoltype">
@@ -36,7 +42,7 @@
                     </i-select>
                 </i-col>
                 <i-col :span="4" style="text-align: right;">
-                    协议版本号&nbsp;
+                    <span style="color: red;">*</span>&nbsp;协议版本号&nbsp;
                 </i-col>
                 <i-col :span="8">
                     <i-input v-model.trim="uplinkversion"></i-input>
@@ -44,13 +50,13 @@
             </Row>
             <Row style="height: 35px;line-height: 35px;">
                 <i-col :span="4" style="text-align: right;">
-                    用户名&nbsp;
+                    <span style="color: red;">*</span>&nbsp;用户名&nbsp;
                 </i-col>
                 <i-col :span="8">
                     <i-input v-model.trim="userid"></i-input>
                 </i-col>
                 <i-col :span="4" style="text-align: right;">
-                    密码&nbsp;
+                    <span style="color: red;">*</span>&nbsp;密码&nbsp;
                 </i-col>
                 <i-col :span="8">
                     <i-input v-model.trim="password"></i-input>
@@ -58,10 +64,38 @@
             </Row>
             <Row style="height: 35px;line-height: 35px;">
                 <i-col :span="4" style="text-align: right;">
-                    下级平台接入码&nbsp;
+                    <span style="color: red;">*</span>&nbsp;主链路ip&nbsp;
                 </i-col>
                 <i-col :span="8">
-                    <i-input v-model.trim="gnsscenterid"></i-input>
+                    <i-input v-model.trim="uplinkip"></i-input>
+                </i-col>
+                <i-col :span="4" style="text-align: right;">
+                    <span style="color: red;">*</span>&nbsp;主链路端口&nbsp;
+                </i-col>
+                <i-col :span="8">
+                    <i-input v-model.trim="uplinkport"></i-input>
+                </i-col>
+            </Row>
+            <Row style="height: 35px;line-height: 35px;">
+                <i-col :span="4" style="text-align: right;">
+                    <span style="color: red;">*</span>&nbsp;密匙M1&nbsp;
+                </i-col>
+                <i-col :span="8">
+                    <i-input v-model.trim="m1"></i-input>
+                </i-col>
+                <i-col :span="4" style="text-align: right;">
+                    <span style="color: red;">*</span>&nbsp;密匙IA1&nbsp;
+                </i-col>
+                <i-col :span="8">
+                    <i-input v-model.trim="ia1"></i-input>
+                </i-col>
+            </Row>
+            <Row style="height: 35px;line-height: 35px;">
+                <i-col :span="4" style="text-align: right;">
+                    <span style="color: red;">*</span>&nbsp;密匙IC1&nbsp;
+                </i-col>
+                <i-col :span="8">
+                    <i-input v-model.trim="ic1"></i-input>
                 </i-col>
                 <i-col :span="4" style="text-align: right;">
                     视频key&nbsp;
@@ -72,16 +106,16 @@
             </Row>
             <Row style="height: 35px;line-height: 35px;">
                 <i-col :span="4" style="text-align: right;">
-                    主链路ip&nbsp;
+                    实时视频URL&nbsp;
                 </i-col>
                 <i-col :span="8">
-                    <i-input v-model.trim="uplinkip"></i-input>
+                    <i-input v-model.trim="realtimevideourl"></i-input>
                 </i-col>
                 <i-col :span="4" style="text-align: right;">
-                    主链路端口&nbsp;
+                    视频回放URL&nbsp;
                 </i-col>
                 <i-col :span="8">
-                    <i-input v-model.trim="uplinkport"></i-input>
+                    <i-input v-model.trim="historyvideourl"></i-input>
                 </i-col>
             </Row>
             <Row style="height: 35px;line-height: 35px;">
@@ -100,43 +134,9 @@
             </Row>
             <Row style="height: 35px;line-height: 35px;">
                 <i-col :span="4" style="text-align: right;">
-                    密匙M1&nbsp;
-                </i-col>
-                <i-col :span="8">
-                    <i-input v-model.trim="m1"></i-input>
-                </i-col>
-                <i-col :span="4" style="text-align: right;">
-                    密匙IA1&nbsp;
-                </i-col>
-                <i-col :span="8">
-                    <i-input v-model.trim="ia1"></i-input>
-                </i-col>
-            </Row>
-            <Row style="height: 35px;line-height: 35px;">
-                <i-col :span="4" style="text-align: right;">
-                    密匙IC1&nbsp;
-                </i-col>
-                <i-col :span="8">
-                    <i-input v-model.trim="ic1"></i-input>
-                </i-col>
-                <i-col :span="4" style="text-align: right;">
-                    视频回放URL&nbsp;
-                </i-col>
-                <i-col :span="8">
-                    <i-input v-model.trim="historyvideourl"></i-input>
-                </i-col>
-            </Row>
-            <Row style="height: 35px;line-height: 35px;">
-                <i-col :span="4" style="text-align: right;">
-                    实时视频URL&nbsp;
-                </i-col>
-                <i-col :span="8">
-                    <i-input v-model.trim="realtimevideourl"></i-input>
-                </i-col>
-                <i-col :span="4" style="text-align: right;">
                     备注&nbsp;
                 </i-col>
-                <i-col :span="8">
+                <i-col :span="20">
                     <i-input v-model.trim="remark"></i-input>
                 </i-col>
             </Row>
@@ -183,6 +183,20 @@
                         return h('div', [
                             h('Button', {
                                 props: {
+                                    type: status == 0 ? 'primary' : 'error',
+                                    size: 'small'
+                                },
+                                style: {
+                                    marginRight: '5px'
+                                },
+                                on: {
+                                    click: function() {
+                                        vueInstanse.setUpload809sStatus(params.row);
+                                    }
+                                }
+                            }, status == 0 ? "开启服务" : '关闭服务'),
+                            h('Button', {
+                                props: {
                                     type: 'info',
                                     size: 'small'
                                 },
@@ -222,20 +236,6 @@
                                     }
                                 }, vRoot.$t("bgMgr.delete"))
                             ]),
-                            h('Button', {
-                                props: {
-                                    type: status == 0 ? 'primary' : 'error',
-                                    size: 'small'
-                                },
-                                style: {
-                                    marginRight: '5px'
-                                },
-                                on: {
-                                    click: function() {
-                                        vueInstanse.setUpload809sStatus(params.row);
-                                    }
-                                }
-                            }, status == 0 ? "开启服务" : '关闭服务'),
                         ]);
                     },
                 }, {
