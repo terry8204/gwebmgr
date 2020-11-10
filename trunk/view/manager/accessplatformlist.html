@@ -471,9 +471,8 @@
                         uploads: [row.upload809id]
                     };
                     utils.sendAjax(url, data, function(resp) {
-                        console.log(resp);
                         if (resp.status === 0) {
-                            editObject.status = data.status;
+                            row.status = row.status == 0 ? 1 : 0;
                         } else {
                             me.$Message.error("操作失败");
                         }
