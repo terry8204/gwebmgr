@@ -243,38 +243,83 @@
                     width: 120,
                     render: function(h, params) {
                         var upstatus = params.row.upstatus;
-                        if (upstatus === 0) {
-                            return h('span', {
-                                style: {
-                                    color: 'red'
-                                }
-                            }, '已断开')
-                        } else {
-                            return h('span', {
-                                style: {
-                                    color: 'green'
-                                }
-                            }, '已连接')
+                        var color = 'green';
+                        var str = 'red';
+                        switch (upstatus) {
+                            case -1:
+                                str = '断开';
+                                break;
+                            case 0:
+                                str = '已连接';
+                                color = 'green';
+                                break;
+                            case 1:
+                                str = 'ip地址不正确';
+                                break;
+                            case 2:
+                                str = '接入码不正确';
+                                break;
+                            case 3:
+                                str = '用户没有注册';
+                                break;
+                            case 4:
+                                str = '密码错误';
+                                break;
+                            case 5:
+                                str = '资源紧张，稍候再连接';
+                                break;
+                            case 6:
+                                str = '其他';
+                                break;
                         }
+
+                        return h('span', {
+                            style: {
+                                color: color
+                            }
+                        }, str)
+
                     }
                 }, {
                     title: '从链路状态',
                     width: 120,
                     render: function(h, params) {
                         var downstatus = params.row.downstatus;
-                        if (downstatus === 0) {
-                            return h('span', {
-                                style: {
-                                    color: 'red'
-                                }
-                            }, '已断开')
-                        } else {
-                            return h('span', {
-                                style: {
-                                    color: 'green'
-                                }
-                            }, '已连接')
+                        var color = 'green';
+                        var str = 'red';
+                        switch (downstatus) {
+                            case -1:
+                                str = '断开';
+                                break;
+                            case 0:
+                                str = '成功';
+                                color = 'green';
+                                break;
+                            case 1:
+                                str = 'ip地址不正确';
+                                break;
+                            case 2:
+                                str = '接入码不正确';
+                                break;
+                            case 3:
+                                str = '用户没有注册';
+                                break;
+                            case 4:
+                                str = '密码错误';
+                                break;
+                            case 5:
+                                str = '资源紧张，稍候再连接';
+                                break;
+                            case 6:
+                                str = '其他';
+                                break;
                         }
+
+                        return h('span', {
+                            style: {
+                                color: color
+                            }
+                        }, str)
                     }
                 }, {
                     title: '平台名称',
