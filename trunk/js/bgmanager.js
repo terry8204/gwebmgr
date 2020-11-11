@@ -83,7 +83,7 @@ var bgManager = {
                     name: 'forward809',
                     icon: 'ios-laptop',
                     children: [
-                        { title: "接入平台列表", name: 'accessPlatformList', icon: 'logo-foursquare' },
+                        { title: "接入平台列表", name: 'accessPlatformList', icon: 'md-git-merge' },
                     ]
                 },
             ]
