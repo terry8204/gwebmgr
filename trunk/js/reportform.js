@@ -7944,6 +7944,60 @@ function multiMedia() {
 
 
 
+function reportNav(reportNavList) {
+    new Vue({
+        el: "#report-nav",
+        data: {
+            search: isZh ? '搜索' : 'search',
+            reportNavList: reportNavList,
+            sosoValue: '',
+            selectedName: '',
+        },
+        methods: {
+            handleSearch: function() {
+                for (var i = 0; i < this.reportNavList.length; i++) {
+                    var children = this.reportNavList[i].children
+                    for (var j = 0; j < children.length; j++) {
+                        var title = children[j].title;
+                        if (title.indexOf(this.sosoValue) > -1) {
+                            this.selectedName = children[j].name;
+                            return;
+                        }
+                    }
+                }
+                this.selectedName = "";
+            },
+            selectdItem: function(name) {
+                var vIns = vRoot.$children[3];
+                vIns.activeName = name;
+                vIns.openedNames = this.getOpenedNames(name);
+                vIns.selectditem(name);
+                vIns.$nextTick(function() {
+                    vIns.$refs.navMenu.updateOpened();
+                });
+            },
+            getOpenedNames: function(sName) {
+                var openedNames = [];
+                for (var i = 0; i < this.reportNavList.length; i++) {
+                    var gName = this.reportNavList[i].name;
+                    var children = this.reportNavList[i].children
+                    for (var j = 0; j < children.length; j++) {
+                        if (children[j].name == sName) {
+                            openedNames.push(gName);
+                            break;
+                        }
+                    }
+                }
+                return openedNames;
+            }
+        },
+        mounted: function() {
+
+        }
+    })
+}
+
+
 // 统计报表
 var reportForm = {
     template: document.getElementById('report-template').innerHTML,
@@ -7952,9 +8006,14 @@ var reportForm = {
         return {
             theme: "light",
             groupslist: [],
-            activeName: "",
+            activeName: "reportNav",
             openedNames: [],
             reportNavList: [{
+                    title: isZh ? "报表导航" : "Report nav",
+                    name: 'reportNav',
+                    icon: 'ios-stats',
+                },
+                {
                     title: me.$t("reportForm.drivingReport"),
                     name: 'drivingReport',
                     icon: 'ios-photos',
@@ -7968,7 +8027,7 @@ var reportForm = {
                         { title: me.$t("reportForm.voiceReport"), name: 'records', icon: 'md-volume-up' },
                         { title: me.$t("reportForm.messageReport"), name: 'messageRecords', icon: 'ios-book' },
                         { title: me.$t("reportForm.rotationStatistics"), name: 'rotateReport', icon: 'ios-aperture' },
-                        { title: "IO报表", name: 'ioReport', icon: 'md-contrast' },
+                        { title: isZh ? "IO报表" : "IO report", name: 'ioReport', icon: 'md-contrast' },
                     ]
                 },
                 {
@@ -8054,6 +8113,11 @@ var reportForm = {
                 var groupslist = deepClone(me.groupslist);
                 window.onresize = null;
                 switch (page) {
+                    case 'reportnav.html':
+                        var reportNavList = deepClone(me.reportNavList);
+                        reportNavList.shift();
+                        reportNav(reportNavList);
+                        break;
                     case 'rechargerecords.html':
                         rechargeRecords(groupslist);
                         break;
@@ -8201,6 +8265,8 @@ var reportForm = {
             me.toAlarmRecords("allAlarm", "allalarm.html");
         } else if (isToPhoneAlarmRecords) {
             me.toAlarmRecords("phoneAlarm", "phonealarm.html");
+        } else {
+            me.selectditem('reportNav');
         }
     }
 }

@@ -6,8 +6,13 @@ var bgManager = {
         return {
             userType: null,
             theme: 'light',
-            navList: [
-
+            activeName: "bgNav",
+            openedNames: [],
+            navList: [{
+                    title: isZh ? "管理导航" : "Manager nav",
+                    name: 'bgNav',
+                    icon: 'ios-stats',
+                },
                 {
                     title: me.$t("bgMgr.userMgr"),
                     name: 'userMar',
@@ -98,6 +103,9 @@ var bgManager = {
             }
             var page = null
             switch (name) {
+                case 'bgNav':
+                    page = 'bgnav.html'
+                    break
                 case 'addCustomer':
                     page = 'addcustomer.html'
                     break
@@ -223,8 +231,8 @@ var bgManager = {
         this.userType = vstore.state.userType;
         if (this.userType == 4) {
             this.navList.splice(0, 1);
-            // this.navList[0].children.splice(0, 1);
         };
+        this.selectditem('bgNav');
     }
 }
 

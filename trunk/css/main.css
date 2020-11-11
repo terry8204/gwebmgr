@@ -1485,3 +1485,21 @@ div.msg_content {
     bottom: 10px;
     right: 10px;
 }
+
+.navigation-display-ui {
+    display: flex;
+    flex-direction: row;
+}
+
+.navigation-display-ui .navigation-display-li {
+    flex: 1;
+    padding: 0 10px;
+}
+
+.navigation-display-ui .navigation-display-li .navigation-display-li-btn-wrap {
+    padding-bottom: 10px;
+}
+
+.navigation-display-ui .navigation-display-li .navigation-display-li-btn-wrap:last-child {
+    padding-bottom: 0px;
+}

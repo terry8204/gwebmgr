@@ -1,0 +1,27 @@
+<div id="report-nav" style="padding: 10px;">
+    <div class="full">
+        <div style="height: 32px;margin-bottom: 10px;">
+            <div style="float: left;padding:0 0 10px 10px;">
+                <i-input v-model="sosoValue"></i-input>
+            </div>
+            <div style="float: left;padding-left: 20px;">
+                <i-button icon="ios-search-outline" @click="handleSearch">{{search}}</i-button>
+            </div>
+        </div>
+        <div class="navigation-display-ui">
+            <div v-for="gourp in reportNavList" class="navigation-display-li">
+                <Card>
+                    <p slot="title">
+                        <Icon :type="gourp.icon"></Icon>
+                        {{gourp.title}}
+                    </p>
+                    <template v-for="item in gourp.children">
+                        <div class="navigation-display-li-btn-wrap">
+                            <i-button :icon="item.icon" :type="selectedName==item.name?'primary':'default'" @click="selectdItem(item.name)">{{item.title}}</i-button>
+                        </div>
+                    </template>
+                </Card>
+            </div>
+        </div>
+    </div>
+</div>

@@ -2407,17 +2407,21 @@
                 <div class="mar-nav">
                     <i-menu :theme="theme" @on-select="selectditem" :active-name="activeName" :open-names="openedNames" ref="navMenu" accordion>
                         <template v-for="(group,index) in reportNavList">
-                                    <Submenu :name="group.name" :key="index">
-                                            <template slot="title">
-                                                <Icon :type="group.icon"></Icon>
-                                                <span>{{ group.title}}</span>
-                                            </template>
+                            <MenuItem :name="group.name" :key="index" v-if="!group.children">
+                                <Icon :type="group.icon"></Icon>
+                                    {{group.title}}
+                            </MenuItem>
+                            <Submenu :name="group.name" :key="index" v-if="group.children">
+                                <template slot="title">
+                                    <Icon :type="group.icon"></Icon>
+                                    <span>{{ group.title}}</span>
+                                </template>
                         <template v-for="(item,idx) in group.children">
-                                                <MenuItem :name="item.name" :key="idx">
-                                                    <Icon :type="item.icon"></Icon>
-                                                    {{item.title}}
-                                                </MenuItem>
-                                            </template>
+                                    <MenuItem :name="item.name" :key="idx">
+                                            <Icon :type="item.icon"></Icon>
+                                            {{item.title}}
+                                    </MenuItem>
+                                </template>
                         </Submenu>
                         </template>
                     </i-menu>
@@ -2431,9 +2435,13 @@
     <script type="text/x-template" id="manager-template">
         <div class="manager-wraper">
             <div class="mar-nav">
-                <i-menu :theme="theme" @on-select="selectditem" accordion>
+                <i-menu :theme="theme" @on-select="selectditem" accordion :active-name="activeName" :open-names="openedNames" ref="bgNavMenu">
                     <template v-for="(group,index) in navList">
-                            <Submenu :name="group.name" :key="index">
+                            <MenuItem :name="group.name" :key="index" v-if="!group.children">
+                                <Icon :type="group.icon"></Icon>
+                                    {{group.title}}
+                            </MenuItem>
+                            <Submenu :name="group.name" :key="index" v-if="group.children">
                                     <template slot="title">
                                         <Icon :type="group.icon"></Icon>
                                         <span>{{ group.title}}</span>
