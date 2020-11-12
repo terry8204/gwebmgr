@@ -1,0 +1,616 @@
+<div id="batchmgr" class="full" style="padding: 10px;">
+    <div class="demo-spin-container" v-if="loading">
+        <Spin size="large" fix></Spin>
+    </div>
+    <div class="demo-spin-container" v-if="batchSendCmdLoading">
+        <Spin fix>
+            <Icon type="ios-loading" size=18 class="demo-spin-icon-load"></Icon>
+            <div>{{$t("bgMgr.sending")}}:{{idx}}/{{tableData.length}}</div>
+        </Spin>
+    </div>
+    <div class="full">
+        <div style="display: flex;flex-direction: row;height: 30px; line-height: 30px;">
+            <div style="padding: 0 10px;width: 320px;">
+                {{$t("bgMgr.allAevcieList")}}
+            </div>
+            <div style="width: 500px;">
+                {{$t("bgMgr.selectedDeviceList")}} {{tableData.length}}
+                <i-button type="error" size="small" @click="tableData=[]" style="float: right;">{{$t("insure.removeAll")}}</i-button>
+            </div>
+            <div style="flex: 1;padding: 0 10px;">
+                {{$t("bgMgr.transferGroupList")}}
+            </div>
+        </div>
+        <div style="display: flex;flex-direction: row;position: absolute;left: 0;right: 0;bottom: 0;top: 40px;">
+            <div style="padding: 0 10px;width: 320px;">
+                <div style="line-height: 45px;">
+                    <i-input v-model.trim="searchDeviceVal" style="width: 100%;" icon="search"></i-input>
+                </div>
+                <Tree :data="searchDeviceList" show-checkbox :style="streeStyle" @on-check-change="onCheckChange"></Tree>
+            </div>
+            <div style="padding: 0 10px;width: 500px;">
+                <i-table border ref="table" :columns="columns" :data="tableData" :height="taleHeight"></i-table>
+            </div>
+            <div style="padding: 0 10px;flex: 1;">
+                <div style="height: 40%;overflow-y: auto;border: 1px solid #DCDEE2;">
+                    <Tree :data="treeGroupList" @on-select-change="onSelectChange"></Tree>
+                </div>
+                <div style="height: 60%;padding: 10px 0px;">
+                    <div style="height: 100%;border: 1px solid #DCDEE2;">
+                        <i-button @click="onCollection">采集</i-button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    vueInstanse = new Vue({
+        el: "#batchmgr",
+        i18n: utils.getI18n(),
+        data: {
+            loading: false,
+            userType: localStorage.getItem('userType'),
+            batchSendCmdLoading: false,
+            idx: 0,
+            importModal: false,
+            idLength: 11,
+            isOk: false,
+            forwardurl: "",
+            newPassword: '',
+            forwardtype: '0',
+            cmdContent: '',
+            cmdPassword: '',
+            expirationDate: new Date(),
+            resetpasswordtype: '1',
+            deviceType: '',
+            deviceTypeList: [],
+            deviceid: '',
+            searchDeviceVal: '',
+            searchDeviceList: [],
+            treeGroupList: [{
+                title: '2012版行车记录仪',
+                expand: true,
+                children: [{
+                    title: '采集记录仪执行标准版本',
+                    selected: true,
+                }, {
+                    title: '采集当前驾驶人信息'
+                }, {
+                    title: '采集/设置记录仪实时时间'
+                }, {
+                    title: '采集/设置累计行驶里程'
+                }, {
+                    title: '采集/设置记录仪脉冲系数'
+                }, {
+                    title: '采集/设置车辆信息'
+                }, {
+                    title: '采集/设置记录仪状态信号配置信息'
+                }, {
+                    title: '采集记录仪唯一性编号'
+                }, {
+                    title: '采集指定的行驶速度记录'
+                }, {
+                    title: '采集指定的位置信息记录'
+                }, {
+                    title: '采集指定的疑点事故记录'
+                }, {
+                    title: '采集指定的超时驾驶记录'
+                }, {
+                    title: '采集指定的驾驶人身份记录'
+                }, {
+                    title: '采集指定的记录仪外部供电记录'
+                }, {
+                    title: '采集指定的速度状态记录'
+                }, {
+                    title: '设置初次安装日期'
+                }]
+            }],
+            tableData: [],
+            mileageRatio: 100,
+            columns: [{
+                type: 'index',
+                width: 60,
+            }, {
+                title: vRoot.$t('alarm.devName'),
+                key: 'devicename'
+            }, {
+                title: vRoot.$t('alarm.devNum'),
+                key: 'deviceid',
+            }, {
+                title: vRoot.$t('alarm.action'),
+                width: 85,
+                render: function(h, params) {
+                    return h('Button', {
+                        props: {
+                            type: 'error',
+                            size: 'small'
+                        },
+                        style: {
+                            marginRight: '5px'
+                        },
+                        on: {
+                            click: function() {
+                                vueInstanse.tableData.splice(params.index, 1);
+                            }
+                        }
+                    }, vRoot.$t('insure.remove'))
+                }
+            }, {
+                title: vRoot.$t('bgMgr.result'),
+                width: 90,
+                render: function(h, params) {
+                    var result = '',
+                        color = '',
+                        resultType = params.row.resultType;
+                    switch (resultType) {
+                        case 0:
+                            color = "#2D8CF0";
+                            result = vRoot.$t('device.actionSucc');
+                            break;
+                        case 1:
+                            color = "#E4393C";
+                            result = vRoot.$t('device.actionFail');
+                            break;
+                        case 2:
+                            color = "#000";
+                            result = vRoot.$t('device.notOperated');
+                            break;
+                        case 3:
+                            color = "red";
+                            result = vRoot.$t('device.noDevice');
+                            break;
+                        case 4:
+                            color = "red";
+                            result = vRoot.$t('device.passwordError');
+                            break;
+                        case 5:
+                            color = "red";
+                            result = vRoot.$t('device.abnormalInstructionIssued');
+                            break;
+                        case 6:
+                            color = "red";
+                            result = vRoot.$t('monitor.sendCmdNoCache');
+                            break;
+                        case 7:
+                            color = "red";
+                            result = vRoot.$t('monitor.sendCmdAlreadyCache');
+                            break;
+                        case 8:
+                            color = "red";
+                            result = vRoot.$t('monitor.changePwdSendCmd');
+                            break;
+                    }
+                    return h('span', {
+                        style: {
+                            color: color
+                        }
+                    }, result);
+                }
+            }],
+            selectedGroupId: null,
+            selectedGroupName: null,
+            selectedUserName: null,
+            taleHeight: 100
+        },
+        methods: {
+            onCollection: function() {
+                var me = this;
+                var data = {
+                    deviceids: [],
+                    action: 'recorder',
+                    recorderaction: 1,
+                    recordercommand: 0x00,
+                };
+                var lock = true;
+                this.tableData.forEach(function(item) {
+                    if (item.resultType === 3) {
+                        lock = false;
+                    }
+                    data.deviceids.push(item.deviceid);
+                });
+                if (!lock) {
+                    me.$Message.error(vRoot.$t('device.exportErrorTips'));
+                    return;
+                }
+                var url = myUrls.batchOperate();
+                utils.sendAjax(url, data, function(respData) {
+                    console.log(respData);
+                    if (respData.status === 0) {
+                        if (respData.total == respData.success) {
+                            me.$Message.success(vRoot.$t('device.actionSucc'));
+                        } else {
+                            me.$Message.error(vRoot.$t('message.changeFail') + ' : ' + respData.fail);
+                        }
+                        me.updatedActionState(respData.errorrecords);
+                        me.batchModal = false;
+                    } else {
+                        me.$Message.error(respData.cause);
+                    }
+                });
+            },
+            updatedActionState: function(errorrecords) {
+                this.tableData.forEach(function(item) {
+                    if (errorrecords.indexOf(item.deviceid) != -1) {
+                        item.resultType = 1;
+                    } else {
+                        item.resultType = 0;
+                    }
+                })
+            },
+            onCheckChange: function(selectArr) {
+                var me = this;
+                var tableData = [];
+                selectArr.forEach(function(item) {
+                    var deviceid = item.deviceid;
+                    if (deviceid && !me.isRepeatAddDevice(deviceid)) {
+                        utils.deviceInfos[deviceid].resultType = 2;
+                        tableData.push(utils.deviceInfos[deviceid]);
+                    }
+                })
+                this.tableData = this.tableData.concat(tableData);
+            },
+            onSelectChange: function(row) {
+                console.log(row);
+            },
+            isRepeatAddDevice: function(deviceid) {
+                var relsut = false;
+                for (var i = 0; i < this.tableData.length; i++) {
+                    var item = this.tableData[i];
+                    if (item.deviceid == deviceid) {
+                        relsut = true;
+                        break;
+                    }
+                }
+                return relsut;
+            },
+            queryDevicesTree: function() {
+                this.loading = true;
+                var url = myUrls.queryDevicesTree(),
+                    me = this;
+                var data = {
+                    username: userName
+                };
+                utils.sendAjax(url, data, function(respData) {
+                    me.loading = false;
+                    if (respData.status === 0) {
+                        rootuser = respData.rootuser;
+                        me.setTreeDataList(respData.rootuser);
+                    }
+                });
+            },
+            setTreeDataList: function(rootuser) {
+                this.searchDeviceList = [this.castUsersTreeToDevicesTree(rootuser, true, false)];
+                this.treeDeviceList = deepClone(this.searchDeviceList);
+                // this.treeGroupList = [this.castUsersTreeToDevicesTree(rootuser, false, true)];
+            },
+            filtered: function(textStr) {
+                function uniq(array) {
+                    var temp = [];
+                    for (var i = 0; i < array.length; i++) {
+                        if (temp.indexOf(array[i]) == -1) {
+                            temp.push(array[i]);
+                        }
+                    }
+                    return temp;
+                }
+                var newArr = [];
+                textStr.split("\n").forEach(function(item) {
+                    if (item) {
+                        newArr.push(item);
+                    }
+                })
+                return uniq(newArr);
+            },
+            getDeviceListGroups: function(groups, isNeedDevice, username, isNeedRadio) {
+                var groupsList = [],
+                    me = this;
+                if (groups != null) {
+                    for (var i = 0; i < groups.length; ++i) {
+                        var group = groups[i];
+                        var groupObj = {
+                            title: group.groupname,
+                            groupid: group.groupid,
+
+                        }
+                        if (isNeedDevice) {
+                            groupObj.render = utils.renderGroup;
+                        } else {
+                            groupObj.render = function(h, params) {
+                                var data = params.data;
+                                var children = null;
+
+                                if (isNeedRadio) {
+                                    children = [
+                                        h('span', [
+                                            h('Radio', {
+                                                props: {
+                                                    value: (me.selectedUserName == username && me.selectedGroupId == data.groupid)
+                                                },
+                                                style: {
+                                                    marginRight: '4px'
+                                                }
+                                            }),
+                                            h('Icon', {
+                                                props: {
+                                                    type: 'ios-folder-open'
+                                                },
+                                                style: {
+                                                    marginRight: '8px'
+                                                }
+                                            }),
+                                            h('span', data.title)
+                                        ])
+                                    ]
+                                } else {
+                                    children = [
+                                        h('span', [
+                                            h('Icon', {
+                                                props: {
+                                                    type: 'ios-folder-open'
+                                                },
+                                                style: {
+                                                    marginRight: '8px'
+                                                }
+                                            }),
+                                            h('span', data.title)
+                                        ])
+                                    ]
+                                }
+
+                                return h('span', {
+                                    on: {
+                                        'click': function() {
+                                            me.selectedUserName = username;
+                                            me.selectedGroupId = data.groupid;
+                                            me.selectedGroupName = data.groupname;
+                                        }
+                                    },
+                                    style: {
+                                        cursor: 'pointer',
+                                        color: (me.selectedUserName == username && me.selectedGroupId == data.groupid) ? '#2D8CF0' : '#000'
+                                    }
+                                }, children)
+                            };
+                        }
+                        if (isNeedDevice && group.devices) {
+                            groupObj.children = [];
+                            group.devices.forEach(function(device) {
+                                groupObj.children.push({
+                                    deviceid: device.deviceid,
+                                    title: device.devicename,
+                                    render: utils.renderDev
+                                });
+                                utils.deviceInfos[device.deviceid] = {
+                                    deviceid: device.deviceid,
+                                    devicename: device.devicename,
+                                    username: username,
+                                    groupid: groupObj.groupid,
+                                    groupname: groupObj.groupname,
+                                }
+                            });
+                        }
+                        groupsList.push(groupObj);
+                    }
+                }
+
+                if (groupsList.length == 0) {
+                    groupsList.push({
+                        title: 'Default',
+                        groupid: 0,
+                        render: function(h, params) {
+                            var data = params.data;
+                            var children = [];
+                            if (isNeedRadio) {
+                                children = [
+                                    h('span', [
+                                        h('Radio', {
+                                            props: {
+                                                value: (me.selectedUserName == username && me.selectedGroupId == group.groupid)
+                                            },
+                                            style: {
+                                                marginRight: '4px'
+                                            }
+                                        }),
+                                        h('Icon', {
+                                            props: {
+                                                type: 'ios-folder-open'
+                                            },
+                                            style: {
+                                                marginRight: '8px'
+                                            }
+                                        }),
+                                        h('span', data.title)
+                                    ])
+                                ]
+                            } else {
+                                children = [
+                                    h('span', [
+                                        h('Icon', {
+                                            props: {
+                                                type: 'ios-folder-open'
+                                            },
+                                            style: {
+                                                marginRight: '8px'
+                                            }
+                                        }),
+                                        h('span', data.title)
+                                    ])
+                                ]
+                            }
+                            return h('span', {
+                                on: {
+                                    'click': function() {
+                                        me.selectedUserName = username;
+                                        me.selectedGroupId = 0;
+                                        me.selectedGroupName = 'Default';
+                                    }
+                                },
+                                style: {
+                                    cursor: 'pointer',
+                                    color: (me.selectedUserName == username && me.selectedGroupId == 0) ? '#2D8CF0' : '#000'
+                                }
+                            }, children)
+                        }
+                    });
+                }
+                return groupsList;
+
+            },
+            doCastUsersTreeToDevicesTree: function(usersTrees, isNeedDevice, isNeedRadio) {
+
+                var devicesTreeRecord = [];
+                if (usersTrees != null && usersTrees.length > 0) {
+                    for (var i = 0; i < usersTrees.length; ++i) {
+                        var usersTree = usersTrees[i];
+                        var username = usersTree.username;
+                        var subusers = usersTree.subusers;
+                        var currentsubDevicesTreeRecord = {
+                            render: utils.renderPerson,
+                        };
+                        currentsubDevicesTreeRecord.title = username;
+                        var deviceListGroups = this.getDeviceListGroups(usersTree.groups, isNeedDevice, username, isNeedRadio);
+                        if (username != null && subusers != null && subusers.length > 0) {
+                            var subDevicesTreeRecord = this.doCastUsersTreeToDevicesTree(subusers, isNeedDevice, isNeedRadio);
+                            subDevicesTreeRecord = deviceListGroups.concat(subDevicesTreeRecord);
+                            currentsubDevicesTreeRecord.children = subDevicesTreeRecord;
+
+                        } else {
+                            currentsubDevicesTreeRecord.children = deviceListGroups;
+
+                        }
+                        devicesTreeRecord.push(currentsubDevicesTreeRecord);
+                    }
+                }
+                return devicesTreeRecord;
+            },
+            castUsersTreeToDevicesTree: function(devicesTreeRecord, isNeedDevice, isNeedRadio) {
+                var iViewTree = {
+                    render: utils.renderPerson,
+                    expand: true,
+                };
+                if (devicesTreeRecord != null) {
+                    var username = devicesTreeRecord.username;
+                    var subusers = devicesTreeRecord.subusers;
+                    iViewTree.title = username;
+                    var deviceListGroups = this.getDeviceListGroups(devicesTreeRecord.groups, isNeedDevice, username, isNeedRadio);
+                    if (username != null && subusers != null && subusers.length > 0) {
+
+                        var subDevicesTreeRecord = this.doCastUsersTreeToDevicesTree(subusers, isNeedDevice, isNeedRadio);
+
+                        iViewTree.children = deviceListGroups.concat(subDevicesTreeRecord);
+
+                    } else {
+                        iViewTree.children = deviceListGroups;
+                    }
+                }
+                return iViewTree;
+            },
+            calcTableHeight: function() {
+                var wHeight = window.innerHeight;
+                this.taleHeight = wHeight - 110;
+            },
+            getDeviceType: function() {
+                var me = this;
+                var url = myUrls.queryDeviceTypeByUser();
+                utils.sendAjax(url, {}, function(resp) {
+                    if (resp.status == 0 && resp.devicetypes != null) {
+                        resp.devicetypes.forEach(function(item, index) {
+                            if (index === 0) {
+                                me.deviceType = item.devicetypeid;
+                            }
+                            me.deviceTypeList.push({
+                                value: item.devicetypeid,
+                                label: item.typename
+                            });
+                        })
+
+                    }
+                });
+            },
+            variableDeepSearch: function(treeDataFilter, searchWord, limitcount) {
+
+                var childTemp = [];
+                var that = this;
+                for (var i = 0; i < treeDataFilter.length; i++) {
+                    var copyItem = null;
+                    var item = treeDataFilter[i];
+                    if (item != null) {
+
+                        var isFound = false;
+                        if (item.title.indexOf(searchWord) != -1 || (item.deviceid && item.deviceid.indexOf(searchWord) != -1)) {
+                            copyItem = item;
+                            copyItem.expand = false;
+                            isFound = true;
+                        }
+                        if (isFound == false && item.children && item.children.length > 0) {
+                            // item.expand = true;
+                            // childTemp.push(item);
+                            var rs = that.variableDeepSearch(item.children, searchWord, limitcount);
+                            if (rs && rs.length > 0) {
+                                copyItem = deepClone(item);
+                                copyItem.children = rs;
+                                copyItem.expand = true;
+                                isFound = true;
+                            }
+                        }
+
+                        if (isFound == true) {
+                            limitcount++;
+                            childTemp.push(copyItem);
+                            if (limitcount > 10) {
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                return childTemp;
+            }
+        },
+        computed: {
+            streeStyle: function() {
+                return {
+                    'height': (this.taleHeight - 45) + 'px',
+                    'overflow-y': 'auto'
+                }
+            },
+            deviceids: function() {
+                var deviceids = [];
+                this.tableData.forEach(function(item) {
+                    deviceids.push(item.deviceid);
+                });
+                return deviceids;
+            }
+        },
+        watch: {
+            searchDeviceVal: function(newVal) {
+
+                if (newVal === '') {
+                    this.searchDeviceList = deepClone(this.treeDeviceList);
+                } else {
+                    var limitcount = 0;
+                    this.searchDeviceList = this.variableDeepSearch(deepClone(this.treeDeviceList), newVal, limitcount);
+                }
+
+            }
+        },
+        mounted: function() {
+            var me = this;
+            utils.deviceInfos = {};
+            this.calcTableHeight();
+            this.treeDeviceList = [];
+            window.onresize = function() {
+                me.calcTableHeight();
+            }
+            if (rootuser == null) {
+                this.queryDevicesTree();
+            } else {
+                me.setTreeDataList(rootuser);
+            }
+
+            this.getDeviceType();
+            this.userName = userName;
+        },
+    })
+</script>

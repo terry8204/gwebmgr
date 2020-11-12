@@ -43,6 +43,7 @@ var bgManager = {
                         { title: me.$t("bgMgr.addDev"), name: 'addDevice', icon: 'md-add' },
                         { title: me.$t("bgMgr.batchAdd"), name: 'batchAddDevice', icon: 'md-add' },
                         { title: me.$t("bgMgr.batchMgr"), name: 'batchMgrDevice', icon: 'ios-folder-outline' },
+                        { title: "行驶记录仪采集", name: 'travelingDataRecorder', icon: 'ios-car-outline' },
                         { title: me.$t("bgMgr.stockDev"), name: 'stockDev', icon: 'md-cube' },
                         { title: me.$t("bgMgr.notPutIntoStorage"), name: 'notPutIntoStorage', icon: 'md-basket' },
                         { title: me.$t("bgMgr.renewMgr"), name: 'chargeMgr', icon: 'ios-apps-outline' },
@@ -147,6 +148,9 @@ var bgManager = {
                     break
                 case 'batchMgrDevice':
                     page = 'batchmgr.html'
+                    break
+                case 'travelingDataRecorder':
+                    page = 'travelingdatarecorder.html'
                     break
                 case 'stockDev':
                     page = 'stockdev.html'
