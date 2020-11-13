@@ -46,14 +46,24 @@ var utils = {
     },
     renderDev: function(h, params) {
         var data = params.data;
-        return h('span', {}, [
-            h('span', [
+        var deviceid = data.deviceid;
+        var track = vRoot.$children[1].positionLastrecords[deviceid];
+        var isOnline =  false;
+        if(track){
+            isOnline = utils.getIsOnline(track);
+        };
+        return h('span', {
+            style:{
+                color:isOnline?'#33DAD0':'#B1BBC2'
+            }
+             }, [
+            h('span',[
                 h('Icon', {
                     props: {
                         type: 'md-phone-portrait'
                     },
                     style: {
-                        marginRight: '8px'
+                        marginRight: '8px',
                     }
                 }),
                 h('span', data.title)

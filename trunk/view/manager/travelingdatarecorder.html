@@ -13,11 +13,11 @@
             <div style="padding: 0 10px;width: 320px;">
                 {{$t("bgMgr.allAevcieList")}}
             </div>
-            <div style="width: 500px;">
+            <div style="flex: 1;">
                 {{$t("bgMgr.selectedDeviceList")}} {{tableData.length}}
-                <i-button type="error" size="small" @click="tableData=[]" style="float: right;margin: 3px 20px 0 0;">{{$t("insure.removeAll")}}</i-button>
+                <i-button type="error" size="small" @click="clearTableData" style="float: right;margin: 3px 0px 0 0;">{{$t("insure.removeAll")}}</i-button>
             </div>
-            <div style="flex: 1;padding: 0 10px;">
+            <div style="padding: 0 20px;width:600px;">  
                 {{$t("bgMgr.transferGroupList")}}
             </div>
         </div>
@@ -28,10 +28,10 @@
                 </div>
                 <Tree :data="searchDeviceList" show-checkbox :style="streeStyle" @on-check-change="onCheckChange"></Tree>
             </div>
-            <div style="padding: 0 10px;width: 500px;">
+            <div style="padding: 0 10px;width: 500px;flex: 1;">
                 <i-table border ref="table" :columns="columns" :data="tableData" :height="taleHeight" highlight-row @on-current-change="onCurrentChange"></i-table>
             </div>
-            <div style="padding: 0 10px;flex: 1;">
+            <div style="padding: 0 10px;width:600px;">
                 <div style="height: 40%;overflow-y: auto;border: 1px solid #DCDEE2;">
                     <Tree :data="treeGroupList" @on-select-change="onSelectChange"></Tree>
                 </div>
@@ -43,7 +43,7 @@
                                     &nbsp;更新时间 : &nbsp;
                                 </i-col>
                                 <i-col span="12">
-                                    <i-input v-model.trim="recordVersion"></i-input>
+                                    <i-input v-model.trim="updateTimeStr" disabled></i-input>
                                 </i-col>
                             </Row>
                             <Row style="margin: 10px 0">
@@ -69,7 +69,7 @@
                                     &nbsp;更新时间 : &nbsp;
                                 </i-col>
                                 <i-col span="12">
-                                    <i-input v-model.trim="recordVersion"></i-input>
+                                    <i-input v-model.trim="updateTimeStr" disabled></i-input>
                                 </i-col>
                             </Row>
                             <Row style="margin: 10px 0">
@@ -77,7 +77,7 @@
                                     &nbsp;驾驶证号码 : &nbsp;
                                 </i-col>
                                 <i-col span="12">
-                                    <i-input v-model.trim="recordVersion"></i-input>
+                                    <i-input v-model.trim="driverLicenseNo"></i-input>
                                 </i-col>
                             </Row>
                         </div>
@@ -87,7 +87,7 @@
                                     &nbsp;更新时间 : &nbsp;
                                 </i-col>
                                 <i-col span="12">
-                                    <i-input v-model.trim="recordVersion"></i-input>
+                                    <i-input v-model.trim="updateTimeStr" disabled></i-input>
                                 </i-col>
                             </Row>
                             <Row style="margin: 10px 0">
@@ -95,7 +95,7 @@
                                     &nbsp;当前时间 : &nbsp;
                                 </i-col>
                                 <i-col span="12">
-                                    <i-input v-model.trim="recordVersion"></i-input>
+                                    <i-input v-model.trim="realTimeClock"></i-input>
                                 </i-col>
                             </Row>
                         </div>
@@ -105,7 +105,7 @@
                                     &nbsp;更新时间 : &nbsp;
                                 </i-col>
                                 <i-col span="12">
-                                    <i-input v-model.trim="recordVersion"></i-input>
+                                    <i-input v-model.trim="updateTimeStr" disabled></i-input>
                                 </i-col>
                             </Row>
                             <Row style="margin: 10px 0">
@@ -113,7 +113,7 @@
                                     &nbsp;当前时间 : &nbsp;
                                 </i-col>
                                 <i-col span="12">
-                                    <i-input v-model.trim="recordVersion"></i-input>
+                                    <i-input v-model.trim="realTimeClock"></i-input>
                                 </i-col>
                             </Row>
                             <Row style="margin: 10px 0">
@@ -121,7 +121,7 @@
                                     &nbsp;安装时间 : &nbsp;
                                 </i-col>
                                 <i-col span="12">
-                                    <i-input v-model.trim="recordVersion"></i-input>
+                                    <i-input v-model.trim="setupDateTime"></i-input>
                                 </i-col>
                             </Row>
                             <Row style="margin: 10px 0">
@@ -129,7 +129,7 @@
                                     &nbsp;初始里程 : &nbsp;
                                 </i-col>
                                 <i-col span="12">
-                                    <i-input v-model.trim="recordVersion"></i-input>
+                                    <i-input v-model.trim="beginMileage"></i-input>
                                 </i-col>
                             </Row>
                             <Row style="margin: 10px 0">
@@ -137,7 +137,7 @@
                                     &nbsp;累积里程 : &nbsp;
                                 </i-col>
                                 <i-col span="12">
-                                    <i-input v-model.trim="recordVersion"></i-input>
+                                    <i-input v-model.trim="endMileage"></i-input>
                                 </i-col>
                             </Row>
                         </div>
@@ -147,7 +147,7 @@
                                     &nbsp;更新时间 : &nbsp;
                                 </i-col>
                                 <i-col span="12">
-                                    <i-input v-model.trim="recordVersion"></i-input>
+                                    <i-input v-model.trim="updateTimeStr" disabled></i-input>
                                 </i-col>
                             </Row>
                             <Row style="margin: 10px 0">
@@ -155,7 +155,7 @@
                                     &nbsp;当前时间 : &nbsp;
                                 </i-col>
                                 <i-col span="12">
-                                    <i-input v-model.trim="recordVersion"></i-input>
+                                    <i-input v-model.trim="realTimeClock"></i-input>
                                 </i-col>
                             </Row>
                             <Row style="margin: 10px 0">
@@ -163,7 +163,7 @@
                                     &nbsp;脉冲系数 : &nbsp;
                                 </i-col>
                                 <i-col span="12">
-                                    <i-input v-model.trim="recordVersion"></i-input>
+                                    <i-input v-model.trim="pulseFactor"></i-input>
                                 </i-col>
                             </Row>
                         </div>
@@ -173,7 +173,7 @@
                                     &nbsp;更新时间 : &nbsp;
                                 </i-col>
                                 <i-col span="12">
-                                    <i-input v-model.trim="recordVersion"></i-input>
+                                    <i-input v-model.trim="updateTimeStr" disabled></i-input>
                                 </i-col>
                             </Row>
                             <Row style="margin: 10px 0">
@@ -181,7 +181,7 @@
                                     &nbsp;车辆识别代号 : &nbsp;
                                 </i-col>
                                 <i-col span="12">
-                                    <i-input v-model.trim="recordVersion"></i-input>
+                                    <i-input v-model.trim="vin"></i-input>
                                 </i-col>
                             </Row>
                             <Row style="margin: 10px 0">
@@ -189,7 +189,7 @@
                                     &nbsp;车辆号码 : &nbsp;
                                 </i-col>
                                 <i-col span="12">
-                                    <i-input v-model.trim="recordVersion"></i-input>
+                                    <i-input v-model.trim="vehicleNumber"></i-input>
                                 </i-col>
                             </Row>
                             <Row style="margin: 10px 0">
@@ -197,7 +197,7 @@
                                     &nbsp;车辆分类 : &nbsp;
                                 </i-col>
                                 <i-col span="12">
-                                    <i-input v-model.trim="recordVersion"></i-input>
+                                    <i-input v-model.trim="classificationOfVehicle"></i-input>
                                 </i-col>
                             </Row>
                         </div>
@@ -207,7 +207,15 @@
                                     &nbsp;更新时间 : &nbsp;
                                 </i-col>
                                 <i-col span="12">
-                                    <i-input v-model.trim="recordVersion"></i-input>
+                                    <i-input v-model.trim="updateTimeStr" disabled></i-input>
+                                </i-col>
+                            </Row>
+                            <Row style="margin: 10px 0">
+                                <i-col span="6" style="height: 100%;text-align:right;line-height:32px;">
+                                    &nbsp;当前时间 : &nbsp;
+                                </i-col>
+                                <i-col span="12">
+                                    <i-input v-model.trim="realTimeClock"></i-input>
                                 </i-col>
                             </Row>
                             <Row style="margin: 10px 0">
@@ -215,7 +223,7 @@
                                     &nbsp;内容 : &nbsp;
                                 </i-col>
                                 <i-col span="12">
-                                    <i-input v-model.trim="recordVersion"></i-input>
+                                    <i-input v-model.trim="content"></i-input>
                                 </i-col>
                             </Row>
                             <Row style="margin: 10px 0">
@@ -223,7 +231,7 @@
                                     &nbsp;状态信号 : &nbsp;
                                 </i-col>
                                 <i-col span="12">
-                                    <i-input v-model.trim="recordVersion"></i-input>
+                                    <i-input v-model.trim="state"></i-input>
                                 </i-col>
                             </Row>
                         </div>
@@ -233,7 +241,7 @@
                                     &nbsp;更新时间 : &nbsp;
                                 </i-col>
                                 <i-col span="12">
-                                    <i-input v-model.trim="recordVersion"></i-input>
+                                    <i-input v-model.trim="updateTimeStr" disabled></i-input>
                                 </i-col>
                             </Row>
                             <Row style="margin: 10px 0">
@@ -241,7 +249,7 @@
                                     &nbsp;3C认证代码 : &nbsp;
                                 </i-col>
                                 <i-col span="12">
-                                    <i-input v-model.trim="recordVersion"></i-input>
+                                    <i-input v-model.trim="cCCcode"></i-input>
                                 </i-col>
                             </Row>
                             <Row style="margin: 10px 0">
@@ -249,7 +257,7 @@
                                     &nbsp;认证产品型号 : &nbsp;
                                 </i-col>
                                 <i-col span="12">
-                                    <i-input v-model.trim="recordVersion"></i-input>
+                                    <i-input v-model.trim="certifiedProductModel"></i-input>
                                 </i-col>
                             </Row>
                             <Row style="margin: 10px 0">
@@ -257,7 +265,7 @@
                                     &nbsp;记录仪生产日期 : &nbsp;
                                 </i-col>
                                 <i-col span="12">
-                                    <i-input v-model.trim="recordVersion"></i-input>
+                                    <i-input v-model.trim="productDateTime"></i-input>
                                 </i-col>
                             </Row>
                             <Row style="margin: 10px 0">
@@ -265,7 +273,15 @@
                                     &nbsp;产品生产流水号 : &nbsp;
                                 </i-col>
                                 <i-col span="12">
-                                    <i-input v-model.trim="recordVersion"></i-input>
+                                    <i-input v-model.trim="productSerialNumber"></i-input>
+                                </i-col>
+                            </Row>
+                            <Row style="margin: 10px 0">
+                                <i-col span="6" style="height: 100%;text-align:right;line-height:32px;">
+                                    &nbsp;备用 : &nbsp;
+                                </i-col>
+                                <i-col span="12">
+                                    <i-input v-model.trim="productOther"></i-input>
                                 </i-col>
                             </Row>
                         </div>
@@ -275,7 +291,7 @@
                                     &nbsp;开始时间 : &nbsp;
                                 </i-col>
                                 <i-col span="12">
-                                    <i-input v-model.trim="recordVersion"></i-input>
+                                    <Date-Picker type="datetime" v-model="startDateTime"></Date-Picker>
                                 </i-col>
                             </Row>
                             <Row style="margin: 10px 0">
@@ -283,15 +299,15 @@
                                     &nbsp;结束时间 : &nbsp;
                                 </i-col>
                                 <i-col span="12">
-                                    <i-input v-model.trim="recordVersion"></i-input>
+                                    <Date-Picker type="datetime" v-model="endDateTime" ></Date-Picker>
                                 </i-col>
                             </Row>
                             <Row style="margin: 10px 0">
                                 <i-col span="6" style="height: 100%;text-align:right;line-height:32px;">
                                     &nbsp;模块数 : &nbsp;
                                 </i-col>
-                                <i-col span="12">
-                                    <i-input v-model.trim="recordVersion"></i-input>
+                                <i-col span="12">  
+                                    <Input-Number :min="0" v-model="modulesNumber"></Input-Number>
                                 </i-col>
                             </Row>
                             <i-table border :columns="deviceInfoColumns" height="200" :data="deviceInfoData"></i-table>
@@ -310,7 +326,7 @@
                             <i-col span="12" :offset="5">
                                 <i-button @click="onCollection(1)">采集</i-button>
                                 <i-button @click="onRefresh">刷新</i-button>
-                                <i-button @click="onCollection(2)">设置</i-button>
+                                <i-button @click="onSetDataInfo" v-show="isShowSetBtn">设置</i-button>
                             </i-col>
                         </Row>
                     </div>
@@ -324,11 +340,42 @@
         el: "#batchmgr",
         i18n: utils.getI18n(),
         data: {
+            updateTimeStr:'',
             // 0
             recordVersion: '',
             modifiedOrder: '',
             commandWord: '',
             // 1
+            driverLicenseNo:'',
+            // 2
+            realTimeClock:'',
+            // 3
+            beginMileage: '',
+            endMileage: '',
+            realTimeClock: "",
+            setupDateTime: "",
+            // 4
+            pulseFactor: '',
+            // realTimeClock: "",
+            // 5
+            classificationOfVehicle: "",
+            vehicleNumber: "",
+            vin: "",
+            // 6
+            content: "",
+            state: '',
+            // realTimeClock: "",
+            // 7
+            cCCcode : '',
+            certifiedProductModel  : '',
+            productDateTime  : '',
+            productSerialNumber  : '',
+            productOther  : '',
+
+            // 8 - 14
+            startDateTime:new Date(DateFormat.format(new Date(),'yyyy-MM-dd') + ' 00:00:00' ),
+            endDateTime:new Date(DateFormat.format(new Date(),'yyyy-MM-dd') + ' 23:59:59' ),
+            modulesNumber:10,
 
             loading: false,
             userType: localStorage.getItem('userType'),
@@ -425,7 +472,11 @@
                             click: function(event) {
                                 event.stopPropagation();
                                 event.preventDefault();
-                                vueInstanse.tableData.splice(params.index, 1);
+                                var row = vueInstanse.tableData.splice(params.index, 1)[0];
+                                
+                                if(row && vueInstanse.curruntRow && row.deviceid === vueInstanse.curruntRow.deviceid){
+                                    vueInstanse.curruntRow = null;
+                                }
                             }
                         }
                     }, vRoot.$t('insure.remove'))
@@ -488,9 +539,15 @@
             taleHeight: 100
         },
         methods: {
+            clearTableData :function(){
+                this.curruntRow = null;
+                this.tableData=[];
+            },
             onRefresh: function() {
                 if (this.curruntRow) {
                     this.onCurrentChange(this.curruntRow)
+                }else{
+                    this.$Message.error('请选择一个设备');
                 }
             },
             onCurrentChange: function(curruntRow) {
@@ -501,16 +558,17 @@
                     recordercommand: this.getRecorderCommand(),
                     deviceid: curruntRow.deviceid
                 }
-                console.log(data);
                 utils.sendAjax(url, data, function(resp) {
                     if (resp.status == 0) {
                         var recorderData = JSON.parse(resp.recorderdata);
+                        me.updateTimeStr = DateFormat.longToDateTimeStr(resp.updatetime, 0)
                         me.setRecorderData(recorderData);
                     } else {
                         me.$Message.error('查询失败');
                     }
                 });
             },
+            
             getRecorderCommand: function() {
                 var cmd = 0x00;
                 switch (this.curruntCmdType) {
@@ -565,11 +623,75 @@
                 }
                 return cmd;
             },
-            getRecorderData: function() {
-                var data = {};
-                return data;
+            getRecorderData:function(){
+                var dataStr = null;
+                switch (this.curruntCmdType) {
+                    case '00H':
+                        dataStr = null;
+                        break;
+                    case '01H':
+                        dataStr = null;
+                        break;
+                    case '02H':
+                        dataStr = null;
+                        break;
+                    case '03H':
+                        dataStr = null;
+                        break;
+                    case '04H':
+                        dataStr = null;
+                        break;
+                    case '05H':
+                        dataStr = null;
+                        break;
+                    case '06H':
+                        dataStr = null;
+                        break;
+                    case '07H':
+                        dataStr = null;
+                        break;
+                    case '15H':
+                        dataStr = null;
+                        break;
+                    default :
+                        var daya = {
+                            begintime: this.startDateTime.getTime(),
+                            endtime: this.endDateTime.getTime(),
+                            offset: timeDifference,
+                            maxnumber: this.modulesNumber,
+                        }
+                        console.log('this.daya',daya);
+                        dataStr = JSON.stringify(daya);
+                }
+                return dataStr;    
             },
+            // getQueryRecorderData:function(){
+            //     var dataStr = null;
+            //     if(
+            //         this.curruntCmdType=='08H'||
+            //         this.curruntCmdType=='09H'||
+            //         this.curruntCmdType=='10H'||
+            //         this.curruntCmdType=='11H'||
+            //         this.curruntCmdType=='12H'||
+            //         this.curruntCmdType=='13H'||
+            //         this.curruntCmdType=='14H'
+            //     ){
+            //         var daya = {
+            //             begintime: this.startDateTime.getTime(),
+            //             endtime: this.endDateTime.getTime(),
+            //             offset: timeDifference,
+            //             maxnumber: this.modulesNumber,
+            //         }
+            //         dataStr = JSON.stringify(daya);
+            //     }
+            //     return dataStr;
+            // },
+            // getSetRecorderData: function() {
+            //     var data = {};
+            //     return data;
+            // },
             setRecorderData: function(recorderData) {
+                console.log(recorderData);
                 switch (this.curruntCmdType) {
                     case '00H':
                         this.recordVersion = recorderData.recordVersion;
@@ -577,49 +699,61 @@
                         this.commandWord = recorderData.commandWord;
                         break;
                     case '01H':
-                        cmd = 0x01;
+                        this.driverLicenseNo = recorderData.driverLicenseNo;
                         break;
                     case '02H':
-                        cmd = 0x02;
+                        this.realTimeClock = recorderData.realTimeClock;
                         break;
                     case '03H':
-                        cmd = 0x03;
+                        this.setupDateTime = recorderData.setupDateTime;
+                        this.realTimeClock = recorderData.realTimeClock;
+                        this.endMileage = recorderData.endMileage;
+                        this.beginMileage = recorderData.beginMileage;
                         break;
                     case '04H':
-                        cmd = 0x04;
+                        this.pulseFactor = recorderData.pulseFactor;
+                        this.realTimeClock = recorderData.realTimeClock;
                         break;
                     case '05H':
-                        cmd = 0x05;
+                        this.classificationOfVehicle = recorderData.classificationOfVehicle;
+                        this.vehicleNumber = recorderData.vehicleNumber;
+                        this.vin = recorderData.vin;
                         break;
                     case '06H':
-                        cmd = 0x06;
+                         this.content = recorderData.content;
+                         this.realTimeClock = recorderData.realTimeClock;
+                         this.state = recorderData.state;
                         break;
                     case '07H':
-                        cmd = 0x07;
+                        this.cCCcode = recorderData.cCCcode;
+                        this.certifiedProductModel = recorderData.certifiedProductModel;
+                        this.productDateTime = recorderData.productDateTime;
+                        this.productSerialNumber = recorderData.productSerialNumber;
+                        this.productOther = recorderData.productOther;
                         break;
                     case '08H':
-                        cmd = 0x08;
+        
                         break;
                     case '09H':
-                        cmd = 0x09;
+                     
                         break;
                     case '10H':
-                        cmd = 0x0A;
+                     
                         break;
                     case '11H':
-                        cmd = 0x0B;
+                    
                         break;
                     case '12H':
-                        cmd = 0x0C;
+                
                         break;
                     case '13H':
-                        cmd = 0x0D;
+             
                         break;
                     case '14H':
-                        cmd = 0x0E;
+               
                         break;
                     case '15H':
-                        cmd = 0x0F;
+               
                         break;
                 }
             },
@@ -629,11 +763,8 @@
                     action: 'recorder',
                     recorderaction: type,
                     recordercommand: this.getRecorderCommand(),
-                    // recordercommand: 0x00,
+                    recorderdata:this.getRecorderData(type),
                 };
-                if (type == 2) {
-                    data.recorderdata = this.getRecorderData();
-                }
                 this.tableData.forEach(function(item) {
                     data.deviceids.push(item.deviceid);
                 });
@@ -642,14 +773,13 @@
             onCollection: function(type) {
                 var me = this;
                 var data = this.getCmdTypeData(type);
-                console.log(data);
                 if (data.deviceids.length == 0) {
                     me.$Message.error('请选择设备');
                     return;
                 }
                 var url = myUrls.batchOperate();
+     
                 utils.sendAjax(url, data, function(respData) {
-                    console.log(respData);
                     if (respData.status === 0) {
                         if (respData.total == respData.success) {
                             me.$Message.success(vRoot.$t('device.actionSucc'));
@@ -657,7 +787,31 @@
                             me.$Message.error(vRoot.$t('message.changeFail') + ' : ' + respData.fail);
                         }
                         me.updatedActionState(respData.errorrecords);
-                        me.batchModal = false;
+                    } else {
+                        me.$Message.error(respData.cause);
+                    }
+                });
+
+                
+            },
+            onSetDataInfo:function(){
+                var me = this;
+                if (!this.curruntRow) {
+                    me.$Message.error('请选择一个设备');
+                    return;
+                };
+                var data = {
+                    deviceids: [this.curruntRow.deviceid],
+                    action: 'recorder',
+                    recorderaction: 2,
+                    recordercommand: this.getRecorderCommand(),
+                    recorderdata:this.getRecorderCommand(),
+                };
+                var url = myUrls.batchOperate();
+                utils.sendAjax(url, data, function(respData) {
+                    console.log(respData);
+                    if (respData.status === 0) {
+                        
                     } else {
                         me.$Message.error(respData.cause);
                     }
@@ -686,7 +840,7 @@
             },
             onSelectChange: function(arr) {
                 var row = arr[0];
-                if (!row.children) {
+                if (row && !row.children) {
                     this.curruntCmdType = row.cmdType;
                 }
             },
@@ -1018,7 +1172,10 @@
                     deviceids.push(item.deviceid);
                 });
                 return deviceids;
-            }
+            },
+            isShowSetBtn:function(){
+                return this.curruntCmdType=='02H'||this.curruntCmdType=='03H'||this.curruntCmdType=='04H'||this.curruntCmdType=='05H'||this.curruntCmdType=='06H'||this.curruntCmdType=='15H'
+            },
         },
         watch: {
             searchDeviceVal: function(newVal) {
