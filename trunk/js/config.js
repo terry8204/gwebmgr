@@ -799,6 +799,9 @@ var myUrls = {
     setUpload809sStatus: function() {
         return this.apihosts + 'webapi?action=setupload809sstatus&token=' + token;
     },
+    queryRecorderData: function() {
+        return this.apihosts + 'webapi?action=queryrecorderdata&token=' + token;
+    },
 }
 
 
