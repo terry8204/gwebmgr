@@ -1750,267 +1750,270 @@ var ScrollbarMixins = {
         }
     }
 };
-Vue.component('Drawer', {
-    template: document.getElementById("drawer-template").innerHTML,
-    directives: {
-        TransferDom: {
-            inserted: function(el, params, vnode) {
-                var value = params.value;
-                if (el.dataset && el.dataset.transfer !== 'true') return false;
-                el.className = el.className ? el.className + ' v-transfer-dom' : 'v-transfer-dom';
-                var parentNode = el.parentNode;
-                if (!parentNode) return;
-                var home = document.createComment('');
-                var hasMovedOut = false;
 
-                if (value !== false) {
-                    parentNode.replaceChild(home, el); // moving out, el is no longer in the document
-                    getTarget(value).appendChild(el); // moving into new place
-                    hasMovedOut = true
-                }
-                if (!el.__transferDomData) {
-                    el.__transferDomData = {
-                        parentNode: parentNode,
-                        home: home,
-                        target: getTarget(value),
-                        hasMovedOut: hasMovedOut
+if(document.getElementById("drawer-template")){
+    Vue.component('Drawer', {
+        template: document.getElementById("drawer-template").innerHTML,
+        directives: {
+            TransferDom: {
+                inserted: function(el, params, vnode) {
+                    var value = params.value;
+                    if (el.dataset && el.dataset.transfer !== 'true') return false;
+                    el.className = el.className ? el.className + ' v-transfer-dom' : 'v-transfer-dom';
+                    var parentNode = el.parentNode;
+                    if (!parentNode) return;
+                    var home = document.createComment('');
+                    var hasMovedOut = false;
+    
+                    if (value !== false) {
+                        parentNode.replaceChild(home, el); // moving out, el is no longer in the document
+                        getTarget(value).appendChild(el); // moving into new place
+                        hasMovedOut = true
                     }
+                    if (!el.__transferDomData) {
+                        el.__transferDomData = {
+                            parentNode: parentNode,
+                            home: home,
+                            target: getTarget(value),
+                            hasMovedOut: hasMovedOut
+                        }
+                    }
+                },
+                componentUpdated: function(el, params) {
+                    var value = params.value;
+                    if (el.dataset && el.dataset.transfer !== 'true') return false;
+                    // need to make sure children are done updating (vs. `update`)
+                    var ref$1 = el.__transferDomData;
+                    if (!ref$1) return;
+                    // homes.get(el)
+                    var parentNode = ref$1.parentNode;
+                    var home = ref$1.home;
+                    var hasMovedOut = ref$1.hasMovedOut; // recall where home is
+    
+                    if (!hasMovedOut && value) {
+                        // remove from document and leave placeholder
+                        parentNode.replaceChild(home, el);
+                        // append to target
+                        getTarget(value).appendChild(el);
+                        el.__transferDomData = Object.assign({}, el.__transferDomData, {
+                            hasMovedOut: true,
+                            target: getTarget(value)
+                        });
+                    } else if (hasMovedOut && value === false) {
+                        // previously moved, coming back home
+                        parentNode.replaceChild(el, home);
+                        el.__transferDomData = Object.assign({}, el.__transferDomData, {
+                            hasMovedOut: false,
+                            target: getTarget(value)
+                        });
+                    } else if (value) {
+                        // already moved, going somewhere else
+                        getTarget(value).appendChild(el);
+                    }
+                },
+                unbind: function(el) {
+                    if (el.dataset && el.dataset.transfer !== 'true') return false;
+                    el.className = el.className.replace('v-transfer-dom', '');
+                    var ref$1 = el.__transferDomData;
+                    if (!ref$1) return;
+                    if (el.__transferDomData.hasMovedOut === true) {
+                        el.__transferDomData.parentNode && el.__transferDomData.parentNode.appendChild(el)
+                    }
+                    el.__transferDomData = null
                 }
-            },
-            componentUpdated: function(el, params) {
-                var value = params.value;
-                if (el.dataset && el.dataset.transfer !== 'true') return false;
-                // need to make sure children are done updating (vs. `update`)
-                var ref$1 = el.__transferDomData;
-                if (!ref$1) return;
-                // homes.get(el)
-                var parentNode = ref$1.parentNode;
-                var home = ref$1.home;
-                var hasMovedOut = ref$1.hasMovedOut; // recall where home is
-
-                if (!hasMovedOut && value) {
-                    // remove from document and leave placeholder
-                    parentNode.replaceChild(home, el);
-                    // append to target
-                    getTarget(value).appendChild(el);
-                    el.__transferDomData = Object.assign({}, el.__transferDomData, {
-                        hasMovedOut: true,
-                        target: getTarget(value)
-                    });
-                } else if (hasMovedOut && value === false) {
-                    // previously moved, coming back home
-                    parentNode.replaceChild(el, home);
-                    el.__transferDomData = Object.assign({}, el.__transferDomData, {
-                        hasMovedOut: false,
-                        target: getTarget(value)
-                    });
-                } else if (value) {
-                    // already moved, going somewhere else
-                    getTarget(value).appendChild(el);
-                }
-            },
-            unbind: function(el) {
-                if (el.dataset && el.dataset.transfer !== 'true') return false;
-                el.className = el.className.replace('v-transfer-dom', '');
-                var ref$1 = el.__transferDomData;
-                if (!ref$1) return;
-                if (el.__transferDomData.hasMovedOut === true) {
-                    el.__transferDomData.parentNode && el.__transferDomData.parentNode.appendChild(el)
-                }
-                el.__transferDomData = null
-            }
-        }
-    },
-    mixins: [emitter, ScrollbarMixins],
-    props: {
-        value: {
-            type: Boolean,
-            default: false
-        },
-        title: {
-            type: String
-        },
-        width: {
-            type: [Number, String],
-            default: 256
-        },
-        closable: {
-            type: Boolean,
-            default: true
-        },
-        maskClosable: {
-            type: Boolean,
-            default: true
-        },
-        mask: {
-            type: Boolean,
-            default: true
-        },
-        maskStyle: {
-            type: Object
-        },
-        styles: {
-            type: Object
-        },
-        scrollable: {
-            type: Boolean,
-            default: false
-        },
-        placement: {
-            validator(value) {
-                return oneOf(value, ['left', 'right']);
-            },
-            default: 'right'
-        },
-        zIndex: {
-            type: Number,
-            default: 1000
-        },
-        transfer: {
-            type: Boolean,
-            default () {
-                return !this.$IVIEW || this.$IVIEW.transfer === '' ? true : this.$IVIEW.transfer;
             }
         },
-        className: {
-            type: String
-        },
-        inner: {
-            type: Boolean,
-            default: false
-        }
-    },
-    data: function() {
-        return {
-            prefixCls: prefixCls,
-            visible: this.value,
-            wrapShow: false,
-            showHead: true,
-        };
-    },
-    computed: {
-        wrapClasses: function() {
-            return [
-                `${prefixCls}-wrap`, {
-                    [`${prefixCls}-hidden`]: !this.wrapShow,
-                    [`${this.className}`]: !!this.className,
-                    [`${prefixCls}-no-mask`]: !this.mask,
-                    [`${prefixCls}-wrap-inner`]: this.inner
+        mixins: [emitter, ScrollbarMixins],
+        props: {
+            value: {
+                type: Boolean,
+                default: false
+            },
+            title: {
+                type: String
+            },
+            width: {
+                type: [Number, String],
+                default: 256
+            },
+            closable: {
+                type: Boolean,
+                default: true
+            },
+            maskClosable: {
+                type: Boolean,
+                default: true
+            },
+            mask: {
+                type: Boolean,
+                default: true
+            },
+            maskStyle: {
+                type: Object
+            },
+            styles: {
+                type: Object
+            },
+            scrollable: {
+                type: Boolean,
+                default: false
+            },
+            placement: {
+                validator(value) {
+                    return oneOf(value, ['left', 'right']);
+                },
+                default: 'right'
+            },
+            zIndex: {
+                type: Number,
+                default: 1000
+            },
+            transfer: {
+                type: Boolean,
+                default () {
+                    return !this.$IVIEW || this.$IVIEW.transfer === '' ? true : this.$IVIEW.transfer;
                 }
-            ];
+            },
+            className: {
+                type: String
+            },
+            inner: {
+                type: Boolean,
+                default: false
+            }
         },
-        mainStyles: function() {
-            var style = {};
-
-            var width = parseInt(this.width);
-
-            var styleWidth = {
-                width: width <= 100 ? `${width}%` : `${width}px`
+        data: function() {
+            return {
+                prefixCls: prefixCls,
+                visible: this.value,
+                wrapShow: false,
+                showHead: true,
             };
-
-            Object.assign(style, styleWidth);
-
-            return style;
         },
-        contentClasses: function() {
-            return [
-                `${prefixCls}-content`, {
-                    [`${prefixCls}-content-no-mask`]: !this.mask
-                }
-            ];
-        },
-        classes: function() {
-            return [
-                `${prefixCls}`,
-                `${prefixCls}-${this.placement}`, {
-                    [`${prefixCls}-no-header`]: !this.showHead,
-                    [`${prefixCls}-inner`]: this.inner
-                }
-            ];
-        },
-        maskClasses: function() {
-            return [
-                `${prefixCls}-mask`, {
-                    [`${prefixCls}-mask-inner`]: this.inner
-                }
-            ];
-        }
-    },
-    methods: {
-        close: function() {
-            this.visible = false;
-            this.$emit('input', false);
-            this.$emit('on-close');
-        },
-        handleMask: function() {
-            if (this.maskClosable && this.mask) {
-                this.close();
-            }
-        },
-        handleWrapClick: function(event) {
-            // use indexOf,do not use === ,because ivu-modal-wrap can have other custom className
-            var className = event.target.getAttribute('class');
-            if (className && className.indexOf(`${prefixCls}-wrap`) > -1) this.handleMask();
-        },
-    },
-    mounted: function() {
-        if (this.visible) {
-            this.wrapShow = true;
-        }
-
-        var showHead = true;
-
-        if (this.$slots.header === undefined && !this.title) {
-            showHead = false;
-        }
-
-        this.showHead = showHead;
-    },
-    beforeDestroy: function() {
-        this.removeScrollEffect();
-    },
-    watch: {
-        value: function(val) {
-            this.visible = val;
-        },
-        visible: function(val) {
-            if (val === false) {
-                this.timer = setTimeout(() => {
-                    this.wrapShow = false;
-                    // #4831 Check if there are any drawers left at the parent level
-                    var brotherDrawers = findBrothersComponents(this, 'Drawer', true) || [];
-                    var parentDrawers = findComponentsUpward(this, 'Drawer') || [];
-
-                    var otherDrawers = [].concat(brotherDrawers).concat(parentDrawers);
-
-                    var isScrollDrawer = otherDrawers.some(item => item.visible && !item.scrollable);
-
-                    if (!isScrollDrawer) {
-                        this.removeScrollEffect();
+        computed: {
+            wrapClasses: function() {
+                return [
+                    `${prefixCls}-wrap`, {
+                        [`${prefixCls}-hidden`]: !this.wrapShow,
+                        [`${this.className}`]: !!this.className,
+                        [`${prefixCls}-no-mask`]: !this.mask,
+                        [`${prefixCls}-wrap-inner`]: this.inner
                     }
-                }, 300);
-            } else {
-                if (this.timer) clearTimeout(this.timer);
+                ];
+            },
+            mainStyles: function() {
+                var style = {};
+    
+                var width = parseInt(this.width);
+    
+                var styleWidth = {
+                    width: width <= 100 ? `${width}%` : `${width}px`
+                };
+    
+                Object.assign(style, styleWidth);
+    
+                return style;
+            },
+            contentClasses: function() {
+                return [
+                    `${prefixCls}-content`, {
+                        [`${prefixCls}-content-no-mask`]: !this.mask
+                    }
+                ];
+            },
+            classes: function() {
+                return [
+                    `${prefixCls}`,
+                    `${prefixCls}-${this.placement}`, {
+                        [`${prefixCls}-no-header`]: !this.showHead,
+                        [`${prefixCls}-inner`]: this.inner
+                    }
+                ];
+            },
+            maskClasses: function() {
+                return [
+                    `${prefixCls}-mask`, {
+                        [`${prefixCls}-mask-inner`]: this.inner
+                    }
+                ];
+            }
+        },
+        methods: {
+            close: function() {
+                this.visible = false;
+                this.$emit('input', false);
+                this.$emit('on-close');
+            },
+            handleMask: function() {
+                if (this.maskClosable && this.mask) {
+                    this.close();
+                }
+            },
+            handleWrapClick: function(event) {
+                // use indexOf,do not use === ,because ivu-modal-wrap can have other custom className
+                var className = event.target.getAttribute('class');
+                if (className && className.indexOf(`${prefixCls}-wrap`) > -1) this.handleMask();
+            },
+        },
+        mounted: function() {
+            if (this.visible) {
                 this.wrapShow = true;
-                if (!this.scrollable) {
+            }
+    
+            var showHead = true;
+    
+            if (this.$slots.header === undefined && !this.title) {
+                showHead = false;
+            }
+    
+            this.showHead = showHead;
+        },
+        beforeDestroy: function() {
+            this.removeScrollEffect();
+        },
+        watch: {
+            value: function(val) {
+                this.visible = val;
+            },
+            visible: function(val) {
+                if (val === false) {
+                    this.timer = setTimeout(() => {
+                        this.wrapShow = false;
+                        // #4831 Check if there are any drawers left at the parent level
+                        var brotherDrawers = findBrothersComponents(this, 'Drawer', true) || [];
+                        var parentDrawers = findComponentsUpward(this, 'Drawer') || [];
+    
+                        var otherDrawers = [].concat(brotherDrawers).concat(parentDrawers);
+    
+                        var isScrollDrawer = otherDrawers.some(item => item.visible && !item.scrollable);
+    
+                        if (!isScrollDrawer) {
+                            this.removeScrollEffect();
+                        }
+                    }, 300);
+                } else {
+                    if (this.timer) clearTimeout(this.timer);
+                    this.wrapShow = true;
+                    if (!this.scrollable) {
+                        this.addScrollEffect();
+                    }
+                }
+                this.broadcast('Table', 'on-visible-change', val);
+                this.broadcast('Slider', 'on-visible-change', val); // #2852
+                this.$emit('on-visible-change', val);
+            },
+            scrollable: function(val) {
+                if (!val) {
                     this.addScrollEffect();
+                } else {
+                    this.removeScrollEffect();
+                }
+            },
+            title: function(val) {
+                if (this.$slots.header === undefined) {
+                    this.showHead = !!val;
                 }
             }
-            this.broadcast('Table', 'on-visible-change', val);
-            this.broadcast('Slider', 'on-visible-change', val); // #2852
-            this.$emit('on-visible-change', val);
-        },
-        scrollable: function(val) {
-            if (!val) {
-                this.addScrollEffect();
-            } else {
-                this.removeScrollEffect();
-            }
-        },
-        title: function(val) {
-            if (this.$slots.header === undefined) {
-                this.showHead = !!val;
-            }
         }
-    }
-});
+    });
+}

@@ -336,9 +336,9 @@
                         <i-col :span="4" style="line-height:60px;text-align:center;"> {{$t("main.playSpeed")}} : &nbsp;</i-col>
                         <i-col :span="10">
                             <Button-Group>
-                                <i-button :type="velocity == 1500?'primary':''" @click="velocity=1500">{{$t("main.slow")}}</i-button>
-                                <i-button :type="velocity == 1000?'primary':''" @click="velocity=1000">{{$t("main.middle")}}</i-button>
-                                <i-button :type="velocity == 500?'primary':''" @click="velocity=500">{{$t("main.fast")}}</i-button>
+                                <i-button :type="velocity == 900?'primary':''" @click="velocity=900">{{$t("main.slow")}}</i-button>
+                                <i-button :type="velocity == 600?'primary':''" @click="velocity=600">{{$t("main.middle")}}</i-button>
+                                <i-button :type="velocity == 300?'primary':''" @click="velocity=300">{{$t("main.fast")}}</i-button>
                             </Button-Group>
                         </i-col>
                     </Row>
@@ -576,7 +576,7 @@
                     extractRecords: [], //精确位置
                     markers: [],
                     range: 1, // 范围1米之内的点不显示
-                    velocity: 1000, // 半秒
+                    velocity: 600, // 半秒
                     intervalInstanse: null,
                     carMarker: null,
                     index: 0,
@@ -1713,11 +1713,11 @@
                         var oil1 = []; //速度
                         var oil2 = []; //速度
                         this.disMin = 0;
-
+                        var totalDistanceMin = 0;
                         records.forEach(function(item, index) {
-
+                  
                             if (index == 0) {
-                                me.disMin = item.totaldistance
+                                totalDistanceMin = item.totaldistance;
                             }
                             var ad0 = item.ad0;
                             var ad1 = item.ad1;
@@ -1734,7 +1734,7 @@
                             oil.push(item.ad0 + item.ad1);
                             recvtime.push(DateFormat.longToDateTimeStr(item.updatetime, timeDifference));
                             veo.push((item.speed / 1000).toFixed(2));
-                            distance.push(item.totaldistance);
+                            distance.push((item.totaldistance - totalDistanceMin).toFixed(2));
                         });
                         this.distance = distance;
                         this.recvtime = recvtime;
