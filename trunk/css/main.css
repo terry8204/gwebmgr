@@ -121,6 +121,10 @@ div.site_links ul li span {
     background-image: none;
     position: relative;
     cursor: pointer;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
 }
 
 

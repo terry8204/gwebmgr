@@ -804,7 +804,7 @@ Vue.component('s-checkbox', {
     props: {
         ioCount: {
             type: Number,
-            default: 4,
+            default: 16,
         }
     },
     data: function() {
@@ -820,7 +820,7 @@ Vue.component('s-checkbox', {
         },
         onChange: function(val) {
             if (val) {
-                this.checkboxList = [1, 2, 3, 4];
+                this.checkboxList = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16];
             } else {
                 this.checkboxList = [];
             }
