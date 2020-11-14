@@ -317,8 +317,8 @@
             productOther  : '',
 
             // 8 - 14
-            startDateTime:new Date(DateFormat.format(new Date(),'yyyy-MM-dd') + ' 00:00:00' ),
-            endDateTime:new Date(DateFormat.format(new Date(),'yyyy-MM-dd') + ' 23:59:59' ),
+            startDateTime:new Date(Date.now()-3600*1000),
+            endDateTime:new Date(),
             modulesNumber:10,
 
             loading: false,
@@ -549,22 +549,22 @@
                         cmd = 0x09;
                         break;
                     case '10H':
-                        cmd = 0x0A;
+                        cmd = 0x10;
                         break;
                     case '11H':
-                        cmd = 0x0B;
+                        cmd = 0x11;
                         break;
                     case '12H':
-                        cmd = 0x0C;
+                        cmd = 0x12;
                         break;
                     case '13H':
-                        cmd = 0x0D;
+                        cmd = 0x13;
                         break;
                     case '14H':
-                        cmd = 0x0E;
+                        cmd = 0x14;
                         break;
                     case '15H':
-                        cmd = 0x0F;
+                        cmd = 0x15;
                         break;
                 }
                 return cmd;
@@ -666,10 +666,30 @@
                         this.deviceInfoData = tableData08H;
                         break;
                     case '09H':
-                     
+                        var tableData09H = [];
+                        var hours = recorderData.hours
+                        hours.forEach(function(mItem){
+                            var realTimeClock = mItem.realTimeClock;
+                            mItem.minutes.forEach(function(sItem,index){
+                                sItem.time = realTimeClock;
+                                sItem.second = index;
+                                tableData09H.push(sItem);
+                            })
+                        });
+                        this.deviceInfoData = tableData09H;
                         break;
                     case '10H':
-                     
+                        var tableData10H = [];
+                        var doubts = recorderData.doubts
+                        doubts.forEach(function(mItem){
+                            var realTimeClock = mItem.realTimeClock;
+                            mItem.records.forEach(function(sItem,index){
+                                sItem.time = realTimeClock;
+                                sItem.second = index;
+                                tableData10H.push(sItem);
+                            })
+                        });
+                        this.deviceInfoData = tableData10H;
                         break;
                     case '11H':
                     
@@ -1130,7 +1150,7 @@
                         },{
                             title: '秒',
                             key: 'second',
-                            width:50,
+                            width:60,
                         }, {
                             title: '速度',
                             key: 'speed',
@@ -1143,63 +1163,45 @@
                     case '09H':
                     this.deviceInfoColumns = [{
                             title: '时间',
-                            key: '12'
+                            key: 'time',
+                            width:140,
                         }, {
-                            title: '速度',
-                            key: '12'
+                            title: '秒',
+                            key: 'second',
+                            width:60,
                         }, {
                             title: '经度',
-                            key: '12'
+                            key: 'lon'
                         }, {
                             title: '纬度',
-                            key: '12'
+                            key: 'lat'
+                        }, {
+                            title: '速度',
+                            key: 'speed',
+                            width:70,
                         }, {
                             title: '海拔',
-                            key: '12'
+                            key: 'altitude',
+                            width:70,
                         }];
                         break;
                     case '10H':
                     this.deviceInfoColumns = [{
                             title: '时间',
-                            key: '12',
-                            width:160,
+                            key: 'time',
+                            width:140,
+                        },{
+                            title: '秒',
+                            key: 'second',
+                            width:60,
                         }, {
                             title: '速度',
-                            key: '12',
-                            width:160,
-                        }, {
-                            title: '经度',
-                            key: '12',
-                            width:160,
-                        }, {
-                            title: '纬度',
-                            key: '12',
-                            width:160,
-                        }, {
-                            title: '海拔',
-                            key: '12',
-                            width:160,
-                        }, {
-                            title: '制动',
-                            key: '12',
-                            width:160,
-                        }, {
-                            title: '左转向',
-                            key: '12',
-                            width:160,
-                        }, {
-                            title: '右转向',
-                            key: '12',
-                            width:160,
-                        }, {
-                            title: '远光',
-                            key: '12',
-                            width:160,
-                        }, {
-                            title: '近光',
-                            key: '12',
-                            width:160,
-                        },];
+                            key: 'speed',
+                            width:70,
+                        },  {
+                            title: '内容',
+                            key: 'content',
+                        }];
                         break;
                     case '11H':
                     this.deviceInfoColumns = [{
