@@ -72,16 +72,19 @@
             </Row>
 
             <Row style="margin: 10px 0">
-                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">{{$t("device.idLength")}}: &nbsp;</i-col>
+              
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">{{$t("device.allowLogin")}} : &nbsp;</i-col>
                 <i-col span="8">
-                    <input-number v-model.number="idLength" :max="15" :min="8" :editable="false" style="width: 100%;"></input-number>
+                    <i-select v-model="loginenable">
+                        <i-option value="0">{{$t("user.ban")}}</i-option>
+                        <i-option value="1">{{$t("user.allow")}}</i-option>
+                    </i-select>
                 </i-col>
                 <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">{{$t("device.allReportCount")}} : &nbsp;</i-col>
                 <i-col span="8">
                     <i-input v-model.trim="totalpoint"></i-input>
                 </i-col>
             </Row>
-
 
             <Row style="margin: 10px 0">
                 <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">{{$t("device.reportCount")}} : &nbsp;</i-col>
@@ -98,12 +101,9 @@
             </Row>
 
             <Row style="margin: 10px 0">
-                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">{{$t("device.allowLogin")}} : &nbsp;</i-col>
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">{{$t("device.idLength")}}: &nbsp;</i-col>
                 <i-col span="8">
-                    <i-select v-model="loginenable">
-                        <i-option value="0">{{$t("user.ban")}}</i-option>
-                        <i-option value="1">{{$t("user.allow")}}</i-option>
-                    </i-select>
+                    <input-number v-model.number="idLength" :max="15" :min="8" :editable="false" style="width: 100%;"></input-number>
                 </i-col>
                 <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;{{$t("device.timeZone")}} : &nbsp;</i-col>
                 <i-col span="8">

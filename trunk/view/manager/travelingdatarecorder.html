@@ -37,15 +37,15 @@
                 </div>
                 <div style="height: 60%;padding: 10px 0px;">
                     <div style="height: 100%;border: 1px solid #DCDEE2;">
+                        <Row style="margin: 10px 0">
+                            <i-col span="6" style="height: 100%;text-align:right;line-height:32px;">
+                                &nbsp;更新时间 : &nbsp;
+                            </i-col>
+                            <i-col span="12">
+                                <i-input v-model.trim="updateTimeStr" disabled></i-input>
+                            </i-col>
+                        </Row>
                         <div v-if="curruntCmdType=='00H'">
-                            <Row style="margin: 10px 0">
-                                <i-col span="6" style="height: 100%;text-align:right;line-height:32px;">
-                                    &nbsp;更新时间 : &nbsp;
-                                </i-col>
-                                <i-col span="12">
-                                    <i-input v-model.trim="updateTimeStr" disabled></i-input>
-                                </i-col>
-                            </Row>
                             <Row style="margin: 10px 0">
                                 <i-col span="6" style="height: 100%;text-align:right;line-height:32px;">
                                     &nbsp;标准执行年号 : &nbsp;
@@ -66,14 +66,6 @@
                         <div v-if="curruntCmdType=='01H'">
                             <Row style="margin: 10px 0">
                                 <i-col span="6" style="height: 100%;text-align:right;line-height:32px;">
-                                    &nbsp;更新时间 : &nbsp;
-                                </i-col>
-                                <i-col span="12">
-                                    <i-input v-model.trim="updateTimeStr" disabled></i-input>
-                                </i-col>
-                            </Row>
-                            <Row style="margin: 10px 0">
-                                <i-col span="6" style="height: 100%;text-align:right;line-height:32px;">
                                     &nbsp;驾驶证号码 : &nbsp;
                                 </i-col>
                                 <i-col span="12">
@@ -84,14 +76,6 @@
                         <div v-if="curruntCmdType=='02H'">
                             <Row style="margin: 10px 0">
                                 <i-col span="6" style="height: 100%;text-align:right;line-height:32px;">
-                                    &nbsp;更新时间 : &nbsp;
-                                </i-col>
-                                <i-col span="12">
-                                    <i-input v-model.trim="updateTimeStr" disabled></i-input>
-                                </i-col>
-                            </Row>
-                            <Row style="margin: 10px 0">
-                                <i-col span="6" style="height: 100%;text-align:right;line-height:32px;">
                                     &nbsp;当前时间 : &nbsp;
                                 </i-col>
                                 <i-col span="12">
@@ -100,14 +84,6 @@
                             </Row>
                         </div>
                         <div v-if="curruntCmdType=='03H'">
-                            <Row style="margin: 10px 0">
-                                <i-col span="6" style="height: 100%;text-align:right;line-height:32px;">
-                                    &nbsp;更新时间 : &nbsp;
-                                </i-col>
-                                <i-col span="12">
-                                    <i-input v-model.trim="updateTimeStr" disabled></i-input>
-                                </i-col>
-                            </Row>
                             <Row style="margin: 10px 0">
                                 <i-col span="6" style="height: 100%;text-align:right;line-height:32px;">
                                     &nbsp;当前时间 : &nbsp;
@@ -144,14 +120,6 @@
                         <div v-if="curruntCmdType=='04H'">
                             <Row style="margin: 10px 0">
                                 <i-col span="6" style="height: 100%;text-align:right;line-height:32px;">
-                                    &nbsp;更新时间 : &nbsp;
-                                </i-col>
-                                <i-col span="12">
-                                    <i-input v-model.trim="updateTimeStr" disabled></i-input>
-                                </i-col>
-                            </Row>
-                            <Row style="margin: 10px 0">
-                                <i-col span="6" style="height: 100%;text-align:right;line-height:32px;">
                                     &nbsp;当前时间 : &nbsp;
                                 </i-col>
                                 <i-col span="12">
@@ -168,14 +136,6 @@
                             </Row>
                         </div>
                         <div v-if="curruntCmdType=='05H'">
-                            <Row style="margin: 10px 0">
-                                <i-col span="6" style="height: 100%;text-align:right;line-height:32px;">
-                                    &nbsp;更新时间 : &nbsp;
-                                </i-col>
-                                <i-col span="12">
-                                    <i-input v-model.trim="updateTimeStr" disabled></i-input>
-                                </i-col>
-                            </Row>
                             <Row style="margin: 10px 0">
                                 <i-col span="6" style="height: 100%;text-align:right;line-height:32px;">
                                     &nbsp;车辆识别代号 : &nbsp;
@@ -204,14 +164,6 @@
                         <div v-if="curruntCmdType=='06H'">
                             <Row style="margin: 10px 0">
                                 <i-col span="6" style="height: 100%;text-align:right;line-height:32px;">
-                                    &nbsp;更新时间 : &nbsp;
-                                </i-col>
-                                <i-col span="12">
-                                    <i-input v-model.trim="updateTimeStr" disabled></i-input>
-                                </i-col>
-                            </Row>
-                            <Row style="margin: 10px 0">
-                                <i-col span="6" style="height: 100%;text-align:right;line-height:32px;">
                                     &nbsp;当前时间 : &nbsp;
                                 </i-col>
                                 <i-col span="12">
@@ -236,14 +188,6 @@
                             </Row>
                         </div>
                         <div v-if="curruntCmdType=='07H'">
-                            <Row style="margin: 10px 0">
-                                <i-col span="6" style="height: 100%;text-align:right;line-height:32px;">
-                                    &nbsp;更新时间 : &nbsp;
-                                </i-col>
-                                <i-col span="12">
-                                    <i-input v-model.trim="updateTimeStr" disabled></i-input>
-                                </i-col>
-                            </Row>
                             <Row style="margin: 10px 0">
                                 <i-col span="6" style="height: 100%;text-align:right;line-height:32px;">
                                     &nbsp;3C认证代码 : &nbsp;
@@ -304,10 +248,10 @@
                             </Row>
                             <Row style="margin: 10px 0">
                                 <i-col span="6" style="height: 100%;text-align:right;line-height:32px;">
-                                    &nbsp;模块数 : &nbsp;
+                                    &nbsp;模块数(分钟) : &nbsp;
                                 </i-col>
                                 <i-col span="12">  
-                                    <Input-Number :min="0" v-model="modulesNumber"></Input-Number>
+                                    <Input-Number :min="1" :max="30" v-model="modulesNumber"></Input-Number>
                                 </i-col>
                             </Row>
                             <i-table border :columns="deviceInfoColumns" height="200" :data="deviceInfoData"></i-table>
@@ -395,53 +339,55 @@
                 title: '2012版行车记录仪',
                 expand: true,
                 children: [{
-                    title: '采集记录仪执行标准版本',
+                    title: '00H-采集记录仪执行标准版本',
                     cmdType: '00H',
                     selected: true,
                 }, {
-                    title: '采集当前驾驶人信息',
+                    title: '01H-采集当前驾驶人信息',
                     cmdType: '01H',
                 }, {
-                    title: '采集/设置记录仪实时时间',
+                    title: '02H-采集/设置记录仪实时时间',
                     cmdType: '02H',
                 }, {
-                    title: '采集/设置累计行驶里程',
+                    title: '03H-采集/设置累计行驶里程',
                     cmdType: '03H',
                 }, {
-                    title: '采集/设置记录仪脉冲系数',
+                    title: '04H-采集/设置记录仪脉冲系数',
                     cmdType: '04H',
                 }, {
-                    title: '采集/设置车辆信息',
+                    title: '05H-采集/设置车辆信息',
                     cmdType: '05H',
                 }, {
-                    title: '采集/设置记录仪状态信号配置信息',
+                    title: '06H-采集/设置记录仪状态信号配置信息',
                     cmdType: '06H',
                 }, {
-                    title: '采集记录仪唯一性编号',
+                    title: '07H-采集记录仪唯一性编号',
                     cmdType: '07H',
-                }, {
-                    title: '采集指定的行驶速度记录',
+                }, 
+                {
+                    title: '08H-采集指定的行驶速度记录',
                     cmdType: '08H',
                 }, {
-                    title: '采集指定的位置信息记录',
+                    title: '09H-采集指定的位置信息记录',
                     cmdType: '09H',
                 }, {
-                    title: '采集指定的疑点事故记录',
+                    title: '10H-采集指定的疑点事故记录',
                     cmdType: '10H',
                 }, {
-                    title: '采集指定的超时驾驶记录',
+                    title: '11H-采集指定的超时驾驶记录',
                     cmdType: '11H',
                 }, {
-                    title: '采集指定的驾驶人身份记录',
+                    title: '12H-采集指定的驾驶人身份记录',
                     cmdType: '12H',
                 }, {
-                    title: '采集指定的记录仪外部供电记录',
+                    title: '13H-采集指定的记录仪外部供电记录',
                     cmdType: '13H',
                 }, {
-                    title: '采集指定的速度状态记录',
+                    title: '14H-采集指定的速度状态记录',
                     cmdType: '14H',
-                }, {
-                    title: '设置初次安装日期',
+                }, 
+                {
+                    title: '15H-设置初次安装日期',
                     cmdType: '15H',
                 }]
             }],
@@ -665,31 +611,6 @@
                 }
                 return dataStr;    
             },
-            // getQueryRecorderData:function(){
-            //     var dataStr = null;
-            //     if(
-            //         this.curruntCmdType=='08H'||
-            //         this.curruntCmdType=='09H'||
-            //         this.curruntCmdType=='10H'||
-            //         this.curruntCmdType=='11H'||
-            //         this.curruntCmdType=='12H'||
-            //         this.curruntCmdType=='13H'||
-            //         this.curruntCmdType=='14H'
-            //     ){
-            //         var daya = {
-            //             begintime: this.startDateTime.getTime(),
-            //             endtime: this.endDateTime.getTime(),
-            //             offset: timeDifference,
-            //             maxnumber: this.modulesNumber,
-            //         }
-            //         dataStr = JSON.stringify(daya);
-            //     }
-            //     return dataStr;
-            // },
-            // getSetRecorderData: function() {
-            //     var data = {};
-            //     return data;
-            // },
             setRecorderData: function(recorderData) {
                 console.log(recorderData);
                 switch (this.curruntCmdType) {
@@ -732,7 +653,17 @@
                         this.productOther = recorderData.productOther;
                         break;
                     case '08H':
-        
+                        var tableData08H = [];
+                        var minutes = recorderData.minutes
+                        minutes.forEach(function(mItem){
+                            var realTimeClock = mItem.realTimeClock;
+                            mItem.seconds.forEach(function(sItem,index){
+                                sItem.time = realTimeClock;
+                                sItem.second = index;
+                                tableData08H.push(sItem);
+                            })
+                        });
+                        this.deviceInfoData = tableData08H;
                         break;
                     case '09H':
                      
@@ -842,6 +773,7 @@
                 var row = arr[0];
                 if (row && !row.children) {
                     this.curruntCmdType = row.cmdType;
+                    this.onRefresh();
                 }
             },
             isRepeatAddDevice: function(deviceid) {
@@ -1193,35 +1125,20 @@
                     case '08H':
                         this.deviceInfoColumns = [{
                             title: '时间',
-                            key: '12'
+                            key: 'time',
+                            width:140,
+                        },{
+                            title: '秒',
+                            key: 'second',
+                            width:50,
                         }, {
                             title: '速度',
-                            key: '12'
-                        }, {
-                            title: '制动',
-                            key: '12'
-                        }, {
-                            title: '左转向',
-                            key: '12'
-                        }, {
-                            title: '右转向',
-                            key: '12'
-                        }, {
-                            title: '远光',
-                            key: '12'
-                        }, {
-                            title: '近光',
-                            key: '12'
-                        }, {
-                            title: 'D2',
-                            key: '12'
-                        }, {
-                            title: 'D1',
-                            key: '12'
-                        }, {
-                            title: 'D0',
-                            key: '12'
-                        },];
+                            key: 'speed',
+                            width:70,
+                        },  {
+                            title: '内容',
+                            key: 'content',
+                        }];
                         break;
                     case '09H':
                     this.deviceInfoColumns = [{
