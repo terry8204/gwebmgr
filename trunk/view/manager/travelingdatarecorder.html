@@ -348,7 +348,7 @@
                     title: '02H-采集/设置记录仪实时时间',
                     cmdType: '02H',
                 }, {
-                    title: '03H-采集/设置累计行驶里程',
+                    title: '03H-采集累计行驶里程',
                     cmdType: '03H',
                 }, {
                     title: '04H-采集/设置记录仪脉冲系数',
@@ -586,7 +586,9 @@
                         dataStr = null;
                         break;
                     case '04H':
-                        dataStr = null;
+                        dataStr = JSON.stringify({
+                            pulseFactor:this.pulseFactor,
+                        });
                         break;
                     case '05H':
                         dataStr = null;
@@ -790,7 +792,14 @@
                         tableData.push(utils.deviceInfos[deviceid]);
                     }
                 })
+             
                 this.tableData = this.tableData.concat(tableData);
+
+                setTimeout(function(){
+                    if(tableData.length){
+                        me.$refs.table.$refs.tbody.clickCurrentRow(0);
+                    }
+                },500)
             },
             onSelectChange: function(arr) {
                 var row = arr[0];
@@ -1129,7 +1138,7 @@
                 return deviceids;
             },
             isShowSetBtn:function(){
-                return this.curruntCmdType=='02H'||this.curruntCmdType=='03H'||this.curruntCmdType=='04H'||this.curruntCmdType=='05H'||this.curruntCmdType=='06H'||this.curruntCmdType=='15H'
+                return this.curruntCmdType=='02H'||this.curruntCmdType=='04H'||this.curruntCmdType=='05H'||this.curruntCmdType=='06H'||this.curruntCmdType=='15H'
             },
         },
         watch: {
