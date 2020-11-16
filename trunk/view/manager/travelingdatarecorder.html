@@ -18,7 +18,11 @@
                 <i-button type="error" size="small" @click="clearTableData" style="float: right;margin: 3px 0px 0 0;">{{$t("insure.removeAll")}}</i-button>
             </div>
             <div style="padding: 0 20px;width:400px;">  
-                {{$t("bgMgr.transferGroupList")}}
+                <div v-show="curruntRow.deviceid">
+                    <span v-text="curruntRow.devicename"></span>
+                    <span>-</span>
+                    <span v-text="curruntRow.deviceid"></span>
+                </div>
             </div>
         </div>
         <div style="display: flex;flex-direction: row;position: absolute;left: 0;right: 0;bottom: 0;top: 40px;">
@@ -424,7 +428,7 @@
                                 var row = vueInstanse.tableData.splice(params.index, 1)[0];
                                 
                                 if(row && vueInstanse.curruntRow && row.deviceid === vueInstanse.curruntRow.deviceid){
-                                    vueInstanse.curruntRow = null;
+                                    vueInstanse.curruntRow = {deviceid:''};
                                 }
                             }
                         }
@@ -454,11 +458,12 @@
             selectedGroupId: null,
             selectedGroupName: null,
             selectedUserName: null,
-            taleHeight: 100
+            taleHeight: 100,
+            curruntRow : {deviceid:"",devicename:''}
         },
         methods: {
             clearTableData :function(){
-                this.curruntRow = null;
+                this.curruntRow = {deviceid:"",devicename:''};
                 this.tableData=[];
             },
             onRefresh: function() {
@@ -481,8 +486,9 @@
                         var recorderData = JSON.parse(resp.recorderdata);
                         me.updateTimeStr = DateFormat.longToDateTimeStr(resp.updatetime, 0)
                         me.setRecorderData(recorderData);
+                        me.$Message.success('刷新成功');
                     } else {
-                        me.$Message.error('查询失败');
+                        // me.$Message.error('查询失败');
                     }
                 });
             },
@@ -713,11 +719,11 @@
      
                 utils.sendAjax(url, data, function(respData) {
                     if (respData.status === 0) {
-                        if (respData.total == respData.success) {
-                            me.$Message.success(vRoot.$t('device.actionSucc'));
-                        } else {
-                            me.$Message.error(vRoot.$t('message.changeFail') + ' : ' + respData.fail);
-                        }
+                        // if (respData.total == respData.success) {
+                        //     me.$Message.success(vRoot.$t('device.actionSucc'));
+                        // } else {
+                        //     me.$Message.error(vRoot.$t('message.changeFail') + ' : ' + respData.fail);
+                        // }
                         me.updatedActionState(respData.errorrecords);
                     } else {
                         me.$Message.error(respData.cause);
@@ -1235,7 +1241,6 @@
         mounted: function() {
             var me = this;
             utils.deviceInfos = {};
-            this.curruntRow = null;
             this.calcTableHeight();
             this.treeDeviceList = [];
             window.onresize = function() {
