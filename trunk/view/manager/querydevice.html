@@ -383,7 +383,7 @@
                 <span>{{$t("device.ioConfig")}}</span>
             </p>
             <div>
-                <Row style="height:32px;margin: 10px 0;">
+                <Row style="height:32px;margin: 2px 0;">
                     <i-Col span="4" style="height: 100%;line-height:32px;text-align: right;">
                         {{$t("device.ioNumber")}}:
                     </i-Col>
@@ -391,7 +391,7 @@
                         <Input-Number :max="16" :min="0" v-model="ioCount" style="width: 100%;"></Input-Number>
                     </i-Col>
                 </Row>
-                <Row style="height:32px;margin: 10px 0;" style="height:32px;margin: 10px 0;" v-show="ioCount > 0">
+                <Row style="height:32px;margin: 2px 0;" style="height:32px;margin: 10px 0;" v-show="ioCount > 0">
                     <i-Col span="4" style="height: 100%;line-height:32px;text-align: right;">
                         {{$t("device.io1Open")}}：
                     </i-Col>
@@ -405,7 +405,7 @@
                         <i-input v-model.trim="ioObject.io1g" style="width: 100%;"></i-input>
                     </i-Col>
                 </Row>
-                <Row style="height:32px;margin: 10px 0;" v-show="ioCount > 1">
+                <Row style="height:32px;margin: 2px 0;" v-show="ioCount > 1">
                     <i-Col span="4" style="height: 100%;line-height:32px;text-align: right;">
                         {{$t("device.io2Open")}}：
                     </i-Col>
@@ -419,7 +419,7 @@
                         <i-input v-model.trim="ioObject.io2g" style="width: 100%;"></i-input>
                     </i-Col>
                 </Row>
-                <Row style="height:32px;margin: 10px 0;" v-show="ioCount > 2">
+                <Row style="height:32px;margin: 2px 0;" v-show="ioCount > 2">
                     <i-Col span="4" style="height: 100%;line-height:32px;text-align: right;">
                         {{$t("device.io3Open")}}：
                     </i-Col>
@@ -433,7 +433,7 @@
                         <i-input v-model.trim="ioObject.io3g" style="width: 100%;"></i-input>
                     </i-Col>
                 </Row>
-                <Row style="height:32px;margin: 10px 0;" v-show="ioCount > 3">
+                <Row style="height:32px;margin: 2px 0;" v-show="ioCount > 3">
                     <i-Col span="4" style="height: 100%;line-height:32px;text-align: right;">
                         {{$t("device.io4Open")}}：
                     </i-Col>
@@ -447,7 +447,7 @@
                         <i-input v-model.trim="ioObject.io4g" style="width: 100%;"></i-input>
                     </i-Col>
                 </Row>
-                <Row style="height:32px;margin: 10px 0;" v-show="ioCount > 4">
+                <Row style="height:32px;margin: 2px 0;" v-show="ioCount > 4">
                     <i-Col span="4" style="height: 100%;line-height:32px;text-align: right;">
                         {{$t("device.io5Open")}}：
                     </i-Col>
@@ -461,7 +461,7 @@
                         <i-input v-model.trim="ioObject.io5g" style="width: 100%;"></i-input>
                     </i-Col>
                 </Row>
-                <Row style="height:32px;margin: 10px 0;" v-show="ioCount > 5">
+                <Row style="height:32px;margin: 2px 0;" v-show="ioCount > 5">
                     <i-Col span="4" style="height: 100%;line-height:32px;text-align: right;">
                         {{$t("device.io6Open")}}：
                     </i-Col>
@@ -475,7 +475,7 @@
                         <i-input v-model.trim="ioObject.io6g" style="width: 100%;"></i-input>
                     </i-Col>
                 </Row>
-                <Row style="height:32px;margin: 10px 0;" v-show="ioCount > 6">
+                <Row style="height:32px;margin: 2px 0;" v-show="ioCount > 6">
                     <i-Col span="4" style="height: 100%;line-height:32px;text-align: right;">
                         {{$t("device.io7Open")}}：
                     </i-Col>
@@ -489,7 +489,7 @@
                         <i-input v-model.trim="ioObject.io7g" style="width: 100%;"></i-input>
                     </i-Col>
                 </Row>
-                <Row style="height:32px;margin: 10px 0;" v-show="ioCount > 7">
+                <Row style="height:32px;margin: 2px 0;" v-show="ioCount > 7">
                     <i-Col span="4" style="height: 100%;line-height:32px;text-align: right;">
                         {{$t("device.io8Open")}}：
                     </i-Col>
@@ -503,7 +503,7 @@
                         <i-input v-model.trim="ioObject.io8g" style="width: 100%;"></i-input>
                     </i-Col>
                 </Row>
-                <Row style="height:32px;margin: 10px 0;" v-show="ioCount > 8">
+                <Row style="height:32px;margin: 2px 0;" v-show="ioCount > 8">
                     <i-Col span="4" style="height: 100%;line-height:32px;text-align: right;">
                         {{$t("device.io9Open")}}：
                     </i-Col>
@@ -517,7 +517,7 @@
                         <i-input v-model.trim="ioObject.io9g" style="width: 100%;"></i-input>
                     </i-Col>
                 </Row>
-                <Row style="height:32px;margin: 10px 0;" v-show="ioCount > 9">
+                <Row style="height:32px;margin: 2px 0;" v-show="ioCount > 9">
                     <i-Col span="4" style="height: 100%;line-height:32px;text-align: right;">
                         {{$t("device.io10Open")}}：
                     </i-Col>
@@ -531,7 +531,7 @@
                         <i-input v-model.trim="ioObject.io10g" style="width: 100%;"></i-input>
                     </i-Col>
                 </Row>
-                <Row style="height:32px;margin: 10px 0;" v-show="ioCount > 10">
+                <Row style="height:32px;margin: 2px 0;" v-show="ioCount > 10">
                     <i-Col span="4" style="height: 100%;line-height:32px;text-align: right;">
                         {{$t("device.io11Open")}}：
                     </i-Col>
@@ -545,7 +545,7 @@
                         <i-input v-model.trim="ioObject.io11g" style="width: 100%;"></i-input>
                     </i-Col>
                 </Row>
-                <Row style="height:32px;margin: 10px 0;" v-show="ioCount > 11">
+                <Row style="height:32px;margin: 2px 0;" v-show="ioCount > 11">
                     <i-Col span="4" style="height: 100%;line-height:32px;text-align: right;">
                         {{$t("device.io12Open")}}：
                     </i-Col>
@@ -559,7 +559,7 @@
                         <i-input v-model.trim="ioObject.io12g" style="width: 100%;"></i-input>
                     </i-Col>
                 </Row>
-                <Row style="height:32px;margin: 10px 0;" v-show="ioCount > 12">
+                <Row style="height:32px;margin: 2px 0;" v-show="ioCount > 12">
                     <i-Col span="4" style="height: 100%;line-height:32px;text-align: right;">
                         {{$t("device.io13Open")}}：
                     </i-Col>
@@ -573,7 +573,7 @@
                         <i-input v-model.trim="ioObject.io13g" style="width: 100%;"></i-input>
                     </i-Col>
                 </Row>
-                <Row style="height:32px;margin: 10px 0;" v-show="ioCount > 13">
+                <Row style="height:32px;margin: 2px 0;" v-show="ioCount > 13">
                     <i-Col span="4" style="height: 100%;line-height:32px;text-align: right;">
                         {{$t("device.io14Open")}}：
                     </i-Col>
@@ -587,7 +587,7 @@
                         <i-input v-model.trim="ioObject.io14g" style="width: 100%;"></i-input>
                     </i-Col>
                 </Row>
-                <Row style="height:32px;margin: 10px 0;" v-show="ioCount > 14">
+                <Row style="height:32px;margin: 2px 0;" v-show="ioCount > 14">
                     <i-Col span="4" style="height: 100%;line-height:32px;text-align: right;">
                         {{$t("device.io15Open")}}：
                     </i-Col>
@@ -601,7 +601,7 @@
                         <i-input v-model.trim="ioObject.io15g" style="width: 100%;"></i-input>
                     </i-Col>
                 </Row>
-                <Row style="height:32px;margin: 10px 0;" v-show="ioCount > 15">
+                <Row style="height:32px;margin: 2px 0;" v-show="ioCount > 15">
                     <i-Col span="4" style="height: 100%;line-height:32px;text-align: right;">
                         {{$t("device.io16Open")}}：
                     </i-Col>
@@ -1389,7 +1389,6 @@
                 onClickIoSetting: function(params) {
                     editObject = params.row;
                     this.queryIoConfig(editObject.deviceid);
-                    this.ioModal = true;
                 },
                 queryCarMasterInfo: function(params) {
                     utils.queryDeviceex(params.row.deviceid, function(resp) {
@@ -1454,6 +1453,7 @@
                         if (resp.status == 0) {
                             var records = resp.records;
                             if (records) {
+                                me.ioCount = records.length;
                                 for (var i = 0; i < me.ioCount; i++) {
                                     var item = records[i];
                                     if (item) {
@@ -1464,9 +1464,8 @@
                                         me.ioObject['io' + (i + 1) + 'g'] = '';
                                     }
                                 }
-                                me.ioCount = records.length;
                             } else {
-                                for (var i = 0; i < 4; i++) {
+                                for (var i = 0; i < 16; i++) {
                                     me.ioObject['io' + (i + 1) + 'k'] = '';
                                     me.ioObject['io' + (i + 1) + 'g'] = '';
                                 }
@@ -1477,6 +1476,7 @@
                         } else {
                             me.$Message.error(vRoot.$t('monitor.queryFail'));
                         }
+                        me.ioModal = true;
                     });
                 },
                 setIoConfig: function() {

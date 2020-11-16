@@ -335,10 +335,8 @@
             searchDeviceList: [],
             deviceInfoColumns: [],
             deviceInfoData: [],
-            treeGroupList: [{
-                title: '2012版行车记录仪',
-                expand: true,
-                children: [{
+            treeGroupList: [
+                {
                     title: '00H-采集记录仪执行标准版本',
                     cmdType: '00H',
                     selected: true,
@@ -389,8 +387,7 @@
                 {
                     title: '15H-设置初次安装日期',
                     cmdType: '15H',
-                }]
-            }],
+                }],
             tableData: [],
             mileageRatio: 100,
             columns: [{
@@ -501,7 +498,7 @@
                 var me = this;
                 var url = myUrls.queryRecorderData();
                 var data = {
-                    recordercommand: this.getRecorderCommand(),
+                    recordercommand: this.getRecorderCommand(1),
                     deviceid: curruntRow.deviceid
                 }
                 utils.sendAjax(url, data, function(resp) {
@@ -515,7 +512,7 @@
                 });
             },
             
-            getRecorderCommand: function() {
+            getRecorderCommand: function(type) {
                 var cmd = 0x00;
                 switch (this.curruntCmdType) {
                     case '00H':
@@ -525,19 +522,19 @@
                         cmd = 0x01;
                         break;
                     case '02H':
-                        cmd = 0x02;
-                        break;
+                        cmd = type == 1 ? 0x02 : 0xC2;   
+                        break; 
                     case '03H':
-                        cmd = 0x03;
+                        cmd = type == 1 ? 0x03 : 0xC4;      
                         break;
                     case '04H':
-                        cmd = 0x04;
+                        cmd = type == 1 ? 0x04 : 0xC3;  
                         break;
                     case '05H':
-                        cmd = 0x05;
+                        cmd = type == 1 ? 0x05 : 0x82;
                         break;
                     case '06H':
-                        cmd = 0x06;
+                        cmd = type == 1 ? 0x06 : 0x84;
                         break;
                     case '07H':
                         cmd = 0x07;
@@ -564,7 +561,7 @@
                         cmd = 0x14;
                         break;
                     case '15H':
-                        cmd = 0x15;
+                        cmd = type == 1 ? 0x15 : 0x83;
                         break;
                 }
                 return cmd;
@@ -713,7 +710,7 @@
                     deviceids: [],
                     action: 'recorder',
                     recorderaction: type,
-                    recordercommand: this.getRecorderCommand(),
+                    recordercommand: this.getRecorderCommand(type),
                     recorderdata:this.getRecorderData(type),
                 };
                 this.tableData.forEach(function(item) {
@@ -755,8 +752,8 @@
                     deviceids: [this.curruntRow.deviceid],
                     action: 'recorder',
                     recorderaction: 2,
-                    recordercommand: this.getRecorderCommand(),
-                    recorderdata:this.getRecorderCommand(),
+                    recordercommand: this.getRecorderCommand(2),
+                    recorderdata:this.getRecorderData(),
                 };
                 var url = myUrls.batchOperate();
                 utils.sendAjax(url, data, function(respData) {
@@ -791,7 +788,7 @@
             },
             onSelectChange: function(arr) {
                 var row = arr[0];
-                if (row && !row.children) {
+                if (row ) {
                     this.curruntCmdType = row.cmdType;
                     this.onRefresh();
                 }
