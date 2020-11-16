@@ -383,29 +383,31 @@
                 <span>{{$t("device.ioConfig")}}</span>
             </p>
             <div>
-                <Row style="height:32px;margin: 2px 0;">
-                    <i-Col span="4" style="height: 100%;line-height:32px;text-align: right;">
+                <Row style="height:24px;margin: 2px 0;">
+                    <i-Col span="4" style="height: 100%;line-height:24px;text-align: right;">
                         {{$t("device.ioNumber")}}:
                     </i-Col>
-                    <i-Col span="8" style="height: 100%;line-height:32px;padding-left: 3px;">
-                        <Input-Number :max="16" :min="0" v-model="ioCount" style="width: 100%;"></Input-Number>
+                    <i-Col span="8" style="height: 100%;line-height:24px;padding-left: 3px;">
+                        <Input-Number :max="16" :min="0" v-model="ioCount" style="width: 100%;" size="small"></Input-Number>
                     </i-Col>
                 </Row>
-                <Row style="height:32px;margin: 2px 0;" style="height:32px;margin: 10px 0;" v-show="ioCount > 0">
-                    <i-Col span="4" style="height: 100%;line-height:32px;text-align: right;">
-                        {{$t("device.io1Open")}}：
-                    </i-Col>
-                    <i-Col span="8" style="height: 100%;padding-left: 3px;">
-                        <i-input v-model.trim="ioObject.io1k" style="width: 100%;"></i-input>
-                    </i-Col>
-                    <i-Col span="2" style="height: 100%;line-height:32px;text-align: right;">
-                        {{$t("device.io1Close")}}：
-                    </i-Col>
-                    <i-Col span="8" style="height: 100%;padding-left: 3px;">
-                        <i-input v-model.trim="ioObject.io1g" style="width: 100%;"></i-input>
-                    </i-Col>
-                </Row>
-                <Row style="height:32px;margin: 2px 0;" v-show="ioCount > 1">
+                <template v-for="i in ioCount">
+                    <Row style="height:24px;margin: 2px 0;" style="height:24px;margin: 10px 0;" v-show="ioCount >= i">
+                        <i-Col span="4" style="height: 100%;line-height:24px;text-align: right;">
+                            {{$t("device.io" + i + "Open")}}：
+                        </i-Col>
+                        <i-Col span="8" style="height: 100%;padding-left: 3px;">
+                            <i-input v-model.trim="ioObject['io'+i+'k']" style="width: 100%;" size="small"></i-input>
+                        </i-Col>
+                        <i-Col span="2" style="height: 100%;line-height:24px;text-align: right;">
+                            {{$t("device.io" + i + "Close")}}：
+                        </i-Col>
+                        <i-Col span="8" style="height: 100%;padding-left: 3px;">
+                            <i-input v-model.trim="ioObject['io'+i+'g']" style="width: 100%;" size="small"></i-input>
+                        </i-Col>
+                    </Row>
+                </template>
+                <!-- <Row style="height:32px;margin: 2px 0;" v-show="ioCount > 1">
                     <i-Col span="4" style="height: 100%;line-height:32px;text-align: right;">
                         {{$t("device.io2Open")}}：
                     </i-Col>
@@ -614,7 +616,7 @@
                     <i-Col span="8" style="height: 100%;padding-left: 3px;">
                         <i-input v-model.trim="ioObject.io16g" style="width: 100%;"></i-input>
                     </i-Col>
-                </Row>
+                </Row> -->
             </div>
             <div slot="footer" style="text-align: center;">
                 <i-input v-model.trim="referenceResourcesDeviceid" style="width:160px;" :placeholder="$t('device.importDeviceidsTips')"></i-input>
