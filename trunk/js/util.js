@@ -531,32 +531,32 @@ var utils = {
     getTemperature: function(isZh, track) {
         var tempStr = null;
         var temp = track.temp1;
-        if (temp && temp != 0xffff) {
+        if (temp != undefined && temp != 0xffff) {
             tempStr = temp / 10 + '℃';
         }
 
         temp = track.temp2;
-        if (temp && temp != 0xffff) {
+        if (temp != undefined  && temp != 0xffff) {
             tempStr += "|"
             tempStr += temp / 10 + '℃';
         }
 
         temp = track.temp3;
-        if (temp && temp != 0xffff) {
+        if (temp != undefined  && temp != 0xffff) {
             tempStr += "|"
             tempStr += temp / 10 + '℃';
         }
 
         temp = track.temp4;
-        if (temp && temp != 0xffff) {
+        if (temp != undefined  && temp != 0xffff) {
             tempStr += "|"
             tempStr += temp / 10 + '℃';
         }
 
-        temp = track.humi1;
-        if (temp && temp > 0) {
+        var humi1 = track.humi1;
+        if (humi1 != undefined && humi1 > 0) {
             tempStr += "|";
-            tempStr += temp / 10 + '%';
+            tempStr += humi1 / 10 + '%';
         }
 
         if (tempStr != null) {
