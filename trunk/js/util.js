@@ -555,7 +555,10 @@ var utils = {
 
         var humi1 = track.humi1;
         if (humi1 != undefined && humi1 > 0) {
-            tempStr += "|";
+        	if(tempStr != null)
+        		{
+        			tempStr += "|";
+        		}
             tempStr += humi1 / 10 + '%';
         }
 
