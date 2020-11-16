@@ -17,7 +17,7 @@
                 {{$t("bgMgr.selectedDeviceList")}} {{tableData.length}}
                 <i-button type="error" size="small" @click="clearTableData" style="float: right;margin: 3px 0px 0 0;">{{$t("insure.removeAll")}}</i-button>
             </div>
-            <div style="padding: 0 20px;width:600px;">  
+            <div style="padding: 0 20px;width:400px;">  
                 {{$t("bgMgr.transferGroupList")}}
             </div>
         </div>
@@ -31,14 +31,20 @@
             <div style="padding: 0 10px;width: 500px;flex: 1;">
                 <i-table border ref="table" :columns="columns" :data="tableData" :height="taleHeight" highlight-row @on-current-change="onCurrentChange"></i-table>
             </div>
-            <div style="padding: 0 10px;width:600px;">
-                <div style="height: 40%;overflow-y: auto;border: 1px solid #DCDEE2;">
-                    <Tree :data="treeGroupList" @on-select-change="onSelectChange"></Tree>
+            <div style="padding: 0 10px;width:400px;">
+                <div style="height: 40%;overflow-y: auto;border: 1px solid #DCDEE2;padding:5px 12px;">
+                    <Radio-Group v-model="curruntCmdType" vertical>
+                        <template v-for="(item,index) in treeGroupList">
+                            <Radio :label="item.cmdType" style="vertical-align:middle;">
+                                <span v-text="item.title" style="font-size: 14px;vertical-align:top;"></span>
+                            </Radio> 
+                        </template>
+                    </Radio-Group>
                 </div>
                 <div style="height: 60%;padding: 10px 0px;">
                     <div style="height: 100%;border: 1px solid #DCDEE2;">
                         <Row style="margin: 10px 0">
-                            <i-col span="6" style="height: 100%;text-align:right;line-height:32px;">
+                            <i-col span="7" style="height: 100%;text-align:right;line-height:32px;">
                                 &nbsp;更新时间 : &nbsp;
                             </i-col>
                             <i-col span="12">
@@ -47,7 +53,7 @@
                         </Row>
                         <div v-if="curruntCmdType=='00H'">
                             <Row style="margin: 10px 0">
-                                <i-col span="6" style="height: 100%;text-align:right;line-height:32px;">
+                                <i-col span="7" style="height: 100%;text-align:right;line-height:32px;">
                                     &nbsp;标准执行年号 : &nbsp;
                                 </i-col>
                                 <i-col span="12">
@@ -55,7 +61,7 @@
                                 </i-col>
                             </Row>
                             <Row style="margin: 10px 0">
-                                <i-col span="6" style="height: 100%;text-align:right;line-height:32px;">
+                                <i-col span="7" style="height: 100%;text-align:right;line-height:32px;">
                                     &nbsp;修改单号 : &nbsp;
                                 </i-col>
                                 <i-col span="12">
@@ -65,7 +71,7 @@
                         </div>
                         <div v-if="curruntCmdType=='01H'">
                             <Row style="margin: 10px 0">
-                                <i-col span="6" style="height: 100%;text-align:right;line-height:32px;">
+                                <i-col span="7" style="height: 100%;text-align:right;line-height:32px;">
                                     &nbsp;驾驶证号码 : &nbsp;
                                 </i-col>
                                 <i-col span="12">
@@ -75,7 +81,7 @@
                         </div>
                         <div v-if="curruntCmdType=='02H'">
                             <Row style="margin: 10px 0">
-                                <i-col span="6" style="height: 100%;text-align:right;line-height:32px;">
+                                <i-col span="7" style="height: 100%;text-align:right;line-height:32px;">
                                     &nbsp;当前时间 : &nbsp;
                                 </i-col>
                                 <i-col span="12">
@@ -85,7 +91,7 @@
                         </div>
                         <div v-if="curruntCmdType=='03H'">
                             <Row style="margin: 10px 0">
-                                <i-col span="6" style="height: 100%;text-align:right;line-height:32px;">
+                                <i-col span="7" style="height: 100%;text-align:right;line-height:32px;">
                                     &nbsp;当前时间 : &nbsp;
                                 </i-col>
                                 <i-col span="12">
@@ -93,7 +99,7 @@
                                 </i-col>
                             </Row>
                             <Row style="margin: 10px 0">
-                                <i-col span="6" style="height: 100%;text-align:right;line-height:32px;">
+                                <i-col span="7" style="height: 100%;text-align:right;line-height:32px;">
                                     &nbsp;安装时间 : &nbsp;
                                 </i-col>
                                 <i-col span="12">
@@ -101,7 +107,7 @@
                                 </i-col>
                             </Row>
                             <Row style="margin: 10px 0">
-                                <i-col span="6" style="height: 100%;text-align:right;line-height:32px;">
+                                <i-col span="7" style="height: 100%;text-align:right;line-height:32px;">
                                     &nbsp;初始里程 : &nbsp;
                                 </i-col>
                                 <i-col span="12">
@@ -109,7 +115,7 @@
                                 </i-col>
                             </Row>
                             <Row style="margin: 10px 0">
-                                <i-col span="6" style="height: 100%;text-align:right;line-height:32px;">
+                                <i-col span="7" style="height: 100%;text-align:right;line-height:32px;">
                                     &nbsp;累积里程 : &nbsp;
                                 </i-col>
                                 <i-col span="12">
@@ -119,7 +125,7 @@
                         </div>
                         <div v-if="curruntCmdType=='04H'">
                             <Row style="margin: 10px 0">
-                                <i-col span="6" style="height: 100%;text-align:right;line-height:32px;">
+                                <i-col span="7" style="height: 100%;text-align:right;line-height:32px;">
                                     &nbsp;当前时间 : &nbsp;
                                 </i-col>
                                 <i-col span="12">
@@ -127,7 +133,7 @@
                                 </i-col>
                             </Row>
                             <Row style="margin: 10px 0">
-                                <i-col span="6" style="height: 100%;text-align:right;line-height:32px;">
+                                <i-col span="7" style="height: 100%;text-align:right;line-height:32px;">
                                     &nbsp;脉冲系数 : &nbsp;
                                 </i-col>
                                 <i-col span="12">
@@ -137,7 +143,7 @@
                         </div>
                         <div v-if="curruntCmdType=='05H'">
                             <Row style="margin: 10px 0">
-                                <i-col span="6" style="height: 100%;text-align:right;line-height:32px;">
+                                <i-col span="7" style="height: 100%;text-align:right;line-height:32px;">
                                     &nbsp;车辆识别代号 : &nbsp;
                                 </i-col>
                                 <i-col span="12">
@@ -145,7 +151,7 @@
                                 </i-col>
                             </Row>
                             <Row style="margin: 10px 0">
-                                <i-col span="6" style="height: 100%;text-align:right;line-height:32px;">
+                                <i-col span="7" style="height: 100%;text-align:right;line-height:32px;">
                                     &nbsp;车辆号码 : &nbsp;
                                 </i-col>
                                 <i-col span="12">
@@ -153,7 +159,7 @@
                                 </i-col>
                             </Row>
                             <Row style="margin: 10px 0">
-                                <i-col span="6" style="height: 100%;text-align:right;line-height:32px;">
+                                <i-col span="7" style="height: 100%;text-align:right;line-height:32px;">
                                     &nbsp;车辆分类 : &nbsp;
                                 </i-col>
                                 <i-col span="12">
@@ -163,7 +169,7 @@
                         </div>
                         <div v-if="curruntCmdType=='06H'">
                             <Row style="margin: 10px 0">
-                                <i-col span="6" style="height: 100%;text-align:right;line-height:32px;">
+                                <i-col span="7" style="height: 100%;text-align:right;line-height:32px;">
                                     &nbsp;当前时间 : &nbsp;
                                 </i-col>
                                 <i-col span="12">
@@ -171,7 +177,7 @@
                                 </i-col>
                             </Row>
                             <Row style="margin: 10px 0">
-                                <i-col span="6" style="height: 100%;text-align:right;line-height:32px;">
+                                <i-col span="7" style="height: 100%;text-align:right;line-height:32px;">
                                     &nbsp;内容 : &nbsp;
                                 </i-col>
                                 <i-col span="12">
@@ -179,7 +185,7 @@
                                 </i-col>
                             </Row>
                             <Row style="margin: 10px 0">
-                                <i-col span="6" style="height: 100%;text-align:right;line-height:32px;">
+                                <i-col span="7" style="height: 100%;text-align:right;line-height:32px;">
                                     &nbsp;状态信号 : &nbsp;
                                 </i-col>
                                 <i-col span="12">
@@ -189,7 +195,7 @@
                         </div>
                         <div v-if="curruntCmdType=='07H'">
                             <Row style="margin: 10px 0">
-                                <i-col span="6" style="height: 100%;text-align:right;line-height:32px;">
+                                <i-col span="7" style="height: 100%;text-align:right;line-height:32px;">
                                     &nbsp;3C认证代码 : &nbsp;
                                 </i-col>
                                 <i-col span="12">
@@ -197,7 +203,7 @@
                                 </i-col>
                             </Row>
                             <Row style="margin: 10px 0">
-                                <i-col span="6" style="height: 100%;text-align:right;line-height:32px;">
+                                <i-col span="7" style="height: 100%;text-align:right;line-height:32px;">
                                     &nbsp;认证产品型号 : &nbsp;
                                 </i-col>
                                 <i-col span="12">
@@ -205,7 +211,7 @@
                                 </i-col>
                             </Row>
                             <Row style="margin: 10px 0">
-                                <i-col span="6" style="height: 100%;text-align:right;line-height:32px;">
+                                <i-col span="7" style="height: 100%;text-align:right;line-height:32px;">
                                     &nbsp;记录仪生产日期 : &nbsp;
                                 </i-col>
                                 <i-col span="12">
@@ -213,7 +219,7 @@
                                 </i-col>
                             </Row>
                             <Row style="margin: 10px 0">
-                                <i-col span="6" style="height: 100%;text-align:right;line-height:32px;">
+                                <i-col span="7" style="height: 100%;text-align:right;line-height:32px;">
                                     &nbsp;产品生产流水号 : &nbsp;
                                 </i-col>
                                 <i-col span="12">
@@ -221,7 +227,7 @@
                                 </i-col>
                             </Row>
                             <Row style="margin: 10px 0">
-                                <i-col span="6" style="height: 100%;text-align:right;line-height:32px;">
+                                <i-col span="7" style="height: 100%;text-align:right;line-height:32px;">
                                     &nbsp;备用 : &nbsp;
                                 </i-col>
                                 <i-col span="12">
@@ -231,7 +237,7 @@
                         </div>
                         <div v-if="curruntCmdType=='08H'||curruntCmdType=='09H'||curruntCmdType=='10H'||curruntCmdType=='11H'||curruntCmdType=='12H'||curruntCmdType=='13H'||curruntCmdType=='14H'">
                             <Row style="margin: 10px 0">
-                                <i-col span="6" style="height: 100%;text-align:right;line-height:32px;">
+                                <i-col span="7" style="height: 100%;text-align:right;line-height:32px;">
                                     &nbsp;开始时间 : &nbsp;
                                 </i-col>
                                 <i-col span="12">
@@ -239,7 +245,7 @@
                                 </i-col>
                             </Row>
                             <Row style="margin: 10px 0">
-                                <i-col span="6" style="height: 100%;text-align:right;line-height:32px;">
+                                <i-col span="7" style="height: 100%;text-align:right;line-height:32px;">
                                     &nbsp;结束时间 : &nbsp;
                                 </i-col>
                                 <i-col span="12">
@@ -247,7 +253,7 @@
                                 </i-col>
                             </Row>
                             <Row style="margin: 10px 0">
-                                <i-col span="6" style="height: 100%;text-align:right;line-height:32px;">
+                                <i-col span="7" style="height: 100%;text-align:right;line-height:32px;">
                                     &nbsp;模块数(分钟) : &nbsp;
                                 </i-col>
                                 <i-col span="12">  
@@ -258,7 +264,7 @@
                         </div>
                         <div v-if="curruntCmdType=='15H'">
                             <Row style="margin: 10px 0">
-                                <i-col span="6" style="height: 100%;text-align:right;line-height:32px;">
+                                <i-col span="7" style="height: 100%;text-align:right;line-height:32px;">
                                     &nbsp;初次安装日期 : &nbsp;
                                 </i-col>
                                 <i-col span="12">
@@ -340,7 +346,6 @@
                 {
                     title: '00H-采集记录仪执行标准版本',
                     cmdType: '00H',
-                    selected: true,
                 }, {
                     title: '01H-采集当前驾驶人信息',
                     cmdType: '01H',
@@ -432,43 +437,12 @@
                     var result = '',
                         color = '',
                         resultType = params.row.resultType;
-                    switch (resultType) {
-                        case 0:
-                            color = "#2D8CF0";
-                            result = vRoot.$t('device.actionSucc');
-                            break;
-                        case 1:
-                            color = "#E4393C";
-                            result = vRoot.$t('device.actionFail');
-                            break;
-                        case 2:
-                            color = "#000";
-                            result = vRoot.$t('device.notOperated');
-                            break;
-                        case 3:
-                            color = "red";
-                            result = vRoot.$t('device.noDevice');
-                            break;
-                        case 4:
-                            color = "red";
-                            result = vRoot.$t('device.passwordError');
-                            break;
-                        case 5:
-                            color = "red";
-                            result = vRoot.$t('device.abnormalInstructionIssued');
-                            break;
-                        case 6:
-                            color = "red";
-                            result = vRoot.$t('monitor.sendCmdNoCache');
-                            break;
-                        case 7:
-                            color = "red";
-                            result = vRoot.$t('monitor.sendCmdAlreadyCache');
-                            break;
-                        case 8:
-                            color = "red";
-                            result = vRoot.$t('monitor.changePwdSendCmd');
-                            break;
+                    if(resultType === 0){
+                        color = "#2D8CF0";
+                        result = vRoot.$t('device.actionSucc');
+                    }else{
+                        color = "#E4393C";
+                        result = params.row.resultCause;
                     }
                     return h('span', {
                         style: {
@@ -767,19 +741,22 @@
                 };
                 var url = myUrls.batchOperate();
                 utils.sendAjax(url, data, function(respData) {
-                    console.log(respData);
-                    if (respData.status === 0) {
-                        me.$Message.success("设置成功");
-                    } else {
-                        me.$Message.error(respData.cause);
-                    }
+                    me.updatedActionState(respData.errorrecords);
                 });
             },
             updatedActionState: function(errorrecords) {
+                console.log(errorrecords);
                 this.tableData.forEach(function(item) {
-                    if (errorrecords.indexOf(item.deviceid) != -1) {
-                        item.resultType = 1;
-                    } else {
+                    var isErr = false;
+                    for(var i = 0 ; i < errorrecords.length ; i ++ ){
+                        var errItem = errorrecords[i];
+                        if(item.deviceid == errItem.deviceid){
+                            item.resultType = errItem.status;
+                            item.resultCause = errItem.cause;
+                            isErr = true;
+                        }
+                    }
+                    if(isErr == false){
                         item.resultType = 0;
                     }
                 })
@@ -802,13 +779,6 @@
                         me.$refs.table.$refs.tbody.clickCurrentRow(0);
                     }
                 },500)
-            },
-            onSelectChange: function(arr) {
-                var row = arr[0];
-                if (row ) {
-                    this.curruntCmdType = row.cmdType;
-                    this.onRefresh();
-                }
             },
             isRepeatAddDevice: function(deviceid) {
                 var relsut = false;
@@ -839,7 +809,6 @@
             setTreeDataList: function(rootuser) {
                 this.searchDeviceList = [this.castUsersTreeToDevicesTree(rootuser, true, false)];
                 this.treeDeviceList = deepClone(this.searchDeviceList);
-                // this.treeGroupList = [this.castUsersTreeToDevicesTree(rootuser, false, true)];
             },
             filtered: function(textStr) {
                 function uniq(array) {
@@ -1260,6 +1229,7 @@
                         }];
                         break;
                 }
+                this.onRefresh();
             }
         },
         mounted: function() {
