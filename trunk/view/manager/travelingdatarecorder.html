@@ -105,7 +105,7 @@
                                     &nbsp;初始里程 : &nbsp;
                                 </i-col>
                                 <i-col span="12">
-                                    <i-input v-model.trim="beginMileage"></i-input>
+                                    <Input-Number :min="0" v-model="beginMileage" style="width: 100%;"></Input-Number>
                                 </i-col>
                             </Row>
                             <Row style="margin: 10px 0">
@@ -113,7 +113,7 @@
                                     &nbsp;累积里程 : &nbsp;
                                 </i-col>
                                 <i-col span="12">
-                                    <i-input v-model.trim="endMileage"></i-input>
+                                    <Input-Number :min="0" v-model="endMileage" style="width: 100%;"></Input-Number>
                                 </i-col>
                             </Row>
                         </div>
@@ -348,7 +348,7 @@
                     title: '02H-采集/设置记录仪实时时间',
                     cmdType: '02H',
                 }, {
-                    title: '03H-采集累计行驶里程',
+                    title: '03H-采集/设置累计行驶里程',
                     cmdType: '03H',
                 }, {
                     title: '04H-采集/设置记录仪脉冲系数',
@@ -582,8 +582,10 @@
                             offset:timeDifference
                         });
                         break;
-                    case '03H':
-                        dataStr = null;
+                    case '03H':  
+                        dataStr = JSON.stringify({
+                            beginMileage:this.beginMileage
+                        });
                         break;
                     case '04H':
                         dataStr = JSON.stringify({
@@ -1138,7 +1140,7 @@
                 return deviceids;
             },
             isShowSetBtn:function(){
-                return this.curruntCmdType=='02H'||this.curruntCmdType=='04H'||this.curruntCmdType=='05H'||this.curruntCmdType=='06H'||this.curruntCmdType=='15H'
+                return this.curruntCmdType=='02H'|| this.curruntCmdType=='03H' ||this.curruntCmdType=='04H'||this.curruntCmdType=='05H'||this.curruntCmdType=='06H'||this.curruntCmdType=='15H'
             },
         },
         watch: {
