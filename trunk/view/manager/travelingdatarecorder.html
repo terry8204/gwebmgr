@@ -51,7 +51,7 @@
                                     &nbsp;标准执行年号 : &nbsp;
                                 </i-col>
                                 <i-col span="12">
-                                    <i-input v-model.trim="modifiedOrder"></i-input>
+                                    <i-input v-model.trim="recordVersion"></i-input>
                                 </i-col>
                             </Row>
                             <Row style="margin: 10px 0">
@@ -59,7 +59,7 @@
                                     &nbsp;修改单号 : &nbsp;
                                 </i-col>
                                 <i-col span="12">
-                                    <i-input v-model.trim="commandWord"></i-input>
+                                    <i-input v-model.trim="modifiedOrder"></i-input>
                                 </i-col>
                             </Row>
                         </div>
@@ -262,14 +262,14 @@
                                     &nbsp;初次安装日期 : &nbsp;
                                 </i-col>
                                 <i-col span="12">
-                                    <i-input v-model.trim="recordVersion"></i-input>
+                                    <Date-Picker type="date" v-model="setuptime"></Date-Picker>
                                 </i-col>
                             </Row>
                         </div>
                         <Row style="margin: 10px 0">
                             <i-col span="12" :offset="5">
-                                <i-button @click="onCollection(1)">采集</i-button>
-                                <i-button @click="onRefresh">刷新</i-button>
+                                <i-button @click="onCollection(1)" v-show="curruntCmdType!='15H'">采集</i-button>
+                                <i-button @click="onRefresh" v-show="curruntCmdType!='15H'">刷新</i-button>
                                 <i-button @click="onSetDataInfo" v-show="isShowSetBtn">设置</i-button>
                             </i-col>
                         </Row>
@@ -288,7 +288,6 @@
             // 0
             recordVersion: '',
             modifiedOrder: '',
-            commandWord: '',
             // 1
             driverLicenseNo:'',
             // 2
@@ -320,6 +319,8 @@
             startDateTime:new Date(Date.now()-3600*1000),
             endDateTime:new Date(),
             modulesNumber:10,
+            //15 
+            setuptime:new Date(),
 
             loading: false,
             userType: localStorage.getItem('userType'),
@@ -561,7 +562,7 @@
                         cmd = 0x14;
                         break;
                     case '15H':
-                        cmd = type == 1 ? 0x15 : 0x83;
+                        cmd = 0x83;
                         break;
                 }
                 return cmd;
@@ -594,7 +595,10 @@
                         dataStr = null;
                         break;
                     case '15H':
-                        dataStr = null;
+                        dataStr = JSON.stringify({
+                            setuptime:this.setuptime.getTime(),
+                            offset:timeDifference
+                        });
                         break;
                     default :
                         var daya = {
@@ -614,7 +618,6 @@
                     case '00H':
                         this.recordVersion = recorderData.recordVersion;
                         this.modifiedOrder = recorderData.modifiedOrder;
-                        this.commandWord = recorderData.commandWord;
                         break;
                     case '01H':
                         this.driverLicenseNo = recorderData.driverLicenseNo;
