@@ -79,7 +79,7 @@
                                     &nbsp;当前时间 : &nbsp;
                                 </i-col>
                                 <i-col span="12">
-                                    <i-input v-model.trim="realTimeClock"></i-input>
+                                    <Date-Picker type="datetime" v-model="realtime" ></Date-Picker>
                                 </i-col>
                             </Row>
                         </div>
@@ -291,7 +291,7 @@
             // 1
             driverLicenseNo:'',
             // 2
-            realTimeClock:'',
+            realtime:'',
             // 3
             beginMileage: '',
             endMileage: '',
@@ -577,7 +577,10 @@
                         dataStr = null;
                         break;
                     case '02H':
-                        dataStr = null;
+                        dataStr = JSON.stringify({
+                            setuptime:this.realtime.getTime(),
+                            offset:timeDifference
+                        });
                         break;
                     case '03H':
                         dataStr = null;
@@ -623,7 +626,7 @@
                         this.driverLicenseNo = recorderData.driverLicenseNo;
                         break;
                     case '02H':
-                        this.realTimeClock = recorderData.realTimeClock;
+                        this.realtime = new Date(recorderData.realTimeClock);
                         break;
                     case '03H':
                         this.setupDateTime = recorderData.setupDateTime;
@@ -762,7 +765,7 @@
                 utils.sendAjax(url, data, function(respData) {
                     console.log(respData);
                     if (respData.status === 0) {
-                        
+                        me.$Message.success("设置成功");
                     } else {
                         me.$Message.error(respData.cause);
                     }
