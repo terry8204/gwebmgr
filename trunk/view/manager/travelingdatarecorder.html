@@ -45,9 +45,9 @@
                         </template>
                     </Radio-Group>
                 </div>
-                <div style="height: 60%;padding: 10px 0px;">
+                <div style="height: 60%;padding: 5px 0px;">
                     <div style="height: 100%;border: 1px solid #DCDEE2;">
-                        <Row style="margin: 10px 0">
+                        <Row style="margin: 5px 0">
                             <i-col span="7" style="height: 100%;text-align:right;line-height:32px;">
                                 &nbsp;更新时间 : &nbsp;
                             </i-col>
@@ -56,7 +56,7 @@
                             </i-col>
                         </Row>
                         <div v-if="curruntCmdType=='00H'">
-                            <Row style="margin: 10px 0">
+                            <Row style="margin: 5px 0">
                                 <i-col span="7" style="height: 100%;text-align:right;line-height:32px;">
                                     &nbsp;标准执行年号 : &nbsp;
                                 </i-col>
@@ -64,7 +64,7 @@
                                     <i-input v-model.trim="recordVersion"></i-input>
                                 </i-col>
                             </Row>
-                            <Row style="margin: 10px 0">
+                            <Row style="margin: 5px 0">
                                 <i-col span="7" style="height: 100%;text-align:right;line-height:32px;">
                                     &nbsp;修改单号 : &nbsp;
                                 </i-col>
@@ -74,7 +74,7 @@
                             </Row>
                         </div>
                         <div v-if="curruntCmdType=='01H'">
-                            <Row style="margin: 10px 0">
+                            <Row style="margin: 5px 0">
                                 <i-col span="7" style="height: 100%;text-align:right;line-height:32px;">
                                     &nbsp;驾驶证号码 : &nbsp;
                                 </i-col>
@@ -84,7 +84,7 @@
                             </Row>
                         </div>
                         <div v-if="curruntCmdType=='02H'">
-                            <Row style="margin: 10px 0">
+                            <Row style="margin: 5px 0">
                                 <i-col span="7" style="height: 100%;text-align:right;line-height:32px;">
                                     &nbsp;当前时间 : &nbsp;
                                 </i-col>
@@ -94,7 +94,7 @@
                             </Row>
                         </div>
                         <div v-if="curruntCmdType=='03H'">
-                            <Row style="margin: 10px 0">
+                            <Row style="margin: 5px 0">
                                 <i-col span="7" style="height: 100%;text-align:right;line-height:32px;">
                                     &nbsp;当前时间 : &nbsp;
                                 </i-col>
@@ -102,7 +102,7 @@
                                     <i-input v-model.trim="realTimeClock"></i-input>
                                 </i-col>
                             </Row>
-                            <Row style="margin: 10px 0">
+                            <Row style="margin: 5px 0">
                                 <i-col span="7" style="height: 100%;text-align:right;line-height:32px;">
                                     &nbsp;安装时间 : &nbsp;
                                 </i-col>
@@ -110,7 +110,7 @@
                                     <i-input v-model.trim="setupDateTime"></i-input>
                                 </i-col>
                             </Row>
-                            <Row style="margin: 10px 0">
+                            <Row style="margin: 5px 0">
                                 <i-col span="7" style="height: 100%;text-align:right;line-height:32px;">
                                     &nbsp;初始里程 : &nbsp;
                                 </i-col>
@@ -118,7 +118,7 @@
                                     <Input-Number :min="0" v-model="beginMileage" style="width: 100%;"></Input-Number>
                                 </i-col>
                             </Row>
-                            <Row style="margin: 10px 0">
+                            <Row style="margin: 5px 0">
                                 <i-col span="7" style="height: 100%;text-align:right;line-height:32px;">
                                     &nbsp;累积里程 : &nbsp;
                                 </i-col>
@@ -128,7 +128,7 @@
                             </Row>
                         </div>
                         <div v-if="curruntCmdType=='04H'">
-                            <Row style="margin: 10px 0">
+                            <Row style="margin: 5px 0">
                                 <i-col span="7" style="height: 100%;text-align:right;line-height:32px;">
                                     &nbsp;当前时间 : &nbsp;
                                 </i-col>
@@ -136,7 +136,7 @@
                                     <i-input v-model.trim="realTimeClock"></i-input>
                                 </i-col>
                             </Row>
-                            <Row style="margin: 10px 0">
+                            <Row style="margin: 5px 0">
                                 <i-col span="7" style="height: 100%;text-align:right;line-height:32px;">
                                     &nbsp;脉冲系数 : &nbsp;
                                 </i-col>
@@ -146,7 +146,7 @@
                             </Row>
                         </div>
                         <div v-if="curruntCmdType=='05H'">
-                            <Row style="margin: 10px 0">
+                            <Row style="margin: 5px 0">
                                 <i-col span="7" style="height: 100%;text-align:right;line-height:32px;">
                                     &nbsp;车辆识别代号 : &nbsp;
                                 </i-col>
@@ -154,7 +154,7 @@
                                     <i-input v-model.trim="vin"></i-input>
                                 </i-col>
                             </Row>
-                            <Row style="margin: 10px 0">
+                            <Row style="margin: 5px 0">
                                 <i-col span="7" style="height: 100%;text-align:right;line-height:32px;">
                                     &nbsp;车辆号码 : &nbsp;
                                 </i-col>
@@ -162,7 +162,7 @@
                                     <i-input v-model.trim="vehicleNumber"></i-input>
                                 </i-col>
                             </Row>
-                            <Row style="margin: 10px 0">
+                            <Row style="margin: 5px 0">
                                 <i-col span="7" style="height: 100%;text-align:right;line-height:32px;">
                                     &nbsp;车辆分类 : &nbsp;
                                 </i-col>
@@ -172,7 +172,7 @@
                             </Row>
                         </div>
                         <div v-if="curruntCmdType=='06H'">
-                            <Row style="margin: 10px 0">
+                            <Row style="margin: 5px 0">
                                 <i-col span="7" style="height: 100%;text-align:right;line-height:32px;">
                                     &nbsp;当前时间 : &nbsp;
                                 </i-col>
@@ -180,7 +180,7 @@
                                     <i-input v-model.trim="realTimeClock"></i-input>
                                 </i-col>
                             </Row>
-                            <Row style="margin: 10px 0">
+                            <Row style="margin: 5px 0">
                                 <i-col span="7" style="height: 100%;text-align:right;line-height:32px;">
                                     &nbsp;内容 : &nbsp;
                                 </i-col>
@@ -188,7 +188,7 @@
                                     <i-input v-model.trim="content"></i-input>
                                 </i-col>
                             </Row>
-                            <Row style="margin: 10px 0">
+                            <Row style="margin: 5px 0">
                                 <i-col span="7" style="height: 100%;text-align:right;line-height:32px;">
                                     &nbsp;状态信号 : &nbsp;
                                 </i-col>
@@ -198,7 +198,7 @@
                             </Row>
                         </div>
                         <div v-if="curruntCmdType=='07H'">
-                            <Row style="margin: 10px 0">
+                            <Row style="margin: 5px 0">
                                 <i-col span="7" style="height: 100%;text-align:right;line-height:32px;">
                                     &nbsp;3C认证代码 : &nbsp;
                                 </i-col>
@@ -206,7 +206,7 @@
                                     <i-input v-model.trim="cCCcode"></i-input>
                                 </i-col>
                             </Row>
-                            <Row style="margin: 10px 0">
+                            <Row style="margin: 5px 0">
                                 <i-col span="7" style="height: 100%;text-align:right;line-height:32px;">
                                     &nbsp;认证产品型号 : &nbsp;
                                 </i-col>
@@ -214,23 +214,23 @@
                                     <i-input v-model.trim="certifiedProductModel"></i-input>
                                 </i-col>
                             </Row>
-                            <Row style="margin: 10px 0">
+                            <Row style="margin: 5px 0">
                                 <i-col span="7" style="height: 100%;text-align:right;line-height:32px;">
-                                    &nbsp;记录仪生产日期 : &nbsp;
+                                    记录仪生产日期:
                                 </i-col>
                                 <i-col span="12">
                                     <i-input v-model.trim="productDateTime"></i-input>
                                 </i-col>
                             </Row>
-                            <Row style="margin: 10px 0">
+                            <Row style="margin: 5px 0">
                                 <i-col span="7" style="height: 100%;text-align:right;line-height:32px;">
-                                    &nbsp;产品生产流水号 : &nbsp;
+                                    产品生产流水号:
                                 </i-col>
                                 <i-col span="12">
                                     <i-input v-model.trim="productSerialNumber"></i-input>
                                 </i-col>
                             </Row>
-                            <Row style="margin: 10px 0">
+                            <Row style="margin: 5px 0">
                                 <i-col span="7" style="height: 100%;text-align:right;line-height:32px;">
                                     &nbsp;备用 : &nbsp;
                                 </i-col>
@@ -240,7 +240,7 @@
                             </Row>
                         </div>
                         <div v-if="curruntCmdType=='08H'||curruntCmdType=='09H'||curruntCmdType=='10H'||curruntCmdType=='11H'||curruntCmdType=='12H'||curruntCmdType=='13H'||curruntCmdType=='14H'">
-                            <Row style="margin: 10px 0">
+                            <Row style="margin: 5px 0">
                                 <i-col span="7" style="height: 100%;text-align:right;line-height:32px;">
                                     &nbsp;开始时间 : &nbsp;
                                 </i-col>
@@ -248,7 +248,7 @@
                                     <Date-Picker type="datetime" v-model="startDateTime"></Date-Picker>
                                 </i-col>
                             </Row>
-                            <Row style="margin: 10px 0">
+                            <Row style="margin: 5px 0">
                                 <i-col span="7" style="height: 100%;text-align:right;line-height:32px;">
                                     &nbsp;结束时间 : &nbsp;
                                 </i-col>
@@ -256,7 +256,7 @@
                                     <Date-Picker type="datetime" v-model="endDateTime" ></Date-Picker>
                                 </i-col>
                             </Row>
-                            <Row style="margin: 10px 0">
+                            <Row style="margin: 5px 0">
                                 <i-col span="7" style="height: 100%;text-align:right;line-height:32px;">
                                     &nbsp;模块数(分钟) : &nbsp;
                                 </i-col>
@@ -267,7 +267,7 @@
                             <i-table border :columns="deviceInfoColumns" height="200" :data="deviceInfoData"></i-table>
                         </div>
                         <div v-if="curruntCmdType=='15H'">
-                            <Row style="margin: 10px 0">
+                            <Row style="margin: 5px 0">
                                 <i-col span="7" style="height: 100%;text-align:right;line-height:32px;">
                                     &nbsp;初次安装日期 : &nbsp;
                                 </i-col>
@@ -276,7 +276,7 @@
                                 </i-col>
                             </Row>
                         </div>
-                        <Row style="margin: 10px 0">
+                        <Row style="margin: 5px 0">
                             <i-col span="12" :offset="5">
                                 <i-button @click="onCollection(1)" v-show="curruntCmdType!='15H'">采集</i-button>
                                 <i-button @click="onRefresh" v-show="curruntCmdType!='15H'">刷新</i-button>
