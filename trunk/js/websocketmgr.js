@@ -2,10 +2,13 @@ var lockReconnect = false;
 var tempUserName = null;
 var tempCallBack = null;
 var tempHost = null;
+var ws = null;
 var initWebSocket = function (host, userName, callback) {
     tempHost = host;
     tempUserName = userName;
+    tempCallBack = null;
     tempCallBack = callback;
+    ws = null;
     var initIsPass = false;
     if ('WebSocket' in window) {
         ws = new WebSocket(tempHost);
@@ -34,8 +37,11 @@ var initWebSocket = function (host, userName, callback) {
             }
         };
         ws.onmessage = function (event) {
+        	if(tempCallBack != null)
+        		{
             var resp = JSON.parse(event.data);
             tempCallBack(resp);
+        		}
         };
     }
     return initIsPass;
