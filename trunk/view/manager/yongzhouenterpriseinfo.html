@@ -1,0 +1,324 @@
+<div id="yongzhouenterpriseinfo">
+    <div class="full">
+        <h3 class="h3-title">永州企业基本信息</h3>
+        <ul>
+            <li>
+                <i-input v-model.trim="queryParameter"></i-input>
+            </li>
+            <li>
+                <i-button type="info" @click="handlerClickQuery">{{$t("reportForm.query")}}</i-button>
+            </li>
+            <li style="float: right;text-align: right;">
+                <i-button type="primary" @click="handlerNewAdd">新增企业</i-button>
+            </li>
+        </ul>
+        <div class="table-wraper">
+            <i-table border :columns="columns" :height="taleHeight" :data="tableData" :loading="loading"></i-table>
+        </div>
+        <Modal v-model="modal" width="900" :title="modalTile">
+            <div style="width:700px;margin:10px auto">
+                <Row style="margin: 10px 0">
+                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">企业名称 : &nbsp;</i-col>
+                    <i-col span="8">
+                        <i-input v-model.trim="enterName"></i-input>
+                    </i-col>
+                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;企业简称 : &nbsp;</i-col>
+                    <i-col span="8">
+                        <i-input v-model.trim="enterShortName"></i-input>
+                    </i-col>
+                </Row>
+                <Row style="margin: 10px 0">
+                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">统一社会信用代码 : &nbsp;</i-col>
+                    <i-col span="8">
+                        <i-input v-model.trim="identifier"></i-input>
+                    </i-col>
+                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;经营许可证号 : &nbsp;</i-col>
+                    <i-col span="8">
+                        <i-input v-model.trim="operateLicense"></i-input>
+                    </i-col>
+                </Row>
+                <Row style="margin: 10px 0">
+                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">企业类别 : &nbsp;</i-col>
+                    <i-col span="8">
+                        <i-select v-model.sync="enterCategory">
+                            <i-option value="1">巡游出租企业 </i-option>
+                            <i-option value="2">网约出租企业 </i-option>
+                            <i-option value="3">其他 </i-option>
+                        </i-select>
+                    </i-col>
+                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;经营范围 : &nbsp;</i-col>
+                    <i-col span="8">
+                        <i-input v-model.trim="scope"></i-input>
+                    </i-col>
+                </Row>
+                <Row style="margin: 10px 0">
+                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">注册地址 : &nbsp;</i-col>
+                    <i-col span="8">
+                        <i-input v-model.trim="registrationAddress"></i-input>
+                    </i-col>
+                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;联系地址 : &nbsp;</i-col>
+                    <i-col span="8">
+                        <i-input v-model.trim="contactAddress"></i-input>
+                    </i-col>
+                </Row>
+                <Row style="margin: 10px 0">
+                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">联系人 : &nbsp;</i-col>
+                    <i-col span="8">
+                        <i-input v-model.trim="contactPerson"></i-input>
+                    </i-col>
+                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;联系电话 : &nbsp;</i-col>
+                    <i-col span="8">
+                        <i-input v-model.trim="contactPhone"></i-input>
+                    </i-col>
+                </Row>
+                <Row style="margin: 10px 0">
+                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">投诉电话 : &nbsp;</i-col>
+                    <i-col span="8">
+                        <i-input v-model.trim="complaintPhone"></i-input>
+                    </i-col>
+                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;经济性质 : &nbsp;</i-col>
+                    <i-col span="8">
+                        <i-input v-model.trim="economicNature"></i-input>
+                    </i-col>
+                </Row>
+                <Row style="margin: 10px 0">
+                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">证件有效期 : &nbsp;</i-col>
+                    <i-col span="8">
+                        <date-picker type="date" v-model="paperValidityDate" style="width: 100%;"></date-picker>
+                    </i-col>
+                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;核发机关 : &nbsp;</i-col>
+                    <i-col span="8">
+                        <i-input v-model.trim="issuOrganization"></i-input>
+                    </i-col>
+                </Row>
+                <Row style="margin: 10px 0">
+                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">核发日期 : &nbsp;</i-col>
+                    <i-col span="8">
+                        <date-picker type="date" v-model="issuDate" style="width: 100%;"></date-picker>
+                    </i-col>
+                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;经营区域 : &nbsp;</i-col>
+                    <i-col span="8">
+                        <i-input v-model.trim="businessArea"></i-input>
+                    </i-col>
+                </Row>
+            </div>
+            <div slot="footer" style="text-align: center;">
+                <i-button style="width:480px" type="primary" @click="handleSubmit">{{$t("bgMgr.submit")}}</i-button>
+            </div>
+        </Modal>
+    </div>
+    <script>
+        vueInstanse = new Vue({
+            el: "#yongzhouenterpriseinfo",
+            i18n: utils.getI18n(),
+            data: {
+                enterName:'',
+                enterShortName:'',
+                identifier:'',
+                operateLicense:'',//经营许可证号' ,
+                enterCategory:'1',//1:巡游出租企业 2:网约出租企业 0:其他' ,
+                scope:'',//经营范围' ,
+                registrationAddress:'',//注册地址' ,
+                contactAddress:'',//联系地址' ,
+                contactPerson:'',//联系人' ,
+                contactPhone:'',//联系电话' ,
+                complaintPhone:'',//投诉电话' ,
+                economicNature:'',//经济性质' ,
+                businessArea:'',//经营区域' ,
+                paperValidityDate:new Date(),//证件有效期YYYYMMDD' ,
+                issuOrganization:'',//核发机关' ,
+                issuDate:new Date(),//核发日期' ,
+
+                isEdit:false,
+                modal: false,
+                queryTableData: [],
+                queryParameter: "",
+                loading: true,
+                columns: [
+                    {
+                        title: '企业名称',key: 'enterName', wdith:120,
+                    }, 
+                    {
+                        title: '企业简称',key: 'enterShortName', wdith:120,
+                    }, 
+                    {
+                        title: '统一社会信用代码',key: 'identifier', wdith:160,
+                    }, 
+                    {
+                        title: '经营许可证号',key: 'operateLicense', wdith:160,
+                    }, 
+                    {
+                        title: '企业类别',key: 'enterCategory', wdith:100,
+                    }, 
+                    {
+                        title: '经营范围',key: 'scope', wdith:100,
+                    }, 
+                    {
+                        title: '注册地址',key: 'registrationAddress', wdith:180,
+                    }, 
+                    {
+                        title: '联系地址',key: 'contactAddress',  wdith:180,
+                    }, 
+                    {
+                        title: '联系人',key: 'contactPerson',  wdith:100,
+                    }, 
+                    {
+                        title: '联系电话',key: 'contactPhone', wdith:120,
+                    }, 
+                    {
+                        title: '投诉电话',key: 'complaintPhone', wdith:120,
+                    }, 
+                    { 
+                        title: '经济性质',key: 'economicNature', wdith:120,
+                    }, 
+                    {
+                        title: '经营区域',key: 'businessArea', wdith:120,
+                    }, 
+                    {
+                        title: '证件有效期',key: 'paperValidityDate', wdith:120,
+                    }, 
+                    { 
+                        title: '核发机关',key: 'issuOrganization', wdith:120,
+                    }, 
+                    {
+                        title: '核发日期',key: 'issuDate', wdith:120,
+                    }, 
+                    {
+                        title: vRoot.$t("bgMgr.action"),
+                        key: 'action',
+                        width: 210,
+                        render: function(h, params) {
+                            return h('div', [
+                                h('Button', {
+                                    props: {
+                                        type: 'primary',
+                                        size: 'small'
+                                    },
+                                    style: {
+                                        marginRight: '5px'
+                                    },
+                                    on: {
+                                        click: function() {
+                                            editObject = params.row;
+                                            vueInstanse.isEdit = true;
+                                            vueInstanse.modal = true;
+                                            vueInstanse.setRowInfo(editObject);
+         
+                                        }
+                                    }
+                                }, vRoot.$t("bgMgr.edit")),
+
+                                h('Poptip', {
+                                    props: {
+                                        confirm: true,
+                                        title: vRoot.$t("message.confirmDel")
+                                    },
+                                    style: {
+                                        marginRight: '5px',
+                                    },
+                                    on: {
+                                        'on-ok': function() {
+                                            vueInstanse.handleDelete(params.row.username);
+                                        }
+                                    }
+                                }, [
+                                    h('Button', {
+                                        props: {
+                                            type: 'error',
+                                            size: 'small'
+                                        }
+                                    }, vRoot.$t("bgMgr.delete"))
+                                ]),
+                            ]);
+                        }
+                }],
+                tableData: [],
+                recordsList: [],
+                taleHeight: 300,
+            },
+            methods: {
+                setRowInfo:function(row){
+                    this.enterName=row.enterName;
+                    this.enterShortName=row.enterShortName;
+                    this.identifier=row.identifier;
+                    this.operateLicense=row.operateLicense;//经营许可证号' ,
+                    this.enterCategory=row.enterCategory;//1:巡游出租企业 2:网约出租企业 0:其他' ,
+                    this.scope=row.scope;//经营范围' ,
+                    this.registrationAddress=row.registrationAddress;//注册地址' ,
+                    this.contactAddress=row.contactAddress;//联系地址' ,
+                    this.contactPerson=row.contactPerson;//联系人' ,
+                    this.contactPhone=row.contactPhone;//联系电话' ,
+                    this.complaintPhone=row.complaintPhone;//投诉电话' ,
+                    this.economicNature=row.economicNature;//经济性质' ,
+                    this.businessArea=row.businessArea;//经营区域' ,
+                    this.paperValidityDate=row.paperValidityDate;//证件有效期YYYYMMDD' ,
+                    this.issuOrganization=row.issuOrganization;//核发机关' ,
+                    this.issuDate=row.issuDate;//核发日期' ,
+                },
+                handlerNewAdd:function(){
+                    this.isEdit = false;
+                    this.modal = true;
+                },
+                handlerClickQuery() {
+                    var self = this;
+                    var queryTableData = [];
+                    var queryParameterLowerCase = this.queryParameter.toLowerCase();
+                    if (!self.queryParameter) return;
+                    this.recordsList.forEach(function(record) {
+                    })
+
+                },
+                handleDelete: function(username) {
+                
+                },
+                calcTableHeight: function() {
+                    var wHeight = window.innerHeight;
+                    this.taleHeight = wHeight - 148;
+                },
+                handleSubmit: function() {
+                    var url = '';
+                    if(this.isEdit){
+
+                    }else{
+                        url = myUrls.createYongZhouEnter();
+                        var data = {
+                            enterName:this.enterName,//企业名称,按照工商营业执照' ,
+                            enterShortName:this.enterShortName,//企业简称' ,
+                            identifier:this.identifier,//统一社会信用代码' ,
+                            operateLicense:this.operateLicense,//经营许可证号' ,
+                            enterCategory:Number(this.enterCategory),//1:巡游出租企业 2:网约出租企业 0:其他' ,
+                            scope:this.scope,//经营范围' ,
+                            registrationAddress:this.registrationAddress,//注册地址' ,
+                            contactAddress:this.contactAddress,//联系地址' ,
+                            contactPerson:this.contactPerson,//联系人' ,
+                            contactPhone:this.contactPhone,//联系电话' ,
+                            complaintPhone:this.complaintPhone,//投诉电话' ,
+                            economicNature:this.economicNature,//经济性质' ,
+                            businessArea:this.businessArea,//经营区域' ,
+                            paperValidityDate:DateFormat.format(this.paperValidityDate,'yyyy-MM-dd'),//证件有效期YYYYMMDD' ,
+                            issuOrganization:this.issuOrganization,//核发机关' ,
+                            issuDate:DateFormat.format(this.issuDate,'yyyy-MM-dd'),//核发日期' ,
+                            operateFlag:1,//操作标识 1:新增 2:更新 3:删除' ,
+                            creater:userName//创建者' , 
+                        }
+                        utils.sendAjax(url,data,function(resp){
+                            console.log(resp);
+                        });
+                    }
+                },
+            },   
+            computed: {
+                modalTile:function(){
+                    return this.isEdit ? '编辑企业' : '新增企业';
+                },
+            },
+            mounted: function() {
+                var me = this;
+                me.calcTableHeight();
+                window.onresize = function() {
+                    me.calcTableHeight();
+                }
+            }
+        })
+    </script>
+</div>

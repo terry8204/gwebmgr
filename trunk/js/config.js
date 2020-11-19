@@ -802,6 +802,9 @@ var myUrls = {
     queryRecorderData: function() {
         return this.apihosts + 'webapi?action=queryrecorderdata&token=' + token;
     },
+    createYongZhouEnter: function() {
+        return this.apihosts + 'webapi?action=createyongzhouenter&token=' + token;
+    },
 }
 
 

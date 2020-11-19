@@ -92,6 +92,28 @@ var bgManager = {
                         { title: "接入平台列表", name: 'accessPlatformList', icon: 'md-git-merge' },
                     ]
                 },
+                {
+                    title: '第三方平台',
+                    name: 'thirdPlatform',
+                    icon: 'ios-analytics',
+                    children: [
+                        { 
+                            title: '永州企业基本信息', 
+                            name: 'yongZhouEnterpriseInfo', 
+                            icon: 'md-add' 
+                        },
+                        { 
+                            title: '永州车辆基本信息', 
+                            name: 'yongZhouVehicleInfo', 
+                            icon: 'md-add' 
+                        },
+                        { 
+                            title: '永州驾驶员基本信息', 
+                            name: 'yongZhouDriverInfo', 
+                            icon: 'md-add' 
+                        },
+                    ]
+                },
             ]
         }
     },
@@ -203,8 +225,17 @@ var bgManager = {
                 case 'accessPlatformList':
                     page = 'accessplatformlist.html'
                     break
+                case 'yongZhouEnterpriseInfo':
+                    page = 'yongzhouenterpriseinfo.html'
+                    break
+                case 'yongZhouVehicleInfo':
+                    page = 'yongzhouvehicleinfo.html'
+                    break
+                case 'yongZhouDriverInfo':
+                    page = 'yongzhoudriverinfo.html'
+                    break
             }
-            this.currentPage = name
+            this.currentPage = name;
             this.loadPage(page)
         },
         loadPage: function(page) {
