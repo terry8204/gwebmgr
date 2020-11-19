@@ -811,6 +811,9 @@ var myUrls = {
     editYongZhouEnter: function() {
         return this.apihosts + 'webapi?action=edityongzhouenter&token=' + token;
     },
+    deleteYongZhouEnters: function() {
+        return this.apihosts + 'webapi?action=deleteyongzhouenters&token=' + token;
+    },
 }
 
 

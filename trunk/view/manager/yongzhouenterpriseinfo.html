@@ -171,8 +171,57 @@
                 queryParameter: "",
                 loading: true,
                 columns: [
+                        {
+                            title: vRoot.$t("bgMgr.action"),
+                            key: 'action',
+                            width: 130,
+                            render: function(h, params) {
+                                return h('div', [
+                                    h('Button', {
+                                        props: {
+                                            type: 'primary',
+                                            size: 'small'
+                                        },
+                                        style: {
+                                            marginRight: '5px'
+                                        },
+                                        on: {
+                                            click: function() {
+                                                editObject = params.row;
+                                                vueInstanse.isEdit = true;
+                                                vueInstanse.modal = true;
+                                                vueInstanse.setRowInfo(editObject);
+            
+                                            }
+                                        }
+                                    }, vRoot.$t("bgMgr.edit")),
+
+                                    h('Poptip', {
+                                        props: {
+                                            confirm: true,
+                                            title: vRoot.$t("message.confirmDel")
+                                        },
+                                        style: {
+                                            marginRight: '5px',
+                                        },
+                                        on: {
+                                            'on-ok': function() {
+                                                vueInstanse.handleDelete(params);
+                                            }
+                                        }
+                                    }, [
+                                        h('Button', {
+                                            props: {
+                                                type: 'error',
+                                                size: 'small'
+                                            }
+                                        }, vRoot.$t("bgMgr.delete"))
+                                    ]),
+                                ]);
+                            }
+                    },
                     {
-                        title: '企业名称',key: 'enterName', width:120,
+                        title: '企业名称',key: 'enterName', width:160,
                     }, 
                     {
                         title: '企业简称',key: 'enterShortName', width:120,
@@ -343,56 +392,7 @@
                     }, 
                     {
                         title: '核发日期',key: 'issuDate', width:120,
-                    }, 
-                    {
-                        title: vRoot.$t("bgMgr.action"),
-                        key: 'action',
-                        width: 210,
-                        render: function(h, params) {
-                            return h('div', [
-                                h('Button', {
-                                    props: {
-                                        type: 'primary',
-                                        size: 'small'
-                                    },
-                                    style: {
-                                        marginRight: '5px'
-                                    },
-                                    on: {
-                                        click: function() {
-                                            editObject = params.row;
-                                            vueInstanse.isEdit = true;
-                                            vueInstanse.modal = true;
-                                            vueInstanse.setRowInfo(editObject);
-         
-                                        }
-                                    }
-                                }, vRoot.$t("bgMgr.edit")),
-
-                                h('Poptip', {
-                                    props: {
-                                        confirm: true,
-                                        title: vRoot.$t("message.confirmDel")
-                                    },
-                                    style: {
-                                        marginRight: '5px',
-                                    },
-                                    on: {
-                                        'on-ok': function() {
-                                            vueInstanse.handleDelete(params.row.username);
-                                        }
-                                    }
-                                }, [
-                                    h('Button', {
-                                        props: {
-                                            type: 'error',
-                                            size: 'small'
-                                        }
-                                    }, vRoot.$t("bgMgr.delete"))
-                                ]),
-                            ]);
-                        }
-                }],
+                    }],
                 tableData: [],
                 recordsList: [],
                 taleHeight: 300,
@@ -423,8 +423,20 @@
                 handlerClickQuery() {
                    this.queryYongZhouEnters();
                 },
-                handleDelete: function(username) {
-                
+                handleDelete: function(params) {
+                    var me = this;
+                    var url = myUrls.deleteYongZhouEnters();
+                    var data = {
+                        enters:[params.row.enterId],
+                    }
+                    utils.sendAjax(url,data,function(resp){
+                        if(resp.status === 0){
+                            me.$Message.error("删除成功");
+                            me.$delete(me.tableData,params.index);
+                        }else{
+                            me.$Message.error("删除失败");
+                        }
+                    });
                 },
                 calcTableHeight: function() {
                     var wHeight = window.innerHeight;
@@ -461,7 +473,6 @@
                     };
            
                     utils.sendAjax(url,data,function(resp){
-                        console.log(resp);
                         if(resp.status == 0){
                             if(me.isEdit){
                                 Object.assign(editObject,data);
@@ -487,7 +498,6 @@
                     };
                     me.loading = true;
                     utils.sendAjax(url,data,function(resp){
-                        console.log(resp);
                         me.loading = false;
                         if(resp.status == 0){
                             me.tableData = resp.enters;
