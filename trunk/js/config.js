@@ -805,6 +805,12 @@ var myUrls = {
     createYongZhouEnter: function() {
         return this.apihosts + 'webapi?action=createyongzhouenter&token=' + token;
     },
+    queryYongZhouEnters: function() {
+        return this.apihosts + 'webapi?action=queryyongzhouenters&token=' + token;
+    },
+    editYongZhouEnter: function() {
+        return this.apihosts + 'webapi?action=edityongzhouenter&token=' + token;
+    },
 }
 
 
