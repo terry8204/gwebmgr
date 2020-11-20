@@ -53,7 +53,7 @@
                 <Row style="margin: 10px 0">
                     <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">身份证 : &nbsp;</i-col>
                     <i-col span="8">
-                        <i-input v-model.trim="iDNumber"></i-input>
+                        <i-input v-model.trim="idNumber"></i-input>
                     </i-col>
                     <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;从业资格证类别 : &nbsp;</i-col>
                     <i-col span="8">
@@ -112,7 +112,7 @@
                 nationality:'中国',//国籍,默认中国,
                 address:'',//地址' ,
                 phone:'',//电话' ,
-                iDNumber:'',//身份证' ,
+                idNumber:'',//身份证' ,
                 certificateType:'1',//1:巡游出租汽车驾驶员\r\n2：网约出租汽车驾驶员\r\n0：其他' ,
                 certificateNum:'',//从业资格证号码' ,
                 driverType:'',//准驾车型' ,
@@ -191,7 +191,7 @@
                         title: '电话',key: 'phone', width:160,
                     }, 
                     { 
-                        title: '身份证',key: 'iDNumber', width:120,
+                        title: '身份证',key: 'idNumber', width:120,
                     }, 
                     {
                         title: '从业资格证类别',key: 'certificateType', width:160,
@@ -226,7 +226,7 @@
                     this.nationality=row.nationality;
                     this.address=row.address;
                     this.phone=row.phone;
-                    this.iDNumber=row.iDNumber;
+                    this.idNumber=row.idNumber;
                     this.nacertificateTypeme=String(row.certificateType);
                     this.certificateNum=row.certificateNum;
                     this.driverType=row.driverType;
@@ -271,7 +271,7 @@
                         nationality:this.nationality,//国籍,默认中国,
                         address:this.address,//地址' ,
                         phone:this.phone,//电话' ,
-                        iDNumber:this.iDNumber,//身份证' ,
+                        idNumber:this.idNumber,//身份证' ,
                         certificateType:Number(this.certificateType),//1:巡游出租汽车驾驶员\r\n2：网约出租汽车驾驶员\r\n0：其他' ,
                         certificateNum:this.certificateNum,//从业资格证号码' ,
                         driverType:this.driverType,//准驾车型' ,
