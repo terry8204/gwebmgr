@@ -412,9 +412,9 @@
                     this.complaintPhone=row.complaintPhone;//投诉电话' ,
                     this.economicNature=row.economicNature;//经济性质' ,
                     this.businessArea=row.businessArea;//经营区域' ,
-                    this.paperValidityDate=row.paperValidityDate;//证件有效期YYYYMMDD' ,
+                    this.paperValidityDate=new Date(row.paperValidityDate);//证件有效期YYYYMMDD' ,
                     this.issuOrganization=row.issuOrganization;//核发机关' ,
-                    this.issuDate=row.issuDate;//核发日期' ,
+                    this.issuDate=new Date(row.issuDate);//核发日期' ,
                 },
                 handlerNewAdd:function(){
                     this.isEdit = false;
@@ -445,6 +445,8 @@
                 handleSubmit: function() {
                     var me = this;
                     var url = '';
+                    console.log('this.paperValidityDate',this.paperValidityDate);
+                    console.log('this.issuDate',this.issuDate);
                     var data = {
                             enterName:this.enterName,//企业名称,按照工商营业执照' ,
                             enterShortName:this.enterShortName,//企业简称' ,
