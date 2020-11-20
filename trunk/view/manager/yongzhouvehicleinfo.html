@@ -1,6 +1,6 @@
 <div id="yongzhouvehicleinfo">
     <div class="full">
-        <h3 class="h3-title">永州企业基本信息</h3>
+        <h3 class="h3-title">永州车辆基本信息</h3>
         <ul>
             <li>
                 <i-input v-model.trim="queryParameter"></i-input>
@@ -9,7 +9,7 @@
                 <i-button type="info" @click="handlerClickQuery">{{$t("reportForm.query")}}</i-button>
             </li>
             <li style="float: right;text-align: right;">
-                <i-button type="primary" @click="handlerNewAdd">新增企业</i-button>
+                <i-button type="primary" @click="handlerNewAdd">新增车辆信息</i-button>
             </li>
         </ul>
         <div class="table-wraper">
@@ -577,13 +577,13 @@
                     this.modal = true;
                 },
                 handlerClickQuery() {
-                   this.queryYongZhouEnters();
+                   this.queryYongZhouVehicles();
                 },
                 handleDelete: function(params) {
                     var me = this;
                     var url = myUrls.deleteYongZhouVehicles();
                     var data = {
-                        enters:[params.row.vehicleId],
+                        vehicles:[params.row.vehicleId],
                     }
                     utils.sendAjax(url,data,function(resp){
                         if(resp.status === 0){
@@ -626,6 +626,7 @@
                         issuOrganization:this.issuOrganization,
                         issuDate:DateFormat.format(this.issuDate,'yyyy-MM-dd') + " 00:00:00",// 核发日期' ,
                         // int operateFlag;//操作标识 1:新增 2:更新 3:删除' ,  
+                        creater:userName
                     };
                     if(this.isEdit){
                         data.operateFlag = 2;
@@ -665,7 +666,7 @@
                     utils.sendAjax(url,data,function(resp){
                         me.loading = false;
                         if(resp.status == 0){
-                            me.tableData = resp.enters;
+                            me.tableData = resp.vehicles;
                         }
                     });
                 },
