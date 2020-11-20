@@ -590,7 +590,7 @@
                             me.$Message.success("删除成功");
                             me.$delete(me.tableData,params.index);
                         }else{
-                            me.$Message.error("删除失败");
+                            me.$Message.error(resp.cause);
                         }
                     });
                 },
@@ -649,11 +649,7 @@
                             }
                             me.modal = false;
                         }else{
-                            if(me.isEdit){
-                                me.$Message.error('编辑失败');
-                            }else{
-                                me.$Message.error('新增失败');
-                            }
+                            me.$Message.error(resp.cause);
                         }
                     });
                 },
