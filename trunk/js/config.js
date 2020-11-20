@@ -814,6 +814,18 @@ var myUrls = {
     deleteYongZhouEnters: function() {
         return this.apihosts + 'webapi?action=deleteyongzhouenters&token=' + token;
     },
+    createYongZhouVehicle: function() {
+        return this.apihosts + 'webapi?action=createyongzhouvehicle&token=' + token;
+    },
+    queryYongZhouVehicles: function() {
+        return this.apihosts + 'webapi?action=queryyongzhouvehicles&token=' + token;
+    },
+    editYongZhouVehicle: function() {
+        return this.apihosts + 'webapi?action=edityongzhouvehicle&token=' + token;
+    },
+    deleteYongZhouVehicles: function() {
+        return this.apihosts + 'webapi?action=deleteyongzhouvehicles&token=' + token;
+    },
 }
 
 

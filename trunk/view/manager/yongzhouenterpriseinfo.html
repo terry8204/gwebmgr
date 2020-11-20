@@ -167,7 +167,6 @@
     
                 isEdit:false,
                 modal: false,
-                queryTableData: [],
                 queryParameter: "",
                 loading: true,
                 columns: [
@@ -385,16 +384,15 @@
                         title: '经营区域',key: 'businessArea', width: 90,
                     }, 
                     {
-                        title: '证件有效期',key: 'paperValidityDate', width:120,
+                        title: '证件有效期',key: 'paperValidityDate', width:160,
                     }, 
                     { 
                         title: '核发机关',key: 'issuOrganization', width:120,
                     }, 
                     {
-                        title: '核发日期',key: 'issuDate', width:120,
+                        title: '核发日期',key: 'issuDate', width:160,
                     }],
                 tableData: [],
-                recordsList: [],
                 taleHeight: 300,
             },
             methods: {
@@ -431,7 +429,7 @@
                     }
                     utils.sendAjax(url,data,function(resp){
                         if(resp.status === 0){
-                            me.$Message.error("删除成功");
+                            me.$Message.success("删除成功");
                             me.$delete(me.tableData,params.index);
                         }else{
                             me.$Message.error("删除失败");
@@ -445,8 +443,6 @@
                 handleSubmit: function() {
                     var me = this;
                     var url = '';
-                    console.log('this.paperValidityDate',this.paperValidityDate);
-                    console.log('this.issuDate',this.issuDate);
                     var data = {
                             enterName:this.enterName,//企业名称,按照工商营业执照' ,
                             enterShortName:this.enterShortName,//企业简称' ,
@@ -464,14 +460,15 @@
                             paperValidityDate:DateFormat.format(this.paperValidityDate,'yyyy-MM-dd') + " 00:00:00",//证件有效期YYYYMMDD' ,
                             issuOrganization:this.issuOrganization,//核发机关' ,
                             issuDate:DateFormat.format(this.issuDate,'yyyy-MM-dd') + " 00:00:00",//核发日期' ,
-                            operateFlag:1,//操作标识 1:新增 2:更新 3:删除' ,
                             creater:userName//创建者' , 
                     };
                     if(this.isEdit){
                         data.enterId = editObject.enterId;
                         url = myUrls.editYongZhouEnter();
+                        data.operateFlag = 2;//操作标识 1:新增 2:更新 3:删除' ,
                     }else{
                         url = myUrls.createYongZhouEnter();
+                        data.operateFlag = 1;
                     };
            
                     utils.sendAjax(url,data,function(resp){

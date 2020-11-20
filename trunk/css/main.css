@@ -1048,7 +1048,8 @@ div.rule-view>div>div.rule-table {
 #queryuser,
 #onlineuser,
 #login-records,
-#yongzhouenterpriseinfo {
+#yongzhouenterpriseinfo ,
+#yongzhouvehicleinfo {
     padding: 10px;
     height: 100%;
     width: 100%;
@@ -1058,13 +1059,16 @@ div.rule-view>div>div.rule-table {
 
 #queryuser>div>div,
 #queryuser>div>div,
-#yongzhouenterpriseinfo>div>div {
+#yongzhouenterpriseinfo>div>div ,
+#yongzhouvehicleinfo>div>div
+{
     width: 100%;
 }
 
 #queryuser>div>ul,
 #onlineuser>div>ul,
 #yongzhouenterpriseinfo>div>ul,
+#yongzhouvehicleinfo>div>ul,
 #bonus-list>div>ul {
     height: 42px;
 }
@@ -1072,6 +1076,7 @@ div.rule-view>div>div.rule-table {
 #queryuser>div>ul>li,
 #onlineuser>div>ul>li,
 #yongzhouenterpriseinfo>div>ul>li,
+#yongzhouvehicleinfo>div>ul>li,
 #bonus-list>div>ul>li {
     float: left;
     width: 150px;
