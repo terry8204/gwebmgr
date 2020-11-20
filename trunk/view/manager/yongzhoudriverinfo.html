@@ -58,9 +58,9 @@
                     <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;从业资格证类别 : &nbsp;</i-col>
                     <i-col span="8">
                         <i-select v-model.sync="certificateType">
-                            <i-option value="巡游出租汽车驾驶员">巡游出租汽车驾驶员</i-option>
-                            <i-option value="网约出租汽车驾驶员">网约出租汽车驾驶员</i-option>
-                            <i-option value="其他">其他 </i-option>
+                            <i-option value="1">巡游出租汽车驾驶员</i-option>
+                            <i-option value="2">网约出租汽车驾驶员</i-option>
+                            <i-option value="0">其他 </i-option>
                         </i-select>
                     </i-col>
                 </Row>
@@ -113,7 +113,7 @@
                 address:'',//地址' ,
                 phone:'',//电话' ,
                 IDNumber:'',//身份证' ,
-                certificateType:'巡游出租汽车驾驶员',//1:巡游出租汽车驾驶员\r\n2：网约出租汽车驾驶员\r\n0：其他' ,
+                certificateType:'1',//1:巡游出租汽车驾驶员\r\n2：网约出租汽车驾驶员\r\n0：其他' ,
                 certificateNum:'',//从业资格证号码' ,
                 driverType:'',//准驾车型' ,
                 initialDate:new Date(),//资格证初始领证日期' ,
@@ -227,7 +227,7 @@
                     this.address=row.address;
                     this.phone=row.phone;
                     this.IDNumber=row.IDNumber;
-                    this.nacertificateTypeme=row.certificateType;
+                    this.nacertificateTypeme=String(row.certificateType);
                     this.certificateNum=row.certificateNum;
                     this.driverType=row.driverType;
                     this.initialDate=new Date(row.initialDate);
@@ -272,7 +272,7 @@
                         address:this.address,//地址' ,
                         phone:this.phone,//电话' ,
                         IDNumber:this.IDNumber,//身份证' ,
-                        certificateType:this.certificateType,//1:巡游出租汽车驾驶员\r\n2：网约出租汽车驾驶员\r\n0：其他' ,
+                        certificateType:Number(this.certificateType),//1:巡游出租汽车驾驶员\r\n2：网约出租汽车驾驶员\r\n0：其他' ,
                         certificateNum:this.certificateNum,//从业资格证号码' ,
                         driverType:this.driverType,//准驾车型' ,
                         initialDate:DateFormat.format(this.initialDate,'yyyy-MM-dd') + " 00:00:00",//资格证初始领证日期' ,
