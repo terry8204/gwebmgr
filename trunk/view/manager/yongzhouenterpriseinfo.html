@@ -477,8 +477,10 @@
                                 Object.assign(editObject,data);
                                 me.$Message.success('编辑成功');
                             }else{
+                                me.queryYongZhouEnters();
                                 me.$Message.success('新增成功');
                             }
+                            me.modal = false;
                         }else{
                             if(me.isEdit){
                                 me.$Message.error('编辑失败');
