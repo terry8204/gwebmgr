@@ -594,7 +594,6 @@
                             offset: timeDifference,
                             maxnumber: this.modulesNumber,
                         }
-                        console.log('this.daya',daya);
                         dataStr = JSON.stringify(daya);
                 }
                 return dataStr;    
@@ -701,8 +700,11 @@
                     action: 'recorder',
                     recorderaction: type,
                     recordercommand: this.getRecorderCommand(type),
-                    recorderdata:this.getRecorderData(type),
+                    recorderdata:null,
                 };
+                if(type==2){
+                    data.recorderdata = this.getRecorderData(type);
+                }
                 this.tableData.forEach(function(item) {
                     data.deviceids.push(item.deviceid);
                 });
