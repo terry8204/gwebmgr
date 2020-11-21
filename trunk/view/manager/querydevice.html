@@ -1538,7 +1538,7 @@
                     return result;
                 },
                 expireNotifyTime: function(dayNumber) {
-                    console.log('dayNumber', dayNumber);
+
                     switch (dayNumber) {
                         case 0:
                             this.queryType = 'all';
@@ -1990,7 +1990,6 @@
                             }
                         }
                     }
-
                     me.groupsList = groupsList;
                     me.groupid = editObject.groupid;
                     if (foundGroupId) {
@@ -1998,8 +1997,6 @@
                     } else {
                         vueInstanse.groupid = 0;
                     }
-
-
                 },
                 calcTableHeight: function() {
                     var wHeight = window.innerHeight;
@@ -2131,7 +2128,7 @@
                             });
                         }
                     }, function() {});
-                }
+                },
             },
             watch: {
                 isShowMatchDev: function() {

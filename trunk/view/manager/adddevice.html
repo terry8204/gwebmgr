@@ -337,22 +337,6 @@
                     this.deviceenable = "1";
                     this.groupid = "";
                 },
-                getGroupsList: function() {
-                    var me = this;
-                    var url = myUrls.queryGroupByUser();
-                    utils.sendAjax(url, {}, function(resp) {
-                        var groupList = [];
-                        if (resp.status === 0 && resp.grouplist) {
-                            resp.grouplist.forEach(function(group) {
-                                groupList.push({
-                                    label: group.groupname,
-                                    value: group.groupid
-                                });
-                            })
-                        }
-                        me.groupsList = groupList;
-                    });
-                },
                 getDeviceType: function() {
                     var me = this;
                     var deviceTypes = vstore.state.deviceTypes;
@@ -407,7 +391,6 @@
             },
             mounted: function() {
                 this.getDeviceType();
-                // this.getGroupsList();  
                 this.createrToUser = userName;
                 this.userlists = userlists;
                 this.overduetime = new Date(Date.now() + 365 * 24 * 3600 * 1000);

@@ -78,65 +78,71 @@
             </Row>
             <Row style="height: 35px;line-height: 35px;">
                 <i-col :span="4" style="text-align: right;">
-                    <span style="color: red;">*</span>&nbsp;密匙M1&nbsp;
+                    &nbsp;是否加密&nbsp;
+                </i-col>
+                <i-col :span="8">
+                    <Checkbox :value="encryptflag==1" @on-change="onChangeEncryptFlag"></Checkbox>
+                </i-col>
+                <i-col :span="4" style="text-align: right;">
+                    <span style="color: red;" v-show="encryptflag==1">*</span>&nbsp;密匙M1&nbsp;
                 </i-col>
                 <i-col :span="8">
                     <i-input v-model.trim="m1"></i-input>
                 </i-col>
+            </Row>
+            <Row style="height: 35px;line-height: 35px;">
                 <i-col :span="4" style="text-align: right;">
-                    <span style="color: red;">*</span>&nbsp;密匙IA1&nbsp;
+                    <span style="color: red;" v-show="encryptflag==1">*</span>&nbsp;密匙IA1&nbsp;
                 </i-col>
                 <i-col :span="8">
                     <i-input v-model.trim="ia1"></i-input>
                 </i-col>
-            </Row>
-            <Row style="height: 35px;line-height: 35px;">
                 <i-col :span="4" style="text-align: right;">
-                    <span style="color: red;">*</span>&nbsp;密匙IC1&nbsp;
+                    <span style="color: red;" v-show="encryptflag==1">*</span>&nbsp;密匙IC1&nbsp;
                 </i-col>
                 <i-col :span="8">
                     <i-input v-model.trim="ic1"></i-input>
                 </i-col>
+            </Row>
+            <Row style="height: 35px;line-height: 35px;">
                 <i-col :span="4" style="text-align: right;">
                     视频key&nbsp;
                 </i-col>
                 <i-col :span="8">
                     <i-input v-model.trim="videokey"></i-input>
                 </i-col>
-            </Row>
-            <Row style="height: 35px;line-height: 35px;">
                 <i-col :span="4" style="text-align: right;">
                     实时视频URL&nbsp;
                 </i-col>
                 <i-col :span="8">
                     <i-input v-model.trim="realtimevideourl"></i-input>
                 </i-col>
+            </Row>
+            <Row style="height: 35px;line-height: 35px;">
                 <i-col :span="4" style="text-align: right;">
                     视频回放URL&nbsp;
                 </i-col>
                 <i-col :span="8">
                     <i-input v-model.trim="historyvideourl"></i-input>
                 </i-col>
-            </Row>
-            <Row style="height: 35px;line-height: 35px;">
                 <i-col :span="4" style="text-align: right;">
                     从链ip&nbsp;
                 </i-col>
                 <i-col :span="8">
                     <i-input v-model.trim="downlinkip"></i-input>
                 </i-col>
+            </Row>
+            <Row style="height: 35px;line-height: 35px;">
                 <i-col :span="4" style="text-align: right;">
                     从链端口&nbsp;
                 </i-col>
                 <i-col :span="8">
                     <i-input v-model.trim="downlinkport"></i-input>
                 </i-col>
-            </Row>
-            <Row style="height: 35px;line-height: 35px;">
                 <i-col :span="4" style="text-align: right;">
                     备注&nbsp;
                 </i-col>
-                <i-col :span="20">
+                <i-col :span="8">
                     <i-input v-model.trim="remark"></i-input>
                 </i-col>
             </Row>
@@ -174,6 +180,7 @@
                 historyvideourl: '', //视频回放URL' ,
                 videokey: '', //视频key' ,
                 remark: '', //备注' ,
+                encryptflag: 1, //是否加密 ,
                 columnsList: [{
                     title: vRoot.$t("bgMgr.action"),
                     key: 'action',
@@ -385,6 +392,9 @@
                 protocols: [],
             },
             methods: {
+                onChangeEncryptFlag:function(val){
+                    this.encryptflag = val?1:0;
+                },
                 handleSubmit: function() {
                     var url = '';
                     var me = this;
@@ -406,6 +416,7 @@
                         historyvideourl: this.historyvideourl, //视频回放URL' ,
                         videokey: this.videokey, //视频key' ,
                         remark: this.remark, //备注' ,
+                        encryptflag:this.encryptflag
                     }
                     if (this.isEdit) {
                         data.upload809id = editObject.upload809id;
@@ -467,6 +478,7 @@
                     this.historyvideourl = row.historyvideourl; //视频回放URL' ,
                     this.videokey = row.videokey; //视频key' ,
                     this.remark = row.remark; //备注' ,
+                    this.encryptflag = row.encryptflag; //备注' ,
                 },
                 handleAdd: function() {
                     this.setRowInfo({
