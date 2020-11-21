@@ -238,37 +238,47 @@ new Vue({
     },
     mounted: function() {
         var me = this;
-        this.$nextTick(function() {
-            var keepPass = localStorage.getItem("keepPass");
-            var type = localStorage.getItem("logintype");
-            if (type) {
-                if (type == "USER") {
-                    me.account = 0;
-                    me.placeholder = this.$t("login.inputUsername");
-                    var user = localStorage.getItem("accountuser");
-                    var pass = localStorage.getItem("accountpass");
-                } else if (type == "DEVICE") {
-                    me.placeholder = this.$t("login.inputDeviceNumber");
-                    me.account = 1;
-                    var user = localStorage.getItem("deviceuser");
-                    var pass = localStorage.getItem("devicepass");
-                }
-            } else {
-                var type = this.account == 0 ? "USER" : "DEVICE";
-                localStorage.setItem("logintype", type);
-            };
+        var username = utils.getParameterByName("username");
+        var password = utils.getParameterByName("password");
 
-            if (keepPass == 'true' && user != undefined && pass != undefined) {
-                if (user && pass) {
-                    me.username = user;
-                    me.password = pass;
-                    me.keepPass = true;
+        this.$nextTick(function() {
+            if(username!='undefined' && password!='undefined'){
+                me.loading = true;
+                me.username = username;
+                me.password = password;
+                me.handleSubmit();
+            }else{
+                var keepPass = localStorage.getItem("keepPass");
+                var type = localStorage.getItem("logintype");
+                if (type) {
+                    if (type == "USER") {
+                        me.account = 0;
+                        me.placeholder = this.$t("login.inputUsername");
+                        var user = localStorage.getItem("accountuser");
+                        var pass = localStorage.getItem("accountpass");
+                    } else if (type == "DEVICE") {
+                        me.placeholder = this.$t("login.inputDeviceNumber");
+                        me.account = 1;
+                        var user = localStorage.getItem("deviceuser");
+                        var pass = localStorage.getItem("devicepass");
+                    }
                 } else {
-                    me.username = "";
-                    me.password = "";
-                    me.keepPass = false;
-                }
-            };
+                    var type = this.account == 0 ? "USER" : "DEVICE";
+                    localStorage.setItem("logintype", type);
+                };
+    
+                if (keepPass == 'true' && user != undefined && pass != undefined) {
+                    if (user && pass) {
+                        me.username = user;
+                        me.password = pass;
+                        me.keepPass = true;
+                    } else {
+                        me.username = "";
+                        me.password = "";
+                        me.keepPass = false;
+                    }
+                };
+            }
             me.pwdPlaceholder = this.$t("login.inputPassword");
             document.title = this.$t("login.title");
         });
