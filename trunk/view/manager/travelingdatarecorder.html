@@ -573,7 +573,11 @@
                         });
                         break;
                     case '05H':
-                        dataStr = null;
+                        dataStr = JSON.stringify({
+                            vin:this.vin,
+                            vehicleNumber:this.vehicleNumber,
+                            classificationOfVehicle:this.classificationOfVehicle,
+                        });
                         break;
                     case '06H':
                         dataStr = null;
