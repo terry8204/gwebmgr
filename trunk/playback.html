@@ -1385,12 +1385,14 @@
 
                         var deviceid = "'" + this.deviceid + "'";
                         var speed = info.speed == 0 ? "0km/h" : (info.speed / 1000).toFixed(2) + "km/h";
+                        var recorderspeed = info.recorderspeed == 0 ? "0km/h" : (recorderspeed.speed / 1000).toFixed(2) + "km/h";
                         var sContent = '<div style="max-width:296px;">' +
                             '<p> ' + (isZh ? '设备名称' : 'Device Name') + ': ' + this.deviceid + '</p>' +
                             '<p> ' + (isZh ? '经纬度' : 'Longitude and latitude') + ': ' + info.callon.toFixed(6) + "," + info.callat.toFixed(6) + '</p>' +
                             '<p> ' + (isZh ? '定位类型' : 'Position Type') + ': ' + posiType + '</p>' +
                             '<p> ' + (isZh ? '方向' : 'Direction') + ': ' + utils.getCarDirection(info.course) + '</p>' +
                             '<p> ' + (isZh ? '速度' : 'Speed') + ': ' + speed + '(' + (isZh ? '信号:' : 'Signal:') + info.rxlevel + '%)</p>' +
+                            '<p> ' + (isZh ? '记录仪行驶速度' : 'RecorderSpeed') + ': ' + recorderspeed + '</p>' +
                             '<p> ' + (isZh ? '总里程' : 'Mileage') + ': ' + (info.totaldistance == 0 ? 0 : info.totaldistance) + 'km</p>' +
                             '<p> ' + (isZh ? '最后时间' : 'Last time') + ': ' + DateFormat.longToDateTimeStr(info.updatetime, timeDifference) + '</p>' +
                             '<p> ' + (isZh ? '状态' : 'Status') + ': ' + strstatus + '</p>' +
@@ -1508,6 +1510,7 @@
                         var me = this;
                         this.distance = [];
                         this.veo = [];
+                        this.recorderspeed = [];
                         this.recvtime = [];
                         this.oil = [];
                         this.oil1 = [];
@@ -1551,6 +1554,7 @@
 
                         var totoil = this.$t('main.totalOil');
                         var speed = this.$t('main.speed');
+                        var recorderspeed = isZh ? "行驶记录仪速度" :'RecorderSpeed';
                         var dis = this.$t('main.mileage');
                         var time = this.$t('main.time');
                         var usoil1 = this.$t('main.oil1');
@@ -1584,7 +1588,7 @@
                                 }
                             },
                             legend: {
-                                data: [dis, speed, totoil, usoil1, usoil2],
+                                data: [dis, speed,recorderspeed, totoil, usoil1, usoil2],
                                 //selected: {
                                 //    '里程' : false
                                 // },
@@ -1675,6 +1679,14 @@
                                     //itemStyle: {normal: {areaStyle: {type: 'default'}}},
                                     color: '#4876FF',
                                     data: this.veo
+                                },  {
+                                    name: recorderspeed,
+                                    type: 'line',
+                                    symbol: 'none',
+                                    yAxisIndex: 0,
+                                    //itemStyle: {normal: {areaStyle: {type: 'default'}}},
+                                    color: '#710000',
+                                    data: this.recorderspeed,
                                 }, {
                                     //show:'false',
                                     name: totoil,
@@ -1709,6 +1721,7 @@
                         var distance = []; //总里程;
                         var recvtime = []; //时间
                         var veo = []; //速度
+                        var recorderspeed = []; //速度
                         var oil = []; //速度
                         var oil1 = []; //速度
                         var oil2 = []; //速度
@@ -1734,6 +1747,7 @@
                             oil.push(item.ad0 + item.ad1);
                             recvtime.push(DateFormat.longToDateTimeStr(item.updatetime, timeDifference));
                             veo.push((item.speed / 1000).toFixed(2));
+                            recorderspeed.push((item.recorderspeed / 1000).toFixed(2));
                             distance.push((item.totaldistance - totalDistanceMin).toFixed(2));
                         });
                         this.distance = distance;
@@ -1742,7 +1756,7 @@
                         this.oil = oil;
                         this.oil1 = oil1;
                         this.oil2 = oil2;
-
+                        this.recorderspeed = recorderspeed;
 
                         this.charts.setOption(this.getChartsOption());
 
