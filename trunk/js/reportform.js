@@ -2731,6 +2731,7 @@ function messageRecords(groupslist) {
                 { title: vRoot.$t("reportForm.callon"), key: 'callon', width: 120 },
                 { title: vRoot.$t("reportForm.radius"), key: 'radius', width: 80 },
                 { title: vRoot.$t("reportForm.speed"), key: 'speed', width: 80 },
+                { title: vRoot.$t("reportForm.recorderspeed"), key: 'recorderspeed', width: 120 },
                 { title: vRoot.$t("reportForm.totaldistance"), key: 'totaldistance', width: 120 },
                 { title: vRoot.$t("reportForm.altitude"), key: 'altitude', width: 100 },
                 { title: vRoot.$t("reportForm.course"), key: 'course', width: 100 },
