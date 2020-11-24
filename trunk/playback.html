@@ -23,7 +23,6 @@
         div.controller {
             position: absolute;
             bottom: 0px;
-            line-height: 60px;
             height: 300px;
             left: 0px;
         }
@@ -259,8 +258,30 @@
             cursor: pointer;
         }
         /* popup css  end */
+
+        #container .vdp-datepicker__calendar .cell{
+            line-height: 20px;
+        }
+        #container .vdp-datepicker__calendar .day-header{
+            height: 20px;
+        }
+        #container .vdp-datepicker__calendar .cell.selected {
+            background: #E0E0E0;
+        }
+        #container .vdp-datepicker__calendar{   
+            bottom: 34px;
+        }
+        #container .vdp-datepicker > div >input{
+            height: 32px;
+            border: 1px solid #DCDEE2;
+            padding-left: 10px;
+            border-radius: 3px;
+            outline:#00FF00;
+        }
+
+        
     </style>
-    <script src="js/js.cookie.min.js"></script>
+  
     <script src="js/distancetool_min.js"></script>
 </head>
 
@@ -296,7 +317,7 @@
                     <div id="charts"></div>
                 </div>
                 <div class="ctrl-wrap">
-                    <Row>
+                    <Row style="padding-top: 10px;">
                         <i-col :span="10" style="padding:0px 10px 0 10px;height:40px;">
                             {{(isZh ? '设备名称' : 'Device name')}} : {{deviceName}}
                         </i-col>
@@ -306,7 +327,15 @@
                     <Row>
                         <i-col :span="4" style="text-align: center;height:45px;">{{$t("main.selectDate")}} : &nbsp;</i-col>
                         <i-col :span="11" style="height:45px;">
-                            <date-picker type="date" style="width: 100%;height:45px;" v-model="startTime" :clearable="false" :editable="false"></date-picker>
+                            <datepicker
+                                format="yyyy-MM-dd"
+                                :language="language"
+                                :value="startTime"
+                                :day-cell-content="dayCellContent"
+                                v-on:changedmonth="logChangedMonth"
+                                v-on:selected="onSelected"
+                            >
+                            <!-- <date-picker type="date" style="width: 100%;height:45px;" v-model="startTime" :clearable="false" :editable="false"></date-picker> -->
                         </i-col>
                         <i-col :span="4" style="text-align: center;height:45px;">
                             <i-button @click="prevDay">{{$t("main.prevDay")}}</i-button>
@@ -411,6 +440,8 @@
     <script src="./js/util.js"></script>
     <script src="./js/js.cookie.min.js"></script>
     <script src="./js/echarts.min.js"></script>
+    <script src="./js/vuejs-datepicker.js"></script>
+    <script src="./js/locale/index.js"></script>
     <script src="./js/en-US.js"></script>
     <script src="./js/zh-CN.js"></script>
     <!-- <script src="http://api.map.baidu.com/api?v=3.0&ak=e7SC5rvmn2FsRNE4R1ygg44n"></script>
@@ -419,6 +450,7 @@
         var timeDifference = DateFormat.getOffset();
         var token = utils.getParameterByName("token");
         var icon = utils.getParameterByName("icon");
+        var deviceid = utils.getParameterByName("deviceid");
         Vue.use(iview);
         Vue.use(VueI18n);
         var isZh = utils.locale === 'zh';
@@ -556,7 +588,9 @@
                 el: "#container",
                 i18n: utils.getI18n(),
                 data: {
+
                     isZh: isZh,
+                    language:vdp_translation_index.zh,
                     isShowCtrl: true,
                     isShowMarker: false,
                     deviceName: utils.getParameterByName("devicename"),
@@ -586,6 +620,7 @@
                     polyline: null,
                     modal: false,
                     modal1: false,
+
                     cause: "",
                     xList: '',
                     wList: '',
@@ -603,7 +638,65 @@
                     }, ],
                     mapType: mapType,
                 },
+                components:{
+                    datepicker:vuejsDatepicker
+                },
                 methods: {
+                    onSelected:function(date){
+                        this.startTime = date;
+                    },
+                    queryReportMileageDetail:function(date){
+      
+                        var me = this;
+                        var url = myUrls.reportMileageDetail();
+                        var day = date.getFullYear()+'-'+ (date.getMonth() +1) + '-';
+                        var startday = DateFormat.addMonth(new Date(day + "1"),-1);
+                            startday = DateFormat.format(startday,"yyyy-MM-dd");
+                        var data = {
+                            startday:  startday,
+                            endday:  day + this.getTheMonthDays(date) ,
+                            offset: timeDifference,
+                            deviceid:deviceid,
+                        };
+                        utils.sendAjax(url, data, function(resp) {
+                            var records = resp.records;
+
+                            if(records){
+                                records.forEach(function(item){
+                                    if(item){
+                                        // console.log("item",item,typeof item.totaldistance);
+                                        me.mileageMonthRecord[item.day]=(item.totaldistance/1000).toFixed(1);
+                                    }
+                                })
+                            }
+                       
+                        
+                        });
+                    },
+                    logChangedMonth(date){
+                        // console.log(DateFormat.format(date,"yyyy-MM-dd"));
+                        // var day = DateFormat.format(date,"yyyy-MM-dd");
+                        // if(!this.mileageMonthRecord[day]){
+                            this.queryReportMileageDetail(date);
+                        // }
+                    },
+                    getTheMonthDays: function(date) {
+                        var year = date.getFullYear();
+                        var month = date.getMonth()+1;
+                        var d = new Date(year, month, 0);
+                        return d.getDate();
+                    },
+                    dayCellContent(data){
+                        if(this.mileageMonthRecord){
+                            var dayStr = DateFormat.format(new Date(data.timestamp),"yyyy-MM-dd");
+                            var totaldistance = this.mileageMonthRecord[dayStr];
+                            if(totaldistance ==undefined){
+                                totaldistance = "-"
+                            }
+                            return data.date+"<br><span style='font-size:12px;color:#6DCFF6;'>" + totaldistance  +"</span>";
+                        }
+                       
+                    },
                     initMap: function(callback) {
                         var me = this;
                         if (this.mapType === 'bMap') {
@@ -1843,8 +1936,10 @@
                 mounted: function() {
                     this.initMap();
                     this.initCharts();
-                    var deviceid = utils.getParameterByName("deviceid");
+
                     this.startTime = new Date();
+                    this.mileageMonthRecord = {};
+                    this.queryReportMileageDetail(this.startTime);
                     if (deviceid) {
                         this.deviceid = deviceid;
                     } else {
