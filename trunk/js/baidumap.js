@@ -126,25 +126,40 @@ BMapClass.pt.getCarLabel = function(track) {
     return label;
 }
 
-BMapClass.pt.getIcon = function(track) {
-    var imgPath = '',
-        deviceid = track.deviceid;
-    if (utils.isLocalhost()) {
-        imgPath = myUrls.viewhost + 'images/carstate'
-    } else {
-        imgPath = '../images/carstate'
-    }
-    if (track.online) {
-        if (track.moving == 0) {
-            imgPath += '/' + carIconTypes[deviceid] + '_red_0.png'
-        } else {
-            imgPath += '/' + carIconTypes[deviceid] + '_green_0.png'
-        }
+var gBMapIconList = {};
 
-    } else {
-        imgPath += '/' + carIconTypes[deviceid] + '_gray_0.png'
+BMapClass.pt.getIcon = function(track) {
+    var imagekey = "";
+    var deviceid = track.deviceid;
+    imagekey = track.online + "-" + track.moving + "-" + carIconTypes[deviceid];
+    var cacheIcon = gBMapIconList[imagekey];
+    if(!cacheIcon)
+    {
+        var imgPath = '';
+     
+        if (utils.isLocalhost()) {
+            imgPath = myUrls.viewhost + 'images/carstate'
+        } else {
+            imgPath = '../images/carstate'
+        }
+        if (track.online) {
+            if (track.moving == 0) {
+                imgPath += '/' + carIconTypes[deviceid] + '_red_0.png'
+            } else {
+                imgPath += '/' + carIconTypes[deviceid] + '_green_0.png'
+            }
+
+        } else {
+            imgPath += '/' + carIconTypes[deviceid] + '_gray_0.png'
+        }
+        
+        cacheIcon = new BMap.Icon(imgPath, new BMap.Size(32, 32));
+        gBMapIconList[imagekey] = cacheIcon;
+    
     }
-    return new BMap.Icon(imgPath, new BMap.Size(32, 32));
+
+
+    return cacheIcon;
 }
 
 
@@ -231,13 +246,14 @@ BMapClass.pt.cancelFence = function(deviceid) {
 }
 
 
+
 BMapClass.pt.updateLastTracks = function(deviceid) {
     // console.log('updateLastTracks', deviceid)
-    // this.lastTracks = lastTracks;
+    var currentTime = DateFormat.getCurrentUTC();
     for (var key in this.lastTracks) {
         if (this.lastTracks.hasOwnProperty(key)) {
             var track = this.lastTracks[key];
-            track.online = utils.getIsOnline(track);
+            track.online = utils.getIsOnlineWithTime(track,currentTime);
             if (this.markerHashMap[key]) {
                 var marker = this.markerHashMap[key];
                 var newPoint = new BMap.Point(track.b_lon, track.b_lat);

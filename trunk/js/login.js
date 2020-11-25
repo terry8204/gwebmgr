@@ -109,6 +109,7 @@ new Vue({
                         localStorage.setItem("name", "minigps");
                         localStorage.setItem("forcealarm", resp.forcealarm);
                         localStorage.setItem("alarmaction", resp.alarmaction);
+                        localStorage.setItem("intervaltime", resp.intervaltime);
                         localStorage.setItem("minigps" + "-multilogin", resp.multilogin);
                         // window.location.href = "main.html?token=" + resp.token + "&usertype=" + resp.usertype;
                         window.location.href = "main.html";
@@ -174,6 +175,7 @@ new Vue({
                     localStorage.setItem("name", me.username);
                     localStorage.setItem("forcealarm", resp.forcealarm);
                     localStorage.setItem("alarmaction", resp.alarmaction);
+                    localStorage.setItem("intervaltime", resp.intervaltime);
                     localStorage.setItem(me.username + "-multilogin", resp.multilogin);
                     // window.location.href = "main.html?token=" + resp.token + "&usertype=" + resp.usertype;
                     window.location.href = "main.html";

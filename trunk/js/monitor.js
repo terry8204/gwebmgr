@@ -1334,10 +1334,11 @@ var monitor = {
             var areaMovingCount = 0,
                 areaOfflineCount = 0,
                 areaStaticCount = 0;
+            var  currentUTC = DateFormat.getCurrentUTC();
             for (var key in this.positionLastrecords) {
                 var track = this.positionLastrecords[key];
                 if (utils.pointInPolygon(track.b_lat, track.b_lon, polylatList, polylonList)) {
-                    if (this.getIsOnline(track.deviceid)) {
+                    if (this.getIsOnline(track.deviceid,currentUTC)) {
                         if (track.moving == 0) {
                             areaStaticCount++;
                         } else {
@@ -1926,6 +1927,7 @@ var monitor = {
             var filterData = []
             var me = this;
             value = value.toLowerCase();
+            var currentTime = DateFormat.getCurrentUTC();
             for (var i = 0; i < this.groups.length; i++) {
                 var group = this.groups[i]
                 if (
@@ -1936,7 +1938,7 @@ var monitor = {
                     var cloneGroup = deepClone(group);
                     if (me.selectedState == "all") {
                         group.devices.forEach(function(device) {
-                            var isOnline = me.getIsOnline(device.deviceid);
+                            var isOnline = me.getIsOnline(device.deviceid,currentTime);
                             device.isOnline = isOnline;
                         })
                         if (cloneGroup.devices.length > 10) {
@@ -1948,7 +1950,7 @@ var monitor = {
 
                         cloneGroup.devices = [];
                         group.devices.forEach(function(device, index) {
-                            var isOnline = me.getIsOnline(device.deviceid);
+                            var isOnline = me.getIsOnline(device.deviceid,currentTime);
                             device.isOnline = isOnline;
                             if (isOnline && index < 10) {
                                 cloneGroup.devices.push(device);
@@ -1961,7 +1963,7 @@ var monitor = {
 
                         cloneGroup.devices = [];
                         group.devices.forEach(function(device, index) {
-                            var isOnline = me.getIsOnline(device.deviceid);
+                            var isOnline = me.getIsOnline(device.deviceid,currentTime);
                             device.isOnline = isOnline;
                             if (!isOnline && index < 10) {
                                 cloneGroup.devices.push(device);
@@ -1977,10 +1979,11 @@ var monitor = {
                         groupname: group.groupname,
                         devices: []
                     }
+
                     for (var j = 0; j < devices.length; j++) {
                         var device = devices[j]
                         var devicename = device.devicename;
-                        var isOnline = this.getIsOnline(device.deviceid);
+                        var isOnline = this.getIsOnline(device.deviceid,currentTime);
                         device.isOnline = isOnline;
                         if (
                             device.devicetitle.toLowerCase().indexOf(value) !== -1 ||
@@ -2275,13 +2278,14 @@ var monitor = {
                         var resp = respDeviceLastPositionProto.decode(responseArray);
                         if (resp.status == 0) {
                             me.lastquerypositiontime = resp.lastquerypositiontime;
+                            var currentTime = DateFormat.getCurrentUTC();
                             if (resp.records && resp.records.length > 0) {
                                 resp.records.forEach(function(item) {
                                     if (item) {
                                         var deviceid = item.deviceid;
                                         var b_lon_and_b_lat = wgs84tobd09(item.callon, item.callat)
                                         var g_lon_and_g_lat = wgs84togcj02(item.callon, item.callat);
-                                        var online = utils.getIsOnline(item);
+                                        var online = me.getIsOnline(item,currentTime);
                                         item.b_lon = b_lon_and_b_lat[0];
                                         item.b_lat = b_lon_and_b_lat[1];
                                         item.g_lon = g_lon_and_g_lat[0];
@@ -2633,49 +2637,62 @@ var monitor = {
         },
         getAllHideCompanyTreeData: function() {
             var me = this;
+            var  currentUTC = DateFormat.getCurrentUTC();
             this.groups.forEach(function(group) {
                 var count = 0;
                 var online = 0;
                 group.devices.forEach(function(device, index) {
                     count++;
-                    var isOnline = me.getIsOnline(device.deviceid);
+                    var isOnline = me.getIsOnline(device.deviceid,currentUTC);
                     device.isOnline = isOnline;
                     if (isOnline) {
-                        device.isMoving = me.positionLastrecords[device.deviceid].moving != 0;
+                        
                         online++;
-                        device.devicetitle = device.deviceTypeName + '-' + device.devicename;
+                        if(group.expand)
+                        {
+                            device.isMoving = me.positionLastrecords[device.deviceid].moving != 0;
+                            device.devicetitle = device.deviceTypeName + '-' + device.devicename;
+                        }
                     } else {
-                        me.updateDeviceLastActiveTime(device);
-                        var track = me.positionLastrecords[device.deviceid];
+                        
+                        if(group.expand)
+                        {
+                            me.updateDeviceLastActiveTime(device);
+                            var track = me.positionLastrecords[device.deviceid];
 
-                        device.isMoving = null;
-                        if (device.lastactivetime <= 0 && track == undefined) {
-                            device.devicetitle = device.deviceTypeName + '-' + device.devicename + me.$t("monitor.notEnabled");
-                        } else {
+                            device.isMoving = null;
+                            if (device.lastactivetime <= 0 && track == undefined) {
+                                device.devicetitle = device.deviceTypeName + '-' + device.devicename + me.$t("monitor.notEnabled");
+                            } else {
 
-                            var offlineTime = DateFormat.getCurrentUTC() - device.lastactivetime;
-                            device.devicetitle = device.deviceTypeName + '-' + device.devicename + " [" + me.$t("monitor.offline") + utils.timeStampNoSecond(offlineTime) + "] ";
+                                var offlineTime = currentUTC - device.lastactivetime;
+                                device.devicetitle = device.deviceTypeName + '-' + device.devicename + " [" + me.$t("monitor.offline") + utils.timeStampNoSecond(offlineTime) + "] ";
+                            }
                         }
                     };
                     // device.deviceTypeName = "";
                     // device.devicetitle = device.devicename;
 
                 });
-                group.devices.sort(function(a, b) {
-                    return a.devicetitle.localeCompare(b.devicetitle);
-                });
+                if(group.expand)
+                {
+                    group.devices.sort(function(a, b) {
+                        return a.devicetitle.localeCompare(b.devicetitle);
+                    });
+                }
                 group.isShow = true;
                 group.title = group.groupname + "(" + online + "/" + count + ")";
             });
         },
         getOnlineHideCompanyTreeData: function() {
             var me = this;
+            var currentUTC = DateFormat.getCurrentUTC();   
             this.groups.forEach(function(group) {
                 var online = 0;
                 var count = 0;
                 group.devices.forEach(function(device, index) {
                     count++;
-                    var isOnline = me.getIsOnline(device.deviceid);
+                    var isOnline = me.getIsOnline(device.deviceid,currentUTC);
                     device.isOnline = isOnline;
                     if (isOnline) {
                         device.isMoving = me.positionLastrecords[device.deviceid].moving != 0;
@@ -2704,23 +2721,30 @@ var monitor = {
         },
         getOfflineHideCompanyTreeData: function() {
             var me = this;
+            var  currentUTC = DateFormat.getCurrentUTC();
             this.groups.forEach(function(group) {
                 var offline = 0;
                 var count = 0;
                 group.devices.forEach(function(device, index) {
                     count++;
                     me.updateDeviceLastActiveTime(device);
-                    var isOnline = me.getIsOnline(device.deviceid);
+                    var isOnline = me.getIsOnline(device.deviceid,currentUTC);
                     var isStock = device.lastactivetime <= 0;
                     device.isOffline = !isOnline && !isStock;
 
                     if (device.isOffline) {
                         offline++;
-                        var offlineTime = DateFormat.getCurrentUTC() - device.lastactivetime;
+                        if(group.expand)
+                        {
+                        var offlineTime = currentUTC - device.lastactivetime;
                         device.devicetitle = device.deviceTypeName + '-' + device.devicename + " [" + me.$t("monitor.offline") + utils.timeStampNoSecond(offlineTime) + "] ";
+                        }
                     };
                 });
+                if(group.expand)
+                {
                 group.devices.sort(function(a, b) { return b.lastactivetime - a.lastactivetime });
+                }
                 if (offline != 0) {
                     group.isShow = true;
                 } else {
@@ -2757,12 +2781,11 @@ var monitor = {
                 group.title = group.groupname + "(" + stared + "/" + count + ")";
             });
         },
-        getIsOnline: function(deviceid) {
+        getIsOnline: function(deviceid,currentTime) {
             var isOnline = false;
             var record = this.positionLastrecords[deviceid];
             if (record) {
                 var updatetime = record.updatetime;
-                var currentTime = new Date().getTime();
                 if ((currentTime - updatetime) < this.offlineTime) {
                     isOnline = true;
                 };
@@ -2771,10 +2794,11 @@ var monitor = {
         },
         updateDevLastPosition: function(item) {
             var deviceid = item.deviceid;
+            var currentTime = DateFormat.getCurrentUTC();
             if (this.deviceInfos && this.deviceInfos[deviceid]) {
                 var b_lon_and_b_lat = wgs84tobd09(item.callon, item.callat)
                 var g_lon_and_g_lat = wgs84togcj02(item.callon, item.callat);
-                var online = utils.getIsOnline(item);
+                var online = this.getIsOnline(item,currentTime);
                 item.b_lon = b_lon_and_b_lat[0];
                 item.b_lat = b_lon_and_b_lat[1];
                 item.g_lon = g_lon_and_g_lat[0];
@@ -2874,12 +2898,12 @@ var monitor = {
             var me = this
             this.intervalInstanse = setInterval(function() {
                 //dorefreshUI
-                me.dorefreshMapUI();
+                me.intervalTime % 2 == 0 && me.dorefreshMapUI();
                 me.intervalTime--;
                 if (me.intervalTime <= 0) {
                     me.intervalTime = me.stateIntervalTime;
                     me.getLastPosition([], function() {
-                        me.dorefreshMapUI();
+                        // me.dorefreshMapUI();
                     }, function(error) {});
                 }
                 me.intervalTime % 5 == 0 && me.stopVideoPlayer();
@@ -2915,10 +2939,10 @@ var monitor = {
             var staredDevCount = 0;
             var offlineDevCount = 0;
             var deviceIds = Object.keys(me.deviceInfos);
-
+            var currentTime = DateFormat.getCurrentUTC();
             this.groups.forEach(function(group) {
                 group.devices.forEach(function(device) {
-                    if (me.getIsOnline(device.deviceid)) {
+                    if (me.getIsOnline(device.deviceid,currentTime)) {
                         online++;
                     } else {
                         if (device.lastactivetime <= 0) {} else {

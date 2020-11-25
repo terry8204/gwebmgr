@@ -279,6 +279,14 @@ var utils = {
         }
         return result;
     },
+    getIsOnlineWithTime: function(track,currentTime) {
+        var result = false;
+        var updatetime = track.updatetime;
+        if ((currentTime - updatetime) < 60 * 10 * 1000) {
+            result = true;
+        }
+        return result;
+    },
     getBaiduAddressFromBaidu: function(offsetlon, offsetlat, callback) {
 
         var point = new BMap.Point(offsetlon, offsetlat);

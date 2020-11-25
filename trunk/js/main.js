@@ -43,7 +43,7 @@ vstore = new Vuex.Store({
         allCmdList: [], // 所有的指令
         deviceTypes: {},
         headerActiveName: 'monitor', // 选中的header 
-        intervalTime: 10, // 定位发送请求的timer
+        intervalTime: Number(localStorage.getItem("intervaltime")), // 定位发送请求的timer
         editDeviceInfo: {}, // 备份监控页面要编辑的设备对象
         currentDeviceRecord: null, // 点击设备的记录
         currentDeviceId: null, // 点击设备的id 
@@ -1017,7 +1017,8 @@ var appHeader = {
                 qq: this.qq,
                 wechat: this.wechat,
                 username: userName,
-                multilogin: Number(this.multilogin)
+                multilogin: Number(this.multilogin),
+                intervaltime:Number(this.intervalTime),
             };
             utils.sendAjax(url, data, function(resp) {
                 if (resp.status === 0) {
