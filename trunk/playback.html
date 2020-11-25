@@ -329,6 +329,7 @@
         <Modal v-model="trackModal" width="1240" title="轨迹列表">
             <div style="width:1200px;margin:0px auto">
                 <i-table ref="table" border :columns="columns" height="500" :data="tableData"></i-table>
+                <Page :total="total" show-total @on-change="onPageChange" :page-size="pageSize" :current="currentIndex" />
             </div>
             <div slot="footer" style="text-align: center;">
                 <i-button style="width:200px" type="info" icon="ios-search" @click="getAllTracksAddress">一键获取地址</i-button>
@@ -625,6 +626,10 @@
                     
                     isZh: isZh,
                     queryLoading:false,
+                    trackTableLoading:false,
+                    total:0,
+                    pageSize:50,
+                    currentIndex:1,
                     idx:0,
                     language: isZh ? vdp_translation_index.zh : vdp_translation_index.en,
                     isShowCtrl: true,
@@ -675,12 +680,12 @@
                     mapType: mapType,
                     trackModal:false,
                     columns: [
-                        { title: '序号',key: 'index', width:60 }, 
+                        { title: '序号',key: 'index', width:70 }, 
                         { title: '设备名称',key: 'devicename', width:120 }, 
                         { title: '设备序号',key: 'deviceid', width:120 }, 
                         { title: '时间',key: 'updatetimeStr', width:150 }, 
                         { title: '定位类型',key: 'gotsrcStr', width:100 }, 
-                        { title: '速度',key: 'speedStr', width:100 }, 
+                        { title: '速度',key: 'speedStr', width:70 }, 
                         { title: '经度',key: 'callon', width:110 }, 
                         { title: '纬度',key: 'callat', width:110 }, 
                         { title: '状态',key: 'strstatus', width:120 }, 
@@ -692,6 +697,7 @@
                     datepicker:vuejsDatepicker
                 },
                 methods: {
+ 
                     onSelected:function(date){
                         this.startTime = date;
                     },
@@ -1086,11 +1092,46 @@
                             }
                         });
                     },
+                    onPageChange:function(index){  
+                        var me = this;     
+                        var offset = index * me.pageSize;
+                        var start = (index - 1) * me.pageSize;
+                        this.currentIndex = index;
+                        var tracks = me.isExtract ? me.extractRecords : me.records;
+                        var splitTrack = tracks.slice(start,offset);
+                        var tableData = [];
+                        splitTrack.forEach(function(track,index){
+                            var callon = track.callon;
+                            var callat = track.callat;
+                            var address = LocalCacheMgr.getAddress(callon, callat);
+                            tableData.push({
+                                index:start+1,
+                                devicename:me.deviceName,
+                                deviceid:me.deviceid,
+                                updatetimeStr:DateFormat.longToDateTimeStr(track.updatetime, timeDifference),
+                                gotsrcStr: utils.getPosiType(track),
+                                speedStr:track.speed/1000,
+                                callon:callon,
+                                callat:callat,
+                                strstatus:track.strstatus,
+                                address:address?address:'点击一键获取',
+                            })
+                            start++;
+                        })
+                        me.tableData = tableData;
+                    },
                     showTracksListModal:function(){
+
+                        this.trackModal = true;
                         var me = this;
                         var tableData = [];
-                        var tracks = this.isExtract ? this.extractRecords : this.records;
-                        tracks.forEach(function(track,index){
+                        var tracks = me.isExtract ? me.extractRecords : me.records;
+                        var splitTrack = tracks.slice(0,me.pageSize);
+                        this.total = tracks.length;
+                        this.currentIndex = 1;
+
+
+                        splitTrack.forEach(function(track,index){
                             var callon = track.callon;
                             var callat = track.callat;
                             var address = LocalCacheMgr.getAddress(callon, callat);
@@ -1107,14 +1148,16 @@
                                 address:address?address:'点击一键获取',
                             })
                         })
-                        this.tableData = tableData;
-                        this.trackModal = true;
+                        me.tableData = tableData;
+                
                     },
                     filtertracks: function(records) {
                         var extractRecords = [];
                         var newRecords = [];
                         for (var i = 0; i < records.length; i++) {
                             var track = records[i];
+                            track.callat = Number(track.callat.toFixed(5));
+                            track.callon = Number(track.callon.toFixed(5));
                             track.totaldistance = (track.totaldistance / 1000).toFixed(3)
                             var g_lon_lat = wgs84togcj02(track.callon, track.callat);
                             track.gpoint = {
@@ -1603,7 +1646,7 @@
                         var recorderspeed = info.recorderspeed == 0 ? "0km/h" : (recorderspeed.speed / 1000).toFixed(2) + "km/h";
                         var sContent = '<div style="max-width:296px;">' +
                             '<p> ' + (isZh ? '设备名称' : 'Device Name') + ': ' + this.deviceid + '</p>' +
-                            '<p> ' + (isZh ? '经纬度' : 'Longitude and latitude') + ': ' + info.callon.toFixed(6) + "," + info.callat.toFixed(6) + '</p>' +
+                            '<p> ' + (isZh ? '经纬度' : 'Longitude and latitude') + ': ' + info.callon + "," + info.callat + '</p>' +
                             '<p> ' + (isZh ? '定位类型' : 'Position Type') + ': ' + posiType + '</p>' +
                             '<p> ' + (isZh ? '方向' : 'Direction') + ': ' + utils.getCarDirection(info.course) + '</p>' +
                             '<p> ' + (isZh ? '速度' : 'Speed') + ': ' + speed + '(' + (isZh ? '信号:' : 'Signal:') + info.rxlevel + '%)</p>' +
@@ -1621,11 +1664,8 @@
                     },
                     getAddress: function(info) {
                         var that = this;
-                        var callon = info.callon.toFixed(5);
-                        var callat = info.callat.toFixed(5);
-                        // var bd09 = wgs84tobd09(callon, callat)
-                        // var lng = bd09[0].toFixed(5);
-                        // var lat = bd09[1].toFixed(5);
+                        var callon = info.callon;
+                        var callat = info.callat;
                         var address = LocalCacheMgr.getAddress(callon, callat);
                         if (address !== null) {
                             return address;
