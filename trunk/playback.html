@@ -326,7 +326,7 @@
                 <i-button @click="openDistance" size="small" style="width:100%;">{{isZh ? '测距' : 'Ranging'}}</i-button>
             </div>
         </div>
-        <Modal v-model="trackModal" width="1240" title="轨迹信息">
+        <Modal v-model="trackModal" width="1240" title="轨迹列表">
             <div style="width:1200px;margin:0px auto">
                 <i-table ref="table" border :columns="columns" height="500" :data="tableData"></i-table>
             </div>
