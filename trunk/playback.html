@@ -292,6 +292,7 @@
             padding-left: 10px;
             border-radius: 3px;
             outline:#00FF00;
+            width: 100%;
         }
 
         
@@ -325,7 +326,7 @@
         </div>
         <Modal v-model="trackModal" width="1240" title="轨迹信息">
             <div style="width:1200px;margin:0px auto">
-                <i-table ref="table" border :columns="columns" height="600" :data="tableData"></i-table>
+                <i-table ref="table" border :columns="columns" height="500" :data="tableData"></i-table>
             </div>
             <div slot="footer" style="text-align: center;">
                 <i-button style="width:200px" type="info" icon="ios-search" @click="getAllTracksAddress">一键获取地址</i-button>
@@ -349,7 +350,7 @@
                     </Row>
                     <Row style="line-height:45px;">
                         <i-col :span="4" style="text-align: center;height:45px;">{{$t("main.selectDate")}} : &nbsp;</i-col>
-                        <i-col :span="11" style="height:45px;line-height:45px;">
+                        <i-col :span="10" style="height:45px;line-height:45px;">
                             <datepicker
                                 format="yyyy-MM-dd"
                                 :language="language"
@@ -360,11 +361,11 @@
                             >
                             <!-- <date-picker type="date" style="width: 100%;height:45px;" v-model="startTime" :clearable="false" :editable="false"></date-picker> -->
                         </i-col>
-                        <i-col :span="4" style="text-align: center;height:45px;">
-                            <i-button @click="prevDay">{{$t("main.prevDay")}}</i-button>
+                        <i-col :span="5" style="text-align: center;height:45px;">
+                            <i-button @click="prevDay" style="width: 80px;">{{$t("main.prevDay")}}</i-button>
                         </i-col>
-                        <i-col :span="4" style="text-align: center;height:45px;">
-                            <i-button @click="nextDay">{{$t("main.nextDay")}}</i-button>
+                        <i-col :span="5" style="height:45px;">
+                            <i-button @click="nextDay" style="width: 80px;">{{$t("main.nextDay")}}</i-button>
                         </i-col>
                     </Row>
 
