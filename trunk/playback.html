@@ -19,7 +19,22 @@
             position: relative;
             overflow: hidden;
         }
-        
+
+        .demo-spin-container {
+            display: inline-block;
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            background-color: rgba(255, 255, 255, .6);
+            z-index: 19999;
+        }
+
+        .demo-spin-icon-load {
+            animation: ani-demo-spin 1s linear infinite;
+        }
+                
         div.controller {
             position: absolute;
             bottom: 0px;
@@ -308,6 +323,15 @@
                 <i-button @click="openDistance" size="small" style="width:100%;">{{isZh ? '测距' : 'Ranging'}}</i-button>
             </div>
         </div>
+        <Modal v-model="trackModal" width="1240" title="轨迹信息">
+            <div style="width:1200px;margin:0px auto">
+                <i-table ref="table" border :columns="columns" height="600" :data="tableData"></i-table>
+            </div>
+            <div slot="footer" style="text-align: center;">
+                <i-button style="width:200px" type="info" icon="ios-search" @click="getAllTracksAddress">一键获取地址</i-button>
+                <i-button style="width:200px" type="primary" icon="md-exit"  @click="exportData">导出轨迹</i-button>
+            </div>
+        </Modal>
         <transition name="el-zoom-in-bottom">
             <div class="controller" v-show="isShowCtrl" :class="rightBottomCtrl">
                 <div class="close-icon" @click="onShowCtrl">
@@ -317,14 +341,13 @@
                     <div id="charts"></div>
                 </div>
                 <div class="ctrl-wrap">
-                    <Row style="padding-top: 10px;">
-                        <i-col :span="10" style="padding:0px 10px 0 10px;height:40px;">
+                    <Row>
+                        <i-col :span="10" style="padding:0px 10px 0 10px;line-height:40px;">
                             {{(isZh ? '设备名称' : 'Device name')}} : {{deviceName}}
                         </i-col>
-                        <i-col :span="12" style="text-align:center;padding-top:0px;height:40px;"> {{(isZh ? '设备序号' : 'Device ID')}} : {{deviceid}}</i-col>
-
+                        <i-col :span="12" style="text-align:center;padding-top:0px;height:40px;line-height:40px;"> {{(isZh ? '设备序号' : 'Device ID')}} : {{deviceid}}</i-col>
                     </Row>
-                    <Row>
+                    <Row style="line-height:45px;">
                         <i-col :span="4" style="text-align: center;height:45px;">{{$t("main.selectDate")}} : &nbsp;</i-col>
                         <i-col :span="11" style="height:45px;">
                             <datepicker
@@ -345,15 +368,17 @@
                         </i-col>
                     </Row>
 
-                    <Row>
-                        <i-col :span="4" style="text-align: center;height:45px;">{{$t("main.selectTime")}} : &nbsp;</i-col>
-                        <i-col :span="14" style="text-align: left;height:45px;">
+                    <Row style="line-height:45px;">
+                        <i-col :span="4" style="text-align: center;height:45px;line-height:45px;">{{$t("main.selectTime")}} : &nbsp;</i-col>
+                        <i-col :span="10" style="text-align: left;height:45px;">
                             <Time-Picker type="timerange" v-model="timeValue" style="width: 100%"></Time-Picker>
                         </i-col>
                         <i-col :span="5" style="text-align: center;height:45px;">
                             <i-button @click="sosoTracks">{{$t("main.queryBtn")}}</i-button>
                         </i-col>
-                        <i-col :span="1" style="height:45px;">&nbsp;</i-col>
+                        <i-col :span="5" style="height:45px;">
+                            <i-button @click="showTracksListModal">轨迹列表</i-button>
+                        </i-col>
                     </Row>
 
 
@@ -363,7 +388,7 @@
                         </i-col>
 
                         <i-col :span="4" style="line-height:60px;text-align:center;"> {{$t("main.playSpeed")}} : &nbsp;</i-col>
-                        <i-col :span="10">
+                        <i-col :span="10" style="height:60px;line-height: 60px;">
                             <Button-Group>
                                 <i-button :type="velocity == 900?'primary':''" @click="velocity=900">{{$t("main.slow")}}</i-button>
                                 <i-button :type="velocity == 600?'primary':''" @click="velocity=600">{{$t("main.middle")}}</i-button>
@@ -426,6 +451,12 @@
             </div>
         </Modal>
         <Spin size="large" fix v-if="spinShow"></Spin>
+        <div class="demo-spin-container" v-if="queryLoading">
+            <Spin fix>
+                <Icon type="ios-loading" size=18 class="demo-spin-icon-load"></Icon>
+                <div>查询进度:{{idx}}/{{tableData.length}}</div>
+            </Spin>
+        </div>
     </div>
     <script src="dist/vue.min.js"></script>
     <script src="dist/iview.min.js"></script>
@@ -588,9 +619,11 @@
                 el: "#container",
                 i18n: utils.getI18n(),
                 data: {
-
+                    
                     isZh: isZh,
-                    language:vdp_translation_index.zh,
+                    queryLoading:false,
+                    idx:0,
+                    language: isZh ? vdp_translation_index.zh : vdp_translation_index.en,
                     isShowCtrl: true,
                     isShowMarker: false,
                     deviceName: utils.getParameterByName("devicename"),
@@ -637,6 +670,20 @@
                         value: "oMap"
                     }, ],
                     mapType: mapType,
+                    trackModal:false,
+                    columns: [
+                        { title: '序号',key: 'index', width:60 }, 
+                        { title: '设备名称',key: 'devicename', width:120 }, 
+                        { title: '设备序号',key: 'deviceid', width:120 }, 
+                        { title: '时间',key: 'updatetimeStr', width:150 }, 
+                        { title: '定位类型',key: 'gotsrcStr', width:100 }, 
+                        { title: '速度',key: 'speedStr', width:100 }, 
+                        { title: '经度',key: 'callon', width:110 }, 
+                        { title: '纬度',key: 'callat', width:110 }, 
+                        { title: '状态',key: 'strstatus', width:120 }, 
+                        { title: '地址',key: 'address'}, 
+                    ],
+                    tableData:[],
                 },
                 components:{
                     datepicker:vuejsDatepicker
@@ -659,8 +706,8 @@
                             deviceid:deviceid,
                         };
                         utils.sendAjax(url, data, function(resp) {
-                            var records = resp.records;
 
+                            var records = resp.records;
                             if(records){
                                 records.forEach(function(item){
                                     if(item){
@@ -669,7 +716,6 @@
                                     }
                                 })
                             }
-                       
                         
                         });
                     },
@@ -987,6 +1033,79 @@
                                 imgSize: [32, 32]
                             }))
                         });
+                    },
+                    exportData: function() {
+                        var tableData = deepClone(this.tableData);
+                        tableData.forEach(function(item) {
+                            item.deviceid = "\t" + item.deviceid;
+                            item.devicename = "\t" + item.devicename;
+                            item.updatetimeStr = "\t" + item.updatetimeStr;
+                        });
+                        this.$refs.table.exportCsv({
+                            filename: this.deviceName + '-' +this.deviceid,
+                            original: false,
+                            columns: this.columns,
+                            data: tableData
+                        });
+                    },
+                    getAllTracksAddress:function(){
+                        var me = this;
+                        var maxLen = this.isExtract ? this.extractRecords.length : this.records.length;
+                        this.queryLoading = true;
+                        this.idx = 0;
+                        this.tableData.forEach(function(track){
+                            var callon = track.callon;
+                            var callat = track.callat;
+                            var address = LocalCacheMgr.getAddress(track.callon, track.callat);
+                            if(address == null){
+                                (function(track){
+                                    utils.getJiuHuAddressSyn(track.callon,track.callat,function(resp){
+                                        if(resp && resp.address){
+                                            track.address = resp.address;
+                                            LocalCacheMgr.setAddress(track.callon, track.callat,track.address);
+                                        }
+                                        me.idx = me.idx + 1;
+                                        if(me.idx >= maxLen){
+                                            me.queryLoading = false;
+                                        }
+                                    },function(e){
+                                        me.idx = me.idx + 1;
+                                        if(me.idx >= maxLen){
+                                            me.queryLoading = false;
+                                        }
+                                    });
+                                })(track);
+                            }else{
+                                me.idx = me.idx + 1;
+                                if(me.idx >= maxLen){
+                                    me.queryLoading = false;
+                                }
+                            }
+                        });
+                    },
+                    showTracksListModal:function(){
+                        var me = this;
+                        var tableData = [];
+                        var tracks = this.isExtract ? this.extractRecords : this.records;
+                        tracks.forEach(function(track,index){
+                            var callon = track.callon;
+                            var callat = track.callat;
+                            var address = LocalCacheMgr.getAddress(callon, callat);
+                            tableData.push({
+                                index:index+1,
+                                devicename:me.deviceName,
+                                deviceid:me.deviceid,
+                                updatetimeStr:DateFormat.longToDateTimeStr(track.updatetime, timeDifference),
+                                gotsrcStr: utils.getPosiType(track),
+                                speedStr:track.speed/1000,
+                                callon:callon,
+                                callat:callat,
+                                strstatus:track.strstatus,
+                                address:address?address:'点击一键获取',
+                            })
+                        })
+                        this.tableData = tableData;
+                        this.trackModal = true;
                     },
                     filtertracks: function(records) {
                         var extractRecords = [];
@@ -1499,36 +1618,28 @@
                     },
                     getAddress: function(info) {
                         var that = this;
-                        var callon = info.callon;
-                        var callat = info.callat;
-                        var bd09 = wgs84tobd09(callon, callat)
-                        var lng = bd09[0].toFixed(5);
-                        var lat = bd09[1].toFixed(5);
-                        var address = LocalCacheMgr.getAddress(lng, lat);
+                        var callon = info.callon.toFixed(5);
+                        var callat = info.callat.toFixed(5);
+                        // var bd09 = wgs84tobd09(callon, callat)
+                        // var lng = bd09[0].toFixed(5);
+                        // var lat = bd09[1].toFixed(5);
+                        var address = LocalCacheMgr.getAddress(callon, callat);
                         if (address !== null) {
                             return address;
                         }
-                        if (this.mapType === 'bMap' || this.mapType === 'oMap') {
 
-                            utils.getJiuHuAddressSyn(callon, callat, function(resp) {
-                                if (resp.status > 9900) {
-                                    console.log('getJiuHuAddressSyn token失效,请重新登录')
-                                } else if (resp.status == 0) {
-                                    address = resp.address
-                                    $("p.last-address").html(" 详细地址: " + address);
-                                    LocalCacheMgr.setAddress(lng, lat, address);
-                                } else {
-                                    console.log('getJiuHuAddressSyn 查询地址失败')
-                                }
-                            });
-                        } else if (this.mapType === 'gMap') {
-                            var google_lng_lat = wgs84togcj02(callon, callat);
-                            utils.getGoogleAddressSyn(google_lng_lat[1], google_lng_lat[0], function(address) {
+                        utils.getJiuHuAddressSyn(callon, callat, function(resp) {
+                            if (resp.status > 9900) {
+                                console.log('getJiuHuAddressSyn token失效,请重新登录')
+                            } else if (resp.status == 0) {
+                                address = resp.address
                                 $("p.last-address").html(" 详细地址: " + address);
-                                LocalCacheMgr.setAddress(lng, lat, address);
-                            })
-                        }
-
+                                LocalCacheMgr.setAddress(callon, callat, address);
+                            } else {
+                                console.log('getJiuHuAddressSyn 查询地址失败')
+                            }
+                        });
+               
                         return "地址正在解析..."
                     },
                     resetMapState: function() {
