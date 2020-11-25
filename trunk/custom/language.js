@@ -311,6 +311,7 @@
                 notSupportCanvas: "Your browser does not support canvas at this time",
             },
             reportForm: {
+                maxSignal:'Max Signal',
                 viewPicture: 'Image',
                 empty: 'Empty',
                 multiMedia: 'Multi-Media',
@@ -1441,6 +1442,7 @@
                 notSupportCanvas: "您的浏览器暂不支持canvas",
             },
             reportForm: {
+                maxSignal:'最大信号值',
                 viewPicture: '查看图片',
                 empty: '空',
                 multiMedia: '多媒体',
