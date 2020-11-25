@@ -326,7 +326,7 @@
                 <i-button @click="openDistance" size="small" style="width:100%;">{{isZh ? '测距' : 'Ranging'}}</i-button>
             </div>
         </div>
-        <Modal v-model="trackModal" width="1240" title="轨迹列表">
+        <Modal v-model="trackModal" width="1240" :title="tableTitle">
             <div style="width:1200px;margin:0px auto">
                 <i-table ref="table" border :columns="columns" height="500" :data="tableData"></i-table>
                 <Page :total="total" show-total @on-change="onPageChange" :page-size="pageSize" :current="currentIndex" />
@@ -458,7 +458,7 @@
         <div class="demo-spin-container" v-if="queryLoading">
             <Spin fix>
                 <Icon type="ios-loading" size=18 class="demo-spin-icon-load"></Icon>
-                <div>查询进度:{{idx}}/{{tableData.length}}</div>
+                <div>查询进度:{{idx}}/{{maxLen}}</div>
             </Spin>
         </div>
     </div>
@@ -623,7 +623,7 @@
                 el: "#container",
                 i18n: utils.getI18n(),
                 data: {
-                    
+                    maxLen:0,
                     isZh: isZh,
                     queryLoading:false,
                     trackTableLoading:false,
@@ -679,13 +679,12 @@
                     }, ],
                     mapType: mapType,
                     trackModal:false,
-                    columns: [
-                        { title: '序号',key: 'index', width:70 }, 
-                        { title: '设备名称',key: 'devicename', width:120 }, 
-                        { title: '设备序号',key: 'deviceid', width:120 }, 
+                    columns: [ 
+                        { title: '序号',key: 'idx', width:70 }, 
                         { title: '时间',key: 'updatetimeStr', width:150 }, 
                         { title: '定位类型',key: 'gotsrcStr', width:100 }, 
                         { title: '速度',key: 'speedStr', width:70 }, 
+                        { title: '记录仪速度',key: 'recorderspeedStr', width:100 }, 
                         { title: '经度',key: 'callon', width:110 }, 
                         { title: '纬度',key: 'callat', width:110 }, 
                         { title: '状态',key: 'strstatus', width:120 }, 
@@ -1044,25 +1043,22 @@
                         });
                     },
                     exportData: function() {
-                        var tableData = deepClone(this.tableData);
-                        tableData.forEach(function(item) {
-                            item.deviceid = "\t" + item.deviceid;
-                            item.devicename = "\t" + item.devicename;
-                            item.updatetimeStr = "\t" + item.updatetimeStr;
-                        });
+            
                         this.$refs.table.exportCsv({
                             filename: this.deviceName + '-' +this.deviceid,
                             original: false,
                             columns: this.columns,
-                            data: tableData
+                            data: this.records
                         });
                     },
                     getAllTracksAddress:function(){
                         var me = this;
-                        var maxLen = this.isExtract ? this.extractRecords.length : this.records.length;
+                        var tracks =  this.isExtract ? this.extractRecords : this.records;
+                        var maxLen = tracks.length;
+                        this.maxLen = maxLen;
                         this.queryLoading = true;
                         this.idx = 0;
-                        this.tableData.forEach(function(track){
+                        tracks.forEach(function(track){
                             var callon = track.callon;
                             var callat = track.callat;
                             var address = LocalCacheMgr.getAddress(track.callon, track.callat);
@@ -1097,61 +1093,26 @@
                         var offset = index * me.pageSize;
                         var start = (index - 1) * me.pageSize;
                         this.currentIndex = index;
-                        var tracks = me.isExtract ? me.extractRecords : me.records;
+                        var tracks =  me.records;
                         var splitTrack = tracks.slice(start,offset);
                         var tableData = [];
-                        splitTrack.forEach(function(track,index){
-                            var callon = track.callon;
-                            var callat = track.callat;
-                            var address = LocalCacheMgr.getAddress(callon, callat);
-                            tableData.push({
-                                index:start+1,
-                                devicename:me.deviceName,
-                                deviceid:me.deviceid,
-                                updatetimeStr:DateFormat.longToDateTimeStr(track.updatetime, timeDifference),
-                                gotsrcStr: utils.getPosiType(track),
-                                speedStr:track.speed/1000,
-                                callon:callon,
-                                callat:callat,
-                                strstatus:track.strstatus,
-                                address:address?address:'点击一键获取',
-                            })
-                            start++;
-                        })
-                        me.tableData = tableData;
+
+                        me.tableData = splitTrack;
                     },
                     showTracksListModal:function(){
 
                         this.trackModal = true;
                         var me = this;
                         var tableData = [];
-                        var tracks = me.isExtract ? me.extractRecords : me.records;
+                        var tracks =  me.records;
                         var splitTrack = tracks.slice(0,me.pageSize);
                         this.total = tracks.length;
                         this.currentIndex = 1;
 
-
-                        splitTrack.forEach(function(track,index){
-                            var callon = track.callon;
-                            var callat = track.callat;
-                            var address = LocalCacheMgr.getAddress(callon, callat);
-                            tableData.push({
-                                index:index+1,
-                                devicename:me.deviceName,
-                                deviceid:me.deviceid,
-                                updatetimeStr:DateFormat.longToDateTimeStr(track.updatetime, timeDifference),
-                                gotsrcStr: utils.getPosiType(track),
-                                speedStr:track.speed/1000,
-                                callon:callon,
-                                callat:callat,
-                                strstatus:track.strstatus,
-                                address:address?address:'点击一键获取',
-                            })
-                        })
-                        me.tableData = tableData;
+                        me.tableData = splitTrack;
                 
                     },
-                    filtertracks: function(records) {
+                    filtertracks: function(records,index) {
                         var extractRecords = [];
                         var newRecords = [];
                         for (var i = 0; i < records.length; i++) {
@@ -1176,8 +1137,18 @@
                             } else {
                                 track.isextract = false;
                             }
+
+                            var address = LocalCacheMgr.getAddress(track.callon, track.callat);
+               
+                            track.idx = i+1;  
+                            track.updatetimeStr = "\t" + DateFormat.longToDateTimeStr(track.updatetime, timeDifference);
+                            track.gotsrcStr = utils.getPosiType(track);
+                            track.speedStr = track.speed/1000;
+                            track.recorderspeedStr = track.recorderspeed/1000;
+                            track.address = address?address:'点击一键获取';
+
                             newRecords.push(track);
-                        };
+                        }
                         this.records = newRecords;
                         this.extractRecords = extractRecords;
                     },
@@ -2019,6 +1990,9 @@
                     rightBottomCtrl: function() {
                         return [(this.mapType === 'bMap' || this.mapType === 'oMap') ? 'right-10' : 'right-65'];
                     },
+                    tableTitle:function(){
+                        return '轨迹列表 - ' + this.deviceName + ' - ' + this.deviceid; 
+                    }
                 },
                 watch: {
                     velocity: function() {
