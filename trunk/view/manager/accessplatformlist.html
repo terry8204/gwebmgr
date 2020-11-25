@@ -409,20 +409,12 @@
                         uplinkport: Number(this.uplinkport), //主链路端口' ,
                         downlinkip: this.downlinkip, //从链ip' ,
                         downlinkport: Number(this.downlinkport), //从链端口' ,
-                        m1: Number(this.m1), //密匙' ,
-                        ia1: Number(this.ia1), //密匙' ,
-                        ic1: Number(this.ic1), //密匙' ,
+                 
                         realtimevideourl: this.realtimevideourl, //实时视频URL' ,
                         historyvideourl: this.historyvideourl, //视频回放URL' ,
                         videokey: this.videokey, //视频key' ,
                         remark: this.remark, //备注' ,
                         encryptflag:this.encryptflag
-                    }
-                    if (this.isEdit) {
-                        data.upload809id = editObject.upload809id;
-                        url = myUrls.editUpload809();
-                    } else {
-                        url = myUrls.createupLoad809();
                     }
 
                     if (
@@ -430,18 +422,33 @@
                         this.gnsscenterid == "" ||
                         this.userid == "" ||
                         this.password == "" ||
-                        this.m1 == "" ||
-                        this.ia1 == "" ||
-                        this.ic1 == "" ||
                         this.uplinkip == "" ||
                         this.uplinkport == "") {
                         this.$Message.error('红点的参数是必填的');
                         return;
                     }
 
+                    if(this.encryptflag == 1){
+                        if( 
+                        this.m1 == "" ||
+                        this.ia1 == "" ||
+                        this.ic1 == "" ){
+                            this.$Message.error('红点的参数是必填的');
+                        } 
+                        data.m1 = Number(this.m1); //密匙' ,
+                        data.ia1 = Number(this.ia1); //密匙' ,
+                        data.ic1 = Number(this.ic1); //密匙' ,
+                    }
 
+                    if (this.isEdit) {
+                        data.upload809id = editObject.upload809id;
+                        url = myUrls.editUpload809();
+                    } else {
+                        url = myUrls.createupLoad809();
+                    }
+
+           
                     utils.sendAjax(url, data, function(resp) {
-                        console.log(resp);
                         if (resp.status == 0) {
                             if (me.isEdit) {
                                 me.$Message.success('编辑成功');
