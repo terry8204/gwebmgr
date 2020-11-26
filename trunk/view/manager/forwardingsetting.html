@@ -11,35 +11,28 @@
     <div class="full">
         <h3 class="h3-title">{{$t("bgMgr.batchMgr")}}</h3>
         <Row>
-            <i-col span="6" style="padding: 10px;">
+            <i-col span="5" style="padding: 10px;">
                 {{$t("bgMgr.allAevcieList")}}
             </i-col>
-            <i-col span="14" style="padding: 10px;">
+            <i-col span="19" style="padding: 10px;">
                 {{$t("bgMgr.selectedDeviceList")}} {{tableData.length}}
                 <i-button type="error" size="small" @click="tableData=[]" style="float: right;">{{$t("insure.removeAll")}}</i-button>
             </i-col>
-            <i-col span="4" style="padding: 10px;">
-                {{$t("bgMgr.transferGroupList")}}
-            </i-col>
         </Row>
         <Row>
-            <i-col span="6" style="padding: 10px;">
+            <i-col span="5" style="padding: 10px;">
                 <div style="line-height: 45px;">
                     <i-input v-model.trim="searchDeviceVal" style="width: 100%;" icon="search"></i-input>
                 </div>
                 <Tree :data="searchDeviceList" show-checkbox :style="streeStyle" @on-check-change="onCheckChange"></Tree>
             </i-col>
-            <i-col span="14" style="padding: 10px;">
+            <i-col span="19" style="padding: 10px;">
                 <i-table border ref="table" :columns="columns" :data="tableData" :height="taleHeight"></i-table>
-            </i-col>
-            <i-col span="4" style="padding: 10px;">
-                <Tree :data="treeGroupList" :style="treeStyle"></Tree>
             </i-col>
         </Row>
         <Row>
             <i-col span="24" style="text-align: center;border: 1px solid #DCDEE2;padding: 5px;">
                 <i-button @click="handleBatchTransfer" style="margin: 0 10px;">{{$t("bgMgr.batchTransfer")}}</i-button>
-                <i-button @click="importModal=true" style="margin: 0 10px;">{{$t("bgMgr.exportDevice")}}</i-button>
                 <i-button @click="showBatchModal(1)" style="margin: 0 10px;">{{$t("bgMgr.batchModifyForwardingAddress")}}</i-button>
                 <i-button @click="showBatchModal(2)" style="margin: 0 10px;">{{$t("bgMgr.batchEditDueDate")}}</i-button>
                 <i-button @click="showBatchModal(3)" style="margin: 0 10px;">{{$t("bgMgr.batchResetPwd")}}</i-button>
@@ -48,27 +41,6 @@
                 <i-button v-if="userType<2" @click="showBatchModal(6)" style="margin: 0 10px;">{{$t('bgMgr.batchEditDevMileageRatio')}}</i-button>
             </i-col>
         </Row>
-        <Modal v-model="importModal" width="700" :title="$t('device.import')">
-            <Row>
-                <i-col span="12" style="padding: 10px;">
-                    <i-input v-model.trim="deviceid" type="textarea" :placeholder="$('device.copyBatchNumber')" :autosize="{minRows: 15,maxRows: 15}"></i-input>
-                </i-col>
-                <i-col span="12" style="padding: 10px;">
-                    <i-input v-model.trim="errorTips" :class="fontColor" type="textarea" disabled :autosize="{minRows: 15,maxRows: 15}"></i-input>
-                </i-col>
-            </Row>
-            <div slot="footer" style="height:40px;">
-                <Row>
-                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">{{$t('device.idLength')}}: &nbsp;</i-col>
-                    <i-col span="5">
-                        <input-number v-model.number="idLength" :max="15" :min="8" :editable="false" style="width: 100%;"></input-number>
-                    </i-col>
-                    <i-col span="8" offset="4">
-                        <i-button style="width: 100%" @click="handleBatchImport">{{$t('device.import')}}</i-button>
-                    </i-col>
-                </Row>
-            </div>
-        </Modal>
         <Modal v-model="batchModal" width="400" :title="$t('bgMgr.batchModification')">
             <div v-if="showBatchModalType == 1">
                 <Row>
@@ -182,10 +154,7 @@
             batchSendCmdLoading: false,
             idx: 0,
             showBatchModalType: 1, // 1批量地址  2
-            importModal: false,
             batchModal: false,
-            idLength: 11,
-            isOk: false,
             forwardurl: "",
             newPassword: '',
             forwardtype: '0',
@@ -195,11 +164,8 @@
             resetpasswordtype: '1',
             deviceType: '',
             deviceTypeList: [],
-            errorTips: '',
-            deviceid: '',
             searchDeviceVal: '',
             searchDeviceList: [],
-            treeGroupList: [],
             tableData: [],
             mileageRatio: 100,
             columns: [{
@@ -470,32 +436,6 @@
                     }
                 })
             },
-            handleBatchImport: function() {
-                if (!this.isOk) {
-                    this.$Message.error("请添加正确的imeis");
-                    return;
-                };
-                var deviceids = this.deviceid.split('\n').filter(function(item) {
-                    if (item) {
-                        return item
-                    }
-                });
-                var tableData = [];
-                deviceids.forEach(function(deviceid) {
-                    var device = utils.deviceInfos[deviceid];
-                    if (device) {
-                        device.resultType = 2;
-                        tableData.push(device)
-                    } else {
-                        tableData.push({
-                            resultType: 3,
-                            deviceid: deviceid
-                        });
-                    }
-                });
-                this.tableData = this.tableData.concat(tableData);
-                this.importModal = false;
-            },
             onCheckChange: function(selectArr) {
                 var me = this;
                 var tableData = [];
@@ -537,7 +477,6 @@
             setTreeDataList: function(rootuser) {
                 this.searchDeviceList = [this.castUsersTreeToDevicesTree(rootuser, true, false)];
                 this.treeDeviceList = deepClone(this.searchDeviceList);
-                this.treeGroupList = [this.castUsersTreeToDevicesTree(rootuser, false, true)];
             },
             filtered: function(textStr) {
                 function uniq(array) {
@@ -761,67 +700,6 @@
                 }
                 return iViewTree;
             },
-            matchingDeviceIds: utils.debounce(function(vm, testIds) {
-                var relu = this.getRegularPattern(testIds);
-                if (relu.content && relu.errormsg === 'OK') {
-                    var guilv = relu.content;
-                    var reg = new RegExp("^[a-z0-9a-z]{" + vm.idLength + "}$");
-                    if (reg.test(guilv)) {
-                        vm.isOk = true;
-                        vm.deviceid = guilv + "\n";
-                        vm.errorTips = "总数 : 1";
-                    } else {
-                        var isOk = true; // 数据是否合法！
-                        var textStr = "";
-                        var array = testIds.split(guilv);
-                        var errorStr = "";
-                        var idx = null;
-                        for (var i = 0; i < array.length; i++) {
-                            var line = array[i];
-                            if (reg.test(line)) {
-                                if (array.length - 1 == i) {
-                                    textStr += line;
-                                } else {
-                                    textStr += line + "\n";
-                                }
-                            } else {
-                                idx = i;
-                                if (line.length % vm.idLength === 0) {
-                                    var count = line.length / vm.idLength;
-                                    var j = 0;
-                                    while (count > -1 && j <= count) {
-                                        textStr += line.slice(j * vm.idLength, vm.idLength * (j + 1)) + "\n";
-                                        j++;
-                                        count--;
-                                    }
-                                } else {
-                                    errorStr = array[i - 1] + guilv + array[i];
-                                    if (array[i + 1]) {
-                                        errorStr += guilv + array[i + 1];
-                                    }
-                                    isOk = false;
-                                }
-                            }
-                        }
-                        vm.isOk = isOk;
-                        if (isOk) {
-                            var newArr = vm.filtered(textStr)
-                            var len = newArr.length;
-                            vm.deviceid = newArr.join("\n") + "\n";
-                            vm.errorTips = "总数  : " + len;
-                        } else {
-                            vm.errorTips = ("可能在第" + (idx + 1) + "个ID号不合法或者分隔符不一致; \n" + errorStr);
-                        }
-
-
-                    }
-
-                } else {
-                    vm.errorTips = "首个ID号不合法";
-                    this.isOk = false;
-                }
-
-            }, 500),
             calcTableHeight: function() {
                 var wHeight = window.innerHeight;
                 this.taleHeight = wHeight - 204;
@@ -930,12 +808,6 @@
             fontColor: function() {
                 return [this.isOk ? 'succ' : 'error'];
             },
-            treeStyle: function() {
-                return {
-                    'height': this.taleHeight + 'px',
-                    'overflow-y': 'auto'
-                }
-            },
             streeStyle: function() {
                 return {
                     'height': (this.taleHeight - 45) + 'px',
@@ -951,17 +823,6 @@
             }
         },
         watch: {
-            deviceid: function(newVal) {
-                var exec = /[0-9A-Za-z]/g.exec(newVal);
-                if (exec) {
-                    var idx = exec.index;
-                    var newText = newVal.slice(idx);
-                    this.matchingDeviceIds(this, newText);
-                } else {
-                    this.isOk = false;
-                    this.errorTips = vRoot.$t('message.deviceIdTips');
-                }
-            },
             searchDeviceVal: function(newVal) {
 
                 if (newVal === '') {

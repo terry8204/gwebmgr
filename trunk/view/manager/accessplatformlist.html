@@ -8,7 +8,7 @@
                 <i-input v-model.trim="queryParameter"></i-input>
             </div>
             <div style="float: left;padding-right: 10px;">
-                <i-button type="info" @click="queryupLoad809s">{{$t("reportForm.query")}}</i-button>
+                <i-button type="info" @click="queryForwardParams">{{$t("reportForm.query")}}</i-button>
             </div>
             <div style="float: left;padding-right: 10px;">
                 <i-button type="primary" @click="handleAdd">{{$t("user.add")}}</i-button>
@@ -232,7 +232,7 @@
                                 on: {
                                     'on-ok': function() {
                                         vueInstanse.upload809Index = params.index;
-                                        vueInstanse.deleteUpload809s(params.row.upload809id);
+                                        vueInstanse.deleteForwardParams(params.row.forwardid);
                                     }
                                 }
                             }, [
@@ -441,10 +441,10 @@
                     }
 
                     if (this.isEdit) {
-                        data.upload809id = editObject.upload809id;
-                        url = myUrls.editUpload809();
+                        data.forwardid = editObject.forwardid;
+                        url = myUrls.editForwardParam();
                     } else {
-                        url = myUrls.createupLoad809();
+                        url = myUrls.createForwardParam();
                     }
 
            
@@ -514,19 +514,19 @@
                     var wHeight = window.innerHeight;
                     this.taleHeight = wHeight - 148;
                 },
-                queryupLoad809s: function() {
+                queryForwardParams: function() {
                     var me = this;
-                    var url = myUrls.queryupLoad809s();
+                    var url = myUrls.queryForwardParams();
                     utils.sendAjax(url, {
                         creater: userName,
                         keyword: this.queryParameter,
                     }, function(resp) {
-                        me.tableData = resp.uploads;
+                        me.tableData = resp.forwards;
                     });
                 },
-                query809Protocols: function() {
+                queryForwardProtocols: function() {
                     var me = this;
-                    var url = myUrls.query809Protocols();
+                    var url = myUrls.queryForwardProtocols();
                     utils.sendAjax(url, {}, function(resp) {
                         me.protocols = resp.protocols;
                     });
@@ -536,7 +536,7 @@
                     var url = myUrls.setUpload809sStatus();
                     var data = {
                         status: row.status == 0 ? 1 : 0,
-                        uploads: [row.upload809id]
+                        uploads: [row.forwardid]
                     };
                     utils.sendAjax(url, data, function(resp) {
                         if (resp.status === 0) {
@@ -546,9 +546,9 @@
                         }
                     });
                 },
-                deleteUpload809s: function(uploadid) {
+                deleteForwardParams: function(uploadid) {
                     var me = this;
-                    var url = myUrls.deleteUpload809s();
+                    var url = myUrls.deleteForwardParams();
                     var data = {
                         uploads: [uploadid]
                     };
@@ -571,8 +571,8 @@
             mounted: function() {
                 var me = this;
                 this.calcTableHeight();
-                this.queryupLoad809s();
-                this.query809Protocols();
+                this.queryForwardParams();
+                this.queryForwardProtocols();
                 window.onresize = function() {
                     me.calcTableHeight();
                 }

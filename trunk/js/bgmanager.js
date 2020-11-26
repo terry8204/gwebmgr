@@ -85,12 +85,14 @@ var bgManager = {
                     ]
                 },
                 {
-                    title: '809转发',
+                    title: '转发管理',
                     name: 'forward809',
                     icon: 'ios-laptop',
                     children: [
                         { title: "接入平台列表", name: 'accessPlatformList', icon: 'md-git-merge' },
+                        { title: "转发设置", name: 'forwardingSetting', icon: 'md-git-merge' },
                     ]
+
                 },
                 {
                     title: '第三方平台',
@@ -224,6 +226,9 @@ var bgManager = {
                     break
                 case 'accessPlatformList':
                     page = 'accessplatformlist.html'
+                    break
+                case 'forwardingSetting':
+                    page = 'forwardingsetting.html'
                     break
                 case 'yongZhouEnterpriseInfo':
                     page = 'yongzhouenterpriseinfo.html'

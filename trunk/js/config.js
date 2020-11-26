@@ -781,20 +781,20 @@ var myUrls = {
     editEmployee: function() {
         return this.apihosts + 'webapi?action=editemployee&token=' + token;
     },
-    createupLoad809: function() {
-        return this.apihosts + 'webapi?action=createupload809&token=' + token;
+    createForwardParam: function() {
+        return this.apihosts + 'webapi?action=createforwardparam&token=' + token;
     },
-    queryupLoad809s: function() {
-        return this.apihosts + 'webapi?action=queryupload809s&token=' + token;
+    queryForwardParams: function() {
+        return this.apihosts + 'webapi?action=queryforwardparams&token=' + token;
     },
-    editUpload809: function() {
-        return this.apihosts + 'webapi?action=editupload809&token=' + token;
+    editForwardParam: function() {
+        return this.apihosts + 'webapi?action=editforwardparam&token=' + token;
     },
-    query809Protocols: function() {
-        return this.apihosts + 'webapi?action=query809protocols&token=' + token;
+    queryForwardProtocols: function() {
+        return this.apihosts + 'webapi?action=queryforwardprotocols&token=' + token;
     },
-    deleteUpload809s: function() {
-        return this.apihosts + 'webapi?action=deleteupload809s&token=' + token;
+    deleteForwardParams: function() {
+        return this.apihosts + 'webapi?action=deleteforwardparams&token=' + token;
     },
     setUpload809sStatus: function() {
         return this.apihosts + 'webapi?action=setupload809sstatus&token=' + token;
