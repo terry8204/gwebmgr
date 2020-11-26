@@ -18,134 +18,185 @@
             <i-table :columns="columnsList" :data="tableData" :height="taleHeight" :loading="loading"></i-table>
         </div>
         <Drawer :title="drawerTitle" width="800" v-model="drawerModal">
-            <Row style="height: 35px;line-height: 35px;">
-                <i-col :span="4" style="text-align: right;">
-                    <span style="color: red;">*</span>&nbsp;平台名称&nbsp;
-                </i-col>
-                <i-col :span="8">
-                    <i-input v-model.trim="servername"></i-input>
-                </i-col>
-                <i-col :span="4" style="text-align: right;">
-                    <span style="color: red;">*</span>&nbsp;下级平台接入码&nbsp;
-                </i-col>
-                <i-col :span="8">
-                    <i-input v-model.trim="gnsscenterid"></i-input>
-                </i-col>
-            </Row>
-            <Row style="height: 35px;line-height: 35px;">
-                <i-col :span="4" style="text-align: right;">
-                    <span style="color: red;">*</span>&nbsp;协议类型&nbsp;
-                </i-col>
-                <i-col :span="8">
-                    <i-select v-model="protocoltype">
-                        <i-option :value="item.index" :key="item.index" v-for="item in protocols">{{item.name}}</i-option>
-                    </i-select>
-                </i-col>
-                <i-col :span="4" style="text-align: right;">
-                    <span style="color: red;">*</span>&nbsp;协议版本号&nbsp;
-                </i-col>
-                <i-col :span="8">
-                    <i-input v-model.trim="uplinkversion"></i-input>
-                </i-col>
-            </Row>
-            <Row style="height: 35px;line-height: 35px;">
-                <i-col :span="4" style="text-align: right;">
-                    <span style="color: red;">*</span>&nbsp;用户名&nbsp;
-                </i-col>
-                <i-col :span="8">
-                    <i-input v-model.trim="userid"></i-input>
-                </i-col>
-                <i-col :span="4" style="text-align: right;">
-                    <span style="color: red;">*</span>&nbsp;密码&nbsp;
-                </i-col>
-                <i-col :span="8">
-                    <i-input v-model.trim="password"></i-input>
-                </i-col>
-            </Row>
-            <Row style="height: 35px;line-height: 35px;">
-                <i-col :span="4" style="text-align: right;">
-                    <span style="color: red;">*</span>&nbsp;主链路ip&nbsp;
-                </i-col>
-                <i-col :span="8">
-                    <i-input v-model.trim="uplinkip"></i-input>
-                </i-col>
-                <i-col :span="4" style="text-align: right;">
-                    <span style="color: red;">*</span>&nbsp;主链路端口&nbsp;
-                </i-col>
-                <i-col :span="8">
-                    <i-input v-model.trim="uplinkport"></i-input>
-                </i-col>
-            </Row>
-            <Row style="height: 35px;line-height: 35px;">
-                <i-col :span="4" style="text-align: right;">
-                    &nbsp;是否加密&nbsp;
-                </i-col>
-                <i-col :span="8">
-                    <Checkbox :value="encryptflag==1" @on-change="onChangeEncryptFlag"></Checkbox>
-                </i-col>
-                <i-col :span="4" style="text-align: right;">
-                    <span style="color: red;" v-show="encryptflag==1">*</span>&nbsp;密匙M1&nbsp;
-                </i-col>
-                <i-col :span="8">
-                    <i-input v-model.trim="m1"></i-input>
-                </i-col>
-            </Row>
-            <Row style="height: 35px;line-height: 35px;">
-                <i-col :span="4" style="text-align: right;">
-                    <span style="color: red;" v-show="encryptflag==1">*</span>&nbsp;密匙IA1&nbsp;
-                </i-col>
-                <i-col :span="8">
-                    <i-input v-model.trim="ia1"></i-input>
-                </i-col>
-                <i-col :span="4" style="text-align: right;">
-                    <span style="color: red;" v-show="encryptflag==1">*</span>&nbsp;密匙IC1&nbsp;
-                </i-col>
-                <i-col :span="8">
-                    <i-input v-model.trim="ic1"></i-input>
-                </i-col>
-            </Row>
-            <Row style="height: 35px;line-height: 35px;">
-                <i-col :span="4" style="text-align: right;">
-                    视频key&nbsp;
-                </i-col>
-                <i-col :span="8">
-                    <i-input v-model.trim="videokey"></i-input>
-                </i-col>
-                <i-col :span="4" style="text-align: right;">
-                    实时视频URL&nbsp;
-                </i-col>
-                <i-col :span="8">
-                    <i-input v-model.trim="realtimevideourl"></i-input>
-                </i-col>
-            </Row>
-            <Row style="height: 35px;line-height: 35px;">
-                <i-col :span="4" style="text-align: right;">
-                    视频回放URL&nbsp;
-                </i-col>
-                <i-col :span="8">
-                    <i-input v-model.trim="historyvideourl"></i-input>
-                </i-col>
-                <i-col :span="4" style="text-align: right;">
-                    从链ip&nbsp;
-                </i-col>
-                <i-col :span="8">
-                    <i-input v-model.trim="downlinkip"></i-input>
-                </i-col>
-            </Row>
-            <Row style="height: 35px;line-height: 35px;">
-                <i-col :span="4" style="text-align: right;">
-                    从链端口&nbsp;
-                </i-col>
-                <i-col :span="8">
-                    <i-input v-model.trim="downlinkport"></i-input>
-                </i-col>
-                <i-col :span="4" style="text-align: right;">
-                    备注&nbsp;
-                </i-col>
-                <i-col :span="8">
-                    <i-input v-model.trim="remark"></i-input>
-                </i-col>
-            </Row>
+            <div  v-if="protocoltype > 3">
+                <Row style="height: 35px;line-height: 35px;">
+                    <i-col :span="4" style="text-align: right;">
+                        <span style="color: red;">*</span>&nbsp;平台名称&nbsp;
+                    </i-col>
+                    <i-col :span="8">
+                        <i-input v-model.trim="servername"></i-input>
+                    </i-col>
+                    <i-col :span="4" style="text-align: right;">
+                        <span style="color: red;">*</span>&nbsp;下级平台接入码&nbsp;
+                    </i-col>
+                    <i-col :span="8">
+                        <i-input v-model.trim="gnsscenterid"></i-input>
+                    </i-col>
+                </Row>
+                <Row style="height: 35px;line-height: 35px;">
+                    <i-col :span="4" style="text-align: right;">
+                        <span style="color: red;">*</span>&nbsp;协议类型&nbsp;
+                    </i-col>
+                    <i-col :span="8">
+                        <i-select v-model="protocoltype">
+                            <i-option :value="item.index" :key="item.index" v-for="item in protocols">{{item.name}}</i-option>
+                        </i-select>
+                    </i-col>
+                    <i-col :span="4" style="text-align: right;">
+                        <span style="color: red;">*</span>&nbsp;协议版本号&nbsp;
+                    </i-col>
+                    <i-col :span="8">
+                        <i-input v-model.trim="uplinkversion"></i-input>
+                    </i-col>
+                </Row>
+                <Row style="height: 35px;line-height: 35px;">
+                    <i-col :span="4" style="text-align: right;">
+                        <span style="color: red;">*</span>&nbsp;用户名&nbsp;
+                    </i-col>
+                    <i-col :span="8">
+                        <i-input v-model.trim="userid"></i-input>
+                    </i-col>
+                    <i-col :span="4" style="text-align: right;">
+                        <span style="color: red;">*</span>&nbsp;密码&nbsp;
+                    </i-col>
+                    <i-col :span="8">
+                        <i-input v-model.trim="password"></i-input>
+                    </i-col>
+                </Row>
+                <Row style="height: 35px;line-height: 35px;">
+                    <i-col :span="4" style="text-align: right;">
+                        <span style="color: red;">*</span>&nbsp;主链路ip&nbsp;
+                    </i-col>
+                    <i-col :span="8">
+                        <i-input v-model.trim="uplinkip"></i-input>
+                    </i-col>
+                    <i-col :span="4" style="text-align: right;">
+                        <span style="color: red;">*</span>&nbsp;主链路端口&nbsp;
+                    </i-col>
+                    <i-col :span="8">
+                        <i-input v-model.trim="uplinkport"></i-input>
+                    </i-col>
+                </Row>
+                <Row style="height: 35px;line-height: 35px;">
+                    <i-col :span="4" style="text-align: right;">
+                        &nbsp;是否加密&nbsp;
+                    </i-col>
+                    <i-col :span="8">
+                        <Checkbox :value="encryptflag==1" @on-change="onChangeEncryptFlag"></Checkbox>
+                    </i-col>
+                    <i-col :span="4" style="text-align: right;">
+                        <span style="color: red;" v-show="encryptflag==1">*</span>&nbsp;密匙M1&nbsp;
+                    </i-col>
+                    <i-col :span="8">
+                        <i-input v-model.trim="m1"></i-input>
+                    </i-col>
+                </Row>
+                <Row style="height: 35px;line-height: 35px;">
+                    <i-col :span="4" style="text-align: right;">
+                        <span style="color: red;" v-show="encryptflag==1">*</span>&nbsp;密匙IA1&nbsp;
+                    </i-col>
+                    <i-col :span="8">
+                        <i-input v-model.trim="ia1"></i-input>
+                    </i-col>
+                    <i-col :span="4" style="text-align: right;">
+                        <span style="color: red;" v-show="encryptflag==1">*</span>&nbsp;密匙IC1&nbsp;
+                    </i-col>
+                    <i-col :span="8">
+                        <i-input v-model.trim="ic1"></i-input>
+                    </i-col>
+                </Row>
+                <Row style="height: 35px;line-height: 35px;">
+                    <i-col :span="4" style="text-align: right;">
+                        视频key&nbsp;
+                    </i-col>
+                    <i-col :span="8">
+                        <i-input v-model.trim="videokey"></i-input>
+                    </i-col>
+                    <i-col :span="4" style="text-align: right;">
+                        实时视频URL&nbsp;
+                    </i-col>
+                    <i-col :span="8">
+                        <i-input v-model.trim="realtimevideourl"></i-input>
+                    </i-col>
+                </Row>
+                <Row style="height: 35px;line-height: 35px;">
+                    <i-col :span="4" style="text-align: right;">
+                        视频回放URL&nbsp;
+                    </i-col>
+                    <i-col :span="8">
+                        <i-input v-model.trim="historyvideourl"></i-input>
+                    </i-col>
+                    <i-col :span="4" style="text-align: right;">
+                        从链ip&nbsp;
+                    </i-col>
+                    <i-col :span="8">
+                        <i-input v-model.trim="downlinkip"></i-input>
+                    </i-col>
+                </Row>
+                <Row style="height: 35px;line-height: 35px;">
+                    <i-col :span="4" style="text-align: right;">
+                        从链端口&nbsp;
+                    </i-col>
+                    <i-col :span="8">
+                        <i-input v-model.trim="downlinkport"></i-input>
+                    </i-col>
+                    <i-col :span="4" style="text-align: right;">
+                        备注&nbsp;
+                    </i-col>
+                    <i-col :span="8">
+                        <i-input v-model.trim="remark"></i-input>
+                    </i-col>
+                </Row>
+            </div>
+            <div v-if="protocoltype < 4">
+                <Row style="height: 35px;line-height: 35px;">
+                    <i-col :span="4" style="text-align: right;">
+                        <span style="color: red;">*</span>&nbsp;平台名称&nbsp;
+                    </i-col>
+                    <i-col :span="8">
+                        <i-input v-model.trim="servername"></i-input>
+                    </i-col>
+                    <i-col :span="4" style="text-align: right;">
+                        <span style="color: red;">*</span>&nbsp;协议类型&nbsp;
+                    </i-col>
+                    <i-col :span="8">
+                        <i-select v-model="protocoltype">
+                            <i-option :value="item.index" :key="item.index" v-for="item in protocols">{{item.name}}</i-option>
+                        </i-select>
+                    </i-col>
+                </Row>
+                <Row style="height: 35px;line-height: 35px;">
+                    <i-col :span="4" style="text-align: right;">
+                        <span style="color: red;">*</span>&nbsp;转发地址&nbsp;
+                    </i-col>
+                    <i-col :span="20">
+                        <i-input v-model.trim="uplinkip"></i-input>
+                    </i-col>
+                </Row>
+
+                <Row style="height: 35px;line-height: 35px;">
+                    <i-col :span="4" style="text-align: right;">
+                        &nbsp;用户名&nbsp;
+                    </i-col>
+                    <i-col :span="8">
+                        <i-input v-model.trim="userid"></i-input>
+                    </i-col>
+                    <i-col :span="4" style="text-align: right;">
+                        &nbsp;密码&nbsp;
+                    </i-col>
+                    <i-col :span="8">
+                        <i-input v-model.trim="password"></i-input>
+                    </i-col>
+                </Row>
+                <Row style="height: 35px;line-height: 35px;">
+                    <i-col :span="4" style="text-align: right;">
+                        备注&nbsp;
+                    </i-col>
+                    <i-col :span="20">
+                        <i-input v-model.trim="remark"></i-input>
+                    </i-col>
+                </Row>
+            </div>
             <div style="width: 100%;position: absolute;bottom: 0;left: 0;border-top: 1px solid #e8e8e8;padding: 10px 16px;text-align: right;background: #fff;">
                 <i-button style="margin-right: 8px" @click="drawerModal = false">取消</i-button>
                 <i-button type="primary" @click="handleSubmit">确定</i-button>
@@ -165,7 +216,7 @@
                 tableData: [],
                 protocoltype: 1,
                 servername: '',
-                uplinkversion: '',
+                uplinkversion: '1.0.0',
                 userid: '', //用户名' ,
                 password: '', //密码，限制8位长度' ,
                 gnsscenterid: '', //下级平台接入码，上级平台给下级平台分配唯一标识码' ,
@@ -417,15 +468,24 @@
                         encryptflag:this.encryptflag
                     }
 
-                    if (
-                        this.servername == "" ||
-                        this.gnsscenterid == "" ||
-                        this.userid == "" ||
-                        this.password == "" ||
-                        this.uplinkip == "" ||
-                        this.uplinkport == "") {
-                        this.$Message.error('红点的参数是必填的');
-                        return;
+                    if(this.protocoltype < 4){
+                        if (
+                            this.servername == "" ||
+                            this.uplinkip == "" ) {
+                            this.$Message.error('红点的参数是必填的');
+                            return;
+                        }
+                    }else{
+                        if (
+                            this.servername == "" ||
+                            this.gnsscenterid == "" ||
+                            this.userid == "" ||
+                            this.password == "" ||
+                            this.uplinkip == "" ||
+                            this.uplinkport == "") {
+                            this.$Message.error('红点的参数是必填的');
+                            return;
+                        }
                     }
 
                     if(this.encryptflag == 1){
