@@ -796,8 +796,8 @@ var myUrls = {
     deleteForwardParams: function() {
         return this.apihosts + 'webapi?action=deleteforwardparams&token=' + token;
     },
-    setUpload809sStatus: function() {
-        return this.apihosts + 'webapi?action=setupload809sstatus&token=' + token;
+    setForwardParamsStatus: function() {
+        return this.apihosts + 'webapi?action=setforwardparamsstatus&token=' + token;
     },
     queryRecorderData: function() {
         return this.apihosts + 'webapi?action=queryrecorderdata&token=' + token;

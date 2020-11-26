@@ -249,7 +249,7 @@
                                 },
                                 on: {
                                     click: function() {
-                                        vueInstanse.setUpload809sStatus(params.row);
+                                        vueInstanse.setForwardParamsStatus(params.row);
                                     }
                                 }
                             }, status == 0 ? "开启服务" : '关闭服务'),
@@ -549,7 +549,7 @@
                 },
                 handleAdd: function() {
                     this.setRowInfo({
-                        protocoltype: '1',
+                        protocoltype: this.protocoltype,
                         servername: '',
                         uplinkversion: '',
                         userid: '', //用户名' ,
@@ -591,12 +591,12 @@
                         me.protocols = resp.protocols;
                     });
                 },
-                setUpload809sStatus: function(row) {
+                setForwardParamsStatus: function(row) {
                     var me = this;
-                    var url = myUrls.setUpload809sStatus();
+                    var url = myUrls.setForwardParamsStatus();
                     var data = {
                         status: row.status == 0 ? 1 : 0,
-                        uploads: [row.forwardid]
+                        forwards: [row.forwardid]
                     };
                     utils.sendAjax(url, data, function(resp) {
                         if (resp.status === 0) {
@@ -610,7 +610,7 @@
                     var me = this;
                     var url = myUrls.deleteForwardParams();
                     var data = {
-                        uploads: [uploadid]
+                        forwards: [uploadid]
                     };
                     utils.sendAjax(url, data, function(resp) {
                         console.log(resp);
