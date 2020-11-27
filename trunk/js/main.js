@@ -1200,7 +1200,6 @@ var vRoot = new Vue({
         // this.$store.dispatch('setUserTypeDescr');
         this.$store.dispatch('setAllCmdList');
         this.$store.dispatch('setDeviceTypes');
-        vueInstanse = this; // 备份monitor实例
         utils.getUserInfoList();
         utils.queryAllSubgroups();
 
