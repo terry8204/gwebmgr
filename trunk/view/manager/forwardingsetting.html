@@ -9,7 +9,7 @@
         </Spin>
     </div>
     <div class="full">
-        <h3 class="h3-title">{{$t("bgMgr.batchMgr")}}</h3>
+        <h3 class="h3-title">转发设置</h3>
         <Row>
             <i-col span="5" style="padding: 10px;">
                 {{$t("bgMgr.allAevcieList")}}
@@ -30,111 +30,226 @@
                 <i-table border ref="table" :columns="columns" :data="tableData" :height="taleHeight"></i-table>
             </i-col>
         </Row>
-        <Row>
-            <i-col span="24" style="text-align: center;border: 1px solid #DCDEE2;padding: 5px;">
-                <i-button @click="handleBatchTransfer" style="margin: 0 10px;">{{$t("bgMgr.batchTransfer")}}</i-button>
-                <i-button @click="showBatchModal(1)" style="margin: 0 10px;">{{$t("bgMgr.batchModifyForwardingAddress")}}</i-button>
-                <i-button @click="showBatchModal(2)" style="margin: 0 10px;">{{$t("bgMgr.batchEditDueDate")}}</i-button>
-                <i-button @click="showBatchModal(3)" style="margin: 0 10px;">{{$t("bgMgr.batchResetPwd")}}</i-button>
-                <i-button @click="showBatchModal(4)" style="margin: 0 10px;" v-if="userName == 'admin'">{{$t("bgMgr.batchEditDevType")}}</i-button>
-                <i-button @click="showBatchModal(5)" style="margin: 0 10px;">{{$t("bgMgr.batchIssueCmd")}}</i-button>
-                <i-button v-if="userType<2" @click="showBatchModal(6)" style="margin: 0 10px;">{{$t('bgMgr.batchEditDevMileageRatio')}}</i-button>
+        <Row style="border: 1px solid #DCDEE2;padding: 5px;">
+            <i-col span="3" offset="5">
+                 <i-select v-model="filterforwardtype">
+                    <i-option value="all">全部已转发设备</i-option>
+                    <i-option v-for="(item,idx) in forwards" :value="item.forwardid" :key="item.forwardid">
+                        {{item.servername}}
+                    </i-option>
+                </i-select>
+            </i-col>
+            <i-col span="2">
+                <i-button @click="handleFilterProtocolDevice" style="margin: 0 10px;width: 100%;">查询</i-button>
+            </i-col>
+            <i-col span="8" style="padding-left: 10px;">
+                <i-button @click="showBatchModal(1)" style="margin-left:10px;">{{$t("bgMgr.batchModifyForwardingAddress")}}</i-button>
+                <i-button @click="showBatchModal(2)" style="margin-left:10px;" type="error">设置不转发</i-button>
             </i-col>
         </Row>
-        <Modal v-model="batchModal" width="400" :title="$t('bgMgr.batchModification')">
-            <div v-if="showBatchModalType == 1">
-                <Row>
-                    <i-col span="4" style="padding-top: 6px;">
-                        &nbsp;{{$t('bgMgr.forwardingType')}} : &nbsp;
-                    </i-col>
-                    <i-col span="20">
-                        <i-select v-model="forwardtype">
-                            <i-option :value="item.index" :key="item.index" v-for="item in protocols">{{item.name}}</i-option>
-                        </i-select>
-                    </i-col>
-                </Row>
-                <Row>
-                    <i-col span="4" style="padding-top: 6px;">
-                        {{$t('device.forwardAddress')}}:
-                    </i-col>
-                    <i-col span="20">
-                        <i-input v-model.trim="forwardurl"></i-input>
-                    </i-col>
-                </Row>
+        <Modal v-model="batchModal" width="900" :title="$t('bgMgr.batchModification')">
+            <div v-if="showBatchModalType == 1" style=" overflow: hidden;height: 366px;">
+                <div style="float: left; overflow-y: auto;width: 258px;height: 366px;">
+                    <div style="height: 45px;">
+                        <i-input v-model.trim="sosoForwardName" icon="ios-search-outline" @on-change="sosoForwardChange"></i-input>
+                    </div> 
+                    <div style="overflow-y: auto;height: 320px;">
+                        <i-menu @on-select="selectdForwardItem" :active-name="activeName">
+                            <template v-for="(item,idx) in forwards">
+                                <Menu-Item :name="item.forwardid" :key="item.forwardid">
+                                    {{item.servername}}
+                                </Menu-Item>
+                            </template>
+                        </i-menu>
+                    </div>
+                </div>
+                <div style="float: right;overflow-y: auto;width: 600px;height: 366px;padding-top: 45px;">
+                    <div v-if="protocoltype > 3">
+                        <Row style="height: 35px;line-height: 35px;">
+                            <i-col :span="4" style="text-align: right;">
+                                &nbsp;平台名称&nbsp;
+                            </i-col>
+                            <i-col :span="8">
+                                <i-input v-model.trim="forwardTypeInfo.servername" disabled></i-input>
+                            </i-col>
+                            <i-col :span="4" style="text-align: right;">
+                                &nbsp;下级平台接入码&nbsp;
+                            </i-col>
+                            <i-col :span="8">
+                                <i-input v-model.trim="forwardTypeInfo.gnsscenterid" disabled></i-input>
+                            </i-col>
+                        </Row>
+                        <Row style="height: 35px;line-height: 35px;">
+                            <i-col :span="4" style="text-align: right;">
+                                &nbsp;协议类型&nbsp;
+                            </i-col>
+                            <i-col :span="8">
+                                <i-select v-model="protocoltype" disabled>
+                                    <i-option :value="item.index" :key="item.index" v-for="item in protocols" disabled>{{item.name}}</i-option>
+                                </i-select>
+                            </i-col>
+                            <i-col :span="4" style="text-align: right;">
+                                &nbsp;协议版本号&nbsp;
+                            </i-col>
+                            <i-col :span="8">
+                                <i-input v-model.trim="forwardTypeInfo.uplinkversion" disabled></i-input>
+                            </i-col>
+                        </Row>
+                        <Row style="height: 35px;line-height: 35px;">
+                            <i-col :span="4" style="text-align: right;">
+                                &nbsp;用户名&nbsp;
+                            </i-col>
+                            <i-col :span="8">
+                                <i-input v-model.trim="forwardTypeInfo.userid" disabled></i-input>
+                            </i-col>
+                            <i-col :span="4" style="text-align: right;">
+                                &nbsp;密码&nbsp;
+                            </i-col>
+                            <i-col :span="8">
+                                <i-input v-model.trim="forwardTypeInfo.password" disabled></i-input>
+                            </i-col>
+                        </Row>
+                        <Row style="height: 35px;line-height: 35px;">
+                            <i-col :span="4" style="text-align: right;">
+                                &nbsp;主链路ip&nbsp;
+                            </i-col>
+                            <i-col :span="8">
+                                <i-input v-model.trim="forwardTypeInfo.uplinkip" disabled></i-input>
+                            </i-col>
+                            <i-col :span="4" style="text-align: right;">
+                                &nbsp;主链路端口&nbsp;
+                            </i-col>
+                            <i-col :span="8">
+                                <i-input v-model.trim="forwardTypeInfo.uplinkport" disabled></i-input>
+                            </i-col>
+                        </Row>
+                        <Row style="height: 35px;line-height: 35px;">
+                            <i-col :span="4" style="text-align: right;">
+                                &nbsp;是否加密&nbsp;
+                            </i-col>
+                            <i-col :span="8">
+                                <Checkbox :value="forwardTypeInfo.encryptflag==1" disabled></Checkbox>
+                            </i-col>
+                            <i-col :span="4" style="text-align: right;">
+                                &nbsp;密匙M1&nbsp;
+                            </i-col>
+                            <i-col :span="8">
+                                <i-input v-model.trim="forwardTypeInfo.m1" forwardTypeInfo disabled></i-input>
+                            </i-col>
+                        </Row>
+                        <Row style="height: 35px;line-height: 35px;">
+                            <i-col :span="4" style="text-align: right;">
+                                &nbsp;密匙IA1&nbsp;
+                            </i-col>
+                            <i-col :span="8">
+                                <i-input v-model.trim="forwardTypeInfo.ia1" disabled></i-input>
+                            </i-col>
+                            <i-col :span="4" style="text-align: right;">
+                                &nbsp;密匙IC1&nbsp;
+                            </i-col>
+                            <i-col :span="8">
+                                <i-input v-model.trim="forwardTypeInfo.ic1" disabled></i-input>
+                            </i-col>
+                        </Row>
+                        <Row style="height: 35px;line-height: 35px;">
+                            <i-col :span="4" style="text-align: right;">
+                                视频key&nbsp;
+                            </i-col>
+                            <i-col :span="8">
+                                <i-input v-model.trim="forwardTypeInfo.videokey" disabled></i-input>
+                            </i-col>
+                            <i-col :span="4" style="text-align: right;">
+                                实时视频URL&nbsp;
+                            </i-col>
+                            <i-col :span="8">
+                                <i-input v-model.trim="forwardTypeInfo.realtimevideourl" disabled></i-input>
+                            </i-col>
+                        </Row>
+                        <Row style="height: 35px;line-height: 35px;">
+                            <i-col :span="4" style="text-align: right;">
+                                视频回放URL&nbsp;
+                            </i-col>
+                            <i-col :span="8">
+                                <i-input v-model.trim="forwardTypeInfo.historyvideourl" disabled></i-input>
+                            </i-col>
+                            <i-col :span="4" style="text-align: right;">
+                                从链ip&nbsp;
+                            </i-col>
+                            <i-col :span="8">
+                                <i-input v-model.trim="forwardTypeInfo.downlinkip" disabled></i-input>
+                            </i-col>
+                        </Row>
+                        <Row style="height: 35px;line-height: 35px;">
+                            <i-col :span="4" style="text-align: right;">
+                                从链端口&nbsp;
+                            </i-col>
+                            <i-col :span="8">
+                                <i-input v-model.trim="forwardTypeInfo.downlinkport" disabled></i-input>
+                            </i-col>
+                            <i-col :span="4" style="text-align: right;">
+                                备注&nbsp;
+                            </i-col>
+                            <i-col :span="8">
+                                <i-input v-model.trim="forwardTypeInfo.remark" disabled></i-input>
+                            </i-col>
+                        </Row>
+                    </div>
+                    <div v-if="protocoltype < 4">
+                        <Row style="height: 35px;line-height: 35px;">
+                            <i-col :span="4" style="text-align: right;">
+                                &nbsp;平台名称&nbsp;
+                            </i-col>
+                            <i-col :span="8">
+                                <i-input v-model.trim="forwardTypeInfo.servername" disabled></i-input>
+                            </i-col>
+                            <i-col :span="4" style="text-align: right;">
+                                &nbsp;协议类型&nbsp;
+                            </i-col>
+                            <i-col :span="8">
+                                <i-select v-model="protocoltype" disabled>
+                                    <i-option :value="item.index" :key="item.index" v-for="item in protocols">{{item.name}}</i-option>
+                                </i-select>
+                            </i-col>
+                        </Row>
+                        <Row style="height: 35px;line-height: 35px;">
+                            <i-col :span="4" style="text-align: right;">
+                                &nbsp;转发地址&nbsp;
+                            </i-col>
+                            <i-col :span="20">
+                                <i-input v-model.trim="forwardTypeInfo.uplinkip" disabled></i-input>
+                            </i-col>
+                        </Row>
+        
+                        <Row style="height: 35px;line-height: 35px;">
+                            <i-col :span="4" style="text-align: right;">
+                                &nbsp;用户名&nbsp;
+                            </i-col>
+                            <i-col :span="8">
+                                <i-input v-model.trim="forwardTypeInfo.userid" disabled></i-input>
+                            </i-col>
+                            <i-col :span="4" style="text-align: right;">
+                                &nbsp;密码&nbsp;
+                            </i-col>
+                            <i-col :span="8">
+                                <i-input v-model.trim="forwardTypeInfo.password" disabled></i-input>
+                            </i-col>
+                        </Row>
+                        <Row style="height: 35px;line-height: 35px;">
+                            <i-col :span="4" style="text-align: right;">
+                                备注&nbsp;
+                            </i-col>
+                            <i-col :span="20">
+                                <i-input v-model.trim="forwardTypeInfo.remark" disabled></i-input>
+                            </i-col>
+                        </Row>
+                    </div>
+                </div>
             </div>
-            <Row v-if="showBatchModalType == 2">
-                <i-col span="4" offset="4" style="line-height: 32px;">
-                    {{$t('monitor.expireTime')}}:
-                </i-col>
-                <i-col span="12">
-                    <date-picker type="date" v-model="expirationDate"></date-picker>
-                </i-col>
-            </Row>
-            <Row v-if="showBatchModalType == 3">
-                <i-col span="4" offset="4" style="line-height: 32px;">
-                    {{$t('bgMgr.passModel')}}:
-                </i-col>
-                <i-col span="12">
-                    <i-select v-model="resetpasswordtype">
-                        <i-option value="1">{{$t('bgMgr.deviceIDlastFour')}}</i-option>
-                        <i-option value="2">{{$t('bgMgr.fixedPassword')}}</i-option>
-                    </i-select>
-                </i-col>
-            </Row>
-            <Row v-if="showBatchModalType == 3 && resetpasswordtype == '2'" style="margin-top: 10px;">
-                <i-col span="4" offset="4" style="line-height: 32px;">
-                    {{$t('header.newPwd')}}:
-                </i-col>
-                <i-col span="12">
-                    <i-input v-model.trim="newPassword"></i-input>
-                </i-col>
-            </Row>
-            <Row v-if="showBatchModalType == 4">
-                <i-col span="4" offset="4" style="line-height: 32px;">
-                    {{$t('user.devType')}}:
-                </i-col>
-                <i-col span="12">
-                    <i-select v-model="deviceType">
-                        <i-option v-for="item in deviceTypeList" :value="item.value" :key="item.value">{{ item.label }}</i-option>
-                    </i-select>
-                </i-col>
-            </Row>
-            <div v-if="showBatchModalType == 5">
-                <div style="text-align: center;padding:0 0 10px 0;font-weight: 600;font-size: 18px;">{{$t('bgMgr.issueCmd')}}</div>
+
+            <div slot="footer">
                 <Row>
-                    <i-col span="4" offset="4" style="line-height: 32px;">
-                        {{$t('bgMgr.cmdContent')}}:
-                    </i-col>
-                    <i-col span="12">
-                        <i-input v-model.trim="cmdContent"></i-input>
-                    </i-col>
-                </Row>
-                <Row style="margin-top: 10px;">
-                    <i-col span="4" offset="4" style="line-height: 32px;">
-                        {{$t('bgMgr.pwd')}}:
-                    </i-col>
-                    <i-col span="12">
-                        <i-input v-model.trim="cmdPassword"></i-input>
-                    </i-col>
-                </Row>
-            </div>
-            <div v-if="showBatchModalType == 6">
-                <Row>
-                    <i-col span="4" offset="4" style="line-height: 32px;">
-                        {{$t('bgMgr.mileageRatio')}}:
-                    </i-col>
-                    <i-col span="12">
-                        <input-number v-model.number="mileageRatio" :max="200" :min="1" style="width: 100%;"></input-number>
-                    </i-col>
-                    <i-col span="1" style="line-height: 32px;">
-                        %
-                    </i-col>
-                </Row>
-            </div>
-            <div slot="footer" style="height:40px;">
-                <Row style="margin: 5px 0">
                     <i-col span="24" style="text-align: center;">
-                        <i-button @click="handleBatchEdit" style="width:300px;">{{$t("bgMgr.submit")}}</i-button>
+                        <i-button @click="handleBatchEdit" style="width:300px;">设置</i-button>
                     </i-col>
                 </Row>
             </div>
@@ -152,12 +267,11 @@
             idx: 0,
             showBatchModalType: 1, // 1批量地址  2
             batchModal: false,
-            forwardurl: "",
-            newPassword: '',
-            forwardtype: '0',
-            cmdContent: '',
-            cmdPassword: '',
-            expirationDate: new Date(),
+            protocoltype:1,
+            protocols :[],
+            forwards:[],
+            forwardtype: '',
+            forwardTypeInfo:{},
             resetpasswordtype: '1',
             deviceType: '',
             deviceTypeList: [],
@@ -180,6 +294,9 @@
             }, {
                 title: vRoot.$t("user.grouping"),
                 key: 'groupname'
+            }, {
+                title: "转发平台",
+                key: 'serverName'
             }, {
                 title: vRoot.$t('alarm.action'),
                 width: 85,
@@ -255,21 +372,107 @@
             selectedGroupName: null,
             selectedUserName: null,
             taleHeight: 100,
-            protocols :[],
+            activeName:'',
+            sosoForwardName:'',
+            filterforwardtype:"all",
         },
         methods: {
-            queryForwardProtocols: function() {
+            handleFilterProtocolDevice:function(){
                 var me = this;
-                var url = myUrls.queryForwardProtocols();
-                utils.sendAjax(url, {}, function(resp) {
-                    me.protocols = resp.protocols;
+                var filterforwardtype = this.filterforwardtype;
+                var tableData = [];
+                function traverse(obj){
+                    for(var i in obj){
+                        var item = obj[i];
+                        if(item.children && item.children.length){
+                            traverse(item.children)
+                        }else{
+                            var deviceid = item.deviceid;
+                            if(deviceid){
+                                var device = utils.deviceInfos[deviceid];
+                                if(filterforwardtype == 'all'){
+                                    if(device.forwardid){
+                                        var row = deepClone(device);
+                                        row.resultType = 2;
+                                        row.serverName = me.getServerName(row.forwardid);
+                                        tableData.push(row);
+                                    }
+                                }else{
+                                    if(filterforwardtype == device.forwardid){
+                                        var row = deepClone(device);
+                                        row.resultType = 2;
+                                        row.serverName = me.getServerName(row.forwardid);
+                                        tableData.push(row);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                traverse(this.treeDeviceList);
+                this.tableData = tableData;
+            },  
+            sosoForwardChange:function(){
+                var value = this.sosoForwardName;
+                if(value==''){
+                    this.forwards = this.copyForwards;
+                }else{
+                    var forwards = [];
+                    var copyForwards = this.copyForwards;
+                    for(var i = 0 ; i < copyForwards.length ; i++){
+                        var forward = copyForwards[i];
+                        if(forward.servername.indexOf(value) != -1){
+                            forwards.push(forward);
+                        }
+                    }
+                    this.forwards = forwards;
+                }
+            },
+            selectdForwardItem:function(item){
+                this.activeName = item;
+                this.forwardtype = item;
+                var forwards = this.forwards;
+                for(var i = 0 ; i < forwards.length ; i++){
+                    var forward = forwards[i];
+                    if(forward.forwardid == item){
+                        this.forwardTypeInfo = forward;
+                        this.protocoltype = forward.protocoltype;
+                        return;
+                    }
+                }
+            },
+            queryForwardParams: function() {
+                var me = this;
+                var url = myUrls.queryForwardParams();
+                me.copyForwards = [];
+                utils.sendAjax(url, {
+                    creater: null,
+                    keyword: '',
+                }, function(resp) {
+                    me.forwards = resp.forwards;
+                    me.copyForwards = deepClone(resp.forwards);
+                    if(me.forwards && me.forwards.length){
+                        var forward = me.forwards[0];
+                        me.activeName = forward.forwardid;
+                        me.forwardtype = forward.forwardid;
+                        me.forwardTypeInfo = forward;
+                    }
                 });
             },
             showBatchModal: function(type) {
                 this.showBatchModalType = type;
+                if(type == 2){
+                    this.handleBatchEdit();
+                    return;
+                }
                 this.batchModal = true;
-                this.forwardurl = '';
-                this.newPassword = '';
+               
+            },
+            updatedLocalDeviceInfos:function(tableData,forwardid){
+                tableData.forEach(function(item){
+                    var deviceid = item.deviceid;
+                    utils.deviceInfos[deviceid] = forwardid;
+                })
             },
             handleBatchEdit: function() {
                 if (this.tableData.length == 0) {
@@ -282,86 +485,11 @@
                     me = this;
                 if (this.showBatchModalType == 1) {
                     data.action = 'modifyforwardurl';
-                    data.forwardtype = Number(this.forwardtype);
-                    data.forwardurl = this.forwardurl;
+                    data.forwardid = this.forwardtype;
                 } else if (this.showBatchModalType == 2) {
-                    data.action = 'modifyexpiretime';
-                    data.expiretime = new Date(this.expirationDate).getTime();
-                } else if (this.showBatchModalType == 3) {
-                    data.action = 'resetpassword';
-                    if (this.resetpasswordtype == '2') {
-                        if (this.newPassword.length >= 4) {
-                            data.resetpasswordtype = 2;
-                            data.passwordnotmd5 = this.newPassword;
-                        } else {
-                            this.$Message.error(vRoot.$t('device.pwdLengthTips'));
-                            return;
-                        }
-                    } else {
-                        data.resetpasswordtype = 1;
-                    }
-                } else if (this.showBatchModalType == 4) {
-                    data.action = 'changedevicetype';
-                    data.devicetype = this.deviceType;
-                } else if (this.showBatchModalType == 5) {
-                    this.batchSendCmdLoading = true;
-                    var url = myUrls.sendCmd();
-                    this.idx = 0;
-                    var tableData = deepClone(me.tableData);
-                    this.tableData.forEach(function(item) {
-                        var deviceid = item.deviceid
-                        var data = {
-                            "devicetype": vRoot.$children[1].deviceInfos[deviceid].devicetype,
-                            "cmdcode": "TYPE_SERVER_TRANS_DATA",
-                            "deviceid": item.deviceid,
-                            "params": [me.cmdContent],
-                            "state": -1,
-                            "cmdpwd": me.cmdPassword
-                        };
-                        utils.sendAjax(url, data, function(resp) {
-                            me.idx++;
-                            tableData.forEach(function(item) {
-                                if (item.deviceid == deviceid) {
-                                    if (resp.status === 0) {
-                                        item.resultType = 0;
-                                    } else if (resp.status === 1) {
-                                        item.resultType = 4;
-                                    } else if (resp.status === -1) {
-                                        item.resultType = 5;
-                                    } else if (resp.status === 2) {
-                                        item.resultType = 6;
-                                    } else if (resp.status === 3) {
-                                        item.resultType = 7;
-                                    } else if (resp.status === 4) {
-                                        item.resultType = 8;
-                                    }
-                                }
-                            });
-                            if (me.idx >= tableData.length - 1) {
-                                me.tableData = tableData;
-                                me.batchSendCmdLoading = false;
-                            }
-                        }, function() {
-                            me.idx++;
-                            tableData.forEach(function(item) {
-                                if (item.deviceid == deviceid) {
-                                    if (resp.status === 0) {
-                                        item.resultType = 1;
-                                    };
-                                }
-                            });
-                            if (me.idx >= tableData.length - 1) {
-                                me.tableData = tableData;
-                                me.batchSendCmdLoading = false;
-                            }
-                        });
-                    });
-                    me.batchModal = false;
-                    return;
-                } else if (this.showBatchModalType == 6) {
-                    data.action = 'setdistanceratio';
-                    data.distanceratio = this.mileageRatio;
-                }
+                    data.action = 'modifyforwardurl';
+                    data.forwardid = null;
+                } 
 
                 var lock = true;
                 this.tableData.forEach(function(item) {
@@ -379,54 +507,17 @@
                     if (respData.status === 0) {
                         if (respData.total == respData.success) {
                             me.$Message.success(vRoot.$t('device.actionSucc'));
+                            var serverName = me.getServerName(data.forwardid);
+                            me.tableData.forEach(function(item){
+                                item.serverName=serverName;
+                            });
+                            me.updatedLocalDeviceInfos(me.tableData,data.forwardid);
+                            me.queryDevicesTree();
                         } else {
                             me.$Message.error(vRoot.$t('message.changeFail') + ' : ' + respData.fail);
                         }
                         me.updatedActionState(respData.errorrecords);
                         me.batchModal = false;
-                    } else {
-                        me.$Message.error(respData.cause);
-                    }
-                });
-            },
-            handleBatchTransfer: function() {
-                if (this.tableData.length == 0) {
-                    this.$Message.error(vRoot.$t('reportForm.selectDevTip'));
-                    return;
-                }
-                if (this.selectedGroupName === null) {
-                    this.$Message.error(vRoot.$t('device.selectedTransferGroup'));
-                    return;
-                }
-                var url = myUrls.batchOperate(),
-                    me = this;
-                var data = {
-                    action: 'move',
-                    deviceids: [],
-                    targetgroupid: this.selectedGroupId,
-                    targetusername: this.selectedUserName,
-                }
-                var lock = true;
-                this.tableData.forEach(function(item) {
-                    if (item.resultType === 3) {
-                        lock = false;
-                    }
-                    data.deviceids.push(item.deviceid);
-                });
-                if (!lock) {
-                    me.$Message.error(vRoot.$t('device.exportErrorTips'));
-                    return;
-                }
-                utils.sendAjax(url, data, function(respData) {
-                    if (respData.status === 0) {
-                        if (respData.total == respData.success) {
-                            me.$Message.success(vRoot.$t('device.actionSucc'));
-                        } else {
-                            var successArr = [];
-                            me.$Message.error(vRoot.$t('message.changeFail') + ' : ' + respData.fail);
-                        }
-                        me.updatedActionState(respData.errorrecords);
-                        me.queryDevicesTree();
                     } else {
                         me.$Message.error(respData.cause);
                     }
@@ -447,8 +538,11 @@
                 selectArr.forEach(function(item) {
                     var deviceid = item.deviceid;
                     if (deviceid && !me.isRepeatAddDevice(deviceid)) {
-                        utils.deviceInfos[deviceid].resultType = 2;
-                        tableData.push(utils.deviceInfos[deviceid]);
+                        var device = utils.deviceInfos[deviceid];
+                        var row = deepClone(device);
+                        row.resultType = 2;
+                        row.serverName = me.getServerName(row.forwardid);
+                        tableData.push(row);
                     }
                 })
                 this.tableData = this.tableData.concat(tableData);
@@ -463,6 +557,20 @@
                     }
                 }
                 return relsut;
+            },
+            getServerName:function(forwardid){
+                var result = '没有设置平台';
+                var forwards = this.forwards;
+                if(forwards){
+                    for(var i = 0 ; i < forwards.length ; i++){
+                        var forward = forwards[i];
+                        if(forwardid == forward.forwardid){
+                            result = forward.servername;
+                            break;
+                        }
+                    }
+                }
+                return result;
             },
             queryDevicesTree: function() {
                 this.loading = true;
@@ -507,72 +615,13 @@
                 if (groups != null) {
                     for (var i = 0; i < groups.length; ++i) {
                         var group = groups[i];
+          
                         var groupObj = {
                             title: group.groupname,
                             groupid: group.groupid,
-
-                        }
-                        if (isNeedDevice) {
-                            groupObj.render = utils.renderGroup;
-                        } else {
-                            groupObj.render = function(h, params) {
-                                var data = params.data;
-                                var children = null;
-
-                                if (isNeedRadio) {
-                                    children = [
-                                        h('span', [
-                                            h('Radio', {
-                                                props: {
-                                                    value: (me.selectedUserName == username && me.selectedGroupId == data.groupid)
-                                                },
-                                                style: {
-                                                    marginRight: '4px'
-                                                }
-                                            }),
-                                            h('Icon', {
-                                                props: {
-                                                    type: 'ios-folder-open'
-                                                },
-                                                style: {
-                                                    marginRight: '8px'
-                                                }
-                                            }),
-                                            h('span', data.title)
-                                        ])
-                                    ]
-                                } else {
-                                    children = [
-                                        h('span', [
-                                            h('Icon', {
-                                                props: {
-                                                    type: 'ios-folder-open'
-                                                },
-                                                style: {
-                                                    marginRight: '8px'
-                                                }
-                                            }),
-                                            h('span', data.title)
-                                        ])
-                                    ]
-                                }
-
-                                return h('span', {
-                                    on: {
-                                        'click': function() {
-                                            me.selectedUserName = username;
-                                            me.selectedGroupId = data.groupid;
-                                            me.selectedGroupName = data.groupname;
-                                        }
-                                    },
-                                    style: {
-                                        cursor: 'pointer',
-                                        color: (me.selectedUserName == username && me.selectedGroupId == data.groupid) ? '#2D8CF0' : '#000'
-                                    }
-                                }, children)
-                            };
                         }
                         if (isNeedDevice && group.devices) {
+                            groupObj.render = utils.renderGroup;
                             groupObj.children = [];
                             group.devices.forEach(function(device) {
                                 groupObj.children.push({
@@ -584,8 +633,9 @@
                                     deviceid: device.deviceid,
                                     devicename: device.devicename,
                                     username: username,
-                                    groupid: groupObj.groupid,
-                                    groupname: groupObj.groupname,
+                                    groupid: group.groupid,
+                                    groupname: group.groupname,
+                                    forwardid:device.forwardid,
                                 }
                             });
                         }
@@ -709,22 +759,11 @@
                 var wHeight = window.innerHeight;
                 this.taleHeight = wHeight - 204;
             },
-            getDeviceType: function() {
+            queryForwardProtocols: function() {
                 var me = this;
-                var url = myUrls.queryDeviceTypeByUser();
+                var url = myUrls.queryForwardProtocols();
                 utils.sendAjax(url, {}, function(resp) {
-                    if (resp.status == 0 && resp.devicetypes != null) {
-                        resp.devicetypes.forEach(function(item, index) {
-                            if (index === 0) {
-                                me.deviceType = item.devicetypeid;
-                            }
-                            me.deviceTypeList.push({
-                                value: item.devicetypeid,
-                                label: item.typename
-                            });
-                        })
-
-                    }
+                    me.protocols = resp.protocols;
                 });
             },
             getRegularPattern: function(str) {
@@ -807,7 +846,25 @@
                 }
 
                 return childTemp;
-            }
+            },
+            queryGroupInfos: function(callback) {
+                var me = this;
+                me.allGroups = {};
+                utils.sendAjax(myUrls.queryGroupInfos(), {}, function(resp) {
+                    if (resp.status === 0) {
+                        resp.groups.forEach(function(item) {
+                            me.allGroups[item.groupid] = item;
+                        });
+                    }
+                })
+            },
+            getGroupName: function(groupId) {
+                var groupName = "";
+                if (this.allGroups[groupId] !== undefined) {
+                    groupName = this.allGroups[groupId].groupname;
+                }
+                return groupName;
+            },
         },
         computed: {
             fontColor: function() {
@@ -829,14 +886,12 @@
         },
         watch: {
             searchDeviceVal: function(newVal) {
-
                 if (newVal === '') {
                     this.searchDeviceList = deepClone(this.treeDeviceList);
                 } else {
                     var limitcount = 0;
                     this.searchDeviceList = this.variableDeepSearch(deepClone(this.treeDeviceList), newVal, limitcount);
                 }
-
             }
         },
         mounted: function() {
@@ -852,8 +907,9 @@
             } else {
                 me.setTreeDataList(rootuser);
             }
+            this.queryForwardParams();
             this.queryForwardProtocols();
-            this.getDeviceType();
+            this.queryGroupInfos();
             this.userName = userName;
         },
     })
