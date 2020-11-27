@@ -41,7 +41,7 @@ gps51.com 前端网页完整代码，主要功能：定位、管理设备、在�
 #### 使用说明
 
 1.  下载全部代码
-2.  复制到 tomcat 的 webapps 目录下
+2.  解压后，复制trunk目录下的全部文件到 tomcat 的 webapps 目录下的gwebserver目录下面
 3.  配置好 tomcat的端口 80 和 网站根目录
 4.  启动tomcat
 5.  输入ip地址测试是否出现网页登录界面
