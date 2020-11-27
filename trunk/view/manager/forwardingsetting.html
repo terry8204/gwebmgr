@@ -471,7 +471,7 @@
             updatedLocalDeviceInfos:function(tableData,forwardid){
                 tableData.forEach(function(item){
                     var deviceid = item.deviceid;
-                    utils.deviceInfos[deviceid] = forwardid;
+                    utils.deviceInfos[deviceid].forwardid = forwardid;
                 })
             },
             handleBatchEdit: function() {
@@ -483,6 +483,7 @@
                         deviceids: []
                     },
                     me = this;
+            
                 if (this.showBatchModalType == 1) {
                     data.action = 'modifyforwardurl';
                     data.forwardid = this.forwardtype;
@@ -502,8 +503,11 @@
                     me.$Message.error(vRoot.$t('device.exportErrorTips'));
                     return;
                 }
+                me.batchModal = false;
+                me.loading = true;
                 var url = myUrls.batchOperate();
                 utils.sendAjax(url, data, function(respData) {
+                    me.loading = false;
                     if (respData.status === 0) {
                         if (respData.total == respData.success) {
                             me.$Message.success(vRoot.$t('device.actionSucc'));
@@ -512,15 +516,16 @@
                                 item.serverName=serverName;
                             });
                             me.updatedLocalDeviceInfos(me.tableData,data.forwardid);
-                            me.queryDevicesTree();
                         } else {
                             me.$Message.error(vRoot.$t('message.changeFail') + ' : ' + respData.fail);
                         }
                         me.updatedActionState(respData.errorrecords);
-                        me.batchModal = false;
                     } else {
                         me.$Message.error(respData.cause);
                     }
+                },function(e){
+                    me.$Message.error(e);
+                    me.loading = false;
                 });
             },
             updatedActionState: function(errorrecords) {
@@ -902,6 +907,7 @@
             window.onresize = function() {
                 me.calcTableHeight();
             }
+            rootuser = null;
             if (rootuser == null) {
                 this.queryDevicesTree();
             } else {
