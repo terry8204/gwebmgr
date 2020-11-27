@@ -244,6 +244,7 @@ var bgManager = {
             this.loadPage(page)
         },
         loadPage: function(page) {
+            vueInstanse && vueInstanse.$destroy && vueInstanse.$destroy();
             var me = this
             var pagePath = null
             if (page == "chargemgr.html") {
@@ -283,7 +284,8 @@ var systemParam = {
         return {
             selectdItemName: null,
             theme: 'light',
-            navList: [{
+            navList: [
+                {
                     title: '设备指令',
                     name: 'deviceDirective',
                     icon: 'ios-pricetag-outline',
@@ -355,6 +357,7 @@ var systemParam = {
             page && (this.loadPage(page));
         },
         loadPage: function(page) {
+
             vueInstanse && vueInstanse.$destroy && vueInstanse.$destroy();
             var me = this
             var pagePath = null

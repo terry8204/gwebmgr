@@ -2885,14 +2885,15 @@ var monitor = {
 
         dorefreshMapUI: function() {
             // console.log("dorefreshMapUI enter isNeedRefreshMapUI=",isNeedRefreshMapUI);
-            if (isNeedRefreshMapUI == true) {
-                isNeedRefreshMapUI = false;
-                this.map && this.map.updateLastTracks && this.map.updateLastTracks(this.currentDeviceId);
-                // this.map && this.map.updateMarkersState && this.map.updateMarkersState(this.currentDeviceId);
-                this.updateTreeOnlineState();
-                this.caclOnlineCount();
-            }
-
+            if(vstore.state.headerActiveName == 'monitor'){
+                if (isNeedRefreshMapUI == true) {
+                    isNeedRefreshMapUI = false;
+                    this.map && this.map.updateLastTracks && this.map.updateLastTracks(this.currentDeviceId);
+                    // this.map && this.map.updateMarkersState && this.map.updateMarkersState(this.currentDeviceId);
+                    this.updateTreeOnlineState();
+                    this.caclOnlineCount();
+                }
+            }     
         },
         setIntervalReqRecords: function() {
             var me = this

@@ -58,6 +58,7 @@ var ruleManager = {
             this.loadPage(page)
         },
         loadPage: function(page) {
+            vueInstanse && vueInstanse.$destroy && vueInstanse.$destroy();
             var me = this
             var pagePath = null
             if (utils.isLocalhost()) {

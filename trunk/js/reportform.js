@@ -8101,6 +8101,7 @@ var reportForm = {
             this.loadPage(pageName);
         },
         loadPage: function(page) {
+            vueInstanse && vueInstanse.$destroy && vueInstanse.$destroy();
             var me = this;
             var pagePath = null;
             if (utils.isLocalhost()) {
