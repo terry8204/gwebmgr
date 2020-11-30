@@ -116,44 +116,26 @@
         div.right-button-wrap {
             position: relative;
             width: 80px;
-            height: 35px;
+            height: 60px;
             cursor: pointer;
         }
-        
-        div.right-button-wrap img,
-        .right-button-wrap-marker img {
-            width: 100%;
-            height: 100%;
-            border: 0;
-        }
-        
-        .right-button-wrap-marker {
-            position: relative;
-            width: 80px;
-            height: 35px;
-            cursor: pointer;
-            margin-top: 20px;
-        }
-        
-        div.right-button-wrap-ceju {
-            position: relative;
-            width: 80px;
-            height: 35px;
-            padding: 0 5px;
-            margin-top: 20px;
-        }
-        
-        div.btn-label {
-            position: absolute;
-            left: 50%;
-            bottom: -15px;
-            transform: translateX(-50%);
+
+        div.right-button-wrap div.btn-label{
             background: #FB6726;
             color: #fff;
             font-size: 12px;
             text-align: center;
             width: 50px;
+            height: 18px;
+            margin: 0 auto;
         }
+        
+        div.right-button-wrap img {
+            width: 80px;
+            height: 35px;
+            border: 0;
+        }
+        
         
         label.BMapLabel::after {
             font-size: 0px;
@@ -317,12 +299,17 @@
                 <img v-else :src="isZh?'./images/ic_fine_network_on.png':'./images/ic_fine_network_on_en.png'">
                 <div class="btn-label">{{isZh ? '精 / 粗' : 'F / N'}} </div>
             </div>
-            <div class="right-button-wrap-marker" @click="onShowMarker">
+            <div class="right-button-wrap" @click="onShowMarker">
                 <img v-if="isShowMarker" src="./images/ic_on.png">
                 <img v-else src="./images/ic_off.png">
                 <div class="btn-label"> {{isZh ? '显示点' : 'Marker'}}</div>
             </div>
-            <div class="right-button-wrap-ceju" v-show="mapType === 'bMap'">
+            <div class="right-button-wrap" @click="onSwithAllLine">
+                <img v-if="isShowAllLine" src="./images/ic_on.png">
+                <img v-else src="./images/ic_off.png">
+                <div class="btn-label"> {{isZh ? '全部线' : 'All line'}}</div>
+            </div>
+            <div style="padding-top: 10px;" v-show="mapType === 'bMap'">
                 <i-button @click="openDistance" size="small" style="width:100%;">{{isZh ? '测距' : 'Ranging'}}</i-button>
             </div>
         </div>
@@ -482,6 +469,7 @@
     <!-- <script src="http://api.map.baidu.com/api?v=3.0&ak=e7SC5rvmn2FsRNE4R1ygg44n"></script>
     <script type="text/javascript" src="http://api.map.baidu.com/library/DistanceTool/1.2/src/DistanceTool_min.js"></script> -->
     <script>
+        var lineFeature = null;
         var timeDifference = DateFormat.getOffset();
         var token = utils.getParameterByName("token");
         var icon = utils.getParameterByName("icon");
@@ -634,6 +622,7 @@
                     language: isZh ? vdp_translation_index.zh : vdp_translation_index.en,
                     isShowCtrl: true,
                     isShowMarker: false,
+                    isShowAllLine: true,
                     deviceName: utils.getParameterByName("devicename"),
                     map: null,
                     myDis: null,
@@ -696,12 +685,10 @@
                     datepicker:vuejsDatepicker
                 },
                 methods: {
- 
                     onSelected:function(date){
                         this.startTime = date;
                     },
                     queryReportMileageDetail:function(date){
-      
                         var me = this;
                         var url = myUrls.reportMileageDetail();
                         var day = date.getFullYear()+'-'+ (date.getMonth() +1) + '-';
@@ -813,12 +800,24 @@
                             mapTypeId: google.maps.MapTypeId.ROADMAP
                         });
                     },
-                    getLineFeature: function(tracksList) {
+                    getLineFeature: function(tracksList,isFeature) {
                         var arrayList = [];
-                        tracksList.forEach(function(track) {
-                            arrayList.push(ol.proj.fromLonLat([track.callon, track.callat]));
-                        });
-                        return new ol.Feature(new ol.geom.LineString(arrayList));
+                        for(var i = 0 ; i < tracksList.length; i++){
+                            var track = tracksList[i];
+                            var point = ol.proj.fromLonLat([track.callon, track.callat]);
+                            if(this.isShowAllLine){
+                                arrayList.push(point);
+                            }else{
+                                if(i <= this.index){
+                                    arrayList.push(point);     
+                                }
+                            }
+                        }
+                        if(isFeature){
+                            return new ol.Feature(new ol.geom.LineString(arrayList));
+                        } else{
+                            return new ol.geom.LineString(arrayList);
+                        }
                     },
                     initOMap: function() {
                         layerVector = new ol.layer.Vector({
@@ -1147,13 +1146,14 @@
                             track.recorderspeedStr = track.recorderspeed/1000;
                             track.address = address?address:'点击一键获取';
 
+
                             newRecords.push(track);
                         }
                         this.records = newRecords;
                         this.extractRecords = extractRecords;
                     },
                     drawingOpenStreeMap: function(records) {
-                        var lineFeature = this.getLineFeature(records);
+                        lineFeature = this.getLineFeature(records,true);
                         var maxLen = records.length - 1,
                             features = [],
                             iconFeature;
@@ -1221,7 +1221,13 @@
 
                                 for (var i = 0; i < records.length; i++) {
                                     var point = records[i].point;
-                                    lines.push(point);
+                                    if(this.isShowAllLine){
+                                        lines.push(point);
+                                    }else{
+                                        if(i <= me.index){
+                                            lines.push(point);     
+                                        }
+                                    }
                                     if (i != 0 && i != records.length - 1) {
                                         var icon = null;
                                         if (records[i].isextract) {
@@ -1274,7 +1280,14 @@
                                 var points = []
                                 for (var i = 0; i < records.length; i++) {
                                     var record = records[i];
-                                    points.push(record.gpoint);
+                                    if(this.isShowAllLine){
+                                        points.push(record.gpoint);
+                                    }else{
+                                        if(i <= me.index){
+                                            points.push(record.gpoint);     
+                                        }
+                                    }
+
                                     if (i === 0) {
                                         this.firstMarker = new google.maps.Marker({
                                             position: record.gpoint,
@@ -1486,6 +1499,7 @@
                             var windowInfo = new BMap.InfoWindow(sContent);
                             windowInfo.disableCloseOnClick();
                             this.isShowMarker && marker && marker.openInfoWindow(windowInfo);
+                            !this.isShowAllLine && this.polyline && this.polyline.setPath(this.getBMapLines());
                             if (this.carMarker) {
                                 this.carMarker.setPosition && this.carMarker.setPosition(track.point);
                                 this.carMarker.setIcon && this.carMarker.setIcon(this.getDirectionIcon(0));
@@ -1504,6 +1518,7 @@
                             var icon = this.getDirectionIcon(track.course);
                             this.carMarker.setIcon(icon);
                             this.carMarker && this.carMarker.setIcon(this.getDirectionIcon(track.course));
+                            !this.isShowAllLine && this.polyline && this.polyline.setPath(this.getGMapLines());
                         } else if (this.mapType === 'oMap') {
                             var posi = ol.proj.fromLonLat([track.callon, track.callat]);
                             this.carMarker.setStyle(this.getFeatureIcon(track));
@@ -1518,6 +1533,7 @@
                             } else {
                                 document.getElementById('popup').style.display = 'none';
                             }
+                            !this.isShowAllLine && lineFeature.setGeometry(this.getLineFeature(this.getTypeRecords(),false));
                         }
                     },
                     setViewPortCenter: function(lines) {
@@ -1552,6 +1568,7 @@
                                 if (me.index >= paths) {
                                     clearInterval(me.intervalInstanse);
                                 };
+                         
                                 var track = records[me.index];
                                 if (track) {
                                     me.openInfoWindow(me.carMarker, track);
@@ -1723,6 +1740,55 @@
                             }
                         }
                         this.isShowMarker = !this.isShowMarker;
+                    },
+                    onSwithAllLine:function(){
+                        this.isShowAllLine = !this.isShowAllLine;
+                            
+                        switch(this.mapType){
+                            case 'bMap':
+                                this.polyline.setPath(this.getBMapLines());
+                                break;
+                            case 'gMap':
+                                this.polyline.setPath(this.getGMapLines());
+                                break;
+                            case 'oMap':
+                                lineFeature.setGeometry(this.getLineFeature(this.getTypeRecords(),false));
+                                break;
+                            default :
+
+                                ;
+                            
+                        };
+                    },
+                    getBMapLines:function(){
+                        var lines = [];
+                        var records = this.getTypeRecords();
+                        for (var i = 0; i < records.length; i++) {
+                            var point = records[i].point;
+                            if(this.isShowAllLine){
+                                lines.push(point);
+                            }else{
+                                if(i <= this.index){
+                                    lines.push(point);     
+                                }
+                            }
+                        };
+                        return lines;
+                    },
+                    getGMapLines:function(){
+                        var lines = [];
+                        var records = this.getTypeRecords();
+                        for (var i = 0; i < records.length; i++) {
+                            var point = records[i].gpoint;
+                            if(this.isShowAllLine){
+                                lines.push(point);
+                            }else{
+                                if(i <= this.index){
+                                    lines.push(point);     
+                                }
+                            }
+                        };
+                        return lines;
                     },
                     initCharts: function() {
                         var me = this;

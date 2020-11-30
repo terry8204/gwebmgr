@@ -320,7 +320,7 @@ var reportMixin = {
 //  指令查询 DateFormat.longToDateStr(Date.now(),0)
 function cmdReport(groupslist) {
 
-    new Vue({
+    vueInstanse =   new Vue({
         el: "#cmd-report",
         i18n: utils.getI18n(),
         data: {
@@ -675,7 +675,7 @@ function posiReport(groupslist) {
 
 // 里程详单
 function reportMileageDetail(groupslist) {
-    new Vue({
+    vueInstanse =  new Vue({
         el: '#mileage-detail',
         i18n: utils.getI18n(),
         mixins: [reportMixin],
@@ -755,7 +755,7 @@ function reportMileageDetail(groupslist) {
 }
 
 function groupMileage(groupslist) {
-    new Vue({
+    vueInstanse = new Vue({
         el: '#group-mileage',
         i18n: utils.getI18n(),
         mixins: [treeMixin],
@@ -2704,7 +2704,7 @@ function devRecords(groupslist) {
 
 
 function messageRecords(groupslist) {
-    new Vue({
+    vueInstanse =  new Vue({
         el: '#messageRecords',
         i18n: utils.getI18n(),
         mixins: [reportMixin],
@@ -2869,7 +2869,7 @@ function messageRecords(groupslist) {
 
 // 查询报警
 function allAlarm(groupslist) {
-    new Vue({
+    vueInstanse = new Vue({
         el: "#all-alarm",
         i18n: utils.getI18n(),
         data: {
@@ -2985,7 +2985,7 @@ function allAlarm(groupslist) {
 //
 
 function phoneAlarm(groupslist) {
-    new Vue({
+    vueInstanse = new Vue({
         el: '#phone-alarm',
         i18n: utils.getI18n(),
         mixins: [reportMixin],
@@ -3058,7 +3058,7 @@ function phoneAlarm(groupslist) {
 }
 
 function wechatAlarm(groupslist) {
-    new Vue({
+    vueInstanse = new Vue({
         el: '#phone-alarm',
         i18n: utils.getI18n(),
         mixins: [reportMixin],
@@ -3132,7 +3132,7 @@ function wechatAlarm(groupslist) {
 
 
 function rechargeRecords(groupslist) {
-    new Vue({
+    vueInstanse = new Vue({
         el: '#recharge-records',
         i18n: utils.getI18n(),
         mixins: [reportMixin],
@@ -4033,7 +4033,7 @@ function salesRecord(groupslist) {
 
 //综合上线统计
 function reportOnlineSummary(groupslist) {
-    new Vue({
+    vueInstanse = new Vue({
         i18n: utils.getI18n(),
         el: "#reportonlinesummary",
         mixins: [treeMixin],
@@ -4319,7 +4319,7 @@ function reportOnlineSummary(groupslist) {
 
 // 掉线报表
 function dropLineReport(groupslist) {
-    new Vue({
+    vueInstanse = new Vue({
         i18n: utils.getI18n(),
         el: "#droplinereport",
         mixins: [treeMixin],
@@ -4685,7 +4685,7 @@ function deviceOnlineDaily(groupslist) {
 
 // 车队日在线率
 function groupsOnlineDaily(groupslist) {
-    new Vue({
+    vueInstanse = new Vue({
         el: '#groupsonlinedaily',
         i18n: utils.getI18n(),
         mixins: [treeMixin],
@@ -7946,7 +7946,7 @@ function multiMedia() {
 
 
 function reportNav(reportNavList) {
-    new Vue({
+    vueInstanse =  new Vue({
         el: "#report-nav",
         data: {
             search: isZh ? '搜索' : 'search',
