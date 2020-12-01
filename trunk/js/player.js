@@ -56,7 +56,8 @@ JSWebrtc.Player = (function () {
             return _self.pc.setLocalDescription(offer).then(function () { return offer; });
         }).then(function (offer) {
             return new Promise(function (resolve, reject) {
-                var port = _self.urlParams.port || 1985;
+                var port = 82;
+                // var port = _self.urlParams.port || 1985;
 
                 // @see https://github.com/rtcdn/rtcdn-draft
                 var api = _self.urlParams.user_query.play || '/rtc/v1/play/';
@@ -64,7 +65,7 @@ JSWebrtc.Player = (function () {
                     api += '/';
                 }
 
-                var url = 'http://' + _self.urlParams.server + ':' + port + api;
+                var url = 'https://' + _self.urlParams.server + ':' + port + api;
                 for (var key in _self.urlParams.user_query) {
                     if (key != 'api' && key != 'play') {
                         url += '&' + key + '=' + _self.urlParams.user_query[key];
@@ -75,10 +76,10 @@ JSWebrtc.Player = (function () {
                 var data = {
                     api: url, streamurl: _self.urlParams.url, clientip: null, sdp: offer.sdp
                 };
-                console.log("offer: " + JSON.stringify(data));
+                // console.log("offer: " + JSON.stringify(data));
 
                 JSWebrtc.HttpPost(url, JSON.stringify(data)).then(function (res) {
-                    console.log("answer: " + JSON.stringify(res));
+                    // console.log("answer: " + JSON.stringify(res));
                     resolve(res.sdp);
                 }, function (rej) {
                     reject(rej);
