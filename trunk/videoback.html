@@ -1251,7 +1251,8 @@
                         enableWorker: false,
                         enableStashBuffer: false,
                         isLive: true,
-                        lazyLoad: false
+                        lazyLoad: false,
+                        fixAudioTimestampGap: false,  //主要是这个配置，直播时音频的码率会被降低，直播游戏时背景音会有回响，但是说话声音没问题
                     });
                     this.flvPlayer.on(flvjs.Events.LOADING_COMPLETE, function() {
                         // alert("加载完成");

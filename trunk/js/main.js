@@ -257,12 +257,13 @@ Vue.component('my-video', {
             //     me.networkSpeed = parseInt(e.speed * 10) / 10 + 'KB/S';
             // })
             // this.rtcPlayer = rtcPlayer;
+            var me = this;
             var video =  this.$refs.player;
             var rtcPlayer = new JSWebrtc.Player(url,{ 
                     video: video, 
                     autoplay: true, 
-                    onPlay: (obj) => { 
-                        console.log("start play") 
+                    onPlay: function(obj){ 
+                        me.playerStateTips = me.$t('video.play');
                     } 
                 });
             this.rtcPlayer = rtcPlayer;
@@ -272,17 +273,20 @@ Vue.component('my-video', {
                 var rtcPlayer = this.rtcPlayer;
                 if (rtcPlayer != null) {
                     // this.rtcPlayer = rtcPlayer.update();
-                    this.startLoading();
-                    // rtcPlayer.unload();
+                    // this.rtcPlayer.startLoading();
+                    // this.$refs.player.play();
+                    //rtcPlayer.pause();
+                    rtcPlayer.play();
+                    this.$refs.player.play();
                     // rtcPlayer.detachMediaElement();
                     // rtcPlayer.destroy();
                 }else{
-                    this.initVideo(url, hasaudio);
+                     this.initVideo(url, hasaudio);
                 }
             } catch (error) {
-                console.log('报错了');
+                vRoot.$Message.error('该浏览器不支持视频播放,请换谷歌浏览器');
             }
-            // this.initVideo(url, hasaudio);
+    
         },
         addEventListenerToPlayer: function() {
             var player = this.$refs.player,

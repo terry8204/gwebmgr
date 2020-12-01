@@ -1634,10 +1634,10 @@ function findComponentsUpward(context, componentName) {
 }
 
 function findBrothersComponents(context, componentName, exceptMe) {
-    var res = context.$parent.$children.filter(item => {
+    var res = context.$parent.$children.filter(function(item)  {
         return item.$options.name === componentName;
     });
-    var index = res.findIndex(item => item._uid === context._uid);
+    var index = res.findIndex(function(item){ return item._uid === context._uid; });
     if (exceptMe) res.splice(index, 1);
     return res;
 }
@@ -1652,7 +1652,7 @@ function oneOf(value, validList) {
 }
 
 function broadcast(componentName, eventName, params) {
-    this.$children.forEach(child => {
+    this.$children.forEach(function(child){
         var name = child.$options.name;
         if (name === componentName) {
             child.$emit.apply(child, [eventName].concat(params));
@@ -1738,11 +1738,11 @@ var ScrollbarMixins = {
         },
         checkMaskInVisible: function() {
             var masks = document.getElementsByClassName('ivu-modal-mask') || [];
-            return Array.from(masks).every(m => m.style.display === 'none' || m.classList.contains('fade-leave-to'));
+            return Array.from(masks).every(function(m) {return  m.style.display === 'none' || m.classList.contains('fade-leave-to') } );
         },
         setScrollBar: function() {
             if (this.bodyIsOverflowing && this.scrollBarWidth !== undefined) {
-                document.body.style.paddingRight = `${this.scrollBarWidth}px`;
+                document.body.style.paddingRight = this.scrollBarWidth+'px';
             }
         },
         resetScrollBar: function() {
@@ -1870,7 +1870,7 @@ if(document.getElementById("drawer-template")){
                 default: false
             },
             placement: {
-                validator(value) {
+                validator:function(value) {
                     return oneOf(value, ['left', 'right']);
                 },
                 default: 'right'
@@ -1881,7 +1881,7 @@ if(document.getElementById("drawer-template")){
             },
             transfer: {
                 type: Boolean,
-                default () {
+                default:function () {
                     return !this.$IVIEW || this.$IVIEW.transfer === '' ? true : this.$IVIEW.transfer;
                 }
             },
@@ -1904,11 +1904,11 @@ if(document.getElementById("drawer-template")){
         computed: {
             wrapClasses: function() {
                 return [
-                    `${prefixCls}-wrap`, {
-                        [`${prefixCls}-hidden`]: !this.wrapShow,
-                        [`${this.className}`]: !!this.className,
-                        [`${prefixCls}-no-mask`]: !this.mask,
-                        [`${prefixCls}-wrap-inner`]: this.inner
+                    prefixCls+'-wrap', {
+                        [prefixCls+'-hidden']: !this.wrapShow,
+                        [this.className]: !!this.className,
+                        [prefixCls+'-no-mask']: !this.mask,
+                        [prefixCls+'-wrap-inner']: this.inner
                     }
                 ];
             },
@@ -1918,7 +1918,7 @@ if(document.getElementById("drawer-template")){
                 var width = parseInt(this.width);
     
                 var styleWidth = {
-                    width: width <= 100 ? `${width}%` : `${width}px`
+                    width: width <= 100 ? width+'%' :   width+'px' 
                 };
     
                 Object.assign(style, styleWidth);
@@ -1927,24 +1927,24 @@ if(document.getElementById("drawer-template")){
             },
             contentClasses: function() {
                 return [
-                    `${prefixCls}-content`, {
-                        [`${prefixCls}-content-no-mask`]: !this.mask
+                    prefixCls+'-content', {
+                        [prefixCls+'-content-no-mask']: !this.mask
                     }
                 ];
             },
             classes: function() {
                 return [
-                    `${prefixCls}`,
-                    `${prefixCls}-${this.placement}`, {
-                        [`${prefixCls}-no-header`]: !this.showHead,
-                        [`${prefixCls}-inner`]: this.inner
+                    prefixCls,
+                    prefixCls+'-'+this.placement, {
+                        [prefixCls+'-no-header']: !this.showHead,
+                        [prefixCls+'-inner']: this.inner
                     }
                 ];
             },
             maskClasses: function() {
                 return [
-                    `${prefixCls}-mask`, {
-                        [`${prefixCls}-mask-inner`]: this.inner
+                    prefixCls+'-mask', {
+                        [prefixCls+'-mask-inner']: this.inner
                     }
                 ];
             }
@@ -1963,7 +1963,7 @@ if(document.getElementById("drawer-template")){
             handleWrapClick: function(event) {
                 // use indexOf,do not use === ,because ivu-modal-wrap can have other custom className
                 var className = event.target.getAttribute('class');
-                if (className && className.indexOf(`${prefixCls}-wrap`) > -1) this.handleMask();
+                if (className && className.indexOf(prefixCls+'-wrap') > -1) this.handleMask();
             },
         },
         mounted: function() {
@@ -1988,7 +1988,7 @@ if(document.getElementById("drawer-template")){
             },
             visible: function(val) {
                 if (val === false) {
-                    this.timer = setTimeout(() => {
+                    this.timer = setTimeout(function () {
                         this.wrapShow = false;
                         // #4831 Check if there are any drawers left at the parent level
                         var brotherDrawers = findBrothersComponents(this, 'Drawer', true) || [];
@@ -1996,7 +1996,7 @@ if(document.getElementById("drawer-template")){
     
                         var otherDrawers = [].concat(brotherDrawers).concat(parentDrawers);
     
-                        var isScrollDrawer = otherDrawers.some(item => item.visible && !item.scrollable);
+                        var isScrollDrawer = otherDrawers.some(function(item) { return item.visible && !item.scrollable});
     
                         if (!isScrollDrawer) {
                             this.removeScrollEffect();
