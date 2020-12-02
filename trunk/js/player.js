@@ -46,7 +46,11 @@ JSWebrtc.Player = (function () {
 
    
         _self.pc.ontrack = function (event) {
-            _self.options.video['srcObject'] = event.streams[0];
+            try{
+                _self.options.video['srcObject'] = event.streams[0];
+            }catch(e){
+
+            }
         };
         _self.pc.addTransceiver("audio", { direction: "recvonly" });
         _self.pc.addTransceiver("video", { direction: "recvonly" });

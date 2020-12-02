@@ -209,13 +209,19 @@ Vue.component('my-video', {
             this.addEventListenerToPlayer();
         },
         setDevicedInfoAndPlay: function(device) {
+            this.cleanDevicedInfo();
             if (this.deviceId && this.deviceId != device.deviceid) {
-                this.handleStopVideos();
+                if(this.isPlaying){
+                    this.handleStopVideos();
+                }
+                
+            }else{
+                this.deviceId = device.deviceid;
+                this.deviceName = device.devicename;
+                this.channel = device.channel;
+                this.handleStartVideos();
             }
-            this.deviceId = device.deviceid;
-            this.deviceName = device.devicename;
-            this.channel = device.channel;
-            this.handleStartVideos();
+
         },
         cleanDevicedInfo: function() {
             this.deviceId = '';
@@ -267,6 +273,7 @@ Vue.component('my-video', {
                     } 
                 });
             this.rtcPlayer = rtcPlayer;
+            this.$refs.player.play();
         },
         switchrtcPlayer: function(url, hasaudio) {
             try {
@@ -276,14 +283,35 @@ Vue.component('my-video', {
                     // this.rtcPlayer.startLoading();
                     // this.$refs.player.play();
                     //rtcPlayer.pause();
-                    rtcPlayer.play();
-                    this.$refs.player.play();
+                    if(!this.isPlaying){
+                        rtcPlayer.play();
+                        this.$refs.player.play();
+ 
+                    }else{
+                 
+                        // rtcPlayer.stop();
+                        try
+                        {
+                        this.$refs.player.pause();
+                        this.$refs.player.srcObject = null;
+                        }catch(errorPause)
+                        {
+                            console.log("this.$refs.player.pause:",errorPause);
+                        }
+                        rtcPlayer.destroy();
+                        this.rtcPlayer = null;
+                       
+                        this.initVideo(url, hasaudio);
+                       
+                
+                    }
                     // rtcPlayer.detachMediaElement();
                     // rtcPlayer.destroy();
                 }else{
                      this.initVideo(url, hasaudio);
                 }
             } catch (error) {
+                console.log("switchrtcPlayer:",error);
                 vRoot.$Message.error('该浏览器不支持视频播放,请换谷歌浏览器');
             }
     
@@ -429,7 +457,7 @@ Vue.component('my-video', {
                 // player.unload();
                 // player.detachMediaElement();
                 // player.destroy();
-                player.pause();
+                player.stop();
 
                 // this.rtcPlayer = null;
             } catch (error) {};
