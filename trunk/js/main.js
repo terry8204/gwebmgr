@@ -206,6 +206,15 @@ Vue.component('my-video', {
             this.startTimes = 0;
             this.rtcPlayer = null;
             this.isSendAjaxState = false;
+            this.bitrate = {
+                timer : null,
+                bsnow : null,
+                bsbefore : null,
+                tsnow : null,
+                tsbefore : null,
+                value : null,
+            };
+
             this.addEventListenerToPlayer();
         },
         setDevicedInfoAndPlay: function(device) {
@@ -343,6 +352,65 @@ Vue.component('my-video', {
                 me.playerStateTips = me.$t('video.waiting');
             });
         },
+        caclBits:function(){
+            var me = this;
+           this.timer = setInterval(function(){
+            me.rtcPlayer.getStats().then(function(stats){
+                stats.forEach(function (res) {
+                    if(!res)
+                        return;
+                    var inStats = false;
+                    // Check if these are statistics on incoming media
+                    if((res.mediaType === "video" || res.id.toLowerCase().indexOf("video") > -1) &&
+                            res.type === "inbound-rtp" && res.id.indexOf("rtcp") < 0) {
+                        // New stats
+                        inStats = true;
+                    } else if(res.type == 'ssrc' && res.bytesReceived &&
+                            (res.googCodecName === "VP8" || res.googCodecName === "")) {
+                        // Older Chromer versions
+                        inStats = true;
+                    }
+                    // Parse stats now
+                    if(inStats) {
+                        var bitRate = -1;
+                        me.bitrate.bsnow = res.bytesReceived;
+                        me.bitrate.tsnow = res.timestamp;
+                        if(me.bitrate.bsbefore === null || me.bitrate.tsbefore === null) {
+                            // Skip this round
+                            me.bitrate.bsbefore = me.bitrate.bsnow;
+                            me.bitrate.tsbefore = me.bitrate.tsnow;
+                        } else {
+                            // Calculate bitrate
+                            var timePassed = me.bitrate.tsnow - me.bitrate.tsbefore;
+                            if(adapter.browserDetails.browser == "safari")
+                            {
+                                timePassed = timePassed/1000;	// Apparently the timestamp is in microseconds, in Safari
+                            }
+                            bitRate = Math.round((me.bitrate.bsnow - me.bitrate.bsbefore)  / timePassed);
+                            if(adapter.browserDetails.browser === 'safari')
+                            {
+                                bitRate = parseInt(bitRate/1000);
+                            }
+                            me.bitrate.value = bitRate + ' KB/s';
+                            //~ Janus.log("Estimated bitrate is " + config.bitrate.value);
+                            me.bitrate.bsbefore = me.bitrate.bsnow;
+                            me.bitrate.tsbefore = me.bitrate.tsnow;
+
+                            if(bitRate > 0){
+                                me.networkSpeed = me.bitrate.value;
+                                // console.log('bitRate',me.networkSpeed);   
+                            }
+                        }
+
+         
+                    }
+                });
+
+            },function(e){
+                console.log('e',e);
+            })
+           },2000);
+        },
         flv_photograph: function(playerIndex) {
             if (!this.isPlaying) {
                 return;
@@ -392,6 +460,7 @@ Vue.component('my-video', {
             }
         },
         handleStartVideos: function() {
+                clearInterval(this.timer);
             var url = myUrls.startVideos(),
                 me = this;
             this.playerStateTips = me.$t('video.requestPlay');
@@ -429,6 +498,7 @@ Vue.component('my-video', {
                     me.switchrtcPlayer(records[0].playurl, records[0].hasaudio);
                     me.isPlaying = true;
                     me.startTimes = Date.now();
+                    me.caclBits();
                 } else if (status === CMD_SEND_OVER_RETRY_TIMES) {
                     me.$Message.error(me.$t('monitor.CMD_SEND_OVER_RETRY_TIMES'));
                 } else if (status === CMD_SEND_SYNC_TIMEOUT) {
@@ -443,6 +513,7 @@ Vue.component('my-video', {
                     me.switchrtcPlayer(records[0].playurl, records[0].hasaudio);
                     me.isPlaying = true;
                     me.startTimes = Date.now();
+                    me.caclBits();
                 }
 
             }, function() {
@@ -451,28 +522,21 @@ Vue.component('my-video', {
             })
         },
         handleStopVideos: function() {
-
             try {
                 var player = this.rtcPlayer;
-                // player.unload();
-                // player.detachMediaElement();
-                // player.destroy();
                 player.stop();
-
                 // this.rtcPlayer = null;
             } catch (error) {};
             this.isPlaying = false;
             this.playerStateTips = this.$t('video.pausePlay');
             this.isSendAjaxState = false;
             this.networkSpeed = '0KB/S';
-
+            clearInterval(this.timer);
             var url = myUrls.stopVideos();
             utils.sendAjax(url, {
                 deviceid: this.deviceId,
                 channels: [Number(this.channel)]
             }, function(resp) {})
-
-
         },
         timeout: function() {
 

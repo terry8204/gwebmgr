@@ -26,6 +26,14 @@ JSWebrtc.Player = (function () {
         this.startLoading();
     };
 
+    Player.prototype.getStats = function(){
+        var bits = 0;
+        if(this.pc!=null){
+            bits=  this.pc.getStats() ; 
+        }
+        return bits;
+    }
+
     Player.prototype.startLoading = function () {
         var _self = this;
         if (_self.pc) {
@@ -43,7 +51,7 @@ JSWebrtc.Player = (function () {
             //   }); 
         }   
 
-
+        
    
         _self.pc.ontrack = function (event) {
             try{

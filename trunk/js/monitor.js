@@ -2601,7 +2601,7 @@ var monitor = {
             }
             var playerIns = this.$refs;
             var playedIndex = this.getPlayerIndexInPlayerList(device.deviceid, devInfo.channel);
-            console.log('playedIndex',playedIndex);
+        
             if (playedIndex <= 0) {
                 var playingIndex = this.getPlayingIndex();
                 var playerIn = playerIns['player' + playingIndex][0];
