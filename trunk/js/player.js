@@ -3,6 +3,7 @@ JSWebrtc.Player = (function () {
     "use strict";
 
     var Player = function (url, options) {
+        this.srcURL = url;
         this.options = options || {};
 
         if (!url.match(/^webrtc?:\/\//)) {
@@ -25,6 +26,15 @@ JSWebrtc.Player = (function () {
 
         this.startLoading();
     };
+
+    Player.prototype.getURL = function(){
+        var url = null;
+        if(this.srcURL){
+            url = this.srcURL;
+        }
+        return url;
+    }
+
 
     Player.prototype.getStats = function(){
         var bits = 0;

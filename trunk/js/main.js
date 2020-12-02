@@ -250,28 +250,6 @@ Vue.component('my-video', {
             }
         },
         initVideo: function(url, hasaudio) {
-            // var rtcPlayer = flvjs.createPlayer({
-            //     type: 'flv',
-            //     url: url,
-            //     isLive: true,
-            //     hasAudio: hasaudio === 1,
-            //     hasVideo: true,
-            //     withCredentials: false,
-            //     // url: 'http://video.gps51.com:81/live/teststream.flv'
-            // }, {
-            //     enableWorker: false,
-            //     enableStashBuffer: false,
-            //     isLive: true,
-            //     lazyLoad: false
-            // });
-            // var me = this;
-            // rtcPlayer.attachMediaElement(this.$refs.player);
-            // rtcPlayer.load(); //加载
-            // rtcPlayer.play();
-            // rtcPlayer.on(flvjs.Events.STATISTICS_INFO, function(e) {
-            //     me.networkSpeed = parseInt(e.speed * 10) / 10 + 'KB/S';
-            // })
-            // this.rtcPlayer = rtcPlayer;
             var me = this;
             var video =  this.$refs.player;
             var rtcPlayer = new JSWebrtc.Player(url,{ 
@@ -285,37 +263,37 @@ Vue.component('my-video', {
             this.$refs.player.play();
         },
         switchrtcPlayer: function(url, hasaudio) {
+            var me = this;
             try {
                 var rtcPlayer = this.rtcPlayer;
                 if (rtcPlayer != null) {
-                    // this.rtcPlayer = rtcPlayer.update();
-                    // this.rtcPlayer.startLoading();
-                    // this.$refs.player.play();
-                    //rtcPlayer.pause();
                     if(!this.isPlaying){
                         rtcPlayer.play();
                         this.$refs.player.play();
- 
+                        me.playerStateTips = me.$t('video.play');
                     }else{
-                 
-                        // rtcPlayer.stop();
-                        try
+                        var oldURL = rtcPlayer.getURL();
+                        console.log('oldURL',oldURL);
+                        console.log('url',url);
+                        if(oldURL != null && oldURL === url )
                         {
-                        this.$refs.player.pause();
-                        this.$refs.player.srcObject = null;
-                        }catch(errorPause)
-                        {
-                            console.log("this.$refs.player.pause:",errorPause);
+                            rtcPlayer.play();
+                            this.$refs.player.play();
+                            me.playerStateTips = me.$t('video.play');
                         }
-                        rtcPlayer.destroy();
-                        this.rtcPlayer = null;
-                       
-                        this.initVideo(url, hasaudio);
-                       
-                
+                        else
+                        {
+                            try{
+                                this.$refs.player.pause();
+                                this.$refs.player.srcObject = null;
+                            }catch(errorPause){
+                                console.log("this.$refs.player.pause:",errorPause);
+                            }
+                            rtcPlayer.destroy();
+                            this.rtcPlayer = null;
+                            this.initVideo(url, hasaudio);
+                        }
                     }
-                    // rtcPlayer.detachMediaElement();
-                    // rtcPlayer.destroy();
                 }else{
                      this.initVideo(url, hasaudio);
                 }
