@@ -1,4 +1,6 @@
 # gwebmgr
+#### 秒播视频效果
+[毫秒级演示视频](http://jiuhuwq.com/downloadbin/gps51show.mp4)
 
 #### 介绍
 gps51.com 前端网页完整代码，主要功能：定位、管理设备、在线视频。
