@@ -420,6 +420,7 @@ function posiReport(groupslist) {
             minuteNum: 5,
             tabValue: "lastPosi",
             markerIns: null,
+            isSpin:false,
             lastPosiColumns: [
                 { title: vRoot.$t("reportForm.index"),key: 'idx', width: 60, align: 'center', fixed: 'left' },
                 { title: vRoot.$t("alarm.devName"), key: 'devicename', width: 150, fixed: 'left' },
@@ -727,7 +728,7 @@ function posiReport(groupslist) {
                 });
             } else {
                 me.groupslist = [utils.castUsersTreeToDevicesTree(rootuser, true)];
-                
+                me.treeData = me.groupslist;
             }    
         }
     })

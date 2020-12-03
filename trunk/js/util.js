@@ -1019,7 +1019,6 @@ var utils = {
                     var subDevicesTreeRecord = this.doCastUsersTreeToDevicesTree(subusers, isNeedDevice);
                     subDevicesTreeRecord = deviceListGroups.concat(subDevicesTreeRecord);
                     currentsubDevicesTreeRecord.children = subDevicesTreeRecord;
-
                 } else {
                     currentsubDevicesTreeRecord.children = deviceListGroups;
 
