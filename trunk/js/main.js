@@ -22,7 +22,7 @@ var voiceQueue = []; //语音报警队列
 var alarmTypeList = []; //全部报警类型
 var isPlayAlarmVoice = false;
 
-document.title = isZh ? "车载视频安全预警平台" : "Location video service platform";
+
 
 Vue.use(VTree.VTree);
 // vuex store
@@ -1285,6 +1285,7 @@ var vRoot = new Vue({
     mounted: function() {
         // this.isShowAlarm = this.userType == 0 ? false : true;
         // this.$store.dispatch('setUserTypeDescr');
+        document.title = this.$t('login.title');
         this.$store.dispatch('setAllCmdList');
         this.$store.dispatch('setDeviceTypes');
         utils.getUserInfoList();
