@@ -5,6 +5,7 @@ new Vue({
     data: {
         username: '',
         password: '',
+        loginPageBgUrl:loginPageBgUrl,
         keepPass: false,
         account: 0,
         userTip: false,
@@ -289,6 +290,14 @@ new Vue({
             if (keyCode == 13) {
                 me.handleSubmit();
             }
+        }
+        // this.$el.style.backgroundImage = '../custom/' + this.loginPageBgUrl;
+    },
+    computed:{
+        bgImgStyle:function () {
+            return  {
+                backgroundImage: 'url('+'./custom/' + this.loginPageBgUrl+')'
+            }          
         }
     },
     watch: {

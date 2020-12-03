@@ -950,6 +950,7 @@ var appHeader = {
             dark: 'dark',
             name: '',
             isManager: true,
+            mainLogo:'custom/' + mainLogo,
             modal: false,
             intervalTime: null,
             multilogin: localStorage.getItem(userName + "-multilogin"),
