@@ -273,8 +273,6 @@ Vue.component('my-video', {
                         me.playerStateTips = me.$t('video.play');
                     }else{
                         var oldURL = rtcPlayer.getURL();
-                        console.log('oldURL',oldURL);
-                        console.log('url',url);
                         if(oldURL != null && oldURL === url )
                         {
                             rtcPlayer.play();

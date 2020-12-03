@@ -13,6 +13,21 @@ var treeMixin = {
         dayNumberType: 0,
     },
     methods: {
+        cleanSelectedDev: function() {
+            this.sosoValue = '';
+            this.checkedDevice = [];
+            function recurrence(list) {
+                for(var i = 0 ; i < list.length; i ++){
+                    var item = list[i];
+                    item.checked = false;
+                    if(item.children){
+                        recurrence(item.children)
+                    }
+                }
+            }
+            // recurrence(this.groupslist);
+            recurrence(this.treeData);
+        },
         changePage: function(index) {
             var offset = index * 20;
             var start = (index - 1) * 20;
@@ -84,7 +99,6 @@ var treeMixin = {
 
                     if (isFound == true) {
                         limitcount++;
-
                         childTemp.push(copyItem);
                         if (limitcount > 10) {
                             break;
@@ -407,12 +421,14 @@ function posiReport(groupslist) {
             tabValue: "lastPosi",
             markerIns: null,
             lastPosiColumns: [
-                { type: 'index', width: 60, align: 'center', fixed: 'left' },
+                { title: vRoot.$t("reportForm.index"),key: 'idx', width: 60, align: 'center', fixed: 'left' },
                 { title: vRoot.$t("alarm.devName"), key: 'devicename', width: 150, fixed: 'left' },
+                { title: vRoot.$t("alarm.devNum"), key: 'deviceid', width: 150},
                 { title: vRoot.$t("reportForm.lon"), key: 'fixedLon', width: 100 },
                 { title: vRoot.$t("reportForm.lat"), key: 'fixedLat', width: 100 },
-                { title: vRoot.$t("reportForm.direction"), key: 'direction', width: 90 },
+                { title: vRoot.$t("reportForm.direction"), key: 'direction', width: 100 },
                 { title: vRoot.$t("reportForm.speed"), key: 'speed', width: 100 },
+                { title: vRoot.$t("reportForm.downOfflineDuration"), key: 'downOfflineDuration', width: 180, },
                 { title: vRoot.$t("reportForm.date"), key: 'updatetimeStr', width: 160 },
                 { title: vRoot.$t("reportForm.status"), key: isZh ? 'strstatus' : 'strstatusen', width: 180 },
                 { title: vRoot.$t("reportForm.posiType"), key: 'positype', width: 115 },
@@ -514,20 +530,49 @@ function posiReport(groupslist) {
             mapInstance: null,
             deviceName: '',
         },
-        mixins: [reportMixin],
+        mixins: [treeMixin],
         methods: {
+            exportData:function(){
+                var tableData = deepClone(this.lastPosiData);
+                var columns = deepClone(this.lastPosiColumns);
+                columns.pop();
+                tableData.forEach(function(item) {
+                    item.deviceid = "\t" + item.deviceid;
+                    item.updatetimeStr = "\t" + item.updatetimeStr;
+                    item.devicename = "\t" + item.devicename;
+                });
+                this.$refs.totalTable.exportCsv({
+                    filename: isZh ?"位置报表":"PosiReport",
+                    original: false,
+                    columns: columns,
+                    data: tableData
+                });
+            },
             calcTableHeight: function() {
                 var wHeight = window.innerHeight;
                 this.lastTableHeight = wHeight - 170;
                 this.posiDetailHeight = wHeight - 144;
             },
             onClickQuery: function() {
-                if (!this.queryDeviceId) { return };
                 var me = this;
-                this.loading = true;
-                this.getLastPosition([this.queryDeviceId], function() {
-                    me.loading = false;
+                var deviceids = [];
+                this.checkedDevice.forEach(function(group) {
+                    if (!group.children) {
+                        if (group.deviceid != null) {
+                            deviceids.push(group.deviceid);
+                        }
+                    }
                 });
+                if (deviceids.length) { 
+  
+                    this.loading = true;
+                    this.getLastPosition(deviceids, function() {
+                        me.loading = false;
+                    });
+                }else{
+                    me.$Message.error(me.$t('reportForm.selectDevTip'));
+                }
+               
             },
             getLastPosition: function(deviceIds, callback) {
                 var me = this;
@@ -540,10 +585,11 @@ function posiReport(groupslist) {
                     if (resp.status == 0) {
                         if (resp.records) {
                             var newCored = [];
-                            resp.records.forEach(function(item) {
-
+                            resp.records.forEach(function(item,index) {
                                 if (item) {
+                                    var time = Date.now() - item.updatetime;
                                     var deviceid = item.deviceid;
+                                    item.idx = index + 1;
                                     item.devicename = vstore.state.deviceInfos[deviceid].devicename;
                                     item.updatetimeStr = DateFormat.longToDateTimeStr(item.updatetime, timeDifference);
                                     item.fixedLon = item.callon.toFixed(5);
@@ -554,9 +600,9 @@ function posiReport(groupslist) {
                                     newCored.push(item);
                                     item.positype = utils.getPosiType(item);
                                     item.direction = utils.getCarDirection(item.course);
+                                    item.downOfflineDuration = time > 600000 ? utils.timeStamp(Date.now() - item.updatetime) : vRoot.$t('monitor.online');
                                     item.speed = item.speed == 0 ? item.speed : (item.speed / 1000).toFixed(2) + "h/km";
                                 }
-
                             });
                             me.lastPosiData = newCored;
                         } else {
@@ -666,9 +712,23 @@ function posiReport(groupslist) {
             }
         },
         mounted: function() {
+            var me = this;
             this.mapType = utils.getMapType();
             this.initMap();
-            this.groupslist = groupslist;
+            if (rootuser == null) {
+                me.isSpin = true;
+                utils.queryDevicesTree(function(rootuserinfo) {
+                    me.isSpin = false;
+                    if (rootuserinfo) {
+                        rootuser = rootuserinfo;
+                        me.groupslist = [utils.castUsersTreeToDevicesTree(rootuserinfo, true)];
+                        me.treeData = me.groupslist;
+                    }
+                });
+            } else {
+                me.groupslist = [utils.castUsersTreeToDevicesTree(rootuser, true)];
+                
+            }    
         }
     })
 }
@@ -4329,70 +4389,29 @@ function dropLineReport(groupslist) {
             days: '1',
             groupslist: [],
             columns: [
-                { type: vRoot.$t("reportForm.index"), width: 70 },
-                { title: vRoot.$t("alarm.devNum"), key: 'deviceid', },
-                { title: vRoot.$t("alarm.devName"), key: 'devicename', },
-                { title: 'SIM', key: 'simnum', },
+                { title: vRoot.$t("reportForm.index"),key: 'index', width: 70 },
+                { title: vRoot.$t("alarm.devNum"), key: 'deviceid',  width: 120},
+                { title: vRoot.$t("alarm.devName"), key: 'devicename',  width: 120},
+                { title: 'SIM', key: 'simnum',   width: 120},
                 {
                     title: vRoot.$t("monitor.groupName"),
-                    key: 'groupid',
-                    render: function(h, params) {
-                        var groupid = params.row.groupid;
-                        var deviceid = params.row.deviceid;
-                        var groupName = '';
-                        if (groupid == 0) {
-                            groupName = vRoot.$t("monitor.defaultGroup");
-                        } else {
-                            for (var i = 0; i < groupslist.length; i++) {
-                                var group = groupslist[i];
-                                for (var j = 0; j < group.devices.length; j++) {
-                                    var device = group.devices[j];
-
-                                    if (device.deviceid === deviceid) {
-                                        if (group.groupname.indexOf('-') == -1) {
-                                            groupName = group.groupname;
-                                        } else {
-                                            groupName = group.groupname.split('-')[1];
-                                        }
-                                        break;
-                                    }
-                                    if (groupName != '') { break };
-                                }
-                            }
-                        }
-                        return h('span', {}, groupName)
-                    }
+                    key: 'groupName',
+                    width: 100,
                 },
                 {
                     title: vRoot.$t("user.devType"),
                     key: 'devicetype',
                     width: 85,
-                    render: function(h, params) {
-                        var devicetype = params.row.devicetype;
-                        var deviceTypes = vstore.state.deviceTypes;
-                        var item = deviceTypes[devicetype];
-                        return h('span', {}, item.typename);
-                    }
                 },
                 {
                     title: vRoot.$t('reportForm.offlineTime'),
                     width: 150,
-                    render: function(h, params) {
-                        var updatetime = params.row.updatetime;
-                        var updatetimeStr = isZh ? '未上报' : 'null';
-                        if (updatetime > 0) {
-                            updatetimeStr = DateFormat.longToDateTimeStr(updatetime, timeDifference);
-                        }
-                        return h('span', {}, updatetimeStr)
-                    }
+                    key:'updatetimeStr',
                 },
                 {
                     title: vRoot.$t('reportForm.downOfflineDuration'),
                     width: 150,
-                    render: function(h, params) {
-                        var updatetime = params.row.updatetime;
-                        return h('span', {}, utils.timeStamp(Date.now() - updatetime))
-                    }
+                    key:'downOfflineDuration',
                 },
                 {
                     title: vRoot.$t('monitor.remarks'),
@@ -4412,6 +4431,24 @@ function dropLineReport(groupslist) {
             tableHeight: 300,
         },
         methods: {
+            exportData:function(){
+
+                var tableData = deepClone(this.tableData);
+                var columns = deepClone(this.columns);
+                tableData.forEach(function(item) {
+                    item.deviceid = "\t" + item.deviceid;
+                    item.updatetimeStr = "\t" + item.updatetimeStr;
+                    item.devicename = "\t" + item.devicename;
+                    item.simnum = "\t" + item.simnum;
+                });
+                columns[columns.length-1] = {title: vRoot.$t('monitor.remarks'),key: 'remark',};
+                this.$refs.totalTable.exportCsv({
+                    filename: isZh ?"离线报表":"OfflineReport",
+                    original: false,
+                    columns: columns,
+                    data: tableData
+                });
+            },
             onClickQuery: function() {
                 if (this.checkedDevice.length == 0) {
                     this.$Message.error(this.$t('reportForm.selectDevTip'));
@@ -4433,14 +4470,58 @@ function dropLineReport(groupslist) {
                     }
                 });
 
+                function getUpdatetimeStr(row) {
+                    var updatetime = row.updatetime;
+                    var updatetimeStr = isZh ? '未上报' : 'null';
+                    if (updatetime > 0) {
+                        updatetimeStr = DateFormat.longToDateTimeStr(updatetime, timeDifference);
+                    }
+                    return updatetimeStr;
+                }
+
                 utils.sendAjax(url, data, function(respData) {
                     me.loading = false;
                     if (respData.status == 0) {
+
+                        respData.records.forEach(function(item,index){
+                            item.index = index+1;
+                            item.updatetimeStr = getUpdatetimeStr(item);
+                            item.devicetype = vstore.state.deviceTypes[item.devicetype].typename;
+                            item.downOfflineDuration = utils.timeStamp(Date.now() - item.updatetime);
+                            item.groupName = me.getGroupName(groupslist , item);
+                        });
+
                         me.tableData = respData.records;
                     } else {
                         me.$Message.error(me.$t('monitor.queryFail'));
                     }
                 });
+            },
+            getGroupName :function ( groupslist , row) {
+                var groupid = row.groupid;
+                var deviceid = row.deviceid;
+                var groupName = '';
+                if (groupid == 0) {
+                    groupName = vRoot.$t("monitor.defaultGroup");
+                } else {
+                    for (var i = 0; i < groupslist.length; i++) {
+                        var group = groupslist[i];
+                        for (var j = 0; j < group.devices.length; j++) {
+                            var device = group.devices[j];
+
+                            if (device.deviceid === deviceid) {
+                                if (group.groupname.indexOf('-') == -1) {
+                                    groupName = group.groupname;
+                                } else {
+                                    groupName = group.groupname.split('-')[1];
+                                }
+                                break;
+                            }
+                            if (groupName != '') { break };
+                        }
+                    }
+                }
+                return groupName;
             },
             clean: function() {
                 this.sosoValue = '';

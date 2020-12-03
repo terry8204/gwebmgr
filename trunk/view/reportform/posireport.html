@@ -19,18 +19,11 @@
             </div>
             <div style="float: left;position: relative;width: 300px;">
                 <div class="search-wrapper" v-click-outside.capture="onClickOutside">
-                    <i-input v-model.trim="sosoValue" icon="ios-search-outline" @on-change="sosoValueChange" :readonly="readonly" @on-blur="blur" @on-focus="focus" :placeholder="placeholder" @on-click="focus"></i-input>
+                    <i-input v-model.trim="sosoValue" icon="ios-search-outline" @on-change="sosoValueChange" :readonly="readonly" @on-focus="focus" :placeholder="placeholder"></i-input>
                     <transition name="fade">
-                        <ul class="search-item-wrapper" v-show="isShowMatchDev">
-                            <li class="demo-auto-complete-item" v-for="item in filterData">
-                                <div class="demo-auto-complete-group" v-show="item.devices.length">
-                                    <span>{{ item.groupname }}</span>
-                                </div>
-                                <div v-for="option in item.devices" :value="option.groupname" :key="option.groupname" class="ivu-select-item">
-                                    <span :style="{color:option.isOnline ? '#33DAD0':'#B1BBC2'}" @click="sosoSelect(option)" class="demo-auto-complete-title">{{ option.allDeviceIdTitle }}</span>
-                                </div>
-                            </li>
-                        </ul>
+                        <div class="search-item-wrapper" v-show="isShowMatchDev">
+                            <Tree :data="treeData" show-checkbox @on-check-change="onCheckedDevice"></Tree>
+                        </div>
                     </transition>
                 </div>
             </div>
@@ -39,6 +32,9 @@
             </div>
             <div style="margin-left:20px;float: left;">
                 <i-button @click="onClickQuery">{{$t("reportForm.query")}}</i-button>
+            </div>
+            <div style="margin-left:20px;float: right;">
+                <i-button @click="exportData" icon="ios-search" type="primary">{{$t("reportForm.exportData")}}</i-button>
             </div>
         </Row>
         <div style="margin:10px;">
@@ -50,7 +46,7 @@
                 <span>{{$t("reportForm.AddressDetails")}}-{{deviceName}}</span>
             </p>
             <div>
-                <i-table :columns="posiDetailColumns" :data="posiDetailData" :loading="loading" :height="posiDetailHeight"></i-table>
+                <i-table ref="totalTable" :columns="posiDetailColumns" :data="posiDetailData" :loading="loading" :height="posiDetailHeight"></i-table>
             </div>
         </Modal>
         <transition name="fade">

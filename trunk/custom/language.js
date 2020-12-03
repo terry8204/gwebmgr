@@ -1441,7 +1441,7 @@
                 threeMinutes: '已播放三分钟时间,暂停播放',
                 notSupportCanvas: "您的浏览器暂不支持canvas",
             },
-            reportForm: {
+            reportForm: { 
                 maxSignal:'最大信号值',
                 viewPicture: '查看图片',
                 empty: '空',
@@ -1577,8 +1577,8 @@
                 d30: "1个月",
                 d180: "半年",
                 d365: "一年",
-                offlineTime: "掉线时间",
-                downOfflineDuration: "掉线时长",
+                offlineTime: "离线时间",
+                downOfflineDuration: "离线时长",
                 ascriptionUser: "所属账号",
                 selectMonth: "选择月份",
                 onlineDaysAndTotalDays: "在线天数/总天数",
