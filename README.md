@@ -65,4 +65,4 @@ gps51.com 前端网页完整代码，主要功能：定位、管理设备、在�
 ![输入图片说明](https://images.gitee.com/uploads/images/2020/1025/115804_2a70e4ba_1763104.jpeg "track.jpg")
 
 #### 秒播视频效果
-[毫秒级演示视频](http://[毫秒级演示视频]（http://jiuhuwq.com/downloadbin/gps51show.mp4))
+[毫秒级演示视频](http://jiuhuwq.com/downloadbin/gps51show.mp4（http://jiuhuwq.com/downloadbin/gps51show.mp4))
