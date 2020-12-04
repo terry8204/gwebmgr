@@ -204,7 +204,7 @@ Vue.component('my-video', {
 
         init: function() {
             this.startTimes = 0;
-            this.rtcPlayer = null;
+            this.videoPlayer = null;
             this.isSendAjaxState = false;
             this.bitrate = {
                 timer : null,
@@ -249,57 +249,103 @@ Vue.component('my-video', {
                 this.handleStartVideos();
             }
         },
-        initVideo: function(url, hasaudio) {
+        initWebRtcVideo:function(url, hasaudio){
             var me = this;
             var video =  this.$refs.player;
-            var rtcPlayer = new JSWebrtc.Player(url,{ 
+            var videoPlayer = new JSWebrtc.Player(url,{ 
                     video: video, 
                     autoplay: true, 
                     onPlay: function(obj){ 
                         me.playerStateTips = me.$t('video.play');
                     } 
                 });
-            this.rtcPlayer = rtcPlayer;
+            this.videoPlayer = videoPlayer;
             this.$refs.player.play();
+        },
+        initFlvVideo:function(url, hasaudio){
+            var videoPlayer = flvjs.createPlayer({
+                type: 'flv',
+                url: url,
+                isLive: true,
+                hasAudio: hasaudio === 1,
+                hasVideo: true,
+                withCredentials: false,
+                // url: 'http://video.gps51.com:81/live/teststream.flv'
+            }, {
+                enableWorker: false,
+                enableStashBuffer: false,
+                isLive: true,
+                lazyLoad: false,
+                fixAudioTimestampGap: false,  //主要是这个配置，直播时音频的码率会被降低，直播游戏时背景音会有回响，但是说话声音没问题
+            });
+            var me = this;
+            videoPlayer.attachMediaElement(this.$refs.player);
+            videoPlayer.load(); //加载
+            videoPlayer.play();
+            videoPlayer.on(flvjs.Events.STATISTICS_INFO, function(e) {
+                me.networkSpeed = parseInt(e.speed * 10) / 10 + 'KB/S';
+            })
+            this.videoPlayer = videoPlayer; 
+        },
+        initVideo: function(url, hasaudio) {
+            if(isWebrtcPlay){
+                this.initWebRtcVideo(url, hasaudio);
+            }else{
+                this.initFlvVideo(url, hasaudio);
+            }
         },
         switchrtcPlayer: function(url, hasaudio) {
             var me = this;
-            try {
-                var rtcPlayer = this.rtcPlayer;
-                if (rtcPlayer != null) {
-                    if(!this.isPlaying){
-                        rtcPlayer.play();
-                        this.$refs.player.play();
-                        me.playerStateTips = me.$t('video.play');
-                    }else{
-                        var oldURL = rtcPlayer.getURL();
-                        if(oldURL != null && oldURL === url )
-                        {
-                            rtcPlayer.play();
+            if(isWebrtcPlay){
+                try {
+                    var videoPlayer = this.videoPlayer;
+                    if (videoPlayer != null) {
+                        if(!this.isPlaying){
+                            videoPlayer.play();
                             this.$refs.player.play();
                             me.playerStateTips = me.$t('video.play');
-                        }
-                        else
-                        {
-                            try{
-                                this.$refs.player.pause();
-                                this.$refs.player.srcObject = null;
-                            }catch(errorPause){
-                                console.log("this.$refs.player.pause:",errorPause);
+                        }else{
+                            var oldURL = videoPlayer.getURL();
+                            if(oldURL != null && oldURL === url )
+                            {
+                                videoPlayer.play();
+                                this.$refs.player.play();
+                                me.playerStateTips = me.$t('video.play');
                             }
-                            rtcPlayer.destroy();
-                            this.rtcPlayer = null;
-                            this.initVideo(url, hasaudio);
+                            else
+                            {
+                                try{
+                                    this.$refs.player.pause();
+                                    this.$refs.player.srcObject = null;
+                                }catch(errorPause){
+                                    console.log("this.$refs.player.pause:",errorPause);
+                                }
+                                videoPlayer.destroy();
+                                this.videoPlayer = null;
+                                this.initVideo(url, hasaudio);
+                            }
                         }
+                    }else{
+                        this.initWebRtcVideo(url, hasaudio);
                     }
-                }else{
-                     this.initVideo(url, hasaudio);
+                } catch (error) {
+                    console.log("switchrtcPlayer:",error);
+                    vRoot.$Message.error('该浏览器不支持视频播放,请换谷歌浏览器');
                 }
-            } catch (error) {
-                console.log("switchrtcPlayer:",error);
-                vRoot.$Message.error('该浏览器不支持视频播放,请换谷歌浏览器');
-            }
+            }else{
+                try {
+                    var videoPlayer = this.videoPlayer;
+                    if (videoPlayer != null) {
+                        videoPlayer.pause();
+                        videoPlayer.unload();
+                        videoPlayer.detachMediaElement();
+                        videoPlayer.destroy();
+                    }
+                } catch (error) {
     
+                }
+                this.initFlvVideo(url, hasaudio);
+            }
         },
         addEventListenerToPlayer: function() {
             var player = this.$refs.player,
@@ -331,7 +377,7 @@ Vue.component('my-video', {
         caclBits:function(){
             var me = this;
            this.timer = setInterval(function(){
-            me.rtcPlayer.getStats().then(function(stats){
+            me.videoPlayer.getStats().then(function(stats){
                 stats.forEach(function (res) {
                     if(!res)
                         return;
@@ -443,8 +489,7 @@ Vue.component('my-video', {
             utils.sendAjax(url, {
                 deviceid: this.deviceId,
                 channels: [Number(this.channel)],
-                // playtype: ishttps ? 'flvs' : 'flv',
-                playtype: 'webrtc',
+                playtype: isWebrtcPlay ? 'webrtc' : (ishttps ? 'flvs' : 'flv') ,
             }, function(resp) {
                 me.isSendAjaxState = false;
                 var records = resp.records;
@@ -474,7 +519,7 @@ Vue.component('my-video', {
                     me.switchrtcPlayer(records[0].playurl, records[0].hasaudio);
                     me.isPlaying = true;
                     me.startTimes = Date.now();
-                    me.caclBits();
+                    isWebrtcPlay && me.caclBits();
                 } else if (status === CMD_SEND_OVER_RETRY_TIMES) {
                     me.$Message.error(me.$t('monitor.CMD_SEND_OVER_RETRY_TIMES'));
                 } else if (status === CMD_SEND_SYNC_TIMEOUT) {
@@ -489,7 +534,7 @@ Vue.component('my-video', {
                     me.switchrtcPlayer(records[0].playurl, records[0].hasaudio);
                     me.isPlaying = true;
                     me.startTimes = Date.now();
-                    me.caclBits();
+                    isWebrtcPlay &&  me.caclBits();
                 }
 
             }, function() {
@@ -499,15 +544,22 @@ Vue.component('my-video', {
         },
         handleStopVideos: function() {
             try {
-                var player = this.rtcPlayer;
-                player.stop();
-                // this.rtcPlayer = null;
+                if(isWebrtcPlay){
+                    var player = this.videoPlayer;
+                    player.stop();
+                }else{
+                    var player = this.videoPlayer;
+                    player.unload();
+                    player.detachMediaElement();
+                    player.destroy();
+                    this.videoPlayer = null;
+                }
             } catch (error) {};
             this.isPlaying = false;
             this.playerStateTips = this.$t('video.pausePlay');
             this.isSendAjaxState = false;
             this.networkSpeed = '0KB/S';
-            clearInterval(this.timer);
+            isWebrtcPlay &&  clearInterval(this.timer);
             var url = myUrls.stopVideos();
             utils.sendAjax(url, {
                 deviceid: this.deviceId,
@@ -934,7 +986,7 @@ Vue.component('s-checkbox', {
             }
             this.$emit('change-io', this.checkboxList);
         }
-    },
+    }, 
     template: document.getElementById("select-checkbox-template"),
 })
 
