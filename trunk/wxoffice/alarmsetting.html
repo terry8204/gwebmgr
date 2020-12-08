@@ -95,7 +95,6 @@
     <script src="./vue.min.js"></script>
     <script src="./vant.min.js"></script>
     <script src="./axios.min.js"></script>
-    <script src="./md5.min.js"></script>
     <script type="text/javascript">
         new Vue({
             el: "#app",
@@ -140,7 +139,7 @@
                         type: "USER",
                         from: "web",
                         username: this.username,
-                        password: MD5(this.password),
+                        password: this.password,
                     };
                     axios.post(url, data)
                         .then((response) => {
