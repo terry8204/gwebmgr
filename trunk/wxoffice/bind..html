@@ -72,12 +72,13 @@
                         if (data.status == 0) {
                             this.$toast.success('绑定成功');
                         } else {
-                            this.$toast.error('绑定失败');
+                            this.$dialog.alert({
+                                message: data.cause,
+                            });
                         }
                     }).catch((e) => {
-                        this.$dialog.alert({
-                            message: '网络错误',
-                        });
+                        this.$toast.error('绑定失败');
+
                     });
                     console.log('submit', values);
                 },
