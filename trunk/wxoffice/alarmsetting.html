@@ -149,7 +149,6 @@
                             this.forcealarm = data.forcealarm;
                             this.queryAlarmDescr(data.forcealarm);
                             this.disabled = (data.alarmaction & 0X04) === 0X04;
-                            console.log(data);
                         }).catch((e) => {
                             this.$dialog.alert({
                                 message: '登录失败,请重新登录',
@@ -168,25 +167,30 @@
                                 checked: checked,
                             })
                             this.alarmTypeList = alarmTypeList;
-                        })
+                        });
+
+                        this.lock = false;
                     })
                 }
             },
             watch: {
                 disabled(newVal) {
-                    this.setForcealarm().then((response) => {
-                        let data = response.data;
-                        if (data.status == 0) {
-                            this.$toast.success(newVal ? '开启成功' : '关闭成功');
-                        } else {
+                    if (!this.lock) {
+                        this.setForcealarm().then((response) => {
+                            let data = response.data;
+                            if (data.status == 0) {
+                                this.$toast.success(newVal ? '开启成功' : '关闭成功');
+                            } else {
+                                this.$toast.error('开启失败');
+                            }
+                        }).catch((e) => {
                             this.$toast.error('开启失败');
-                        }
-                    }).catch((e) => {
-                        this.$toast.error('开启失败');
-                    });;
+                        });;
+                    }
                 },
             },
             mounted() {
+                this.lock = true;
                 this.token = null;
                 this.username = this.getQueryString('username');
                 this.password = this.getQueryString('password');
