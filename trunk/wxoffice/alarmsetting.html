@@ -146,8 +146,8 @@
                             let data = response.data;
                             if (data.status == 0) {
                                 this.token = data.token;
-                                this.forcealarm = data.forcealarm;
-                                this.queryAlarmDescr(data.forcealarm);
+                                this.forcealarm = data.forcealarm ? data.forcealarm : '000000000000000000000000000000000000000000000000000000000000000';
+                                this.queryAlarmDescr(this.forcealarm);
                                 this.disabled = (data.alarmaction & 0X04) === 0X04;
                             } else {
                                 this.$dialog.alert({
