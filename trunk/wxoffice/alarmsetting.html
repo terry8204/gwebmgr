@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <title>消息推送</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no, viewport-fit=cover">
+    <meta http-equiv="x-dns-prefetch-control" content="on" />
+    <link rel="stylesheet" href="./vant.css">
+    <style>
+        html,
+        body {
+            font-size: 100px;
+            height: 100%;
+            width: 100%;
+        }
+        
+        .loading-wrap {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 80%;
+            width: 100%;
+        }
+        
+        #app {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            width: 100%;
+        }
+        
+        #app header {
+            height: 50px;
+            line-height: 50px;
+            text-align: center;
+            font-size: 16px;
+            font-weight: 600;
+            background-color: #4E6BBB;
+            color: #ffffff;
+        }
+        
+        #app div.switch-wrap {
+            height: 56px;
+            font-size: 15px;
+            background-color: #ECECEC;
+            padding-top: 4px;
+        }
+        
+        #app .van-cell {
+            line-height: 32px;
+            font-size: 16px;
+        }
+        
+        #app div.switch-wrap>div {
+            height: 50px;
+            line-height: 50px;
+            background-color: #fff;
+        }
+        
+        #app div.content {
+            flex: 1;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <header>微信报警推送</header>
+        <div class="switch-wrap">
+            <div>
+                <van-cell title="接收新消息通知">
+                    <template #right-icon>
+                        <van-switch v-model="disabled" />
+                    </template>
+                </van-cell>
+            </div>
+        </div>
+        <div class="content">
+            <div class="loading-wrap" v-show="alarmTypeList.length == 0">
+                <van-loading type="spinner" size="24px" color="#1989fa" />
+            </div>
+            <div v-for="(item,index) in alarmTypeList" style="border-bottom:1px solid #F8F8F8;">
+                <van-cell :title="item.title">
+                    <template #right-icon>
+                        <van-switch v-model="item.checked" :disabled="!disabled" @change="handleChange(index)" />
+                    </template>
+                </van-cell>
+            </div>
+        </div>
+    </div>
+    <script src="./vue.min.js"></script>
+    <script src="./vant.min.js"></script>
+    <script src="./axios.min.js"></script>
+    <script src="./md5.min.js"></script>
+    <script type="text/javascript">
+        new Vue({
+            el: "#app",
+            data: {
+                disabled: false,
+                alarmTypeList: [],
+            },
+            methods: {
+                handleChange(index) {
+                    this.setForcealarm().then((response) => {
+                        let data = response.data;
+                        if (data.status == 0) {
+                            this.$toast.success('设置成功');
+                        } else {
+                            this.$toast.error('设置失败');
+                        }
+                    }).catch((e) => {
+                        this.$toast.error('设置失败');
+                    });;
+                },
+                setForcealarm() {
+                    let url = 'https://www.gps51.com/webapi?action=setforcealarm&token=' + this.token;
+                    let data = {
+                        alarmaction: this.disabled ? 4 : 0,
+                        forcealarm: '',
+                    }
+                    this.alarmTypeList.forEach(function(item) {
+                        data.forcealarm += item.checked ? '1' : '0';
+                    });
+                    return axios.post(url, data);
+
+                },
+                getQueryString(name) {
+                    var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+                    var r = window.location.search.substr(1).match(reg);
+                    if (r != null) return unescape(r[2]);
+                    return null;
+                },
+                login() {
+                    let url = 'https://www.gps51.com/webapi?action=login';
+                    var data = {
+                        type: "USER",
+                        from: "web",
+                        username: this.username,
+                        password: MD5(this.password),
+                    };
+                    axios.post(url, data)
+                        .then((response) => {
+                            let data = response.data;
+                            this.token = data.token;
+                            this.forcealarm = data.forcealarm;
+                            this.queryAlarmDescr(data.forcealarm);
+                            this.disabled = (data.alarmaction & 0X04) === 0X04;
+                            console.log(data);
+                        }).catch((e) => {
+                            this.$dialog.alert({
+                                message: '登录失败,请重新登录',
+                            });
+                        })
+                },
+                queryAlarmDescr(forcealarm) {
+                    let url = "https://www.gps51.com/webapi?action=queryalarmdescr&token=" + this.token;
+                    axios.post(url, {}).then((response) => {
+                        let data = response.data;
+                        let alarmTypeList = [];
+                        data.records.forEach((item, index) => {
+                            let checked = Number(forcealarm.charAt(index)) === 1;
+                            alarmTypeList.push({
+                                title: item.alarmname,
+                                checked: checked,
+                            })
+                            this.alarmTypeList = alarmTypeList;
+                        })
+                    })
+                }
+            },
+            watch: {
+                disabled(newVal) {
+                    this.setForcealarm().then((response) => {
+                        let data = response.data;
+                        if (data.status == 0) {
+                            this.$toast.success(newVal ? '开启成功' : '关闭成功');
+                        } else {
+                            this.$toast.error('开启失败');
+                        }
+                    }).catch((e) => {
+                        this.$toast.error('开启失败');
+                    });;
+                },
+            },
+            mounted() {
+                this.token = null;
+                this.username = this.getQueryString('username');
+                this.password = this.getQueryString('password');
+                this.login();
+            },
+        })
+    </script>
+</body>
+
+</html>

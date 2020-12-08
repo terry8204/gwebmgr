@@ -207,12 +207,12 @@ Vue.component('my-video', {
             this.videoPlayer = null;
             this.isSendAjaxState = false;
             this.bitrate = {
-                timer : null,
-                bsnow : null,
-                bsbefore : null,
-                tsnow : null,
-                tsbefore : null,
-                value : null,
+                timer: null,
+                bsnow: null,
+                bsbefore: null,
+                tsnow: null,
+                tsbefore: null,
+                value: null,
             };
 
             this.addEventListenerToPlayer();
@@ -220,11 +220,11 @@ Vue.component('my-video', {
         setDevicedInfoAndPlay: function(device) {
             this.cleanDevicedInfo();
             if (this.deviceId && this.deviceId != device.deviceid) {
-                if(this.isPlaying){
+                if (this.isPlaying) {
                     this.handleStopVideos();
                 }
-                
-            }else{
+
+            } else {
                 this.deviceId = device.deviceid;
                 this.deviceName = device.devicename;
                 this.channel = device.channel;
@@ -249,20 +249,20 @@ Vue.component('my-video', {
                 this.handleStartVideos();
             }
         },
-        initWebRtcVideo:function(url, hasaudio){
+        initWebRtcVideo: function(url, hasaudio) {
             var me = this;
-            var video =  this.$refs.player;
-            var videoPlayer = new JSWebrtc.Player(url,{ 
-                    video: video, 
-                    autoplay: true, 
-                    onPlay: function(obj){ 
-                        me.playerStateTips = me.$t('video.play');
-                    } 
-                });
+            var video = this.$refs.player;
+            var videoPlayer = new JSWebrtc.Player(url, {
+                video: video,
+                autoplay: true,
+                onPlay: function(obj) {
+                    me.playerStateTips = me.$t('video.play');
+                }
+            });
             this.videoPlayer = videoPlayer;
             this.$refs.player.play();
         },
-        initFlvVideo:function(url, hasaudio){
+        initFlvVideo: function(url, hasaudio) {
             var videoPlayer = flvjs.createPlayer({
                 type: 'flv',
                 url: url,
@@ -276,7 +276,7 @@ Vue.component('my-video', {
                 enableStashBuffer: false,
                 isLive: true,
                 lazyLoad: false,
-                fixAudioTimestampGap: false,  //主要是这个配置，直播时音频的码率会被降低，直播游戏时背景音会有回响，但是说话声音没问题
+                // fixAudioTimestampGap: false,  //主要是这个配置，直播时音频的码率会被降低，直播游戏时背景音会有回响，但是说话声音没问题
             });
             var me = this;
             videoPlayer.attachMediaElement(this.$refs.player);
@@ -285,54 +285,51 @@ Vue.component('my-video', {
             videoPlayer.on(flvjs.Events.STATISTICS_INFO, function(e) {
                 me.networkSpeed = parseInt(e.speed * 10) / 10 + 'KB/S';
             })
-            this.videoPlayer = videoPlayer; 
+            this.videoPlayer = videoPlayer;
         },
         initVideo: function(url, hasaudio) {
-            if(isWebrtcPlay){
+            if (isWebrtcPlay) {
                 this.initWebRtcVideo(url, hasaudio);
-            }else{
+            } else {
                 this.initFlvVideo(url, hasaudio);
             }
         },
         switchrtcPlayer: function(url, hasaudio) {
             var me = this;
-            if(isWebrtcPlay){
+            if (isWebrtcPlay) {
                 try {
                     var videoPlayer = this.videoPlayer;
                     if (videoPlayer != null) {
-                        if(!this.isPlaying){
+                        if (!this.isPlaying) {
                             videoPlayer.play();
                             this.$refs.player.play();
                             me.playerStateTips = me.$t('video.play');
-                        }else{
+                        } else {
                             var oldURL = videoPlayer.getURL();
-                            if(oldURL != null && oldURL === url )
-                            {
+                            if (oldURL != null && oldURL === url) {
                                 videoPlayer.play();
                                 this.$refs.player.play();
                                 me.playerStateTips = me.$t('video.play');
-                            }
-                            else
-                            {
-                                try{
+                            } else {
+                                try {
                                     this.$refs.player.pause();
                                     this.$refs.player.srcObject = null;
-                                }catch(errorPause){
-                                    console.log("this.$refs.player.pause:",errorPause);
+                                } catch (errorPause) {
+                                    console.log("this.$refs.player.pause:", errorPause);
                                 }
                                 videoPlayer.destroy();
                                 this.videoPlayer = null;
                                 this.initVideo(url, hasaudio);
                             }
                         }
-                    }else{
+                    } else {
                         this.initWebRtcVideo(url, hasaudio);
                     }
                 } catch (error) {
-                    console.log("switchrtcPlayer:",error);
+                    console.log("switchrtcPlayer:", error);
                     vRoot.$Message.error('该浏览器不支持视频播放,请换谷歌浏览器');
                 }
-            }else{
+            } else {
                 try {
                     var videoPlayer = this.videoPlayer;
                     if (videoPlayer != null) {
@@ -342,7 +339,7 @@ Vue.component('my-video', {
                         videoPlayer.destroy();
                     }
                 } catch (error) {
-    
+
                 }
                 this.initFlvVideo(url, hasaudio);
             }
@@ -374,64 +371,62 @@ Vue.component('my-video', {
                 me.playerStateTips = me.$t('video.waiting');
             });
         },
-        caclBits:function(){
+        caclBits: function() {
             var me = this;
-           this.timer = setInterval(function(){
-            me.videoPlayer.getStats().then(function(stats){
-                stats.forEach(function (res) {
-                    if(!res)
-                        return;
-                    var inStats = false;
-                    // Check if these are statistics on incoming media
-                    if((res.mediaType === "video" || res.id.toLowerCase().indexOf("video") > -1) &&
+            this.timer = setInterval(function() {
+                me.videoPlayer.getStats().then(function(stats) {
+                    stats.forEach(function(res) {
+                        if (!res)
+                            return;
+                        var inStats = false;
+                        // Check if these are statistics on incoming media
+                        if ((res.mediaType === "video" || res.id.toLowerCase().indexOf("video") > -1) &&
                             res.type === "inbound-rtp" && res.id.indexOf("rtcp") < 0) {
-                        // New stats
-                        inStats = true;
-                    } else if(res.type == 'ssrc' && res.bytesReceived &&
+                            // New stats
+                            inStats = true;
+                        } else if (res.type == 'ssrc' && res.bytesReceived &&
                             (res.googCodecName === "VP8" || res.googCodecName === "")) {
-                        // Older Chromer versions
-                        inStats = true;
-                    }
-                    // Parse stats now
-                    if(inStats) {
-                        var bitRate = -1;
-                        me.bitrate.bsnow = res.bytesReceived;
-                        me.bitrate.tsnow = res.timestamp;
-                        if(me.bitrate.bsbefore === null || me.bitrate.tsbefore === null) {
-                            // Skip this round
-                            me.bitrate.bsbefore = me.bitrate.bsnow;
-                            me.bitrate.tsbefore = me.bitrate.tsnow;
-                        } else {
-                            // Calculate bitrate
-                            var timePassed = me.bitrate.tsnow - me.bitrate.tsbefore;
-                            if(adapter.browserDetails.browser == "safari")
-                            {
-                                timePassed = timePassed/1000;	// Apparently the timestamp is in microseconds, in Safari
-                            }
-                            bitRate = Math.round((me.bitrate.bsnow - me.bitrate.bsbefore)  / timePassed);
-                            if(adapter.browserDetails.browser === 'safari')
-                            {
-                                bitRate = parseInt(bitRate/1000);
-                            }
-                            me.bitrate.value = bitRate + ' KB/s';
-                            //~ Janus.log("Estimated bitrate is " + config.bitrate.value);
-                            me.bitrate.bsbefore = me.bitrate.bsnow;
-                            me.bitrate.tsbefore = me.bitrate.tsnow;
-
-                            if(bitRate > 0){
-                                me.networkSpeed = me.bitrate.value;
-                                // console.log('bitRate',me.networkSpeed);   
-                            }
+                            // Older Chromer versions
+                            inStats = true;
                         }
+                        // Parse stats now
+                        if (inStats) {
+                            var bitRate = -1;
+                            me.bitrate.bsnow = res.bytesReceived;
+                            me.bitrate.tsnow = res.timestamp;
+                            if (me.bitrate.bsbefore === null || me.bitrate.tsbefore === null) {
+                                // Skip this round
+                                me.bitrate.bsbefore = me.bitrate.bsnow;
+                                me.bitrate.tsbefore = me.bitrate.tsnow;
+                            } else {
+                                // Calculate bitrate
+                                var timePassed = me.bitrate.tsnow - me.bitrate.tsbefore;
+                                if (adapter.browserDetails.browser == "safari") {
+                                    timePassed = timePassed / 1000; // Apparently the timestamp is in microseconds, in Safari
+                                }
+                                bitRate = Math.round((me.bitrate.bsnow - me.bitrate.bsbefore) / timePassed);
+                                if (adapter.browserDetails.browser === 'safari') {
+                                    bitRate = parseInt(bitRate / 1000);
+                                }
+                                me.bitrate.value = bitRate + ' KB/s';
+                                //~ Janus.log("Estimated bitrate is " + config.bitrate.value);
+                                me.bitrate.bsbefore = me.bitrate.bsnow;
+                                me.bitrate.tsbefore = me.bitrate.tsnow;
 
-         
-                    }
-                });
+                                if (bitRate > 0) {
+                                    me.networkSpeed = me.bitrate.value;
+                                    // console.log('bitRate',me.networkSpeed);   
+                                }
+                            }
 
-            },function(e){
-                console.log('e',e);
-            })
-           },2000);
+
+                        }
+                    });
+
+                }, function(e) {
+                    console.log('e', e);
+                })
+            }, 2000);
         },
         flv_photograph: function(playerIndex) {
             if (!this.isPlaying) {
@@ -482,14 +477,14 @@ Vue.component('my-video', {
             }
         },
         handleStartVideos: function() {
-                clearInterval(this.timer);
+            clearInterval(this.timer);
             var url = myUrls.startVideos(),
                 me = this;
             this.playerStateTips = me.$t('video.requestPlay');
             utils.sendAjax(url, {
                 deviceid: this.deviceId,
                 channels: [Number(this.channel)],
-                playtype: isWebrtcPlay ? 'webrtc' : (ishttps ? 'flvs' : 'flv') ,
+                playtype: isWebrtcPlay ? 'webrtc' : (ishttps ? 'flvs' : 'flv'),
             }, function(resp) {
                 me.isSendAjaxState = false;
                 var records = resp.records;
@@ -534,7 +529,7 @@ Vue.component('my-video', {
                     me.switchrtcPlayer(records[0].playurl, records[0].hasaudio);
                     me.isPlaying = true;
                     me.startTimes = Date.now();
-                    isWebrtcPlay &&  me.caclBits();
+                    isWebrtcPlay && me.caclBits();
                 }
 
             }, function() {
@@ -544,10 +539,10 @@ Vue.component('my-video', {
         },
         handleStopVideos: function() {
             try {
-                if(isWebrtcPlay){
+                if (isWebrtcPlay) {
                     var player = this.videoPlayer;
                     player.stop();
-                }else{
+                } else {
                     var player = this.videoPlayer;
                     player.unload();
                     player.detachMediaElement();
@@ -559,7 +554,7 @@ Vue.component('my-video', {
             this.playerStateTips = this.$t('video.pausePlay');
             this.isSendAjaxState = false;
             this.networkSpeed = '0KB/S';
-            isWebrtcPlay &&  clearInterval(this.timer);
+            isWebrtcPlay && clearInterval(this.timer);
             var url = myUrls.stopVideos();
             utils.sendAjax(url, {
                 deviceid: this.deviceId,
@@ -959,7 +954,7 @@ Vue.component('s-checkbox', {
         },
         onChange: function(val) {
             if (val) {
-                this.checkboxList = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16];
+                this.checkboxList = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
             } else {
                 this.checkboxList = [];
             }
@@ -986,7 +981,7 @@ Vue.component('s-checkbox', {
             }
             this.$emit('change-io', this.checkboxList);
         }
-    }, 
+    },
     template: document.getElementById("select-checkbox-template"),
 })
 
@@ -1002,7 +997,7 @@ var appHeader = {
             dark: 'dark',
             name: '',
             isManager: true,
-            mainLogo:'custom/' + mainLogo,
+            mainLogo: 'custom/' + mainLogo,
             modal: false,
             intervalTime: null,
             multilogin: localStorage.getItem(userName + "-multilogin"),
@@ -1158,7 +1153,7 @@ var appHeader = {
                 wechat: this.wechat,
                 username: userName,
                 multilogin: Number(this.multilogin),
-                intervaltime:Number(this.intervalTime),
+                intervaltime: Number(this.intervalTime),
             };
             utils.sendAjax(url, data, function(resp) {
                 if (resp.status === 0) {

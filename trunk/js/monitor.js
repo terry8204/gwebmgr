@@ -2282,6 +2282,7 @@ var monitor = {
                             if (resp.records && resp.records.length > 0) {
                                 resp.records.forEach(function(item) {
                                     if (item) {
+
                                         var deviceid = item.deviceid;
                                         var b_lon_and_b_lat = wgs84tobd09(item.callon, item.callat)
                                         var g_lon_and_g_lat = wgs84togcj02(item.callon, item.callat);
@@ -2819,6 +2820,7 @@ var monitor = {
         },
 
         copyPositionLastValue: function(oldPositionLast, newPositionLast) {
+
             oldPositionLast.b_lon = newPositionLast.b_lon;
             oldPositionLast.b_lat = newPositionLast.b_lat;
             oldPositionLast.g_lat = newPositionLast.g_lat;
