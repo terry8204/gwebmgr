@@ -144,10 +144,17 @@
                     axios.post(url, data)
                         .then((response) => {
                             let data = response.data;
-                            this.token = data.token;
-                            this.forcealarm = data.forcealarm;
-                            this.queryAlarmDescr(data.forcealarm);
-                            this.disabled = (data.alarmaction & 0X04) === 0X04;
+                            if (data.status == 0) {
+                                this.token = data.token;
+                                this.forcealarm = data.forcealarm;
+                                this.queryAlarmDescr(data.forcealarm);
+                                this.disabled = (data.alarmaction & 0X04) === 0X04;
+                            } else {
+                                this.$dialog.alert({
+                                    message: '账号或密码错误',
+                                });
+                            }
+
                         }).catch((e) => {
                             this.$dialog.alert({
                                 message: '登录失败,请重新登录',

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <title>绑定账号</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no, viewport-fit=cover">
+    <meta http-equiv="x-dns-prefetch-control" content="on" />
+    <link rel="stylesheet" href="./vant.css">
+    <style>
+        html,
+        body,
+        #app {
+            height: 100%;
+            width: 100%;
+            background-color: #F8F8F8;
+        }
+        
+        #app header {
+            height: 50px;
+            line-height: 50px;
+            text-align: center;
+            font-size: 16px;
+            font-weight: 600;
+            background-color: #4E6BBB;
+            color: #ffffff;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <header>绑定账号</header>
+        <van-form @submit="onSubmit">
+            <div style="border-bottom:1px solid #F8F8F8;">
+                <van-field v-model="username" name="username" label="用户名" placeholder="用户名" :rules="[{ required: true, message: '请填写用户名' }]" />
+            </div>
+            <div>
+                <van-field v-model="password" type="password" name="password" label="密码" placeholder="密码" :rules="[{ required: true, message: '请填写密码' }]" />
+            </div>
+            <div style="margin: 16px;">
+                <van-button round block type="info" native-type="submit">
+                    提交
+                </van-button>
+            </div>
+        </van-form>
+    </div>
+    <script src="./vue.min.js"></script>
+    <script src="./vant.min.js"></script>
+    <script src="./axios.min.js"></script>
+    <script type="text/javascript">
+        new Vue({
+            el: "#app",
+            data: {
+                username: '',
+                password: '',
+            },
+            methods: {
+                getQueryString(name) {
+                    var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+                    var r = window.location.search.substr(1).match(reg);
+                    if (r != null) return unescape(r[2]);
+                    return null;
+                },
+                onSubmit(values) {
+                    values.openid = this.openid;
+                    let url = 'https://www.gps51.com/webapi?action=bindwxoffice';
+                    axios.post(url, values).then((respData) => {
+                        let data = respData.data;
+                        if (data.status == 0) {
+                            this.$toast.success('绑定成功');
+                        } else {
+                            this.$toast.error('绑定失败');
+                        }
+                    }).catch((e) => {
+                        this.$dialog.alert({
+                            message: '网络错误',
+                        });
+                    });
+                    console.log('submit', values);
+                },
+            },
+            mounted() {
+                this.openid = this.getQueryString('openid');
+            },
+        })
+    </script>
+</body>
+
+</html>
