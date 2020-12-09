@@ -2562,11 +2562,14 @@
                     <span>{{$t('alarm.filterAlarmTitle')}}</span>
                 </p>
                 <div>
-                    <Row style="margin: 10px 0" v-for="(item,index) in alarmTypeList" :key="index">
-                        <i-col span="8" v-for="(type , index) in item" :key="type.alarmcode">
-                            <Checkbox v-model="checkboxObj[type.index]">{{ isZh ? type.alarmname : type.alarmname}}</Checkbox>
-                        </i-col>
-                    </Row>
+                    <div>
+                        <i-input v-model.trim="searchValue" icon="ios-search-outline" style="width:100%;" placeholder="输入你想搜索的报警类型"></i-input>
+                    </div>
+                    <div style="overflow:hidden;">
+                        <div style="width:33.33%;float:left;padding:2px 0;" v-for="(item,index) in alarmTypeList" :key="index" v-show="item.show">
+                            <Checkbox v-model="checkboxObj[item.index]">{{ isZh ? item.alarmname : item.alarmname}}</Checkbox>
+                        </div>
+                    </div>
                 </div>
                 <div slot="footer">
                     <i-button type="primary" @click="setForceAlarmClick" style="width: 100%">{{$t("monitor.confirm")}}</i-button>

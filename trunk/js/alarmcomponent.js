@@ -10,6 +10,7 @@ var waringComponent = {
             index: 1,
             waringRowIndex: null,
             componentName: 'waringMsg',
+            searchValue: '',
             disposeModal: false,
             settingModal: false,
             checkboxObj: {},
@@ -57,18 +58,22 @@ var waringComponent = {
         isLargen: function() {
             this.changeWrapperCls();
         },
-        // waringRecords: function() {
-        //     // if (this.waringRecords.length) {
-        //     //     this.isWaring = true;
-        //     // } else {
-        //     //     this.isWaring = false;
-        //     // }
+        searchValue(newVal) {
+            if (newVal.length == 0) {
+                this.alarmTypeList.forEach(function(item) {
+                    item.show = true;
+                });
+            } else {
+                this.alarmTypeList.forEach(function(item) {
 
-        //     // if(this.isWaring == false){
-        //     //     this.isWaring = this.getIsWaring();
-        //     //     console.log('isWaring', this.isWaring);
-        //     // }
-        // },
+                    if (item.alarmname.indexOf(newVal) != -1) {
+                        item.show = true;
+                    } else {
+                        item.show = false;
+                    }
+                });
+            }
+        },
         isMute: function() {
             this.setForceAlarm(true, true);
         },
@@ -481,18 +486,14 @@ var waringComponent = {
             utils.sendAjax(url, {}, function(resp) {
                 if (resp.status == 0) {
                     var records = resp.records;
-                    alarmTypeList = resp.records;
+                    var alarmTypeList = [];
                     records.forEach(function(item, index) {
-                        if (index % 3 == 0) {
-                            var newArr = [];
-                            newArr.push(item);
-                            me.alarmTypeList.push(newArr);
-                        } else {
-                            me.alarmTypeList[me.alarmTypeList.length - 1].push(item);
-                        };
+                        item.show = true;
+                        alarmTypeList.push(item);
                         me.checkboxObj[item.index] = false;
                     });
                     me.checkboxObjLength = records.length;
+                    me.alarmTypeList = alarmTypeList;
                     me.queryWaringMsg();
                 }
             })
