@@ -43,6 +43,27 @@
         
         #app div.map-wrap {
             flex: 1;
+            position: relative;
+        }
+        
+        #app div.map-wrap .zoomin {
+            width: 40px;
+            height: 40px;
+            position: absolute;
+            right: 5px;
+            bottom: 50px;
+            background-image: url('../images/zoomin80.png');
+            background-size: cover;
+        }
+        
+        #app div.map-wrap .zoomout {
+            width: 40px;
+            height: 40px;
+            position: absolute;
+            right: 5px;
+            bottom: 5px;
+            background-image: url('../images/zoomout80.png');
+            background-size: cover;
         }
     </style>
 </head>
@@ -52,11 +73,13 @@
         <header>设备位置信息</header>
         <div class="map-wrap">
             <div id="map"></div>
+            <div class="zoomin" @click="zoomIn"></div>
+            <div class="zoomout" @click="zoomOut"></div>
         </div>
     </div>
     <script src="./vue.min.js"></script>
     <script src="./vant.min.js"></script>
-    <script src="./axios.min.js"></script> -->
+    <script src="./axios.min.js"></script>
     <script src="../js/transformlatlon.js"></script>
     <script src="https://api.map.baidu.com/api?v=3.0&ak=e7SC5rvmn2FsRNE4R1ygg44n"></script>
     <script type="text/javascript">
@@ -67,6 +90,12 @@
                 password: '',
             },
             methods: {
+                zoomIn() {
+                    this.mapInstance.zoomIn();
+                },
+                zoomOut() {
+                    this.mapInstance.zoomOut();
+                },
                 getQueryString(name) {
                     var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
                     var r = window.location.search.substr(1).match(reg);
