@@ -64,6 +64,11 @@
             flex: 1;
             overflow-y: auto;
         }
+        
+        #app div.search-wrap {
+            height: 53px;
+            width: 100%;
+        }
     </style>
 </head>
 
@@ -79,11 +84,14 @@
                 </van-cell>
             </div>
         </div>
+        <div class="search-wrap" style="border-bottom:1px solid #F8F8F8;">
+            <van-field v-model="searchValue" clearable label="搜索" left-icon="search" placeholder="输入你要的报警类型" />
+        </div>
         <div class="content">
             <div class="loading-wrap" v-show="alarmTypeList.length == 0">
                 <van-loading type="spinner" size="24px" color="#1989fa" />
             </div>
-            <div v-for="(item,index) in alarmTypeList" style="border-bottom:1px solid #F8F8F8;">
+            <div v-for="(item,index) in alarmTypeList" style="border-bottom:1px solid #F8F8F8;" v-show="item.show">
                 <van-cell :title="item.title">
                     <template #right-icon>
                         <van-switch v-model="item.checked" :disabled="!disabled" @change="handleChange(index)" />
@@ -101,6 +109,7 @@
             data: {
                 disabled: false,
                 alarmTypeList: [],
+                searchValue: ""
             },
             methods: {
                 handleChange(index) {
@@ -171,6 +180,7 @@
                             alarmTypeList.push({
                                 title: item.alarmname,
                                 checked: checked,
+                                show: true,
                             })
                             this.alarmTypeList = alarmTypeList;
                         });
@@ -194,6 +204,21 @@
                         });;
                     }
                 },
+                searchValue(newVal) {
+                    if (newVal.length == 0) {
+                        this.alarmTypeList.forEach((item) => {
+                            item.show = true;
+                        });
+                    } else {
+                        this.alarmTypeList.forEach((item) => {
+                            if (item.title.indexOf(newVal) != -1) {
+                                item.show = true;
+                            } else {
+                                item.show = false;
+                            }
+                        });
+                    }
+                }
             },
             mounted() {
                 this.lock = true;
