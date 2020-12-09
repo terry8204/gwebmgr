@@ -143,12 +143,15 @@
                     this.mapInstance.addOverlay(this.marker); // 将标注添加到地图中
                     var sContent = `<div style="width:200px"><p>名称:${this.devicename}</p><p>序号:${this.deviceid}</p><p>时间:${this.updatetime}</p><p>速度:${this.speed}</p><p>报警:${this.alarm}</p><p>状态:${this.status}</p><p>地址:${this.address}</p></div>`;
                     var infoWindow = new BMap.InfoWindow(sContent); // 创建信息窗口对象 
+                    infoWindow.disableCloseOnClick();
                     this.marker.addEventListener("click", function() {
                         this.openInfoWindow(infoWindow); //开启信息窗口
                     });
-                    this.mapInstance.openInfoWindow(new BMap.InfoWindow(sContent, {
+                    var offsetInfoWindow = new BMap.InfoWindow(sContent, {
                         offset: new BMap.Size(0, -25)
-                    }), this.point);
+                    });
+                    offsetInfoWindow.disableCloseOnClick();
+                    this.mapInstance.openInfoWindow(offsetInfoWindow, this.point);
                     this.mapInstance.centerAndZoom(this.point, 18);
                 },
                 init() {
