@@ -2032,7 +2032,7 @@
                     </Modal>
 
                     <!-- 下发指令模态 -->
-                    <Modal v-model="dispatchDirectiveModal" width="460">
+                    <Modal v-model="dispatchDirectiveModal" width="460" :mask-closable="false">
                         <p slot="header" style="color:#f60;text-align:center">
                             <Icon type="ios-create-outline"></Icon>
                             <span>{{ selectedCmdInfo.cmdName }}</span>
@@ -2660,7 +2660,7 @@
                     </i-Col>
                 </Row>
             </div>
-            <div slot="footer" style="text-align:center"> 
+            <div slot="footer" style="text-align:center">
                 <i-button type="error" @click="onClose" style="width: 160px">{{$t('rule.close')}}</i-button>
                 <i-button type="primary" @click="settingRuleToDevice" style="width: 160px">{{$t('rule.confirm')}}</i-button>
             </div>
