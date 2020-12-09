@@ -150,25 +150,24 @@
                         username: this.username,
                         password: this.password,
                     };
-                    axios.post(url, data)
-                        .then((response) => {
-                            let data = response.data;
-                            if (data.status == 0) {
-                                this.token = data.token;
-                                this.forcealarm = data.forcealarm ? data.forcealarm : '000000000000000000000000000000000000000000000000000000000000000';
-                                this.queryAlarmDescr(this.forcealarm);
-                                this.disabled = (data.alarmaction & 0X04) === 0X04;
-                            } else {
-                                this.$dialog.alert({
-                                    message: '账号或密码错误',
-                                });
-                            }
-
-                        }).catch((e) => {
+                    axios.post(url, data).then((response) => {
+                        let data = response.data;
+                        if (data.status == 0) {
+                            this.token = data.token;
+                            this.forcealarm = data.forcealarm ? data.forcealarm : '000000000000000000000000000000000000000000000000000000000000000';
+                            this.queryAlarmDescr(this.forcealarm);
+                            this.disabled = (data.alarmaction & 0X04) === 0X04;
+                        } else {
                             this.$dialog.alert({
-                                message: '登录失败,请重新登录',
+                                message: '账号或密码错误',
                             });
-                        })
+                        }
+
+                    }).catch((e) => {
+                        this.$dialog.alert({
+                            message: '登录失败,请重新登录',
+                        });
+                    })
                 },
                 queryAlarmDescr(forcealarm) {
                     let url = "https://www.gps51.com/webapi?action=queryalarmdescr&token=" + this.token;

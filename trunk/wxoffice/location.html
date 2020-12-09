@@ -141,7 +141,7 @@
 
                     this.marker = new BMap.Marker(this.point); // 创建标注
                     this.mapInstance.addOverlay(this.marker); // 将标注添加到地图中
-                    var sContent = `<div style="width:200px"><p>名称:${this.devicename}</p><p>序号:${this.deviceid}</p><p>速度:${this.speed}</p><p>报警:${this.alarm}</p><p>状态:${this.status}</p><p>地址:${this.address}</p></div>`;
+                    var sContent = `<div style="width:200px"><p>名称:${this.devicename}</p><p>序号:${this.deviceid}</p><p>时间:${this.updatetime}</p><p>速度:${this.speed}</p><p>报警:${this.alarm}</p><p>状态:${this.status}</p><p>地址:${this.address}</p></div>`;
                     var infoWindow = new BMap.InfoWindow(sContent); // 创建信息窗口对象 
                     this.marker.addEventListener("click", function() {
                         this.openInfoWindow(infoWindow); //开启信息窗口
@@ -158,6 +158,7 @@
                     this.point = new BMap.Point(b_lon_and_b_lat[0], b_lon_and_b_lat[1]);
                     this.deviceid = this.getQueryString('deviceid');
                     this.devicename = this.getQueryString('devicename');
+                    this.updatetime = this.getQueryString('updatetime');
                     this.speed = (Number(this.getQueryString('speed')) / 1000).toFixed(2) + "km/h";
                     this.alarm = this.getQueryString('alarm');
                     this.status = this.getQueryString('status');
