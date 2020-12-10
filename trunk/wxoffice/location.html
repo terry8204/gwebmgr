@@ -97,10 +97,25 @@
                     this.mapInstance.zoomOut();
                 },
                 getQueryString(name) {
-                    var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
-                    var r = window.location.search.substr(1).match(reg);
-                    if (r != null) return decodeURIComponent(r[2]);
-                    return null;
+                    var resulturl = null;
+                    var allurl = location.search;
+                    var theRequest = new Object();
+                    if (allurl.indexOf('?') != -1) {
+                        var str = allurl.substr(1)
+                        var strs = str.split('&')
+                        for (var i = 0; i < strs.length; i++) {
+                            var value = strs[i].split('=')[1];
+                            theRequest[strs[i].split('=')[0]] = value;
+                        }
+                    }
+                    resulturl = theRequest[name];
+                    try {
+                        resulturl = decodeURIComponent(resulturl);
+                    } catch (e) {
+                        resulturl ? resulturl : '';
+                    }
+
+                    return resulturl;
                 },
                 onSubmit(values) {
                     values.openid = this.openid;
@@ -155,6 +170,7 @@
                     this.mapInstance.centerAndZoom(this.point, 18);
                 },
                 init() {
+
                     let lat = this.getQueryString('lat');
                     let lon = this.getQueryString('lon');
                     let b_lon_and_b_lat = wgs84tobd09(Number(lon), Number(lat));
@@ -166,6 +182,7 @@
                     this.alarm = this.getQueryString('alarm');
                     this.status = this.getQueryString('status');
                     this.address = this.getQueryString('address');
+
                     this.initMap();
                     this.addMarkerAndInfoWindow();
 
