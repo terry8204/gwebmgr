@@ -75,9 +75,11 @@ var waringComponent = {
             }
         },
         isMute: function() {
+            if (this.lock) return;
             this.setForceAlarm(true, true);
         },
         isPopup: function() {
+            if (this.lock) return;
             this.setForceAlarm(true, true);
         },
         settingModal: function(newVal) {
@@ -1008,12 +1010,16 @@ var waringComponent = {
     },
     mounted: function() {
         var me = this;
+        this.lock = true;
         this.alarmMgr = new AlarmMgr();
         this.queryDeviceMsgList();
         this.timingRequestMsg();
         this.queryAlarmDescr();
         this.changeWrapperCls();
         this.setAlarmAction();
+        setTimeout(function() {
+            me.lock = false;
+        }, 1000)
         this.lastquerydevicemediastime = 0;
         communicate.$on("remindmsg", function(data) {
             me.alarmMgr.addRecord(data);
