@@ -119,8 +119,7 @@
                 },
                 onSubmit(values) {
                     values.openid = this.openid;
-                    // let url = 'https://www.gps51.com/webapi?action=bindwxoffice';
-                    let url = 'http://localhost:8080/gpsserver/webapi?action=bindwxoffice';
+                    let url = 'https://www.gps51.com/webapi?action=bindwxoffice';
                     axios.post(url, values).then((respData) => {
                         let data = respData.data;
                         if (data.status == 0) {
