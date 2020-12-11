@@ -125,10 +125,12 @@
                     });;
                 },
                 setForcealarm() {
+                    // let url = 'http://localhost:8080/gpsserver/webapi?action=setforcealarm&token=' + this.token;
                     let url = 'https://www.gps51.com/webapi?action=setforcealarm&token=' + this.token;
                     let data = {
                         alarmaction: this.disabled ? 4 : 0,
                         forcealarm: '',
+                        updatemask: 0x04
                     }
                     this.alarmTypeList.forEach(function(item) {
                         data.forcealarm += item.checked ? '1' : '0';

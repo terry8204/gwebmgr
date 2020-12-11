@@ -195,6 +195,7 @@ var waringComponent = {
             var data = {
                 forcealarm: forcealarm,
                 alarmaction: alarmaction,
+                updatemask: 0x01 | 0x02
             }
             utils.sendAjax(url, data, function(resp) {
                 if (resp.status === 0) {
