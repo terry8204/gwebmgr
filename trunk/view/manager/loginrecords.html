@@ -39,6 +39,11 @@
                 total: 0,
                 currentIndex: 1,
                 columns: [{
+                    title: vRoot.$t("reportForm.index"),
+                    key: 'index',
+
+                    width: 80
+                }, {
                     title: vRoot.$t("header.loginTime"),
                     key: 'logintimeStr',
                     width: 160
@@ -96,7 +101,8 @@
                         method: "post",
                         success: function(resp) {
                             if (resp.status == 0 && resp.logs) {
-                                resp.logs.forEach(function(item) {
+                                resp.logs.forEach(function(item, index) {
+                                    item.index = index + 1;
                                     item.logintimeStr = DateFormat.longToDateTimeStr(item.logintime, timeDifference);
                                 });
                                 me.tableData = resp.logs.slice(0, 20);

@@ -28,58 +28,63 @@
                 loading: true,
                 total: 0,
                 currentIndex: 1,
-                columns: [
-                    {
-                        title: vRoot.$t("user.username"),
-                        key: 'username',
-                    }, {
-                        title: vRoot.$t("user.userType"),
-                        width:120,
-                        key: 'userTypeStr'
-                    }, {
-                        title: vRoot.$t("header.loginSource"),    
-                        width:120,
-                        key: 'from'
-                    }, {
-                        title: vRoot.$t("header.loginTime"),
-                        key: 'logintimeStr'
-                    }, {
-                        title: 'ip',
-                        key: 'loginip'
-                    }, {
-                        title: vRoot.$t("header.multiSiteLanding"),  
-                        width:120,
-                        key: 'multiloginStr'
-                    }, 
-                ],
+                columns: [{
+                    title: vRoot.$t("user.username"),
+                    key: 'username',
+                }, {
+                    title: vRoot.$t("user.userType"),
+                    width: 120,
+                    key: 'userTypeStr'
+                }, {
+                    title: vRoot.$t("header.loginSource"),
+                    width: 120,
+                    key: 'from'
+                }, {
+                    title: vRoot.$t("header.loginTime"),
+                    key: 'logintimeStr'
+                }, {
+                    title: 'ip',
+                    key: 'loginip'
+                }, {
+                    title: vRoot.$t("header.multiSiteLanding"),
+                    width: 120,
+                    key: 'multiloginStr'
+                }, ],
                 tableData: [],
                 recordsList: [],
                 taleHeight: 300,
 
             },
             methods: {
+                changePage: function(index) {
+                    var offset = index * 10;
+                    var start = (index - 1) * 10;
+                    var me = this;
+                    this.currentIndex = index;
+                    this.tableData = this.recordsList.slice(start, offset);
+                },
                 handlerClickQuery() {
                     var self = this;
-                    var queryTableData = [];
+                    var recordsList = [];
                     var queryParameterLowerCase = this.queryParameter.toLowerCase();
-                    if (self.queryParameter == ''){
+                    if (self.queryParameter == '') {
                         this.queryOnlineUsers();
-                    }else{
+                    } else {
                         this.recordsList.forEach(function(record) {
-                        var username = record.username;
-                        if (
-                            record.username.indexOf(self.queryParameter) != -1 
-                        ) {
-                            queryTableData.push(record);
-                        }
+                            var username = record.username;
+                            if (
+                                record.username.indexOf(self.queryParameter) != -1
+                            ) {
+                                recordsList.push(record);
+                            }
                         })
 
                         this.currentIndex = 1;
-                        this.queryTableData = queryTableData;
-                        this.tableData = this.queryTableData.slice(0, 10);
-                        this.total = this.queryTableData.length;
+                        this.recordsList = recordsList;
+                        this.tableData = this.recordsList.slice(0, 10);
+                        this.total = this.recordsList.length;
                     }
-       
+
                 },
 
                 getUserTypeStr: function(type) {
@@ -93,27 +98,29 @@
                     };
                     return name;
                 },
-                
+
 
                 calcTableHeight: function() {
                     var wHeight = window.innerHeight;
                     this.taleHeight = wHeight - 185;
                 },
-                queryOnlineUsers:function(){
+                queryOnlineUsers: function() {
                     var me = this;
                     var url = myUrls.onlineUsers();
-                    utils.sendAjax(url,{},function(resp){
+                    utils.sendAjax(url, {}, function(resp) {
                         me.loading = false;
-                        if(resp.status == 0){
+                        if (resp.status == 0) {
                             var users = resp.users;
-                            if(users){
-                                users.sort(function(a,b){return b.logintime-a.logintime});
-                                users.forEach(function(item){
-                                    item.userTypeStr = me.getUserTypeStr(item.usertype);
-                                    item.multiloginStr = item.multilogin == 1 ? vRoot.$t('header.yes'):vRoot.$t('header.no');
-                                    item.logintimeStr = DateFormat.longToDateTimeStr(item.logintime,8);
+                            if (users) {
+                                users.sort(function(a, b) {
+                                    return b.logintime - a.logintime
                                 });
-                                me.tableData = users;
+                                users.forEach(function(item) {
+                                    item.userTypeStr = me.getUserTypeStr(item.usertype);
+                                    item.multiloginStr = item.multilogin == 1 ? vRoot.$t('header.yes') : vRoot.$t('header.no');
+                                    item.logintimeStr = DateFormat.longToDateTimeStr(item.logintime, 8);
+                                });
+                                me.tableData = users.slice(0, 10);
                                 me.recordsList = users;
                                 me.total = users.length;
                                 me.currentIndex = 1;
@@ -122,7 +129,6 @@
                     });
                 }
             },
-            mixins: [mixIn],
             mounted: function() {
                 var me = this;
                 this.userTypeDescrList = vstore.state.userTypeDescrList;
