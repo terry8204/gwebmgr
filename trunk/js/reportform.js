@@ -156,14 +156,17 @@ var treeMixin = {
             return title;
         },
         onCheckedDevice: function(arr) {
+
             this.checkedDevice = arr;
             var sosoValue = "";
             var selectedCount = 0;
             arr.forEach(function(item) {
                 if (item.children) {
                     sosoValue += item.title + ","
-                    item.children.forEach(function() {
-                        selectedCount++;
+                    item.children.forEach(function(item) {
+                        if (item.deviceid) {
+                            selectedCount++;
+                        }
                     })
                 } else {
                     sosoValue += item.title + ","
