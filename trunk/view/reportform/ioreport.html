@@ -29,8 +29,11 @@
                 </transition>
             </div>
         </div>
+        <div style="margin-left:20px;float: left;line-height: 35px;">
+            {{$t("reportForm.selected")}}: <span v-text="selectedCount"></span>
+        </div>
         <div style="margin-left:20px;float: left;position: relative;">
-            <s-checkbox style="width:200px;" @change-io="onIoChange"></s-checkbox> 
+            <s-checkbox style="width:200px;" @change-io="onIoChange"></s-checkbox>
         </div>
         <div style="margin-left:20px;float: left;">
             <i-button @click="clean" icon="ios-nuclear-outline">{{$t("reportForm.clean")}}</i-button>
@@ -39,7 +42,7 @@
             <i-button @click="onClickQuery" icon="ios-search">{{$t("reportForm.query")}}</i-button>
         </div>
         <div style="margin-left:20px;float: left;">
-            <i-button @click="exportData" icon="md-arrow-down">{{$t("reportForm.download")}}</i-button> 
+            <i-button @click="exportData" icon="md-arrow-down">{{$t("reportForm.download")}}</i-button>
         </div>
     </Row>
     <div style="margin:10px;">

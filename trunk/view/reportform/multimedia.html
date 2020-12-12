@@ -29,6 +29,9 @@
                 </transition>
             </div>
         </div>
+        <div style="margin-left:20px;float: left;line-height: 35px;">
+            {{$t("reportForm.selected")}}: <span v-text="selectedCount"></span>
+        </div>
         <div style="margin-left:20px;float: left;">
             <i-button @click="clean" icon="ios-nuclear-outline">{{$t("reportForm.clean")}}</i-button>
         </div>
@@ -40,7 +43,7 @@
             <i-button @click="exportTableData" icon="md-exit" type="primary">{{$t("reportForm.exportData")}}</i-button>
         </div>
         <div style="float: right;">
-            <i-button @click="queryAllAddress" icon="ios-search" type="primary">{{$t("reportForm.queryAllAddress")}}</i-button> 
+            <i-button @click="queryAllAddress" icon="ios-search" type="primary">{{$t("reportForm.queryAllAddress")}}</i-button>
         </div>
     </Row>
     <div style="margin:10px;">

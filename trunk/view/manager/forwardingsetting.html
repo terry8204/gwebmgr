@@ -32,7 +32,7 @@
         </Row>
         <Row style="border: 1px solid #DCDEE2;padding: 5px;">
             <i-col span="3" offset="5">
-                 <i-select v-model="filterforwardtype">
+                <i-select v-model="filterforwardtype">
                     <i-option value="all">全部已转发设备</i-option>
                     <i-option v-for="(item,idx) in forwards" :value="item.forwardid" :key="item.forwardid">
                         {{item.servername}}
@@ -52,7 +52,7 @@
                 <div style="float: left; overflow-y: auto;width: 258px;height: 366px;">
                     <div style="height: 45px;">
                         <i-input v-model.trim="sosoForwardName" icon="ios-search-outline" @on-change="sosoForwardChange"></i-input>
-                    </div> 
+                    </div>
                     <div style="overflow-y: auto;height: 320px;">
                         <i-menu @on-select="selectdForwardItem" :active-name="activeName">
                             <template v-for="(item,idx) in forwards">
@@ -219,7 +219,7 @@
                                 <i-input v-model.trim="forwardTypeInfo.uplinkip" disabled></i-input>
                             </i-col>
                         </Row>
-        
+
                         <Row style="height: 35px;line-height: 35px;">
                             <i-col :span="4" style="text-align: right;">
                                 &nbsp;用户名&nbsp;
@@ -267,11 +267,11 @@
             idx: 0,
             showBatchModalType: 1, // 1批量地址  2
             batchModal: false,
-            protocoltype:1,
-            protocols :[],
-            forwards:[],
+            protocoltype: 1,
+            protocols: [],
+            forwards: [],
             forwardtype: '',
-            forwardTypeInfo:{},
+            forwardTypeInfo: {},
             resetpasswordtype: '1',
             deviceType: '',
             deviceTypeList: [],
@@ -372,33 +372,34 @@
             selectedGroupName: null,
             selectedUserName: null,
             taleHeight: 100,
-            activeName:'',
-            sosoForwardName:'',
-            filterforwardtype:"all",
+            activeName: '',
+            sosoForwardName: '',
+            filterforwardtype: "all",
         },
         methods: {
-            handleFilterProtocolDevice:function(){
+            handleFilterProtocolDevice: function() {
                 var me = this;
                 var filterforwardtype = this.filterforwardtype;
                 var tableData = [];
-                function traverse(obj){
-                    for(var i in obj){
+
+                function traverse(obj) {
+                    for (var i in obj) {
                         var item = obj[i];
-                        if(item.children && item.children.length){
+                        if (item.children && item.children.length) {
                             traverse(item.children)
-                        }else{
+                        } else {
                             var deviceid = item.deviceid;
-                            if(deviceid){
+                            if (deviceid) {
                                 var device = utils.deviceInfos[deviceid];
-                                if(filterforwardtype == 'all'){
-                                    if(device.forwardid){
+                                if (filterforwardtype == 'all') {
+                                    if (device.forwardid) {
                                         var row = deepClone(device);
                                         row.resultType = 2;
                                         row.serverName = me.getServerName(row.forwardid);
                                         tableData.push(row);
                                     }
-                                }else{
-                                    if(filterforwardtype == device.forwardid){
+                                } else {
+                                    if (filterforwardtype == device.forwardid) {
                                         var row = deepClone(device);
                                         row.resultType = 2;
                                         row.serverName = me.getServerName(row.forwardid);
@@ -411,30 +412,30 @@
                 }
                 traverse(this.treeDeviceList);
                 this.tableData = tableData;
-            },  
-            sosoForwardChange:function(){
+            },
+            sosoForwardChange: function() {
                 var value = this.sosoForwardName;
-                if(value==''){
+                if (value == '') {
                     this.forwards = this.copyForwards;
-                }else{
+                } else {
                     var forwards = [];
                     var copyForwards = this.copyForwards;
-                    for(var i = 0 ; i < copyForwards.length ; i++){
+                    for (var i = 0; i < copyForwards.length; i++) {
                         var forward = copyForwards[i];
-                        if(forward.servername.indexOf(value) != -1){
+                        if (forward.servername.indexOf(value) != -1) {
                             forwards.push(forward);
                         }
                     }
                     this.forwards = forwards;
                 }
             },
-            selectdForwardItem:function(item){
+            selectdForwardItem: function(item) {
                 this.activeName = item;
                 this.forwardtype = item;
                 var forwards = this.forwards;
-                for(var i = 0 ; i < forwards.length ; i++){
+                for (var i = 0; i < forwards.length; i++) {
                     var forward = forwards[i];
-                    if(forward.forwardid == item){
+                    if (forward.forwardid == item) {
                         this.forwardTypeInfo = forward;
                         this.protocoltype = forward.protocoltype;
                         return;
@@ -451,7 +452,7 @@
                 }, function(resp) {
                     me.forwards = resp.forwards;
                     me.copyForwards = deepClone(resp.forwards);
-                    if(me.forwards && me.forwards.length){
+                    if (me.forwards && me.forwards.length) {
                         var forward = me.forwards[0];
                         me.activeName = forward.forwardid;
                         me.forwardtype = forward.forwardid;
@@ -461,15 +462,15 @@
             },
             showBatchModal: function(type) {
                 this.showBatchModalType = type;
-                if(type == 2){
+                if (type == 2) {
                     this.handleBatchEdit();
                     return;
                 }
                 this.batchModal = true;
-               
+
             },
-            updatedLocalDeviceInfos:function(tableData,forwardid){
-                tableData.forEach(function(item){
+            updatedLocalDeviceInfos: function(tableData, forwardid) {
+                tableData.forEach(function(item) {
                     var deviceid = item.deviceid;
                     utils.deviceInfos[deviceid].forwardid = forwardid;
                 })
@@ -483,14 +484,14 @@
                         deviceids: []
                     },
                     me = this;
-            
+
                 if (this.showBatchModalType == 1) {
                     data.action = 'modifyforwardurl';
                     data.forwardid = this.forwardtype;
                 } else if (this.showBatchModalType == 2) {
                     data.action = 'modifyforwardurl';
                     data.forwardid = null;
-                } 
+                }
 
                 var lock = true;
                 this.tableData.forEach(function(item) {
@@ -512,10 +513,10 @@
                         if (respData.total == respData.success) {
                             me.$Message.success(vRoot.$t('device.actionSucc'));
                             var serverName = me.getServerName(data.forwardid);
-                            me.tableData.forEach(function(item){
-                                item.serverName=serverName;
+                            me.tableData.forEach(function(item) {
+                                item.serverName = serverName;
                             });
-                            me.updatedLocalDeviceInfos(me.tableData,data.forwardid);
+                            me.updatedLocalDeviceInfos(me.tableData, data.forwardid);
                         } else {
                             me.$Message.error(vRoot.$t('message.changeFail') + ' : ' + respData.fail);
                         }
@@ -523,7 +524,7 @@
                     } else {
                         me.$Message.error(respData.cause);
                     }
-                },function(e){
+                }, function(e) {
                     me.$Message.error(e);
                     me.loading = false;
                 });
@@ -563,13 +564,13 @@
                 }
                 return relsut;
             },
-            getServerName:function(forwardid){
+            getServerName: function(forwardid) {
                 var result = '没有设置平台';
                 var forwards = this.forwards;
-                if(forwards){
-                    for(var i = 0 ; i < forwards.length ; i++){
+                if (forwards) {
+                    for (var i = 0; i < forwards.length; i++) {
                         var forward = forwards[i];
-                        if(forwardid == forward.forwardid){
+                        if (forwardid == forward.forwardid) {
                             result = forward.servername;
                             break;
                         }
@@ -620,12 +621,15 @@
                 if (groups != null) {
                     for (var i = 0; i < groups.length; ++i) {
                         var group = groups[i];
-          
+
                         var groupObj = {
-                            title: group.groupname,
                             groupid: group.groupid,
+                            title: group.groupname,
+
                         }
                         if (isNeedDevice && group.devices) {
+                            groupObj.totalCount = group.devices.length;
+                            groupObj.title = group.groupname + '(' + group.devices.length + ')';
                             groupObj.render = utils.renderGroup;
                             groupObj.children = [];
                             group.devices.forEach(function(device) {
@@ -640,7 +644,7 @@
                                     username: username,
                                     groupid: group.groupid,
                                     groupname: group.groupname,
-                                    forwardid:device.forwardid,
+                                    forwardid: device.forwardid,
                                 }
                             });
                         }
@@ -650,8 +654,9 @@
 
                 if (groupsList.length == 0) {
                     groupsList.push({
-                        title: 'Default',
+                        title: 'Default(0)',
                         groupid: 0,
+                        totalCount: 0,
                         render: function(h, params) {
                             var data = params.data;
                             var children = [];
@@ -722,7 +727,7 @@
                         var currentsubDevicesTreeRecord = {
                             render: utils.renderPerson,
                         };
-                        currentsubDevicesTreeRecord.title = username;
+
                         var deviceListGroups = this.getDeviceListGroups(usersTree.groups, isNeedDevice, username, isNeedRadio);
                         if (username != null && subusers != null && subusers.length > 0) {
                             var subDevicesTreeRecord = this.doCastUsersTreeToDevicesTree(subusers, isNeedDevice, isNeedRadio);
@@ -733,12 +738,21 @@
                             currentsubDevicesTreeRecord.children = deviceListGroups;
 
                         }
+                        var totalCount = 0;
+                        if (currentsubDevicesTreeRecord.children) {
+                            for (var j = 0; j < currentsubDevicesTreeRecord.children.length; ++j) {
+                                totalCount += currentsubDevicesTreeRecord.children[j].totalCount;
+                            }
+                        }
+                        currentsubDevicesTreeRecord.totalCount = totalCount;
+                        currentsubDevicesTreeRecord.title = username + "(" + totalCount + ")";
                         devicesTreeRecord.push(currentsubDevicesTreeRecord);
                     }
                 }
                 return devicesTreeRecord;
             },
             castUsersTreeToDevicesTree: function(devicesTreeRecord, isNeedDevice, isNeedRadio) {
+
                 var iViewTree = {
                     render: utils.renderPerson,
                     expand: true,
@@ -746,7 +760,7 @@
                 if (devicesTreeRecord != null) {
                     var username = devicesTreeRecord.username;
                     var subusers = devicesTreeRecord.subusers;
-                    iViewTree.title = username;
+
                     var deviceListGroups = this.getDeviceListGroups(devicesTreeRecord.groups, isNeedDevice, username, isNeedRadio);
                     if (username != null && subusers != null && subusers.length > 0) {
 
@@ -757,6 +771,13 @@
                     } else {
                         iViewTree.children = deviceListGroups;
                     }
+                    var totalCount = 0;
+                    if (iViewTree.children) {
+                        for (var i = 0; i < iViewTree.children.length; ++i) {
+                            totalCount += iViewTree.children[i].totalCount;
+                        }
+                    }
+                    iViewTree.title = username + "(" + totalCount + ")";
                 }
                 return iViewTree;
             },

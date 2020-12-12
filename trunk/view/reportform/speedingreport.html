@@ -28,6 +28,9 @@
                 </transition>
             </div>
         </div>
+        <div style="margin-left:20px;float: left;line-height: 35px;">
+            {{$t("reportForm.selected")}}: <span v-text="selectedCount"></span>
+        </div>
         <div style="margin-left:20px;float: left;">
             <i-button @click="clean" icon="ios-nuclear-outline">{{$t("reportForm.clean")}}</i-button>
         </div>
@@ -59,7 +62,7 @@
             <div class="map-modal" @click="trackDetailModal=false"></div>
             <div class="work-inner-map-wraper">
                 <div class="posi-map-title">
-                     {{$t("reportForm.speedingTrack")}}
+                    {{$t("reportForm.speedingTrack")}}
                     <div class="map-close"></div>
                 </div>
                 <div id="spedding-map" class="work-details-map"></div>

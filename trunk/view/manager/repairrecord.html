@@ -29,6 +29,9 @@
                 </transition>
             </div>
         </div>
+        <div style="margin-left:20px;float: left;line-height: 35px;">
+            {{$t("reportForm.selected")}}: <span v-text="selectedCount"></span>
+        </div>
         <div style="margin-left:20px;float: left;">
             <i-button @click="clean" icon="ios-nuclear-outline">{{$t("reportForm.clean")}}</i-button>
         </div>
@@ -36,7 +39,7 @@
             <i-button @click="onClickQuery" icon="ios-search">{{$t("reportForm.query")}}</i-button>
         </div>
         <div style="float: right;">
-            <i-button @click="exportTableData" icon="ios-search" type="primary">{{$t("reportForm.exportData")}}</i-button> 
+            <i-button @click="exportTableData" icon="ios-search" type="primary">{{$t("reportForm.exportData")}}</i-button>
         </div>
     </Row>
     <div style="margin:10px;">
@@ -48,7 +51,7 @@
     <Modal v-model="repairModal" width="500">
         <p slot="header" style="color:#f60;text-align:center">
             <Icon type="ios-create-outline"></Icon>
-            <span>{{$t("insure.editRepairInfo")}}</span>  
+            <span>{{$t("insure.editRepairInfo")}}</span>
         </p>
         <div style="text-align:center">
             <Row style="margin:10px 0;">
@@ -160,34 +163,34 @@
                     title: vRoot.$t("insure.repairItem"),
                     key: 'repairitem'
                 }, {
-                    title: vRoot.$t("insure.repairFee"),  
+                    title: vRoot.$t("insure.repairFee"),
                     key: 'fee',
                 }, {
-                    title:vRoot.$t("insure.repairShop"),  
+                    title: vRoot.$t("insure.repairShop"),
                     key: 'repairagent'
                 }, {
-                    title: vRoot.$t("insure.repairAddress"),  
+                    title: vRoot.$t("insure.repairAddress"),
                     key: 'repairaddress'
                 }, {
-                    title: vRoot.$t("insure.repairShopPhone"),  
+                    title: vRoot.$t("insure.repairShopPhone"),
                     key: 'repairphone'
                 }, {
-                    title: vRoot.$t("insure.repairShopName"),  
+                    title: vRoot.$t("insure.repairShopName"),
                     key: 'repairname'
                 }, {
-                    title: vRoot.$t("insure.deliveryTime"),   
+                    title: vRoot.$t("insure.deliveryTime"),
                     key: 'createtimeStr'
                 }, {
-                    title: vRoot.$t("insure.submitRepairName"),  
+                    title: vRoot.$t("insure.submitRepairName"),
                     key: 'submitrepairname'
                 }, {
-                    title: vRoot.$t("insure.submitRepairPhone"),  
+                    title: vRoot.$t("insure.submitRepairPhone"),
                     key: 'submitrepairphone'
                 }, {
-                    title: vRoot.$t("monitor.remarks"),  
+                    title: vRoot.$t("monitor.remarks"),
                     key: 'remark'
                 }, {
-                    title:  vRoot.$t("alarm.action"),  
+                    title: vRoot.$t("alarm.action"),
                     width: 150,
                     render: function(h, parmas) {
                         return h(
@@ -217,7 +220,7 @@
                                             type: 'info'
                                         }
                                     },
-                                     vRoot.$t("monitor.edit")
+                                    vRoot.$t("monitor.edit")
                                 ),
                                 h(
                                     'Button', {
@@ -233,7 +236,7 @@
                                         style: {
                                             marginLeft: '5px'
                                         }
-                                    },vRoot.$t("monitor.delete")
+                                    }, vRoot.$t("monitor.delete")
                                 ),
                             ]
                         )

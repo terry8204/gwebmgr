@@ -30,6 +30,9 @@
                     </transition>
                 </div>
             </div>
+            <div style="margin-left:20px;float: left;line-height: 35px;">
+                {{$t("reportForm.selected")}}: <span v-text="selectedCount"></span>
+            </div>
             <div style="margin-left:20px;float: left;">
                 <i-button @click="cleanSelectedDev" icon="ios-nuclear-outline">{{$t("reportForm.clean")}}</i-button>
             </div>

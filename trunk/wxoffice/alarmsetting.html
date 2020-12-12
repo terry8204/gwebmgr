@@ -145,7 +145,9 @@
                     return null;
                 },
                 login() {
+                    // let url = 'http://localhost:8080/gpsserver/webapi?action=login';
                     let url = 'https://www.gps51.com/webapi?action=login';
+
                     var data = {
                         type: "USER",
                         from: "web",
@@ -172,6 +174,7 @@
                     })
                 },
                 queryAlarmDescr(forcealarm) {
+                    // let url = "http://localhost:8080/gpsserver/webapi?action=queryalarmdescr&token=" + this.token;
                     let url = "https://www.gps51.com/webapi?action=queryalarmdescr&token=" + this.token;
                     axios.post(url, {}).then((response) => {
                         let data = response.data;

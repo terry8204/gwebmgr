@@ -16,6 +16,9 @@
                 </transition>
             </div>
         </div>
+        <div style="margin-left:20px;float: left;line-height: 35px;">
+            {{$t("reportForm.selected")}}: <span v-text="selectedCount"></span>
+        </div>
         <div style="float: left;">
             <div style="height: 32px; line-height: 32px;padding: 0 10px;">{{$t("reportForm.selectMonth")}}:&nbsp;</div>
         </div>
@@ -32,7 +35,7 @@
     <div style="margin:10px;">
         <i-table ref="totalTable" :columns="columns" :data="tableData" border :height="tableHeight" :loading="loading"></i-table>
     </div>
-    <Modal v-model="modal" :title="$t('reportForm.onlineDate')" width="332"> 
+    <Modal v-model="modal" :title="$t('reportForm.onlineDate')" width="332">
         <div class="calendar-wrap">
             <div class="calendar-top">
                 <div class="date-wrap">

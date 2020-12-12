@@ -564,13 +564,14 @@
                     for (var i = 0; i < groups.length; ++i) {
                         var group = groups[i];
                         var groupObj = {
-                            title: group.groupname,
                             groupid: group.groupid,
-
+                            title: group.groupname
                         }
                         if (isNeedDevice) {
                             groupObj.render = utils.renderGroup;
                         } else {
+                            groupObj.totalCount = group.devices.length;
+                            groupObj.title = group.groupname + '(' + group.devices.length + ')';
                             groupObj.render = function(h, params) {
                                 var data = params.data;
                                 var children = null;
@@ -629,7 +630,9 @@
                             };
                         }
                         if (isNeedDevice && group.devices) {
+                            groupObj.totalCount = group.devices.length;
                             groupObj.children = [];
+                            groupObj.title = group.groupname + '(' + group.devices.length + ')';
                             group.devices.forEach(function(device) {
                                 groupObj.children.push({
                                     deviceid: device.deviceid,
@@ -642,7 +645,7 @@
                                     username: username,
                                     groupid: group.groupid,
                                     groupname: group.groupname,
-                                    forwardid:device.forwardid,
+                                    forwardid: device.forwardid,
                                 }
                             });
                         }
@@ -652,8 +655,9 @@
 
                 if (groupsList.length == 0) {
                     groupsList.push({
-                        title: 'Default',
+                        title: 'Default(0)',
                         groupid: 0,
+                        totalCount: 0,
                         render: function(h, params) {
                             var data = params.data;
                             var children = [];
@@ -724,7 +728,6 @@
                         var currentsubDevicesTreeRecord = {
                             render: utils.renderPerson,
                         };
-                        currentsubDevicesTreeRecord.title = username;
                         var deviceListGroups = this.getDeviceListGroups(usersTree.groups, isNeedDevice, username, isNeedRadio);
                         if (username != null && subusers != null && subusers.length > 0) {
                             var subDevicesTreeRecord = this.doCastUsersTreeToDevicesTree(subusers, isNeedDevice, isNeedRadio);
@@ -735,6 +738,14 @@
                             currentsubDevicesTreeRecord.children = deviceListGroups;
 
                         }
+                        var totalCount = 0;
+                        if (currentsubDevicesTreeRecord.children) {
+                            for (var j = 0; j < currentsubDevicesTreeRecord.children.length; ++j) {
+                                totalCount += currentsubDevicesTreeRecord.children[j].totalCount;
+                            }
+                        }
+                        currentsubDevicesTreeRecord.totalCount = totalCount;
+                        currentsubDevicesTreeRecord.title = username + "(" + totalCount + ")";
                         devicesTreeRecord.push(currentsubDevicesTreeRecord);
                     }
                 }
@@ -759,6 +770,13 @@
                     } else {
                         iViewTree.children = deviceListGroups;
                     }
+                    var totalCount = 0;
+                    if (iViewTree.children) {
+                        for (var i = 0; i < iViewTree.children.length; ++i) {
+                            totalCount += iViewTree.children[i].totalCount;
+                        }
+                    }
+                    iViewTree.title = username + "(" + totalCount + ")";
                 }
                 return iViewTree;
             },
@@ -917,6 +935,7 @@
                         if (isFound == true) {
                             limitcount++;
                             childTemp.push(copyItem);
+
                             if (limitcount > 10) {
                                 break;
                             }

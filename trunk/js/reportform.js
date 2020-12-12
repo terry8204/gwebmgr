@@ -11,21 +11,46 @@ var treeMixin = {
         isShowMatchDev: false,
         treeData: [],
         dayNumberType: 0,
+        selectedCount: 0,
     },
     methods: {
+        clean: function() {
+            this.selectedCount = 0;
+            this.sosoValue = '';
+            this.checkedDevice = [];
+            this.cleanSelected(this.groupslist);
+            this.treeData = this.groupslist;
+
+            if (this.tableData) {
+                this.tableData = [];
+            }
+        },
+        cleanSelected: function(treeDataFilter) {
+            var that = this;
+            for (var i = 0; i < treeDataFilter.length; i++) {
+                var item = treeDataFilter[i];
+                if (item != null) {
+                    item.checked = false;
+                    if (item.children && item.children.length > 0) {
+                        that.cleanSelected(item.children);
+                    }
+                }
+            }
+        },
         cleanSelectedDev: function() {
             this.sosoValue = '';
             this.checkedDevice = [];
+            this.selectedCount = 0;
+
             function recurrence(list) {
-                for(var i = 0 ; i < list.length; i ++){
+                for (var i = 0; i < list.length; i++) {
                     var item = list[i];
                     item.checked = false;
-                    if(item.children){
+                    if (item.children) {
                         recurrence(item.children)
                     }
                 }
             }
-            // recurrence(this.groupslist);
             recurrence(this.treeData);
         },
         changePage: function(index) {
@@ -133,14 +158,19 @@ var treeMixin = {
         onCheckedDevice: function(arr) {
             this.checkedDevice = arr;
             var sosoValue = "";
+            var selectedCount = 0;
             arr.forEach(function(item) {
                 if (item.children) {
                     sosoValue += item.title + ","
+                    item.children.forEach(function() {
+                        selectedCount++;
+                    })
                 } else {
                     sosoValue += item.title + ","
                 }
             });
             this.sosoValue = sosoValue;
+            this.selectedCount = selectedCount;
         }
     },
     mounted: function() {
@@ -334,7 +364,7 @@ var reportMixin = {
 //  指令查询 DateFormat.longToDateStr(Date.now(),0)
 function cmdReport(groupslist) {
 
-    vueInstanse =   new Vue({
+    vueInstanse = new Vue({
         el: "#cmd-report",
         i18n: utils.getI18n(),
         data: {
@@ -420,11 +450,11 @@ function posiReport(groupslist) {
             minuteNum: 5,
             tabValue: "lastPosi",
             markerIns: null,
-            isSpin:false,
+            isSpin: false,
             lastPosiColumns: [
-                { title: vRoot.$t("reportForm.index"),key: 'idx', width: 60, align: 'center', fixed: 'left' },
+                { title: vRoot.$t("reportForm.index"), key: 'idx', width: 60, align: 'center', fixed: 'left' },
                 { title: vRoot.$t("alarm.devName"), key: 'devicename', width: 150, fixed: 'left' },
-                { title: vRoot.$t("alarm.devNum"), key: 'deviceid', width: 150},
+                { title: vRoot.$t("alarm.devNum"), key: 'deviceid', width: 150 },
                 { title: vRoot.$t("reportForm.lon"), key: 'fixedLon', width: 100 },
                 { title: vRoot.$t("reportForm.lat"), key: 'fixedLat', width: 100 },
                 { title: vRoot.$t("reportForm.direction"), key: 'direction', width: 100 },
@@ -533,7 +563,7 @@ function posiReport(groupslist) {
         },
         mixins: [treeMixin],
         methods: {
-            exportData:function(){
+            exportData: function() {
                 var tableData = deepClone(this.lastPosiData);
                 var columns = deepClone(this.lastPosiColumns);
                 columns.pop();
@@ -543,7 +573,7 @@ function posiReport(groupslist) {
                     item.devicename = "\t" + item.devicename;
                 });
                 this.$refs.totalTable.exportCsv({
-                    filename: isZh ?"位置报表":"PosiReport",
+                    filename: isZh ? "位置报表" : "PosiReport",
                     original: false,
                     columns: columns,
                     data: tableData
@@ -564,16 +594,16 @@ function posiReport(groupslist) {
                         }
                     }
                 });
-                if (deviceids.length) { 
-  
+                if (deviceids.length) {
+
                     this.loading = true;
                     this.getLastPosition(deviceids, function() {
                         me.loading = false;
                     });
-                }else{
+                } else {
                     me.$Message.error(me.$t('reportForm.selectDevTip'));
                 }
-               
+
             },
             getLastPosition: function(deviceIds, callback) {
                 var me = this;
@@ -586,7 +616,7 @@ function posiReport(groupslist) {
                     if (resp.status == 0) {
                         if (resp.records) {
                             var newCored = [];
-                            resp.records.forEach(function(item,index) {
+                            resp.records.forEach(function(item, index) {
                                 if (item) {
                                     var time = Date.now() - item.updatetime;
                                     var deviceid = item.deviceid;
@@ -729,14 +759,14 @@ function posiReport(groupslist) {
             } else {
                 me.groupslist = [utils.castUsersTreeToDevicesTree(rootuser, true)];
                 me.treeData = me.groupslist;
-            }    
+            }
         }
     })
 }
 
 // 里程详单
 function reportMileageDetail(groupslist) {
-    vueInstanse =  new Vue({
+    vueInstanse = new Vue({
         el: '#mileage-detail',
         i18n: utils.getI18n(),
         mixins: [reportMixin],
@@ -869,12 +899,7 @@ function groupMileage(groupslist) {
             currentIndex: 1,
         },
         methods: {
-            clean: function() {
-                this.sosoValue = '';
-                this.checkedDevice = [];
-                this.cleanSelected(this.groupslist);
-                this.treeData = this.groupslist;
-            },
+
             cleanSelected: function(treeDataFilter) {
                 var that = this;
                 for (var i = 0; i < treeDataFilter.length; i++) {
@@ -1231,24 +1256,7 @@ function accDetails(groupslist) {
                     data: this.allRotateTableData
                 });
             },
-            clean: function() {
-                this.sosoValue = '';
-                this.checkedDevice = [];
-                this.cleanSelected(this.groupslist);
-                this.treeData = this.groupslist;
-            },
-            cleanSelected: function(treeDataFilter) {
-                var that = this;
-                for (var i = 0; i < treeDataFilter.length; i++) {
-                    var item = treeDataFilter[i];
-                    if (item != null) {
-                        item.checked = false;
-                        if (item.children && item.children.length > 0) {
-                            that.cleanSelected(item.children);
-                        }
-                    }
-                }
-            },
+
             onClickTab: function(name) {
                 this.activeTab = name;
             },
@@ -1268,6 +1276,7 @@ function accDetails(groupslist) {
                         }
                     }
                 });
+
                 if (deviceids.length) {
                     var me = this;
                     var url = myUrls.reportAccs();
@@ -1527,12 +1536,7 @@ function rotateReport(groupslist) {
                     data: this.allRotateTableData
                 });
             },
-            clean: function() {
-                this.sosoValue = '';
-                this.checkedDevice = [];
-                this.cleanSelected(this.groupslist);
-                this.treeData = this.groupslist;
-            },
+
             cleanSelected: function(treeDataFilter) {
                 var that = this;
                 for (var i = 0; i < treeDataFilter.length; i++) {
@@ -2273,12 +2277,7 @@ function speedingReport(groupslist) {
                     data: this.allRotateTableData
                 });
             },
-            clean: function() {
-                this.sosoValue = '';
-                this.checkedDevice = [];
-                this.cleanSelected(this.groupslist);
-                this.treeData = this.groupslist;
-            },
+
             cleanSelected: function(treeDataFilter) {
                 var that = this;
                 for (var i = 0; i < treeDataFilter.length; i++) {
@@ -2765,7 +2764,7 @@ function devRecords(groupslist) {
 
 
 function messageRecords(groupslist) {
-    vueInstanse =  new Vue({
+    vueInstanse = new Vue({
         el: '#messageRecords',
         i18n: utils.getI18n(),
         mixins: [reportMixin],
@@ -3673,11 +3672,11 @@ function insureRecords(groupslist) {
                                 ])
                             },
                         };
-                        currentsubDevicesTreeRecord.title = username;
                         if (username != null && subusers != null && subusers.length > 0) {
                             var subDevicesTreeRecord = this.doCastUsersTreeToDevicesTree(subusers);
                             currentsubDevicesTreeRecord.children = subDevicesTreeRecord;
                         }
+                        currentsubDevicesTreeRecord.title = username;
                         devicesTreeRecord.push(currentsubDevicesTreeRecord);
                     }
                 }
@@ -3995,11 +3994,12 @@ function salesRecord(groupslist) {
                                 ])
                             },
                         };
-                        currentsubDevicesTreeRecord.title = username;
                         if (username != null && subusers != null && subusers.length > 0) {
                             var subDevicesTreeRecord = this.doCastUsersTreeToDevicesTree(subusers);
                             currentsubDevicesTreeRecord.children = subDevicesTreeRecord;
                         }
+
+                        currentsubDevicesTreeRecord.title = username;
                         devicesTreeRecord.push(currentsubDevicesTreeRecord);
                     }
                 }
@@ -4306,6 +4306,13 @@ function reportOnlineSummary(groupslist) {
                         iViewTree.children = subDevicesTreeRecord;
 
                     }
+                    var totalCount = 0;
+                    if (iViewTree.children) {
+                        for (var i = 0; i < iViewTree.children.length; ++i) {
+                            totalCount += iViewTree.children[i].totalCount;
+                        }
+                    }
+                    iViewTree.title = username + "(" + totalCount + ")";
                 }
                 return iViewTree;
             },
@@ -4347,11 +4354,18 @@ function reportOnlineSummary(groupslist) {
                                 ])
                             },
                         };
-                        currentsubDevicesTreeRecord.title = username;
                         if (username != null && subusers != null && subusers.length > 0) {
                             var subDevicesTreeRecord = this.doCastUsersTreeToDevicesTree(subusers);
                             currentsubDevicesTreeRecord.children = subDevicesTreeRecord;
                         }
+                        var totalCount = 0;
+                        if (currentsubDevicesTreeRecord.children) {
+                            for (var j = 0; j < currentsubDevicesTreeRecord.children.length; ++j) {
+                                totalCount += currentsubDevicesTreeRecord.children[j].totalCount;
+                            }
+                        }
+                        currentsubDevicesTreeRecord.totalCount = totalCount;
+                        currentsubDevicesTreeRecord.title = username + "(" + totalCount + ")";
                         devicesTreeRecord.push(currentsubDevicesTreeRecord);
                     }
                 }
@@ -4390,10 +4404,10 @@ function dropLineReport(groupslist) {
             days: '1',
             groupslist: [],
             columns: [
-                { title: vRoot.$t("reportForm.index"),key: 'index', width: 70 },
-                { title: vRoot.$t("alarm.devNum"), key: 'deviceid',  width: 120},
-                { title: vRoot.$t("alarm.devName"), key: 'devicename',  width: 120},
-                { title: 'SIM', key: 'simnum',   width: 120},
+                { title: vRoot.$t("reportForm.index"), key: 'index', width: 70 },
+                { title: vRoot.$t("alarm.devNum"), key: 'deviceid', width: 120 },
+                { title: vRoot.$t("alarm.devName"), key: 'devicename', width: 120 },
+                { title: 'SIM', key: 'simnum', width: 120 },
                 {
                     title: vRoot.$t("monitor.groupName"),
                     key: 'groupName',
@@ -4407,12 +4421,12 @@ function dropLineReport(groupslist) {
                 {
                     title: vRoot.$t('reportForm.offlineTime'),
                     width: 150,
-                    key:'updatetimeStr',
+                    key: 'updatetimeStr',
                 },
                 {
                     title: vRoot.$t('reportForm.downOfflineDuration'),
                     width: 150,
-                    key:'downOfflineDuration',
+                    key: 'downOfflineDuration',
                 },
                 {
                     title: vRoot.$t('monitor.remarks'),
@@ -4432,7 +4446,7 @@ function dropLineReport(groupslist) {
             tableHeight: 300,
         },
         methods: {
-            exportData:function(){
+            exportData: function() {
 
                 var tableData = deepClone(this.tableData);
                 var columns = deepClone(this.columns);
@@ -4442,9 +4456,9 @@ function dropLineReport(groupslist) {
                     item.devicename = "\t" + item.devicename;
                     item.simnum = "\t" + item.simnum;
                 });
-                columns[columns.length-1] = {title: vRoot.$t('monitor.remarks'),key: 'remark',};
+                columns[columns.length - 1] = { title: vRoot.$t('monitor.remarks'), key: 'remark', };
                 this.$refs.totalTable.exportCsv({
-                    filename: isZh ?"离线报表":"OfflineReport",
+                    filename: isZh ? "离线报表" : "OfflineReport",
                     original: false,
                     columns: columns,
                     data: tableData
@@ -4484,12 +4498,12 @@ function dropLineReport(groupslist) {
                     me.loading = false;
                     if (respData.status == 0) {
 
-                        respData.records.forEach(function(item,index){
-                            item.index = index+1;
+                        respData.records.forEach(function(item, index) {
+                            item.index = index + 1;
                             item.updatetimeStr = getUpdatetimeStr(item);
                             item.devicetype = vstore.state.deviceTypes[item.devicetype].typename;
                             item.downOfflineDuration = utils.timeStamp(Date.now() - item.updatetime);
-                            item.groupName = me.getGroupName(groupslist , item);
+                            item.groupName = me.getGroupName(groupslist, item);
                         });
 
                         me.tableData = respData.records;
@@ -4498,7 +4512,7 @@ function dropLineReport(groupslist) {
                     }
                 });
             },
-            getGroupName :function ( groupslist , row) {
+            getGroupName: function(groupslist, row) {
                 var groupid = row.groupid;
                 var deviceid = row.deviceid;
                 var groupName = '';
@@ -4524,13 +4538,7 @@ function dropLineReport(groupslist) {
                 }
                 return groupName;
             },
-            clean: function() {
-                this.sosoValue = '';
-                this.checkedDevice = [];
-                this.cleanSelected(this.groupslist);
-                this.treeData = this.groupslist;
-                this.tableData = [];
-            },
+
             cleanSelected: function(treeDataFilter) {
                 var that = this;
                 for (var i = 0; i < treeDataFilter.length; i++) {
@@ -4653,13 +4661,7 @@ function deviceOnlineDaily(groupslist) {
                 });
                 return tableData;
             },
-            clean: function() {
-                this.sosoValue = '';
-                this.checkedDevice = [];
-                this.cleanSelected(this.groupslist);
-                this.treeData = this.groupslist;
-                this.tableData = [];
-            },
+
             cleanSelected: function(treeDataFilter) {
                 var that = this;
                 for (var i = 0; i < treeDataFilter.length; i++) {
@@ -4840,13 +4842,7 @@ function groupsOnlineDaily(groupslist) {
                     }
                 });
             },
-            clean: function() {
-                this.sosoValue = '';
-                this.checkedDevice = [];
-                this.cleanSelected(this.groupslist);
-                this.treeData = this.groupslist;
-                this.tableData = [];
-            },
+
             cleanSelected: function(treeDataFilter) {
                 var that = this;
                 for (var i = 0; i < treeDataFilter.length; i++) {
@@ -5074,13 +5070,7 @@ function deviceMonthOnlineDaily(groupslist) {
                 });
                 return tableData;
             },
-            clean: function() {
-                this.sosoValue = '';
-                this.checkedDevice = [];
-                this.cleanSelected(this.groupslist);
-                this.treeData = this.groupslist;
-                this.tableData = [];
-            },
+
             cleanSelected: function(treeDataFilter) {
                 var that = this;
                 for (var i = 0; i < treeDataFilter.length; i++) {
@@ -6899,12 +6889,7 @@ function driverWorkDetails() {
                     });
                 };
             },
-            clean: function() {
-                this.sosoValue = '';
-                this.checkedDevice = [];
-                this.cleanSelected(this.groupslist);
-                this.treeData = this.groupslist;
-            },
+
             cleanSelected: function(treeDataFilter) {
                 var that = this;
                 for (var i = 0; i < treeDataFilter.length; i++) {
@@ -7451,12 +7436,7 @@ function ioReport(groupslist) {
                     }
                 }
             },
-            clean: function() {
-                this.sosoValue = '';
-                this.checkedDevice = [];
-                this.cleanSelected(this.groupslist);
-                this.treeData = this.groupslist;
-            },
+
             cleanSelected: function(treeDataFilter) {
                 var that = this;
                 for (var i = 0; i < treeDataFilter.length; i++) {
@@ -7829,12 +7809,7 @@ function multiMedia() {
                     }, 300);
                 };
             },
-            clean: function() {
-                this.sosoValue = '';
-                this.checkedDevice = [];
-                this.cleanSelected(this.groupslist);
-                this.treeData = this.groupslist;
-            },
+
             cleanSelected: function(treeDataFilter) {
                 var that = this;
                 for (var i = 0; i < treeDataFilter.length; i++) {
@@ -8028,7 +8003,7 @@ function multiMedia() {
 
 
 function reportNav(reportNavList) {
-    vueInstanse =  new Vue({
+    vueInstanse = new Vue({
         el: "#report-nav",
         data: {
             search: isZh ? '搜索' : 'search',

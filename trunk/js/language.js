@@ -311,7 +311,8 @@
                 notSupportCanvas: "Your browser does not support canvas at this time",
             },
             reportForm: {
-                maxSignal:'Max Signal',
+                selected: 'Selected',
+                maxSignal: 'Max Signal',
                 viewPicture: 'Image',
                 empty: 'Empty',
                 multiMedia: 'Multi-Media',
@@ -1441,8 +1442,9 @@
                 threeMinutes: '已播放三分钟时间,暂停播放',
                 notSupportCanvas: "您的浏览器暂不支持canvas",
             },
-            reportForm: { 
-                maxSignal:'最大信号值',
+            reportForm: {
+                selected: '已选中',
+                maxSignal: '最大信号值',
                 viewPicture: '查看图片',
                 empty: '空',
                 multiMedia: '多媒体',
@@ -2273,5 +2275,5 @@
     win.messages = messages;
     win.loginPageBgUrl = 'login_bg.jpg';
     win.mainLogo = 'logo.png';
-    
+
 })(this)

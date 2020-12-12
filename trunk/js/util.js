@@ -48,16 +48,16 @@ var utils = {
         var data = params.data;
         var deviceid = data.deviceid;
         var track = vRoot.$children[1].positionLastrecords[deviceid];
-        var isOnline =  false;
-        if(track){
+        var isOnline = false;
+        if (track) {
             isOnline = utils.getIsOnline(track);
         };
         return h('span', {
-            style:{
-                color:isOnline?'#33DAD0':'#B1BBC2'
+            style: {
+                color: isOnline ? '#33DAD0' : '#B1BBC2'
             }
-             }, [
-            h('span',[
+        }, [
+            h('span', [
                 h('Icon', {
                     props: {
                         type: 'md-phone-portrait'
@@ -279,7 +279,7 @@ var utils = {
         }
         return result;
     },
-    getIsOnlineWithTime: function(track,currentTime) {
+    getIsOnlineWithTime: function(track, currentTime) {
         var result = false;
         var updatetime = track.updatetime;
         if ((currentTime - updatetime) < 60 * 10 * 1000) {
@@ -544,29 +544,28 @@ var utils = {
         }
 
         temp = track.temp2;
-        if (temp != undefined  && temp != 0xffff) {
+        if (temp != undefined && temp != 0xffff) {
             tempStr += "|"
             tempStr += temp / 10 + '℃';
         }
 
         temp = track.temp3;
-        if (temp != undefined  && temp != 0xffff) {
+        if (temp != undefined && temp != 0xffff) {
             tempStr += "|"
             tempStr += temp / 10 + '℃';
         }
 
         temp = track.temp4;
-        if (temp != undefined  && temp != 0xffff) {
+        if (temp != undefined && temp != 0xffff) {
             tempStr += "|"
             tempStr += temp / 10 + '℃';
         }
 
         var humi1 = track.humi1;
         if (humi1 != undefined && humi1 > 0) {
-        	if(tempStr != null)
-        		{
-        			tempStr += "|";
-        		}
+            if (tempStr != null) {
+                tempStr += "|";
+            }
             tempStr += humi1 / 10 + '%';
         }
 
@@ -905,6 +904,7 @@ var utils = {
                     groupid: group.groupid,
                     username: username,
                     groupname: group.groupname,
+                    totalCount: group.devices.length
                 }
                 if (isNeedDevice) {
                     groupObj.render = utils.renderGroup;
@@ -968,6 +968,7 @@ var utils = {
                 title: 'Default(0)',
                 groupid: 0,
                 username: username,
+                totalCount: 0,
                 render: function(h, params) {
                     var data = params.data;
                     return h('span', {
@@ -1013,7 +1014,6 @@ var utils = {
                     username: username,
                     render: utils.renderPerson
                 };
-                currentsubDevicesTreeRecord.title = username;
                 var deviceListGroups = this.getDeviceListGroups(usersTree.groups, isNeedDevice, username);
                 if (username != null && subusers != null && subusers.length > 0) {
                     var subDevicesTreeRecord = this.doCastUsersTreeToDevicesTree(subusers, isNeedDevice);
@@ -1023,6 +1023,14 @@ var utils = {
                     currentsubDevicesTreeRecord.children = deviceListGroups;
 
                 }
+                var totalCount = 0;
+                if (currentsubDevicesTreeRecord.children) {
+                    for (var j = 0; j < currentsubDevicesTreeRecord.children.length; ++j) {
+                        totalCount += currentsubDevicesTreeRecord.children[j].totalCount;
+                    }
+                }
+                currentsubDevicesTreeRecord.totalCount = totalCount;
+                currentsubDevicesTreeRecord.title = username + "(" + totalCount + ")";
                 devicesTreeRecord.push(currentsubDevicesTreeRecord);
             }
         }
@@ -1037,7 +1045,6 @@ var utils = {
         if (devicesTreeRecord != null) {
             var username = devicesTreeRecord.username;
             var subusers = devicesTreeRecord.subusers;
-            iViewTree.title = username;
             var deviceListGroups = this.getDeviceListGroups(devicesTreeRecord.groups, isNeedDevice, username);
             if (username != null && subusers != null && subusers.length > 0) {
 
@@ -1048,6 +1055,13 @@ var utils = {
             } else {
                 iViewTree.children = deviceListGroups;
             }
+            var totalCount = 0;
+            if (iViewTree.children) {
+                for (var i = 0; i < iViewTree.children.length; ++i) {
+                    totalCount += iViewTree.children[i].totalCount;
+                }
+            }
+            iViewTree.title = username + "(" + totalCount + ")";
         }
         return iViewTree;
     },
@@ -1633,10 +1647,10 @@ function findComponentsUpward(context, componentName) {
 }
 
 function findBrothersComponents(context, componentName, exceptMe) {
-    var res = context.$parent.$children.filter(function(item)  {
+    var res = context.$parent.$children.filter(function(item) {
         return item.$options.name === componentName;
     });
-    var index = res.findIndex(function(item){ return item._uid === context._uid; });
+    var index = res.findIndex(function(item) { return item._uid === context._uid; });
     if (exceptMe) res.splice(index, 1);
     return res;
 }
@@ -1651,7 +1665,7 @@ function oneOf(value, validList) {
 }
 
 function broadcast(componentName, eventName, params) {
-    this.$children.forEach(function(child){
+    this.$children.forEach(function(child) {
         var name = child.$options.name;
         if (name === componentName) {
             child.$emit.apply(child, [eventName].concat(params));
@@ -1737,11 +1751,11 @@ var ScrollbarMixins = {
         },
         checkMaskInVisible: function() {
             var masks = document.getElementsByClassName('ivu-modal-mask') || [];
-            return Array.from(masks).every(function(m) {return  m.style.display === 'none' || m.classList.contains('fade-leave-to') } );
+            return Array.from(masks).every(function(m) { return m.style.display === 'none' || m.classList.contains('fade-leave-to') });
         },
         setScrollBar: function() {
             if (this.bodyIsOverflowing && this.scrollBarWidth !== undefined) {
-                document.body.style.paddingRight = this.scrollBarWidth+'px';
+                document.body.style.paddingRight = this.scrollBarWidth + 'px';
             }
         },
         resetScrollBar: function() {
@@ -1761,7 +1775,7 @@ var ScrollbarMixins = {
     }
 };
 
-if(document.getElementById("drawer-template")){
+if (document.getElementById("drawer-template")) {
     Vue.component('Drawer', {
         template: document.getElementById("drawer-template").innerHTML,
         directives: {
@@ -1774,7 +1788,7 @@ if(document.getElementById("drawer-template")){
                     if (!parentNode) return;
                     var home = document.createComment('');
                     var hasMovedOut = false;
-    
+
                     if (value !== false) {
                         parentNode.replaceChild(home, el); // moving out, el is no longer in the document
                         getTarget(value).appendChild(el); // moving into new place
@@ -1799,7 +1813,7 @@ if(document.getElementById("drawer-template")){
                     var parentNode = ref$1.parentNode;
                     var home = ref$1.home;
                     var hasMovedOut = ref$1.hasMovedOut; // recall where home is
-    
+
                     if (!hasMovedOut && value) {
                         // remove from document and leave placeholder
                         parentNode.replaceChild(home, el);
@@ -1869,7 +1883,7 @@ if(document.getElementById("drawer-template")){
                 default: false
             },
             placement: {
-                validator:function(value) {
+                validator: function(value) {
                     return oneOf(value, ['left', 'right']);
                 },
                 default: 'right'
@@ -1880,7 +1894,7 @@ if(document.getElementById("drawer-template")){
             },
             transfer: {
                 type: Boolean,
-                default:function () {
+                default: function() {
                     return !this.$IVIEW || this.$IVIEW.transfer === '' ? true : this.$IVIEW.transfer;
                 }
             },
@@ -1903,47 +1917,47 @@ if(document.getElementById("drawer-template")){
         computed: {
             wrapClasses: function() {
                 return [
-                    prefixCls+'-wrap', {
-                        [prefixCls+'-hidden']: !this.wrapShow,
+                    prefixCls + '-wrap', {
+                        [prefixCls + '-hidden']: !this.wrapShow,
                         [this.className]: !!this.className,
-                        [prefixCls+'-no-mask']: !this.mask,
-                        [prefixCls+'-wrap-inner']: this.inner
+                        [prefixCls + '-no-mask']: !this.mask,
+                        [prefixCls + '-wrap-inner']: this.inner
                     }
                 ];
             },
             mainStyles: function() {
                 var style = {};
-    
+
                 var width = parseInt(this.width);
-    
+
                 var styleWidth = {
-                    width: width <= 100 ? width+'%' :   width+'px' 
+                    width: width <= 100 ? width + '%' : width + 'px'
                 };
-    
+
                 Object.assign(style, styleWidth);
-    
+
                 return style;
             },
             contentClasses: function() {
                 return [
-                    prefixCls+'-content', {
-                        [prefixCls+'-content-no-mask']: !this.mask
+                    prefixCls + '-content', {
+                        [prefixCls + '-content-no-mask']: !this.mask
                     }
                 ];
             },
             classes: function() {
                 return [
                     prefixCls,
-                    prefixCls+'-'+this.placement, {
-                        [prefixCls+'-no-header']: !this.showHead,
-                        [prefixCls+'-inner']: this.inner
+                    prefixCls + '-' + this.placement, {
+                        [prefixCls + '-no-header']: !this.showHead,
+                        [prefixCls + '-inner']: this.inner
                     }
                 ];
             },
             maskClasses: function() {
                 return [
-                    prefixCls+'-mask', {
-                        [prefixCls+'-mask-inner']: this.inner
+                    prefixCls + '-mask', {
+                        [prefixCls + '-mask-inner']: this.inner
                     }
                 ];
             }
@@ -1962,20 +1976,20 @@ if(document.getElementById("drawer-template")){
             handleWrapClick: function(event) {
                 // use indexOf,do not use === ,because ivu-modal-wrap can have other custom className
                 var className = event.target.getAttribute('class');
-                if (className && className.indexOf(prefixCls+'-wrap') > -1) this.handleMask();
+                if (className && className.indexOf(prefixCls + '-wrap') > -1) this.handleMask();
             },
         },
         mounted: function() {
             if (this.visible) {
                 this.wrapShow = true;
             }
-    
+
             var showHead = true;
-    
+
             if (this.$slots.header === undefined && !this.title) {
                 showHead = false;
             }
-    
+
             this.showHead = showHead;
         },
         beforeDestroy: function() {
@@ -1987,16 +2001,16 @@ if(document.getElementById("drawer-template")){
             },
             visible: function(val) {
                 if (val === false) {
-                    this.timer = setTimeout(function () {
+                    this.timer = setTimeout(function() {
                         this.wrapShow = false;
                         // #4831 Check if there are any drawers left at the parent level
                         var brotherDrawers = findBrothersComponents(this, 'Drawer', true) || [];
                         var parentDrawers = findComponentsUpward(this, 'Drawer') || [];
-    
+
                         var otherDrawers = [].concat(brotherDrawers).concat(parentDrawers);
-    
-                        var isScrollDrawer = otherDrawers.some(function(item) { return item.visible && !item.scrollable});
-    
+
+                        var isScrollDrawer = otherDrawers.some(function(item) { return item.visible && !item.scrollable });
+
                         if (!isScrollDrawer) {
                             this.removeScrollEffect();
                         }

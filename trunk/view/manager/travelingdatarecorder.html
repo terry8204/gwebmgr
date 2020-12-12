@@ -17,7 +17,7 @@
                 {{$t("bgMgr.selectedDeviceList")}} {{tableData.length}}
                 <i-button type="error" size="small" @click="clearTableData" style="float: right;margin: 3px 0px 0 0;">{{$t("insure.removeAll")}}</i-button>
             </div>
-            <div style="padding: 0 20px;width:400px;">  
+            <div style="padding: 0 20px;width:400px;">
                 <div v-show="curruntRow.deviceid">
                     <span v-text="curruntRow.devicename"></span>
                     <span>-</span>
@@ -89,7 +89,7 @@
                                     &nbsp;当前时间 : &nbsp;
                                 </i-col>
                                 <i-col span="12">
-                                    <Date-Picker type="datetime" v-model="realtime" ></Date-Picker>
+                                    <Date-Picker type="datetime" v-model="realtime"></Date-Picker>
                                 </i-col>
                             </Row>
                         </div>
@@ -253,14 +253,14 @@
                                     &nbsp;结束时间 : &nbsp;
                                 </i-col>
                                 <i-col span="12">
-                                    <Date-Picker type="datetime" v-model="endDateTime" ></Date-Picker>
+                                    <Date-Picker type="datetime" v-model="endDateTime"></Date-Picker>
                                 </i-col>
                             </Row>
                             <Row style="margin: 5px 0">
                                 <i-col span="7" style="height: 100%;text-align:right;line-height:32px;">
                                     &nbsp;模块数(分钟) : &nbsp;
                                 </i-col>
-                                <i-col span="12">  
+                                <i-col span="12">
                                     <Input-Number :min="1" :max="30" v-model="modulesNumber"></Input-Number>
                                 </i-col>
                             </Row>
@@ -294,14 +294,14 @@
         el: "#batchmgr",
         i18n: utils.getI18n(),
         data: {
-            updateTimeStr:'',
+            updateTimeStr: '',
             // 0
             recordVersion: '',
             modifiedOrder: '',
             // 1
-            driverLicenseNo:'',
+            driverLicenseNo: '',
             // 2
-            realtime:'',
+            realtime: '',
             // 3
             beginMileage: '',
             endMileage: '',
@@ -319,18 +319,18 @@
             state: '',
             // realTimeClock: "",
             // 7
-            cCCcode : '',
-            certifiedProductModel  : '',
-            productDateTime  : '',
-            productSerialNumber  : '',
-            productOther  : '',
+            cCCcode: '',
+            certifiedProductModel: '',
+            productDateTime: '',
+            productSerialNumber: '',
+            productOther: '',
 
             // 8 - 14
-            startDateTime:new Date(Date.now()-3600*1000),
-            endDateTime:new Date(),
-            modulesNumber:10,
+            startDateTime: new Date(Date.now() - 3600 * 1000),
+            endDateTime: new Date(),
+            modulesNumber: 10,
             //15 
-            setuptime:new Date(),
+            setuptime: new Date(),
 
             loading: false,
             userType: localStorage.getItem('userType'),
@@ -346,58 +346,55 @@
             searchDeviceList: [],
             deviceInfoColumns: [],
             deviceInfoData: [],
-            treeGroupList: [
-                {
-                    title: '00H-采集记录仪执行标准版本',
-                    cmdType: '00H',
-                }, {
-                    title: '01H-采集当前驾驶人信息',
-                    cmdType: '01H',
-                }, {
-                    title: '02H-采集/设置记录仪实时时间',
-                    cmdType: '02H',
-                }, {
-                    title: '03H-采集/设置累计行驶里程',
-                    cmdType: '03H',
-                }, {
-                    title: '04H-采集/设置记录仪脉冲系数',
-                    cmdType: '04H',
-                }, {
-                    title: '05H-采集/设置车辆信息',
-                    cmdType: '05H',
-                }, {
-                    title: '06H-采集/设置记录仪状态信号配置信息',
-                    cmdType: '06H',
-                }, {
-                    title: '07H-采集记录仪唯一性编号',
-                    cmdType: '07H',
-                }, 
-                {
-                    title: '08H-采集指定的行驶速度记录',
-                    cmdType: '08H',
-                }, {
-                    title: '09H-采集指定的位置信息记录',
-                    cmdType: '09H',
-                }, {
-                    title: '10H-采集指定的疑点事故记录',
-                    cmdType: '10H',
-                }, {
-                    title: '11H-采集指定的超时驾驶记录',
-                    cmdType: '11H',
-                }, {
-                    title: '12H-采集指定的驾驶人身份记录',
-                    cmdType: '12H',
-                }, {
-                    title: '13H-采集指定的记录仪外部供电记录',
-                    cmdType: '13H',
-                }, {
-                    title: '14H-采集指定的速度状态记录',
-                    cmdType: '14H',
-                }, 
-                {
-                    title: '15H-设置初次安装日期',
-                    cmdType: '15H',
-                }],
+            treeGroupList: [{
+                title: '00H-采集记录仪执行标准版本',
+                cmdType: '00H',
+            }, {
+                title: '01H-采集当前驾驶人信息',
+                cmdType: '01H',
+            }, {
+                title: '02H-采集/设置记录仪实时时间',
+                cmdType: '02H',
+            }, {
+                title: '03H-采集/设置累计行驶里程',
+                cmdType: '03H',
+            }, {
+                title: '04H-采集/设置记录仪脉冲系数',
+                cmdType: '04H',
+            }, {
+                title: '05H-采集/设置车辆信息',
+                cmdType: '05H',
+            }, {
+                title: '06H-采集/设置记录仪状态信号配置信息',
+                cmdType: '06H',
+            }, {
+                title: '07H-采集记录仪唯一性编号',
+                cmdType: '07H',
+            }, {
+                title: '08H-采集指定的行驶速度记录',
+                cmdType: '08H',
+            }, {
+                title: '09H-采集指定的位置信息记录',
+                cmdType: '09H',
+            }, {
+                title: '10H-采集指定的疑点事故记录',
+                cmdType: '10H',
+            }, {
+                title: '11H-采集指定的超时驾驶记录',
+                cmdType: '11H',
+            }, {
+                title: '12H-采集指定的驾驶人身份记录',
+                cmdType: '12H',
+            }, {
+                title: '13H-采集指定的记录仪外部供电记录',
+                cmdType: '13H',
+            }, {
+                title: '14H-采集指定的速度状态记录',
+                cmdType: '14H',
+            }, {
+                title: '15H-设置初次安装日期',
+                cmdType: '15H',
+            }],
             tableData: [],
             mileageRatio: 100,
             columns: [{
@@ -426,9 +423,11 @@
                                 event.stopPropagation();
                                 event.preventDefault();
                                 var row = vueInstanse.tableData.splice(params.index, 1)[0];
-                                
-                                if(row && vueInstanse.curruntRow && row.deviceid === vueInstanse.curruntRow.deviceid){
-                                    vueInstanse.curruntRow = {deviceid:''};
+
+                                if (row && vueInstanse.curruntRow && row.deviceid === vueInstanse.curruntRow.deviceid) {
+                                    vueInstanse.curruntRow = {
+                                        deviceid: ''
+                                    };
                                 }
                             }
                         }
@@ -441,10 +440,10 @@
                     var result = '',
                         color = '',
                         resultType = params.row.resultType;
-                    if(resultType === 0){
+                    if (resultType === 0) {
                         color = "#2D8CF0";
                         result = vRoot.$t('device.actionSucc');
-                    }else{
+                    } else {
                         color = "#E4393C";
                         result = params.row.resultCause;
                     }
@@ -459,17 +458,23 @@
             selectedGroupName: null,
             selectedUserName: null,
             taleHeight: 100,
-            curruntRow : {deviceid:"",devicename:''}
+            curruntRow: {
+                deviceid: "",
+                devicename: ''
+            }
         },
         methods: {
-            clearTableData :function(){
-                this.curruntRow = {deviceid:"",devicename:''};
-                this.tableData=[];
+            clearTableData: function() {
+                this.curruntRow = {
+                    deviceid: "",
+                    devicename: ''
+                };
+                this.tableData = [];
             },
             onRefresh: function() {
                 if (this.curruntRow) {
                     this.onCurrentChange(this.curruntRow)
-                }else{
+                } else {
                     this.$Message.error('请选择一个设备');
                 }
             },
@@ -492,7 +497,7 @@
                     }
                 });
             },
-            
+
             getRecorderCommand: function(type) {
                 var cmd = 0x00;
                 switch (this.curruntCmdType) {
@@ -503,13 +508,13 @@
                         cmd = 0x01;
                         break;
                     case '02H':
-                        cmd = type == 1 ? 0x02 : 0xC2;   
-                        break; 
+                        cmd = type == 1 ? 0x02 : 0xC2;
+                        break;
                     case '03H':
-                        cmd = type == 1 ? 0x03 : 0xC4;      
+                        cmd = type == 1 ? 0x03 : 0xC4;
                         break;
                     case '04H':
-                        cmd = type == 1 ? 0x04 : 0xC3;  
+                        cmd = type == 1 ? 0x04 : 0xC3;
                         break;
                     case '05H':
                         cmd = type == 1 ? 0x05 : 0x82;
@@ -547,7 +552,7 @@
                 }
                 return cmd;
             },
-            getRecorderData:function(){
+            getRecorderData: function() {
                 var dataStr = null;
                 switch (this.curruntCmdType) {
                     case '00H':
@@ -558,25 +563,25 @@
                         break;
                     case '02H':
                         dataStr = JSON.stringify({
-                            realtime:this.realtime.getTime(),
-                            offset:timeDifference
+                            realtime: this.realtime.getTime(),
+                            offset: timeDifference
                         });
                         break;
-                    case '03H':  
+                    case '03H':
                         dataStr = JSON.stringify({
-                            beginMileage:this.beginMileage
+                            beginMileage: this.beginMileage
                         });
                         break;
                     case '04H':
                         dataStr = JSON.stringify({
-                            pulseFactor:this.pulseFactor,
+                            pulseFactor: this.pulseFactor,
                         });
                         break;
                     case '05H':
                         dataStr = JSON.stringify({
-                            vin:this.vin,
-                            vehicleNumber:this.vehicleNumber,
-                            classificationOfVehicle:this.classificationOfVehicle,
+                            vin: this.vin,
+                            vehicleNumber: this.vehicleNumber,
+                            classificationOfVehicle: this.classificationOfVehicle,
                         });
                         break;
                     case '06H':
@@ -591,11 +596,11 @@
                         break;
                     case '15H':
                         dataStr = JSON.stringify({
-                            setuptime:this.setuptime.getTime(),
-                            offset:timeDifference
+                            setuptime: this.setuptime.getTime(),
+                            offset: timeDifference
                         });
                         break;
-                    default :
+                    default:
                         var daya = {
                             begintime: this.startDateTime.getTime(),
                             endtime: this.endDateTime.getTime(),
@@ -604,7 +609,7 @@
                         }
                         dataStr = JSON.stringify(daya);
                 }
-                return dataStr;    
+                return dataStr;
             },
             setRecorderData: function(recorderData) {
                 console.log(recorderData);
@@ -635,9 +640,9 @@
                         this.vin = recorderData.vin;
                         break;
                     case '06H':
-                         this.content = recorderData.content;
-                         this.realTimeClock = recorderData.realTimeClock;
-                         this.state = recorderData.state;
+                        this.content = recorderData.content;
+                        this.realTimeClock = recorderData.realTimeClock;
+                        this.state = recorderData.state;
                         break;
                     case '07H':
                         this.cCCcode = recorderData.cCCcode;
@@ -649,9 +654,9 @@
                     case '08H':
                         var tableData08H = [];
                         var minutes = recorderData.minutes
-                        minutes.forEach(function(mItem){
+                        minutes.forEach(function(mItem) {
                             var realTimeClock = mItem.realTimeClock;
-                            mItem.seconds.forEach(function(sItem,index){
+                            mItem.seconds.forEach(function(sItem, index) {
                                 sItem.time = realTimeClock;
                                 sItem.second = index;
                                 tableData08H.push(sItem);
@@ -662,9 +667,9 @@
                     case '09H':
                         var tableData09H = [];
                         var hours = recorderData.hours
-                        hours.forEach(function(mItem){
+                        hours.forEach(function(mItem) {
                             var realTimeClock = mItem.realTimeClock;
-                            mItem.minutes.forEach(function(sItem,index){
+                            mItem.minutes.forEach(function(sItem, index) {
                                 sItem.time = realTimeClock;
                                 sItem.second = index;
                                 tableData09H.push(sItem);
@@ -675,9 +680,9 @@
                     case '10H':
                         var tableData10H = [];
                         var doubts = recorderData.doubts
-                        doubts.forEach(function(mItem){
+                        doubts.forEach(function(mItem) {
                             var realTimeClock = mItem.realTimeClock;
-                            mItem.records.forEach(function(sItem,index){
+                            mItem.records.forEach(function(sItem, index) {
                                 sItem.time = realTimeClock;
                                 sItem.second = index;
                                 tableData10H.push(sItem);
@@ -686,19 +691,19 @@
                         this.deviceInfoData = tableData10H;
                         break;
                     case '11H':
-                    
+
                         break;
                     case '12H':
-                
+
                         break;
                     case '13H':
-             
+
                         break;
                     case '14H':
-               
+
                         break;
                     case '15H':
-               
+
                         break;
                 }
             },
@@ -708,9 +713,9 @@
                     action: 'recorder',
                     recorderaction: type,
                     recordercommand: this.getRecorderCommand(type),
-                    recorderdata:null,
+                    recorderdata: null,
                 };
-                if(type==2){
+                if (type == 2) {
                     data.recorderdata = this.getRecorderData(type);
                 }
                 this.tableData.forEach(function(item) {
@@ -726,7 +731,7 @@
                     return;
                 }
                 var url = myUrls.batchOperate();
-     
+
                 utils.sendAjax(url, data, function(respData) {
                     if (respData.status === 0) {
                         // if (respData.total == respData.success) {
@@ -740,9 +745,9 @@
                     }
                 });
 
-                
+
             },
-            onSetDataInfo:function(){
+            onSetDataInfo: function() {
                 var me = this;
                 if (!this.curruntRow) {
                     me.$Message.error('请选择一个设备');
@@ -753,7 +758,7 @@
                     action: 'recorder',
                     recorderaction: 2,
                     recordercommand: this.getRecorderCommand(2),
-                    recorderdata:this.getRecorderData(),
+                    recorderdata: this.getRecorderData(),
                 };
                 var url = myUrls.batchOperate();
                 utils.sendAjax(url, data, function(respData) {
@@ -764,15 +769,15 @@
                 console.log(errorrecords);
                 this.tableData.forEach(function(item) {
                     var isErr = false;
-                    for(var i = 0 ; i < errorrecords.length ; i ++ ){
+                    for (var i = 0; i < errorrecords.length; i++) {
                         var errItem = errorrecords[i];
-                        if(item.deviceid == errItem.deviceid){
+                        if (item.deviceid == errItem.deviceid) {
                             item.resultType = errItem.status;
                             item.resultCause = errItem.cause;
                             isErr = true;
                         }
                     }
-                    if(isErr == false){
+                    if (isErr == false) {
                         item.resultType = 0;
                     }
                 })
@@ -787,14 +792,14 @@
                         tableData.push(utils.deviceInfos[deviceid]);
                     }
                 })
-             
+
                 this.tableData = this.tableData.concat(tableData);
 
-                setTimeout(function(){
-                    if(tableData.length){
+                setTimeout(function() {
+                    if (tableData.length) {
                         me.$refs.table.$refs.tbody.clickCurrentRow(0);
                     }
-                },500)
+                }, 500)
             },
             isRepeatAddDevice: function(deviceid) {
                 var relsut = false;
@@ -851,9 +856,8 @@
                     for (var i = 0; i < groups.length; ++i) {
                         var group = groups[i];
                         var groupObj = {
-                            title: group.groupname,
                             groupid: group.groupid,
-
+                            title: group.groupname
                         }
                         if (isNeedDevice) {
                             groupObj.render = utils.renderGroup;
@@ -916,7 +920,9 @@
                             };
                         }
                         if (isNeedDevice && group.devices) {
+                            groupObj.totalCount = group.devices.length;
                             groupObj.children = [];
+                            groupObj.title = group.groupname + '(' + group.devices.length + ')';
                             group.devices.forEach(function(device) {
                                 groupObj.children.push({
                                     deviceid: device.deviceid,
@@ -929,7 +935,7 @@
                                     username: username,
                                     groupid: groupObj.groupid,
                                     groupname: groupObj.groupname,
-                                    forwardid:device.forwardid,
+                                    forwardid: device.forwardid,
                                 }
                             });
                         }
@@ -939,8 +945,9 @@
 
                 if (groupsList.length == 0) {
                     groupsList.push({
-                        title: 'Default',
+                        title: 'Default(0)',
                         groupid: 0,
+                        totalCount: 0,
                         render: function(h, params) {
                             var data = params.data;
                             var children = [];
@@ -1011,7 +1018,6 @@
                         var currentsubDevicesTreeRecord = {
                             render: utils.renderPerson,
                         };
-                        currentsubDevicesTreeRecord.title = username;
                         var deviceListGroups = this.getDeviceListGroups(usersTree.groups, isNeedDevice, username, isNeedRadio);
                         if (username != null && subusers != null && subusers.length > 0) {
                             var subDevicesTreeRecord = this.doCastUsersTreeToDevicesTree(subusers, isNeedDevice, isNeedRadio);
@@ -1022,6 +1028,14 @@
                             currentsubDevicesTreeRecord.children = deviceListGroups;
 
                         }
+                        var totalCount = 0;
+                        if (currentsubDevicesTreeRecord.children) {
+                            for (var j = 0; j < currentsubDevicesTreeRecord.children.length; ++j) {
+                                totalCount += currentsubDevicesTreeRecord.children[j].totalCount;
+                            }
+                        }
+                        currentsubDevicesTreeRecord.totalCount = totalCount;
+                        currentsubDevicesTreeRecord.title = username + "(" + totalCount + ")";
                         devicesTreeRecord.push(currentsubDevicesTreeRecord);
                     }
                 }
@@ -1035,7 +1049,6 @@
                 if (devicesTreeRecord != null) {
                     var username = devicesTreeRecord.username;
                     var subusers = devicesTreeRecord.subusers;
-                    iViewTree.title = username;
                     var deviceListGroups = this.getDeviceListGroups(devicesTreeRecord.groups, isNeedDevice, username, isNeedRadio);
                     if (username != null && subusers != null && subusers.length > 0) {
 
@@ -1046,6 +1059,13 @@
                     } else {
                         iViewTree.children = deviceListGroups;
                     }
+                    var totalCount = 0;
+                    if (iViewTree.children) {
+                        for (var i = 0; i < iViewTree.children.length; ++i) {
+                            totalCount += iViewTree.children[i].totalCount;
+                        }
+                    }
+                    iViewTree.title = username + "(" + totalCount + ")";
                 }
                 return iViewTree;
             },
@@ -1125,8 +1145,8 @@
                 });
                 return deviceids;
             },
-            isShowSetBtn:function(){
-                return this.curruntCmdType=='02H'|| this.curruntCmdType=='03H' ||this.curruntCmdType=='04H'||this.curruntCmdType=='05H'||this.curruntCmdType=='06H'||this.curruntCmdType=='15H'
+            isShowSetBtn: function() {
+                return this.curruntCmdType == '02H' || this.curruntCmdType == '03H' || this.curruntCmdType == '04H' || this.curruntCmdType == '05H' || this.curruntCmdType == '06H' || this.curruntCmdType == '15H'
             },
         },
         watch: {
@@ -1146,29 +1166,29 @@
                         this.deviceInfoColumns = [{
                             title: '时间',
                             key: 'time',
-                            width:140,
-                        },{
+                            width: 140,
+                        }, {
                             title: '秒',
                             key: 'second',
-                            width:60,
+                            width: 60,
                         }, {
                             title: '速度',
                             key: 'speed',
-                            width:70,
-                        },  {
+                            width: 70,
+                        }, {
                             title: '内容',
                             key: 'content',
                         }];
                         break;
                     case '09H':
-                    this.deviceInfoColumns = [{
+                        this.deviceInfoColumns = [{
                             title: '时间',
                             key: 'time',
-                            width:140,
+                            width: 140,
                         }, {
                             title: '秒',
                             key: 'second',
-                            width:60,
+                            width: 60,
                         }, {
                             title: '经度',
                             key: 'lon'
@@ -1178,36 +1198,36 @@
                         }, {
                             title: '速度',
                             key: 'speed',
-                            width:70,
+                            width: 70,
                         }, {
                             title: '海拔',
                             key: 'altitude',
-                            width:70,
+                            width: 70,
                         }];
                         break;
                     case '10H':
-                    this.deviceInfoColumns = [{
+                        this.deviceInfoColumns = [{
                             title: '时间',
                             key: 'time',
-                            width:140,
-                        },{
+                            width: 140,
+                        }, {
                             title: '秒',
                             key: 'second',
-                            width:60,
+                            width: 60,
                         }, {
                             title: '速度',
                             key: 'speed',
-                            width:70,
-                        },  {
+                            width: 70,
+                        }, {
                             title: '内容',
                             key: 'content',
                         }];
                         break;
                     case '11H':
-                    this.deviceInfoColumns = [];
+                        this.deviceInfoColumns = [];
                         break;
                     case '12H':
-                    this.deviceInfoColumns = [{
+                        this.deviceInfoColumns = [{
                             title: '时间',
                             key: '12'
                         }, {
@@ -1216,7 +1236,7 @@
                         }];
                         break;
                     case '13H':
-                    this.deviceInfoColumns = [{
+                        this.deviceInfoColumns = [{
                             title: '时间',
                             key: '12'
                         }, {
@@ -1228,7 +1248,7 @@
                         }];
                         break;
                     case '14H':
-                    this.deviceInfoColumns = [{
+                        this.deviceInfoColumns = [{
                             title: '速度状态',
                             key: '12'
                         }, {
