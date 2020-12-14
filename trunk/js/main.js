@@ -206,6 +206,7 @@ Vue.component('my-video', {
             this.startTimes = 0;
             this.videoPlayer = null;
             this.isSendAjaxState = false;
+            this.playUrl = null;
             this.bitrate = {
                 timer: null,
                 bsnow: null,
@@ -330,18 +331,35 @@ Vue.component('my-video', {
                     vRoot.$Message.error('该浏览器不支持视频播放,请换谷歌浏览器');
                 }
             } else {
-                try {
-                    var videoPlayer = this.videoPlayer;
-                    if (videoPlayer != null) {
-                        videoPlayer.pause();
-                        videoPlayer.unload();
-                        videoPlayer.detachMediaElement();
-                        videoPlayer.destroy();
+                if (this.playUrl == url) {
+                    var video = this.$refs.player;
+                    console.log(video);
+                    if (video.buffered.length && video.buffered.length > 0) {
+                        var end = video.buffered.end(0);
+                        var diff = end - video.currentTime;
+                        if (diff >= 1.5) {
+                            video.currentTime = end;
+                        }
                     }
-                } catch (error) {
 
+                    this.videoPlayer.play();
+
+                } else {
+                    try {
+                        var videoPlayer = this.videoPlayer;
+                        if (videoPlayer != null) {
+                            videoPlayer.pause();
+                            videoPlayer.unload();
+                            videoPlayer.detachMediaElement();
+                            videoPlayer.destroy();
+                        }
+                    } catch (error) {
+
+                    }
+                    this.playUrl = url;
+                    this.initFlvVideo(url, hasaudio);
                 }
-                this.initFlvVideo(url, hasaudio);
+
             }
         },
         addEventListenerToPlayer: function() {
@@ -489,7 +507,7 @@ Vue.component('my-video', {
                 me.isSendAjaxState = false;
                 var records = resp.records;
                 var status = resp.status;
-
+                var playUrl = records[0].playurl;
                 if (status == CMD_SEND_RESULT_UNCONFIRM) {
                     me.$Message.error(me.$t('monitor.CMD_SEND_RESULT_UNCONFIRM'));
                 } else if (status === CMD_SEND_RESULT_PASSWORD_ERROR) {
@@ -511,7 +529,7 @@ Vue.component('my-video', {
                         accState = me.$t('video.accClose');
                     }
                     me.$Message.success(accState + me.$t('video.requestPlaySucc'));
-                    me.switchrtcPlayer(records[0].playurl, records[0].hasaudio);
+                    me.switchrtcPlayer(playUrl, records[0].hasaudio);
                     me.isPlaying = true;
                     me.startTimes = Date.now();
                     isWebrtcPlay && me.caclBits();
@@ -526,7 +544,7 @@ Vue.component('my-video', {
                         accState = me.$t('video.accClose');
                     }
                     me.$Message.error(accState + me.$t('video.requestPlayTimeout'));
-                    me.switchrtcPlayer(records[0].playurl, records[0].hasaudio);
+                    me.switchrtcPlayer(playUrl, records[0].hasaudio);
                     me.isPlaying = true;
                     me.startTimes = Date.now();
                     isWebrtcPlay && me.caclBits();
@@ -544,10 +562,11 @@ Vue.component('my-video', {
                     player.stop();
                 } else {
                     var player = this.videoPlayer;
-                    player.unload();
-                    player.detachMediaElement();
-                    player.destroy();
-                    this.videoPlayer = null;
+                    this.videoPlayer.pause();
+                    // player.unload();
+                    // player.detachMediaElement();
+                    // player.destroy();
+                    // this.videoPlayer = null;
                 }
             } catch (error) {};
             this.isPlaying = false;

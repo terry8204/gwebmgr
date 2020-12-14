@@ -607,7 +607,7 @@ var utils = {
         } else {
             var isOnineStr = utils.getIsOnline(track) ? "online" : "offline" + utils.timeStampNoSecond(Date.now() - track.updatetime);
         };
-        var speed = track.speed == 0 ? "0km/h" : (track.speed / 1000).toFixed(2) + "km/h";
+        var speed = track.speed <= 0 ? "0km/h" : (track.speed / 1000).toFixed(2) + "km/h";
         var rxlevel = track.rxlevel === 0 ? '' : ('(' + (isZh ? '信号' : 'Signal') + ':' + track.rxlevel + '%)');
         var deviceid = "'" + track.deviceid + "'";
         var extendsBtns = this.getIsAddExtendBtns(),
