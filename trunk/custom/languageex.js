@@ -1,4 +1,4 @@
-messages.en.login.gcustomeexperience = "ceshi01";
+// messages.en.login.gcustomeexperience = "minigps";
 // messages.en.login.title = "11";   
 // messages.zh.login.title = "22";
 
