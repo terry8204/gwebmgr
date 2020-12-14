@@ -45,6 +45,7 @@
                 noCurruntDayTrack: "There is no track of the day,"
             },
             login: {
+                gcustomeexperience: 'minigps',
                 title: "Location video service platform",
                 chinese: "Chinese",
                 english: "英文",

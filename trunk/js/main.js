@@ -333,7 +333,6 @@ Vue.component('my-video', {
             } else {
                 if (this.playUrl == url) {
                     var video = this.$refs.player;
-                    console.log(video);
                     if (video.buffered.length && video.buffered.length > 0) {
                         var end = video.buffered.end(0);
                         var diff = end - video.currentTime;

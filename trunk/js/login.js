@@ -5,7 +5,7 @@ new Vue({
     data: {
         username: '',
         password: '',
-        loginPageBgUrl:loginPageBgUrl,
+        loginPageBgUrl: loginPageBgUrl,
         keepPass: false,
         account: 0,
         userTip: false,
@@ -81,7 +81,10 @@ new Vue({
             var me = this;
             var url = myUrls.login();
             var type = "USER";
-            var data = { type: type, from: "web", username: "minigps", password: $.md5("123456"), browser: me.getBrowserInfo() };
+
+            var tempcustomeexperience = messages.en.login.gcustomeexperience;
+
+            var data = { type: type, from: "web", username: tempcustomeexperience, password: $.md5("123456"), browser: me.getBrowserInfo() };
             var encode = JSON.stringify(data);
             $.ajax({
                 url: url,
@@ -107,11 +110,11 @@ new Vue({
 
                         localStorage.setItem("token", resp.token);
                         localStorage.setItem("userType", resp.usertype);
-                        localStorage.setItem("name", "minigps");
+                        localStorage.setItem("name", tempcustomeexperience);
                         localStorage.setItem("forcealarm", resp.forcealarm);
                         localStorage.setItem("alarmaction", resp.alarmaction);
                         localStorage.setItem("intervaltime", resp.intervaltime);
-                        localStorage.setItem("minigps" + "-multilogin", resp.multilogin);
+                        localStorage.setItem(tempcustomeexperience + "-multilogin", resp.multilogin);
                         // window.location.href = "main.html?token=" + resp.token + "&usertype=" + resp.usertype;
                         window.location.href = "main.html";
                     } else {
@@ -245,12 +248,12 @@ new Vue({
         var password = utils.getParameterByName("password");
 
         this.$nextTick(function() {
-            if(username!='undefined' && password!='undefined'){
+            if (username != 'undefined' && password != 'undefined') {
                 me.loading = true;
                 me.username = username;
                 me.password = password;
                 me.handleSubmit();
-            }else{
+            } else {
                 var keepPass = localStorage.getItem("keepPass");
                 var type = localStorage.getItem("logintype");
                 if (type) {
@@ -269,7 +272,7 @@ new Vue({
                     var type = this.account == 0 ? "USER" : "DEVICE";
                     localStorage.setItem("logintype", type);
                 };
-    
+
                 if (keepPass == 'true' && user != undefined && pass != undefined) {
                     if (user && pass) {
                         me.username = user;
@@ -286,18 +289,18 @@ new Vue({
             document.title = this.$t("login.title");
         });
         document.onkeyup = function(e) {
-            var keyCode = e.keyCode;
-            if (keyCode == 13) {
-                me.handleSubmit();
+                var keyCode = e.keyCode;
+                if (keyCode == 13) {
+                    me.handleSubmit();
+                }
             }
-        }
-        // this.$el.style.backgroundImage = '../custom/' + this.loginPageBgUrl;
+            // this.$el.style.backgroundImage = '../custom/' + this.loginPageBgUrl;
     },
-    computed:{
-        bgImgStyle:function () {
-            return  {
-                backgroundImage: 'url('+'./custom/' + this.loginPageBgUrl+')'
-            }          
+    computed: {
+        bgImgStyle: function() {
+            return {
+                backgroundImage: 'url(' + './custom/' + this.loginPageBgUrl + ')'
+            }
         }
     },
     watch: {
