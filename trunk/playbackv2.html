@@ -1,0 +1,1155 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="shortcut icon" href="./favicon.ico" />
+    <title>轨迹回放</title>
+    <link rel="stylesheet" href="dist/styles/iview.css">
+    <link rel="stylesheet" href="./maptalks/maptalks.css">
+    <style>
+        html,
+        body,
+        #container {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        #container .ivu-tabs {
+            overflow: visible;
+        }
+        
+        #container .ivu-tabs-bar {
+            padding-bottom: 8px;
+            margin-bottom: 8px;
+        }
+        
+        #container .ivu-table td {
+            height: 25px;
+        }
+        
+        #container .ivu-table th {
+            height: 25px;
+        }
+        
+        div.master-wraper {
+            position: absolute;
+            top: 0px;
+            left: 0;
+            right: 0;
+            bottom: 260px;
+        }
+        /* 控制器 */
+        
+        div.ctrl-wraper {
+            position: absolute;
+            top: 0px;
+            left: 0;
+            width: 325px;
+            bottom: 0px;
+            /* overflow-y: auto; */
+        }
+        
+        div.ctrl-wraper>div {
+            width: 301px;
+            margin: 10px;
+        }
+        
+        div.ctrl-wraper .device {
+            height: 30px;
+            position: relative;
+        }
+        
+        div.ctrl-wraper .device-name {
+            width: 301px;
+            height: 30px;
+            line-height: 30px;
+            border-left: 6px solid #2D8CF0;
+            font-size: 14px;
+            font-weight: 600px;
+            position: absolute;
+            padding-left: 5px;
+            top: 0;
+            left: 0px;
+            right: 90px;
+            bottom: 0;
+            background-color: #f9f9f9;
+        }
+        
+        div.ctrl-wraper .download-wrap {
+            position: absolute;
+            top: 0;
+            width: 80px;
+            right: 0px;
+            bottom: 0;
+            text-align: right;
+            line-height: 30px;
+            background-color: #f9f9f9;
+        }
+        /* 日历 开始*/
+        
+        div.calendar {
+            width: 301px;
+            margin: 10px 10px 0 10px;
+        }
+        
+        div.calendar-header {
+            height: 35px;
+            background-color: #2D8CF0;
+            color: #ffffff;
+            display: flex;
+            flex-direction: row;
+        }
+        
+        div.year-month {
+            flex: 1;
+            line-height: 35px;
+            text-align: center;
+        }
+        
+        div.prve-month,
+        div.next-month {
+            width: 35px;
+            height: 35px;
+            line-height: 35px;
+            text-align: center;
+            cursor: pointer;
+        }
+        
+        div.calendar-inner-wrap {
+            overflow: hidden;
+        }
+        
+        div.calendar-inner-wrap div.week-wrap {
+            height: 40px;
+            background-color: #f9f9f9;
+        }
+        
+        div.calendar-inner-wrap div.week-wrap>div {
+            float: left;
+            width: 43px;
+            line-height: 40px;
+            text-align: center;
+        }
+        
+        .dates-wrap {
+            border-top: 1px solid #DDDDDD;
+            border-right: 1px solid #DDDDDD;
+            overflow: hidden;
+        }
+        
+        .dates-wrap>div {
+            float: left;
+            width: 42.8px;
+            height: 40px;
+            box-sizing: border-box;
+            border-left: 1px solid #DDDDDD;
+            border-bottom: 1px solid #DDDDDD;
+        }
+        
+        .dates-wrap>div>div {
+            text-align: center;
+        }
+        
+        .dates-wrap>div>div>div.date {
+            height: 24px;
+            font-size: 15px;
+            line-height: 24px;
+        }
+        
+        .dates-wrap>div>div>div.mileage {
+            height: 16px;
+            font-size: 12px;
+            line-height: 16px;
+        }
+        
+        .active-day {
+            background: #2D8CF0;
+            color: #ffffff;
+        }
+        
+        .noTheMonth {
+            opacity: 0.5;
+        }
+        /* 日历 结束*/
+        /* 地图  */
+        
+        div.map-wraper {
+            position: absolute;
+            top: 0px;
+            left: 325px;
+            right: 0px;
+            bottom: 0px;
+        }
+        /* tab 页  */
+        
+        div.tab-wraper {
+            position: absolute;
+            left: 0;
+            right: 0;
+            height: 260px;
+            bottom: 0px;
+            background: #f3f3f3;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="container" v-cloak>
+        <div class="master-wraper">
+            <div class="ctrl-wraper">
+                <div class="device">
+                    <div class="device-name">
+                        <span v-text="devicenameAndId"></span>
+                    </div>
+                    <!-- <div class="download-wrap">
+                        <i-button type="primary" size="small">下载轨迹</i-button>
+                    </div> -->
+                </div>
+                <div class="calendar">
+                    <div class="calendar-header">
+                        <div class="prve-month" @click="prevMonth">
+                            <Icon type="ios-arrow-back" :size="20" />
+                        </div>
+                        <div class="year-month">
+                            <span v-text="year"></span>
+                            <span>-</span>
+                            <span v-text="month"></span>
+                        </div>
+                        <div class="next-month" @click="nextMonth">
+                            <Icon type="ios-arrow-forward" :size="20" />
+                        </div>
+                    </div>
+                    <div class="calendar-inner-wrap">
+                        <div class="week-wrap">
+                            <div v-for="item in weekList" :key="item" v-text="item"></div>
+                        </div>
+                        <div class="dates-wrap">
+                            <div v-for="(item , index) in datesArr" :key="index" :style="{background:item.isTheMonth?'#f9f9f9':''}">
+                                <div class="full" :class="{noTheMonth:!item.isTheMonth}" :style="{cursor:item.isTheMonth?'pointer':''}" @click="onClickDate(item)">
+                                    <div v-text="item.day" :class="{'active-day':item.dateStr == dateStr && item.isTheMonth }" class="date"></div>
+                                    <div v-text="item.mileage" :class="{'active-day':item.day == date && item.isTheMonth, }" :style="{color:item.mileage != '-'?'#94D2A5':'#000'}" class="mileage"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <Row>
+                        <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">选择时间 : &nbsp;</i-col>
+                        <i-col span="19" style="height: 100%;line-height:32px;">
+                            <Time-Picker type="timerange" v-model="timeValue" style="width: 100%"></Time-Picker>
+                        </i-col>
+                    </Row>
+                </div>
+                <div>
+                    <div>
+                        <Row>
+                            <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">轨迹精度 : &nbsp;</i-col>
+                            <i-col span="19" style="height: 100%;line-height:32px;">
+                                <Radio-Group v-model="trackType">
+                                    <Radio label="exact">
+                                        <span>精确轨迹</span>
+                                    </Radio>
+                                    <Radio label="all">
+                                        <span>全部轨迹</span>
+                                    </Radio>
+                                </Radio-Group>
+                            </i-col>
+                        </Row>
+                    </div>
+                    <div>
+                        <Row>
+                            <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">显示窗口 : &nbsp;</i-col>
+                            <i-col span="19" style="height: 100%;line-height:32px;">
+                                <Radio-Group v-model="isShowInfoWindow">
+                                    <Radio label="yes">
+                                        <span>是</span>
+                                    </Radio>
+                                    <Radio label="no">
+                                        <span>否</span>
+                                    </Radio>
+                                </Radio-Group>
+                            </i-col>
+                        </Row>
+                    </div>
+                    <div>
+                        <Row>
+                            <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">显示线 : &nbsp;</i-col>
+                            <i-col span="19" style="height: 100%;line-height:32px;">
+                                <Radio-Group v-model="isShowAllLine">
+                                    <Radio label="yes">
+                                        <span>是</span>
+                                    </Radio>
+                                    <Radio label="no">
+                                        <span>否</span>
+                                    </Radio>
+                                </Radio-Group>
+                            </i-col>
+                        </Row>
+                    </div>
+                    <div>
+                        <Row>
+                            <i-col span="12" style="height: 100%;text-align:center;line-height:32px;">
+                                <i-button type="primary" style="width:140px" :loading="loading" @click="queryTracks">查询轨迹</i-button>
+                            </i-col>
+                            <i-col span="12" style="height: 100%;text-align:center;line-height:32px;">
+                                <i-button type="primary" style="width:140px">下载轨迹</i-button>
+                            </i-col>
+                        </Row>
+                    </div>
+                </div>
+            </div>
+            <div class="map-wraper">
+                <div id="map" style="width:100%;height: 100%;"></div>
+            </div>
+        </div>
+        <div class="tab-wraper">
+            <Tabs v-model="tabActive" :animated="true">
+                <tab-pane label="曲线" name="chart">
+                    <div id="charts" style="width: 100%;height: 200px;"></div>
+                </tab-pane>
+                <tab-pane label="轨迹列表" name="table">
+                    <i-table ref="table" border :columns="columns" height="170" :data="tableData"></i-table>
+                    <Page :total="total" show-total @on-change="onPageChange" :page-size="pageSize" :current="currentIndex" />
+                </tab-pane>
+                <i-button v-show="tabActive=='table'" type="primary" size="small" slot="extra" style="margin:10px 5px 0 0;">一键获取地址</i-button>
+            </Tabs>
+        </div>
+
+    </div>
+    <script src="dist/vue.min.js"></script>
+    <script src="dist/iview.min.js"></script>
+    <script src="./js/gps51-jquery.js"></script>
+    <script src="./js/config.js"></script>
+    <script src="./js/vue-i18n.min.js"></script>
+    <script src="./js/hashmap.js"></script>
+    <script src="./js/localcachemgr.js"></script>
+    <script src="./js/transformlatlon.js"></script>
+    <script src="./js/dateformat.js"></script>
+    <script src="./js/util.js"></script>
+    <script src="./js/js.cookie.min.js"></script>
+    <script src="./js/echarts.min.js"></script>
+    <script src="./js/vuejs-datepicker.js"></script>
+    <script src="./js/locale/index.js"></script>
+    <script src="./maptalks/maptalks.min.js"></script>
+    <script src="./js/en-US.js"></script>
+    <script src="./js/zh-CN.js"></script>
+    <script>
+        var timeDifference = DateFormat.getOffset();
+        var token = utils.getParameterByName("token");
+        var icon = utils.getParameterByName("icon");
+        var deviceid = utils.getParameterByName("deviceid");
+        var devicename = utils.getParameterByName("devicename");
+        var vRoot = null;
+        Vue.use(iview);
+        Vue.use(VueI18n);
+        var isZh = utils.locale === 'zh';
+        document.title = isZh ? "轨迹回放" : "Playback";
+        iview.lang(isZh ? 'zh-CN' : 'en-US');
+
+
+        function queryTrackDetail(deviceid) {
+            var data = {
+                deviceid: deviceid,
+                updatetime: currentTrack.updatetime,
+                trackid: currentTrack.trackid
+            };
+            var url = myUrls.queryTrackDetail();
+            utils.sendAjax(url, data, function(resp) {
+                if (resp.status == 0) {
+                    vRoot.xList = resp.track.x ? resp.track.x : isZh ? '空' : 'Empty';
+                    vRoot.wList = resp.track.w ? resp.track.w : isZh ? '空' : 'Empty';
+                    vRoot.trackid = resp.track.trackid;
+                    vRoot.trackStringify = JSON.stringify(resp);
+                    vRoot.modal = true;
+                } else {
+                    vRoot.$Message.error("error");
+                }
+            });
+        };
+
+        function refreshTrackPosition(deviceid) {
+            var trackid = currentTrack.trackid;
+            var data = {
+                deviceid: deviceid,
+                updatetime: currentTrack.updatetime,
+                trackid: currentTrack.trackid
+            };
+            var url = myUrls.refreshTrackPosition();
+            utils.sendAjax(url, data, function(resp) {
+                if (resp.status === 0) {
+                    vRoot.$Message.success(isZh ? "刷新成功" : "Refresh success");
+                    localStorage.setItem(deviceid + '-' + trackid, true);
+                } else {
+                    vRoot.modal1 = true;
+                    vRoot.cause = resp.cause;
+                }
+            });
+        };
+        var messages = {
+            en: {
+                main: {
+                    selectDate: "Select Date",
+                    selectTime: "Select Time",
+                    prevDay: "Prev Day",
+                    nextDay: "Next Day",
+                    startDate: "Start time",
+                    endDate: "End time",
+                    queryBtn: "Query",
+                    playSpeed: "Play Speed",
+                    msec: "ms",
+                    play: "Play",
+                    pause: "Pause",
+                    replay: "Replay",
+                    prevStep: "Prev step",
+                    nextStep: "Next step",
+                    empty: "Empty",
+                    refreshSuccess: "Refresh success",
+                    posiDetail: "Positon details",
+                    trackId: "Track ID",
+                    jizhanList: "Base station",
+                    WIFIList: "WiFi",
+                    originalData: "Original Data",
+                    result: "Position result",
+                    totalOil: 'Total oil',
+                    oil1: "oil1",
+                    oil2: "oil2",
+                    oil: "oil",
+                    speed: 'Speed',
+                    mileage: 'Mileage',
+                    time: 'Time',
+                    noCurruntDayTrack: "There is no track of the day",
+                    slow: 'slow',
+                    middle: 'middle',
+                    fast: 'fast',
+                }
+
+            },
+            zh: {
+                main: {
+                    selectDate: "选择日期",
+                    selectTime: "选择时间",
+                    prevDay: "上一天",
+                    nextDay: "下一天",
+                    startDate: "开始时间",
+                    endDate: "结束时间",
+                    queryBtn: "查询轨迹",
+                    playSpeed: "播放速度",
+                    msec: "毫秒",
+                    play: "播放",
+                    pause: "暂停",
+                    replay: "重播",
+                    prevStep: "上一步",
+                    nextStep: "下一步",
+                    empty: "空",
+                    refreshSuccess: "刷新成功",
+                    posiDetail: "定位详情",
+                    trackId: "轨迹序号",
+                    jizhanList: "基站列表",
+                    WIFIList: "WiFi列表",
+                    originalData: "原始数据",
+                    result: "定位结果",
+                    totalOil: '总油液',
+                    oil1: "油液1",
+                    oil2: "油液2",
+                    oil: "油液",
+                    speed: '速度',
+                    mileage: '里程',
+                    time: '时间',
+                    noCurruntDayTrack: "没有当天轨迹",
+                    slow: '慢',
+                    middle: '中',
+                    fast: '快',
+                }
+            }
+        };
+
+        (function() { //utils.getAngle
+            var YES = "yes";
+            var NO = "no";
+            var mapType = utils.getMapType();
+            vRoot = new Vue({
+                el: "#container",
+                i18n: utils.getI18n(),
+                data: {
+                    loading: false,
+                    trackType: 'exact',
+                    isShowInfoWindow: 'no',
+                    isShowAllLine: 'no',
+                    mapType: 'GMap', // BMap GMap AMap;
+                    deviceid: deviceid,
+                    devicename: devicename,
+                    year: 1970,
+                    month: 1,
+                    date: 1,
+                    weekList: isZh ? ["日", "一", "二", "三", "四", "五", "六"] : ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+                    datesArr: [],
+                    timeValue: ['00:00:00', '23:59:59'],
+                    tabActive: 'chart',
+                    columns: [{
+                        title: '序号',
+                        key: 'idx',
+                        width: 70
+                    }, {
+                        title: '时间',
+                        key: 'updatetimeStr',
+                        width: 154
+                    }, {
+                        title: '定位类型',
+                        key: 'gotsrcStr',
+                        width: 100
+                    }, {
+                        title: '速度',
+                        key: 'speedStr',
+                        width: 70
+                    }, {
+                        title: '记录仪速度',
+                        key: 'recorderspeedStr',
+                        width: 100
+                    }, {
+                        title: '经度',
+                        key: 'callon',
+                        width: 110
+                    }, {
+                        title: '纬度',
+                        key: 'callat',
+                        width: 110
+                    }, {
+                        title: '状态',
+                        key: 'strstatus',
+                        width: 120
+                    }, {
+                        title: '地址',
+                        key: 'address'
+                    }, ],
+                    tableData: [],
+                    total: 0,
+                    pageSize: 10,
+                    currentIndex: 1,
+                },
+                components: {
+                    datepicker: vuejsDatepicker
+                },
+                methods: {
+                    onClickDate(item) {
+                        if (!item.isTheMonth) return;
+                        this.date = item.day;
+                        console.log(item);
+                    },
+                    initMap: function() {
+                        var me = this;
+                        var baseLayer = new maptalks.TileLayer('base', {
+                            urlTemplate: "http://mt2.google.cn/vt?lyrs=m@180000000&hl=zh-CN&gl=cn&src=app&x={x}&y={y}&z={z}&s=Gal",
+                            attribution: ''
+                        })
+                        this.map = new maptalks.Map('map', {
+                            center: [106, 36.11],
+                            zoom: 5,
+                            minZoom: 4,
+                            maxZoom: 18,
+                            baseLayer: baseLayer
+                        });
+
+                        new maptalks.control.Toolbar({
+                            'vertical': true,
+                            'position': 'top-right',
+                            'items': [{
+                                item: '百度',
+                                click: function() {
+                                    if (me.mapType == 'BMap') return;
+                                    me.mapType = 'BMap';
+                                    me.map.setSpatialReference({
+                                        projection: 'baidu'
+                                    });
+                                    me.map.setBaseLayer(me.getMapTypeLayer());
+                                }
+                            }, {
+                                item: '谷歌',
+                                click: function() {
+                                    if (me.mapType == 'GMap') return;
+                                    me.mapType = 'GMap';
+                                    me.map.setSpatialReference({})
+                                    me.map.setBaseLayer(me.getMapTypeLayer());
+                                }
+                            }, {
+                                item: '高德',
+                                click: function() {
+                                    if (me.mapType == 'AMap') return;
+                                    me.mapType = 'AMap';
+                                    me.map.setSpatialReference({})
+                                    me.map.setBaseLayer(me.getMapTypeLayer());
+                                }
+                            }]
+                        }).addTo(this.map);
+                    },
+                    getMapTypeLayer: function() {
+                        var layer = null;
+                        switch (this.mapType) {
+                            case 'BMap':
+                                layer = new maptalks.TileLayer('base', {
+                                    'urlTemplate': 'http://online{s}.map.bdimg.com/onlinelabel/?qt=tile&x={x}&y={y}&z={z}&styles=pl&scaler=1&p=1',
+                                    'subdomains': [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+                                    'attribution': '&copy; <a target="_blank" href="http://map.baidu.com">Baidu</a>'
+                                })
+                                break;
+                            case 'GMap':
+                                layer = new maptalks.TileLayer('base', {
+                                    urlTemplate: "http://mt2.google.cn/vt?lyrs=m@180000000&hl=zh-CN&gl=cn&src=app&x={x}&y={y}&z={z}&s=Gal",
+                                })
+                                break;
+                            case 'AMap':
+                                layer = new maptalks.TileLayer('base', {
+                                    urlTemplate: 'http://webrd04.is.autonavi.com/appmaptile?lang=zh_cn&style=8&x={x}&y={y}&z={z}',
+                                })
+                                break;
+                            default:
+                                ;
+                        }
+                        return layer
+                    },
+                    createMarker(lat, lon, deviceName, deviceid) {
+                        var marker = new maptalks.Marker(
+                            [lat, lon], {
+                                visible: true,
+                                editable: true,
+                                cursor: 'pointer',
+                                shadowBlur: 0,
+                                shadowColor: 'black',
+                                draggable: false,
+                                dragShadow: false, // display a shadow during dragging
+                                drawOnAxis: null, // force dragging stick on a axis, can be: x, y
+                                'symbol': [{
+                                    'markerFile': './images/carstate/0_gray_0.png',
+                                    'markerWidth': 25,
+                                    'markerHeight': 25
+                                }, {
+                                    'textFaceName': 'sans-serif',
+                                    'textName': deviceName,
+                                    'textSize': 14,
+                                    'textDy': 24
+                                }]
+                            }
+                        );
+                        marker.deviceid = deviceid;
+                        return marker;
+                    },
+                    prevMonth() {
+                        this.month--;
+                        if (!this.mileageMonthRecord[this.dateStr]) {
+                            this.queryReportMileageDetail(new Date(this.year, this.month, this.date))
+                        }
+
+                    },
+                    nextMonth() {
+                        this.month++;
+                        if (!this.mileageMonthRecord[this.dateStr]) {
+                            this.queryReportMileageDetail(new Date(this.year, this.month, this.date))
+                        }
+                    },
+                    setTheDate() {
+                        var date = new Date();
+                        this.year = date.getFullYear();
+                        this.month = date.getMonth() + 1;
+                        this.date = date.getDate();
+                    },
+                    //得到这个月的第一天是是星期几
+                    getTheMonthFirstDayWeek() {
+                        return new Date(this.year, this.month - 1, 1).getDay();
+                    },
+                    // 得到这个月有多少天
+                    getTheMonthDays() {
+                        var year = this.month == 12 ? this.year + 1 : this.year;
+                        var month = this.month == 12 ? 1 : this.month;
+                        return new Date(new Date(year, month, 1) - 1).getDate();
+                    },
+                    // 得到上个月的最后一天
+                    getPrevMonthLastDate() {
+                        return new Date(new Date(this.year, this.month - 1, 1) - 1).getDate();
+                    },
+                    getDatesArr: function() {
+                        var datesArr = [];
+                        var weekNum = this.getTheMonthFirstDayWeek();
+                        var prevMonthDate = this.getPrevMonthLastDate();
+                        var theDates = this.getTheMonthDays();
+
+                        while (weekNum--) {
+                            datesArr.unshift({
+                                day: prevMonthDate--,
+                                isTheMonth: false,
+                                mileage: '-',
+                                dateStr: this.year + '-' + this.month + '-' + prevMonthDate
+                            });
+                        }
+                        var d = 1
+                        while (theDates--) {
+                            var dateStr = this.year + '-' + this.month + '-' + (d < 10 ? ('0' + d) : d);
+                            var mileage = '-';
+                            if (this.mileageMonthRecord[dateStr] != undefined) {
+                                mileage = this.mileageMonthRecord[dateStr];
+                            }
+                            datesArr.push({
+                                day: d,
+                                isTheMonth: true,
+                                mileage: mileage,
+                                dateStr: this.year + '-' + this.month + '-' + d
+                            });
+                            d++;
+                        }
+                        var count = 1;
+                        while (datesArr.length < 42) {
+                            var dateStr = this.year + '-' + this.month + '-' + count;
+                            datesArr.push({
+                                day: count++,
+                                isTheMonth: false,
+                                mileage: '-',
+                                dateStr: dateStr
+                            });
+                        }
+                        return datesArr;
+                    },
+                    onPageChange: function(index) {
+                        var me = this;
+                        var offset = index * me.pageSize;
+                        var start = (index - 1) * me.pageSize;
+                        this.currentIndex = index;
+                        var tracks = me.records;
+                        var splitTrack = tracks.slice(start, offset);
+                        var tableData = [];
+
+                        me.tableData = splitTrack;
+                    },
+                    initCharts: function() {
+                        var me = this;
+                        this.distance = [];
+                        this.veo = [];
+                        this.recorderspeed = [];
+                        this.recvtime = [];
+                        this.oil = [];
+                        this.oil1 = [];
+                        this.oil2 = [];
+                        this.charts = echarts.init(document.getElementById('charts'));
+                        this.charts.setOption(this.getChartsOption());
+                        this.charts.getZr().on('click', function(params) {
+                            var pointInPixel = [params.offsetX, params.offsetY];
+                            if (me.charts.containPixel('grid', pointInPixel)) {
+                                var xIndex = me.charts.convertFromPixel({
+                                    seriesIndex: 0
+                                }, [params.offsetX, params.offsetY])[0];
+
+                                me.index = xIndex;
+                                if (me.isExtract) {
+                                    if (me.index > me.extractRecords.length - 1) {
+                                        me.index = 0;
+                                    }
+                                    var track = me.extractRecords[me.index];
+                                } else {
+                                    if (me.index > me.records.length - 1) {
+                                        me.index = 0;
+                                    }
+                                    var track = me.records[me.index];
+                                }
+                                // var marker = this.getPointMarker();
+                                me.openInfoWindow(me.carMarker, track);
+
+                            }
+                        });
+                        window.onresize = function() {
+                            me.charts.resize();
+                        }
+                    },
+                    getTypeRecords: function() {
+                        if (this.trackType == 'exact') {
+                            return this.exactTracks;
+                        } else if (this.trackType == 'all') {
+                            return this.allTracks;
+                        }
+                    },
+                    getChartsOption: function() {
+                        // totalOil:'总油液',
+                        // oil1:"油液1",
+                        // oil2:"油液2",
+                        // oil:"油液",
+                        // speed:'速度',
+                        // mileage:'里程',
+                        // time:'时间',
+                        var totoil = this.$t('main.totalOil');
+                        var speed = this.$t('main.speed');
+                        var recorderspeed = isZh ? "行驶记录仪速度" : 'RecorderSpeed';
+                        var dis = this.$t('main.mileage');
+                        var time = this.$t('main.time');
+                        var usoil1 = this.$t('main.oil1');
+                        var usoil2 = this.$t('main.oil2');
+                        var cotgasus = this.$t('main.oil');
+                        var option = {
+                            backgroundColor: '#F9F9F9',
+                            title: {
+                                // text: time + '/' + cotgasus,
+                                text: '',
+                                x: 'center',
+                                textStyle: {
+                                    fontSize: 12,
+                                    fontWeight: 'bolder',
+                                    color: '#333'
+                                }
+                            },
+                            grid: {
+                                x: 50,
+                                y: 40,
+                                x2: 80,
+                                y2: 40
+                            },
+                            tooltip: {
+                                trigger: 'axis',
+                                formatter: function(v) {
+
+                                    var data = vRoot.$t('main.time') + ': ' + v[0].name + '<br/>';
+                                    for (i in v) {
+                                        if (v[i].seriesName && v[i].seriesName != vRoot.$t('main.time')) data += v[i].seriesName + ' : ' + v[i].value + '<br/>';
+                                    }
+                                    return data;
+                                }
+                            },
+                            legend: {
+                                data: [dis, speed, recorderspeed, totoil, usoil1, usoil2],
+                                //selected: {
+                                //    '里程' : false
+                                // },
+                                x: 'left'
+                            },
+                            toolbox: {
+                                show: true,
+                                feature: {
+                                    magicType: {
+                                        show: true,
+                                        type: ['line', 'bar']
+                                    },
+                                    restore: {
+                                        show: true
+                                    },
+                                    saveAsImage: {
+                                        show: true
+                                    }
+                                },
+                                itemSize: 14
+                            },
+                            dataZoom: [{
+                                show: true,
+                                realtime: true,
+                                start: 0,
+                                end: 100,
+                                height: 20,
+                                backgroundColor: '#EDEDED',
+                                fillerColor: 'rgb(54, 72, 96,0.5)',
+                                //fillerColor:'rgb(244,129,38,0.8)',
+                                bottom: 0
+                            }, {
+                                type: "inside",
+                                realtime: true,
+                                start: 0,
+                                end: 100,
+                                height: 20,
+                                bottom: 0
+                            }],
+                            xAxis: [{
+                                type: 'category',
+                                boundaryGap: false,
+                                axisLine: {
+                                    onZero: false
+                                },
+                                data: this.recvtime
+                            }],
+                            yAxis: [{
+                                name: totoil + '/' + speed,
+                                type: 'value',
+                                nameTextStyle: 10,
+                                nameGap: 5,
+
+                            }, {
+                                name: dis,
+                                type: 'value',
+                                nameTextStyle: 10,
+                                nameGap: 2,
+                                min: this.disMin,
+                                axisLabel: {
+                                    formatter: '{value} km',
+                                },
+                                axisTick: {
+                                    show: false
+                                }
+                            }],
+                            series: [{
+                                    name: time,
+                                    type: 'line',
+                                    symbol: 'none',
+                                    yAxisIndex: 1,
+                                    color: '#F0805A',
+                                    //itemStyle: {normal: {areaStyle: {type: 'default'}}},
+                                    data: this.recvtime
+                                }, {
+                                    name: dis,
+                                    type: 'line',
+                                    symbol: 'none',
+                                    yAxisIndex: 1,
+                                    color: '#3CB371',
+                                    //itemStyle: {normal: {areaStyle: {type: 'default'}}},
+                                    data: this.distance
+                                }, {
+                                    name: speed,
+                                    type: 'line',
+                                    symbol: 'none',
+                                    yAxisIndex: 0,
+                                    //itemStyle: {normal: {areaStyle: {type: 'default'}}},
+                                    color: '#4876FF',
+                                    data: this.veo
+                                }, {
+                                    name: recorderspeed,
+                                    type: 'line',
+                                    symbol: 'none',
+                                    yAxisIndex: 0,
+                                    //itemStyle: {normal: {areaStyle: {type: 'default'}}},
+                                    color: '#710000',
+                                    data: this.recorderspeed,
+                                }, {
+                                    //show:'false',
+                                    name: totoil,
+                                    type: 'line',
+                                    symbol: 'none',
+                                    color: '#C1232B',
+                                    data: this.oil
+                                }, {
+                                    //show:'false',
+                                    name: usoil1,
+                                    type: 'line',
+                                    symbol: 'none',
+                                    color: '#8E388E',
+                                    data: this.oil1
+                                },
+
+                                {
+                                    //show:'false',
+                                    name: usoil2,
+                                    type: 'line',
+                                    symbol: 'none',
+                                    color: '#FF4500',
+                                    data: this.oil2
+                                },
+                            ]
+                        };
+                        return option;
+                    },
+                    redrawCharts: function() {
+                        var records = this.getTypeRecords(),
+                            me = this;
+                        var distance = []; //总里程;
+                        var recvtime = []; //时间
+                        var veo = []; //速度
+                        var recorderspeed = []; //速度
+                        var oil = []; //速度
+                        var oil1 = []; //速度
+                        var oil2 = []; //速度
+                        this.disMin = 0;
+                        var totalDistanceMin = 0;
+                        records.forEach(function(item, index) {
+
+                            if (index == 0) {
+                                totalDistanceMin = item.totaldistance;
+                            }
+                            var ad0 = item.ad0;
+                            var ad1 = item.ad1;
+                            if (ad0 < 0) {
+                                ad0 = 0;
+                            };
+                            if (ad1 < 0) {
+                                ad1 = 0;
+                            };
+                            item.ad0 = ad0 / 100;
+                            item.ad1 = ad1 / 100;
+                            oil1.push(item.ad0);
+                            oil2.push(item.ad1);
+                            oil.push(item.ad0 + item.ad1);
+                            recvtime.push(DateFormat.longToDateTimeStr(item.updatetime, timeDifference));
+                            veo.push((item.speed / 1000).toFixed(2));
+                            recorderspeed.push((item.recorderspeed / 1000).toFixed(2));
+                            distance.push((item.totaldistance - totalDistanceMin).toFixed(2));
+                        });
+                        this.distance = distance;
+                        this.recvtime = recvtime;
+                        this.veo = veo;
+                        this.oil = oil;
+                        this.oil1 = oil1;
+                        this.oil2 = oil2;
+                        this.recorderspeed = recorderspeed;
+
+                        this.charts.setOption(this.getChartsOption());
+
+                    },
+                    getMonthDays: function(date) {
+                        var year = date.getFullYear();
+                        var month = date.getMonth() + 1;
+                        var d = new Date(year, month, 0);
+                        return d.getDate();
+                    },
+                    queryReportMileageDetail: function(date) {
+                        var me = this;
+                        var url = myUrls.reportMileageDetail();
+                        var day = date.getFullYear() + '-' + (date.getMonth() + 1) + '-';
+                        var startday = DateFormat.addMonth(new Date(day + "1"), -1);
+                        startday = DateFormat.format(startday, "yyyy-MM-dd");
+                        var endDay = '';
+                        var monthDays = this.getMonthDays(date);
+                        var dateArr = startday.split('-');
+                        dateArr[2] = '' + monthDays;
+                        endDay = dateArr.join('-');
+                        var data = {
+                            startday: startday,
+                            endday: endDay,
+                            offset: timeDifference,
+                            deviceid: deviceid,
+                        };
+                        utils.sendAjax(url, data, function(resp) {
+                            var records = resp.records;
+                            if (records) {
+                                records.forEach(function(item) {
+                                    if (item) {
+                                        // console.log("item",item,typeof item.totaldistance);
+                                        if (item.totaldistance == 0) {
+                                            me.mileageMonthRecord[item.day] = '0.0';
+                                        } else {
+                                            me.mileageMonthRecord[item.day] = (item.totaldistance / 1000).toFixed(1);
+                                        }
+
+                                    }
+                                })
+                            }
+                            me.setDeviceMileage();
+                        });
+                    },
+                    setDeviceMileage: function() {
+                        var datesArr = this.datesArr;
+                        for (var i = 0; i < datesArr.length; i++) {
+                            var item = datesArr[i];
+                            if (item.isTheMonth) {
+                                var day = item.day;
+                                var key = item.dateStr;
+                                if (day < 10) {
+                                    var dateArr = key.split('-');
+                                    dateArr[2] = '0' + day;
+                                    key = dateArr.join('-');
+                                }
+                                var mileage = this.mileageMonthRecord[key];
+                                item.mileage = mileage;
+                            }
+                        }
+                    },
+                    queryTracks: function() {
+                        this.loading = true;
+                        var me = this;
+                        var url = myUrls.queryTracks();
+                        var data = {
+                            deviceid: this.deviceid,
+                            lbs: 1,
+                            timeorder: 0,
+                            begintime: this.dateStr + ' ' + this.timeValue[0],
+                            endtime: this.dateStr + ' ' + this.timeValue[1],
+                        };
+                        utils.sendAjax(url, data, function(resp) {
+                            me.loading = false;
+                            console.log('resp', resp);
+                            if (resp.status == 0) {
+                                var records = resp.records;
+                                me.filtertracks(records);
+                                me.redrawCharts();
+                                var splitTrack = me.allTracks.slice(0, me.pageSize);
+                                me.total = records.length;
+                                me.currentIndex = 1;
+                                me.tableData = splitTrack;
+                            }
+                        });
+                    },
+                    filtertracks: function(records) {
+                        var exactTracks = [];
+                        var allTracks = [];
+                        for (var i = 0; i < records.length; i++) {
+                            var track = records[i];
+                            track.callat = Number(track.callat.toFixed(5));
+                            track.callon = Number(track.callon.toFixed(5));
+                            track.totaldistance = (track.totaldistance / 1000).toFixed(3);
+
+                            // var g_lon_lat = wgs84togcj02(track.callon, track.callat);
+                            // track.gpoint = {
+                            //     lat: g_lon_lat[1],
+                            //     lng: g_lon_lat[0]
+                            // };
+                            // track.direction = utils.getAngle(track.course);
+                            // if (this.mapType === 'bMap') {
+                            //     var lng_lat = wgs84tobd09(track.callon, track.callat);
+                            //     track.point = new BMap.Point(lng_lat[0], lng_lat[1]);
+                            // };
+
+                            if (track.gotsrc == "gps") {
+                                track.isextract = true;
+                                exactTracks.push(track);
+                            } else {
+                                track.isextract = false;
+                            }
+
+                            var address = LocalCacheMgr.getAddress(track.callon, track.callat);
+
+                            track.idx = i + 1;
+                            track.updatetimeStr = "\t" + DateFormat.longToDateTimeStr(track.updatetime, timeDifference);
+                            track.gotsrcStr = utils.getPosiType(track);
+                            track.speedStr = track.speed / 1000;
+                            track.recorderspeedStr = track.recorderspeed / 1000;
+                            track.address = address ? address : '点击一键获取';
+
+
+                            allTracks.push(track);
+                        }
+                        this.allTracks = allTracks;
+                        this.exactTracks = exactTracks;
+                    },
+                    init: function() {
+                        this.map = null;
+                        this.mileageMonthRecord = {};
+                        this.allTracks = [];
+                        this.exactTracks = []
+                        this.setTheDate();
+                        this.initMap();
+                        this.initCharts();
+                        this.queryReportMileageDetail(new Date(this.year, this.month, this.date));
+                    }
+                },
+                computed: {
+                    devicenameAndId: function() {
+                        return this.devicename + '-' + this.deviceid;
+                    },
+                    dateStr: function() {
+                        return this.year + '-' + this.month + '-' + this.date;
+                    },
+                },
+                watch: {
+                    month() {
+                        if (this.month > 12) {
+                            this.year++;
+                            this.month = 1;
+                        } else if (this.month < 1) {
+                            this.year--;
+                            this.month = 12;
+                        }
+                        this.datesArr = this.getDatesArr();
+                    }
+                },
+                mounted: function() {
+                    this.init();
+                }
+            });
+        })();
+    </script>
+</body>
+
+</html>
