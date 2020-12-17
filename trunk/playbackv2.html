@@ -19,6 +19,10 @@
             overflow: hidden;
         }
         
+        [v-cloak] {
+            display: none;
+        }
+        
         #container .ivu-tabs {
             overflow: visible;
         }
@@ -190,11 +194,11 @@
         
         div.map-wraper div.play_ctrl_wrap {
             position: absolute;
-            width: 600px;
+            width: 760px;
             bottom: 20px;
             height: 50px;
             left: 50%;
-            margin-left: -300px;
+            margin-left: -380px;
             border-radius: 5px;
             background-color: rgba(0, 0, 0, 0.6);
         }
@@ -276,7 +280,7 @@
                 </div>
                 <div>
                     <Row>
-                        <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">选择时间 : &nbsp;</i-col>
+                        <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t("main.selectTime")}} : &nbsp;</i-col>
                         <i-col span="19" style="height: 100%;line-height:32px;">
                             <Time-Picker type="timerange" v-model="timeValue" style="width: 100%"></Time-Picker>
                         </i-col>
@@ -285,14 +289,14 @@
                 <div>
                     <div>
                         <Row>
-                            <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">轨迹精度 : &nbsp;</i-col>
+                            <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t("main.trackType")}} : &nbsp;</i-col>
                             <i-col span="19" style="height: 100%;line-height:32px;">
                                 <Radio-Group v-model="trackType">
                                     <Radio label="exact" style="width:71.34px;">
                                         <span>GPS</span>
                                     </Radio>
                                     <Radio label="all">
-                                        <span>全部</span>
+                                        <span>{{$t("main.all")}}</span>
                                     </Radio>
                                 </Radio-Group>
                             </i-col>
@@ -300,14 +304,14 @@
                     </div>
                     <div>
                         <Row>
-                            <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">显示路线 : &nbsp;</i-col>
+                            <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t("main.showLine")}} : &nbsp;</i-col>
                             <i-col span="19" style="height: 100%;line-height:32px;">
                                 <Radio-Group v-model="isShowAllLine">
                                     <Radio label="yes" style="width:71.34px;">
-                                        <span>是</span>
+                                        <span>{{$t("main.yes")}}</span>
                                     </Radio>
                                     <Radio label="no">
-                                        <span>否</span>
+                                        <span>{{$t("main.no")}}</span>
                                     </Radio>
                                 </Radio-Group>
                             </i-col>
@@ -316,10 +320,10 @@
                     <div>
                         <Row>
                             <i-col span="12" style="height: 100%;text-align:center;line-height:32px;">
-                                <i-button type="primary" style="width:140px" :loading="loading" @click="queryTracks" icon="ios-search">查询轨迹</i-button>
+                                <i-button type="primary" style="width:140px" :loading="loading" @click="queryTracks" icon="ios-search">{{$t("main.queryTracks")}}</i-button>
                             </i-col>
                             <i-col span="12" style="height: 100%;text-align:center;line-height:32px;">
-                                <i-button type="primary" style="width:140px" icon="ios-download-outline" @click="exportData">下载轨迹</i-button>
+                                <i-button type="primary" style="width:140px" icon="ios-download-outline" @click="exportData">{{$t("main.downloadTrack")}}</i-button>
                             </i-col>
                         </Row>
                     </div>
@@ -329,6 +333,11 @@
                 <div id="map"></div>
                 <div class="play_ctrl_wrap">
                     <Row>
+                        <i-col span="5">
+                            <div class="tracks_len" style="color: #ffffff;font-size: 14px;">
+                                {{$t("main.mileage")}}:{{totalMileage}}Km
+                            </div>
+                        </i-col>
                         <i-col span="5">
                             <div v-if="currentTracksLenth == 0" class="tracks_len">
                                 <span v-text="currentMarkerIndex"></span>
@@ -341,24 +350,24 @@
                                 <span v-text="currentTracksLenth"></span>
                             </div>
                         </i-col>
-                        <i-col span="6" style="line-height: 50px;text-align: center;">
+                        <i-col span="4" style="line-height: 50px;text-align: center;">
                             <i-button type="primary" shape="circle" icon="md-play" @click="startedPlay"></i-button>
                             <i-button type="primary" shape="circle" icon="ios-square" @click="stopPlay"></i-button>
                         </i-col>
-                        <i-col span="6" style="line-height: 50px;text-align: center;">
+                        <i-col span="4" style="line-height: 50px;text-align: center;">
                             <i-button type="primary" shape="circle" icon="ios-arrow-up" @click="prveSpeed"></i-button>
                             <i-button type="primary" shape="circle" icon="ios-arrow-down" @click="nextSpeed"></i-button>
                         </i-col>
-                        <i-col span="7" style="line-height: 50px;text-align: center;">
+                        <i-col span="6" style="line-height: 50px;text-align: center;">
                             <Button-Group>
                                 <i-button :type="playSpeed=='man'?'primary':'default'" @click="playSpeed='man'">
-                                    <span>慢</span>
+                                    <span>{{$t("main.slow")}}</span>
                                 </i-button>
                                 <i-button :type="playSpeed=='zhong'?'primary':'default'" @click="playSpeed='zhong'">
-                                    中
+                                    <span>{{$t("main.middle")}}</span>
                                 </i-button>
                                 <i-button :type="playSpeed=='kuai'?'primary':'default'" @click="playSpeed='kuai'">
-                                    快
+                                    <span>{{$t("main.fast")}}</span>
                                 </i-button>
                             </Button-Group>
                         </i-col>
@@ -367,34 +376,57 @@
                 <div style="position: absolute; right:20px;top:20px;">
                     <div>
                         <i-select v-model="mapType" size="small" style="width:90px;">
-                            <i-option value="bMap">百度地图</i-option>
-                            <i-option value="gMap">谷歌地图</i-option>
-                            <i-option value="aMap">高德地图</i-option>
+                            <i-option value="bMap">{{$t("main.bmap")}}</i-option>
+                            <i-option value="gMap">{{$t("main.gmap")}}</i-option>
+                            <i-option value="aMap">{{$t("main.amap")}}</i-option>
                         </i-select>
                     </div>
                     <div style="background:#fff;margin:10px 0;width:90px;text-align: center;">
-                        <Checkbox v-model="isShowBubble">显示气泡</Checkbox>
+                        <Checkbox v-model="isShowBubble">{{$t("main.showBubbles")}}</Checkbox>
                     </div>
                     <div style="background:#fff;margin:10px 0;width:90px;text-align: center;">
-                        <Checkbox v-model="isOpenDistance">开启测距</Checkbox>
+                        <Checkbox v-model="isOpenDistance">{{$t("main.openRanging")}}</Checkbox>
                     </div>
                 </div>
             </div>
         </div>
         <div class="tab-wraper">
             <Tabs v-model="tabActive" :animated="true">
-                <tab-pane label="曲线" name="chart">
+                <tab-pane :label="$t('main.chart')" name="chart">
                     <div id="charts" style="width: '100%';height: 200px;"></div>
                 </tab-pane>
-                <tab-pane label="轨迹列表" name="table">
+                <tab-pane :label="$t('main.trackList')" name="table">
                     <div style="padding: 0 10px;">
                         <i-table ref="table" border :columns="columns" height="170" :data="tableData"></i-table>
                         <Page :total="total" show-total @on-change="onPageChange" :page-size="pageSize" :current="currentIndex" />
                     </div>
                 </tab-pane>
-                <i-button v-show="tabActive=='table'" type="primary" size="small" slot="extra" style="margin:10px 5px 0 0;" @click="getAllTracksAddress">一键获取地址</i-button>
+                <i-button v-show="tabActive=='table'" type="primary" size="small" slot="extra" style="margin:10px 5px 0 0;" @click="getAllTracksAddress">{{$t("main.queryAddress")}}</i-button>
             </Tabs>
         </div>
+        <Modal v-model="modal" width="600">
+            <p slot="header" style="color:#2D8CF0;text-align:center">
+                <Icon type="ios-hammer-outline"></Icon>
+                <span>{{$t("main.posiDetail")}}</span>
+            </p>
+            <div>
+                <p style="margin: 10px">{{$t("main.trackId")}} : {{trackid}}</p>
+                <p style="margin: 10px">{{$t("main.jizhanList")}} : {{xList}}</p>
+                <p style="margin: 10px">{{$t("main.WIFIList")}} : {{wList}}</p>
+                <p style="margin: 10px;word-wrap:break-word;">{{$t("main.originalData")}} : {{trackStringify}}</p>
+            </div>
+        </Modal>
+        <Modal v-model="modal1" width="600">
+            <p slot="header" style="color:#2D8CF0;text-align:center">
+                <Icon type="ios-hammer-outline"></Icon>
+                <span>{{$t("main.result")}}</span>
+            </p>
+            <div style="text-align: center;">
+                <p>
+                    {{cause}}
+                </p>
+            </div>
+        </Modal>
         <div class="demo-spin-container" v-if="queryLoading">
             <Spin fix>
                 <Icon type="ios-loading" size=18 class="demo-spin-icon-load"></Icon>
@@ -425,7 +457,7 @@
         var deviceid = utils.getParameterByName("deviceid");
         var devicename = utils.getParameterByName("devicename");
         var vRoot = null;
-        var xiaoxu = null;
+        var currentTrack = null;
         Vue.use(iview);
         Vue.use(VueI18n);
         var isZh = utils.locale === 'zh';
@@ -474,8 +506,25 @@
         var messages = {
             en: {
                 main: {
+                    all: 'all',
+                    showLine: 'Show line',
+                    yes: 'Yes',
+                    no: 'No',
+                    queryTracks: 'Query Tracks',
+                    downloadTrack: 'Download Tracks',
+                    progress: 'Progress',
+                    bmap: 'BaiDuMap',
+                    gmap: 'GoogleMap',
+                    amap: 'AlibabaMap',
+                    chart: 'Chart',
+                    trackList: 'Track List',
+                    queryAddress: 'Qeury address',
+                    showBubbles: 'Bubbles',
+                    openRanging: 'Distance ',
+
                     selectDate: "Select Date",
                     selectTime: "Select Time",
+                    trackType: "Track Type",
                     prevDay: "Prev Day",
                     nextDay: "Next Day",
                     startDate: "Start time",
@@ -512,8 +561,25 @@
             },
             zh: {
                 main: {
+                    all: '全部',
+                    showLine: '显示路线',
+                    yes: '是',
+                    no: '否',
+                    queryTracks: '查询轨迹',
+                    downloadTrack: '下载轨迹',
+                    progress: '查询进度',
+                    bmap: '百度地图',
+                    gmap: '谷歌地图',
+                    amap: '高德地图',
+                    chart: '曲线图表',
+                    trackList: '轨迹列表',
+                    queryAddress: '一键查询地址',
+                    showBubbles: '显示气泡',
+                    openRanging: '开启测距',
+
                     selectDate: "选择日期",
                     selectTime: "选择时间",
+                    trackType: "轨迹精度",
                     prevDay: "上一天",
                     nextDay: "下一天",
                     startDate: "开始时间",
@@ -557,6 +623,14 @@
                 el: "#container",
                 i18n: utils.getI18n(),
                 data: {
+                    modal: false,
+                    modal1: false,
+                    cause: "",
+                    xList: '',
+                    wList: '',
+                    trackid: '',
+                    trackStringify: "",
+
                     queryLoading: false,
                     idx: 0,
                     isPlaying: false,
@@ -579,45 +653,46 @@
                     timeValue: ['00:00:00', '23:59:59'],
                     tabActive: 'chart',
                     columns: [{
-                        title: '序号',
+                        title: isZh ? '序号' : 'index',
                         key: 'idx',
                         width: 70
                     }, {
-                        title: '时间',
+                        title: isZh ? '时间' : 'date',
                         key: 'updatetimeStr',
                         width: 154
                     }, {
-                        title: '定位类型',
+                        title: isZh ? '定位类型' : 'got',
                         key: 'gotsrcStr',
                         width: 100
                     }, {
-                        title: '速度',
+                        title: isZh ? '速度' : 'speed',
                         key: 'speedStr',
-                        width: 70
+                        width: 80
                     }, {
-                        title: '记录仪速度',
+                        title: isZh ? '记录仪速度' : 'recorder speed',
                         key: 'recorderspeedStr',
-                        width: 100
+                        width: 125
                     }, {
-                        title: '经度',
+                        title: isZh ? '经度' : 'lon',
                         key: 'callon',
                         width: 110
                     }, {
-                        title: '纬度',
+                        title: isZh ? '纬度' : 'lat',
                         key: 'callat',
                         width: 110
                     }, {
-                        title: '状态',
+                        title: isZh ? '状态' : 'state',
                         key: 'strstatus',
                         width: 120
                     }, {
-                        title: '地址',
+                        title: isZh ? '地址' : 'address',
                         key: 'address'
                     }, ],
                     tableData: [],
                     total: 0,
                     pageSize: 10,
                     currentIndex: 1,
+                    totalMileage: 0,
                 },
                 methods: {
                     startedPlay: function() {
@@ -639,7 +714,7 @@
                                     }
                                 }, me.playSpeedMillisecond);
                             } else {
-                                me.$Message.error("没有轨迹");
+                                me.$Message.error(isZh ? "没有轨迹" : "No Tracks");
                             }
                         }
                     },
@@ -1168,8 +1243,9 @@
                                 if (me.getTypeRecords().length > 0) {
                                     me.initMapView();
                                 } else {
-                                    me.$Message.error('没有轨迹');
+                                    me.$Message.error(isZh ? "没有轨迹" : "No Tracks");
                                     me.removeAllLayer();
+                                    me.totalMileage = 0;
                                 }
                             }
                         });
@@ -1200,6 +1276,8 @@
 
                         var pointList = this.getPointList(tracks);
                         this.lineString.setCoordinates(pointList);
+
+                        this.totalMileage = ((tracks[tracks.length - 1].totaldistance - tracks[0].totaldistance)).toFixed(2);
 
                         this.fitExtent(tracks);
 
@@ -1373,7 +1451,7 @@
                             track.gotsrcStr = utils.getPosiType(track);
                             track.speedStr = track.speed / 1000;
                             track.recorderspeedStr = track.recorderspeed / 1000;
-                            track.address = address ? address : '点击一键获取';
+                            track.address = address ? address : (isZh ? '点击一键获取' : 'Click query address');
                             allTracks.push(track);
                         }
                         this.allTracks = allTracks;
@@ -1449,8 +1527,24 @@
                                 console.log('getJiuHuAddressSyn token失效,请重新登录')
                             } else if (resp.status == 0) {
                                 address = resp.address
-                                    // $("p.last-address").html(" 详细地址: " + address);
                                 LocalCacheMgr.setAddress(callon, callat, address);
+
+                                var sContent = that.getInfoWindowContent(info);
+                                that.carMarker.setInfoWindow({
+                                    'content': sContent,
+                                    'width': 300,
+                                    'autoOpenOn': 'click', //set to null if not to open when clicking on marker
+                                    'autoCloseOn': false, //set to null if not to open when clicking on marker
+                                    'animation': false,
+                                    'autoPan': false,
+                                    'animationDuration': 0,
+                                });
+
+                                if (that.isShowBubble) {
+                                    that.carMarker.openInfoWindow();
+                                } else {
+                                    that.carMarker.closeInfoWindow()
+                                }
                             } else {
                                 console.log('getJiuHuAddressSyn 查询地址失败')
                             }
@@ -1463,6 +1557,7 @@
                         var posiType = utils.getPosiType(info);
                         var color = '#515A6E';
                         var strstatus = null;
+                        currentTrack = info;
                         if (info.radius > 0) {
                             var radiuDesc = null;
                             if (isZh) {
