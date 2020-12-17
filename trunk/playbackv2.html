@@ -701,6 +701,15 @@
                             this.carMarker.closeInfoWindow()
                         }
 
+
+
+                        var isOut = this.isOut(point, this.map.getExtent());
+                        if (!isOut) {
+                            this.map.setCenter(point);
+                        }
+                    },
+                    isOut: function(point, extent) {
+                        return extent.contains(point)
                     },
                     getMarkerSymbol: function(markerFile, markerRotation, markerDy) {
                         return {
@@ -1254,17 +1263,16 @@
                     initMap: function() {
                         var me = this;
 
-                        var baseLayer = new maptalks.TileLayer('base', {
-                            urlTemplate: "http://mt2.google.cn/vt?lyrs=m@180000000&hl=zh-CN&gl=cn&src=app&x={x}&y={y}&z={z}&s=Gal",
-                            attribution: ''
-                        })
+                        // var baseLayer = new maptalks.TileLayer('base', {
+                        //     urlTemplate: "http://mt2.google.cn/vt?lyrs=m@180000000&hl=zh-CN&gl=cn&src=app&x={x}&y={y}&z={z}&s=Gal",
+                        //     attribution: ''
+                        // })
 
                         this.map = new maptalks.Map('map', {
                             center: [106, 36.11],
                             zoom: 5,
                             minZoom: 4,
                             maxZoom: 18,
-                            // baseLayer:
                         });
 
                         if (me.mapType == 'bMap') {
@@ -1300,8 +1308,8 @@
 
                         var customPosition = new maptalks.control.Zoom({
                             'position': {
-                                'bottom': '20',
-                                'right': '20'
+                                'bottom': '15',
+                                'right': '15'
                             },
                             'slider': false,
                             'zoomLevel': false
@@ -1564,7 +1572,6 @@
                         return this.year + '-' + this.month + '-' + this.date;
                     },
                     playSpeedMillisecond: function() {
-
                         if (this.playSpeed == 'kuai') {
                             return 50;
                         } else if (this.playSpeed == 'zhong') {
@@ -1601,8 +1608,15 @@
                         }
                         this.datesArr = this.getDatesArr();
                     },
-                    playSpeed: function() {
+                    playSpeed: function(newVal) {
                         var me = this;
+                        if (newVal == 'kuai') {
+                            this.map.setZoom(13);
+                        } else if (newVal == 'zhong') {
+                            this.map.setZoom(14);
+                        } else if (newVal == 'man') {
+                            this.map.setZoom(15);
+                        };
                         if (me.isPlaying) {
                             setTimeout(function() {
                                 me.stopPlay();
@@ -1615,6 +1629,7 @@
                     },
                     trackType: function() {
                         if (this.currentTracksLenth > 0) {
+
                             this.initMapView();
                         }
                     },
