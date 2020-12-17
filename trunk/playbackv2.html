@@ -806,19 +806,19 @@
                         switch (this.mapType) {
                             case 'bMap':
                                 layer = new maptalks.TileLayer('base', {
-                                    'urlTemplate': 'http://online{s}.map.bdimg.com/onlinelabel/?qt=tile&x={x}&y={y}&z={z}&styles=pl&scaler=1&p=1',
+                                    'urlTemplate': 'https://maponline2.bdimg.com/tile/?qt=vtile&styles=pl&scaler=2&udt=20201217&from=jsapi2_0&x={x}&y={y}&z={z}',
                                     'subdomains': [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
                                     'attribution': '&copy; <a target="_blank" href="http://map.baidu.com">Baidu</a>'
                                 })
                                 break;
                             case 'gMap':
                                 layer = new maptalks.TileLayer('base', {
-                                    urlTemplate: "http://mt2.google.cn/vt?lyrs=m@180000000&hl=zh-CN&gl=cn&src=app&x={x}&y={y}&z={z}&s=Gal",
+                                    urlTemplate: "http://mt2.google.cn/vt?lyrs=m@180000000&hl=zh-CN&scale=2&gl=cn&src=app&x={x}&y={y}&z={z}&s=Gal",
                                 })
                                 break;
                             case 'aMap':
                                 layer = new maptalks.TileLayer('base', {
-                                    urlTemplate: 'http://webrd04.is.autonavi.com/appmaptile?lang=zh_cn&style=8&x={x}&y={y}&z={z}',
+                                    urlTemplate: 'http://webrd04.is.autonavi.com/appmaptile?lang=zh_cn&scale=2&style=8&x={x}&y={y}&z={z}',
                                 })
                                 break;
                             default:
@@ -1256,7 +1256,6 @@
                         if (this.markerLayer !== null) {
                             this.map.removeLayer(this.markerLayer);
                         }
-
 
                         // 得到当前类型轨迹
                         var tracks = this.getTypeRecords();
@@ -1706,7 +1705,7 @@
                     playSpeed: function(newVal) {
                         var me = this;
                         if (newVal == 'kuai') {
-                            this.map.setZoom(13);
+                            this.map.setZoom(11);
                         } else if (newVal == 'zhong') {
                             this.map.setZoom(14);
                         } else if (newVal == 'man') {
