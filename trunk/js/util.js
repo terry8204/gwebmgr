@@ -1302,7 +1302,7 @@ var mixIn = {
 // 轨迹回放
 function playBack(deviceid) {
     var devicename = getDeviceNameByDeviceid(deviceid);
-    window.open('playback.html?deviceid=' + deviceid + '&icon=' + carIconTypes[deviceid] + '&devicename=' + devicename + '&token=' + token);
+    window.open('playbackv2.html?deviceid=' + deviceid + '&icon=' + carIconTypes[deviceid] + '&devicename=' + devicename + '&token=' + token);
 }
 
 // 跟踪

@@ -19,7 +19,7 @@
             position: relative;
             overflow: hidden;
         }
-
+        
         .demo-spin-container {
             display: inline-block;
             position: absolute;
@@ -30,11 +30,11 @@
             background-color: rgba(255, 255, 255, .6);
             z-index: 19999;
         }
-
+        
         .demo-spin-icon-load {
             animation: ani-demo-spin 1s linear infinite;
         }
-                
+        
         div.controller {
             position: absolute;
             bottom: 0px;
@@ -119,8 +119,8 @@
             height: 60px;
             cursor: pointer;
         }
-
-        div.right-button-wrap div.btn-label{
+        
+        div.right-button-wrap div.btn-label {
             background: #FB6726;
             color: #fff;
             font-size: 12px;
@@ -135,7 +135,6 @@
             height: 35px;
             border: 0;
         }
-        
         
         label.BMapLabel::after {
             font-size: 0px;
@@ -255,33 +254,35 @@
             cursor: pointer;
         }
         /* popup css  end */
-
-        #container .vdp-datepicker__calendar .cell{
+        
+        #container .vdp-datepicker__calendar .cell {
             line-height: 20px;
         }
-        #container .vdp-datepicker__calendar .day-header{
+        
+        #container .vdp-datepicker__calendar .day-header {
             height: 20px;
         }
+        
         #container .vdp-datepicker__calendar .cell.selected {
             background: #E0E0E0;
         }
-        #container .vdp-datepicker__calendar{   
+        
+        #container .vdp-datepicker__calendar {
             bottom: 34px;
         }
-        #container .vdp-datepicker > div >input{
+        
+        #container .vdp-datepicker>div>input {
             height: 32px;
             border: 1px solid #DCDEE2;
             padding-left: 10px;
             border-radius: 3px;
-            outline:#00FF00;
+            outline: #00FF00;
             width: 100%;
-            margin-top:8px;
+            margin-top: 8px;
             line-height: 32px;
         }
-
-        
     </style>
-  
+
     <script src="js/distancetool_min.js"></script>
 </head>
 
@@ -320,7 +321,7 @@
             </div>
             <div slot="footer" style="text-align: center;">
                 <i-button style="width:200px" type="info" icon="ios-search" @click="getAllTracksAddress">一键获取地址</i-button>
-                <i-button style="width:200px" type="primary" icon="md-exit"  @click="exportData">导出轨迹</i-button>
+                <i-button style="width:200px" type="primary" icon="md-exit" @click="exportData">导出轨迹</i-button>
             </div>
         </Modal>
         <transition name="el-zoom-in-bottom">
@@ -341,15 +342,8 @@
                     <Row style="line-height:45px;">
                         <i-col :span="4" style="text-align: center;height:45px;">{{$t("main.selectDate")}} : &nbsp;</i-col>
                         <i-col :span="10" style="height:45px;line-height:45px;">
-                            <datepicker
-                                format="yyyy-MM-dd"
-                                :language="language"
-                                :value="startTime"
-                                :day-cell-content="dayCellContent"
-                                v-on:changedmonth="logChangedMonth"
-                                v-on:selected="onSelected"
-                            >
-                            <!-- <date-picker type="date" style="width: 100%;height:45px;" v-model="startTime" :clearable="false" :editable="false"></date-picker> -->
+                            <datepicker format="yyyy-MM-dd" :language="language" :value="startTime" :day-cell-content="dayCellContent" v-on:changedmonth="logChangedMonth" v-on:selected="onSelected">
+                                <!-- <date-picker type="date" style="width: 100%;height:45px;" v-model="startTime" :clearable="false" :editable="false"></date-picker> -->
                         </i-col>
                         <i-col :span="5" style="text-align: center;height:45px;">
                             <i-button @click="prevDay" style="width: 80px;">{{$t("main.prevDay")}}</i-button>
@@ -611,14 +605,14 @@
                 el: "#container",
                 i18n: utils.getI18n(),
                 data: {
-                    maxLen:0,
+                    maxLen: 0,
                     isZh: isZh,
-                    queryLoading:false,
-                    trackTableLoading:false,
-                    total:0,
-                    pageSize:50,
-                    currentIndex:1,
-                    idx:0,
+                    queryLoading: false,
+                    trackTableLoading: false,
+                    total: 0,
+                    pageSize: 50,
+                    currentIndex: 1,
+                    idx: 0,
                     language: isZh ? vdp_translation_index.zh : vdp_translation_index.en,
                     isShowCtrl: true,
                     isShowMarker: false,
@@ -667,76 +661,101 @@
                         value: "oMap"
                     }, ],
                     mapType: mapType,
-                    trackModal:false,
-                    columns: [ 
-                        { title: '序号',key: 'idx', width:70 }, 
-                        { title: '时间',key: 'updatetimeStr', width:154 }, 
-                        { title: '定位类型',key: 'gotsrcStr', width:100 }, 
-                        { title: '速度',key: 'speedStr', width:70 }, 
-                        { title: '记录仪速度',key: 'recorderspeedStr', width:100 }, 
-                        { title: '经度',key: 'callon', width:110 }, 
-                        { title: '纬度',key: 'callat', width:110 }, 
-                        { title: '状态',key: 'strstatus', width:120 }, 
-                        { title: '地址',key: 'address'}, 
-                    ],
-                    tableData:[],
+                    trackModal: false,
+                    columns: [{
+                        title: '序号',
+                        key: 'idx',
+                        width: 70
+                    }, {
+                        title: '时间',
+                        key: 'updatetimeStr',
+                        width: 154
+                    }, {
+                        title: '定位类型',
+                        key: 'gotsrcStr',
+                        width: 100
+                    }, {
+                        title: '速度',
+                        key: 'speedStr',
+                        width: 70
+                    }, {
+                        title: '记录仪速度',
+                        key: 'recorderspeedStr',
+                        width: 100
+                    }, {
+                        title: '经度',
+                        key: 'callon',
+                        width: 110
+                    }, {
+                        title: '纬度',
+                        key: 'callat',
+                        width: 110
+                    }, {
+                        title: '状态',
+                        key: 'strstatus',
+                        width: 120
+                    }, {
+                        title: '地址',
+                        key: 'address'
+                    }, ],
+                    tableData: [],
                 },
-                components:{
-                    datepicker:vuejsDatepicker
+                components: {
+                    datepicker: vuejsDatepicker
                 },
                 methods: {
-                    onSelected:function(date){
+                    onSelected: function(date) {
                         this.startTime = date;
                     },
-                    queryReportMileageDetail:function(date){
+                    queryReportMileageDetail: function(date) {
                         var me = this;
                         var url = myUrls.reportMileageDetail();
-                        var day = date.getFullYear()+'-'+ (date.getMonth() +1) + '-';
-                        var startday = DateFormat.addMonth(new Date(day + "1"),-1);
-                            startday = DateFormat.format(startday,"yyyy-MM-dd");
+                        var day = date.getFullYear() + '-' + (date.getMonth() + 1) + '-';
+                        var startday = DateFormat.addMonth(new Date(day + "1"), -1);
+                        startday = DateFormat.format(startday, "yyyy-MM-dd");
                         var data = {
-                            startday:  startday,
-                            endday:  day + this.getTheMonthDays(date) ,
+                            startday: startday,
+                            endday: day + this.getTheMonthDays(date),
                             offset: timeDifference,
-                            deviceid:deviceid,
+                            deviceid: deviceid,
                         };
                         utils.sendAjax(url, data, function(resp) {
 
                             var records = resp.records;
-                            if(records){
-                                records.forEach(function(item){
-                                    if(item){
+                            if (records) {
+                                records.forEach(function(item) {
+                                    if (item) {
                                         // console.log("item",item,typeof item.totaldistance);
-                                        me.mileageMonthRecord[item.day]=(item.totaldistance/1000).toFixed(1);
+                                        me.mileageMonthRecord[item.day] = (item.totaldistance / 1000).toFixed(1);
                                     }
                                 })
                             }
-                        
+
                         });
                     },
-                    logChangedMonth(date){
+                    logChangedMonth(date) {
                         // console.log(DateFormat.format(date,"yyyy-MM-dd"));
                         // var day = DateFormat.format(date,"yyyy-MM-dd");
                         // if(!this.mileageMonthRecord[day]){
-                            this.queryReportMileageDetail(date);
+                        this.queryReportMileageDetail(date);
                         // }
                     },
                     getTheMonthDays: function(date) {
                         var year = date.getFullYear();
-                        var month = date.getMonth()+1;
+                        var month = date.getMonth() + 1;
                         var d = new Date(year, month, 0);
                         return d.getDate();
                     },
-                    dayCellContent(data){
-                        if(this.mileageMonthRecord){
-                            var dayStr = DateFormat.format(new Date(data.timestamp),"yyyy-MM-dd");
+                    dayCellContent(data) {
+                        if (this.mileageMonthRecord) {
+                            var dayStr = DateFormat.format(new Date(data.timestamp), "yyyy-MM-dd");
                             var totaldistance = this.mileageMonthRecord[dayStr];
-                            if(totaldistance ==undefined){
+                            if (totaldistance == undefined) {
                                 totaldistance = "-"
                             }
-                            return data.date+"<br><span style='font-size:12px;color:#6DCFF6;'>" + totaldistance  +"</span>";
+                            return data.date + "<br><span style='font-size:12px;color:#6DCFF6;'>" + totaldistance + "</span>";
                         }
-                       
+
                     },
                     initMap: function(callback) {
                         var me = this;
@@ -800,22 +819,22 @@
                             mapTypeId: google.maps.MapTypeId.ROADMAP
                         });
                     },
-                    getLineFeature: function(tracksList,isFeature) {
+                    getLineFeature: function(tracksList, isFeature) {
                         var arrayList = [];
-                        for(var i = 0 ; i < tracksList.length; i++){
+                        for (var i = 0; i < tracksList.length; i++) {
                             var track = tracksList[i];
                             var point = ol.proj.fromLonLat([track.callon, track.callat]);
-                            if(this.isShowAllLine){
+                            if (this.isShowAllLine) {
                                 arrayList.push(point);
-                            }else{
-                                if(i <= this.index){
-                                    arrayList.push(point);     
+                            } else {
+                                if (i <= this.index) {
+                                    arrayList.push(point);
                                 }
                             }
                         }
-                        if(isFeature){
+                        if (isFeature) {
                             return new ol.Feature(new ol.geom.LineString(arrayList));
-                        } else{
+                        } else {
                             return new ol.geom.LineString(arrayList);
                         }
                     },
@@ -1042,76 +1061,76 @@
                         });
                     },
                     exportData: function() {
-            
+
                         this.$refs.table.exportCsv({
-                            filename: this.deviceName + '-' +this.deviceid,
+                            filename: this.deviceName + '-' + this.deviceid,
                             original: false,
                             columns: this.columns,
                             data: this.records
                         });
                     },
-                    getAllTracksAddress:function(){
+                    getAllTracksAddress: function() {
                         var me = this;
-                        var tracks =  this.isExtract ? this.extractRecords : this.records;
+                        var tracks = this.isExtract ? this.extractRecords : this.records;
                         var maxLen = tracks.length;
                         this.maxLen = maxLen;
                         this.queryLoading = true;
                         this.idx = 0;
-                        tracks.forEach(function(track){
+                        tracks.forEach(function(track) {
                             var callon = track.callon;
                             var callat = track.callat;
                             var address = LocalCacheMgr.getAddress(track.callon, track.callat);
-                            if(address == null){
-                                (function(track){
-                                    utils.getJiuHuAddressSyn(track.callon,track.callat,function(resp){
-                                        if(resp && resp.address){
+                            if (address == null) {
+                                (function(track) {
+                                    utils.getJiuHuAddressSyn(track.callon, track.callat, function(resp) {
+                                        if (resp && resp.address) {
                                             track.address = resp.address;
-                                            LocalCacheMgr.setAddress(track.callon, track.callat,track.address);
+                                            LocalCacheMgr.setAddress(track.callon, track.callat, track.address);
                                         }
                                         me.idx = me.idx + 1;
-                                        if(me.idx >= maxLen){
+                                        if (me.idx >= maxLen) {
                                             me.queryLoading = false;
                                         }
-                                    },function(e){
+                                    }, function(e) {
                                         me.idx = me.idx + 1;
-                                        if(me.idx >= maxLen){
+                                        if (me.idx >= maxLen) {
                                             me.queryLoading = false;
                                         }
                                     });
                                 })(track);
-                            }else{
+                            } else {
                                 me.idx = me.idx + 1;
-                                if(me.idx >= maxLen){
+                                if (me.idx >= maxLen) {
                                     me.queryLoading = false;
                                 }
                             }
                         });
                     },
-                    onPageChange:function(index){  
-                        var me = this;     
+                    onPageChange: function(index) {
+                        var me = this;
                         var offset = index * me.pageSize;
                         var start = (index - 1) * me.pageSize;
                         this.currentIndex = index;
-                        var tracks =  me.records;
-                        var splitTrack = tracks.slice(start,offset);
+                        var tracks = me.records;
+                        var splitTrack = tracks.slice(start, offset);
                         var tableData = [];
 
                         me.tableData = splitTrack;
                     },
-                    showTracksListModal:function(){
+                    showTracksListModal: function() {
 
                         this.trackModal = true;
                         var me = this;
                         var tableData = [];
-                        var tracks =  me.records;
-                        var splitTrack = tracks.slice(0,me.pageSize);
+                        var tracks = me.records;
+                        var splitTrack = tracks.slice(0, me.pageSize);
                         this.total = tracks.length;
                         this.currentIndex = 1;
 
                         me.tableData = splitTrack;
-                
+
                     },
-                    filtertracks: function(records,index) {
+                    filtertracks: function(records, index) {
                         var extractRecords = [];
                         var newRecords = [];
                         for (var i = 0; i < records.length; i++) {
@@ -1138,13 +1157,13 @@
                             }
 
                             var address = LocalCacheMgr.getAddress(track.callon, track.callat);
-               
-                            track.idx = i+1;  
+
+                            track.idx = i + 1;
                             track.updatetimeStr = "\t" + DateFormat.longToDateTimeStr(track.updatetime, timeDifference);
                             track.gotsrcStr = utils.getPosiType(track);
-                            track.speedStr = track.speed/1000;
-                            track.recorderspeedStr = track.recorderspeed/1000;
-                            track.address = address?address:'点击一键获取';
+                            track.speedStr = track.speed / 1000;
+                            track.recorderspeedStr = track.recorderspeed / 1000;
+                            track.address = address ? address : '点击一键获取';
 
 
                             newRecords.push(track);
@@ -1153,7 +1172,7 @@
                         this.extractRecords = extractRecords;
                     },
                     drawingOpenStreeMap: function(records) {
-                        lineFeature = this.getLineFeature(records,true);
+                        lineFeature = this.getLineFeature(records, true);
                         var maxLen = records.length - 1,
                             features = [],
                             iconFeature;
@@ -1221,11 +1240,11 @@
 
                                 for (var i = 0; i < records.length; i++) {
                                     var point = records[i].point;
-                                    if(this.isShowAllLine){
+                                    if (this.isShowAllLine) {
                                         lines.push(point);
-                                    }else{
-                                        if(i <= me.index){
-                                            lines.push(point);     
+                                    } else {
+                                        if (i <= me.index) {
+                                            lines.push(point);
                                         }
                                     }
                                     if (i != 0 && i != records.length - 1) {
@@ -1280,11 +1299,11 @@
                                 var points = []
                                 for (var i = 0; i < records.length; i++) {
                                     var record = records[i];
-                                    if(this.isShowAllLine){
+                                    if (this.isShowAllLine) {
                                         points.push(record.gpoint);
-                                    }else{
-                                        if(i <= me.index){
-                                            points.push(record.gpoint);     
+                                    } else {
+                                        if (i <= me.index) {
+                                            points.push(record.gpoint);
                                         }
                                     }
 
@@ -1532,8 +1551,7 @@
                                 }
                             } else {
                                 document.getElementById('popup').style.display = 'none';
-                            }
-                            !this.isShowAllLine && lineFeature.setGeometry(this.getLineFeature(this.getTypeRecords(),false));
+                            }!this.isShowAllLine && lineFeature.setGeometry(this.getLineFeature(this.getTypeRecords(), false));
                         }
                     },
                     setViewPortCenter: function(lines) {
@@ -1568,7 +1586,7 @@
                                 if (me.index >= paths) {
                                     clearInterval(me.intervalInstanse);
                                 };
-                         
+
                                 var track = records[me.index];
                                 if (track) {
                                     me.openInfoWindow(me.carMarker, track);
@@ -1670,7 +1688,7 @@
                                 console.log('getJiuHuAddressSyn 查询地址失败')
                             }
                         });
-               
+
                         return "地址正在解析..."
                     },
                     resetMapState: function() {
@@ -1741,11 +1759,11 @@
                         }
                         this.isShowMarker = !this.isShowMarker;
                     },
-                    onSwithAllLine:function(){
-                        
+                    onSwithAllLine: function() {
+
                         this.isShowAllLine = !this.isShowAllLine;
-                            
-                        switch(this.mapType){
+
+                        switch (this.mapType) {
                             case 'bMap':
                                 this.polyline.setPath(this.getBMapLines());
                                 break;
@@ -1753,39 +1771,39 @@
                                 this.polyline.setPath(this.getGMapLines());
                                 break;
                             case 'oMap':
-                                lineFeature.setGeometry(this.getLineFeature(this.getTypeRecords(),false));
+                                lineFeature.setGeometry(this.getLineFeature(this.getTypeRecords(), false));
                                 break;
-                            default :
+                            default:
 
                                 ;
-                            
+
                         };
                     },
-                    getBMapLines:function(){
+                    getBMapLines: function() {
                         var lines = [];
                         var records = this.getTypeRecords();
                         for (var i = 0; i < records.length; i++) {
                             var point = records[i].point;
-                            if(this.isShowAllLine){
+                            if (this.isShowAllLine) {
                                 lines.push(point);
-                            }else{
-                                if(i <= this.index){
-                                    lines.push(point);     
+                            } else {
+                                if (i <= this.index) {
+                                    lines.push(point);
                                 }
                             }
                         };
                         return lines;
                     },
-                    getGMapLines:function(){
+                    getGMapLines: function() {
                         var lines = [];
                         var records = this.getTypeRecords();
                         for (var i = 0; i < records.length; i++) {
                             var point = records[i].gpoint;
-                            if(this.isShowAllLine){
+                            if (this.isShowAllLine) {
                                 lines.push(point);
-                            }else{
-                                if(i <= this.index){
-                                    lines.push(point);     
+                            } else {
+                                if (i <= this.index) {
+                                    lines.push(point);
                                 }
                             }
                         };
@@ -1838,7 +1856,7 @@
                         // time:'时间',
                         var totoil = this.$t('main.totalOil');
                         var speed = this.$t('main.speed');
-                        var recorderspeed = isZh ? "行驶记录仪速度" :'RecorderSpeed';
+                        var recorderspeed = isZh ? "行驶记录仪速度" : 'RecorderSpeed';
                         var dis = this.$t('main.mileage');
                         var time = this.$t('main.time');
                         var usoil1 = this.$t('main.oil1');
@@ -1847,7 +1865,7 @@
                         var option = {
                             title: {
                                 // text: time + '/' + cotgasus,
-                                text: '' ,
+                                text: '',
                                 x: 'center',
                                 textStyle: {
                                     fontSize: 12,
@@ -1873,7 +1891,7 @@
                                 }
                             },
                             legend: {
-                                data: [dis, speed,recorderspeed, totoil, usoil1, usoil2],
+                                data: [dis, speed, recorderspeed, totoil, usoil1, usoil2],
                                 //selected: {
                                 //    '里程' : false
                                 // },
@@ -1964,7 +1982,7 @@
                                     //itemStyle: {normal: {areaStyle: {type: 'default'}}},
                                     color: '#4876FF',
                                     data: this.veo
-                                },  {
+                                }, {
                                     name: recorderspeed,
                                     type: 'line',
                                     symbol: 'none',
@@ -2013,7 +2031,7 @@
                         this.disMin = 0;
                         var totalDistanceMin = 0;
                         records.forEach(function(item, index) {
-                  
+
                             if (index == 0) {
                                 totalDistanceMin = item.totaldistance;
                             }
@@ -2057,8 +2075,8 @@
                     rightBottomCtrl: function() {
                         return [(this.mapType === 'bMap' || this.mapType === 'oMap') ? 'right-10' : 'right-65'];
                     },
-                    tableTitle:function(){
-                        return '轨迹列表 - ' + this.deviceName + ' - ' + this.deviceid; 
+                    tableTitle: function() {
+                        return '轨迹列表 - ' + this.deviceName + ' - ' + this.deviceid;
                     }
                 },
                 watch: {
