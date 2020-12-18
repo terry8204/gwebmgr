@@ -669,21 +669,20 @@
                         key: 'speedStr',
                         width: 80
                     }, {
-                        title: isZh ? '记录仪速度' : 'recorder speed',
+                        title: isZh ? '记录仪速度' : 'rec speed',
                         key: 'recorderspeedStr',
-                        width: 125
+                        width: 100
                     }, {
                         title: isZh ? '经度' : 'lon',
                         key: 'callon',
-                        width: 110
+                        width: 95
                     }, {
                         title: isZh ? '纬度' : 'lat',
                         key: 'callat',
-                        width: 110
+                        width: 95
                     }, {
                         title: isZh ? '状态' : 'state',
                         key: 'strstatus',
-                        width: 120
                     }, {
                         title: isZh ? '地址' : 'address',
                         key: 'address'
@@ -1219,6 +1218,9 @@
                     },
                     setTableData: function() {
                         var record = this.getTypeRecords();
+                        record.forEach(function(item, index) {
+                            item.idx = index + 1;
+                        })
                         this.tableData = record.slice(0, this.pageSize);
                         this.total = record.length;
                         this.currentIndex = 1;
@@ -1449,7 +1451,6 @@
                                 track.isextract = false;
                             }
                             var address = LocalCacheMgr.getAddress(track.callon, track.callat);
-                            track.idx = i + 1;
                             track.updatetimeStr = "\t" + DateFormat.longToDateTimeStr(track.updatetime, timeDifference);
                             track.gotsrcStr = utils.getPosiType(track);
                             track.speedStr = track.speed / 1000;
@@ -1730,8 +1731,8 @@
                     },
                     trackType: function() {
                         if (this.currentTracksLenth > 0) {
-
                             this.initMapView();
+                            this.setTableData();
                         }
                     },
                     mapType: function(newMapType) {
