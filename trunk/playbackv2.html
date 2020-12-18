@@ -212,6 +212,21 @@
             color: #ffffff;
             font-weight: 600;
         }
+        
+        div.map-tool-wraper {
+            background: #fff;
+            margin: 10px 0;
+            width: 90px;
+            text-align: center;
+            line-height: 20px;
+            height: 22px;
+            border-radius: 3px;
+            border: 1px solid #DCDEE2;
+        }
+        
+        div.map-tool-wraper:hover {
+            border: 1px solid #57a3f3;
+        }
         /* tab 页  */
         
         div.tab-wraper {
@@ -381,10 +396,10 @@
                             <i-option value="aMap">{{$t("main.amap")}}</i-option>
                         </i-select>
                     </div>
-                    <div style="background:#fff;margin:10px 0;width:90px;text-align: center;">
+                    <div class="map-tool-wraper">
                         <Checkbox v-model="isShowBubble">{{$t("main.showBubbles")}}</Checkbox>
                     </div>
-                    <div style="background:#fff;margin:10px 0;width:90px;text-align: center;">
+                    <div class="map-tool-wraper">
                         <Checkbox v-model="isOpenDistance">{{$t("main.openRanging")}}</Checkbox>
                     </div>
                 </div>
@@ -761,7 +776,7 @@
                         var sContent = this.getInfoWindowContent(track);
                         this.carMarker.setInfoWindow({
                             'content': sContent,
-                            'width': 300,
+                            'width': 330,
                             'autoOpenOn': 'click', //set to null if not to open when clicking on marker
                             'autoCloseOn': false, //set to null if not to open when clicking on marker
                             'animation': false,
@@ -1279,11 +1294,32 @@
                         this.markerLayer = new maptalks.VectorLayer('marker', [this.startMarker, this.endMarker, this.carMarker]);
                         this.markerLayer.addTo(this.map);
 
+
+                        var sContent = this.getInfoWindowContent(tracks[0]);
+                        this.carMarker.setInfoWindow({
+                            'content': sContent,
+                            'width': 330,
+                            'autoOpenOn': 'click', //set to null if not to open when clicking on marker
+                            'autoCloseOn': false, //set to null if not to open when clicking on marker
+                            'animation': false,
+                            'autoPan': false,
+                            'animationDuration': 0,
+                        });
+
+                        if (this.isShowBubble) {
+                            this.carMarker.openInfoWindow();
+                        } else {
+                            this.carMarker.closeInfoWindow()
+                        }
+
+
                         var pointList = this.getPointList(tracks);
 
                         this.lineString.setCoordinates(pointList);
 
                         this.totalMileage = ((tracks[tracks.length - 1].totaldistance - tracks[0].totaldistance)).toFixed(2);
+
+
 
                         this.fitExtent(tracks);
 
@@ -1528,18 +1564,19 @@
 
                         if (this.isShowBubble) {
                             utils.getJiuHuAddressSyn(callon, callat, function(resp) {
+                                address = resp.address;
                                 if (resp.status > 9900) {
                                     console.log('getJiuHuAddressSyn token失效,请重新登录')
-                                } else if (resp.status == 0) {
-                                    address = resp.address
+                                } else if (resp.status == 0 && address) {
+
                                     LocalCacheMgr.setAddress(callon, callat, address);
 
                                     var sContent = that.getInfoWindowContent(info);
                                     that.carMarker.setInfoWindow({
                                         'content': sContent,
-                                        'width': 300,
-                                        'autoOpenOn': 'click', //set to null if not to open when clicking on marker
-                                        'autoCloseOn': false, //set to null if not to open when clicking on marker
+                                        'width': 330,
+                                        'autoOpenOn': 'click',
+                                        'autoCloseOn': false,
                                         'animation': false,
                                         'autoPan': false,
                                         'animationDuration': 0,
@@ -1549,7 +1586,9 @@
                                         that.carMarker.openInfoWindow();
                                     } else {
                                         that.carMarker.closeInfoWindow()
-                                    }
+                                    };
+
+                                    info.address = address;
                                 } else {
                                     console.log('getJiuHuAddressSyn 查询地址失败')
                                 }
@@ -1687,6 +1726,17 @@
                     isShowBubble: function(newVal) {
                         if (this.carMarker != null) {
                             if (newVal) {
+                                var tracks = this.getTypeRecords()
+                                var sContent = this.getInfoWindowContent(tracks[this.currentMarkerIndex]);
+                                this.carMarker.setInfoWindow({
+                                    'content': sContent,
+                                    'width': 330,
+                                    'autoOpenOn': 'click', //set to null if not to open when clicking on marker
+                                    'autoCloseOn': false, //set to null if not to open when clicking on marker
+                                    'animation': false,
+                                    'autoPan': false,
+                                    'animationDuration': 0,
+                                });
                                 this.carMarker.openInfoWindow();
                             } else {
                                 this.carMarker.closeInfoWindow();
