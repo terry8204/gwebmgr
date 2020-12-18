@@ -904,6 +904,10 @@
                         this.currentIndex = index;
                         var tracks = me.getTypeRecords();
                         var splitTrack = tracks.slice(start, offset);
+                        splitTrack.forEach(function(item) {
+                            var address = LocalCacheMgr.getAddress(item.callon, item.callat);
+                            item.address = address ? address : (isZh ? '点击一键获取' : 'Click query address');
+                        });
                         me.tableData = splitTrack;
                     },
                     initCharts: function() {
@@ -1274,6 +1278,7 @@
                         this.markerLayer.addTo(this.map);
 
                         var pointList = this.getPointList(tracks);
+
                         this.lineString.setCoordinates(pointList);
 
                         this.totalMileage = ((tracks[tracks.length - 1].totaldistance - tracks[0].totaldistance)).toFixed(2);
@@ -1330,9 +1335,8 @@
                             this.map.removeLayer(this.markerLayer);
                             this.markerLayer = null;
                         }
-                        if (this.lineLayer !== null) {
-                            this.map.removeLayer(this.lineLayer);
-                            this.lineLayer = null;
+                        if (this.lineString !== null) {
+                            this.lineString.setCoordinates([]);
                         }
                         this.currentMarkerIndex = 0;
                         this.currentTracksLenth = 0;
@@ -1521,33 +1525,36 @@
                             return address;
                         }
 
-                        utils.getJiuHuAddressSyn(callon, callat, function(resp) {
-                            if (resp.status > 9900) {
-                                console.log('getJiuHuAddressSyn token失效,请重新登录')
-                            } else if (resp.status == 0) {
-                                address = resp.address
-                                LocalCacheMgr.setAddress(callon, callat, address);
+                        if (this.isShowBubble) {
+                            utils.getJiuHuAddressSyn(callon, callat, function(resp) {
+                                if (resp.status > 9900) {
+                                    console.log('getJiuHuAddressSyn token失效,请重新登录')
+                                } else if (resp.status == 0) {
+                                    address = resp.address
+                                    LocalCacheMgr.setAddress(callon, callat, address);
 
-                                var sContent = that.getInfoWindowContent(info);
-                                that.carMarker.setInfoWindow({
-                                    'content': sContent,
-                                    'width': 300,
-                                    'autoOpenOn': 'click', //set to null if not to open when clicking on marker
-                                    'autoCloseOn': false, //set to null if not to open when clicking on marker
-                                    'animation': false,
-                                    'autoPan': false,
-                                    'animationDuration': 0,
-                                });
+                                    var sContent = that.getInfoWindowContent(info);
+                                    that.carMarker.setInfoWindow({
+                                        'content': sContent,
+                                        'width': 300,
+                                        'autoOpenOn': 'click', //set to null if not to open when clicking on marker
+                                        'autoCloseOn': false, //set to null if not to open when clicking on marker
+                                        'animation': false,
+                                        'autoPan': false,
+                                        'animationDuration': 0,
+                                    });
 
-                                if (that.isShowBubble) {
-                                    that.carMarker.openInfoWindow();
+                                    if (that.isShowBubble) {
+                                        that.carMarker.openInfoWindow();
+                                    } else {
+                                        that.carMarker.closeInfoWindow()
+                                    }
                                 } else {
-                                    that.carMarker.closeInfoWindow()
+                                    console.log('getJiuHuAddressSyn 查询地址失败')
                                 }
-                            } else {
-                                console.log('getJiuHuAddressSyn 查询地址失败')
-                            }
-                        });
+                            });
+                        }
+
 
                         return "地址正在解析..."
                     },
