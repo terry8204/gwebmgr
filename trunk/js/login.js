@@ -116,7 +116,7 @@ new Vue({
                         localStorage.setItem("intervaltime", resp.intervaltime);
                         localStorage.setItem(tempcustomeexperience + "-multilogin", resp.multilogin);
                         // window.location.href = "main.html?token=" + resp.token + "&usertype=" + resp.usertype;
-                        window.location.href = "main.html";
+                        window.location.href = "mainv2.html";
                     } else {
                         me.$Message.error("登录失败");
                     }

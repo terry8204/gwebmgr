@@ -124,7 +124,6 @@ div.site_links ul li span {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-
 }
 
 
@@ -682,7 +681,7 @@ ul.ul-manager-wraper li.gongju {
     line-height: 35px;
 }
 
-#windowInfo p.operation span {
+p.operation span {
     margin-right: 3px;
     font-size: 12px;
 }
@@ -1048,8 +1047,8 @@ div.rule-view>div>div.rule-table {
 #queryuser,
 #onlineuser,
 #login-records,
-#yongzhouenterpriseinfo ,
-#yongzhoudriverinfo  ,
+#yongzhouenterpriseinfo,
+#yongzhoudriverinfo,
 #yongzhouvehicleinfo {
     padding: 10px;
     height: 100%;
@@ -1060,10 +1059,9 @@ div.rule-view>div>div.rule-table {
 
 #queryuser>div>div,
 #queryuser>div>div,
-#yongzhouenterpriseinfo>div>div ,
+#yongzhouenterpriseinfo>div>div,
 #yongzhouvehicleinfo>div>div,
-#yongzhoudriverinfo>div>div
-{
+#yongzhoudriverinfo>div>div {
     width: 100%;
 }
 
@@ -1081,7 +1079,7 @@ div.rule-view>div>div.rule-table {
 #yongzhouenterpriseinfo>div>ul>li,
 #yongzhouvehicleinfo>div>ul>li,
 #yongzhoudriverinfo>div>ul>li,
-#bonus-list>div>ul>li {  
+#bonus-list>div>ul>li {
     float: left;
     width: 150px;
     margin-right: 10px;
