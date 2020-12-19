@@ -272,6 +272,10 @@ div.map_manager {
     transition: top .3s;
 }
 
+#my-map p {
+    font-family: "Microsoft YaHei", 微软雅黑, "MicrosoftJhengHei", 华文细黑, STHeiti, MingLiu
+}
+
 #app .monitor-wraper .map-mode-cls {
     position: absolute;
     left: 10px;

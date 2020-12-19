@@ -344,7 +344,7 @@
                     </div>
                 </div>
             </div>
-            <div class="map-wraper">
+            <div class="map-wraper" ref="mapWraper">
                 <div id="map"></div>
                 <div class="play_ctrl_wrap">
                     <Row>
@@ -401,6 +401,9 @@
                     </div>
                     <div class="map-tool-wraper">
                         <Checkbox v-model="isOpenDistance">{{$t("main.openRanging")}}</Checkbox>
+                    </div>
+                    <div class="map-tool-wraper">
+                        <Checkbox v-model="isFullScreen">{{$t("main.fullScreen")}}</Checkbox>
                     </div>
                 </div>
             </div>
@@ -536,6 +539,7 @@
                     queryAddress: 'Qeury address',
                     showBubbles: 'Bubbles',
                     openRanging: 'Distance ',
+                    fullScreen: 'Full screen ',
 
                     selectDate: "Select Date",
                     selectTime: "Select Time",
@@ -591,6 +595,7 @@
                     queryAddress: '一键查询地址',
                     showBubbles: '显示气泡',
                     openRanging: '开启测距',
+                    fullScreen: '地图全屏',
 
                     selectDate: "选择日期",
                     selectTime: "选择时间",
@@ -652,11 +657,12 @@
                     loading: false,
                     isShowBubble: true,
                     isOpenDistance: false,
+                    isFullScreen: false,
                     currentMarkerIndex: 0,
                     currentTracksLenth: 0,
                     trackType: 'exact',
                     isShowAllLine: 'yes',
-                    mapType: 'bMap', // BMap GMap AMap;
+                    mapType: mapType, // BMap GMap AMap;
                     deviceid: deviceid,
                     devicename: devicename,
                     playSpeed: 'zhong',
@@ -954,7 +960,26 @@
                             me.charts.resize();
                         }, 500);
 
+                        document.addEventListener('fullscreenchange', function() {
+                            me.isFullScreen = me.changeIsFullMapIcon();
+                        })
+                        document.addEventListener('mozfullscreenchange', function() {
+                            me.isFullScreen = me.changeIsFullMapIcon();
+                        })
+                        document.addEventListener('webkitfullscreenchange', function() {
+                            me.isFullScreen = me.changeIsFullMapIcon();
+                        })
+                        document.addEventListener('msfullscreenchange', function() {
+                            me.isFullScreen = me.changeIsFullMapIcon();
+                        })
+
                         window.onresize = onresize;
+                    },
+                    changeIsFullMapIcon: function() {
+                        var isFullscreen = document.fullscreenElement || document.mozFullScreenElement || document.webkitFullscreenElement || document.fullScreen || document.mozFullScreen || document.webkitIsFullScreen
+                        isFullscreen = !!isFullscreen;
+                        !isFullscreen && (this.isMouseoverTop35 = false);
+                        return isFullscreen;
                     },
                     getTypeRecords: function() {
                         if (this.trackType == 'exact') {
@@ -1700,7 +1725,29 @@
                         });
                         this.distanceTool.addTo(this.map);
                         this.distanceTool.disable();
-                    }
+                    },
+                    exitFullscreen: function() {
+                        if (document.exitFullscreen) {
+                            document.exitFullscreen()
+                        } else if (document.mozCancelFullScreen) {
+                            document.mozCancelFullScreen()
+                        } else if (document.webkitCancelFullScreen) {
+                            document.webkitCancelFullScreen()
+                        } else if (document.msExitFullscreen) {
+                            document.msExitFullscreen()
+                        }
+                    },
+                    requestFullscreen: function(mapWraper) {
+                        if (mapWraper.requestFullscreen) {
+                            mapWraper.requestFullscreen()
+                        } else if (mapWraper.mozRequestFullScreen) {
+                            mapWraper.mozRequestFullScreen()
+                        } else if (mapWraper.webkitRequestFullScreen) {
+                            mapWraper.webkitRequestFullScreen()
+                        } else if (mapWraper.msRequestFullscreen) {
+                            mapWraper.msRequestFullscreen()
+                        }
+                    },
                 },
                 computed: {
                     tabsHeight: function() {
@@ -1814,10 +1861,21 @@
 
                         me.lastMapType = newMapType;
 
+                    },
+                    isFullScreen: function(newVal) {
+                        if (newVal) {
+                            var mapWraper = this.$refs.mapWraper;
+                            this.requestFullscreen(mapWraper);
+
+                        } else {
+                            this.exitFullscreen();
+                        }
+
                     }
                 },
                 mounted: function() {
                     this.init();
+
                 }
             });
         })();
