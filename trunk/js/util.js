@@ -194,6 +194,17 @@ var utils = {
         };
         return mapType;
     },
+    getCurrentMapCoordinate: function(isBMap, point) {
+        if (isBMap) {
+            console.log('old', point);
+            debugger;
+            var lng_lat = gcj02tobd09(point[0], point[1]);
+            console.log('new', lng_lat);
+            return [lng_lat[0], lng_lat[1]];
+        } else {
+            return point;
+        }
+    },
     initWindowMap: function(elId) {
 
         var map = new maptalks.Map(elId, {

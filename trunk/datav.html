@@ -384,7 +384,7 @@
                         that.chart_total4.resize();
                     }
                     $.ajax({
-                        url: myUrls.queryGeoJson(100000),
+                        url: myUrls.queryGeoJson(100000, 1),
                         type: 'get',
                         success: function(json) {
                             mapJson = json;
@@ -465,7 +465,7 @@
                     if (province && province.adcode) {
                         var that = this;
                         $.ajax({
-                            url: myUrls.queryGeoJson(province.adcode),
+                            url: myUrls.queryGeoJson(province.adcode, 1),
                             async: false,
                             success: function(json) {
                                 mapJson = json;

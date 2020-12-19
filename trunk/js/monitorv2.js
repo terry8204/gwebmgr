@@ -1384,59 +1384,61 @@ var monitor = {
 
         },
         getAllCoordinates: function(json) {
-            var points = [];
+            var outCoordinates = [];
+            var me = this;
+            var isBMap = me.mapType == 'bMap';
             json.features.forEach(function(item) {
                 var geometry = item.geometry;
                 var coordinates = geometry.coordinates;
                 if (geometry.type == "Polygon") {
                     coordinates.forEach(function(coordinate) {
+                        var points = [];
                         coordinate.forEach(function(point) {
-                            points.push(point);
+                            points.push(utils.getCurrentMapCoordinate(isBMap, point));
+                            // points.push(point);
                         })
+                        outCoordinates.push(points);
                     })
                 } else if (geometry.type == "MultiPolygon") {
                     coordinates.forEach(function(coordinate) {
+                        var points = [];
                         coordinate.forEach(function(pointArr) {
                             pointArr.forEach(function(point) {
-                                points.push(point);
+                                points.push(utils.getCurrentMapCoordinate(isBMap, point));
+                                // points.push(point);
                             })
+
                         })
+                        outCoordinates.push(points);
                     })
                 }
             })
-            return points;
+            return outCoordinates;
         },
         handleQueryArea: function() {
             var me = this;
-            switch (this.mapType) {
-                case 'bMap':
-                    // this.arealoading = true;
 
-                    var adcode = this.areaAddress[2];
-                    var isincludesub = 0;
-                    $.ajax({
-                        url: myUrls.queryGeoJson(adcode, isincludesub),
-                        async: true,
-                        success: function(json) {
-                            // mapJson = json;
-                            // that.qeuryDatavOnlineSummary(province.adcode);
-                            // callback && callback(json);
-                            var coordinates = me.getAllCoordinates(json);
-                            console.log(coordinates);
-                            if (me.polygonLayer) {
-                                me.map.removeLayer(me.polygonLayer);
-                            }
-                            me.polygonLayer = new maptalks.VectorLayer('polygon', me.getPolygon(coordinates));
-                            me.polygonLayer.addTo(me.map);
-                        }
-                    });
-                    break;
-                case 'gMap':
-                    this.$Message.error(this.$t('monitor.mapNotSupported'));
-                case 'oMap':
-                    this.$Message.error(this.$t('monitor.mapNotSupported'));
-                    break;
-            };
+            var adcode = this.areaAddress[2];
+            var isincludesub = 0;
+            $.ajax({
+                url: myUrls.queryGeoJson(adcode, isincludesub),
+                async: true,
+                success: function(json) {
+                    var coordinates = me.getAllCoordinates(json);
+                    console.log('coordinates', coordinates);
+                    if (me.polygonLayer) {
+                        me.map.removeLayer(me.polygonLayer);
+                    }
+                    var polygons = [];
+                    coordinates.forEach(function(item) {
+                        polygons.push(me.getPolygon([item]));
+                    })
+                    me.polygonLayer = new maptalks.VectorLayer('polygon', polygons);
+                    me.polygonLayer.addTo(me.map);
+                }
+            });
+
+
         },
         getPolygon: function(arr) {
             return new maptalks.Polygon(arr, {
