@@ -1384,14 +1384,27 @@ var monitor = {
 
         },
         getAllCoordinates: function(json) {
-            var coordinates = [];
+            var points = [];
             json.features.forEach(function(item) {
-                var arr = item.geometry.coordinates[0];
-                arr.forEach(function(point) {
-                    coordinates.push(point);
-                })
+                var geometry = item.geometry;
+                var coordinates = geometry.coordinates;
+                if (geometry.type == "Polygon") {
+                    coordinates.forEach(function(coordinate) {
+                        coordinate.forEach(function(point) {
+                            points.push(point);
+                        })
+                    })
+                } else if (geometry.type == "MultiPolygon") {
+                    coordinates.forEach(function(coordinate) {
+                        coordinate.forEach(function(pointArr) {
+                            pointArr.forEach(function(point) {
+                                points.push(point);
+                            })
+                        })
+                    })
+                }
             })
-            return coordinates;
+            return points;
         },
         handleQueryArea: function() {
             var me = this;
@@ -1400,8 +1413,9 @@ var monitor = {
                     // this.arealoading = true;
 
                     var adcode = this.areaAddress[2];
+                    var isincludesub = 0;
                     $.ajax({
-                        url: myUrls.queryGeoJson(adcode),
+                        url: myUrls.queryGeoJson(adcode, isincludesub),
                         async: true,
                         success: function(json) {
                             // mapJson = json;
