@@ -1296,7 +1296,7 @@
                 videoMode: '视频模式',
                 screenDisplay: '大屏展示',
                 regionSelection: '区域选择',
-                defaultStyle: '模式样式',
+                defaultStyle: '默认样式',
                 midnightBlue: '午夜蓝',
                 stock: '库存',
                 stared: '关注',

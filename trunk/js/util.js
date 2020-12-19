@@ -194,6 +194,59 @@ var utils = {
         };
         return mapType;
     },
+    initWindowMap: function(elId) {
+
+        var map = new maptalks.Map(elId, {
+            center: [106, 36.11],
+            zoom: 5,
+            minZoom: 4,
+            maxZoom: 19,
+            // baseLayer:
+        });
+
+        var newMapType = this.getMapType();
+        if (newMapType == 'bMap') {
+            map.setSpatialReference({
+                projection: 'baidu'
+            });
+            var layer = new maptalks.TileLayer('base', {
+                'urlTemplate': 'https://maponline2.bdimg.com/tile/?qt=vtile&styles=pl&scaler=2&udt=20201217&from=jsapi2_0&x={x}&y={y}&z={z}',
+                // 'urlTemplate': 'http://online{s}.map.bdimg.com/onlinelabel/?qt=tile&x={x}&y={y}&z={z}&styles=pl&scaler=1&p=1',
+                'subdomains': [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+                'attribution': '&copy; <a target="_blank" href="http://map.baidu.com">Baidu</a>'
+            })
+            map.setBaseLayer(layer);
+
+        } else if (newMapType == 'gMap') {
+
+            var layer = new maptalks.TileLayer('base', {
+                urlTemplate: "http://mt2.google.cn/vt?lyrs=m@180000000&hl=zh-CN&gl=cn&scale=2&src=app&x={x}&y={y}&z={z}&s=Gal",
+            })
+            map.setSpatialReference({})
+            map.setBaseLayer(layer);
+
+        } else if (newMapType == 'aMap') {
+            var layer = new maptalks.TileLayer('base', {
+                urlTemplate: 'http://webrd04.is.autonavi.com/appmaptile?lang=zh_cn&scale=2&style=8&x={x}&y={y}&z={z}',
+            })
+            map.setSpatialReference({})
+            map.setBaseLayer(layer);
+
+        }
+
+        var customPosition = new maptalks.control.Zoom({
+            'position': {
+                'bottom': '20',
+                'right': '20'
+            },
+            'slider': false,
+            'zoomLevel': false
+        });
+        map.addControl(customPosition);
+
+        return map;
+    },
+
     timeStamp: function(mss) {
         var strTime = '';
         var days = parseInt(mss / (1000 * 60 * 60 * 24));

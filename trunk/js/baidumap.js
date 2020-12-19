@@ -133,10 +133,9 @@ BMapClass.pt.getIcon = function(track) {
     var deviceid = track.deviceid;
     imagekey = track.online + "-" + track.moving + "-" + carIconTypes[deviceid];
     var cacheIcon = gBMapIconList[imagekey];
-    if(!cacheIcon)
-    {
+    if (!cacheIcon) {
         var imgPath = '';
-     
+
         if (utils.isLocalhost()) {
             imgPath = myUrls.viewhost + 'images/carstate'
         } else {
@@ -152,10 +151,10 @@ BMapClass.pt.getIcon = function(track) {
         } else {
             imgPath += '/' + carIconTypes[deviceid] + '_gray_0.png'
         }
-        
+
         cacheIcon = new BMap.Icon(imgPath, new BMap.Size(32, 32));
         gBMapIconList[imagekey] = cacheIcon;
-    
+
     }
 
 
@@ -253,7 +252,7 @@ BMapClass.pt.updateLastTracks = function(deviceid) {
     for (var key in this.lastTracks) {
         if (this.lastTracks.hasOwnProperty(key)) {
             var track = this.lastTracks[key];
-            track.online = utils.getIsOnlineWithTime(track,currentTime);
+            track.online = utils.getIsOnlineWithTime(track, currentTime);
             if (this.markerHashMap[key]) {
                 var marker = this.markerHashMap[key];
                 var newPoint = new BMap.Point(track.b_lon, track.b_lat);

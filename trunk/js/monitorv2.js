@@ -293,6 +293,7 @@ var monitor = {
             isShowVideoBtn: false,
             isShowActiveSafetyBtn: false,
             map: null,
+            isOpenDistance: false,
             placement: "right-start",
             mapType: utils.getMapType(),
             isShowLabel: false,
@@ -455,15 +456,55 @@ var monitor = {
     methods: {
 
         handleClickTools: function(name) {
+            var me = this;
+            var newMapType = me.mapType;
+            var cssFilter = "sepia(100%) invert(90%)";
             switch (name) {
                 case 'openDistance':
                     this.openDistance();
                     break;
                 case 'normal':
-                    this.map.changeMapStyle('normal');
+                    if (newMapType == 'bMap') {
+                        var layer = new maptalks.TileLayer('base', {
+                            'urlTemplate': 'https://maponline2.bdimg.com/tile/?qt=vtile&styles=pl&scaler=2&udt=20201217&from=jsapi2_0&x={x}&y={y}&z={z}',
+                            'subdomains': [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+                            'attribution': '&copy; <a target="_blank" href="http://map.baidu.com">Baidu</a>',
+                        })
+                        me.map.setBaseLayer(layer);
+                    } else if (newMapType == 'gMap') {
+                        var layer = new maptalks.TileLayer('base', {
+                            urlTemplate: "http://mt2.google.cn/vt?lyrs=m@180000000&hl=zh-CN&gl=cn&scale=2&src=app&x={x}&y={y}&z={z}&s=Gal",
+                        })
+                        me.map.setBaseLayer(layer);
+                    } else if (newMapType == 'aMap') {
+                        var layer = new maptalks.TileLayer('base', {
+                            urlTemplate: 'http://webrd04.is.autonavi.com/appmaptile?lang=zh_cn&scale=2&style=8&x={x}&y={y}&z={z}',
+                        })
+                        me.map.setBaseLayer(layer);
+                    }
                     break;
                 case 'midnight':
-                    this.map.changeMapStyle('midnight');
+                    if (newMapType == 'bMap') {
+                        var layer = new maptalks.TileLayer('base', {
+                            urlTemplate: 'https://maponline2.bdimg.com/tile/?qt=vtile&styles=pl&scaler=2&udt=20201217&from=jsapi2_0&x={x}&y={y}&z={z}',
+                            subdomains: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+                            attribution: '&copy; <a target="_blank" href="http://map.baidu.com">Baidu</a>',
+                            cssFilter: cssFilter
+                        })
+                        me.map.setBaseLayer(layer);
+                    } else if (newMapType == 'gMap') {
+                        var layer = new maptalks.TileLayer('base', {
+                            urlTemplate: "http://mt2.google.cn/vt?lyrs=m@180000000&hl=zh-CN&gl=cn&scale=2&src=app&x={x}&y={y}&z={z}&s=Gal",
+                            cssFilter: cssFilter,
+                        })
+                        me.map.setBaseLayer(layer);
+                    } else if (newMapType == 'aMap') {
+                        var layer = new maptalks.TileLayer('base', {
+                            urlTemplate: 'http://webrd04.is.autonavi.com/appmaptile?lang=zh_cn&scale=2&style=8&x={x}&y={y}&z={z}',
+                            cssFilter: cssFilter
+                        })
+                        me.map.setBaseLayer(layer);
+                    }
                     break;
             }
         },
@@ -1239,10 +1280,7 @@ var monitor = {
                     }]
                 })
                 .addTo(this.map);
-
-
             this.addDistanceTool();
-
         },
         addDistanceTool: function() {
             this.distanceTool = new maptalks.DistanceTool({
@@ -1299,26 +1337,35 @@ var monitor = {
             this.distanceTool.addTo(this.map);
             this.distanceTool.disable();
         },
+        coordinateTransformation: function(newMapType) {
+            for (var key in this.mapAllMarkers) {
+                var marker = this.mapAllMarkers[key];
+                if (marker) {
+                    marker.closeInfoWindow();
+                }
+            };
+            this.map.removeLayer(this.clusterLayer);
+            this.clusterLayer = null;
+            this.addClusterLayer();
+        },
         setMapType: function(newMapType) {
             var me = this;
-            var isBMap = this.lastMapType == 'BMap';
-
             if (newMapType == 'bMap') {
                 me.map.setSpatialReference({
                     projection: 'baidu'
                 });
                 var layer = new maptalks.TileLayer('base', {
                     'urlTemplate': 'https://maponline2.bdimg.com/tile/?qt=vtile&styles=pl&scaler=2&udt=20201217&from=jsapi2_0&x={x}&y={y}&z={z}',
-                    // 'urlTemplate': 'http://online{s}.map.bdimg.com/onlinelabel/?qt=tile&x={x}&y={y}&z={z}&styles=pl&scaler=1&p=1',
                     'subdomains': [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
-                    'attribution': '&copy; <a target="_blank" href="http://map.baidu.com">Baidu</a>'
+                    'attribution': '&copy; <a target="_blank" href="http://map.baidu.com">Baidu</a>',
+                    // 'cssFilter': 'sepia(100%) invert(90%)'
                 })
                 me.map.setBaseLayer(layer);
 
             } else if (newMapType == 'gMap') {
-
                 var layer = new maptalks.TileLayer('base', {
                     urlTemplate: "http://mt2.google.cn/vt?lyrs=m@180000000&hl=zh-CN&gl=cn&scale=2&src=app&x={x}&y={y}&z={z}&s=Gal",
+                    // cssFilter: 'sepia(100%) invert(90%)',
                 })
                 me.map.setSpatialReference({})
                 me.map.setBaseLayer(layer);
@@ -1326,6 +1373,7 @@ var monitor = {
             } else if (newMapType == 'aMap') {
                 var layer = new maptalks.TileLayer('base', {
                     urlTemplate: 'http://webrd04.is.autonavi.com/appmaptile?lang=zh_cn&scale=2&style=8&x={x}&y={y}&z={z}',
+                    // cssFilter: 'sepia(100%) invert(90%)'
                 })
                 me.map.setSpatialReference({})
                 me.map.setBaseLayer(layer);
@@ -1335,16 +1383,39 @@ var monitor = {
             me.lastMapType = newMapType;
 
         },
+        getAllCoordinates: function(json) {
+            var coordinates = [];
+            json.features.forEach(function(item) {
+                var arr = item.geometry.coordinates[0];
+                arr.forEach(function(point) {
+                    coordinates.push(point);
+                })
+            })
+            return coordinates;
+        },
         handleQueryArea: function() {
-            if (this.areaAddress.length == 0) {
-                this.$Message.error('请选择区域');
-                return;
-            }
+            var me = this;
             switch (this.mapType) {
                 case 'bMap':
-                    this.arealoading = true;
-                    this.areaName = utils.getAreaName(this.areaAddress[0], this.areaAddress[1], this.areaAddress[2]);
-                    this.map.qeuryBMapAreaPoint(this.areaName, this.calcAreaBaiduMarkerStatus);
+                    // this.arealoading = true;
+
+                    var adcode = this.areaAddress[2];
+                    $.ajax({
+                        url: myUrls.queryGeoJson(adcode),
+                        async: true,
+                        success: function(json) {
+                            // mapJson = json;
+                            // that.qeuryDatavOnlineSummary(province.adcode);
+                            // callback && callback(json);
+                            var coordinates = me.getAllCoordinates(json);
+                            console.log(coordinates);
+                            if (me.polygonLayer) {
+                                me.map.removeLayer(me.polygonLayer);
+                            }
+                            me.polygonLayer = new maptalks.VectorLayer('polygon', me.getPolygon(coordinates));
+                            me.polygonLayer.addTo(me.map);
+                        }
+                    });
                     break;
                 case 'gMap':
                     this.$Message.error(this.$t('monitor.mapNotSupported'));
@@ -1352,6 +1423,24 @@ var monitor = {
                     this.$Message.error(this.$t('monitor.mapNotSupported'));
                     break;
             };
+        },
+        getPolygon: function(arr) {
+            return new maptalks.Polygon(arr, {
+                visible: true,
+                editable: true,
+                cursor: 'pointer',
+                shadowBlur: 0,
+                shadowColor: 'black',
+                draggable: false,
+                dragShadow: false, // display a shadow during dragging
+                drawOnAxis: null, // force dragging stick on a axis, can be: x, y
+                symbol: {
+                    'lineColor': '#e4393c',
+                    'lineWidth': 2,
+                    'polygonFill': 'rgb(135,196,240)',
+                    'polygonOpacity': 0.6
+                }
+            });
         },
         handleRemoveAreaOverlay: function() {
             this.isShowAreaCount = false;
@@ -1396,13 +1485,7 @@ var monitor = {
             isNeedRefreshMapUI = true;
         },
         openDistance: function() {
-            if (this.myDis != null) {
-                this.myDis.close();
-            }
-            if (this.mapType == 'bMap') {
-                this.myDis = new BMapLib.DistanceTool(this.map.mapInstance);
-                this.myDis.open();
-            }
+            this.isOpenDistance = !this.isOpenDistance;
         },
         switchMapMode: function(type) {
             var that = this;
@@ -2214,7 +2297,7 @@ var monitor = {
 
                 if (globalDeviceId) {
                     var oldMarker = this.mapAllMarkers[globalDeviceId];
-                    oldMarker.setZIndex(111);
+                    oldMarker && oldMarker.setZIndex(111);
                 }
                 marker.setZIndex(999);
             } else {
@@ -3265,11 +3348,11 @@ var monitor = {
 
             if (globalDeviceId) {
                 var oldMarker = this.mapAllMarkers[globalDeviceId];
-                oldMarker.setZIndex(111);
+                oldMarker && oldMarker.setZIndex(111);
             }
             marker.setZIndex(999);
             globalDeviceId = deviceid;
-
+            communicate.$emit("on-click-marker", deviceid);
         },
         getInfoWindowContent: function(track, address) {
             var sContent = utils.getWindowContent(track, address);
@@ -3458,8 +3541,19 @@ var monitor = {
         },
     },
     watch: {
+        isOpenDistance: function(newVal) {
+            if (newVal) {
+                this.distanceTool.enable();
+                this.$Message.success(isZh ? '开启成功' : 'Open success');
+            } else {
+                this.distanceTool.disable();
+                this.$Message.success(isZh ? '关闭成功' : 'Close success');
+            }
+        },
         mapType: function(newType) {
+            this.coordinateTransformation(newType);
             this.setMapType(newType);
+            localStorage.setItem('app-map-type', newType)
         },
         filterData: function() {
             if (this.filterData.length) {

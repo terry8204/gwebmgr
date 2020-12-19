@@ -707,20 +707,22 @@ function posiReport(groupslist) {
                 });
             },
             initMap: function() {
-                if (this.mapType == 'bMap') {
-                    this.mapInstance = new BMap.Map('posi-map', { minZoom: 4, maxZoom: 18, enableMapClick: false });
-                    this.mapInstance.enableScrollWheelZoom();
-                    this.mapInstance.enableAutoResize();
-                    this.mapInstance.enableDoubleClickZoom();
-                    this.mapInstance.centerAndZoom(new BMap.Point(113.264435, 24.129163), 18);
-                } else {
-                    var center = new google.maps.LatLng(24.129163, 113.264435);
-                    this.mapInstance = new google.maps.Map(document.getElementById('posi-map'), {
-                        zoom: 4,
-                        center: center,
-                        mapTypeId: google.maps.MapTypeId.ROADMAP
-                    });
-                };
+                // if (this.mapType == 'bMap') {
+                //     this.mapInstance = new BMap.Map('posi-map', { minZoom: 4, maxZoom: 18, enableMapClick: false });
+                //     this.mapInstance.enableScrollWheelZoom();
+                //     this.mapInstance.enableAutoResize();
+                //     this.mapInstance.enableDoubleClickZoom();
+                //     this.mapInstance.centerAndZoom(new BMap.Point(113.264435, 24.129163), 18);
+                // } else {
+                //     var center = new google.maps.LatLng(24.129163, 113.264435);
+                //     this.mapInstance = new google.maps.Map(document.getElementById('posi-map'), {
+                //         zoom: 4,
+                //         center: center,
+                //         mapTypeId: google.maps.MapTypeId.ROADMAP
+                //     });
+                // };
+
+                this.mapInstance = utils.initWindowMap('posi-map');
             },
             getAddress: function(type, params) {
                 var me = this;
