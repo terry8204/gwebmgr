@@ -1272,18 +1272,7 @@ var monitor = {
             });
             this.map.addControl(customPosition);
 
-            // new maptalks.control.Toolbar({
-            //         'vertical': true,
-            //         'position': 'top-right',
-            //         'items': [{
-            //             item: '显示名称',
-            //             click: function() {
-            //                 me.isShowLabel = !me.isShowLabel;
-            //             }
-            //         }]
-            //     })
-            //     .addTo(this.map);
-            // this.addDistanceTool();
+            this.addDistanceTool();
         },
         addDistanceTool: function() {
             this.distanceTool = new maptalks.DistanceTool({
@@ -3072,7 +3061,7 @@ var monitor = {
 
                         var infoWindow = marker.getInfoWindow();
 
-                        if (infoWindow.isVisible()) {
+                        if (infoWindow.isVisible && infoWindow.isVisible()) {
                             var address = this.getAddress(track, marker);
                             var sContent = this.getInfoWindowContent(track, address);
                             marker.setInfoWindow(sContent);
