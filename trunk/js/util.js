@@ -863,7 +863,7 @@ var utils = {
         return map;
     },
     showWindowMap: function(vueInstanse, params) {
-        vueInstanse.mapModal && (vueInstanse.mapModal = true);
+        vueInstanse.mapModal = true;
         var row = params.row;
         var isBMap = utils.getMapType() == 'bMap';
         var pointArr = [];
