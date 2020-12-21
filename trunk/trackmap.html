@@ -93,6 +93,7 @@
             position: absolute;
             bottom: 10px;
             width: 300px;
+            right: 10px;
             background: red;
             border: 1px solid #e6e6e6;
         }
@@ -130,6 +131,7 @@
         .pull-up {
             position: absolute;
             bottom: 10px;
+            right: 10px;
         }
         
         .right-10 {
@@ -186,7 +188,7 @@
         <div class="interval">{{interval}}</div>
 
         <transition name="el-zoom-in-bottom">
-            <div class="down-wrapper" :class="trackInfoCls" v-show="isDown">
+            <div class="down-wrapper" v-show="isDown">
                 <div class="down-button">
                     <i-button shape="circle" icon="ios-arrow-down" @click="isDown=false"></i-button>
                 </div>
@@ -194,7 +196,7 @@
             </div>
         </transition>
 
-        <div class="pull-up" :class="trackInfoCls" v-show="!isDown">
+        <div class="pull-up" v-show="!isDown">
             <i-button shape="circle" icon="ios-arrow-up" @click="isDown=true"></i-button>
         </div>
         <div class="map-type">
@@ -680,9 +682,6 @@
 
                     username: function() {
                         return localStorage.getItem("name");
-                    },
-                    trackInfoCls: function() {
-                        return [((this.mapType === 'bMap' || this.mapType === 'oMap') && !isMobile) ? 'right-10' : 'right-60'];
                     },
                     imgSrcBg: function() {
                         if (isZh) {

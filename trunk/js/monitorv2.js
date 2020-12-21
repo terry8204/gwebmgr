@@ -1538,8 +1538,11 @@ var monitor = {
             }
             setTimeout(function() {
                 var record = that.getSingleDeviceInfo(that.currentDeviceId);
-                if (record) {
-                    that.map.onClickDevice(that.currentDeviceId);
+                var marker = that.mapAllMarkers[that.currentDeviceId];
+                if (record && marker) {
+                    that.onClickMarker({
+                        target: marker
+                    })
                 }
             }, 300);
         },
@@ -3066,12 +3069,19 @@ var monitor = {
                         this.clusterLayer.addMarker(marker);
                     }
                     if (deviceid === key) {
-                        var address = this.getAddress(track, marker);
-                        var sContent = this.getInfoWindowContent(track, address);
-                        marker.setInfoWindow(sContent);
-                        marker.setZIndex(999);
-                        marker.openInfoWindow();
+
+                        var infoWindow = marker.getInfoWindow();
+
+                        if (infoWindow.isVisible()) {
+                            var address = this.getAddress(track, marker);
+                            var sContent = this.getInfoWindowContent(track, address);
+                            marker.setInfoWindow(sContent);
+                            marker.setZIndex(999);
+                            marker.openInfoWindow();
+                        }
+
                     }
+
                 }
             }
 
@@ -3584,6 +3594,23 @@ var monitor = {
         mapType: function(newType) {
             this.coordinateTransformation(newType);
             this.setMapType(newType);
+            if (globalDeviceId) {
+                var track = this.positionLastrecords[globalDeviceId]
+                if (track) {
+                    if (newType == 'bMap') {
+                        this.map.setCenter({
+                            y: track.b_lat,
+                            x: track.b_lon,
+                        })
+                    } else {
+                        this.map.setCenter({
+                            y: track.g_lat,
+                            x: track.g_lon,
+                        })
+                    }
+                }
+            }
+
             localStorage.setItem('app-map-type', newType)
         },
         filterData: function() {
