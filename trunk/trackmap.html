@@ -640,6 +640,7 @@
                             var eTrack = tracks[tracks.length - 1];
                             this.carMarker.setCoordinates(isBMap ? eTrack.bpoint : eTrack.gpoint);
                             this.startMarker.setCoordinates(isBMap ? sTrack.bpoint : sTrack.gpoint);
+                            this.map.setCenter(isBMap ? eTrack.bpoint : eTrack.gpoint);
                         } else {
                             this.trackHtml = '';
                             this.isDown = false;
