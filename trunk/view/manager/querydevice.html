@@ -278,7 +278,7 @@
                     <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;{{$t("device.networkType")}} : &nbsp;</i-col>
                     <i-col span="8">
                         <i-select v-model="teltype">
-                            <i-option value="1">{{$t("reportForm.maxSignal")}}32(2G)</i-option>  
+                            <i-option value="1">{{$t("reportForm.maxSignal")}}32(2G)</i-option>
                             <i-option value="2">{{$t("reportForm.maxSignal")}}64(2G)</i-option>
                             <i-option value="3">{{$t("reportForm.maxSignal")}}32(3G)</i-option>
                             <i-option value="4">{{$t("reportForm.maxSignal")}}32(4G)</i-option>
@@ -561,7 +561,7 @@
                                     {{$t("device.scale")}}:
                                 </i-col>
                                 <i-col span="5">
-                                    <input-number :max="1500" :min="0" v-model.trim.number="tagging1" style="width:100%"></input-number>
+                                    <input-number :max="65535" :min="0" v-model.trim.number="tagging1" style="width:100%"></input-number>
                                 </i-col>
                                 <i-col span="4" offset="1" style="line-height: 32px;text-align: center;">
                                     {{$t("device.calibratedFluid")}}:
@@ -723,7 +723,7 @@
                                     {{$t("device.scale")}}:
                                 </i-col>
                                 <i-col span="5">
-                                    <input-number :max="1500" :min="0" v-model.trim.number="tagging2" style="width:100%"></input-number>
+                                    <input-number :max="65535" :min="0" v-model.trim.number="tagging2" style="width:100%"></input-number>
                                 </i-col>
                                 <i-col offset="1" span="4" style="line-height: 32px;text-align: center;">
                                     {{$t("device.calibratedFluid")}}:

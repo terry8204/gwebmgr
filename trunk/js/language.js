@@ -2019,7 +2019,7 @@
                 pwdLengthTips: '密码必须大于或等于4位数',
                 exportErrorTips: '导入的设备不存在该账户下，请确认',
                 selectedTransferGroup: '请选择要转入的组',
-                scale: '刻度',
+                scale: '模拟量刻度',
                 timeZone: '时区',
                 automatic: '自动',
             },

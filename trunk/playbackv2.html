@@ -962,26 +962,7 @@
                             me.charts.resize();
                         }, 500);
 
-                        document.addEventListener('fullscreenchange', function() {
-                            me.isFullScreen = me.changeIsFullMapIcon();
-                        })
-                        document.addEventListener('mozfullscreenchange', function() {
-                            me.isFullScreen = me.changeIsFullMapIcon();
-                        })
-                        document.addEventListener('webkitfullscreenchange', function() {
-                            me.isFullScreen = me.changeIsFullMapIcon();
-                        })
-                        document.addEventListener('msfullscreenchange', function() {
-                            me.isFullScreen = me.changeIsFullMapIcon();
-                        })
-
                         window.onresize = onresize;
-                    },
-                    changeIsFullMapIcon: function() {
-                        var isFullscreen = document.fullscreenElement || document.mozFullScreenElement || document.webkitFullscreenElement || document.fullScreen || document.mozFullScreen || document.webkitIsFullScreen
-                        isFullscreen = !!isFullscreen;
-                        !isFullscreen && (this.isMouseoverTop35 = false);
-                        return isFullscreen;
                     },
                     getTypeRecords: function() {
                         if (this.trackType == 'exact') {
