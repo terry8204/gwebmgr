@@ -707,21 +707,7 @@ function posiReport(groupslist) {
                 });
             },
             initMap: function() {
-                // if (this.mapType == 'bMap') {
-                //     this.mapInstance = new BMap.Map('posi-map', { minZoom: 4, maxZoom: 18, enableMapClick: false });
-                //     this.mapInstance.enableScrollWheelZoom();
-                //     this.mapInstance.enableAutoResize();
-                //     this.mapInstance.enableDoubleClickZoom();
-                //     this.mapInstance.centerAndZoom(new BMap.Point(113.264435, 24.129163), 18);
-                // } else {
-                //     var center = new google.maps.LatLng(24.129163, 113.264435);
-                //     this.mapInstance = new google.maps.Map(document.getElementById('posi-map'), {
-                //         zoom: 4,
-                //         center: center,
-                //         mapTypeId: google.maps.MapTypeId.ROADMAP
-                //     });
-                // };
-
+                this.markerLayer = null;
                 this.mapInstance = utils.initWindowMap('posi-map');
             },
             getAddress: function(type, params) {
@@ -1155,20 +1141,8 @@ function parkDetails(groupslist) {
                 });
             },
             initMap: function() {
-                if (this.mapType == 'bMap') {
-                    this.mapInstance = new BMap.Map('posi-map', { minZoom: 4, maxZoom: 18, enableMapClick: false });
-                    this.mapInstance.enableScrollWheelZoom();
-                    this.mapInstance.enableAutoResize();
-                    this.mapInstance.enableDoubleClickZoom();
-                    this.mapInstance.centerAndZoom(new BMap.Point(113.264435, 24.129163), 18);
-                } else {
-                    var center = new google.maps.LatLng(24.129163, 113.264435);
-                    this.mapInstance = new google.maps.Map(document.getElementById('posi-map'), {
-                        zoom: 4,
-                        center: center,
-                        mapTypeId: google.maps.MapTypeId.ROADMAP
-                    });
-                };
+                this.markerLayer = null;
+                this.mapInstance = utils.initWindowMap('posi-map');
             },
         },
         mounted: function() {
@@ -2143,7 +2117,6 @@ function speedingReport(groupslist) {
                                             e.stopPropagation();
                                             e.preventDefault();
                                             vueInstanse.isSpin = true;
-                                            vueInstanse.mapInstance.clearOverlays();
                                             vueInstanse.querySingleDevTracks('map', params.row);
                                         }
                                     }
@@ -2176,42 +2149,10 @@ function speedingReport(groupslist) {
                     me.isSpin = false;
                     if (resp.status == 0) {
                         var records = resp.records;
-                        if (records) {
+                        if (records && records.length) {
                             if (type == 'map') {
+                                utils.markersAndLineLayerToMap(me.records);
                                 me.trackDetailModal = true;
-                                var poinsts = me.getBdPoints(records);
-                                if (poinsts.length === 1) {
-                                    var startMarker = new BMap.Marker(poinsts[0], {
-                                        icon: new BMap.Icon("./images/map/marker_qidian.png", new BMap.Size(32, 32), {
-                                            imageOffset: new BMap.Size(0, 0)
-                                        })
-                                    });
-                                    me.mapInstance.addOverlay(startMarker);
-                                } else if (poinsts.length > 1) {
-                                    var startMarker = new BMap.Marker(poinsts[0], {
-                                        icon: new BMap.Icon("./images/map/marker_qidian.png", new BMap.Size(32, 32), {
-                                            imageOffset: new BMap.Size(0, 0)
-                                        })
-                                    });
-                                    var endMarker = new BMap.Marker(poinsts[poinsts.length - 1], {
-                                        icon: new BMap.Icon("./images/map/marker_zhongdian.png", new BMap.Size(32, 32), {
-                                            imageOffset: new BMap.Size(0, 0)
-                                        })
-                                    });
-                                    var polyline = new BMap.Polyline(poinsts, {
-                                        enableEditing: false, //是否启用线编辑，默认为false
-                                        enableClicking: true, //是否响应点击事件，默认为true
-                                        enableMassClear: true,
-                                        strokeWeight: '4', //折线的宽度，以像素为单位
-                                        strokeOpacity: 0.8, //折线的透明度，取值范围0 - 1
-                                        strokeColor: "red" //折线颜色
-                                    });
-                                    me.mapInstance.addOverlay(startMarker);
-                                    me.mapInstance.addOverlay(endMarker);
-                                    me.mapInstance.addOverlay(polyline);
-                                }
-
-                                me.setViewPortCenter(poinsts);
                             } else {
                                 var distance = []; //总里程;
                                 var recvtime = []; //时间
@@ -2239,15 +2180,6 @@ function speedingReport(groupslist) {
                     me.isSpin = false;
                 });
             },
-            setViewPortCenter: function(lines) {
-                var me = this;
-                setTimeout(function() {
-                    var view = me.mapInstance.getViewport(eval(lines));
-                    var mapZoom = view.zoom;
-                    var centerPoint = view.center;
-                    me.mapInstance.centerAndZoom(centerPoint, mapZoom);
-                }, 300)
-            },
             getBdPoints: function(records) {
                 var points = [];
                 records.forEach(function(item) {
@@ -2257,20 +2189,8 @@ function speedingReport(groupslist) {
                 return points;
             },
             initMap: function() {
-                if (utils.getMapType() == 'bMap') {
-                    this.mapInstance = new BMap.Map('spedding-map', { minZoom: 4, maxZoom: 18, enableMapClick: false });
-                    this.mapInstance.enableScrollWheelZoom();
-                    this.mapInstance.enableAutoResize();
-                    this.mapInstance.enableDoubleClickZoom();
-                    this.mapInstance.centerAndZoom(new BMap.Point(113.264435, 24.129163), 4);
-                } else {
-                    var center = new google.maps.LatLng(24.129163, 113.264435);
-                    this.mapInstance = new google.maps.Map(document.getElementById('posi-map'), {
-                        zoom: 4,
-                        center: center,
-                        mapTypeId: google.maps.MapTypeId.ROADMAP
-                    });
-                };
+                this.markerLayer = null;
+                this.mapInstance = utils.initWindowMap('spedding-map');
             },
             exportData: function() {
                 var startday = this.dateVal[0];
@@ -6879,20 +6799,8 @@ function driverWorkDetails() {
                 });
             },
             initMap: function() {
-                if (utils.getMapType() == 'bMap') {
-                    this.mapInstance = new BMap.Map(document.getElementsByClassName('work-details-map')[0], { minZoom: 4, maxZoom: 18, enableMapClick: false });
-                    this.mapInstance.enableScrollWheelZoom();
-                    this.mapInstance.enableAutoResize();
-                    this.mapInstance.enableDoubleClickZoom();
-                    this.mapInstance.centerAndZoom(new BMap.Point(108.0017245, 35.926895), 5);
-                } else {
-                    var center = new google.maps.LatLng(24.129163, 113.264435);
-                    this.mapInstance = new google.maps.Map(document.getElementsByClassName('work-details-map')[0], {
-                        zoom: 4,
-                        center: center,
-                        mapTypeId: google.maps.MapTypeId.ROADMAP
-                    });
-                };
+                this.markerLayer = null;
+                this.mapInstance = utils.initWindowMap('work-details-map');
             },
 
             cleanSelected: function(treeDataFilter) {
@@ -6924,34 +6832,9 @@ function driverWorkDetails() {
                 utils.sendAjax(url, data, function(respData) {
                     if (respData.status === 0) {
                         var records = respData.records;
-                        if (records) {
+                        if (records && records.length) {
                             me.trackDetailModal = true;
-                            var poinsts = me.getBdPoints(records);
-                            if (poinsts.length === 1) {
-                                var startMarker = new BMap.Marker(poinsts[0], {
-                                    icon: new BMap.Icon("./images/map/marker_qidian.png", new BMap.Size(32, 32), { imageOffset: new BMap.Size(0, 0) })
-                                });
-                                me.mapInstance.addOverlay(startMarker);
-                            } else if (poinsts.length > 1) {
-                                var startMarker = new BMap.Marker(poinsts[0], {
-                                    icon: new BMap.Icon("./images/map/marker_qidian.png", new BMap.Size(32, 32), { imageOffset: new BMap.Size(0, 0) })
-                                });
-                                var endMarker = new BMap.Marker(poinsts[poinsts.length - 1], {
-                                    icon: new BMap.Icon("./images/map/marker_zhongdian.png", new BMap.Size(32, 32), { imageOffset: new BMap.Size(0, 0) })
-                                });
-                                var polyline = new BMap.Polyline(poinsts, {
-                                    enableEditing: false, //是否启用线编辑，默认为false
-                                    enableClicking: true, //是否响应点击事件，默认为true
-                                    enableMassClear: true,
-                                    strokeWeight: '4', //折线的宽度，以像素为单位
-                                    strokeOpacity: 0.8, //折线的透明度，取值范围0 - 1
-                                    strokeColor: "red" //折线颜色
-                                });
-                                me.mapInstance.addOverlay(startMarker);
-                                me.mapInstance.addOverlay(endMarker);
-                                me.mapInstance.addOverlay(polyline);
-                            }
-                            me.setViewPortCenter(poinsts);
+                            utils.markersAndLineLayerToMap(me, records);
                         } else {
                             me.$Message.error(vRoot.$t("reportForm.noRecord"));
                         }
@@ -7186,7 +7069,6 @@ function ioReport(groupslist) {
                 },
             ],
             tableData: [],
-            mapModal: false,
         },
         methods: {
             getBdPoints: function(records) {
@@ -7198,7 +7080,6 @@ function ioReport(groupslist) {
                 return points;
             },
             queryTracks: function(row) {
-                this.mapInstance.clearOverlays && this.mapInstance.clearOverlays();
                 var url = myUrls.queryTracks(),
                     me = this,
                     data = {
@@ -7214,105 +7095,10 @@ function ioReport(groupslist) {
                 utils.sendAjax(url, data, function(respData) {
                     if (respData.status === 0) {
                         var records = respData.records;
-                        if (records) {
+
+                        if (records && records.length > 0) {
+                            utils.markersAndLineLayerToMap(me, records)
                             me.mapModal = true;
-                            if (utils.getMapType() == 'bMap') {
-                                var poinsts = me.getBdPoints(records);
-                                if (poinsts.length === 1) {
-                                    var startMarker = new BMap.Marker(poinsts[0], {
-                                        icon: new BMap.Icon("./images/map/marker_qidian.png", new BMap.Size(32, 32), { imageOffset: new BMap.Size(0, 0) })
-                                    });
-                                    me.mapInstance.addOverlay(startMarker);
-                                } else if (poinsts.length > 1) {
-                                    var startMarker = new BMap.Marker(poinsts[0], {
-                                        icon: new BMap.Icon("./images/map/marker_qidian.png", new BMap.Size(32, 32), { imageOffset: new BMap.Size(0, 0) })
-                                    });
-                                    var endMarker = new BMap.Marker(poinsts[poinsts.length - 1], {
-                                        icon: new BMap.Icon("./images/map/marker_zhongdian.png", new BMap.Size(32, 32), { imageOffset: new BMap.Size(0, 0) })
-                                    });
-                                    var polyline = new BMap.Polyline(poinsts, {
-                                        enableEditing: false, //是否启用线编辑，默认为false
-                                        enableClicking: true, //是否响应点击事件，默认为true
-                                        enableMassClear: true,
-                                        strokeWeight: '4', //折线的宽度，以像素为单位
-                                        strokeOpacity: 0.8, //折线的透明度，取值范围0 - 1
-                                        strokeColor: row.iostate === 1 ? "green" : "red" //折线颜色
-                                    });
-                                    me.mapInstance.addOverlay(startMarker);
-                                    me.mapInstance.addOverlay(endMarker);
-                                    me.mapInstance.addOverlay(polyline);
-                                }
-                                me.setViewPortCenter(poinsts);
-                            } else if (utils.getMapType() == 'gMap') {
-                                var maxLen = records.length - 1;
-                                var points = []
-                                for (var i = 0; i < records.length; i++) {
-                                    var record = records[i];
-                                    var g_lon_lat = wgs84togcj02(record.callon, record.callat);
-                                    var point = {
-                                        lat: g_lon_lat[1],
-                                        lng: g_lon_lat[0]
-                                    };
-                                    points.push(point);
-                                    if (i === 0) {
-                                        me.firstMarker = new google.maps.Marker({
-                                            position: point,
-                                            map: me.mapInstance,
-                                            icon: me.getFirstMarkerIcon(true)
-                                        })
-
-                                    } else if (i === maxLen) {
-
-                                        me.lastMakrker = new google.maps.Marker({
-                                            position: point,
-                                            map: me.mapInstance,
-                                            icon: me.getFirstMarkerIcon(false)
-                                        })
-                                    }
-                                }
-                                me.polyline = new google.maps.Polyline({
-                                    path: points,
-                                    geodesic: true,
-                                    strokeColor: 'red',
-                                    strokeOpacity: 1.5,
-                                    strokeWeight: 8
-                                });
-                                me.polyline.setMap(me.mapInstance);
-                                me.mapInstance.setZoom(16)
-                                me.mapInstance.setCenter(points[0])
-                            } else if (utils.getMapType() == 'oMap') {
-                                var lineFeature = me.getLineFeature(records);
-                                var maxLen = records.length - 1,
-                                    features = [],
-                                    firstMarker = null,
-                                    lastMarker = null;
-
-                                for (var i = 0; i < records.length; i++) {
-                                    var record = records[i];
-                                    var tempPoint = ol.proj.fromLonLat([record.callon, record.callat]);
-                                    if (i === 0) {
-                                        firstMarker = new ol.Feature({
-                                            geometry: new ol.geom.Point(tempPoint),
-                                        });
-                                        firstMarker.setStyle(me.getFirstMarkerIcon(true));
-                                    } else if (i === maxLen) {
-                                        lastMarker = new ol.Feature({
-                                            geometry: new ol.geom.Point(tempPoint),
-                                        });
-                                        lastMarker.setStyle(me.getFirstMarkerIcon(false));
-                                    }
-                                }
-
-                                var features = [lineFeature];
-                                firstMarker && features.push(firstMarker);
-                                lastMarker && features.push(lastMarker);
-                                me.layerVector.setSource(new ol.source.Vector({
-                                    features: features
-                                }));
-
-                                me.mapInstance.getView().setCenter(ol.proj.fromLonLat([records[0].callon, records[0].callat]));
-
-                            }
                         } else {
                             me.$Message.error(vRoot.$t("reportForm.noRecord"));
                         }
@@ -7365,55 +7151,8 @@ function ioReport(groupslist) {
                 }
             },
             initMap: function() {
-                var mapType = utils.getMapType();
-                if (mapType == 'bMap') {
-                    this.mapInstance = new BMap.Map('posi-map', { minZoom: 4, maxZoom: 18, enableMapClick: false });
-                    this.mapInstance.enableScrollWheelZoom();
-                    this.mapInstance.enableAutoResize();
-                    this.mapInstance.enableDoubleClickZoom();
-                    this.mapInstance.centerAndZoom(new BMap.Point(113.264435, 24.129163), 4);
-                } else if (mapType == 'gMap') {
-                    var center = new google.maps.LatLng(24.129163, 113.264435);
-                    this.mapInstance = new google.maps.Map(document.getElementById('posi-map'), {
-                        zoom: 4,
-                        center: center,
-                        mapTypeId: google.maps.MapTypeId.ROADMAP
-                    });
-                } else if (mapType == 'oMap') {
-                    this.layerVector = new ol.layer.Vector({
-                        source: new ol.source.Vector({
-                            features: []
-                        }),
-                        style: new ol.style.Style({
-                            stroke: new ol.style.Stroke({
-                                width: 3,
-                                color: [255, 0, 0, 1]
-                            }),
-                            fill: new ol.style.Fill({
-                                color: [0, 0, 255, 0.6]
-                            })
-                        })
-                    })
-
-                    var projection = ol.proj.get('EPSG:4326');
-
-                    this.mapInstance = new ol.Map({
-                        target: 'posi-map',
-                        projection: projection,
-                        layers: [
-                            new ol.layer.Tile({
-                                source: new ol.source.OSM()
-                            }),
-                            this.layerVector
-                        ],
-                        view: new ol.View({
-                            center: ol.proj.fromLonLat([108.0017245, 35.926895]),
-                            zoom: 4,
-                            minZoom: 3,
-                            maxZoom: 20
-                        }),
-                    });
-                }
+                this.markerLayer = null;
+                this.mapInstance = utils.initWindowMap('posi-map');
             },
             onIoChange: function(list) {
                 this.ioType = list;
@@ -7768,51 +7507,8 @@ function multiMedia() {
                 });
             },
             initMap: function() {
-                if (utils.getMapType() == 'bMap') {
-                    this.mapInstance = new BMap.Map(document.getElementsByClassName('work-details-map')[0], { minZoom: 4, maxZoom: 18, enableMapClick: false });
-                    this.mapInstance.enableScrollWheelZoom();
-                    this.mapInstance.enableAutoResize();
-                    this.mapInstance.enableDoubleClickZoom();
-                    this.mapInstance.centerAndZoom(new BMap.Point(108.0017245, 35.926895), 17);
-                } else if (utils.getMapType() == 'gMap') {
-                    var center = new google.maps.LatLng(24.129163, 113.264435);
-                    this.mapInstance = new google.maps.Map(document.getElementsByClassName('work-details-map')[0], {
-                        zoom: 4,
-                        center: center,
-                        mapTypeId: google.maps.MapTypeId.ROADMAP
-                    });
-                } else if (utils.getMapType() == 'oMap') {
-                    var me = this;
-                    setTimeout(function() {
-
-                        me.layerVector = new ol.layer.Vector({
-                            source: new ol.source.Vector({
-                                features: features
-                            }),
-                            style: function(feature) {
-                                return feature.get('style');
-                            },
-                            updateWhileInteracting: true
-                        });
-                        var projection = ol.proj.get('EPSG:4326');
-                        me.mapInstance = new ol.Map({
-                            target: 'work-details-map',
-                            projection: projection,
-                            layers: [
-                                new ol.layer.Tile({
-                                    source: new ol.source.OSM()
-                                }),
-                                me.layerVector
-                            ],
-                            view: new ol.View({
-                                center: ol.proj.fromLonLat([108.0017245, 35.926895]),
-                                zoom: 4,
-                                minZoom: 3,
-                                maxZoom: 20
-                            }),
-                        });
-                    }, 300);
-                };
+                this.markerLayer = null;
+                this.mapInstance = utils.initWindowMap('work-details-map');
             },
 
             cleanSelected: function(treeDataFilter) {
@@ -7828,37 +7524,8 @@ function multiMedia() {
                 }
             },
             viewMap: function(row) {
-                var me = this;
+                utils.showWindowMap(this, row)
                 this.trackDetailModal = true;
-                if (utils.getMapType() == 'bMap') {
-                    this.mapInstance.clearOverlays();
-                    var lon_lat = wgs84tobd09(row.callon, row.callat);
-                    var point = new BMap.Point(lon_lat[0], lon_lat[1])
-                    this.mapInstance.addOverlay(new BMap.Marker(point, {}));
-                    setTimeout(function() {
-                        me.mapInstance.panTo(point);
-                    }, 300)
-
-                } else if (utils.getMapType() == 'gMap') {
-
-                } else if (utils.getMapType() == 'oMap') {
-                    var tempPoint = ol.proj.fromLonLat([row.callon, row.callat]);
-                    var firstMarker = new ol.Feature({
-                        geometry: new ol.geom.Point(tempPoint),
-                    });
-
-                    firstMarker.setStyle(me.getFirstMarkerIcon(true));
-
-                    var features = [firstMarker];
-                    this.layerVector.setSource(new ol.source.Vector({
-                        features: features
-                    }));
-                    setTimeout(function() {
-                        me.mapInstance.getView().setCenter(tempPoint);
-                    }, 300)
-
-                };
-
             },
             getFirstMarkerIcon: function(isStart) {
                 var iconName = isStart ? 'marker_qidian.png' : 'marker_zhongdian.png';

@@ -196,66 +196,11 @@ var utils = {
     },
     getCurrentMapCoordinate: function(isBMap, point) {
         if (isBMap) {
-            console.log('old', point);
-            debugger;
             var lng_lat = gcj02tobd09(point[0], point[1]);
-            console.log('new', lng_lat);
             return [lng_lat[0], lng_lat[1]];
         } else {
             return point;
         }
-    },
-    initWindowMap: function(elId) {
-
-        var map = new maptalks.Map(elId, {
-            center: [106, 36.11],
-            zoom: 5,
-            minZoom: 4,
-            maxZoom: 19,
-            // baseLayer:
-        });
-
-        var newMapType = this.getMapType();
-        if (newMapType == 'bMap') {
-            map.setSpatialReference({
-                projection: 'baidu'
-            });
-            var layer = new maptalks.TileLayer('base', {
-                'urlTemplate': 'https://maponline2.bdimg.com/tile/?qt=vtile&styles=pl&scaler=2&udt=20201217&from=jsapi2_0&x={x}&y={y}&z={z}',
-                // 'urlTemplate': 'http://online{s}.map.bdimg.com/onlinelabel/?qt=tile&x={x}&y={y}&z={z}&styles=pl&scaler=1&p=1',
-                'subdomains': [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
-                'attribution': '&copy; <a target="_blank" href="http://map.baidu.com">Baidu</a>'
-            })
-            map.setBaseLayer(layer);
-
-        } else if (newMapType == 'gMap') {
-
-            var layer = new maptalks.TileLayer('base', {
-                urlTemplate: "http://mt2.google.cn/vt?lyrs=m@180000000&hl=zh-CN&gl=cn&scale=2&src=app&x={x}&y={y}&z={z}&s=Gal",
-            })
-            map.setSpatialReference({})
-            map.setBaseLayer(layer);
-
-        } else if (newMapType == 'aMap') {
-            var layer = new maptalks.TileLayer('base', {
-                urlTemplate: 'http://webrd04.is.autonavi.com/appmaptile?lang=zh_cn&scale=2&style=8&x={x}&y={y}&z={z}',
-            })
-            map.setSpatialReference({})
-            map.setBaseLayer(layer);
-
-        }
-
-        var customPosition = new maptalks.control.Zoom({
-            'position': {
-                'bottom': '20',
-                'right': '20'
-            },
-            'slider': false,
-            'zoomLevel': false
-        });
-        map.addControl(customPosition);
-
-        return map;
     },
 
     timeStamp: function(mss) {
@@ -859,34 +804,174 @@ var utils = {
             });
         }
     },
-    showWindowMap: function(vueInstanse, params) {
-        vueInstanse.mapModal = true;
-        var row = params.row;
-        if (vueInstanse.mapType == 'bMap') {
-            var b_lon_lat = wgs84tobd09(Number(row.callon), Number(row.callat));
-            var point = new BMap.Point(b_lon_lat[0], b_lon_lat[1]);
-            var marker = new BMap.Marker(point);
-            setTimeout(function() {
-                vueInstanse.mapInstance.clearOverlays();
-                vueInstanse.mapInstance.addOverlay(marker);
-                vueInstanse.mapInstance.panTo(point);
-            }, 100);
-        } else {
-            if (vueInstanse.markerIns) {
-                vueInstanse.markerIns.setMap(null);
-            }
-            var g_lon_lat = wgs84togcj02(Number(row.callon), Number(row.callat));
-            var latLng = new google.maps.LatLng(g_lon_lat[1], g_lon_lat[0]);
-            vueInstanse.markerIns = new MarkerWithLabel({
-                position: latLng,
-                map: vueInstanse.mapInstance,
+
+    initWindowMap: function(elId) {
+
+        var map = new maptalks.Map(elId, {
+            center: [106, 36.11],
+            zoom: 5,
+            minZoom: 4,
+            maxZoom: 19,
+            // baseLayer:
+        });
+
+        var newMapType = this.getMapType();
+        if (newMapType == 'bMap') {
+            map.setSpatialReference({
+                projection: 'baidu'
             });
-            vueInstanse.mapInstance.setZoom(18);
-            setTimeout(function() {
-                vueInstanse.mapInstance.panTo(latLng);
-            }, 100);
+            var layer = new maptalks.TileLayer('base', {
+                'urlTemplate': 'https://maponline2.bdimg.com/tile/?qt=vtile&styles=pl&scaler=2&udt=20201217&from=jsapi2_0&x={x}&y={y}&z={z}',
+                'subdomains': [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+                'attribution': '&copy; <a target="_blank" href="http://map.baidu.com">Baidu</a>'
+            })
+            map.setBaseLayer(layer);
+
+        } else if (newMapType == 'gMap') {
+
+            var layer = new maptalks.TileLayer('base', {
+                urlTemplate: "http://mt2.google.cn/vt?lyrs=m@180000000&hl=zh-CN&gl=cn&scale=2&src=app&x={x}&y={y}&z={z}&s=Gal",
+            })
+            map.setSpatialReference({})
+            map.setBaseLayer(layer);
+
+        } else if (newMapType == 'aMap') {
+            var layer = new maptalks.TileLayer('base', {
+                urlTemplate: 'http://webrd04.is.autonavi.com/appmaptile?lang=zh_cn&scale=2&style=8&x={x}&y={y}&z={z}',
+            })
+            map.setSpatialReference({})
+            map.setBaseLayer(layer);
+
         }
+
+        var customPosition = new maptalks.control.Zoom({
+            'position': {
+                'bottom': '20',
+                'right': '20'
+            },
+            'slider': false,
+            'zoomLevel': false
+        });
+        map.addControl(customPosition);
+
+
+        return map;
     },
+    showWindowMap: function(vueInstanse, params) {
+        vueInstanse.mapModal && (vueInstanse.mapModal = true);
+        var row = params.row;
+        var isBMap = utils.getMapType() == 'bMap';
+        var pointArr = [];
+        if (isBMap) {
+            pointArr = wgs84tobd09(Number(row.callon), Number(row.callat));
+        } else {
+            pointArr = wgs84togcj02(Number(row.callon), Number(row.callat));
+        }
+
+        if (vueInstanse.markerLayer != null) {
+            vueInstanse.mapInstance.removeLayer(vueInstanse.markerLayer);
+        }
+
+        var marker = new maptalks.Marker(
+            pointArr, {
+                symbol: {
+                    'markerFile': './images/carstate/0_green_0.png',
+                    'markerWidth': 30,
+                    'markerHeight': 30,
+                    'markerRotation': -row.course,
+                    'markerDy': 15,
+                    'markerDx': 0,
+                },
+            }
+        );
+
+        vueInstanse.markerLayer = new maptalks.VectorLayer('marker', [marker]);
+        vueInstanse.markerLayer.addTo(vueInstanse.mapInstance);
+
+        vueInstanse.mapInstance.setZoom(18)
+        vueInstanse.mapInstance.setCenter({
+            x: pointArr[0],
+            y: pointArr[1],
+        })
+    },
+    markersAndLineLayerToMap: function(vueInstanse, tracks) {
+        if (vueInstanse.markerLayer != null) {
+            vueInstanse.mapInstance.removeLayer(vueInstanse.markerLayer);
+        }
+
+        var isBMap = utils.getMapType();
+        tracks.forEach(function(track) {
+            if (isBMap) {
+                var g_lon_lat = wgs84togcj02(track.callon, track.callat);
+                track.point = {
+                    y: g_lon_lat[1],
+                    x: g_lon_lat[0]
+                };
+            } else {
+                var lng_lat = wgs84tobd09(track.callon, track.callat);
+                track.point = {
+                    y: lng_lat[1],
+                    x: lng_lat[0]
+                };
+            }
+        })
+
+        var sTrack = tracks[0];
+
+        var smarker = new maptalks.Marker(
+            [sTrack.point.x, sTrack.point.y], {
+                symbol: {
+                    'markerFile': './images/icon_st.png',
+                    'markerWidth': 30,
+                    'markerHeight': 30,
+                    'markerRotation': -sTrack.course,
+                    'markerDy': 0,
+                    'markerDx': 0,
+                },
+            }
+        );
+        var eTrack = tracks[tracks.length - 1];
+        var emarker = new maptalks.Marker(
+            [eTrack.point.x, eTrack.point.y], {
+                symbol: {
+                    'markerFile': './images/icon_en.png',
+                    'markerWidth': 30,
+                    'markerHeight': 30,
+                    'markerRotation': -eTrack.course,
+                    'markerDy': 0,
+                    'markerDx': 0,
+                },
+            }
+        );
+
+        var points = [];
+
+        tracks.forEach(function(track) {
+            points.push(track.point);
+        })
+
+        var lineString = new maptalks.LineString(
+            points, {
+                symbol: {
+                    'lineColor': {
+                        'type': 'linear',
+                        'colorStops': [
+                            [0.00, 'red'],
+                            [1.00, 'red']
+                        ]
+                    },
+                    'lineWidth': 4
+                }
+            })
+
+        vueInstanse.markerLayer = new maptalks.VectorLayer('marker', [smarker, emarker, lineString]);
+        vueInstanse.markerLayer.addTo(vueInstanse.mapInstance);
+
+        vueInstanse.mapInstance.setCenter(sTrack.point);
+        vueInstanse.mapInstance.setZoom(17);
+
+    },
+
     getPinyin: function(groupslist) {
         var me = this;
         groupslist.forEach(function(group) {

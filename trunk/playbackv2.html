@@ -946,14 +946,17 @@
                         this.charts.getZr().on('click', function(params) {
                             var pointInPixel = [params.offsetX, params.offsetY];
                             if (me.charts.containPixel('grid', pointInPixel)) {
-                                var xIndex = me.charts.convertFromPixel({
-                                    seriesIndex: 0
-                                }, [params.offsetX, params.offsetY])[0];
+                                var tracks = me.getTypeRecords();
+                                if (tracks.length) {
+                                    var xIndex = me.charts.convertFromPixel({
+                                        seriesIndex: 0
+                                    }, [params.offsetX, params.offsetY])[0];
 
-                                me.currentMarkerIndex = xIndex;
-                                me.markerMoveing();
-                                if (me.isShowAllLine == 'no') {
-                                    me.redrawLines();
+                                    me.currentMarkerIndex = xIndex;
+                                    me.markerMoveing();
+                                    if (me.isShowAllLine == 'no') {
+                                        me.redrawLines();
+                                    }
                                 }
                             }
                         });
@@ -1329,27 +1332,10 @@
 
 
 
-                        this.fitExtent(tracks);
+                        this.fitExtent(pointList);
 
                     },
-                    fitExtent: function(tracks) {
-                        var pointList = [];
-                        if (this.mapType == 'bMap') {
-                            for (var i = 0; i < tracks.length; i++) {
-                                var track = tracks[i];
-                                pointList.push(track.bpoint);
-                            }
-                        } else {
-                            for (var i = 0; i < tracks.length; i++) {
-                                var track = tracks[i];
-                                pointList.push(track.gpoint);
-                            }
-                        }
-                        var center = this.map.getCenter();
-                        var polygonList = [];
-                        pointList.forEach(function(item) {
-                            polygonList.push(center.add(item.x, item.y))
-                        });
+                    fitExtent: function(pointList) {
                         var polygon = new maptalks.Polygon(pointList);
                         this.map.fitExtent(polygon.getExtent(), 0);
                         polygon = null;

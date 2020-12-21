@@ -506,6 +506,9 @@ var monitor = {
                         me.map.setBaseLayer(layer);
                     }
                     break;
+                case 'carName':
+                    me.isShowLabel = !me.isShowLabel;
+                    break;
             }
         },
         insertNodeAt: function(fatherNode, node, position) {
@@ -1269,18 +1272,18 @@ var monitor = {
             });
             this.map.addControl(customPosition);
 
-            new maptalks.control.Toolbar({
-                    'vertical': true,
-                    'position': 'top-right',
-                    'items': [{
-                        item: '显示名称',
-                        click: function() {
-                            me.isShowLabel = !me.isShowLabel;
-                        }
-                    }]
-                })
-                .addTo(this.map);
-            this.addDistanceTool();
+            // new maptalks.control.Toolbar({
+            //         'vertical': true,
+            //         'position': 'top-right',
+            //         'items': [{
+            //             item: '显示名称',
+            //             click: function() {
+            //                 me.isShowLabel = !me.isShowLabel;
+            //             }
+            //         }]
+            //     })
+            //     .addTo(this.map);
+            // this.addDistanceTool();
         },
         addDistanceTool: function() {
             this.distanceTool = new maptalks.DistanceTool({
@@ -1425,20 +1428,31 @@ var monitor = {
                 async: true,
                 success: function(json) {
                     var coordinates = me.getAllCoordinates(json);
-                    console.log('coordinates', coordinates);
+
                     if (me.polygonLayer) {
                         me.map.removeLayer(me.polygonLayer);
                     }
                     var polygons = [];
+                    var pointList = [];
                     coordinates.forEach(function(item) {
                         polygons.push(me.getPolygon([item]));
+                        item.forEach(function(point) {
+                            pointList.push({
+                                x: point[0],
+                                y: point[1]
+                            })
+                        });
                     })
                     me.polygonLayer = new maptalks.VectorLayer('polygon', polygons);
                     me.polygonLayer.addTo(me.map);
+                    me.fitExtent(pointList);
                 }
             });
-
-
+        },
+        fitExtent: function(pointList) {
+            var polygon = new maptalks.Polygon(pointList);
+            this.map.fitExtent(polygon.getExtent(), 0);
+            polygon = null;
         },
         getPolygon: function(arr) {
             return new maptalks.Polygon(arr, {
@@ -3028,7 +3042,6 @@ var monitor = {
             if (vstore.state.headerActiveName == 'monitor') {
                 if (isNeedRefreshMapUI == true) {
                     isNeedRefreshMapUI = false;
-                    console.log("刷新了")
                     this.updateLastTracks(globalDeviceId);
                     this.updateTreeOnlineState();
                     this.caclOnlineCount();
@@ -3070,7 +3083,7 @@ var monitor = {
                 if (me.intervalTime <= 0) {
                     me.intervalTime = me.stateIntervalTime;
                     me.getLastPosition([], function() {
-                        // me.dorefreshMapUI();
+                        me.dorefreshMapUI();
                     }, function(error) {});
                 }
                 me.intervalTime % 5 == 0 && me.stopVideoPlayer();
