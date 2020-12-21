@@ -273,7 +273,8 @@ div.map_manager {
 }
 
 #my-map p {
-    font-family: "Microsoft YaHei", 微软雅黑, "MicrosoftJhengHei", 华文细黑, STHeiti, MingLiu
+    font-family: "Microsoft YaHei", 微软雅黑, "MicrosoftJhengHei", 华文细黑, STHeiti, MingLiu;
+    color: #000000;
 }
 
 #app .monitor-wraper .map-mode-cls {

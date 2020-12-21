@@ -628,26 +628,25 @@ var utils = {
         var srcad1 = track.srcad1;
         if (track.totaloil > 0 && track.auxoil > 0) {
             if (isZh) {
-                oil = '(油液:' + track.totaloil / 100 + 'L@' + srcad0 +'/' + track.auxoil / 100 + 'L@'+ srcad1 + ')';
+                oil = '(油液:' + track.totaloil / 100 + 'L@' + srcad0 + '/' + track.auxoil / 100 + 'L@' + srcad1 + ')';
             } else {
-                oil = '(oil:' + track.totaloil / 100 + 'L@' + srcad0 +'/' + track.auxoil / 100 + 'L@'+ srcad1 + ')';
+                oil = '(oil:' + track.totaloil / 100 + 'L@' + srcad0 + '/' + track.auxoil / 100 + 'L@' + srcad1 + ')';
             }
         } else if (track.totaloil > 0) {
             if (isZh) {
-                oil = '(油液:' + track.totaloil / 100 + 'L@'+ srcad0 + ')';
+                oil = '(油液:' + track.totaloil / 100 + 'L@' + srcad0 + ')';
             } else {
-                oil = '(oil:' + track.totaloil / 100 +  'L@'+ srcad0 + ')';
+                oil = '(oil:' + track.totaloil / 100 + 'L@' + srcad0 + ')';
             }
         } else if (track.auxoil > 0) {
             if (isZh) {
-                oil = '(油液:' + track.auxoil / 100  + 'L@'+ srcad1 + ')';
+                oil = '(油液:' + track.auxoil / 100 + 'L@' + srcad1 + ')';
             } else {
-                oil = '(oil:' + track.auxoil / 100 +  'L@'+ srcad1 + ')';
+                oil = '(oil:' + track.auxoil / 100 + 'L@' + srcad1 + ')';
             }
-        }else if(srcad0 > 0 || srcad1 > 0)
-        {
-        	//没设置油杆的时候显示原始ad值
-        	oil = '(ad:' + srcad0  + '/'+ srcad1 + ')';
+        } else if (srcad0 > 0 || srcad1 > 0) {
+            //没设置油杆的时候显示原始ad值
+            oil = '(ad:' + srcad0 + '/' + srcad1 + ')';
         };
 
         var temp = this.getTemperature(isZh, track);
@@ -678,9 +677,9 @@ var utils = {
             deviceid +
             ')">SIM</span><span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="setFence(' +
             deviceid +
-            ')">' + (isZh ? '设置围栏' : 'SetFence') + '</span><span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="setPanorama(' +
-            deviceid +
-            ')">' + (isZh ? '查看街景' : 'Panorama') + '</span></p>';
+            ')">' + (isZh ? '设置围栏' : 'SetFence') + '</span></p>';
+
+        // <span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="setPanorama(' +deviceid + ')">' + (isZh ? '查看街景' : 'Panorama') + '</span>
 
         if (extendsBtns.video) {
             var devicename = "'" + track.devicename + "'";
