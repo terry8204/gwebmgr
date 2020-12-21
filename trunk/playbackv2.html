@@ -180,7 +180,6 @@
             background-color: #f9f9f9;
             border-bottom: 1px solid #E0E0E0;
             overflow: hidden;
-            z-index: 999;
         }
         
         #map {
@@ -1724,13 +1723,14 @@
                     mapWraperStyle: function() {
                         if (this.isFullScreen) {
                             return {
-                                position: 'fixed',
-                                left: '0px',
+                                'position': 'fixed',
+                                'left': '0px',
+                                'z-index': 9,
                             }
                         } else {
                             return {
-                                position: 'absolute',
-                                left: '325px',
+                                'position': 'absolute',
+                                'left': '325px',
                             }
                         }
                     }
