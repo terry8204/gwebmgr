@@ -216,6 +216,14 @@ var deviceLastPositionProto = {
                         "currentoverspeedstate": {
                             "type": "sint32",
                             "id": 47
+                        },
+                        "srcad0": {
+                            "type": "sint32",
+                            "id": 48
+                        },
+                        "srcad1": {
+                            "type": "sint32",
+                            "id": 49
                         }
                     }
                 }

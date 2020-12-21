@@ -624,24 +624,30 @@ var utils = {
             videoState = isZh ? track.strvideoalarm : track.strvideoalarmen;
         this.videoState = videoState;
         var oil = '';
+        var srcad0 = track.srcad0;
+        var srcad1 = track.srcad1;
         if (track.totaloil > 0 && track.auxoil > 0) {
             if (isZh) {
-                oil = '(油液:' + track.totaloil / 100 + 'L/' + track.auxoil / 100 + 'L)';
+                oil = '(油液:' + track.totaloil / 100 + 'L@' + srcad0 +'/' + track.auxoil / 100 + 'L@'+ srcad1 + ')';
             } else {
-                oil = '(oil:' + track.totaloil / 100 + 'L/' + track.auxoil / 100 + 'L)';
+                oil = '(oil:' + track.totaloil / 100 + 'L@' + srcad0 +'/' + track.auxoil / 100 + 'L@'+ srcad1 + ')';
             }
         } else if (track.totaloil > 0) {
             if (isZh) {
-                oil = '(油液:' + track.totaloil / 100 + 'L)';
+                oil = '(油液:' + track.totaloil / 100 + 'L@'+ srcad0 + ')';
             } else {
-                oil = '(oil:' + track.totaloil / 100 + 'L)';
+                oil = '(oil:' + track.totaloil / 100 +  'L@'+ srcad0 + ')';
             }
         } else if (track.auxoil > 0) {
             if (isZh) {
-                oil = '(油液:' + track.auxoil / 100 + 'L)';
+                oil = '(油液:' + track.auxoil / 100  + 'L@'+ srcad1 + ')';
             } else {
-                oil = '(oil:' + track.auxoil / 100 + 'L)';
+                oil = '(oil:' + track.auxoil / 100 +  'L@'+ srcad1 + ')';
             }
+        }else if(srcad0 > 0 || srcad1 > 0)
+        {
+        	//没设置油杆的时候显示原始ad值
+        	oil = '(ad:' + srcad0  + '/'+ srcad1 + ')';
         };
 
         var temp = this.getTemperature(isZh, track);
