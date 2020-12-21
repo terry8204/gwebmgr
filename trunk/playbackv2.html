@@ -174,14 +174,13 @@
         /* 地图  */
         
         div.map-wraper {
-            position: absolute;
             top: 0px;
-            left: 325px;
             right: 0px;
             bottom: 0px;
             background-color: #f9f9f9;
             border-bottom: 1px solid #E0E0E0;
             overflow: hidden;
+            z-index: 999;
         }
         
         #map {
@@ -344,7 +343,7 @@
                     </div>
                 </div>
             </div>
-            <div class="map-wraper" ref="mapWraper">
+            <div class="map-wraper" :style="mapWraperStyle">
                 <div id="map"></div>
                 <div class="play_ctrl_wrap">
                     <Row>
@@ -772,36 +771,39 @@
                     markerMoveing: function() {
                         var tracks = this.getTypeRecords();
                         var track = tracks[this.currentMarkerIndex];
-                        var isBMap = this.mapType == 'bMap';
-                        var point = isBMap ? track.bpoint : track.gpoint;
+                        if (track) {
+                            var isBMap = this.mapType == 'bMap';
+                            var point = isBMap ? track.bpoint : track.gpoint;
 
-                        this.carMarker.setCoordinates(point);
+                            this.carMarker.setCoordinates(point);
 
-                        this.carMarker.setSymbol(this.getMarkerSymbol('./images/carstate/0_green_0.png', track.course, 15));
+                            this.carMarker.setSymbol(this.getMarkerSymbol('./images/carstate/0_green_0.png', track.course, 15));
 
-                        var sContent = this.getInfoWindowContent(track);
-                        this.carMarker.setInfoWindow({
-                            'content': sContent,
-                            'width': 330,
-                            'autoOpenOn': 'click', //set to null if not to open when clicking on marker
-                            'autoCloseOn': false, //set to null if not to open when clicking on marker
-                            'animation': false,
-                            'autoPan': false,
-                            'animationDuration': 0,
-                        });
+                            var sContent = this.getInfoWindowContent(track);
+                            this.carMarker.setInfoWindow({
+                                'content': sContent,
+                                'width': 330,
+                                'autoOpenOn': 'click', //set to null if not to open when clicking on marker
+                                'autoCloseOn': false, //set to null if not to open when clicking on marker
+                                'animation': false,
+                                'autoPan': false,
+                                'animationDuration': 0,
+                            });
 
-                        if (this.isShowBubble) {
-                            this.carMarker.openInfoWindow();
-                        } else {
-                            this.carMarker.closeInfoWindow()
+                            if (this.isShowBubble) {
+                                this.carMarker.openInfoWindow();
+                            } else {
+                                this.carMarker.closeInfoWindow()
+                            }
+
+
+
+                            var isOut = this.isOut(point, this.map.getExtent());
+                            if (!isOut) {
+                                this.map.setCenter(point);
+                            }
                         }
 
-
-
-                        var isOut = this.isOut(point, this.map.getExtent());
-                        if (!isOut) {
-                            this.map.setCenter(point);
-                        }
                     },
                     isOut: function(point, extent) {
                         return extent.contains(point)
@@ -1523,6 +1525,7 @@
                         this.exactTracks = exactTracks;
                     },
                     init: function() {
+                        var me = this;
                         this.map = null;
                         this.carMarker = null;
                         this.startMarker = null;
@@ -1540,6 +1543,11 @@
                         this.initMap();
                         this.initCharts();
                         this.queryReportMileageDetail(new Date(this.year, this.month, this.date));
+                        document.onkeydown = function(e) {
+                            if (e.keyCode == 27) {
+                                me.isFullScreen = false;
+                            }
+                        }
                     },
                     getAllTracksAddress: function() {
                         var me = this;
@@ -1725,29 +1733,7 @@
                         });
                         this.distanceTool.addTo(this.map);
                         this.distanceTool.disable();
-                    },
-                    exitFullscreen: function() {
-                        if (document.exitFullscreen) {
-                            document.exitFullscreen()
-                        } else if (document.mozCancelFullScreen) {
-                            document.mozCancelFullScreen()
-                        } else if (document.webkitCancelFullScreen) {
-                            document.webkitCancelFullScreen()
-                        } else if (document.msExitFullscreen) {
-                            document.msExitFullscreen()
-                        }
-                    },
-                    requestFullscreen: function(mapWraper) {
-                        if (mapWraper.requestFullscreen) {
-                            mapWraper.requestFullscreen()
-                        } else if (mapWraper.mozRequestFullScreen) {
-                            mapWraper.mozRequestFullScreen()
-                        } else if (mapWraper.webkitRequestFullScreen) {
-                            mapWraper.webkitRequestFullScreen()
-                        } else if (mapWraper.msRequestFullscreen) {
-                            mapWraper.msRequestFullscreen()
-                        }
-                    },
+                    }
                 },
                 computed: {
                     tabsHeight: function() {
@@ -1766,6 +1752,19 @@
                             return 300;
                         } else if (this.playSpeed == 'man') {
                             return 600;
+                        }
+                    },
+                    mapWraperStyle: function() {
+                        if (this.isFullScreen) {
+                            return {
+                                position: 'fixed',
+                                left: '0px',
+                            }
+                        } else {
+                            return {
+                                position: 'absolute',
+                                left: '325px',
+                            }
                         }
                     }
                 },
@@ -1860,18 +1859,8 @@
                         }
 
                         me.lastMapType = newMapType;
-
                     },
-                    isFullScreen: function(newVal) {
-                        if (newVal) {
-                            var mapWraper = this.$refs.mapWraper;
-                            this.requestFullscreen(mapWraper);
 
-                        } else {
-                            this.exitFullscreen();
-                        }
-
-                    }
                 },
                 mounted: function() {
                     this.init();
