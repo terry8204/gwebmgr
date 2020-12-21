@@ -790,24 +790,12 @@ var utils = {
         });
     },
     queryAddress: function(info, callback) {
-        if (this.getMapType() == 'bMap') {
-            utils.getJiuHuAddressSyn(info.callon, info.callat, function(resp) {
-                var j_address = resp.address;
-                j_address && callback(j_address);
-            });
-        } else {
-            var g_lon_lat = wgs84togcj02(Number(info.callon), Number(info.callat));
-            utils.getGoogleAddressSyn(g_lon_lat[1], g_lon_lat[0], function(b_address) {
-                if (b_address.length) {
-                    callback(b_address);
-                } else {
-                    utils.getJiuHuAddressSyn(callon, callat, function(resp) {
-                        var j_address = resp.address
-                        j_address && callback(j_address);
-                    });
-                }
-            });
-        }
+
+        utils.getJiuHuAddressSyn(info.callon, info.callat, function(resp) {
+            var j_address = resp.address;
+            j_address && callback(j_address);
+        });
+
     },
 
     initWindowMap: function(elId) {
@@ -1493,23 +1481,15 @@ function refreshPostion(deviceid) {
     var lon = track.callon.toFixed(5);
     var lat = track.callat.toFixed(5);
 
-    try {
-        utils.getJiuHuAddressSyn(track.callon, track.callat, function(resp) {
-            var j_address = resp.address;
-            if (j_address) {
-                $("p.last-address").html((isZh ? "地址: " : "Address: ") + j_address);
-                LocalCacheMgr.setAddress(lon, lat, j_address);
-            };
-        });
-    } catch (error) {
-        var g_lon_lat = wgs84togcj02(track.callon, track.callat);
-        utils.getGoogleAddressSyn(g_lon_lat[1], g_lon_lat[0], function(g_address) {
-            if (g_address) {
-                $("p.last-address").html((isZh ? "详细地址: " : "Address: ") + g_address);
-                LocalCacheMgr.setAddress(lon, lat, g_address);
-            }
-        });
-    }
+
+    utils.getJiuHuAddressSyn(track.callon, track.callat, function(resp) {
+        var j_address = resp.address;
+        if (j_address) {
+            $("p.last-address").html((isZh ? "地址: " : "Address: ") + j_address);
+            LocalCacheMgr.setAddress(lon, lat, j_address);
+        };
+    });
+
     utils.sendAjax(url, { deviceid: deviceid }, function(resp) {});
 }
 
