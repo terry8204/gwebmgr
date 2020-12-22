@@ -84,7 +84,7 @@
     <script src="js/config.js"></script>
     <script type="text/javascript">
         jQuery.support.cors = true;
-        var isZh = utils.locale === 'zh';
+        var isZh = (localStorage.getItem("PATH_LANG") || 'zh') === 'zh';
 
         function getParameterByName(name) {
             var url = location.search;
