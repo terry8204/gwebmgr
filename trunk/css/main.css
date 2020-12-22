@@ -380,8 +380,8 @@ li.full-map-wraper {
 
 #video_wrap .video_body .video_number2_2 {
     position: absolute;
-    width: 40%;
-    height: 40%;
+    width: 25%;
+    height: 25%;
     right: 0;
     bottom: 35px;
     background-image: url('../images/tv_default.jpg');
