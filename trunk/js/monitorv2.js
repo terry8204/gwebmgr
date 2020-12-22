@@ -3042,6 +3042,31 @@ var monitor = {
                 }
             }
         },
+        isNeedUpdateMarker: function(track, marker) {
+            var result = false;
+            var point = marker.getCoordinates();
+            var lon = point.x;
+            var lat = point.y;
+            var mSymbol = marker.getSymbol()[0];
+
+            if (this.mapType == 'bMap') {
+                if (lon !== track.b_lon && lat !== track.b_lat) {
+                    result = true;
+                }
+            } else {
+                if (lon !== track.g_lon && lat !== track.g_lat) {
+                    result = true;
+                }
+            }
+
+            if (result == false) {
+                if (track.online !== mSymbol.online || track.course !== Math.abs(mSymbol.markerRotation)) {
+                    result = true;
+                }
+            }
+
+            return result;
+        },
         updateLastTracks: function(deviceid) {
             var currentTime = DateFormat.getCurrentUTC();
             for (var key in this.positionLastrecords) {
@@ -3050,7 +3075,11 @@ var monitor = {
                     track.online = utils.getIsOnlineWithTime(track, currentTime);
                     var marker = this.mapAllMarkers[key];
                     if (marker) {
-                        marker.setSymbol(this.getMarkerSymbol(track, this.isShowLabel));
+
+                        if (this.isNeedUpdateMarker(track, marker)) {
+                            marker.setSymbol(this.getMarkerSymbol(track, this.isShowLabel));
+                        }
+
                     } else {
                         marker = this.createMarker(track).on('mousedown', this.onClickMarker);
                         marker.deviceid = key;
@@ -3256,6 +3285,7 @@ var monitor = {
                     'markerHeight': 30,
                     'markerDy': 15,
                     'markerRotation': -track.course,
+                    'online': track.online
                 }, {
                     'textFaceName': 'sans-serif',
                     'textName': '{name}',
@@ -3276,6 +3306,7 @@ var monitor = {
                     'markerHeight': 30,
                     'markerDy': 15,
                     'markerRotation': -track.course,
+                    'online': track.online
                 }];
             }
         },
