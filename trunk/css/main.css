@@ -368,26 +368,6 @@ li.full-map-wraper {
     bottom: 0px;
 }
 
-#video_wrap .video_body .video_number2_1 {
-    position: absolute;
-    left: 0px;
-    top: 0px;
-    right: 0px;
-    bottom: 0px;
-    background-image: url('../images/tv_default.jpg');
-    background-size: cover;
-}
-
-#video_wrap .video_body .video_number2_2 {
-    position: absolute;
-    width: 25%;
-    height: 25%;
-    right: 0;
-    bottom: 35px;
-    background-image: url('../images/tv_default.jpg');
-    background-size: cover;
-}
-
 #videoContent {
     overflow: hidden;
     position: absolute;
@@ -503,8 +483,8 @@ div.resolving-power {
     position: absolute;
     right: 0px;
     bottom: 35px;
-    width: 40%;
-    height: 40%;
+    width: 25%;
+    height: 25%;
     border: 2px solid gray;
 }
 
