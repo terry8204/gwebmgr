@@ -2234,7 +2234,7 @@ var monitor = {
                 var a = document.createElement('a');
                 a.href = '#' + deviceid;
                 a.click();
-            }, 500);
+            }, 1000);
         },
         sosoValueChange: function() {
             var me = this;
@@ -3093,7 +3093,7 @@ var monitor = {
 
                         var infoWindow = marker.getInfoWindow();
 
-                        if (infoWindow.isVisible && infoWindow.isVisible()) {
+                        if (infoWindow && infoWindow.isVisible && infoWindow.isVisible()) {
                             var address = this.getAddress(track, marker);
                             var sContent = this.getInfoWindowContent(track, address);
                             marker.setInfoWindow(sContent);
@@ -3250,7 +3250,6 @@ var monitor = {
                     // me.updateTreeOnlineState();
                     me.addClusterLayer();
                     communicate.$on("positionlast", me.handleWebSocket);
-                    communicate.$on("on-click-marker", me.openTreeDeviceNav);
                     communicate.$on("on-click-expiration", function(deviceid) {
                         me.editDevice(deviceid);
                         me.openTreeDeviceNav(deviceid);
@@ -3416,7 +3415,7 @@ var monitor = {
             }
             marker.setZIndex(999);
             globalDeviceId = deviceid;
-            communicate.$emit("on-click-marker", deviceid);
+            this.openTreeDeviceNav(deviceid);
         },
         getInfoWindowContent: function(track, address) {
             var sContent = utils.getWindowContent(track, address);
@@ -3711,7 +3710,6 @@ var monitor = {
         this.$store.commit('currentDeviceRecord', {});
         clearInterval(this.intervalInstanse);
         communicate.$off('positionlast', this.handleWebSocket);
-        communicate.$off("on-click-marker", this.openTreeDeviceNav);
         this.myDis && this.myDis.close();
         isLoadLastPositon = false;
     }

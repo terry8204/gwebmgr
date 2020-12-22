@@ -51,6 +51,15 @@
 
             <Row style="margin: 10px 0">
                 <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">
+                    &nbsp;{{$t("user.showname")}} : &nbsp;
+                </i-col>
+                <i-col span="12">
+                    <i-input v-model.trim="showname"></i-input>
+                </i-col>
+            </Row>
+
+            <Row style="margin: 10px 0">
+                <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">
                     &nbsp;{{$t("user.corporateName")}} : &nbsp;
                 </i-col>
                 <i-col span="12">
@@ -125,13 +134,14 @@
         </div>
     </div>
     <script>
-       vueInstanse = new Vue({
+        vueInstanse = new Vue({
             el: "#adduser",
             i18n: utils.getI18n(),
             data: {
                 username: "",
                 password: "",
                 usertype: "",
+                showname: "",
                 singleLogin: "0",
                 phoneLogin: "0",
                 weixinLogin: "0",
@@ -201,6 +211,9 @@
                         creater: this.createrToUser
                     };
 
+                    if (this.showname != '') {
+                        data.showname = this.showname;
+                    }
 
                     if (this.username.trim() == "") {
                         this.$Message.error(this.$t("message.usernameRule"));
