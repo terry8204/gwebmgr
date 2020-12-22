@@ -35,6 +35,7 @@ i {
 .tv_box span i.icon_num7,
 .tv_box span i.icon_num8,
 .tv_box span i.icon_num9 {
+    /* background: url(images/playericons.png) 0 0 no-repeat; */
     background: url(images/icon_s_for.png) 0 0 no-repeat;
     width: 16px;
     height: 16px;
@@ -65,58 +66,67 @@ i {
 }
 
 .tv_box span i {
-    background: url(images/icon_s.png) 0 0 no-repeat;
+    background: url(images/playericons.png) 0 0 no-repeat;
+    /* background: url(images/icon_s.png) 0 0 no-repeat; */
     width: 14px;
     height: 14px;
     cursor: pointer;
 }
 
 .tv_box span i.icon_num1 {
-    background-position: -100px -326px;
+    background-position: 0px -25px;
+}
+
+.tv_box span i.icon_num_er {
+    background-position: -20px -25px;
 }
 
 .tv_box span i.icon_num2 {
-    background-position: -120px -326px;
+    background-position: -40px -25px;
 }
 
 .tv_box span i.icon_num3 {
-    background-position: -140px -326px;
+    background-position: -60px -25px;
 }
 
 .tv_box span i.icon_num4 {
-    background-position: -160px -326px;
+    background-position: -80px -25px;
 }
 
 .tv_box span i.icon_num5 {
-    background-position: -180px -326px;
+    background-position: -100px -25px;
 }
 
 .tv_box span i.icon_num6 {
-    background-position: -200px -326px;
+    background-position: -120px -25px;
 }
 
 .tv_box span:hover i.icon_num1 {
-    background-position: -100px -346px;
+    background-position: 0px 0px;
+}
+
+.tv_box span:hover i.icon_num_er {
+    background-position: -20px 0px;
 }
 
 .tv_box span:hover i.icon_num2 {
-    background-position: -120px -346px;
+    background-position: -40px 0px;
 }
 
 .tv_box span:hover i.icon_num3 {
-    background-position: -140px -346px;
+    background-position: -60px 0px;
 }
 
 .tv_box span:hover i.icon_num4 {
-    background-position: -160px -346px;
+    background-position: -80px 0px;
 }
 
 .tv_box span:hover i.icon_num5 {
-    background-position: -180px -346px;
+    background-position: -100px 0px;
 }
 
 .tv_box span:hover i.icon_num6 {
-    background-position: -200px -346px;
+    background-position: -120px 0px;
 }
 
 .tv_box span i.icon_top {
@@ -144,11 +154,11 @@ i {
 }
 
 .tv_box span i.icon_play_all {
-    background-position: -145px -50px;
+    background-position: -140px -25px;
 }
 
 .tv_box span i.icon_close_show {
-    background-position: -164px -50px;
+    background-position: -160px -25px;
 }
 
 .tv_box span:hover i.icon_top {
@@ -176,11 +186,11 @@ i {
 }
 
 .tv_box span:hover i.icon_play_all {
-    background-position: -366px -50px;
+    background-position: -140px -0px;
 }
 
 .tv_box span:hover i.icon_close_show {
-    background-position: -385px -50px;
+    background-position: -160px -0px;
 }
 
 .tv_box span i.icon_xl {

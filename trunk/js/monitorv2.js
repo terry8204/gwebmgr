@@ -1250,8 +1250,6 @@ var monitor = {
             }
         },
         initMap: function() {
-            var me = this; // my-map
-
             this.map = new maptalks.Map('my-map', {
                 center: [106, 36.11],
                 zoom: 5,
@@ -1584,7 +1582,9 @@ var monitor = {
             var videoIns = this.$refs;
             for (var i = 1; i <= 16; i++) {
                 var player = videoIns['player' + i][0];
-                player.timeout();
+                if (player) {
+                    player.timeout();
+                }
             }
         },
         handleClickMore: function(name) {
@@ -2278,12 +2278,15 @@ var monitor = {
             var that = this;
             if (this.isMapMode) {
                 this.isMapMode = false;
-            }
+            };
             this.dblClickDeviceVideo(deviceInfo);
             setTimeout(function() {
                 var record = that.getSingleDeviceInfo(that.currentDeviceId);
-                if (record) {
-                    that.map.onClickDevice(that.currentDeviceId);
+                var marker = that.mapAllMarkers[that.currentDeviceId];
+                if (record && marker) {
+                    that.onClickMarker({
+                        target: marker
+                    })
                 }
             }, 300);
         },
@@ -3593,6 +3596,7 @@ var monitor = {
         videoContentCls: function() {
             return {
                 'videoContent-1': this.videoNumber === 1,
+                'videoContent-2': this.videoNumber === 2,
                 'videoContent-4': this.videoNumber === 4,
                 'videoContent-6': this.videoNumber === 6,
                 'videoContent-8': this.videoNumber === 8,

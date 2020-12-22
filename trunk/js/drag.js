@@ -68,7 +68,6 @@ $.fn.extend({
             });
         }
 
-
         hander.mousedown(function(e) {
             father.children().css({ "zIndex": "0" });
             $this.css({ "zIndex": "1" });
