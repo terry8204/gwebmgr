@@ -874,11 +874,6 @@
                                 <li style="padding-top:6px;">
                                     <i-button size="small" @click="echartsMapPage"> {{$t("monitor.screenDisplay")}} </i-button>
                                 </li>
-                                <li class="maps">
-                                    <i-select v-model="mapType" size="small" style="width:100px">
-                                        <i-option v-for="item in mapList" :value="item.value" :key="item.value">{{ item.label }}</i-option>
-                                    </i-select>
-                                </li>
                                 <li class="full-map-wraper">
                                     <Icon @click.native="handleMapSizeChange" :type="isFullMap ?'md-contract':'md-expand'" size="23"></Icon>
                                 </li>
@@ -906,7 +901,12 @@
                                 </li>
                             </ul>
                         </div>
-                        <div id="my-map" :class="{ 'map-mode-cls': isMapMode, 'video-mode-cls': !isMapMode }" :style='{top:isMouseoverTop35?"10px":"35px"}'></div>
+                        <div id="my-map-wrap" :class="{ 'map-mode-cls': isMapMode, 'video-mode-cls': !isMapMode }" :style='{top:isMouseoverTop35?"10px":"35px"}'>
+                            <div id="my-map"></div>
+                            <div style="position: absolute; right: 10px; top: 10px;">
+                                <selected-map :mapType="mapType" @select-map="onSelectMap" @switch-traffic="onSwitchTraffic"></selected-map>
+                            </div>
+                        </div>
                         <div id="video_wrap" :class="{ 'videos-wrapper-hide': isMapMode, 'videos-wrapper-show': !isMapMode }" :style='{top:isMouseoverTop35?"10px":"35px"}'>
                             <div class="video_header">
                                 <div class="video_function">
@@ -2721,6 +2721,36 @@
             </div>
         </div>
     </script>
+
+    <script type="text/x-template" id="selected-map-template">
+        <div class="selected-map-wrap" v-click-outside.capture="onClickOutside">
+            <div class="selected-map-inner" @click="isShowMapList=true">
+                {{mapTypeStr}}
+                <Icon type="ios-arrow-down" />
+            </div>
+            <div class="selected-map-list" v-show="isShowMapList">
+                <div v-for="(item,index) in mapSelectorList" :data-index="index" :class="{actived:mapType==item.value}" :key="index" @click="selectedMap">{{item.label}}</div>
+            </div>
+            <div class="map-selector-popup" v-show="isShowMapList" :style="mapSelectorPopupSty">
+                <div v-if="false" class="MapSelector_item_193IR" :class="{'map_icon_xiansu_off':!isShowXianSu,'map_icon_xiansu_on':isShowXianSu}" style="width:35px" @click="isShowXianSu=!isShowXianSu">
+                    <div class="map_selector_icon_text no_selected_icon">限速</div>
+                </div>
+                <div class="MapSelector_item_193IR" :class="{'map_icon_traffic_off':!isShowTraffic,'map_icon_traffic_on':isShowTraffic}" style="width:35px" @click="isShowTraffic=!isShowTraffic">
+                    <div class="map_selector_icon_text no_selected_icon">路况</div>
+                </div>
+                <div class="MapSelector_item_193IR normal-map" @click="isSatelliteMap=!isSatelliteMap">
+                    <div class="map_selector_icon_text" :class="{'selected_icon':!isSatelliteMap,'no_selected_icon':isSatelliteMap}">地图</div>
+                </div>
+                <div class="MapSelector_item_193IR satellite-map" @click="isSatelliteMap=!isSatelliteMap">
+                    <div class="map_selector_icon_text" :class="{'selected_icon':isSatelliteMap,'no_selected_icon':!isSatelliteMap}">卫星</div>
+                </div>
+            </div>
+        </div>
+    </script>
+
+
+
+
 
     <audio id="myaudio" src="./custom/sos.mp3"></audio>
     <script src="dist/vue.min.js"></script>

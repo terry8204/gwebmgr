@@ -297,11 +297,6 @@ var monitor = {
             placement: "right-start",
             mapType: utils.getMapType(),
             isShowLabel: false,
-            mapList: [
-                { label: isZh ? "百度地图" : "BaiduMap", value: "bMap" },
-                { label: isZh ? "谷歌地图" : "GoogleMap", value: "gMap" },
-                { label: isZh ? "高德地图" : "AlibabaMap", value: "aMap" },
-            ],
             sosoValue: '', // 搜索框的值
             sosoData: [], // 搜索框里面的数据
             openGroupIds: {},
@@ -454,7 +449,120 @@ var monitor = {
         }
     },
     methods: {
+        onSelectMap: function(item) {
 
+
+            this.mapType = item.mapType;
+            this.setMapType(item);
+        },
+        onSwitchTraffic: function(traffic) {
+            var isBMap = this.mapType == 'bMap';
+            if (traffic) {
+                if (isBMap) {
+                    this.baiduTrafficLayer.show();
+                } else {
+                    this.googleTrafficLayer.show();
+                }
+            } else {
+                if (isBMap) {
+                    this.baiduTrafficLayer.hide();
+                } else {
+                    this.googleTrafficLayer.hide();
+                }
+            }
+            console.log(this.googleTrafficLayer.setZIndex(9999));
+        },
+        addTrafficLayer: function(traffic) {
+
+            if (this.baiduTrafficLayer == null) {
+                this.baiduTrafficLayer = new maptalks.TileLayer("baidutraffic", {
+
+                    urlTemplate: function(x, y, z) {
+                        var domain = '';
+                        if (this.options && this.options['subdomains']) {
+                            const subdomains = this.options['subdomains'];
+                            if (isArrayHasData(subdomains)) {
+                                const length = subdomains.length;
+                                let s = (x + y) % length;
+                                if (s < 0) {
+                                    s = 0;
+                                }
+                                domain = subdomains[s];
+                            }
+                        }
+                        var data = {
+                            'x': x,
+                            'y': y,
+                            'z': z,
+                            'domain': domain,
+                            'time': Date.now()
+                        };
+                        var URL_PATTERN = /\{ *([\w_]+) *\}/g;
+                        return baiduTrafficUrlTemplate.replace(URL_PATTERN, function(str, key) {
+                            let value = data[key];
+
+                            if (value === undefined) {
+                                throw new Error('No value provided for variable ' + str);
+
+                            } else if (typeof value === 'function') {
+                                value = value(data);
+                            }
+                            return value;
+                        });
+                    }
+                });
+                this.map.addLayer(this.baiduTrafficLayer);
+                this.baiduTrafficLayer.hide();
+            }
+
+            if (this.googleTrafficLayer == null) {
+                this.googleTrafficLayer = new maptalks.TileLayer("googletraffic", {
+                    urlTemplate: function(x, y, z) {
+
+
+
+                        console.log(x, y, z);
+                        y = Math.pow(2, z) - 1 - y;
+                        var domain = '';
+                        if (this.options && this.options['subdomains']) {
+                            const subdomains = this.options['subdomains'];
+                            if (isArrayHasData(subdomains)) {
+                                const length = subdomains.length;
+                                let s = (x + y) % length;
+                                if (s < 0) {
+                                    s = 0;
+                                }
+                                domain = subdomains[s];
+                            }
+                        }
+                        var data = {
+                            'x': x,
+                            'y': y,
+                            'z': z,
+                            'domain': domain,
+                            'time': Date.now()
+                        };
+                        var URL_PATTERN = /\{ *([\w_]+) *\}/g;
+                        return googleTrafficUrlTemplate.replace(URL_PATTERN, function(str, key) {
+                            let value = data[key];
+
+                            if (value === undefined) {
+                                throw new Error('No value provided for variable ' + str);
+
+                            } else if (typeof value === 'function') {
+                                value = value(data);
+                            }
+                            return value;
+                        });
+                    }
+                });
+                this.map.addLayer(this.googleTrafficLayer);
+                this.googleTrafficLayer.hide();
+            }
+
+            this.onSwitchTraffic(traffic);
+
+        },
         handleClickTools: function(name) {
             var me = this;
             var newMapType = me.mapType;
@@ -1250,6 +1358,10 @@ var monitor = {
             }
         },
         initMap: function() {
+
+            this.googleTrafficLayer = null;
+            this.baiduTrafficLayer = null;
+
             this.map = new maptalks.Map('my-map', {
                 center: [106, 36.11],
                 zoom: 5,
@@ -1258,7 +1370,12 @@ var monitor = {
                 // baseLayer:
             });
 
-            this.setMapType(this.mapType);
+            this.setMapType({
+                mapType: this.mapType,
+                traffic: false,
+                xiansu: false,
+                satelliteMap: false
+            });
 
             var customPosition = new maptalks.control.Zoom({
                 'position': {
@@ -1271,6 +1388,7 @@ var monitor = {
             this.map.addControl(customPosition);
 
             this.addDistanceTool();
+
         },
         addDistanceTool: function() {
             this.distanceTool = new maptalks.DistanceTool({
@@ -1338,37 +1456,42 @@ var monitor = {
             this.clusterLayer = null;
             this.addClusterLayer();
         },
-        setMapType: function(newMapType) {
+        setMapType: function(mapInfo) {
+            this.map.removeLayer('baiduText');
+            this.map.removeLayer('aliText');
             var me = this;
+            var newMapType = mapInfo.mapType;
+            var satelliteMap = mapInfo.satelliteMap;
+            var traffic = mapInfo.traffic;
             if (newMapType == 'bMap') {
                 me.map.setSpatialReference({
                     projection: 'baidu'
                 });
-                var layer = new maptalks.TileLayer('base', {
-                    'urlTemplate': 'https://maponline2.bdimg.com/tile/?qt=vtile&styles=pl&scaler=2&udt=20201217&from=jsapi2_0&x={x}&y={y}&z={z}',
-                    'subdomains': [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
-                    'attribution': '&copy; <a target="_blank" href="http://map.baidu.com">Baidu</a>',
-                    // 'cssFilter': 'sepia(100%) invert(90%)'
-                })
+                var layer = new maptalks.TileLayer('base', satelliteMap ? baiduSatelliteBaseOption : baiduNormaBaseOption)
                 me.map.setBaseLayer(layer);
+                if (satelliteMap) {
+                    var textlayer = new maptalks.TileLayer('baiduText', baiduTextBaseOption)
+                    me.map.addLayer(textlayer);
+                }
 
             } else if (newMapType == 'gMap') {
-                var layer = new maptalks.TileLayer('base', {
-                    urlTemplate: "http://mt2.google.cn/vt?lyrs=m@180000000&hl=zh-CN&gl=cn&scale=2&src=app&x={x}&y={y}&z={z}&s=Gal",
-                    // cssFilter: 'sepia(100%) invert(90%)',
-                })
+                var layer = new maptalks.TileLayer('base', satelliteMap ? googleSatelliteBaseOption : googleNormaBaseOption)
                 me.map.setSpatialReference({})
                 me.map.setBaseLayer(layer);
 
             } else if (newMapType == 'aMap') {
-                var layer = new maptalks.TileLayer('base', {
-                    urlTemplate: 'http://webrd04.is.autonavi.com/appmaptile?lang=zh_cn&scale=2&style=8&x={x}&y={y}&z={z}',
-                    // cssFilter: 'sepia(100%) invert(90%)'
-                })
+                var layer = new maptalks.TileLayer('base', satelliteMap ? aliSatelliteBaseOption : aliNormaBaseOption)
                 me.map.setSpatialReference({})
                 me.map.setBaseLayer(layer);
+                if (satelliteMap) {
+                    var textlayer = new maptalks.TileLayer('aliText', aliTextBaseOption)
+                    me.map.addLayer(textlayer);
+                }
+
 
             }
+
+            me.addTrafficLayer(traffic);
 
             me.lastMapType = newMapType;
 
@@ -3072,6 +3195,7 @@ var monitor = {
         },
         updateLastTracks: function(deviceid) {
             var currentTime = DateFormat.getCurrentUTC();
+            var isBMap = this.mapType == 'bMap';
             for (var key in this.positionLastrecords) {
                 var track = this.positionLastrecords[key];
                 if (track) {
@@ -3080,7 +3204,12 @@ var monitor = {
                     if (marker) {
 
                         if (this.isNeedUpdateMarker(track, marker)) {
+                            var point = {
+                                x: isBMap ? track.b_lon : track.g_lon,
+                                y: isBMap ? track.b_lat : track.g_lat,
+                            }
                             marker.setSymbol(this.getMarkerSymbol(track, this.isShowLabel));
+                            marker.setCoordinates(point)
                         }
 
                     } else {
@@ -3616,7 +3745,6 @@ var monitor = {
         },
         mapType: function(newType) {
             this.coordinateTransformation(newType);
-            this.setMapType(newType);
             if (globalDeviceId) {
                 var track = this.positionLastrecords[globalDeviceId]
                 if (track) {

@@ -183,6 +183,102 @@ Vue.component('table-dropdown', {
     }
 });
 
+Vue.component('selected-map', {
+    props: {
+        mapType: String,
+        // b g a;
+    },
+    data: function() {
+        return {
+            isShowMapList: false, //是否显示选择框
+            isSatelliteMap: false, //是否卫星地图
+            isShowXianSu: false,
+            isShowTraffic: false,
+            mapSelectorList: [
+                { label: isZh ? "百度地图" : "BaiduMap", value: "bMap" },
+                { label: isZh ? "谷歌地图" : "GoogleMap", value: "gMap" },
+                { label: isZh ? "高德地图" : "AlibabaMap", value: "aMap" },
+            ],
+            currentMapIndex: 0,
+        }
+    },
+    methods: {
+        onClickOutside: function() {
+            this.isShowMapList = false;
+        },
+        selectedMap: function(e) {
+            var index = Number(e.target.dataset.index);
+            var item = this.mapSelectorList[index];
+            this.$emit('select-map', {
+                mapType: item.value,
+                xiansu: this.isShowXianSu,
+                traffic: this.isShowTraffic,
+                satelliteMap: this.isSatelliteMap
+            });
+            this.currentMapIndex = index;
+        },
+        getCurrentMapIndex: function() {
+            var index = 0;
+            for (var i = 0; i < this.mapSelectorList.length; i++) {
+                var item = this.mapSelectorList[i];
+                if (item.value == this.mapType) {
+                    index = i;
+                    break;
+                }
+            }
+            return index;
+        }
+    },
+    computed: {
+        mapTypeStr: function() {
+            var mapTypeStr = '';
+            for (var i = 0; i < this.mapSelectorList.length; i++) {
+                var item = this.mapSelectorList[i];
+                if (item.value == this.mapType) {
+                    mapTypeStr = item.label;
+                    break;
+                }
+            }
+            return mapTypeStr;
+        },
+        mapSelectorPopupSty: function() {
+            var top = 31;
+            var currentMapIndex = this.currentMapIndex;
+            var maxCurrentIndex = this.mapSelectorList.length - 1;
+
+            top = top * (currentMapIndex + 1);
+
+            if (currentMapIndex == maxCurrentIndex) {
+                top -= 31;
+            }
+
+            return {
+                top: top + 'px'
+            }
+        }
+    },
+    watch: {
+        isSatelliteMap: function() {
+            this.$emit('select-map', {
+                mapType: this.mapType,
+                xiansu: this.isShowXianSu,
+                traffic: this.isShowTraffic,
+                satelliteMap: this.isSatelliteMap
+            });
+        },
+        isShowXianSu: function(newVal) {
+            this.$emit('switch-xiansu', newVal);
+        },
+        isShowTraffic: function(newVal) {
+            this.$emit('switch-traffic', newVal);
+        },
+    },
+    mounted: function() {
+        this.currentMapIndex = this.getCurrentMapIndex();
+    },
+    template: document.getElementById('selected-map-template').innerHTML
+})
+
 
 
 Vue.component('my-video', {

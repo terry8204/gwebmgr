@@ -871,3 +871,79 @@ var CMD_SEND_RESULT_DETAIL_ERROR = 5; //发送错误，需要显示具体cause�
 var CMD_SEND_CONFIRMED = 6; //发送成功,并确认收到
 var CMD_SEND_OVER_RETRY_TIMES = 7; //尝试发送3次失败
 var CMD_SEND_SYNC_TIMEOUT = 8; //同步消息发送后超过6秒没收到回应
+
+
+// 各类型地图地址  'cssFilter': 'sepia(100%) invert(90%)'
+
+var baiduNormalUrlTemplate = 'https://maponline{s}.bdimg.com/tile/?qt=vtile&styles=pl&scaler=2&udt=20201217&from=jsapi2_0&x={x}&y={y}&z={z}';
+var baiduSatelliteUrlTemplate = 'https://maponline{s}.bdimg.com/starpic/?qt=satepc&u=x={x};y={y};z={z};v=009;type=sate&fm=46&app=webearth2&v=009&udt=20201223';
+var baiduTrafficUrlTemplate = 'http://its.map.baidu.com:8002/traffic/TrafficTileService?x={x}&y={y}&level={z}&time={time}&label=web2D&v=017';
+
+var baiduTextUrlTemplate = 'http://online{s}.map.bdimg.com/tile/?qt=tile&x={x}&y={y}&z={z}&styles=sl&v=020';
+
+
+var googleNormalUrlTemplate = 'http://mt{s}.google.cn/vt?lyrs=m@180000000&hl=zh-CN&gl=cn&scale=2&src=app&x={x}&y={y}&z={z}&s=Gal';
+var googleSatelliteUrlTemplate = 'http://mt{s}.google.cn/vt?lyrs=y@186&hl=zh_CN&scale=2&gl=cn&x={x}&y={y}&z={z}';
+var googleTrafficUrlTemplate = 'https://rtt2c.map.qq.com/rtt/?z={z}&x={x}&y={y}&times=1&time={time}';
+
+var aliNormalUrlTemplate = 'http://webrd0{s}.is.autonavi.com/appmaptile?lang=zh_cn&scale=2&style=8&x={x}&y={y}&z={z}';
+var aliSatelliteUrlTemplate = 'http://webst0{s}.is.autonavi.com/appmaptile?style=6&scale=2&x={x}&y={y}&z={z}';
+var aliTextUrlTemplate = 'http://wprd0{s}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scl=1&style=8&ltype=6&x={x}&y={y}&z={z}';
+// 新版
+// http://wprd0{1-4}.is.autonavi.com/appmaptile?x={x}&y={y}&z={z}&lang=zh_cn&size=1&scl=1&style=7和
+// 前者是高德的新版地址，后者是老版地址。
+
+// lang可以通过zh_cn设置中文，en设置英文
+// size基本无作用
+// scl设置标注还是底图，scl=1代表注记
+// scl=2代表底图（矢量或者影像）
+// style设置影像和路网，6为影像图，7为矢量路网，8为影像路网
+// 组合列表
+
+// http://wprd0{1-4}.is.autonavi.com/appmaptile?x={x}&y={y}&z={z}&lang=zh_cn&size=1&scl=1&style=7 为矢量图（含路网、含注记）
+// http://wprd0{1-4}.is.autonavi.com/appmaptile?x={x}&y={y}&z={z}&lang=zh_cn&size=1&scl=2&style=7 为矢量图（含路网，不含注记）
+// http://wprd0{1-4}.is.autonavi.com/appmaptile?x={x}&y={y}&z={z}&lang=zh_cn&size=1&scl=1&style=6 为影像底图（不含路网，不含注记）
+// http://wprd0{1-4}.is.autonavi.com/appmaptile?x={x}&y={y}&z={z}&lang=zh_cn&size=1&scl=2&style=6 为影像底图（不含路网、不含注记）
+// http://wprd0{1-4}.is.autonavi.com/appmaptile?x={x}&y={y}&z={z}&lang=zh_cn&size=1&scl=1&style=8 为影像路图（含路网，含注记）
+// http://wprd0{1-4}.is.autonavi.com/appmaptile?x={x}&y={y}&z={z}&lang=zh_cn&size=1&scl=2&style=8 为影像路网（含路网，不含注记）
+
+var baiduNormaBaseOption = {
+    'urlTemplate': baiduNormalUrlTemplate,
+    'subdomains': [0, 1, 2, 3],
+}
+
+var baiduSatelliteBaseOption = {
+    'urlTemplate': baiduSatelliteUrlTemplate,
+    'subdomains': [0, 1, 2],
+}
+
+var baiduTextBaseOption = {
+    'urlTemplate': baiduTextUrlTemplate,
+    'subdomains': [0, 1, 2],
+}
+
+
+
+var googleNormaBaseOption = {
+    'urlTemplate': googleNormalUrlTemplate,
+    'subdomains': [0, 1, 2, 3],
+}
+
+var googleSatelliteBaseOption = {
+    'urlTemplate': googleSatelliteUrlTemplate,
+    'subdomains': [0, 1, 2, 3],
+}
+var aliNormaBaseOption = {
+    'urlTemplate': aliNormalUrlTemplate,
+    'subdomains': [1, 2, 3, 4],
+}
+
+var aliSatelliteBaseOption = {
+    'urlTemplate': aliSatelliteUrlTemplate,
+    'subdomains': [1, 2, 3, 4],
+}
+var aliTextBaseOption = {
+    'urlTemplate': aliTextUrlTemplate,
+
+    'subdomains': [1, 2, 3, 4],
+}
