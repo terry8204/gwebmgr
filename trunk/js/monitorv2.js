@@ -1581,7 +1581,9 @@ var monitor = {
         },
         handleRemoveAreaOverlay: function() {
             this.isShowAreaCount = false;
-            this.map.removePolygonOverlay();
+            if (this.polygonLayer) {
+                this.map.removeLayer(this.polygonLayer);
+            }
         },
         calcAreaBaiduMarkerStatus: function(bdpoints) {
             var polylatList = [],
