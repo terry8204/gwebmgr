@@ -879,8 +879,8 @@ var baiduNormalUrlTemplate = 'https://maponline{s}.bdimg.com/tile/?qt=vtile&styl
 var baiduSatelliteUrlTemplate = 'https://maponline{s}.bdimg.com/starpic/?qt=satepc&u=x={x};y={y};z={z};v=009;type=sate&fm=46&app=webearth2&v=009&udt=20201223';
 var baiduTrafficUrlTemplate = 'http://its.map.baidu.com:8002/traffic/TrafficTileService?x={x}&y={y}&level={z}&time={time}&label=web2D&v=017';
 
-var baiduTextUrlTemplate = 'http://online{s}.map.bdimg.com/tile/?qt=tile&x={x}&y={y}&z={z}&styles=sl&v=020';
-
+//var baiduTextUrlTemplate = 'http://online{s}.map.bdimg.com/tile/?qt=tile&x={x}&y={y}&z={z}&styles=sl&v=020';
+var baiduTextUrlTemplate = 'https://gps51.com/fbaidumap/tile/?qt=tile&x={x}&y={y}&z={z}&styles=sl&v=020';
 
 var googleNormalUrlTemplate = 'http://mt{s}.google.cn/vt?lyrs=m@180000000&hl=zh-CN&gl=cn&scale=2&src=app&x={x}&y={y}&z={z}&s=Gal';
 var googleSatelliteUrlTemplate = 'http://mt{s}.google.cn/vt?lyrs=y@186&hl=zh_CN&scale=2&gl=cn&x={x}&y={y}&z={z}';

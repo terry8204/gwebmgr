@@ -450,8 +450,6 @@ var monitor = {
     },
     methods: {
         onSelectMap: function(item) {
-
-
             this.mapType = item.mapType;
             this.setMapType(item);
         },
@@ -470,7 +468,6 @@ var monitor = {
                     this.googleTrafficLayer.hide();
                 }
             }
-            console.log(this.googleTrafficLayer.setZIndex(9999));
         },
         addTrafficLayer: function(traffic) {
 

@@ -251,6 +251,117 @@
         .demo-spin-icon-load {
             animation: ani-demo-spin 1s linear infinite;
         }
+        
+        div.selected-map-wrap {
+            height: 32px;
+            width: 100px;
+            background-color: #fff;
+            cursor: pointer;
+        }
+        
+        div.selected-map-inner {
+            line-height: 30px;
+            border: 1px solid #AEBAC5;
+            height: 32px;
+            position: relative;
+            padding: 0 11px;
+        }
+        
+        div.selected-map-list {
+            position: absolute;
+            top: 32px;
+            left: 0px;
+            right: 0px;
+            background-color: #fff;
+            border-left: 1px solid #AEBAC5;
+            border-right: 1px solid #AEBAC5;
+            border-bottom: 1px solid #AEBAC5;
+            z-index: 99;
+        }
+        
+        div.selected-map-list>div {
+            padding: 0 11px;
+            height: 30px;
+            line-height: 30px;
+        }
+        
+        div.selected-map-list>div:hover {
+            background-color: #FCF0C0;
+        }
+        
+        div.selected-map-list>div.actived {
+            background-color: #FCF0C0;
+        }
+        
+        div.map-selector-popup {
+            position: absolute;
+            right: 100px;
+            padding: 5px 0px 5px 5px;
+            box-shadow: 0 0 5px 0 rgb(0 0 0 / 10%);
+            background-color: #fff;
+            display: -webkit-box;
+            display: -ms-flexbox;
+            display: flex;
+        }
+        
+        .MapSelector_item_193IR {
+            height: 50px;
+            width: 50px;
+            border: 1px solid;
+            cursor: pointer;
+            position: relative;
+            margin-right: 5px;
+        }
+        
+        .satellite-map {
+            background: url(./images/model-satel.png) no-repeat;
+            background-position: 50%;
+        }
+        
+        .normal-map {
+            background: url(./images/model-map.png) no-repeat;
+            background-position: 50%;
+        }
+        
+        .map_icon_traffic_off {
+            background: url(data:image/png;base64,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) no-repeat;
+            background-position: center 3px;
+        }
+        
+        .map_icon_traffic_on {
+            background: url(data:image/png;base64,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) no-repeat;
+            background-position: center 3px;
+        }
+        
+        .map_icon_xiansu_off {
+            background: url(data:image/png;base64,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) no-repeat;
+            background-position: center 4px;
+        }
+        
+        .map_icon_xiansu_on {
+            background: url(data:image/png;base64,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) no-repeat;
+            background-position: center 4px;
+        }
+        
+        .map_selector_icon_text {
+            position: absolute;
+            bottom: 1px;
+            left: 1px;
+            right: 1px;
+            height: 18px;
+            line-height: 18px;
+            text-align: center;
+            font-size: 12px;
+        }
+        
+        .no_selected_icon {
+            background-color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .selected_icon {
+            background-color: rgba(64, 150, 209, 0.9);
+            color: rgb(255, 255, 255);
+        }
     </style>
 </head>
 
@@ -387,13 +498,11 @@
                     </Row>
                 </div>
                 <div style="position: absolute; right:20px;top:20px;">
+
                     <div>
-                        <i-select v-model="mapType" size="small" style="width:90px;">
-                            <i-option value="bMap">{{$t("main.bmap")}}</i-option>
-                            <i-option value="gMap">{{$t("main.gmap")}}</i-option>
-                            <i-option value="aMap">{{$t("main.amap")}}</i-option>
-                        </i-select>
+                        <selected-map @select-map="onSelectMap" @switch-traffic="onSwitchTraffic"></selected-map>
                     </div>
+
                     <div class="map-tool-wraper">
                         <Checkbox v-model="isShowBubble">{{$t("main.showBubbles")}}</Checkbox>
                     </div>
@@ -450,6 +559,33 @@
             </Spin>
         </div>
     </div>
+
+    <script type="text/x-template" id="selected-map-template">
+        <div class="selected-map-wrap" v-click-outside.capture="onClickOutside">
+            <div class="selected-map-inner" @click="isShowMapList=true">
+                {{mapTypeStr}}
+                <Icon type="ios-arrow-down" />
+            </div>
+            <div class="selected-map-list" v-show="isShowMapList">
+                <div v-for="(item,index) in mapSelectorList" :data-index="index" :class="{actived:mapType==item.value}" :key="index" @click="selectedMap">{{item.label}}</div>
+            </div>
+            <div class="map-selector-popup" v-show="isShowMapList" :style="mapSelectorPopupSty">
+                <div v-if="false" class="MapSelector_item_193IR" :class="{'map_icon_xiansu_off':!isShowXianSu,'map_icon_xiansu_on':isShowXianSu}" style="width:35px" @click="isShowXianSu=!isShowXianSu">
+                    <div class="map_selector_icon_text no_selected_icon">限速</div>
+                </div>
+                <div class="MapSelector_item_193IR" :class="{'map_icon_traffic_off':!isShowTraffic,'map_icon_traffic_on':isShowTraffic}" style="width:35px" @click="isShowTraffic=!isShowTraffic">
+                    <div class="map_selector_icon_text no_selected_icon">路况</div>
+                </div>
+                <div class="MapSelector_item_193IR normal-map" @click="isSatelliteMap=false">
+                    <div class="map_selector_icon_text" :class="{'selected_icon':!isSatelliteMap,'no_selected_icon':isSatelliteMap}">地图</div>
+                </div>
+                <div class="MapSelector_item_193IR satellite-map" @click="isSatelliteMap=true">
+                    <div class="map_selector_icon_text" :class="{'selected_icon':isSatelliteMap,'no_selected_icon':!isSatelliteMap}">卫星</div>
+                </div>
+            </div>
+        </div>
+    </script>
+
     <script src="dist/vue.min.js"></script>
     <script src="dist/iview.min.js"></script>
     <script src="./js/gps51-jquery.js"></script>
@@ -459,6 +595,7 @@
     <script src="./js/localcachemgr.js"></script>
     <script src="./js/transformlatlon.js"></script>
     <script src="./js/dateformat.js"></script>
+    <script src="js/v-click-outside-x.js"></script>
     <script src="./js/util.js"></script>
     <script src="./js/js.cookie.min.js"></script>
     <script src="./js/echarts.min.js"></script>
@@ -637,6 +774,105 @@
             var YES = "yes";
             var NO = "no";
             var mapType = utils.getMapType();
+
+            Vue.component('selected-map', {
+                data: function() {
+                    return {
+                        isShowMapList: false, //是否显示选择框
+                        isSatelliteMap: false, //是否卫星地图
+                        isShowXianSu: false,
+                        isShowTraffic: false,
+                        mapSelectorList: [{
+                            label: isZh ? "百度地图" : "BaiduMap",
+                            value: "bMap"
+                        }, {
+                            label: isZh ? "谷歌地图" : "GoogleMap",
+                            value: "gMap"
+                        }, {
+                            label: isZh ? "高德地图" : "AlibabaMap",
+                            value: "aMap"
+                        }, ],
+                        currentMapIndex: 0,
+                        mapType: mapType
+                    }
+                },
+                methods: {
+                    onClickOutside: function() {
+                        this.isShowMapList = false;
+                    },
+                    selectedMap: function(e) {
+                        var index = Number(e.target.dataset.index);
+                        var item = this.mapSelectorList[index];
+                        this.mapType = item.value;
+                        this.$emit('select-map', {
+                            mapType: item.value,
+                            xiansu: this.isShowXianSu,
+                            traffic: this.isShowTraffic,
+                            satelliteMap: this.isSatelliteMap
+                        });
+                        this.currentMapIndex = index;
+                    },
+                    getCurrentMapIndex: function() {
+                        var index = 0;
+                        for (var i = 0; i < this.mapSelectorList.length; i++) {
+                            var item = this.mapSelectorList[i];
+                            if (item.value == this.mapType) {
+                                index = i;
+                                break;
+                            }
+                        }
+                        return index;
+                    }
+                },
+                computed: {
+                    mapTypeStr: function() {
+                        var mapTypeStr = '';
+                        for (var i = 0; i < this.mapSelectorList.length; i++) {
+                            var item = this.mapSelectorList[i];
+                            if (item.value == this.mapType) {
+                                mapTypeStr = item.label;
+                                break;
+                            }
+                        }
+                        return mapTypeStr;
+                    },
+                    mapSelectorPopupSty: function() {
+                        var top = 31;
+                        var currentMapIndex = this.currentMapIndex;
+                        var maxCurrentIndex = this.mapSelectorList.length - 1;
+
+                        top = top * (currentMapIndex + 1);
+
+                        if (currentMapIndex == maxCurrentIndex) {
+                            top -= 31;
+                        }
+
+                        return {
+                            top: top + 'px'
+                        }
+                    }
+                },
+                watch: {
+                    isSatelliteMap: function() {
+                        this.$emit('select-map', {
+                            mapType: this.mapType,
+                            xiansu: this.isShowXianSu,
+                            traffic: this.isShowTraffic,
+                            satelliteMap: this.isSatelliteMap
+                        });
+                    },
+                    isShowXianSu: function(newVal) {
+                        this.$emit('switch-xiansu', newVal);
+                    },
+                    isShowTraffic: function(newVal) {
+                        this.$emit('switch-traffic', newVal);
+                    },
+                },
+                mounted: function() {
+                    this.currentMapIndex = this.getCurrentMapIndex();
+                },
+                template: document.getElementById('selected-map-template').innerHTML
+            })
             vRoot = new Vue({
                 el: "#container",
                 i18n: utils.getI18n(),
@@ -713,6 +949,26 @@
                     totalMileage: 0,
                 },
                 methods: {
+                    onSelectMap: function(item) {
+                        this.mapType = item.mapType;
+                        this.setMapType(item);
+                    },
+                    onSwitchTraffic: function(traffic) {
+                        var isBMap = this.mapType == 'bMap';
+                        if (traffic) {
+                            if (isBMap) {
+                                this.baiduTrafficLayer.show();
+                            } else {
+                                this.googleTrafficLayer.show();
+                            }
+                        } else {
+                            if (isBMap) {
+                                this.baiduTrafficLayer.hide();
+                            } else {
+                                this.googleTrafficLayer.hide();
+                            }
+                        }
+                    },
                     startedPlay: function() {
                         var me = this;
                         if (this.isPlaying == false) {
@@ -821,31 +1077,6 @@
                         if (!item.isTheMonth) return;
                         this.date = item.day;
                         this.queryTracks();
-                    },
-                    getMapTypeLayer: function() {
-                        var layer = null;
-                        switch (this.mapType) {
-                            case 'bMap':
-                                layer = new maptalks.TileLayer('base', {
-                                    'urlTemplate': 'https://maponline2.bdimg.com/tile/?qt=vtile&styles=pl&scaler=2&udt=20201217&from=jsapi2_0&x={x}&y={y}&z={z}',
-                                    'subdomains': [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
-                                    'attribution': '&copy; <a target="_blank" href="http://map.baidu.com">Baidu</a>'
-                                })
-                                break;
-                            case 'gMap':
-                                layer = new maptalks.TileLayer('base', {
-                                    urlTemplate: "http://mt2.google.cn/vt?lyrs=m@180000000&hl=zh-CN&scale=2&gl=cn&src=app&x={x}&y={y}&z={z}&s=Gal",
-                                })
-                                break;
-                            case 'aMap':
-                                layer = new maptalks.TileLayer('base', {
-                                    urlTemplate: 'http://webrd04.is.autonavi.com/appmaptile?lang=zh_cn&scale=2&style=8&x={x}&y={y}&z={z}',
-                                })
-                                break;
-                            default:
-                                ;
-                        }
-                        return layer
                     },
                     prevMonth() {
                         this.month--;
@@ -1302,6 +1533,7 @@
 
                         // 创建marker图层并添加到地图    
                         this.markerLayer = new maptalks.VectorLayer('marker', [this.startMarker, this.endMarker, this.carMarker]);
+                        this.markerLayer.setZIndex(999)
                         this.markerLayer.addTo(this.map);
 
 
@@ -1375,10 +1607,7 @@
                     initMap: function() {
                         var me = this;
 
-                        // var baseLayer = new maptalks.TileLayer('base', {
-                        //     urlTemplate: "http://mt2.google.cn/vt?lyrs=m@180000000&hl=zh-CN&gl=cn&src=app&x={x}&y={y}&z={z}&s=Gal",
-                        //     attribution: ''
-                        // })
+                        me.lastMapType = this.mapType;
 
                         this.map = new maptalks.Map('map', {
                             center: [106, 36.11],
@@ -1387,23 +1616,17 @@
                             maxZoom: 18,
                         });
 
-                        if (me.mapType == 'bMap') {
-                            me.map.setSpatialReference({
-                                projection: 'baidu'
-                            });
-                            me.map.setBaseLayer(me.getMapTypeLayer());
-                        } else if (me.mapType == 'gMap') {
-                            me.map.setSpatialReference({})
-                            me.map.setBaseLayer(me.getMapTypeLayer());
-
-                        } else if (me.mapType == 'aMap') {
-                            me.map.setSpatialReference({})
-                            me.map.setBaseLayer(me.getMapTypeLayer());
-                        }
+                        this.setMapType({
+                            mapType: this.mapType,
+                            traffic: false,
+                            xiansu: false,
+                            satelliteMap: false
+                        });
 
 
 
                         this.lineLayer = new maptalks.VectorLayer('line').addTo(this.map);
+                        this.lineLayer.setZIndex(998);
                         this.lineString = new maptalks.LineString(
                             [], {
                                 symbol: {
@@ -1429,6 +1652,136 @@
                         this.map.addControl(customPosition);
 
                         this.addDistanceTool();
+                    },
+                    setMapType: function(mapInfo) {
+                        this.map.removeLayer('baiduText');
+                        this.map.removeLayer('aliText');
+                        var me = this;
+                        var newMapType = mapInfo.mapType;
+                        var satelliteMap = mapInfo.satelliteMap;
+
+                        var traffic = mapInfo.traffic;
+                        if (newMapType == 'bMap') {
+                            me.map.setSpatialReference({
+                                projection: 'baidu'
+                            });
+                            var baseOption = satelliteMap ? baiduSatelliteBaseOption : baiduNormaBaseOption;
+                            var layer = new maptalks.TileLayer('base', baseOption)
+                            me.map.setBaseLayer(layer);
+                            if (satelliteMap) {
+                                var textlayer = new maptalks.TileLayer('baiduText', baiduTextBaseOption)
+                                me.map.addLayer(textlayer);
+                            }
+
+                        } else if (newMapType == 'gMap') {
+                            var baseOption = satelliteMap ? googleSatelliteBaseOption : googleNormaBaseOption;
+                            var layer = new maptalks.TileLayer('base', baseOption)
+                            me.map.setSpatialReference({})
+                            me.map.setBaseLayer(layer);
+                        } else if (newMapType == 'aMap') {
+                            var baseOption = satelliteMap ? aliSatelliteBaseOption : aliNormaBaseOption;
+                            var layer = new maptalks.TileLayer('base', baseOption)
+                            me.map.setSpatialReference({})
+                            me.map.setBaseLayer(layer);
+                            if (satelliteMap) {
+                                var textlayer = new maptalks.TileLayer('aliText', aliTextBaseOption)
+                                me.map.addLayer(textlayer);
+                            }
+
+                        }
+
+                        me.addTrafficLayer(traffic);
+                    },
+                    addTrafficLayer: function(traffic) {
+
+                        if (this.baiduTrafficLayer == null) {
+                            this.baiduTrafficLayer = new maptalks.TileLayer("baidutraffic", {
+
+                                urlTemplate: function(x, y, z) {
+                                    var domain = '';
+                                    if (this.options && this.options['subdomains']) {
+                                        const subdomains = this.options['subdomains'];
+                                        if (isArrayHasData(subdomains)) {
+                                            const length = subdomains.length;
+                                            let s = (x + y) % length;
+                                            if (s < 0) {
+                                                s = 0;
+                                            }
+                                            domain = subdomains[s];
+                                        }
+                                    }
+                                    var data = {
+                                        'x': x,
+                                        'y': y,
+                                        'z': z,
+                                        'domain': domain,
+                                        'time': Date.now()
+                                    };
+                                    var URL_PATTERN = /\{ *([\w_]+) *\}/g;
+                                    return baiduTrafficUrlTemplate.replace(URL_PATTERN, function(str, key) {
+                                        let value = data[key];
+
+                                        if (value === undefined) {
+                                            throw new Error('No value provided for variable ' + str);
+
+                                        } else if (typeof value === 'function') {
+                                            value = value(data);
+                                        }
+                                        return value;
+                                    });
+                                }
+                            });
+                            this.map.addLayer(this.baiduTrafficLayer);
+                            this.baiduTrafficLayer.hide();
+                        }
+
+                        if (this.googleTrafficLayer == null) {
+                            this.googleTrafficLayer = new maptalks.TileLayer("googletraffic", {
+                                urlTemplate: function(x, y, z) {
+
+
+
+                                    console.log(x, y, z);
+                                    y = Math.pow(2, z) - 1 - y;
+                                    var domain = '';
+                                    if (this.options && this.options['subdomains']) {
+                                        const subdomains = this.options['subdomains'];
+                                        if (isArrayHasData(subdomains)) {
+                                            const length = subdomains.length;
+                                            let s = (x + y) % length;
+                                            if (s < 0) {
+                                                s = 0;
+                                            }
+                                            domain = subdomains[s];
+                                        }
+                                    }
+                                    var data = {
+                                        'x': x,
+                                        'y': y,
+                                        'z': z,
+                                        'domain': domain,
+                                        'time': Date.now()
+                                    };
+                                    var URL_PATTERN = /\{ *([\w_]+) *\}/g;
+                                    return googleTrafficUrlTemplate.replace(URL_PATTERN, function(str, key) {
+                                        let value = data[key];
+
+                                        if (value === undefined) {
+                                            throw new Error('No value provided for variable ' + str);
+
+                                        } else if (typeof value === 'function') {
+                                            value = value(data);
+                                        }
+                                        return value;
+                                    });
+                                }
+                            });
+                            this.map.addLayer(this.googleTrafficLayer);
+                            this.googleTrafficLayer.hide();
+                        }
+
+                        this.onSwitchTraffic(traffic);
+
                     },
                     createMarker(track, isRotate, markerFile, markerRotation) {
 
@@ -1799,32 +2152,21 @@
                         }
                     },
                     mapType: function(newMapType) {
-                        // this.lastMapType
                         var me = this;
                         var isBMap = this.lastMapType == 'bMap';
-
                         if (newMapType == 'bMap') {
-                            me.map.setSpatialReference({
-                                projection: 'baidu'
-                            });
-                            me.map.setBaseLayer(me.getMapTypeLayer());
                             if (me.currentTracksLenth > 0) {
                                 me.initMapView();
                             }
                         } else if (newMapType == 'gMap') {
-                            me.map.setSpatialReference({})
-                            me.map.setBaseLayer(me.getMapTypeLayer());
                             if (isBMap && me.currentTracksLenth > 0) {
                                 me.initMapView();
                             }
                         } else if (newMapType == 'aMap') {
-                            me.map.setSpatialReference({})
-                            me.map.setBaseLayer(me.getMapTypeLayer());
                             if (isBMap && me.currentTracksLenth > 0) {
                                 me.initMapView();
                             }
                         }
-
                         me.lastMapType = newMapType;
                     },
 

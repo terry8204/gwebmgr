@@ -186,7 +186,6 @@ Vue.component('table-dropdown', {
 Vue.component('selected-map', {
     props: {
         mapType: String,
-        // b g a;
     },
     data: function() {
         return {
