@@ -797,7 +797,7 @@ var utils = {
             zoom: 5,
             minZoom: 4,
             maxZoom: 19,
-            // baseLayer:
+            scaleControl: true,
         });
 
         var newMapType = this.getMapType();

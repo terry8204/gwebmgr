@@ -1364,7 +1364,7 @@ var monitor = {
                 zoom: 5,
                 minZoom: 4,
                 maxZoom: 19,
-                // baseLayer:
+                scaleControl: true,
             });
 
             this.setMapType({
