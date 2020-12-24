@@ -471,6 +471,7 @@ Vue.component('my-video', {
             });
             player.addEventListener('play', function() {
                 me.playerStateTips = me.$t('video.play');
+                me.isPlaying = true;
             });
             player.addEventListener('playing', function() {
                 me.playerStateTips = me.$t('video.playing');
@@ -478,6 +479,7 @@ Vue.component('my-video', {
             });
             player.addEventListener('pause', function() {
                 me.playerStateTips = me.$t('video.pause');
+                me.isPlaying = false;
             });
             player.addEventListener('waiting', function() {
                 me.playerStateTips = me.$t('video.waiting');
@@ -541,9 +543,9 @@ Vue.component('my-video', {
             }, 2000);
         },
         flv_photograph: function(playerIndex) {
-            if (!this.isPlaying) {
-                return;
-            };
+            // if (!this.isPlaying) {
+            //     return;
+            // };
             var ele = document.createElement('a');
             var now = DateFormat.longToDateTimeStrNoSplit(Date.now(), timeDifference);
             var fileName = this.deviceName + '-' + this.channel + '-' + now;
@@ -552,6 +554,7 @@ Vue.component('my-video', {
             ele.click();
         },
         htmlToImage: function(index) {
+
             var canvas = document.getElementById('V2I_canvas');
             if (!canvas.getContext) {
                 me.$Message.error(me.$t('video.notSupportCanvas'));
@@ -574,9 +577,6 @@ Vue.component('my-video', {
             this.handleFullScreen();
         },
         handleFullScreen: function() {
-            if (!this.isPlaying) {
-                return;
-            };
             var video = this.$refs.player;
             if (video.webkitRequestFullScreen) {
                 video.webkitRequestFullScreen();
