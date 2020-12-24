@@ -2356,7 +2356,7 @@ var monitor = {
                 var a = document.createElement('a');
                 a.href = '#' + deviceid;
                 a.click();
-            }, 1000);
+            }, 500);
         },
         sosoValueChange: function() {
             var me = this;
@@ -2767,8 +2767,7 @@ var monitor = {
         },
         filterGroups: function(groups) {
             var me = this,
-                all = 0,
-                videoGroups = [];
+                all = 0;
             groups.forEach(function(group) {
                 var devCount = 0;
                 if (group.groupname == 'Default') {
@@ -2910,6 +2909,17 @@ var monitor = {
         echartsMapPage: function() {
             window.open('datav.html?token=' + token);
         },
+        addDeviceExpirationReminder: function(device) {
+            console.log('device.isfree', device.deviceid, device.isfree)
+            if (device.isfree == 3) {
+                device.devicetitle += me.$t("monitor.deviceDisabled");
+            } else if (device.isfree == 4) {
+                device.devicetitle += me.$t("monitor.deviceExpiration");
+            } else if (device.isfree == 5) {
+                device.devicetitle += me.$t("monitor.deviceExpired");
+                console.log('device.devicetitle', device.devicetitle);
+            }
+        },
         getAllHideCompanyTreeData: function() {
             var me = this;
             var currentUTC = DateFormat.getCurrentUTC();
@@ -2921,30 +2931,31 @@ var monitor = {
                     var isOnline = me.getIsOnline(device.deviceid, currentUTC);
                     device.isOnline = isOnline;
                     if (isOnline) {
-
                         online++;
                         if (group.expand) {
                             device.isMoving = me.positionLastrecords[device.deviceid].moving != 0;
                             device.devicetitle = device.deviceTypeName + '-' + device.devicename;
+                            me.addDeviceExpirationReminder(device, track);
                         }
                     } else {
-
                         if (group.expand) {
                             me.updateDeviceLastActiveTime(device);
                             var track = me.positionLastrecords[device.deviceid];
-
                             device.isMoving = null;
-                            if (device.lastactivetime <= 0 && track == undefined) {
-                                device.devicetitle = device.deviceTypeName + '-' + device.devicename + me.$t("monitor.notEnabled");
-                            } else {
 
-                                var offlineTime = currentUTC - device.lastactivetime;
-                                device.devicetitle = device.deviceTypeName + '-' + device.devicename + " [" + me.$t("monitor.offline") + utils.timeStampNoSecond(offlineTime) + "] ";
+                            if (device.isfree > 2) {
+                                if (device.lastactivetime <= 0 && track == undefined) {
+                                    device.devicetitle = device.deviceTypeName + '-' + device.devicename + me.$t("monitor.notEnabled");
+                                } else {
+                                    var offlineTime = currentUTC - device.lastactivetime;
+                                    device.devicetitle = device.deviceTypeName + '-' + device.devicename + " [" + me.$t("monitor.offline") + utils.timeStampNoSecond(offlineTime) + "] ";
+                                }
+                            } else {
+                                me.addDeviceExpirationReminder(device, track);
                             }
                         }
                     };
-                    // device.deviceTypeName = "";
-                    // device.devicetitle = device.devicename;
+
 
                 });
                 if (group.expand) {
@@ -3376,6 +3387,7 @@ var monitor = {
 
                     // me.caclOnlineCount();
                     // me.updateTreeOnlineState();
+
                     me.addClusterLayer();
                     communicate.$on("positionlast", me.handleWebSocket);
                     communicate.$on("on-click-expiration", function(deviceid) {

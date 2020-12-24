@@ -295,6 +295,9 @@
                 deviceOffline: 'Device offline',
                 deviceNotVideo: 'The device is not a video player',
                 notEnabled: " [Store] ",
+                deviceDisabled: " [<span style='color:red;'>已禁用</span>] ",
+                deviceExpiration: " [<span style='color:red;'>设备到期</span>] ",
+                deviceExpired: " [<span style='color:red;'>设备过期</span>] ",
             },
             video: {
                 accOpen: 'ACC open,',
@@ -1429,6 +1432,9 @@
                 deviceOffline: '设备离线',
                 deviceNotVideo: '该设备不是视频机',
                 notEnabled: " [库存] ",
+                deviceDisabled: " [<span style='color:red;'>已禁用</span>] ",
+                deviceExpiration: " [<span style='color:red;'>设备到期</span>] ",
+                deviceExpired: " [<span style='color:red;'>设备过期</span>] ",
             },
             video: {
                 accOpen: 'ACC开,',
