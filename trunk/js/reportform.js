@@ -1536,7 +1536,7 @@ function rotateReport(groupslist) {
             },
             calcTableHeight: function() {
                 var wHeight = window.innerHeight;
-                this.lastTableHeight = wHeight - 535;
+                this.lastTableHeight = wHeight - 415;
             },
             onClickQuery: function() {
                 var deviceids = [];
@@ -2223,7 +2223,7 @@ function speedingReport(groupslist) {
             },
             calcTableHeight: function() {
                 var wHeight = window.innerHeight;
-                this.lastTableHeight = wHeight - 535;
+                this.lastTableHeight = wHeight - 415;
             },
             onClickQuery: function() {
                 var deviceids = [];
@@ -5285,7 +5285,7 @@ function timeOilConsumption(groupslist) {
             },
             calcTableHeight: function() {
                 var wHeight = window.innerHeight;
-                this.lastTableHeight = wHeight - 520;
+                this.lastTableHeight = wHeight - 400;
             },
             onClickQuery: function() {
                 if (this.queryDeviceId == "") { return };
@@ -5516,7 +5516,7 @@ function dayOil(groupslist) {
 
             calcTableHeight: function() {
                 var wHeight = window.innerHeight;
-                this.lastTableHeight = wHeight - 520;
+                this.lastTableHeight = wHeight - 360;
             },
             onClickQuery: function() {
                 if (this.queryDeviceId == "") { return };
@@ -5792,7 +5792,7 @@ function refuelingReport(groupslist) {
 
             calcTableHeight: function() {
                 var wHeight = window.innerHeight;
-                this.lastTableHeight = wHeight - 480;
+                this.lastTableHeight = wHeight - 360;
             },
             onClickQuery: function() {
                 if (this.queryDeviceId == "") { return };
@@ -6082,7 +6082,7 @@ function oilLeakageReport(groupslist) {
 
             calcTableHeight: function() {
                 var wHeight = window.innerHeight;
-                this.lastTableHeight = wHeight - 480;
+                this.lastTableHeight = wHeight - 360;
             },
             onClickQuery: function() {
                 if (this.queryDeviceId == "") { return };
@@ -6443,7 +6443,7 @@ function temperature(groupslist) {
             },
             calcTableHeight: function() {
                 var wHeight = window.innerHeight;
-                this.lastTableHeight = wHeight - 520;
+                this.lastTableHeight = wHeight - 400;
             },
             onClickQuery: function() {
                 if (this.queryDeviceId == "") { return };
@@ -7201,7 +7201,7 @@ function ioReport(groupslist) {
             },
             calcTableHeight: function() {
                 var wHeight = window.innerHeight;
-                this.lastTableHeight = wHeight - 215;
+                this.lastTableHeight = wHeight - 220;
             },
             onClickQuery: function() {
                 var deviceids = [];
