@@ -2218,10 +2218,7 @@
                             </Row>
                             <Row>
                                 <i-col span="5" style="height: 100%;text-align:right;line-height:25px;">{{$t("monitor.expireTime")}} : &nbsp;</i-col>
-                                <i-col v-if="deviceBaseInfo.isfree === 1" span="16" style="height: 100%;line-height:25px;text-align:left;">
-                                    {{ deviceBaseInfo.freeStr }}
-                                </i-col>
-                                <i-col v-if="deviceBaseInfo.isfree !== 1" span="16" style="height: 100%;line-height:25px;text-align:left;">
+                                <i-col span="16" style="height: 100%;line-height:25px;text-align:left;">
                                     {{ deviceBaseInfo.overdueDateStr }}
                                 </i-col>
                             </Row>

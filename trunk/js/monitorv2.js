@@ -1847,7 +1847,6 @@ var monitor = {
                     that.$Message.error(that.$t('monitor.CMD_SEND_RESULT_DETAIL_ERROR') + resp.cause);
                 } else if (status === CMD_SEND_CONFIRMED) {
                     resp.overdueDateStr = DateFormat.longToDateStr(resp.overduetime, timeDifference);
-                    resp.freeStr = isZh ? '终身免费' : 'Free for life'
                     that.deviceBaseInfo = resp;
                 } else if (status === CMD_SEND_OVER_RETRY_TIMES) {
                     that.$Message.error(that.$t('monitor.CMD_SEND_OVER_RETRY_TIMES'));
@@ -2910,14 +2909,12 @@ var monitor = {
             window.open('datav.html?token=' + token);
         },
         addDeviceExpirationReminder: function(device) {
-            console.log('device.isfree', device.deviceid, device.isfree)
             if (device.isfree == 3) {
-                device.devicetitle += me.$t("monitor.deviceDisabled");
+                device.devicetitle = device.deviceTypeName + '-' + device.devicename + this.$t("monitor.deviceDisabled");
             } else if (device.isfree == 4) {
-                device.devicetitle += me.$t("monitor.deviceExpiration");
+                device.devicetitle = device.deviceTypeName + '-' + device.devicename + this.$t("monitor.deviceExpiration");
             } else if (device.isfree == 5) {
-                device.devicetitle += me.$t("monitor.deviceExpired");
-                console.log('device.devicetitle', device.devicetitle);
+                device.devicetitle = device.deviceTypeName + '-' + device.devicename + this.$t("monitor.deviceExpired");
             }
         },
         getAllHideCompanyTreeData: function() {
@@ -2934,8 +2931,11 @@ var monitor = {
                         online++;
                         if (group.expand) {
                             device.isMoving = me.positionLastrecords[device.deviceid].moving != 0;
-                            device.devicetitle = device.deviceTypeName + '-' + device.devicename;
-                            me.addDeviceExpirationReminder(device, track);
+                            if (device.isfree < 3) {
+                                device.devicetitle = device.deviceTypeName + '-' + device.devicename;
+                            } else {
+                                me.addDeviceExpirationReminder(device);
+                            }
                         }
                     } else {
                         if (group.expand) {
@@ -2943,15 +2943,15 @@ var monitor = {
                             var track = me.positionLastrecords[device.deviceid];
                             device.isMoving = null;
 
-                            if (device.isfree > 2) {
-                                if (device.lastactivetime <= 0 && track == undefined) {
+                            if (device.isfree < 3) {
+                                if (track == undefined && device.lastactivetime <= 0) {
                                     device.devicetitle = device.deviceTypeName + '-' + device.devicename + me.$t("monitor.notEnabled");
                                 } else {
                                     var offlineTime = currentUTC - device.lastactivetime;
                                     device.devicetitle = device.deviceTypeName + '-' + device.devicename + " [" + me.$t("monitor.offline") + utils.timeStampNoSecond(offlineTime) + "] ";
                                 }
                             } else {
-                                me.addDeviceExpirationReminder(device, track);
+                                me.addDeviceExpirationReminder(device);
                             }
                         }
                     };
@@ -2980,7 +2980,11 @@ var monitor = {
                     if (isOnline) {
                         device.isMoving = me.positionLastrecords[device.deviceid].moving != 0;
                         online++;
-                        device.devicetitle = device.deviceTypeName + '-' + device.devicename
+                        if (device.isfree < 3) {
+                            device.devicetitle = device.deviceTypeName + '-' + device.devicename;
+                        } else {
+                            me.addDeviceExpirationReminder(device);
+                        }
                     };
                 });
                 if (online != 0) {
@@ -3018,8 +3022,17 @@ var monitor = {
                     if (device.isOffline) {
                         offline++;
                         if (group.expand) {
-                            var offlineTime = currentUTC - device.lastactivetime;
-                            device.devicetitle = device.deviceTypeName + '-' + device.devicename + " [" + me.$t("monitor.offline") + utils.timeStampNoSecond(offlineTime) + "] ";
+                            if (device.isfree < 3) {
+                                var track = me.positionLastrecords[device.deviceid];
+                                if (track == undefined && device.lastactivetime <= 0) {
+                                    device.devicetitle = device.deviceTypeName + '-' + device.devicename + me.$t("monitor.notEnabled");
+                                } else {
+                                    var offlineTime = currentUTC - device.lastactivetime;
+                                    device.devicetitle = device.deviceTypeName + '-' + device.devicename + " [" + me.$t("monitor.offline") + utils.timeStampNoSecond(offlineTime) + "] ";
+                                }
+                            } else {
+                                me.addDeviceExpirationReminder(device);
+                            }
                         }
                     };
                 });
@@ -3035,24 +3048,52 @@ var monitor = {
             });
         },
         getStockHideCompanyTreeData: function() {
+            var me = this;
+            var currentUTC = DateFormat.getCurrentUTC();
             this.groups.forEach(function(group) {
                 var stared = 0;
                 var count = 0;
                 group.devices.forEach(function(device, index) {
                     count++;
-                    // var track = me.positionLastrecords[device.deviceid];
-                    // if (device.lastactivetime <= 0 && track == undefined) {
-                    //     stock++;
-                    //     device.isStock = true;
-                    // } else {
-                    //     device.isStock = false;
-                    // };
                     if (device.stared == 1) {
                         stared++;
                         device.isStared = true;
+                        var isOnline = me.getIsOnline(device.deviceid, currentUTC);
+                        device.isOnline = isOnline;
+                        if (isOnline) {
+
+                            device.isMoving = me.positionLastrecords[device.deviceid].moving != 0;
+                            if (device.isfree < 3) {
+                                device.devicetitle = device.deviceTypeName + '-' + device.devicename;
+                            } else {
+                                me.addDeviceExpirationReminder(device);
+                            }
+
+                        } else {
+
+                            me.updateDeviceLastActiveTime(device);
+                            var track = me.positionLastrecords[device.deviceid];
+                            device.isMoving = null;
+
+                            if (device.isfree < 3) {
+                                if (track == undefined && device.lastactivetime <= 0) {
+                                    device.devicetitle = device.deviceTypeName + '-' + device.devicename + me.$t("monitor.notEnabled");
+                                } else {
+                                    var offlineTime = currentUTC - device.lastactivetime;
+                                    device.devicetitle = device.deviceTypeName + '-' + device.devicename + " [" + me.$t("monitor.offline") + utils.timeStampNoSecond(offlineTime) + "] ";
+                                }
+                            } else {
+                                me.addDeviceExpirationReminder(device);
+                            }
+
+                        };
                     } else {
                         device.isStared = false;
                     }
+
+
+
+
                 });
                 if (stared != 0) {
                     group.isShow = true;
@@ -3386,6 +3427,7 @@ var monitor = {
                 me.getLastPosition([], function() {
 
                     // me.caclOnlineCount();
+                    // isNeedRefreshMapUI == true;
                     // me.updateTreeOnlineState();
 
                     me.addClusterLayer();
