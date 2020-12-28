@@ -246,16 +246,16 @@ var bgManager = {
             vueInstanse && vueInstanse.$destroy && vueInstanse.$destroy();
             var me = this
             var pagePath = null
-            if (page == "chargemgr.html") {
-                if (utils.isLocalhost()) {
-                    pagePath = myUrls.viewhost + '/' + page
-                } else {
-                    pagePath = './' + page
-                }
-                window.open(pagePath + '?token=' + token + "&username=" + userName);
-                $('#mar-view').html("");
-                return;
-            }
+                // if (page == "chargemgr.html") {
+                //     if (utils.isLocalhost()) {
+                //         pagePath = myUrls.viewhost + '/' + page
+                //     } else {
+                //         pagePath = './' + page
+                //     }
+                //     window.open(pagePath + '?token=' + token + "&username=" + userName);
+                //     $('#mar-view').html("");
+                //     return;
+                // }
             if (utils.isLocalhost()) {
                 pagePath = myUrls.viewhost + 'view/manager/' + page
             } else {

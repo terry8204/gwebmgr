@@ -1,0 +1,411 @@
+<div id="charge-mgr">
+    <div style="margin:10px;height: 32px;">
+        <input type="file" id="file" style="display: none;" />
+        <div style="float: left;position: relative;width: 210px;line-height:32px;">
+            <div class="search-wrapper" v-click-outside.capture="onClickOutside">
+                <i-input v-model.trim="sosoValue" icon="ios-search-outline" @on-change="sosoValueChange" @on-blur="blur" @on-focus="focus" :readonly="readonly" @on-click="focus" :placeholder="placeholder"></i-input>
+                <transition name="fade">
+                    <div class="search-item-wrapper" v-show="isShowMatchDev">
+                        <Tree :data="treeData" @on-check-change="onCheckedDevice"></Tree>
+                    </div>
+                </transition>
+            </div>
+        </div>
+        <div style="margin-left:10px;float: left;line-height: 32px;position: relative;width: 90px;">
+            <i-select v-model="maturityType">
+                <i-option value="0">已过期</i-option>
+                <i-option value="1">未过期</i-option>
+            </i-select>
+        </div>
+        <div style="margin-left:10px;float: left;height: 32px;position: relative;">
+            <div style="float: left;height: 32px;line-height: 32px;">
+                天数:
+            </div>
+            <div style="float: left;line-height: 32px;position: relative;width: 80px;">
+                <input-number v-model.number="dayNumbers" :max="365" :min="1" style="width: 100%;"></input-number>
+            </div>
+        </div>
+        <div style="margin-left:10px;float: left;line-height: 32px;">
+            <Checkbox v-model="isIncludeSub">是否包含下级</Checkbox>
+        </div>
+        <div style="margin-left:10px;float: left;">
+            <i-button :loading="loading" type="info" @click="queryChargeDeviceList">{{$t("reportForm.query")}}</i-button>
+        </div>
+        <div style="margin-left:10px;float: left;">
+            <i-button type="primary" @click="modal=true">充值</i-button>
+        </div>
+        <div style="float: right;">
+            <i-button @click="exportData" type="primary">{{$t("reportForm.exportData")}}</i-button>
+        </div>
+        <div style="float: right;margin-right:10px;">
+            <i-button @click="importTownerInfo" type="info">导入文件</i-button>
+        </div>
+    </div>
+    <div style="margin:10px;">
+        <i-table :columns="columns" border ref="table" :height="tableHeight" :data="tableData" :loading="loading" @on-selection-change="onSelection"></i-table>
+    </div>
+    <Modal v-model="modal" width="400" v-cloak>
+        <p slot="header" style="color:#2D8CF0;text-align:center">
+            操作
+        </p>
+        <div>
+            <Row style="margin: 10px 0">
+                <i-col span="6" style="height: 100%;line-height:32px;text-align:center">操作类型:</i-col>
+                <i-col span="12" style="height: 100%;line-height:32px;">
+                    <i-select v-model="activeType">
+                        <i-option value="1">充值</i-option>
+                        <i-option value="0">取消充值</i-option>
+                    </i-select>
+                </i-col>
+            </Row>
+            <Row style="margin: 10px 0">
+                <i-col span="6" style="height: 100%;line-height:32px;text-align:center">选中个数:</i-col>
+                <i-col span="12" style="height: 100%;line-height:32px;">
+                    {{selectionArray.length}}
+                </i-col>
+            </Row>
+            <Row style="margin: 10px 0">
+                <i-col span="6" style="height: 100%;line-height:32px;text-align:center">选择时间:</i-col>
+                <i-col span="17" style="height: 100%;line-height:32px;">
+                    <Radio-Group v-model="years">
+                        <Radio label="1年"></Radio>
+                        <Radio label="2年"></Radio>
+                        <Radio label="3年"></Radio>
+                        <Radio label="4年"></Radio>
+                        <Radio label="5年"></Radio>
+                    </Radio-Group>
+                </i-col>
+            </Row>
+            <Row style="margin: 10px 0">
+                <i-col span="6" style="height: 100%;line-height:32px;text-align:center">选择日期:</i-col>
+                <i-col span="17" style="height: 100%;line-height:32px;">
+                    <date-picker type="date" v-model="overdueDate" disabled style="width: 100%"></date-picker>
+                </i-col>
+            </Row>
+        </div>
+        <div slot="footer" style="padding:6.5px 15px;">
+            <i-button style="width:100%;" type="primary" @click="handlerChargeDevices">提交</i-button>
+        </div>
+    </Modal>
+
+    <script>
+        new Vue({
+            el: '#charge-mgr',
+            i18n: utils.getI18n(),
+            mixins: [treeMixin],
+            data: {
+                isIncludeSub: false,
+                modal: false,
+                activeType: '1',
+                dayNumbers: 30,
+                years: '一年',
+                overdueDate: DateFormat.addYear(new Date(), 1),
+                selectionArray: [],
+                createrToUser: userName,
+                modal: false,
+                columns: [{
+                    type: 'selection',
+                    width: 60,
+                    align: 'center'
+                }, {
+                    type: 'index',
+                    width: 60,
+                    align: 'center'
+                }, {
+                    title: '管理账号',
+                    key: 'username'
+                }, {
+                    title: '设备序号',
+                    key: 'deviceid'
+                }, {
+                    title: '设备名称',
+                    key: 'devicename'
+                }, {
+                    title: '设备型号',
+                    key: 'devicetype',
+                }, {
+                    title: '过期时间',
+                    key: 'overduedate'
+                }],
+                tableHeight: 300,
+                tableData: [],
+                loading: false,
+                maturityType: '0',
+            },
+            methods: {
+                queryChargeDeviceList: function() {
+                    this.loading = true;
+                    var me = this;
+                    var url = myUrls.queryChargeDeviceList();
+                    var overduedays = this.dayNumbers;
+                    if (this.maturityType == '0') {
+                        overduedays = -overduedays;
+                    };
+                    var data = {
+                        username: this.createrToUser, // 需要查询的账号
+                        isquerysubaccount: this.isIncludeSub, //true 是包含下级账号 false 不包含
+                        overduedays: overduedays //负数 代表过期多少天 正数代表还有多少天过期
+                    };
+                    utils.sendAjax(url, data, function(respData) {
+                        me.loading = false;
+                        console.log('resp', respData);
+                        var deviceTypeMap = vRoot.$store.state.deviceTypes;
+                        if (respData.status == 0) {
+                            if (respData.devices.length) {
+                                var resultArray = [];
+                                respData.devices.forEach(function(item, index) {
+                                    resultArray.push({
+                                        username: item.creater,
+                                        deviceid: item.deviceid,
+                                        devicename: item.devicename,
+                                        devicetype: deviceTypeMap[item.devicetype].typename,
+                                        devicetypeid: item.devicetype,
+                                        chargestatus: item.chargestatus,
+                                        overduedate: DateFormat.longToDateStr(item.overduetime, timeDifference),
+                                        overduetime: item.overduetime
+                                    });
+                                });
+                                me.tableData = resultArray;
+                            } else {
+                                me.$Message.error("没有搜索到内容");
+                            }
+                        } else {
+                            me.$Message.error("没有该用户权限");
+                        }
+                    }, function() {
+                        me.loading = false;
+                    });
+                },
+                handleDelete: function(row) {
+
+
+                },
+                onSelection: function(result) {
+                    this.selectionArray = result;
+                },
+                handlerChargeDevices: function() {
+                    if (this.selectionArray.length == 0) {
+                        this.$Message.error("请选择要充值的设备");
+                        return;
+                    };
+                    var url = myUrls.chargeDevices(),
+                        me = this;
+                    var data = {
+                        chargestatus: Number(this.activeType),
+                        isfree: this.isLifelong ? 1 : 0,
+                        deviceids: [],
+                        overduetime: DateFormat.format(this.overdueDate, 'yyyy-MM-dd HH:mm:ss')
+                    }
+                    this.selectionArray.forEach(function(item) {
+                        data.deviceids.push(item.deviceid);
+                    });
+
+                    utils.sendAjax(url, data, function(respData) {
+                        if (respData.status == 0) {
+                            me.modal = false;
+                            me.$Message.success("充值成功:" + respData.successcount + "个");
+                        } else {
+                            me.$Message.error("充值失败");
+                        }
+                    });
+                },
+                queryUsersTree: function(callback) {
+                    var url = myUrls.queryUsersTree(),
+                        me = this;
+                    utils.sendAjax(url, {
+                        username: userName
+                    }, function(respData) {
+                        if (respData.status == 0 && respData.rootuser.user) {
+                            callback([me.castUsersTreeToDevicesTree(respData.rootuser)]);
+                        } else {
+                            me.$Message.error(me.$t('monitor.queryFail'))
+                        }
+                    });
+                },
+                castUsersTreeToDevicesTree: function(devicesTreeRecord) {
+                    var me = this;
+                    var iViewTree = {
+                        render: function(h, params) {
+                            var username = params.data.title;
+                            return h('span', {
+                                on: {
+                                    'click': function() {
+                                        me.createrToUser = username;
+                                        me.sosoValue = username;
+                                    }
+                                },
+                                style: {
+                                    cursor: 'pointer',
+                                    color: (me.createrToUser == username) ? '#2D8CF0' : '#000'
+                                }
+                            }, [
+                                h('span', [
+                                    h('Radio', {
+                                        props: {
+                                            value: username == me.createrToUser
+                                        },
+                                        style: {
+                                            marginRight: '4px',
+                                            marginLeft: '4px'
+                                        }
+                                    }),
+                                    h('span', params.data.title)
+                                ]),
+                            ])
+                        },
+                        expand: true,
+                    };
+                    if (devicesTreeRecord != null) {
+                        var username = devicesTreeRecord.user.username;
+                        var subusers = devicesTreeRecord.subusers;
+                        iViewTree.title = username;
+                        if (username != null && subusers != null && subusers.length > 0) {
+                            var subDevicesTreeRecord = this.doCastUsersTreeToDevicesTree(subusers);
+                            iViewTree.children = subDevicesTreeRecord;
+
+                        }
+                    }
+                    return iViewTree;
+                },
+                doCastUsersTreeToDevicesTree: function(usersTrees) {
+                    var devicesTreeRecord = [],
+                        me = this;
+                    if (usersTrees != null && usersTrees.length > 0) {
+                        for (var i = 0; i < usersTrees.length; ++i) {
+                            var usersTree = usersTrees[i];
+                            var username = usersTree.user.username;
+                            var subusers = usersTree.subusers;
+                            var currentsubDevicesTreeRecord = {
+                                render: function(h, params) {
+                                    var username = params.data.title;
+                                    return h('span', {
+                                        on: {
+                                            'click': function() {
+                                                me.createrToUser = username;
+                                                me.sosoValue = username;
+                                            }
+                                        },
+                                        style: {
+                                            cursor: 'pointer',
+                                            color: (me.createrToUser == username) ? '#2D8CF0' : '#000'
+                                        }
+                                    }, [
+                                        h('span', [
+                                            h('Radio', {
+                                                props: {
+                                                    value: username == me.createrToUser
+                                                },
+                                                style: {
+                                                    marginRight: '4px',
+                                                    marginLeft: '4px'
+                                                }
+                                            }),
+                                            h('span', params.data.title)
+                                        ]),
+                                    ])
+                                },
+                            };
+                            if (username != null && subusers != null && subusers.length > 0) {
+                                var subDevicesTreeRecord = this.doCastUsersTreeToDevicesTree(subusers);
+                                currentsubDevicesTreeRecord.children = subDevicesTreeRecord;
+                            }
+                            currentsubDevicesTreeRecord.title = username;
+                            devicesTreeRecord.push(currentsubDevicesTreeRecord);
+                        }
+                    }
+                    return devicesTreeRecord;
+                },
+                calcTableHeight: function() {
+                    var wHeight = window.innerHeight;
+                    this.tableHeight = wHeight - 125;
+                },
+                exportData: function() {
+                    var tableData = deepClone(this.insureRecords);
+                    tableData.forEach(function(item) {
+                        item.cardid = "\t" + item.cardid;
+                        item.usernamephonenum = "\t" + item.usernamephonenum;
+                        item.phonenum = "\t" + item.phonenum;
+                        item.policyno = "\t" + item.policyno;
+                        item.vinno = "\t" + item.vinno;
+                    });
+                    this.$refs.table.exportCsv({
+                        filename: vRoot.$t('reportForm.insureData'),
+                        original: false,
+                        columns: this.columns,
+                        data: tableData
+                    });
+                },
+                importTownerInfo: function() {
+                    this.fileEl.files.length = 0;
+                    this.fileEl.value = "";
+                    this.fileEl.click();
+                },
+                readWorkbookFromLocalFile: function(file, callback) {
+                    var reader = new FileReader();
+                    reader.onload = function(e) {
+                        var data = e.target.result;
+                        var workbook = XLSX.read(data, {
+                            type: 'binary'
+                        });
+                        if (callback) callback(workbook);
+                    };
+                    reader.readAsBinaryString(file);
+                },
+                parserExcelData: function(excelData) {
+                    try {
+                        var indexY = 2;
+                        var tableData = [];
+                        while (true) {
+                            var vinnoKey = this.excelX[1] + indexY; //设备ID
+                            var policynoKey = this.excelX[2] + indexY; //防盗号
+
+                            if (excelData[vinnoKey] == undefined) {
+                                break;
+                            }
+
+                            tableData.push({
+                                vinno: excelData[vinnoKey] ? String(excelData[vinnoKey].v).trim() : '',
+                                policyno: excelData[policynoKey] ? String(excelData[policynoKey].v).trim() : '',
+                                status: -1
+                            })
+
+                            indexY++;
+                        }
+                        this.tableData = tableData;
+                    } catch (error) {
+                        this.$Message.error(vRoot.$t('insure.importExcelFailTips'));
+                    }
+                }
+            },
+            watch: {
+                years: function(newVal) {
+                    this.overdueDate = DateFormat.addYear(new Date(), parseFloat(newVal));
+                }
+            },
+            mounted: function() {
+                var me = this;
+                me.queryUsersTree(function(usersTree) {
+                    me.groupslist = usersTree;
+                    me.treeData = usersTree;
+                });
+                this.sosoValue = userName;
+                this.calcTableHeight();
+
+                this.fileEl = document.getElementById('file');
+                this.fileEl.onchange = function(e) {
+                    var idx = e.srcElement.value.lastIndexOf('.');
+                    var houzhui = e.srcElement.value.slice(idx);
+                    if (houzhui.indexOf('xlsx') == -1) {
+                        me.$Message.error(vRoot.$t('insure.importExcelTips'));
+                        return;
+                    }
+                    var file = e.target.files[0]
+                    me.readWorkbookFromLocalFile(file, function(workbook) {
+                        me.parserExcelData(workbook.Sheets['保单信息'])
+                    });
+                };
+
+            },
+        })
+    </script>
+</div>

@@ -1571,7 +1571,7 @@ var monitor = {
                     'lineColor': '#e4393c',
                     'lineWidth': 2,
                     'polygonFill': 'rgb(135,196,240)',
-                    'polygonOpacity': 0.6
+                    'polygonOpacity': 0
                 }
             });
         },
