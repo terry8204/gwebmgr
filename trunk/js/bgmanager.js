@@ -46,7 +46,6 @@ var bgManager = {
                         { title: "记录仪采集", name: 'travelingDataRecorder', icon: 'ios-car-outline' },
                         { title: me.$t("bgMgr.stockDev"), name: 'stockDev', icon: 'md-cube' },
                         { title: me.$t("bgMgr.notPutIntoStorage"), name: 'notPutIntoStorage', icon: 'md-basket' },
-                        { title: me.$t("bgMgr.renewMgr"), name: 'chargeMgr', icon: 'ios-apps-outline' },
                         { title: me.$t("bgMgr.clearRecord"), name: "clearRecord", icon: "ios-paw" },
                         { title: me.$t("bgMgr.setMileage"), name: "setMileage", icon: "md-paper" },
                     ]
@@ -82,6 +81,7 @@ var bgManager = {
                         { title: me.$t("bgMgr.priceList"), name: 'priceList', icon: 'logo-apple' },
                         { title: me.$t("bgMgr.memberSwitch"), name: 'bonusList', icon: 'ios-barcode' },
                         { title: me.$t("bgMgr.transferRecords"), name: 'transferRecord', icon: 'ios-paper-outline' },
+                        { title: me.$t("bgMgr.renewMgr"), name: 'chargeMgr', icon: 'ios-apps-outline' },
                     ]
                 },
                 {

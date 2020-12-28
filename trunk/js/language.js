@@ -1802,7 +1802,7 @@
                 superQuotation: "报价",
                 totalGoldenBeans: '剩余金豆数',
                 memberUser: '会员账号',
-                memberSwitch: '会员调整',
+                memberSwitch: '金豆划拨',
                 memberLevel: '会员等级',
                 transferGoldenBeans: '划拨金豆数',
                 goldenBeanNumber: '金豆数',
