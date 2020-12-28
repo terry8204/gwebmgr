@@ -225,6 +225,7 @@
             var map = this.getMap();
             var zoom = map.getZoom();
             var maxClusterZoom = this.layer.options['maxClusterZoom'];
+           
             if (maxClusterZoom && zoom > maxClusterZoom) {
                 delete this._currentClusters;
                 this._markersToDraw = this.layer._geoList;
@@ -257,10 +258,14 @@
                 height = void 0;
             for (var p in zoomClusters) {
                 this._currentGrid = zoomClusters[p];
-                if (zoomClusters[p]['count'] <= 100 && this.layer.options['noClusterWithOneMarker']) {
-                    var marker = zoomClusters[p]['children'][0];
+                var markerCount = zoomClusters[p]['count'];
+                if (markerCount < 100 && this.layer.options['noClusterWithOneMarker']) {
+                	for(var q = 0; q < markerCount; ++q)
+                	{
+                    var marker = zoomClusters[p]['children'][q];
                     marker._cluster = zoomClusters[p];
                     this._markersToDraw.push(marker);
+                	}
                     continue;
                 }
                 sprite = this._getSprite();
