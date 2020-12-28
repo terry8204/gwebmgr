@@ -256,10 +256,11 @@
                 sprite = void 0,
                 width = void 0,
                 height = void 0;
+            
             for (var p in zoomClusters) {
                 this._currentGrid = zoomClusters[p];
                 var markerCount = zoomClusters[p]['count'];
-                if (markerCount < 100 && this.layer.options['noClusterWithOneMarker']) {
+                if (markerCount < 10 && this.layer.options['noClusterWithOneMarker']) {
                 	for(var q = 0; q < markerCount; ++q)
                 	{
                     var marker = zoomClusters[p]['children'][q];
