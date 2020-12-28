@@ -2116,19 +2116,6 @@
                         quoted: true,
                     });
                 },
-                queryBonusQuotation: function() {
-                    this.devicePriceObj = {};
-                    var me = this;
-                    var url = myUrls.queryBonusQuotation();
-                    utils.sendAjax(url, {}, function(resp) {
-                        me.loading = false;
-                        if (resp.records) {
-                            resp.records.forEach(function(item) {
-                                me.devicePriceObj[item.devicetypeid] = item.createbonus
-                            });
-                        }
-                    }, function() {});
-                },
             },
             watch: {
                 isShowMatchDev: function() {
@@ -2170,7 +2157,6 @@
                 this.queryGroupInfos(function() {
                     me.getDeviceList(false, 0);
                 });
-                this.queryBonusQuotation();
                 this.getDeviceType();
                 this.calcTableHeight();
                 this.fileEl1 = document.getElementById('file1');
