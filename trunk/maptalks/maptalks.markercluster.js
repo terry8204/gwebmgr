@@ -257,7 +257,7 @@
                 height = void 0;
             for (var p in zoomClusters) {
                 this._currentGrid = zoomClusters[p];
-                if (zoomClusters[p]['count'] === 1 && this.layer.options['noClusterWithOneMarker']) {
+                if (zoomClusters[p]['count'] <= 100 && this.layer.options['noClusterWithOneMarker']) {
                     var marker = zoomClusters[p]['children'][0];
                     marker._cluster = zoomClusters[p];
                     this._markersToDraw.push(marker);
