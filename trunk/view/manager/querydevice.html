@@ -263,7 +263,7 @@
                     <i-col span="4" style="height: 100%;text-align:right;line-height:32px;"><i style="color: red;display: inline-block;">*</i>&nbsp;{{$t("user.devType")}} : &nbsp;</i-col>
                     <i-col span="8">
                         <!-- devicetype -->
-                        <i-select v-model="devicetype" :disabled="isEditDeviceType">
+                        <i-select v-model="devicetype" :disabled="isfree!==2">
                             <i-option v-for="item in deviceTypeList" :value="item.value" :key="item.value">{{ item.label }}</i-option>
                         </i-select>
                     </i-col>
@@ -842,6 +842,7 @@
                 model: "",
                 tabsActive: '',
                 allTemp: false,
+                isfree: 0,
                 taleHeight: 300,
                 isQuery: false,
                 userType: localStorage.getItem('userType'),
@@ -979,7 +980,7 @@
                                 h('Poptip', {
                                     props: {
                                         confirm: true,
-                                        title: vRoot.$t("message.confirmDel")
+                                        title: vRoot.$t("message.confirmDelHintCharge")
                                     },
                                     style: {
                                         marginRight: '5px'
@@ -994,8 +995,6 @@
                                         props: {
                                             type: 'error',
                                             size: 'small',
-                                            disabled: localStorage.getItem('userType') !== '0'
-
                                         }
                                     }, vRoot.$t("bgMgr.delete"))
                                 ]),
@@ -1911,7 +1910,7 @@
                     me.reportedpoint = editObject.reportedpoint;
                     me.totalpoint = editObject.totalpoint;
                     me.forwardurl = editObject.forwardurl;
-                    // me.createrToUser = editObject.creater;
+                    me.isfree = editObject.isfree;
                     me.monitor = editObject.monitor;
                     me.timezone = String(editObject.timezone);
                     me.teltype = String(editObject.teltype);
@@ -2149,9 +2148,6 @@
                 }
             },
             computed: {
-                isEditDeviceType: function() {
-                    return this.userType > 0;
-                },
                 disabledOverdueTime: function() {
                     return this.userType > 4;
                 },

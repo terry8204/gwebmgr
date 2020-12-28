@@ -752,11 +752,14 @@ var myUrls = {
     setDeviceIcon: function() {
         return this.apihosts + 'webapi?action=setdeviceicon&token=' + token;
     },
-    queryBonusQuotation: function() {
-        return this.apihosts + 'webapi?action=querybonusquotation&token=' + token;
+    queryQuotation: function() {
+        return this.apihosts + 'webapi?action=queryquotation&token=' + token;
     },
-    setBonusQuotation: function() {
-        return this.apihosts + 'webapi?action=setbonusquotation&token=' + token;
+    setQuotation: function() {
+        return this.apihosts + 'webapi?action=setquotation&token=' + token;
+    },
+    queryBonusByUsername: function() {
+        return this.apihosts + 'webapi?action=querybonusbyusername&token=' + token;
     },
     queryBonusList: function() {
         return this.apihosts + 'webapi?action=querybonuslist&token=' + token;

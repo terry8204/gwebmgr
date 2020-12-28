@@ -256,9 +256,16 @@ var waringComponent = {
                         if (records) {
                             var mediaFileLists = deepClone(me.mediaFileLists);
                             records.forEach(function(item) {
+                                var device = me.deviceInfos[item.deviceid];
                                 var callon = item.callon.toFixed(5);
                                 var callat = item.callat.toFixed(5);
-                                item.devicename = me.deviceInfos[item.deviceid].devicename;
+
+                                if (device) {
+                                    item.devicename = device.devicename;
+                                } else {
+                                    item.devicename = item.deviceid;
+                                }
+
                                 item.address = LocalCacheMgr.getAddress(callon, callat);
                                 item.callon = callon;
                                 item.callat = callat;
@@ -489,7 +496,6 @@ var waringComponent = {
             utils.sendAjax(url, {}, function(resp) {
                 if (resp.status == 0) {
                     var records = resp.records;
-                    var alarmTypeList = [];
                     records.forEach(function(item, index) {
                         item.show = true;
                         alarmTypeList.push(item);

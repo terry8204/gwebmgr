@@ -98,21 +98,20 @@ var bgManager = {
                     title: '第三方平台',
                     name: 'thirdPlatform',
                     icon: 'ios-analytics',
-                    children: [
-                        { 
-                            title: '永州企业基本信息', 
-                            name: 'yongZhouEnterpriseInfo', 
-                            icon: 'md-add' 
+                    children: [{
+                            title: '永州企业基本信息',
+                            name: 'yongZhouEnterpriseInfo',
+                            icon: 'md-add'
                         },
-                        { 
-                            title: '永州车辆基本信息', 
-                            name: 'yongZhouVehicleInfo', 
-                            icon: 'md-add' 
+                        {
+                            title: '永州车辆基本信息',
+                            name: 'yongZhouVehicleInfo',
+                            icon: 'md-add'
                         },
-                        { 
-                            title: '永州驾驶员基本信息', 
-                            name: 'yongZhouDriverInfo', 
-                            icon: 'md-add' 
+                        {
+                            title: '永州驾驶员基本信息',
+                            name: 'yongZhouDriverInfo',
+                            icon: 'md-add'
                         },
                     ]
                 },
@@ -273,6 +272,9 @@ var bgManager = {
         if (this.userType == 4) {
             this.navList.splice(0, 1);
         };
+        if (this.userType != 0) {
+            this.navList[6].children.splice(1, 1);
+        }
         this.selectditem('bgNav');
     }
 }
@@ -284,8 +286,7 @@ var systemParam = {
         return {
             selectdItemName: null,
             theme: 'light',
-            navList: [
-                {
+            navList: [{
                     title: '设备指令',
                     name: 'deviceDirective',
                     icon: 'ios-pricetag-outline',

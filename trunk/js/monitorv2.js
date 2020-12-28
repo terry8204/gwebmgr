@@ -477,10 +477,10 @@ var monitor = {
                     urlTemplate: function(x, y, z) {
                         var domain = '';
                         if (this.options && this.options['subdomains']) {
-                            const subdomains = this.options['subdomains'];
+                            var subdomains = this.options['subdomains'];
                             if (isArrayHasData(subdomains)) {
-                                const length = subdomains.length;
-                                let s = (x + y) % length;
+                                var length = subdomains.length;
+                                var s = (x + y) % length;
                                 if (s < 0) {
                                     s = 0;
                                 }
@@ -496,7 +496,7 @@ var monitor = {
                         };
                         var URL_PATTERN = /\{ *([\w_]+) *\}/g;
                         return baiduTrafficUrlTemplate.replace(URL_PATTERN, function(str, key) {
-                            let value = data[key];
+                            var value = data[key];
 
                             if (value === undefined) {
                                 throw new Error('No value provided for variable ' + str);
@@ -516,16 +516,13 @@ var monitor = {
                 this.googleTrafficLayer = new maptalks.TileLayer("googletraffic", {
                     urlTemplate: function(x, y, z) {
 
-
-
-                        console.log(x, y, z);
                         y = Math.pow(2, z) - 1 - y;
                         var domain = '';
                         if (this.options && this.options['subdomains']) {
-                            const subdomains = this.options['subdomains'];
+                            var subdomains = this.options['subdomains'];
                             if (isArrayHasData(subdomains)) {
-                                const length = subdomains.length;
-                                let s = (x + y) % length;
+                                var length = subdomains.length;
+                                var s = (x + y) % length;
                                 if (s < 0) {
                                     s = 0;
                                 }
@@ -541,7 +538,7 @@ var monitor = {
                         };
                         var URL_PATTERN = /\{ *([\w_]+) *\}/g;
                         return googleTrafficUrlTemplate.replace(URL_PATTERN, function(str, key) {
-                            let value = data[key];
+                            var value = data[key];
 
                             if (value === undefined) {
                                 throw new Error('No value provided for variable ' + str);
@@ -1377,13 +1374,12 @@ var monitor = {
             var customPosition = new maptalks.control.Zoom({
                 'position': {
                     'bottom': '20',
-                    'right': '20'
+                    'right': '10'
                 },
                 'slider': false,
                 'zoomLevel': false
             });
             this.map.addControl(customPosition);
-
             this.addDistanceTool();
 
         },
@@ -3577,6 +3573,7 @@ var monitor = {
                 'geometryEvents': true,
                 'single': true
             });
+            this.clusterLayer.setZIndex(999);
             this.map.addLayer(this.clusterLayer);
         },
         onClickMarker: function(e) {

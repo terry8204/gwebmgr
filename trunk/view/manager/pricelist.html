@@ -9,29 +9,12 @@
                 <Icon type="ios-create-outline"></Icon>
                 <span>{{$t('monitor.edit')}}</span>
             </p>
-
             <Row style="margin: 10px 0">
                 <i-col span="6" style="height: 100%;text-align:right;line-height:32px;">
-                    {{$t('bgMgr.level3')}} :
+                    {{$t('bgMgr.superQuotation')}} :
                 </i-col>
                 <i-col span="16">
-                    <input-number :max="10000" :min="0" v-model.trim.number="bonusleveladd3" style="width: 100%;"></input-number>
-                </i-col>
-            </Row>
-            <Row style="margin: 10px 0">
-                <i-col span="6" style="height: 100%;text-align:right;line-height:32px;">
-                    {{$t('bgMgr.level2')}} :
-                </i-col>
-                <i-col span="16">
-                    <input-number :max="10000" :min="0" v-model.trim.number="bonusleveladd2" style="width: 100%;"></input-number>
-                </i-col>
-            </Row>
-            <Row style="margin: 10px 0">
-                <i-col span="6" style="height: 100%;text-align:right;line-height:32px;">
-                    {{$t('bgMgr.level1')}} :
-                </i-col>
-                <i-col span="16">
-                    <input-number :max="10000" :min="0" v-model.trim.number="bonusleveladd1" style="width: 100%;"></input-number>
+                    <input-number :max="10000" :min="0" v-model.trim.number="price" style="width: 100%;"></input-number>
                 </i-col>
             </Row>
             <div slot="footer">
@@ -55,16 +38,7 @@
                     key: 'remark',
                 }, {
                     title: vRoot.$t('bgMgr.superQuotation'),
-                    key: 'createbonus',
-                }, {
-                    title: vRoot.$t('bgMgr.level3'),
-                    key: 'bonusleveladd3',
-                }, {
-                    title: vRoot.$t('bgMgr.level2'),
-                    key: 'bonusleveladd2',
-                }, {
-                    title: vRoot.$t('bgMgr.level1'),
-                    key: 'bonusleveladd1',
+                    key: 'price',
                 }, {
                     title: vRoot.$t('alarm.action'),
                     width: 100,
@@ -78,36 +52,27 @@
                             on: {
                                 click: function() {
                                     editObject = row;
-                                    vueInstanse.bonusleveladd1 = row.bonusleveladd1;
-                                    vueInstanse.bonusleveladd2 = row.bonusleveladd2;
-                                    vueInstanse.bonusleveladd3 = row.bonusleveladd3;
+                                    vueInstanse.price = row.price;
                                     vueInstanse.modal = true;
                                 }
                             }
                         }, vRoot.$t('monitor.edit'))
                     },
                 }],
-                bonusleveladd1: 0,
-                bonusleveladd2: 0,
-                bonusleveladd3: 0,
+                price: 0,
                 tableData: [],
             },
             methods: {
                 handleEdit: function() {
                     var me = this;
-                    var url = myUrls.setBonusQuotation();
+                    var url = myUrls.setQuotation();
                     var data = {
                         devicetypeid: editObject.devicetypeid,
-                        bonusleveladd1: this.bonusleveladd1,
-                        bonusleveladd2: this.bonusleveladd2,
-                        bonusleveladd3: this.bonusleveladd3,
-
+                        price: this.price
                     };
                     utils.sendAjax(url, data, function(resp) {
                         if (resp.status === 0) {
-                            editObject.bonusleveladd1 = me.bonusleveladd1;
-                            editObject.bonusleveladd2 = me.bonusleveladd2;
-                            editObject.bonusleveladd3 = me.bonusleveladd3;
+                            editObject.price = me.price;
                             me.modal = false;
                             me.$Message.success(me.$t('monitor.setupSucc'));
                         } else if (resp.status === 11) {
@@ -125,9 +90,9 @@
                     var wHeight = window.innerHeight;
                     this.taleHeight = wHeight - 115;
                 },
-                queryBonusQuotation: function() {
+                queryQuotation: function() {
                     var me = this;
-                    var url = myUrls.queryBonusQuotation();
+                    var url = myUrls.queryQuotation();
                     utils.sendAjax(url, {}, function(resp) {
                         me.loading = false;
                         if (resp.records) {
@@ -141,7 +106,10 @@
             mounted: function() {
                 var me = this;
                 this.calcTableHeight();
-                this.queryBonusQuotation();
+                this.queryQuotation();
+                if (vRoot.$store.state.userType > 0) {
+                    this.columns.pop();
+                }
                 window.onresize = function() {
                     me.calcTableHeight();
                 }

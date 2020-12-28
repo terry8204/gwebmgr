@@ -1508,12 +1508,44 @@ function rotateReport(groupslist) {
             exportData: function() {
                 var startday = this.dateVal[0];
                 var endday = this.dateVal[1];
-                this.$refs.totalTable.exportCsv({
-                    filename: vRoot.$t("reportForm.rotationStatistics") + startday + '-' + endday,
-                    original: false,
-                    columns: this.allAccColumns.filter(function(col, index) { return index != 1; }),
-                    data: this.allRotateTableData
-                });
+                if (this.activeTab == 'tabTotal') {
+                    this.$refs.totalTable.exportCsv({
+                        filename: vRoot.$t("reportForm.rotationStatistics") + startday + '-' + endday,
+                        original: false,
+                        columns: this.allAccColumns.filter(function(col, index) { return index != 1; }),
+                        data: this.allRotateTableData
+                    });
+                } else {
+                    var columns = deepClone(this.columns);
+                    columns[6] = {
+                        title: isZh ? '地址' : 'Address',
+                        key: 'address',
+                    };
+                    var tableData = deepClone(this.tableData);
+                    tableData.forEach(function(item) {
+                        var lat = item.slat ? item.slat : null;
+                        var lon = item.slon ? item.slon : null;
+                        var address = null;
+                        if (lat && lon) {
+                            address = LocalCacheMgr.getAddress(lon, lat)
+                        }
+                        if (address !== null) {
+                            item.address = address;
+                        } else {
+                            item.address = lon + "-" + lat;
+                        }
+                        item.startDate = "\t" + item.startDate;
+                        item.endDate = "\t" + item.endDate;
+                        item.dveiceid = "\t" + item.dveiceid;
+                    });
+                    this.$refs.detailTable.exportCsv({
+                        filename: (isZh ? '正反转细节-' : 'Rotate-details-') + startday + '-' + endday,
+                        original: false,
+                        columns: columns,
+                        data: tableData
+                    });
+                }
+
             },
 
             cleanSelected: function(treeDataFilter) {

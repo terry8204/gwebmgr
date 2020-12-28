@@ -38,9 +38,6 @@
         <div style="margin-left:20px;float: left;">
             <i-button @click="onClickQuery" icon="ios-search">{{$t("reportForm.query")}}</i-button>
         </div>
-        <div style="margin-left:20px;float: left;">
-            <i-button @click="exportData" icon="md-arrow-down">{{$t("reportForm.download")}}</i-button>
-        </div>
     </Row>
     <div style="width:100%;height: 180px;position: relative;">
         <div id="barContainer" style="height: 180px;width: 100%;"></div>
@@ -53,6 +50,9 @@
             <Tab-pane :label="$t('reportForm.rotationDetails')" name="tabDetail">
                 <i-table ref="detailTable" :columns="columns" :height="lastTableHeight" :data="tableData" :loading="loading"></i-table>
             </Tab-pane>
+            <div style="margin-top:5px;" slot="extra">
+                <i-button @click="exportData" type="primary" icon="md-arrow-down" size="small">{{$t("reportForm.exportData")}}</i-button>
+            </div>
         </Tabs>
     </div>
 </div>

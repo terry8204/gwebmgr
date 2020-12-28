@@ -29,21 +29,7 @@
                     {{userName}}
                 </i-col>
             </Row>
-            <div v-if="type=='level'">
-                <Row style="margin: 10px 0">
-                    <i-col span="6" style="height: 100%;text-align:right;line-height:32px;">
-                        {{$t("bgMgr.memberLevel")}} :
-                    </i-col>
-                    <i-col span="16">
-                        <i-select v-model="level">
-                            <i-option value="1">{{$t("bgMgr.level1")}}</i-option>
-                            <i-option value="2">{{$t("bgMgr.level2")}}</i-option>
-                            <i-option value="3">{{$t("bgMgr.level3")}}</i-option>
-                        </i-select>
-                    </i-col>
-                </Row>
-            </div>
-            <div v-if="type=='point'">
+            <div>
                 <Row style="margin: 10px 0">
                     <i-col span="6" style="height: 100%;text-align:right;line-height:32px;">
                         {{$t("bgMgr.transferGoldenBeans")}} :
@@ -80,24 +66,6 @@
                     title: vRoot.$t('user.username'),
                     key: 'username',
                 }, {
-                    title: vRoot.$t('bgMgr.memberLevel'),
-                    render: function(h, params) {
-                        var str = '';
-                        var level = params.row.bonuslevel;
-                        switch (level) {
-                            case 1:
-                                str = vRoot.$t('bgMgr.level1');
-                                break;
-                            case 2:
-                                str = vRoot.$t('bgMgr.level2');
-                                break;
-                            case 3:
-                                str = vRoot.$t('bgMgr.level3');
-                                break;
-                        };
-                        return h('sapn', {}, str);
-                    }
-                }, {
                     title: vRoot.$t('bgMgr.goldenBeanNumber'),
                     key: 'bonuspoints',
                 }, {
@@ -107,24 +75,6 @@
                         var row = params.row;
                         return h(
                             'div', {}, [
-                                h('Button', {
-                                    props: {
-                                        type: 'primary',
-                                        size: 'small'
-                                    },
-                                    style: {
-                                        marginRight: '5px',
-                                    },
-                                    on: {
-                                        click: function() {
-                                            editObject = row;
-                                            vueInstanse.type = 'level';
-                                            vueInstanse.userName = row.username;
-                                            vueInstanse.level = String(editObject.bonuslevel);
-                                            vueInstanse.modal = true;
-                                        }
-                                    }
-                                }, vRoot.$t('bgMgr.adjustMembershipLevel')),
                                 h('Button', {
                                     props: {
                                         type: 'primary',
@@ -148,10 +98,18 @@
                 level: '1',
                 bonuspoint: 0,
                 bonuspoints: 0,
-                type: 'level',
                 tableData: [],
             },
             methods: {
+                queryBonusByUsername: function() {
+                    var me = this;
+                    var url = myUrls.queryBonusByUsername();
+                    utils.sendAjax(url, {}, function(resp) {
+                        if (resp.status == 0) {
+                            me.bonuspoints = resp.bonuspoints
+                        }
+                    })
+                },
                 handlerClickQuery: function() {
                     if (this.queryParameter) {
                         var me = this;
@@ -167,47 +125,32 @@
                 },
                 handleEdit: function() {
                     var me = this;
-                    if (this.type == 'level') {
-                        var url = myUrls.setBonusLevel();
-                        var data = {
-                            username: editObject.username,
-                            bonuslevel: this.level,
-                        };
-                        utils.sendAjax(url, data, function(resp) {
-                            if (resp.status === 0) {
-                                editObject.bonuslevel = Number(me.level);
-                                me.modal = false;
-                                me.$Message.success(me.$t('monitor.setupSucc'));
-                            } else {
-                                me.$Message.error(me.$t('monitor.setupFail'));
-                            }
-                        });
-                    } else {
-                        if (!(this.bonuspoint > 0)) {
-                            me.$Message.error(me.$t('bgMgr.transferGoldenBeansTips3'));
-                            return;
-                        }
-                        var url = myUrls.assignPoints();
-                        var data = {
-                            targetusername: editObject.username,
-                            points: this.bonuspoint,
-                            remark: this.remark,
-                        };
-                        utils.sendAjax(url, data, function(resp) {
-                            if (resp.status === 0) {
-                                me.modal = false;
-                                editObject.bonuspoints = resp.topoints;
-                                me.bonuspoints = resp.frompoints;
-                                me.$Message.success(me.$t('monitor.setupSucc'));
-                            } else if (resp.status === 1) {
-                                me.$Message.error(vRoot.$t('bgMgr.transferGoldenBeansTips1'));
-                            } else if (resp.status === -1) {
-                                me.$Message.error(vRoot.$t('bgMgr.transferGoldenBeansTips2'));
-                            } else {
-                                me.$Message.error(me.$t('monitor.setupFail'));
-                            }
-                        });
+
+                    if (!(this.bonuspoint > 0)) {
+                        me.$Message.error(me.$t('bgMgr.transferGoldenBeansTips3'));
+                        return;
                     }
+                    var url = myUrls.assignPoints();
+                    var data = {
+                        targetusername: editObject.username,
+                        points: this.bonuspoint,
+                        remark: this.remark,
+                    };
+                    utils.sendAjax(url, data, function(resp) {
+                        if (resp.status === 0) {
+                            me.modal = false;
+                            editObject.bonuspoints = resp.topoints;
+                            me.bonuspoints = resp.frompoints;
+                            me.$Message.success(me.$t('monitor.setupSucc'));
+                        } else if (resp.status === 1) {
+                            me.$Message.error(vRoot.$t('bgMgr.transferGoldenBeansTips1'));
+                        } else if (resp.status === -1) {
+                            me.$Message.error(vRoot.$t('bgMgr.transferGoldenBeansTips2'));
+                        } else {
+                            me.$Message.error(me.$t('monitor.setupFail'));
+                        }
+                    });
+
 
                 },
                 calcTableHeight: function() {
@@ -223,7 +166,6 @@
                             me.tableData = resp.records;
                             me.records = resp.records;
                         }
-                        me.bonuspoints = resp.selfrecord ? resp.selfrecord.bonuspoints : '';
                     }, function() {
                         me.loading = false;
                     })
@@ -241,6 +183,7 @@
                 me.records = [];
                 this.calcTableHeight();
                 this.queryBonusList();
+                this.queryBonusByUsername();
                 window.onresize = function() {
                     me.calcTableHeight();
                 }

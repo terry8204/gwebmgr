@@ -15,11 +15,9 @@
         <div style="float: left;height: 30px; line-height: 30px;margin-left: 10px;" class="spans-wrap">
             <span class="cursor-pointer" @click="handleSelectdDate(0)" :style="{color: dayNumberType == 0 ? '#2D8CF0' : '#515A6E'}">{{$t("reportForm.toDay")}}</span> <b>｜</b>
             <span class="cursor-pointer" @click="handleSelectdDate(1)" :style="{color: dayNumberType == 1 ? '#2D8CF0' : '#515A6E'}">{{$t("reportForm.yesterDay")}}</span> <b>｜</b>
-
             <span class="cursor-pointer" @click="handleSelectdDate(7)" :style="{color: dayNumberType == 7 ? '#2D8CF0' : '#515A6E'}">{{$t("reportForm.sevenDays")}}</span> <b>｜</b>
             <span class="cursor-pointer" @click="handleSelectdDate(30)" :style="{color: dayNumberType == 30 ? '#2D8CF0' : '#515A6E'}">{{$t("reportForm.lastMonth")}}</span> <b>｜</b>
             <span class="cursor-pointer" @click="handleSelectdDate(180)" :style="{color: dayNumberType == 180 ? '#2D8CF0' : '#515A6E'}">{{$t("reportForm.lastHalfYear")}}</span>
-
         </div>
         <div style="margin-left:10px;float: left;">
             <i-button @click="queryTransferRecords" :loading="loading">{{$t("reportForm.query")}}</i-button>
@@ -32,6 +30,9 @@
         </div>
         <div style="float: right;">
             <i-button @click="exportData" type="primary">{{$t("reportForm.exportData")}}</i-button>
+        </div>
+        <div style="float: right;line-height: 32px;margin-right: 10px;">
+            <span>{{$t("bgMgr.totalGoldenBeans")}} : {{bonuspoints}}</span>
         </div>
     </div>
     <div style="margin:10px;">
@@ -84,6 +85,7 @@
                 tableHeight: 300,
                 tableData: [],
                 loading: false,
+                bonuspoints: 0,
             },
             methods: {
                 rowClassName(row, index) {
@@ -117,7 +119,6 @@
                         offset: timeDifference
                     };
                     utils.sendAjax(url, data, function(resp) {
-                        console.log(resp);
                         if (resp.status == 0) {
                             var total = 0;
                             var records = resp.records;
@@ -149,6 +150,7 @@
                     }
                 },
                 exportData: function() {
+                    // alert(11);
                     this.$refs.table.exportCsv({
                         filename: vRoot.$t('reportForm.insureData'),
                         original: false,
@@ -160,6 +162,15 @@
                     var wHeight = window.innerHeight;
                     this.tableHeight = wHeight - 155;
                 },
+                queryBonusByUsername: function() {
+                    var me = this;
+                    var url = myUrls.queryBonusByUsername();
+                    utils.sendAjax(url, {}, function(resp) {
+                        if (resp.status == 0) {
+                            me.bonuspoints = resp.bonuspoints
+                        }
+                    })
+                }
             },
             watch: {
                 exactValue: function(newVal) {
@@ -172,6 +183,7 @@
                 var me = this;
                 this.calcTableHeight();
                 this.queryTransferRecords();
+                this.queryBonusByUsername();
                 this.records = [];
                 window.onresize = function() {
                     me.calcTableHeight();
