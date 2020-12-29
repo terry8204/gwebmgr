@@ -59,8 +59,8 @@ var treeMixin = {
             this.currentPageIndex = index;
             this.tableData = this.cmdRecords.slice(start, offset);
         },
-        onClickOutside: function() {
-            this.readonly = true;
+        onClickOutside: function(e) {
+            this.readonly = false;
             this.isShowMatchDev = false;
         },
         onChange: function(value) {
