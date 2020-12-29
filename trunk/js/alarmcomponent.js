@@ -9,7 +9,7 @@ var waringComponent = {
             isLargen: 0,
             index: 4,
             waringRowIndex: null,
-            componentName: 'waringMsg',
+            componentName: 'emergencyAlarm',
             searchValue: '',
             disposeModal: false,
             settingModal: false,
