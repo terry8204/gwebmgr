@@ -330,7 +330,9 @@ var utils = {
             //contentType: "application/json;charset=utf-8",
             url: 'https://www.gps51.com/webapi?action=w&lat=' + lat + '&lon=' + lon + '&token=' + token,
             success: function(data) {
-                (data.address != "") && callback(data)
+                if (data) {
+                    (data.address != "") && callback(data)
+                }
             }
         })
     },

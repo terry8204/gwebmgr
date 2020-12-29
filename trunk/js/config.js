@@ -842,6 +842,9 @@ var myUrls = {
     deleteYongZhouDriver: function() {
         return this.apihosts + 'webapi?action=deleteyongzhoudrivers&token=' + token;
     },
+    queryDevicesByIds: function() {
+        return this.apihosts + 'webapi?action=querydevicesbyids&token=' + token;
+    },
 }
 
 

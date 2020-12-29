@@ -45,6 +45,9 @@
         <div style="float: right;margin-right:10px;">
             <i-button @click="importTownerInfo" type="info">{{$t("insure.importFile")}}</i-button>
         </div>
+        <div style="float: right;margin-right:10px;">
+            <i-button @click="downloadTemplate">{{$t('insure.templateDownload')}}</i-button>
+        </div>
     </div>
     <div style="margin:10px;">
         <i-table :columns="columns" border ref="table" :height="tableHeight" :data="tableData" :loading="loading" @on-selection-change="onSelection"></i-table>
@@ -168,6 +171,12 @@
                 maturityType: '0',
             },
             methods: {
+                downloadTemplate: function() {
+                    var a = document.createElement('a');
+                    a.href = myUrls.apihost + 'deviceidstemplate.xlsx';
+                    a.download = 'deviceidstemplate';
+                    a.click();
+                },
                 handleChargeModal: function() {
                     if (vRoot.$store.state.userType == 0) {
                         this.adminModal = true;
@@ -435,6 +444,16 @@
                     this.fileEl.value = "";
                     this.fileEl.click();
                 },
+                queryDevicesByIds: function(deviceids) {
+                    console.log('deviceids', deviceids);
+                    var url = myUrls.queryDevicesByIds();
+                    var data = {
+                        deviceids: deviceids
+                    }
+                    utils.sendAjax(url, data, function(resp) {
+                        console.log(resp);
+                    });
+                },
                 readWorkbookFromLocalFile: function(file, callback) {
                     var reader = new FileReader();
                     reader.onload = function(e) {
@@ -449,24 +468,28 @@
                 parserExcelData: function(excelData) {
                     try {
                         var indexY = 2;
-                        var tableData = [];
+                        var deviceids = [];
+                        var excelX = ['A', 'B'];
                         while (true) {
-                            var vinnoKey = this.excelX[1] + indexY; //设备ID
-                            var policynoKey = this.excelX[2] + indexY; //防盗号
-
-                            if (excelData[vinnoKey] == undefined) {
+                            var deviceidKey = excelX[1] + indexY; //设备ID
+                            if (excelData[deviceidKey] == undefined) {
                                 break;
                             }
-
-                            tableData.push({
-                                vinno: excelData[vinnoKey] ? String(excelData[vinnoKey].v).trim() : '',
-                                policyno: excelData[policynoKey] ? String(excelData[policynoKey].v).trim() : '',
-                                status: -1
-                            })
+                            var data = excelData[deviceidKey];
+                            if (data) {
+                                var deviceid = String(data.v).trim()
+                                if (deviceid) {
+                                    deviceids.push(deviceid);
+                                }
+                            }
 
                             indexY++;
                         }
-                        this.tableData = tableData;
+
+                        if (deviceids.length) {
+                            this.queryDevicesByIds(deviceids);
+                        }
+
                     } catch (error) {
                         this.$Message.error(vRoot.$t('insure.importExcelFailTips'));
                     }
@@ -491,7 +514,7 @@
                     }
                     var file = e.target.files[0]
                     me.readWorkbookFromLocalFile(file, function(workbook) {
-                        me.parserExcelData(workbook.Sheets['保单信息'])
+                        me.parserExcelData(workbook.Sheets['设备序号'])
                     });
                 };
 
